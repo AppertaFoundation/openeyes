@@ -23,14 +23,22 @@ class DocManDeliveryCommand extends CConsoleCommand
 
     private $event;
 
+    private $csv_format = 'OEGPLetterReport_%s.csv';
+
+    private $generate_xml = false;
+
+    private $generate_csv = false;
+
     /**
      * DocManDeliveryCommand constructor.
      */
     public function __construct()
     {
         $this->path = Yii::app()->params['docman_export_dir'];
-        // check if directory is exists
+        $this->generate_xml = !isset(Yii::app()->params['docman_xml_format']) || Yii::app()->params['docman_xml_format'] !== 'none';
+        $this->generate_csv = Yii::app()->params['docman_generate_csv'];
 
+        // check if directory exists
         if (!is_dir($this->path)) {
             mkdir($this->path);
             echo "ALERT! Directory " . $this->path . " has been created!";
@@ -42,10 +50,9 @@ class DocManDeliveryCommand extends CConsoleCommand
     /**
      * Run the command.
      */
-    public function run()
+    public function run($args)
     {
         $pending_documents = $this->getPendingDocuments();
-
         foreach ($pending_documents as $document) {
             echo 'Processing event ' . $document->document_target->document_instance->correspondence_event_id . PHP_EOL;
             $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
@@ -63,9 +70,13 @@ class DocManDeliveryCommand extends CConsoleCommand
     /**
      * @param $event_id
      * @param $output_id
+     *
+     * @return bool;
      */
     private function savePDFFile($event_id, $output_id)
     {
+        $pdf_generated = false;
+        $xml_generated = false;
         $this->event = Event::model()->findByPk($event_id);
         if ($this->event) {
             $login_page = Yii::app()->params['docman_login_url'];
@@ -123,24 +134,46 @@ class DocManDeliveryCommand extends CConsoleCommand
                     }
                 }
             }
-            file_put_contents($this->path . "/" . $filename . ".pdf", $content);
-            if (!isset(Yii::app()->params['docman_xml_format']) || Yii::app()->params['docman_xml_format'] !== 'none') {
-                $this->generateXMLOutput($filename, $output_id);
+
+            $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
+
+            if ($this->generate_xml) {
+                $xml_generated = $this->generateXMLOutput($filename);
             }
-            $this->updateDelivery($output_id);
+
+            if (!$pdf_generated || ($this->generate_xml && !$xml_generated)) {
+                echo 'Generating for file ' . $filename . ' failed' . PHP_EOL;
+
+                return false;
+            }
+
+            if ($this->updateDelivery($output_id)) {
+                $this->logData(array(
+                    'hos_num' => $this->event->episode->patient->hos_num,
+                    'clinician_name' => $this->event->user->getFullName(),
+                    'event_updated' => $this->event->last_modified_date,
+                    'event_date' => $this->event->created_date,
+                    'output_date' => date('Y-m-d H:i:s'),
+                ));
+            }
+
+            return true;
         }
     }
 
     /**
      * @param string $filename
+     *
+     * @return bool
      */
     private function generateXMLOutput($filename)
     {
         $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $this->event->id));
         $letter_types = array("0" => "", "1" => "Clinic discharge letter", "2" => "Post-op letter", "3" => "Clinic letter", "4" => "Other letter");
 
-        $subspeciality = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec : 'SS';
-        $subspeciality_name = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name : 'Support Services';
+        $subObj = $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty;
+        $subspeciality = isset($subObj->ref_spec) ? $subObj->ref_spec : 'SS';
+        $subspeciality_name = isset($subObj->name) ? $subObj->name : 'Support Services';
         $nat_id = isset($this->event->episode->patient->gp->nat_id) ? $this->event->episode->patient->gp->nat_id : null;
         $gp_name = isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->getFullName() : null;
         $practice_code = isset($this->event->episode->patient->practice->code) ? $this->event->episode->patient->practice->code : '';
@@ -188,7 +221,7 @@ class DocManDeliveryCommand extends CConsoleCommand
             <SubLocationName></SubLocationName>
             </DocumentInformation>";
 
-        file_put_contents($this->path . "/" . $filename . ".XML", $this->cleanXML($xml));
+        return (file_put_contents($this->path . "/" . $filename . ".XML", $this->cleanXML($xml)) !== false);
     }
 
     /**
@@ -203,12 +236,35 @@ class DocManDeliveryCommand extends CConsoleCommand
     }
 
     /**
-     * @param int $output_id
+     * @param $output_id
+     * @return bool
      */
     private function updateDelivery($output_id)
     {
         $output = DocumentOutput::model()->findByPk($output_id);
         $output->output_status = "COMPLETE";
-        $output->save();
+
+        return $output->save();
+    }
+
+    /**
+     * @param $data
+     */
+    private function logData($data)
+    {
+        if ($this->generate_csv) {
+            $doc_log = new DocumentLog();
+            $doc_log->attributes = $data;
+            $doc_log->save();
+
+            $csv_filename = implode(DIRECTORY_SEPARATOR, array($this->path, sprintf($this->csv_format, date('Ymd'))));
+
+            $fp = fopen($csv_filename, 'ab');
+            if(!filesize($csv_filename)){
+                fputcsv($fp, array_keys($data));
+            }
+            fputcsv($fp, $data);
+            fclose($fp);
+        }
     }
 }
