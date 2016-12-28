@@ -1440,6 +1440,10 @@ class PatientController extends BaseController
             }
         }
     }
+
+    /**
+     * @param $area
+     */
     public function renderModulePartials($area)
     {
         if (isset(Yii::app()->params['module_partials'][$area])) {
@@ -1468,9 +1472,9 @@ class PatientController extends BaseController
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
        
-        $patient = new Patient;
-        $contact = new Contact;
-        $address = new Address;
+        $patient = new Patient('manual');
+        $contact = new Contact();
+        $address = new Address();
         
         $this->performAjaxValidation(array($patient, $contact, $address));
         
@@ -1478,13 +1482,20 @@ class PatientController extends BaseController
         {
             
             $contact->attributes = $_POST['Contact'];
-            if($contact->save()){
+            try {
+                $contact->save();
+            } catch (Exception $e) {
+                //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
             }
+
             
             $patient->attributes = $_POST['Patient'];
             $patient->contact_id = $contact->id;
-            
-            if($patient->save()){
+
+            try {
+                $patient->save();
+            } catch (Exception $e) {
+                //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
             }
             
             $address->attributes = $_POST['Address'];
@@ -1498,8 +1509,7 @@ class PatientController extends BaseController
                         'patient' => $patient,
                         'contact' => $contact,
                         'address' => $address,
-		));
-	
+        ));
    }
    
     /**
@@ -1515,8 +1525,8 @@ class PatientController extends BaseController
         $this->renderPatientPanel = false;
         
         $patient = $this->loadModel($id);
-        $contact = $patient->contact;
-        $address = $patient->contact->address;
+        $contact = $patient->contact ? $patient->contact : new Contact();
+        $address = $patient->contact->address ? $patient->contact->address : new Address();
         
         $this->performAjaxValidation(array($patient, $contact, $address));
         
@@ -1524,7 +1534,10 @@ class PatientController extends BaseController
         {
          
             $contact->attributes = $_POST['Contact'];
-            if($contact->save()){
+            try {
+                $contact->save();
+            } catch (Exception $e) {
+                //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
             }
 
             $patient->attributes = $_POST['Patient'];
@@ -1535,7 +1548,10 @@ class PatientController extends BaseController
             $patient->date_of_death = $patient->date_of_death == '' ? null : Helper::convertNHS2MySQL($patient->date_of_death);
             $patient->dob = $patient->dob == '' ? null : Helper::convertNHS2MySQL($patient->dob);
 
-            if($patient->save()){
+            try {
+                $patient->save();
+            } catch (Exception $e) {
+                //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
             }
             
             $address->attributes = $_POST['Address'];
