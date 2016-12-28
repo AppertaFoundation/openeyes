@@ -63,8 +63,12 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, gene_id, method_id, comments, exon, prime_rf, prime_rr, base_change, amino_acid_change, assay, effect_id, homo, result, result_date', 'safe'),
-            array('gene_id, homo', 'required'),
+            array('event_id, gene_id, method_id, comments, exon, prime_rf, prime_rr, base_change, method_id
+                 amino_acid_change, assay, effect_id, method_id homo, result, result_date, external_source_identifier, withdrawal_source_id, external_source_id',
+                'safe'),
+            array('gene_id, homo, method_id, effect_id, result', 'required'),
+            array('withdrawal_source_id', 'validateSource'),
+            array('exon, prime_rf, prime_rr', 'validateForMethod', 'method' => 'Sanger'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, result, ', 'safe', 'on' => 'search'),
@@ -113,6 +117,7 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
             'result_date' => 'Result date',
             'external_source_id' => 'External Source',
             'withdrawal_source_id' => 'Withdrawal Source',
+            'external_source_identifier' => 'External Source ID',
         );
     }
 
@@ -156,6 +161,35 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
         );
 
         return Element_OphInDnaextraction_DnaTests::model()->with('event', 'event.episode')->findAll($criteria);
+    }
+
+    /**
+     * Validate that either a withdrawal source or an external source is provided
+     */
+    public function validateSource()
+    {
+        if ($this->withdrawal_source_id && $this->external_source_id) {
+            $this->addError('withdrawal_source_id', 'Only one of withdrawal and external sources can be selected');
+        }
+
+        if (!$this->withdrawal_source_id && !$this->external_source_id) {
+            $this->addError('withdrawal_source_id', 'Either a withdrawal or an external source must be selected');
+        }
+    }
+
+    /**
+     * Some attributes are only required for a given method, this checks them
+     *
+     * @param $attribute
+     * @param $params
+     */
+    public function validateForMethod($attribute, $params)
+    {
+        if($this->method) {
+            if(isset($params['method']) && ($params['method'] === $this->method->name && !$this->$attribute)){
+                $this->addError($attribute, 'This is required when then method is set to ' . $params['method']);
+            }
+        }
     }
 }
 

@@ -52,6 +52,7 @@ if ($patient_id) {
           false,
           array('label' => 3, 'field' => 3)
       ) ?>
+      <?php $form->textField($element, 'external_source_identifier', array(), array(), array('label' => 3, 'field' => 3)) ?>
       <?php $form->dropDownList(
           $element,
           'gene_id',
@@ -76,15 +77,15 @@ if ($patient_id) {
           false, array('label' => 3, 'field' => 3)
       ) ?>
 
-      <?php echo $form->textField($element, 'exon', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php echo $form->textField($element, 'prime_rf', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php echo $form->textField($element, 'prime_rr', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php echo $form->textField($element, 'base_change', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php echo $form->textField($element, 'amino_acid_change', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php echo $form->textField($element, 'assay', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php echo $form->radioBoolean($element, 'homo', array(), array('label' => 3, 'field' => 9)) ?>
-      <?php echo $form->textField($element, 'result', array(), array(), array('label' => 3, 'field' => 5)) ?>
-      <?php echo $form->datePicker($element, 'result_date', array(), array(), array('label' => 3, 'field' => 2)) ?>
-      <?php echo $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 5)) ?>
+      <?php $form->textField($element, 'exon', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->textField($element, 'prime_rf', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->textField($element, 'prime_rr', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->textField($element, 'base_change', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->textField($element, 'amino_acid_change', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->textField($element, 'assay', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->radioBoolean($element, 'homo', array(), array('label' => 3, 'field' => 9)) ?>
+      <?php $form->textField($element, 'result', array(), array(), array('label' => 3, 'field' => 5)) ?>
+      <?php $form->datePicker($element, 'result_date', array(), array(), array('label' => 3, 'field' => 2)) ?>
+      <?php $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 5)) ?>
   </div>
 </section>
