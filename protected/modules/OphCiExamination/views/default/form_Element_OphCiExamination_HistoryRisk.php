@@ -21,11 +21,14 @@
 <div class="sub-element-fields">
     <div class="field-row row">
         <div class="large-6 column">
-            <?php $form->radioButtons($element, 'anticoagulant', array(
-                0 => 'Not Checked',
-                1 => 'Yes',
-                2 => 'No',
-            ),
+            <?php $form->radioButtons(
+                $element,
+                'anticoagulant',
+                array(
+                    0 => 'Not Checked',
+                    1 => 'Yes',
+                    2 => 'No',
+                ),
                 ($element->anticoagulant !== null) ? $element->anticoagulant : 0,
                 false,
                 false,
@@ -51,16 +54,19 @@
                     'label' => 4,
                     'field' => 8,
                 )
-            );?>
+            ); ?>
         </div>
     </div>
     <div class="field-row row">
         <div class="large-6 column">
-            <?php $form->radioButtons($element, 'alphablocker', array(
-                0 => 'Not Checked',
-                1 => 'Yes',
-                2 => 'No',
-            ),
+            <?php $form->radioButtons(
+                $element,
+                'alphablocker',
+                array(
+                    0 => 'Not Checked',
+                    1 => 'Yes',
+                    2 => 'No',
+                ),
                 ($element->alphablocker !== null) ? $element->alphablocker : 0,
                 false,
                 false,
@@ -85,7 +91,7 @@
                 array(
                     'label' => 4,
                     'field' => 8,
-                ));?>
+                )); ?>
         </div>
     </div>
 </div>

@@ -2,8 +2,9 @@
     <h2>Menu</h2>
     <ul class="navigation">
         <?php $sidebarLinks = array(
-            'Pedigrees' => Yii::app()->createUrl('/Genetics/default/pedigrees'),
-            'Genes' => Yii::app()->createUrl('/Genetics/default/genes'),
+            'Pedigrees' => Yii::app()->createUrl('/Genetics/pedigree/list'),
+            'Genes' => Yii::app()->createUrl('/Genetics/gene/list'),
+            'Subjects' => Yii::app()->createUrl('/Genetics/subject/list'),
         );
         foreach ($sidebarLinks as $title => $uri) { ?>
             <li<?php if (Yii::app()->getController()->action->id == $uri) { ?> class="selected"<?php } ?>>

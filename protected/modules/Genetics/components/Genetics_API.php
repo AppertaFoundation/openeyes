@@ -26,12 +26,15 @@ class Genetics_API extends BaseAPI
      */
     public function findPatientPedigree($patient_id)
     {
-        return PatientPedigree::model()->with(
-            array(
-                'patient',
-                'pedigree' => array('with' => array('inheritance', 'gene', 'disorder')),
-                'status')
-        )->find('patient_id=?', array($patient_id));
+        if ($genetics_patient = GeneticsPatient::model()->find('patient_id = ?', array($patient_id))) {
+            return GeneticsPatientPedigree::model()->with(
+                array(
+                    'patient',
+                    'pedigree' => array('with' => array('inheritance', 'gene', 'disorder')),
+                    'status')
+            )->find('t.patient_id=?', array($genetics_patient->id));
+        }
+        return null;
     }
 
     /**

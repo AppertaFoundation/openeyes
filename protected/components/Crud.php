@@ -7,6 +7,19 @@
  */
 class Crud extends Admin
 {
+
+    /**
+     * Crud constructor.
+     *
+     * @param BaseActiveRecord $model
+     * @param BaseController   $controller
+     */
+    public function __construct(BaseActiveRecord $model, BaseController $controller)
+    {
+        parent::__construct($model, $controller);
+        Yii::app()->assetManager->registerScriptFile('/js/handleButtons.js');
+    }
+
     /**
      * @param $type
      *

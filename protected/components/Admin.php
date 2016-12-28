@@ -470,6 +470,9 @@ class Admin
 
             if (!$this->model->validate()) {
                 $errors = $this->model->getErrors();
+                if(!$redirect){
+                    return false;
+                }
             } else {
                 if (!$this->model->save()) {
                     throw new CHttpException(500, 'Unable to save '.$this->modelName.': '.print_r($this->model->getErrors(), true));
@@ -478,7 +481,7 @@ class Admin
                 if($redirect){
                     $this->redirect();
                 } else {
-                    return;
+                    return true;
                 }
             }
         } else {
@@ -709,7 +712,7 @@ class Admin
      * @param $template
      * @param array $data
      */
-    protected function render($template, $data = array())
+    public function render($template, $data = array())
     {
         $this->controller->render($template, $data);
     }

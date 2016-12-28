@@ -225,7 +225,7 @@ class PatientMerge
 
                     if ($secondary_subspecialty == $primary_subspecialty) {
 
-                        /* We have to keep the episode withe the highest status */             
+                        /* We have to keep the episode with the highest status */             
 
                         if ($primary_episode->status->order > $secondary_episode->status->order) {
                             // the primary episode has greater status than the secondary so we move the events from the Secondary into the Primary

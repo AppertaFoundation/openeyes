@@ -26,14 +26,20 @@
  *
  * The followings are the available model relations:
  */
-class GeneticsStudy extends BaseActiveRecord
+class GeneticsStudy extends BaseActiveRecordVersioned
 {
+    use Study;
+
     protected $auto_update_relations = true;
+
+    protected $pivot = 'genetics_study_subject';
+
+    protected $pivot_model = 'GeneticsStudySubject';
 
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return Issue the static model class
+     * @return GeneticsStudy Issue the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -68,7 +74,7 @@ class GeneticsStudy extends BaseActiveRecord
     {
         return array(
             'proposers' => array(self::MANY_MANY, 'User', 'genetics_study_proposer(study_id, user_id)'),
-            'patients' => array(self::MANY_MANY, 'GeneticsPatient', 'genetics_study_subject(study_id, subject_id)'),
+            'subjects' => array(self::MANY_MANY, 'GeneticsPatient', 'genetics_study_subject(study_id, subject_id)'),
         );
     }
 

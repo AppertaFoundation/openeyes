@@ -43,3 +43,8 @@
 #relationships_list li select {
   width: auto;
 }
+
+/* line 21, ../sass/module.scss */
+#enteredDiagnosisText .clear-diagnosis-widget {
+  cursor: pointer;
+}

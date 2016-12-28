@@ -58,12 +58,6 @@ class Patient extends BaseResource
         $model = $assignment->getInternal();
         $this->isNewResource = $model->isNewRecord;
 
-        if ($this->isNewResource && $this->partial_record) {
-            $this->addError('Cannot perform partial update on a new record');
-
-            return;
-        }
-
         if (!$this->validate()) {
             return;
         }

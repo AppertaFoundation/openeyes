@@ -30,6 +30,10 @@ class GeneticsPatient extends BaseActiveRecord
 {
     protected $auto_update_relations = true;
 
+    protected $statuses = array();
+
+    protected $preExistingPedigreesIds = array();
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -56,8 +60,31 @@ class GeneticsPatient extends BaseActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('patient_id, comments, gender_id, is_deceased, relationships', 'safe'),
+            array('studies', 'isProposable'),
+            array('patient_id, comments, gender_id, is_deceased, relationships, studies, pedigrees, diagnoses', 'safe'),
         );
+    }
+
+    /**
+     * Checks if it's possible for the user to propose this patient for the study.
+     *
+     * @param $attribute
+     * @param $params
+     */
+    public function isProposable($attribute, $params)
+    {
+        if ($this->isAttributeDirty('studies')) {
+            $existing = GeneticsStudy::model()->participatingStudyIds($this);
+            foreach ($this->studies as $study) {
+                if (in_array($study->id, $existing, true)) {
+                    continue;
+                }
+                //New study has been added, make sure that it's possible for the user to propose this.
+                if(!$study->canBeProposedByUser(Yii::app()->user)){
+                    $this->addError($attribute, 'You do not have permission to propose subjects for ' . $study->name);
+                }
+            }
+        }
     }
 
     /**
@@ -65,10 +92,53 @@ class GeneticsPatient extends BaseActiveRecord
      */
     public function relations()
     {
+        //Was unable to join on the pivot table as any joins added with the relationship are inserted in to
+        //the query string before the join generated for the relationship, so selecting status ID here and
+        //inserting it in to condition manually.
+        if (!array_key_exists('Rejected', $this->statuses)) {
+            $statuses = StudyParticipationStatus::model()->findAll();
+            foreach ($statuses as $status) {
+                $this->statuses[$status->status] = $status->id;
+            }
+        }
+
         return array(
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
             'gender' => array(self::BELONGS_TO, 'Gender', 'gender_id'),
             'relationships' => array(self::HAS_MANY, 'GeneticsPatientRelationship', 'patient_id'),
+            'studies' => array(self::MANY_MANY, 'GeneticsStudy', 'genetics_study_subject(subject_id, study_id)'),
+            'previous_studies' => array(
+                self::MANY_MANY,
+                'GeneticsStudy',
+                'genetics_study_subject(subject_id, study_id)',
+                'condition' => 'end_date < NOW() ' .
+                    'AND (previous_studies_previous_studies.participation_status_id IS NULL ' .
+                    'OR previous_studies_previous_studies.participation_status_id <> ' . $this->statuses['Rejected'] . ')',
+            ),
+            'current_studies' => array(
+                self::MANY_MANY,
+                'GeneticsStudy',
+                'genetics_study_subject(subject_id, study_id)',
+                'condition' => 'end_date > NOW() ' .
+                    'AND (current_studies_current_studies.participation_status_id IS NULL ' .
+                    'OR current_studies_current_studies.participation_status_id <> ' . $this->statuses['Rejected'] . ')',
+            ),
+            'rejected_studies' => array(
+                self::MANY_MANY,
+                'GeneticsStudy',
+                'genetics_study_subject(subject_id, study_id)',
+                'condition' => 'rejected_studies_rejected_studies.participation_status_id = ' . $this->statuses['Rejected'],
+            ),
+            'pedigrees' => array(
+                self::MANY_MANY,
+                'Pedigree',
+                'genetics_patient_pedigree(patient_id, pedigree_id)',
+            ),
+            'diagnoses' => array(
+                self::MANY_MANY,
+                'Disorder',
+                'genetics_patient_diagnosis(patient_id, disorder_id)',
+            ),
         );
     }
 
@@ -81,7 +151,84 @@ class GeneticsPatient extends BaseActiveRecord
             'id' => 'ID',
             'patient_id' => 'Patient',
             'gender_id' => 'Karyotypic Sex',
-            'is_deceased' => 'Is Deceased'
+            'is_deceased' => 'Is Deceased',
         );
+    }
+
+    /**
+     * Set the pedigrees that exist on load to compare to when saved.
+     */
+    protected function afterFind()
+    {
+        parent::afterFind();
+        foreach($this->pedigrees as $pedigree) {
+            $this->preExistingPedigreesIds[] = $pedigree->attributes['id'];
+        }
+    }
+
+    /**
+     * Update the pedigrees this patient has been added to.
+     */
+    protected function afterSave()
+    {
+        parent::afterSave();
+
+        if($this->getIsNewRecord()) {
+            $this->updateDiagnoses();
+        }
+
+        $pedigrees = GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $this->id), array('select' =>  'pedigree_id'));
+        $pedigreeIds = array();
+        foreach($pedigrees as $pedigree) {
+            $pedigreeIds[] = $pedigree->attributes['pedigree_id'];
+        }
+
+        $added = array_diff($this->preExistingPedigreesIds, $pedigreeIds);
+        $deleted = array_diff($pedigreeIds, $this->preExistingPedigreesIds);
+
+        $difference = Pedigree::model()->findAllByPk(array_merge($added, $deleted));
+
+        foreach ($difference as $pedigree) {
+            $pedigree->updateDiagnosis();
+        }
+    }
+
+    /**
+     * Should only be called for a new genetic patient record as it doesn't check for duplication or anything along
+     * those lines.
+     */
+    protected function updateDiagnoses()
+    {
+        $diagnoses = $this->patient->getAllDisorders();
+
+        foreach($diagnoses as $diagnosis) {
+            $geneticsDiagnosis = new GeneticsPatientDiagnosis();
+            $geneticsDiagnosis->patient_id = $this->id;
+            $geneticsDiagnosis->disorder_id = $diagnosis->id;
+            $geneticsDiagnosis->save();
+        }
+    }
+
+    /**
+     * @param int $pedigree_id
+     *
+     * @return bool|string
+     */
+    public function statusForPedigree($pedigree_id)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->condition = 'pedigree_id = :pedigree_id AND patient_id = :patient_id';
+        $criteria->params = array(
+            'pedigree_id' => $pedigree_id,
+            'patient_id' => $this->id,
+        );
+
+        $patientPedigree = GeneticsPatientPedigree::model()->find($criteria);
+
+        if(!$patientPedigree) {
+            return false;
+        }
+
+        return $patientPedigree->status->name;
     }
 }

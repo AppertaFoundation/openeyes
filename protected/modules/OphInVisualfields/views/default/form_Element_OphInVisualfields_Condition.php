@@ -18,7 +18,15 @@
  */
 ?>
 <div class="element-fields">
-	<?= $form->multiSelectList($element, 'MultiSelect_ability', 'abilitys', 'ophinvisualfields_condition_ability_id', CHtml::listData(OphInVisualfields_Condition_Ability::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'), $element->ophinvisualfields_condition_ability_defaults, array('empty' => '- Please select -', 'label' => 'Ability', 'class' => 'linked-fields', 'data-linked-fields' => 'other', 'data-linked-values' => 'Other'))?>
-	<?= $form->textArea($element, 'other', array('rows' => 4), !$element->hasMultiSelectValue('abilitys', 'Other')) ?>
-	<?= $form->radioBoolean($element, 'glasses') ?>
+    <?= $form->multiSelectList(
+        $element,
+        'MultiSelect_ability',
+        'abilitys',
+        'ophinvisualfields_condition_ability_id',
+        CHtml::listData(OphInVisualfields_Condition_Ability::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
+        $element->ophinvisualfields_condition_ability_defaults,
+        array('empty' => '- Please select -', 'label' => 'Ability', 'class' => 'linked-fields', 'data-linked-fields' => 'other', 'data-linked-values' => 'Other')
+    ) ?>
+    <?= $form->textArea($element, 'other', array('rows' => 4), !$element->hasMultiSelectValue('abilitys', 'Other')) ?>
+    <?= $form->radioBoolean($element, 'glasses') ?>
 </div>

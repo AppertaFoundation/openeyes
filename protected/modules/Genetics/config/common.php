@@ -8,10 +8,10 @@ return array(
     'params' => array(
         'menu_bar_items' => array(
             'pedigrees' => array(
-                'title' => 'Pedigrees',
+                'title' => 'Genetics',
                 'uri' => 'Genetics/default/index',
                 'position' => 40,
-                'restricted' => array('TaskViewPedigreeData'),
+                'restricted' => array('Genetics User'),
             ),
         ),
         'module_partials' => array(
@@ -21,28 +21,13 @@ return array(
                 ),
             ),
         ),
-        'advanced_search' => array(
-            'Genetics' => array(
-                'Advanced Patient Search' => 'geneticPatients',
+        'admin_structure' => array(
+            'Studies' => array(
+                'Genetics' => '/Genetics/studyAdmin/list',
             ),
         ),
-    ),
-    'components' => array(
-    'event' => array(
-        'observers' => array(
-            'patient_add_diagnosis' => array(
-                array(
-                    'class' => 'DiagnosisObserver',
-                    'method' => 'patientAddDiagnosis',
-                ),
-            ),
-            'patient_remove_diagnosis' => array(
-                array(
-                    'class' => 'DiagnosisObserver',
-                    'method' => 'patientRemoveDiagnosis',
-                ),
-            ),
+        'admin_menu' => array(
+
         ),
     ),
-),
 );

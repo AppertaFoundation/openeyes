@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -28,17 +29,17 @@ class OEMigration extends CDbMigration
      * Executes a SQL statement.
      * This method executes the specified SQL statement using {@link dbConnection}.
      *
-     * @param string $sql     the SQL statement to be executed
-     * @param array  $params  input parameters (name=>value) for the SQL execution. See {@link CDbCommand::execute} for more details.
+     * @param string $sql the SQL statement to be executed
+     * @param array  $params input parameters (name=>value) for the SQL execution. See {@link CDbCommand::execute} for more details.
      * @param string $message optional message to display instead of SQL
      */
     public function execute($sql, $params = array(), $message = null)
     {
-        $message = ($message) ? $message : strtok($sql, "\n").'...';
+        $message = ($message) ? $message : strtok($sql, "\n") . '...';
         $this->migrationEcho("		> execute SQL: $message ...");
         $time = microtime(true);
         $this->getDbConnection()->createCommand($sql)->execute($params);
-        $this->migrationEcho(' done (time: '.sprintf('%.3f', microtime(true) - $time)."s)\n");
+        $this->migrationEcho(' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n");
     }
 
     /**
@@ -68,7 +69,7 @@ class OEMigration extends CDbMigration
                 $this->migrationEcho("removed $deleted rows\n");
             } else {
                 // Database is not migrated up to the consolidation point, cannot migrate
-                $this->migrationEcho('In order to run this migration, you must migrate have migrated up to at least '.end($consolidated_migrations)."\n");
+                $this->migrationEcho('In order to run this migration, you must migrate have migrated up to at least ' . end($consolidated_migrations) . "\n");
                 $this->migrationEcho("This requires a pre-consolidation version of the code\n");
                 throw new CException('Previous migrations missing or incomplete, migration not possible');
             }
@@ -87,13 +88,13 @@ class OEMigration extends CDbMigration
         if (!$data_directory) {
             $data_directory = get_class($this);
         }
-        $data_path = $migrations_path.'/data/'.$data_directory.'/';
-        $this->csvFiles = glob($data_path.'*.csv');
+        $data_path = $migrations_path . '/data/' . $data_directory . '/';
+        $this->csvFiles = glob($data_path . '*.csv');
 
         if ($this->testdata) {
             echo "\nRunning test data import\n";
-            $testdata_path = $migrations_path.DIRECTORY_SEPARATOR.'testdata'.DIRECTORY_SEPARATOR.$data_directory.DIRECTORY_SEPARATOR;
-            $testdataCsvFiles = glob($testdata_path.'*.csv');
+            $testdata_path = $migrations_path . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . $data_directory . DIRECTORY_SEPARATOR;
+            $testdataCsvFiles = glob($testdata_path . '*.csv');
             //echo "\nCSV FIles: " . var_export($this->csvFiles,true);
             //echo "\nCSV TEST FIles: " . var_export($testdataCsvFiles,true);
             $this->csvFiles = array_udiff($this->csvFiles, $testdataCsvFiles, 'self::compare_file_basenames');
@@ -132,7 +133,12 @@ class OEMigration extends CDbMigration
                     if ($this->testdata && ($lookup_table == 'episode' || $lookup_table == 'event')) {
                         $data[$lookup_column] = $this->getInsertReferentialObjectValue($lookup_table, $lookup_value);
                     } else {
-                        $lookup_record = $this->dbConnection->createCommand()->select('*')->from($lookup_table)->where("$field = :value", array(':value' => $lookup_value))->queryRow();
+                        $lookup_record = $this->dbConnection->createCommand()
+                            ->select('*')
+                            ->from($lookup_table)
+                            ->where("$field = :value", array(':value' => $lookup_value))
+                            ->queryRow();
+
                         $data[$lookup_column] = $lookup_record['id'];
                     }
                 }
@@ -149,11 +155,11 @@ class OEMigration extends CDbMigration
                     $existing = $this->getDbConnection()->createCommand()
                         ->select($update_pk)
                         ->from($table)
-                        ->where($update_pk.' = ?')
+                        ->where($update_pk . ' = ?')
                         ->queryScalar(array($pk));
 
                     if ($existing) {
-                        $this->update($table, $data, $update_pk.'= :pk', array(':pk' => $pk));
+                        $this->update($table, $data, $update_pk . '= :pk', array(':pk' => $pk));
                     } else {
                         $this->insert($table, $data);
                         $this->insertsMap[$table][$row_count] = $this->getInsertId($table, $data);
@@ -171,7 +177,7 @@ class OEMigration extends CDbMigration
     public function exportData($migrationName, $tables)
     {
         if (!is_writable($this->getMigrationPath())) {
-            throw new OEMigrationException('Migration folder is not writable/accessible: '.$this->getMigrationPath());
+            throw new OEMigrationException('Migration folder is not writable/accessible: ' . $this->getMigrationPath());
         }
 
         if (!is_array($tables) || count($tables) == 0) {
@@ -212,7 +218,7 @@ class OEMigration extends CDbMigration
 
     /**
      * @param string         $migrationName - name of the migration, a folder with name will be created under data
-     * @param CDbTableSchema $table         - name of the table being exported
+     * @param CDbTableSchema $table - name of the table being exported
      *
      * @return int - return totRows
      *
@@ -224,7 +230,7 @@ class OEMigration extends CDbMigration
             throw new OEMigrationException('Not a CDbTableSchema child class');
         }
 
-        $dataPath = $this->getMigrationPath().DIRECTORY_SEPARATOR.'data';
+        $dataPath = $this->getMigrationPath() . DIRECTORY_SEPARATOR . 'data';
         //create data folder if does not exist
         if (!file_exists($dataPath)) {
             $dataDirCreated = mkdir($dataPath);
@@ -232,7 +238,7 @@ class OEMigration extends CDbMigration
                 throw new OEMigrationException('Data folder could not be created');
             }
         }
-        $dataMigPath = $dataPath.DIRECTORY_SEPARATOR.$migrationName;
+        $dataMigPath = $dataPath . DIRECTORY_SEPARATOR . $migrationName;
         //create data migration folder if does not exist
         if (!file_exists($dataMigPath)) {
             $dataMigDirCreated = mkdir($dataMigPath);
@@ -250,7 +256,7 @@ class OEMigration extends CDbMigration
         $data[] = $table->getColumnNames();
         $data = array_merge($data, $rowsQuery);
 
-        $file = fopen($dataMigPath.DIRECTORY_SEPARATOR.'01_'.$table->name.'.csv', 'w');
+        $file = fopen($dataMigPath . DIRECTORY_SEPARATOR . '01_' . $table->name . '.csv', 'w');
         //i dont like manual file opening with no exceptions - might need refactoring later
         foreach ($data as $row) {
             fputcsv($file, $row);
@@ -312,7 +318,7 @@ class OEMigration extends CDbMigration
     /**
      * Convenience function to drop OE tables from db - versioned defaults to false to mirroe createOETable.
      *
-     * @param $name
+     * @param      $name
      * @param bool $versioned
      */
     protected function dropOETable($name, $versioned = false)
@@ -331,7 +337,7 @@ class OEMigration extends CDbMigration
      */
     protected function versionExistingTable($base_name)
     {
-        $res = $this->dbConnection->createCommand('show create table '.$this->dbConnection->quoteTableName($base_name))->queryRow();
+        $res = $this->dbConnection->createCommand('show create table ' . $this->dbConnection->quoteTableName($base_name))->queryRow();
         $sql = $res['Create Table'];
         $start = strpos($sql, '(');
         $end = strrpos($sql, ')');
@@ -353,8 +359,8 @@ class OEMigration extends CDbMigration
 
     /**
      * @param string $event_type Class name of event type
-     * @param string $name       Name of event
-     * @param array  $params     Supported values and defaults are: class_name, display_order (1), default (false), required (false), parent_name (null)
+     * @param string $name Name of event
+     * @param array  $params Supported values and defaults are: class_name, display_order (1), default (false), required (false), parent_name (null)
      *
      * @return int Element type ID
      */
@@ -362,7 +368,7 @@ class OEMigration extends CDbMigration
     {
         $row = array(
             'name' => $name,
-            'class_name' => isset($params['class_name']) ? $params['class_name'] : "Element_{$event_type}_".str_replace(' ', '', $name),
+            'class_name' => isset($params['class_name']) ? $params['class_name'] : "Element_{$event_type}_" . str_replace(' ', '', $name),
             'event_type_id' => $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = ?', array($event_type))->queryScalar(),
             'display_order' => isset($params['display_order']) ? $params['display_order'] : 1,
             'default' => isset($params['default']) ? $params['default'] : false,
@@ -414,7 +420,7 @@ class OEMigration extends CDbMigration
             ->queryScalar();
 
         if ($group_id === false) {
-            throw new OEMigrationException('Group id could not be found for $eventTypeGroup: '.$eventTypeGroup);
+            throw new OEMigrationException('Group id could not be found for $eventTypeGroup: ' . $eventTypeGroup);
         }
 
         // Create the new event_type (if not already present)
@@ -424,7 +430,7 @@ class OEMigration extends CDbMigration
             ->where('class_name = :class_name', array(':class_name' => $eventTypeClass))
             ->queryScalar();
         if ($event_type_id) {
-            $this->migrationEcho('Updating event_type, event_type_name: '.$eventTypeName.' event_type_class: '.$eventTypeClass.' event_type_group: '.$eventTypeGroup."\n");
+            $this->migrationEcho('Updating event_type, event_type_name: ' . $eventTypeName . ' event_type_class: ' . $eventTypeClass . ' event_type_group: ' . $eventTypeGroup . "\n");
             $this->update(
                 'event_type',
                 array(
@@ -435,7 +441,7 @@ class OEMigration extends CDbMigration
                 array(':event_type_id' => $event_type_id)
             );
         } else {
-            $this->migrationEcho('Inserting event_type, event_type_name: '.$eventTypeName.' event_type_class: '.$eventTypeClass.' event_type_group: '.$eventTypeGroup."\n");
+            $this->migrationEcho('Inserting event_type, event_type_name: ' . $eventTypeName . ' event_type_class: ' . $eventTypeClass . ' event_type_group: ' . $eventTypeGroup . "\n");
             $this->insert(
                 'event_type',
                 array(
@@ -489,11 +495,9 @@ class OEMigration extends CDbMigration
                 )
             );
 
-            $this->migrationEcho('Added element type, element_type_class: '.$element_type_class.
-                ' element type properties: '.var_export(
-                    $element_type_data,
-                    true
-                ).' event_type_id: '.$event_type_id." \n"
+            $this->migrationEcho(
+                'Added element type, element_type_class: ' . $element_type_class . ' element type properties: '
+                . var_export($element_type_data, true) . ' event_type_id: ' . $event_type_id . " \n"
             );
 
             // Insert element type id into element type array
@@ -518,7 +522,7 @@ class OEMigration extends CDbMigration
      *                                $fieldsValsArray should look like
      *
      * array(
-     *		array('column_name'=>'value', 'column_name'=>'val'),
+     *        array('column_name'=>'value', 'column_name'=>'val'),
      * )
      */
     protected function deleteOEFromMultikeyTable($tableName, array $fieldsValsArray)
@@ -529,17 +533,16 @@ class OEMigration extends CDbMigration
             $isFirst = true;
             foreach ($fieldsValArray as $fieldKey => $fieldVal) {
                 $fieldsList .= ($isFirst ? ' and ' : '');
-                $fieldsList .= $fieldKey."=:$fieldKey ";
+                $fieldsList .= $fieldKey . "=:$fieldKey ";
 
                 $fieldsValArrayMap[":$fieldKey "] = $fieldVal;
 
                 $isFirst = false;
             }
             $this->delete($tableName, $fieldsList, $fieldsValArrayMap);
-            $this->migrationEcho("\nDeleted  in table : $tableName. Fields : ".$fieldsList.' value: '.var_export(
-                    $fieldsValArrayMap,
-                    true
-                )."\n"
+            $this->migrationEcho(
+                "\nDeleted  in table : $tableName. Fields : "
+                . $fieldsList . ' value: ' . var_export($fieldsValArrayMap, true) . "\n"
             );
         }
     }
@@ -560,7 +563,7 @@ class OEMigration extends CDbMigration
             $_key = $key;
 
             if (strlen($_key) <= 60) {
-                $_key = 'acv_'.$_key;
+                $_key = 'acv_' . $_key;
             } else {
                 $_key[0] = 'a';
                 $_key[1] = 'c';
@@ -577,7 +580,7 @@ class OEMigration extends CDbMigration
             $_key = $key;
 
             if (strlen($_key) <= 60) {
-                $_key = 'acv_'.$_key;
+                $_key = 'acv_' . $_key;
             } else {
                 $_key[0] = 'a';
                 $_key[1] = 'c';
@@ -630,7 +633,7 @@ class OEMigration extends CDbMigration
     {
         $schema = $this->dbConnection->getSchema()->getTable($table);
         if (!$schema) {
-            throw new OEMigrationException('Table '.$table.' does not exist');
+            throw new OEMigrationException('Table ' . $table . ' does not exist');
         }
         if ($schema->primaryKey != 'id') {
             return;
@@ -660,48 +663,64 @@ class OEMigration extends CDbMigration
         $this->verbose = $verbose;
     }
 
-    public function setEventTypeRBACSuffix($class_name,$rbac_operation_suffix) {
-        $event_type_id=$this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>$class_name))->queryScalar();
-        $this->update('event_type',array('rbac_operation_suffix'=>$rbac_operation_suffix),"id = $event_type_id");
+    public function setEventTypeRBACSuffix($class_name, $rbac_operation_suffix)
+    {
+        $event_type_id = $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('event_type')
+            ->where('class_name = :class_name', array(':class_name' => $class_name))
+            ->queryScalar();
+
+        $this->update('event_type', array('rbac_operation_suffix' => $rbac_operation_suffix), "id = $event_type_id");
     }
 
-    public function addRole($role_name) {
-        $this->insert('authitem',array('name'=>$role_name, 'type' => 2));
+    public function addRole($role_name)
+    {
+        $this->insert('authitem', array('name' => $role_name, 'type' => 2));
     }
 
-    public function addTask($task_name) {
-        $this->insert('authitem',array('name'=>$task_name, 'type' => 1));
+    public function addTask($task_name)
+    {
+        $this->insert('authitem', array('name' => $task_name, 'type' => 1));
     }
 
-    public function addOperation($oprn_name) {
-        $this->insert('authitem',array('name'=>$oprn_name, 'type' => 0));
+    public function addOperation($oprn_name)
+    {
+        $this->insert('authitem', array('name' => $oprn_name, 'type' => 0));
     }
 
-    public function addTaskToRole($task_name, $role_name) {
-        $this->insert('authitemchild',array('parent'=>$role_name,'child'=>$task_name));
+    public function addTaskToRole($task_name, $role_name)
+    {
+        $this->insert('authitemchild', array('parent' => $role_name, 'child' => $task_name));
     }
 
-    public function addOperationToTask($oprn_name, $task_name) {
-        $this->insert('authitemchild',array('parent'=>$task_name,'child'=>$oprn_name));
+    public function addOperationToTask($oprn_name, $task_name)
+    {
+        $this->insert('authitemchild', array('parent' => $task_name, 'child' => $oprn_name));
     }
 
-    public function removeOperationFromTask($oprn_name, $task_name) {
-        $this->delete('authitemchild','parent = :task_name and child = :oprn_name', array(":task_name"=>$task_name,':oprn_name'=>$oprn_name));
+    public function removeOperationFromTask($oprn_name, $task_name)
+    {
+        $this->delete('authitemchild', 'parent = :task_name and child = :oprn_name', array(":task_name" => $task_name, ':oprn_name' => $oprn_name));
     }
 
-    public function removeTaskFromRole($task_name, $role_name) {
-        $this->delete('authitemchild','parent = :role_name and child = :task_name', array(":role_name"=>$role_name,':task_name'=>$task_name));
+    public function removeTaskFromRole($task_name, $role_name)
+    {
+        $this->delete('authitemchild', 'parent = :role_name and child = :task_name', array(":role_name" => $role_name, ':task_name' => $task_name));
     }
 
-    public function removeRole($role_name) {
-        $this->delete('authitem',"name = :name and type=2", array(':name'=>$role_name));
+    public function removeRole($role_name)
+    {
+        $this->delete('authitem', "name = :name and type=2", array(':name' => $role_name));
     }
 
-    public function removeTask($task_name) {
-        $this->delete('authitem',"name = :name and type=1", array(':name'=>$task_name));
+    public function removeTask($task_name)
+    {
+        $this->delete('authitem', "name = :name and type=1", array(':name' => $task_name));
     }
 
-    public function removeOperation($oprn_name) {
-        $this->delete('authitem',"name = :name and type=0", array(':name'=>$oprn_name));
+    public function removeOperation($oprn_name)
+    {
+        $this->delete('authitem', "name = :name and type=0", array(':name' => $oprn_name));
     }
 }

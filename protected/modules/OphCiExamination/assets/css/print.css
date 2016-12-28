@@ -88,11 +88,6 @@
   .container.content {
     background: none;
   }
-
-  /* line 74, ../../../../assets/sass/openeyes/components/print/_event.scss */
-  .metadata {
-    display: none;
-  }
 }
 /* line 20, ../sass/print.scss */
 .metadata {

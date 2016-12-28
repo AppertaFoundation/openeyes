@@ -41,4 +41,9 @@ $(document).ready(function () {
       window.location.href = url.join('/');
     }
   });
+
+  $('#diagnosis-search').on('click', '#clear-diagnosis-widget', function() {
+    $('#enteredDiagnosisText').hide();
+    $('#savedDiagnosis').val('');
+  });
 });

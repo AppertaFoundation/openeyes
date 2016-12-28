@@ -22,8 +22,8 @@
  *
  * The followings are the available columns in table 'event_type':
  *
- * @property int $id
- * @property string $name
+ * @property int     $id
+ * @property string  $name
  *
  * The followings are the available model relations:
  * @property Event[] $events
@@ -64,20 +64,20 @@ class EventType extends BaseActiveRecordVersioned
         );
     }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-			'events' => array(self::HAS_MANY, 'Event', 'event_type_id'),
-			'elementTypes' => array(self::HAS_MANY, 'ElementType', 'event_type_id'),
-            'parent' => array(self::BELONGS_TO, 'Event', 'parent_id'),
-            'children' => array(self::HAS_MANY, 'Event', 'parent_id'),
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'events' => array(self::HAS_MANY, 'Event', 'event_type_id'),
+            'elementTypes' => array(self::HAS_MANY, 'ElementType', 'event_type_id'),
+            'parent' => array(self::BELONGS_TO, 'EventType', 'parent_id'),
+            'children' => array(self::HAS_MANY, 'EventType', 'parent_id'),
+        );
+    }
 
     /**
      * @return array customized attribute labels (name=>label)
@@ -100,12 +100,13 @@ class EventType extends BaseActiveRecordVersioned
         $legacy_events = EventGroup::model()->find('code=?', array('Le'));
 
         $criteria = new CDbCriteria();
-        $criteria->condition = "class_name in ('".implode("','", array_keys(Yii::app()->getModules()))."') and event_group_id != $legacy_events->id";
+        $criteria->condition = "class_name in ('" . implode("','", array_keys(Yii::app()->getModules())) . "') and event_group_id != $legacy_events->id";
         $criteria->order = 'name asc';
         $criteria->addCondition('parent_id is null');
 
         return self::model()->findAll($criteria);
     }
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
@@ -246,7 +247,7 @@ class EventType extends BaseActiveRecordVersioned
             return Yii::app()->params['modules_disabled'][$this->class_name]['detail'];
         }
 
-        return 'The '.$this->name.' module will be available in an upcoming release.';
+        return 'The ' . $this->name . ' module will be available in an upcoming release.';
     }
 
     /**
@@ -262,8 +263,8 @@ class EventType extends BaseActiveRecordVersioned
     /**
      * Register a short code for this event type.
      *
-     * @param $code
-     * @param $method
+     * @param      $code
+     * @param      $method
      * @param bool $description
      *
      * @throws Exception
@@ -278,8 +279,8 @@ class EventType extends BaseActiveRecordVersioned
 
         if (PatientShortcode::model()->find('code=?', array(strtolower($code)))) {
             $n = '00';
-            while (PatientShortcode::model()->find('z'.$n)) {
-                $n = str_pad((int) $n + 1, 2, '0', STR_PAD_LEFT);
+            while (PatientShortcode::model()->find('z' . $n)) {
+                $n = str_pad((int)$n + 1, 2, '0', STR_PAD_LEFT);
             }
             $code = "z$n";
 
@@ -294,7 +295,7 @@ class EventType extends BaseActiveRecordVersioned
         $ps->description = $description;
 
         if (!$ps->save()) {
-            throw new Exception('Unable to save PatientShortcode: '.print_r($ps->getErrors(), true));
+            throw new Exception('Unable to save PatientShortcode: ' . print_r($ps->getErrors(), true));
         }
     }
 
@@ -345,6 +346,11 @@ class EventType extends BaseActiveRecordVersioned
         }
         $criteria->addInCondition('event_type_id', $ids);
         $criteria->order = 'display_order asc';
+
+        if (Yii::app()->params['clinical_management_pcr']) {
+            $criteria->addCondition('class_name <> :class');
+            $criteria->params['class'] = 'OEModule\\OphCiExamination\\models\\Element_OphCiExamination_PcrRisk';
+        }
 
         return ElementType::model()->findAll($criteria);
     }

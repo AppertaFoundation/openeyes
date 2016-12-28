@@ -444,7 +444,7 @@ class DefaultController extends \BaseEventTypeController
 
         // if POST, then a new filter is to be applied, otherwise retrieve from the session
         if ($this->request->isPostRequest) {
-            foreach (array('date_from', 'date_to', 'subspecialty_id', 'site_id', 'consultant_ids', 'show_issued') as $key) {
+            foreach (array('date_from', 'date_to', 'subspecialty_id', 'site_id', 'consultant_ids', 'show_issued', 'issue_status', 'issue_complete', 'issue_incomplete', 'createdby_ids') as $key) {
                 $val = $this->request->getPost($key, null);
                 $filter[$key] = $val;
             }
@@ -820,9 +820,9 @@ class DefaultController extends \BaseEventTypeController
         }
 
         $labelAddress = array(
-            $this->demographicsData['address'],
-            $this->demographicsData['gp_address'],
-            $this->demographicsData['la_address'],
+            $this->demographicsData['title_surname'] . "," . $this->demographicsData['address'],
+            $this->demographicsData['gp_name'] . "," . $this->demographicsData['gp_address'],
+            $this->demographicsData['la_name'] . "," . $this->demographicsData['la_address'],
         );
 
         $labelClass->fillLabelsInTable('LabelsTable', $labelAddress, $firstLabel);

@@ -67,6 +67,9 @@ class DocumentInstance extends BaseActiveRecord
 			'created_user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'document_set' => array(self::BELONGS_TO, 'DocumentSet', 'document_set_id'),
 			'correspondence_event' => array(self::BELONGS_TO, 'Event', 'correspondence_event_id'),
+			'document_instance_data' => array(self::HAS_MANY, 'DocumentInstanceData', 'document_instance_id'),
+			'document_target' => array(self::HAS_MANY, 'DocumentTarget', 'document_instance_id'),
+                        'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
 		);
 	}
 

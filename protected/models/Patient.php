@@ -111,7 +111,7 @@ class Patient extends BaseActiveRecordVersioned
     {
         return array(
             array('pas_key', 'length', 'max' => 10),
-            array('hos_num', 'required'),
+            array('hos_num', 'required', 'on' => 'pas'),
             array('hos_num, nhs_num', 'length', 'max' => 40),
             array('gender', 'length', 'max' => 1),
             array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id', 'safe'),
@@ -1103,12 +1103,12 @@ class Patient extends BaseActiveRecordVersioned
         }
 
         foreach ($this->episodes as $ep) {
-            //primary disorder for episode
-            if ($ep->disorder_id) {
-                $disorder_ids[] = $ep->disorder_id;
+            if ($ep->eye_id){
+                if ($ep->disorder_id && (is_null($eye_id) || $ep->eye_id == $eye_id || $ep->eye_id == Eye::BOTH)) {
+                    $disorder_ids[] = $ep->disorder_id;
+                }
             }
         }
-
         return array_unique($disorder_ids);
     }
 
@@ -1168,6 +1168,9 @@ class Patient extends BaseActiveRecordVersioned
         return $res;
     }
 
+    /**
+     * @return array|mixed|null
+     */
     public function getSystemicDiagnoses()
     {
         $criteria = new CDbCriteria();
@@ -1178,6 +1181,9 @@ class Patient extends BaseActiveRecordVersioned
         return SecondaryDiagnosis::model()->findAll($criteria);
     }
 
+    /**
+     * @return array|mixed|null
+     */
     public function getOphthalmicDiagnoses()
     {
         $criteria = new CDbCriteria();

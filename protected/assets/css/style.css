@@ -4059,12 +4059,12 @@ button.disabled, button.inactive, .button.inactive, input[type="submit"].inactiv
 }
 
 /* line 22, ../sass/openeyes/components/_navigation.scss */
-.navigation {
+.genetics .navigation {
   list-style-type: none;
   margin: 0;
 }
 /* line 143, ../sass/openeyes/_mixins.scss */
-.navigation a {
+.genetics .navigation a {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;
@@ -4074,17 +4074,17 @@ button.disabled, button.inactive, .button.inactive, input[type="submit"].inactiv
   padding: 4px 8px;
 }
 /* line 149, ../sass/openeyes/_mixins.scss */
-.navigation a:hover {
+.genetics .navigation a:hover {
   background: #3665ff;
   color: #fff;
 }
 /* line 153, ../sass/openeyes/_mixins.scss */
-.navigation a.selected {
+.genetics .navigation a.selected {
   background: #ccc;
   color: #333;
 }
 /* line 159, ../sass/openeyes/_mixins.scss */
-.navigation li:last-child a {
+.genetics .navigation li:last-child a {
   margin: 0;
 }
 
@@ -7510,3 +7510,55 @@ tfoot.pagination-container .pagination-view-all {
 .ui-autocomplete.ui-menu.patient-ajax-list .ui-menu-item a .nhs-number, .ui-autocomplete.ui-menu.patient-ajax-list .ui-menu-item a.ui-state-focus .nhs-number {
   float: right;
 }
+
+/* line 2, ../sass/openeyes/components/_studies.scss */
+.studies_list {
+  list-style: none;
+  margin: 0;
+}
+
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : Dec 9, 2016, 11:56:22 AM
+    Author     : sabi
+*/
+/* line 13, ../sass/openeyes/components/_docman.scss */
+div#docman_block select.macro {
+  max-width: 220px;
+}
+/* line 17, ../sass/openeyes/components/_docman.scss */
+div#docman_block textarea {
+  font-size: 13px;
+}
+/* line 21, ../sass/openeyes/components/_docman.scss */
+div#docman_block #dm_table {
+  border: 1px solid black;
+  cell-spacing: 0;
+  cell-padding: 0;
+}
+/* line 26, ../sass/openeyes/components/_docman.scss */
+div#docman_block #dm_table th.actions {
+  padding: 0 10px;
+  min-width: 113px;
+}
+/* line 31, ../sass/openeyes/components/_docman.scss */
+div#docman_block #dm_table tr {
+  background-color: #eee;
+  color: black;
+  padding: 2px 5px;
+}
+/* line 36, ../sass/openeyes/components/_docman.scss */
+div#docman_block #dm_table tr td {
+  border: 1px solid black;
+  border-collapse: 1;
+  vertical-align: top;
+}
+/* line 37, ../sass/openeyes/components/_docman.scss */
+div#docman_block #dm_table tr td.docman_delivery_method {
+  min-width: 156px;
+}
+

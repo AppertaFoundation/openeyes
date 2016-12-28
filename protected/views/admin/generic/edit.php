@@ -52,6 +52,10 @@ $assetManager = Yii::app()->getAssetManager();
                     ?>
                     <div class="field-row furtherfindings-multi-select">
                         <?php
+                        $through = array();
+                        if(array_key_exists('through', $type) && is_array($type['through'])){
+                            $through = $type['through'];
+                        }
                         echo $form->multiSelectList(
                             $admin->getModel(),
                             $admin->getModelName() . '[' . $field . ']',
@@ -65,7 +69,12 @@ $assetManager = Yii::app()->getAssetManager();
                                 'searchable' => true,
                             ),
                             false,
-                            true
+                            true,
+                            null,
+                            false,
+                            false,
+                            array(),
+                            $through
                         );
                         ?>
                     </div>
@@ -100,6 +109,42 @@ $assetManager = Yii::app()->getAssetManager();
                     break;
                 case 'PatientLookup':
                     $this->renderPartial('//admin//generic/patientLookup', array('model' => $admin->getModel()));
+                    break;
+                case 'DisorderLookup':
+                    if (!is_array($admin->getModel()->{$type['relation']})) {
+                        $relations = array($admin->getModel()->{$type['relation']});
+                    } else {
+                        $relations = $admin->getModel()->{$type['relation']};
+                    }
+                    ?>
+                    <div class="row field-row">
+                        <div class="large-2 column">
+                            <label>Diagnosis</label>
+                        </div>
+                        <div class="large-5 column end">
+                            <div id="enteredDiagnosisText">
+                                <?php
+                                foreach($relations as $relation) {
+                                    if($relation){
+                                        echo '<span>' . $relation->term .
+                                            '<i class="fa fa-times clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id="'.$relation->id.'"></i><br>' .
+                                            '</span>';
+                                    }
+                                } ?>
+                            </div>
+                        <?php
+                          $this->renderPartial('//disorder/disorderAutoComplete', array(
+                              'class' => get_class($admin->getModel()),
+                              'name' => $field,
+                              'code' => '',
+                              'value' => $admin->getModel()->$field,
+                              'clear_diagnosis' => '<i class="fa fa-times clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id=""></i>',
+                              'placeholder' => 'Search for a diagnosis',
+                          ));
+                        ?>
+                        </div>
+                    </div>
+                    <?php
                     break;
             }
         } else {

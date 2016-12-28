@@ -1562,7 +1562,6 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function actionPrint($id)
     {
-        $this->printLog($id, false);
         $this->printInit($id);
         $this->printHTML($id, $this->open_elements);
     }
@@ -1572,6 +1571,9 @@ class BaseEventTypeController extends BaseModuleController
         if (!$event = Event::model()->findByPk($id)) {
             throw new Exception("Event not found: $id");
         }
+
+        $auto_print = Yii::app()->request->getParam('auto_print', true);
+        $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
         $event->lock();
 
@@ -1597,7 +1599,7 @@ class BaseEventTypeController extends BaseModuleController
             $wk->setDocref($event->docref);
             $wk->setPatient($event->episode->patient);
             $wk->setBarcode($event->barcodeHTML);
-
+            
             foreach (array('left', 'middle', 'right') as $section) {
                 if (isset(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name])) {
                     $setMethod = 'set'.ucfirst($section);
@@ -1617,13 +1619,11 @@ class BaseEventTypeController extends BaseModuleController
                     $wk->setCustomTag($pdf_footer_tag->tag_name, $api->{$pdf_footer_tag->method}($event->id));
                 }
             }
-
-            $wk->generatePDF($event->imageDirectory, 'event', $this->pdf_print_suffix, $this->pdf_print_html, (boolean) @$_GET['html']);
+            
+            $wk->generatePDF($event->imageDirectory, 'event', $this->pdf_print_suffix, $this->pdf_print_html, (boolean) @$_GET['html'], $inject_autoprint_js);
         }
 
         $event->unlock();
-
-        $this->printLog($id, true);
 
         if (@$_GET['html']) {
             return Yii::app()->end();
@@ -1950,11 +1950,13 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         ob_start();
-        $this->actionPrint($id);
+        $this->actionPrint($id, false);
         $html = ob_get_contents();
         ob_end_clean();
 
         $event->unlock();
+        
+        $this->printLog($id, false);
 
         // Verify we have all the images by detecting eyedraw canvas elements in the page.
         // If we don't, the "outofdate" response will trigger a page-refresh so we can re-send the canvas elements to the

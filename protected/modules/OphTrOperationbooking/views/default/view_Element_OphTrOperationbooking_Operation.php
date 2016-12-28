@@ -132,6 +132,17 @@
         </div>
     </div>
     <div class="row">
+        <div class="large-6 column">
+            <h3 class="data-title">Admission category:</h3>
+            <div class="data-value"><?php echo ($element->overnight_stay) ? 'An overnight stay' : 'Day case'?>
+            </div>
+        </div>
+        <div class="large-6 column">
+            <h3 class="data-title">Total theatre time (mins):</h3>
+            <div class="data-value"><?php echo CHtml::encode($element->total_duration)?></div>
+        </div>
+    </div>
+    <div class="row">
         <div class="large-6 column end">
             <?php if (!is_null($element->special_equipment)): ?>
                 <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('special_equipment')) ?></h3>

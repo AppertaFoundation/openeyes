@@ -49,5 +49,5 @@
             createNewWindow('<?= $external_link?>');
         });
     </script>
-<?php $this->getApp()->user->setState("new_referral", null); ?>
+<?php $this->getApp()->user->setState("new_referral", false); ?>
 <?php endif; ?>
