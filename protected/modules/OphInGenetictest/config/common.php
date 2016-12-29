@@ -10,6 +10,7 @@ return array(
         'admin_menu' => array(
             'Genetic Test Method' => '/OphInGenetictest/methodAdmin/list',
             'Genetic Test Effect' => '/OphInGenetictest/effectAdmin/list',
+            'External Source' => '/OphInGenetictest/externalSourceAdmin/list',
         ),
     ),
 );
