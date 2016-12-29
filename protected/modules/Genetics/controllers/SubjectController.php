@@ -73,7 +73,6 @@ class SubjectController extends BaseModuleController
         $admin->setEditFields(array(
             'patient_id' => array(
                 'widget' => 'PatientLookup',
-                'options' => CHtml::listData(Patient::model()->findAll(), 'id', 'fullName'),
             ),
             'gender_id' => array(
                 'widget' => 'DropDownList',
@@ -101,9 +100,9 @@ class SubjectController extends BaseModuleController
                 'label' => 'Pedigree',
                 'options' => CHtml::encodeArray(
                     CHtml::listData(
-                        Pedigree::model()->findAll(),
+                        Pedigree::model()->getAllIdAndText(),
                         'id',
-                        'gene_transcript'
+                        'text'
                     )
                 ),
                 'through' => array(

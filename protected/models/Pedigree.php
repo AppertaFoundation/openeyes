@@ -130,6 +130,7 @@ class Pedigree extends BaseActiveRecord
     public function updateDiagnosis()
     {
         $sql = 'SELECT
+                 disorder.id,
                  count(disorder.id),
                  disorder.term
                 FROM pedigree
@@ -151,5 +152,17 @@ class Pedigree extends BaseActiveRecord
         }
 
         $this->save();
+    }
+
+    /**
+     * @return array|CDbDataReader
+     */
+    public function getAllIdAndText()
+    {
+        $sql = "SELECT pedigree.id, CONCAT_WS(' ', pedigree.id, pedigree_gene.name, gene_transcript) as text 
+                FROM pedigree
+                JOIN pedigree_gene on pedigree_gene.id = pedigree.gene_id";
+
+        return $this->getDbConnection()->createCommand($sql)->queryAll();
     }
 }
