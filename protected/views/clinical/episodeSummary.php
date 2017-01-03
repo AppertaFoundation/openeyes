@@ -37,7 +37,18 @@ if (!empty($episode)) {
 
 	<div class="row">
 		<div class="large-9 column">
-
+			<?php
+			if ($episodesTotal = Episode::model()->findAll('patient_id = "' . $episode->patient->id . ' "')) {
+				if (count($episodesTotal) > 1){
+				?>
+				<div class="alert-box alert warning with-icon">Only data from the selected episode is included in this
+					summary.
+					For a full picture of the patient’s care, please look at all episodes individually.
+				</div>
+				<?php
+				}
+			}
+			?>
 			<section class="element element-data">
 				<h3 class="data-title">Overview</h3>
 				<div class="data-value highlight">
