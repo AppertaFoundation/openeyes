@@ -256,6 +256,7 @@ return array(
     ),
 
     'params' => array(
+        'utf8_decode_required' => false,
         'pseudonymise_patient_details' => false,
         'ab_testing' => false,
         'auth_source' => 'BASIC', // Options are BASIC or LDAP.
