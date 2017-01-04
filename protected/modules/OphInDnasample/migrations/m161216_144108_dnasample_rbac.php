@@ -30,8 +30,7 @@ class m161216_144108_dnasample_rbac extends CDbMigration
 
 	public function down()
 	{
-		echo "m161216_144108_dnasample_rbac does not support migration down.\n";
-		return false;
+		return true;
 	}
 
 	/*

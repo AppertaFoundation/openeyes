@@ -18,8 +18,7 @@ class m161216_153049_dna_rbac_operation extends CDbMigration
 
 	public function down()
 	{
-		echo "m161216_153049_dna_rbac_operation does not support migration down.\n";
-		return false;
+		return true;
 	}
 
 	/*

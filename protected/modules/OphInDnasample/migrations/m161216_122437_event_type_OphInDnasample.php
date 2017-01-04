@@ -21,8 +21,7 @@ class m161216_122437_event_type_OphInDnasample extends CDbMigration
 
 	public function down()
 	{
-		
-		return false;
+		return true;
 	}
 
 	/*

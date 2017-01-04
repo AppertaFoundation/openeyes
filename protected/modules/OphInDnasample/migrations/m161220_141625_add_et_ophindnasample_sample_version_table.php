@@ -34,8 +34,7 @@ class m161220_141625_add_et_ophindnasample_sample_version_table extends CDbMigra
 
 	public function down()
 	{
-		echo "m161220_141625_add_et_ophindnasample_sample_version_table does not support migration down.\n";
-		return false;
+        $this->dropTable('et_ophindnasample_sample_version');
 	}
 
 	/*
