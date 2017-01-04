@@ -421,5 +421,6 @@ return array(
             )
         ),
         'clinical_management_pcr' => true,
+        'docman_generate_csv' => false,
     ),
 );
