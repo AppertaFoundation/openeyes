@@ -53,6 +53,14 @@ class m161217_091226_et_ophindnasample_sample_NewFields extends CDbMigration
 
 	public function safeDown()
 	{
+	    $this->dropForeignKey('fk_genetics_study_id', 'et_ophindnasample_sample_genetics_studies');
+	    $this->dropForeignKey('fk_et_ophindnasample_sample_id', 'et_ophindnasample_sample_genetics_studies');
+	    $this->dropTable('et_ophindnasample_sample_genetics_studies');
+
+	    $this->dropColumn('et_ophindnasample_sample', 'other_sample_type');
+        $this->dropColumn('et_ophindnasample_sample', 'consented_by');
+        $this->dropColumn('et_ophindnasample_sample', 'is_local');
+        $this->dropColumn('et_ophindnasample_sample', 'destination');
 	}
 	
 }
