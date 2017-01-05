@@ -68,7 +68,7 @@ $patient = Patient::model()->findByPk($patient_id);
             <label>Macro:</label>
         </div>
         <div class="large-2 column end">
-            <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, '', array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width')); ?>
+            <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width')); ?>
         </div>
     </div>
 
