@@ -49,10 +49,9 @@ $pedigree = new Pedigree();
       <?php $form->dropDownList(
           $element,
           'external_source_id',
-          CHtml::listData(OphInGenetictest_External_Source::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+          CHtml::listData(OphInGeneticresults_External_Source::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
           array('empty' => '- Select -'),
-          false,
-          array('label' => 3, 'field' => 3)
+          false, array('label' => 3, 'field' => 3)
       ) ?>
       <?php $form->textField($element, 'external_source_identifier', array(), array(), array('label' => 3, 'field' => 3)) ?>
       <?php $form->dropDownList(
@@ -82,13 +81,6 @@ $pedigree = new Pedigree();
       <?php $form->textField($element, 'exon', array(), array(), array('label' => 3, 'field' => 3)) ?>
       <?php $form->textField($element, 'prime_rf', array(), array(), array('label' => 3, 'field' => 3)) ?>
       <?php $form->textField($element, 'prime_rr', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php $form->dropDownList(
-          $element,
-          'external_source_id',
-          CHtml::listData(OphInGeneticresults_External_Source::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
-          array('empty' => '- Select -'),
-          false, array('label' => 3, 'field' => 3)
-      ) ?>
       <?php $form->dropDownList(
           $element,
           'base_change_id',
