@@ -44,6 +44,17 @@
     );
 
     $user = User::model()->findByPk(Yii::app()->user->id);
+
+    $form->multiSelectList(
+        $element,
+        CHtml::modelName($element) .'[studies]',
+        'studies',
+        'id',
+        CHtml::listData(GeneticsStudy::model()->findAll(), 'id', 'name'),
+        array(),
+        array('label' => 'Study(s)', 'empty' => '-- Add --')
+    );
+
     //$user['first_name'].' '.$user['last_name'];
     $form->activeWidget('TextField', $element, 'comments');
     

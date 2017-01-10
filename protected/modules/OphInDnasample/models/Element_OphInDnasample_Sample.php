@@ -73,12 +73,39 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('event_id, old_dna_no,subject_id, dna_date, comments, type_id, volume', 'safe'),
-            array('type_id', 'required'),
+            array('type_id, consented_by, is_local, studies', 'required'),
+            array('other_sample_type', 'other_type_validator'),
+            array('volume', 'volume_validator'),
+            array('destination', 'destination_validator'),
             array('consented_by, is_local, destination','safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, old_dna_no, subject_id, dna_date, comments', 'safe', 'on' => 'search'),
         );
+    }
+
+    public function other_type_validator($attribute, $params)
+    {
+        if($this->type_id == 4 && $this->other_sample_type == '')
+        {
+            $this->addError($attribute, 'Please specify sample type');
+        }
+    }
+
+    public function volume_validator($attribute, $params)
+    {
+        if(!is_numeric($this->volume) || $this->volume <=0 || $this->volume > 99)
+        {
+            $this->addError($attribute, 'Please enter a value between 1 and 99');
+        }
+    }
+
+    public function destination_validator($attribute, $params)
+    {
+        if($this->is_local==0 && $this->destination == '')
+        {
+            $this->addError($attribute, 'Please enter Destination');
+        }
     }
 
     /**
@@ -116,6 +143,7 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
             'consented_by' => 'Consented By',
             'is_local' => 'Local',
             'destination' => 'Destination',
+            'volume'       => 'Volume (mililiters)'
         );
     }
 
