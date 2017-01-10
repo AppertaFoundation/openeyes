@@ -72,7 +72,7 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, old_dna_no,subject_id, dna_date, comments, type_id, volume', 'safe'),
+            array('event_id, old_dna_no,subject_id, blood_date, comments, type_id, volume', 'safe'),
             array('type_id, consented_by, is_local, studies', 'required'),
             array('other_sample_type', 'other_type_validator'),
             array('volume', 'volume_validator'),
@@ -80,7 +80,7 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
             array('consented_by, is_local, destination','safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, old_dna_no, subject_id, dna_date, comments', 'safe', 'on' => 'search'),
+            array('id, event_id, old_dna_no, subject_id, blood_date, comments', 'safe', 'on' => 'search'),
         );
     }
 
@@ -136,7 +136,7 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
             'event_id'      => 'Event',
             'old_dna_no'    => 'Old DNA no',
             'subject_id'    => 'Subject',
-            'dna_date'      => 'Dna date',
+            'blood_date'      => 'Dna date',
             'comments'      => 'Comments',
             'type_id'       => 'Type',
             'other_sample_type' => '(if other, please specify)',
