@@ -121,7 +121,7 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'studies' => array(self::MANY_MANY, 'Genetics_study', 'et_ophindnasample_sample_genetics_studies(et_ophindnasample_sample_id, genetics_study_id)'),
+            'studies' => array(self::MANY_MANY, 'GeneticsStudy', 'et_ophindnasample_sample_genetics_studies(et_ophindnasample_sample_id, genetics_study_id)'),
             'type' => array(self::BELONGS_TO, 'OphInDnasample_Sample_Type', 'type_id'),
         );
     }
