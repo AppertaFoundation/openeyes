@@ -62,9 +62,13 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, gene_id, method_id, comments, exon, prime_rf, prime_rr, base_change, amino_acid_change, assay, effect_id, homo, result, result_date', 'safe'),
-            
-            array('gene_id, homo', 'required'),
+            array('event_id, gene_id, method_id, comments, exon, prime_rf, prime_rr, base_change, method_id, amino_acid_change_id, base_change_id,
+                 amino_acid_change, assay, effect_id, method_id homo, result, result_date, external_source_identifier, withdrawal_source_id, external_source_id,
+                 genomic_coordinate, genome_version, gene_transcript',
+                'safe'),
+            array('gene_id, homo, method_id, effect_id, result', 'required'),
+            array('withdrawal_source_id', 'validateSource'),
+            array('exon, prime_rf, prime_rr', 'validateForMethod', 'method' => 'Sanger'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, result, ', 'safe', 'on' => 'search'),
@@ -79,15 +83,16 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
-            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'gene' => array(self::BELONGS_TO, 'PedigreeGene', 'gene_id'),
-            'effect' => array(self::BELONGS_TO, 'OphInGeneticresults_Test_Effect', 'effect_id'),
-            'method' => array(self::BELONGS_TO, 'OphInGeneticresults_Test_Method', 'method_id'),
-            'external_source' => array(self::BELONGS_TO, 'OphInGeneticresults_External_Source', 'external_source_id'),
+            'effect' => array(self::BELONGS_TO, 'OphInGenetictest_Test_Effect', 'effect_id'),
+            'method' => array(self::BELONGS_TO, 'OphInGenetictest_Test_Method', 'method_id'),
+            'withdrawal_source' => array(self::BELONGS_TO, 'Element_OphInDnaextraction_DnaTests', 'withdrawal_source_id'),
+            'external_source' => array(self::BELONGS_TO, 'OphInGenetictest_External_Source', 'external_source_id'),
+            'base_change_type' => array(self::BELONGS_TO, 'PedigreeBaseChangeType', 'base_change_id'),
+            'amino_acid_change_type' => array(self::BELONGS_TO, 'PedigreeAminoAcidChangeType', 'amino_acid_change_id'),
         );
     }
 
@@ -112,7 +117,11 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
             'homo' => 'Homo',
             'result' => 'Result',
             'result_date' => 'Result date',
-            'external_source_id' => 'External Source'
+            'external_source_id' => 'External Source',
+            'withdrawal_source_id' => 'Withdrawal Source',
+            'external_source_identifier' => 'External Source ID',
+            'base_change_id' => 'Base Change Type',
+            'amino_acid_change_id' => 'Amino Acid Chane Type'
         );
     }
 
@@ -136,5 +145,55 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
             'criteria' => $criteria,
         ));
     }
+
+
+    /**
+     * @param Patient $patient
+     *
+     * @return CActiveRecord[]
+     */
+    public function possibleWithdrawalEvents(Patient $patient)
+    {
+        if(!Yii::app()->modules['OphInDnaextraction']) {
+            return array();
+        }
+
+        $criteria = new CDbCriteria();
+        $criteria->condition = 'episode.patient_id = :patient_id';
+        $criteria->params = array(
+            'patient_id' => $patient->id,
+        );
+
+        return Element_OphInDnaextraction_DnaTests::model()->with('event', 'event.episode')->findAll($criteria);
+    }
+
+    /**
+     * Validate that either a withdrawal source or an external source is provided
+     */
+    public function validateSource()
+    {
+        if ($this->withdrawal_source_id && $this->external_source_id) {
+            $this->addError('withdrawal_source_id', 'Only one of withdrawal and external sources can be selected');
+        }
+
+        if (!$this->withdrawal_source_id && !$this->external_source_id) {
+            $this->addError('withdrawal_source_id', 'Either a withdrawal or an external source must be selected');
+        }
+    }
+
+    /**
+     * Some attributes are only required for a given method, this checks them
+     *
+     * @param $attribute
+     * @param $params
+     */
+    public function validateForMethod($attribute, $params)
+    {
+        if($this->method) {
+            if(isset($params['method']) && ($params['method'] === $this->method->name && !$this->$attribute)){
+                $this->addError($attribute, 'This is required when then method is set to ' . $params['method']);
+            }
+        }
+    }
 }
-?>
+

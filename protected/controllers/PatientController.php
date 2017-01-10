@@ -40,7 +40,7 @@ class PatientController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent'),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'create', 'update'),
                 'users' => array('@'),
             ),
             array('allow',
@@ -1441,6 +1441,9 @@ class PatientController extends BaseController
         }
     }
 
+    /**
+     * @param $area
+     */
     public function renderModulePartials($area)
     {
         if (isset(Yii::app()->params['module_partials'][$area])) {
@@ -1458,4 +1461,126 @@ class PatientController extends BaseController
             }
         }
     }
+    
+    /**
+     * Creates a new model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     */
+    public function actionCreate()
+    {
+        Yii::app()->assetManager->registerScriptFile('js/patient.js');
+        //Don't render patient summary box on top as we have no selected patient
+        $this->renderPatientPanel = false;
+       
+        $patient = new Patient('manual');
+        $contact = new Contact();
+        $address = new Address();
+        
+        $this->performAjaxValidation(array($patient, $contact, $address));
+        
+        if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
+        {
+            
+            $contact->attributes = $_POST['Contact'];
+            try {
+                $contact->save();
+            } catch (Exception $e) {
+                //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
+            }
+
+            
+            $patient->attributes = $_POST['Patient'];
+            $patient->contact_id = $contact->id;
+
+            try {
+                $patient->save();
+            } catch (Exception $e) {
+                //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
+            }
+            
+            $address->attributes = $_POST['Address'];
+            $address->contact_id = $contact->id;
+            if($address->save()){
+                $this->redirect(array('view', 'id' => $patient->id));
+            }
+        }
+        
+        $this->render('crud/create',array(
+                        'patient' => $patient,
+                        'contact' => $contact,
+                        'address' => $address,
+        ));
+   }
+   
+    /**
+     * Updates a particular model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id the ID of the model to be updated
+     */
+    public function actionUpdate($id)
+    {
+        Yii::app()->assetManager->registerScriptFile('js/patient.js');
+        
+        //Don't render patient summary box on top as we have no selected patient
+        $this->renderPatientPanel = false;
+        
+        $patient = $this->loadModel($id);
+        $contact = $patient->contact ? $patient->contact : new Contact();
+        $address = $patient->contact->address ? $patient->contact->address : new Address();
+        
+        $this->performAjaxValidation(array($patient, $contact, $address));
+        
+        if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
+        {
+         
+            $contact->attributes = $_POST['Contact'];
+            try {
+                $contact->save();
+            } catch (Exception $e) {
+                //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
+            }
+
+            $patient->attributes = $_POST['Patient'];
+            $patient->contact_id = $contact->id;
+
+            //This could be handled in OeDateFormat Behaviour
+            //make sure that if no date_of_death has been posted than we insert NULL instad of 000-00-00 into the DB
+            $patient->date_of_death = $patient->date_of_death == '' ? null : Helper::convertNHS2MySQL($patient->date_of_death);
+            $patient->dob = $patient->dob == '' ? null : Helper::convertNHS2MySQL($patient->dob);
+
+            try {
+                $patient->save();
+            } catch (Exception $e) {
+                //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
+            }
+            
+            $address->attributes = $_POST['Address'];
+            $address->contact_id = $contact->id;
+            if($address->save()){
+                $this->redirect(array('view', 'id' => $patient->id));
+            }
+        }
+        
+        $this->render('crud/update',array(
+                        'patient' => $patient,
+                        'contact' => $contact,
+                        'address' => $address,
+        ));
+    }
+    
+    /**
+     * Deletes a particular model.
+     * If deletion is successful, the browser will be redirected to the 'admin' page.
+     * @param integer $id the ID of the model to be deleted
+     */
+    public function actionDelete($id)
+    {
+        $this->loadModel($id)->delete();
+        
+        // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+        if(!isset($_GET['ajax'])){
+            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('site'));
+        }
+    }
+    
 }

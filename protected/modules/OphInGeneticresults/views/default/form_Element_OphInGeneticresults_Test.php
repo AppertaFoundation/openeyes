@@ -16,6 +16,20 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+$patient_id = null;
+$withdrawals = array();
+
+if ($element->event) {
+    $patient_id = $element->event->episode->patient_id;
+} elseif (Yii::app()->request->getQuery('patient_id', '0')) {
+    $patient_id = Yii::app()->request->getQuery('patient_id');
+}
+
+if ($patient_id) {
+    $withdrawals = $element->possibleWithdrawalEvents(Patient::model()->findByPk($patient_id));
+}
+
+$pedigree = new Pedigree();
 ?>
 
 <section class="element <?php echo $element->elementType->class_name ?>"
@@ -25,6 +39,22 @@
          data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
   <div class="element-fields">
+      <?php $form->widget('application.widgets.ElementSelection', array(
+          'element' => $element,
+          'field' => 'withdrawal_source_id',
+          'relatedElements' => $withdrawals,
+          'htmlOptions' => array('empty' => '- Select -'),
+          'layoutColumns' => array('label' => 3, 'field' => 3),
+      )); ?>
+      <?php $form->dropDownList(
+          $element,
+          'external_source_id',
+          CHtml::listData(OphInGenetictest_External_Source::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+          array('empty' => '- Select -'),
+          false,
+          array('label' => 3, 'field' => 3)
+      ) ?>
+      <?php $form->textField($element, 'external_source_identifier', array(), array(), array('label' => 3, 'field' => 3)) ?>
       <?php $form->dropDownList(
           $element,
           'gene_id',
@@ -48,23 +78,47 @@
           array('empty' => '- Select -'),
           false, array('label' => 3, 'field' => 3)
       ) ?>
+
+      <?php $form->textField($element, 'exon', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->textField($element, 'prime_rf', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->textField($element, 'prime_rr', array(), array(), array('label' => 3, 'field' => 3)) ?>
       <?php $form->dropDownList(
           $element,
           'external_source_id',
           CHtml::listData(OphInGeneticresults_External_Source::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
           array('empty' => '- Select -'),
-          false,
-          array('label' => 3, 'field' => 3)
+          false, array('label' => 3, 'field' => 3)
       ) ?>
-      <?php echo $form->textField($element, 'exon', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php echo $form->textField($element, 'prime_rf', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php echo $form->textField($element, 'prime_rr', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php echo $form->textField($element, 'base_change', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php echo $form->textField($element, 'amino_acid_change', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php echo $form->textField($element, 'assay', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php echo $form->radioBoolean($element, 'homo', array(), array('label' => 3, 'field' => 9)) ?>
-      <?php echo $form->textField($element, 'result', array(), array(), array('label' => 3, 'field' => 5)) ?>
-      <?php echo $form->datePicker($element, 'result_date', array(), array(), array('label' => 3, 'field' => 2)) ?>
-      <?php echo $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 5)) ?>
+      <?php $form->dropDownList(
+          $element,
+          'base_change_id',
+          CHtml::listData(PedigreeBaseChangeType::model()->findAll(array('order' => '`change` asc')), 'id', 'change'),
+          array('empty' => '- Select -'),
+          false, array('label' => 3, 'field' => 3)
+      ) ?>
+      <?php $form->textField($element, 'base_change', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->dropDownList(
+          $element,
+          'amino_acid_change_id',
+          CHtml::listData(PedigreeAminoAcidChangeType::model()->findAll(array('order' => '`change` asc')), 'id', 'change'),
+          array('empty' => '- Select -'),
+          false, array('label' => 3, 'field' => 3)
+      ) ?>
+      <?php $form->textField($element, 'amino_acid_change', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->textField($element, 'genomic_coordinate', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->dropDownList(
+          $element,
+          'genome_version',
+          array_combine($pedigree->genomeVersions(), $pedigree->genomeVersions()),
+          array('empty' => '- Select -'),
+          false, array('label' => 3, 'field' => 3)
+      ) ?>
+      <?php $form->textField($element, 'gene_transcript', array(), array(), array('label' => 3, 'field' => 3)) ?>
+
+      <?php $form->textField($element, 'assay', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->radioBoolean($element, 'homo', array(), array('label' => 3, 'field' => 9)) ?>
+      <?php $form->textField($element, 'result', array(), array(), array('label' => 3, 'field' => 5)) ?>
+      <?php $form->datePicker($element, 'result_date', array(), array(), array('label' => 3, 'field' => 2)) ?>
+      <?php $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 5)) ?>
   </div>
 </section>

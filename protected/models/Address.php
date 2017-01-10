@@ -67,7 +67,9 @@ class Address extends BaseActiveRecordVersioned
             array('address1, address2, city, county', 'length', 'max' => 255),
             array('postcode', 'length', 'max' => 10),
             array('email', 'length', 'max' => 255),
+            array('email','email'),
             array('country_id, type, date_start, date_end', 'safe'),
+            array('country_id, contact_id', 'required'),
             array('id, address1, address2, city, postcode, county, email, country_id, type, date_start, date_end', 'safe', 'on' => 'search'),
         );
     }
@@ -97,6 +99,7 @@ class Address extends BaseActiveRecordVersioned
             'county' => 'County',
             'country_id' => 'Country',
             'email' => 'Email',
+            'address_type_id' => 'Address Type',
         );
     }
 
