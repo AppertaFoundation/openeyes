@@ -24,7 +24,10 @@ $medications = $current ? $patient->medications : $patient->previous_medications
             </tr>
             <tr>
                 <th>Administration</th>
-                <td><?= $medication->dose ?> <?= $medication->route->name ?> <?= $medication->option ? "({$medication->option->name})" : '' ?> <?= isset($medication->frequency->name) ? $medication->frequency->name : '' ?></td>
+                <td><?= $medication->dose ?>
+                    <?= isset($medication->route->name) ? $medication->route->name : '' ?>
+                    <?= $medication->option ? "({$medication->option->name})" : '' ?>
+                    <?= isset($medication->frequency->name) ? $medication->frequency->name : '' ?></td>
             </tr>
             <tr>
                 <th>Date</th>
