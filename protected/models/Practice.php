@@ -237,4 +237,20 @@ class Practice extends BaseActiveRecordVersioned
             throw $e;
         }
     }
+
+    /**
+     * @return array|CDbDataReader
+     */
+    public function practiceAddresses()
+    {
+        $sql = 'SELECT practice.id, CONCAT_WS(", ", address1, address2, city, county, postcode) as letterLine
+                FROM practice 
+                JOIN contact on practice.contact_id = contact.id
+                JOIN address on contact.id = address.contact_id 
+                WHERE ( (date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW()))';
+
+        $query = $this->getDbConnection()->createCommand($sql);
+
+        return $query->queryAll();
+    }
 }
