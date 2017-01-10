@@ -87,10 +87,10 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'gene' => array(self::BELONGS_TO, 'PedigreeGene', 'gene_id'),
-            'effect' => array(self::BELONGS_TO, 'OphInGenetictest_Test_Effect', 'effect_id'),
-            'method' => array(self::BELONGS_TO, 'OphInGenetictest_Test_Method', 'method_id'),
+            'effect' => array(self::BELONGS_TO, 'OphInGeneticresults_Test_Effect', 'effect_id'),
+            'method' => array(self::BELONGS_TO, 'OphInGeneticresults_Test_Method', 'method_id'),
             'withdrawal_source' => array(self::BELONGS_TO, 'Element_OphInDnaextraction_DnaTests', 'withdrawal_source_id'),
-            'external_source' => array(self::BELONGS_TO, 'OphInGenetictest_External_Source', 'external_source_id'),
+            'external_source' => array(self::BELONGS_TO, 'OphInGeneticresults_External_Source', 'external_source_id'),
             'base_change_type' => array(self::BELONGS_TO, 'PedigreeBaseChangeType', 'base_change_id'),
             'amino_acid_change_type' => array(self::BELONGS_TO, 'PedigreeAminoAcidChangeType', 'amino_acid_change_id'),
         );

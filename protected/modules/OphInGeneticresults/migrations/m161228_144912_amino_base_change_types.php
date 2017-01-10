@@ -13,7 +13,6 @@ class m161228_144912_amino_base_change_types extends CDbMigration
         $this->addColumn('et_ophingenetictest_test', 'genomic_coordinate', 'varchar(5)');
         $this->addColumn('et_ophingenetictest_test', 'genome_version', 'smallint unsigned');
         $this->addColumn('et_ophingenetictest_test', 'gene_transcript', 'varchar(100)');
-
     }
 
     public function down()

@@ -61,7 +61,7 @@ class m170103_130245_rename_module extends OEMigration
 
 	public function down()
 	{
-		//echo "m170103_130245_rename_module does not support migration down.\n";
+		
 		return true;
 	}
 
