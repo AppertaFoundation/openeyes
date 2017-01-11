@@ -24,9 +24,16 @@
 				<div class="data-label"><?php echo $element->getAttributeLabel('type_id')?>:</div>
 			</div>
 			<div class="large-10 column">
-				<div class="data-value"><?php echo $element->type ? $element->type->name : 'None'?></div>
+				<div class="data-value">
+                    <?php echo $element->type ? $element->type->name : 'None'?>
+                    <?php if($element->type->id == 4): ?>
+                    (<?php echo $element->other_sample_type; ?>)
+                    <?php endif; ?>
+                </div>
 			</div>
 		</div>
+
+
 		<div class="row data-row">
 			<div class="large-2 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel('blood_date')?>:</div>
@@ -49,7 +56,7 @@
 				<div class="data-label"><?php echo $element->getAttributeLabel('is_local')?>:</div>
 			</div>
 			<div class="large-10 column">
-				<div class="data-value"><?php echo CHtml::encode($element->is_local)?></div>
+				<div class="data-value"><?php echo $element->is_local ==1 ? "Yes" : "No" ?></div>
 			</div>
 		</div>		
 
@@ -75,7 +82,25 @@
 				</div>
 			</div>
 		</div>
-		
+
+        <div class="row data-row">
+            <div class="large-2 column">
+                <div class="data-label"><?php echo $element->getAttributeLabel('studies')?>:</div>
+            </div>
+            <div class="large-10 column">
+                <div class="data-value">
+                    <?php
+                    $studies = [];
+                    foreach ($element->studies as $s)
+                    {
+                        $studies[] = $s->name;
+                    }
+                    echo implode(", ", $studies);
+                    ?>
+                </div>
+            </div>
+        </div>
+
 		<div class="row data-row">
 			<div class="large-2 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel('comments')?>:</div>
