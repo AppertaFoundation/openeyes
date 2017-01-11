@@ -1473,6 +1473,7 @@ class PatientController extends BaseController
         $this->renderPatientPanel = false;
        
         $patient = new Patient('manual');
+        $patient->noPas();
         $contact = new Contact();
         $address = new Address();
         

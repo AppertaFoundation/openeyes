@@ -22,25 +22,25 @@
  *
  * The followings are the available columns in table:
  *
- * @property string $id
- * @property int $event_id
- * @property int $old_dna_no
- * @property string $subject_id
- * @property string $blood_date
- * @property string $blood_location
- * @property string $comments
- * @property int $type_id
+ * @property string                     $id
+ * @property int                        $event_id
+ * @property int                        $old_dna_no
+ * @property string                     $subject_id
+ * @property string                     $blood_date
+ * @property string                     $blood_location
+ * @property string                     $comments
+ * @property int                        $type_id
  *
  * The followings are the available model relations:
- * @property ElementType $element_type
- * @property EventType $eventType
- * @property Event $event
- * @property User $user
- * @property User $usermodified
+ * @property ElementType                $element_type
+ * @property EventType                  $eventType
+ * @property Event                      $event
+ * @property User                       $user
+ * @property User                       $usermodified
  * @property OphInDnasample_Sample_Type $type
- * @property mixed destination
- * @property mixed is_local
- * @property mixed consented_by
+ * @property mixed                      destination
+ * @property mixed                      is_local
+ * @property mixed                      consented_by
  */
 class Element_OphInDnasample_Sample extends BaseEventTypeElement
 {
@@ -77,7 +77,7 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
             array('other_sample_type', 'other_type_validator'),
             array('volume', 'volume_validator'),
             array('destination', 'destination_validator'),
-            array('consented_by, is_local, destination','safe'),
+            array('consented_by, is_local, destination', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, old_dna_no, subject_id, blood_date, comments', 'safe', 'on' => 'search'),
@@ -86,24 +86,21 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
 
     public function other_type_validator($attribute, $params)
     {
-        if($this->type_id == 4 && $this->other_sample_type == '')
-        {
+        if ($this->type_id === 4 && $this->other_sample_type === '') {
             $this->addError($attribute, 'Please specify sample type');
         }
     }
 
     public function volume_validator($attribute, $params)
     {
-        if(!is_numeric($this->volume) || $this->volume <=0 || $this->volume > 99)
-        {
+        if (!is_numeric($this->volume) || $this->volume <= 0 || $this->volume > 99) {
             $this->addError($attribute, 'Please enter a value between 1 and 99');
         }
     }
 
     public function destination_validator($attribute, $params)
     {
-        if($this->is_local==0 && $this->destination == '')
-        {
+        if ($this->is_local === 0 && $this->destination === '') {
             $this->addError($attribute, 'Please enter Destination');
         }
     }
@@ -116,7 +113,7 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
+            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
@@ -132,18 +129,18 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
     public function attributeLabels()
     {
         return array(
-            'id'            => 'ID',
-            'event_id'      => 'Event',
-            'old_dna_no'    => 'Old DNA no',
-            'subject_id'    => 'Subject',
-            'blood_date'      => 'Dna date',
-            'comments'      => 'Comments',
-            'type_id'       => 'Type',
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'old_dna_no' => 'Old DNA no',
+            'subject_id' => 'Subject',
+            'blood_date' => 'Dna date',
+            'comments' => 'Comments',
+            'type_id' => 'Type',
             'other_sample_type' => '(if other, please specify)',
             'consented_by' => 'Consented By',
             'is_local' => 'Local',
             'destination' => 'Destination',
-            'volume'       => 'Volume (mililiters)'
+            'volume' => 'Volume (mililiters)',
         );
     }
 

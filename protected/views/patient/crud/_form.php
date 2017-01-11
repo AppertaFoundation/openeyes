@@ -25,15 +25,10 @@
 $nhs_num_statuses = CHtml::listData(NhsNumberVerificationStatus::model()->findAll(), 'id', 'description');
 $countries = CHtml::listData(Country::model()->findAll(), 'id', 'name');
 $address_type_ids = CHtml::listData(AddressType::model()->findAll(), 'id', 'name');
-
-$general_practitioners = CHtml::listData(Gp::model()->findAll(), 'id', 'correspondenceName');
-
-$practice_models = Practice::model()->findAll();
-foreach ($practice_models as $practice_model) {
-    if ($practice_model->contact->address) {
-        $practices[$practice_model->id] = $practice_model->contact->address->letterLine;
-    }
-}
+$gp = new Gp();
+$practice = new Practice();
+$general_practitioners = CHtml::listData($gp->gpCorrespondences(), 'id', 'correspondenceName');
+$practices = CHtml::listData($practice->practiceAddresses(), 'id', 'letterLine');
 
 $gender_models = Gender::model()->findAll();
 $genders = CHtml::listData($gender_models, function ($gender_model) {

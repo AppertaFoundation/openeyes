@@ -22,25 +22,25 @@
  *
  * The following are the available columns in table 'contact':
  *
- * @property int $id
- * @property string $nick_name
- * @property string $primary_phone
- * @property string $title
- * @property string $first_name
- * @property string $last_name
- * @property string $qualifications
+ * @property int          $id
+ * @property string       $nick_name
+ * @property string       $primary_phone
+ * @property string       $title
+ * @property string       $first_name
+ * @property string       $last_name
+ * @property string       $qualifications
  *
  * The following are the available model relations:
- * @property Gp $gp
- * @property Address[] $addresses
- * @property Address $address Primary address
- * @property Address $homeAddress Home address
- * @property Address $correspondAddress Correspondence address
+ * @property Gp           $gp
+ * @property Address[]    $addresses
+ * @property Address      $address Primary address
+ * @property Address      $homeAddress Home address
+ * @property Address      $correspondAddress Correspondence address
  * @property ContactLabel $label
  *
  * The following are pseudo (calculated) fields
- * @property string $salutationName
- * @property string $fullName
+ * @property string       $salutationName
+ * @property string       $fullName
  */
 class Contact extends BaseActiveRecordVersioned
 {
@@ -62,18 +62,18 @@ class Contact extends BaseActiveRecordVersioned
         return 'contact';
     }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		return array(
-			array('nick_name', 'length', 'max' => 80),
-			array('title, first_name, last_name, nick_name, primary_phone, qualifications, maiden_name, contact_label_id', 'safe'),
-			array('first_name, last_name', 'required'),
-			array('id, nick_name, primary_phone, title, first_name, last_name, qualifications', 'safe', 'on' => 'search'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+            array('nick_name', 'length', 'max' => 80),
+            array('title, first_name, last_name, nick_name, primary_phone, qualifications, maiden_name, contact_label_id', 'safe'),
+            array('first_name, last_name', 'required'),
+            array('id, nick_name, primary_phone, title, first_name, last_name, qualifications', 'safe', 'on' => 'search'),
+        );
+    }
 
     /**
      * @return array relational rules.
@@ -84,16 +84,25 @@ class Contact extends BaseActiveRecordVersioned
             'gp' => array(self::HAS_ONE, 'Gp', 'contact_id'),
             'addresses' => array(self::HAS_MANY, 'Address', 'contact_id'),
             // Prefer H records for primary address, but fall back to others
-            'address' => array(self::HAS_ONE, 'Address', 'contact_id',
-                'order' => '((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id,'.AddressType::HOME.') DESC, date_start DESC',
+            'address' => array(
+                self::HAS_ONE,
+                'Address',
+                'contact_id',
+                'order' => '((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id,' . AddressType::HOME . ') DESC, date_start DESC',
             ),
             // Prefer H records for home address, but fall back to others
-            'homeAddress' => array(self::HAS_ONE, 'Address', 'contact_id',
-                'order' => '((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id,'.AddressType::HOME.') DESC, date_start DESC',
+            'homeAddress' => array(
+                self::HAS_ONE,
+                'Address',
+                'contact_id',
+                'order' => '((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id,' . AddressType::HOME . ') DESC, date_start DESC',
             ),
             // Prefer C records for correspond address, but fall back to others
-            'correspondAddress' => array(self::HAS_ONE, 'Address', 'contact_id',
-                'order' => '((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id,'.AddressType::CORRESPOND.') DESC, date_start DESC',
+            'correspondAddress' => array(
+                self::HAS_ONE,
+                'Address',
+                'contact_id',
+                'order' => '((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id,' . AddressType::CORRESPOND . ') DESC, date_start DESC',
             ),
             'label' => array(self::BELONGS_TO, 'ContactLabel', 'contact_label_id'),
             'locations' => array(self::HAS_MANY, 'ContactLocation', 'contact_id'),
@@ -160,17 +169,17 @@ class Contact extends BaseActiveRecordVersioned
      */
     public function getSalutationName()
     {
-        return $this->title.' '.$this->last_name;
+        return $this->title . ' ' . $this->last_name;
     }
 
     public function contactLine($location = false)
     {
-        $line = $this->fullName.' ('.$this->label->name;
+        $line = $this->fullName . ' (' . $this->label->name;
         if ($location) {
-            $line .= ', '.$location;
+            $line .= ', ' . $location;
         }
 
-        return $line.')';
+        return $line . ')';
     }
 
     /**
@@ -192,7 +201,7 @@ class Contact extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
         $criteria->addSearchCondition('lower(last_name)', $term, false);
         if ($exclude) {
-            $criteria->compare('contact_label_id', '<>'.$cl->id);
+            $criteria->compare('contact_label_id', '<>' . $cl->id);
         } else {
             $criteria->compare('contact_label_id', $cl->id);
         }
@@ -201,10 +210,10 @@ class Contact extends BaseActiveRecordVersioned
 
         if ($join) {
             if (!in_array($join, array('person'))) {
-                throw new Exception('Unknown join table '.$join);
+                throw new Exception('Unknown join table ' . $join);
             }
             // force to only match on Person contacts
-            $criteria->join = 'join '.$join.' model_join on model_join.contact_id = t.id';
+            $criteria->join = 'join ' . $join . ' model_join on model_join.contact_id = t.id';
         }
         $found_contacts = self::model()->with(array('locations' => array('with' => array('site', 'institution')), 'label'))->findAll($criteria);
 
