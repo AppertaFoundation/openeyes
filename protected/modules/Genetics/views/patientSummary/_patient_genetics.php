@@ -100,7 +100,7 @@
       }
       ?>
       <?php
-      if ($api = Yii::app()->moduleAPI->get('OphInGenetictest')) {
+      if ($api = Yii::app()->moduleAPI->get('OphInGeneticresults')) {
           if ($events = $api->getEventsByPatient($this->patient)) { ?>
             <div class="row data-row">
               <div class="large-4 column">

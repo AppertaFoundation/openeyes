@@ -69,7 +69,7 @@ $widgetOptionsJson = json_encode(array(
       <?php } ?>
     <div class="multi-select<?php if (!$inline) {echo ' multi-select-list';} ?>"
          data-options='<?php echo $widgetOptionsJson; ?>'
-         <?php if($through): ?>data-statuses='<?=json_encode($through['options'])?>' <?php endif; ?>
+         <?php if(isset($through['options'])){ ?>data-statuses='<?php json_encode($through['options'])?>' <?php } ?>
     >
       <input type="hidden" name="<?php echo CHtml::modelName($element) ?>[MultiSelectList_<?php echo $field ?>]" class="multi-select-list-name"/>
       <div class="multi-select-dropdown-container">
@@ -123,7 +123,7 @@ $widgetOptionsJson = json_encode(array(
                       } ?>
                   />
                   <?php
-                    if($through) {
+                    if(isset($through['current'])) {
                       $currentField = 0;
                       foreach ( $through['current'] as $current) {
                         if($current->{$through['related_by']} === $id){

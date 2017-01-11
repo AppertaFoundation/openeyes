@@ -75,6 +75,7 @@ class GeneticsStudy extends BaseActiveRecordVersioned
         return array(
             'proposers' => array(self::MANY_MANY, 'User', 'genetics_study_proposer(study_id, user_id)'),
             'subjects' => array(self::MANY_MANY, 'GeneticsPatient', 'genetics_study_subject(study_id, subject_id)'),
+            'dna_sample_events' => array(self::MANY_MANY, 'Element_OphInDnasample_Sample', 'et_ophindnasample_sample_genetics_studies(genetics_study_id,et_ophindnasample_sample_id)')
         );
     }
 
