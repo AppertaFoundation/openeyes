@@ -4,7 +4,6 @@ class m161216_144108_dnasample_rbac extends CDbMigration
 {
 	public function up()
 	{
-        
         $this->delete('authitemchild', "parent = 'Genetics Admin' AND child = 'TaskEditBloodSample'");
         $this->delete('authitemchild', "parent = 'Genetics Admin' AND child = 'TaskViewBloodSample'");
         $this->delete('authitemchild', "parent = 'Genetics User' AND child = 'TaskViewBloodSample'");
@@ -30,7 +29,26 @@ class m161216_144108_dnasample_rbac extends CDbMigration
 
 	public function down()
 	{
-		return true;
+		$this->delete('authitemchild', "parent = 'Genetics Admin' AND child = 'TaskEditDnaSample'");
+        $this->delete('authitemchild', "parent = 'Genetics Admin' AND child = 'TaskViewDnaSample'");
+        $this->delete('authitemchild', "parent = 'Genetics User' AND child = 'TaskViewDnaSample'");
+        
+        $this->delete('authitemchild', "parent = 'TaskEditDnaSample' AND child = 'OprnEditDnaSample'");
+        $this->delete('authitemchild', "parent = 'TaskViewDnaSample' AND child = 'OprnViewDnaSample'");
+        
+        $this->update('authitem', array('name' => 'TaskEditBloodSample', 'type' => 1), "name = 'TaskEditDnaSample'");
+        $this->update('authitem', array('name' => 'TaskViewBloodSample', 'type' => 1), "name = 'TaskViewDnaSample'");
+        
+        $this->update('authitem', array('name' => 'OprnViewBloodSample', 'type' => 0), "name = 'OprnViewDnaSample'");
+        $this->update('authitem', array('name' => 'OprnEditBloodSample', 'type' => 0), "name = 'OprnEditDnaSample'");
+        
+        
+        $this->insert('authitemchild', array('parent' => 'Genetics Admin', 'child' => 'TaskEditBloodSample'));
+        $this->insert('authitemchild', array('parent' => 'Genetics Admin', 'child' => 'TaskViewBloodSample'));
+        $this->insert('authitemchild', array('parent' => 'Genetics User', 'child' => 'TaskViewBloodSample'));
+        
+        $this->insert('authitemchild', array('parent' => 'TaskEditBloodSample', 'child' => 'OprnEditBloodSample'));
+        $this->insert('authitemchild', array('parent' => 'TaskViewBloodSample', 'child' => 'OprnViewBloodSample'));
 	}
 
 	/*
