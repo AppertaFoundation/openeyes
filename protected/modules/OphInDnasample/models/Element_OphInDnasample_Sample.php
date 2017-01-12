@@ -46,6 +46,8 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
 {
     public $service;
 
+    protected $auto_update_relations = true;
+
     /**
      * Returns the static model of the specified AR class.
      *
