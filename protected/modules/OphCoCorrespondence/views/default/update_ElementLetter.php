@@ -67,10 +67,45 @@ $patient = Patient::model()->findByPk($patient_id);
         <div class="large-<?php echo $layoutColumns['label']; ?> column">
             <label>Macro:</label>
         </div>
-        <div class="large-2 column end">
-            <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, '', array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width')); ?>
+        <div class="large-4 column end">
+            <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width resizeselect')); ?>
         </div>
     </div>
+
+    <script type="text/javascript">
+        $ = jQuery;
+        $(function($, window){
+            var arrowWidth = 30;
+
+            $.fn.resizeselect = function(settings) {
+                return this.each(function() {
+
+                    $(this).change(function(){
+                        var $this = $(this);
+
+                        // create test element
+                        var text = $this.find("option:selected").text();
+                        var $test = $("<span>").html(text);
+
+                        // add to body, get width, and get out
+                        $test.appendTo('body');
+                        var width = $test.width();
+                        $test.remove();
+
+                        // set select width
+                        $this.width(width + arrowWidth);
+
+                        // run on start
+                    }).change();
+
+                });
+            };
+
+            // run by default
+            $("select.resizeselect").resizeselect();
+
+        })(jQuery, window);
+    </script>
 
     <div class="row field-row">
         <div class="large-<?php echo $layoutColumns['label']; ?> column">

@@ -46,8 +46,15 @@
 			<tbody>
 			<?php foreach ($this->patient->ophthalmicDiagnoses as $diagnosis) {?>
 				<tr>
+					<?php
+					if (strpos($diagnosis->disorder->term, $diagnosis->eye->adjective. ' ') === 0) {
+						$term = $diagnosis->disorder->term;
+					} else {
+						$term = $diagnosis->eye->adjective . ' ' . $diagnosis->disorder->term;
+					}
+					?> 
 					<td><?php echo $diagnosis->dateText?></td>
-					<td><?php if(isset($diagnosis->eye)) { echo $diagnosis->eye->adjective; }?> <?php echo $diagnosis->disorder->term?></td>
+					<td><?php echo $term; ?></td>
 					<?php if ($this->checkAccess('OprnEditOtherOphDiagnosis')) { ?>
 						<td><a href="#" class="removeDiagnosis" rel="<?php echo $diagnosis->id?>">Remove</a></td>
 					<?php } ?>
