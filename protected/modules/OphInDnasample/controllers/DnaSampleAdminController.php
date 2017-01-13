@@ -18,7 +18,7 @@ class DnaSampleAdminController extends BaseAdminController{
     {
         
         $admin = new Admin(OphInDnasample_Sample_Type::model(), $this);
-        $admin->setModelDisplayName('DNA sample type change');
+        $admin->setModelDisplayName('DNA Sample Type');
         $admin->setListFields(array(
             'id',
             'name',
@@ -36,7 +36,7 @@ class DnaSampleAdminController extends BaseAdminController{
         if ($id) {
             $admin->setModelId($id);
         }
-        $admin->setModelDisplayName('DNA sample type change');
+        $admin->setModelDisplayName('DNA Sample Type');
         $admin->setEditFields(array(
             'name' => 'text',
         ));
