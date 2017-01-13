@@ -178,15 +178,6 @@ class Document //extends BaseActiveRecord
     }
 
 
-
-    // Need new document version.
-    // This will:
-    // Copy the current _version record to a new version number
-
-    public function updateDocument($macroId, $eventId, $target, $outputs, $data = null)
-    {
-    }
-
     /**
      * Dispatches all the documents associated with this DocSet, that have not already been sent.
      */

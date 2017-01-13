@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,63 +17,63 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class DocumentInstanceData extends BaseActiveRecord
 {
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return Site the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     *
+     * @return Site the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'document_instance_data';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'document_instance_data';
+    }
 
-	public function behaviors()
-	{
-		return array(
-			'LookupTable' => 'LookupTable',
-		);
-	}
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		return array(
-			array('document_instance_id, macro_id', 'safe'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('document_instance_id, macro_id', 'safe', 'on' => 'search'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+            array('document_instance_id, macro_id', 'safe'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('document_instance_id, macro_id', 'safe', 'on' => 'search'),
+        );
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		return array(
-			'created_user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'document_instance' => array(self::BELONGS_TO, 'DocumentInstance', 'document_instance_id'),
-			'macro' => array(self::BELONGS_TO, 'LetterMacro', 'macro_id'),
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+            'created_user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'document_instance' => array(self::BELONGS_TO, 'DocumentInstance', 'document_instance_id'),
+            'macro' => array(self::BELONGS_TO, 'LetterMacro', 'macro_id'),
 
-		);
-	}
+        );
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-	}
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+    }
 }

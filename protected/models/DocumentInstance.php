@@ -19,85 +19,87 @@
 
 class DocumentInstance extends BaseActiveRecord
 {
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return Site the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     *
+     * @return Site the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'document_instance';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'document_instance';
+    }
 
-	public function behaviors()
-	{
-		return array(
-			'LookupTable' => 'LookupTable',
-		);
-	}
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('document_set_id, correspondence_event_id', 'safe'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('document_set_id, correspondence_event_id', 'safe', 'on' => 'search'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('document_set_id, correspondence_event_id', 'safe'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('document_set_id, correspondence_event_id', 'safe', 'on' => 'search'),
+        );
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		return array(
-			'created_user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'document_set' => array(self::BELONGS_TO, 'DocumentSet', 'document_set_id'),
-			'correspondence_event' => array(self::BELONGS_TO, 'Event', 'correspondence_event_id'),
-			'document_instance_data' => array(self::HAS_MANY, 'DocumentInstanceData', 'document_instance_id'),
-			'document_target' => array(self::HAS_MANY, 'DocumentTarget', 'document_instance_id'),
-                        'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+            'created_user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'document_set' => array(self::BELONGS_TO, 'DocumentSet', 'document_set_id'),
+            'correspondence_event' => array(self::BELONGS_TO, 'Event', 'correspondence_event_id'),
+            'document_instance_data' => array(self::HAS_MANY, 'DocumentInstanceData', 'document_instance_id'),
+            'document_target' => array(self::HAS_MANY, 'DocumentTarget', 'document_instance_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+        );
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-	}
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+    }
 
 
-	public function dispatch()
-	{
-		switch ($this->dispatchType) {
-			case 'PRINT':
-				$dispatchObj = new DocumentDispatchPrint($this);
-				break;
-			case 'DOCMAN':
-				$dispatchObj = new DocumentDispatchDocMan($this);
-				break;
-			case 'FILE':
-				$dispatchObj = new DocumentDispatchFile($this);
-				break;
-		}
+    public function dispatch()
+    {
+        switch ($this->dispatchType) {
+            case 'PRINT':
+                $dispatchObj = new DocumentDispatchPrint($this);
+                break;
+            case 'DOCMAN':
+                $dispatchObj = new DocumentDispatchDocMan($this);
+                break;
+            case 'FILE':
+                $dispatchObj = new DocumentDispatchFile($this);
+                break;
+        }
 
-		if ($dispatchObj) {
-			$tempname = $dispatchObj->send();
-			return $tempname; // PRINT dispatch types return the temp filename that was created
-		}
-	}
+        if ($dispatchObj) {
+            $tempname = $dispatchObj->send();
+
+            return $tempname; // PRINT dispatch types return the temp filename that was created
+        }
+    }
 }
