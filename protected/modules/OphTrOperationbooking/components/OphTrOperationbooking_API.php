@@ -429,5 +429,102 @@ class OphTrOperationbooking_API extends BaseAPI
 
         return implode(', ', $not_booked_events);
     }
+    
+    public function autoScheduleOperationBookings(\Episode $episode)
+    {
+        
+        $criteria = new CDbCriteria();
+        $criteria->order = 't.created_date asc';
+        $criteria->condition = 't.status_id = 1';
+        $criteria->compare('episode_id', $episode->id);
+
+        $operations = Element_OphTrOperationbooking_Operation::model()->with('event')->findAll($criteria);
+        
+        $op_status_scheduled = OphTrOperationbooking_Operation_Status::model()->find('name=?', array('Scheduled'));
+        $ep_status_listed = EpisodeStatus::model()->find('name=?', array('Listed/booked'));
+
+        foreach($operations as $operation){
+            $session = $this->getFirstBookableSessionByFirm($episode->firm_id, $operation);
+
+            $schedule_options = Element_OphTrOperationbooking_ScheduleOperation::model()->find('event_id = ?', array($operation->event->id));
+            
+            if($session){
+                $errors = null;
+
+                try {
+                    
+                    $ward = OphTrOperationbooking_Operation_Ward::model()->find('site_id = ?', array($operation->site->id));
+                    $booking = new OphTrOperationbooking_Operation_Booking();
+                    $booking->ward_id = $ward->id;
+                    $booking->element_id = $operation->id;
+                    $booking->session_id = $session->id;
+                    $booking->session_theatre_id = 1;
+                    $booking->session_date = date("Y-m-d H:i:s");
+                    $booking->session_start_time = $session->start_time;
+                    $booking->admission_time = $session->start_time;
+                    $booking->session_end_time = $session->end_time;
+                    $booking->cancellation_comment = '';
+                    
+                    $booking->save();
+                    
+                    $result = $operation->schedule($booking, '', '', '', false, null, $schedule_options);
+
+                    if ($result !== true) {
+                        $errors = $result;
+                        Yii::app()->user->setFlash('notice', $errors);
+                    } else {
+                    }
+                    
+                } catch (RaceConditionException $e) {
+                        Yii::app()->user->setFlash('notice', $e->getMessage());
+                } catch (Exception $e) {
+                        // no handling of this at the moment
+                        throw $e;
+                }
+                
+                if(!$errors){
+                    $operation->status_id = $op_status_scheduled->id;
+                    $operation->save();
+                    
+                    $episode->episode_status_id = $ep_status_listed->id;
+                    $episode->save();
+                    
+                    $operation->event->deleteIssues();
+                }
+            }
+        }
+        
+    }
+    
+    public function getFirstBookableSessionByFirm($firm_id, $operation)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->compare('firm_id', $firm_id);
+        $criteria->compare('available', 1);
+        //$criteria->addSearchCondition('date', "$year-$month-%", false);
+        $criteria->addCondition("date >= " . date("Y-m-d"));
+        $criteria->order = 'date asc';
+        
+        if(!$operation) {
+            return OphTrOperationbooking_Operation_Session::model()->find($criteria);
+        }
+        
+        $sessions = OphTrOperationbooking_Operation_Session::model()->findAll($criteria);
+       // $operation = Element_OphTrOperationbooking_Operation::model()->findByPk($operation_id);
+        
+        if($operation){
+            foreach ($sessions as $session){
+                $is_bookable = $session->operationBookable($operation);
+
+                if ($session->availableMinutes >= $operation->total_duration) {
+                    return $session;
+                }
+            }
+        } else {
+            throw new Exception("Operation event not found: $operation_id");
+        }
+        
+        return null;
+    }
 
 }

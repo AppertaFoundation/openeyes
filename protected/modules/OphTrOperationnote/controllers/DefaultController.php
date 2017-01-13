@@ -197,8 +197,10 @@ class DefaultController extends BaseEventTypeController
     {
         parent::initActionCreate();
 
+        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+        
         if (isset($_GET['booking_event_id'])) {
-            if (!$api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
+            if (!$api) {
                 throw new Exception('invalid request for booking event');
             }
             if (!$this->booking_operation = $api->getOperationForEvent($_GET['booking_event_id'])) {
@@ -207,6 +209,14 @@ class DefaultController extends BaseEventTypeController
         } elseif (isset($_GET['unbooked'])) {
             $this->unbooked = true;
         }
+        
+        $is_theatre_diary_disabled = Yii::app()->params['disable_theatre_diary'];
+        // if Theatre diary is disabled we schedule the Op to the first available slot
+
+        if ($api && $is_theatre_diary_disabled) {
+            $api->autoScheduleOperationBookings($this->current_episode);
+        }
+        
 
         $this->initEdit();
     }
@@ -273,6 +283,7 @@ class DefaultController extends BaseEventTypeController
             $this->render('select_event', array(
                 'errors' => $errors,
                 'bookings' => $bookings,
+                'is_theatre_diary_disabled' => Yii::app()->params['disable_theatre_diary']
             ));
         }
     }

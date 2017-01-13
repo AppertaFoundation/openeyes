@@ -419,5 +419,6 @@ return array(
                     'saveprint' => 'Save and print'
             )
         ),
+        "disable_theatre_diary" => false,
     ),
 );
