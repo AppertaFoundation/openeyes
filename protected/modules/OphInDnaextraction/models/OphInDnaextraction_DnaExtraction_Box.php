@@ -54,7 +54,10 @@ class OphInDnaextraction_DnaExtraction_Box extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('value, display_order', 'safe'),
+            array('value', 'required'),
+            array('maxletter', 'required'),
+            array('maxnumber', 'required'),
+            array('value, maxletter, maxnumber, display_order', 'safe'),
         );
     }
 
@@ -76,4 +79,16 @@ class OphInDnaextraction_DnaExtraction_Box extends BaseEventTypeElement
             'criteria' => $criteria,
         ));
     }
+    
+    public function availableBoxes( $boxID )
+    {
+        $availableBox = Yii::app()->db->createCommand()
+            ->select('id, value, maxletter, maxnumber')
+            ->from('ophindnaextraction_dnaextraction_box')
+            ->where('id =:id', array(':id' => $boxID))
+            ->queryRow();
+        
+        return $availableBox;
+    }
+    
 }
