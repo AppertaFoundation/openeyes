@@ -18,7 +18,7 @@ class DnaTestsInvestigatorAdminController extends BaseAdminController
     public function actionList()
     {
         $admin = new Admin(OphInDnaextraction_DnaTests_Investigator::model(), $this);
-        $admin->setModelDisplayName('Dna Investigator');
+        $admin->setModelDisplayName('DNA Investigators');
         $admin->setListFields(array(
             'id',
             'name',
@@ -35,7 +35,7 @@ class DnaTestsInvestigatorAdminController extends BaseAdminController
         if ($id) {
             $admin->setModelId($id);
         }
-        $admin->setModelDisplayName('DNA Investigator');
+        $admin->setModelDisplayName('DNA Investigators');
         $admin->setEditFields(array(
             'name' => 'text',
         ));
