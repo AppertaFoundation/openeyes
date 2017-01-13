@@ -91,4 +91,13 @@ class OphInDnaextraction_DnaExtraction_Box extends BaseEventTypeElement
         return $availableBox;
     }
     
+    public function attributeLabels()
+    {
+        return array(
+            'value'      => 'Box name',
+            'maxletter'  => 'Max letter',
+            'maxnumber'  => 'Max number',
+        );
+    }
+    
 }

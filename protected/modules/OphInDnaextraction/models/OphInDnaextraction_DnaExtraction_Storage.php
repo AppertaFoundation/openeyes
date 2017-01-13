@@ -98,12 +98,30 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
         }
     }
     
+    public function setLetterRange( $maxletter )
+    {
+        $this->letterRange = range('A' , $maxletter);
+    }
+    
+    public function setNumberRange( $maxnumber )
+    {
+        $this->numberRange = range('1' , $maxnumber);
+    }
+    
     protected function letterNumberValidation()
     {
         
         $boxRanges = OphInDnaextraction_DnaExtraction_Box::availableBoxes($this->box_id);
-        $this->letterRange = range('A' , $boxRanges['maxletter']);
-        $this->numberRange = range('1' , $boxRanges['maxnumber'] );
+        if($boxRanges['maxletter'] == NULL){
+            return 'You have not specified a maximum letter value to '.$boxRanges['value'].' box.';
+        }
+        if($boxRanges['maxnumber'] == NULL){
+            return 'You have not specified a maximum number value to '.$boxRanges['value'].' box.';
+        }
+        
+        $this->setLetterRange( $boxRanges['maxletter'] );
+        $this->setNumberRange( $boxRanges['maxnumber'] );
+       
        
         $validLetter = FALSE;
         foreach ($this->letterRange as $char) {
@@ -112,7 +130,7 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
             }
         }
         if($validLetter == FALSE){
-            return 'This letter is bigger than maximum value.';
+            return 'This letter is larger than maximum value.';
         }
         
         $validNumber = FALSE;
@@ -122,9 +140,32 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
             }
         }
         if($validNumber == FALSE){
-            return 'This number is bigger than maximum value.';
+            return 'This number is larger than maximum value.';
         }
         
         return TRUE;
+    }
+    
+    public function getBoxLastRow( $boxid )
+    {
+        $boxRow = Yii::app()->db->createCommand()
+            ->select('id, box_id, letter, number')
+            ->from('ophindnaextraction_storage_address')
+            ->where('box_id =:box_id', array(':box_id' => $boxid))
+            ->order('id DESC')
+            ->limit('1')
+            ->queryRow();
+        
+        return $boxRow;
+    }
+    
+   
+    
+    public function attributeLabels()
+    {
+        return array(
+            'box.value' => 'Box name',
+            'box_id'    => 'Box name',
+        );
     }
 }

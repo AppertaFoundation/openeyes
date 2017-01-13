@@ -20,7 +20,7 @@ class DnaExtractionBoxAdminController extends \ModuleAdminController
        
         $admin = new Admin(OphInDnaextraction_DnaExtraction_Box::model(), $this);
       
-        $admin->setModelDisplayName('Dna Box');
+        $admin->setModelDisplayName('Dna Storage Box');
         $admin->setListFields(array(
             'value',
             'maxletter',
@@ -39,7 +39,7 @@ class DnaExtractionBoxAdminController extends \ModuleAdminController
         if ($id) {
             $admin->setModelId($id);
         }
-        $admin->setModelDisplayName('Dna Box');
+        $admin->setModelDisplayName('Dna Storage Box');
         $admin->setEditFields(array(
             'value'     => 'text',
             'maxletter' => 'text',
@@ -61,7 +61,7 @@ class DnaExtractionBoxAdminController extends \ModuleAdminController
                 if ($box = OphInDnaextraction_DnaExtraction_Box::model()->findByPk($id)) {
                     $box->display_order = $i + 1;
                     if (!$box->save()) {
-                        throw new Exception('Unable to save box: '.print_r($dnaName->getErrors(), true));
+                        throw new Exception('Unable to save storage box: '.print_r($dnaName->getErrors(), true));
                     }
                 }
             }
