@@ -18,7 +18,16 @@ class m161216_153049_dna_rbac_operation extends CDbMigration
 
 	public function down()
 	{
-		return true;
+		$this->update('event_type', array('rbac_operation_suffix' => 'BloodSample'), "rbac_operation_suffix = 'DnaSample'");
+        
+        $this->delete('authitemchild', "parent = 'Genetics User' AND child = 'TaskCreateDnaSample'");
+        $this->delete('authitemchild', "parent = 'TaskCreateDnaSample' AND child = 'OprnCreateDnaSample'");
+        
+        $this->update('authitem', array('name' => 'TaskCreateBloodSample', 'type' => 1), "name = 'TaskCreateDnaSample'");
+        $this->update('authitem', array('name' => 'OprnCreateBloodSample', 'type' => 0), "name = 'OprnCreateDnaSample'");
+        
+        $this->insert('authitemchild', array('parent' => 'Genetics User' ,'child' => 'TaskCreateBloodSample'));
+        $this->insert('authitemchild', array('parent' => 'TaskCreateBloodSample','child' => 'OprnCreateBloodSample')); 
 	}
 
 	/*

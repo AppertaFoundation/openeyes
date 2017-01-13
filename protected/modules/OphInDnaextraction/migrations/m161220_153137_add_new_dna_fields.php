@@ -18,17 +18,5 @@ class m161220_153137_add_new_dna_fields extends CDbMigration
 		
 		$this->dropColumn('et_ophindnaextraction_dnaextraction_version', 'dna_quality'); 
 		$this->dropColumn('et_ophindnaextraction_dnaextraction_version', 'dna_quantity'); 
-		return false;
 	}
-
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
-
-	public function safeDown()
-	{
-	}
-	*/
 }

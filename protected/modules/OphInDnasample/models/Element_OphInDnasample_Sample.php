@@ -46,6 +46,8 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
 {
     public $service;
 
+    protected $auto_update_relations = true;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -139,6 +141,7 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
             'other_sample_type' => '(if other, please specify)',
             'consented_by' => 'Consented By',
             'is_local' => 'Local',
+            'studies' => 'Study(s)',
             'destination' => 'Destination',
             'volume' => 'Volume (mililiters)',
         );
