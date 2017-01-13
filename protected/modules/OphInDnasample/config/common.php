@@ -7,7 +7,7 @@ return array(
             ),
         ),
         'admin_menu' => array(
-            'DNA Sample Change' => '/OphInDnasample/DnaSampleAdmin/list',
+            'DNA Sample Type' => '/OphInDnasample/DnaSampleAdmin/list',
         ),
     ),
 
