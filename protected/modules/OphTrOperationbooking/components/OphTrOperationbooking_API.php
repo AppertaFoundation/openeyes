@@ -444,7 +444,8 @@ class OphTrOperationbooking_API extends BaseAPI
         $ep_status_listed = EpisodeStatus::model()->find('name=?', array('Listed/booked'));
 
         foreach($operations as $operation){
-            $session = $this->getFirstBookableSessionByFirm($episode->firm_id, $operation);
+            // get the first bookable session regardless of the firm
+            $session = $this->getFirstBookableSession($operation);
 
             $schedule_options = Element_OphTrOperationbooking_ScheduleOperation::model()->find('event_id = ?', array($operation->event->id));
             
@@ -471,12 +472,12 @@ class OphTrOperationbooking_API extends BaseAPI
 
                     if ($result !== true) {
                         $errors = $result;
-                        Yii::app()->user->setFlash('notice', $errors);
+                        Yii::app()->user->setFlash('error.alert', $errors);
                     } else {
                     }
                     
                 } catch (RaceConditionException $e) {
-                        Yii::app()->user->setFlash('notice', $e->getMessage());
+                        Yii::app()->user->setFlash('error.alert', $e->getMessage());
                 } catch (Exception $e) {
                         // no handling of this at the moment
                         throw $e;
@@ -491,37 +492,34 @@ class OphTrOperationbooking_API extends BaseAPI
                     
                     $operation->event->deleteIssues();
                 }
+            } else {
+                Yii::app()->user->setFlash('error.no-sessions', 'Operation notes cannot be created for un-scheduled Operations. Please add free sessions.');
             }
         }
         
     }
     
-    public function getFirstBookableSessionByFirm($firm_id, $operation)
-    {
+    public function getFirstBookableSession(\Element_OphTrOperationbooking_Operation $operation)
+    {   
         $criteria = new CDbCriteria();
-        $criteria->compare('firm_id', $firm_id);
         $criteria->compare('available', 1);
-        //$criteria->addSearchCondition('date', "$year-$month-%", false);
-        $criteria->addCondition("date >= " . date("Y-m-d"));
+        $criteria->addCondition("date >= '" . date("Y-m-d") . "'"  );
         $criteria->order = 'date asc';
         
-        if(!$operation) {
-            return OphTrOperationbooking_Operation_Session::model()->find($criteria);
-        }
+        $dataProvider = new CActiveDataProvider('OphTrOperationbooking_Operation_Session',
+                array(
+                    'criteria' => $criteria
+                )
+        );
         
-        $sessions = OphTrOperationbooking_Operation_Session::model()->findAll($criteria);
-       // $operation = Element_OphTrOperationbooking_Operation::model()->findByPk($operation_id);
-        
-        if($operation){
-            foreach ($sessions as $session){
-                $is_bookable = $session->operationBookable($operation);
+        $session_iterator = new CDataProviderIterator($dataProvider);
 
-                if ($session->availableMinutes >= $operation->total_duration) {
+        foreach ($session_iterator as $session){
+            $is_bookable = $session->operationBookable($operation);
+
+            if ($is_bookable && ($session->availableMinutes >= $operation->total_duration)) {
                     return $session;
-                }
             }
-        } else {
-            throw new Exception("Operation event not found: $operation_id");
         }
         
         return null;
