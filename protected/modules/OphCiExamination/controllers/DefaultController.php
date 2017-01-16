@@ -927,10 +927,11 @@ class DefaultController extends \BaseEventTypeController
     protected function saveComplexAttributes_Element_OphCiExamination_Dilation(models\Element_OphCiExamination_Dilation $element, $data, $index)
     {
         $model_name = \CHtml::modelName($element);
-        $element->updateTreatments(\Eye::LEFT, $element->hasLeft() ?
+
+        $element->updateTreatments(\Eye::LEFT, $element->left_treatments ?
                 @$data[$model_name]['left_treatments'] :
                 array());
-        $element->updateTreatments(\Eye::RIGHT, $element->hasRight() ?
+        $element->updateTreatments(\Eye::RIGHT, $element->right_treatments ?
                 @$data[$model_name]['right_treatments'] :
                 array());
     }
