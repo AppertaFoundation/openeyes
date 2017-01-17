@@ -212,7 +212,7 @@ class GeneticsPatient extends BaseActiveRecord
     /**
      * @param int $pedigree_id
      *
-     * @return bool|string
+     * @return string
      */
     public function statusForPedigree($pedigree_id)
     {
@@ -225,8 +225,8 @@ class GeneticsPatient extends BaseActiveRecord
 
         $patientPedigree = GeneticsPatientPedigree::model()->find($criteria);
 
-        if(!$patientPedigree) {
-            return false;
+        if(!$patientPedigree || !$patientPedigree->status) {
+            return 'Uknown';
         }
 
         return $patientPedigree->status->name;
