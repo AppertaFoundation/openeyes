@@ -29,5 +29,11 @@ return array(
         'admin_menu' => array(
 
         ),
+        'additional_rulesets' => array(
+            array(
+                'namespace' => 'Genetics',
+                'class' => 'Genetics_AuthRules'
+            ),
+        ),
     ),
 );

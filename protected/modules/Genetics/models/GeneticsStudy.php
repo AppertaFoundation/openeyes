@@ -75,7 +75,11 @@ class GeneticsStudy extends BaseActiveRecordVersioned
         return array(
             'proposers' => array(self::MANY_MANY, 'User', 'genetics_study_proposer(study_id, user_id)'),
             'subjects' => array(self::MANY_MANY, 'GeneticsPatient', 'genetics_study_subject(study_id, subject_id)'),
-            'dna_sample_events' => array(self::MANY_MANY, 'Element_OphInDnasample_Sample', 'et_ophindnasample_sample_genetics_studies(genetics_study_id,et_ophindnasample_sample_id)')
+            'dna_sample_events' => array(
+                self::MANY_MANY,
+                'Element_OphInDnasample_Sample',
+                'et_ophindnasample_sample_genetics_studies(genetics_study_id,et_ophindnasample_sample_id)',
+            ),
         );
     }
 
@@ -93,9 +97,28 @@ class GeneticsStudy extends BaseActiveRecordVersioned
     public function beforeSave()
     {
         //Set the date to null if it's not truthy so empty strings don't convert to 0000-00-00....
-        if(!$this->end_date){
+        if (!$this->end_date) {
             $this->end_date = null;
         }
+
         return parent::beforeSave();
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return bool
+     */
+    public function isUserProposer(User $user)
+    {
+        $is_proposer = false;
+        foreach ($this->proposers as $proposer) {
+            if ($proposer->id === $user->id) {
+                $is_proposer = true;
+                continue;
+            }
+        }
+
+        return $is_proposer;
     }
 }

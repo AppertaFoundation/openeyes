@@ -9,7 +9,9 @@
                     <a href="/Genetics/subject/edit/<?=$subject->id?>" title="<?=$subject->patient->fullName?>">
                         <?=$subject->patient->fullName?>
                     </a>
+                  <?php if(isset($pedigree_id)): ?>
                     <span class="status"><i>(Status: <?= $subject->statusForPedigree($pedigree_id)?>)</i></span>
+                  <?php endif; ?>
                 </li>
             <?php endforeach; ?>
         </ul>

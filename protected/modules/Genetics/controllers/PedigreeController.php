@@ -106,7 +106,7 @@ class PedigreeController extends BaseModuleController
             'gene_transcript' => 'text',
             'subjects' => array(
                 'widget' => 'CustomView',
-                'viewName' => 'subjectList',
+                'viewName' => '/default/subjectList',
                 'viewArguments' => array(
                     'subjects' => $admin->getModel()->subjects,
                     'pedigree_id' => $id,

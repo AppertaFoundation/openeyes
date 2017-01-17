@@ -5,6 +5,7 @@
             'Pedigrees' => Yii::app()->createUrl('/Genetics/pedigree/list'),
             'Genes' => Yii::app()->createUrl('/Genetics/gene/list'),
             'Subjects' => Yii::app()->createUrl('/Genetics/subject/list'),
+            'Studies' => Yii::app()->createUrl('/Genetics/study/list'),
         );
         foreach ($sidebarLinks as $title => $uri) { ?>
             <li<?php if (Yii::app()->getController()->action->id == $uri) { ?> class="selected"<?php } ?>>
