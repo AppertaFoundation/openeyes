@@ -354,7 +354,7 @@ class BaseEventTypeElement extends BaseElement
     public function requiredIfSide($attribute, $params)
     {
         if (($params['side'] === 'left' && $this->eye_id != 2) || ($params['side'] === 'right' && $this->eye_id != 1)) {
-            if ($this->$attribute === null) {
+            if ($this->$attribute !== 0 && $this->$attribute == null) {
                 if (!@$params['message']) {
                     $params['message'] = ucfirst($params['side']).' {attribute} cannot be blank.';
                 }
