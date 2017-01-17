@@ -15,7 +15,7 @@ $(document).ready(function () {
       search: {
         'patient.contact.first_name': {
           value: request.term,
-          compare_to: 'patient.contact.last_name'
+          compare_to: ['patient.contact.last_name']
         }
       }
     }, response);
