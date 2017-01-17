@@ -14,7 +14,7 @@
 class DnaTestsInvestigatorAdminController extends BaseAdminController
 {
     protected $itemsPerPage = 100;
-    
+
     public function actionList()
     {
         $admin = new Admin(OphInDnaextraction_DnaTests_Investigator::model(), $this);
@@ -47,7 +47,7 @@ class DnaTestsInvestigatorAdminController extends BaseAdminController
         $admin = new Admin(OphInDnaextraction_DnaTests_Investigator::model(), $this);
         $admin->deleteModel();
     }
-    
+
     public function actionSort()
     {
         if (!empty($_POST['OphInDnaextraction_DnaTests_Investigator']['display_order'])) {
