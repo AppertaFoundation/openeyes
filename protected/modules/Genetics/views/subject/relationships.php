@@ -9,6 +9,11 @@ Yii::app()->clientScript->registerScriptFile($assetPath.'/js/relationships.js');
     </div>
     <div class="large-5 column end">
         <input type="text" name="genetics_patient_lookup" id="genetics_patient_lookup" placeholder="Search for a related patient">
+        <div style="display:none" class="no-result-patients warning alert-box">
+          <div class="small-12 column text-center">
+            No results found.
+          </div>
+        </div>
         <ul id="relationships_list">
             <?php if($model->relationships):?>
                 <?php foreach ($model->relationships as $relationship):?>
