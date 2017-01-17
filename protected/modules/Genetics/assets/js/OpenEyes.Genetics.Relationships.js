@@ -2,10 +2,11 @@ this.OpenEyes = this.OpenEyes || {};
 this.OpenEyes.Genetics = this.OpenEyes.Genetics || {};
 
 (function (exports) {
-  var template = '<li><input type="hidden" name="GeneticsPatient[relationships][{{relatedId}}][related_to_id]" value="{{relatedId}}">' +
+  var template = '<li><span class="genetics_relationship_remove"> <i class="fa fa-minus-circle" title="Remove Relationship"></i></span> ' +
+      '<input type="hidden" name="GeneticsPatient[relationships][{{relatedId}}][related_to_id]" value="{{relatedId}}">' +
       '{{name}} is a ' +
       '<select id="relationship_id" name="GeneticsPatient[relationships][{{relatedId}}][relationship_id]">' +
-      '{{#relationships}} <option value="{{id}}" >{{name}}</option>{{/relationships}}</select> ' +
+      '{{#relationships}} <option value="{{id}}" >{{name}}</option>{{/relationships}}</select>' +
       'to the patient</li>',
     Relationships = {},
     possibleRelationships,
@@ -18,7 +19,7 @@ this.OpenEyes.Genetics = this.OpenEyes.Genetics || {};
   Relationships.init = function (relationsList, existingList) {
     possibleRelationships = relationsList;
     existingRelationships = existingList;
-    $('.genetics_relationship_remove').on('click', Relationships.remove);
+    $('#relationships_list').on('click', '.genetics_relationship_remove', Relationships.remove);
   };
 
   Relationships.newRelationshipForm = function(item) {
