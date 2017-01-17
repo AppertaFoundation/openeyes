@@ -172,7 +172,12 @@ class SubjectController extends BaseModuleController
                             $relationship->save();
                         }
                     }
+                } else {
+                    foreach ($admin->getModel()->relationships as $relationship) {
+                        $relationship->delete();
+                    }
                 }
+
                 if (isset($post['pedigrees_through'])) {
                     foreach ($admin->getModel()->pedigrees as $pedigree) {
                         if (array_key_exists($pedigree->id, $post['pedigrees_through'])) {
@@ -187,6 +192,7 @@ class SubjectController extends BaseModuleController
                         }
                     }
                 }
+
                 $admin->redirect();
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
