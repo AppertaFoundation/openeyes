@@ -144,6 +144,23 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
      */
     protected function afterValidate()
     {
+        if (!$this->left_treatments || !$this->right_treatments) {
+            $values = false;
+            if ($this->hasLeft()) {
+                if ($this->left_treatments) {
+                    $values = true;
+                }
+            }
+            if ($this->hasRight()) {
+                if ($this->right_treatments) {
+                    $values = true;
+                }
+            }
+            if (!$values) {
+                $this->addError(null, 'Dilation requires data');
+            }
+        }
+
         foreach (array('left' => 'hasLeft', 'right' => 'hasRight') as $side => $checkFunc) {
             if ($this->$checkFunc()) {
                 foreach ($this->{$side.'_treatments'} as $i => $treat) {
@@ -155,6 +172,7 @@ class Element_OphCiExamination_Dilation extends \SplitEventTypeElement
                 }
             }
         }
+        parent::afterValidate();
     }
 
     /**
