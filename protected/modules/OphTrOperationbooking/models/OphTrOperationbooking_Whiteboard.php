@@ -88,7 +88,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->patient_name = $contact['title'] . ' ' . $contact['first_name'] . ' ' . $contact['last_name'];
         $this->date_of_birth = $patient['dob'];
         $this->hos_num = $patient['hos_num'];
-        $this->procedure = implode(',', array_column($operation, 'term'));
+        $this->procedure = implode(', ', array_column($operation, 'term'));
         $this->allergies = $allergyString;
         $this->iol_model = ($biometry) ? $biometry->attributes['lens_description_' . $eyeLabel] . ' <br /> ' . $biometry->attributes['formula_' . $eyeLabel] : 'Unknown';
         $this->iol_power = ($biometry) ? $biometry->attributes['iol_power_' . $eyeLabel] : 'None';
@@ -162,11 +162,11 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         $allergyString = 'None';
         if ($allergies || $allergiesOther) {
-            $allergyString = implode(',', array_column($allergies, 'name'));
-            $allergyOtherString = implode(',', array_column($allergiesOther, 'other'));
+            $allergyString = implode(', ', array_column($allergies, 'name'));
+            $allergyOtherString = implode(', ', array_column($allergiesOther, 'other'));
 
             if ($allergyOtherString && $allergyString){
-                $allergyString = $allergyString . "," . $allergyOtherString;
+                $allergyString = $allergyString . ", " . $allergyOtherString;
             }
 
             if ($allergyOtherString && !$allergyString){
