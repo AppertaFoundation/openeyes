@@ -18,11 +18,15 @@
  */
 ?>
 <h1 class="badge">Theatre Diaries</h1>
-
+<div class="row">
+    <div class="large-8 large-centered column">
+        <?php $this->renderPartial('//base/_messages'); ?>
+    </div>
+</div>
 <div class="box content">
 
 	<div class="panel panel actions row">
-
+            
 		<div class="large-12 column">
 			<div class="label">
 				Use the filters below to view Theatre schedules:

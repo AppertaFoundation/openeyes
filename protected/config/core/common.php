@@ -419,6 +419,10 @@ return array(
                     'saveprint' => 'Save and print'
             )
         ),
-        "disable_theatre_diary" => false,
+
+        /**
+         *  Operation bookings will be automatically scheduled to the next available slot (regardless of the firm)
+         */
+        "auto_schedule_operation" => false,
     ),
 );

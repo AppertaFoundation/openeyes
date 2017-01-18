@@ -65,7 +65,7 @@
 											<span class="large-1 column">
 												<img src="<?php echo Yii::app()->assetManager->createUrl('img/small.png', $assetAliasPath)?>" alt="op" style="height:15px" />
 											</span>
-											<span class="large-3 column <?php echo $is_theatre_diary_disabled ? 'hide':''?>">
+											<span class="large-3 column <?php echo $is_auto_schedule_operation ? 'hide':''?>">
 												<?php echo $booking->operation->booking->session->NHSDate('date')?>
 											</span>
 
@@ -73,7 +73,7 @@
 												Operation
 											</span>
 
-                                                      <span class="large-3 column <?php echo $is_theatre_diary_disabled ? '':'hide'?>">
+                                                      <span class="large-3 column <?php echo $is_auto_schedule_operation ? '':'hide'?>">
                                                       <?php echo $booking->operation->comments; ?>
 											</span>
 											<span class="large-4 column">
