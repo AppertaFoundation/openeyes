@@ -20,30 +20,34 @@
 <section class="box patient-info js-toggle-container">
   <h3 class="box-title">Genetics:</h3>
   <a href="#" class="toggle-trigger toggle-hide js-toggle">
-		<span class="icon-showhide">
-			Show/hide this section
-		</span>
+    <span class="icon-showhide">
+      Show/hide this section
+    </span>
   </a>
   <div class="js-toggle-body">
-      <?php if ($pp = $api->findPatientPedigree($patient->id)) { ?>
-        <div class="row data-row">
-          <div class="large-4 column">
-            <div class="data-label">Pedigree ID:</div>
-          </div>
-          <div class="large-8 column">
-            <div class="data-value"><?php echo $pp->pedigree_id ?> (<?php echo CHtml::link('View', Yii::app()->createUrl('/Genetics/pedigree/edit/' . $pp->pedigree_id)) ?>)</div>
-          </div>
-        </div>
-          <?php if ($genetics_patient = GeneticsPatient::model()->find('patient_id=?', array($patient->id))) { ?>
+    <?php $subject = GeneticsPatient::model()->findByAttributes(array('patient_id' => $patient->id));?>
+      <?php if ($subject && $subject->pedigrees) { ?>
+          <?php foreach($subject->pedigrees as $pedigree) { ?>
           <div class="row data-row">
             <div class="large-4 column">
-              <div class="data-label"><?php echo $genetics_patient->getAttributeLabel('comments') ?>:</div>
+              <div class="data-label">Pedigree ID:</div>
             </div>
             <div class="large-8 column">
-              <div class="data-value"><?php echo Yii::app()->format->ntext($genetics_patient->comments) ?></div>
+              <div class="data-value">
+                <?php echo $pedigree->id ?>
+                (<?php echo CHtml::link('View', Yii::app()->createUrl('/Genetics/pedigree/edit/' . $pedigree->id)) ?>)
+              </div>
             </div>
           </div>
           <?php } ?>
+          <div class="row data-row">
+            <div class="large-4 column">
+              <div class="data-label"><?php echo $subject->getAttributeLabel('comments') ?>:</div>
+            </div>
+            <div class="large-8 column">
+              <div class="data-value"><?php echo Yii::app()->format->ntext($subject->comments) ?></div>
+            </div>
+          </div>
       <?php } else { ?>
         <div class="row data-row">
           <div class="large-12 column">
