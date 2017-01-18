@@ -466,6 +466,11 @@ class OphTrOperationbooking_API extends BaseAPI
                 try {
                     
                     $ward = OphTrOperationbooking_Operation_Ward::model()->find('site_id = ?', array($operation->site->id));
+                    if(!$ward){
+                        //as this feature is used when the client/hospital doesn't use the 
+                        //scheduling, most likely it will have a dummy ward set up for only one site 
+                        $ward = OphTrOperationbooking_Operation_Ward::model()->find();
+                    }
                     $booking = new OphTrOperationbooking_Operation_Booking('insert');
                     $booking->ward_id = $ward->id;
                     $booking->element_id = $operation->id;
