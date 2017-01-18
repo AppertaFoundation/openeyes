@@ -144,16 +144,35 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     protected function allergyString($episode)
     {
         $allergies = Yii::app()->db->createCommand()
-            ->select('a.name as name')
+            ->select('a.name as name, pas.other as other')
             ->from('patient_allergy_assignment pas')
             ->leftJoin('allergy a', 'pas.allergy_id = a.id')
-            ->where("pas.patient_id = {$episode->patient_id}")
+            ->where("a.name != 'Other' AND pas.patient_id = {$episode->patient_id}")
             ->order('a.name')
             ->queryAll();
 
+        $allergiesOther = Yii::app()->db->createCommand()
+            ->select('a.name as name, pas.other as other')
+            ->from('patient_allergy_assignment pas')
+            ->leftJoin('allergy a', 'pas.allergy_id = a.id')
+            ->where("a.name = 'Other' AND pas.patient_id = {$episode->patient_id}")
+            ->order('a.name')
+            ->queryAll();
+
+
         $allergyString = 'None';
-        if ($allergies) {
+        if ($allergies || $allergiesOther) {
             $allergyString = implode(',', array_column($allergies, 'name'));
+            $allergyOtherString = implode(',', array_column($allergiesOther, 'other'));
+
+            if ($allergyOtherString && $allergyString){
+                $allergyString = $allergyString . "," . $allergyOtherString;
+            }
+
+            if ($allergyOtherString && !$allergyString){
+                $allergyString = $allergyOtherString;
+            }
+
 
             return $allergyString;
         }
