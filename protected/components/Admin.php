@@ -481,6 +481,7 @@ class Admin
                 if($redirect){
                     $this->redirect();
                 } else {
+                    $this->model = $this->model->findByPk($this->model->id);
                     return true;
                 }
             }

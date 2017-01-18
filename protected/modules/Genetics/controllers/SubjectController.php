@@ -165,19 +165,6 @@ class SubjectController extends BaseModuleController
         if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 $post = Yii::app()->request->getPost('GeneticsPatient', array());
-                if (isset($post['relationships'])) {
-                    foreach ($admin->getModel()->relationships as $relationship) {
-                        if (array_key_exists($relationship->related_to_id, $post['relationships'])) {
-                            $relationship->relationship_id = $post['relationships'][$relationship->related_to_id]['relationship_id'];
-                            $relationship->save();
-                        }
-                    }
-                } else {
-                    foreach ($admin->getModel()->relationships as $relationship) {
-                        $relationship->delete();
-                    }
-                }
-
                 if (isset($post['pedigrees_through'])) {
                     foreach ($admin->getModel()->pedigrees as $pedigree) {
                         if (array_key_exists($pedigree->id, $post['pedigrees_through'])) {
