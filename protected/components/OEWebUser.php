@@ -39,19 +39,4 @@ class OEWebUser extends CWebUser
             return false;
         }
     }
-    
-    /**
-     * Is the current user a technician.
-     *
-     * @return bool
-     */
-    public function isTechnician()
-    {
-        $user = User::model()->findByPk($this->getId());
-        if ($user) {
-            return (bool) $user->is_technician;
-        } else {
-            return false;
-        }
-    }    
 }

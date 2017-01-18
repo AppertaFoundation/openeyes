@@ -29,6 +29,7 @@
  * @property int $number_id
  * @property string $extracted_date
  * @property int $extracted_by_id
+ * @property string $extracted_by_text
  * @property string $comments
  * @property int $volume
  *
@@ -68,7 +69,7 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, box, letter, number, extracted_date, extracted_by, comments, dna_concentration, volume,', 'safe'),
+            array('event_id, box, letter, number, extracted_date, extracted_by_id, extracted_by_text, comments, dna_concentration, volume,', 'safe'),
             array('dna_quantity', 'safe'),
             array('dna_quality', 'numerical', 'min' => 0.2, 'max' => 2.5),
             array('box_id, letter_id, number_id', 'required'),

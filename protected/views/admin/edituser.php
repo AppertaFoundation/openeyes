@@ -61,7 +61,6 @@
     <?php echo $form->radioBoolean($user, 'is_clinical') ?>
     <?php echo $form->radioBoolean($user, 'is_consultant') ?>
     <?php echo $form->radioBoolean($user, 'is_surgeon') ?>
-    <?php echo $form->radioBoolean($user, 'is_technician') ?>
     <?php echo $form->passwordField($user, 'password', array('autocomplete' => Yii::app()->params['html_autocomplete']),
         array('empty' => '', array('empty' => '- None -'))) ?>
     <?php echo $form->passwordChangeField($user, 'Confirm', 'User[password_repeat]') ?>

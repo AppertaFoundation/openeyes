@@ -17,53 +17,53 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section class="element <?php echo $element->elementType->class_name?>"
-	data-element-type-id="<?php echo $element->elementType->id?>"
-	data-element-type-class="<?php echo $element->elementType->class_name?>"
-	data-element-type-name="<?php echo $element->elementType->name?>"
-	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<input type="hidden" name="<?php echo CHtml::modelName($element);?>[force_validation]" />
-	<fieldset class="element-fields">
-		<div class="row field-row">
-			<div class="large-3 column">
-				<label>Tests:</label>
-			</div>
-			<div class="large-9 column">
-				<table>
-					<thead>
-						<tr>
-							<th>Date</th>
-							<th>Investigator</th>
-							<th>Study</th>
-							<th>Volume</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody class="transactions">
-						<?php if (!empty($_POST)) {
-							$transactions = $this->getFormTransactions();
-						} else {
-							$transactions = $element->transactions;
-						}
+<section class="element <?php echo $element->elementType->class_name ?>"
+         data-element-type-id="<?php echo $element->elementType->id ?>"
+         data-element-type-class="<?php echo $element->elementType->class_name ?>"
+         data-element-type-name="<?php echo $element->elementType->name ?>"
+         data-element-display-order="<?php echo $element->elementType->display_order ?>">
+  <input type="hidden" name="<?php echo CHtml::modelName($element); ?>[force_validation]"/>
+  <fieldset class="element-fields">
+    <div class="row field-row">
+      <div class="large-3 column">
+        <label>Tests:</label>
+      </div>
+      <div class="large-9 column">
+        <table>
+          <thead>
+          <tr>
+            <th>Date</th>
+            <th>Investigator</th>
+            <th>Study</th>
+            <th>Volume</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody class="transactions">
+          <?php if (!empty($_POST)) {
+              $transactions = $this->getFormTransactions();
+          } else {
+              $transactions = $element->transactions;
+          }
 
-                        if ($transactions) {
-                            foreach ($transactions as $i => $transaction) {
-                                $disabled = !$this->checkAccess('OprnEditGeneticsWithdrawals');
-                                $this->renderPartial('_dna_test', array('transaction' => $transaction, 'i' => $i, 'disabled' => $disabled));
-                            }
-                        } else { ?>
-							<tr>
-								<td id="no-tests" colspan="4">
-									No tests have been logged for this DNA.
-								</td>
-							</tr>
-						<?php }?>
-					</tbody>
-				</table>
-				<button class="button small secondary addTest">
-					Add
-				</button>
-			</div>
-		</div>
-	</fieldset>
+          if ($transactions) {
+              foreach ($transactions as $i => $transaction) {
+                  $disabled = !$this->checkAccess('OprnEditGeneticsWithdrawals');
+                  $this->renderPartial('_dna_test', array('transaction' => $transaction, 'i' => $i, 'disabled' => $disabled));
+              }
+          } else { ?>
+            <tr>
+              <td id="no-tests" colspan="4">
+                No tests have been logged for this DNA.
+              </td>
+            </tr>
+          <?php } ?>
+          </tbody>
+        </table>
+        <button class="button small secondary addTest">
+          Add
+        </button>
+      </div>
+    </div>
+  </fieldset>
 </section>
