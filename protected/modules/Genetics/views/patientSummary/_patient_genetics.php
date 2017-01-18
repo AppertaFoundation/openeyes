@@ -56,8 +56,10 @@
         </div>
       <?php } ?>
       <?php
-      if ($api = Yii::app()->moduleAPI->get('OphInBloodsample')) {
-          if ($events = $api->getEventsByPatient($this->patient)) { ?>
+      $api = Yii::app()->moduleAPI->get('OphInDnasample');
+      if ($api) {
+          $events = $api->getEventsByPatient($this->patient);
+          if ($events) { ?>
             <div class="row data-row">
               <div class="large-4 column">
                 <div class="data-label">DNA Sample Events:</div>
@@ -80,8 +82,10 @@
       }
       ?>
       <?php
-      if ($api = Yii::app()->moduleAPI->get('OphInDnaextraction')) {
-          if ($events = $api->getEventsByPatient($this->patient)) { ?>
+      $api = Yii::app()->moduleAPI->get('OphInDnaextraction');
+      if ($api) {
+          $events = $api->getEventsByPatient($this->patient);
+          if ($events) { ?>
             <div class="row data-row">
               <div class="large-4 column">
                 <div class="data-label">DNA Extraction Events:</div>
@@ -104,8 +108,10 @@
       }
       ?>
       <?php
-      if ($api = Yii::app()->moduleAPI->get('OphInGeneticresults')) {
-          if ($events = $api->getEventsByPatient($this->patient)) { ?>
+      $api = Yii::app()->moduleAPI->get('OphInGeneticresults');
+      if ($api) {
+          $events = $api->getEventsByPatient($this->patient);
+          if ($events) { ?>
             <div class="row data-row">
               <div class="large-4 column">
                 <div class="data-label">Genetic Result Events:</div>
