@@ -11,6 +11,10 @@ class SubjectController extends BaseModuleController
 
     protected $itemsPerPage = 20;
 
+    public $renderPatientPanel = false;
+
+    public $patient;
+
     /**
      * Configure access rules
      *
@@ -67,6 +71,8 @@ class SubjectController extends BaseModuleController
         $admin = new Crud(GeneticsPatient::model(), $this);
         if ($id) {
             $admin->setModelId($id);
+            $this->renderPatientPanel = true;
+            $this->patient = $admin->getModel()->patient;
         }
 
         $admin->setModelDisplayName('Genetics Subject');
