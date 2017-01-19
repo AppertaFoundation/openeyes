@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /** Blood sample */
 /**
  * OpenEyes
@@ -23,9 +22,9 @@
 }
 /* line 4, ../sass/components/_event.scss */
 .event.ophindnasample .event-content {
-  background-image: url('../img/new/watermark.png?1383748886');
+  background-image: url('../img/watermark.png?1484753023');
 }
 /* line 7, ../sass/components/_event.scss */
 .event.ophindnasample .event-title {
-  background-image: url('../img/new/medium.png?1383748886');
+  background-image: url('../img/medium.png?1484740710');
 }

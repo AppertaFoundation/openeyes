@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /** OphInGeneticresults module styles */
 /**
  * OpenEyes
@@ -23,9 +22,9 @@
 }
 /* line 4, ../sass/components/_event.scss */
 .event.ophingeneticresults .event-content {
-  background-image: url('../img/watermark.png?1384441968');
+  background-image: url('../img/watermark.png?1484752937');
 }
 /* line 7, ../sass/components/_event.scss */
 .event.ophingeneticresults .event-title {
-  background-image: url('../img/medium.png?1384441968');
+  background-image: url('../img/medium.png?1484740801');
 }
