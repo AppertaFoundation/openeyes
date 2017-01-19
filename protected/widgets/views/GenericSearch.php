@@ -96,7 +96,7 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())):
                                     'name' => $key,
                                     'code' => '',
                                     'value' => Yii::app()->request->getQuery('search[disorder_id]', ''),
-                                    'clear_diagnosis' => '<i class="fa fa-times" aria-hidden="true" id="clear-diagnosis-widget"></i>',
+                                    'clear_diagnosis' => '&nbsp;<i class="fa fa-minus-circle" aria-hidden="true" id="clear-diagnosis-widget"></i>',
                                     'placeholder' => 'Search for a diagnosis',
                                 ));
                             ?>

@@ -135,7 +135,7 @@ $assetManager = Yii::app()->getAssetManager();
                                 foreach($relations as $relation) {
                                     if($relation){
                                         echo '<span>' . $relation->term .
-                                            '<i class="fa fa-times clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id="'.$relation->id.'"></i><br>' .
+                                            '&nbsp;<i class="fa fa-minus-circle clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id="'.$relation->id.'"></i><br>' .
                                             '</span>';
                                     }
                                 } ?>
@@ -146,7 +146,7 @@ $assetManager = Yii::app()->getAssetManager();
                               'name' => $field,
                               'code' => '',
                               'value' => $admin->getModel()->$field,
-                              'clear_diagnosis' => '<i class="fa fa-times clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id=""></i>',
+                              'clear_diagnosis' => '&nbsp;<i class="fa fa-minus-circle clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id=""></i>',
                               'placeholder' => 'Search for a diagnosis',
                           ));
                         ?>
