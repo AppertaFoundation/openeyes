@@ -53,8 +53,12 @@ $assetManager = Yii::app()->getAssetManager();
                     <div class="field-row furtherfindings-multi-select">
                         <?php
                         $through = array();
+                        $link = '';
                         if(array_key_exists('through', $type) && is_array($type['through'])){
                             $through = $type['through'];
+                        }
+                        if(array_key_exists('link', $type) && $type['link']){
+                            $link = $type['link'];
                         }
                         echo $form->multiSelectList(
                             $admin->getModel(),
@@ -74,7 +78,8 @@ $assetManager = Yii::app()->getAssetManager();
                             false,
                             false,
                             array(),
-                            $through
+                            $through,
+                            $link
                         );
                         ?>
                     </div>

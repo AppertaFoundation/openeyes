@@ -400,7 +400,8 @@ class BaseEventTypeCActiveForm extends FormLayout
         $showRemoveAllLink = false,
         $sorted = false,
         $layoutColumns = array(),
-        $through = array()
+        $through = array(),
+        $link = ''
     ) {
         $this->widget('application.widgets.MultiSelectList', array(
             'element' => $element,
@@ -417,6 +418,7 @@ class BaseEventTypeCActiveForm extends FormLayout
             'sorted' => $sorted,
             'layoutColumns' => $layoutColumns,
             'through' => $through,
+            'link' => $link,
         ));
     }
 

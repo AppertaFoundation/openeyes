@@ -119,6 +119,7 @@ class SubjectController extends BaseModuleController
                         )
                     ),
                 ),
+                'link' => '/Genetics/pedigree/edit/%s'
             ),
             'previous_studies' => array(
                 'widget' => 'CustomView',
