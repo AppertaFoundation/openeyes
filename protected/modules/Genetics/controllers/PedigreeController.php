@@ -62,6 +62,7 @@ class PedigreeController extends BaseModuleController
         }
 
         $admin->setEditFields(array(
+            'id' => 'label',
             'inheritance_id' => array(
                 'widget' => 'DropDownList',
                 'options' => CHtml::listData(PedigreeInheritance::model()->findAll(), 'id', 'name'),
@@ -124,11 +125,9 @@ class PedigreeController extends BaseModuleController
     {
         $admin = new Crud(Pedigree::model(), $this);
         $admin->setListFields(array(
+            'id',
             'inheritance.name',
             'gene.name',
-            'genomic_coordinate',
-            'genome_version',
-            'gene_transcript',
         ));
         $admin->getSearch()->addSearchItem('id');
         $admin->getSearch()->addSearchItem('inheritance_id', array(
