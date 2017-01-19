@@ -274,10 +274,10 @@ $(document).ready(function(){
         if(!isValid){
             e.preventDefault();
         }
-        
-        if( $('#patientDataConflictConfirmation').is(':visible') && !$('#PatientMergeRequest_personalDetailsConflictConfirm').is(':checked') ){
+
+        if( $('#patientDataConflictConfirmation').is(':visible') && !$('#PatientMergeRequest_personal_details_conflict_confirm').is(':checked') ){
             e.preventDefault();
-            $('#PatientMergeRequest_personalDetailsConflictConfirm').closest('label').css({"border":'3px solid red',"padding":"5px"});
+            $('#PatientMergeRequest_personal_details_conflict_confirm').closest('label').css({"border":'3px solid red',"padding":"5px"});
         }
             
         if( $('#PatientMergeRequest_confirm').length > 0 && !$('#PatientMergeRequest_confirm').is(':checked') ){

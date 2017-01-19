@@ -1,6 +1,6 @@
 <?php
 /* @var $this PatientMergeRequestController */
-/* @var $dataProvider CActiveDataProvider */
+/* @var $data_provider CActiveDataProvider */
 
 ?>
 
@@ -10,7 +10,6 @@
     'id' => 'merge-form',
     'enableAjaxValidation' => false,
     'enableClientValidation' => true,
-    //'focus' => array($model,'firstName'),
 
 )); ?>
 
@@ -38,7 +37,7 @@
                         </div>
                     </div>
                     <div class="grid-view" id="inbox-table">
-                        <?php $this->renderPartial('//patientmergerequest/_list', array('dataProvider' => $dataProvider, 'filters' => $filters))?>
+                        <?php $this->renderPartial('//patientmergerequest/_list', array('data_provider' => $data_provider, 'filters' => $filters))?>
                     </div>
                 </section>
             </div>

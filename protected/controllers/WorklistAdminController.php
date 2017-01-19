@@ -56,7 +56,6 @@ class WorklistAdminController extends BaseAdminController
 
         $this->render('//admin/worklists/definitions', array(
             'definitions' => $definitions,
-            'errors' => @$errors,
         ));
     }
 

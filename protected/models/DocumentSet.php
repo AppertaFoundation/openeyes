@@ -19,85 +19,66 @@
 
 class DocumentSet extends BaseActiveRecord
 {
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return Site the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     *
+     * @return Site the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'document_set';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'document_set';
+    }
 
-	public function behaviors()
-	{
-		return array();
-	}
+    public function behaviors()
+    {
+        return array();
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('event_id', 'safe'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, event_id', 'safe', 'on' => 'search'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('event_id', 'safe'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, event_id', 'safe', 'on' => 'search'),
+        );
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		return array(
-			'created_user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-                        'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-                        'document_instance' => array(self::HAS_MANY, 'DocumentInstance', 'document_set_id'),
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+            'created_user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'document_instance' => array(self::HAS_MANY, 'DocumentInstance', 'document_set_id'),
+        );
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-	}
+    /**
+     * @param $eventId
+     * @return mixed
+     */
+    public function createNew($eventId)
+    {
+        $documentSet = new DocumentSet();
+        $documentSet->event_id = $eventId;
+        $documentSet->save();
 
-
-	public function createNew($eventId)
-	{
-		$ds = new DocumentSet;
-		$ds->event_id = $eventId;
-		$ds->save();
-		return ($ds->id);
-	}
-	
-	// If AUTO, pre-calculates template
-	// If MANUAL, takes body text from data[] arrary
-	public function addDocument($autoManual, $macroId, $eventId, $target, $outputs, $data=null)
-	{
-	}
-
-	
-	// Need new document version.
-	// This will:
-	// Copy the current _version record to a new version number
-	
-// It will also incement 
-	public function updateDocument($macroId, $eventId, $target, $outputs, $data=null)
-	{
-	}
-
+        return ($documentSet->id);
+    }
 }
