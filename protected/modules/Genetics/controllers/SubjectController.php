@@ -71,8 +71,10 @@ class SubjectController extends BaseModuleController
 
         $admin->setModelDisplayName('Genetics Subject');
         $admin->setEditFields(array(
+            'id' => 'label',
             'patient_id' => array(
                 'widget' => 'PatientLookup',
+                'extras' => true
             ),
             'gender_id' => array(
                 'widget' => 'DropDownList',

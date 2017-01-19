@@ -148,7 +148,7 @@ class GeneticsPatient extends BaseActiveRecord
     public function attributeLabels()
     {
         return array(
-            'id' => 'ID',
+            'id' => 'Subject ID',
             'patient_id' => 'Patient',
             'gender_id' => 'Karyotypic Sex',
             'is_deceased' => 'Is Deceased',

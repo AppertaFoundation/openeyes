@@ -108,7 +108,10 @@ $assetManager = Yii::app()->getAssetManager();
                     }
                     break;
                 case 'PatientLookup':
-                    $this->renderPartial('//admin//generic/patientLookup', array('model' => $admin->getModel()));
+                    $this->renderPartial('//admin//generic/patientLookup', array(
+                        'model' => $admin->getModel(),
+                        'extras' => array_key_exists('extras', $type) ? $type['extras'] : false,
+                    ));
                     break;
                 case 'DisorderLookup':
                     if (!is_array($admin->getModel()->{$type['relation']})) {
