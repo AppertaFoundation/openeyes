@@ -65,6 +65,16 @@ class ModelSearch
     protected $searchTerms = array();
 
     /**
+     * @var bool
+     */
+    protected $defaultResults = true;
+
+    /**
+     * @var bool
+     */
+    protected $searching = false;
+
+    /**
      * @return BaseActiveRecord
      */
     public function getModel()
@@ -151,6 +161,40 @@ class ModelSearch
     }
 
     /**
+     * @return bool
+     */
+    public function isDefaultResults()
+    {
+        return $this->defaultResults;
+    }
+
+    /**
+     * @param bool $defaultResults
+     */
+    public function setDefaultResults($defaultResults)
+    {
+        $this->defaultResults = $defaultResults;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSearching()
+    {
+        return $this->searching;
+    }
+
+    /**
+     * @param bool $searching
+     */
+    public function setSearching($searching)
+    {
+        $this->searching = $searching;
+    }
+
+
+
+    /**
      * @param BaseActiveRecord $model
      */
     public function __construct(BaseActiveRecord $model)
@@ -178,6 +222,7 @@ class ModelSearch
         }
 
         if (is_array($search)) {
+            $this->searching = true;
             foreach ($search as $key => $value) {
                 if ($key === 'exact') {
                     continue;
@@ -282,6 +327,10 @@ class ModelSearch
      */
     public function retrieveResults()
     {
+        if(!$this->defaultResults && !$this->searching){
+            return array();
+        }
+
         return $this->model->findAll($this->criteria);
     }
 

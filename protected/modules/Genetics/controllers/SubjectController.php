@@ -213,6 +213,7 @@ class SubjectController extends BaseModuleController
         $admin->getSearch()->addSearchItem('comments');
         $admin->getSearch()->addSearchItem('diagnoses.id', array('type' => 'disorder'));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+        $admin->getSearch()->setDefaultResults(false);
         $admin->listModel();
     }
 
