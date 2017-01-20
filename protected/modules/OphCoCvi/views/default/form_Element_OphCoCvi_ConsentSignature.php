@@ -22,14 +22,20 @@
         array('style' => 'width: 110px;')) ?>
     <fieldset id="OEModule_OphCoCvi_models_Element_OphCoCvi_ConsentSignature_is_patient" class="row field-row">
         <div class="large-2 column">
-            <label>Patient:</label>
+            <label>Signed By:</label>
         </div>
         <div class="large-10 column end">
-            <?php echo $form->checkBox($element, 'is_patient', array('nowrapper' => true)) ?>
-            <?php //echo $form->radioBoolean($element, 'is_patient', array('nowrapper' => true)) ?>
+            <?php echo $form->radioButtons($element, 'is_patient', array(
+                1 => 'Patient',
+                0 => "Patient's Representative",
+            ),
+                $element->is_patient,
+                false, false, false, false,
+                array('nowrapper' => true)
+            ); ?>
+            <?php // echo $form->radioBoolean($element, 'is_patient', array('nowrapper' => true)) ?>
         </div>
     </fieldset>
-
     <?php echo $form->textField($element, 'representative_name', array('hide' => $element->is_patient), null, array('field' => 4)) ?>
 
 </div>
