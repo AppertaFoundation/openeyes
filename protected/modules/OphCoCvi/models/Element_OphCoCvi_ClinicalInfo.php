@@ -94,7 +94,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 'max' => 20
             ),
             array(
-                'examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id, field_of_vision_id',
+                'examination_date, is_considered_blind, sight_varies_by_light_levels, unaided_right_va, unaided_left_va, best_corrected_right_va, best_corrected_left_va, best_corrected_binocular_va, low_vision_status_id',
                 'required',
                 'on' => 'finalise'
             ),
