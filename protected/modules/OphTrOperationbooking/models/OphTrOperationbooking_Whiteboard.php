@@ -88,7 +88,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->patient_name = $contact['title'] . ' ' . $contact['first_name'] . ' ' . $contact['last_name'];
         $this->date_of_birth = $patient['dob'];
         $this->hos_num = $patient['hos_num'];
-        $this->procedure = implode(',', array_column($operation, 'term'));
+        $this->procedure = implode(', ', array_column($operation, 'term'));
         $this->allergies = $allergyString;
         $this->iol_model = ($biometry) ? $biometry->attributes['lens_description_' . $eyeLabel] . ' <br /> ' . $biometry->attributes['formula_' . $eyeLabel] : 'Unknown';
         $this->iol_power = ($biometry) ? $biometry->attributes['iol_power_' . $eyeLabel] : 'None';
@@ -144,16 +144,35 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     protected function allergyString($episode)
     {
         $allergies = Yii::app()->db->createCommand()
-            ->select('a.name as name')
+            ->select('a.name as name, pas.other as other')
             ->from('patient_allergy_assignment pas')
             ->leftJoin('allergy a', 'pas.allergy_id = a.id')
-            ->where("pas.patient_id = {$episode->patient_id}")
+            ->where("a.name != 'Other' AND pas.patient_id = {$episode->patient_id}")
             ->order('a.name')
             ->queryAll();
 
+        $allergiesOther = Yii::app()->db->createCommand()
+            ->select('a.name as name, pas.other as other')
+            ->from('patient_allergy_assignment pas')
+            ->leftJoin('allergy a', 'pas.allergy_id = a.id')
+            ->where("a.name = 'Other' AND pas.patient_id = {$episode->patient_id}")
+            ->order('a.name')
+            ->queryAll();
+
+
         $allergyString = 'None';
-        if ($allergies) {
-            $allergyString = implode(',', array_column($allergies, 'name'));
+        if ($allergies || $allergiesOther) {
+            $allergyString = implode(', ', array_column($allergies, 'name'));
+            $allergyOtherString = implode(', ', array_column($allergiesOther, 'other'));
+
+            if ($allergyOtherString && $allergyString){
+                $allergyString = $allergyString . ", " . $allergyOtherString;
+            }
+
+            if ($allergyOtherString && !$allergyString){
+                $allergyString = $allergyOtherString;
+            }
+
 
             return $allergyString;
         }
