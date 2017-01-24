@@ -22,8 +22,18 @@ function updateCorrespondence(macro_id)
 {
     var nickname = $('input[id="ElementLetter_use_nickname"][type="checkbox"]').is(':checked') ? '1' : '0';
     var obj = $(this);
+    var $option_obj;
+    var option_width;
+    var arrowWidth = 30;
 
     if ( macro_id != '') {
+        
+        $option_obj = $("<span>").html($('#macro_id option:selected').text());
+        $option_obj.appendTo('body');
+        option_width = $option_obj.width();
+        $option_obj.remove();
+
+        $('#macro_id').width(option_width + arrowWidth);
 
         $.ajax({
             'type': 'GET',

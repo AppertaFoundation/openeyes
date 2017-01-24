@@ -17,10 +17,38 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
         $(document.body).on('change', $pcrRiskEl.find('.right-eye'), function () {
             pcrCalculate($pcrRiskEl.find('.right-eye'), 'right');
         });
+
+        $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_diabetic").change(function () {
+            var $pcrDiabeticRight = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_diabetic").prop('selectedIndex');
+            $("select#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_diabetic").prop('selectedIndex', $pcrDiabeticRight);
+        });
+
+        $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_diabetic").change(function () {
+            var $pcrDiabeticLeft = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_diabetic").prop('selectedIndex');
+            $("select#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_diabetic").prop('selectedIndex', $pcrDiabeticLeft);
+        });
+
+        $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_alpha_receptor_blocker").change(function () {
+            var $pcrAlphaRight = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_alpha_receptor_blocker").prop('selectedIndex');
+            $("select#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_alpha_receptor_blocker").prop('selectedIndex', $pcrAlphaRight);
+        });
+
+        $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_alpha_receptor_blocker").change(function () {
+            var $pcrAlphaLeft = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_alpha_receptor_blocker").prop('selectedIndex');
+            $("select#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_alpha_receptor_blocker").prop('selectedIndex', $pcrAlphaLeft);
+        });
+
     });
 </script>
 <div class="element-eyes element-fields">
 <?php
+if ($this->patient->getDiabetes()) {
+    $diabeticOptions = array('Y' => 'Diabetes present');
+}else{
+    $diabeticOptions = array('NK' => 'Not Known', 'N' => 'No Diabetes', 'Y' => 'Diabetes present');
+}
+
+
 $criteria = new CDbCriteria();
 $criteria->condition = 'has_pcr_risk';
 $grades = \DoctorGrade::model()->findAll($criteria, array('order' => 'display_order'));
@@ -34,7 +62,7 @@ $dropDowns = array(
         'class' => 'pcrrisk_pxf_phako',
     ),
     'diabetic' => array(
-        'options' => array('NK' => 'Not Known', 'N' => 'No Diabetes', 'Y' => 'Diabetes present'),
+        'options' => $diabeticOptions,
         'class' => 'pcrrisk_diabetic',
     ),
     'pupil_size' => array(
@@ -113,6 +141,16 @@ foreach (array('right', 'left') as $side):
                     </div>
                 <?php
                 else:
+                    if($element->{'left_diabetic'} == 'Y' OR $element->{'left_diabetic'} == 'N'){
+                        $element->{'right_diabetic'} = $element->{'left_diabetic'};
+                    }elseif($element->{'right_diabetic'} == 'Y' OR $element->{'right_diabetic'} == 'N'){
+                        $element->{'left_diabetic'} = $element->{'right_diabetic'};
+                    }
+                    if($element->{'left_alpha_receptor_blocker'} == 'Y' OR $element->{'left_alpha_receptor_blocker'} == 'N'){
+                        $element->{'right_alpha_receptor_blocker'} = $element->{'left_alpha_receptor_blocker'};
+                    }elseif($element->{'right_alpha_receptor_blocker'} == 'Y' OR $element->{'right_alpha_receptor_blocker'} == 'N'){
+                        $element->{'left_alpha_receptor_blocker'} = $element->{'right_alpha_receptor_blocker'};
+                    }
                     echo $form->dropDownList(
                         $element,
                         $side.'_'.$key,

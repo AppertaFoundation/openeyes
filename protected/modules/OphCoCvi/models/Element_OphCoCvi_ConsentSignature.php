@@ -102,7 +102,7 @@ class Element_OphCoCvi_ConsentSignature extends \BaseEventTypeElement
         return array(
             'id' => 'ID',
             'event_id' => 'Event',
-            'is_patient' => 'Is patient',
+            'is_patient' => 'Patient',
             'signature_date' => 'Signature date',
             'representative_name' => 'Representative name',
             'signature_file_id' => 'Signature File',
