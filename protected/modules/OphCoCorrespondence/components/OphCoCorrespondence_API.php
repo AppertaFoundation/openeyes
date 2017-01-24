@@ -53,6 +53,138 @@ class OphCoCorrespondence_API extends BaseAPI
         }
     }
 
+    /**
+     * get the full name of the patient for use in correspondence.
+     *
+     * @param Patient $patient
+     *
+     * @return string
+     */
+    public function getFullName($patient)
+    {
+            $fullname = trim(implode(' ', array($patient->title, $patient->first_name, $patient->last_name)));
+            return $fullname;
+    }
+
+    /**
+     * get the patient title for use in correspondence.
+     *
+     * @param Patient $patient
+     *
+     * @return string
+     */
+    public function getPatientTitle($patient)
+    {
+        return $patient->title;
+    }
+
+    /**
+     * get the patient first name for use in correspondence.
+     *
+     * @param Patient $patient
+     *
+     * @return string
+     */
+    public function getFirstName($patient)
+    {
+        return $patient->first_name;
+    }
+
+
+    /**
+     * get the patient last name for use in correspondence.
+     *
+     * @param Patient $patient
+     *
+     * @return string
+     */
+    public function getLastName($patient)
+    {
+        return $patient->last_name;
+    }
+
+
+    /**
+     * get the last Examination Date for patient for use in correspondence.
+     *
+     * @param Patient $patient
+     *
+     * @return string
+     */
+    public function getLastExaminationDate(\Patient $patient)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
+            $event = $this->getMostRecentEventInEpisode($episode->id, $event_type->id);
+            if (isset($event->event_date)) {
+                return Helper::convertDate2NHS($event->event_date);
+            }
+        }
+
+        return '';
+    }
+
+
+    public function getOphthalmicDiagnoses(\Patient $patient)
+    {
+        $allDiagnoses ='';
+        foreach ($patient->ophthalmicDiagnoses as $diagnosis) {
+            return $diagnosis->eye->adjective . ' ' . $diagnosis->disorder->term;
+        }
+    }
+
+    public function getLastIOLType(\Patient $patient)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
+            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract');
+                return CHtml::encode($element->iol_type->name);
+        }
+    }
+
+    public function getLastIOLPower(\Patient $patient)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
+            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract');
+            return CHtml::encode($element->iol_power);
+        }
+    }
+
+    public function getLastOperatedEye(\Patient $patient)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
+            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
+                'Element_OphTrOperationnote_ProcedureList');
+            return $element->eye->adjective;
+        }
+    }
+
+    /**
+     * Get the Pre-Op Visual Acuity - both eyes.
+     *
+     * @param $patient
+     *
+     * @return string|null
+     */
+    public function getPreOpVABothEyes($patient)
+    {
+        if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+            return $api->getAllVisualAcuityLeft($patient);
+//        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+//            $side = 'left';
+            //           if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+//                if ($va = $api->getBestVisualAcuity($patient, $episode, $side)) {
+//                    var_dump($va);
+//                return $va->value . " Left";
+//                }
+//            }
+//        }
+        }
+    }
+
+
     public function getMacroTargets($patient_id, $macro_id)
     {
         if (!$patient = Patient::model()->findByPk($patient_id)) {
