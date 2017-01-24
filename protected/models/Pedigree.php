@@ -111,6 +111,8 @@ class Pedigree extends BaseActiveRecord
             'disorder_id' => 'Disorder',
             'base_change_id' => 'Base change type',
             'amino_acid_change_id' => 'Amino acid change type',
+            'getSubjectsCount' => 'Subjects count',
+            'getAffectedSubjectsCount' => 'Affected subjects count'
         );
     }
 
@@ -164,5 +166,29 @@ class Pedigree extends BaseActiveRecord
                 JOIN pedigree_gene on pedigree_gene.id = pedigree.gene_id";
 
         return $this->getDbConnection()->createCommand($sql)->queryAll();
+    }
+
+    /**
+     * @return int
+     */
+    public function getSubjectsCount()
+    {
+        return count($this->subjects);
+    }
+
+    /**
+     * @return int
+     */
+    public function getAffectedSubjectsCount()
+    {
+        $count = 0;
+        foreach($this->subjects as $subject)
+        {
+            if($subject->statusForPedigree($this->id) == 'Affected')
+            {
+                $count++;
+            }
+        }
+        return $count;
     }
 }

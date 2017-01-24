@@ -128,6 +128,8 @@ class PedigreeController extends BaseModuleController
             'id',
             'inheritance.name',
             'gene.name',
+            'getSubjectsCount',
+            'getAffectedSubjectsCount'
         ));
         $admin->getSearch()->addSearchItem('id');
         $admin->getSearch()->addSearchItem('inheritance_id', array(
