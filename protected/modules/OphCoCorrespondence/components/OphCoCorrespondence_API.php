@@ -211,7 +211,7 @@ class OphCoCorrespondence_API extends BaseAPI
         $refractfound = false;
 
         if ($eventid = Event::model()->findAll(array(
-            'condition' => 'event_type_id = ' . $eventtypeid . ' AND episode_id = ' . $episode->id,
+            'condition' => 'event_type_id = ' . $eventtypeid . ' AND episode_id = ' . $episode->id . " AND event_date <= '" . $opDate . "'",
             'order' => 'event_date DESC',
         ))
         ) {
