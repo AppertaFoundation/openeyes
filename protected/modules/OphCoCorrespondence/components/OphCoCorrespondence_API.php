@@ -170,18 +170,81 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getPreOpVABothEyes($patient)
     {
-        if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-            return $api->getAllVisualAcuityLeft($patient);
-//        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-//            $side = 'left';
-            //           if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-//                if ($va = $api->getBestVisualAcuity($patient, $episode, $side)) {
-//                    var_dump($va);
-//                return $va->value . " Left";
-//                }
-//            }
-//        }
+        if ($apiNote = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
+                $opDate = $apiNote->getLastOperationDateUnformatted($patient);
+            }
+        $api = Yii::app()->moduleAPI->get('OphCiExamination');
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
+
+        $criteria = new CDbCriteria();
+        $criteria->condition = 'episode_id = :e_id AND event_type_id = :et_id';
+        $criteria->addCondition('event_date <= :event_date');
+        $criteria->order = ' event_date DESC, created_date DESC';
+        $criteria->params = array(':e_id' => $episode->id, ':et_id' => $event_type->id, 'event_date' => $opDate);
+
+        $event = Event::model()->find($criteria);
+            $rightVA = $api->getAllVisualAcuityRightByDate($patient, $opDate);
+            $leftVA = $api->getAllVisualAcuityLeftByDate($patient, $opDate);
+
+
+            return $rightVA . " Right Eye" . " " . $leftVA . " Left Eye";
+    }
+
+    /**
+     * Get the Pre-Op Refraction - both eyes.
+     *
+     * @param $patient
+     *
+     * @return string|null
+     */
+    public function getPreOpRefraction($patient)
+    {
+        if ($apiNote = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
+            $opDate = $apiNote->getLastOperationDateUnformatted($patient);
         }
+        $api = Yii::app()->moduleAPI->get('OphCiExamination');
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
+        $eventtypeid = $event_type->id;
+// Refraction here
+        $refractfound = false;
+
+        if ($eventid = Event::model()->findAll(array(
+            'condition' => 'event_type_id = ' . $eventtypeid . ' AND episode_id = ' . $episode->id,
+            'order' => 'event_date DESC',
+        ))
+        ) {
+// Loop through responses, for ones that have RefractionValues
+            for ($i = 0; $i < count($eventid); ++$i) {
+                if ($api->getRefractionValues($eventid[$i]->id)) {
+                    if (!$refractfound) {
+                        $refractelement = $api->getRefractionValues($eventid[$i]->id);
+                        $refract_event_date = $eventid[$i]->event_date;
+                        $refractfound = true;
+                        $rightspherical = number_format($refractelement->{'right_sphere'} + 0.5 * $refractelement->{'right_cylinder'}, 2);
+                        $leftspherical = number_format($refractelement->{'left_sphere'} + 0.5 * $refractelement->{'left_cylinder'}, 2);
+                        return $rightspherical . " Right Eye" . ", " . $leftspherical . " Left Eye";
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Get Allergies in a bullet format.
+     *
+     * @param $patient
+     *
+     * @return string|null
+     */
+    public function getAllergiesBulleted($patient)
+    {
+        $multiAllergies = '';
+        foreach ($patient->allergyAssignments as $aa) {
+            $multiAllergies .= " - " . $aa->allergy->name . "\r\n";
+        }
+        return $multiAllergies;
     }
 
 
