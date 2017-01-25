@@ -521,6 +521,22 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
+    public function getAllVisualAcuityLeftByDate($patient, $opDate)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            return ($best = $this->getBestVisualAcuity($patient, $episode, 'left')) ? $best->convertTo($best->value,
+                $this->getSnellenUnitId()) : null;
+        }
+    }
+
+    public function getAllVisualAcuityRightByDate($patient, $opDate)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            return ($best = $this->getBestVisualAcuity($patient, $episode, 'right')) ? $best->convertTo($best->value,
+                $this->getSnellenUnitId()) : null;
+        }
+    }
+
 
     public function getUnitName($unitId)
     {

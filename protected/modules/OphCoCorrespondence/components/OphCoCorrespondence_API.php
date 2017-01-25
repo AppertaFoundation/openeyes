@@ -53,6 +53,201 @@ class OphCoCorrespondence_API extends BaseAPI
         }
     }
 
+    /**
+     * get the full name of the patient for use in correspondence.
+     *
+     * @param Patient $patient
+     *
+     * @return string
+     */
+    public function getFullName($patient)
+    {
+            $fullname = trim(implode(' ', array($patient->title, $patient->first_name, $patient->last_name)));
+            return $fullname;
+    }
+
+    /**
+     * get the patient title for use in correspondence.
+     *
+     * @param Patient $patient
+     *
+     * @return string
+     */
+    public function getPatientTitle($patient)
+    {
+        return $patient->title;
+    }
+
+    /**
+     * get the patient first name for use in correspondence.
+     *
+     * @param Patient $patient
+     *
+     * @return string
+     */
+    public function getFirstName($patient)
+    {
+        return $patient->first_name;
+    }
+
+
+    /**
+     * get the patient last name for use in correspondence.
+     *
+     * @param Patient $patient
+     *
+     * @return string
+     */
+    public function getLastName($patient)
+    {
+        return $patient->last_name;
+    }
+
+
+    /**
+     * get the last Examination Date for patient for use in correspondence.
+     *
+     * @param Patient $patient
+     *
+     * @return string
+     */
+    public function getLastExaminationDate(\Patient $patient)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
+            $event = $this->getMostRecentEventInEpisode($episode->id, $event_type->id);
+            if (isset($event->event_date)) {
+                return Helper::convertDate2NHS($event->event_date);
+            }
+        }
+
+        return '';
+    }
+
+
+    public function getOphthalmicDiagnoses(\Patient $patient)
+    {
+        $allDiagnoses ='';
+        foreach ($patient->ophthalmicDiagnoses as $diagnosis) {
+            return $diagnosis->eye->adjective . ' ' . $diagnosis->disorder->term;
+        }
+    }
+
+    public function getLastIOLType(\Patient $patient)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
+            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract');
+                return CHtml::encode($element->iol_type->name);
+        }
+    }
+
+    public function getLastIOLPower(\Patient $patient)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
+            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract');
+            return CHtml::encode($element->iol_power);
+        }
+    }
+
+    public function getLastOperatedEye(\Patient $patient)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
+            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
+                'Element_OphTrOperationnote_ProcedureList');
+            return $element->eye->adjective;
+        }
+    }
+
+    /**
+     * Get the Pre-Op Visual Acuity - both eyes.
+     *
+     * @param $patient
+     *
+     * @return string|null
+     */
+    public function getPreOpVABothEyes($patient)
+    {
+        if ($apiNote = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
+                $opDate = $apiNote->getLastOperationDateUnformatted($patient);
+            }
+        $api = Yii::app()->moduleAPI->get('OphCiExamination');
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
+
+        $criteria = new CDbCriteria();
+        $criteria->condition = 'episode_id = :e_id AND event_type_id = :et_id';
+        $criteria->addCondition('event_date <= :event_date');
+        $criteria->order = ' event_date DESC, created_date DESC';
+        $criteria->params = array(':e_id' => $episode->id, ':et_id' => $event_type->id, 'event_date' => $opDate);
+
+        $event = Event::model()->find($criteria);
+            $rightVA = $api->getAllVisualAcuityRightByDate($patient, $opDate);
+            $leftVA = $api->getAllVisualAcuityLeftByDate($patient, $opDate);
+
+
+            return $rightVA . " Right Eye" . " " . $leftVA . " Left Eye";
+    }
+
+    /**
+     * Get the Pre-Op Refraction - both eyes.
+     *
+     * @param $patient
+     *
+     * @return string|null
+     */
+    public function getPreOpRefraction($patient)
+    {
+        if ($apiNote = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
+            $opDate = $apiNote->getLastOperationDateUnformatted($patient);
+        }
+        $api = Yii::app()->moduleAPI->get('OphCiExamination');
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
+        $eventtypeid = $event_type->id;
+// Refraction here
+        $refractfound = false;
+
+        if ($eventid = Event::model()->findAll(array(
+            'condition' => 'event_type_id = ' . $eventtypeid . ' AND episode_id = ' . $episode->id . " AND event_date <= '" . $opDate . "'",
+            'order' => 'event_date DESC',
+        ))
+        ) {
+// Loop through responses, for ones that have RefractionValues
+            for ($i = 0; $i < count($eventid); ++$i) {
+                if ($api->getRefractionValues($eventid[$i]->id)) {
+                    if (!$refractfound) {
+                        $refractelement = $api->getRefractionValues($eventid[$i]->id);
+                        $refract_event_date = $eventid[$i]->event_date;
+                        $refractfound = true;
+                        $rightspherical = number_format($refractelement->{'right_sphere'} + 0.5 * $refractelement->{'right_cylinder'}, 2);
+                        $leftspherical = number_format($refractelement->{'left_sphere'} + 0.5 * $refractelement->{'left_cylinder'}, 2);
+                        return $rightspherical . " Right Eye" . ", " . $leftspherical . " Left Eye";
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Get Allergies in a bullet format.
+     *
+     * @param $patient
+     *
+     * @return string|null
+     */
+    public function getAllergiesBulleted($patient)
+    {
+        $multiAllergies = '';
+        foreach ($patient->allergyAssignments as $aa) {
+            $multiAllergies .= " - " . $aa->allergy->name . "\r\n";
+        }
+        return $multiAllergies;
+    }
+
+
     public function getMacroTargets($patient_id, $macro_id)
     {
         if (!$patient = Patient::model()->findByPk($patient_id)) {
