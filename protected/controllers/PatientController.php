@@ -40,7 +40,7 @@ class PatientController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'create', 'update'),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'create', 'update', 'gpList', 'practiceList' ),
                 'users' => array('@'),
             ),
             array('allow',
@@ -1582,6 +1582,58 @@ class PatientController extends BaseController
         if(!isset($_GET['ajax'])){
             $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('site'));
         }
+    }
+    
+    public function actionGpList($term)
+    {
+        $criteria = new CDbCriteria;
+        $criteria->addSearchCondition('first_name', '', true, 'OR');
+        $criteria->addSearchCondition('LOWER(first_name)', '', true, 'OR');
+        $criteria->addSearchCondition('last_name', '', true, 'OR');
+        $criteria->addSearchCondition('LOWER(last_name)', '', true, 'OR');
+        
+        $criteria->addSearchCondition('concat(first_name, " ", last_name)', $term, true, 'OR');
+        $criteria->addSearchCondition('LOWER(concat(first_name, " ", last_name))', $term, true, 'OR');
+        
+        $gps = Gp::model()->with('contact')->findAll($criteria);
+        
+        $output = array();
+        foreach($gps as $gp){
+            $output[] = array(
+                'label' => $gp->correspondenceName,
+                'value' => $gp->id
+            );
+        }
+        
+        echo CJSON::encode($output);
+        
+        Yii::app()->end();
+    }
+    
+    public function actionPracticeList($term)
+    {
+        $term = strtolower($term);
+        
+        $criteria = new CDbCriteria;
+        $criteria->join = 'JOIN contact on t.contact_id = contact.id';
+        $criteria->join .= '  JOIN address on contact.id = address.contact_id';
+        $criteria->addCondition('( (date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW()))');
+        
+        $criteria->addSearchCondition('LOWER(CONCAT_WS(", ", address1, address2, city, county, postcode))', $term);
+        
+        $practices = Practice::model()->findAll($criteria);
+        
+        $output = array();
+        foreach($practices as $practice){
+            $output[] = array(
+                'label' => $practice->getAddressLines(),
+                'value' => $practice->id
+            );
+        }
+        
+        echo CJSON::encode($output);
+        
+        Yii::app()->end();
     }
     
 }
