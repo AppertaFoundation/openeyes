@@ -176,19 +176,39 @@ class OphCoCorrespondence_API extends BaseAPI
         $api = Yii::app()->moduleAPI->get('OphCiExamination');
         $episode = $patient->getEpisodeForCurrentSubspecialty();
         $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
-
+        $data = '';
         $criteria = new CDbCriteria();
         $criteria->condition = 'episode_id = :e_id AND event_type_id = :et_id';
         $criteria->addCondition('event_date <= :event_date');
         $criteria->order = ' event_date DESC, created_date DESC';
         $criteria->params = array(':e_id' => $episode->id, ':et_id' => $event_type->id, 'event_date' => $opDate);
 
-        $event = Event::model()->find($criteria);
-            $rightVA = $api->getAllVisualAcuityRightByDate($patient, $opDate);
-            $leftVA = $api->getAllVisualAcuityLeftByDate($patient, $opDate);
+        if($events = Event::model()->findAll($criteria)){
+            for ($i = 0; $i < count($events); ++$i) {
+                // Get Most Recent VA
+                $vaID = $api->getMostRecentVA($events[$i]->id);
+                if($vaID && !$data){
+                    $data = $api->getMostRecentVAData($vaID->id);
+                    $chosenVA = $vaID;
+                }
+            }
+        }
 
+        for ($i = 0; $i < count($data); ++$i) {
+            if($data[$i]->side == 0){
+                $rightData[] = $data[$i];
+            }
+            if($data[$i]->side == 1){
+                $leftData[] = $data[$i];
+            }
+        }
 
-            return $rightVA . " Right Eye" . " " . $leftVA . " Left Eye";
+        $unitId = $chosenVA->unit_id;
+
+        $rightVA = $api->getVAvalue($rightData[0]->value, $unitId);
+        $leftVA = $api->getVAvalue($leftData[0]->value, $unitId);
+
+        return $rightVA . " Right Eye" . " " . $leftVA . " Left Eye";
     }
 
     /**
