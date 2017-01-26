@@ -33,7 +33,7 @@
   <div class="large-10 column content admin large-centered">
 
     <div class="box admin">
-      <h1 class="text-center">Update Patient <?php echo $patient->hos_num; ?></h1>
+      <h1 class="text-center">Update Patient</h1>
 
         <?php $this->renderPartial('crud/_form', array(
             'patient' => $patient,
