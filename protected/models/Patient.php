@@ -113,10 +113,10 @@ class Patient extends BaseActiveRecordVersioned
             array('pas_key', 'length', 'max' => 10),
             array('hos_num', 'required', 'on' => 'pas'),
             array('hos_num, nhs_num', 'length', 'max' => 40),
-            array('gender', 'length', 'max' => 1),
-            array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id', 'safe'),
+            array('gender,is_local', 'length', 'max' => 1),
+            array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local', 'safe'),
             array('deleted', 'safe'),
-            array('dob, hos_num, nhs_num, date_of_death, deleted', 'safe', 'on' => 'search'),
+            array('dob, hos_num, nhs_num, date_of_death, deleted,is_local', 'safe', 'on' => 'search'),
         );
     }
 
@@ -185,6 +185,7 @@ class Patient extends BaseActiveRecordVersioned
             'nhs_num_status_id' => 'NHS Number Status',
             'gp_id' => 'General Practitioner',
             'practice_id' => 'Practice',
+            'is_local' => 'Is local patient ?'
         );
     }
 
@@ -280,6 +281,11 @@ class Patient extends BaseActiveRecordVersioned
         }
 
         return true;
+    }
+    
+    public function isEditable()
+    {
+        return $this->is_local && ( BaseController::checkAccess('TaskAddPatient'));
     }
 
     /*
@@ -602,7 +608,7 @@ class Patient extends BaseActiveRecordVersioned
      */
     protected function instantiate($attributes)
     {
-        $model = parent::instantiate($attributes);
+        $model = parent::instantiate($attributes);    
         $model->use_pas = $this->use_pas;
 
         return $model;
@@ -616,6 +622,7 @@ class Patient extends BaseActiveRecordVersioned
     protected function afterFind()
     {
         parent::afterFind();
+        $this->use_pas = $this->is_local ? false : true;
         Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));
     }
 

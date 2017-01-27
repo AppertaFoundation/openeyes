@@ -343,7 +343,7 @@ return array(
                         'title' => 'Add Patient',
                         'uri' => 'patient/create',
                         'position' => 9,
-                        //'restricted' => array('Patient Merge', 'Patient Merge Request'),
+                        'restricted' => array('TaskAddPatient'),
                     ),
 
                 ),

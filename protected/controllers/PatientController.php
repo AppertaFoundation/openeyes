@@ -40,7 +40,7 @@ class PatientController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'create', 'update', 'gpList', 'practiceList' ),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'practiceList' ),
                 'users' => array('@'),
             ),
             array('allow',
@@ -84,6 +84,10 @@ class PatientController extends BaseController
                 'actions' => array('editSocialHistory', 'editSocialHistory'),
                 'roles' => array('OprnEditSocialHistory'),
             ),
+            array('allow',
+                'actions' => array('create', 'update'),
+                'roles' => array('TaskAddPatient'),
+            )
         );
     }
 
@@ -120,7 +124,7 @@ class PatientController extends BaseController
         Yii::app()->assetManager->registerScriptFile('js/patientSummary.js');
 
         $this->patient = $this->loadModel($id);
-
+        
         $tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
         $eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
 
@@ -1489,8 +1493,10 @@ class PatientController extends BaseController
                 //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
             }
 
-            
             $patient->attributes = $_POST['Patient'];
+            
+            // not to be sync with PAS
+            $patient->is_local = 1;
             $patient->contact_id = $contact->id;
 
             try {
@@ -1526,6 +1532,13 @@ class PatientController extends BaseController
         $this->renderPatientPanel = false;
         
         $patient = $this->loadModel($id);
+        
+        //only local patient can be edited
+        if($patient->is_local == 0){
+            Yii::app()->user->setFlash('warning.update-patient', 'Only local patients can be edited.');
+            $this->redirect(array('view', 'id' => $patient->id));
+        }
+        
         $contact = $patient->contact ? $patient->contact : new Contact();
         $address = $patient->contact->address ? $patient->contact->address : new Address();
         
@@ -1576,7 +1589,9 @@ class PatientController extends BaseController
      */
     public function actionDelete($id)
     {
-        $this->loadModel($id)->delete();
+        $patient = $this->loadModel($id);
+        $patient->deleted = 1;
+        $patient->save();
         
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
         if(!isset($_GET['ajax'])){
