@@ -147,13 +147,62 @@ class DocManDeliveryCommand extends CConsoleCommand
                 return false;
             }
 
+            $correspondenceDate = $this->event->event_date;
+
+            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
+            $event_type_id = $event_type->id;
+
+            $criteria = new CDbCriteria();
+            $criteria->compare('event_type_id', $event_type_id);
+            $criteria->compare('episode_id', $this->event->episode->id);
+            $criteria->condition = "created_date <= '$correspondenceDate'";
+            $criteria->order = 'event_date desc, created_date desc';
+
+            $lastOpNoteDate = '';
+            if($opNote = Event::model()->find($criteria)){
+                $lastOpNoteDate = $opNote->event_date;
+            }
+
+            $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
+            $event_type_id = $event_type->id;
+
+            $criteria = new CDbCriteria();
+            $criteria->compare('event_type_id', $event_type_id);
+            $criteria->compare('episode_id', $this->event->episode->id);
+            $criteria->condition = "created_date <= '$correspondenceDate'";
+            $criteria->order = 'event_date desc, created_date desc';
+
+            $lastExamDate = '';
+            if($examEvent = Event::model()->find($criteria)){
+                $lastExamDate = $examEvent->event_date;
+            }
+
+            $lastSignificantEventDate = '';
+            if(!$lastExamDate && $lastOpNoteDate) {
+                $lastSignificantEventDate = $lastOpNoteDate;
+            }
+            if($lastExamDate && !$lastOpNoteDate) {
+                $lastSignificantEventDate = $lastExamDate;
+            }
+            if(!$lastSignificantEventDate && $lastExamDate && $lastOpNoteDate){
+                $diff = date_diff(date_create($lastExamDate), date_create($lastOpNoteDate));
+                if($diff->days >= 0){
+                    $lastSignificantEventDate = $lastOpNoteDate;
+                }else{
+                    $lastSignificantEventDate = $lastExamDate;
+                }
+            }
+
+            // Get Last Significant Event Date most recent examination or OpNote event on or before the correspondence event date
+
             if ($this->updateDelivery($output_id)) {
                 $this->logData(array(
                     'hos_num' => $this->event->episode->patient->hos_num,
                     'clinician_name' => $this->event->user->getFullName(),
-                    'event_updated' => $this->event->last_modified_date,
-                    'event_date' => $this->event->created_date,
-                    'output_date' => date('Y-m-d H:i:s'),
+                    'letter_finalised_date' => $this->event->last_modified_date,
+                    'letter_created_date' => $this->event->created_date,
+                    'last_significant_event_date' => $lastSignificantEventDate,
+                    'letter_sent_date' => date('Y-m-d H:i:s'),
                 ));
             }
 
