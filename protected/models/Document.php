@@ -291,9 +291,11 @@ class Document //extends BaseActiveRecord
                             if (isset($document_output['id'])) {
                                 $data['id'] = $document_output['id'];
                             }
-                            
+
                             if( $this->is_draft && $data['output_type'] == 'Docman' ){
                                 $data['output_status'] = "DRAFT";
+                            } else if($this->is_draft == 0 && $data['output_type'] == 'Docman'){
+                                $data['output_status'] = "PENDING";
                             }
 
                             $this->createNewDocOutput($doc_target, $doc_instance_version, $data);
@@ -337,10 +339,7 @@ class Document //extends BaseActiveRecord
         $doc_output->document_instance_data_id = $doc_instance_version->id;
         $doc_output->output_type = $data['output_type'];
         $doc_output->requestor_id = 'OE';
-        if ( isset($_POST['saveprint']) ){
-            $doc_output->output_status = "PENDING";
-        }
-        
+
         if( isset($data['output_status']) && $doc_output->output_type != "COMPLETE"){
             $doc_output->output_status = $data['output_status'];
         }
