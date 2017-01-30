@@ -306,9 +306,10 @@ class DocManDeliveryCommand extends CConsoleCommand
             $doc_log->save();
 
             $csv_filename = implode(DIRECTORY_SEPARATOR, array($this->path, sprintf($this->csv_format, date('Ymd'))));
+            $put_header = !file_exists($csv_filename);
 
             $fp = fopen($csv_filename, 'ab');
-            if(!filesize($csv_filename)){
+            if($put_header){
                 fputcsv($fp, array_keys($data));
             }
             fputcsv($fp, $data);
