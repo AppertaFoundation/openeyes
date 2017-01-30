@@ -154,7 +154,7 @@ class DocManDeliveryCommand extends CConsoleCommand
 
             $criteria = new CDbCriteria();
             $criteria->condition = "episode_id = '" . $this->event->episode->id
-                . "' AND created_date <= '$correspondenceDate' AND deleted = 0 AND event_type_id = '$event_type_id'";
+                . "' AND event_date <= '$correspondenceDate' AND deleted = 0 AND event_type_id = '$event_type_id'";
             $criteria->order = 'event_date desc, created_date desc';
 
             $lastOpNoteDate = '';
@@ -167,7 +167,7 @@ class DocManDeliveryCommand extends CConsoleCommand
 
             $criteria = new CDbCriteria();
             $criteria->condition = "episode_id = '" . $this->event->episode->id
-                . "' AND created_date <= '$correspondenceDate' AND deleted = 0 AND event_type_id = '$event_type_id'";
+                . "' AND event_date <= '$correspondenceDate' AND deleted = 0 AND event_type_id = '$event_type_id'";
             $criteria->order = 'event_date desc, created_date desc';
 
             $lastExamDate = '';
@@ -185,7 +185,7 @@ class DocManDeliveryCommand extends CConsoleCommand
             if(!$lastExamDate && !$lastOpNoteDate) {
                 $lastSignificantEventDate = NULL;
             }
-            if(!$lastSignificantEventDate && $lastExamDate && $lastOpNoteDate){
+            if($lastExamDate && $lastOpNoteDate){
                 $diff = date_diff(date_create($lastExamDate), date_create($lastOpNoteDate));
                 if($diff->days >= 0){
                     $lastSignificantEventDate = $lastOpNoteDate;
