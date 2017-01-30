@@ -153,9 +153,8 @@ class DocManDeliveryCommand extends CConsoleCommand
             $event_type_id = $event_type->id;
 
             $criteria = new CDbCriteria();
-            $criteria->compare('event_type_id', $event_type_id);
-            $criteria->compare('episode_id', $this->event->episode->id);
-            $criteria->condition = "created_date <= '$correspondenceDate'";
+            $criteria->condition = "episode_id = '" . $this->event->episode->id
+                . "' AND created_date <= '$correspondenceDate' AND deleted = 0 AND event_type_id = '$event_type_id'";
             $criteria->order = 'event_date desc, created_date desc';
 
             $lastOpNoteDate = '';
@@ -167,9 +166,8 @@ class DocManDeliveryCommand extends CConsoleCommand
             $event_type_id = $event_type->id;
 
             $criteria = new CDbCriteria();
-            $criteria->compare('event_type_id', $event_type_id);
-            $criteria->compare('episode_id', $this->event->episode->id);
-            $criteria->condition = "created_date <= '$correspondenceDate'";
+            $criteria->condition = "episode_id = '" . $this->event->episode->id
+                . "' AND created_date <= '$correspondenceDate' AND deleted = 0 AND event_type_id = '$event_type_id'";
             $criteria->order = 'event_date desc, created_date desc';
 
             $lastExamDate = '';
@@ -184,6 +182,9 @@ class DocManDeliveryCommand extends CConsoleCommand
             if($lastExamDate && !$lastOpNoteDate) {
                 $lastSignificantEventDate = $lastExamDate;
             }
+            if(!$lastExamDate && !$lastOpNoteDate) {
+                $lastSignificantEventDate = NULL;
+            }
             if(!$lastSignificantEventDate && $lastExamDate && $lastOpNoteDate){
                 $diff = date_diff(date_create($lastExamDate), date_create($lastOpNoteDate));
                 if($diff->days >= 0){
@@ -192,8 +193,6 @@ class DocManDeliveryCommand extends CConsoleCommand
                     $lastSignificantEventDate = $lastExamDate;
                 }
             }
-
-            // Get Last Significant Event Date most recent examination or OpNote event on or before the correspondence event date
 
             if ($this->updateDelivery($output_id)) {
                 $this->logData(array(
