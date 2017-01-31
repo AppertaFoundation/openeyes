@@ -295,7 +295,7 @@ class Patient extends BaseActiveRecordVersioned
     
     public function isEditable()
     {
-        return $this->is_local && ( BaseController::checkAccess('TaskAddPatient'));
+        return $this->is_local && ( Yii::app()->user->checkAccess('TaskAddPatient'));
     }
 
     /*
