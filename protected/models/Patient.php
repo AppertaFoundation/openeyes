@@ -114,7 +114,7 @@ class Patient extends BaseActiveRecordVersioned
             array('hos_num', 'required', 'on' => 'pas'),
             array('hos_num, nhs_num', 'length', 'max' => 40),
             array('gender,is_local', 'length', 'max' => 1),
-            array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local', 'safe'),
+            array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id', 'safe'),
             array('deleted', 'safe'),
             array('dob, hos_num, nhs_num, date_of_death, deleted,is_local', 'safe', 'on' => 'search'),
         );
@@ -255,6 +255,16 @@ class Patient extends BaseActiveRecordVersioned
             }
         }
 
+        //FIXME : this shoud be done with application.behaviors.OeDateFormat
+        foreach (array('dob', 'date_of_death') as $date_column) {
+            $date = $this->{$date_column};
+            if (preg_match(Helper::NHS_DATE_REGEX, $date) && strtotime($date)) {
+                $this->{$date_column} = date('Y-m-d', strtotime($date));
+            } else {
+                $this->{$date_column} = null;
+            }
+        }
+        
         return parent::beforeSave();
     }
 
