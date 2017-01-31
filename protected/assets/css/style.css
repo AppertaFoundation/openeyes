@@ -4532,6 +4532,36 @@ tfoot.pagination-container .pagination-view-all {
   }
 }
 
+/* line 45, ../sass/openeyes/components/alert-boxes/_patient.scss */
+.box.admin {
+  background: #fafafa none repeat scroll 0 0;
+  border-color: #f3f3f3;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  color: #333333;
+  margin: 0 0 0.75rem;
+  padding: 10px;
+}
+/* line 55, ../sass/openeyes/components/alert-boxes/_patient.scss */
+.box.admin .nhs-number-wrapper div {
+  font-size: 13px;
+  display: inline-block;
+  color: #000000;
+}
+/* line 61, ../sass/openeyes/components/alert-boxes/_patient.scss */
+.box.admin .errorMessage {
+  color: red;
+  font-size: 13px;
+}
+/* line 66, ../sass/openeyes/components/alert-boxes/_patient.scss */
+.box.admin .errorSummary {
+  background: red;
+  padding: 10px;
+  color: white;
+  margin-bottom: 30px;
+}
+
 /* line 29, ../sass/openeyes/components/alert-boxes/_success.scss */
 .alert-box.success, .alert-box.info {
   background-color: #e0f2db;
@@ -4784,6 +4814,14 @@ tfoot.pagination-container .pagination-view-all {
   .box.patient-info {
     page-break-inside: avoid;
   }
+}
+/* line 96, ../sass/openeyes/components/boxes/_patient-info.scss */
+.box.patient-info.internalreferral.internalreferral-doclist span {
+  background-color: #4D1F77;
+  color: #F47B20;
+  display: inline-block;
+  float: right;
+  padding: 3px 15px;
 }
 
 /* line 138, ../sass/openeyes/components/boxes/_patient-info.scss */
@@ -5449,7 +5487,7 @@ tfoot.pagination-container .pagination-view-all {
   right: 0;
 }
 @media screen {
-  /* line 118, ../sass/openeyes/components/panels/_patient.scss */
+/* line 118, ../sass/openeyes/components/panels/_patient.scss */
   .stuck .panel.patient .patient-summary-anchor {
     display: none;
   }
@@ -7522,7 +7560,7 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
-/*
+/* 
     Created on : Dec 9, 2016, 11:56:22 AM
     Author     : sabi
 */
