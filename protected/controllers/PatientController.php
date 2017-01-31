@@ -1484,32 +1484,15 @@ class PatientController extends BaseController
         $this->performAjaxValidation(array($patient, $contact, $address));
         
         if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
-        {
-            
+        {   
             $contact->attributes = $_POST['Contact'];
-            try {
-                $contact->save();
-            } catch (Exception $e) {
-                //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
-            }
-
             $patient->attributes = $_POST['Patient'];
+            $address->attributes = $_POST['Address'];
             
             // not to be sync with PAS
             $patient->is_local = 1;
-            $patient->contact_id = $contact->id;
-
-            try {
-                $patient->save();
-            } catch (Exception $e) {
-                //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
-            }
             
-            $address->attributes = $_POST['Address'];
-            $address->contact_id = $contact->id;
-            if($address->save()){
-                $this->redirect(array('view', 'id' => $patient->id));
-            }
+            list($contact, $patient, $address) = $this->performPatientSave($contact, $patient, $address);
         }
         
         $this->render('crud/create',array(
@@ -1517,6 +1500,54 @@ class PatientController extends BaseController
                         'contact' => $contact,
                         'address' => $address,
         ));
+   }
+   
+   /**
+    * Saving the Contact, Patient and Address object
+    * 
+    * @param Contact $contact
+    * @param Patient $patient
+    * @param Address $address
+    * @return on validation error returns the 3 objects otherwise redirects to the patient view page
+    */
+   private function performPatientSave(Contact $contact, Patient $patient, Address $address)
+   {
+        $transaction = Yii::app()->db->beginTransaction();
+
+        try{
+            if( $contact->save() ){
+
+                $patient->contact_id = $contact->id;
+                $address->contact_id = $contact->id;
+                $action = $patient->isNewRecord ? 'add' : 'edit';
+                if($patient->save() && $address->save()){
+                    $transaction->commit();
+
+                    Audit::add('Patient', $action . '-patient', "Patient manually [id: $patient->id] {$action}ed.");
+                    $this->redirect(array('view', 'id' => $patient->id));
+                } else {
+                    // patient or address failed to save
+                    $transaction->rollback();
+                }
+            } else {
+                // to show validation error messages to the user
+                $patient->validate();
+                $address->validate();
+
+                // remove contact_id validation error
+                $patient->clearErrors('contact_id');
+                $address->clearErrors('contact_id');
+
+                // contact failed to save
+                $transaction->rollback();
+            }
+
+        } catch (Exception $ex) {
+            OELog::logException($ex);
+            $transaction->rollback();
+        }
+        
+        return array($contact, $patient, $address);
    }
    
     /**
@@ -1543,36 +1574,17 @@ class PatientController extends BaseController
         $address = $patient->contact->address ? $patient->contact->address : new Address();
         
         $this->performAjaxValidation(array($patient, $contact, $address));
-        
+
         if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
         {
-         
             $contact->attributes = $_POST['Contact'];
-            try {
-                $contact->save();
-            } catch (Exception $e) {
-                //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
-            }
-
             $patient->attributes = $_POST['Patient'];
-            $patient->contact_id = $contact->id;
-
-            //This could be handled in OeDateFormat Behaviour
-            //make sure that if no date_of_death has been posted than we insert NULL instad of 000-00-00 into the DB
-            $patient->date_of_death = $patient->date_of_death == '' ? null : Helper::convertNHS2MySQL($patient->date_of_death);
-            $patient->dob = $patient->dob == '' ? null : Helper::convertNHS2MySQL($patient->dob);
-
-            try {
-                $patient->save();
-            } catch (Exception $e) {
-                //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
-            }
-            
             $address->attributes = $_POST['Address'];
-            $address->contact_id = $contact->id;
-            if($address->save()){
-                $this->redirect(array('view', 'id' => $patient->id));
-            }
+
+            // not to be sync with PAS
+            $patient->is_local = 1;
+
+            list($contact, $patient, $address) = $this->performPatientSave($contact, $patient, $address);
         }
         
         $this->render('crud/update',array(

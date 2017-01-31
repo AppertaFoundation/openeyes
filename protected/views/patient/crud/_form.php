@@ -52,7 +52,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 
   <p class="note text-right">Fields with <span class="required">*</span> are required.</p>
 
-    <?php echo $form->errorSummary(array($patient, $address, $contact)); ?>
+    <?php echo $form->errorSummary(array($contact, $patient, $address)); ?>
 
   <div class="row field-row">
     <div class="large-6 column">
@@ -133,12 +133,12 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
         <div class="large-4 column end">
             <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'Patient[dob]',
-                'id' => 'date_from',
+                'id' => 'patient_dob',
                 'options' => array(
                     'showAnim' => 'fold',
                     'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                 ),
-                'value' => Helper::convertMySQL2NHS($patient->dob, ''),
+                'value' => $patient->NHSDate('dob'),
                 'htmlOptions' => array(
                     'class' => 'small fixed-width',
                 ),
@@ -222,7 +222,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                     'showAnim' => 'fold',
                     'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                 ),
-                'value' => Helper::convertMySQL2NHS($patient->date_of_death, ''),
+                'value' => $patient->NHSDate('date_of_death'),
                 'htmlOptions' => array(
                     'class' => 'small fixed-width',
                 ),

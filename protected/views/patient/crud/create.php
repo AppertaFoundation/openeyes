@@ -26,6 +26,13 @@
     color: red;
     font-size: 13px;
   }
+  
+  .errorSummary{
+        background: red;
+        padding: 10px;
+        color: white;
+        margin-bottom: 30px;
+  }
 
 </style>
 <h1 class="badge">Patient</h1>
