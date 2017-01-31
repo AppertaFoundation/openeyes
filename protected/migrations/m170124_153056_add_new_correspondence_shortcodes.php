@@ -4,8 +4,14 @@ class m170124_153056_add_new_correspondence_shortcodes extends CDbMigration
 {
 	public function up()
 	{
+
+        $data = $this->dbConnection->createCommand()
+            ->select('id')->from('event_type')
+            ->where('name = "Correspondence"')->queryAll();
+        $event_type_id = $data[0]['id'];
+
         $this->insert('patient_shortcode', array(
-            'event_type_id' => '26',
+            'event_type_id' => $event_type_id,
             'default_code' => 'pna',
             'code' => 'pna',
             'method' => 'getFullName',
@@ -13,7 +19,7 @@ class m170124_153056_add_new_correspondence_shortcodes extends CDbMigration
             'last_modified_user_id' => '1',
         ));
         $this->insert('patient_shortcode', array(
-            'event_type_id' => '26',
+            'event_type_id' => $event_type_id,
             'default_code' => 'pnt',
             'code' => 'pnt',
             'method' => 'getPatientTitle',
@@ -22,7 +28,7 @@ class m170124_153056_add_new_correspondence_shortcodes extends CDbMigration
         ));
 
         $this->insert('patient_shortcode', array(
-            'event_type_id' => '26',
+            'event_type_id' => $event_type_id,
             'default_code' => 'pnf',
             'code' => 'pnf',
             'method' => 'getFirstName',
@@ -30,7 +36,7 @@ class m170124_153056_add_new_correspondence_shortcodes extends CDbMigration
             'last_modified_user_id' => '1',
         ));
         $this->insert('patient_shortcode', array(
-            'event_type_id' => '26',
+            'event_type_id' => $event_type_id,
             'default_code' => 'pnl',
             'code' => 'pnl',
             'method' => 'getLastName',
@@ -39,7 +45,7 @@ class m170124_153056_add_new_correspondence_shortcodes extends CDbMigration
         ));
 
         $this->insert('patient_shortcode', array(
-            'event_type_id' => '26',
+            'event_type_id' => $event_type_id,
             'default_code' => 'eld',
             'code' => 'eld',
             'method' => 'getLastExaminationDate',
@@ -47,7 +53,7 @@ class m170124_153056_add_new_correspondence_shortcodes extends CDbMigration
             'last_modified_user_id' => '1',
         ));
         $this->insert('patient_shortcode', array(
-            'event_type_id' => '26',
+            'event_type_id' => $event_type_id,
             'default_code' => 'aod',
             'code' => 'aod',
             'method' => 'getOphthalmicDiagnoses',
@@ -55,7 +61,7 @@ class m170124_153056_add_new_correspondence_shortcodes extends CDbMigration
             'last_modified_user_id' => '1',
         ));
         $this->insert('patient_shortcode', array(
-            'event_type_id' => '26',
+            'event_type_id' => $event_type_id,
             'default_code' => 'ilt',
             'code' => 'ilt',
             'method' => 'getLastIOLType',
@@ -63,7 +69,7 @@ class m170124_153056_add_new_correspondence_shortcodes extends CDbMigration
             'last_modified_user_id' => '1',
         ));
         $this->insert('patient_shortcode', array(
-            'event_type_id' => '26',
+            'event_type_id' => $event_type_id,
             'default_code' => 'ilp',
             'code' => 'ilp',
             'method' => 'getLastIOLPower',
@@ -71,7 +77,7 @@ class m170124_153056_add_new_correspondence_shortcodes extends CDbMigration
             'last_modified_user_id' => '1',
         ));
         $this->insert('patient_shortcode', array(
-            'event_type_id' => '26',
+            'event_type_id' => $event_type_id,
             'default_code' => 'loe',
             'code' => 'loe',
             'method' => 'getLastOperatedEye',
@@ -79,7 +85,7 @@ class m170124_153056_add_new_correspondence_shortcodes extends CDbMigration
             'last_modified_user_id' => '1',
         ));
         $this->insert('patient_shortcode', array(
-            'event_type_id' => '26',
+            'event_type_id' => $event_type_id,
             'default_code' => 'pov',
             'code' => 'pov',
             'method' => 'getPreOpVABothEyes',
@@ -87,7 +93,7 @@ class m170124_153056_add_new_correspondence_shortcodes extends CDbMigration
             'last_modified_user_id' => '1',
         ));
         $this->insert('patient_shortcode', array(
-            'event_type_id' => '26',
+            'event_type_id' => $event_type_id,
             'default_code' => 'por',
             'code' => 'por',
             'method' => 'getPreOpRefraction',
@@ -95,7 +101,7 @@ class m170124_153056_add_new_correspondence_shortcodes extends CDbMigration
             'last_modified_user_id' => '1',
         ));
         $this->insert('patient_shortcode', array(
-            'event_type_id' => '26',
+            'event_type_id' => $event_type_id,
             'default_code' => 'alg',
             'code' => 'alg',
             'method' => 'getAllergiesBulleted',
