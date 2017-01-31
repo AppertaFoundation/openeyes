@@ -87,6 +87,10 @@ $(document).ready(function() {
 	handleButton($('#et_saveprint'),function() {
 		$('#ElementLetter_draft').val(0);
 	});
+        
+	handleButton($('#et_save'),function() {
+		$('#ElementLetter_draft').val(0);
+	});
 
 	handleButton($('#et_cancel'),function() {
 		$('#dialog-confirm-cancel').dialog({

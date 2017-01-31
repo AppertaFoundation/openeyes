@@ -336,7 +336,7 @@ if ($refractfound) {
         <div class="element-eye right-eye column">
             <?php if ($refractelement->hasRight()) {
                 ?>
-                <div class="row refraction">
+                <div class="refraction">
                     <?php $this->renderPartial($element->view_view . '_OEEyeDraw',
                         array('side' => 'right', 'element' => $refractelement));
                     ?>
