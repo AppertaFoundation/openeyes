@@ -146,7 +146,7 @@ class PatientMerge
      * @param Patient $secondary
      * @param Patient $primary
      */
-    public function isMergable(Patient $secondary, Patient $primary)
+    public function isMergable(Patient $primary, Patient $secondary)
     {
         
         $conflict = array();
@@ -172,7 +172,7 @@ class PatientMerge
     {
         $is_merged = false;
         
-        $is_mergable = $this->isMergable();
+        $is_mergable = $this->isMergable($this->primary_patient, $this->secondary_patient);
         if( !empty($is_mergable) ){
             $msg = isset($is_mergable['message']) ? $is_mergable['message'] : ('Patients cannot be merged ' . print_r($is_mergable, true) );
             throw new Exception($msg);
@@ -274,7 +274,7 @@ class PatientMerge
 
                         /* We have to keep the episode with the highest status */             
 
-                        if ($primary_episode->status->order > $secondary_episode->status->order) {
+                        if ($primary_episode->status->order > $secondary_episode->status->order) {                            
                             // the primary episode has greater status than the secondary so we move the events from the Secondary into the Primary
                             $this->updateEventsEpisodeId($primary_episode->id, $secondary_episode->events);
 
