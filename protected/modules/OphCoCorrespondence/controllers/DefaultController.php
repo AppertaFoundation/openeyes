@@ -256,7 +256,7 @@ class DefaultController extends BaseEventTypeController
 
         $data['textappend_ElementLetter_cc'] = implode("\n", $cc['text']);
         $data['elementappend_cc_targets'] = implode("\n", $cc['targets']);
-        $data['sel_letter_type'] = $macro->letter_type;
+        $data['sel_letter_type_id'] = $macro->letter_type_id;
         echo json_encode($data);
     }
 

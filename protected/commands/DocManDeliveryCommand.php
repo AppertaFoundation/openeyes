@@ -122,14 +122,14 @@ class DocManDeliveryCommand extends CConsoleCommand
             curl_close($ch);
 
             if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] === 'format1') {
-                $filename = "OPENEYES_" . $this->event->episode->patient->hos_num . '_' . $this->event->id . "_" . rand();
+                $filename = "OPENEYES_" . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . $this->event->id . "_" . rand();
             } else {
                 if (Yii::app()->params['docman_filename_format'] === 'format2') {
-                    $filename = $this->event->episode->patient->hos_num . '_' . date('YmdHi',
+                    $filename = (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . date('YmdHi',
                             strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
                 } else {
                     if (Yii::app()->params['docman_filename_format'] === 'format3') {
-                        $filename = $this->event->episode->patient->hos_num . '_edtdep-OEY_' .
+                        $filename = (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_edtdep-OEY_' .
                             date('Ymd_His', strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
                     }
                 }
@@ -195,9 +195,11 @@ class DocManDeliveryCommand extends CConsoleCommand
             }
 
             if ($this->updateDelivery($output_id)) {
+                $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $this->event->id));
                 $this->logData(array(
                     'hos_num' => $this->event->episode->patient->hos_num,
                     'clinician_name' => $this->event->user->getFullName(),
+                    'letter_type' => (isset($element_letter->letterType->name) ? $element_letter->letterType->name : ''),
                     'letter_finalised_date' => $this->event->last_modified_date,
                     'letter_created_date' => $this->event->created_date,
                     'last_significant_event_date' => $lastSignificantEventDate,
@@ -217,8 +219,6 @@ class DocManDeliveryCommand extends CConsoleCommand
     private function generateXMLOutput($filename)
     {
         $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $this->event->id));
-        $letter_types = array("0" => "", "1" => "Clinic discharge letter", "2" => "Post-op letter", "3" => "Clinic letter", "4" => "Other letter");
-
         $subObj = $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty;
         $subspeciality = isset($subObj->ref_spec) ? $subObj->ref_spec : 'SS';
         $subspeciality_name = isset($subObj->name) ? $subObj->name : 'Support Services';
@@ -231,6 +231,7 @@ class DocManDeliveryCommand extends CConsoleCommand
         $county = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->county) : '';
         $city = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->city) : '';
         $post_code = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->postcode) : '';
+        $letter_type = isset($element_letter->letterType->name) ? $element_letter->letterType->name : '';
 
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
             <DocumentInformation>
@@ -255,7 +256,7 @@ class DocManDeliveryCommand extends CConsoleCommand
             <GPName>" . $gp_name . "</GPName>
             <Surgery>" . $practice_code . "</Surgery>
             <SurgeryName></SurgeryName>
-            <LetterType>" . $letter_types[$element_letter->letter_type] . "</LetterType>
+            <LetterType>" . $letter_type . "</LetterType>
             <ActivityID>" . $this->event->id . "</ActivityID>
             <ActivityDate>" . $this->event->event_date . "</ActivityDate>
             <ClinicianType></ClinicianType>
