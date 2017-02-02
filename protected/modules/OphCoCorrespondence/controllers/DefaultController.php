@@ -396,7 +396,12 @@ class DefaultController extends BaseEventTypeController
             
             if($to_recipient_gp){
                 // print an extra copy to note
-                $this->render('print', array('element' => $letter, 'letter_address' => ($to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address)));
+                if(!Yii::app()->params['disable_correspondence_notes_copy']) {
+                    $this->render('print', array(
+                        'element' => $letter,
+                        'letter_address' => ($to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address)
+                    ));
+                }
             }
 
             $print_outputs = $letter->getOutputByType("Print");
@@ -407,7 +412,9 @@ class DefaultController extends BaseEventTypeController
                     
                     //extra printout for note
                     if($document_target->ToCc == 'To' && $document_target->contact_type != 'GP'){
-                        $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
+                        if(!Yii::app()->params['disable_correspondence_notes_copy']){
+                            $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
+                        }
                     }
                 }
             }
@@ -431,7 +438,9 @@ class DefaultController extends BaseEventTypeController
             $this->render('print', array('element' => $letter));
 
             if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
-                $this->render('print', array('element' => $letter));
+                if(!Yii::app()->params['disable_correspondence_notes_copy']) {
+                    $this->render('print', array('element' => $letter));
+                }
 
                 foreach ($letter->getCcTargets() as $letter_address) {
                     $this->render('print', array('element' => $letter, 'letter_address' => $letter_address));
