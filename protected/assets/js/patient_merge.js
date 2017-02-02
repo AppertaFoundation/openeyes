@@ -187,7 +187,7 @@ $(document).ready(function(){
                             // cannot be the same patient and the primary patient is not local than we can merge local and non-local patient into primary
                             if ( (patientMerge.patients.primary.id != ui.item.id && patientMerge.patients.primary.is_local == 0) ||
                                     // if primary patient is local we only merge local pation into it
-                                 (patientMerge.patients.secondary.is_local == 1 && patientMerge.patients.primary.is_local == 1) ){
+                                 (ui.item.is_local == patientMerge.patients.primary.is_local) ){
                                 patientMerge.patients.secondary = ui.item;
                                 patientMerge.updateDOM('secondary');
                                 patientMerge.validatePatientsData(null, displayConflictMessage);
@@ -198,7 +198,7 @@ $(document).ready(function(){
                                 new OpenEyes.UI.Dialog.Alert({
                                     content: "Primary and Secondary patient cannot be the same record."
                                 }).open();
-                            } else if(patientMerge.patients.secondary.is_local == 0 && patientMerge.patients.primary.is_local == 1 ){
+                            } else if(ui.item.is_local != patientMerge.patients.primary.is_local){
                                 //if primary is local then we can only merge local patient into it
                                 new OpenEyes.UI.Dialog.Alert({
                                     content: "Non local patient cannot be merged into local patient."

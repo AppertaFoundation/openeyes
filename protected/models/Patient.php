@@ -258,7 +258,7 @@ class Patient extends BaseActiveRecordVersioned
         //FIXME : this shoud be done with application.behaviors.OeDateFormat
         foreach (array('dob', 'date_of_death') as $date_column) {
             $date = $this->{$date_column};
-            if (preg_match(Helper::NHS_DATE_REGEX, $date) && strtotime($date)) {
+            if (strtotime($date)) {
                 $this->{$date_column} = date('Y-m-d', strtotime($date));
             } else {
                 $this->{$date_column} = null;

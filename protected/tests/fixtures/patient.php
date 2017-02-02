@@ -117,6 +117,7 @@ return array(
         'practice_id' => 3,
         'address_id' => 4,
         'contact_id' => 5,
+        'is_local' => 0,
     ),
     'patient8' => array(
         'id' => 8,
@@ -132,6 +133,7 @@ return array(
         'practice_id' => 3,
         'address_id' => 4,
         'contact_id' => 6,
+        'is_local' => 0,
     ),
 
 );
