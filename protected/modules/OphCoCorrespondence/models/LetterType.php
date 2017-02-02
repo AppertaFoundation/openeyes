@@ -26,9 +26,8 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-class LetterMacro extends BaseActiveRecordVersioned
+class LetterType extends BaseActiveRecordVersioned
 {
-    public $type;
 
     /**
      * Returns the static model of the specified AR class.
@@ -45,7 +44,7 @@ class LetterMacro extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'ophcocorrespondence_letter_macro';
+        return 'ophcocorrespondence_letter_type';
     }
 
     /**
@@ -54,11 +53,8 @@ class LetterMacro extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name, recipient_id, use_nickname, body, cc_patient, cc_doctor, display_order, site_id, subspecialty_id, firm_id, cc_drss, episode_status_id, letter_type_id', 'safe'),
-            array('name, use_nickname, body, cc_patient, cc_doctor, type', 'required'),
-            array('site_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'site'),
-            array('subspecialty_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'subspecialty'),
-            array('firm_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'firm'),
+            array('name', 'safe'),
+            array('name', 'required'),
         );
     }
 
@@ -69,13 +65,7 @@ class LetterMacro extends BaseActiveRecordVersioned
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array(
-            'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
-            'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
-            'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-            'episode_status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
-            'recipient' => array(self::BELONGS_TO, 'LetterRecipient', 'recipient_id'),
-        );
+        return array();
     }
 
     /**
@@ -84,15 +74,7 @@ class LetterMacro extends BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
-            'use_nickname' => 'Use nickname',
-            'cc_patient' => 'CC patient',
-            'cc_doctor' => 'CC doctor',
-            'cc_drss' => 'CC DRSS',
-            'site_id' => 'Site',
-            'subspecialty_id' => 'Subspecialty',
-            'firm_id' => 'Firm',
-            'episode_status_id' => 'Episode status',
-            'recipient_id' => 'Default recipient',
+            'name' => 'Letter Type',
         );
     }
 
@@ -109,46 +91,10 @@ class LetterMacro extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
-        $criteria->compare('event_id', $this->event_id, true);
+        $criteria->compare('name', $this->name, true);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
-    }
-
-    public function afterFind()
-    {
-        if ($this->site_id) {
-            $this->type = 'site';
-        } elseif ($this->subspecialty_id) {
-            $this->type = 'subspecialty';
-        } elseif ($this->firm_id) {
-            $this->type = 'firm';
-        }
-    }
-
-    public function beforeSave()
-    {
-        switch ($this->type) {
-            case 'site':
-                $this->firm_id = null;
-                $this->subspecialty = null;
-                break;
-            case 'subspecialty':
-                $this->firm_id = null;
-                $this->site_id = null;
-                break;
-            case 'firm':
-                $this->subspecialty_id = null;
-                $this->site_id = null;
-                break;
-        }
-
-        return parent::beforeSave();
-    }
-
-    public function substitute($patient)
-    {
-        $this->body = OphCoCorrespondence_Substitution::replace($this->body, $patient);
     }
 }
