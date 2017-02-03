@@ -138,7 +138,7 @@ class OphCoCorrespondence_API extends BaseAPI
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
             $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract');
-                return CHtml::encode($element->iol_type->name);
+                return $element->iol_type->name;
         }
     }
 
@@ -147,7 +147,7 @@ class OphCoCorrespondence_API extends BaseAPI
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
             $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract');
-            return CHtml::encode($element->iol_power);
+            return $element->iol_power;
         }
     }
 

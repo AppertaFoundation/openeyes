@@ -431,18 +431,9 @@ $(document).ready(function() {
 				'url': baseUrl+'/OphCoCorrespondence/Default/expandStrings',
 				'data': 'patient_id='+OE_patient_id+'&text='+text+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 				'success': function(resp) {
-
-					//create a textarea and put the html encoded string in it
-					//so later we can retrive as "normal" text
-					//it's like decode
-					var $text_area = document.createElement('textarea');
-					$text_area.innerHTML = resp;
-
 					if (resp) {
-						$('#ElementLetter_body').val($text_area.value);
+						$('#ElementLetter_body').val(resp);
 					}
-
-					$($text_area).remove();
 				}
 			});
 		}
