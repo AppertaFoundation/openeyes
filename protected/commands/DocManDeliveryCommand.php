@@ -63,8 +63,15 @@ class DocManDeliveryCommand extends CConsoleCommand
      * @return CActiveRecord[]
      */
     private function getPendingDocuments()
-    {
-        return DocumentOutput::model()->findAllByAttributes(array("output_status" => "PENDING", "output_type" => "Docman"));
+    {   
+        $criteria = new CDbCriteria();
+        $criteria->join = "JOIN `document_target` tr ON t.`document_target_id` = tr.id";
+        $criteria->join .= " JOIN `document_instance` i ON tr.`document_instance_id` = i.`id`";
+        $criteria->join .= " JOIN event e ON i.`correspondence_event_id` = e.id";
+        $criteria->addCondition("e.deleted = 0");
+        $criteria->addCondition("t.`output_status` = 'PENDING' AND t.`output_type`= 'Docman'");
+        
+        return DocumentOutput::model()->findAll($criteria);
     }
 
     /**
