@@ -398,13 +398,6 @@ if ($refractfound) {
                 <div class="active-form">
                     <a href="#" class="icon-remove-side remove-side">Remove side</a>
                     <?php echo CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
-                    <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
-                        'side' => 'right',
-                        'element' => $element,
-                        'form' => $form,
-                        'data' => $data,
-                        'measurementInput' => $iolRefValues,
-                    )); ?>
                 </div>
                 <div class="inactive-form">
                     <div class="add-side">
@@ -413,6 +406,16 @@ if ($refractfound) {
                         </a>
                     </div>
                 </div>
+                <div class="active-form">
+                <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
+                    'side' => 'right',
+                    'element' => $element,
+                    'form' => $form,
+                    'data' => $data,
+                    'measurementInput' => $iolRefValues,
+                )); ?>
+                    </div>
+
             </div>
             <div id="left-eye-lens"
                  class="element-eye left-eye top-pad right side column <?php if (!$element->hasLeft()) {
@@ -421,18 +424,8 @@ if ($refractfound) {
                 <div class="element-header left-side">
                     <h4><b>LEFT</b></h4>
                 </div>
-                <div class="active-form">
-                    <?php if ($element->hasLeft()) {
-                        ?>
                         <div class="active-form">
                             <a href="#" class="icon-remove-side remove-side">Remove side</a>
-                            <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
-                                'side' => 'left',
-                                'element' => $element,
-                                'form' => $form,
-                                'data' => $data,
-                                'measurementInput' => $iolRefValues,
-                            )); ?>
                         </div>
                         <div class="inactive-form">
                             <div class="add-side">
@@ -441,9 +434,14 @@ if ($refractfound) {
                                 </a>
                             </div>
                         </div>
-                        <?php
-                    }
-                    ?>
+                        <div class="active-form">
+                        <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
+                            'side' => 'left',
+                            'element' => $element,
+                            'form' => $form,
+                            'data' => $data,
+                            'measurementInput' => $iolRefValues,
+                        )); ?></div>
                 </div>
             </div>
     </section>
