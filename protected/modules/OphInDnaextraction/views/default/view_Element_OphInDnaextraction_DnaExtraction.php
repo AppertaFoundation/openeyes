@@ -27,30 +27,10 @@
 	<div class="sub-element-data">
 		<div class="row data-row">
 			<div class="large-2 column">
-				<div class="data-label"><?php echo $element->getAttributeLabel('box_id')?>:</div>
+                <div class="data-label"><?php echo $element->getAttributeLabel('storage_id')?>:</div>
 			</div>
 			<div class="large-10 column">
-				<div class="data-value"><?php echo CHtml::encode($element->box ? $element->box->value : 'None')?></div>
-			</div>
-		</div>
-	</div>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label"><?php echo $element->getAttributeLabel('letter_id')?>:</div>
-			</div>
-			<div class="large-10 column">
-				<div class="data-value"><?php echo CHtml::encode($element->letter ? $element->letter->value : 'None')?></div>
-			</div>
-		</div>
-	</div>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label"><?php echo $element->getAttributeLabel('number_id')?>:</div>
-			</div>
-			<div class="large-10 column">
-				<div class="data-value"><?php echo CHtml::encode($element->number ? $element->number->value : 'None')?></div>
+				<div class="data-value"><?php echo CHtml::encode($element->storage->box->value.' - '.$element->storage->letter.' - '.$element->storage->number)?></div>
 			</div>
 		</div>
 	</div>

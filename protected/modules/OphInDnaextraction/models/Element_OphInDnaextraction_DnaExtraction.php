@@ -47,6 +47,10 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
      *
      * @return the static model class
      */
+    public $box_id;
+    public $letter;
+    public $number;
+    
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
@@ -68,15 +72,15 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, box, letter, number, extracted_date, extracted_by, comments, dna_concentration, volume,', 'safe'),
+            array('event_id, storage, extracted_date, extracted_by, comments, dna_concentration, volume,', 'safe'),
             array('dna_quantity', 'safe'),
             array('dna_quality', 'numerical', 'min' => 0.2, 'max' => 2.5),
-            array('box_id, letter_id, number_id', 'required'),
+            array('storage_id', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, box, letter, number, key_address, extracted_date, extracted_by_id, comments, dna_concentration, volume, ', 'safe', 'on' => 'search'),
+            array('id, event_id,storage, key_address, extracted_date, extracted_by_id, comments, dna_concentration, volume, ', 'safe', 'on' => 'search'),
             array('dna_concentration', 'numerical', 'numberPattern' => '/^\s*[\+\-]?\d+\.?\d*\s*$/'),
-            array('number_id', 'boxAvailable'),
+            //array('number_id', 'boxAvailable'),
         );
     }
 
@@ -94,9 +98,7 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'extracted_by' => array(self::BELONGS_TO, 'User', 'extracted_by_id'),
-            'box' => array(self::BELONGS_TO, 'OphInDnaextraction_DnaExtraction_Box', 'box_id'),
-            'letter' => array(self::BELONGS_TO, 'OphInDnaextraction_DnaExtraction_Letter', 'letter_id'),
-            'number' => array(self::BELONGS_TO, 'OphInDnaextraction_DnaExtraction_Number', 'number_id'),
+            'storage' => array(self::BELONGS_TO, 'OphInDnaextraction_DnaExtraction_Storage', 'storage_id'),
         );
     }
 
@@ -120,6 +122,7 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
     {
         return array(
             'id' => 'ID',
+            'storage_id' => 'Storage',
             'event_id' => 'Event',
             'box' => 'Box',
             'letter' => 'Letter',
@@ -161,7 +164,7 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
         $criteria->compare('comments', $this->comments);
         $criteria->compare('dna_concentration', $this->dna_concentration);
         $criteria->compare('volume', $this->volume);
-
+        
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));

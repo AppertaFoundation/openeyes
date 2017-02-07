@@ -15,12 +15,10 @@ function getExtractionStorageLetterNumber( obj ){
                 
                 $('#OphInDnaextraction_DnaExtraction_Storage_letter').prop('disabled', false);
                 $('#OphInDnaextraction_DnaExtraction_Storage_number').prop('disabled', false);
-            } else {
-                
+            } else {        
                 $('#OphInDnaextraction_DnaExtraction_Storage_letter').prop('disabled', true);
                 $('#OphInDnaextraction_DnaExtraction_Storage_number').prop('disabled', true);
             }
-           
         }
     });
 

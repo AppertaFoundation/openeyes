@@ -80,15 +80,15 @@ class OphInDnaextraction_DnaExtraction_Box extends BaseEventTypeElement
         ));
     }
     
-    public function availableBoxes( $boxID )
+    public function boxMaxValues( $boxID )
     {
-        $availableBox = Yii::app()->db->createCommand()
+        $boxMaxValues = Yii::app()->db->createCommand()
             ->select('id, value, maxletter, maxnumber')
             ->from('ophindnaextraction_dnaextraction_box')
             ->where('id =:id', array(':id' => $boxID))
             ->queryRow();
         
-        return $availableBox;
+        return $boxMaxValues;
     }
     
     public function attributeLabels()

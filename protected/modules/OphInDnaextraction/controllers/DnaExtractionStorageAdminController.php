@@ -70,31 +70,33 @@ class DnaExtractionStorageAdminController extends \ModuleAdminController
         $admin->deleteModel();
     }
     
-     public function actionGetNextLetterNumberRow( )
+    public function actionGetNextLetterNumberRow( )
     {
+        $result = array();
         if((int)$_POST['box_id'] > 0){
-            
-            $usedBoxRows = OphInDnaextraction_DnaExtraction_Storage::getBoxLastRow($_POST['box_id']);
-            $boxRanges = OphInDnaextraction_DnaExtraction_Box::availableBoxes($_POST['box_id']);
-            
-            $letterRange = range('A', $boxRanges['maxletter']);
-            $numberRange = range('1' , $boxRanges['maxnumber']);
+            $storage = new OphInDnaextraction_DnaExtraction_Storage();
  
-            if(in_array($usedBoxRows['letter'], $letterRange) && 
-              in_array($usedBoxRows['number'] + 1, $numberRange))
-            {
-                $result['letter'] = $usedBoxRows['letter'];
-                $result['number'] = $usedBoxRows['number'] + 1;
-            } else {
-                
-                $key = array_search($usedBoxRows['letter'], $letterRange); 
-                if(isset($letterRange[$key+1])){
-                    $result['letter'] = $letterRange[$key+1];
-                }
-                
-                $result['number'] = '1';
-            }
+            $boxRanges = OphInDnaextraction_DnaExtraction_Box::boxMaxValues($_POST['box_id']);  
+            $letterArray = $storage->generateLetterArrays($_POST['box_id'], $boxRanges['maxletter'] , $boxRanges['maxnumber']);       
+            $usedBoxRows = OphInDnaextraction_DnaExtraction_Storage::getAllLetterNumberToBox( $_POST['box_id'] );
         
+      
+            $arrayDiff = array_filter($letterArray, function ($element) use ($usedBoxRows) {
+                return !in_array($element, $usedBoxRows);
+            });
+           
+            foreach($arrayDiff as $key => $val){
+                if($val['letter'] == "0"){
+                    $result['letter'] = "You have not specified a maximum letter value.";
+                    $result['number'] = "You have not specified a maximum number value.";
+                } else {
+                    $result['letter'] = $val['letter'];
+                    $result['number'] = $val['number'];
+                }
+
+                break;
+            }
+ 
             echo json_encode($result);
         }
     }
