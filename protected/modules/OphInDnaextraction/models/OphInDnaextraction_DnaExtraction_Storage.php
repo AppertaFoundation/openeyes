@@ -107,8 +107,9 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
      
     protected function letterNumberValidation()
     {
+        $box = new OphInDnaextraction_DnaExtraction_Box();
+        $boxRanges = $box->boxMaxValues($this->box_id);
         
-        $boxRanges = OphInDnaextraction_DnaExtraction_Box::boxMaxValues($this->box_id);
         if($boxRanges['maxletter'] == NULL){
             return 'You have not specified a maximum letter value to '.$boxRanges['value'].' box.';
         }
