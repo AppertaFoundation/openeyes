@@ -23,7 +23,9 @@
 	data-element-type-name="<?php echo $element->elementType->name?>"
 	data-element-display-order="<?php echo $element->elementType->display_order?>">
 	<fieldset class="element-fields">
-		<?php echo $form->dropDownList($element, 'storage_id', CHtml::listData(OphInDnaextraction_DnaExtraction_Storage::getAvailableCombinedList( $element->storage_id ), 'id', 'value' ), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
+		<?php 
+        $storage = new OphInDnaextraction_DnaExtraction_Storage();
+        echo $form->dropDownList($element, 'storage_id', CHtml::listData($storage->getAvailableCombinedList( $element->storage_id ), 'id', 'value' ), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
         <?php echo CHtml::button('Add new storage', 
             array(
                 'id'        => 'addNewStoragePopup',
