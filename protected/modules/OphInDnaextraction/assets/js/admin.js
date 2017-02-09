@@ -1,3 +1,8 @@
+$(document).ready(function(){
+    $('#OphInDnaextraction_DnaExtraction_Storage_letter').keyup(function(){
+        this.value = this.value.toUpperCase();
+    });
+});
 function getExtractionStorageLetterNumber( obj ){
     obj = $(obj);
     $.ajax({

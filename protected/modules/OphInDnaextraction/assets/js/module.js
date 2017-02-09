@@ -78,6 +78,7 @@ $(document).ready(function() {
             'data': {YII_CSRF_TOKEN: YII_CSRF_TOKEN},
             'url': baseUrl+'/OphInDnaextraction/default/GetNewStorageFields',
             'success': function(html) {
+                
                     var storageDialog = new OpenEyes.UI.Dialog({
                     content: html,
                     title: "Add new storage",
@@ -196,6 +197,10 @@ function refreshStorageSelect(){
            
         }
     });
+}
+
+function setUppercase( obj ){
+    obj.value = obj.value.toUpperCase();
 }
 
 

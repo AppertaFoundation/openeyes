@@ -16,7 +16,7 @@
     <div class="row data-row">
         <div class="large-3 column">Letter:</div>
         <div class="large-9 column end">
-            <?php echo CHtml::textField('dnaextraction_letter', $element->letter)?>
+            <?php echo CHtml::textField('dnaextraction_letter', $element->letter, array('onkeyup' => "setUppercase( this )"))?>
         </div>
     </div>
     <div class="row data-row">

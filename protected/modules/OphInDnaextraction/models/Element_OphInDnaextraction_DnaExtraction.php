@@ -101,7 +101,8 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
             'storage' => array(self::BELONGS_TO, 'OphInDnaextraction_DnaExtraction_Storage', 'storage_id'),
         );
     }
-
+   
+    /*
     public function boxAvailable($attribute, $params)
     {
         $box = Yii::app()->db->createCommand()
@@ -114,7 +115,7 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
             $this->addError($attribute, 'this box number is already in use.');
         }
     }
-
+*/
     /**
      * @return array customized attribute labels (name=>label)
      */

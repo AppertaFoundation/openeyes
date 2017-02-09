@@ -76,22 +76,16 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'extracted_by' => array(self::BELONGS_TO, 'User', 'extracted_by_id'),
             'box' => array(self::BELONGS_TO, 'OphInDnaextraction_DnaExtraction_Box', 'box_id'),
+            'extraction' => array(self::HAS_ONE, 'Element_OphInDnaextraction_DnaExtraction', 'storage_id'),
         );
     }
     
     
     protected function beforeDelete(){
-        
-        $issetExtr = Yii::app()->db->createCommand()
-            ->select('COUNT(id)')
-            ->from('et_ophindnaextraction_dnaextraction')
-            ->where('storage_id =:storage_id', array(':storage_id' => $this->id))
-            ->queryScalar();
-        
-        if($issetExtr > 0){
-           return FALSE;
-        }
        
+        if($this->extraction != NULL){
+           return FALSE;
+        }     
         return parent::beforeDelete();
     }
     
@@ -236,7 +230,7 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
     public function checkNewStorage( $array )
     {
         $this->box_id = $array['dnaextraction_box_id'];
-        $this->letter = $array['dnaextraction_letter'];
+        $this->letter = strtoupper($array['dnaextraction_letter']);
         $this->number = $array['dnaextraction_number'];
         
         $availabeStorage = Yii::app()->db->createCommand()

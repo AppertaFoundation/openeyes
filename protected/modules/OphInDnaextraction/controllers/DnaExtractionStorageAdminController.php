@@ -74,11 +74,12 @@ class DnaExtractionStorageAdminController extends \ModuleAdminController
     {
         $result = array();
         if((int)$_POST['box_id'] > 0){
+            
             $storage = new OphInDnaextraction_DnaExtraction_Storage();
- 
-            $boxRanges = OphInDnaextraction_DnaExtraction_Box::boxMaxValues($_POST['box_id']);  
-            $letterArray = $storage->generateLetterArrays($_POST['box_id'], $boxRanges['maxletter'] , $boxRanges['maxnumber']);       
-            $usedBoxRows = OphInDnaextraction_DnaExtraction_Storage::getAllLetterNumberToBox( $_POST['box_id'] );
+           
+            $boxRanges = OphInDnaextraction_DnaExtraction_Box::boxMaxValues(Yii::app()->request->getPost('box_id'));  
+            $letterArray = $storage->generateLetterArrays(Yii::app()->request->getPost('box_id'), $boxRanges['maxletter'] , $boxRanges['maxnumber']);       
+            $usedBoxRows = $storage->getAllLetterNumberToBox( Yii::app()->request->getPost('box_id') );
         
       
             $arrayDiff = array_filter($letterArray, function ($element) use ($usedBoxRows) {
