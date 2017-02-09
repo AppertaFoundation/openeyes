@@ -5,7 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-echo json_encode(CHtml::listData(OphInDnaextraction_DnaExtraction_Storage::getAvailableCombinedList( $element->storage_id ), 'id', 'value' ));
+$storage = new OphInDnaextraction_DnaExtraction_Storage();
+echo json_encode(CHtml::listData($storage->getAvailableCombinedList( $element->storage_id ), 'id', 'value' ));
 ?>
 

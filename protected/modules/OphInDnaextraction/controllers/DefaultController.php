@@ -159,11 +159,11 @@ class DefaultController extends BaseEventTypeController
         $result = array();
         if((int)$_POST['box_id'] > '0'){
             $storage = new OphInDnaextraction_DnaExtraction_Storage();
-
-            $boxRanges = OphInDnaextraction_DnaExtraction_Box::boxMaxValues($_POST['box_id']);  
+            $boxModel = new OphInDnaextraction_DnaExtraction_Box();
+            $boxRanges = $boxModel->boxMaxValues($_POST['box_id']);  
 
             $letterArray = $storage->generateLetterArrays($_POST['box_id'], $boxRanges['maxletter'] , $boxRanges['maxnumber']);       
-            $usedBoxRows = OphInDnaextraction_DnaExtraction_Storage::getAllLetterNumberToBox( $_POST['box_id'] );
+            $usedBoxRows = $storage->getAllLetterNumberToBox( $_POST['box_id'] );
 
 
             $arrayDiff = array_filter($letterArray, function ($element) use ($usedBoxRows) {

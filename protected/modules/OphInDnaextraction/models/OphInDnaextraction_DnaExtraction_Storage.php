@@ -79,6 +79,22 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
         );
     }
     
+    
+    protected function beforeDelete(){
+        
+        $issetExtr = Yii::app()->db->createCommand()
+            ->select('COUNT(id)')
+            ->from('et_ophindnaextraction_dnaextraction')
+            ->where('storage_id =:storage_id', array(':storage_id' => $this->id))
+            ->queryScalar();
+        
+        if($issetExtr > 0){
+           return FALSE;
+        }
+       
+        return parent::beforeDelete();
+    }
+    
     /*
      * Available storage in admin
      */
