@@ -20,21 +20,17 @@
 namespace OEModule\OphCiExamination\models;
 
 /**
- * This is the model class for table "et_ophciexamination_specular_microscopy".
+ * This is the model class for table "ophciexamination_topographer_device".
  *
  * The followings are the available columns in table:
  *
  * @property int $id
- * @property int $event_id
- * @property int $eye_id
- * @property int $specular_microscope_id
- * @property int $scan_quality_id
- * @property int $endothelial_cell_density_value
- * @property dec $coefficient_variation_value
+ * @property var $name
+ * @property int $display_order
  *
  * The followings are the available model relations:
  */
-class Element_OphCiExamination_Specular_Microscopy extends \SplitEventTypeElement
+class OphCiExamination_Topographer_device extends \SplitEventTypeElement
 {
     public $service;
 
@@ -53,7 +49,7 @@ class Element_OphCiExamination_Specular_Microscopy extends \SplitEventTypeElemen
      */
     public function tableName()
     {
-        return 'et_ophciexamination_specular_microscopy';
+        return 'ophciexamination_topographer_device';
     }
 
     /**
@@ -64,10 +60,10 @@ class Element_OphCiExamination_Specular_Microscopy extends \SplitEventTypeElemen
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('eye_id, specular_microscope_id, scan_quality_id, endothelial_cell_density_value, coefficient_variation_value', 'safe'),
+                array('name', 'safe'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
-                array('id, event_id, specular_microscope_id, scan_quality_id, endothelial_cell_density_value, coefficient_variation_value', 'safe', 'on' => 'search'),
+                array('id, name', 'safe', 'on' => 'search'),
         );
     }
 
@@ -80,12 +76,8 @@ class Element_OphCiExamination_Specular_Microscopy extends \SplitEventTypeElemen
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-                'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
                 'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
                 'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-                'specular_microscope' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope', 'specular_microscope_id'),
-                'scan_quality' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\ophciexamination_scan_quality', 'scan_quality_id'),
         );
     }
 
@@ -96,11 +88,7 @@ class Element_OphCiExamination_Specular_Microscopy extends \SplitEventTypeElemen
     {
         return array(
                 'id' => 'ID',
-                'event_id' => 'Event',
-                'specular_microscope_id' => 'Specular Microscope',
-                'scan_quality_id' => 'Scan Quality',
-                'endothelial_cell_density_value' => 'Endothelial Cell Density',
-                'coefficient_variation_value' => 'Coefficient Variation',
+                'name' => 'Name',
         );
     }
 
@@ -117,16 +105,7 @@ class Element_OphCiExamination_Specular_Microscopy extends \SplitEventTypeElemen
         $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
-        $criteria->compare('event_id', $this->event_id, true);
-//        * @property int $specular_microscope_id
-//    * @property int $scan_quality_id
-//    * @property int $endothelial_cell_density_value
-//    * @property dec $coefficient_variation_value
-
-        $criteria->compare('specular_microscope_id', $this->specular_microscope_id);
-        $criteria->compare('scan_quality_id', $this->scan_quality_id);
-        $criteria->compare('endothelial_cell_density_value', $this->endothelial_cell_density_value);
-        $criteria->compare('coefficient_variation_value', $this->coefficient_variation_value);
+        $criteria->compare('name', $this->name, true);
 
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
