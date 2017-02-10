@@ -17,47 +17,75 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class DocManDeliveryCommand extends CConsoleCommand
 {
     private $path;
 
     private $event;
 
+    private $csv_format = 'OEGPLetterReport_%s.csv';
+
+    private $generate_xml = false;
+
+    private $generate_csv = false;
+
+    /**
+     * DocManDeliveryCommand constructor.
+     */
     public function __construct()
     {
         $this->path = Yii::app()->params['docman_export_dir'];
-        // check if directory is exists
+        $this->generate_xml = !isset(Yii::app()->params['docman_xml_format']) || Yii::app()->params['docman_xml_format'] !== 'none';
+        $this->generate_csv = Yii::app()->params['docman_generate_csv'];
 
-        if(!is_dir($this->path))
-        {
+        // check if directory exists
+        if (!is_dir($this->path)) {
             mkdir($this->path);
-            echo "ALERT! Directory ".$this->path." has been created!";
+            echo "ALERT! Directory " . $this->path . " has been created!";
         }
         parent::__construct(null, null);
     }
 
-    public function actionIndex()
+
+    /**
+     * Run the command.
+     */
+    public function run($args)
     {
         $pending_documents = $this->getPendingDocuments();
-        foreach($pending_documents as $document)
-        {
-            $event_id = $document->document_target->document_instance->correspondence_event_id;
-            //var_dump($event_id);
-            $this->savePDFFile($event_id, $document->id);
+        foreach ($pending_documents as $document) {
+            echo 'Processing event ' . $document->document_target->document_instance->correspondence_event_id . PHP_EOL;
+            $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
         }
     }
 
+    /**
+     * @return CActiveRecord[]
+     */
     private function getPendingDocuments()
-    {
-        $documents = DocumentOutput::model()->findAllByAttributes(array("output_status"=>"PENDING","output_type"=>"Docman"));
-        return $documents;
+    {   
+        $criteria = new CDbCriteria();
+        $criteria->join = "JOIN `document_target` tr ON t.`document_target_id` = tr.id";
+        $criteria->join .= " JOIN `document_instance` i ON tr.`document_instance_id` = i.`id`";
+        $criteria->join .= " JOIN event e ON i.`correspondence_event_id` = e.id";
+        $criteria->addCondition("e.deleted = 0");
+        $criteria->addCondition("t.`output_status` = 'PENDING' AND t.`output_type`= 'Docman'");
+        
+        return DocumentOutput::model()->findAll($criteria);
     }
 
+    /**
+     * @param $event_id
+     * @param $output_id
+     *
+     * @return bool;
+     */
     private function savePDFFile($event_id, $output_id)
     {
-        if($this->event = Event::model()->findByPk($event_id)) {
-
+        $pdf_generated = false;
+        $xml_generated = false;
+        $this->event = Event::model()->findByPk($event_id);
+        if ($this->event) {
             $login_page = Yii::app()->params['docman_login_url'];
             $username = Yii::app()->params['docman_user'];
             $password = Yii::app()->params['docman_password'];
@@ -92,7 +120,7 @@ class DocManDeliveryCommand extends CConsoleCommand
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
 
             curl_exec($ch);
-            
+
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, false);
             curl_setopt($ch, CURLOPT_URL, $print_url . $this->event->id . '?auto_print=' . (int)$inject_autoprint_js . '&print_only_gp=1');
@@ -100,30 +128,107 @@ class DocManDeliveryCommand extends CConsoleCommand
 
             curl_close($ch);
 
-            if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] == 'format1') {
-                $filename = "OPENEYES_" . $this->event->episode->patient->hos_num . '_' . $this->event->id . "_" . rand();
-            } else if (Yii::app()->params['docman_filename_format'] == 'format2') {
-                $filename = $this->event->episode->patient->hos_num . '_' . date('YmdHi',
-                        strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
-            } else if (Yii::app()->params['docman_filename_format'] == 'format3') {
-                $filename = $this->event->episode->patient->hos_num . '_edtdep-OEY_' . date('Ymd_His',
-                        strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
+            if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] === 'format1') {
+                $filename = "OPENEYES_" . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . $this->event->id . "_" . rand();
+            } else {
+                if (Yii::app()->params['docman_filename_format'] === 'format2') {
+                    $filename = (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . date('YmdHi',
+                            strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
+                } else {
+                    if (Yii::app()->params['docman_filename_format'] === 'format3') {
+                        $filename = (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_edtdep-OEY_' .
+                            date('Ymd_His', strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
+                    }
+                }
             }
-            file_put_contents($this->path . "/" . $filename . ".pdf", $content);
-            if (!isset(Yii::app()->params['docman_xml_format']) || Yii::app()->params['docman_xml_format'] != 'none') {
-                $this->generateXMLOutput($filename, $output_id);
+
+            $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
+
+            if ($this->generate_xml) {
+                $xml_generated = $this->generateXMLOutput($filename);
             }
-            $this->updateDelivery($output_id);
+
+            if (!$pdf_generated || ($this->generate_xml && !$xml_generated)) {
+                echo 'Generating for file ' . $filename . ' failed' . PHP_EOL;
+
+                return false;
+            }
+
+            $correspondenceDate = $this->event->event_date;
+
+            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
+            $event_type_id = $event_type->id;
+
+            $criteria = new CDbCriteria();
+            $criteria->condition = "episode_id = '" . $this->event->episode->id
+                . "' AND event_date <= '$correspondenceDate' AND deleted = 0 AND event_type_id = '$event_type_id'";
+            $criteria->order = 'event_date desc, created_date desc';
+
+            $lastOpNoteDate = '';
+            if($opNote = Event::model()->find($criteria)){
+                $lastOpNoteDate = $opNote->event_date;
+            }
+
+            $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
+            $event_type_id = $event_type->id;
+
+            $criteria = new CDbCriteria();
+            $criteria->condition = "episode_id = '" . $this->event->episode->id
+                . "' AND event_date <= '$correspondenceDate' AND deleted = 0 AND event_type_id = '$event_type_id'";
+            $criteria->order = 'event_date desc, created_date desc';
+
+            $lastExamDate = '';
+            if($examEvent = Event::model()->find($criteria)){
+                $lastExamDate = $examEvent->event_date;
+            }
+
+            $lastSignificantEventDate = '';
+            if(!$lastExamDate && $lastOpNoteDate) {
+                $lastSignificantEventDate = $lastOpNoteDate;
+            }
+            if($lastExamDate && !$lastOpNoteDate) {
+                $lastSignificantEventDate = $lastExamDate;
+            }
+            if(!$lastExamDate && !$lastOpNoteDate) {
+                $lastSignificantEventDate = NULL;
+            }
+            if($lastExamDate && $lastOpNoteDate){
+                $diff = date_diff(date_create($lastExamDate), date_create($lastOpNoteDate));
+                if($diff->days >= 0){
+                    $lastSignificantEventDate = $lastOpNoteDate;
+                }else{
+                    $lastSignificantEventDate = $lastExamDate;
+                }
+            }
+
+            if ($this->updateDelivery($output_id)) {
+                $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $this->event->id));
+                $this->logData(array(
+                    'hos_num' => $this->event->episode->patient->hos_num,
+                    'clinician_name' => $this->event->user->getFullName(),
+                    'letter_type' => (isset($element_letter->letterType->name) ? $element_letter->letterType->name : ''),
+                    'letter_finalised_date' => $this->event->last_modified_date,
+                    'letter_created_date' => $this->event->created_date,
+                    'last_significant_event_date' => $lastSignificantEventDate,
+                    'letter_sent_date' => date('Y-m-d H:i:s'),
+                ));
+            }
+
+            return true;
         }
     }
 
+    /**
+     * @param string $filename
+     *
+     * @return bool
+     */
     private function generateXMLOutput($filename)
     {
-        $element_letter = ElementLetter::model()->findByAttributes(array("event_id"=>$this->event->id));
-        $letter_types = array("0"=>"","1"=>"Clinic discharge letter","2"=>"Post-op letter","3"=>"Clinic letter","4"=>"Other letter");
-        
-        $subspeciality = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec : 'SS';
-        $subspeciality_name = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name : 'Support Services';
+        $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $this->event->id));
+        $subObj = $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty;
+        $subspeciality = isset($subObj->ref_spec) ? $subObj->ref_spec : 'SS';
+        $subspeciality_name = isset($subObj->name) ? $subObj->name : 'Support Services';
         $nat_id = isset($this->event->episode->patient->gp->nat_id) ? $this->event->episode->patient->gp->nat_id : null;
         $gp_name = isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->getFullName() : null;
         $practice_code = isset($this->event->episode->patient->practice->code) ? $this->event->episode->patient->practice->code : '';
@@ -133,62 +238,90 @@ class DocManDeliveryCommand extends CConsoleCommand
         $county = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->county) : '';
         $city = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->city) : '';
         $post_code = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->postcode) : '';
+        $letter_type = isset($element_letter->letterType->name) ? $element_letter->letterType->name : '';
 
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
             <DocumentInformation>
-            <PatientNumber>".$this->event->episode->patient->hos_num."</PatientNumber>
-            <NhsNumber>".$this->event->episode->patient->nhs_num."</NhsNumber>
-            <Name>".$this->event->episode->patient->contact->getFullName()."</Name>
-            <Surname>".$this->event->episode->patient->contact->last_name."</Surname>
-            <FirstForename>".$this->event->episode->patient->contact->first_name."</FirstForename>
+            <PatientNumber>" . $this->event->episode->patient->hos_num . "</PatientNumber>
+            <NhsNumber>" . $this->event->episode->patient->nhs_num . "</NhsNumber>
+            <Name>" . $this->event->episode->patient->contact->getFullName() . "</Name>
+            <Surname>" . $this->event->episode->patient->contact->last_name . "</Surname>
+            <FirstForename>" . $this->event->episode->patient->contact->first_name . "</FirstForename>
             <SecondForename></SecondForename>
-            <Title>".$this->event->episode->patient->contact->title."</Title>
-            <DateOfBirth>".$this->event->episode->patient->dob."</DateOfBirth>
-            <Sex>".$this->event->episode->patient->gender."</Sex>
-            <Address>".implode(", ", $address)."</Address>
+            <Title>" . $this->event->episode->patient->contact->title . "</Title>
+            <DateOfBirth>" . $this->event->episode->patient->dob . "</DateOfBirth>
+            <Sex>" . $this->event->episode->patient->gender . "</Sex>
+            <Address>" . implode(", ", $address) . "</Address>
             <AddressName></AddressName>
             <AddressNumber></AddressNumber>
             <AddressStreet>" . $address1 . "</AddressStreet>
             <AddressDistrict></AddressDistrict>
-            <AddressTown>".$city."</AddressTown>
-            <AddressCounty>".$county."</AddressCounty>
-            <AddressPostcode>".$post_code."</AddressPostcode>
+            <AddressTown>" . $city . "</AddressTown>
+            <AddressCounty>" . $county . "</AddressCounty>
+            <AddressPostcode>" . $post_code . "</AddressPostcode>
             <GP>" . $nat_id . "</GP>
             <GPName>" . $gp_name . "</GPName>
             <Surgery>" . $practice_code . "</Surgery>
             <SurgeryName></SurgeryName>
-            <LetterType>".$letter_types[$element_letter->letter_type]."</LetterType>
-            <ActivityID>".$this->event->id."</ActivityID>
-            <ActivityDate>".$this->event->event_date."</ActivityDate>
+            <LetterType>" . $letter_type . "</LetterType>
+            <ActivityID>" . $this->event->id . "</ActivityID>
+            <ActivityDate>" . $this->event->event_date . "</ActivityDate>
             <ClinicianType></ClinicianType>
             <Clinician></Clinician>
             <ClinicianName></ClinicianName>
-            <Specialty>".$subspeciality."</Specialty>
-            <SpecialtyName>".$subspeciality_name."</SpecialtyName>
+            <Specialty>" . $subspeciality . "</Specialty>
+            <SpecialtyName>" . $subspeciality_name . "</SpecialtyName>
             <Location>" . $element_letter->site->short_name . "</Location>
             <LocationName>" . $element_letter->site->name . "</LocationName>
             <SubLocation></SubLocation>
             <SubLocationName></SubLocationName>
             </DocumentInformation>";
 
-        file_put_contents($this->path."/".$filename.".XML", $this->cleanXML($xml) );
+        return (file_put_contents($this->path . "/" . $filename . ".XML", $this->cleanXML($xml)) !== false);
     }
-    
+
     /**
      * Special function to sanitize XML
-     * 
-     * @param type $xml
-     * @return type
+     *
+     * @param string $xml
+     * @return string
      */
     private function cleanXML($xml)
     {
-        return str_replace ("&", "and", $xml);
+        return str_replace("&", "and", $xml);
     }
 
+    /**
+     * @param $output_id
+     * @return bool
+     */
     private function updateDelivery($output_id)
     {
         $output = DocumentOutput::model()->findByPk($output_id);
         $output->output_status = "COMPLETE";
-        $output->save();
+
+        return $output->save();
+    }
+
+    /**
+     * @param $data
+     */
+    private function logData($data)
+    {
+        if ($this->generate_csv) {
+            $doc_log = new DocumentLog();
+            $doc_log->attributes = $data;
+            $doc_log->save();
+
+            $csv_filename = implode(DIRECTORY_SEPARATOR, array($this->path, sprintf($this->csv_format, date('Ymd'))));
+            $put_header = !file_exists($csv_filename);
+
+            $fp = fopen($csv_filename, 'ab');
+            if($put_header){
+                fputcsv($fp, array_keys($data));
+            }
+            fputcsv($fp, $data);
+            fclose($fp);
+        }
     }
 }

@@ -22,15 +22,15 @@
  *
  * The followings are the available columns in table 'User':
  *
- * @property int $id
+ * @property int    $id
  * @property string $username
  * @property string $first_name
  * @property string $last_name
  * @property string $email
- * @property int $active
+ * @property int    $active
  * @property string $password
  * @property string $salt
- * @property int $global_firm_rights
+ * @property int    $global_firm_rights
  */
 class User extends BaseActiveRecordVersioned
 {
@@ -439,10 +439,10 @@ class User extends BaseActiveRecordVersioned
     /**
      * Perform an audit log for the user
      *
-     * @param $target
-     * @param $action
-     * @param null $data
-     * @param bool $log
+     * @param       $target
+     * @param       $action
+     * @param null  $data
+     * @param bool  $log
      * @param array $properties
      */
     public function audit($target, $action, $data = null, $log = false, $properties = array())
@@ -598,17 +598,17 @@ class User extends BaseActiveRecordVersioned
      */
     public function saveFirms(array $firms)
     {
-        if(!$this->global_firm_rights && count($firms) === 0){
+        if (!$this->global_firm_rights && count($firms) === 0) {
             throw new FirmSaveException('When global firm rights are not set, a firm must be selected');
         }
 
         $transaction = Yii::app()->db->beginTransaction();
         FirmUserAssignment::model()->deleteAll('user_id = :user_id', array('user_id' => $this->id));
-        foreach($firms as $firm){
+        foreach ($firms as $firm) {
             $firmUserAssign = new FirmUserAssignment();
             $firmUserAssign->user_id = $this->id;
             $firmUserAssign->firm_id = $firm;
-            if(!$firmUserAssign->insert()){
+            if (!$firmUserAssign->insert()) {
                 throw new CDbException('Unable to save firm assignment');
             }
         }
@@ -689,10 +689,14 @@ class User extends BaseActiveRecordVersioned
         if (Yii::app()->params['no_md5_verify']) {
             return $decrypt;
         }
+
         return Helper::md5Verified($decrypt);
     }
 
-
+    /**
+     * @param $uniqueCodeId
+     * @return string
+     */
     public function generateUniqueCodeWithChecksum($uniqueCodeId)
     {
         $uniqueCode = UniqueCodes::model()->findByPk($uniqueCodeId)->code;
@@ -704,6 +708,9 @@ class User extends BaseActiveRecordVersioned
         return $finalUniqueCode;
     }
 
+    /**
+     * @return mixed
+     */
     protected function getUniqueCode()
     {
         $userUniqueCode = UniqueCodeMapping::model()->findByAttributes(array('user_id' => $this->id));
@@ -711,17 +718,23 @@ class User extends BaseActiveRecordVersioned
         return $userUniqueCode->unique_code_id;
     }
 
+    /**
+     * @param $signature_pin
+     * @return bool|string
+     */
     public function getDecryptedSignature($signature_pin)
     {
-        if($signature_pin)
-        {
-            if($this->signature_file_id){
+        if ($signature_pin) {
+            if ($this->signature_file_id) {
                 $signature_file = ProtectedFile::model()->findByPk($this->signature_file_id);
-                $image_data = base64_decode($this->decryptSignature(
-                    file_get_contents($signature_file->getPath()),
-                    md5(md5($this->id).$this->generateUniqueCodeWithChecksum($this->getUniqueCode()).$signature_pin)));
-                if(strlen($image_data) > 100)
-                {
+                $image_data = base64_decode(
+                    $this->decryptSignature(
+                        file_get_contents($signature_file->getPath()),
+                        md5(md5($this->id) . $this->generateUniqueCodeWithChecksum($this->getUniqueCode()) . $signature_pin)
+                    )
+                );
+
+                if (strlen($image_data) > 100) {
                     return $image_data;
 
                 }
@@ -730,6 +743,5 @@ class User extends BaseActiveRecordVersioned
 
         return false;
     }
-
 
 }

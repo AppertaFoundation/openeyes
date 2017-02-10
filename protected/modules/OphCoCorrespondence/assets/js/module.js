@@ -18,13 +18,28 @@
 
 var correspondence_markprinted_url, correspondence_print_url;
 
+function setDropDownWidth(id){
+    var $option_obj;
+    var option_width;
+    var arrow_width = 30;
+    
+    $option_obj = $("<span>").html($('#' + id +' option:selected').text());
+    $option_obj.appendTo('body');
+    option_width = $option_obj.width();
+    $option_obj.remove();
+
+    $('#' + id).width(option_width + arrow_width);
+}
+
 function updateCorrespondence(macro_id)
 {
     var nickname = $('input[id="ElementLetter_use_nickname"][type="checkbox"]').is(':checked') ? '1' : '0';
     var obj = $(this);
 
     if ( macro_id != '') {
-
+        
+        setDropDownWidth('macro_id');
+        
         $.ajax({
             'type': 'GET',
             'dataType': 'json',
@@ -44,9 +59,7 @@ function updateCorrespondence(macro_id)
                 obj.val('');
                 
                 //set letter type
-                if('Post-op' == $('#macro_id option:selected').text() ){
-                    $('#ElementLetter_letter_type').val(2);
-                }
+                $('#ElementLetter_letter_type_id').val(data.sel_letter_type_id);
             }
         });
     }
@@ -75,6 +88,10 @@ $(document).ready(function() {
 	});
 
 	handleButton($('#et_saveprint'),function() {
+		$('#ElementLetter_draft').val(0);
+	});
+        
+	handleButton($('#et_save'),function() {
 		$('#ElementLetter_draft').val(0);
 	});
 

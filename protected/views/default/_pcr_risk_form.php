@@ -20,13 +20,44 @@ if (!isset($side)) {
     $side = 'left';
 }
 if ($side === 'left') {
-    $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js'),
-        false, -1);
+    $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js'), false, -1);
     ?>
     <script type="text/javascript">
-        $.getScript('<?=$jsPath?>/PCRCalculation.js');
+
+        function callCalculate(){
+
+            if( $('#Element_OphTrOperationnote_ProcedureList_eye_id_2').length == 0 && $('#Element_OphTrOperationnote_ProcedureList_eye_id_2').length == 0 ){
+                pcrCalculate($('#ophCiExaminationPCRRiskLeftEye'), 'left');
+                pcrCalculate($('#ophCiExaminationPCRRiskRightEye'), 'right');
+            } else {
+                if( $('#Element_OphTrOperationnote_ProcedureList_eye_id_2').is(':checked') ){
+                    pcrCalculate($('#ophCiExaminationPCRRiskRightEye'), 'right');
+                }
+
+                if( $('#Element_OphTrOperationnote_ProcedureList_eye_id_1').is(':checked') ){
+                    pcrCalculate($('#ophCiExaminationPCRRiskLeftEye'), 'left');
+                }
+            }
+
+        }
+
+        $.getScript('<?=$jsPath?>/PCRCalculation.js', function(){
+            //Map the elements
+            mapExaminationToPcr();
+            //Make the initial calculations
+                pcrCalculate($('#ophCiExaminationPCRRiskLeftEye'), 'left');
+                pcrCalculate($('#ophCiExaminationPCRRiskRightEye'), 'right');
+
+            $(document.body).on('change', '#ophCiExaminationPCRRiskLeftEye, #ophCiExaminationPCRRiskRightEye', function () {
+                callCalculate();
+
+            });
+
+            callCalculate();
+
+        });
     </script>
-    <?php
+<?php
 
 }
 $criteria = new CDbCriteria();
@@ -201,10 +232,10 @@ $criteria = new CDbCriteria();
                 <div class="large-2 column">
 
                     <?php $grades = DoctorGrade::model()->findAll($criteria->condition = 'has_pcr_risk', array('order' => 'display_order'));?>
-                    <select id="<?='pcrrisk_'.$side.'_doctor_grade_id'?>" class="pcr_doctor_grade">
+                    <select id="<?='pcrrisk_'.$side.'_doctor_grade_id'?>" class="pcr_doctor_grade" name="PcrRisk[<?= $side ?>][pcr_doctor_grade]">
                         <?php if(is_array($grades)):?>
                             <?php foreach ($grades as $grade):?>
-                                    <option value="<?=$grade->pcr_risk_value?>"><?=$grade->grade?></option>
+                                <option value="<?=$grade->id?>" data-pcr-value="<?=$grade->pcr_risk_value?>"><?=$grade->grade?></option>
                             <?php endforeach;?>
                         <?php endif;?>
                     </select>

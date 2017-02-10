@@ -123,7 +123,7 @@ class Helper
      *
      * @param string $value
      *
-     * @return float
+     * @return int
      */
     public static function mysqlDate2JsTimestamp($value)
     {

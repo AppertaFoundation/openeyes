@@ -50,6 +50,22 @@ class OptomPortalConnection
     protected $client;
     protected $config = array();
 
+    /**
+     * @return Zend_Http_Client
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
 
     /**
      * OptomPortalConnection constructor.
@@ -92,12 +108,21 @@ class OptomPortalConnection
     /**
      * Init HTTP client.
      *
-     * @return Zend_Http_Client
      * @throws Zend_Http_Client_Exception
      */
     protected function initClient()
     {
-        $client = new Zend_Http_Client($this->config['uri']);
+        $clientConfig = array();
+        if($this->yii->params['curl_proxy']){
+            $proxy = parse_url($this->yii->params['curl_proxy']);
+            $clientConfig['adapter'] = 'Zend_Http_Client_Adapter_Proxy';
+            $clientConfig['proxy_host'] = $proxy['host'];
+            if(array_key_exists('port', $proxy)){
+                $clientConfig['proxy_port'] = $proxy['port'];
+            }
+        }
+
+        $client = new Zend_Http_Client($this->config['uri'], $clientConfig);
         $client->setHeaders('Accept', 'application/vnd.OpenEyesPortal.v1+json');
 
         $this->client = $client;
