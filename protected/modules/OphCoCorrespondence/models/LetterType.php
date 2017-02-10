@@ -18,20 +18,21 @@
  */
 
 /**
- * This is the model class for table "document_log".
+ * The followings are the available columns in table '':.
  *
- * The followings are the available columns in table 'document_log':
- *
- * @property int $id
+ * @property string $id
+ * @property int $event_id
  *
  * The followings are the available model relations:
+ * @property Event $event
  */
-class DocumentLog extends BaseActiveRecordVersioned
+class LetterType extends BaseActiveRecordVersioned
 {
+
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return DocumentLog the static model class
+     * @return ElementOperation the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -43,7 +44,7 @@ class DocumentLog extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'document_log';
+        return 'ophcocorrespondence_letter_type';
     }
 
     /**
@@ -51,12 +52,9 @@ class DocumentLog extends BaseActiveRecordVersioned
      */
     public function rules()
     {
-        // NOTE: you should only define rules for those attributes that
-        // will receive user inputs.
         return array(
-            // The following rule is used by search().
-            // Please remove those attributes that should not be searched.
-            array('id, hos_num, clinician_name, letter_finalised_date, letter_created_date, letter_sent_date, last_significant_event_date, letter_type', 'safe'),
+            array('name', 'safe'),
+            array('name', 'required'),
         );
     }
 
@@ -67,8 +65,7 @@ class DocumentLog extends BaseActiveRecordVersioned
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array(
-        );
+        return array();
     }
 
     /**
@@ -77,6 +74,27 @@ class DocumentLog extends BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
+            'name' => 'Letter Type',
         );
+    }
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // Warning: Please modify the following code to remove attributes that
+        // should not be searched.
+
+        $criteria = new CDbCriteria();
+
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('name', $this->name, true);
+
+        return new CActiveDataProvider(get_class($this), array(
+            'criteria' => $criteria,
+        ));
     }
 }

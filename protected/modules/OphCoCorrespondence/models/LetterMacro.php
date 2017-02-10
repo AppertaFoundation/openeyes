@@ -54,7 +54,7 @@ class LetterMacro extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name, recipient_id, use_nickname, body, cc_patient, cc_doctor, display_order, site_id, subspecialty_id, firm_id, cc_drss, episode_status_id, letter_type', 'safe'),
+            array('name, recipient_id, use_nickname, body, cc_patient, cc_doctor, display_order, site_id, subspecialty_id, firm_id, cc_drss, episode_status_id, letter_type_id', 'safe'),
             array('name, use_nickname, body, cc_patient, cc_doctor, type', 'required'),
             array('site_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'site'),
             array('subspecialty_id', 'RequiredIfFieldValidator', 'field' => 'type', 'value' => 'subspecialty'),

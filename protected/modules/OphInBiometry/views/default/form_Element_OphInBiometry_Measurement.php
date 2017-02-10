@@ -61,6 +61,9 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
         }
     }
 
+    $rightData = array();
+    $leftData = array();
+
     for ($i = 0; $i < count($data); ++$i) {
         if($data[$i]->side == 0){
             $rightData[] = $data[$i];
@@ -70,9 +73,11 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
         }
     }
 
+    $methodnameRight = array();
+    $methodnameLeft = array();
+
     if($data){
         $unitId = $chosenVA->unit_id;
-
 
         for ($i = 0; $i < count($rightData); ++$i) {
             $VAfinalright = $api->getVAvalue($rightData[$i]->value, $unitId);
@@ -108,8 +113,8 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
     </header>
     <div class="element-fields element-eyes row">
         <div class="element-eye right-eye column">
-            <?php if ($element->hasRight()) {
-                if($data){
+            <?php
+                if(count($methodnameRight)){
                     ?>
                     <div class="data-row">
                         <div class="data-value">
@@ -138,11 +143,11 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
                     </div>
                     <?php
                 }
-            } ?>
+            ?>
         </div>
         <div class="element-eye left-eye column">
             <?php
-            if($data){
+            if(count($methodnameLeft)){
                 ?>
                 <div class="data-row">
                     <div class="data-value">
@@ -193,6 +198,9 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
         }
     }
 
+    $rightNearData = array();
+    $leftNearData = array();
+
     if($NearVAFound){
         for ($i = 0; $i < count($neardata); ++$i) {
             if($neardata[$i]->side == 0){
@@ -204,9 +212,6 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
         }
 
         $unitId = $chosenNearVA->unit_id;
-
-
-
 
         for ($i = 0; $i < count($rightNearData); ++$i) {
             $VAfinalright = $api->getVAvalue($rightNearData[$i]->value, $unitId);
@@ -237,8 +242,8 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
     </header>
     <div class="element-fields element-eyes row">
         <div class="element-eye right-eye column">
-            <?php if ($element->hasRight()) {
-                if ($NearVAFound) {
+            <?php
+                if (count($rightNearData)) {
                     ?>
                     <div class="data-row">
                         <div class="data-value">
@@ -268,11 +273,11 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
                     </div>
                     <?php
                 }
-            } ?>
+            ?>
         </div>
         <div class="element-eye left-eye column">
             <?php
-            if ($NearVAFound) {
+            if (count($leftNearData)) {
                 ?>
                 <div class="data-row">
                     <div class="data-value">
@@ -344,7 +349,11 @@ if ($refractfound) {
                 <?php
             } else {
                 ?>
-                Not recorded
+                <div class="data-row">
+                    <div class="data-value">
+                        Not recorded
+                    </div>
+                </div>
                 <?php
             } ?>
         </div>
@@ -357,7 +366,11 @@ if ($refractfound) {
                 <?php
             } else {
                 ?>
-                Not recorded
+                <div class="data-row">
+                    <div class="data-value">
+                        Not recorded
+                    </div>
+                </div>
                 <?php
             } ?>
         </div>
@@ -370,10 +383,18 @@ if ($refractfound) {
     </header>
     <div class="element-fields element-eyes row">
         <div class="element-eye right-eye column">
-            <div class="row refraction">Not recorded</div>
+            <div class="data-row">
+                <div class="data-value">
+                    Not recorded
+                </div>
+            </div>
         </div>
         <div class="element-eye left-eye column">
-            <div class="row refraction">Not recorded</div>
+            <div class="data-row">
+                <div class="data-value">
+                    Not recorded
+                </div>
+            </div>
         </div>
     </div>
         <?php
@@ -398,13 +419,6 @@ if ($refractfound) {
                 <div class="active-form">
                     <a href="#" class="icon-remove-side remove-side">Remove side</a>
                     <?php echo CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
-                    <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
-                        'side' => 'right',
-                        'element' => $element,
-                        'form' => $form,
-                        'data' => $data,
-                        'measurementInput' => $iolRefValues,
-                    )); ?>
                 </div>
                 <div class="inactive-form">
                     <div class="add-side">
@@ -413,6 +427,16 @@ if ($refractfound) {
                         </a>
                     </div>
                 </div>
+                <div class="active-form">
+                <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
+                    'side' => 'right',
+                    'element' => $element,
+                    'form' => $form,
+                    'data' => $data,
+                    'measurementInput' => $iolRefValues,
+                )); ?>
+                    </div>
+
             </div>
             <div id="left-eye-lens"
                  class="element-eye left-eye top-pad right side column <?php if (!$element->hasLeft()) {
@@ -421,18 +445,8 @@ if ($refractfound) {
                 <div class="element-header left-side">
                     <h4><b>LEFT</b></h4>
                 </div>
-                <div class="active-form">
-                    <?php if ($element->hasLeft()) {
-                        ?>
                         <div class="active-form">
                             <a href="#" class="icon-remove-side remove-side">Remove side</a>
-                            <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
-                                'side' => 'left',
-                                'element' => $element,
-                                'form' => $form,
-                                'data' => $data,
-                                'measurementInput' => $iolRefValues,
-                            )); ?>
                         </div>
                         <div class="inactive-form">
                             <div class="add-side">
@@ -441,9 +455,14 @@ if ($refractfound) {
                                 </a>
                             </div>
                         </div>
-                        <?php
-                    }
-                    ?>
+                        <div class="active-form">
+                        <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
+                            'side' => 'left',
+                            'element' => $element,
+                            'form' => $form,
+                            'data' => $data,
+                            'measurementInput' => $iolRefValues,
+                        )); ?></div>
                 </div>
             </div>
     </section>
