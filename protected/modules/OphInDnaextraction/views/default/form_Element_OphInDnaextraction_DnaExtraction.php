@@ -26,13 +26,22 @@
 		<?php 
         $storage = new OphInDnaextraction_DnaExtraction_Storage();
         echo $form->dropDownList($element, 'storage_id', CHtml::listData($storage->getAvailableCombinedList( $element->storage_id ), 'id', 'value' ), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
-        <?php echo CHtml::button('Add new storage', 
-            array(
-                'id'        => 'addNewStoragePopup',
-                'class'     => 'button small secondary', 
-                'type'      => 'button',
-            )
-        ); ?>
+        
+        <div class="row field-row">
+            <div class="large-3 column">
+                <label></label>
+            </div>
+            <div class="large-2 column end">
+                 <?php echo CHtml::button('Add new storage', 
+                    array(
+                        'id'        => 'addNewStoragePopup',
+                        'class'     => 'button small secondary', 
+                        'type'      => 'button',
+                    )
+                ); ?>
+            </div>
+        </div>
+        
         <?php echo $form->datePicker($element, 'extracted_date', array('maxDate' => 'today'), array(), array('label' => 3, 'field' => 2))?>
 		<?php echo $form->textField($element, 'extracted_by', array(), array(), array('label' => 3, 'field' => 2))?>
 		<?php echo $form->textField($element, 'dna_concentration', array(), array(), array('label' => 3, 'field' => 2))?>
