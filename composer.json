@@ -3,7 +3,7 @@
   "description": "Electronic Patient Record system for use in Ophthalmology clinics",
   "require": {
     "yiisoft/yii": "1.1.14",
-    "rlanvin/php-rrule": "1.2.0",
+    "rlanvin/php-rrule": "1.3.1",
     "endroid/qrcode": "^1.7",
     "setasign/fpdi-fpdf": "1.6.1"
   },
@@ -31,6 +31,12 @@
   },
   "config": {
     "bin-dir": "bin"
+  },
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://packagist.org"
+    }
   },
   "autoload": {
     "classmap": ["features/bootstrap/Pages/OpenEyesPage.php"]

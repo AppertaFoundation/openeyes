@@ -11,7 +11,7 @@ opts = GetoptLong.new(
 )
 
 hostname = 'openeyes.vm'
-servername = 'OpenEyes'
+servername = 'OpenEyes-virgin' + '_' + Time.now.strftime("%Y%m%d%H%M%S")
 
 opts.each do |opt, arg|
   case opt
