@@ -54,9 +54,11 @@ class OphInDnaextraction_DnaExtraction_Box extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('value', 'required'),
-            array('maxletter', 'required'),
-            array('maxnumber', 'required'),
+            array('value, maxletter, maxnumber', 'required'),
+            array('maxletter', 'match', 'pattern' => '/^[a-zA-Z\s]{1}+$/',
+                    'message' => '{attribute} can only contain 1 word character'
+                ),
+
             array('value, maxletter, maxnumber, display_order', 'safe'),
         );
     }
