@@ -45,7 +45,7 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
             array('letter', 'required'),
             array('number', 'required'),
             array('number', 'numerical', 'min' => 1),
-            array('box_id, letter, number','availabeStorage'),
+            array('letter, number','availabeStorage'),
             array('box_id, letter, number','safe'),
         );
     }
@@ -104,7 +104,7 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
             $this->addError($attribute, 'This parameters are already in use.');
         }
         
-        $validParams = $this->letterNumberValidation();
+        $validParams = $this->letterNumberValidation($attribute);
        
         if( $validParams !== TRUE){
             $this->addError($attribute, $validParams);
@@ -115,7 +115,7 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
      * Letter and number validation in admin
      */
      
-    protected function letterNumberValidation()
+    protected function letterNumberValidation($attribute)
     {
         $box = new OphInDnaextraction_DnaExtraction_Box();
         $boxRanges = $box->boxMaxValues($this->box_id);
@@ -136,8 +136,8 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
                 $validLetter = TRUE;
             }
         }
-        if($validLetter == FALSE){
-            return 'This letter is larger than maximum value.';
+        if($attribute == 'letter' && $validLetter == FALSE){
+            return "$attribute: This letter is larger than maximum value.";
         }
         
         $validNumber = FALSE;
@@ -146,8 +146,8 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
                 $validNumber = TRUE;
             }
         }
-        if($validNumber == FALSE){
-            return 'This number is larger than maximum value.';
+        if($attribute == 'number' && $validNumber == FALSE){
+            return "$attribute: This number is larger than maximum value.";
         }
         
         return TRUE;
