@@ -26,7 +26,31 @@
 
 					<div class="row field-row">
 						<div class="<?php echo $form->columns('label'); ?>">
-							<label for="specular_microscope_id">Specular Microscope:</label>
+							<?php echo $element->getAttributeLabel('specular_microscope_id')?>:
+						</div>
+						<div class="<?php echo $form->columns('field'); ?>">
+							<?php
+							$allSpecularMicroscope = \OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->findAll(array('order' => 'display_order'));
+							echo CHtml::dropDownList('specular_microscope_id',
+								null,
+								CHtml::listData($allSpecularMicroscope, 'id', 'name')); ?>
+						</div>
+					</div>
+					<div class="row field-row">
+						<div class="<?php echo $form->columns('label'); ?>">
+							<?php echo $element->getAttributeLabel('scan_quality_id')?>:
+						</div>
+						<div class="<?php echo $form->columns('field'); ?>">
+							<?php
+							$allScanQuality = \OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->findAll(array('order' => 'display_order'));
+							echo CHtml::dropDownList('scan_quality_id',
+								null,
+								CHtml::listData($allScanQuality, 'id', 'name')); ?>
+						</div>
+					</div>
+					<div class="row field-row">
+						<div class="<?php echo $form->columns('label'); ?>">
+							<?php echo $element->getAttributeLabel('endothelial_cell_density_value')?>:
 						</div>
 						<div class="<?php echo $form->columns('field'); ?>">
 							<?php
@@ -38,31 +62,7 @@
 					</div>
 					<div class="row field-row">
 						<div class="<?php echo $form->columns('label'); ?>">
-							<label for="scan_quality_id">Scan Quality:</label>
-						</div>
-						<div class="<?php echo $form->columns('field'); ?>">
-							<?php
-							$allAllergies = \Allergy::model()->findAll(array('order' => 'display_order', 'condition' => 'active=1'));
-							echo CHtml::dropDownList('allergy_id',
-								null,
-								CHtml::listData($allAllergies, 'id', 'name'), array('empty' => '-- Select --')); ?>
-						</div>
-					</div>
-					<div class="row field-row">
-						<div class="<?php echo $form->columns('label'); ?>">
-							<label for="endothelial_cell_density_value">Endothelial Cell Density:</label>
-						</div>
-						<div class="<?php echo $form->columns('field'); ?>">
-							<?php
-							$allAllergies = \Allergy::model()->findAll(array('order' => 'display_order', 'condition' => 'active=1'));
-							echo CHtml::dropDownList('allergy_id',
-								null,
-								CHtml::listData($allAllergies, 'id', 'name'), array('empty' => '-- Select --')); ?>
-						</div>
-					</div>
-					<div class="row field-row">
-						<div class="<?php echo $form->columns('label'); ?>">
-							<label for="coefficient_variation_value">Coefficient of Variations:</label>
+							<?php echo $element->getAttributeLabel('coefficient_variations_value')?>:
 						</div>
 						<div class="<?php echo $form->columns('field'); ?>">
 							<?php
