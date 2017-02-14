@@ -118,11 +118,6 @@ class Element_OphCiExamination_Specular_Microscopy extends \SplitEventTypeElemen
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
-//        * @property int $specular_microscope_id
-//    * @property int $scan_quality_id
-//    * @property int $endothelial_cell_density_value
-//    * @property dec $coefficient_variation_value
-
         $criteria->compare('specular_microscope_id', $this->specular_microscope_id);
         $criteria->compare('scan_quality_id', $this->scan_quality_id);
         $criteria->compare('endothelial_cell_density_value', $this->endothelial_cell_density_value);

@@ -6,10 +6,6 @@ class m170202_145814_create_specular_microscopy extends CDbMigration
     public function up()
     {
 
-        // TODO: All datatypes below need to be checked.
-
-        $this->insert('element_type', array('name' => 'Konan', 'display_order' => '1'));
-
         $this->createTable('ophciexamination_specular_microscope', array(
             'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
             'name' => 'varchar(128) NOT NULL',
