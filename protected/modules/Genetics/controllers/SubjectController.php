@@ -11,6 +11,10 @@ class SubjectController extends BaseModuleController
 
     protected $itemsPerPage = 20;
 
+    public $renderPatientPanel = false;
+
+    public $patient;
+
     /**
      * Configure access rules
      *
@@ -67,12 +71,16 @@ class SubjectController extends BaseModuleController
         $admin = new Crud(GeneticsPatient::model(), $this);
         if ($id) {
             $admin->setModelId($id);
+            $this->renderPatientPanel = true;
+            $this->patient = $admin->getModel()->patient;
         }
 
         $admin->setModelDisplayName('Genetics Subject');
         $admin->setEditFields(array(
+            'id' => 'label',
             'patient_id' => array(
                 'widget' => 'PatientLookup',
+                'extras' => true
             ),
             'gender_id' => array(
                 'widget' => 'DropDownList',
@@ -117,6 +125,7 @@ class SubjectController extends BaseModuleController
                         )
                     ),
                 ),
+                'link' => '/Genetics/pedigree/edit/%s'
             ),
             'previous_studies' => array(
                 'widget' => 'CustomView',
@@ -165,14 +174,6 @@ class SubjectController extends BaseModuleController
         if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 $post = Yii::app()->request->getPost('GeneticsPatient', array());
-                if (isset($post['relationships'])) {
-                    foreach ($admin->getModel()->relationships as $relationship) {
-                        if (array_key_exists($relationship->related_to_id, $post['relationships'])) {
-                            $relationship->relationship_id = $post['relationships'][$relationship->related_to_id]['relationship_id'];
-                            $relationship->save();
-                        }
-                    }
-                }
                 if (isset($post['pedigrees_through'])) {
                     foreach ($admin->getModel()->pedigrees as $pedigree) {
                         if (array_key_exists($pedigree->id, $post['pedigrees_through'])) {
@@ -187,6 +188,7 @@ class SubjectController extends BaseModuleController
                         }
                     }
                 }
+
                 $admin->redirect();
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
@@ -211,6 +213,7 @@ class SubjectController extends BaseModuleController
         $admin->getSearch()->addSearchItem('comments');
         $admin->getSearch()->addSearchItem('diagnoses.id', array('type' => 'disorder'));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+        $admin->getSearch()->setDefaultResults(false);
         $admin->listModel();
     }
 

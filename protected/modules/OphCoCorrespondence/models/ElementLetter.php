@@ -67,7 +67,7 @@ class ElementLetter extends BaseEventTypeElement
                 'print_all, is_signed_off',
                 'safe'
             ),
-            array('letter_type', 'letterTypeValidator'),
+            array('letter_type_id', 'letterTypeValidator'),
             array('site_id, date, introduction, body, footer', 'requiredIfNotDraft'),
             array('use_nickname', 'required'),
             array('date', 'OEDateValidator'),
@@ -75,7 +75,7 @@ class ElementLetter extends BaseEventTypeElement
             //array('is_signed_off', 'isSignedOffValidator'), // they do not want this at the moment - waiting for the demo/feedback
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, site_id, use_nickname, date, introduction, re, body, footer, draft, direct_line, letter_type', 'safe', 'on' => 'search'),
+            array('id, event_id, site_id, use_nickname, date, introduction, re, body, footer, draft, direct_line, letter_type_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -95,7 +95,7 @@ class ElementLetter extends BaseEventTypeElement
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             'enclosures' => array(self::HAS_MANY, 'LetterEnclosure', 'element_letter_id', 'order' => 'display_order'),
             'document_instance' => array(self::HAS_MANY, 'DocumentInstance', array( 'correspondence_event_id' => 'event_id')),
-            
+            'letterType' => array(self::BELONGS_TO, 'LetterType', 'letter_type_id'),
         );
     }
 
@@ -216,7 +216,7 @@ class ElementLetter extends BaseEventTypeElement
 
         $options = array('Patient'.$patient->id => $patient->fullname.' (Patient)');
         if (!isset($patient->contact->address)) {
-            $options[$patient->contact->id] .= ' - NO ADDRESS';
+            $options['Patient'.$patient->id] .= ' - NO ADDRESS';
         }
 
         if ($patient->gp) {

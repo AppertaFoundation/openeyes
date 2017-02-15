@@ -69,7 +69,7 @@ $widgetOptionsJson = json_encode(array(
       <?php } ?>
     <div class="multi-select<?php if (!$inline) {echo ' multi-select-list';} ?>"
          data-options='<?php echo $widgetOptionsJson; ?>'
-         <?php if(isset($through['options'])){ ?>data-statuses='<?php json_encode($through['options'])?>' <?php } ?>
+         <?php if($through): ?>data-statuses='<?=json_encode($through['options'])?>' <?php endif; ?>
     >
       <input type="hidden" name="<?php echo CHtml::modelName($element) ?>[MultiSelectList_<?php echo $field ?>]" class="multi-select-list-name"/>
       <div class="multi-select-dropdown-container">
@@ -110,9 +110,16 @@ $widgetOptionsJson = json_encode(array(
           <?php foreach ($selected_ids as $id) {
               if (isset($options[$id])) { ?>
                 <li>
-                  <span class="text">
-                    <?php echo strip_tags($options[$id]) ?>
-                  </span>
+                  <?php
+                  if(isset($link) && $link): ?>
+                  <a href="<?= sprintf($link, $id)?>">
+                  <?php endif;?>
+                    <span class="text">
+                      <?php echo strip_tags($options[$id]) ?>
+                    </span>
+                  <?php if(isset($link) && $link): ?>
+                  </a>
+                  <?php endif;?>
                   <a href="#" data-text="<?php echo $options[$id] ?>"
                      class="MultiSelectRemove remove-one<?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"<?php if (isset($htmlOptions['data-linked-fields'])) { ?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"<?php } ?><?php if (isset($htmlOptions['data-linked-values'])) { ?> data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"<?php } ?>>Remove</a>
                   <input type="hidden" name="<?php echo $field ?>[]" value="<?php echo $id ?>"
@@ -123,7 +130,7 @@ $widgetOptionsJson = json_encode(array(
                       } ?>
                   />
                   <?php
-                    if(isset($through['current'])) {
+                    if($through) {
                       $currentField = 0;
                       foreach ( $through['current'] as $current) {
                         if($current->{$through['related_by']} === $id){

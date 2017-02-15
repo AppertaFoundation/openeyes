@@ -17,12 +17,30 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 ?>
+<?php
+$clinical = $clinical = $this->checkAccess('OprnViewClinical');
+
+$warnings = $this->patient->getWarnings($clinical);
+?>
 
 <?php $this->beginContent('//patient/event_container'); ?>
 
 	<?php
     $this->moduleNameCssClass .= ' highlight-fields';
     $this->title .= ' ('.Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($this->event->id))->status->name.')'?>
+
+<?php if ($warnings) { ?>
+	<div class="row">
+		<div class="large-12 column">
+			<div class="alert-box patient with-icon">
+				<?php foreach ($warnings as $warn) {?>
+					<strong><?php echo $warn['long_msg']; ?></strong>
+					- <?php echo $warn['details'];
+				}?>
+			</div>
+		</div>
+	</div>
+<?php }?>
 
 	<?php if (!$operation->has_gp) {?>
 		<div class="alert-box alert with-icon">

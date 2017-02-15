@@ -148,7 +148,7 @@ class GeneticsPatient extends BaseActiveRecord
     public function attributeLabels()
     {
         return array(
-            'id' => 'ID',
+            'id' => 'Subject ID',
             'patient_id' => 'Patient',
             'gender_id' => 'Karyotypic Sex',
             'is_deceased' => 'Is Deceased',
@@ -212,7 +212,7 @@ class GeneticsPatient extends BaseActiveRecord
     /**
      * @param int $pedigree_id
      *
-     * @return bool|string
+     * @return string
      */
     public function statusForPedigree($pedigree_id)
     {
@@ -225,8 +225,8 @@ class GeneticsPatient extends BaseActiveRecord
 
         $patientPedigree = GeneticsPatientPedigree::model()->find($criteria);
 
-        if(!$patientPedigree) {
-            return false;
+        if(!$patientPedigree || !$patientPedigree->status) {
+            return 'Uknown';
         }
 
         return $patientPedigree->status->name;

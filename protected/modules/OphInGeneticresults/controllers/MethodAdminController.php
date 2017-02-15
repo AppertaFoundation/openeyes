@@ -22,7 +22,7 @@ class MethodAdminController extends BaseAdminController
     public function actionList()
     {
         $admin = new Admin(OphInGeneticresults_Test_Method::model(), $this);
-        $admin->setModelDisplayName('Genetic Test Method');
+        $admin->setModelDisplayName('Genetic Results Method');
         $admin->setListFields(array(
             'id',
             'name',
@@ -33,7 +33,7 @@ class MethodAdminController extends BaseAdminController
     }
 
     /**
-     * Edits or adds a Genetic Test Method.
+     * Edits or adds a Genetic Results Method.
      *
      * @param bool|int $id
      *
@@ -45,7 +45,7 @@ class MethodAdminController extends BaseAdminController
         if ($id) {
             $admin->setModelId($id);
         }
-        $admin->setModelDisplayName('Genetic Test Method');
+        $admin->setModelDisplayName('Genetic Results Method');
         $admin->setEditFields(array(
             'name' => 'text',
         ));

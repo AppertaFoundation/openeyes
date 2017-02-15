@@ -256,6 +256,7 @@ return array(
     ),
 
     'params' => array(
+        'utf8_decode_required' => true,
         'pseudonymise_patient_details' => false,
         'ab_testing' => false,
         'auth_source' => 'BASIC', // Options are BASIC or LDAP.
@@ -342,7 +343,7 @@ return array(
                         'title' => 'Add Patient',
                         'uri' => 'patient/create',
                         'position' => 9,
-                        //'restricted' => array('Patient Merge', 'Patient Merge Request'),
+                        'restricted' => array('TaskAddPatient'),
                     ),
 
                 ),
@@ -426,6 +427,13 @@ return array(
                     'saveprint' => 'Save and print'
             )
         ),
+
+        /**
+         *  Operation bookings will be automatically scheduled to the next available slot (regardless of the firm)
+         */
+        "auto_schedule_operation" => false,
+
         'clinical_management_pcr' => true,
+        'docman_generate_csv' => false,
     ),
 );

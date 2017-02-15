@@ -109,6 +109,11 @@ class WhiteboardController extends BaseDashboardController
         }
         $this->setWhiteboard($whiteboard);
 
+        if (is_object($whiteboard->booking) && $whiteboard->booking->isEditable() && !$whiteboard->is_confirmed)
+        {
+            $whiteboard->loadData($id);
+        }
+
         $this->render('view', array('data' => $whiteboard), false, true);
     }
 

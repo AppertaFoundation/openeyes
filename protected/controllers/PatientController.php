@@ -40,7 +40,7 @@ class PatientController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'create', 'update'),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'practiceList' ),
                 'users' => array('@'),
             ),
             array('allow',
@@ -84,6 +84,10 @@ class PatientController extends BaseController
                 'actions' => array('editSocialHistory', 'editSocialHistory'),
                 'roles' => array('OprnEditSocialHistory'),
             ),
+            array('allow',
+                'actions' => array('create', 'update'),
+                'roles' => array('TaskAddPatient'),
+            )
         );
     }
 
@@ -120,7 +124,7 @@ class PatientController extends BaseController
         Yii::app()->assetManager->registerScriptFile('js/patientSummary.js');
 
         $this->patient = $this->loadModel($id);
-
+        
         $tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
         $eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
 
@@ -1480,30 +1484,15 @@ class PatientController extends BaseController
         $this->performAjaxValidation(array($patient, $contact, $address));
         
         if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
-        {
-            
+        {   
             $contact->attributes = $_POST['Contact'];
-            try {
-                $contact->save();
-            } catch (Exception $e) {
-                //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
-            }
-
-            
             $patient->attributes = $_POST['Patient'];
-            $patient->contact_id = $contact->id;
-
-            try {
-                $patient->save();
-            } catch (Exception $e) {
-                //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
-            }
-            
             $address->attributes = $_POST['Address'];
-            $address->contact_id = $contact->id;
-            if($address->save()){
-                $this->redirect(array('view', 'id' => $patient->id));
-            }
+            
+            // not to be sync with PAS
+            $patient->is_local = 1;
+            
+            list($contact, $patient, $address) = $this->performPatientSave($contact, $patient, $address);
         }
         
         $this->render('crud/create',array(
@@ -1511,6 +1500,54 @@ class PatientController extends BaseController
                         'contact' => $contact,
                         'address' => $address,
         ));
+   }
+   
+   /**
+    * Saving the Contact, Patient and Address object
+    * 
+    * @param Contact $contact
+    * @param Patient $patient
+    * @param Address $address
+    * @return on validation error returns the 3 objects otherwise redirects to the patient view page
+    */
+   private function performPatientSave(Contact $contact, Patient $patient, Address $address)
+   {
+        $transaction = Yii::app()->db->beginTransaction();
+
+        try{
+            if( $contact->save() ){
+
+                $patient->contact_id = $contact->id;
+                $address->contact_id = $contact->id;
+                $action = $patient->isNewRecord ? 'add' : 'edit';
+                if($patient->save() && $address->save()){
+                    $transaction->commit();
+
+                    Audit::add('Patient', $action . '-patient', "Patient manually [id: $patient->id] {$action}ed.");
+                    $this->redirect(array('view', 'id' => $patient->id));
+                } else {
+                    // patient or address failed to save
+                    $transaction->rollback();
+                }
+            } else {
+                // to show validation error messages to the user
+                $patient->validate();
+                $address->validate();
+
+                // remove contact_id validation error
+                $patient->clearErrors('contact_id');
+                $address->clearErrors('contact_id');
+
+                // contact failed to save
+                $transaction->rollback();
+            }
+
+        } catch (Exception $ex) {
+            OELog::logException($ex);
+            $transaction->rollback();
+        }
+        
+        return array($contact, $patient, $address);
    }
    
     /**
@@ -1526,40 +1563,28 @@ class PatientController extends BaseController
         $this->renderPatientPanel = false;
         
         $patient = $this->loadModel($id);
+        
+        //only local patient can be edited
+        if($patient->is_local == 0){
+            Yii::app()->user->setFlash('warning.update-patient', 'Only local patients can be edited.');
+            $this->redirect(array('view', 'id' => $patient->id));
+        }
+        
         $contact = $patient->contact ? $patient->contact : new Contact();
         $address = $patient->contact->address ? $patient->contact->address : new Address();
         
         $this->performAjaxValidation(array($patient, $contact, $address));
-        
+
         if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
         {
-         
             $contact->attributes = $_POST['Contact'];
-            try {
-                $contact->save();
-            } catch (Exception $e) {
-                //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
-            }
-
             $patient->attributes = $_POST['Patient'];
-            $patient->contact_id = $contact->id;
-
-            //This could be handled in OeDateFormat Behaviour
-            //make sure that if no date_of_death has been posted than we insert NULL instad of 000-00-00 into the DB
-            $patient->date_of_death = $patient->date_of_death == '' ? null : Helper::convertNHS2MySQL($patient->date_of_death);
-            $patient->dob = $patient->dob == '' ? null : Helper::convertNHS2MySQL($patient->dob);
-
-            try {
-                $patient->save();
-            } catch (Exception $e) {
-                //Stupid exception thrown in beforeSave of ContactBehaviour whenever validation fails.
-            }
-            
             $address->attributes = $_POST['Address'];
-            $address->contact_id = $contact->id;
-            if($address->save()){
-                $this->redirect(array('view', 'id' => $patient->id));
-            }
+
+            // not to be sync with PAS
+            $patient->is_local = 1;
+
+            list($contact, $patient, $address) = $this->performPatientSave($contact, $patient, $address);
         }
         
         $this->render('crud/update',array(
@@ -1576,12 +1601,66 @@ class PatientController extends BaseController
      */
     public function actionDelete($id)
     {
-        $this->loadModel($id)->delete();
+        $patient = $this->loadModel($id);
+        $patient->deleted = 1;
+        $patient->save();
         
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
         if(!isset($_GET['ajax'])){
             $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('site'));
         }
+    }
+    
+    public function actionGpList($term)
+    {
+        $criteria = new CDbCriteria;
+        $criteria->addSearchCondition('first_name', '', true, 'OR');
+        $criteria->addSearchCondition('LOWER(first_name)', '', true, 'OR');
+        $criteria->addSearchCondition('last_name', '', true, 'OR');
+        $criteria->addSearchCondition('LOWER(last_name)', '', true, 'OR');
+        
+        $criteria->addSearchCondition('concat(first_name, " ", last_name)', $term, true, 'OR');
+        $criteria->addSearchCondition('LOWER(concat(first_name, " ", last_name))', $term, true, 'OR');
+        
+        $gps = Gp::model()->with('contact')->findAll($criteria);
+        
+        $output = array();
+        foreach($gps as $gp){
+            $output[] = array(
+                'label' => $gp->correspondenceName,
+                'value' => $gp->id
+            );
+        }
+        
+        echo CJSON::encode($output);
+        
+        Yii::app()->end();
+    }
+    
+    public function actionPracticeList($term)
+    {
+        $term = strtolower($term);
+        
+        $criteria = new CDbCriteria;
+        $criteria->join = 'JOIN contact on t.contact_id = contact.id';
+        $criteria->join .= '  JOIN address on contact.id = address.contact_id';
+        $criteria->addCondition('( (date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW()))');
+        
+        $criteria->addSearchCondition('LOWER(CONCAT_WS(", ", address1, address2, city, county, postcode))', $term);
+        
+        $practices = Practice::model()->findAll($criteria);
+        
+        $output = array();
+        foreach($practices as $practice){
+            $output[] = array(
+                'label' => $practice->getAddressLines(),
+                'value' => $practice->id
+            );
+        }
+        
+        echo CJSON::encode($output);
+        
+        Yii::app()->end();
     }
     
 }

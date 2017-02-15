@@ -26,7 +26,7 @@
  * @property string $value
  * @property int $display_order
  */
-class OphInDnaextraction_DnaExtraction_Box extends BaseEventTypeElement
+class OphInDnaextraction_DnaExtraction_Box extends BaseActiveRecord
 {
     /**
      * Returns the static model of the specified AR class.

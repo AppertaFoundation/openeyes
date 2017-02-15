@@ -23,23 +23,41 @@ if ($side === 'left') {
     $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js'), false, -1);
     ?>
     <script type="text/javascript">
+
+        function callCalculate(){
+
+            if( $('#Element_OphTrOperationnote_ProcedureList_eye_id_2').length == 0 && $('#Element_OphTrOperationnote_ProcedureList_eye_id_2').length == 0 ){
+                pcrCalculate($('#ophCiExaminationPCRRiskLeftEye'), 'left');
+                pcrCalculate($('#ophCiExaminationPCRRiskRightEye'), 'right');
+            } else {
+                if( $('#Element_OphTrOperationnote_ProcedureList_eye_id_2').is(':checked') ){
+                    pcrCalculate($('#ophCiExaminationPCRRiskRightEye'), 'right');
+                }
+
+                if( $('#Element_OphTrOperationnote_ProcedureList_eye_id_1').is(':checked') ){
+                    pcrCalculate($('#ophCiExaminationPCRRiskLeftEye'), 'left');
+                }
+            }
+
+        }
+
         $.getScript('<?=$jsPath?>/PCRCalculation.js', function(){
             //Map the elements
             mapExaminationToPcr();
             //Make the initial calculations
-            pcrCalculate($('#ophCiExaminationPCRRiskLeftEye'), 'left');
-            pcrCalculate($('#ophCiExaminationPCRRiskRightEye'), 'right');
-
-            $(document.body).on('change', '#ophCiExaminationPCRRiskLeftEye', function () {
                 pcrCalculate($('#ophCiExaminationPCRRiskLeftEye'), 'left');
+                pcrCalculate($('#ophCiExaminationPCRRiskRightEye'), 'right');
+
+            $(document.body).on('change', '#ophCiExaminationPCRRiskLeftEye, #ophCiExaminationPCRRiskRightEye', function () {
+                callCalculate();
+
             });
 
-            $(document.body).on('change', '#ophCiExaminationPCRRiskRightEye', function () {
-                pcrCalculate($('#ophCiExaminationPCRRiskRightEye'), 'right');
-            });
+            callCalculate();
+
         });
     </script>
-    <?php
+<?php
 
 }
 $criteria = new CDbCriteria();

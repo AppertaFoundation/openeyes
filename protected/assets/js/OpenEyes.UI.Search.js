@@ -86,8 +86,8 @@
     /**
      * Init the search
      */
-    function initAutocomplete() {
-        $searchInput.autocomplete({
+    function initAutocomplete($input) {
+      $input.autocomplete({
             minLength: 0,
             delay: 700,
             source: function (request, response) {
@@ -105,22 +105,24 @@
             response: function (event, ui) {
                 $('.loader').hide();
                 if (ui.content.length === 0) {
-                    $('.no-result-patients').slideDown();
+                  $input.siblings('.no-result-patients').slideDown();
                 } else {
-                    $('.no-result-patients').slideUp();
+                  $input.siblings('.no-result-patients').slideUp();
                 }
             }
         });
 
-        if ($searchInput !== 'undefined' && $searchInput.length) {
-            $searchInput.data("autocomplete")._renderItem = renderItem;
+        if ($input !== 'undefined' && $input.length) {
+          $input.data("autocomplete")._renderItem = renderItem;
         }
     }
 
     exports.Search = {
         init: function ($input) {
             $searchInput = $input;
-            initAutocomplete();
+            initAutocomplete($input);
+
+            return exports.Search;
         },
         setSourceURL: function(url){
             autocompleteSource = url;

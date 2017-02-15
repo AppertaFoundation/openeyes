@@ -62,6 +62,7 @@ class PedigreeController extends BaseModuleController
         }
 
         $admin->setEditFields(array(
+            'id' => 'label',
             'inheritance_id' => array(
                 'widget' => 'DropDownList',
                 'options' => CHtml::listData(PedigreeInheritance::model()->findAll(), 'id', 'name'),
@@ -90,7 +91,7 @@ class PedigreeController extends BaseModuleController
             'amino_acid_change_id' => array(
                 'widget' => 'DropDownList',
                 'options' => CHtml::listData(PedigreeAminoAcidChangeType::model()->findAll(), 'id', 'change'),
-                'htmlOptions' => array('empty' => '- Amino Acid Change Type -'),
+                'htmlOptions' => array('empty' => '- Amino Acid Chain Type -'),
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
@@ -106,7 +107,7 @@ class PedigreeController extends BaseModuleController
             'gene_transcript' => 'text',
             'subjects' => array(
                 'widget' => 'CustomView',
-                'viewName' => 'subjectList',
+                'viewName' => '/default/subjectList',
                 'viewArguments' => array(
                     'subjects' => $admin->getModel()->subjects,
                     'pedigree_id' => $id,
@@ -124,11 +125,11 @@ class PedigreeController extends BaseModuleController
     {
         $admin = new Crud(Pedigree::model(), $this);
         $admin->setListFields(array(
+            'id',
             'inheritance.name',
             'gene.name',
-            'genomic_coordinate',
-            'genome_version',
-            'gene_transcript',
+            'getSubjectsCount',
+            'getAffectedSubjectsCount'
         ));
         $admin->getSearch()->addSearchItem('id');
         $admin->getSearch()->addSearchItem('inheritance_id', array(

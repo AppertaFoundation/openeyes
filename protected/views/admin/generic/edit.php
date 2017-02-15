@@ -53,8 +53,12 @@ $assetManager = Yii::app()->getAssetManager();
                     <div class="field-row furtherfindings-multi-select">
                         <?php
                         $through = array();
+                        $link = '';
                         if(array_key_exists('through', $type) && is_array($type['through'])){
                             $through = $type['through'];
+                        }
+                        if(array_key_exists('link', $type) && $type['link']){
+                            $link = $type['link'];
                         }
                         echo $form->multiSelectList(
                             $admin->getModel(),
@@ -74,7 +78,8 @@ $assetManager = Yii::app()->getAssetManager();
                             false,
                             false,
                             array(),
-                            $through
+                            $through,
+                            $link
                         );
                         ?>
                     </div>
@@ -108,7 +113,10 @@ $assetManager = Yii::app()->getAssetManager();
                     }
                     break;
                 case 'PatientLookup':
-                    $this->renderPartial('//admin//generic/patientLookup', array('model' => $admin->getModel()));
+                    $this->renderPartial('//admin//generic/patientLookup', array(
+                        'model' => $admin->getModel(),
+                        'extras' => array_key_exists('extras', $type) ? $type['extras'] : false,
+                    ));
                     break;
                 case 'DisorderLookup':
                     if (!is_array($admin->getModel()->{$type['relation']})) {
@@ -127,7 +135,7 @@ $assetManager = Yii::app()->getAssetManager();
                                 foreach($relations as $relation) {
                                     if($relation){
                                         echo '<span>' . $relation->term .
-                                            '<i class="fa fa-times clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id="'.$relation->id.'"></i><br>' .
+                                            '&nbsp;<i class="fa fa-minus-circle clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id="'.$relation->id.'"></i><br>' .
                                             '</span>';
                                     }
                                 } ?>
@@ -138,7 +146,7 @@ $assetManager = Yii::app()->getAssetManager();
                               'name' => $field,
                               'code' => '',
                               'value' => $admin->getModel()->$field,
-                              'clear_diagnosis' => '<i class="fa fa-times clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id=""></i>',
+                              'clear_diagnosis' => '&nbsp;<i class="fa fa-minus-circle clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id=""></i>',
                               'placeholder' => 'Search for a diagnosis',
                           ));
                         ?>

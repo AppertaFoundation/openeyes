@@ -49,7 +49,7 @@ if (!isset($base_data_url)) {
 				<?php
 				$criteria = new CDbCriteria();
 				$criteria->with = array('commissioning_body');
-				$criteria->order = 't.name asc';
+				$criteria->order = 'LOWER(t.name) asc';
 
 				if (isset($commissioning_bt)) {
 					$criteria->addColumnCondition(array('commissioning_body.commissioning_body_type_id' => $commissioning_bt->id));

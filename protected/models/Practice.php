@@ -182,6 +182,16 @@ class Practice extends BaseActiveRecordVersioned
     {
         return Gp::UNKNOWN_SALUTATION;
     }
+    
+    public function getAddressLines()
+    {
+        if( isset($this->contact->address ) ){
+            return "{$this->contact->address->address1}, {$this->contact->address->address2}, "
+                            . "{$this->contact->address->city}, {$this->contact->address->county}, {$this->contact->address->postcode}";
+        } else {
+            return '';
+        }
+    }
 
     /**
      * Delete commissioning body assignments for referential integrity

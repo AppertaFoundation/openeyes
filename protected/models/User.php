@@ -78,7 +78,8 @@ class User extends BaseActiveRecordVersioned
             array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
             array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on' => 'search'),
             array(
-                'username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon, is_technician, has_selected_firms,doctor_grade_id, registration_code, signature_file_id',
+                'username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon,
+                 has_selected_firms,doctor_grade_id, registration_code, signature_file_id',
                 'safe',
             ),
         );
@@ -240,7 +241,6 @@ class User extends BaseActiveRecordVersioned
             'is_consultant' => 'Consultant',
             'is_clinical' => 'Clinically trained',
             'is_surgeon' => 'Surgeon',
-            'is_technician' => 'Technician',
             'doctor_grade_id' => 'Grade',
         );
     }
@@ -737,7 +737,6 @@ class User extends BaseActiveRecordVersioned
 
                 if (strlen($image_data) > 100) {
                     return $image_data;
-
                 }
             }
         }
@@ -745,4 +744,15 @@ class User extends BaseActiveRecordVersioned
         return false;
     }
 
+    /**
+     * @return array|mixed|null
+     */
+    public function geneticLabTechs()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join = 'join authassignment on authassignment.userid = t.id';
+        $criteria->addCondition('itemname = "Genetics Laboratory Technician"');
+
+        return User::model()->findAll($criteria);
+    }
 }

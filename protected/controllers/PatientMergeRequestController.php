@@ -118,11 +118,19 @@ class PatientMergeRequestController extends BaseController
         $model = new PatientMergeRequest();
         $merge_handler = new PatientMerge();
         $patient_merge_request = Yii::app()->request->getParam('PatientMergeRequest', null);
+
+        $model->attributes = $patient_merge_request;
+
         $personal_details_conflict_confirm = null;
 
         if ($patient_merge_request && isset($patient_merge_request['primary_id']) && isset($patient_merge_request['secondary_id'])) {
             $primary_patient = Patient::model()->findByPk($patient_merge_request['primary_id']);
             $secondary_patient = Patient::model()->findByPk($patient_merge_request['secondary_id']);
+            
+            //non local patient cannot be merged into local patient
+            if( $secondary_patient->is_local == 0 && $primary_patient->is_local == 1 ){
+                $model->addError('secondary_id', 'Non local patient cannot be merged into local patient');
+            }
 
             //check if the patients' ids are already submited
             // we do not allow the same patient id in the list multiple times
@@ -149,7 +157,6 @@ class PatientMergeRequestController extends BaseController
                     if (empty($patient_merge_request['secondary_id']) || empty($patient_merge_request['primary_id'])) {
                         Yii::app()->user->setFlash('warning.merge_error', 'Both Primary and Secondary patients have to be selected.');
                     } else {
-                        $model->attributes = $patient_merge_request;
                         if ($model->save()) {
                             $this->redirect(array('index'));
                         }
@@ -258,6 +265,7 @@ class PatientMergeRequestController extends BaseController
                             'genderletter' => $primary->gender,
                             'dob' => ($primary->dob) ? $primary->NHSDate('dob') : 'Unknown',
                             'hos_num' => $primary->hos_num,
+                            'is_local' => $primary->is_local,
                             'nhsnum' => $primary->nhsnum,
                             'all-episodes' => htmlentities(str_replace(array("\n", "\r", "\t"), '', $this->getEpisodesHTML($primary))),
                         )
@@ -272,6 +280,7 @@ class PatientMergeRequestController extends BaseController
                             'genderletter' => $secondary->gender,
                             'dob' => ($secondary->dob) ? $secondary->NHSDate('dob') : 'Unknown',
                             'hos_num' => $secondary->hos_num,
+                            'is_local' => $secondary->is_local,
                             'nhsnum' => $secondary->nhsnum,
                             'all-episodes' => htmlentities(str_replace(array("\n", "\r", "\t"), '', $this->getEpisodesHTML($secondary))),
                         )
@@ -305,7 +314,7 @@ class PatientMergeRequestController extends BaseController
 
         if (isset($_POST['PatientMergeRequest']) && isset($_POST['PatientMergeRequest']['confirm']) && Yii::app()->user->checkAccess('Patient Merge')) {
 
-            // if personal details are not conflictin than its fine, 
+            // if personal details are not conflicting than its fine, 
             // but if there is a conflict we need the extra confirmation
             if (!$personal_details_conflict_confirm['is_conflict'] || ($personal_details_conflict_confirm['is_conflict'] && isset($_POST['PatientMergeRequest']['personal_details_conflict_confirm']))) {
 
@@ -394,7 +403,7 @@ class PatientMergeRequestController extends BaseController
     {
         $criteria = new CDbCriteria();
 
-        $criteria->condition = 'secondary_id=:patient_id OR ( primary_id=:patient_id AND status = '.PatientMergeRequest::STATUS_NOT_PROCESSED.') AND deleted = 0';
+        $criteria->condition = '(secondary_id=:patient_id OR ( primary_id=:patient_id AND status = '.PatientMergeRequest::STATUS_NOT_PROCESSED.')) AND deleted = 0';
 
         $criteria->params = array(':patient_id' => $patientId);
 
@@ -415,10 +424,14 @@ class PatientMergeRequestController extends BaseController
             foreach ($data_provider->getData() as $patient) {
 
                 // check if the patient is already in the Request List
-                $warning = '';
+                $warning = array();
+                $notice = array();
                 $is_in_list = $this->isPatientInRequestList($patient->id);
                 if ($is_in_list) {
-                    $warning = "This patient is already requested for merge as $is_in_list patient.";
+                    $warning[] = "This patient is already requested for merge as $is_in_list patient.";
+                }
+                if ($patient->is_local) {
+                    $notice[] = "Local patient";
                 }
 
                 $result[] = array(
@@ -431,8 +444,10 @@ class PatientMergeRequestController extends BaseController
                     'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
                     'hos_num' => $patient->hos_num,
                     'nhsnum' => $patient->nhsnum,
+                    'is_local' => $patient->is_local ? 1 : 0,
                     'all-episodes' => $this->getEpisodesHTML($patient),
                     'warning' => $warning,
+                    'notice' => $notice,
                 );
             }
         }

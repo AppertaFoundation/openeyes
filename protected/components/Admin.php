@@ -481,6 +481,7 @@ class Admin
                 if($redirect){
                     $this->redirect();
                 } else {
+                    $this->model = $this->model->findByPk($this->model->id);
                     return true;
                 }
             }
@@ -589,6 +590,11 @@ class Admin
      */
     public function attributeValue($row, $attribute)
     {
+        if (method_exists($row, $attribute))
+        {
+            return $row->$attribute();
+        }
+
         if (isset($row->$attribute)) {
             return $row->$attribute;
         }

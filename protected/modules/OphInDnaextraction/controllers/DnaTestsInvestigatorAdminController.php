@@ -14,11 +14,11 @@
 class DnaTestsInvestigatorAdminController extends BaseAdminController
 {
     protected $itemsPerPage = 100;
-    
+
     public function actionList()
     {
         $admin = new Admin(OphInDnaextraction_DnaTests_Investigator::model(), $this);
-        $admin->setModelDisplayName('Dna Investigator');
+        $admin->setModelDisplayName('DNA Investigators');
         $admin->setListFields(array(
             'id',
             'name',
@@ -35,7 +35,7 @@ class DnaTestsInvestigatorAdminController extends BaseAdminController
         if ($id) {
             $admin->setModelId($id);
         }
-        $admin->setModelDisplayName('DNA Investigator');
+        $admin->setModelDisplayName('DNA Investigators');
         $admin->setEditFields(array(
             'name' => 'text',
         ));
@@ -47,7 +47,7 @@ class DnaTestsInvestigatorAdminController extends BaseAdminController
         $admin = new Admin(OphInDnaextraction_DnaTests_Investigator::model(), $this);
         $admin->deleteModel();
     }
-    
+
     public function actionSort()
     {
         if (!empty($_POST['OphInDnaextraction_DnaTests_Investigator']['display_order'])) {

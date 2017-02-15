@@ -29,13 +29,14 @@ $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->ma
 if( !$macro_id ){
     $macro_id = isset($element->document_instance[0]->document_instance_data[0]->macro_id) ? $element->document_instance[0]->document_instance_data[0]->macro_id : null;
 }
-$macro_name = null;
+
+$macro_letter_type_id = null;
 if($macro_id){
     $macro = LetterMacro::model()->findByPk($macro_id);
-    $macro_name = $macro ? $macro->name : null;
+    $macro_letter_type_id = $macro->letter_type_id;
 }
 
-$element->letter_type = ($element->letter_type ? $element->letter_type : ( $macro_name == 'Post-op' ? 2 : null  ) );
+$element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id : $macro_letter_type_id );
 $patient_id = Yii::app()->request->getQuery('patient_id', null);
 $patient = Patient::model()->findByPk($patient_id);
 
@@ -67,17 +68,16 @@ $patient = Patient::model()->findByPk($patient_id);
         <div class="large-<?php echo $layoutColumns['label']; ?> column">
             <label>Macro:</label>
         </div>
-        <div class="large-2 column end">
-            <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, '', array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width')); ?>
+        <div class="large-4 column end">
+            <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width resizeselect')); ?>
         </div>
     </div>
-
     <div class="row field-row">
         <div class="large-<?php echo $layoutColumns['label']; ?> column">
             <label>Letter type:</label>
         </div>
         <div class="large-2 column end">
-            <?php echo $form->dropDownList($element, 'letter_type', array('1' => 'Clinic discharge letter', '2' => 'Post-op letter', '3' => 'Clinic letter', '4' => 'Other letter'),
+            <?php echo $form->dropDownList($element, 'letter_type_id', CHtml::listData(LetterType::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
                 array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
         </div>
     </div>

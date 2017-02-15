@@ -52,7 +52,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 
   <p class="note text-right">Fields with <span class="required">*</span> are required.</p>
 
-    <?php echo $form->errorSummary(array($patient, $address, $contact)); ?>
+    <?php echo $form->errorSummary(array($contact, $patient, $address)); ?>
 
   <div class="row field-row">
     <div class="large-6 column">
@@ -133,12 +133,12 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
         <div class="large-4 column end">
             <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'Patient[dob]',
-                'id' => 'date_from',
+                'id' => 'patient_dob',
                 'options' => array(
                     'showAnim' => 'fold',
                     'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                 ),
-                'value' => Helper::convertMySQL2NHS($patient->dob, ''),
+                'value' => $patient->NHSDate('dob'),
                 'htmlOptions' => array(
                     'class' => 'small fixed-width',
                 ),
@@ -222,7 +222,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                     'showAnim' => 'fold',
                     'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                 ),
-                'value' => Helper::convertMySQL2NHS($patient->date_of_death, ''),
+                'value' => $patient->NHSDate('date_of_death'),
                 'htmlOptions' => array(
                     'class' => 'small fixed-width',
                 ),
@@ -245,26 +245,96 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 	</div>
 -->
   <div class="row field-row">
-    <div class="large-6 column">
+    <div class="large-6 column">       
       <div class="row field-row">
         <div class="large-4 column"><?php echo $form->labelEx($patient, 'gp_id'); ?></div>
-        <div class="large-4 column end">
-            <?php echo $form->dropDownList($patient, 'gp_id', $general_practitioners, array('empty' => '-- select --')); ?>
-            <?php echo $form->error($patient, 'gp_id'); ?>
+        <div class="large-4 column end"><?php
+            echo $form->error($patient, 'gp_id');
+            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                'name' => 'gp_id',
+                'id' => 'autocomplete_gp_id',
+                'source' => "js:function(request, response) {
+                                    $.getJSON('/patient/gpList', {
+                                            term : request.term
+                                    }, response);
+                            }",
+                'options' => array(
+                    'select' => "js:function(event, ui) {
+                                    removeSelectedGP();
+                                    addItem('selected_gp_wrapper', ui);
+                                    
+                                    return false;
+                    }",
+                    'response' => 'js:function(event, ui){
+                        if(ui.content.length === 0){
+                            $("#no_gp_result").show();
+                        } else {
+                            $("#no_gp_result").hide();
+                        }
+                    }'
+                ),
+                'htmlOptions' => array(
+                    'placeholder' => 'search GP',
+                ),
+                
+            ));?>
         </div>
       </div>
+    <div id="selected_gp_wrapper" class="row field-row <?php echo !$patient->gp_id ? 'hide' : ''?>">
+        <div class="large-offset-4 large-8 column selected_gp end alert-box"><span class="name"><?php echo $patient->gp_id ? $patient->gp->CorrespondenceName : '' ?></span><a href="javascript:void(0)" class="remove right">remove</a></div>
+        <?php echo CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class'=>'hidden_id')); ?>
+    </div>
+    <div id="no_gp_result" class="row field-row hide">
+        <div class="large-offset-4 large-8 column selected_gp end">No result</div>
+    </div>
+        
     </div>
   </div>
 
-  <div class="row field-row">
-    <div class="large-6 column">
+<div class="row field-row">
+    <div class="large-6 column">       
       <div class="row field-row">
         <div class="large-4 column"><?php echo $form->labelEx($patient, 'practice_id'); ?></div>
-        <div class="large-7 column end">
-            <?php echo $form->dropDownList($patient, 'practice_id', $practices, array('empty' => '-- select --')); ?>
-            <?php echo $form->error($patient, 'practice_id'); ?>
+        <div class="large-4 column end"><?php
+            echo $form->error($patient, 'practice_id');
+            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                'name' => 'practice_id',
+                'id' => 'autocomplete_practice_id',
+                'source' => "js:function(request, response) {
+                                    $.getJSON('/patient/practiceList', {
+                                            term : request.term
+                                    }, response);
+                            }",
+                'options' => array(
+                    'select' => "js:function(event, ui) {
+                                    removeSelectedPractice();
+                                    addItem('selected_practice_wrapper', ui);
+                                    $('#autocomplete_practice_id').val('');
+                                    return false;
+                    }",
+                    'response' => 'js:function(event, ui){
+                        if(ui.content.length === 0){
+                            $("#no_practice_result").show();
+                        } else {
+                            $("#no_practice_result").hide();
+                        }
+                    }'
+                ),
+                'htmlOptions' => array(
+                    'placeholder' => 'search Practice',
+                ),
+                
+            ));?>
         </div>
       </div>
+    <div id="selected_practice_wrapper" class="row field-row <?php echo !$patient->practice_id ? 'hide' : ''?>">
+        <div class="large-offset-4 large-8 column selected_practice end alert-box"><span class="name"><?php echo $patient->practice_id ? $patient->practice->getAddressLines() : ''?></span><a href="javascript:void(0)" class="remove right">remove</a></div>
+        <?php echo CHtml::hiddenField('Patient[practice_id]', $patient->practice_id, array('class'=>'hidden_id')); ?>
+    </div>
+    <div id="no_practice_result" class="row field-row hide">
+        <div class="large-offset-4 large-8 column selected_practice end">No result</div>
+    </div>
+        
     </div>
   </div>
 

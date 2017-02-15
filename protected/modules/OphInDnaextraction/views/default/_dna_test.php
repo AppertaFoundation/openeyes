@@ -19,29 +19,39 @@
 ?>
 
 <tr>
-	<td>
-		<?php echo CHtml::hiddenField('transactionID[]', $transaction->id)?>
-		<?php echo CHtml::textField('date[]', $transaction->date, array('id' => "date$i", 'disabled' => $disabled))?>
-	</td>
-	<td>
-		<?php echo CHtml::dropDownList('investigator_id[]', $transaction->investigator_id, CHtml::listData(OphInDnaextraction_DnaTests_Investigator::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'), array('empty' => '- Select -', 'disabled' => $disabled))?>
-	</td>
-	<td>
-		<?php echo CHtml::dropDownList('study_id[]', $transaction->study_id, CHtml::listData(OphInDnaextraction_DnaTests_Study::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'), array('empty' => '- Select -', 'disabled' => $disabled))?>
-	</td>
-	<td>
-		<?php echo CHtml::textField('volume[]', $transaction->volume, array('disabled' => $disabled))?>
-	</td>
-	<td>
-		<?php if(!$disabled) {
-            echo CHtml::link('(remove)','#',array('class' => 'removeTransaction'));
-        }?>
-	</td>
+  <td>
+      <?php echo CHtml::hiddenField('transactionID[]', $transaction->id) ?>
+      <?php echo CHtml::textField('date[]', $transaction->date, array('id' => "date$i", 'disabled' => $disabled)) ?>
+  </td>
+  <td>
+      <?php echo CHtml::dropDownList(
+          'investigator_id[]',
+          $transaction->investigator_id,
+          CHtml::listData(OphInDnaextraction_DnaTests_Investigator::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
+          array('empty' => '- Select -', 'disabled' => $disabled)
+      ) ?>
+  </td>
+  <td>
+      <?php echo CHtml::dropDownList(
+          'study_id[]',
+          $transaction->study_id,
+          CHtml::listData(OphInDnaextraction_DnaTests_Study::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
+          array('empty' => '- Select -', 'disabled' => $disabled)
+      ) ?>
+  </td>
+  <td>
+      <?php echo CHtml::textField('volume[]', $transaction->volume, array('disabled' => $disabled)) ?>
+  </td>
+  <td>
+      <?php if (!$disabled) {
+          echo CHtml::link('(remove)', '#', array('class' => 'removeTransaction'));
+      } ?>
+  </td>
 </tr>
 <script type="text/javascript">
-	$('#date<?php echo $i?>').datepicker({
-		maxDate: 'today',
-		showAnim: 'fold',
-		dateFormat: '<?php echo Helper::NHS_DATE_FORMAT_JS?>'
-	});
+  $('#date<?php echo $i?>').datepicker({
+    maxDate: 'today',
+    showAnim: 'fold',
+    dateFormat: '<?php echo Helper::NHS_DATE_FORMAT_JS?>'
+  });
 </script>
