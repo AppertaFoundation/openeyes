@@ -174,21 +174,27 @@ class DefaultController extends BaseEventTypeController
     public function actionSaveNewStorage()
     {
         $storage = new OphInDnaextraction_DnaExtraction_Storage();
-        $checkUsedStorage = $storage->checkNewStorage( $_POST );
         
-        if($checkUsedStorage !== TRUE){
-            $result = array(
-                's'     => 0,
-                'msg'   => $checkUsedStorage
-            );    
+        $storage->box_id = Yii::app()->request->getPost('dnaextraction_box_id');
+        $storage->letter = Yii::app()->request->getPost('dnaextraction_letter');
+        $storage->number = Yii::app()->request->getPost('dnaextraction_number');
+        $storage->letter = $storage->letter ? strtoupper($storage->letter) : $storage->letter;
+
+        if( $storage->save() ){
+            $result = array('s' => 1);
         } else {
-            
+            $errors = '';
+            foreach( $storage->getErrors() as $attribute => $error ){
+                $errors .= $errors == '' ? '' : "<br>";
+                $errors .= "$attribute: " . ( implode($error) );
+            }
             $result = array(
-                's'     => 1
+                's' => 0,
+                'msg' => $errors
             );
         }
-        
-         echo json_encode($result);
+
+        echo json_encode($result);
     }
     
     public function actionRefreshStorageSelect()

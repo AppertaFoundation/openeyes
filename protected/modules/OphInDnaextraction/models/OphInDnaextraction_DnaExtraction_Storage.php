@@ -41,13 +41,63 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('box_id', 'required'),
-            array('letter', 'required'),
-            array('number', 'required'),
+            array('box_id, letter, number', 'required'),
             array('number', 'numerical', 'min' => 1),
-            array('letter, number','availabeStorage'),
+            array('box_id','availabeStorage'),
+            array('letter','letterValidation'),
+            array('number','numberValidation'),
             array('box_id, letter, number','safe'),
         );
+    }
+
+    /**
+     * Validate the letter attribute
+     * @param type $attribute
+     * @param type $params
+     */
+    public function letterValidation($attribute, $params)
+    {
+        $box = new OphInDnaextraction_DnaExtraction_Box();
+        $boxRanges = $box->boxMaxValues($this->box_id);
+
+        $this->setLetterRange( $boxRanges['maxletter'] );
+
+        if( !in_array($this->letter, $this->letterRange) ){
+            $this->addError($attribute, 'This letter is larger than maximum value.');
+        }
+    }
+
+    /**
+     * Validate the number attribute
+     * @param type $attribute
+     * @param type $params
+     */
+    public function numberValidation($attribute, $params)
+    {
+        $box = new OphInDnaextraction_DnaExtraction_Box();
+        $boxRanges = $box->boxMaxValues($this->box_id);
+        
+        $this->setNumberRange( $boxRanges['maxnumber'] );
+        
+        if( !in_array($this->number, $this->numberRange) ){
+            $this->addError($attribute, 'This number is larger than maximum value.');
+        }
+    }
+
+    /*
+     * Available storage in admin
+     */
+    public function availabeStorage( $attribute, $params )
+    {
+        $availabeStorage = Yii::app()->db->createCommand()
+            ->select('id')
+            ->from('ophindnaextraction_storage_address')
+            ->where('box_id =:box_id and letter =:letter and number =:number', array(':box_id' => $this->box_id, ':letter' => $this->letter, ':number' => $this->number))
+            ->queryScalar();
+        
+        if($availabeStorage){
+          $this->addError('Box', 'These parameters are already in use.');
+        }
     }
 
     /**
@@ -87,70 +137,6 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
            return FALSE;
         }     
         return parent::beforeDelete();
-    }
-    
-    /*
-     * Available storage in admin
-     */
-    public function availabeStorage( $attribute, $params )
-    {
-        $availabeStorage = Yii::app()->db->createCommand()
-            ->select('id')
-            ->from('ophindnaextraction_storage_address')
-            ->where('box_id =:box_id and letter =:letter and number =:number', array(':box_id' => $this->box_id, ':letter' => $this->letter, ':number' => $this->number))
-            ->queryScalar();
-        
-        if((int)$availabeStorage > 0){
-            $this->addError($attribute, 'This parameters are already in use.');
-        }
-        
-        $validParams = $this->letterNumberValidation($attribute);
-       
-        if( $validParams !== TRUE){
-            $this->addError($attribute, $validParams);
-        }
-    }
-    
-    /*
-     * Letter and number validation in admin
-     */
-     
-    protected function letterNumberValidation($attribute)
-    {
-        $box = new OphInDnaextraction_DnaExtraction_Box();
-        $boxRanges = $box->boxMaxValues($this->box_id);
-        
-        if($boxRanges['maxletter'] == NULL){
-            return 'You have not specified a maximum letter value to '.$boxRanges['value'].' box.';
-        }
-        if($boxRanges['maxnumber'] == NULL){
-            return 'You have not specified a maximum number value to '.$boxRanges['value'].' box.';
-        }
-        
-        $this->setLetterRange( $boxRanges['maxletter'] );
-        $this->setNumberRange( $boxRanges['maxnumber'] );
-        
-        $validLetter = FALSE;
-        foreach ($this->letterRange as $char) {
-            if($this->letter == $char){
-                $validLetter = TRUE;
-            }
-        }
-        if($attribute == 'letter' && $validLetter == FALSE){
-            return "$attribute: This letter is larger than maximum value.";
-        }
-        
-        $validNumber = FALSE;
-        foreach ($this->numberRange as $number) {
-           if($this->number == $number){
-                $validNumber = TRUE;
-            }
-        }
-        if($attribute == 'number' && $validNumber == FALSE){
-            return "$attribute: This number is larger than maximum value.";
-        }
-        
-        return TRUE;
     }
     
     /*
@@ -226,34 +212,7 @@ class OphInDnaextraction_DnaExtraction_Storage extends BaseEventTypeElement
         
         return $getAvailableBoxes;
     }
-    
-    public function checkNewStorage( $array )
-    {
-        $this->box_id = $array['dnaextraction_box_id'];
-        $this->letter = strtoupper($array['dnaextraction_letter']);
-        $this->number = $array['dnaextraction_number'];
-        
-        $availabeStorage = Yii::app()->db->createCommand()
-            ->select('id')
-            ->from('ophindnaextraction_storage_address')
-            ->where('box_id =:box_id and letter =:letter and number =:number', array(':box_id' => $this->box_id, ':letter' => $this->letter, ':number' => $this->number ))
-            ->queryScalar();
-        
-        if((int)$availabeStorage > 0){
-            return 'This parameters are already in use.';
-        }
-        
-        $validParams = OphInDnaextraction_DnaExtraction_Storage::letterNumberValidation();
-
-        if( $validParams !== TRUE){
-            return $validParams;
-        }
-        
-        OphInDnaextraction_DnaExtraction_Storage::save();
-        return TRUE;
-    }
-  
-    
+      
     public function attributeLabels()
     {
         return array(
