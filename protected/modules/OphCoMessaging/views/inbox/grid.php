@@ -48,9 +48,9 @@ if ($read_check) {
 $cols = array(
     array(
         'name' => 'priority',
-        // not ideal using the error class, but a simple solution for now.
         'value' => function ($data) {
-            return $data->urgent ? '<span class="priority fa fa-exclamation"></span>' : '<span class="fa fa-minus"></span>';
+            $img_url = Yii::app()->assetManager->createUrl('img/alert.png');
+            return $data->urgent ? '<img src="'.$img_url.'" />' : '';
         },
         'type' => 'raw',
         'htmlOptions' => array(
