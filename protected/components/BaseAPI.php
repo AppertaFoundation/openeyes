@@ -67,6 +67,27 @@ class BaseAPI
                 ->find($criteria);
         }
     }
+    
+    public function getElementForAllEventInEpisode($episode, $element)
+    {
+        $event_type = $this->getEventType();
+        
+        if($events = $episode->getAllEventsByType($event_type->id))
+        {
+            foreach($events as $event)
+            {
+                $criteria = new CDbCriteria();
+                $criteria->compare('episode_id', $episode->id);
+                $criteria->compare('event_id', $event->id);
+                $criteria->order = 'event.created_date desc';
+
+                $result[] = $element::model()
+                    ->with('event')
+                    ->find($criteria);
+            }
+            return $result;
+        }
+    }
 
     /**
      * gets all the events in the episode for the event type this API is for, for the given patient, most recent first.
