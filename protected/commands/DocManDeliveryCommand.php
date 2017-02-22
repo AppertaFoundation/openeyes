@@ -125,9 +125,15 @@ class DocManDeliveryCommand extends CConsoleCommand
             curl_setopt($ch, CURLOPT_POST, false);
             curl_setopt($ch, CURLOPT_URL, $print_url . $this->event->id . '?auto_print=' . (int)$inject_autoprint_js . '&print_only_gp=1');
             $content = curl_exec($ch);
-
+            
             curl_close($ch);
-
+            
+            if(substr($content, 0, 4) !== "%PDF"){
+                echo 'File is not a PDF for event id: '.$this->event->id."\n";
+                $this->updateFailedDelivery($output_id);
+                return false;
+            }
+            
             if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] === 'format1') {
                 $filename = "OPENEYES_" . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . $this->event->id . "_" . rand();
             } else {
@@ -141,7 +147,7 @@ class DocManDeliveryCommand extends CConsoleCommand
                     }
                 }
             }
-
+            
             $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
 
             if ($this->generate_xml) {
@@ -299,6 +305,14 @@ class DocManDeliveryCommand extends CConsoleCommand
     {
         $output = DocumentOutput::model()->findByPk($output_id);
         $output->output_status = "COMPLETE";
+
+        return $output->save();
+    }
+    
+    private function updateFailedDelivery($output_id)
+    {
+        $output = DocumentOutput::model()->findByPk($output_id);
+        $output->output_status = "FAILED";
 
         return $output->save();
     }
