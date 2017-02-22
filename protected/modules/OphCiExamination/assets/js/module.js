@@ -1295,13 +1295,15 @@ $(document).ready(function() {
             var threshold = parseInt($cviAlert.data('threshold'));
 
             if( $section.find('.cvi_alert_dismissed').val() !== "1"){
-                var show_alert = false;
+                var show_alert = null;
                 $section.find('.va-selector').each(function(k,v){
                     var val = parseInt($(this).val());
                     if (val < threshold) {
-                        show_alert = true;
-                        return;
+                        show_alert = (show_alert === null) ? true : show_alert;
+                    } else {
+                        show_alert = false;
                     }
+                    return;
                 });
 
                 if (show_alert) {

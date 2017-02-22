@@ -20,81 +20,477 @@
 
 <?php
 
-    if ($element->event != null &&  $element->event->id > 0) {
-        $iolRefValues = Element_OphInBiometry_IolRefValues::Model()->findAllByAttributes(
-            array(
-                'event_id' => $element->event->id,
-            ));
-    } else {
-        $iolRefValues = array();
+if ($element->event != null && $element->event->id > 0) {
+    $iolRefValues = Element_OphInBiometry_IolRefValues::Model()->findAllByAttributes(
+        array(
+            'event_id' => $element->event->id,
+        ));
+} else {
+    $iolRefValues = array();
+}
+
+if ($eventtype = EventType::model()->find('class_name = "OphCiExamination"')){
+    $eventtypeid = $eventtype->id;
+}
+
+?>
+<?php
+$VAdate = " - (Not Recorded)";
+$episode = $this->episode;
+if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+
+    $chosenVA[] = array('');
+
+    //Get All Events for episode.
+    $criteria = new CDbCriteria();
+    $criteria->condition = 'episode_id = :e_id AND event_type_id = :e_typeid';
+    $criteria->order = ' event_date DESC';
+    $criteria->params = array(':e_id' => $episode->id, ':e_typeid' => $eventtypeid);
+
+    //For each event, check if =event_id in _visualacuity.
+
+    if($events = Event::model()->findAll($criteria)){
+        for ($i = 0; $i < count($events); ++$i) {
+            // Get Most Recent VA
+            $vaID = $api->getMostRecentVA($events[$i]->id);
+            if($vaID && !$data){
+                $data = $api->getMostRecentVAData($vaID->id);
+                $chosenVA = $vaID;
+                $VAdate = "- (exam date " . date("d M Y", strtotime($events[$i]->event_date)) . ")";
+            }
+        }
     }
+
+    $rightData = array();
+    $leftData = array();
+
+    for ($i = 0; $i < count($data); ++$i) {
+        if($data[$i]->side == 0){
+            $rightData[] = $data[$i];
+        }
+        if($data[$i]->side == 1){
+            $leftData[] = $data[$i];
+        }
+    }
+
+    $methodnameRight = array();
+    $methodnameLeft = array();
+
+    if($data){
+        $unitId = $chosenVA->unit_id;
+
+        for ($i = 0; $i < count($rightData); ++$i) {
+            $VAfinalright = $api->getVAvalue($rightData[$i]->value, $unitId);
+        }
+
+        for ($i = 0; $i < count($leftData); ++$i) {
+            $VAfinalleft = $api->getVAvalue($leftData[$i]->value, $unitId);
+        }
+
+        $methodIdRight = $api->getMethodIdRight($chosenVA->id, $episode);
+        for ($i = 0; $i < count($methodIdRight); ++$i) {
+            $methodnameRight[$i] = $api->getMethodName($methodIdRight[$i]->method_id);
+        }
+
+        $methodIdLeft = $api->getMethodIdLeft($chosenVA->id, $episode);
+        for ($i = 0; $i < count($methodIdLeft); ++$i) {
+            $methodnameLeft[$i] = $api->getMethodName($methodIdLeft[$i]->method_id);
+        }
+
+        $unitname = $api->getUnitName($unitId);
+    }
+}
+
 ?>
 
-<section class="element <?php echo $element->elementType->class_name?>"
-	data-element-type-id="<?php echo $element->elementType->id?>"
-	data-element-type-class="<?php echo $element->elementType->class_name?>"
-	data-element-type-name="<?php echo $element->elementType->name?>"
-	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<div class="element-fields element-eyes row">
-		<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-		<div id="right-eye-lens" class="element-eye right-eye top-pad left side column  <?php if (!$element->hasRight()) {
-    ?> inactive<?php 
-} ?>" onClick="switchSides($(this));" data-side="right">
-			<div class="element-header right-side">
-				<h4><b>RIGHT</b></h4>
-			</div>
-			<div class="active-form">
-				<a href="#" class="icon-remove-side remove-side">Remove side</a>
-				<?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data, 'measurementInput' => $iolRefValues)); ?>
-			</div>
-			<div class="inactive-form">
-				<div class="add-side">
-					<a href="#">
-						Add Right side <span class="icon-add-side"></span>
-					</a>
-				</div>
-			</div>
-		</div>
-		<div id="left-eye-lens" class="element-eye left-eye top-pad right side column <?php if (!$element->hasLeft()) {
-    ?> inactive<?php 
-} ?>" onClick="switchSides($(this));" data-side="left">
-			<div class="element-header left-side">
-				<h4><b>LEFT</b></h4>
-			</div>
-			<div class="active-form">
-				<a href="#" class="icon-remove-side remove-side">Remove side</a>
-				<?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data, 'measurementInput' => $iolRefValues)); ?>
-			</div>
-			<div class="inactive-form">
-				<div class="add-side">
-					<a href="#">
-						Add left side <span class="icon-add-side"></span>
-					</a>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="element-fields element-eyes row">
+    <div>&nbsp;
+    </div>
+</div>
+<section>
+    <header class="sub-element-header">
+        <h3 class="element-title">Visual Acuity <?php echo $VAdate; ?></h3>
+    </header>
+    <div class="element-fields element-eyes row">
+        <div class="element-eye right-eye column">
+            <?php
+                if(count($methodnameRight)){
+                    ?>
+                    <div class="data-row">
+                        <div class="data-value">
+                            <?php echo $unitname ?>
+                        </div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-value">
+                            <?php
+                            for ($i = 0; $i < count($methodnameRight); ++$i) {
+                                echo $api->getVAvalue($rightData[$i]->value, $unitId) . " " . $methodnameRight[$i];
+                                if ($i != (count($methodnameRight) - 1)) {
+                                    echo ", ";
+                                }
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <?php
+                } else {
+                    ?>
+                    <div class="data-row">
+                        <div class="data-value">
+                            Not recorded
+                        </div>
+                    </div>
+                    <?php
+                }
+            ?>
+        </div>
+        <div class="element-eye left-eye column">
+            <?php
+            if(count($methodnameLeft)){
+                ?>
+                <div class="data-row">
+                    <div class="data-value">
+                        <?php echo $unitname ?>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <div class="data-value">
+                        <?php
+                        for ($i = 0; $i < count($methodnameLeft); ++$i) {
+                            echo $api->getVAvalue($leftData[$i]->value, $unitId) . " " . $methodnameLeft[$i];
+                            if ($i != (count($methodnameLeft) - 1)) {
+                                echo ", ";
+                            }
+                        }
+                        ?>
+                    </div>
+                </div>
+                <?php
+            } else {
+                ?>
+                <div class="data-row">
+                    <div class="data-value">
+                        Not recorded
+                    </div>
+                </div>
+                <?php
+            }
+            ?>
+        </div>
+    </div>
 </section>
-<script type="text/javascript">
-	function switchSides( element ){
-		// swith from right active to left
-		if( $(element).hasClass('left-eye') ){
-			$('#right-eye-lens').addClass('disabled').removeClass('highlighted-lens');
-			$('#right-eye-selection').addClass('disabled').removeClass('highlighted-selection');
-			$('#right-eye-calculation').addClass('disabled').removeClass('highlighted-calculation');
 
-			$('#left-eye-lens').removeClass('disabled').addClass('highlighted-lens');
-			$('#left-eye-selection').removeClass('disabled').addClass('highlighted-selection');
-			$('#left-eye-calculation').removeClass('disabled').addClass('highlighted-calculation');
+<?php
+// Near VA
+$NearVAdate = " - (Not Recorded)";
+$NearVAFound = false;
+if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+    for ($i = 0; $i < count($events); ++$i) {
+        // Get Most Recent VA
+        $vaID = $api->getMostRecentNearVA($events[$i]->id);
+        // Loop through $data and separate into different eyes
+        if ($vaID && !$NearVAFound) {
+            $neardata = $api->getMostRecentNearVAData($vaID->id);
+            $chosenNearVA = $vaID;
+            $NearVAFound = true;
+            $NearVAdate = "- (exam date " . date("d M Y", strtotime($events[$i]->event_date)) . ")";
+        }
+    }
 
-		}else if( $(element).hasClass('right-eye') ){
-			$('#left-eye-lens').addClass('disabled').removeClass('highlighted-lens');
-			$('#left-eye-selection').addClass('disabled').removeClass('highlighted-selection');
-			$('#left-eye-calculation').addClass('disabled').removeClass('highlighted-calculation');
+    $rightNearData = array();
+    $leftNearData = array();
 
-			$('#right-eye-lens').removeClass('disabled').addClass('highlighted-lens');
-			$('#right-eye-selection').removeClass('disabled').addClass('highlighted-selection');
-			$('#right-eye-calculation').removeClass('disabled').addClass('highlighted-calculation');
-		}
-	}
-</script>
+    if($NearVAFound){
+        for ($i = 0; $i < count($neardata); ++$i) {
+            if($neardata[$i]->side == 0){
+                $rightNearData[] = $neardata[$i];
+            }
+            if($neardata[$i]->side == 1){
+                $leftNearData[] = $neardata[$i];
+            }
+        }
+
+        $unitId = $chosenNearVA->unit_id;
+
+        for ($i = 0; $i < count($rightNearData); ++$i) {
+            $VAfinalright = $api->getVAvalue($rightNearData[$i]->value, $unitId);
+        }
+
+        for ($i = 0; $i < count($leftNearData); ++$i) {
+            $VAfinalleft = $api->getVAvalue($leftNearData[$i]->value, $unitId);
+        }
+
+        $methodIdRight = $api->getMethodIdNearRight($chosenNearVA->id);
+        for ($i = 0; $i < count($rightNearData); ++$i) {
+            $methodnameRight[$i] = $api->getMethodName($rightNearData[$i]->method_id);
+        }
+
+        $methodIdLeft = $api->getMethodIdNearLeft($chosenNearVA->id);
+        for ($i = 0; $i < count($leftNearData); ++$i) {
+            $methodnameLeft[$i] = $api->getMethodName($leftNearData[$i]->method_id);
+        }
+
+        $unitname = $api->getUnitName($unitId);
+    }
+}
+?>
+
+<section>
+    <header class="sub-element-header">
+        <h3 class="element-title">Near Visual Acuity <?php echo $NearVAdate; ?></h3>
+    </header>
+    <div class="element-fields element-eyes row">
+        <div class="element-eye right-eye column">
+            <?php
+                if (count($rightNearData)) {
+                    ?>
+                    <div class="data-row">
+                        <div class="data-value">
+                            <?php echo $unitname ?>
+                        </div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-value">
+
+                            <?php
+                            for ($i = 0; $i < count($rightNearData); ++$i) {
+                                echo $api->getVAvalue($rightNearData[$i]->value, $unitId). " " . $methodnameRight[$i];
+                                if ($i != (count($rightNearData) - 1)) {
+                                    echo ", ";
+                                }
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <?php
+                } else {
+                    ?>
+                    <div class="data-row">
+                        <div class="data-value">
+                            Not recorded
+                        </div>
+                    </div>
+                    <?php
+                }
+            ?>
+        </div>
+        <div class="element-eye left-eye column">
+            <?php
+            if (count($leftNearData)) {
+                ?>
+                <div class="data-row">
+                    <div class="data-value">
+                        <?php echo $unitname ?>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <div class="data-value">
+                        <?php
+                        for ($i = 0; $i < count($leftNearData); ++$i) {
+                            echo $api->getVAvalue($leftNearData[$i]->value, $unitId) . " " . $methodnameLeft[$i];
+                            if ($i != (count($leftNearData) - 1)) {
+                                echo ", ";
+                            }
+                        }
+                        ?>
+                    </div>
+                </div>
+                <?php
+            } else {
+                ?>
+                <div class="data-row">
+                    <div class="data-value">
+                        Not recorded
+                    </div>
+                </div>
+                <?php
+            }
+            ?>
+        </div>
+    </div>
+</section>
+
+<?php
+// Refraction here
+$refractfound = false;
+
+if ($eventid = Event::model()->findAll(array(
+    'condition' => 'event_type_id = ' . $eventtypeid . ' AND episode_id = ' . $episode->id,
+    'order' => 'event_date DESC',
+))){
+// Loop through responses, for ones that have RefractionValues
+for ($i = 0; $i < count($eventid); ++$i) {
+    if ($api->getRefractionValues($eventid[$i]->id)) {
+        if (!$refractfound){
+            $refractelement = $api->getRefractionValues($eventid[$i]->id);
+            $refract_event_date = $eventid[$i]->event_date;
+            $refractfound = true;
+        }
+    }
+}
+
+if ($refractfound) {
+?>
+<section>
+    <header class="sub-element-header">
+        <h3 class="element-title">Refraction - (exam date <?php echo date("d M Y",
+                strtotime($refract_event_date)); ?>)</h3>
+    </header>
+    <div class="element-fields element-eyes row">
+        <div class="element-eye right-eye column">
+            <?php if ($refractelement->hasRight()) {
+                ?>
+                <div class="refraction">
+                    <?php $this->renderPartial($element->view_view . '_OEEyeDraw',
+                        array('side' => 'right', 'element' => $refractelement));
+                    ?>
+                </div>
+                <?php
+            } else {
+                ?>
+                <div class="data-row">
+                    <div class="data-value">
+                        Not recorded
+                    </div>
+                </div>
+                <?php
+            } ?>
+        </div>
+        <div class="element-eye left-eye column">
+            <?php if ($refractelement->hasLeft()) {
+                ?>
+                <?php $this->renderPartial($element->view_view . '_OEEyeDraw',
+                    array('side' => 'left', 'element' => $refractelement));
+                ?>
+                <?php
+            } else {
+                ?>
+                <div class="data-row">
+                    <div class="data-value">
+                        Not recorded
+                    </div>
+                </div>
+                <?php
+            } ?>
+        </div>
+    </div>
+    <?php
+    } else {?>
+    <section>
+    <header class="sub-element-header">
+        <h3 class="element-title">Refraction - (Not Recorded)</h3>
+    </header>
+    <div class="element-fields element-eyes row">
+        <div class="element-eye right-eye column">
+            <div class="data-row">
+                <div class="data-value">
+                    Not recorded
+                </div>
+            </div>
+        </div>
+        <div class="element-eye left-eye column">
+            <div class="data-row">
+                <div class="data-value">
+                    Not recorded
+                </div>
+            </div>
+        </div>
+    </div>
+        <?php
+    }
+    }
+    ?>
+    <br/>
+    <section class="element <?php echo $element->elementType->class_name ?>"
+             data-element-type-id="<?php echo $element->elementType->id ?>"
+             data-element-type-class="<?php echo $element->elementType->class_name ?>"
+             data-element-type-name="<?php echo $element->elementType->name ?>"
+             data-element-display-order="<?php echo $element->elementType->display_order ?>">
+        <div class="element-fields element-eyes row">
+            <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+            <div id="right-eye-lens"
+                 class="element-eye right-eye top-pad left side column  <?php if (!$element->hasRight()) {
+                     ?> inactive<?php
+                 } ?>" onClick="switchSides($(this));" data-side="right">
+                <div class="element-header right-side">
+                    <h4><b>RIGHT</b></h4>
+                </div>
+                <div class="active-form">
+                    <a href="#" class="icon-remove-side remove-side">Remove side</a>
+                    <?php echo CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
+                </div>
+                <div class="inactive-form">
+                    <div class="add-side">
+                        <a href="#">
+                            Add Right side <span class="icon-add-side"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="active-form">
+                <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
+                    'side' => 'right',
+                    'element' => $element,
+                    'form' => $form,
+                    'data' => $data,
+                    'measurementInput' => $iolRefValues,
+                )); ?>
+                    </div>
+
+            </div>
+            <div id="left-eye-lens"
+                 class="element-eye left-eye top-pad right side column <?php if (!$element->hasLeft()) {
+                     ?> inactive<?php
+                 } ?>" onClick="switchSides($(this));" data-side="left">
+                <div class="element-header left-side">
+                    <h4><b>LEFT</b></h4>
+                </div>
+                        <div class="active-form">
+                            <a href="#" class="icon-remove-side remove-side">Remove side</a>
+                        </div>
+                        <div class="inactive-form">
+                            <div class="add-side">
+                                <a href="#">
+                                    Add left side <span class="icon-add-side"></span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="active-form">
+                        <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
+                            'side' => 'left',
+                            'element' => $element,
+                            'form' => $form,
+                            'data' => $data,
+                            'measurementInput' => $iolRefValues,
+                        )); ?></div>
+                </div>
+            </div>
+    </section>
+    <script type="text/javascript">
+        function switchSides(element) {
+            // switch from right active to left
+            if ($(element).hasClass('left-eye')) {
+                $('#right-eye-lens').addClass('disabled').removeClass('highlighted-lens');
+                $('#right-eye-selection').addClass('disabled').removeClass('highlighted-selection');
+                $('#right-eye-calculation').addClass('disabled').removeClass('highlighted-calculation');
+                $('#right-eye-comments').addClass('disabled').removeClass('highlighted-comments');
+
+                $('#left-eye-lens').removeClass('disabled').addClass('highlighted-lens');
+                $('#left-eye-selection').removeClass('disabled').addClass('highlighted-selection');
+                $('#left-eye-calculation').removeClass('disabled').addClass('highlighted-calculation');
+                $('#left-eye-comments').removeClass('disabled').addClass('highlighted-comments');
+
+            } else if ($(element).hasClass('right-eye')) {
+                $('#left-eye-lens').addClass('disabled').removeClass('highlighted-lens');
+                $('#left-eye-selection').addClass('disabled').removeClass('highlighted-selection');
+                $('#left-eye-calculation').addClass('disabled').removeClass('highlighted-calculation');
+                $('#left-eye-comments').addClass('disabled').removeClass('highlighted-comments');
+
+                $('#right-eye-lens').removeClass('disabled').addClass('highlighted-lens');
+                $('#right-eye-selection').removeClass('disabled').addClass('highlighted-selection');
+                $('#right-eye-calculation').removeClass('disabled').addClass('highlighted-calculation');
+                $('#right-eye-comments').removeClass('disabled').addClass('highlighted-comments');
+            }
+        }
+    </script>
+</section>

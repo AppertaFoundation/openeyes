@@ -96,7 +96,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     public function rules()
     {
         return array(
-            array('eye_id, consultant_required, senior_fellow_to_do, any_grade_of_doctor, anaesthetic_type_id, overnight_stay, site_id, priority_id, decision_date, fast_track, fast_track_discussed_with_patient, comments,comments_rtt, anaesthetist_required, anaesthetist_preop_assessment, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, status_id, operation_cancellation_date, cancellation_reason_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment, special_equipment_details, organising_admission_user_id', 'safe'),
+            array('eye_id, consultant_required, senior_fellow_to_do, named_consultant_id, any_grade_of_doctor, anaesthetic_type_id, overnight_stay, site_id, priority_id, decision_date, fast_track, fast_track_discussed_with_patient, comments,comments_rtt, anaesthetist_required, anaesthetist_preop_assessment, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, status_id, operation_cancellation_date, cancellation_reason_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment, special_equipment_details, organising_admission_user_id', 'safe'),
             array('named_consultant_id', 'RequiredIfFieldValidator', 'field' => 'consultant_required', 'value' => true, 'on' => 'insert'),
             array('cancellation_comment', 'length', 'max' => 200),
             array('procedures', 'required', 'message' => 'At least one procedure must be entered'),

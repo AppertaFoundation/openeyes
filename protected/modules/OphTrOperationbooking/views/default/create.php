@@ -18,6 +18,11 @@
 */
 ?>
 <?php $this->beginContent('//patient/event_container'); ?>
+<?php
+$clinical = $clinical = $this->checkAccess('OprnViewClinical');
+
+$warnings = $this->patient->getWarnings($clinical);
+?>
 
 	<?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -32,6 +37,18 @@
     $this->event_actions[] = EventAction::button('Save and Schedule now', '#', array('level' => 'secondary'),  array('name' => 'scheduleNow', 'id' => 'et_save_and_schedule', 'class' => 'button small', 'form' => 'clinical-create', 'style' => $this->checkScheduleAccess() ? '' : 'display: none;'));
     ?>
 	<input type="hidden" name="schedule_now" id="schedule_now" value="0" />
+<?php if ($warnings) { ?>
+    <div class="row">
+        <div class="large-12 column">
+            <div class="alert-box patient with-icon">
+                <?php foreach ($warnings as $warn) {?>
+                    <strong><?php echo $warn['long_msg']; ?></strong>
+                    - <?php echo $warn['details'];
+                }?>
+            </div>
+        </div>
+    </div>
+<?php }?>
 	<?php
     $this->displayErrors($errors);
     $this->renderOpenElements($this->action->id, $form);

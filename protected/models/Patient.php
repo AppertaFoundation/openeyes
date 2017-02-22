@@ -211,7 +211,6 @@ class Patient extends BaseActiveRecordVersioned
     {
         $params += array(
             'pageSize' => 20,
-            'currentPage' => 0,
             'sortBy' => 'hos_num*1',
             'sortDir' => 'asc',
         );
@@ -238,7 +237,7 @@ class Patient extends BaseActiveRecordVersioned
 
         $dataProvider = new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
-            'pagination' => array('pageSize' => $params['pageSize'], 'currentPage' => $params['currentPage']),
+            'pagination' => array('pageSize' => $params['pageSize']),
         ));
 
         return $dataProvider;
@@ -1036,6 +1035,22 @@ class Patient extends BaseActiveRecordVersioned
         }
 
         return false;
+    }
+
+    /**
+     * @param $riskCompare
+     *
+     * @return Risk|null
+     */
+    public function getAssignedRisk($riskCompare)
+    {
+        foreach ($this->riskAssignments as $riskAssignment) {
+            if ($riskAssignment->risk->name === $riskCompare) {
+                return $riskAssignment;
+            }
+        }
+
+        return null;
     }
 
     /**
