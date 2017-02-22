@@ -17,70 +17,104 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="element-fields">
-	<div class="field-row row">
-		<div class="large-12 column">
-				<div id="add_allergy">
+<div class="element-fields row">
+	<div class="large-3 column">
+		<label><?php echo $element->getAttributeLabel('specular_microscope_id')?>:</label>
+	</div>
+	<div class="large-3 column">
+		<?php
+		$allSpecularMicroscope = \OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->findAll(array('order' => 'display_order'));
+		echo CHtml::dropDownList('specular_microscope_id',
+			null,
+			CHtml::listData($allSpecularMicroscope, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+	</div>
+	<div class="large-2 column"></div>
+	<div class="large-3 column">
+		<label><?php echo $element->getAttributeLabel('scan_quality_id')?>:</label>
+	</div>
+	<div class="large-3 column">
+		<?php
+		$allScanQuality = \OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->findAll(array('order' => 'display_order'));
+		echo CHtml::dropDownList('scan_quality_id',
+			null,
+			CHtml::listData($allScanQuality, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+	</div>
+	<div class="large-2 column"></div>
+</div>
+<div class="element-fields element-eyes row">
+<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+<div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {
+?> inactive<?php
+}?>" data-side="right">
+		<div class="active-form">
+			<a href="#" class="icon-remove-side remove-side">Remove side</a>
 
-					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id ?>"/>
+			<div class="row field-row">
+				<div class="large-4 column">
+					<label><?php echo $element->getAttributeLabel('right_endothelial_cell_density_value')?>:</label>
+				</div>
+				<div class="large-4 column">
+				<?= $form->textField($element, "right_endothelial_cell_density_value", array('nowrapper' => true, 'size' => 6, 'maxlength' => 4)) ?>
+				</div>
+				<div class="large-4 column">
+				</div>
+			</div>
 
-					<div class="row field-row">
-						<div class="<?php echo $form->columns('label'); ?>">
-							<?php echo $element->getAttributeLabel('specular_microscope_id')?>:
-						</div>
-						<div class="<?php echo $form->columns('field'); ?>">
-							<?php
-							$allSpecularMicroscope = \OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->findAll(array('order' => 'display_order'));
-							echo CHtml::dropDownList('specular_microscope_id',
-								null,
-								CHtml::listData($allSpecularMicroscope, 'id', 'name')); ?>
-						</div>
-					</div>
-					<div class="row field-row">
-						<div class="<?php echo $form->columns('label'); ?>">
-							<?php echo $element->getAttributeLabel('scan_quality_id')?>:
-						</div>
-						<div class="<?php echo $form->columns('field'); ?>">
-							<?php
-							$allScanQuality = \OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->findAll(array('order' => 'display_order'));
-							echo CHtml::dropDownList('scan_quality_id',
-								null,
-								CHtml::listData($allScanQuality, 'id', 'name')); ?>
-						</div>
-					</div>
-					<div class="row field-row">
-						<div class="<?php echo $form->columns('label'); ?>">
-							<?php echo $element->getAttributeLabel('endothelial_cell_density_value')?>:
-						</div>
-						<div class="<?php echo $form->columns('field'); ?>">
-							<?php
-							$allAllergies = \Allergy::model()->findAll(array('order' => 'display_order', 'condition' => 'active=1'));
-							echo CHtml::dropDownList('allergy_id',
-								null,
-								CHtml::listData($allAllergies, 'id', 'name'), array('empty' => '-- Select --')); ?>
-						</div>
-					</div>
-					<div class="row field-row">
-						<div class="<?php echo $form->columns('label'); ?>">
-							<?php echo $element->getAttributeLabel('coefficient_variations_value')?>:
-						</div>
-						<div class="<?php echo $form->columns('field'); ?>">
-							<?php
-							$allAllergies = \Allergy::model()->findAll(array('order' => 'display_order', 'condition' => 'active=1'));
-							echo CHtml::dropDownList('allergy_id',
-								null,
-								CHtml::listData($allAllergies, 'id', 'name'), array('empty' => '-- Select --')); ?>
-						</div>
-					</div>
-
-
-
-
-					<div class="buttons large-12 column">
-						<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" class="add_allergy_loader" style="display: none;"/>
-						<button type="button" class="secondary small btn_save_allergy right">Add</button>
+			<div class="row field-row">
+				<div class="large-4 column">
+					<label><?php echo $element->getAttributeLabel('right_coefficient_variation_value')?>:</label>
+				</div>
+				<div class="large-4 column">
+					<?= $form->textField($element, "right_coefficient_variation_value", array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
+				</div>
+					<div class="large-4 column">
 					</div>
 				</div>
+
+
+
+		</div>
+		<div class="inactive-form">
+			<div class="add-side">
+				<a href="#">
+					Add right side <span class="icon-add-side"></span>
+				</a>
+			</div>
+		</div>
+	</div>
+<div class="element-eye left-eye column side right<?php if (!$element->hasLeft()) {
+?> inactive<?php
+}?>" data-side="left">
+		<div class="active-form">
+			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+			<div class="row field-row">
+				<div class="large-4 column">
+					<label><?php echo $element->getAttributeLabel('left_endothelial_cell_density_value')?>:</label>
+				</div>
+				<div class="large-4 column">
+					<?= $form->textField($element, "left_endothelial_cell_density_value", array('nowrapper' => true, 'size' => 6, 'maxlength' => 4)) ?>
+				</div>
+				<div class="large-4 column">
+				</div>
+			</div>
+			<div class="row field-row">
+				<div class="large-4 column">
+					<label><?php echo $element->getAttributeLabel('left_coefficient_variation_value')?>:</label>
+				</div>
+				<div class="large-4 column">
+					<?= $form->textField($element, "left_coefficient_variation_value", array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
+				</div>
+				<div class="large-4 column">
+				</div>
+			</div>
+			</div>
+		</div>
+		<div class="inactive-form">
+			<div class="add-side">
+				<a href="#">
+					Add left side <span class="icon-add-side"></span>
+				</a>
+			</div>
 		</div>
 	</div>
 </div>
