@@ -130,6 +130,7 @@ class DocManDeliveryCommand extends CConsoleCommand
             
             if(substr($content, 0, 4) !== "%PDF"){
                 echo 'File is not a PDF for event id: '.$this->event->id."\n";
+                $this->updateFailedDelivery($output_id);
                 return false;
             }
             
@@ -304,6 +305,14 @@ class DocManDeliveryCommand extends CConsoleCommand
     {
         $output = DocumentOutput::model()->findByPk($output_id);
         $output->output_status = "COMPLETE";
+
+        return $output->save();
+    }
+    
+    private function updateFailedDelivery($output_id)
+    {
+        $output = DocumentOutput::model()->findByPk($output_id);
+        $output->output_status = "FAILED";
 
         return $output->save();
     }
