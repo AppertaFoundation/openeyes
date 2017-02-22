@@ -256,6 +256,7 @@ return array(
     ),
 
     'params' => array(
+        'utf8_decode_required' => true,
         'pseudonymise_patient_details' => false,
         'ab_testing' => false,
         'auth_source' => 'BASIC', // Options are BASIC or LDAP.
@@ -397,5 +398,35 @@ return array(
                 'temp_path' => realpath(dirname(__FILE__).'/../..').'/data/hscic/temp',
             ),
         ),
+        /**
+         * Text to be displayed for sending correspondence electronically e.g.: 'Electronic (DocMan)'
+         * To be overriden in local config
+         */
+        'electronic_sending_method_label' => 'Electronic',
+        
+        /**
+         * Action buttons to be displayed when create/update a correspondence letter
+         * Available actions
+         *      - 'savedraft' => 'Save draft',
+         *      - 'save' => 'Save',
+         *      - 'saveprint' => 'Save and print'
+         * To remove an option set it to NULL 
+         * e.g: saveprint' => null,
+         */
+        'OphCoCorrespondence_event_actions' => array(
+                'create' => array(
+                    'savedraft' => 'Save draft',
+                    'save' => null,
+                    'saveprint' => 'Save and print'
+            )
+        ),
+
+        /**
+         *  Operation bookings will be automatically scheduled to the next available slot (regardless of the firm)
+         */
+        "auto_schedule_operation" => false,
+
+        'clinical_management_pcr' => true,
+        'docman_generate_csv' => false,
     ),
 );

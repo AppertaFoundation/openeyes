@@ -32,6 +32,7 @@
         ),
     ))?>
         <?php echo $form->dropDownList($macro, 'type', array('site' => 'Site', 'subspecialty' => 'Subspecialty', 'firm' => 'Firm'), array('empty' => '- Type -'))?>
+        <?php echo $form->dropDownList($macro, 'letter_type_id', CHtml::listData(LetterType::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- Letter type -'))?>
         <?php echo $form->dropDownList($macro, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Site -', 'div-class' => 'typeSite'), $macro->type != 'site')?>
         <?php echo $form->dropDownList($macro, 'subspecialty_id', CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- Subspecialty -', 'div-class' => 'typeSubspecialty'), $macro->type != 'subspecialty')?>
         <?php echo $form->dropDownList($macro, 'firm_id', Firm::model()->getListWithSpecialties(true), array('empty' => '- Firm -', 'div-class' => 'typeFirm'), $macro->type != 'firm')?>

@@ -23,10 +23,20 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
 
+/**
+ * Class OphCoCvi_API
+ *
+ * @package OEModule\OphCoCvi\components
+ */
 class OphCoCvi_API extends \BaseAPI
 {
     protected $yii;
 
+    /**
+     * OphCoCvi_API constructor.
+     *
+     * @param \CApplication|null $yii
+     */
     public function __construct(\CApplication $yii = null)
     {
         if (is_null($yii)) {
@@ -54,7 +64,7 @@ class OphCoCvi_API extends \BaseAPI
     /**
      * Convenience wrapper to allow template rendering.
      *
-     * @param $view
+     * @param       $view
      * @param array $parameters
      * @return mixed
      */
@@ -95,7 +105,7 @@ class OphCoCvi_API extends \BaseAPI
             $rows[] = array(
                 'date' => $this->getManager()->getDisplayStatusDateForEvent($event),
                 'status' => $this->getManager()->getDisplayStatusForEvent($event),
-                'event_url' => $this->getManager()->getEventViewUri($event)
+                'event_url' => $this->getManager()->getEventViewUri($event),
             );
         }
 
@@ -105,7 +115,7 @@ class OphCoCvi_API extends \BaseAPI
             $oph_info_editable = true;
             $rows[] = array(
                 'date' => $info->cvi_status_date,
-                'status' => $info->cvi_status->name
+                'status' => $info->cvi_status->name,
             );
         }
 
@@ -118,7 +128,7 @@ class OphCoCvi_API extends \BaseAPI
             'rows' => $rows,
             'oph_info_editable' => $oph_info_editable,
             'oph_info' => $info,
-            'new_event_uri' => $this->yii->createUrl($this->getEventType()->class_name . '/default/create') . '?patient_id=' . $patient->id
+            'new_event_uri' => $this->yii->createUrl($this->getEventType()->class_name . '/default/create') . '?patient_id=' . $patient->id,
 
         );
 
@@ -134,6 +144,7 @@ class OphCoCvi_API extends \BaseAPI
         if ($event = \Event::model()->findByPk($event_id)) {
             return $this->getManager()->canEditEvent($event);
         }
+
         return false;
     }
 
@@ -146,10 +157,10 @@ class OphCoCvi_API extends \BaseAPI
         $eventUniqueCode = \UniqueCodes::model()->findByPk($eventUniqueCodeId[0]->unique_code_id);
 
         $salt = (isset(\Yii::app()->params['portal']['credentials']['client_id'])) ? \Yii::app()->params['portal']['credentials']['client_id'] : '';
-        $check_digit1 = new \CheckDigitGenerator(\Yii::app()->params['institution_code'] . $eventUniqueCode->code,
-            $salt);
+        $check_digit1 = new \CheckDigitGenerator(\Yii::app()->params['institution_code'] . $eventUniqueCode->code, $salt);
         $check_digit2 = new \CheckDigitGenerator($eventUniqueCode->code . $event->episode->patient->dob, $salt);
-        $finalEventUniqueCode = \Yii::app()->params['institution_code'] . $check_digit1->generateCheckDigit() . '-' . $eventUniqueCode->code . '-' . $check_digit2->generateCheckDigit();
+        $finalEventUniqueCode = \Yii::app()->params['institution_code'] . $check_digit1->generateCheckDigit() . '-'
+            . $eventUniqueCode->code . '-' . $check_digit2->generateCheckDigit();
 
         return $finalEventUniqueCode;
     }
@@ -166,6 +177,7 @@ class OphCoCvi_API extends \BaseAPI
             return true;
         }
         $oph_info = $patient->getOphInfo();
+
         return !$oph_info->isNewRecord;
     }
 
@@ -180,12 +192,19 @@ class OphCoCvi_API extends \BaseAPI
         $threshold = $this->yii->params['thresholds']['visualAcuity']['alert_base_value'];
 
         if (is_array($va_base_value)) {
+            $result = NULL;
+
             foreach ($va_base_value as $value) {
-                if (is_numeric($value) && ($value < $threshold)) {
-                    return true;
+                if (is_numeric($value)) {
+                    if ($value < $threshold) {
+                        $result = is_null($result) ? true : $result;
+                    } else {
+                        $result = false;
+                    }
                 }
             }
-            return false;
+
+            return is_null($result) ? false : $result;
         } else {
             return is_numeric($va_base_value) && ($va_base_value < $threshold);
         }
@@ -193,8 +212,8 @@ class OphCoCvi_API extends \BaseAPI
 
     /**
      * @param Patient $patient
-     * @param $element
-     * @param $show_create - flag to indicate whether the create button should be shown
+     * @param         $element
+     * @param         $show_create - flag to indicate whether the create button should be shown
      * @return mixed
      */
     public function renderAlertForVA(Patient $patient, $element, $show_create = false)
@@ -208,7 +227,7 @@ class OphCoCvi_API extends \BaseAPI
             return $this->renderPartial('OphCoCvi.views.patient._va_alert', array(
                 'threshold' => $this->yii->params['thresholds']['visualAcuity']['alert_base_value'],
                 'visible' => $this->isVaBelowThreshold($base_values),
-                'show_create' => $show_create
+                'show_create' => $show_create,
             ));
         }
 

@@ -90,6 +90,18 @@
 		@media print {
 			page-break-inside: avoid;
 		}
+
+		&.internalreferral{
+			&.internalreferral-doclist{
+				span{
+					background-color: #4D1F77;
+					color:#F47B20; 
+					display: inline-block; 
+					float: right; 
+					padding: 3px 15px;
+	}
+}
+		}
 	}
 }
 

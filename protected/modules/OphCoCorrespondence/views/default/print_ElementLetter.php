@@ -19,8 +19,33 @@
 ?>
 <?php if (!@$no_header) {?>
 	<header>
-		<?php $this->renderPartial('letter_start', array(
-            'toAddress' => $element->address,
+	<?php 
+        $ccString = "";
+        $toAddress = "";
+        
+        if($element->document_instance && $element->document_instance[0]->document_target) {
+            
+            foreach ($element->document_instance as $instance) {
+                foreach ($instance->document_target as $target) {
+                    if($target->ToCc == 'To'){
+                        $toAddress = $target->contact_name . "\n" . $target->address;
+                    } else {
+                        $ccString .= "CC: ".ucfirst(strtolower($target->contact_type)). ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                    }
+                }
+            }
+        }else
+        {
+            $toAddress = $element->address;
+            foreach (explode("\n", trim($element->cc)) as $line) {
+                if (trim($line)) {
+                    $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
+                }
+            }
+        }
+
+        $this->renderPartial('letter_start', array(
+            'toAddress' => isset($letter_address) ? $letter_address : $toAddress, // defaut address is coming from the 'To'
             'patient' => $this->patient,
             'date' => $element->date,
             'clinicDate' => $element->clinic_date,
@@ -47,20 +72,17 @@
 	<?php echo $element->renderFooter() ?>
 </p>
 
-<?php if ($element->cc || $element->enclosures) {?>
 <p nobr="true">
-	<?php if ($element->cc) {?>
-		To:
-		<?php echo $element->renderSourceAddress()?>
-		<?php foreach (explode("\n", trim($element->cc)) as $line) {
-                if (trim($line)) {?>
-		<br />CC:
-		<?php echo str_replace(';', ',', $line) ?>
-		<?php }
-        }
-    }
+<?php 
+    echo ($toAddress ? ('To: ' . $element->renderSourceAddress($toAddress) . '<br/>' ) : '');
+    echo ($ccString ? $ccString : '');
+    ?>
+
+<?php if ($element->enclosures) {?>
+<?php
     foreach ($element->enclosures as $enclosure) {?>
 		<br/>Enc: <?php echo $enclosure->content?>
 	<?php }?>
-</p>
+
 <?php }?>
+</p>

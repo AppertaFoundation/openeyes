@@ -423,11 +423,128 @@ class OphTrOperationbooking_API extends BaseAPI
         $booking_procs = OphTrOperationbooking_Operation_Procedures::model()->findAll($criteria);
         if ($booking_procs) {
             foreach ($booking_procs as $proc) {
-                $not_booked_events[] = $proc->procedure->term;
+                $not_booked_events[] = $proc->element->eye->getAdjective() . ' ' . $proc->procedure->term;
             }
         }
 
         return implode(', ', $not_booked_events);
+    }
+    
+    /**
+     * Automatically scheduleds all the un-scheduled op bookings in the episode
+     * @param \Episode $episode
+     * @return type
+     */
+    public function autoScheduleOperationBookings(\Episode $episode)
+    {
+        $errors = array();
+        
+        $criteria = new CDbCriteria();
+        $criteria->order = 't.created_date asc';
+        $criteria->condition = 't.status_id = 1';
+        $criteria->compare('episode_id', $episode->id);
+
+        $operations = Element_OphTrOperationbooking_Operation::model()->with(array(
+            'event' => array(
+                'condition'=>'event.deleted=0',
+            )
+        ))->findAll($criteria);
+        
+        $op_status_scheduled = OphTrOperationbooking_Operation_Status::model()->find('name=?', array('Scheduled'));
+        $ep_status_listed = EpisodeStatus::model()->find('name=?', array('Listed/booked'));
+
+        foreach($operations as $operation){
+            // get the first bookable session regardless of the firm
+            $session = $this->getFirstBookableSession($operation);
+
+            //we need to pass to schedule the op
+            $schedule_options = Element_OphTrOperationbooking_ScheduleOperation::model()->find('event_id = ?', array($operation->event->id));
+            
+            if($session){
+                $transaction = Yii::app()->db->beginTransaction();
+                
+                try {
+                    
+                    $ward = OphTrOperationbooking_Operation_Ward::model()->find('site_id = ?', array($operation->site->id));
+                    if(!$ward){
+                        //as this feature is used when the client/hospital doesn't use the 
+                        //scheduling, most likely it will have a dummy ward set up for only one site 
+                        $ward = OphTrOperationbooking_Operation_Ward::model()->find();
+                    }
+                    $booking = new OphTrOperationbooking_Operation_Booking('insert');
+                    $booking->ward_id = $ward->id;
+                    $booking->element_id = $operation->id;
+                    $booking->session_id = $session->id;
+                    $booking->session_theatre_id = 1;
+                    $booking->session_date = date("Y-m-d H:i:s");
+                    $booking->session_start_time = $session->start_time;
+                    $booking->admission_time = $session->start_time;
+                    $booking->session_end_time = $session->end_time;
+                    $booking->cancellation_comment = '';
+                    //$booking will be saved in $operation->schedule()
+                    
+                    $result = $operation->schedule($booking, '', '', '', false, null, $schedule_options);
+
+                    if ($result !== true) {
+                        $errors[$operation->id] = $result;
+                    } else {
+                        $operation->status_id = $op_status_scheduled->id;
+                        $operation->save();
+
+                        $episode->episode_status_id = $ep_status_listed->id;
+                        $episode->save();
+
+                        $operation->event->deleteIssues();
+
+                        $transaction->commit();
+                    }
+
+                } catch (RaceConditionException $e) {
+                    $errors[$operation->id] = $e->getMessage();
+                    $transaction->rollback();
+                } catch (Exception $e) {
+                    $errors[$operation->id] = $e->getMessage();
+                    $transaction->rollback();
+                }
+
+            } else {
+                $errors[$operation->id] = 'Operation notes cannot be created for un-scheduled Operations. Please add free sessions.';
+            }
+
+            if( isset($errors[$operation->id]) ){
+                $evevnt_date = new DateTime($operation->event->event_date);
+                $errors[$operation->id] .= ' (' . $evevnt_date->format("d M Y") .': '. $operation->getProceduresCommaSeparated() . ')';
+            }
+        }
+
+        return $errors ? $errors : true;
+
+    }
+    
+    public function getFirstBookableSession(\Element_OphTrOperationbooking_Operation $operation)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->compare('available', 1);
+        $criteria->addCondition("date >= '" . date("Y-m-d") . "'"  );
+        $criteria->order = 'date asc';
+        
+        $dataProvider = new CActiveDataProvider('OphTrOperationbooking_Operation_Session',
+                array(
+                    'criteria' => $criteria
+                )
+        );
+        
+        $session_iterator = new CDataProviderIterator($dataProvider);
+
+        foreach ($session_iterator as $session){
+            $is_bookable = $session->operationBookable($operation);
+
+            if ($is_bookable && ($session->availableMinutes >= $operation->total_duration)) {
+                return $session;
+            }
+        }
+        
+        return null;
     }
 
 }

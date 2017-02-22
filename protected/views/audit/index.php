@@ -85,7 +85,6 @@
 	});
 
 	$(document).ready(function() {
-		$('#auditList-filter button[type="submit"]').click();
 
 		$('#auto_update_toggle').click(function() {
 			if ($(this).text().match(/update on/)) {

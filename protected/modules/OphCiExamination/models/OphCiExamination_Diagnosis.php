@@ -80,7 +80,9 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
     }
 
     /**
-     * @param BaseEventTypeElement $element
+     * @param \BaseEventTypeElement $element
+     *
+     * @return OphCiExamination_Diagnosis
      */
     public function findAllByElement($element)
     {
@@ -92,7 +94,7 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
@@ -103,5 +105,22 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * Return the disorder with the side it applies to if the side is not in disorder name.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+
+        if (strpos($this->disorder->term, $this->eye->adjective. ' ') === 0) {
+            $term = $this->disorder->term;
+        } else {
+            $term = $this->eye->adjective . ' ' . $this->disorder->term;
+        }
+
+        return $term;
     }
 }

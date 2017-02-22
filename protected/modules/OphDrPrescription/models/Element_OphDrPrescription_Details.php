@@ -89,7 +89,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     {
         return array();
     }
-
+    
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
@@ -258,6 +258,20 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         }
 
         return parent::afterValidate();
+    }
+
+    protected function afterSave()
+    {
+        if($this->draft)
+        {
+            $this->event->addIssue('Draft');
+        }
+        else
+        {
+            $this->event->deleteIssue('Draft');
+        }
+
+        return parent::afterSave();
     }
 
     /**

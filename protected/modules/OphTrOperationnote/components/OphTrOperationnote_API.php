@@ -145,6 +145,27 @@ class OphTrOperationnote_API extends BaseAPI
         return '';
     }
 
+    /**
+     * Get the last operation date
+     *
+     * @param Patient $patient
+     *
+     * @return false|string
+     */
+    public function getLastOperationDateUnformatted(\Patient $patient)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
+            $event = $this->getMostRecentEventInEpisode($episode->id, $event_type->id);
+            if (isset($event->event_date)) {
+                return $event->event_date;
+            }
+        }
+
+        return '';
+    }
+
+
 
     /**
      * Get the last operation's surgeon name

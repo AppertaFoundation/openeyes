@@ -18,6 +18,11 @@
 */
 ?>
 <?php $this->beginContent('//patient/event_container'); ?>
+<?php
+$clinical = $clinical = $this->checkAccess('OprnViewClinical');
+
+$warnings = $this->patient->getWarnings($clinical);
+?>
 
 	<?php
         $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -43,6 +48,19 @@
 		<?php if (Yii::app()->params['OphTrOperationbooking_duplicate_proc_warn']) {?>
 			<input type="hidden" name="event_id" value="<?= $this->event->id ?>" />
 		<?php } ?>
+<?php if ($warnings) { ?>
+	<div class="row">
+		<div class="large-12 column">
+			<div class="alert-box patient with-icon">
+				<?php foreach ($warnings as $warn) {?>
+					<strong><?php echo $warn['long_msg']; ?></strong>
+					- <?php echo $warn['details'];
+				}?>
+			</div>
+		</div>
+	</div>
+<?php }?>
+
 		<?php  $this->displayErrors($errors)?>
 		<?php  $this->renderOpenElements($this->action->id, $form); ?>
 		<?php  $this->renderOptionalElements($this->action->id, $form); ?>

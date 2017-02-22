@@ -403,8 +403,13 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionMarkPrinted()
     {
-        if (!$prescription = Element_OphDrPrescription_Details::model()->find('event_id=?', array(@$_GET['event_id']))) {
-            throw new Exception('Prescription not found for event id: '.@$_GET['event_id']);
+        $event_id = Yii::app()->request->getParam('event_id');
+        if(!$event_id){
+            throw new Exception('Prescription id not provided');
+        }
+        
+        if (!$prescription = Element_OphDrPrescription_Details::model()->find('event_id=?', array($event_id))) {
+            throw new Exception('Prescription not found for event id: '.$event_id);
         }
 
         if ($prescription->print == 1) {
@@ -414,6 +419,9 @@ class DefaultController extends BaseEventTypeController
                 throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
             }
         }
+
+        $this->printInit($event_id);
+        $this->printLog($event_id, false);
 
         echo '1';
     }

@@ -211,7 +211,6 @@ class Patient extends BaseActiveRecordVersioned
     {
         $params += array(
             'pageSize' => 20,
-            'currentPage' => 0,
             'sortBy' => 'hos_num*1',
             'sortDir' => 'asc',
         );
@@ -238,7 +237,7 @@ class Patient extends BaseActiveRecordVersioned
 
         $dataProvider = new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
-            'pagination' => array('pageSize' => $params['pageSize'], 'currentPage' => $params['currentPage']),
+            'pagination' => array('pageSize' => $params['pageSize']),
         ));
 
         return $dataProvider;
@@ -1039,6 +1038,22 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
+     * @param $riskCompare
+     *
+     * @return Risk|null
+     */
+    public function getAssignedRisk($riskCompare)
+    {
+        foreach ($this->riskAssignments as $riskAssignment) {
+            if ($riskAssignment->risk->name === $riskCompare) {
+                return $riskAssignment;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * marks the patient as having no family history.
      *
      * @throws Exception
@@ -1085,12 +1100,12 @@ class Patient extends BaseActiveRecordVersioned
         }
 
         foreach ($this->episodes as $ep) {
-            //primary disorder for episode
-            if ($ep->disorder_id) {
-                $disorder_ids[] = $ep->disorder_id;
+            if ($ep->eye_id){
+                if ($ep->disorder_id && (is_null($eye_id) || $ep->eye_id == $eye_id || $ep->eye_id == Eye::BOTH)) {
+                    $disorder_ids[] = $ep->disorder_id;
+                }
             }
         }
-
         return array_unique($disorder_ids);
     }
 

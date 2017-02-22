@@ -216,7 +216,7 @@ class ExaminationCreator
         $vaReading->element_id = $visualAcuity->id;
         $baseValue = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue::model()->getBaseValue($unit->id, $vaData['reading']);
         $vaReading->value = $baseValue;
-        $vaReading->method_id = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->find('name = :name', array('name' => $vaData['method']))->id;
+        $vaReading->method_id = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->find('LOWER(name) = :name', array('name' => strtolower($vaData['method'])))->id;
         if($eyeLabel === 'left'){
             $vaReading->side = \OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::LEFT;
         } else {
@@ -277,7 +277,7 @@ class ExaminationCreator
      */
     protected function createMessage($episodeId, $userId, $examination, $examinationEvent)
     {
-        if (isset(\Yii::app()->modules['OphCoMessaging']) && ($examination['patient']['comments'] || $examination['patient']['ready_for_second_eye'] === false)) {
+        if (isset(\Yii::app()->modules['OphCoMessaging'])) {
             $episode = \Episode::model()->findByPk($episodeId);
             $recipient = \User::model()->findByPk($episode->firm->consultant_id);
             if ($recipient) {
@@ -296,7 +296,7 @@ class ExaminationCreator
                 $messageCreator->setMessageData(array(
                     'optom' => $examination['op_tom']['name'] . ' (' . $examination['op_tom']['goc_number'] . ')',
                     'ready' => $ready,
-                    'comments' => $examination['patient']['comments'],
+                    'comments' => ($examination['patient']['comments']) ? $examination['patient']['comments'] : 'No Comments',
                     'patient' => $episode->patient,
                 ));
                 $message = $messageCreator->save('', array('event' => $examinationEvent->id));
@@ -346,7 +346,7 @@ class ExaminationCreator
                 foreach ($eye['complications'] as $complicationArray) {
                     $eyeComplication = new \OEModule\OphCiExamination\models\OphCiExamination_Et_PostOpComplications();
                     $eyeComplication->element_id = $complications->id;
-                    $complicationToAdd = \OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->find('name = "' . $complicationArray['complication'] . '"');
+                    $complicationToAdd = \OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->find('LOWER(name) = "' . strtolower($complicationArray['complication']) . '"');
                     $eyeComplication->complication_id = $complicationToAdd->id;
                     $eyeComplication->operation_note_id = $opNoteEventId;
                     $eyeComplication->eye_id = $eyeIds[$eyeLabel];
@@ -384,6 +384,9 @@ class ExaminationCreator
             array($iopReading['mm_hg']));
         $instrument = \OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->find('LOWER(name) = ?',
             array(strtolower($iopReading['instrument'])));
+        if ($instrument['scale_id']){
+            $iopValue->qualitative_reading_id = $instrument['scale_id'];
+        }
         $iopValue->reading_id = $iopReadingValue['id'];
         $iopValue->instrument_id = $instrument['id'];
         if (!$iopValue->save(true, null, true)) {

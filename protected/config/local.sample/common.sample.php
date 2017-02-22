@@ -136,8 +136,19 @@ $config = array(
         'event_print_method' => 'pdf',
         'wkhtmltopdf_nice_level' => 19,
         'allow_clinical_summary' => false,
-        // flag to turn on drag and drop sorting for dashboards
-        // 'dashboard_sortable' => true
+        'docman_export_dir' => '/tmp/docman',
+        'docman_login_url' => 'http://localhost/site/login',
+        'docman_user' => 'admin',
+        'docman_password' => 'admin',
+        'docman_print_url' => 'http://localhost/OphCoCorrespondence/default/PDFprint/',
+        // possible values:
+        // none => XML output is suppressed
+        // format1 => OPENEYES_<eventId>_<randomInteger>.pdf [current format, default if parameter not specified]
+        // format2 => <hosnum>_<yyyyMMddhhmm>_<eventId>.pdf
+        // format3 => <hosnum>_edtdep-OEY_yyyyMMdd_hhmmss_<eventId>.pdf
+        'docman_filename_format' => 'format1',
+        // set this to none if you want to suppress XML output
+        'docman_xml_format' => 'none'
     ),
 );
 

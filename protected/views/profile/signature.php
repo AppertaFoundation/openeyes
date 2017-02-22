@@ -15,7 +15,7 @@
                     <label for="signature_pin">PIN:</label>
                 </div>
                 <div class="large-2 column">
-                    <input type="text" maxlength="4" name="signature_pin" id="signature_pin">
+                    <input type="password" maxlength="4" name="signature_pin" id="signature_pin">
                 </div>
                 <div class="large-2 column end">
                     <button class=" primary event-action" name="show_signature" type="submit" id="et_show_signature">OK</button>

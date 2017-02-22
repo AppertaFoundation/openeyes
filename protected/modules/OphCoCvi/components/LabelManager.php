@@ -17,89 +17,94 @@
  */
 
 namespace OEModule\OphCoCvi\components;
+
 use \ODTTemplateManager;
 
 /**
  * A class for odt document modify and change 70 x 36,5mm labels on an A4 sheet and generate pdf
  */
-class LabelManager extends ODTTemplateManager{
+class LabelManager extends ODTTemplateManager
+{
     /**
      * @var string
      */
-    var $cols = 3;
-    var $rows = 8;
+    public $cols = 3;
+    public $rows = 8;
+
     /**
-     * @param $filename 
+     * @param $filename
      * @param $templateDir
      * @param $outputDir
      * @param $outputName
-    */
-    public function __construct( $filename , $templateDir, $outputDir, $outputName )
+     */
+    public function __construct($filename, $templateDir, $outputDir, $outputName)
     {
-        parent::__construct( $filename , $templateDir, $outputDir, $outputName );
+        parent::__construct($filename, $templateDir, $outputDir, $outputName);
     }
-    
-    /*
+
+    /**
      * Fill labels in document table by table-name
      * @param $tableName
      * @param $addressesArray 
      * @param $firstEmptyCell 
      */
-    
-    public function fillLabelsInTable( $tableName , $addressesArray , $firstEmptyCell)
+    public function fillLabelsInTable($tableName, $addressesArray, $firstEmptyCell)
     {
-        $dataArray = $this->generateArrayToTable( $addressesArray , $firstEmptyCell );
-        $this->fillTableByName( $tableName , $dataArray );          
+        $dataArray = $this->generateArrayToTable($addressesArray, $firstEmptyCell);
+        $this->fillTableByName($tableName, $dataArray);
     }
-    
-    /*
+
+    /**
      * Generate array to ODTTemplatemanager fillTableByName valid data array from a simple array
      * @param $addressesArray
      * @param $firstEmptyCell
      */
-    private function generateArrayToTable( $addressesArray , $firstEmptyCell ){
+    private function generateArrayToTable($addressesArray, $firstEmptyCell)
+    {
         $result[] = array();
         $row = 0;
-        if($firstEmptyCell > 1){
-           
-            for($i = 1; $i < $firstEmptyCell; $i++){
-              
-                if($i % $this->cols == 1){
+        if ($firstEmptyCell > 1) {
+            for ($i = 1; $i < $firstEmptyCell; $i++) {
+                if ($i % $this->cols == 1) {
                     $colCount = 0;
-                } else if($i % $this->cols == 2){
-                    $colCount = 1;     
                 } else {
-                    $colCount = 2;
+                    if ($i % $this->cols == 2) {
+                        $colCount = 1;
+                    } else {
+                        $colCount = 2;
+                    }
                 }
-               
+
                 $result[$row][$colCount] = '';
-                if($i % $this->cols == 0){
+                if ($i % $this->cols == 0) {
                     $row++;
                 }
             }
         } else {
             $i = 1;
         }
-       
-        foreach ($addressesArray as $key => $val){
-           
-            if($i % $this->cols == 1){
-                $colCount = 0;
-            } else if($i % $this->cols == 2){
-                $colCount = 1;
-            } else {
-                $colCount = 2;
-            }
-            
-            $result[$row][$colCount] = $val;
 
-            if($i % $this->cols === 0){
+        foreach ($addressesArray as $val) {
+
+            if ($i % $this->cols == 1) {
+                $colCount = 0;
+            } else {
+                if ($i % $this->cols == 2) {
+                    $colCount = 1;
+                } else {
+                    $colCount = 2;
+                }
+            }
+
+            $result[$row][$colCount] = str_replace(array("\r\n", ','), array('', "\\n"), $val);
+
+            if ($i % $this->cols === 0) {
                 $row++;
             }
             $i++;
-          
+
         }
-        
+
         return $result;
     }
 }

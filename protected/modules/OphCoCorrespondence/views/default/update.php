@@ -19,42 +19,44 @@
 ?>
 <?php $this->beginContent('//patient/event_container'); ?>
 
-	<?php
-        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'correspondence-create',
-            'enableAjaxValidation' => false,
-            'layoutColumns' => array(
-                'label' => 2,
-                'field' => 10,
-            ),
-        ));
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'correspondence-create',
+    'enableAjaxValidation' => false,
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 10,
+    ),
+));
 
-        // Event actions
+$actions = array('savedraft' => 'Save draft', 'saveprint' => 'Save and print');
+if( isset(Yii::app()->params['OphCoCorrespondence_event_actions']['create']) ){
+    $actions = Yii::app()->params['OphCoCorrespondence_event_actions']['create'];
+}
+
+foreach($actions as $action_id => $action){
+    if($action){
         $this->event_actions[] = EventAction::button(
-            'Save draft',
-            'savedraft',
+            $action,
+            $action_id,
             array('level' => 'secondary'),
-            array('id' => 'et_save_draft', 'class' => 'button small', 'form' => 'correspondence-create')
+            array('id' => 'et_' . $action_id, 'class' => 'button small', 'form' => 'correspondence-create')
         );
-        $this->event_actions[] = EventAction::button(
-            'Save and print',
-            'saveprint',
-            array('level' => 'secondary'),
-            array('id' => 'et_save_print', 'class' => 'button small', 'form' => 'correspondence-create')
-        );
-    ?>
+    }
+}
+?>
 
-		<?php if (!$this->patient->practice || !$this->patient->practice->contact->address) { ?>
-			<div id="no-practice-address" class="alert-box alert with-icon">
-				Patient has no GP practice address, please correct in PAS before updating GP letter.
-			</div>
-		<?php } ?>
+<?php if (!$this->patient->practice || !$this->patient->practice->contact->address) { ?>
+    <div id="no-practice-address" class="alert-box alert with-icon">
+        Patient has no GP practice address, please correct in PAS before updating GP letter.
+    </div>
+<?php } ?>
 
-		<?php $this->displayErrors($errors)?>
-		<?php $this->renderOpenElements($this->action->id, $form); ?>
-		<?php $this->renderOptionalElements($this->action->id, $form); ?>
-		<?php $this->displayErrors($errors, true)?>
+<?php $this->displayErrors($errors) ?>
+<?php $this->renderOpenElements($this->action->id, $form); ?>
+<?php $this->renderOptionalElements($this->action->id, $form); ?>
+<?php $this->displayErrors($errors, true) ?>
 
-	<?php $this->endWidget(); ?>
+<?php $this->endWidget(); ?>
 
-<?php $this->endContent();?>
+<?php $this->endContent(); ?>

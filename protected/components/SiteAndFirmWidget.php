@@ -107,10 +107,8 @@ class SiteAndFirmWidget extends CWidget
                         $user_firm_ids)) && !isset($firms['Recent'][$firm_id])
             ) {
                 $firm = Firm::model()->findByPk($firm_id);
-                if ($firm->active &&
-                    (!$this->subspecialty ||
-                        ($firm->serviceSubspecialtyAssignment && $firm->serviceSubspecialtyAssignment->subspecialty_id == $this->subspecialty->id)
-                    )
+                if ($firm instanceof Firm && $firm->active &&
+                    (!$this->subspecialty || ($firm->serviceSubspecialtyAssignment && $firm->serviceSubspecialtyAssignment->subspecialty_id == $this->subspecialty->id))
                 ) {
                     if ($preferred_firms) {
                         $firms['Other'][$firm_id] = $firm_label;

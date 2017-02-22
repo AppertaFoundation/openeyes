@@ -1551,7 +1551,6 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function actionPrint($id)
     {
-        $this->printLog($id, false);
         $this->printInit($id);
         $this->printHTML($id, $this->open_elements);
     }
@@ -1562,10 +1561,17 @@ class BaseEventTypeController extends BaseModuleController
             throw new Exception("Event not found: $id");
         }
 
+        $auto_print = Yii::app()->request->getParam('auto_print', true);
+        $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
+
         $event->lock();
 
         // Ensure exclusivity of PDF to avoid race conditions
-        $this->pdf_print_suffix .= Yii::app()->user->id.'_'.rand();
+        if(method_exists($this,"getSession")) {
+            $this->pdf_print_suffix .= Yii::app()->user->id . '_' . rand();
+        }else{
+            $this->pdf_print_suffix .= getmypid().rand();
+        }
 
         if (!$event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
             if (!$this->pdf_print_html) {
@@ -1582,7 +1588,7 @@ class BaseEventTypeController extends BaseModuleController
             $wk->setDocref($event->docref);
             $wk->setPatient($event->episode->patient);
             $wk->setBarcode($event->barcodeHTML);
-
+            
             foreach (array('left', 'middle', 'right') as $section) {
                 if (isset(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name])) {
                     $setMethod = 'set'.ucfirst($section);
@@ -1602,13 +1608,11 @@ class BaseEventTypeController extends BaseModuleController
                     $wk->setCustomTag($pdf_footer_tag->tag_name, $api->{$pdf_footer_tag->method}($event->id));
                 }
             }
-
-            $wk->generatePDF($event->imageDirectory, 'event', $this->pdf_print_suffix, $this->pdf_print_html, (boolean) @$_GET['html']);
+            
+            $wk->generatePDF($event->imageDirectory, 'event', $this->pdf_print_suffix, $this->pdf_print_html, (boolean) @$_GET['html'], $inject_autoprint_js);
         }
 
         $event->unlock();
-
-        $this->printLog($id, true);
 
         if (@$_GET['html']) {
             return Yii::app()->end();
@@ -1667,7 +1671,7 @@ class BaseEventTypeController extends BaseModuleController
     protected function printLog($id, $pdf)
     {
         $this->logActivity("printed event (pdf=$pdf)");
-        $this->event->audit('event', 'print', false);
+        $this->event->audit('event', ( strpos($this->pdf_print_suffix, 'all') === 0  ? 'print all' : 'print'), false);
     }
 
     /**
@@ -1935,11 +1939,13 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         ob_start();
-        $this->actionPrint($id);
+        $this->actionPrint($id, false);
         $html = ob_get_contents();
         ob_end_clean();
 
         $event->unlock();
+        
+        $this->printLog($id, false);
 
         // Verify we have all the images by detecting eyedraw canvas elements in the page.
         // If we don't, the "outofdate" response will trigger a page-refresh so we can re-send the canvas elements to the
