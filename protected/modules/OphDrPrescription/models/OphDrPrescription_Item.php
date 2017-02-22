@@ -139,7 +139,7 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         $criteria->compare('duration_id', $this->duration_id, true);
         $criteria->compare('frequency_id', $this->frequency_id, true);
         $criteria->compare('route_id', $this->route_id, true);
-
+        $criteria->compare('route_option_id', $this->route_option_id, true);
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
