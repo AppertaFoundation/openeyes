@@ -68,6 +68,14 @@ class BaseAPI
         }
     }
     
+    /**
+     * gets all element of type $element for the given patient in the given episode.
+     *
+     * @param Episode $episode - the episode
+     * @param string  $element - the element class
+     *
+     * @return unknown - the element type requested, or null
+     */
     public function getElementForAllEventInEpisode($episode, $element)
     {
         $event_type = $this->getEventType();
