@@ -260,6 +260,20 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         return parent::afterValidate();
     }
 
+    protected function afterSave()
+    {
+        if($this->draft)
+        {
+            $this->event->addIssue('Draft');
+        }
+        else
+        {
+            $this->event->deleteIssue('Draft');
+        }
+
+        return parent::afterSave();
+    }
+
     /**
      * Create and save appropriate Element_OphDrPrescription_Item and Element_OphDrPrescription_Item_Taper
      * models for this prescription based on the $items structure passed in.
