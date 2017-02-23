@@ -83,7 +83,7 @@ class Subspecialty extends BaseActiveRecordVersioned
     {
         return array(
             'id' => 'ID',
-            'name' => 'Name',
+            'name' => 'Subspecialty',
             'class_name' => 'Class Name',
         );
     }
