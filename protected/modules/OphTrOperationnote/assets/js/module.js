@@ -767,7 +767,7 @@ function highlightBiometryElement( ){
 
     // right: 2
     // left: 1
-    $('#ophTrOperationnotePCRRiskDiv').hide();
+    $('#ophTrOperationnotePCRRiskDiv').attr('style', 'display: block;');
     if( $('#Element_OphTrOperationnote_ProcedureList_eye_id_2').is(':checked') ){
         $('.right-eye').removeClass('disabled-eye').addClass('highlighted-eye');
         $('.left-eye').removeClass('highlighted-eye').addClass('disabled-eye');
