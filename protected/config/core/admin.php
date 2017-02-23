@@ -62,7 +62,7 @@ return array(
             ),
             'Drugs' => array(
                 'Common Drugs List' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/commonDrugAdmin/list'),
-                'Drug Sets' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/DrugSetAdmin/DrugSets'),
+                'Drug Sets' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/DrugSetAdmin/list'),
                 'Common Medications List ' => '/oeadmin/commonMedications/list',
                 'Medication List' => '/oeadmin/medication/list',
                 'Formulary Drugs' => '/oeadmin/formularyDrugs/list',
