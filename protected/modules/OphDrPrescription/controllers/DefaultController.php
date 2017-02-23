@@ -164,16 +164,19 @@ class DefaultController extends BaseEventTypeController
             $status_name = $this->episode->status->name;
             $subspecialty_id = $this->firm->getSubspecialtyID();
             $params = array(':subspecialty_id' => $subspecialty_id, ':status_name' => $status_name);
+            
             $set = DrugSet::model()->find(array(
                     'condition' => 'subspecialty_id = :subspecialty_id AND name = :status_name',
                     'params' => $params,
                 ));
+
             if ($set) {
                 foreach ($set->items as $item) {
                     $item_model = new OphDrPrescription_Item();
                     $item_model->drug_id = $item->drug_id;
                     $item_model->loadDefaults();
                     $item_model->attributes = $item->getAttributes();
+                    $item_model->tapers = $item->tapers;
                     $items[] = $item_model;
                 }
             }
