@@ -9,8 +9,7 @@ class m161220_111436_investigator_version extends OEMigration
 
 	public function down()
 	{
-		echo "m161220_111436_investigator_version does not support migration down.\n";
-		return false;
+        $this->dropTable('ophindnaextraction_dnatests_investigator_version');
 	}
 
 	/*

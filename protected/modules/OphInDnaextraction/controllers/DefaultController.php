@@ -2,15 +2,23 @@
 
 class DefaultController extends BaseEventTypeController
 {
+    var $box_id;
+    var $letter;
+    var $number;
+    
     protected static $action_types = array(
         'addTransaction' => self::ACTION_TYPE_FORM,
+        'GetNewStorageFields' => self::ACTION_TYPE_FORM,
+        'getAvailableLetterNumberToBox' => self::ACTION_TYPE_FORM,
+        'saveNewStorage' => self::ACTION_TYPE_FORM,
+        'refreshStorageSelect' => self::ACTION_TYPE_FORM,
     );
 
     public function accessRules()
     {
         return array(
             array('allow',
-                'actions' => array('Create', 'Update', 'View', 'Print', 'AddTransaction'),
+                'actions' => array('Create', 'Update', 'View', 'Print', 'AddTransaction','GetNewStorageFields','getAvailableLetterNumberToBox','saveNewStorage', 'refreshStorageSelect'),
                 'roles' => array('OprnEditDNAExtraction'),
             ),
             array('allow',
@@ -25,21 +33,6 @@ class DefaultController extends BaseEventTypeController
         $api = Yii::app()->moduleAPI->get('OphInDnaextraction');
 
         return $api->volumeRemaining($event_id);
-    }
-
-    public function actionCreate()
-    {
-        parent::actionCreate();
-    }
-
-    public function actionUpdate($id)
-    {
-        parent::actionUpdate($id);
-    }
-
-    public function actionView($id)
-    {
-        parent::actionView($id);
     }
 
     public function actionPrint($id)
@@ -139,4 +132,75 @@ class DefaultController extends BaseEventTypeController
     {
         return true;
     }
+    
+    public function actionGetNewStorageFields()
+    {
+        $element = new Element_OphInDnaextraction_DnaExtraction();
+        $this->renderPartial('newStoragePopup', array('element'=> $element), false, true);
+    }
+    
+    public function actionGetAvailableLetterNumberToBox( )
+    {
+        $result = array();
+        if((int)$_POST['box_id'] > '0'){
+            $storage = new OphInDnaextraction_DnaExtraction_Storage();
+            $boxModel = new OphInDnaextraction_DnaExtraction_Box();
+            $boxRanges = $boxModel->boxMaxValues($_POST['box_id']);  
+
+            $letterArray = $storage->generateLetterArrays($_POST['box_id'], $boxRanges['maxletter'] , $boxRanges['maxnumber']);       
+            $usedBoxRows = $storage->getAllLetterNumberToBox( $_POST['box_id'] );
+
+
+            $arrayDiff = array_filter($letterArray, function ($element) use ($usedBoxRows) {
+                return !in_array($element, $usedBoxRows);
+            });
+
+            foreach($arrayDiff as $key => $val){
+                if($val['letter'] == "0"){
+                    $result['letter'] = "You have not specified a maximum letter value.";
+                    $result['number'] = "You have not specified a maximum number value.";
+                } else {
+                    $result['letter'] = $val['letter'];
+                    $result['number'] = $val['number'];
+                }
+
+                break;
+            }
+        }
+ 
+        echo json_encode($result);
+    }
+
+    public function actionSaveNewStorage()
+    {
+        $storage = new OphInDnaextraction_DnaExtraction_Storage();
+        
+        $storage->box_id = Yii::app()->request->getPost('dnaextraction_box_id');
+        $storage->letter = Yii::app()->request->getPost('dnaextraction_letter');
+        $storage->number = Yii::app()->request->getPost('dnaextraction_number');
+        $storage->letter = $storage->letter ? strtoupper($storage->letter) : $storage->letter;
+
+        if( $storage->save() ){
+            $result = array('s' => 1);
+        } else {
+            $errors = '';
+            foreach( $storage->getErrors() as $attribute => $error ){
+                $errors .= $errors == '' ? '' : "<br>";
+                $errors .= "$attribute: " . ( implode($error) );
+            }
+            $result = array(
+                's' => 0,
+                'msg' => $errors
+            );
+        }
+
+        echo json_encode($result);
+    }
+    
+    public function actionRefreshStorageSelect()
+    {
+        $element = new Element_OphInDnaextraction_DnaExtraction();
+        $this->renderPartial('_boxSelectRefresh', array('element'=> $element), false, true);
+    }
+    
 }

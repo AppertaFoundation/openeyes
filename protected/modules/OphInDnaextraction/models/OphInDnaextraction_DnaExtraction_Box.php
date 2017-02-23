@@ -54,7 +54,12 @@ class OphInDnaextraction_DnaExtraction_Box extends BaseActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('value, display_order', 'safe'),
+            array('value, maxletter, maxnumber', 'required'),
+            array('maxletter', 'match', 'pattern' => '/^[a-zA-Z\s]{1}+$/',
+                    'message' => '{attribute} can only contain 1 word character'
+                ),
+
+            array('value, maxletter, maxnumber, display_order', 'safe'),
         );
     }
 
@@ -76,4 +81,25 @@ class OphInDnaextraction_DnaExtraction_Box extends BaseActiveRecord
             'criteria' => $criteria,
         ));
     }
+    
+    public function boxMaxValues( $boxID )
+    {
+        $boxMaxValues = Yii::app()->db->createCommand()
+            ->select('id, value, maxletter, maxnumber')
+            ->from('ophindnaextraction_dnaextraction_box')
+            ->where('id =:id', array(':id' => $boxID))
+            ->queryRow();
+        
+        return $boxMaxValues;
+    }
+    
+    public function attributeLabels()
+    {
+        return array(
+            'value'      => 'Box name',
+            'maxletter'  => 'Max letter',
+            'maxnumber'  => 'Max number',
+        );
+    }
+    
 }

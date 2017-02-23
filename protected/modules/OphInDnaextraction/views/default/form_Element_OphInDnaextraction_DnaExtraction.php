@@ -17,53 +17,46 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section class="element <?php echo $element->elementType->class_name ?>"
-         data-element-type-id="<?php echo $element->elementType->id ?>"
-         data-element-type-class="<?php echo $element->elementType->class_name ?>"
-         data-element-type-name="<?php echo $element->elementType->name ?>"
-         data-element-display-order="<?php echo $element->elementType->display_order ?>">
-  <fieldset class="element-fields">
-      <?php echo $form->dropDownList($element, 'box_id', CHtml::listData(OphInDnaextraction_DnaExtraction_Box::model()->findAll(array('order' => 'display_order')), 'id', 'value'),
-          array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9)) ?>
-      <?php echo $form->dropDownList(
-          $element,
-          'letter_id',
-          CHtml::listData(OphInDnaextraction_DnaExtraction_Letter::model()->findAll(array('order' => 'display_order')), 'id', 'value'),
-          array('empty' => '- Select -'),
-          false,
-          array('label' => 3, 'field' => 9)
-      );
-      ?>
-      <?php echo $form->dropDownList(
-          $element,
-          'number_id',
-          CHtml::listData(OphInDnaextraction_DnaExtraction_Number::model()->findAll(array('order' => 'display_order')), 'id', 'value'),
-          array('empty' => '- Select -'),
-          false,
-          array('label' => 3, 'field' => 9)
-      ); ?>
-      <?php echo $form->datePicker($element, 'extracted_date', array('maxDate' => 'today'), array(), array('label' => 3, 'field' => 2)) ?>
-      <?php echo $form->dropDownList(
-          $element,
-          'extracted_by_id',
-          CHtml::listData(User::model()->geneticLabTechs(), 'id', 'fullName'),
-          array('empty' => '- Select -'),
-          false,
-          array('label' => 3, 'field' => 9)
-      ); ?>
-      <?php echo $form->textField($element, 'dna_concentration', array(), array(), array('label' => 3, 'field' => 2)) ?>
-      <?php echo $form->textField($element, 'volume', array(), array(), array('label' => 3, 'field' => 2)); ?>
-      <?php echo $form->textField($element, 'dna_quality', array(), array(), array('label' => 3, 'field' => 1)); ?>
-      <?php echo $form->textField($element, 'dna_quantity', array(), array(), array('label' => 3, 'field' => 1));
+<section class="element <?php echo $element->elementType->class_name?>"
+	data-element-type-id="<?php echo $element->elementType->id?>"
+	data-element-type-class="<?php echo $element->elementType->class_name?>"
+	data-element-type-name="<?php echo $element->elementType->name?>"
+	data-element-display-order="<?php echo $element->elementType->display_order?>">
+	<fieldset class="element-fields">
+		<?php 
+        $storage = new OphInDnaextraction_DnaExtraction_Storage();
+        echo $form->dropDownList($element, 'storage_id', CHtml::listData($storage->getAvailableCombinedList( $element->storage_id ), 'id', 'value' ), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
+        
+        <div class="row field-row">
+            <div class="large-3 column">
+                <label></label>
+            </div>
+            <div class="large-2 column end">
+                 <?php echo CHtml::button('Add new storage', 
+                    array(
+                        'id'        => 'addNewStoragePopup',
+                        'class'     => 'button small secondary', 
+                        'type'      => 'button',
+                    )
+                ); ?>
+            </div>
+        </div>
+        
+        <?php echo $form->datePicker($element, 'extracted_date', array('maxDate' => 'today'), array(), array('label' => 3, 'field' => 2))?>
+		<?php echo $form->textField($element, 'extracted_by', array(), array(), array('label' => 3, 'field' => 2))?>
+		<?php echo $form->textField($element, 'dna_concentration', array(), array(), array('label' => 3, 'field' => 2))?>
+		<?php echo $form->textField($element, 'volume', array(), array(), array('label' => 3, 'field' => 2));?>
+        <?php echo $form->textField($element, 'dna_quality', array(), array(), array('label' => 3, 'field' => 1));?>
+        <?php echo $form->textField($element, 'dna_quantity', array(), array(), array('label' => 3, 'field' => 1));
 
-      if ($this->action->id == 'update') {
-          $form->widget('Caption',
-              array(
-                  'label' => 'Volume Remaining',
-                  'value' => $this->volumeRemaining($element->event_id),
-              ));
-      }
-      ?>
-      <?php echo $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 5)) ?>
-  </fieldset>
+        if ($this->action->id == 'update') {
+            $form->widget('Caption',
+                array(
+                    'label' => 'Volume Remaining',
+                    'value' => $this->volumeRemaining($element->event_id),
+                ));
+        }
+        ?>
+		<?php echo $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 5))?>
+	</fieldset>
 </section>
