@@ -79,7 +79,7 @@ class BaseAPI
     public function getElementForAllEventInEpisode($episode, $element)
     {
         $event_type = $this->getEventType();
-        
+       
         if($events = $episode->getAllEventsByType($event_type->id))
         {
             foreach($events as $event)
