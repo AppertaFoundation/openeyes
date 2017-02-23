@@ -157,7 +157,6 @@ class DefaultController extends BaseEventTypeController
     protected function setElementDefaultOptions($element, $action)
     {
         parent::setElementDefaultOptions($element, $action);
-
         if ($action == 'create' && get_class($element) == 'Element_OphDrPrescription_Details') {
             // Prepopulate prescription with set by episode status
             // FIXME: It's brittle relying on the set name matching the status
@@ -174,6 +173,7 @@ class DefaultController extends BaseEventTypeController
                     $item_model = new OphDrPrescription_Item();
                     $item_model->drug_id = $item->drug_id;
                     $item_model->loadDefaults();
+                    $item_model->attributes = $item->getAttributes();
                     $items[] = $item_model;
                 }
             }
