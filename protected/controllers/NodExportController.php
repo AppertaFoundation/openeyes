@@ -1210,7 +1210,7 @@ EOL;
 EOL;
         $dataQuery = array(
             'query' => $query,
-            'header' => array('EpisodeId', 'Sphere', 'Cylinder', 'Axis', 'RefractionTypeId', 'ReadingAdd', 'Eye'),
+            'header' => array('EpisodeId', 'Eye', 'RefractionTypeId', 'Sphere', 'Cylinder', 'Axis', 'ReadingAdd'),
         );
 
         return $this->saveCSVfile($dataQuery, 'EpisodeRefraction');
