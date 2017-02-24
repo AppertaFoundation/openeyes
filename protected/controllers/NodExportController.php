@@ -1184,9 +1184,9 @@ EOL;
                       c.oe_event_id,
                       'R' AS Eye,
                       '' AS RefractionTypeId,
-                      r.left_sphere AS Sphere,
-                      r.left_cylinder AS Cylinder,
-                      r.left_axis AS Axis, 
+                      r.right_sphere AS Sphere,
+                      r.right_cylinder AS Cylinder,
+                      r.right_axis AS Axis,
                       '' AS ReadingAdd
                 
                 /* Restriction: Start with control events */
