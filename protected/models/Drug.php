@@ -86,6 +86,7 @@ class Drug extends BaseActiveRecordVersioned
             'default_duration' => array(self::BELONGS_TO, 'DrugDuration', 'default_duration_id'),
             'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'default_frequency_id'),
             'default_route' => array(self::BELONGS_TO, 'DrugRoute', 'default_route_id'),
+            'default_route_option' => array(self::BELONGS_TO, 'DrugRouteOption', 'default_route_option_id'),
             'subspecialtyAssignments' => array(self::HAS_MANY, 'SiteSubspecialtyDrug', 'drug_id'),
         );
     }
@@ -100,6 +101,7 @@ class Drug extends BaseActiveRecordVersioned
             'default_duration_id' => 'Default Duration',
             'default_frequency_id' => 'Default Frequency',
             'default_route_id' => 'Default Route',
+            'default_route_option_id' => 'Default Route Option',
         );
     }
 
