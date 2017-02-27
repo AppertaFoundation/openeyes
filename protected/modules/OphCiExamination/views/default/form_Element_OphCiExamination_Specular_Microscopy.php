@@ -17,32 +17,32 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 <div class="element-fields row">
-	<div class="large-3 column">
+	<div class="large-2 column">
 		<label><?php echo $element->getAttributeLabel('specular_microscope_id')?>:</label>
 	</div>
-	<div class="large-3 column">
+	<div class="large-2 column">
 		<?php
 		$allSpecularMicroscope = \OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->findAll(array('order' => 'display_order'));
-		echo CHtml::dropDownList('specular_microscope_id',
-			null,
+		echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy[specular_microscope_id]',
+			$element->specular_microscope_id,
 			CHtml::listData($allSpecularMicroscope, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
 	</div>
 	<div class="large-2 column"></div>
-	<div class="large-3 column">
+	<div class="large-2 column">
 		<label><?php echo $element->getAttributeLabel('scan_quality_id')?>:</label>
 	</div>
-	<div class="large-3 column">
+	<div class="large-2 column">
 		<?php
 		$allScanQuality = \OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->findAll(array('order' => 'display_order'));
-		echo CHtml::dropDownList('scan_quality_id',
-			null,
+		echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy[scan_quality_id]',
+			$element->scan_quality_id,
 			CHtml::listData($allScanQuality, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
 	</div>
 	<div class="large-2 column"></div>
 </div>
 <div class="element-fields element-eyes row">
-<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 <div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {
 ?> inactive<?php
 }?>" data-side="right">
@@ -70,9 +70,6 @@
 					<div class="large-4 column">
 					</div>
 				</div>
-
-
-
 		</div>
 		<div class="inactive-form">
 			<div class="add-side">
@@ -108,7 +105,6 @@
 				</div>
 			</div>
 			</div>
-		</div>
 		<div class="inactive-form">
 			<div class="add-side">
 				<a href="#">

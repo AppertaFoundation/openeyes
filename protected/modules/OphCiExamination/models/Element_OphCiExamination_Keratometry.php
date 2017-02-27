@@ -90,21 +90,36 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
                 array('eye_id, topographer_id, topographer_scan_quality_id, 
                 right_anterior_k1_value, right_axis_anterior_k1_value,
                  right_anterior_k2_value, right_axis_anterior_k2_value, right_kmax_value, 
-                 right_posterior_k2_value, right_thinnest_point_pachymetry_value, right_b-a_index_value, 
+                 right_posterior_k2_value, right_thinnest_point_pachymetry_value, right_ba_index_value, 
                  tomographer_id, tomographer_scan_quality_id,
                  left_anterior_k1_value, left_axis_anterior_k1_value,
                  left_anterior_k2_value, left_axis_anterior_k2_value, left_kmax_value, 
-                 left_posterior_k2_value, left_thinnest_point_pachymetry_value, left_b-a_index_value, keratoconus_stage_id', 'safe'),
-                // The following rule is used by search().
+                 left_posterior_k2_value, left_thinnest_point_pachymetry_value, left_ba_index_value, keratoconus_stage_id', 'safe'),
+
+                array('right_anterior_k1_value, right_anterior_k2_value, right_kmax_value, right_posterior_k2_value, 
+                    left_anterior_k1_value, left_anterior_k2_value, left_kmax_value, left_posterior_k2_value',
+                    'in','range'=>range(30,80)),
+
+                array('right_axis_anterior_k1_value, right_axis_anterior_k2_value, left_axis_anterior_k1_value, left_axis_anterior_k2_value',
+                        'in','range'=>range(0,180)),
+
+            array('right_thinnest_point_pachymetry_value, left_thinnest_point_pachymetry_value',
+                'in','range'=>range(100,800)),
+
+            array('right_ba_index_value, left_ba_index_value',
+                'in','range'=>range(0.00,10.00)),
+
+
+            // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
                 array('id, event_id, topographer_id, topographer_scan_quality_id, 
                 right_anterior_k1_value, right_axis_anterior_k1_value,
                  right_anterior_k2_value, right_axis_anterior_k2_value, right_kmax_value, 
-                 right_posterior_k2_value, right_thinnest_point_pachymetry_value, right_b-a_index_value, 
+                 right_posterior_k2_value, right_thinnest_point_pachymetry_value, right_ba_index_value, 
                  tomographer_id, tomographer_scan_quality_id,
                  left_anterior_k1_value, left_axis_anterior_k1_value,
                  left_anterior_k2_value, left_axis_anterior_k2_value, left_kmax_value, 
-                 left_posterior_k2_value, left_thinnest_point_pachymetry_value, left_b-a_index_value, keratoconus_stage_id', 'safe', 'on' => 'search'),
+                 left_posterior_k2_value, left_thinnest_point_pachymetry_value, left_ba_index_value, keratoconus_stage_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -117,6 +132,8 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+            'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'topographer_id' => array(self::BELONGS_TO, 'ophciexamination_topographer_device', 'id'),
@@ -136,24 +153,24 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
             'id' => 'ID',
             'topographer_id' => 'Topographer Device',
             'topographer_scan_quality_id' => 'Topographer Scan Quality',
-            'right_anterior_k1_value' => 'Anterior K1 Value (D)',
-            'right_axis_anterior_k1_value' => 'Axis Anterior K1 Value (degrees)',
-            'right_anterior_k2_value' => 'Anterior K2 Value (D)',
-            'right_axis_anterior_k2_value' => 'Axis Anterior K2 Value (degrees)',
+            'right_anterior_k1_value' => 'Front K1 Value (D)',
+            'right_axis_anterior_k1_value' => 'Back K1 Value (degrees)',
+            'right_anterior_k2_value' => 'Front K2 Value (D)',
+            'right_axis_anterior_k2_value' => 'Back K2 Value (degrees)',
             'right_kmax_value' => 'Kmax range (D)',
-            'left_anterior_k1_value' => 'Anterior K1 Value (D)',
-            'left_axis_anterior_k1_value' => 'Axis Anterior K1 Value (degrees)',
-            'left_anterior_k2_value' => 'Anterior K2 Value (D)',
-            'left_axis_anterior_k2_value' => 'Axis Anterior K2 Value (degrees)',
+            'left_anterior_k1_value' => 'Front K1 Value (D)',
+            'left_axis_anterior_k1_value' => 'Back K1 Value (degrees)',
+            'left_anterior_k2_value' => 'Front K2 Value (D)',
+            'left_axis_anterior_k2_value' => 'Back K2 Value (degrees)',
             'left_kmax_value' => 'Kmax range (D)',
             'tomographer_id' => 'Tomographer Device',
             'tomographer_scan_quality_id' => 'Tomographer Scan Quality',
             'right_posterior_k2_value' => 'Posterior K2 Value (D)',
             'right_thinnest_point_pachymetry_value' => 'Thinnest Point Pachymetry Value (µm)',
-            'right_b-a_index_value' => 'B-A Index Value',
+            'right_ba_index_value' => 'B-A Index Value',
             'left_posterior_k2_value' => 'Posterior K2 Value (D)',
             'left_thinnest_point_pachymetry_value' => 'Thinnest Point Pachymetry Value (µm)',
-            'left_b-a_index_value' => 'B-A Index Value',
+            'left_ba_index_value' => 'B-A Index Value',
             'keratoconus_stage_id' => 'Keratoconus Stage',
         );
     }
@@ -172,6 +189,7 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('eye_id', $this->eye_id, true);
+        $criteria->compare('event_id', $this->event_id, true);
         $criteria->compare('topographer_id', $this->topographer_id, true);
         $criteria->compare('topographer_scan_quality_id', $this->topographer_scan_quality_id, true);
         $criteria->compare('right_anterior_k1_value', $this->right_anterior_k1_value, true);
@@ -188,10 +206,10 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
         $criteria->compare('tomographer_scan_quality_id', $this->tomographer_scan_quality_id, true);
         $criteria->compare('right_posterior_k2_value', $this->right_posterior_k2_value, true);
         $criteria->compare('right_thinnest_point_pachymetry_value', $this->right_thinnest_point_pachymetry_value, true);
-        $criteria->compare('right_b-a_index_value', $this->right_b-a_index_value, true);
+        $criteria->compare('right_ba_index_value', $this->right_ba_index_value, true);
         $criteria->compare('left_posterior_k2_value', $this->left_posterior_k2_value, true);
         $criteria->compare('left_thinnest_point_pachymetry_value', $this->left_thinnest_point_pachymetry_value, true);
-        $criteria->compare('left_b-a_index_value', $this->left_b-a_index_value, true);
+        $criteria->compare('left_ba_index_value', $this->left_ba_index_value, true);
         $criteria->compare('keratoconus_stage_id', $this->keratoconus_stage_id, true);
 
         return new \CActiveDataProvider(get_class($this), array(

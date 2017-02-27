@@ -17,61 +17,78 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<div class="element-data">
+    <div class="data-row">
+        <div class="data-value">
+            <?php echo $element->getAttributeLabel('specular_microscope_id')?>:
+<?php
+$spec_micro = OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->find('id=?', $element->specular_microscope_id);
+echo $spec_micro->name;
+?><br/>
+            <?php echo $element->getAttributeLabel('scan_quality_id')?>:
+ <?php
+$scan_quality = OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->find('id=?', $element->scan_quality_id);
+echo $scan_quality->name;
+?><br/>
+        </div>
+    </div>
+</div>
 <div class="element-data element-eyes row">
     <div class="element-eye right-eye column">
-        <div class="data-row">
-            <div class="data-value">
-                <?php if ($element->hasRight()) {?>
-                    <?php  var_dump($element); ?>
-                    Specular Microscope: <?php
-                    $spec_micro = OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->find('id=?', $element->right_specular_microscope_id);
-                    echo $spec_micro->name;
-                    ?><br/>
-                    Scan Quality: <?php
-                    $scan_quality = OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->find('id=?', $element->right_scan_quality_id);
-                    echo $scan_quality->name;
-                    ?><br/>
-                    Endothelial Cell Density: <?php
-                    echo $element->right_endothelial_cell_density_value;
-                    ?><br/>
-                    Coefficient of Variation: <?php
+        <?php if ($element->hasRight()) {?>
+        <div class="row">
+            <div class="large-6 column data-value">
+                    <?php echo $element->getAttributeLabel('right_endothelial_cell_density_value')?>:
+            </div>
+            <div class="large-5 column data-value">
+                <?php echo $element->right_endothelial_cell_density_value;
+                    ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="large-6 column data-value">
+                    <?php echo $element->getAttributeLabel('right_coefficient_variation_value')?>:
+            </div>
+            <div class="large-5 column data-value">
+                    <?php
                     echo $element->right_coefficient_variation_value;
-                    ?><br/>
+                    ?>
+            </div>
+        </div>
 <?php
                 } else {
                     ?>
                     Not recorded
                     <?php
                 }?>
-            </div>
         </div>
-    </div>
+
     <div class="element-eye left-eye column">
-        <div class="data-row">
-            <div class="data-value">
-                <?php if ($element->hasLeft()) {
-                    ?>
-                    Specular Microscope: <?php
-                    $spec_micro = OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->find('id=?', $element->left_specular_microscope_id);
-                    echo $spec_micro->name;
-                    ?><br/>
-                    Scan Quality: <?php
-                    $scan_quality = OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->find('id=?', $element->left_scan_quality_id);
-                    echo $scan_quality->name;
-                    ?><br/>
-                    Endothelial Cell Density: <?php
-                    echo $element->left_endothelial_cell_density_value;
-                    ?><br/>
-                    Coefficient of Variation: <?php
-                    echo $element->left_coefficient_variation_value;
-                    ?><br/>
-                    <?php
-                } else {
-                    ?>
-                    Not recorded
-                    <?php
-                }?>
+        <?php if ($element->hasLeft()) {?>
+        <div class="row">
+            <div class="large-6 column data-value">
+                <?php echo $element->getAttributeLabel('left_endothelial_cell_density_value')?>:
+            </div>
+            <div class="large-5 column data-value">
+                <?php echo $element->left_endothelial_cell_density_value;
+                ?>
             </div>
         </div>
+        <div class="row">
+            <div class="large-6 column data-value">
+                <?php echo $element->getAttributeLabel('left_coefficient_variation_value')?>:
+            </div>
+            <div class="large-5 column data-value">
+                <?php
+                echo $element->left_coefficient_variation_value;
+                ?>
+            </div>
+        </div>
+        <?php
+        } else {
+            ?>
+            Not recorded
+            <?php
+        }?>
     </div>
 </div>
