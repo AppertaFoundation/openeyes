@@ -60,76 +60,100 @@ $widgetOptionsJson = json_encode(array(
 
 <?php if (!@$htmlOptions['nowrapper']) { ?>
 <div id="<?php echo $div_id ?>" class="<?php echo $div_class ?> row field-row widget"<?php if ($hidden) { ?> style="display: none;"<?php } ?>>
-    <div class="large-<?php echo $layoutColumns['label']; ?> column">
-        <label for="<?php echo $field ?>">
-            <?php echo @$htmlOptions['label'] ?>:
-        </label>
-    </div>
-    <div class="large-<?php echo $layoutColumns['field']; ?> column end">
-        <?php } ?>
-        <div class="multi-select<?php if (!$inline) {
-            echo ' multi-select-list';
-        } ?>" data-options='<?php echo $widgetOptionsJson; ?>'>
-            <input type="hidden" name="<?php echo CHtml::modelName($element) ?>[MultiSelectList_<?php echo $field ?>]" class="multi-select-list-name"/>
-            <div class="multi-select-dropdown-container">
-                <select id="<?php echo CHtml::getIdByName($field) ?>"
-                        class="MultiSelectList<?php if ($showRemoveAllLink) { ?> inline<?php } ?><?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"
-                        name=""
-                    <?php if (isset($htmlOptions['data-linked-fields'])) { ?>
-                        data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"
-                    <?php } ?>
-                    <?php if (isset($htmlOptions['data-linked-values'])) { ?>
-                        data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"
-                    <?php } ?>
-                        data-searchable="<?php echo isset($htmlOptions['searchable']) && $htmlOptions['searchable'] ?>"
-                        data-placeholder="Add <?php echo (isset($htmlOptions['label']) && $htmlOptions['label']) ? 'a ' . $htmlOptions['label'] : '' ?>"
-                >
-                    <option value=""><?php echo $htmlOptions['empty'] ?></option>
-                    <?php
-                    foreach ($filtered_options as $value => $option) {
-                        $attributes = array('value' => $value);
-                        if (isset($opts[$value])) {
-                            $attributes = array_merge($attributes, $opts[$value]);
-                        }
-                        echo '<option';
-                        foreach ($attributes as $att => $att_val) {
-                            echo ' ' . $att . '="' . $att_val . '"';
-                        }
-                        echo '>' . strip_tags($option) . '</option>';
-                    } ?>
-                </select>
-                <?php if ($showRemoveAllLink) { ?>
-                    <a href="#" class="remove-all<?php echo !$found ? ' hide' : ''; ?>">Remove all</a>
-                <?php } ?>
-            </div>
-            <?php if ($noSelectionsMessage) { ?>
-                <div class="no-selections-msg pill<?php if ($found) { ?> hide<?php } ?>"><?php echo $noSelectionsMessage; ?></div>
+  <div class="large-<?php echo $layoutColumns['label']; ?> column">
+    <label for="<?php echo $field ?>">
+        <?php echo @$htmlOptions['label'] ?>:
+    </label>
+  </div>
+  <div class="large-<?php echo $layoutColumns['field']; ?> column end">
+      <?php } ?>
+    <div class="multi-select<?php if (!$inline) {echo ' multi-select-list';} ?>"
+         data-options='<?php echo $widgetOptionsJson; ?>'
+         <?php if($through): ?>data-statuses='<?=json_encode($through['options'])?>' <?php endif; ?>
+    >
+      <input type="hidden" name="<?php echo CHtml::modelName($element) ?>[MultiSelectList_<?php echo $field ?>]" class="multi-select-list-name"/>
+      <div class="multi-select-dropdown-container">
+        <select id="<?php echo CHtml::getIdByName($field) ?>"
+                class="MultiSelectList<?php if ($showRemoveAllLink) { ?> inline<?php } ?><?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"
+                name=""
+            <?php if (isset($htmlOptions['data-linked-fields'])) { ?>
+              data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"
             <?php } ?>
-            <ul class="MultiSelectList multi-select-selections<?php if (!$found) {
-                echo ' hide';
-            } ?><?php if ($sortable) { ?> sortable<?php } ?>">
-                <?php foreach ($selected_ids as $id) {
-                    if (isset($options[$id])) { ?>
-                        <li>
-							<span class="text">
-								<?php echo strip_tags($options[$id]) ?>
-							</span>
-                            <a href="#" data-text="<?php echo $options[$id] ?>"
-                               class="MultiSelectRemove remove-one<?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"<?php if (isset($htmlOptions['data-linked-fields'])) { ?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"<?php } ?><?php if (isset($htmlOptions['data-linked-values'])) { ?> data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"<?php } ?>>Remove</a>
-                            <input type="hidden" name="<?php echo $field ?>[]" value="<?php echo $id ?>"
-                                <?php if (isset($opts[$id])) {
-                                    foreach ($opts[$id] as $key => $val) {
-                                        echo ' ' . $key . '="' . $val . '"';
-                                    }
-                                } ?>
-                            />
-                        </li>
-                    <?php } ?>
-                <?php } ?>
-            </ul>
-        </div>
-        <?php if (!@$htmlOptions['nowrapper']) { ?>
+            <?php if (isset($htmlOptions['data-linked-values'])) { ?>
+              data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"
+            <?php } ?>
+                data-searchable="<?php echo isset($htmlOptions['searchable']) && $htmlOptions['searchable'] ?>"
+                data-placeholder="Add <?php echo (isset($htmlOptions['label']) && $htmlOptions['label']) ? 'a ' . $htmlOptions['label'] : '' ?>"
+        >
+          <option value=""><?php echo $htmlOptions['empty'] ?></option>
+            <?php
+            foreach ($filtered_options as $value => $option) {
+                $attributes = array('value' => $value);
+                if (isset($opts[$value])) {
+                    $attributes = array_merge($attributes, $opts[$value]);
+                }
+                echo '<option';
+                foreach ($attributes as $att => $att_val) {
+                    echo ' ' . $att . '="' . $att_val . '"';
+                }
+                echo '>' . strip_tags($option) . '</option>';
+            } ?>
+        </select>
+          <?php if ($showRemoveAllLink) { ?>
+            <a href="#" class="remove-all<?php echo !$found ? ' hide' : ''; ?>">Remove all</a>
+          <?php } ?>
+      </div>
+        <?php if ($noSelectionsMessage) { ?>
+          <div class="no-selections-msg pill<?php if ($found) { ?> hide<?php } ?>"><?php echo $noSelectionsMessage; ?></div>
+        <?php } ?>
+      <ul class="MultiSelectList multi-select-selections<?php if (!$found) {echo ' hide';} ?><?php if ($sortable) { ?> sortable<?php } ?>">
+          <?php foreach ($selected_ids as $id) {
+              if (isset($options[$id])) { ?>
+                <li>
+                  <?php
+                  if(isset($link) && $link): ?>
+                  <a href="<?= sprintf($link, $id)?>">
+                  <?php endif;?>
+                    <span class="text">
+                      <?php echo strip_tags($options[$id]) ?>
+                    </span>
+                  <?php if(isset($link) && $link): ?>
+                  </a>
+                  <?php endif;?>
+                  <a href="#" data-text="<?php echo $options[$id] ?>"
+                     class="MultiSelectRemove remove-one<?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"<?php if (isset($htmlOptions['data-linked-fields'])) { ?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"<?php } ?><?php if (isset($htmlOptions['data-linked-values'])) { ?> data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"<?php } ?>>Remove</a>
+                  <input type="hidden" name="<?php echo $field ?>[]" value="<?php echo $id ?>"
+                      <?php if (isset($opts[$id])) {
+                          foreach ($opts[$id] as $key => $val) {
+                              echo ' ' . $key . '="' . $val . '"';
+                          }
+                      } ?>
+                  />
+                  <?php
+                    if($through) {
+                      $currentField = 0;
+                      foreach ( $through['current'] as $current) {
+                        if($current->{$through['related_by']} === $id){
+                            $currentField = $current->{$through['field']};
+                            break;
+                        }
+
+                      }
+                  ?>
+
+                      <select name="<?= preg_replace('#\[(.*)\]#', '[${1}_through]', $field) ?>[<?= $id ?>][<?= $through['field'] ?>]">
+                        <?php foreach ($through['options'] as $option_id => $option) { ?>
+                          <option value="<?=$option_id?>" <?php if($currentField && $currentField == $option_id):?> selected <?php endif;?>><?=$option?></option>
+                        <?php } ?>
+                      </select>
+                  <?php } ?>
+                </li>
+              <?php } ?>
+          <?php } ?>
+      </ul>
     </div>
+      <?php if (!@$htmlOptions['nowrapper']) { ?>
+  </div>
 </div>
 <?php } ?>
 <?php

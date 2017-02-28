@@ -182,6 +182,16 @@ class Practice extends BaseActiveRecordVersioned
     {
         return Gp::UNKNOWN_SALUTATION;
     }
+    
+    public function getAddressLines()
+    {
+        if( isset($this->contact->address ) ){
+            return "{$this->contact->address->address1}, {$this->contact->address->address2}, "
+                            . "{$this->contact->address->city}, {$this->contact->address->county}, {$this->contact->address->postcode}";
+        } else {
+            return '';
+        }
+    }
 
     /**
      * Delete commissioning body assignments for referential integrity
@@ -236,5 +246,21 @@ class Practice extends BaseActiveRecordVersioned
             }
             throw $e;
         }
+    }
+
+    /**
+     * @return array|CDbDataReader
+     */
+    public function practiceAddresses()
+    {
+        $sql = 'SELECT practice.id, CONCAT_WS(", ", address1, address2, city, county, postcode) as letterLine
+                FROM practice 
+                JOIN contact on practice.contact_id = contact.id
+                JOIN address on contact.id = address.contact_id 
+                WHERE ( (date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW()))';
+
+        $query = $this->getDbConnection()->createCommand($sql);
+
+        return $query->queryAll();
     }
 }

@@ -30,7 +30,7 @@
             } else {
                 $assetpath = '/assets/';
             }
-            
+
             $args = $this->getCreateArgsForEventTypeOprn($eventType);
             if (call_user_func_array(array($this, 'checkAccess'), $args)) {
                 ?>
