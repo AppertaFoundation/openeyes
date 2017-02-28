@@ -220,7 +220,8 @@ class SubjectController extends BaseModuleController
         $admin->getSearch()->addSearchItem('diagnoses.id', array('type' => 'disorder'));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->getSearch()->setDefaultResults(false);
-        $admin->listModel();
+        $display_buttons = $this->checkAccess('OprnEditGeneticPatient');
+        $admin->listModel($display_buttons);
     }
 
     /**

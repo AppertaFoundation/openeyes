@@ -71,7 +71,8 @@ class GeneController extends BaseModuleController
         ));
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        $admin->listModel();
+        $display_buttons = $this->checkAccess('OprnEditGene');
+        $admin->listModel($display_buttons);
     }
 
     /**

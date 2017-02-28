@@ -130,6 +130,7 @@ class PedigreeController extends BaseModuleController
     public function actionList()
     {
         $admin = new Crud(Pedigree::model(), $this);
+        $admin->setListFieldsAction('view');
         $admin->setListFields(array(
             'id',
             'inheritance.name',
@@ -151,7 +152,8 @@ class PedigreeController extends BaseModuleController
         $admin->getSearch()->addSearchItem('consanguinity', array('type' => 'boolean'));
         $admin->getSearch()->addSearchItem('disorder_id', array('type' => 'disorder'));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        $admin->listModel();
+        $display_buttons = $this->checkAccess('OprnEditPedigree');
+        $admin->listModel($display_buttons);
     }
 
     /**

@@ -21,13 +21,19 @@ class StudyController extends BaseModuleController
         return array(
             array('allow',
                 'actions' => array('List', 'View'),
-                'roles' => array('OprnViewGeneticStudy'),
+                'roles' => array('TaskViewGeneticStudy'),
             ),
             array('allow',
                 'actions' => array('Edit'),
-                'roles' => array('OprnViewGeneticStudy'),
+                'roles' => array('TaskEditGeneticStudy'),
             ),
         );
+    }
+    
+    public function actionView($id)
+    {
+        $genetics_study = $this->loadModel($id);
+        $this->render('view', array('model' => $genetics_study));
     }
 
     /**
@@ -73,7 +79,25 @@ class StudyController extends BaseModuleController
         ));
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        $admin->listModel();
+        
+        $display_buttons = $this->checkAccess('TaskEditGeneticStudy');
+        $admin->listModel($display_buttons);
+    }
+    
+    /**
+     * Returns the data model based on the primary key given in the GET variable.
+     * If the data model is not found, an HTTP exception will be raised.
+     *
+     * @param int $id the ID of the model to be loaded
+     */
+    public function loadModel($id)
+    {
+        $model = GeneticsStudy::model()->findByPk((int) $id);
+        if ($model === null) {
+            throw new CHttpException(404, 'The requested page does not exist.');
+        }
+
+        return $model;
     }
 
 }

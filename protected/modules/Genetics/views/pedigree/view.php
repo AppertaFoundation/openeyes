@@ -18,7 +18,15 @@
  */
 ?>
     <div class="admin box">
-        <h2>View Pedigree</h2>
+        <div class="row">
+        <div class="large-10 column"><h2>View Pedigree</h2></div>
+        <div class="large-2 column right">
+            <?php if( $this->checkAccess('TaskEditPedigreeData') ): ?>
+                <a href="/Genetics/pedigree/edit/<?php echo $model->id; ?>" class="button small right" id="pedigree_edit">Edit</a>
+            <?php endif; ?>
+        </div>
+    </div>
+        
         <?php $this->widget('zii.widgets.CDetailView', array(
         'data'=>$model,
         'htmlOptions' => array('class'=>'detailview'),

@@ -19,7 +19,7 @@
 ?>
     <div class="admin box">
     <div class="row">
-        <div class="large-10 column"><h2>View Subject</h2></div>
+        <div class="large-10 column"><h2>View Genetics Subject</h2></div>
         <div class="large-2 column right">
             <?php if( $this->checkAccess('OprnEditGeneticPatient') ): ?>
                 <a href="/Genetics/subject/edit/<?php echo $model->id; ?>" class="button small right" id="subject_edit">Edit</a>
@@ -89,30 +89,38 @@
                 'label' => 'Pedigree',
                 'type' => 'raw',
                 'value' => function() use ($model){
-                    $html = '<ul>';
-                    foreach($model->pedigrees as $pedigree){
-                        $gene = isset($pedigree->gene) ? ' (Gene: ' . $pedigree->gene->name . ')' : '';
-                        $html .= '<li><a href="/Genetics/pedigree/view/' . $pedigree->id . '">' . $pedigree->id . $gene . '</a>';
-                        foreach($pedigree->members as $member){
-                            $html .= " - " . $member->status->name;
+                    if($model->pedigrees){
+                        $html = '<ul>';
+                        foreach($model->pedigrees as $pedigree){
+                            $gene = isset($pedigree->gene) ? ' (Gene: ' . $pedigree->gene->name . ')' : '';
+                            $html .= '<li><a href="/Genetics/pedigree/view/' . $pedigree->id . '">' . $pedigree->id . $gene . '</a>';
+                            $html .= " - " . $model->statusForPedigree($pedigree->id);
+                            $html .= '</li>';
                         }
-                        $html .= '</li>';
+                        $html .= '</ul>';
+                    } else {
+                        $html = 'None';
                     }
-                    return $html .= '</ul>';
+                    return $html;
                 }
             ),
             array(
                 'label' => 'Previous Studies',
                 'type' => 'raw',
                 'value' => function() use ($model){
-                    $html = '<ul>';
-                    foreach($model->previous_studies as $previous_study){
-                        $end_data = new DateTime($previous_study->end_date);
-                        $html .= '<li>';
-                        $html .= $previous_study->name . ' - ' . '<i>Ended: ' . $end_data->format('d M Y') . '</i>';
-                        $html .= '</li>';
+                    if($model->previous_studies){
+                        $html = '<ul>';
+                        foreach($model->previous_studies as $previous_study){
+                            $end_data = new DateTime($previous_study->end_date);
+                            $html .= '<li>';
+                            $html .= $previous_study->name . ' - ' . '<i>Ended: ' . $end_data->format('d M Y') . '</i>';
+                            $html .= '</li>';
+                        }
+                        $html .= '</ul>';
+                    } else {
+                        return $html = 'None';
                     }
-                    return $html .= '</ul>';
+                    return $html;
                 }
             ),
             
@@ -120,13 +128,18 @@
                 'label' => 'Rejected Studies',
                 'type' => 'raw',
                 'value' => function() use ($model){
-                    $html = '<ul>';
-                    foreach($model->rejected_studies as $rejected_study){
-                        $html .= '<li>';
-                        $html .= $rejected_study->name;
-                        $html .= '</li>';
+                    if($model->rejected_studies){
+                        $html = '<ul>';
+                        foreach($model->rejected_studies as $rejected_study){
+                            $html .= '<li>';
+                            $html .= $rejected_study->name;
+                            $html .= '</li>';
+                        }
+                        $html .= '</ul>';
+                    } else {
+                        $html = 'None';
                     }
-                    return $html .= '</ul>';
+                    return $html;
                 }
             ),
             
@@ -134,77 +147,21 @@
                 'label' => 'Current Studies',
                 'type' => 'raw',
                 'value' => function() use ($model){
-                    $html = '<ul>';
-                    foreach($model->current_studies as $current_study){
-                        $html .= '<li>';
-                        $html .= $current_study->name;
-                        $html .= '</li>';
+                    if($model->current_studies){
+                        $html = '<ul>';
+                        foreach($model->current_studies as $current_study){
+                            $html .= '<li>';
+                            $html .= $current_study->name;
+                            $html .= '</li>';
+                        }
+                         $html .= '</ul>';
+                    } else {
+                        $html = 'None';
                     }
-                    return $html .= '</ul>';
-                }
-            ),
-            
-            
-            
-     /*       'disorder',
-            array(
-                'label' => $model->getAttributeLabel('consanguinity'),
-                'value' => $model->consanguinity ? 'yes' : 'no',
-            ),
-            'gene.name',
-            'base_change_type',
-            array(
-                'label' => $model->getAttributeLabel('base_change'),
-                'value' => $model->base_change ? $model->base_change : '<span class="null">Not set</span>',
-                'type'=>'raw',
-            ),
-            'aminod_acid_change_type',
-            array(
-                'label' => $model->getAttributeLabel('amino_acid_change'),
-                'value' => $model->amino_acid_change ? $model->amino_acid_change : '<span class="null">Not set</span>',
-                'type' => 'raw',
-            ),
-            array(
-                'label' => $model->getAttributeLabel('genomic_coordinate'),
-                'type' => 'raw',
-                'value' => $model->genomic_coordinate ? $model->genomic_coordinate : '<span class="null">Not set</span>',
-            ),
-            array(
-                'label' => $model->getAttributeLabel('genome_version'),
-                'type' => 'raw',
-                'value' => $model->genome_version ? $model->genome_version : '<span class="null">Not set</span>',
-            ),
-            array(
-                'label' => $model->getAttributeLabel('gene_transcript'),
-                'type' => 'raw',
-                'value' => $model->gene_transcript ? $model->gene_transcript : '<span class="null">Not set</span>',
-            ),
-            array(
-                'label' => $model->getAttributeLabel('created_date'),
-                'type' => 'raw',
-                'value' => function() use ($model){
-                    $date = new DateTime($model->created_date);
-                    return $date->format('d M Y');
-                }
-            ),
-            array(
-                'label' => 'Subjects',
-                'type' => 'raw',
-                'value' => function() use ($model){
-
-                    $html = '<ul class="subjects_list">';
-                    foreach($model->subjects as $subject){
-                        $html .= '<li>';
-                        $html .= '<a href="/Genetics/subject/view/' . $subject->id . '" title="' . $subject->patient->fullName . '">';
-                        $html .= $subject->patient->fullName . '</a>';
-                        $html .= '<span class="status"><i>(Status: ' . $subject->statusForPedigree($model->id) . ')</i></span>';
-                        $html .= '</li>';
-                    }
-                    $html .= '</ul>';
                     return $html;
-
                 }
-            )*/
+                    
+            ),
     ),
 )); ?>
     </div>
