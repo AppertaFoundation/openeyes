@@ -51,19 +51,19 @@ $('body').delegate('#clear_prescription', 'click', function () {
   return false;
 });
 
-// Update drug route options for selected route
+// Update drug route options for selected route if not admin page
 $('body').delegate('select.drugRoute', 'change', function () {
-  var selected = $(this).children('option:selected');
-  if (selected.val().length) {
+    var selected = $(this).children('option:selected');
     var options_td = $(this).parent().next();
-    var key = $(this).closest('tr').attr('data-key');
-    $.get(baseUrl + "/OphDrPrescription/Default/RouteOptions", {
-      key: key,
-      route_id: selected.val()
-    }, function (data) {
-      options_td.html(data);
-    });
-  }
+    if(options_td.attr("class")=='route_option_cell'){
+        var key = $(this).closest('tr').attr('data-key');
+        $.get(baseUrl + "/OphDrPrescription/Default/RouteOptions", {
+          key: key,
+          route_id: selected.val()
+        }, function (data) {
+          options_td.html(data);
+        });
+    }
   return false;
 });
 
