@@ -19,6 +19,24 @@
 ?>
 <div class="element-fields">
     <?php echo $form->radioButtons($element, 'protocol_id',  'OphTrOperationnote_CXL_Protocol', $element->protocol_id)?>
+    <?php echo $form->radioButtons($element, 'epithelial_removal_method_id',
+        'OphTrOperationnote_CXL_Epithelial_Removal_Method', $element->epithelial_removal_method_id)?>
+    <?php echo $form->radioButtons($element, 'epithelial_removal_diameter_id',
+        'OphTrOperationnote_CXL_Epithelial_Removal_Diameter', $element->epithelial_removal_diameter_id)?>
+    <?php echo $form->radioButtons($element, 'riboflavin_preparation_id',
+        'OphTrOperationnote_CXL_Riboflavin_Preparation', $element->riboflavin_preparation_id)?>
+    <?php echo $form->radioButtons($element, 'interval_between_drops_id',
+        'OphTrOperationnote_CXL_Interval_Between_Drops', $element->interval_between_drops_id)?>
+    <?php echo $form->radioButtons($element, 'soak_duration_range_id',
+        'OphTrOperationnote_CXL_Soak_Duration', $element->soak_duration_range_id)?>
+    <?php echo $form->radioButtons($element, 'uv_irradiance_range_id',
+        'OphTrOperationnote_CXL_UV_Irradiance', $element->uv_irradiance_range_id)?>
+    <?php echo $form->radioButtons($element, 'total_exposure_time_id',
+        'OphTrOperationnote_CXL_Total_Exposure_Time', $element->total_exposure_time_id)?>
+    <?php echo $form->radioButtons($element, 'uv_pulse_duration_range_id',
+        'OphTrOperationnote_CXL_UV_Pulse_Duration', $element->uv_pulse_duration_range_id)?>
+    <?php echo $form->radioButtons($element, 'interpulse_duration_range_id',
+        'OphTrOperationnote_CXL_Interpulse_Duration', $element->interpulse_duration_range_id)?>
     <?php // echo $form->radioBoolean($element, 'brilliant_blue')?>
     <?php // echo $form->textField($element, 'other_dye', array(), array(), array_merge($form->layoutColumns, array('field' => 3)))?>
     <?php // echo $form->textArea($element, 'comments', array('rows' => 4), false, array(), array_merge($form->layoutColumns, array('field' => 6)))?>
