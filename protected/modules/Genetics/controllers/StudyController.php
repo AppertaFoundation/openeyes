@@ -20,7 +20,11 @@ class StudyController extends BaseModuleController
     {
         return array(
             array('allow',
-                'actions' => array('List', 'Edit'),
+                'actions' => array('List', 'View'),
+                'roles' => array('OprnViewGeneticStudy'),
+            ),
+            array('allow',
+                'actions' => array('Edit'),
                 'roles' => array('OprnViewGeneticStudy'),
             ),
         );
@@ -39,7 +43,7 @@ class StudyController extends BaseModuleController
             $admin->setModelId($id);
         }
 
-        $admin->setModelDisplayName('Gene');
+        $admin->setModelDisplayName('Study');
         $admin->setEditFields(array(
             'name' => 'label',
             'end_date' => 'label',

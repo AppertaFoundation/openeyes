@@ -30,7 +30,7 @@ class SubjectController extends BaseModuleController
             ),
             array(
                 'allow',
-                'actions' => array('List'),
+                'actions' => array('List', 'View'),
                 'roles' => array('OprnViewGeneticPatient'),
             ),
         );
@@ -60,6 +60,11 @@ class SubjectController extends BaseModuleController
         return parent::beforeAction($action);
     }
 
+    public function actionView($id)
+    {
+        $genetics_patient = $this->loadModel($id);
+        $this->render('view', array('model' => $genetics_patient));
+    }
     /**
      * @param bool $id
      *
@@ -203,6 +208,7 @@ class SubjectController extends BaseModuleController
     {
         $admin = new Crud(GeneticsPatient::model(), $this);
         $admin->setModelDisplayName('Genetics Subject');
+        $admin->setListFieldsAction('view');
         $admin->setListFields(array(
             'id',
             'patient.fullName',
@@ -243,5 +249,21 @@ class SubjectController extends BaseModuleController
         $this->render('//studies/editStatus', array(
             'pivot' => $pivot,
         ));
+    }
+    
+    /**
+     * Returns the data model based on the primary key given in the GET variable.
+     * If the data model is not found, an HTTP exception will be raised.
+     *
+     * @param int $id the ID of the model to be loaded
+     */
+    public function loadModel($id)
+    {
+        $model = GeneticsPatient::model()->findByPk((int) $id);
+        if ($model === null) {
+            throw new CHttpException(404, 'The requested page does not exist.');
+        }
+
+        return $model;
     }
 }

@@ -75,7 +75,7 @@
                     $html = '<ul class="subjects_list">';
                     foreach($model->subjects as $subject){
                         $html .= '<li>';
-                        $html .= '<a href="/Genetics/subject/view/' . $subject->id . ' title="' . $subject->patient->fullName . '">';
+                        $html .= '<a href="/Genetics/subject/view/' . $subject->id . '" title="' . $subject->patient->fullName . '">';
                         $html .= $subject->patient->fullName . '</a>';
                         $html .= '<span class="status"><i>(Status: ' . $subject->statusForPedigree($model->id) . ')</i></span>';
                         $html .= '</li>';
