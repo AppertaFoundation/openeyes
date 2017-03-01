@@ -60,7 +60,7 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         return array(
             array('drug_id, dose, route_id, frequency_id, duration_id', 'required'),
             array('route_option_id', 'validateRouteOption'),
-            array('route_option_id, continue_by_gp', 'safe'),
+            array('drug_id, dose, route_id, frequency_id, duration_id, id, route_option_id, continue_by_gp, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe'),
             //array('', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.

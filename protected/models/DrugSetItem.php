@@ -59,7 +59,7 @@ class DrugSetItem extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
                 array('drug_set_id, drug_id', 'required'),
-                array('dose, frequency_id, duration_id, route_id', 'safe'),
+                array('dose, frequency_id, duration_id, route_id, drug_set_id', 'safe'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
                 array('id, drug_set_id, drug_id, dose, frequency_id, duration_id, route_id', 'safe', 'on' => 'search'),

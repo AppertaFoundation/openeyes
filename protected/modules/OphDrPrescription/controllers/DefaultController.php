@@ -175,7 +175,10 @@ class DefaultController extends BaseEventTypeController
                     $item_model = new OphDrPrescription_Item();
                     $item_model->drug_id = $item->drug_id;
                     $item_model->loadDefaults();
-                    $item_model->attributes = $item->getAttributes();
+                    $attr = $item->getAttributes();
+                    unset($attr['drug_set_id']);
+                    $item_model->attributes = $attr;
+                    
                     $item_model->tapers = $item->tapers;
                     
                     if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
