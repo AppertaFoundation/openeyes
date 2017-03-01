@@ -71,6 +71,7 @@ class StudyController extends BaseModuleController
     public function actionList()
     {
         $admin = new Crud(GeneticsStudy::model(), $this);
+        $admin->setListFieldsAction('view');
         $admin->setModelDisplayName('Genetic Study');
         $admin->setListFields(array(
             'id',

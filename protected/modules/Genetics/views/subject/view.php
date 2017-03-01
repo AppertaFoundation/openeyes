@@ -26,7 +26,7 @@
             <?php endif; ?>
         </div>
     </div>
-        <?php $this->widget('zii.widgets.CDetailView', array(
+    <?php $this->widget('zii.widgets.CDetailView', array(
         'data'=>$model,
         'htmlOptions' => array('class'=>'detailview'),
         'attributes'=>array(

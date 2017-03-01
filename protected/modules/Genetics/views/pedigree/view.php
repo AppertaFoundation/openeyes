@@ -39,14 +39,22 @@
                 'label' => $model->getAttributeLabel('consanguinity'),
                 'value' => $model->consanguinity ? 'yes' : 'no',
             ),
-            'gene.name',
+            array(
+                'label' => $model->getAttributeLabel('gene.name'),
+                'type' => 'raw',
+                'value' => function () use ($model){
+                    if($model->gene){
+                     return '<a href="/Genetics/gene/view/' . $model->gene->id . '" >' . $model->gene->name . '</a>';
+                    }
+                }
+            ),
             'base_change_type',
             array(
                 'label' => $model->getAttributeLabel('base_change'),
                 'value' => $model->base_change ? $model->base_change : '<span class="null">Not set</span>',
                 'type'=>'raw',
             ),
-            'aminod_acid_change_type',
+            'amino_acid_change_id',
             array(
                 'label' => $model->getAttributeLabel('amino_acid_change'),
                 'value' => $model->amino_acid_change ? $model->amino_acid_change : '<span class="null">Not set</span>',
