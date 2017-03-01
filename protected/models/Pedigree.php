@@ -109,10 +109,10 @@ class Pedigree extends BaseActiveRecord
             'inheritance_id' => 'Inheritance',
             'base_change' => 'Base change',
             'gene_id' => 'Gene',
-            'amino_acid_change' => 'Amino acid change',
+            'amino_acid_change' => 'Amino acid chain',
             'disorder_id' => 'Disorder',
             'base_change_id' => 'Base change type',
-            'amino_acid_change_id' => 'Amino acid change type',
+            'amino_acid_change_id' => 'Amino acid chain type',
             'getSubjectsCount' => 'Subjects count',
             'getAffectedSubjectsCount' => 'Affected subjects count'
         );
