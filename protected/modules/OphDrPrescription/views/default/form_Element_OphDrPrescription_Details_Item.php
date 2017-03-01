@@ -39,7 +39,7 @@
 	<td>
 		<?php echo CHtml::dropDownList('prescription_item['.$key.'][route_id]', $item->route_id, CHtml::listData(DrugRoute::model()->activeOrPk($item->route_id)->findAll(array('order' => 'display_order asc')), 'id', 'name'), array('empty' => '-- Select --', 'class' => 'drugRoute')); ?>
 	</td>
-	<?php if (strpos($this->uniqueid, 'default')) { ?>
+	<?php if (!strpos(Yii::app()->controller->action->id, 'Admin')) { ?>
 	<td class='route_option_cell'>
 	    
 		<?php if ($item->route && $options = $item->route->options ) {
@@ -82,7 +82,7 @@
 		<?php echo CHtml::textField('prescription_item['.$key.'][taper]['.$count.'][dose]', $taper->dose, array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
 	</td>
 	<td></td>
-	<?php if (strpos($this->uniqueid, 'default')) { ?>
+	<?php if (!strpos(Yii::app()->controller->action->id, 'Admin')) { ?>
 	    <td></td>
 	<?php } ?>
 	<td>
