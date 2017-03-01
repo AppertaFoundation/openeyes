@@ -157,7 +157,6 @@ class DefaultController extends BaseEventTypeController
     protected function setElementDefaultOptions($element, $action)
     {
         parent::setElementDefaultOptions($element, $action);
-
         if ($action == 'create' && get_class($element) == 'Element_OphDrPrescription_Details') {
             // Prepopulate prescription with set by episode status
             // FIXME: It's brittle relying on the set name matching the status
@@ -165,15 +164,19 @@ class DefaultController extends BaseEventTypeController
             $status_name = $this->episode->status->name;
             $subspecialty_id = $this->firm->getSubspecialtyID();
             $params = array(':subspecialty_id' => $subspecialty_id, ':status_name' => $status_name);
+            
             $set = DrugSet::model()->find(array(
                     'condition' => 'subspecialty_id = :subspecialty_id AND name = :status_name',
                     'params' => $params,
                 ));
+
             if ($set) {
                 foreach ($set->items as $item) {
                     $item_model = new OphDrPrescription_Item();
                     $item_model->drug_id = $item->drug_id;
                     $item_model->loadDefaults();
+                    $item_model->attributes = $item->getAttributes();
+                    $item_model->tapers = $item->tapers;
                     $items[] = $item_model;
                 }
             }
@@ -483,7 +486,7 @@ class DefaultController extends BaseEventTypeController
                 // Source is an drug set item which contains frequency and duration data
                 $item->drug_id = $source->drug_id;
                 $item->loadDefaults();
-                foreach (array('duration_id', 'frequency_id', 'dose') as $field) {
+                foreach (array('duration_id', 'frequency_id', 'dose', 'route_id', 'route_option_id') as $field) {
                     if ($source->$field) {
                         $item->$field = $source->$field;
                     }

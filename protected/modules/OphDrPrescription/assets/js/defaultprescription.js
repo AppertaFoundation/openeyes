@@ -1,5 +1,7 @@
 // we need to initialize the list of drug items
-addSet($('#DrugSet_id').val());
+if($('#DrugSet_id').length > 0){
+    addSet($('#DrugSet_id').val());
+}
 
 // Disable currently prescribed drugs in dropdown
 $('#prescription_items input[name$="[drug_id]"]').each(function (index) {
