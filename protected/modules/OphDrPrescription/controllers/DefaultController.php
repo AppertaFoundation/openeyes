@@ -166,10 +166,10 @@ class DefaultController extends BaseEventTypeController
             $params = array(':subspecialty_id' => $subspecialty_id, ':status_name' => $status_name);
             
             $set = DrugSet::model()->find(array(
-                    'condition' => 'subspecialty_id = :subspecialty_id AND name = :status_name',
-                    'params' => $params,
-                ));
-
+                'condition' => 'subspecialty_id = :subspecialty_id AND name = :status_name',
+                'params' => $params,
+            ));
+            
             if ($set) {
                 foreach ($set->items as $item) {
                     $item_model = new OphDrPrescription_Item();
@@ -177,10 +177,16 @@ class DefaultController extends BaseEventTypeController
                     $item_model->loadDefaults();
                     $item_model->attributes = $item->getAttributes();
                     $item_model->tapers = $item->tapers;
+                    
+                    if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
+                        if ($apieye = $api->getLastEye($this->patient)) {
+                            $item_model->route_option_id = $apieye;
+                        }
+                    }
+                    
                     $items[] = $item_model;
                 }
             }
-
             $element->items = $items;
         }
     }
