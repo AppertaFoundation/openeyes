@@ -40,6 +40,7 @@ class DefaultController extends BaseEventTypeController
         'EditInheritance' => self::ACTION_TYPE_FORM,
         'AddPatientToPedigree' => self::ACTION_TYPE_FORM,
         'RemovePatient' => self::ACTION_TYPE_FORM,
+        'savePedigree' => self::ACTION_TYPE_FORM,
     );
 
     /**
@@ -59,9 +60,23 @@ class DefaultController extends BaseEventTypeController
     {
         return array(
             array('allow',
-                'actions' => array('Index',),
+                'actions' => array('Index','editPedigree', 'savePedigree'),
                 'roles' => array('OprnViewGeneticPatient'),
             ),
         );
     }
+    
+    /*
+     * Save pedigree on the patient summary page
+     */
+    public function actionSavePedigree()
+    {
+        
+        $geneticsPatient = new GeneticsPatient();
+        $geneticsPatient->patient_id = $_POST['patient_id'];
+        $geneticsPatient->pedigree_id = $_POST['pedigree_id'];
+        $geneticsPatient->save();
+    }
+    
+   
 }

@@ -441,7 +441,7 @@ class Admin
      * @throws CHttpException
      * @throws Exception
      */
-    public function editModel($redirect = true)
+    public function editModel($redirect = true, $partial = false)
     {
         $this->assetManager->registerScriptFile('/js/oeadmin/edit.js');
         $errors = array();
@@ -493,7 +493,12 @@ class Admin
                 }
             }
         }
-        $this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
+        if($partial === false){
+            $this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
+        } else {
+            $this->controller->renderPartial($this->editTemplate, array('admin' => $this, 'errors' => $errors));
+        }
+        
     }
 
     /**

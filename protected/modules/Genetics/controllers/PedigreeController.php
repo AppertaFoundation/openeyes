@@ -21,7 +21,7 @@ class PedigreeController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('Edit', 'EditStudyStatus'),
+                'actions' => array('Edit', 'EditStudyStatus', 'View'),
                 'roles' => array('OprnEditPedigree'),
             ),
             array(
@@ -47,7 +47,6 @@ class PedigreeController extends BaseModuleController
 
         return parent::beforeAction($action);
     }
-
     /**
      * @param bool $id
      *
