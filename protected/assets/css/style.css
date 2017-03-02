@@ -47,7 +47,7 @@ body {
  * and Firefox.
  * Correct `block` display not defined for `main` in IE 11.
  */
-/* line 33, ../components/foundation/scss/normalize.scss */
+/* line 33, ../../../../../../var/www/openeyes/protected/assets/components/foundation/scss/normalize.scss */
 article,
 aside,
 details,
@@ -93,7 +93,7 @@ audio:not([controls]) {
  * Address `[hidden]` styling not present in IE 8/9/10.
  * Hide the `template` element in IE 8/9/11, Safari, and Firefox < 22.
  */
-/* line 77, ../components/foundation/scss/normalize.scss */
+/* line 77, ../../../../../../var/www/openeyes/protected/assets/components/foundation/scss/normalize.scss */
 [hidden],
 template {
   display: none;
@@ -7600,3 +7600,24 @@ div#docman_block #dm_table tr td.docman_delivery_method {
   min-width: 156px;
 }
 
+/* line 18, ../sass/openeyes/components/_cdetail-view.scss */
+table.detailview {
+  font-family: "Helvetica",Helvetica,Arial,sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+  border: none;
+  background: inherit;
+}
+/* line 24, ../sass/openeyes/components/_cdetail-view.scss */
+table.detailview tr {
+  background: inherit;
+}
+/* line 26, ../sass/openeyes/components/_cdetail-view.scss */
+table.detailview tr th {
+  font-family: "Helvetica",Helvetica,Arial,sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+  border: none;
+  background: inherit;
+  vertical-align: top;
+}

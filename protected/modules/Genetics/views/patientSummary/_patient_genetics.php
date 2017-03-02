@@ -33,7 +33,8 @@
                 </div>
                 <div class="large-8 column">
                      <div class="data-value">
-                         <?php echo $subject->id; ?>
+                        <?php echo $subject->id; ?>
+                        ( <?php echo CHtml::link('View', Yii::app()->createUrl('/Genetics/subject/view/' . $subject->id)) ?> )
                      </div>
                 </div>
             </div>
@@ -45,7 +46,7 @@
                 <div class="large-8 column">
                     <div class="data-value">
                         <?php echo $pedigree->id ?>
-                        ( <?php echo CHtml::link('View', Yii::app()->createUrl('/Genetics/pedigree/edit/' . $pedigree->id)) ?> )
+                        ( <?php echo CHtml::link('View', Yii::app()->createUrl('/Genetics/pedigree/view/' . $pedigree->id)) ?> )
                     </div>
                 </div>
             </div>

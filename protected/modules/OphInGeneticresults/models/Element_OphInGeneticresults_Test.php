@@ -121,7 +121,7 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
             'withdrawal_source_id' => 'Withdrawal Source',
             'external_source_identifier' => 'External Source ID',
             'base_change_id' => 'Base Change Type',
-            'amino_acid_change_id' => 'Amino Acid Chane Type'
+            'amino_acid_change_id' => 'Amino Acid Chain Type'
         );
     }
 

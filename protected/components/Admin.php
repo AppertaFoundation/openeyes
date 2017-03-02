@@ -51,6 +51,11 @@ class Admin
      * @var array
      */
     protected $listFields = array();
+    
+    /**
+     * @var type 
+     */
+    protected $listFieldsAction = 'edit';
 
     /**
      * @var array
@@ -231,6 +236,22 @@ class Admin
     public function setListFields($listFields)
     {
         $this->listFields = $listFields;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getListFieldsAction()
+    {
+        return $this->listFieldsAction;
+    }
+
+    /**
+     * @param string $listFieldsAction
+     */
+    public function setListFieldsAction($listFieldsAction)
+    {
+        $this->listFieldsAction = $listFieldsAction;
     }
 
     /**

@@ -24,7 +24,7 @@ class GeneController extends BaseModuleController
                 'roles' => array('OprnEditGene'),
             ),
             array('allow',
-                'actions' => array('List'),
+                'actions' => array('List', 'View'),
                 'roles' => array('OprnViewGene'),
             ),
         );
@@ -55,6 +55,12 @@ class GeneController extends BaseModuleController
 
         $admin->editModel();
     }
+    
+    public function actionView($id)
+    {
+        $gene = $this->loadModel($id);
+        $this->render('view', array('model' => $gene));
+    }
 
     /**
      * List the Genetic Patients
@@ -63,6 +69,7 @@ class GeneController extends BaseModuleController
     {
         $admin = new Crud(PedigreeGene::model(), $this);
         $admin->setModelDisplayName('Gene');
+        $admin->setListFieldsAction('view');
         $admin->setListFields(array(
             'id',
             'name',
@@ -71,7 +78,8 @@ class GeneController extends BaseModuleController
         ));
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        $admin->listModel();
+        $display_buttons = $this->checkAccess('OprnEditGene');
+        $admin->listModel($display_buttons);
     }
 
     /**
@@ -81,5 +89,21 @@ class GeneController extends BaseModuleController
     {
         $admin = new Crud(PedigreeGene::model(), $this);
         $admin->deleteModel();
+    }
+    
+    /**
+     * Returns the data model based on the primary key given in the GET variable.
+     * If the data model is not found, an HTTP exception will be raised.
+     *
+     * @param int $id the ID of the model to be loaded
+     */
+    public function loadModel($id)
+    {
+        $model = PedigreeGene::model()->findByPk((int) $id);
+        if ($model === null) {
+            throw new CHttpException(404, 'The requested page does not exist.');
+        }
+
+        return $model;
     }
 }
