@@ -28,7 +28,7 @@
  * @property int $assistant_id
  * @property int $anaesthetic_type
  * protocol_id, epithelial_removal_method_id, epithelial_removal_diameter_id, riboflavin_preparation_id,
-interval_between_drops, soak_duration_range_id, uv_irradiance_id, total_exposure_time_id, uv_pulse_duration_id,
+interval_between_drops, soak_duration_range_id, uv_irradiance_range_id, total_exposure_time_id, uv_pulse_duration_id,
 interpulse_duration_id
  *
  * The followings are the available model relations:
@@ -65,12 +65,12 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
         // will receive user inputs.
         return array(
             array('event_id, protocol_id, epithelial_removal_method_id, epithelial_removal_diameter_id, riboflavin_preparation_id,
-            interval_between_drops_id, soak_duration_range_id, uv_irradiance_id, total_exposure_time_id, uv_pulse_duration_id, 
+            interval_between_drops_id, soak_duration_range_id, uv_irradiance_range_id, total_exposure_time_id, uv_pulse_duration_id, 
             interpulse_duration_id', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, protocol_id, epithelial_removal_method_id, epithelial_removal_diameter_id, riboflavin_preparation_id,
-            interval_between_drops_id, soak_duration_range_id, uv_irradiance_id, total_exposure_time_id, uv_pulse_duration_id, 
+            interval_between_drops_id, soak_duration_range_id, uv_irradiance_range_id, total_exposure_time_id, uv_pulse_duration_id, 
             interpulse_duration_id', 'safe', 'on' => 'search'),
         );
     }
@@ -111,7 +111,7 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
             'riboflavin_preparation_id' => 'Riboflavin Preparation',
             'interval_between_drops_id' => 'Interval Between Drops',
             'soak_duration_range_id' => 'Soak Duration',
-            'uv_irradiance_id' => 'UV Irradiance',
+            'uv_irradiance_range_id' => 'UV Irradiance',
             'total_exposure_time_id' => 'Total Exposure Time',
             'uv_pulse_duration_id' => 'UV Pulse Duration',
             'interpulse_duration_id' => 'Inter-pulse Duration',
@@ -138,7 +138,7 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
         $criteria->compare('riboflavin_preparation_id', $this->riboflavin_preparation_id, true);
         $criteria->compare('interval_between_drops_id', $this->interval_between_drops_id);
         $criteria->compare('soak_duration_range_id', $this->soak_duration_range_id);
-        $criteria->compare('uv_irradiance_id', $this->uv_irradiance_id, true);
+        $criteria->compare('uv_irradiance_range_id', $this->uv_irradiance_range_id, true);
         $criteria->compare('total_exposure_time_id', $this->total_exposure_time_id, true);
         $criteria->compare('uv_pulse_duration_id', $this->uv_pulse_duration_id);
         $criteria->compare('interpulse_duration_id', $this->interpulse_duration_id);

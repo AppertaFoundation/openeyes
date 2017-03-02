@@ -86,7 +86,9 @@ if (!empty($episode)) {
 			</section>
 		</div>
 	</div>
-
+	<div class="element element-data event-types">
+		Keratometry table here if available.
+	</div>
 	<?php
         $summaryItems = array();
     if ($episode->subspecialty) {

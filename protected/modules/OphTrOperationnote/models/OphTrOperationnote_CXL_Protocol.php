@@ -58,7 +58,7 @@ class OphTrOperationnote_CXL_Protocol extends BaseActiveRecordVersioned
             array('name', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name', 'safe', 'on' => 'search'),
+            array('id, name, defaultChoice', 'safe', 'on' => 'search'),
         );
     }
 
@@ -100,9 +100,15 @@ class OphTrOperationnote_CXL_Protocol extends BaseActiveRecordVersioned
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
+        $criteria->compare('defaultChoice', $this->defaultChoice, true);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+    public function getDefault()
+    {
+        $defaultId = $this->find("defaultChoice = 1");
+        return $defaultId->id;
     }
 }

@@ -18,27 +18,100 @@
  */
 ?>
 <div class="element-fields">
-    <?php echo $form->radioButtons($element, 'protocol_id',  'OphTrOperationnote_CXL_Protocol', $element->protocol_id)?>
-    <?php echo $form->radioButtons($element, 'epithelial_removal_method_id',
+    <?php
+    if(!$element->protocol_id)
+    {
+        $default_protocol_id = OphTrOperationnote_CXL_Protocol::model()->getDefault();
+    }else{
+        $default_protocol_id = $element->protocol_id;
+    }
+    echo $form->radioButtons($element, 'protocol_id',  'OphTrOperationnote_CXL_Protocol', $default_protocol_id);
+
+    echo $form->radioButtons($element, 'epithelial_removal_method_id',
         'OphTrOperationnote_CXL_Epithelial_Removal_Method', $element->epithelial_removal_method_id)?>
-    <?php echo $form->radioButtons($element, 'epithelial_removal_diameter_id',
-        'OphTrOperationnote_CXL_Epithelial_Removal_Diameter', $element->epithelial_removal_diameter_id)?>
-    <?php echo $form->radioButtons($element, 'riboflavin_preparation_id',
+    <?php
+    if(!$element->epithelial_removal_diameter_id)
+    {
+        $default_epithelial_removal_diameter_id = OphTrOperationnote_CXL_Epithelial_Removal_Diameter::model()->getDefault();
+    }else{
+        $default_epithelial_removal_diameter_id = $element->epithelial_removal_diameter_id;
+    }
+    echo $form->dropDownList($element, 'epithelial_removal_diameter_id',
+        CHtml::listData(OphTrOperationnote_CXL_Epithelial_Removal_Diameter::model()->findAll(), 'id', 'name'),
+        array('options' => array($default_epithelial_removal_diameter_id=>array('selected'=>true))),
+        null, array('field' => 3));?>
+
+    <?php
+    echo $form->radioButtons($element, 'riboflavin_preparation_id',
         'OphTrOperationnote_CXL_Riboflavin_Preparation', $element->riboflavin_preparation_id)?>
-    <?php echo $form->radioButtons($element, 'interval_between_drops_id',
-        'OphTrOperationnote_CXL_Interval_Between_Drops', $element->interval_between_drops_id)?>
-    <?php echo $form->radioButtons($element, 'soak_duration_range_id',
-        'OphTrOperationnote_CXL_Soak_Duration', $element->soak_duration_range_id)?>
-    <?php echo $form->radioButtons($element, 'uv_irradiance_range_id',
-        'OphTrOperationnote_CXL_UV_Irradiance', $element->uv_irradiance_range_id)?>
-    <?php echo $form->radioButtons($element, 'total_exposure_time_id',
-        'OphTrOperationnote_CXL_Total_Exposure_Time', $element->total_exposure_time_id)?>
-    <?php echo $form->radioButtons($element, 'uv_pulse_duration_range_id',
-        'OphTrOperationnote_CXL_UV_Pulse_Duration', $element->uv_pulse_duration_range_id)?>
-    <?php echo $form->radioButtons($element, 'interpulse_duration_range_id',
-        'OphTrOperationnote_CXL_Interpulse_Duration', $element->interpulse_duration_range_id)?>
-    <?php // echo $form->radioBoolean($element, 'brilliant_blue')?>
-    <?php // echo $form->textField($element, 'other_dye', array(), array(), array_merge($form->layoutColumns, array('field' => 3)))?>
-    <?php // echo $form->textArea($element, 'comments', array('rows' => 4), false, array(), array_merge($form->layoutColumns, array('field' => 6)))?>
+
+    <?php
+    if(!$element->interval_between_drops_id)
+    {
+        $default_interval_between_drops_id = OphTrOperationnote_CXL_Interval_Between_Drops::model()->getDefault();
+    }else{
+        $default_interval_between_drops_id = $element->interval_between_drops_id;
+    }
+    echo $form->radioButtons($element, 'interval_between_drops_id',
+        'OphTrOperationnote_CXL_Interval_Between_Drops', $default_interval_between_drops_id)?>
+
+    <?php
+    if(!$element->soak_duration_range_id)
+    {
+        $default_soak_duration_range_id = OphTrOperationnote_CXL_Soak_Duration::model()->getDefault();
+    }else{
+        $default_soak_duration_range_id = $element->soak_duration_range_id;
+    }
+    echo $form->dropDownList($element, 'soak_duration_range_id',
+        CHtml::listData(OphTrOperationnote_CXL_Soak_Duration::model()->findAll(), 'id', 'name'),
+        array('options' => array($default_soak_duration_range_id=>array('selected'=>true))),
+        null, array('field' => 3));?>
+
+    <?php
+    if(!$element->uv_irradiance_range_id)
+    {
+        $default_uv_irradiance_range_id = OphTrOperationnote_CXL_UV_Irradiance_Range::model()->getDefault();
+    }else{
+        $default_uv_irradiance_range_id = $element->uv_irradiance_range_id;
+    }
+    echo $form->dropDownList($element, 'uv_irradiance_range_id',
+        CHtml::listData(OphTrOperationnote_CXL_UV_Irradiance_Range::model()->findAll(), 'id', 'name'),
+        array('options' => array($default_uv_irradiance_range_id=>array('selected'=>true))), null, array('field' => 3));?>
+
+    <?php
+    if(!$element->total_exposure_time_id)
+    {
+        $default_total_exposure_time_id = OphTrOperationnote_CXL_Total_Exposure_Time::model()->getDefault();
+    }else{
+        $default_total_exposure_time_id = $element->total_exposure_time_id;
+    }
+    echo $form->dropDownList($element, 'total_exposure_time_id',
+        CHtml::listData(OphTrOperationnote_CXL_Total_Exposure_Time::model()->findAll(), 'id', 'name'),
+        array('options' => array($default_total_exposure_time_id=>array('selected'=>true))),
+        null, array('field' => 3));?>
+
+    <?php
+    if(!$element->uv_pulse_duration_id)
+    {
+        $default_uv_pulse_duration_id = OphTrOperationnote_CXL_UV_Pulse_Duration::model()->getDefault();
+    }else{
+        $default_uv_pulse_duration_id = $element->uv_pulse_duration_id;
+    }
+    echo $form->dropDownList($element, 'uv_pulse_duration_id',
+        CHtml::listData(OphTrOperationnote_CXL_UV_Pulse_Duration::model()->findAll(), 'id', 'name'),
+        array('options' => array($default_uv_pulse_duration_id=>array('selected'=>true))),
+        null, array('field' => 3));?>
+
+    <?php
+    if(!$element->interpulse_duration_id)
+    {
+        $default_interpulse_duration_id = OphTrOperationnote_CXL_Interpulse_Duration::model()->getDefault();
+    }else{
+        $default_interpulse_duration_id = $element->interpulse_duration_id;
+    }
+    echo $form->dropDownList($element, 'interpulse_duration_id',
+        CHtml::listData(OphTrOperationnote_CXL_Interpulse_Duration::model()->findAll(), 'id', 'name'),
+        array('options' => array($default_interpulse_duration_id=>array('selected'=>true))),
+        null, array('field' => 3));?>
 </div>
 
