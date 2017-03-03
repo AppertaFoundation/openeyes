@@ -24,7 +24,7 @@
                 <?php echo $element->getAttributeLabel('topographer_id')?>:
             </div>
         </div>
-        <div class="large-9 column">
+        <div class="large-3 column">
             <div class="data-value">
                 <?php
                 $top_device = OEModule\OphCiExamination\models\OphCiExamination_Topographer_device::model()->find('id=?', $element->topographer_id);
@@ -32,14 +32,12 @@
                 ?>
             </div>
         </div>
-    </div>
-    <div class="data-row">
         <div class="large-3 column">
             <div class="data-label">
             <?php echo $element->getAttributeLabel('topographer_scan_quality_id')?>:
             </div>
         </div>
-        <div class="large-9 column">
+        <div class="large-3 column">
             <div class="data-value">
                 <?php
                 $top_scan_quality = OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->find('id=?', $element->topographer_scan_quality_id);
@@ -54,7 +52,7 @@
                 <?php echo $element->getAttributeLabel('tomographer_id')?>:
             </div>
         </div>
-        <div class="large-9 column">
+        <div class="large-3 column">
             <div class="data-value">
                 <?php
                 $tom_device = OEModule\OphCiExamination\models\OphCiExamination_Tomographer_device::model()->find('id=?', $element->tomographer_id);
@@ -62,14 +60,12 @@
                 ?>
             </div>
         </div>
-    </div>
-    <div class="data-row">
         <div class="large-3 column">
             <div class="data-label">
                 <?php echo $element->getAttributeLabel('tomographer_scan_quality_id')?>:
             </div>
         </div>
-        <div class="large-9 column">
+        <div class="large-3 column">
             <div class="data-value">
                 <?php
                 $tom_scan_quality = OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->find('id=?', $element->tomographer_scan_quality_id);

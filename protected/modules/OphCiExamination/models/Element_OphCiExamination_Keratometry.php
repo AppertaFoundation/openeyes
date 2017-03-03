@@ -106,8 +106,8 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
             array('right_thinnest_point_pachymetry_value, left_thinnest_point_pachymetry_value',
                 'in','range'=>range(100,800)),
 
-            array('right_ba_index_value, left_ba_index_value',
-                'in','range'=>range(0.00,10.00)),
+            array('right_ba_index_value, left_ba_index_value', 'numerical',
+                'integerOnly'=>false,'min'=>0, 'max'=>10),
 
 
             // The following rule is used by search().

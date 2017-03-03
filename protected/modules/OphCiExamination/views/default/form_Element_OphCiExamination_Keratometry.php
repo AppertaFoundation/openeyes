@@ -142,7 +142,7 @@
 					<label><?php echo $element->getAttributeLabel('right_thinnest_point_pachymetry_value')?>:</label>
 				</div>
 				<div class="large-4 column">
-					<?= $form->textField($element, "right_thinnest_point_pachymetry_value", array('nowrapper' => true, 'size' => 2, 'maxlength' => 2)) ?>
+					<?= $form->textField($element, "right_thinnest_point_pachymetry_value", array('nowrapper' => true, 'size' => 3, 'maxlength' => 3)) ?>
 				</div>
 				<div class="large-4 column">
 				</div>
@@ -152,7 +152,7 @@
 					<label><?php echo $element->getAttributeLabel('right_ba_index_value')?>:</label>
 				</div>
 				<div class="large-4 column">
-					<?= $form->textField($element, "right_ba_index_value", array('nowrapper' => true, 'size' => 3, 'maxlength' => 3)) ?>
+					<?= $form->textField($element, "right_ba_index_value", array('nowrapper' => true, 'size' => 5, 'maxlength' => 5)) ?>
 				</div>
 				<div class="large-4 column">
 				</div>
@@ -251,7 +251,7 @@
 				<label><?php echo $element->getAttributeLabel('left_thinnest_point_pachymetry_value')?>:</label>
 			</div>
 			<div class="large-4 column">
-				<?= $form->textField($element, "left_thinnest_point_pachymetry_value", array('nowrapper' => true, 'size' => 2, 'maxlength' => 2)) ?>
+				<?= $form->textField($element, "left_thinnest_point_pachymetry_value", array('nowrapper' => true, 'size' => 3, 'maxlength' => 3)) ?>
 			</div>
 			<div class="large-4 column">
 			</div>
@@ -261,7 +261,7 @@
 				<label><?php echo $element->getAttributeLabel('left_ba_index_value')?>:</label>
 			</div>
 			<div class="large-4 column">
-				<?= $form->textField($element, "left_ba_index_value", array('nowrapper' => true, 'size' => 3, 'maxlength' => 3)) ?>
+				<?= $form->textField($element, "left_ba_index_value", array('nowrapper' => true, 'size' => 5, 'maxlength' => 5)) ?>
 			</div>
 			<div class="large-4 column">
 			</div>

@@ -17,37 +17,38 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php
+  function yesOrNo($item)
+{
+    if($item == 1){
+        echo "Yes";
+    }else{
+        echo "No";
+    }
+}
+?>
 <div class="element-data">
     <div class="data-row">
-        <div class="data-value">
+        <div class="data-value column large-4">
             <?php echo $element->getAttributeLabel('asthma_id')?>:
             <?php
-            $asthma = $element->asthma_id;
-            if($asthma == 1){
-                echo "Yes";
-            }else{
-                echo "No";
-            }
-            ?><br/>
+            echo yesOrNo($element->asthma_id);
+            ?>
+        </div>
+        <div class="data-value column large-4">
             <?php echo $element->getAttributeLabel('eczema_id')?>:
             <?php
-            $eczema = $element->eczema_id;
-            if($eczema == 1){
-                echo "Yes";
-            }else{
-                echo "No";
-            }
-            ?><br/>
+            echo yesOrNo($element->eczema_id);
+            ?>
+        </div>
+        <div class="data-value column large-4">
             <?php echo $element->getAttributeLabel('hayfever_id')?>:
             <?php
             $hayfever_id = $element->hayfever_id;
-            if($hayfever_id == 1){
-                echo "Yes";
-            }else{
-                echo "No";
-            }
-            ?><br/>
+            echo yesOrNo($element->hayfever_id);
+            ?>
         </div>
+
     </div>
 </div>
 <div class="element-data element-eyes row">
@@ -59,7 +60,8 @@
                     <?php echo $element->getAttributeLabel('right_previous_cxl_value')?>:
                 </div>
                 <div class="large-5 column data-value">
-                    <?php echo $element->right_previous_cxl_value;
+                    <?php
+                    echo yesOrNo($element->right_previous_cxl_value);
                     ?>
                 </div>
             </div>
@@ -69,7 +71,7 @@
                 </div>
                 <div class="large-5 column data-value">
                     <?php
-                    echo $element->right_previous_refractive_value;
+                    echo yesOrNo($element->right_previous_refractive_value);
                     ?>
                 </div>
             </div>
@@ -79,7 +81,7 @@
                 </div>
                 <div class="large-5 column data-value">
                     <?php
-                    echo $element->right_intacs_kera_ring_value;
+                    echo yesOrNo($element->right_intacs_kera_ring_value);
                     ?>
                 </div>
             </div>
@@ -89,7 +91,7 @@
                 </div>
                 <div class="large-5 column data-value">
                     <?php
-                    echo $element->right_trans_prk_value;
+                    echo yesOrNo($element->right_trans_prk_value);
                     ?>
                 </div>
             </div>
@@ -99,7 +101,7 @@
                 </div>
                 <div class="large-5 column data-value">
                     <?php
-                    echo $element->right_previous_hsk_keratitis_value;
+                    echo yesOrNo($element->right_previous_hsk_keratitis_value);
                     ?>
                 </div>
             </div>
@@ -118,7 +120,8 @@
                     <?php echo $element->getAttributeLabel('left_previous_cxl_value')?>:
                 </div>
                 <div class="large-5 column data-value">
-                    <?php echo $element->left_previous_cxl_value;
+                    <?php
+                    echo yesOrNo($element->left_previous_cxl_value);
                     ?>
                 </div>
             </div>
@@ -128,7 +131,7 @@
                 </div>
                 <div class="large-5 column data-value">
                     <?php
-                    echo $element->left_previous_refractive_value;
+                    echo yesOrNo($element->left_previous_refractive_value);
                     ?>
                 </div>
             </div>
@@ -138,7 +141,7 @@
                 </div>
                 <div class="large-5 column data-value">
                     <?php
-                    echo $element->left_intacs_kera_ring_value;
+                    echo yesOrNo($element->left_intacs_kera_ring_value);
                     ?>
                 </div>
             </div>
@@ -148,7 +151,7 @@
                 </div>
                 <div class="large-5 column data-value">
                     <?php
-                    echo $element->left_trans_prk_value;
+                    echo yesOrNo($element->left_trans_prk_value);
                     ?>
                 </div>
             </div>
@@ -158,7 +161,7 @@
                 </div>
                 <div class="large-5 column data-value">
                     <?php
-                    echo $element->left_previous_hsk_keratitis_value;
+                    echo yesOrNo($element->left_previous_hsk_keratitis_value);
                     ?>
                 </div>
             </div>

@@ -84,32 +84,6 @@ if (!empty($episode)) {
 					<?php echo $episode->eye ? $episode->eye->name : 'None'?>
 				</div>
 			</section>
-	<?php
-		// Is there any Keratometry data?
-	?>
-			<section class="element element-data">
-				<h3 class="data-title">Keratometry</h3>
-			</section>
-		<section>
-			<div class="element-eyes element-data row">
-				<div class="element-eye right-eye column">
-					<div class="data-row">
-						Right
-
-					</div>
-				</div>
-				<div class="element-eye lef-eye column">
-					<div class="data-row">
-						Left
-
-					</div>
-				</div>
-
-			</div>
-		</section>
-		<?php
-		// Kera failure
-		?>
 		</div>
 	</div>
 	<?php
