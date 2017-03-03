@@ -20,6 +20,7 @@
 
     <?php echo CHtml::activeHiddenField($document_set, 'id') ?>
     <?php echo CHtml::activeHiddenField($document_set->document_instance[0], 'id') ?>
+    <?php echo CHtml::activeHiddenField($document_set->document_instance[0]->document_instance_data[0], 'id') ?>
 
 <?php $element->draft = 1; ?>
 
@@ -48,7 +49,6 @@
                                 $document_targets[] = $target;
                             }
                         }
-                        
                     }
                 ?>
 

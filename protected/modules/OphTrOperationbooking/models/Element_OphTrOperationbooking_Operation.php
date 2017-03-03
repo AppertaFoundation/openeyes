@@ -715,7 +715,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                         // appending ' 13:00:00' to the date to avoid daylight saving problems near midnight
                         // TODO: use DateTime object
                         if (!isset($datelist2[$day]) || !in_array(date('Y-m-d', strtotime($date .' 13:00:00') - (86400 * 7)), $datelist2[$day])) {
-                            $datelist2[$day][] = date('Y-m-d', strtotime($date .' 13:00:00') - (86400 * 7));
+                            $datelist2[$day][] = date('Y-m-d', strtotime($date . ' 13:00:00') - (86400 * 7));
                             $session_lookup[date('Y-m-d', strtotime($date . ' 13:00:00') - (86400 * 7))] = array('status' => 'blank');
                             $changed = true;
                         }
