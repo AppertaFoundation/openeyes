@@ -377,6 +377,28 @@ class AdminController extends BaseAdminController
                 if (!$user->save()) {
                     throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
                 }
+
+                if (!$contact = $user->contact) {
+                    $contact = new Contact();
+                }
+
+                $contact->title = $user->title;
+                $contact->first_name = $user->first_name;
+                $contact->last_name = $user->last_name;
+                $contact->qualifications = $user->qualifications;
+
+                if (!$contact->save()) {
+                    throw new Exception('Unable to save user contact: ' . print_r($contact->getErrors(), true));
+                }
+
+                if (!$user->contact) {
+                    $user->contact_id = $contact->id;
+
+                    if (!$user->save()) {
+                        throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
+                    }
+                }
+
                 Audit::add('admin-User', 'add', $user->id);
 
                 if (!isset($userAtt['roles'])) {
@@ -1868,9 +1890,7 @@ class AdminController extends BaseAdminController
                         $setting = new SettingInstallation();
                         $setting->key = $metadata->key;
                     }
-
                     $setting->value = @$_POST[$metadata->key];
-
                     if (!$setting->save()) {
                         $errors = $setting->errors;
                     } else {

@@ -23,39 +23,39 @@ $layoutColumns = $form->layoutColumns;
 $form->layoutColumns = array('label' => 3, 'field' => 9);
 ?>
 <div class="element-fields">
-	<div class="row eyedraw-row cataract">
-		<div class="fixed column">
-			<?php $this->renderPartial($element->form_view.'_OEEyeDraw', array(
+    <div class="row eyedraw-row cataract">
+        <div class="fixed column">
+            <?php $this->renderPartial($element->form_view . '_OEEyeDraw', array(
                 'element' => $element,
                 'form' => $form,
             )); ?>
-		</div>
-		<div class="fluid column">
-			<?php $this->renderPartial($element->form_view.'_OEEyeDraw_fields', array(
+        </div>
+        <div class="fluid column">
+            <?php $this->renderPartial($element->form_view . '_OEEyeDraw_fields', array(
                 'form' => $form,
                 'element' => $element,
             )); ?>
-		</div>
-	</div>
-	<span id="ophCiExaminationPCRRiskEyeLabel">
-		<a href="javascript:showhidePCR('ophTrOperationnotePCRRiskDiv')">PCR Risk
-		<span class="pcr-span1"></span>%</a>
-	</span>
+        </div>
+    </div>
+    <span id="ophCiExaminationPCRRiskEyeLabel">
+        <a href="javascript:showhidePCR('ophTrOperationnotePCRRiskDiv')">PCR Risk
+        <span class="pcr-span1"></span>%</a>
+    </span>
 
-	<div id="ophTrOperationnotePCRRiskDiv">
-		<div id="ophCiExaminationPCRRiskLeftEye" class="pcr-exam-link-opnote">
-			<?php
+    <div id="ophTrOperationnotePCRRiskDiv">
+        <div id="ophCiExaminationPCRRiskLeftEye" class="pcr-exam-link-opnote">
+            <?php
             $this->renderPartial('application.views.default._pcr_risk_form',
                 array('form' => $form, 'element' => $element, 'side' => 'left'));
             ?>
-		</div>
-		<div id="ophCiExaminationPCRRiskRightEye" class="pcr-exam-link-opnote">
-			<?php
+        </div>
+        <div id="ophCiExaminationPCRRiskRightEye" class="pcr-exam-link-opnote">
+            <?php
             $this->renderPartial('application.views.default._pcr_risk_form',
                 array('form' => $form, 'element' => $element, 'side' => 'right'));
             ?>
-		</div>
-	</div>
+        </div>
+    </div>
 </div>
 
 

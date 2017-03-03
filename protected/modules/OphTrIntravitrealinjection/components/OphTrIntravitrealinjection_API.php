@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -18,7 +19,7 @@
  */
 class OphTrIntravitrealinjection_API extends BaseAPI
 {
-    private $previous_treatments = array();
+
     private $legacy_api;
 
     /**
@@ -36,34 +37,6 @@ class OphTrIntravitrealinjection_API extends BaseAPI
     }
 
     /**
-     * caching method for previous injections store.
-     *
-     * @param Patient $patient
-     * @param Episode $episode
-     *
-     * @return Element_OphTrIntravitrealinjection_Treatment[]
-     */
-    protected function previousInjectionsForPatientEpisode($patient, $episode)
-    {
-        if (!isset($this->previous_treatments[$patient->id])) {
-            $this->previous_treatments[$patient->id] = array();
-        }
-
-        if (!isset($this->previous_treatments[$patient->id][$episode->id])) {
-            $events = $this->getEventsInEpisode($patient, $episode);
-            $previous = array();
-            foreach ($events as $event) {
-                if ($treat = Element_OphTrIntravitrealinjection_Treatment::model()->find('event_id = :event_id', array(':event_id' => $event->id))) {
-                    $previous[] = $treat;
-                }
-            }
-            $this->previous_treatments[$patient->id][$episode->id] = $previous;
-        }
-
-        return $this->previous_treatments[$patient->id][$episode->id];
-    }
-
-    /**
      * return only previous injections given a starting event id.
      */
     public function previousInjectionsByEvent($event_id, $side, $drug)
@@ -71,63 +44,26 @@ class OphTrIntravitrealinjection_API extends BaseAPI
         $event = Event::model()->find('id = :id', array(':id' => $event_id));
         $episode = $event->episode;
         $patient = $event->episode->patient;
-        $injections = $this->previousInjections($patient, $episode, $side, $drug);
 
-        //remove this event and events in the future
-        $previousInjections = array();
-        foreach ($injections as $injection) {
-            if ($event_id > $injection['event_id']) {
-                $previousInjections[] = $injection;
-            }
-        }
-
-        return $previousInjections;
+        return $this->previousInjections($patient, $episode, $side, $drug, $event->event_date);
     }
 
     /**
      * return the set of treatment elements from previous injection events in descending order.
      *
-     * @param Patient $patient
-     * @param Episode $episode
-     * @param string  $side
-     * @param Drug    $drug
+     * @param Patient                                   $patient
+     * @param Episode                                   $episode
+     * @param string                                    $side
+     * @param OphTrIntravitrealinjection_Treatment_Drug $drug
+     * @param string                                    $since
      *
      * @throws Exception
      *
      * @return array {$side . '_drug_id' => integer, $side . '_number' => integer, 'date' => datetime}[] - array of treatment elements for the eye and optional drug
      */
-    public function previousInjections($patient, $episode, $side, $drug = null)
+    public function previousInjections($patient, $episode, $side, $drug = null, $since = 'now')
     {
         $res = array();
-
-        $previous = $this->previousInjectionsForPatientEpisode($patient, $episode);
-
-        switch ($side) {
-            case 'left':
-                $eye_ids = array(SplitEventTypeElement::LEFT, SplitEventTypeElement::BOTH);
-                break;
-            case 'right':
-                $eye_ids = array(SplitEventTypeElement::RIGHT, SplitEventTypeElement::BOTH);
-                break;
-            default:
-                throw new Exception('invalid side value provided: '.$side);
-                break;
-        }
-
-        foreach ($previous as $prev) {
-            if (in_array($prev->eye_id, $eye_ids)) {
-                if ($drug == null || $prev->{$side.'_drug_id'} == $drug->id) {
-                    $res[] = array(
-                            $side.'_drug_id' => $prev->{$side.'_drug_id'},
-                            $side.'_drug' => $prev->{$side.'_drug'}->name,
-                            $side.'_number' => $prev->{$side.'_number'},
-                            'date' => $prev->created_date,
-                            'event_id' => $prev->event_id,
-                    );
-                }
-            }
-        }
-
         // NOTE: we assume that all legacy injections would be from before any injections in
         // this module. Should this prove not to be the case, we would need to sort the result
         // data structure by date
@@ -137,7 +73,74 @@ class OphTrIntravitrealinjection_API extends BaseAPI
             }
         }
 
+        if (!$drug || get_class($drug) !== 'OphTrIntravitrealinjection_Treatment_Drug') {
+            $drug = new OphTrIntravitrealinjection_Treatment_Drug();
+        }
+
+        $injections = $this->injectionsSinceByEpisodeSideAndDrug($episode, $side, $drug, $since);
+
+        foreach ($injections as $injection) {
+            $res[] = array(
+                $side . '_drug_id' => $injection->{$side . '_drug_id'},
+                $side . '_drug' => $injection->{$side . '_drug'}->name,
+                $side . '_number' => $injection->{$side . '_number'},
+                'date' => $injection->event->event_date,
+                'event_id' => $injection->event_id,
+            );
+        }
+
         return $res;
+    }
+
+
+    /**
+     * @param Episode                                   $episode
+     * @param string                                    $side
+     * @param OphTrIntravitrealinjection_Treatment_Drug $drug
+     * @param string                                    $since
+     *
+     * @return mixed
+     *
+     * @throws Exception
+     */
+    protected function injectionsSinceByEpisodeSideAndDrug(Episode $episode, $side, OphTrIntravitrealinjection_Treatment_Drug $drug, $since = 'now')
+    {
+        switch ($side) {
+            case 'left':
+                $eye_id = SplitEventTypeElement::LEFT;
+                break;
+            case 'right':
+                $eye_id = SplitEventTypeElement::RIGHT;
+                break;
+            default:
+                throw new Exception('invalid side value provided: ' . $side);
+                break;
+        }
+
+        $sinceDate = new DateTime($since);
+
+        $criteria = new CDbCriteria();
+        $criteria->alias = 'treatment';
+        $criteria->addCondition(array(
+            'event.episode_id = :episode_id',
+            'treatment.eye_id in (:eye_id,'.SplitEventTypeElement::BOTH.')',
+            'event_date <= :since',
+            )
+        );
+        $criteria->join = 'JOIN event ON treatment.event_id = event.id';
+        $criteria->order = 'event.event_date ASC';
+        $criteria->params = array(
+            'episode_id' => $episode->id,
+            'eye_id' => $eye_id,
+            'since' => $sinceDate->format('Y-m-d'),
+        );
+
+        if ($drug->id) {
+            $criteria->addCondition('treatment.' . $side . '_drug_id = :drug_id');
+            $criteria->params['drug_id'] = $drug->id;
+        }
+
+        return Element_OphTrIntravitrealinjection_Treatment::model()->findAll($criteria);
     }
 
     /**
@@ -151,7 +154,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      */
     protected function getPreviousTreatmentForSide($patient, $episode, $side)
     {
-        $checker = ($side == 'left') ? 'hasLeft' : 'hasRight';
+        $checker = ($side === 'left') ? 'hasLeft' : 'hasRight';
         $treatment = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrIntravitrealinjection_Treatment');
         if ($treatment && $treatment->$checker()) {
             return $treatment;
@@ -170,7 +173,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
     public function getLetterTreatmentDrugForSide($patient, $episode, $side)
     {
         if ($injection = $this->getPreviousTreatmentForSide($patient, $episode, $side)) {
-            return $injection->{$side.'_drug'}->name;
+            return $injection->{$side . '_drug'}->name;
         }
     }
 
@@ -216,12 +219,12 @@ class OphTrIntravitrealinjection_API extends BaseAPI
             $right = $this->getLetterTreatmentDrugForSide($patient, $episode, 'right');
             $left = $this->getLetterTreatmentDrugForSide($patient, $episode, 'left');
             if ($right) {
-                $res = $right.' injection to the right eye';
+                $res = $right . ' injection to the right eye';
                 if ($left) {
-                    $res .= ', and '.$left.' injection to the left eye';
+                    $res .= ', and ' . $left . ' injection to the left eye';
                 }
             } elseif ($left) {
-                $res = $left.' injection on the left eye';
+                $res = $left . ' injection on the left eye';
             }
 
             return $res;
@@ -240,7 +243,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
     public function getLetterTreatmentNumberForSide($patient, $episode, $side)
     {
         if ($injection = $this->getPreviousTreatmentForSide($patient, $episode, $side)) {
-            return $injection->{$side.'_number'};
+            return $injection->{$side . '_number'};
         }
     }
 
@@ -283,12 +286,12 @@ class OphTrIntravitrealinjection_API extends BaseAPI
         $left = $this->getLetterTreatmentNumberLeft($patient);
         $res = '';
         if ($right) {
-            $res = $right.' on the right eye';
+            $res = $right . ' on the right eye';
             if ($left) {
-                $res .= ', and '.$left.' on the left eye';
+                $res .= ', and ' . $left . ' on the left eye';
             }
         } elseif ($left) {
-            $res = $left.' on the left eye';
+            $res = $left . ' on the left eye';
         }
 
         return $res;
@@ -307,10 +310,10 @@ class OphTrIntravitrealinjection_API extends BaseAPI
             if ($el = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrIntravitrealinjection_PostInjectionExamination')) {
                 $drops = array();
                 if ($el->hasRight()) {
-                    $drops[] = $el->right_drops->name.' to the right eye';
+                    $drops[] = $el->right_drops->name . ' to the right eye';
                 }
                 if ($el->hasLeft()) {
-                    $drops[] = $el->left_drops->name.' to the left eye';
+                    $drops[] = $el->left_drops->name . ' to the left eye';
                 }
 
                 return implode(', and ', $drops);

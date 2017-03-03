@@ -78,11 +78,7 @@
                 <h2 class="mdl-card__title-text">Alpha-blockers</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <?php if ($data->alpha_blockers):?>
-                    Yes - <?=$data->alpha_blocker_name?>
-                <?php else: ?>
-                    No
-                <?php endif;?>
+                <?=$data->alpha_blocker_name?>
             </div>
         </div>
     </div>
@@ -92,12 +88,8 @@
                 <h2 class="mdl-card__title-text">Anticoagulants</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <?php if ($data->anticoagulants):?>
-                    Yes - <?=$data->anticoagulant_name?> <br>
-                    INR: <?=$data->inr?>
-                <?php else: ?>
-                    No
-                <?php endif;?>
+                <?=$data->anticoagulant_name?> <br>
+                INR: <?=$data->inr?>
             </div>
         </div>
     </div>

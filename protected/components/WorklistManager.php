@@ -1411,7 +1411,7 @@ class WorklistManager extends CComponent
             return true;
         }
 
-        return $definition->isNewRecord || count($definition->worklists) == 0;
+        return $definition->isNewRecord || $definition->getWorklistCount() == 0;
     }
 
     /**

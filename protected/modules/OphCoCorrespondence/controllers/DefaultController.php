@@ -256,7 +256,7 @@ class DefaultController extends BaseEventTypeController
 
         $data['textappend_ElementLetter_cc'] = implode("\n", $cc['text']);
         $data['elementappend_cc_targets'] = implode("\n", $cc['targets']);
-        $data['sel_letter_type'] = $macro->letter_type;
+        $data['sel_letter_type_id'] = $macro->letter_type_id;
         echo json_encode($data);
     }
 
@@ -396,7 +396,12 @@ class DefaultController extends BaseEventTypeController
             
             if($to_recipient_gp){
                 // print an extra copy to note
-                $this->render('print', array('element' => $letter, 'letter_address' => ($to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address)));
+                if(!Yii::app()->params['disable_correspondence_notes_copy']) {
+                    $this->render('print', array(
+                        'element' => $letter,
+                        'letter_address' => ($to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address)
+                    ));
+                }
             }
 
             $print_outputs = $letter->getOutputByType("Print");
@@ -407,7 +412,9 @@ class DefaultController extends BaseEventTypeController
                     
                     //extra printout for note
                     if($document_target->ToCc == 'To' && $document_target->contact_type != 'GP'){
-                        $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
+                        if(!Yii::app()->params['disable_correspondence_notes_copy']){
+                            $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
+                        }
                     }
                 }
             }
@@ -431,7 +438,9 @@ class DefaultController extends BaseEventTypeController
             $this->render('print', array('element' => $letter));
 
             if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
-                $this->render('print', array('element' => $letter));
+                if(!Yii::app()->params['disable_correspondence_notes_copy']) {
+                    $this->render('print', array('element' => $letter));
+                }
 
                 foreach ($letter->getCcTargets() as $letter_address) {
                     $this->render('print', array('element' => $letter, 'letter_address' => $letter_address));
@@ -453,7 +462,7 @@ class DefaultController extends BaseEventTypeController
             $this->pdf_print_suffix = 'all';
             $this->pdf_print_documents = count($print_outputs);
         }
-
+        
         if( $print_outputs ){
             foreach($print_outputs as $output){
                 $output->output_status = "COMPLETE";

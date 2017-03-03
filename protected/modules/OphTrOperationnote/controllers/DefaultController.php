@@ -197,8 +197,10 @@ class DefaultController extends BaseEventTypeController
     {
         parent::initActionCreate();
 
+        $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+        
         if (isset($_GET['booking_event_id'])) {
-            if (!$api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
+            if (!$api) {
                 throw new Exception('invalid request for booking event');
             }
             if (!$this->booking_operation = $api->getOperationForEvent($_GET['booking_event_id'])) {
@@ -206,6 +208,18 @@ class DefaultController extends BaseEventTypeController
             }
         } elseif (isset($_GET['unbooked'])) {
             $this->unbooked = true;
+        }
+        
+        $is_auto_schedule_operation = Yii::app()->params['auto_schedule_operation'];
+
+        if ($api && $is_auto_schedule_operation) {
+            $schedule_result = $api->autoScheduleOperationBookings($this->current_episode);
+            if( $schedule_result !== true ){
+                foreach($schedule_result as $error){
+                    Yii::app()->user->setFlash('error.alert', $error);
+                }
+
+            }
         }
 
         $this->initEdit();
@@ -273,6 +287,7 @@ class DefaultController extends BaseEventTypeController
             $this->render('select_event', array(
                 'errors' => $errors,
                 'bookings' => $bookings,
+                'is_auto_schedule_operation' => Yii::app()->params['auto_schedule_operation']
             ));
         }
     }

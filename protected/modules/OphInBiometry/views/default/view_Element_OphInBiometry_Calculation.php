@@ -39,7 +39,7 @@
 		<div class="column" id="comments">
 			<span class="field-info">&nbsp;
 				<?php
-                echo '<b>Comments:</b>&nbsp;'.$element->{'comments'};
+                echo '<b>Device Comments</b>:&nbsp;'.$element->{'comments'};
                 ?>
 			</span>
 		</div>

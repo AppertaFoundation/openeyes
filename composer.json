@@ -32,6 +32,12 @@
   "config": {
     "bin-dir": "bin"
   },
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://packagist.org"
+    }
+  },
   "autoload": {
     "classmap": ["features/bootstrap/Pages/OpenEyesPage.php"]
   }

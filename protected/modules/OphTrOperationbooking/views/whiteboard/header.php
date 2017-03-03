@@ -24,12 +24,6 @@
                     Refresh
                     <i class="material-icons right">refresh</i>
                 </button>
-                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
-                    id="confirm-button"
-                    formaction="/OphTrOperationbooking/whiteboard/confirm/<?=$this->getWhiteboard()->event_id?>">
-                    Confirm
-                    <i class="material-icons right">done</i>
-                </button>
             <?php endif;?>
         <?php $this->endWidget()?>
     </div>

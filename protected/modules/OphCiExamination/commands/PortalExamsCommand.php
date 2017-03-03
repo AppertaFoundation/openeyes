@@ -29,9 +29,9 @@ class PortalExamsCommand extends CConsoleCommand
     {
         $creator = new OEModule\OphCiExamination\components\ExaminationCreator();
         $user = new User();
-        $this->setConfig();
-        $this->client = $this->initClient();
-        $this->login();
+        $connection = new OptomPortalConnection();
+        $this->client = $connection->getClient();
+        $this->config = $connection->getConfig();
         $examinations = $this->examinationSearch();
 
         $eventType = EventType::model()->find('name = "Examination"');
@@ -118,45 +118,6 @@ class PortalExamsCommand extends CConsoleCommand
                 }
             }
         }
-    }
-
-    /**
-     * Set portal config.
-     */
-    protected function setConfig()
-    {
-        $this->config = Yii::app()->params['portal'];
-    }
-
-    /**
-     * Init HTTP client.
-     *
-     * @return Zend_Http_Client
-     *
-     * @throws Zend_Http_Client_Exception
-     */
-    protected function initClient()
-    {
-        $client = new Zend_Http_Client($this->config['uri']);
-        $client->setHeaders('Accept', 'application/vnd.OpenEyesPortal.v1+json');
-
-        return $client;
-    }
-
-    /**
-     * Login to the API, set the auth header.
-     */
-    protected function login()
-    {
-        $this->client->setUri($this->config['uri'].$this->config['endpoints']['auth']);
-        $this->client->setParameterPost($this->config['credentials']);
-        $response = $this->client->request('POST');
-        if ($response->getStatus() > 299) {
-            throw new Exception('Unable to login, user credentials in config incorrect');
-        }
-        $jsonResponse = json_decode($response->getBody(), true);
-        $this->client->resetParameters();
-        $this->client->setHeaders('Authorization', 'Bearer '.$jsonResponse['access_token']);
     }
 
     /**

@@ -57,7 +57,7 @@ class FirmSiteSecretary extends BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('firm_id, site_id, direct_line, fax', 'safe'),
-            array('firm_id, site_id, direct_line', 'required'),
+            array('firm_id, site_id', 'required'),
             array('firm_id', 'ext.validators.UniqueSiteFirmValidator', 'message' => 'Only one contact can be added for each firm and site'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
