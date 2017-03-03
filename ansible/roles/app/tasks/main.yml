@@ -27,17 +27,17 @@
 
 # TODO: Remove dependency directories?
 # Install project dependencies using composer (http://docs.ansible.com/ansible/composer_module.html)
-- name: Install / Update composer dependencies
-  environment:
-    COMPOSER_DISCARD_CHANGES: 1
-  composer:
-    command: "install"
-    arguments: "--no-interaction"
-    prefer_source: "yes"
-    working_dir: "/var/www/openeyes"
-    no_dev: "no"
-  become: true
-  become_user: vagrant
+#- name: Install / Update composer dependencies
+#  environment:
+#    COMPOSER_DISCARD_CHANGES: 1
+#  composer:
+#    command: "install"
+#    arguments: "--no-interaction"
+#    prefer_source: "yes"
+#    working_dir: "/var/www/openeyes"
+#    no_dev: "no"
+#  become: true
+#  become_user: vagrant
 
 # Git Clone OE depenandcies
 - name: Git clone OE dependencies
