@@ -18,7 +18,7 @@
  */
 ?>
 <div class="box admin">
-  <h2>Genetic tests search</h2>
+  <h2>Genetic test/result</h2>
 
   <div class="large-12 column">
       <?php

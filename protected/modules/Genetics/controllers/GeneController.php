@@ -68,7 +68,7 @@ class GeneController extends BaseModuleController
     public function actionList()
     {
         $admin = new Crud(PedigreeGene::model(), $this);
-        $admin->setModelDisplayName('Gene');
+        $admin->setModelDisplayName('Genes');
         $admin->setListFieldsAction('view');
         $admin->setListFields(array(
             'id',

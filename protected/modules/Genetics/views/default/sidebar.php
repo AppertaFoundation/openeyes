@@ -2,10 +2,12 @@
     <h2>Menu</h2>
     <ul class="navigation">
         <?php $sidebarLinks = array(
-            'Pedigrees' => Yii::app()->createUrl('/Genetics/pedigree/list'),
-            'Genes' => Yii::app()->createUrl('/Genetics/gene/list'),
-            'Subjects' => Yii::app()->createUrl('/Genetics/subject/list'),
+            'Patients' => Yii::app()->createUrl('/Genetics/subject/list'),
+            'Families' => Yii::app()->createUrl('/Genetics/pedigree/list'),
+            'Genetic test/result' => Yii::app()->createUrl('/OphInGeneticresults/search/geneticResults'),
+            'Samples' => Yii::app()->createUrl('/OphInDnasample/search/DnaSample'),
             'Studies' => Yii::app()->createUrl('/Genetics/study/list'),
+            'Genes' => Yii::app()->createUrl('/Genetics/gene/list'),
         );
         foreach ($sidebarLinks as $title => $uri) { ?>
             <li<?php if (Yii::app()->getController()->action->id == $uri) { ?> class="selected"<?php } ?>>

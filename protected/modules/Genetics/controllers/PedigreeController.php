@@ -131,6 +131,7 @@ class PedigreeController extends BaseModuleController
     {
         $admin = new Crud(Pedigree::model(), $this);
         $admin->setListFieldsAction('view');
+        $admin->setModelDisplayName('Families');
         $admin->setListFields(array(
             'id',
             'inheritance.name',

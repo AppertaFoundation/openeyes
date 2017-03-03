@@ -18,7 +18,7 @@
  */
 class SearchController extends BaseController
 {
-    public $layout = '//layouts/advanced_search';
+    public $layout = '//../modules/Genetics/views/layouts/genetics';
     public $items_per_page = 30;
 
     public function accessRules()
@@ -26,7 +26,7 @@ class SearchController extends BaseController
         return array(
             array('allow',
                 'actions' => array('DnaSample'),
-                'roles' => array('OprnSearchPedigree'),
+                'roles' => array('TaskSearchGeneticsData'),
             ), );
     }
 
@@ -58,7 +58,7 @@ class SearchController extends BaseController
                 $page = $_GET['page'];
             }
 
-            $search_command = $this->buildSearchCommand('event.id,patient.hos_num,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,patient.yob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments', $page);
+            $search_command = $this->buildSearchCommand('event.id,patient.hos_num,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments', $page);
 
             $dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
@@ -111,6 +111,9 @@ class SearchController extends BaseController
         $sample_type = @$_GET['sample-type'];
         $disorder_id = @$_GET['disorder-id'];
         $comment = @$_GET['comment'];
+        $first_name = @$_GET['first_name'];
+        $last_name = @$_GET['last_name'];
+        $hos_num = @$_GET['hos_num'];
 
         $command = Yii::app()->db->createCommand()
             ->select($select)
@@ -123,11 +126,11 @@ class SearchController extends BaseController
             ->leftJoin('secondary_diagnosis', 'secondary_diagnosis.patient_id = patient.id');
 
         if ($date_from) {
-            $command->andWhere('dna_date <= :date_from', array(':date_from' => Helper::convertNHS2MySQL($date_from)));
+            $command->andWhere('event_date <= :date_from', array(':date_from' => Helper::convertNHS2MySQL($date_from)));
         }
 
         if ($date_to) {
-            $command->andWhere('dna_date >= :date_to', array(':date_to' => Helper::convertNHS2MySQL($date_to)));
+            $command->andWhere('event_date >= :date_to', array(':date_to' => Helper::convertNHS2MySQL($date_to)));
         }
 
         if ($sample_type) {
@@ -140,6 +143,20 @@ class SearchController extends BaseController
         if ($disorder_id) {
             $command->andWhere('secondary_diagnosis.disorder_id = :disorder_id', array(':disorder_id' => $disorder_id));
         }
+
+        if($first_name){
+            $command->andWhere((array('like', 'LOWER(first_name)', '%'. strtolower($first_name) .'%')));
+        }
+
+        if($last_name){
+            $command->andWhere((array('like', 'LOWER(last_name)', '%'. strtolower($last_name) .'%')));
+        }
+
+        if($hos_num){
+            $command->andWhere('hos_num = :hos_num', array(':hos_num' => $hos_num));
+        }
+
+
 
         return $command;
     }

@@ -26,7 +26,7 @@ class SiteController extends BaseController
                 'actions' => array('error', 'login', 'debuginfo'),
             ),
             array('allow',
-                'actions' => array('index', 'advancedSearch', 'changeSiteAndFirm', 'search', 'logout'),
+                'actions' => array('index', 'changeSiteAndFirm', 'search', 'logout'),
                 'users' => array('@'),
             ),
         );
@@ -79,47 +79,8 @@ class SiteController extends BaseController
                     }
                 }
         }
-/*
-            // NHS number (assume 10 digit number is an NHS number)
-            if(preg_match('/^(N|NHS)\s*[:;]\s*([0-9\- ]+)$/i',$query,$matches)
-                    || preg_match('/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i',$query,$matches)) {
-                $nhs = (isset($matches[2])) ? $matches[2] : $matches[1];
-                $nhs = str_replace(array('-',' '),'',$nhs);
-                $this->redirect(array('patient/search', 'nhs_num' => $nhs));
-                return;
-            }
 
-            // Hospital number (assume a < 10 digit number is a hosnum)
-            if(preg_match('/^(H|Hosnum)\s*[:;]\s*([0-9a-zA-Z\-]+)$/i',$query,$matches)
-                    || preg_match(Yii::app()->params['hos_num_regex'],$query,$matches)) {
-                $hosnum = (isset($matches[2])) ? $matches[2] : $matches[1];
-                $this->redirect(array('patient/search', 'hos_num' => $hosnum));
-                return;
-            }
-
-            // Patient name
-            if (preg_match('/^(?:P(?:atient)?[:;\s]*)?(.*[ ,].*)$/', $query, $m)) {
-                $name = $m[1];
-
-                if (strpos($name, ',') !== false) {
-                    list ($surname, $firstname) = explode(',', $name, 2);
-                } else {
-                    list ($firstname, $surname) = explode(' ', $name, 2);
-                }
-
-                $this->redirect(array('patient/search', 'first_name' => trim($firstname), 'last_name' => trim($surname)));
-            }
-                } */
-
-        /*if (isset($query)) {
-            if (strlen($query) == 0) {
-                Yii::app()->user->setFlash('warning.search_error', "Please enter either a hospital number or a firstname and lastname.");
-            } else {
-                Yii::app()->user->setFlash('warning.search_error', '<strong>"'.CHtml::encode($query).'"</strong> is not a valid search.');
-            }
-        }*/
-
-            $this->redirect('/');
+        $this->redirect('/');
     }
 
     /**
@@ -238,9 +199,10 @@ class SiteController extends BaseController
         return parent::beforeAction($action);
     }
 
-    public function actionAdvancedSearch()
-    {
-        $this->layout = 'advanced_search';
-        $this->render('advanced_search_core');
-    }
+//    Advanced search is not integrated at the moment, but we leave the code here for later
+//    public function actionAdvancedSearch()
+//    {
+//        $this->layout = 'advanced_search';
+//        $this->render('advanced_search_core');
+//    }
 }

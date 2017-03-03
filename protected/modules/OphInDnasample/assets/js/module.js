@@ -32,7 +32,7 @@ $(document).ready(function() {
 
 	$('#search_dna_sample').click(function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/OphInDnasample/search/dnaSample?date-from='+$('#date-from').val()+'&date-to='+$('#date-to').val()+'&sample-type='+$('#sample-type').val()+'&comment='+$('#comment').val()+'&disorder-id='+$('#savedDiagnosis').val()+'&search=search';
+		window.location.href = baseUrl+'/OphInDnasample/search/dnaSample?date-from='+$('#date-from').val()+'&date-to='+$('#date-to').val()+'&sample-type='+$('#sample-type').val()+'&comment='+$('#comment').val()+'&disorder-id='+$('#savedDiagnosis').val() + '&first_name=' + $('#first_name').val() + '&last_name=' + $('#last_name').val() + '&hos_num=' + $('#hos_num').val() + '&search=search';
 	});
 
 	$('select.populate_textarea').unbind('change').change(function() {

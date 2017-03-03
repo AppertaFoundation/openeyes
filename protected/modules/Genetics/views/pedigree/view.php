@@ -19,7 +19,7 @@
 ?>
     <div class="admin box">
         <div class="row">
-        <div class="large-10 column"><h2>View Pedigree</h2></div>
+        <div class="large-10 column"><h2>View Family</h2></div>
         <div class="large-2 column right">
             <?php if( $this->checkAccess('TaskEditPedigreeData') ): ?>
                 <a href="/Genetics/pedigree/edit/<?php echo $model->id; ?>" class="button small right" id="pedigree_edit">Edit</a>

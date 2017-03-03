@@ -207,7 +207,7 @@ class SubjectController extends BaseModuleController
     public function actionList()
     {
         $admin = new Crud(GeneticsPatient::model(), $this);
-        $admin->setModelDisplayName('Genetics Subject');
+        $admin->setModelDisplayName('Patients');
         $admin->setListFieldsAction('view');
         $admin->setListFields(array(
             'id',

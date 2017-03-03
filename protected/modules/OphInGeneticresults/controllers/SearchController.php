@@ -19,7 +19,7 @@
  */
 class SearchController extends BaseController
 {
-    public $layout = '//layouts/advanced_search';
+    public $layout = '//../modules/Genetics/views/layouts/genetics';
     public $items_per_page = 30;
 
     public function accessRules()
@@ -28,7 +28,7 @@ class SearchController extends BaseController
             array(
                 'allow',
                 'actions' => array('GeneticResults'),
-                'roles' => array('OprnSearchPedigree'),
+                'roles' => array('TaskSearchGeneticsData'),
             ),
         );
     }
@@ -102,12 +102,12 @@ class SearchController extends BaseController
 
             if (@$_GET['date-from'] && strtotime($_GET['date-from'])) {
                 $where .= ' and result_date >= :date_from';
-                $whereParams[':date_from'] = $_GET['date-from'];
+                $whereParams[':date_from'] = Helper::convertNHS2MySQL($_GET['date-from']);
             }
 
             if (@$_GET['date-to'] && strtotime($_GET['date-to'])) {
                 $where .= ' and result_date <= :date_to';
-                $whereParams[':date_to'] = $_GET['date-to'];
+                $whereParams[':date_to'] = Helper::convertNHS2MySQL($_GET['date-to']);
             }
 
             if (strlen(@$_GET['query']) > 0) {
