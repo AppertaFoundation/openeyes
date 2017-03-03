@@ -419,5 +419,9 @@ return array(
                     'saveprint' => 'Save and print'
             )
         ),
+        /**
+         * Enable or disable the draft printouts DRAFT background
+         */
+        'OphCoCorrespondence_printout_draft_background' => true
     ),
 );
