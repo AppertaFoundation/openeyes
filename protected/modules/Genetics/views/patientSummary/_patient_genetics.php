@@ -117,6 +117,20 @@
                 </div>
                 <div class="large-4 column">
                     <button id="btn-save_pedigree" class="secondary small btn_save_pedigree">Save</button>
+                    <img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="save_pedigree_loader hide" />
+                </div>
+                
+                <div class="clearfix"></div>
+                
+                <div class="large-4 column">
+                    <label class="align">Or create new pedigree:</label>
+                </div>
+                <div class="large-8 column">   
+                    <div class="data-value">
+                        <label class="align">
+                            <?php echo CHtml::link('Create', Yii::app()->createUrl('/Genetics/pedigree/edit')) ?>
+                        </label>
+                    </div>
                 </div>
                 <div class="clearfix"></div>
             </div>
@@ -217,6 +231,9 @@
                     pedigree_id: $('#pedigreeSelect').val(),
                     patient_id: $('#patient_id').val()
                 },
+                beforeSend:function(){
+                    $('.save_pedigree_loader').removeClass('hide');
+                },
                 'success': function(response) {
                     window.location.reload();
                 },
@@ -224,7 +241,8 @@
                     new OpenEyes.UI.Dialog.Alert({
                         content: "Sorry, an internal error occurred.\n\nPlease contact support for assistance."
                     }).open();
-                     $('#btn-save_pedigree').attr('disabled',false);
+                    $('#btn-save_pedigree').attr('disabled',false);
+                    $('.save_pedigree_loader').addClass('hide');
                 }
             });
         });

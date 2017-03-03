@@ -175,7 +175,7 @@ class SubjectController extends BaseModuleController
         ));
 
         $valid = $admin->editModel(false);
-
+       
         if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 $post = Yii::app()->request->getPost('GeneticsPatient', array());
@@ -200,7 +200,7 @@ class SubjectController extends BaseModuleController
             }
         }
     }
-
+    
     /**
      * List the Genetic Patients
      */
