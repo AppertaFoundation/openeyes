@@ -129,16 +129,6 @@
 			</div>
 			<div class="row field-row">
 				<div class="large-4 column">
-					<label><?php echo $element->getAttributeLabel('right_posterior_k2_value')?>:</label>
-				</div>
-				<div class="large-4 column">
-					<?= $form->textField($element, "right_posterior_k2_value", array('nowrapper' => true, 'size' => 3, 'maxlength' => 3)) ?>
-				</div>
-				<div class="large-4 column">
-				</div>
-			</div>
-			<div class="row field-row">
-				<div class="large-4 column">
 					<label><?php echo $element->getAttributeLabel('right_thinnest_point_pachymetry_value')?>:</label>
 				</div>
 				<div class="large-4 column">
@@ -232,16 +222,6 @@
 			</div>
 			<div class="large-4 column">
 				<?= $form->textField($element, "left_kmax_value", array('nowrapper' => true, 'size' => 2, 'maxlength' => 2)) ?>
-			</div>
-			<div class="large-4 column">
-			</div>
-		</div>
-		<div class="row field-row">
-			<div class="large-4 column">
-				<label><?php echo $element->getAttributeLabel('left_posterior_k2_value')?>:</label>
-			</div>
-			<div class="large-4 column">
-				<?= $form->textField($element, "left_posterior_k2_value", array('nowrapper' => true, 'size' => 3, 'maxlength' => 3)) ?>
 			</div>
 			<div class="large-4 column">
 			</div>

@@ -66,12 +66,12 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
         return array(
             array('event_id, protocol_id, epithelial_removal_method_id, epithelial_removal_diameter_id, riboflavin_preparation_id,
             interval_between_drops_id, soak_duration_range_id, uv_irradiance_range_id, total_exposure_time_id, uv_pulse_duration_id, 
-            interpulse_duration_id', 'safe'),
+            interpulse_duration_id, uv_total_energy_value', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, protocol_id, epithelial_removal_method_id, epithelial_removal_diameter_id, riboflavin_preparation_id,
             interval_between_drops_id, soak_duration_range_id, uv_irradiance_range_id, total_exposure_time_id, uv_pulse_duration_id, 
-            interpulse_duration_id', 'safe', 'on' => 'search'),
+            interpulse_duration_id, uv_total_energy_value', 'safe', 'on' => 'search'),
         );
     }
 
@@ -115,6 +115,7 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
             'total_exposure_time_id' => 'Total Exposure Time',
             'uv_pulse_duration_id' => 'UV Pulse Duration',
             'interpulse_duration_id' => 'Inter-pulse Duration',
+            'uv_total_energy_value' => 'UV Total Energy',
         );
     }
 
@@ -142,6 +143,7 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
         $criteria->compare('total_exposure_time_id', $this->total_exposure_time_id, true);
         $criteria->compare('uv_pulse_duration_id', $this->uv_pulse_duration_id);
         $criteria->compare('interpulse_duration_id', $this->interpulse_duration_id);
+        $criteria->compare('uv_total_energy_value', $this->uv_total_energy_value);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,

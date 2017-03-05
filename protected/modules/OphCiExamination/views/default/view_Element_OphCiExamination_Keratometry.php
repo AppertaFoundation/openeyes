@@ -131,16 +131,6 @@
         </div>
         <div class="row">
             <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_posterior_k2_value')?>:
-            </div>
-            <div class="large-5 column data-value">
-                <?php
-                    echo $element->right_posterior_k2_value;
-                    ?>
-            </div>
-        </div>
-        <div class="row">
-            <div class="large-6 column data-value">
             <?php echo $element->getAttributeLabel('right_thinnest_point_pachymetry_value')?>:
             </div>
             <div class="large-5 column data-value">
@@ -217,16 +207,6 @@
                     <div class="large-5 column data-value">
                         <?php
                         echo $element->left_kmax_value;
-                        ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-6 column data-value">
-                        <?php echo $element->getAttributeLabel('left_posterior_k2_value')?>:
-                    </div>
-                    <div class="large-5 column data-value">
-                        <?php
-                        echo $element->left_posterior_k2_value;
                         ?>
                     </div>
                 </div>
