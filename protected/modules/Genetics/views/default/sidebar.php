@@ -9,9 +9,12 @@
             'Studies' => Yii::app()->createUrl('/Genetics/study/list'),
             'Genes' => Yii::app()->createUrl('/Genetics/gene/list'),
         );
+
+        $current_uri = '/' . $this->module->id . '/' . $this->id . '/' . $this->action->id;
+
         foreach ($sidebarLinks as $title => $uri) { ?>
-            <li<?php if (Yii::app()->getController()->action->id == $uri) { ?> class="selected"<?php } ?>>
-                <?php if (Yii::app()->getController()->action->id == $uri) { ?>
+            <li<?php if ($current_uri == $uri) { ?> class="selected"<?php } ?>>
+                <?php if ($current_uri == $uri) { ?>
                     <?php echo CHtml::link($title, array($uri), array('class' => 'selected')) ?>
                 <?php } else { ?>
                     <?php echo CHtml::link($title, array($uri)) ?>
