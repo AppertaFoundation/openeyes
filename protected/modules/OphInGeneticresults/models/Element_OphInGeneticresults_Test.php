@@ -114,7 +114,7 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
             'amino_acid_change' => 'Amino acid change',
             'assay' => 'Assay',
             'effect_id' => 'Effect',
-            'homo' => 'Homo',
+            'homo' => 'Homozygosity',
             'result' => 'Result',
             'result_date' => 'Result date',
             'external_source_id' => 'External Source',

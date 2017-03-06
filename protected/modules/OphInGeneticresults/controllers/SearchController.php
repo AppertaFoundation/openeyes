@@ -75,6 +75,7 @@ class SearchController extends BaseController
         $tests = array();
         $pages = 0;
         $page = 0;
+        $total_items = null;
 
         if (@$_GET['search']) {
             $where = 'e.deleted = :zero and ep.deleted = :zero';
@@ -212,10 +213,15 @@ class SearchController extends BaseController
             }
         }
 
+        $pagination = new CPagination($total_items);
+        $pagination->setPageSize($this->items_per_page);
+
+
         $this->render('geneticResults', array(
             'genetic_tests' => $tests,
             'page' => $page,
             'pages' => $pages,
+            'pagination' => $pagination
         ));
     }
 }

@@ -201,16 +201,27 @@
 						</tr>
 					<?php }?>
 				</tbody>
-				<tfoot class="pagination-container">
-					<tr>
-						<td colspan="8">
-							<?php echo $this->renderPartial('_pagination', array(
-                                'page' => $page,
-                                'pages' => $pages,
-                            ))?>
-						</td>
-					</tr>
-				</tfoot>
+                <tfoot class="pagination-container">
+                <tr>
+                    <td colspan="3">
+                        <?php $to = ($pagination->getItemCount() < $pagination->limit) ? $pagination->getItemCount() : ($pagination->limit * ($pagination->getCurrentPage()+1)); ?>
+                        Showing <?php echo $pagination->offset + 1; ?> to <?php echo $to; ?> of <?php echo $pagination->getItemCount(); ?>
+                    </td>
+                    <td colspan="3">
+                        <?php
+                        $this->widget('CLinkPager', array(
+                            'currentPage' => $pagination->getCurrentPage(),
+                            'itemCount' => $pagination->getItemCount(),
+                            'pageSize' => $pagination->getPageSize(),
+                            'maxButtonCount' => 10,
+                            'header'=> '',
+                            'htmlOptions'=>array('class'=>'pagination right'),
+                            'selectedPageCssClass' => 'current'
+                        ));
+                        ?>
+                    </td>
+                </tr>
+                </tfoot>
 			</table>
 		<?php }?>
 	</form>
