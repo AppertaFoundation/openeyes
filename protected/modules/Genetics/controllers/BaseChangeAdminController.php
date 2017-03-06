@@ -10,9 +10,14 @@ class BaseChangeAdminController extends BaseAdminController
     /**
      * @var string
      */
-    public $layout = '//layouts/admin';
+    public $layout = 'genetics';
 
     protected $itemsPerPage = 100;
+
+    public function accessRules()
+    {
+        return array(array('allow', 'roles' => array('Genetics Admin')));
+    }
 
     /**
      * Lists procedures.

@@ -1,3 +1,33 @@
+<?php $current_uri = '/' . $this->module->id . '/' . $this->id . '/' . $this->action->id; ?>
+
+<?php if($this->checkAccess('Genetics Admin')): ?>
+<div class="box genetics panel">
+    <h2>Admin</h2>
+    <ul class="navigation">
+    <?php
+        $sidebarLinks = array(
+            'Amino Acid C. Type' => Yii::app()->createUrl('/Genetics/aminoAcidChangeAdmin/list'),
+            'Base Change Type' => Yii::app()->createUrl('/Genetics/baseChangeAdmin/list'),
+
+            'Genetic Results Method' => '/OphInGeneticresults/methodAdmin/list',
+            'Genetic Results Effect' => '/OphInGeneticresults/effectAdmin/list',
+            'External Source' => '/OphInGeneticresults/externalSourceAdmin/list',
+        );
+
+        foreach ($sidebarLinks as $title => $uri) { ?>
+            <li<?php if ($current_uri == $uri) { ?> class="selected"<?php } ?>>
+                <?php if ($current_uri == $uri) { ?>
+                    <?php echo CHtml::link($title, array($uri), array('class' => 'selected')) ?>
+                <?php } else { ?>
+                    <?php echo CHtml::link($title, array($uri)) ?>
+                <?php } ?>
+            </li>
+    <?php } ?>
+    </ul>
+</div>
+
+<?php endif; ?>
+
 <div class="box genetics panel">
     <h2>Menu</h2>
     <ul class="navigation">

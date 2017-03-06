@@ -10,9 +10,14 @@ class MethodAdminController extends BaseAdminController
     /**
      * @var string
      */
-    public $layout = '//layouts/admin';
+    public $layout = '//../modules/genetics/views/layouts/genetics';
 
     protected $itemsPerPage = 100;
+
+    public function accessRules()
+    {
+        return array(array('allow', 'roles' => array('Genetics Admin')));
+    }
 
     /**
      * Lists OphInGeneticresults_Test_Method.

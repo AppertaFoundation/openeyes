@@ -79,10 +79,7 @@ return array(
                 'Leaflets' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/Leaflets/list'),
                 'Leaflet Subspecialty and Firm Assignment' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/LeafletSubspecialtyFirm/list'),
             ),
-            'Genetics' => array(
-                'Base Change Type' => '/oeadmin/baseChangeAdmin/list',
-                'Amino Acid Change Type' => '/oeadmin/aminoAcidChangeAdmin/list',
-            )
+
         ),
     ),
 );
