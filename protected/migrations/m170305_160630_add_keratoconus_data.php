@@ -560,6 +560,48 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
             'defaultChoice' => 0,
         ));
 
+        $this->insert('element_type', array(
+            'name' => 'Specular Microscopy',
+            'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy',
+            'event_type_id' => 27,
+            'display_order' => 5,
+        ));
+        $this->insert('element_type', array(
+            'name' => 'Keratometry',
+            'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry',
+            'event_type_id' => 27,
+            'display_order' => 6,
+        ));
+        $this->insert('element_type', array(
+            'name' => 'Slit Lamp',
+            'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp',
+            'event_type_id' => 27,
+            'display_order' => 7,
+        ));
+        $this->insert('element_type', array(
+            'name' => 'CXL History',
+            'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History',
+            'event_type_id' => 27,
+            'display_order' => 8,
+        ));
+        $this->insert('element_type', array(
+            'name' => 'CXL (Cross-Linking)',
+            'class_name' => 'Element_OphTrOperationnote_CXL',
+            'event_type_id' => 4,
+            'display_order' => 10,
+            'parent_element_type_id' => 34,
+        ));
+
+
+        $this->insert('episode_summary_item', array(
+            'event_type_id' => 27,
+            'name' => 'Keratometry',
+        ));
+        $this->insert('episode_summary_item', array(
+            'event_type_id' => 27,
+            'name' => 'Keratometry Chart',
+        ));
+
     }
 
 

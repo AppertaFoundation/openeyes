@@ -103,7 +103,7 @@
                     <?php
                     $uv_irradiance_range_id = OphTrOperationnote_CXL_UV_Irradiance_Range::model()->find('id=?',
                         $element->uv_irradiance_range_id);
-                    echo $uv_irradiance_range_id->name;
+                    echo $uv_irradiance_range_id->name . " mW/cm2";
                     ?>
                 </div>
             </div>
@@ -121,6 +121,16 @@
             </div>
         </div>
         <div class="row">
+            <div class="large-3 column">
+                <h4 class="data-title">
+                    <?php echo CHtml::encode($element->getAttributeLabel('uv_total_energy_value'))?>:
+                </h4>
+                <div class="data-value">
+                    <?php
+                    echo $element->uv_total_energy_value;
+                    ?>
+                </div>
+            </div>
             <div class="large-3 column">
                 <h4 class="data-title">
                     <?php echo CHtml::encode($element->getAttributeLabel('uv_pulse_duration_id'))?>:

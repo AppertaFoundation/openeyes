@@ -15,25 +15,16 @@
 ?>
 <?php if ($chart->hasData()): ?>
 
-    <div class="row">
-        <div class="data-label column large-9"></div>
-        <div class="data-value column large-3">
-            <form action="#OphCiExamination_Episode_VisualAcuityHistory">
-                <label for="va_history_unit_id">Visual Acuity unit</label>
-                <?= CHtml::dropDownList('va_history_unit_id', $va_unit->id, CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(), 'id', 'name'))?>
-            </form>
-        </div>
-    </div>
 
     <div class="row">
         <div class="column large-12">
-            <div id="va-history-chart" class="chart" style="width: 100%; height: 500px"></div>
+            <div id="keratometry-history-chart" class="chart" width="100%" height="500" style="width: 100%; height: 500px"></div>
         </div>
     </div>
     <?= $chart->run(); ?>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#va_history_unit_id').change(function () { this.form.submit(); });
+            $('#keratometry_history_unit_id').change(function () { this.form.submit(); });
         });
     </script>
 <?php else: ?>

@@ -111,11 +111,11 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
             'riboflavin_preparation_id' => 'Riboflavin Preparation',
             'interval_between_drops_id' => 'Interval Between Drops',
             'soak_duration_range_id' => 'Soak Duration',
-            'uv_irradiance_range_id' => 'UV Irradiance',
-            'total_exposure_time_id' => 'Total Exposure Time',
+            'uv_irradiance_range_id' => 'UV Irradiance (mW/cm2)',
+            'total_exposure_time_id' => 'Total Exposure Time (mins)',
             'uv_pulse_duration_id' => 'UV Pulse Duration',
             'interpulse_duration_id' => 'Inter-pulse Duration',
-            'uv_total_energy_value' => 'UV Total Energy',
+            'uv_total_energy_value' => 'UV Total Energy (J/cm2)',
         );
     }
 

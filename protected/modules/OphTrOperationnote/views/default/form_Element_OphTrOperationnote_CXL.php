@@ -65,7 +65,7 @@
     echo $form->dropDownList($element, 'soak_duration_range_id',
         CHtml::listData(OphTrOperationnote_CXL_Soak_Duration::model()->findAll(), 'id', 'name'),
         array('options' => array($default_soak_duration_range_id=>array('selected'=>true))),
-        null, array('field' => 3));?>
+        null, array('field' => 2));?>
 
     <?php
     if(!$element->uv_irradiance_range_id)
@@ -75,8 +75,8 @@
         $default_uv_irradiance_range_id = $element->uv_irradiance_range_id;
     }
     echo $form->dropDownList($element, 'uv_irradiance_range_id',
-        CHtml::listData(OphTrOperationnote_CXL_UV_Irradiance_Range::model()->findAll(), 'id', 'name'),
-        array('options' => array($default_uv_irradiance_range_id=>array('selected'=>true))), null, array('field' => 3));?>
+        CHtml::listData(OphTrOperationnote_CXL_UV_Irradiance_Range::model()->findAll(array('order'=>'display_order')), 'id', 'name'),
+        array('options' => array($default_uv_irradiance_range_id=>array('selected'=>true))), null, array('field' => 1));?>
 
     <?php
     if(!$element->total_exposure_time_id)
@@ -88,7 +88,7 @@
     echo $form->dropDownList($element, 'total_exposure_time_id',
         CHtml::listData(OphTrOperationnote_CXL_Total_Exposure_Time::model()->findAll(), 'id', 'name'),
         array('options' => array($default_total_exposure_time_id=>array('selected'=>true))),
-        null, array('field' => 3));?>
+        null, array('field' => 1));?>
 
     <?php
     if(!$element->uv_pulse_duration_id)
@@ -100,7 +100,9 @@
     echo $form->dropDownList($element, 'uv_pulse_duration_id',
         CHtml::listData(OphTrOperationnote_CXL_UV_Pulse_Duration::model()->findAll(), 'id', 'name'),
         array('options' => array($default_uv_pulse_duration_id=>array('selected'=>true))),
-        null, array('field' => 3));?>
+        null, array('field' => 2));?>
+
+    <?php echo $form->textField($element, 'uv_total_energy_value', array('size'=>10,'maxlength'=>10, 'field' => 2), false, array())?>
 
     <?php
     if(!$element->interpulse_duration_id)
@@ -112,6 +114,6 @@
     echo $form->dropDownList($element, 'interpulse_duration_id',
         CHtml::listData(OphTrOperationnote_CXL_Interpulse_Duration::model()->findAll(), 'id', 'name'),
         array('options' => array($default_interpulse_duration_id=>array('selected'=>true))),
-        null, array('field' => 3));?>
+        null, array('field' => 2));?>
 </div>
 
