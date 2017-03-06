@@ -92,6 +92,15 @@ class GeneticsStudy extends BaseActiveRecordVersioned
     }
 
     /**
+     * This is here because of the Crud class cannot accept parameters, to format date, or any other solution, really....
+     * @return string
+     */
+    public function getFormattedEndDate()
+    {
+        return Helper::convertMySQL2NHS($this->end_date);
+    }
+
+    /**
      * @return bool
      */
     public function beforeSave()

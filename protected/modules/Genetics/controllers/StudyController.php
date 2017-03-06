@@ -37,31 +37,36 @@ class StudyController extends BaseModuleController
     }
 
     /**
-     * @param bool $id
+     * Edits or adds a Procedure.
+     *
+     * @param bool|int $id
      *
      * @throws CHttpException
-     * @throws Exception
      */
     public function actionEdit($id = false)
     {
-        $admin = new Crud(GeneticsStudy::model(), $this);
+        $admin = new Admin(GeneticsStudy::model(), $this);
         if ($id) {
             $admin->setModelId($id);
         }
-
-        $admin->setModelDisplayName('Study');
+        $admin->setModelDisplayName('Genetics Study');
         $admin->setEditFields(array(
-            'name' => 'label',
-            'end_date' => 'label',
-            'subjects' => array(
-                'widget' => 'CustomView',
-                'viewName' => '/default/subjectList',
-                'viewArguments' => array(
-                    'subjects' => $admin->getModel()->subjects,
-                ),
+            'name' => 'text',
+            'criteria' => 'textarea',
+            'end_date' => 'date',
+            'proposers' => array(
+                'widget' => 'MultiSelectList',
+                'relation_field_id' => 'id',
+                'label' => 'Investigator',
+                'options' => CHtml::encodeArray(CHtml::listData(
+                    User::model()->findAll(),
+                    'id',
+                    function ($model) {
+                        return $model->fullName;
+                    }
+                )),
             ),
         ));
-
         $admin->editModel();
     }
 
@@ -76,13 +81,22 @@ class StudyController extends BaseModuleController
         $admin->setListFields(array(
             'id',
             'name',
-            'end_date',
+            'formattedEndDate',
         ));
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         
         $display_buttons = $this->checkAccess('TaskEditGeneticStudy');
         $admin->listModel($display_buttons);
+    }
+
+    /**
+     * Deletes rows for the model.
+     */
+    public function actionDelete()
+    {
+        $admin = new Admin(GeneticsStudy::model(), $this);
+        $admin->deleteModel();
     }
     
     /**

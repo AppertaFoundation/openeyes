@@ -22,12 +22,8 @@ return array(
             ),
         ),
         'admin_structure' => array(
-            'Studies' => array(
-                'Genetics' => '/Genetics/studyAdmin/list',
-            ),
         ),
         'admin_menu' => array(
-
         ),
         'additional_rulesets' => array(
             array(

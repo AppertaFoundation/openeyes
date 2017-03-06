@@ -77,7 +77,7 @@ class SubjectController extends BaseModuleController
         if ($id) {
             $admin->setModelId($id);
             $this->renderPatientPanel = true;
-            $this->patient = $admin->getModel()->patient;
+            $this->patient = isset($admin->getModel()->patient) ? $admin->getModel()->patient : null;
         }
 
         $admin->setModelDisplayName('Genetics Subject');
