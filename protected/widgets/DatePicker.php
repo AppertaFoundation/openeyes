@@ -21,9 +21,12 @@ class DatePicker extends BaseFieldWidget
     public $name;
     public $options = array();
 
+    /**
+     * Run the widget
+     */
     public function run()
     {
-        if (empty($_POST)) {
+        if (!Yii::app()->request->isPostRequest) {
             if ($this->element->{$this->field}) {
                 if (preg_match('/^[0-9]+ [a-zA-Z]+ [0-9]+$/', $this->element->{$this->field})) {
                     $this->value = $this->element->{$this->field};
@@ -31,7 +34,7 @@ class DatePicker extends BaseFieldWidget
                     $this->value = date('j M Y', strtotime($this->element->{$this->field}));
                 }
             } else {
-                if (@$this->htmlOptions['null']) {
+                if (array_key_exists('null', $this->htmlOptions) && $this->htmlOptions['null']) {
                     $this->value = null;
                 } else {
                     $this->value = date('j M Y');
@@ -39,16 +42,20 @@ class DatePicker extends BaseFieldWidget
             }
         } else {
             if ($this->name) {
-                $this->value = $this->getPOSTValue($this->name);
+                $this->value = $this->getPostValue($this->name);
             } else {
-                $this->value = $_POST[get_class($this->element)][$this->field];
+                $this->value = Yii::app()->request->getPost(get_class($this->element))[$this->field];
             }
         }
 
         parent::run();
     }
 
-    public function getPOSTValue($name)
+    /**
+     * @param $name
+     * @return mixed
+     */
+    protected function getPostValue($name)
     {
         $data = $_POST;
         foreach (explode('[', $name) as $i => $key) {

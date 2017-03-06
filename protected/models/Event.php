@@ -22,14 +22,14 @@
  *
  * The followings are the available columns in table 'event':
  *
- * @property string $id
- * @property string $episode_id
- * @property string $user_id
- * @property string $event_type_id
+ * @property string    $id
+ * @property string    $episode_id
+ * @property string    $user_id
+ * @property string    $event_type_id
  *
  * The followings are the available model relations:
- * @property Episode $episode
- * @property User $user
+ * @property Episode   $episode
+ * @property User      $user
  * @property EventType $eventType
  */
 class Event extends BaseActiveRecordVersioned
@@ -90,10 +90,11 @@ class Event extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('event_type_id, event_date', 'required'),
+            array('parent_id', 'safe'),
             array('episode_id, event_type_id', 'length', 'max' => 10),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, episode_id, event_type_id, created_date, event_date', 'safe', 'on' => 'search'),
+            array('id, episode_id, event_type_id, created_date, event_date, parent_id', 'safe', 'on' => 'search'),
             array('event_date', 'OEDateValidatorNotFuture'),
         );
     }
@@ -111,6 +112,8 @@ class Event extends BaseActiveRecordVersioned
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'issues' => array(self::HAS_MANY, 'EventIssue', 'event_id'),
+            'parent' => array(self::BELONGS_TO, 'Event', 'parent_id'),
+            'children' => array(self::HAS_MANY, 'Event', 'parent_id'),
         );
     }
 
@@ -412,10 +415,10 @@ class Event extends BaseActiveRecordVersioned
     /**
      * Sets various default properties for audit calls on this event.
      *
-     * @param $target
-     * @param $action
-     * @param null $data
-     * @param bool $log
+     * @param       $target
+     * @param       $action
+     * @param null  $data
+     * @param bool  $log
      * @param array $properties
      */
     public function audit($target, $action, $data = null, $log = false, $properties = array())
@@ -567,7 +570,7 @@ class Event extends BaseActiveRecordVersioned
 
     /**
      * @param EventType $event_type
-     * @param Patient $patient
+     * @param Patient   $patient
      *
      * @return Event[]
      */
@@ -577,6 +580,7 @@ class Event extends BaseActiveRecordVersioned
         $criteria->compare('patient_id', $patient->id);
         $criteria->compare('event_type_id', $event_type->id);
         $criteria->order = 'event_date asc';
+
         return Event::model()->with('episode')->findAll($criteria);
     }
 }

@@ -757,7 +757,11 @@ class BaseEventTypeController extends BaseModuleController
 
                         $transaction->commit();
 
-                        $this->redirect(array($this->successUri.$this->event->id));
+                        if ($this->event->parent_id) {
+                            $this->redirect(Yii::app()->createUrl('/'.$this->event->parent->eventType->class_name.'/default/view/'.$this->event->parent_id));
+                        } else {
+                            $this->redirect(array($this->successUri.$this->event->id));
+                        }
                     } else {
                         throw new Exception('could not save event');
                     }
@@ -892,7 +896,11 @@ class BaseEventTypeController extends BaseModuleController
 
                         OELog::log("Updated event {$this->event->id}");
                         $transaction->commit();
-                        $this->redirect(array('default/view/'.$this->event->id));
+                        if ($this->event->parent_id) {
+                            $this->redirect(Yii::app()->createUrl('/'.$this->event->parent->eventType->class_name.'/default/view/'.$this->event->parent_id));
+                        } else {
+                            $this->redirect(array('default/view/'.$this->event->id));
+                        }
                     } else {
                         throw new Exception('Unable to save edits to event');
                     }
@@ -1114,7 +1122,7 @@ class BaseEventTypeController extends BaseModuleController
         }
         return $elements;
     }
-    
+
     /**
      * Set the attributes of the given $elements from the given structured array.
      * Returns any validation errors that arise.
@@ -1160,10 +1168,13 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
 
-        //event date
+        //event date and parent validation
         if (isset($data['Event']['event_date'])) {
             $event = $this->event;
             $event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
+            if(isset($data['Event']['parent_id'])){
+                $event->parent_id = $data['Event']['parent_id'];
+            }
             if (!$event->validate()) {
                 foreach ($event->getErrors() as $errormsgs) {
                     foreach ($errormsgs as $error) {

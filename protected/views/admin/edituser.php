@@ -18,7 +18,7 @@
  */
 ?>
 <div class="box admin">
-    <h2>Edit user</h2>
+  <h2>Edit user</h2>
     <?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -64,9 +64,14 @@
     <?php echo $form->passwordField($user, 'password', array('autocomplete' => Yii::app()->params['html_autocomplete']),
         array('empty' => '', array('empty' => '- None -'))) ?>
     <?php echo $form->passwordChangeField($user, 'Confirm', 'User[password_repeat]') ?>
-    <?php echo $form->multiSelectList($user, 'User[roles]', 'roles', 'name',
-        CHtml::listData(Yii::app()->authManager->getRoles(), 'name', 'name'), array(),
-        array('label' => 'Roles', 'empty' => '-- Add --'), false, false, null, false, false, array(), 'AuthItem'); ?>
+    <?php echo $form->multiSelectList($user,
+        'User[roles]',
+        'roles',
+        'name',
+        CHtml::listData(Yii::app()->authManager->getRoles(), 'name', 'name'),
+        array(),
+        array('label' => 'Roles', 'empty' => '-- Add --')
+    ); ?>
     <?php echo $form->formActions(); ?>
     <?php $this->endWidget() ?>
 </div>

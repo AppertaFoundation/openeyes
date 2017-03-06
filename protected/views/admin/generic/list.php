@@ -166,6 +166,7 @@ if (!isset($uniqueid)) {
                         )->toHtml() ?>
                         <?php echo $this->renderPartial('//admin/_pagination', array(
                             'pagination' => $admin->getPagination(),
+                            'hide_links' => (!$admin->getSearch()->isDefaultResults() && !$admin->getSearch()->isSearching())
                         )) ?>
                     </td>
                 </tr>
