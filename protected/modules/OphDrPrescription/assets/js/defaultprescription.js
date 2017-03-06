@@ -51,19 +51,19 @@ $('body').delegate('#clear_prescription', 'click', function () {
   return false;
 });
 
-// Update drug route options for selected route
+// Update drug route options for selected route if not admin page
 $('body').delegate('select.drugRoute', 'change', function () {
-  var selected = $(this).children('option:selected');
-  if (selected.val().length) {
+    var selected = $(this).children('option:selected');
     var options_td = $(this).parent().next();
-    var key = $(this).closest('tr').attr('data-key');
-    $.get(baseUrl + "/OphDrPrescription/Default/RouteOptions", {
-      key: key,
-      route_id: selected.val()
-    }, function (data) {
-      options_td.html(data);
-    });
-  }
+    if(options_td.attr("class")=='route_option_cell'){
+        var key = $(this).closest('tr').attr('data-key');
+        $.get(baseUrl + "/OphDrPrescription/Default/RouteOptions", {
+          key: key,
+          route_id: selected.val()
+        }, function (data) {
+          options_td.html(data);
+        });
+    }
   return false;
 });
 
@@ -88,7 +88,7 @@ $('#prescription_items').delegate('a.taperItem:not(.processing)', 'click', funct
   var key = row.attr('data-key');
   var last_row = $('#prescription_items tr[data-key="' + key + '"]').last();
   var taper_key = (last_row.attr('data-taper')) ? parseInt(last_row.attr('data-taper')) + 1 : 0;
-
+  var colspanNum = (controllerName == 'DefaultController') ? 2 : 0;
   // Clone item fields to create taper row
   var dose_input = row.find('td.prescriptionItemDose input').first().clone();
   dose_input.attr('name', dose_input.attr('name').replace(/\[dose\]/, "[taper][" + taper_key + "][dose]"));
@@ -105,7 +105,7 @@ $('#prescription_items').delegate('a.taperItem:not(.processing)', 'click', funct
   // Insert taper row
   var odd_even = (row.hasClass('odd')) ? 'odd' : 'even';
   var new_row = $('<tr data-key="' + key + '" data-taper="' + taper_key + '" class="prescription-tapier ' + odd_even + '"></tr>');
-  new_row.append($('<td class="prescription-label"><span>then</span></td>'), $('<td></td>').append(dose_input), $('<td colspan="2"></td>'), $('<td></td>').append(frequency_input), $('<td></td>').append(duration_input), $('<td class="prescriptionItemActions"><a class="removeTaper"  href="#">Remove</a></td>'));
+  new_row.append($('<td class="prescription-label"><span>then</span></td>'), $('<td></td>').append(dose_input), $('<td colspan="'+colspanNum+'"></td>'), $('<td></td>').append(frequency_input), $('<td></td>').append(duration_input), $('<td class="prescriptionItemActions"><a class="removeTaper"  href="#">Remove</a></td>'));
   last_row.after(new_row);
 
   return false;

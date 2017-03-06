@@ -166,21 +166,30 @@ class DefaultController extends BaseEventTypeController
             $params = array(':subspecialty_id' => $subspecialty_id, ':status_name' => $status_name);
             
             $set = DrugSet::model()->find(array(
-                    'condition' => 'subspecialty_id = :subspecialty_id AND name = :status_name',
-                    'params' => $params,
-                ));
-
+                'condition' => 'subspecialty_id = :subspecialty_id AND name = :status_name',
+                'params' => $params,
+            ));
+            
             if ($set) {
                 foreach ($set->items as $item) {
                     $item_model = new OphDrPrescription_Item();
                     $item_model->drug_id = $item->drug_id;
                     $item_model->loadDefaults();
-                    $item_model->attributes = $item->getAttributes();
+                    $attr = $item->getAttributes();
+                    unset($attr['drug_set_id']);
+                    $item_model->attributes = $attr;
+                    
                     $item_model->tapers = $item->tapers;
+                    
+                    if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
+                        if ($apieye = $api->getLastEye($this->patient)) {
+                            $item_model->route_option_id = $apieye;
+                        }
+                    }
+                    
                     $items[] = $item_model;
                 }
             }
-
             $element->items = $items;
         }
     }
@@ -486,7 +495,7 @@ class DefaultController extends BaseEventTypeController
                 // Source is an drug set item which contains frequency and duration data
                 $item->drug_id = $source->drug_id;
                 $item->loadDefaults();
-                foreach (array('duration_id', 'frequency_id', 'dose', 'route_id', 'route_option_id') as $field) {
+                foreach (array('duration_id', 'frequency_id', 'dose', 'route_id') as $field) {
                     if ($source->$field) {
                         $item->$field = $source->$field;
                     }
