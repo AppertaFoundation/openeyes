@@ -79,8 +79,6 @@ $pedigree = new Pedigree();
       ) ?>
 
       <?php $form->textField($element, 'exon', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php $form->textField($element, 'prime_rf', array(), array(), array('label' => 3, 'field' => 3)) ?>
-      <?php $form->textField($element, 'prime_rr', array(), array(), array('label' => 3, 'field' => 3)) ?>
       <?php $form->dropDownList(
           $element,
           'base_change_id',

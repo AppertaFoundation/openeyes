@@ -125,34 +125,6 @@
     <div class="row data-row">
       <div class="large-2 column">
         <div class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('prime_rf')) ?>
-        </div>
-      </div>
-      <div class="large-10 column end">
-        <div class="data-value">
-            <?php echo CHtml::encode($element->prime_rf) ?>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="element-data">
-    <div class="row data-row">
-      <div class="large-2 column">
-        <div class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('prime_rr')) ?>
-        </div>
-      </div>
-      <div class="large-10 column end">
-        <div class="data-value">
-            <?php echo CHtml::encode($element->prime_rr) ?>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="element-data">
-    <div class="row data-row">
-      <div class="large-2 column">
-        <div class="data-label">
             <?php echo CHtml::encode($element->getAttributeLabel('base_change_id')) ?>
         </div>
       </div>
