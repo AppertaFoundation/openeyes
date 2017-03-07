@@ -22,11 +22,11 @@ class PedigreeController extends BaseModuleController
             array(
                 'allow',
                 'actions' => array('Edit', 'EditStudyStatus'),
-                'roles' => array('OprnEditPedigree'),
+                'roles' => array('TaskEditPedigreeData','OprnEditPedigree'),
             ),
             array(
                 'allow',
-                'actions' => array('List'),
+                'actions' => array('List', 'View'),
                 'roles' => array('OprnSearchPedigree'),
             ),
             array(
@@ -46,6 +46,12 @@ class PedigreeController extends BaseModuleController
         Yii::app()->assetManager->registerCssFile('/components/font-awesome/css/font-awesome.css', null, 10);
 
         return parent::beforeAction($action);
+    }
+
+    public function actionView($id)
+    {
+        $pedigree = $this->loadModel($id);
+        $this->render('view', array('model' => $pedigree));
     }
 
     /**
@@ -124,6 +130,7 @@ class PedigreeController extends BaseModuleController
     public function actionList()
     {
         $admin = new Crud(Pedigree::model(), $this);
+        $admin->setListFieldsAction('view');
         $admin->setListFields(array(
             'id',
             'inheritance.name',
@@ -145,7 +152,8 @@ class PedigreeController extends BaseModuleController
         $admin->getSearch()->addSearchItem('consanguinity', array('type' => 'boolean'));
         $admin->getSearch()->addSearchItem('disorder_id', array('type' => 'disorder'));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        $admin->listModel();
+        $display_buttons = $this->checkAccess('OprnEditPedigree');
+        $admin->listModel($display_buttons);
     }
 
     /**
@@ -170,5 +178,21 @@ class PedigreeController extends BaseModuleController
                 'disorder' => $pedigree->disorder->term,
             )
         );
+    }
+    
+    /**
+     * Returns the data model based on the primary key given in the GET variable.
+     * If the data model is not found, an HTTP exception will be raised.
+     *
+     * @param int $id the ID of the model to be loaded
+     */
+    public function loadModel($id)
+    {
+        $model = Pedigree::model()->findByPk((int) $id);
+        if ($model === null) {
+            throw new CHttpException(404, 'The requested page does not exist.');
+        }
+
+        return $model;
     }
 }

@@ -1,6 +1,6 @@
-/** Visual Fields module styles */
+<?php
 /**
- * OpenEyes
+ * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
@@ -9,33 +9,37 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-/* line 17, ../sass/components/_event.scss */
-.event {
-  border-color: #a5a0a9;
-}
-/* line 19, ../sass/components/_event.scss */
-.event .event-content {
-  background-image: url('../img/watermark.png?1486988898');
-}
-/* line 22, ../sass/components/_event.scss */
-.event .event-title {
-  background-image: url('../img/medium.png?1486988898');
-}
-
-/* line 22, ../sass/module.scss */
-.OphInVisualfields_field_image_wrapper {
-  font-size: 14px;
-  text-align: center;
-}
-
-/* line 27, ../sass/module.scss */
-.OphInVisualfields_field_image img {
-  padding-bottom: 5px;
-}
+?>
+<div class="admin box">
+    <div class="row">
+        <div class="large-10 column"><h2>View Gene</h2></div>
+        <div class="large-2 column right">
+            <?php if( $this->checkAccess('OprnEditGene') ): ?>
+                <a href="/Genetics/gene/edit/<?php echo $model->id; ?>" class="button small right" id="gene_edit">Edit</a>
+            <?php endif; ?>
+        </div>
+    </div>
+    
+    <?php $this->widget('zii.widgets.CDetailView', array(
+        'data'=>$model,
+        'htmlOptions' => array('class'=>'detailview'),
+        'attributes'=>array(
+            'name',
+            'location',
+            array(
+                'label' => $model->getAttributeLabel('priority'),
+                'value' => ($model->priority ? 'Yes' : 'No'),
+            ),
+            'description',
+            'details',
+            'refs',
+            
+        ),
+        ));

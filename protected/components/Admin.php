@@ -51,6 +51,11 @@ class Admin
      * @var array
      */
     protected $listFields = array();
+    
+    /**
+     * @var type 
+     */
+    protected $listFieldsAction = 'edit';
 
     /**
      * @var array
@@ -231,6 +236,22 @@ class Admin
     public function setListFields($listFields)
     {
         $this->listFields = $listFields;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getListFieldsAction()
+    {
+        return $this->listFieldsAction;
+    }
+
+    /**
+     * @param string $listFieldsAction
+     */
+    public function setListFieldsAction($listFieldsAction)
+    {
+        $this->listFieldsAction = $listFieldsAction;
     }
 
     /**
@@ -441,7 +462,7 @@ class Admin
      * @throws CHttpException
      * @throws Exception
      */
-    public function editModel($redirect = true)
+    public function editModel($redirect = true, $partial = false)
     {
         $this->assetManager->registerScriptFile('/js/oeadmin/edit.js');
         $errors = array();
@@ -493,7 +514,12 @@ class Admin
                 }
             }
         }
-        $this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
+        if($partial === false){
+            $this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
+        } else {
+            $this->controller->renderPartial($this->editTemplate, array('admin' => $this, 'errors' => $errors));
+        }
+        
     }
 
     /**
