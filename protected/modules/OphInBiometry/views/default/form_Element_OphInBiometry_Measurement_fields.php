@@ -14,6 +14,7 @@
                         ?>
 						<input type="text" id="Element_OphInBiometry_Measurement_axial_length_<?php echo $side; ?>" 
                                name="Element_OphInBiometry_Measurement[axial_length_<?php echo $side; ?>]" 
+                               placeholder='0.00'
                                value="<?php echo $element->{"axial_length_$side"}?>"><span class="field-info">mm</span>
 						<?php
 
@@ -35,6 +36,7 @@
                         ?>
 						<input type="text" id="Element_OphInBiometry_Measurement_snr_<?php echo $side; ?>" 
                                name="Element_OphInBiometry_Measurement[snr_<?php echo $side; ?>]" 
+                               placeholder='0.00'
                                value="<?php echo $element->{"snr_$side"}?>">
 						<?php
 
@@ -60,6 +62,7 @@
                         ?>
 					<input type="text" id="Element_OphInBiometry_Measurement_k1_<?php echo $side; ?>" 
                            name="Element_OphInBiometry_Measurement[k1_<?php echo $side; ?>]" 
+                           placeholder='0.00'
                            value="<?php echo $element->{"k1_$side"}?>"><span class="field-info">D</span>
 						<?php
 
@@ -90,6 +93,7 @@
                         ?>
 						<input type="text" id="Element_OphInBiometry_Measurement_axis_k1_<?php echo $side; ?>" 
                                name="Element_OphInBiometry_Measurement[axis_k1_<?php echo $side; ?>]" 
+                               placeholder='0.00'
                                value="<?php echo $element->{"axis_k1_$side"}?>">&deg;
 						<?php
 
@@ -112,9 +116,11 @@
                         ?>
 					<input type="text" disabled id="input_Element_OphInBiometry_Measurement_delta_k_<?php echo $side; ?>" 
                            name="input_Element_OphInBiometry_Measurement[delta_k_<?php echo $side; ?>]" 
+                           placeholder='0.00'
                            value="<?php echo $element->{"delta_k_$side"}?>"><span class="field-info">D</span>
 					<input type="hidden" id="Element_OphInBiometry_Measurement_delta_k_<?php echo $side; ?>" 
                            name="Element_OphInBiometry_Measurement[delta_k_<?php echo $side; ?>]" 
+                           placeholder='0.00'
                            value="<?php echo $element->{"delta_k_$side"}?>">
 						<?php
 
@@ -144,9 +150,11 @@
                         ?>
 						<input type="text" disabled id="input_Element_OphInBiometry_Measurement_delta_k_axis_<?php echo $side; ?>" 
                                name="input_Element_OphInBiometry_Measurement[delta_k_axis_<?php echo $side; ?>]" 
+                               placeholder='0.00'
                                value="<?php echo $element->{"delta_k_axis_$side"}?>">&deg;
 						<input type="hidden" id="Element_OphInBiometry_Measurement_delta_k_axis_<?php echo $side; ?>" 
                                name="Element_OphInBiometry_Measurement[delta_k_axis_<?php echo $side; ?>]" 
+                               placeholder='0.00'
                                value="<?php echo $element->{"delta_k_axis_$side"}?>">
 						<?php
 
@@ -168,9 +176,10 @@
                     if ($this->is_auto) {
                         echo '<span class="readonly-box">'.$element->{"k2_$side"}.'</span><span class="field-info">D</span>';
                     } else { ?>
-						<input type="text" id="Element_OphInBiometry_Measurement_k2_<?php echo $side;
-                        ?>" name="Element_OphInBiometry_Measurement[k2_<?php echo $side;
-                        ?>]" value="<?php echo $element->{"k2_$side"}?>"><span class="field-info">D</span>
+						<input type="text" id="Element_OphInBiometry_Measurement_k2_<?php echo $side;?>" 
+						    name="Element_OphInBiometry_Measurement[k2_<?php echo $side;?>]" 
+						    placeholder='0.00'
+						    value="<?php echo $element->{"k2_$side"}?>"><span class="field-info">D</span>
 					<?php } ?>
 				</div>
 				<div class="large-1 column">
@@ -194,7 +203,8 @@
                     } else {
                         ?>
 						<input type="text" id="Element_OphInBiometry_Measurement_k2_axis_<?php echo $side; ?>" 
-                               name="Element_OphInBiometry_Measurement[k2_axis_<?php echo $side; ?>]" 
+                               name="Element_OphInBiometry_Measurement[k2_axis_<?php echo $side; ?>]"
+                               placeholder='0.00' 
                                value="<?php echo $element->{"k2_axis_$side"}?>">&deg;
 						<?php
                     }
@@ -212,6 +222,7 @@
                         ?>
 						<input type="text" id="Element_OphInBiometry_Measurement_acd_<?php echo $side; ?>" 
                                name="Element_OphInBiometry_Measurement[acd_<?php echo $side; ?>]" 
+                               placeholder='0.00'
                                value="<?php echo $element->{"acd_$side"}?>"><span class="field-info">mm</span>
 					<?php
 

@@ -38,6 +38,17 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
 {
     public $service;
 
+    
+    /**
+     * set defaults
+     */    
+    public function init(){
+        $this->iol_power_left = null;    
+        $this->iol_power_right = null;
+        $this->predicted_refraction_left = null;
+        $this->predicted_refraction_right = null;
+    }
+
     /**
      * Returns the static model of the specified AR class.
      *

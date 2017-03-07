@@ -292,8 +292,9 @@
     <div id="div_Element_OphInBiometry_Selection_<?php echo $side ?>">
         <?php
         if (!$this->is_auto) {
-            echo $form->textField($element, 'iol_power_'.$side, ($this->is_auto) ? array('readonly' => true) : null, null, array('label' => 4, 'field' => 2));
-            echo $form->textField($element, 'predicted_refraction_'.$side, ($this->is_auto) ? array('readonly' => true) : null, null, array('label' => 4, 'field' => 2));
+            //$element->iol_power_left = null;
+            echo $form->textField($element, 'iol_power_'.$side, ($this->is_auto) ? array('readonly' => true) : array('placeholder' => '0.00'), null, array('label' => 4, 'field' => 2));
+            echo $form->textField($element, 'predicted_refraction_'.$side, ($this->is_auto) ? array('readonly' => true) : array('placeholder' => '0.00'), null, array('label' => 4, 'field' => 2));
         }
         ?>
     </div>
