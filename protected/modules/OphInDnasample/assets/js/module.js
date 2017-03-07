@@ -67,6 +67,17 @@ $(document).ready(function() {
 			dialog.open();
 		});
 	}());
+
+	$('#Element_OphInDnasample_Sample_type_id').on('change',function(){
+		if( $(this).val() == 4 ){ //as 'other'
+			$('#div_Element_OphInDnasample_Sample_other_sample_type').slideDown();
+		}
+		else{
+			$('#div_Element_OphInDnasample_Sample_other_sample_type').slideUp();
+			$('#Element_OphInDnasample_Sample_other_sample_type').val('');
+		}
+	});
+
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }

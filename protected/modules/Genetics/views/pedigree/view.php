@@ -17,6 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php $this->renderPartial('//base/_messages')?>
     <div class="admin box">
         <div class="row">
         <div class="large-10 column"><h2>View Family</h2></div>

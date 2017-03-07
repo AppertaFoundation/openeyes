@@ -75,13 +75,15 @@ class GeneticsPatient extends BaseActiveRecord
     {
         if ($this->isAttributeDirty('studies')) {
             $existing = GeneticsStudy::model()->participatingStudyIds($this);
-            foreach ($this->studies as $study) {
-                if (in_array($study->id, $existing, true)) {
-                    continue;
-                }
-                //New study has been added, make sure that it's possible for the user to propose this.
-                if(!$study->canBeProposedByUser(Yii::app()->user)){
-                    $this->addError($attribute, 'You do not have permission to propose subjects for ' . $study->name);
+            if($this->studies){
+                foreach ($this->studies as $study) {
+                    if (in_array($study->id, $existing, true)) {
+                        continue;
+                    }
+                    //New study has been added, make sure that it's possible for the user to propose this.
+                    if(!$study->canBeProposedByUser(Yii::app()->user)){
+                        $this->addError($attribute, 'You do not have permission to propose subjects for ' . $study->name);
+                    }
                 }
             }
         }

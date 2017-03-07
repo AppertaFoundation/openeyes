@@ -88,7 +88,9 @@ class GeneticsStudy extends BaseActiveRecordVersioned
      */
     public function attributeLabels()
     {
-        return array();
+        return array(
+            'formattedEndDate' => 'End Date'
+        );
     }
 
     /**

@@ -193,7 +193,7 @@ class SubjectController extends BaseModuleController
                         }
                     }
                 }
-
+                Yii::app()->user->setFlash('success', "Patient Saved");
                 $admin->redirect();
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
