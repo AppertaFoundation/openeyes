@@ -66,12 +66,14 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
         return array(
             array('event_id, protocol_id, epithelial_removal_method_id, epithelial_removal_diameter_id, riboflavin_preparation_id,
             interval_between_drops_id, soak_duration_range_id, uv_irradiance_range_id, total_exposure_time_id, uv_pulse_duration_id, 
-            interpulse_duration_id, uv_total_energy_value', 'safe'),
+            interpulse_duration_id, uv_total_energy_value, device_id, iontophoresis_id, iontophoresis_current_value,
+            iontophoresis_duration_value, cxl_comments', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, protocol_id, epithelial_removal_method_id, epithelial_removal_diameter_id, riboflavin_preparation_id,
             interval_between_drops_id, soak_duration_range_id, uv_irradiance_range_id, total_exposure_time_id, uv_pulse_duration_id, 
-            interpulse_duration_id, uv_total_energy_value', 'safe', 'on' => 'search'),
+            interpulse_duration_id, uv_total_energy_value, device_id, iontophoresis_id, iontophoresis_current_value,
+            iontophoresis_duration_value, cxl_comments', 'safe', 'on' => 'search'),
         );
     }
 
@@ -87,6 +89,7 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'epithelial_removal_method' => array(self::BELONGS_TO, 'EpithelialRemovalMethod', 'epithelial_removal_method_id'),
             'protocol' => array(self::BELONGS_TO, 'Protocol', 'protocol_id'),
+            'device' => array(self::BELONGS_TO, 'Device', 'device_id'),
             'epithelial_removal_diameter' => array(self::BELONGS_TO, 'EpithelialRemovalDiameter', 'epithelial_removal_diameter_id'),
             'riboflavin_preparation' => array(self::BELONGS_TO, 'RiboflavinPreparation', 'riboflavin_preparation_id'),
             'interval_between_drops' => array(self::BELONGS_TO, 'IntervalBetweenDrugs', 'interval_between_drops_id'),
@@ -95,6 +98,10 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
             'total_exposure_time' => array(self::BELONGS_TO, 'TotalExposureTime', 'total_exposure_time_id'),
             'uv_pulse_duration' => array(self::BELONGS_TO, 'UVPulseDuration', 'uv_pulse_duration_id'),
             'interpulse_duration' => array(self::BELONGS_TO, 'InterpulseDuration', 'interpulse_duration_id'),
+            'iontophoresis' => array(self::BELONGS_TO, 'Iontophoresis', 'iontophoresis_id'),
+            'iontophoresis_current' => array(self::BELONGS_TO, 'IontophoresisCurrent', 'iontophoresis_current_value'),
+            'iontophoresis_duration' => array(self::BELONGS_TO, 'IontophoresisDuration', 'iontophoresis_duration_value'),
+
         );
     }
 
@@ -106,6 +113,7 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
         return array(
             'id' => 'ID',
             'protocol_id' => 'Protocol',
+            'device_id' => 'Device Used',
             'epithelial_removal_method_id' => 'Epithelial Removal Method',
             'epithelial_removal_diameter_id' => 'Epithelial Removal Diameter',
             'riboflavin_preparation_id' => 'Riboflavin Preparation',
@@ -116,9 +124,12 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
             'uv_pulse_duration_id' => 'UV Pulse Duration',
             'interpulse_duration_id' => 'Inter-pulse Duration',
             'uv_total_energy_value' => 'UV Total Energy (J/cm2)',
+            'iontophoresis_id' => 'Iontophoresis Used?',
+            'iontophoresis_current_value' => 'Iontophoresis Current (mA)',
+            'iontophoresis_duration_value' => 'Iontophoresis Duration (minutes)',
+            'cxl_comments' => 'CXL Comments',
         );
     }
-
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
@@ -134,6 +145,7 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
         $criteria->compare('protocol_id', $this->protocol_id);
+        $criteria->compare('device_id', $this->device_id);
         $criteria->compare('epithelial_removal_method_id', $this->epithelial_removal_method_id);
         $criteria->compare('epithelial_removal_diameter_id', $this->epithelial_removal_diameter_id, true);
         $criteria->compare('riboflavin_preparation_id', $this->riboflavin_preparation_id, true);
@@ -144,6 +156,10 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
         $criteria->compare('uv_pulse_duration_id', $this->uv_pulse_duration_id);
         $criteria->compare('interpulse_duration_id', $this->interpulse_duration_id);
         $criteria->compare('uv_total_energy_value', $this->uv_total_energy_value);
+        $criteria->compare('iontophoresis_id', $this->iontophoresis_id);
+        $criteria->compare('iontophoresis_current_value', $this->iontophoresis_current_value);
+        $criteria->compare('iontophoresis_duration_value', $this->iontophoresis_duration_value);
+        $criteria->compare('cxl_comments', $this->cxl_comments);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,

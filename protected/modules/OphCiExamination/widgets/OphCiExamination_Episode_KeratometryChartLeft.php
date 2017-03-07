@@ -14,12 +14,12 @@
  */
 use OEModule\OphCiExamination\models;
 
-class OphCiExamination_Episode_KeratometryChart extends \EpisodeSummaryWidget
+class OphCiExamination_Episode_KeratometryChartLeft extends \EpisodeSummaryWidget
 {
     public $collapsible = true;
     public $openOnPageLoad = true;
 
-    protected $chart_id = 'keratometry-history-chart';
+    protected $chart_id = 'keratometry-history-left-chart';
     protected $kera_unit_input = 'keratometry_history_unit_id';
 
     protected $kera_axis;
@@ -57,8 +57,9 @@ class OphCiExamination_Episode_KeratometryChart extends \EpisodeSummaryWidget
 
         $chart = $this->createWidget('FlotChart', array('chart_id' => $this->chart_id))
             ->configureXAxis(array('mode' => 'time'))
-            ->configureYAxis( $this->kera_axis, array('position' => 'left', 'min' => 1, 'max' => 150, 'ticks' => array('a' => 0, 'b' => 150)))
-            ->configureSeries('Kmax', array('yaxis' => $this->kera_axis, 'lines' => array('show' => true), 'points' => array('show' => true)))
+            ->configureYAxis( $this->kera_axis, array('position' => 'left', 'min' => 0, 'max' => 180))
+            ->configureYAxis("KmaxY", array('position' => 'right', 'min' => 30, 'max' => 80))
+            ->configureSeries('Kmax', array('yaxis' => "KmaxY", 'lines' => array('show' => true), 'points' => array('show' => true)))
             ->configureSeries('K1', array('yaxis' => $this->kera_axis, 'lines' => array('show' => true), 'points' => array('show' => true)))
             ->configureSeries('K2', array('yaxis' => $this->kera_axis, 'lines' => array('show' => true), 'points' => array('show' => true)));
 
@@ -71,9 +72,9 @@ class OphCiExamination_Episode_KeratometryChart extends \EpisodeSummaryWidget
     public function addData(\FlotChart $chart)
     {
         foreach ($this->event_type->api->getEventsInEpisode($this->episode->patient, $this->episode) as $event) {
-                if (($reading = models\Element_OphCiExamination_Keratometry::model()->findAll('event_id = ' . $event->id))) {
-                    $this->addKeraReading($event, $chart, $reading);
-                }
+            if (($reading = models\Element_OphCiExamination_Keratometry::model()->findAll('event_id = ' . $event->id))) {
+                $this->addKeraReading($event, $chart, $reading);
+            }
         }
     }
 
@@ -84,23 +85,14 @@ class OphCiExamination_Episode_KeratometryChart extends \EpisodeSummaryWidget
      */
     protected function addKeraReading($event, \FlotChart $chart, $reading)
     {
-        $series_name = "Kmax (Right)";
-        $label = "{$series_name}";
-        $chart->addPoint($series_name, Helper::mysqlDate2JsTimestamp($event->event_date), $reading[0]['right_kmax_value'], $label);
-        $series_name = "Kmax (Left)";
-        $label = "{$series_name}";
+        $series_name = "Kmax";
+        $label = "{$series_name} - {$event->event_date}";
         $chart->addPoint($series_name, Helper::mysqlDate2JsTimestamp($event->event_date), $reading[0]['left_kmax_value'], $label);
-        $series_name = "K1 (Right)";
-        $label = "{$series_name}";
-        $chart->addPoint($series_name, Helper::mysqlDate2JsTimestamp($event->event_date), $reading[0]['right_anterior_k1_value'], $label);
-        $series_name = "K1 (Left)";
-        $label = "{$series_name}";
+        $series_name = "K1";
+        $label = "{$series_name} - {$event->event_date}";
         $chart->addPoint($series_name, Helper::mysqlDate2JsTimestamp($event->event_date), $reading[0]['left_anterior_k1_value'], $label);
-        $series_name = "K2 (Right)";
-        $label = "{$series_name}";
-        $chart->addPoint($series_name, Helper::mysqlDate2JsTimestamp($event->event_date), $reading[0]['right_anterior_k2_value'], $label);
-        $series_name = "K2 (Left)";
-        $label = "{$series_name}";
+        $series_name = "K2";
+        $label = "{$series_name} - {$event->event_date}";
         $chart->addPoint($series_name, Helper::mysqlDate2JsTimestamp($event->event_date), $reading[0]['left_anterior_k2_value'], $label);
     }
 }

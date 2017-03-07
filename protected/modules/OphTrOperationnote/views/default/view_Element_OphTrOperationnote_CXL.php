@@ -38,6 +38,17 @@
             </div>
             <div class="large-3 column">
                 <h4 class="data-title">
+                    <?php echo CHtml::encode($element->getAttributeLabel('device_id'))?>:
+                </h4>
+                <div class="data-value">
+                    <?php
+                    $deviceName = OphTrOperationnote_CXL_Device::model()->find('id=?', $element->device_id);
+                    echo $deviceName->name;
+                    ?>
+                </div>
+            </div>
+            <div class="large-3 column">
+                <h4 class="data-title">
                     <?php echo CHtml::encode($element->getAttributeLabel('epithelial_removal_method_id'))?>:
                 </h4>
                 <div class="data-value">
@@ -58,6 +69,38 @@
                     ?>
                 </div>
             </div>
+            <div class="large-3 column">
+                <h4 class="data-title">
+                    <?php echo CHtml::encode($element->getAttributeLabel('iontophoresis_id'))?>:
+                </h4>
+                <div class="data-value">
+                    <?php
+                    $iontophoresis_id = OphTrOperationnote_CXL_Iontophoresis::model()->find('id=?', $element->iontophoresis_id);
+                    echo $iontophoresis_id->name;
+                    ?>
+                </div>
+            </div>
+            <div class="large-3 column">
+                <h4 class="data-title">
+                    <?php echo CHtml::encode($element->getAttributeLabel('iontophoresis_current_value'))?>:
+                </h4>
+                <div class="data-value">
+                    <?php
+                    echo $element->iontophoresis_current_value . ' mA';
+                    ?>
+                </div>
+            </div>
+            <div class="large-3 column">
+                <h4 class="data-title">
+                    <?php echo CHtml::encode($element->getAttributeLabel('iontophoresis_duration_value'))?>:
+                </h4>
+                <div class="data-value">
+                    <?php
+                    echo $element->iontophoresis_duration_value . " minutes";
+                    ?>
+                </div>
+            </div>
+
             <div class="large-3 column">
                 <h4 class="data-title">
                     <?php echo CHtml::encode($element->getAttributeLabel('riboflavin_preparation_id'))?>:
@@ -115,7 +158,7 @@
                     <?php
                     $total_exposure_time_id = OphTrOperationnote_CXL_Total_Exposure_Time::model()->find('id=?',
                         $element->total_exposure_time_id);
-                    echo $total_exposure_time_id->name;
+                    echo $total_exposure_time_id->name . ' minutes';
                     ?>
                 </div>
             </div>
@@ -127,7 +170,7 @@
                 </h4>
                 <div class="data-value">
                     <?php
-                    echo $element->uv_total_energy_value;
+                    echo $element->uv_total_energy_value . ' J/cm2';
                     ?>
                 </div>
             </div>
@@ -161,4 +204,15 @@
 
             </div>
     </div>
+        <div class="row">
+            <div class="large-3 column">
+                <h4 class="data-title">
+                    <?php echo CHtml::encode($element->getAttributeLabel('cxl_comments'))?>:
+                </h4>
+                <div class="data-value">
+                    <?php
+                    echo $element->cxl_comments;
+                    ?>
+                </div>
+            </div>
 </section>

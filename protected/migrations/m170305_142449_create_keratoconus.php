@@ -188,6 +188,7 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'uv_pulse_duration_id' => 'int(10)',
             'interpulse_duration_id' => 'int(10)',
             'uv_total_energy_value' => 'int(10)',
+            'cxl_comments' => 'VARCHAR(1024)',
             'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
             'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
             'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
@@ -440,6 +441,32 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
             'id' => 'int(10) NOT NULL',
             'name' => 'int(10)',
+            'display_order' => 'int(10)',
+            'defaultChoice' => 'int(11)',
+            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+        ),true);
+
+
+        $this->createOETable('ophtroperationnote_cxl_devices', array(
+            'id' => 'pk',
+            'name' => 'VARCHAR(128)',
+            'display_order' => 'int(10)',
+            'defaultChoice' => 'int(11)',
+            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+        ),true);
+
+
+        $this->createOETable('ophtroperationnote_cxl_devices_version', array(
+            'version_id' => 'pk',
+            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+            'id' => 'int(10) NOT NULL',
+            'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
             'defaultChoice' => 'int(11)',
             'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',

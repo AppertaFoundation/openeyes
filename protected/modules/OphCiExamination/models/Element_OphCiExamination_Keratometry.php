@@ -54,6 +54,11 @@ namespace OEModule\OphCiExamination\models;
  * @property dec $left_b-a_index_value
  * @property int $left_keratoconus_stage_id
  *
+ * @property int $left_quality_front
+ * @property int $left_quality_back
+ * @property int $right_quality_front
+ * @property int $right_quality_back
+ *
  * The followings are the available model relations:
  */
 class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
@@ -94,7 +99,9 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
                  tomographer_id, tomographer_scan_quality_id,
                  left_anterior_k1_value, left_axis_anterior_k1_value,
                  left_anterior_k2_value, left_axis_anterior_k2_value, left_kmax_value, 
-                 left_posterior_k2_value, left_thinnest_point_pachymetry_value, left_ba_index_value, keratoconus_stage_id', 'safe'),
+                 left_posterior_k2_value, left_thinnest_point_pachymetry_value, left_ba_index_value,
+                 keratoconus_stage_id, right_quality_front, right_quality_back, left_quality_front, left_quality_back, 
+                 right_cl_removed, left_cl_removed', 'safe'),
 
                 array('right_anterior_k1_value, right_anterior_k2_value, right_kmax_value,  
                     left_anterior_k1_value, left_anterior_k2_value, left_kmax_value',
@@ -119,7 +126,9 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
                  tomographer_id, tomographer_scan_quality_id,
                  left_anterior_k1_value, left_axis_anterior_k1_value,
                  left_anterior_k2_value, left_axis_anterior_k2_value, left_kmax_value, 
-                 left_thinnest_point_pachymetry_value, left_ba_index_value, keratoconus_stage_id', 'safe', 'on' => 'search'),
+                 left_thinnest_point_pachymetry_value, left_ba_index_value, keratoconus_stage_id,
+                 right_quality_front, right_quality_back, left_quality_front, left_quality_back, 
+                 right_cl_removed, left_cl_removed', 'safe', 'on' => 'search'),
         );
     }
 
@@ -141,6 +150,13 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
             'tomographer_id' => array(self::BELONGS_TO, 'ophciexamination_tomographer_device', 'id'),
             'tomographer_scan_quality_id' => array(self::BELONGS_TO, 'ophciexamination_scan_quality', 'id'),
             'keratoconus_stage_id' => array(self::BELONGS_TO, 'ophciexamination_keratoconus_stage', 'id'),
+            'right_quality_front' => array(self::BELONGS_TO, 'ophciexamination_cxl_quality_score', 'id'),
+            'right_quality_back' => array(self::BELONGS_TO, 'ophciexamination_cxl_quality_score', 'id'),
+            'left_quality_front' => array(self::BELONGS_TO, 'ophciexamination_cxl_quality_score', 'id'),
+            'left_quality_back' => array(self::BELONGS_TO, 'ophciexamination_cxl_quality_score', 'id'),
+            'right_cl_removed' => array(self::BELONGS_TO, 'ophciexamination_cxl_cl_removed', 'id'),
+            'left_cl_removed' => array(self::BELONGS_TO, 'ophciexamination_cxl_cl_removed', 'id'),
+
         );
     }
 
@@ -172,6 +188,12 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
             'left_thinnest_point_pachymetry_value' => 'Thinnest Point Pachymetry Value (µm)',
             'left_ba_index_value' => 'B-A Index Value',
             'keratoconus_stage_id' => 'Keratoconus Stage',
+            'right_quality_front' => 'Quality Score - Front',
+            'right_quality_back' => 'Quality Score - Back',
+            'left_quality_front' => 'Quality Score - Front',
+            'left_quality_back' => 'Quality Score - Back',
+            'right_cl_removed' => 'CL Removed?',
+            'left_cl_removed' => 'CL Removed?',
         );
     }
 
@@ -209,6 +231,12 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
         $criteria->compare('left_thinnest_point_pachymetry_value', $this->left_thinnest_point_pachymetry_value, true);
         $criteria->compare('left_ba_index_value', $this->left_ba_index_value, true);
         $criteria->compare('keratoconus_stage_id', $this->keratoconus_stage_id, true);
+        $criteria->compare('right_quality_front', $this->right_quality_front, true);
+        $criteria->compare('right_quality_back', $this->right_quality_back, true);
+        $criteria->compare('left_quality_front', $this->left_quality_front, true);
+        $criteria->compare('left_quality_back', $this->left_quality_back, true);
+        $criteria->compare('right_cl_removed', $this->right_cl_removed, true);
+        $criteria->compare('left_cl_removed', $this->left_cl_removed, true);
 
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,

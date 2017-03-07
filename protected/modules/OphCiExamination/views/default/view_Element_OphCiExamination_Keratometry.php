@@ -149,6 +149,47 @@
                 ?>
             </div>
         </div>
+            <div class="row">
+                <div class="large-6 column data-value">
+                    <?php echo $element->getAttributeLabel('right_quality_front')?>:
+                </div>
+                <div class="large-5 column data-value">
+                    <?php
+                    if($element->right_quality_front){
+                    $right_quality_front = OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->find('id=?', $element->right_quality_front);
+                    echo $right_quality_front->name;
+                    }
+                    ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="large-6 column data-value">
+                    <?php echo $element->getAttributeLabel('right_quality_back')?>:
+                </div>
+                <div class="large-5 column data-value">
+                    <?php
+                    if($element->right_quality_back){
+                        $right_quality_back = OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->find('id=?', $element->right_quality_back);
+                        echo $right_quality_back->name;
+                    }
+                    ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="large-6 column data-value">
+                    <?php echo $element->getAttributeLabel('right_cl_removed')?>:
+                </div>
+                <div class="large-5 column data-value">
+                    <?php
+                    if($element->right_cl_removed){
+                        $right_cl_removed = OEModule\OphCiExamination\models\OphCiExamination_CXL_Cl_Removed::model()->find('id=?', $element->right_cl_removed);
+                        echo $right_cl_removed->name;
+                    }
+                    ?>
+                </div>
+            </div>
+
+
 <?php
                 } else {
                     ?>
@@ -227,6 +268,45 @@
                     <div class="large-5 column data-value">
                         <?php
                         echo $element->left_ba_index_value;
+                        ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="large-6 column data-value">
+                        <?php echo $element->getAttributeLabel('left_quality_front')?>:
+                    </div>
+                    <div class="large-5 column data-value">
+                        <?php
+                        if($element->left_quality_front){
+                            $left_quality_front = OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->find('id=?', $element->left_quality_front);
+                            echo $left_quality_front->name;
+                        }
+                        ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="large-6 column data-value">
+                        <?php echo $element->getAttributeLabel('left_quality_back')?>:
+                    </div>
+                    <div class="large-5 column data-value">
+                        <?php
+                        if($element->left_quality_back){
+                            $left_quality_back = OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->find('id=?', $element->left_quality_back);
+                            echo $left_quality_back->name;
+                        }
+                        ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="large-6 column data-value">
+                        <?php echo $element->getAttributeLabel('left_cl_removed')?>:
+                    </div>
+                    <div class="large-5 column data-value">
+                        <?php
+                        if($element->left_cl_removed){
+                            $left_cl_removed = OEModule\OphCiExamination\models\OphCiExamination_CXL_Cl_Removed::model()->find('id=?', $element->left_cl_removed);
+                            echo $left_cl_removed->name;
+                        }
                         ?>
                     </div>
                 </div>

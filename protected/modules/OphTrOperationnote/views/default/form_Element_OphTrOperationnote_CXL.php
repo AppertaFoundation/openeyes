@@ -27,8 +27,22 @@
     }
     echo $form->radioButtons($element, 'protocol_id',  'OphTrOperationnote_CXL_Protocol', $default_protocol_id);
 
+    if(!$element->device_id)
+    {
+        $default_device_id = OphTrOperationnote_CXL_Device::model()->getDefault();
+    }else{
+        $default_device_id = $element->device_id;
+    }
+    echo $form->dropDownList($element, 'device_id',
+        CHtml::listData(OphTrOperationnote_CXL_Device::model()->findAll(), 'id', 'name'),
+        array('options' => array($default_device_id=>array('selected'=>true))),
+        null, array('field' => 3));
+
     echo $form->radioButtons($element, 'epithelial_removal_method_id',
         'OphTrOperationnote_CXL_Epithelial_Removal_Method', $element->epithelial_removal_method_id)?>
+
+
+
     <?php
     if(!$element->epithelial_removal_diameter_id)
     {
@@ -40,6 +54,14 @@
         CHtml::listData(OphTrOperationnote_CXL_Epithelial_Removal_Diameter::model()->findAll(), 'id', 'name'),
         array('options' => array($default_epithelial_removal_diameter_id=>array('selected'=>true))),
         null, array('field' => 3));?>
+
+    <?php
+    echo $form->radioButtons($element, 'iontophoresis_id',
+        'OphTrOperationnote_CXL_Iontophoresis', $element->iontophoresis_id);
+    ?>
+    <?php echo $form->textField($element, 'iontophoresis_current_value', array('size'=>10,'maxlength'=>10, 'field' => 2), false, array('field' => 1))?>
+    <?php echo $form->textField($element, 'iontophoresis_duration_value', array('size'=>10,'maxlength'=>10, 'field' => 2), false, array('field' => 1))?>
+
 
     <?php
     echo $form->radioButtons($element, 'riboflavin_preparation_id',
@@ -102,7 +124,7 @@
         array('options' => array($default_uv_pulse_duration_id=>array('selected'=>true))),
         null, array('field' => 2));?>
 
-    <?php echo $form->textField($element, 'uv_total_energy_value', array('size'=>10,'maxlength'=>10, 'field' => 2), false, array())?>
+    <?php echo $form->textField($element, 'uv_total_energy_value', array('size'=>10,'maxlength'=>10, 'field' => 2), false, array('field' => 1))?>
 
     <?php
     if(!$element->interpulse_duration_id)
@@ -115,5 +137,8 @@
         CHtml::listData(OphTrOperationnote_CXL_Interpulse_Duration::model()->findAll(), 'id', 'name'),
         array('options' => array($default_interpulse_duration_id=>array('selected'=>true))),
         null, array('field' => 2));?>
+
+    <?php echo $form->textArea($element, 'cxl_comments', array(), false, array('rows' => 4))?>
+
 </div>
 

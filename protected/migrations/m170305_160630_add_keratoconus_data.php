@@ -599,10 +599,47 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
         ));
         $this->insert('episode_summary_item', array(
             'event_type_id' => 27,
-            'name' => 'Keratometry Chart',
+            'name' => 'Keratometry Chart Right',
+        ));
+        $this->insert('episode_summary_item', array(
+            'event_type_id' => 27,
+            'name' => 'Keratometry Chart Left',
         ));
 
+        $this->insert('ophtroperationnote_cxl_devices', array(
+            'name' => 'IROC UVX-1000',
+            'display_order' => 1,
+            'defaultChoice' => 0,
+        ));
+        $this->insert('ophtroperationnote_cxl_devices', array(
+            'name' => 'IROC UVX-2000',
+            'display_order' => 2,
+            'defaultChoice' => 0,
+        ));
+        $this->insert('ophtroperationnote_cxl_devices', array(
+            'name' => 'Avedro KXL I',
+            'display_order' => 3,
+            'defaultChoice' => 0,
+        ));
+        $this->insert('ophtroperationnote_cxl_devices', array(
+            'name' => 'Avedro KXL II',
+            'display_order' => 4,
+            'defaultChoice' => 0,
+        ));
+        $this->insert('ophtroperationnote_cxl_devices', array(
+            'name' => 'Peschke CCL-Vario',
+            'display_order' => 5,
+            'defaultChoice' => 0,
+        ));
+        $this->insert('ophtroperationnote_cxl_devices', array(
+            'name' => 'Other',
+            'display_order' => 6,
+            'defaultChoice' => 0,
+        ));
+
+
     }
+
 
 
 

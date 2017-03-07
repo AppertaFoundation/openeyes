@@ -161,6 +161,47 @@
 				<div class="large-4 column">
 				</div>
 			</div>
+			<div class="row field-row">
+				<div class="large-4 column">
+					<label><?php echo $element->getAttributeLabel('right_quality_front')?>:</label>
+				</div>
+				<div class="large-4 column">
+					<?php
+					$allQualScore = \OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->findAll(array('order' => 'display_order'));
+					echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[right_quality_front]',
+						$element->right_quality_front,
+						CHtml::listData($allQualScore, 'id', 'name')); ?>
+				</div>
+				<div class="large-4 column">
+				</div>
+			</div>
+			<div class="row field-row">
+				<div class="large-4 column">
+					<label><?php echo $element->getAttributeLabel('right_quality_back')?>:</label>
+				</div>
+				<div class="large-4 column">
+					<?php
+					echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[right_quality_back]',
+						$element->right_quality_back,
+						CHtml::listData($allQualScore, 'id', 'name')); ?>
+				</div>
+				<div class="large-4 column">
+				</div>
+			</div>
+			<div class="row field-row">
+				<div class="large-4 column">
+					<label><?php echo $element->getAttributeLabel('right_cl_removed')?>:</label>
+				</div>
+				<div class="large-4 column">
+			<?php
+			$allCLRemoved = \OEModule\OphCiExamination\models\OphCiExamination_CXL_Cl_Removed::model()->findAll(array('order' => 'display_order'));
+			echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[right_cl_removed]',
+				$element->right_cl_removed,
+				CHtml::listData($allCLRemoved, 'id', 'name')); ?>
+		</div>
+	<div class="large-4 column">
+	</div>
+</div>
 		</div>
 		<div class="inactive-form">
 			<div class="add-side">
@@ -260,7 +301,45 @@
 			<div class="large-4 column">
 			</div>
 		</div>
-
+		<div class="row field-row">
+		<div class="large-4 column">
+			<label><?php echo $element->getAttributeLabel('left_quality_front')?>:</label>
+		</div>
+		<div class="large-4 column">
+			<?php
+			echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[left_quality_front]',
+				$element->left_quality_front,
+				CHtml::listData($allQualScore, 'id', 'name')); ?>
+		</div>
+		<div class="large-4 column">
+		</div>
+	</div>
+		<div class="row field-row">
+			<div class="large-4 column">
+				<label><?php echo $element->getAttributeLabel('left_quality_back')?>:</label>
+			</div>
+			<div class="large-4 column">
+				<?php
+				echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[left_quality_back]',
+					$element->right_quality_back,
+					CHtml::listData($allQualScore, 'id', 'name')); ?>
+			</div>
+			<div class="large-4 column">
+			</div>
+		</div>
+		<div class="row field-row">
+			<div class="large-4 column">
+				<label><?php echo $element->getAttributeLabel('left_cl_removed')?>:</label>
+			</div>
+			<div class="large-4 column">
+				<?php
+				echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[left_cl_removed]',
+					$element->left_cl_removed,
+					CHtml::listData($allCLRemoved, 'id', 'name')); ?>
+			</div>
+			<div class="large-4 column">
+			</div>
+		</div>
 	</div>
 
 		<div class="inactive-form">

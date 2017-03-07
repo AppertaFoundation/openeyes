@@ -50,6 +50,15 @@
         </div>
 
     </div>
+    <div class="data-row">
+        <div class="data-value column large-12">
+                    <?php echo $element->getAttributeLabel('ocular_surface_disease_id')?>:
+                    <?php
+                    $ocular_surface_disease_id = OEModule\OphCiExamination\models\OphCiExamination_CXL_Ocular_Surface_Disease::model()->find('id=?', $element->ocular_surface_disease_id);
+                    echo $ocular_surface_disease_id->name;
+                    ?>
+        </div>
+    </div>
 </div>
 <div class="element-data element-eyes row">
     <div class="element-eye right-eye column">

@@ -18,15 +18,10 @@
 
     <div class="row">
         <div class="column large-12">
-            <div id="keratometry-history-chart" class="chart" width="100%" height="500" style="width: 100%; height: 500px"></div>
+            <div id="keratometry-history-left-chart" class="chart" width="100%" height="500" style="width: 100%; height: 500px"></div>
         </div>
     </div>
     <?= $chart->run(); ?>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#keratometry_history_unit_id').change(function () { this.form.submit(); });
-        });
-    </script>
 <?php else: ?>
     <div class="row">
         <div class="large-12 column">
