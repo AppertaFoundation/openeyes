@@ -1801,7 +1801,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getAllergies(\Patient $patient)
     {
-        return $patient->getAllergiesSeparatedString($prefix='', $separator=',', $lastSeparatorNeeded=false);
+        return $patient->getAllergiesSeparatedString($prefix='', $separator=', ', $lastSeparatorNeeded=false);
     }
 
     /**
