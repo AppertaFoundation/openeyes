@@ -1802,7 +1802,6 @@ class OphCiExamination_API extends \BaseAPI
     public function getAllergies(\Patient $patient)
     {
         if (count($patient->allergies)) {
-        {
             return $patient->getAllergiesSeparatedString($prefix='', $separator=', ', $lastSeparatorNeeded=false);
         }
 
