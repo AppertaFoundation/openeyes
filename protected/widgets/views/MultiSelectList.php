@@ -96,7 +96,7 @@ $widgetOptionsJson = json_encode(array(
                 foreach ($attributes as $att => $att_val) {
                     echo ' ' . $att . '="' . $att_val . '"';
                 }
-                echo '>' . strip_tags($option) . '</option>';
+                echo '>' . strip_tags($option) . ' </option>';
             } ?>
         </select>
           <?php if ($showRemoveAllLink) { ?>
@@ -106,6 +106,10 @@ $widgetOptionsJson = json_encode(array(
         <?php if ($noSelectionsMessage) { ?>
           <div class="no-selections-msg pill<?php if ($found) { ?> hide<?php } ?>"><?php echo $noSelectionsMessage; ?></div>
         <?php } ?>
+
+        <?php if(Yii::app()->request->isPostRequest && empty($selected_ids)): ?>
+            <input type="hidden" name="<?php echo $field ?>" >
+        <?php endif; ?>
       <ul class="MultiSelectList multi-select-selections<?php if (!$found) {echo ' hide';} ?><?php if ($sortable) { ?> sortable<?php } ?>">
           <?php foreach ($selected_ids as $id) {
               if (isset($options[$id])) { ?>

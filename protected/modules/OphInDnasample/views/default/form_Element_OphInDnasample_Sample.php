@@ -29,7 +29,14 @@
 
     ?>
 
-    <div id="div_Element_OphInDnasample_Sample_other_sample_type" class="row field-row <?php echo $element->other_sample_type || !in_array('other_sample_type', $element->getErrors()) ? '' : 'hidden'?>">
+    <?php
+        $hidden = $element->other_sample_type ? '' : 'hidden'; //hide if null
+        if( $element->getError('other_sample_type') ){
+            // show the field if there is an error
+            $hidden = '';
+        }
+    ?>
+    <div id="div_Element_OphInDnasample_Sample_other_sample_type" class="row field-row <?php echo $hidden; ?>">
         <div class="large-2 column">
             <label for="Element_OphInDnasample_Sample_other_sample_type"><?php echo $element->getAttributeLabel('other_sample_type'); ?></label>
         </div>

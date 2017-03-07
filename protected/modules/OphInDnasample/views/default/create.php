@@ -25,8 +25,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'id' => 'clinical-create',
     'enableAjaxValidation' => false,
     'layoutColumns' => array(
-        'label' => 3,
-        'field' => 9,
+        'label' => 2,
+        'field' => 10,
     ),
 ));
 
