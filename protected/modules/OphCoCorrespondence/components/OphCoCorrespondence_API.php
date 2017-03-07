@@ -264,13 +264,8 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getAllergiesBulleted($patient)
     {
-        $multiAllergies = '';
-        foreach ($patient->allergyAssignments as $aa) {
-            $multiAllergies .= " - " . ( strtoupper($aa->allergy->name) == 'OTHER' ? $aa->other : $aa->allergy->name ) . "\r\n";
-        }
-        return $multiAllergies;
+        return $patient->getAllergiesSeparatedString(" - ", "\r\n", true);
     }
-
 
     public function getMacroTargets($patient_id, $macro_id)
     {
