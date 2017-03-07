@@ -266,7 +266,7 @@ class OphCoCorrespondence_API extends BaseAPI
     {
         $multiAllergies = '';
         foreach ($patient->allergyAssignments as $aa) {
-            $multiAllergies .= " - " . $aa->allergy->name . "\r\n";
+            $multiAllergies .= " - " . ( strtoupper($aa->allergy->name) == 'OTHER' ? $aa->other : $aa->allergy->name ) . "\r\n";
         }
         return $multiAllergies;
     }
