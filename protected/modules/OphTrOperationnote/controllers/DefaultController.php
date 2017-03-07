@@ -958,14 +958,21 @@ class DefaultController extends BaseEventTypeController
                 'condition' => 'active=1 and site_id='.$siteId,
                 'order' => 'name',
             ));
-            //var_dump($optionValues);
-            echo CHtml::dropDownList(
-                'theatre_id',
-                false,
-                CHtml::listData($optionValues, 'id', 'name'),
-                array(
-                    'empty' => '-- Please select --', )
+
+            if(count($optionValues) == 1){
+                echo CHtml::dropDownList(
+                    'theatre_id',
+                    false,
+                    CHtml::listData($optionValues, 'id', 'name')
                 );
+            } else {
+                echo CHtml::dropDownList(
+                    'theatre_id',
+                    false,
+                    CHtml::listData($optionValues, 'id', 'name'),
+                    array('empty' => '-- Please select --', )
+                );
+            }
         }
     }
 
