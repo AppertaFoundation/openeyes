@@ -60,6 +60,9 @@ class PedigreeGene extends BaseActiveRecord
         return array(
             array('name, location, priority, description, details, refs', 'safe'),
             array('name, location', 'required'),
+            array('location', 'length', 'max' => 16,
+                'tooLong' => "{attribute} is too long.",
+            ),
         );
     }
 
