@@ -53,8 +53,10 @@
                 </h4>
                 <div class="data-value">
                     <?php
+                    if($element->epithelial_removal_method_id){
                     $epiremmetName = OphTrOperationnote_CXL_Epithelial_Removal_Method::model()->find('id=?', $element->epithelial_removal_method_id);
                     echo $epiremmetName->name;
+                    }
                     ?>
                 </div>
             </div>
@@ -75,8 +77,10 @@
                 </h4>
                 <div class="data-value">
                     <?php
+                    if($element->iontophoresis_id){
                     $iontophoresis_id = OphTrOperationnote_CXL_Iontophoresis::model()->find('id=?', $element->iontophoresis_id);
                     echo $iontophoresis_id->name;
+                    }
                     ?>
                 </div>
             </div>
@@ -86,7 +90,9 @@
                 </h4>
                 <div class="data-value">
                     <?php
+                    if($element->iontophoresis_current_value){
                     echo $element->iontophoresis_current_value . ' mA';
+                    }
                     ?>
                 </div>
             </div>
@@ -96,7 +102,9 @@
                 </h4>
                 <div class="data-value">
                     <?php
+                    if($element->iontophoresis_duration_value){
                     echo $element->iontophoresis_duration_value . " minutes";
+                    }
                     ?>
                 </div>
             </div>
@@ -107,8 +115,10 @@
                 </h4>
                 <div class="data-value">
                     <?php
+                    if($element->riboflavin_preparation_id){
                     $riboflavin_preparation_id = OphTrOperationnote_CXL_Riboflavin_Preparation::model()->find('id=?', $element->riboflavin_preparation_id);
                     echo $riboflavin_preparation_id->name;
+                    }
                     ?>
                 </div>
             </div>
@@ -170,7 +180,9 @@
                 </h4>
                 <div class="data-value">
                     <?php
+                    if($element->uv_total_energy_value){
                     echo $element->uv_total_energy_value . ' J/cm2';
+                    }
                     ?>
                 </div>
             </div>

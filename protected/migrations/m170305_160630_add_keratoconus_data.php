@@ -4,6 +4,54 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
 {
 	public function up()
 	{
+        $this->insert('ophtroperationnote_cxl_iontophoresis', array(
+            'name' => 'Yes',
+            'display_order' => 1,
+        ));
+        $this->insert('ophtroperationnote_cxl_iontophoresis', array(
+            'name' => 'No',
+            'display_order' => 2,
+        ));
+
+
+        $this->insert('ophciexamination_cxl_ocular_surface_disease', array(
+            'name' => 'HSK',
+            'display_order' => 1,
+        ));
+        $this->insert('ophciexamination_cxl_ocular_surface_disease', array(
+            'name' => 'Bacterial Keratitis',
+            'display_order' => 2,
+        ));
+        $this->insert('ophciexamination_cxl_ocular_surface_disease', array(
+            'name' => 'Marginal Keratitis',
+            'display_order' => 3,
+        ));
+        $this->insert('ophciexamination_cxl_ocular_surface_disease', array(
+            'name' => 'RCES',
+            'display_order' => 4,
+        ));
+        $this->insert('ophciexamination_cxl_ocular_surface_disease', array(
+            'name' => 'Allergic Eye Disease',
+            'display_order' => 5,
+        ));
+
+        $this->insert('ophciexamination_cxl_cl_removed', array(
+            'name' => 'N/A',
+            'display_order' => 1,
+        ));
+        $this->insert('ophciexamination_cxl_cl_removed', array(
+            'name' => 'Today',
+            'display_order' => 2,
+        ));
+        $this->insert('ophciexamination_cxl_cl_removed', array(
+            'name' => '1 Week',
+            'display_order' => 3,
+        ));
+        $this->insert('ophciexamination_cxl_cl_removed', array(
+            'name' => '2 Weeks',
+            'display_order' => 4,
+        ));
+
         $this->insert('ophciexamination_scan_quality', array(
             'name' => 'Good',
             'display_order' => 1,
@@ -19,6 +67,61 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
         $this->insert('ophciexamination_scan_quality', array(
             'name' => 'Unknown',
             'display_order' => 4,
+        ));
+
+        $this->insert('ophtroperationnote_cxl_complications', array(
+            'name' => 'None',
+            'display_order' => 1,
+            'active' => 1,
+        ));
+        $this->insert('ophtroperationnote_cxl_complications', array(
+            'name' => 'Sterile Infiltrate',
+            'display_order' => 2,
+            'active' => 1,
+        ));
+        $this->insert('ophtroperationnote_cxl_complications', array(
+            'name' => 'Infective Infiltrate',
+            'display_order' => 3,
+            'active' => 1,
+        ));
+        $this->insert('ophtroperationnote_cxl_complications', array(
+            'name' => 'Melt',
+            'display_order' => 4,
+            'active' => 1,
+        ));
+        $this->insert('ophtroperationnote_cxl_complications', array(
+            'name' => 'Delayed Epithelial Healing',
+            'display_order' => 5,
+            'active' => 1,
+        ));
+        $this->insert('ophtroperationnote_cxl_complications', array(
+            'name' => 'HSK re-activation',
+            'display_order' => 6,
+            'active' => 1,
+        ));
+        $this->insert('ophtroperationnote_cxl_complications', array(
+            'name' => 'RCES',
+            'display_order' => 7,
+            'active' => 1,
+        ));
+        $this->insert('ophtroperationnote_cxl_complications', array(
+            'name' => 'Haze',
+            'display_order' => 8,
+            'active' => 1,
+        ));
+
+
+        $this->insert('ophciexamination_cxl_quality_score', array(
+            'name' => 'OK',
+            'display_order' => 1,
+        ));
+        $this->insert('ophciexamination_cxl_quality_score', array(
+            'name' => 'Borderline',
+            'display_order' => 2,
+        ));
+        $this->insert('ophciexamination_cxl_quality_score', array(
+            'name' => 'Poor',
+            'display_order' => 3,
         ));
 
         $this->insert('ophciexamination_slit_lamp_conditions', array(
