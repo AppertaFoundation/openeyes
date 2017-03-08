@@ -106,4 +106,12 @@ class AdminController extends BaseAdminController
             }
         }
     }
+
+    public function actionPrescriptionEditOptions()
+    {
+        $this->genericAdmin('Edit prescription editing options', 'OphDrPrescriptionEditReasons',
+            array(
+               
+            ));
+    }
 }

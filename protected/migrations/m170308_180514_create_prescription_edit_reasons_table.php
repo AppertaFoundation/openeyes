@@ -23,11 +23,12 @@ class m170308_180514_create_prescription_edit_reasons_table extends CDbMigration
                 'id' => 'pk',
                 'caption' => 'string NOT NULL',
                 'display_order' => 'tinyint(4) NOT NULL DEFAULT 0',
+                'active'=>'tinyint(1) NOT NULL DEFAULT 1',
                 'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
                 'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1'
             ));
 
-	    $this->addColumn('et_ophdrprescription_details', 'edit_reason_id', 'int');
+	    $this->addColumn('et_ophdrprescription_details', 'edit_reason_id', 'int NULL');
 	    $this->addForeignKey(
 	        'et_ophdrprescription_details_edit_reason_fk',
             'et_ophdrprescription_details',
@@ -35,6 +36,24 @@ class m170308_180514_create_prescription_edit_reasons_table extends CDbMigration
             'ophdrprescription_edit_reasons',
             'id'
         );
+
+	    $this->insert('ophdrprescription_edit_reasons',
+            array(
+                'caption' => 'Incorrect drug prescribed - not dispensed',
+                'display_order' => 1
+            ));
+
+        $this->insert('ophdrprescription_edit_reasons',
+            array(
+                'caption' => 'Saved too early, adding more drugs - not dispensed',
+                'display_order' => 2
+            ));
+
+        $this->insert('ophdrprescription_edit_reasons',
+            array(
+                'caption' => 'Original drug not available, alternative dispensed',
+                'display_order' => 3
+            ));
 	}
 
 	public function safeDown()
@@ -43,7 +62,7 @@ class m170308_180514_create_prescription_edit_reasons_table extends CDbMigration
             'et_ophdrprescription_details_edit_reason_fk',
             'et_ophdrprescription_details');
 	    $this->dropColumn('et_ophdrprescription_details', 'edit_reason_id');
-	    $this->delete('ophdrprescription_edit_reasons');
+	    $this->dropTable('ophdrprescription_edit_reasons');
 	}
 
 }

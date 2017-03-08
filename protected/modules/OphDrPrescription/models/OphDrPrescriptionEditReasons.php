@@ -12,6 +12,8 @@
  */
 class OphDrPrescriptionEditReasons extends BaseActiveRecord
 {
+    const SELECTION_LABEL_FIELD = 'caption';
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -28,12 +30,12 @@ class OphDrPrescriptionEditReasons extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('caption', 'required'),
+			array('caption, active', 'required'),
 			array('display_order', 'numerical', 'integerOnly'=>true),
 			array('caption', 'length', 'max'=>255),
 			array('created_user_id', 'length', 'max'=>10),
 			array('created_date', 'safe'),
-			array('id, caption', 'safe', 'on'=>'search'),
+			array('id, caption, active', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -60,6 +62,7 @@ class OphDrPrescriptionEditReasons extends BaseActiveRecord
 			'display_order' => 'Display Order',
 			'created_date' => 'Created Date',
 			'created_user_id' => 'Created By',
+            'active' => 'Active'
 		);
 	}
 
