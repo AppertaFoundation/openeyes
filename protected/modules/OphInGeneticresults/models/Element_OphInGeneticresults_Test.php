@@ -62,13 +62,13 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, gene_id, method_id, comments, exon, prime_rf, prime_rr, base_change, method_id, amino_acid_change_id, base_change_id,
+            array('event_id, gene_id, method_id, comments, exon, base_change, method_id, amino_acid_change_id, base_change_id,
                  amino_acid_change, assay, effect_id, method_id homo, result, result_date, external_source_identifier, withdrawal_source_id, external_source_id,
                  genomic_coordinate, genome_version, gene_transcript',
                 'safe'),
             array('gene_id, homo, method_id, effect_id, result', 'required'),
             array('withdrawal_source_id', 'validateSource'),
-            array('exon, prime_rf, prime_rr', 'validateForMethod', 'method' => 'Sanger'),
+            array('exon', 'validateForMethod', 'method' => 'Sanger'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, result, ', 'safe', 'on' => 'search'),
@@ -108,20 +108,18 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
             'method_id' => 'Method',
             'comments' => 'Comments',
             'exon' => 'Exon',
-            'prime_rf' => 'Prime RF',
-            'prime_rr' => 'Prime RR',
             'base_change' => 'Base change',
             'amino_acid_change' => 'Amino acid change',
             'assay' => 'Assay',
             'effect_id' => 'Effect',
-            'homo' => 'Homo',
+            'homo' => 'Homozygosity',
             'result' => 'Result',
             'result_date' => 'Result date',
             'external_source_id' => 'External Source',
             'withdrawal_source_id' => 'Withdrawal Source',
             'external_source_identifier' => 'External Source ID',
             'base_change_id' => 'Base Change Type',
-            'amino_acid_change_id' => 'Amino Acid Chain Type'
+            'amino_acid_change_id' => 'Amino Acid Change Type'
         );
     }
 

@@ -26,7 +26,7 @@
             'id' => 'searchform',
             'enableAjaxValidation' => false,
             'focus' => '#search',
-            'action' => Yii::app()->createUrl('/Genetics/search/geneticPatients'),
+            'action' => Yii::app()->createUrl('/OphInDnasample/search/DnaSample'),
             'method' => 'GET',
         ))?>
 		<div class="large-12 column">
@@ -35,51 +35,71 @@
 					<div class="large-12 column">
 						<table class="grid">
 							<thead>
-							<tr>
-								<th>Date Taken From:</th>
-								<th>Date Taken To:</th>
-								<th>Sample Type:</th>
-								<th>Comments:</th>
-							</tr>
+                                <tr>
+                                    <th>Hospital Num:</th>
+                                    <th>First Name:</th>
+                                    <th>Last Name:</th>
+                                </tr>
 							</thead>
 							<tbody>
-							<tr>
-								<td>
-									<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                                        'name' => 'date-from',
-                                        'id' => 'date-from',
-                                        'options' => array(
-                                            'showAnim' => 'fold',
-                                            'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                                        ),
-                                        'value' => @$_GET['date-from'],
-                                    ))?>
-								</td>
-								<td>
-									<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                                        'name' => 'date-to',
-                                        'id' => 'date-to',
-                                        'options' => array(
-                                            'showAnim' => 'fold',
-                                            'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                                        ),
-                                        'value' => @$_GET['date-to'],
-                                    ))?>
-								</td>
-								<td>
-									<?php echo CHtml::dropDownList('sample-type', @$_GET['sample-type'], CHtml::listData(OphInDnasample_Sample_Type::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- All -'))?>
-								</td>
-								<td>
-									<?php echo CHtml::textField('comment', @$_GET['comment'])?>
-								</td>
-								<td>
-									<button id="search_blood_sample" class="secondary" type="submit">
-										Search
-									</button>
-								</td>
-							</tr>
-						</tbody>
-							</table>
+                                <tr>
+                                    <td>
+                                        <?php echo CHtml::textField('hos_num', @$_GET['hos_num'], array('placeholder' => 'Hospital Number'))?>
+                                    </td><td>
+                                        <?php echo CHtml::textField('first_name', @$_GET['first_name'], array('placeholder' => 'First Name'))?>
+                                    </td>
+                                    <td>
+                                        <?php echo CHtml::textField('last_name', @$_GET['last_name'], array('placeholder' => 'Last Name'))?>
+                                    </td>
+
+                                <tr>
+                            </tbody>
+                        </table>
+                        <table class="grid">
+							<thead>
+                                <tr>
+                                    <th>Date Taken From:</th>
+                                    <th>Date Taken To:</th>
+                                    <th>Sample Type:</th>
+                                    <th>Comments:</th>
+                                </tr>
+							</thead>
+							<tbody>
+                                <tr>
+                                    <td>
+                                        <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                                            'name' => 'date-from',
+                                            'id' => 'date-from',
+                                            'options' => array(
+                                                'showAnim' => 'fold',
+                                                'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                            ),
+                                            'value' => @$_GET['date-from'],
+                                        ))?>
+                                    </td>
+                                    <td>
+                                        <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                                            'name' => 'date-to',
+                                            'id' => 'date-to',
+                                            'options' => array(
+                                                'showAnim' => 'fold',
+                                                'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+                                            ),
+                                            'value' => @$_GET['date-to'],
+                                        ))?>
+                                    </td>
+                                    <td>
+                                        <?php echo CHtml::dropDownList('sample-type', @$_GET['sample-type'], CHtml::listData(OphInDnasample_Sample_Type::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- All -'))?>
+                                    </td>
+                                    <td>
+                                        <?php echo CHtml::textField('comment', @$_GET['comment'])?>
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                </tr>
+						    </tbody>
+                        </table>
 						<table class="grid">
 							<tbody>
 							<tr>
@@ -123,6 +143,11 @@
 						</table>
 					</div>
 				</div>
+                <div class="row">
+                    <div class="large-12 column right">
+                        <button id="search_dna_sample" class="secondary right" type="submit">Search</button>
+                    </div>
+                </div>
 			</div>
 		</div>
 		<?php $this->endWidget()?>
@@ -164,23 +189,39 @@
 						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInDnasample/default/view/'.$result['id'])?>">
 							<td><?php echo $result['hos_num']?></td>
 							<td><?php echo strtoupper($result['last_name'])?>, <?php echo $result['first_name']?></td>
-							<td><?php echo $result['event_date']?></td>
+							<td>
+                                <?php
+                                    $date = new DateTime($result['event_date']);
+                                    echo $date->format('d M Y');
+                                ?>
+                            </td>
 							<td><?php echo $result['name']?></td>
 							<td><?php echo $result['volume']?></td>
 							<td><?php echo $result['comments']?></td>
 						</tr>
 					<?php }?>
 				</tbody>
-				<tfoot class="pagination-container">
-					<tr>
-						<td colspan="8">
-							<?php echo $this->renderPartial('_pagination', array(
-                                'page' => $page,
-                                'pages' => $pages,
-                            ))?>
-						</td>
-					</tr>
-				</tfoot>
+                <tfoot class="pagination-container">
+                <tr>
+                    <td colspan="3">
+                        <?php $to = ($pagination->getItemCount() < $pagination->limit) ? $pagination->getItemCount() : ($pagination->limit * ($pagination->getCurrentPage()+1)); ?>
+                        Showing <?php echo $pagination->offset + 1; ?> to <?php echo $to; ?> of <?php echo $pagination->getItemCount(); ?>
+                    </td>
+                    <td colspan="3">
+                        <?php
+                        $this->widget('CLinkPager', array(
+                            'currentPage' => $pagination->getCurrentPage(),
+                            'itemCount' => $pagination->getItemCount(),
+                            'pageSize' => $pagination->getPageSize(),
+                            'maxButtonCount' => 10,
+                            'header'=> '',
+                            'htmlOptions'=>array('class'=>'pagination right'),
+                            'selectedPageCssClass' => 'current'
+                        ));
+                        ?>
+                    </td>
+                </tr>
+                </tfoot>
 			</table>
 		<?php }?>
 	</form>

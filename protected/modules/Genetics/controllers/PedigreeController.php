@@ -97,7 +97,7 @@ class PedigreeController extends BaseModuleController
             'amino_acid_change_id' => array(
                 'widget' => 'DropDownList',
                 'options' => CHtml::listData(PedigreeAminoAcidChangeType::model()->findAll(), 'id', 'change'),
-                'htmlOptions' => array('empty' => '- Amino Acid Chain Type -'),
+                'htmlOptions' => array('empty' => '- Amino Acid Change Type -'),
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
@@ -131,6 +131,7 @@ class PedigreeController extends BaseModuleController
     {
         $admin = new Crud(Pedigree::model(), $this);
         $admin->setListFieldsAction('view');
+        $admin->setModelDisplayName('Families');
         $admin->setListFields(array(
             'id',
             'inheritance.name',

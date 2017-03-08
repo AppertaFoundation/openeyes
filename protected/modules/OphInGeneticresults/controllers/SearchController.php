@@ -19,7 +19,7 @@
  */
 class SearchController extends BaseController
 {
-    public $layout = '//layouts/advanced_search';
+    public $layout = '//../modules/Genetics/views/layouts/genetics';
     public $items_per_page = 30;
 
     public function accessRules()
@@ -28,7 +28,7 @@ class SearchController extends BaseController
             array(
                 'allow',
                 'actions' => array('GeneticResults'),
-                'roles' => array('OprnSearchPedigree'),
+                'roles' => array('TaskSearchGeneticsData'),
             ),
         );
     }
@@ -75,6 +75,7 @@ class SearchController extends BaseController
         $tests = array();
         $pages = 0;
         $page = 0;
+        $total_items = null;
 
         if (@$_GET['search']) {
             $where = 'e.deleted = :zero and ep.deleted = :zero';
@@ -102,16 +103,16 @@ class SearchController extends BaseController
 
             if (@$_GET['date-from'] && strtotime($_GET['date-from'])) {
                 $where .= ' and result_date >= :date_from';
-                $whereParams[':date_from'] = $_GET['date-from'];
+                $whereParams[':date_from'] = Helper::convertNHS2MySQL($_GET['date-from']);
             }
 
             if (@$_GET['date-to'] && strtotime($_GET['date-to'])) {
                 $where .= ' and result_date <= :date_to';
-                $whereParams[':date_to'] = $_GET['date-to'];
+                $whereParams[':date_to'] = Helper::convertNHS2MySQL($_GET['date-to']);
             }
 
             if (strlen(@$_GET['query']) > 0) {
-                $where .= ' and ( comments like :query or exon like :query or prime_rf like :query or prime_rr like :query or base_change like :query or amino_acid_change like :query or assay like :query or result like :query)';
+                $where .= ' and ( comments like :query or exon like :query or base_change like :query or amino_acid_change like :query or assay like :query or result like :query)';
                 $whereParams[':query'] = '%' . $_GET['query'] . '%';
             }
 
@@ -212,10 +213,15 @@ class SearchController extends BaseController
             }
         }
 
+        $pagination = new CPagination($total_items);
+        $pagination->setPageSize($this->items_per_page);
+
+
         $this->render('geneticResults', array(
             'genetic_tests' => $tests,
             'page' => $page,
             'pages' => $pages,
+            'pagination' => $pagination
         ));
     }
 }

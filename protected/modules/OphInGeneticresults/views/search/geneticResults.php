@@ -18,7 +18,7 @@
  */
 ?>
 <div class="box admin">
-  <h2>Genetic tests search</h2>
+  <h2>Genetic test/result</h2>
 
   <div class="large-12 column">
       <?php
@@ -37,7 +37,7 @@
               <tr>
                 <th>Gene</th>
                 <th>Method</th>
-                <th>Homo</th>
+                <th>Homozygosity</th>
                 <th>Effect</th>
               </tr>
               </thead>
@@ -137,7 +137,7 @@
             <th><?php echo CHtml::link('Patient name', $this->getUri(array('sortby' => 'patient_name'))) ?></th>
             <th><?php echo CHtml::link('Gene', $this->getUri(array('sortby' => 'gene'))) ?></th>
             <th><?php echo CHtml::link('Method', $this->getUri(array('sortby' => 'method'))) ?></th>
-            <th><?php echo CHtml::link('Homo', $this->getUri(array('sortby' => 'homo'))) ?></th>
+            <th><?php echo CHtml::link('Homozygosity', $this->getUri(array('sortby' => 'homo'))) ?></th>
             <th><?php echo CHtml::link('Base change', $this->getUri(array('sortby' => 'base_change'))) ?></th>
             <th><?php echo CHtml::link('Amino acid change', $this->getUri(array('sortby' => 'amino_acid_change'))) ?></th>
             <th><?php echo CHtml::link('Result', $this->getUri(array('sortby' => 'result'))) ?></th>
@@ -162,11 +162,22 @@
           </tbody>
           <tfoot class="pagination-container">
           <tr>
-            <td colspan="8">
-                <?php echo $this->renderPartial('_pagination', array(
-                    'page' => $page,
-                    'pages' => $pages,
-                )) ?>
+              <td colspan="3">
+                  <?php $to = ($pagination->getItemCount() < $pagination->limit) ? $pagination->getItemCount() : ($pagination->limit * ($pagination->getCurrentPage()+1)); ?>
+                  Showing <?php echo $pagination->offset + 1; ?> to <?php echo $to; ?> of <?php echo $pagination->getItemCount(); ?>
+              </td>
+            <td colspan="6">
+                <?php
+                    $this->widget('CLinkPager', array(
+                        'currentPage' => $pagination->getCurrentPage(),
+                        'itemCount' => $pagination->getItemCount(),
+                        'pageSize' => $pagination->getPageSize(),
+                        'maxButtonCount' => 10,
+                        'header'=> '',
+                        'htmlOptions'=>array('class'=>'pagination right'),
+                        'selectedPageCssClass' => 'current'
+                    ));
+                   ?>
             </td>
           </tr>
           </tfoot>

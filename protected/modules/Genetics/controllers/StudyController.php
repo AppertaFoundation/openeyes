@@ -72,7 +72,7 @@ class StudyController extends BaseModuleController
     {
         $admin = new Crud(GeneticsStudy::model(), $this);
         $admin->setListFieldsAction('view');
-        $admin->setModelDisplayName('Genetic Study');
+        $admin->setModelDisplayName('Genetic Studies');
         $admin->setListFields(array(
             'id',
             'name',

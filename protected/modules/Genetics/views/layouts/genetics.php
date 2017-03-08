@@ -34,7 +34,7 @@
         <div class="box content admin-content">
             <div class="row">
                 <aside class="large-2 column sidebar admin">
-                    <?php $this->renderPartial('/default/sidebar'); ?>
+                    <?php $this->renderPartial('//../modules/Genetics/views/default/sidebar'); ?>
                 </aside>
                 <div class="large-10 column">
                     <?php echo $content; ?>
