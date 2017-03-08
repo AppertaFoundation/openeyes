@@ -22,7 +22,7 @@
         <div class="large-10 column"><h2>View Genetics Study</h2></div>
         <div class="large-2 column right">
             <?php if( $this->checkAccess('OprnEditGeneticPatient') ): ?>
-                <a href="/Genetics/subject/edit/<?php echo $model->id; ?>" class="button small right" id="subject_edit">Edit</a>
+                <a href="/Genetics/study/edit/<?php echo $model->id; ?>" class="button small right" id="study_edit">Edit</a>
             <?php endif; ?>
         </div>
     </div>
@@ -43,6 +43,7 @@
                     'label' => 'Subjects',
                     'type' => 'raw',
                     'value' => function() use ($model){
+                        $html = null;
                         if($model->subjects){
                             $html = '<ul>';
                             foreach($model->subjects as $subject){

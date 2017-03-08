@@ -88,7 +88,7 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
 
     public function other_type_validator($attribute, $params)
     {
-        if ($this->type_id === 4 && $this->other_sample_type === '') {
+        if ($this->type_id === "4" && $this->other_sample_type === '') {
             $this->addError($attribute, 'Please specify sample type');
         }
     }

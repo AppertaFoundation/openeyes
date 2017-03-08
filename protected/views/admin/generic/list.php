@@ -26,6 +26,7 @@ if (!isset($uniqueid)) {
     $uniqueid = $this->uniqueid;
 }
 ?>
+<?php $this->renderPartial('//base/_messages'); ?>
 <div class="admin box">
     <?php if (!$admin->isSubList()): ?>
         <h2><?php echo $admin->getModelDisplayName(); ?></h2>

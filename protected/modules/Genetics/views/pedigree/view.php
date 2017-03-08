@@ -17,6 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php $this->renderPartial('//base/_messages')?>
     <div class="admin box">
         <div class="row">
         <div class="large-10 column"><h2>View Family</h2></div>
@@ -51,29 +52,29 @@
             //'base_change_type',
             array(
                 'label' => $model->getAttributeLabel('base_change'),
-                'value' => $model->base_change ? $model->base_change : '<span class="null">Not set</span>',
+                'value' => $model->base_change ? $model->base_change : null,
                 'type'=>'raw',
             ),
             'amino_acid_change_id',
             array(
                 'label' => $model->getAttributeLabel('amino_acid_change'),
-                'value' => $model->amino_acid_change ? $model->amino_acid_change : '<span class="null">Not set</span>',
+                'value' => $model->amino_acid_change ? $model->amino_acid_change : null,
                 'type' => 'raw',
             ),
             array(
                 'label' => $model->getAttributeLabel('genomic_coordinate'),
                 'type' => 'raw',
-                'value' => $model->genomic_coordinate ? $model->genomic_coordinate : '<span class="null">Not set</span>',
+                'value' => $model->genomic_coordinate ? $model->genomic_coordinate : null,
             ),
             array(
                 'label' => $model->getAttributeLabel('genome_version'),
                 'type' => 'raw',
-                'value' => $model->genome_version ? $model->genome_version : '<span class="null">Not set</span>',
+                'value' => $model->genome_version ? $model->genome_version : null,
             ),
             array(
                 'label' => $model->getAttributeLabel('gene_transcript'),
                 'type' => 'raw',
-                'value' => $model->gene_transcript ? $model->gene_transcript : '<span class="null">Not set</span>',
+                'value' => $model->gene_transcript ? $model->gene_transcript : null,
             ),
             array(
                 'label' => $model->getAttributeLabel('created_date'),

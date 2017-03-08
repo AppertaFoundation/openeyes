@@ -25,8 +25,27 @@
             'htmlOptions' => array('empty' => '- Please select -'),
         ));
 
-    $form->activeWidget('TextField', $element, 'other_sample_type');
+    /* now way to hide the whole row using the widget : $form->activeWidget('TextField', $element, 'other_sample_type', array('class' => 'hidden')); */
 
+    ?>
+
+    <?php
+        $hidden = $element->other_sample_type ? '' : 'hidden'; //hide if null
+        if( $element->getError('other_sample_type') ){
+            // show the field if there is an error
+            $hidden = '';
+        }
+    ?>
+    <div id="div_Element_OphInDnasample_Sample_other_sample_type" class="row field-row <?php echo $hidden; ?>">
+        <div class="large-2 column">
+            <label for="Element_OphInDnasample_Sample_other_sample_type"><?php echo $element->getAttributeLabel('other_sample_type'); ?></label>
+        </div>
+        <div class="large-10 column end">
+            <?php echo CHtml::textField('Element_OphInDnasample_Sample[other_sample_type]', $element->other_sample_type); ?>
+        </div>
+    </div>
+
+    <?php
     $form->activeWidget('DatePicker', $element, 'blood_date',
         array(
             'options' => array('maxDate' => 'today'),
@@ -73,7 +92,6 @@
 
     //$user['first_name'].' '.$user['last_name'];
     $form->activeWidget('TextField', $element, 'comments');
-    
+
     ?>
-    
 </fieldset>

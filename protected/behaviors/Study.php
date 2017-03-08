@@ -19,7 +19,7 @@ trait Study {
         }
 
         foreach ($this->proposers as $proposer) {
-            if ($proposer->id === $user->id) {
+            if ($proposer->id === $user->id || $user->checkAccess('Genetics Admin')) {
                 return true;
             }
         }

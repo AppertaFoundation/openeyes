@@ -77,7 +77,7 @@ class SubjectController extends BaseModuleController
         if ($id) {
             $admin->setModelId($id);
             $this->renderPatientPanel = true;
-            $this->patient = $admin->getModel()->patient;
+            $this->patient = isset($admin->getModel()->patient) ? $admin->getModel()->patient : null;
         }
 
         $admin->setModelDisplayName('Genetics Subject');
@@ -193,7 +193,7 @@ class SubjectController extends BaseModuleController
                         }
                     }
                 }
-
+                Yii::app()->user->setFlash('success', "Patient Saved");
                 $admin->redirect();
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));

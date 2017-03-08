@@ -3,6 +3,7 @@
     <label for="patient-search">Patient Lookup</label>
   </div>
   <div class="large-5 column end">
+      <span style="font-size: 12px;">Find a patient by Hospital Number, NHS Number, Firstname Surname or Surname, Firstname.</span>
     <input type="hidden" name="<?= get_class($model) ?>[patient_lookup_gender]"/>
     <input type="hidden" name="<?= get_class($model) ?>[patient_lookup_deceased]"/>
     <input type="text" name="search" id="patient-search" class="form panel search large ui-autocomplete-input" placeholder="Enter search..." autocomplete="off">
