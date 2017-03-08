@@ -25,7 +25,9 @@
     }else{
         $default_protocol_id = $element->protocol_id;
     }
-    echo $form->radioButtons($element, 'protocol_id',  'OphTrOperationnote_CXL_Protocol', $default_protocol_id);
+    echo $form->radioButtons($element, 'protocol_id',  'OphTrOperationnote_CXL_Protocol', $default_protocol_id, false,
+        false, false, false, array('class' => 'resizeselect'));
+
 
     if(!$element->device_id)
     {
