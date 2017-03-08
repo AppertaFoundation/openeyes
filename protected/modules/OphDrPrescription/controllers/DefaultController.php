@@ -27,6 +27,13 @@ class DefaultController extends BaseEventTypeController
         'markPrinted' => self::ACTION_TYPE_PRINT,
     );
 
+    public function __construct($id, $module = null)
+    {
+        parent::__construct($id, $module);
+
+        $this->editable = (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
+    }
+
     /**
      * Defines JS data structure for common drug lookup in prescription.
      */
@@ -549,4 +556,17 @@ class DefaultController extends BaseEventTypeController
             return $output;
         }
     }
+
+    public function actionUpdate($id, $reason = null)
+    {
+        if(is_null($reason))
+        {
+            $this->render('ask_reason', array('id'=>$id));
+        }
+        else
+        {
+            parent::actionUpdate($id);
+        }
+    }
+
 }

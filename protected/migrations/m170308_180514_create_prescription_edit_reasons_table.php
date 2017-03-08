@@ -29,6 +29,7 @@ class m170308_180514_create_prescription_edit_reasons_table extends CDbMigration
             ));
 
 	    $this->addColumn('et_ophdrprescription_details', 'edit_reason_id', 'int NULL');
+        $this->addColumn('et_ophdrprescription_details_version', 'edit_reason_id', 'int NULL');
 	    $this->addForeignKey(
 	        'et_ophdrprescription_details_edit_reason_fk',
             'et_ophdrprescription_details',
@@ -62,6 +63,7 @@ class m170308_180514_create_prescription_edit_reasons_table extends CDbMigration
             'et_ophdrprescription_details_edit_reason_fk',
             'et_ophdrprescription_details');
 	    $this->dropColumn('et_ophdrprescription_details', 'edit_reason_id');
+        $this->dropColumn('et_ophdrprescription_details_version', 'edit_reason_id');
 	    $this->dropTable('ophdrprescription_edit_reasons');
 	}
 
