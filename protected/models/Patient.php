@@ -408,6 +408,27 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
+     * Get Allergies in a separated format.
+     *
+     * @param $patient
+     * @param $separator
+     *
+     * @return string|null
+     */    
+    public function getAllergiesSeparatedString($prefix='', $separator=',', $lastSeparatorNeeded=false)
+    {
+        $multiAllergies = '';
+        foreach ($this->allergyAssignments as $aa) {
+            $multiAllergies .= $prefix.( strtoupper($aa->allergy->name) == 'OTHER' ? $aa->other : $aa->allergy->name ) . $separator;
+        }
+        if(!$lastSeparatorNeeded){
+            $multiAllergies = rtrim($multiAllergies,$separator);
+        }
+        return $multiAllergies;
+    }
+
+
+    /**
      * @param int $drug_id
      *
      * @return bool Is patient allergic?
