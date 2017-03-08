@@ -17,7 +17,6 @@ class m170223_155003_create_genetics_clinical_role extends OEMigration
         $this->addTaskToRole("Genetics Clinical","Genetics Admin");
         $this->addTaskToRole("Genetics User","Genetics Laboratory Technician");
         $this->addTaskToRole("Genetics User","Genetics Clinical");
-        $this->addTaskToRole("TaskViewGeneticStudy","Genetics User");
         
         $this->addTask("TaskEditGeneticStudy");
         $this->addTaskToRole("Genetics Admin","TaskEditGeneticStudy");
@@ -26,9 +25,6 @@ class m170223_155003_create_genetics_clinical_role extends OEMigration
         $this->delete("authitemchild", "parent = 'Genetics User' AND child = 'TaskCreateDnaExtraction'");
         $this->delete("authitemchild", "parent = 'Genetics User' AND child = 'TaskCreateDnaSample'");
         $this->delete("authitemchild", "parent = 'Genetics User' AND child = 'TaskCreateGeneticResults'");
-        
-        // Not used any longer
-        $this->delete("authitemchild", "parent = 'Genetics User' AND child = 'TaskViewGeneticStudy'");
         
         $this->addTaskToRole("TaskCreateDnaSample","Genetics Clinical");
         $this->addTaskToRole("TaskCreateGeneticResults","Genetics Clinical");

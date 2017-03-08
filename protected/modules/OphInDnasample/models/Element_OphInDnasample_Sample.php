@@ -148,7 +148,7 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
             'is_local' => 'Local',
             'studies' => 'Study(s)',
             'destination' => 'Destination',
-            'volume' => 'Volume (mililiters)',
+            'volume' => 'Volume (Millilitres)',
         );
     }
 
