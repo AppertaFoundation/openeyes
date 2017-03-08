@@ -11,7 +11,7 @@ return array(
                 'title' => 'Genetics',
                 'uri' => 'Genetics/default/index',
                 'position' => 40,
-                'restricted' => array('Genetics User'),
+                'restricted' => array('Genetics Admin', 'Genetics Clinical', 'Genetics Laboratory Technician', 'Genetics User'),
             ),
         ),
         'module_partials' => array(
