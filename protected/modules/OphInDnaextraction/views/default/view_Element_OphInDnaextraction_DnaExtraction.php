@@ -30,7 +30,15 @@
                 <div class="data-label"><?php echo $element->getAttributeLabel('storage_id')?>:</div>
 			</div>
 			<div class="large-10 column">
-				<div class="data-value"><?php echo CHtml::encode($element->storage->box->value.' - '.$element->storage->letter.' - '.$element->storage->number)?></div>
+				<div class="data-value">
+                    <?php 
+                    if(isset($element->storage->box->value)){
+                        echo CHtml::encode($element->storage->box->value.' - '.$element->storage->letter.' - '.$element->storage->number);
+                    } else {
+                        echo 'Not set';
+                    }
+                    ?>
+                </div>   
 			</div>
 		</div>
 	</div>

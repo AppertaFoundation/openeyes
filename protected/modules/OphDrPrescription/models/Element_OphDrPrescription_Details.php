@@ -321,6 +321,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                 // Save main item attributes
                 $item_model->dose = $item['dose'];
                 $item_model->route_id = $item['route_id'];
+
                 if (isset($item['route_option_id'])) {
                     $item_model->route_option_id = $item['route_option_id'];
                 } else {

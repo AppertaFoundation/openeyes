@@ -9,4 +9,5 @@ $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/vi
 	}
 	?>
 	<img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op" width="19" height="19" />
+    <?php echo $text ?>
 </a>

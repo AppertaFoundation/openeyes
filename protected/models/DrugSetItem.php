@@ -59,10 +59,10 @@ class DrugSetItem extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
                 array('drug_set_id, drug_id', 'required'),
-                array('dose, frequency_id, duration_id', 'safe'),
+                array('dose, frequency_id, duration_id, route_id, drug_set_id', 'safe'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
-                array('id, drug_set_id, drug_id, dose, frequency_id, duration_id', 'safe', 'on' => 'search'),
+                array('id, drug_set_id, drug_id, dose, frequency_id, duration_id, route_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -77,6 +77,7 @@ class DrugSetItem extends BaseActiveRecordVersioned
                 'drug' => array(self::BELONGS_TO, 'Drug', 'drug_id'),
                 'drug_set' => array(self::BELONGS_TO, 'DrugSet', 'drug_set_id'),
                 'frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'frequency_id'),
+                'route' => array(self::BELONGS_TO, 'DrugRoute', 'route_id'),
                 'duration' => array(self::BELONGS_TO, 'DrugDuration', 'duration_id'),
                 'tapers' => array(self::HAS_MANY, 'DrugSetItemTaper', 'item_id'),
         );
@@ -109,6 +110,7 @@ class DrugSetItem extends BaseActiveRecordVersioned
         $criteria->compare('dose', $this->dose, true);
         $criteria->compare('frequency_id', $this->frequency_id, true);
         $criteria->compare('duration_id', $this->duration_id, true);
+        $criteria->compare('route_id', $this->route_id, true);
 
         return new CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,

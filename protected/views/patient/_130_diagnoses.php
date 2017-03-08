@@ -52,7 +52,7 @@
 					} else {
 						$term = $diagnosis->eye->adjective . ' ' . $diagnosis->disorder->term;
 					}
-					?> 
+					?>
 					<td><?php echo $diagnosis->dateText?></td>
 					<td><?php echo $term; ?></td>
 					<?php if ($this->checkAccess('OprnEditOtherOphDiagnosis')) { ?>

@@ -47,7 +47,7 @@ class PedigreeController extends BaseModuleController
 
         return parent::beforeAction($action);
     }
-    
+
     public function actionView($id)
     {
         $pedigree = $this->loadModel($id);

@@ -95,9 +95,14 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
 
     public function volume_validator($attribute, $params)
     {
-        if (!is_numeric($this->volume) || $this->volume <= 0 || $this->volume > 99) {
-            $this->addError($attribute, 'Please enter a value between 1 and 99');
+        if($this->volume !== "")
+        {
+            if ($this->volume <= 0 || $this->volume > 99) {
+                $this->addError($attribute, 'Please enter a value between 1 and 99');
+            }
         }
+
+        return true;
     }
 
     public function destination_validator($attribute, $params)

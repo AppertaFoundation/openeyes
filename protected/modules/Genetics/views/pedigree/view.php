@@ -27,7 +27,7 @@
             <?php endif; ?>
         </div>
     </div>
-        
+       
         <?php $this->widget('zii.widgets.CDetailView', array(
         'data'=>$model,
         'htmlOptions' => array('class'=>'detailview'),
@@ -49,7 +49,7 @@
                     }
                 }
             ),
-            'base_change_type',
+            //'base_change_type',
             array(
                 'label' => $model->getAttributeLabel('base_change'),
                 'value' => $model->base_change ? $model->base_change : null,
