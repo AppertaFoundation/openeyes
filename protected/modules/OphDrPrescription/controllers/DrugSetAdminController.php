@@ -40,7 +40,7 @@ class DrugSetAdminController extends BaseAdminController
         }
         $element = Element_OphDrPrescription_Details::model();
         $admin->setCustomSaveURL('/OphDrPrescription/DrugSetAdmin/SaveDrugSet');
-        $admin->setCustomCancelURL('/OphDrPrescription/DrugSetAdmin/DrugSets');
+        $admin->setCustomCancelURL('/OphDrPrescription/DrugSetAdmin/list');
 
         $admin->setEditFields(array(
             'active' => 'checkbox',

@@ -55,10 +55,26 @@
     $form->radioBoolean($element, 'is_local', array(), array('label' => 3, 'field' => 9));
     $form->activeWidget('TextField', $element, 'destination');
 
+    $users = array_filter(
+        User::model()->findAll(array('order' => 'last_name asc')),
+        function($e){
+            $roles = Yii::app()->authManager->getRoles($e->id);
+            $is_genetics_user = false;
+            foreach ($roles as $r)
+            {
+                if($r->name === "Genetics User")
+                {
+                    $is_genetics_user = true;
+                    break;
+                }
+            }
+            return $is_genetics_user;
+    });
+
     $form->dropDownList(
         $element,
         'consented_by',
-        CHtml::listData(User::model()->findAll(array('order' => 'last_name asc')), 'id', function($row){return $row->last_name.', '.$row->first_name;}),
+        CHtml::listData($users, 'id', function($row){return $row->last_name.', '.$row->first_name;}),
         array('empty' => '- Select -', 'options'=>array(Yii::app()->user->id => array("selected"=>true)))
     );
 
@@ -78,5 +94,4 @@
     $form->activeWidget('TextField', $element, 'comments');
 
     ?>
-
 </fieldset>

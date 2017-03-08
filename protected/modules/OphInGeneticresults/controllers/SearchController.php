@@ -112,7 +112,7 @@ class SearchController extends BaseController
             }
 
             if (strlen(@$_GET['query']) > 0) {
-                $where .= ' and ( comments like :query or exon like :query or prime_rf like :query or prime_rr like :query or base_change like :query or amino_acid_change like :query or assay like :query or result like :query)';
+                $where .= ' and ( comments like :query or exon like :query or base_change like :query or amino_acid_change like :query or assay like :query or result like :query)';
                 $whereParams[':query'] = '%' . $_GET['query'] . '%';
             }
 
