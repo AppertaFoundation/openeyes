@@ -688,6 +688,12 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
             'display_order' => 8,
         ));
         $this->insert('element_type', array(
+            'name' => 'CXL Outcome',
+            'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_Outcome',
+            'event_type_id' => 27,
+            'display_order' => 8,
+        ));
+        $this->insert('element_type', array(
             'name' => 'CXL (Cross-Linking)',
             'class_name' => 'Element_OphTrOperationnote_CXL',
             'event_type_id' => 4,

@@ -113,4 +113,9 @@ class OphTrOperationnote_CXL_Complications extends BaseActiveRecordVersioned
         return $defaultId->id;
     }
 
+    public function getName($id)
+    {
+        $chosenName = $this->find("id = " . $id);
+        return $chosenName->name;
+    }
 }

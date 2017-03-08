@@ -76,6 +76,49 @@ class OphCiExamination_Episode_KeratometryChartLeft extends \EpisodeSummaryWidge
                 $this->addKeraReading($event, $chart, $reading);
             }
         }
+        $episode = $this->episode;
+        if ($eventtype = EventType::model()->find('class_name = "OphCiExamination"')){
+            $eventtypeid = $eventtype->id;
+        }
+
+        $data = '';
+        /// GET VA
+        if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+
+            //Get All Events for episode.
+            $criteria = new CDbCriteria();
+            $criteria->condition = 'episode_id = :e_id AND event_type_id = :e_typeid';
+            $criteria->order = ' event_date DESC';
+            $criteria->params = array(':e_id' => $episode->id, ':e_typeid' => $eventtypeid);
+
+            //For each event, check if =event_id in _visualacuity.
+
+            if($events = Event::model()->findAll($criteria)){
+                for ($i = 0; $i < count($events); ++$i) {
+                    // Get Most Recent VA
+                    $vaID = $api->getMostRecentVA($events[$i]->id);
+                    if($vaID && !$data){
+                        $data = $api->getMostRecentVAData($vaID->id);
+                        $chosenVA = $vaID;
+                        $VAdate = "- (exam date " . date("d M Y", strtotime($events[$i]->event_date)) . ")";
+                    }
+                }
+            }
+            $unitId = $chosenVA->unit_id;
+
+            for ($i = 0; $i < count($data); ++$i) {
+                if($data[$i]->side == 1){
+                    $leftData[] = $data[$i];
+                }
+            }
+
+            for ($i = 0; $i < count($leftData); ++$i) {
+                $VAfinalleft = $api->getVAvalue($leftData[$i]->value, $unitId);
+            }
+            //var_dump($VAfinalleft);
+            //var_dump($leftData);
+
+        }
     }
 
     /**

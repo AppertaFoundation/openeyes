@@ -67,13 +67,13 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
             array('event_id, protocol_id, epithelial_removal_method_id, epithelial_removal_diameter_id, riboflavin_preparation_id,
             interval_between_drops_id, soak_duration_range_id, uv_irradiance_range_id, total_exposure_time_id, uv_pulse_duration_id, 
             interpulse_duration_id, uv_total_energy_value, device_id, iontophoresis_id, iontophoresis_current_value,
-            iontophoresis_duration_value, cxl_comments', 'safe'),
+            iontophoresis_duration_value, cxl_comments, cxl_complications', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, protocol_id, epithelial_removal_method_id, epithelial_removal_diameter_id, riboflavin_preparation_id,
             interval_between_drops_id, soak_duration_range_id, uv_irradiance_range_id, total_exposure_time_id, uv_pulse_duration_id, 
             interpulse_duration_id, uv_total_energy_value, device_id, iontophoresis_id, iontophoresis_current_value,
-            iontophoresis_duration_value, cxl_comments', 'safe', 'on' => 'search'),
+            iontophoresis_duration_value, cxl_comments, cxl_complications', 'safe', 'on' => 'search'),
         );
     }
 
@@ -128,6 +128,7 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
             'iontophoresis_current_value' => 'Iontophoresis Current (mA)',
             'iontophoresis_duration_value' => 'Iontophoresis Duration (minutes)',
             'cxl_comments' => 'CXL Comments',
+            'cxl_complications_id' => 'CXL Complications',
         );
     }
     /**
@@ -160,6 +161,7 @@ class Element_OphTrOperationnote_CXL extends Element_OpNote
         $criteria->compare('iontophoresis_current_value', $this->iontophoresis_current_value);
         $criteria->compare('iontophoresis_duration_value', $this->iontophoresis_duration_value);
         $criteria->compare('cxl_comments', $this->cxl_comments);
+        $criteria->compare('cxl_complications', $this->cxl_complications);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,

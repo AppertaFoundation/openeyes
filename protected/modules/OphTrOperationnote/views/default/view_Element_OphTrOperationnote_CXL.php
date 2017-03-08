@@ -217,7 +217,7 @@
             </div>
     </div>
         <div class="row">
-            <div class="large-3 column">
+            <div class="large-9 column">
                 <h4 class="data-title">
                     <?php echo CHtml::encode($element->getAttributeLabel('cxl_comments'))?>:
                 </h4>
@@ -226,5 +226,18 @@
                     echo $element->cxl_comments;
                     ?>
                 </div>
+            </div>
+            <div class="large-3 column">
+                <h4 class="data-title">
+                    <?php echo CHtml::encode($element->getAttributeLabel('cxl_complications_id'))?>:
+                </h4>
+                <div class="data-value">
+                    <?php
+                    if($element->cxl_complications_id) {
+                        echo $complicationName = OphTrOperationnote_CXL_Complications::model()->getName($element->cxl_complications_id);
+                    }
+                    ?>
+                </div>
+            </div>
             </div>
 </section>
