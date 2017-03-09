@@ -445,7 +445,7 @@ class Patient extends BaseActiveRecordVersioned
 
         foreach($this->getDiagnosesTermsArray() as $diagnosisTerm) {
             
-            $allDiagnoses[$diagnosisTerm] = $diagnosisTerm;
+            $allDiagnoses[$diagnosisTerm] = $prefix.$diagnosisTerm;
         }
         
         $allDiagnosesString = implode($separator,$allDiagnoses).($lastSeparatorNeeded ? $separator:'');
