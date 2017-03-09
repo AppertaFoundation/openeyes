@@ -44,7 +44,9 @@
         <div class="data-value column large-2">
             <?php echo $element->getAttributeLabel('cornea_id')?>:
             <?php
+            if($element->cornea_id){
             echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Cornea::model()->getName($element->cornea_id);
+            }
             ?>
         </div>
         <div class="data-value column large-8">

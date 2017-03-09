@@ -208,36 +208,6 @@
 
             <div class="row field-row">
                 <div class="large-4 column">
-                    <label><?php echo $element->getAttributeLabel('right_trans_prk_value')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php $form->radioButtons(
-                        $element,
-                        'right_trans_prk_value',
-                        array(
-                            0 => 'No',
-                            1 => 'Yes',
-                        ),
-                        ($element->right_trans_prk_value !== null) ? $element->right_trans_prk_value : 0,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array(
-                            'text-align' => 'right',
-                            'nowrapper' => true,
-                        ),
-                        array(
-                            'label' => 4,
-                            'field' => 8,
-                        ));
-                    ?>
-                </div>
-                <div class="large-4 column">
-                </div>
-            </div>
-            <div class="row field-row">
-                <div class="large-4 column">
                     <label><?php echo $element->getAttributeLabel('right_previous_hsk_keratitis_value')?>:</label>
                 </div>
                 <div class="large-4 column">
@@ -375,36 +345,6 @@
                 </div>
             </div>
 
-            <div class="row field-row">
-                <div class="large-4 column">
-                    <label><?php echo $element->getAttributeLabel('left_trans_prk_value')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php $form->radioButtons(
-                        $element,
-                        'left_trans_prk_value',
-                        array(
-                            0 => 'No',
-                            1 => 'Yes',
-                        ),
-                        ($element->left_trans_prk_value !== null) ? $element->left_trans_prk_value : 0,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array(
-                            'text-align' => 'right',
-                            'nowrapper' => true,
-                        ),
-                        array(
-                            'label' => 4,
-                            'field' => 8,
-                        ));
-                    ?>
-                </div>
-                <div class="large-4 column">
-                </div>
-            </div>
             <div class="row field-row">
                 <div class="large-4 column">
                     <label><?php echo $element->getAttributeLabel('left_previous_hsk_keratitis_value')?>:</label>

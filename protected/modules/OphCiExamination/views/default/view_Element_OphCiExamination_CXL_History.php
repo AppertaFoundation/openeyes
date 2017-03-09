@@ -53,7 +53,9 @@
         <div class="data-value column large-12">
                     <?php echo $element->getAttributeLabel('ocular_surface_disease_id')?>:
                     <?php
+                    if($element->ocular_surface_disease_id){
                     echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Ocular_Surface_Disease::model()->getName($element->ocular_surface_disease_id);
+                    }
                     ?>
         </div>
     </div>
@@ -89,16 +91,6 @@
                 <div class="large-5 column data-value">
                     <?php
                     echo yesOrNo($element->right_intacs_kera_ring_value);
-                    ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_trans_prk_value')?>:
-                </div>
-                <div class="large-5 column data-value">
-                    <?php
-                    echo yesOrNo($element->right_trans_prk_value);
                     ?>
                 </div>
             </div>
@@ -149,16 +141,6 @@
                 <div class="large-5 column data-value">
                     <?php
                     echo yesOrNo($element->left_intacs_kera_ring_value);
-                    ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('left_trans_prk_value')?>:
-                </div>
-                <div class="large-5 column data-value">
-                    <?php
-                    echo yesOrNo($element->left_trans_prk_value);
                     ?>
                 </div>
             </div>

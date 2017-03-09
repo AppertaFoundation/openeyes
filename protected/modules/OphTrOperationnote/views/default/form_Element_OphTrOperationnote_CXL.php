@@ -55,7 +55,7 @@
     echo $form->dropDownList($element, 'epithelial_removal_diameter_id',
         CHtml::listData(OphTrOperationnote_CXL_Epithelial_Removal_Diameter::model()->findAll(), 'id', 'name'),
         array('options' => array($default_epithelial_removal_diameter_id=>array('selected'=>true))),
-        null, array('field' => 3));?>
+        null, array('field' => 2));?>
 
     <?php
     echo $form->radioButtons($element, 'iontophoresis_id',
