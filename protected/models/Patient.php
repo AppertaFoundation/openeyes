@@ -409,6 +409,50 @@ class Patient extends BaseActiveRecordVersioned
 
 
     /**
+     * Get all diagnoses term
+     *
+     *
+     * @return array|null
+     */    
+    public function getDiagnosesTermsArray()
+    {
+        $allEpisodesDiagnoses = array();
+        $allOphthalmicDiagnoses = array();
+        
+        foreach($this->episodes as $oneEpisode){
+            if($oneEpisode->diagnosis){
+                $allEpisodesDiagnoses[] = $oneEpisode->eye->adjective . '  ' . $oneEpisode->diagnosis->term;
+            }
+        }
+        
+        foreach( $this->ophthalmicDiagnoses as $oneDiagnosis ){
+            $allOphthalmicDiagnoses[] = $oneDiagnosis->eye->adjective . '  ' . $oneDiagnosis->disorder->term;
+        }
+        
+        return array_merge($allOphthalmicDiagnoses,$allEpisodesDiagnoses);
+    }
+
+    /**
+     *  diagnoses terms formatting to string
+     *
+     *
+     * @return string|null
+     */ 
+    public function getUniqueDiagnosesString($prefix='', $separator=',', $lastSeparatorNeeded=false)
+    {
+        $allDiagnoses = array();
+        $allDiagnosesString ='';
+
+        foreach($this->getDiagnosesTermsArray() as $diagnosisTerm) {
+            
+            $allDiagnoses[$diagnosisTerm] = $diagnosisTerm;
+        }
+        
+        $allDiagnosesString = implode($separator,$allDiagnoses).($lastSeparatorNeeded ? $separator:'');
+        return $allDiagnosesString;
+    }
+
+    /**
      * @param int $drug_id
      *
      * @return bool Is patient allergic?
