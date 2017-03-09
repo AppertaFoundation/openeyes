@@ -112,4 +112,8 @@ class OphTrOperationnote_CXL_Epithelial_Removal_Diameter extends BaseActiveRecor
         $defaultId = $this->find("defaultChoice = 1");
         return $defaultId->id;
     }
-}
+    public function getName($id)
+    {
+        $chosenName = $this->find("id = " . $id);
+        return $chosenName->name;
+    }}

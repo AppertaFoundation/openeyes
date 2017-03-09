@@ -111,5 +111,9 @@ class OphTrOperationnote_CXL_Interpulse_Duration extends BaseActiveRecordVersion
         $defaultId = $this->find("defaultChoice = 1");
         return $defaultId->id;
     }
-
+    public function getName($id)
+    {
+        $chosenName = $this->find("id = " . $id);
+        return $chosenName->name;
+    }
 }

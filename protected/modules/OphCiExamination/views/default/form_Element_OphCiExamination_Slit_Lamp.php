@@ -51,3 +51,17 @@
     </div>
     <div class="large-2 column"></div>
 </div>
+<div class="element-fields row">
+    <div class="large-2 column">
+        <label><?php echo $element->getAttributeLabel('cornea_id')?>:</label>
+    </div>
+    <div class="large-2 column">
+        <?php
+        $allSlitLampCornea = \OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Cornea::model()->findAll(array('order' => 'display_order'));
+        echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp[cornea_id]',
+            $element->cornea_id,
+            CHtml::listData($allSlitLampCornea, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+    </div>
+    <div class="large-8 column">
+    </div>
+</div>

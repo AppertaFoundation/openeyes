@@ -22,23 +22,32 @@
         <div class="data-value column large-4">
             <?php echo $element->getAttributeLabel('allergic_conjunctivitis_id')?>:
             <?php
-            $aller_conjun = OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->find('id=?', $element->allergic_conjunctivitis_id);
-            echo $aller_conjun->name;
+            echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->allergic_conjunctivitis_id);
             ?>
             </div>
             <div class="data-value column large-4">
             <?php echo $element->getAttributeLabel('blepharitis_id')?>:
             <?php
-            $blepharitis = OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->find('id=?', $element->blepharitis_id);
-            echo $blepharitis->name;
+            echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->blepharitis_id);
             ?>
             </div>
         <div class="data-value column large-4">
         <?php echo $element->getAttributeLabel('dry_eye_id')?>:
             <?php
-            $dry_eye = OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->find('id=?', $element->dry_eye_id);
-            echo $dry_eye->name;
+            echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->dry_eye_id);
             ?><br/>
         </div>
+    </div>
+</div>
+<div class="element-data">
+    <div class="data-row">
+        <div class="data-value column large-2">
+            <?php echo $element->getAttributeLabel('cornea_id')?>:
+            <?php
+            echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Cornea::model()->getName($element->cornea_id);
+            ?>
+        </div>
+        <div class="data-value column large-8">
+            </div>
     </div>
 </div>

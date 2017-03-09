@@ -115,4 +115,8 @@ class OphTrOperationnote_CXL_Device extends BaseActiveRecordVersioned
             return 1;
         }
     }
-}
+    public function getName($id)
+    {
+        $chosenName = $this->find("id = " . $id);
+        return $chosenName->name;
+    }}

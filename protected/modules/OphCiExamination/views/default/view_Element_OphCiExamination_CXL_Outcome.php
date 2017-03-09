@@ -24,8 +24,7 @@
             </div>
             <div class="data-value column large-2">
             <?php
-            $diagnosis = OEModule\OphCiExamination\models\OphCiExamination_CXL_Outcome_Diagnosis::model()->find('id=?', $element->diagnosis_id);
-            echo $diagnosis->name;
+            echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Outcome_Diagnosis::model()->getName($element->diagnosis_id);
             ?>
 
         </div>

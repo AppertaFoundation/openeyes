@@ -27,8 +27,7 @@
         <div class="large-3 column">
             <div class="data-value">
                 <?php
-                $top_device = OEModule\OphCiExamination\models\OphCiExamination_Topographer_device::model()->find('id=?', $element->topographer_id);
-                echo $top_device->name;
+                echo OEModule\OphCiExamination\models\OphCiExamination_Topographer_device::model()->getName($element->topographer_id);
                 ?>
             </div>
         </div>
@@ -40,8 +39,7 @@
         <div class="large-3 column">
             <div class="data-value">
                 <?php
-                $top_scan_quality = OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->find('id=?', $element->topographer_scan_quality_id);
-                echo $top_scan_quality->name;
+                echo OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->getName($element->topographer_scan_quality_id);
                 ?>
             </div>
         </div>
@@ -55,8 +53,7 @@
         <div class="large-3 column">
             <div class="data-value">
                 <?php
-                $tom_device = OEModule\OphCiExamination\models\OphCiExamination_Tomographer_device::model()->find('id=?', $element->tomographer_id);
-                echo $tom_device->name;
+                echo OEModule\OphCiExamination\models\OphCiExamination_Tomographer_device::model()->getName($element->tomographer_id);
                 ?>
             </div>
         </div>
@@ -68,8 +65,7 @@
         <div class="large-3 column">
             <div class="data-value">
                 <?php
-                $tom_scan_quality = OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->find('id=?', $element->tomographer_scan_quality_id);
-                echo $tom_scan_quality->name;
+                echo OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->getName($element->tomographer_scan_quality_id);
                 ?>
             </div>
         </div>
@@ -156,8 +152,7 @@
                 <div class="large-5 column data-value">
                     <?php
                     if($element->right_quality_front){
-                    $right_quality_front = OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->find('id=?', $element->right_quality_front);
-                    echo $right_quality_front->name;
+                    echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->right_quality_front);
                     }
                     ?>
                 </div>
@@ -169,8 +164,7 @@
                 <div class="large-5 column data-value">
                     <?php
                     if($element->right_quality_back){
-                        $right_quality_back = OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->find('id=?', $element->right_quality_back);
-                        echo $right_quality_back->name;
+                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->right_quality_back);
                     }
                     ?>
                 </div>
@@ -182,8 +176,7 @@
                 <div class="large-5 column data-value">
                     <?php
                     if($element->right_cl_removed){
-                        $right_cl_removed = OEModule\OphCiExamination\models\OphCiExamination_CXL_Cl_Removed::model()->find('id=?', $element->right_cl_removed);
-                        echo $right_cl_removed->name;
+                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Cl_Removed::model()->getName($element->right_cl_removed);
                     }
                     ?>
                 </div>
@@ -278,8 +271,7 @@
                     <div class="large-5 column data-value">
                         <?php
                         if($element->left_quality_front){
-                            $left_quality_front = OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->find('id=?', $element->left_quality_front);
-                            echo $left_quality_front->name;
+                            echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->left_quality_front);
                         }
                         ?>
                     </div>
@@ -291,8 +283,7 @@
                     <div class="large-5 column data-value">
                         <?php
                         if($element->left_quality_back){
-                            $left_quality_back = OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->find('id=?', $element->left_quality_back);
-                            echo $left_quality_back->name;
+                            echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->left_quality_back);
                         }
                         ?>
                     </div>
@@ -304,8 +295,7 @@
                     <div class="large-5 column data-value">
                         <?php
                         if($element->left_cl_removed){
-                            $left_cl_removed = OEModule\OphCiExamination\models\OphCiExamination_CXL_Cl_Removed::model()->find('id=?', $element->left_cl_removed);
-                            echo $left_cl_removed->name;
+                            echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Cl_Removed::model()->getName($element->left_cl_removed);
                         }
                         ?>
                     </div>

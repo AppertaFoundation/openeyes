@@ -17,22 +17,27 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+namespace OEModule\OphCiExamination\models;
+
 /**
- * This is the model class for table "".
+ * This is the model class for table "ophciexamination_slit_lamp_cornea".
  *
- * The followings are the available columns in table 'ophtroperationnote_cxl_uv_pulse_duration':
+ * The followings are the available columns in table:
  *
- * @property string $id
- * @property int $name
+ * @property int $id
+ * @property var $name
  * @property int $display_order
  *
+ * The followings are the available model relations:
  */
-class OphTrOperationnote_CXL_UV_Pulse_Duration extends BaseActiveRecordVersioned
+class OphCiExamination_Slit_Lamp_Cornea extends \SplitEventTypeElement
 {
+    public $service;
+
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return ElementOperation the static model class
+     * @return the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -44,7 +49,7 @@ class OphTrOperationnote_CXL_UV_Pulse_Duration extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'ophtroperationnote_cxl_uv_pulse_duration';
+        return 'ophciexamination_slit_lamp_cornea';
     }
 
     /**
@@ -58,7 +63,7 @@ class OphTrOperationnote_CXL_UV_Pulse_Duration extends BaseActiveRecordVersioned
             array('name', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, defaultChoice', 'safe', 'on' => 'search'),
+            array('id, name', 'safe', 'on' => 'search'),
         );
     }
 
@@ -76,13 +81,14 @@ class OphTrOperationnote_CXL_UV_Pulse_Duration extends BaseActiveRecordVersioned
         );
     }
 
-
     /**
      * @return array customized attribute labels (name=>label)
      */
     public function attributeLabels()
     {
         return array(
+            'id' => 'ID',
+            'name' => 'Name',
         );
     }
 
@@ -96,20 +102,14 @@ class OphTrOperationnote_CXL_UV_Pulse_Duration extends BaseActiveRecordVersioned
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new CDbCriteria();
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
-        $criteria->compare('defaultChoice', $this->defaultChoice, true);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
-    }
-    public function getDefault()
-    {
-        $defaultId = $this->find("defaultChoice = 1");
-        return $defaultId->id;
     }
     public function getName($id)
     {

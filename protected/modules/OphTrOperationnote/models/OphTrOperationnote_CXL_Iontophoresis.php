@@ -106,5 +106,9 @@ class OphTrOperationnote_CXL_Iontophoresis extends BaseActiveRecordVersioned
         ));
     }
 
-
+    public function getName($id)
+    {
+        $chosenName = $this->find("id = " . $id);
+        return $chosenName->name;
+    }
 }

@@ -63,11 +63,11 @@ class Element_OphCiExamination_Slit_Lamp extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('eye_id, allergic_conjunctivitis_id, blepharitis_id, dry_eye_id', 'safe'),
+            array('eye_id, allergic_conjunctivitis_id, blepharitis_id, dry_eye_id, cornea_id', 'safe'),
 
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, eye_id, event_id, allergic_conjunctivitis_id, blepharitis_id, dry_eye_id', 'safe', 'on' => 'search'),
+            array('id, eye_id, event_id, allergic_conjunctivitis_id, blepharitis_id, dry_eye_id, cornea_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -97,7 +97,8 @@ class Element_OphCiExamination_Slit_Lamp extends \SplitEventTypeElement
             'event_id' => 'Event',
             'allergic_conjunctivitis_id' => 'Allergic Conjunctivitis',
             'blepharitis_id' => 'Blepharitis',
-            'dry_eye_id' => 'Dry Eye'
+            'dry_eye_id' => 'Dry Eye',
+            'cornea_id' => 'Cornea'
         );
     }
 
@@ -119,6 +120,7 @@ class Element_OphCiExamination_Slit_Lamp extends \SplitEventTypeElement
         $criteria->compare('allergic_conjunctivitis_id', $this->allergic_conjunctivitis_id);
         $criteria->compare('blepharitis_id', $this->blepharitis_id);
         $criteria->compare('dry_eye_id', $this->dry_eye_id);
+        $criteria->compare('cornea_id', $this->cornea_id);
 
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,

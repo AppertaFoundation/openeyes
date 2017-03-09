@@ -111,5 +111,9 @@ class OphCiExamination_CXL_Ocular_Surface_Disease extends \SplitEventTypeElement
             'criteria' => $criteria,
         ));
     }
-
+    public function getName($id)
+    {
+        $chosenName = $this->find("id = " . $id);
+        return $chosenName->name;
+    }
 }

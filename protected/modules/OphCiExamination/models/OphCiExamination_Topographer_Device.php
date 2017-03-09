@@ -111,5 +111,9 @@ class OphCiExamination_Topographer_device extends \SplitEventTypeElement
                 'criteria' => $criteria,
         ));
     }
-
+    public function getName($id)
+    {
+        $chosenName = $this->find("id = " . $id);
+        return $chosenName->name;
+    }
 }

@@ -111,4 +111,9 @@ class OphTrOperationnote_CXL_Protocol extends BaseActiveRecordVersioned
         $defaultId = $this->find("defaultChoice = 1");
         return $defaultId->id;
     }
+    public function getName($id)
+    {
+        $chosenName = $this->find("id = " . $id);
+        return $chosenName->name;
+    }
 }

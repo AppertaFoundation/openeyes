@@ -111,5 +111,9 @@ class OphCiExamination_Slit_Lamp_Conditions extends \SplitEventTypeElement
             'criteria' => $criteria,
         ));
     }
-
+    public function getName($id)
+    {
+        $chosenName = $this->find("id = " . $id);
+        return $chosenName->name;
+    }
 }

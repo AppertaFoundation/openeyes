@@ -22,15 +22,13 @@
         <div class="data-value column large-4">
             <?php echo $element->getAttributeLabel('specular_microscope_id')?>:
             <?php
-            $spec_micro = OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->find('id=?', $element->specular_microscope_id);
-            echo $spec_micro->name;
+            echo OEModule\OphCiExamination\models\OphCiExamination_Specular_Microscope::model()->getName($element->specular_microscope_id);
             ?>
         </div>
         <div class="data-value column large-4">
             <?php echo $element->getAttributeLabel('scan_quality_id')?>:
             <?php
-            $scan_quality = OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->find('id=?', $element->scan_quality_id);
-            echo $scan_quality->name;
+            echo OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->getName($element->scan_quality_id);
             ?>
         </div>
         <div class="data-value column large-4">

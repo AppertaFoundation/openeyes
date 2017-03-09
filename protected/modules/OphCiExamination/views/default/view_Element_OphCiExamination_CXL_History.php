@@ -44,7 +44,6 @@
         <div class="data-value column large-4">
             <?php echo $element->getAttributeLabel('hayfever_id')?>:
             <?php
-            $hayfever_id = $element->hayfever_id;
             echo yesOrNo($element->hayfever_id);
             ?>
         </div>
@@ -54,8 +53,7 @@
         <div class="data-value column large-12">
                     <?php echo $element->getAttributeLabel('ocular_surface_disease_id')?>:
                     <?php
-                    $ocular_surface_disease_id = OEModule\OphCiExamination\models\OphCiExamination_CXL_Ocular_Surface_Disease::model()->find('id=?', $element->ocular_surface_disease_id);
-                    echo $ocular_surface_disease_id->name;
+                    echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Ocular_Surface_Disease::model()->getName($element->ocular_surface_disease_id);
                     ?>
         </div>
     </div>

@@ -111,5 +111,9 @@ class OphCiExamination_CXL_Quality_Score extends \SplitEventTypeElement
             'criteria' => $criteria,
         ));
     }
-
+    public function getName($id)
+    {
+        $chosenName = $this->find("id = " . $id);
+        return $chosenName->name;
+    }
 }

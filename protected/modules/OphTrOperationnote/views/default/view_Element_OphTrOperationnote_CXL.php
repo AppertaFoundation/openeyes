@@ -31,8 +31,7 @@
                 </h4>
                 <div class="data-value">
                     <?php
-                    $protocolName = OphTrOperationnote_CXL_Protocol::model()->find('id=?', $element->protocol_id);
-                    echo $protocolName->name;
+                    echo OphTrOperationnote_CXL_Protocol::model()->getName($element->protocol_id);
                     ?>
                 </div>
             </div>
@@ -42,8 +41,7 @@
                 </h4>
                 <div class="data-value">
                     <?php
-                    $deviceName = OphTrOperationnote_CXL_Device::model()->find('id=?', $element->device_id);
-                    echo $deviceName->name;
+                    echo OphTrOperationnote_CXL_Device::model()->getName($element->device_id);
                     ?>
                 </div>
             </div>
@@ -54,8 +52,7 @@
                 <div class="data-value">
                     <?php
                     if($element->epithelial_removal_method_id){
-                    $epiremmetName = OphTrOperationnote_CXL_Epithelial_Removal_Method::model()->find('id=?', $element->epithelial_removal_method_id);
-                    echo $epiremmetName->name;
+                    echo OphTrOperationnote_CXL_Epithelial_Removal_Method::model()->getName($element->epithelial_removal_method_id);
                     }
                     ?>
                 </div>
@@ -66,8 +63,7 @@
                 </h4>
                 <div class="data-value">
                     <?php
-                    $epithelial_removal_diameter_id = OphTrOperationnote_CXL_Epithelial_Removal_Diameter::model()->find('id=?', $element->epithelial_removal_diameter_id);
-                    echo $epithelial_removal_diameter_id->name;
+                    echo OphTrOperationnote_CXL_Epithelial_Removal_Diameter::model()->getName($element->epithelial_removal_diameter_id);
                     ?>
                 </div>
             </div>
@@ -78,8 +74,7 @@
                 <div class="data-value">
                     <?php
                     if($element->iontophoresis_id){
-                    $iontophoresis_id = OphTrOperationnote_CXL_Iontophoresis::model()->find('id=?', $element->iontophoresis_id);
-                    echo $iontophoresis_id->name;
+                    echo OphTrOperationnote_CXL_Iontophoresis::model()->getName($element->iontophoresis_id);
                     }
                     ?>
                 </div>
@@ -116,8 +111,7 @@
                 <div class="data-value">
                     <?php
                     if($element->riboflavin_preparation_id){
-                    $riboflavin_preparation_id = OphTrOperationnote_CXL_Riboflavin_Preparation::model()->find('id=?', $element->riboflavin_preparation_id);
-                    echo $riboflavin_preparation_id->name;
+                    echo OphTrOperationnote_CXL_Riboflavin_Preparation::model()->getName($element->riboflavin_preparation_id);
                     }
                     ?>
                 </div>
@@ -130,9 +124,7 @@
                 </h4>
                 <div class="data-value">
                     <?php
-                    $interval_between_drops_id = OphTrOperationnote_CXL_Interval_Between_Drops::model()->find('id=?',
-                        $element->interval_between_drops_id);
-                    echo $interval_between_drops_id->name;
+                    echo OphTrOperationnote_CXL_Interval_Between_Drops::model()->getName($element->interval_between_drops_id);
                     ?>
                 </div>
             </div>
@@ -142,9 +134,7 @@
                 </h4>
                 <div class="data-value">
                     <?php
-                    $soak_duration_range_id = OphTrOperationnote_CXL_Soak_Duration::model()->find('id=?',
-                        $element->soak_duration_range_id);
-                    echo $soak_duration_range_id->name;
+                    echo OphTrOperationnote_CXL_Soak_Duration::model()->getName($element->soak_duration_range_id);
                     ?>
                 </div>
             </div>
@@ -154,9 +144,7 @@
                 </h4>
                 <div class="data-value">
                     <?php
-                    $uv_irradiance_range_id = OphTrOperationnote_CXL_UV_Irradiance_Range::model()->find('id=?',
-                        $element->uv_irradiance_range_id);
-                    echo $uv_irradiance_range_id->name . " mW/cm2";
+                    echo OphTrOperationnote_CXL_UV_Irradiance_Range::model()->getName($element->uv_irradiance_range_id) . " mW/cm2";
                     ?>
                 </div>
             </div>
@@ -166,9 +154,7 @@
                 </h4>
                 <div class="data-value">
                     <?php
-                    $total_exposure_time_id = OphTrOperationnote_CXL_Total_Exposure_Time::model()->find('id=?',
-                        $element->total_exposure_time_id);
-                    echo $total_exposure_time_id->name . ' minutes';
+                    echo OphTrOperationnote_CXL_Total_Exposure_Time::model()->getName($element->total_exposure_time_id) . ' minutes';
                     ?>
                 </div>
             </div>
@@ -192,9 +178,7 @@
                 </h4>
                 <div class="data-value">
                     <?php
-                    $uv_pulse_duration_id = OphTrOperationnote_CXL_UV_Pulse_Duration::model()->find('id=?',
-                        $element->uv_pulse_duration_id);
-                    echo $uv_pulse_duration_id->name;
+                    echo OphTrOperationnote_CXL_UV_Pulse_Duration::model()->getName($element->uv_pulse_duration_id);
                     ?>
                 </div>
             </div>
@@ -204,9 +188,7 @@
                 </h4>
                 <div class="data-value">
                     <?php
-                    $interpulse_duration_id = OphTrOperationnote_CXL_Interpulse_Duration::model()->find('id=?',
-                        $element->interpulse_duration_id);
-                    echo $interpulse_duration_id->name;
+                    echo OphTrOperationnote_CXL_Interpulse_Duration::model()->getName($element->interpulse_duration_id);
                     ?>
                 </div>
             </div>
