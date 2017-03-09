@@ -127,10 +127,7 @@ class OphCoCorrespondence_API extends BaseAPI
 
     public function getOphthalmicDiagnoses(\Patient $patient)
     {
-        $allDiagnoses ='';
-        foreach ($patient->ophthalmicDiagnoses as $diagnosis) {
-            return $diagnosis->eye->adjective . ' ' . $diagnosis->disorder->term;
-        }
+        return $patient->getUniqueDiagnosesString('- ', "\r\n", true);
     }
 
     public function getLastIOLType(\Patient $patient)
