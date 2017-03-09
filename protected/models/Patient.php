@@ -421,12 +421,12 @@ class Patient extends BaseActiveRecordVersioned
         
         foreach($this->episodes as $oneEpisode){
             if($oneEpisode->diagnosis){
-                $allEpisodesDiagnoses[] = $oneEpisode->eye->adjective . '  ' . $oneEpisode->diagnosis->term;
+                $allEpisodesDiagnoses[] = $oneEpisode->eye->adjective . ' ' . $oneEpisode->diagnosis->term;
             }
         }
         
         foreach( $this->ophthalmicDiagnoses as $oneDiagnosis ){
-            $allOphthalmicDiagnoses[] = $oneDiagnosis->eye->adjective . '  ' . $oneDiagnosis->disorder->term;
+            $allOphthalmicDiagnoses[] = $oneDiagnosis->eye->adjective . ' ' . $oneDiagnosis->disorder->term;
         }
         
         return array_merge($allOphthalmicDiagnoses,$allEpisodesDiagnoses);
