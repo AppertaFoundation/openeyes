@@ -275,4 +275,20 @@ class OphTrOperationnote_API extends BaseAPI
         return $details;
     }
 
+    /**
+     * Get the last operation comments
+     * @param Patient $patient
+     * @return string
+     */
+    public function getLastOperationComments(\Patient $patient)
+    {
+        $comments = '';
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            $comments = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_Comments');
+            if ($comments) {
+                return $comments->comments;
+            }
+        }
+        return $comments;
+    }
 }
