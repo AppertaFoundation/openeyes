@@ -29,7 +29,9 @@ class m170308_180514_create_prescription_edit_reasons_table extends CDbMigration
             ));
 
 	    $this->addColumn('et_ophdrprescription_details', 'edit_reason_id', 'int NULL');
+	    $this->addColumn('et_ophdrprescription_details', 'edit_reason_other', 'varchar(256) NULL');
         $this->addColumn('et_ophdrprescription_details_version', 'edit_reason_id', 'int NULL');
+        $this->addColumn('et_ophdrprescription_details_version', 'edit_reason_other', 'varchar(256) NULL');
 	    $this->addForeignKey(
 	        'et_ophdrprescription_details_edit_reason_fk',
             'et_ophdrprescription_details',
@@ -37,6 +39,12 @@ class m170308_180514_create_prescription_edit_reasons_table extends CDbMigration
             'ophdrprescription_edit_reasons',
             'id'
         );
+
+        $this->insert('ophdrprescription_edit_reasons',
+            array(
+                'caption' => 'Other, please specify:',
+                'display_order' => 99
+            ));
 
 	    $this->insert('ophdrprescription_edit_reasons',
             array(
@@ -55,6 +63,8 @@ class m170308_180514_create_prescription_edit_reasons_table extends CDbMigration
                 'caption' => 'Original drug not available, alternative dispensed',
                 'display_order' => 3
             ));
+
+
 	}
 
 	public function safeDown()
@@ -63,7 +73,9 @@ class m170308_180514_create_prescription_edit_reasons_table extends CDbMigration
             'et_ophdrprescription_details_edit_reason_fk',
             'et_ophdrprescription_details');
 	    $this->dropColumn('et_ophdrprescription_details', 'edit_reason_id');
+        $this->dropColumn('et_ophdrprescription_details', 'edit_reason_other');
         $this->dropColumn('et_ophdrprescription_details_version', 'edit_reason_id');
+        $this->dropColumn('et_ophdrprescription_details_version', 'edit_reason_other');
 	    $this->dropTable('ophdrprescription_edit_reasons');
 	}
 

@@ -57,7 +57,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, comments, draft, print', 'safe'),
+            array('event_id, comments, draft, print, edit_reason_id, edit_reason_other', 'safe'),
             array('items', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.

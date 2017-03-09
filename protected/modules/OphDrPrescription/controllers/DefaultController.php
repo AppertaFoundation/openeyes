@@ -559,12 +559,20 @@ class DefaultController extends BaseEventTypeController
 
     public function actionUpdate($id, $reason = null)
     {
+        global $reason_other_text;
+
         if(is_null($reason))
         {
             $this->render('ask_reason', array('id'=>$id));
         }
         else
         {
+            if(isset($_POST['do_not_save']) && $_POST['do_not_save']=='1')
+            {
+                $reason_other_text = isset($_POST['reason_other']) ? $_POST['reason_other'] : '';
+                $_POST=null;
+            }
+
             parent::actionUpdate($id);
         }
     }

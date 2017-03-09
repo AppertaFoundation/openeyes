@@ -11,14 +11,19 @@
 $reasons = OphDrPrescriptionEditReasons::model()->findAll(array('order'=>'display_order', 'condition'=>'active = 1'));
 
 ?>
-
-<?php foreach ($reasons as $key=>$reason): ?>
+<?php echo CHtml::form('/OphDrPrescription/default/update/'.$id.'?reason=0', 'post'); ?>
+    <input type="hidden" name="do_not_save" value="1" />
+    <?php foreach ($reasons as $key=>$reason): ?>
+        <div>
+            <input type="radio" value="<?php echo $reason->id; ?>" name="reason" id="reason_<?php echo $reason->id; ?>"  />
+            <label style="display: inline" for="reason_<?php echo $reason->id; ?>"><?php echo htmlentities($reason->caption); ?></label>
+        </div>
+    <?php endforeach; ?>
     <div>
-        <input type="radio" value="<?php echo $reason->id; ?>" name="reason" id="reason_<?php echo $reason->id; ?>" onclick="window.location.href='/OphDrPrescription/default/update/<?php echo $id; ?>?reason=<?php echo $reason->id; ?>';" />
-        <label style="display: inline" for="reason_<?php echo $reason->id; ?>" onclick="window.location.href='/OphDrPrescription/default/update/<?php echo $id; ?>?reason=<?php echo $reason->id; ?>';"><?php echo htmlentities($reason->caption); ?></label>
+        <input style="width: 350px; margin-left: 20px;" readonly type="text" id="reason_other_text" name="reason_other" />
     </div>
-<?php endforeach; ?>
-
+    <button type="submit" class="secondary small">Continue</button>
+<?php echo CHtml::endForm() ?>
 <br/>
 <p style="color: red;">Any old paper copies of this prescription MUST BE DESTROYED.</p>
 
@@ -27,5 +32,15 @@ $reasons = OphDrPrescriptionEditReasons::model()->findAll(array('order'=>'displa
 <script type="text/javascript">
     $(function(){
         window.onbeforeunload = null;
+        $(document).on("change","input[name='reason']", function(){
+            if($(this).val()=='1')
+            {
+                $('#reason_other_text').removeAttr("readonly").focus();
+            }
+            else
+            {
+                $('#reason_other_text').val("").attr("readonly", "readonly");
+            }
+        });
     });
 </script>

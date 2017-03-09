@@ -16,6 +16,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+global $reason_other_text;
 ?>
 
 <?php $this->beginContent('//patient/event_container'); ?>
@@ -32,6 +34,7 @@
         ?>
 
 		<input type="hidden" id="Element_OphDrPrescription_Details_edit_reason_id" name="Element_OphDrPrescription_Details[edit_reason_id]" value="<?php echo htmlentities($_GET['reason']); ?>" />
+		<input type="hidden" id="Element_OphDrPrescription_Details_edit_reason_other_text" name="Element_OphDrPrescription_Details[edit_reason_other]" value="<?php echo htmlentities($reason_other_text); ?>" />
 
         <?php $this->displayErrors($errors)?>
         <?php $this->renderOpenElements($this->action->id, $form); ?>
