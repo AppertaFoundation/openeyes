@@ -5486,13 +5486,7 @@ tfoot.pagination-container .pagination-view-all {
   position: absolute;
   right: 0;
 }
-@media screen {
 /* line 118, ../sass/openeyes/components/panels/_patient.scss */
-  .stuck .panel.patient .patient-summary-anchor {
-    display: none;
-  }
-}
-/* line 123, ../sass/openeyes/components/panels/_patient.scss */
 .panel.patient .clinical-summary-anchor {
   bottom: 12px;
   font-size: 0.6875rem;
