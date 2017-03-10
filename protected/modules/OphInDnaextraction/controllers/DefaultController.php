@@ -202,5 +202,5 @@ class DefaultController extends BaseEventTypeController
         $element = new Element_OphInDnaextraction_DnaExtraction();
         $this->renderPartial('_boxSelectRefresh', array('element'=> $element), false, true);
     }
-    
+
 }
