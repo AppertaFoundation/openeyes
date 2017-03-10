@@ -223,10 +223,22 @@ class ModelSearch
 
         if (is_array($search)) {
             $this->searching = true;
+            
             foreach ($search as $key => $value) {
+                
                 if ($key === 'exact') {
                     continue;
                 }
+                
+                if($key === 'precision' ){
+                    if(is_array($value)){
+                        foreach($value as $_key => $_value){
+                            $this->addCompare($this->criteria, $_key, $_value, $sensitive, 'AND', true);
+                        }
+                    }
+                    continue;
+                }
+                
                 $exactMatch = (isset($search['exact'][$key]) && $search['exact'][$key]);
                 if (!is_array($value)) {
                     $this->addCompare($this->criteria, $key, $value, $sensitive, 'AND', $exactMatch);
