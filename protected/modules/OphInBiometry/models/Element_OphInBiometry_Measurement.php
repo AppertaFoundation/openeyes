@@ -40,6 +40,34 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
     public $service;
 
     /**
+     * set defaults
+     */    
+    public function init(){
+        $this->axial_length_left = null;
+        $this->axial_length_right = null;
+        
+        $this->k1_left = null;
+        $this->k1_right = null;
+        $this->k2_left = null;
+        $this->k2_right = null;
+        
+        $this->axis_k1_left = null;
+        $this->axis_k1_right = null;
+        
+        $this->delta_k_left = null;
+        $this->delta_k_right = null;
+        $this->delta_k_axis_left = null;
+        $this->delta_k_axis_right = null;
+        
+        $this->k2_axis_left = null;
+        $this->k2_axis_right = null;
+        $this->acd_left = null;
+        $this->acd_right = null;
+        $this->snr_left = null;
+        $this->snr_right = null;
+    }
+    
+    /**
      * Returns the static model of the specified AR class.
      *
      * @return the static model class

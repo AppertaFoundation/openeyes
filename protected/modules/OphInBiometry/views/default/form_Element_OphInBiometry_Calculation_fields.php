@@ -1,7 +1,7 @@
 
 <div class="element-fields">
 
-	<?php echo $form->textField($element, 'target_refraction_'.$side, null, null, array('label' => 4, 'field' => 2))?>
+	<?php echo $form->textField($element, 'target_refraction_'.$side, array('placeholder'=>'0.00'), null, array('label' => 4, 'field' => 2))?>
 
 	<?php //echo $form->dropDownList($element, 'formula_id_'.$side, CHtml::listData(OphInBiometry_Calculation_Formula::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'),null,array('label'=>3, 'field'=>6))?>
 	<!--
