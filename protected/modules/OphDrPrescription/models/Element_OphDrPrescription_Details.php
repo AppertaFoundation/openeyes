@@ -260,7 +260,12 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
 
         return parent::afterValidate();
     }
-
+/*
+    protected function beforeSave()
+    {
+        var_dump($this->getAttributes()); exit;
+    }
+*/
     protected function afterSave()
     {
         if($this->draft)

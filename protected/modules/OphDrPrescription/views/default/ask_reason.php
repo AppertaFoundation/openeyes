@@ -11,7 +11,7 @@
 $reasons = OphDrPrescriptionEditReasons::model()->findAll(array('order'=>'display_order', 'condition'=>'active = 1'));
 
 ?>
-<?php echo CHtml::form('/OphDrPrescription/default/update/'.$id.'?reason=0', 'post'); ?>
+<?php echo CHtml::form('/OphDrPrescription/default/update/'.$id.'?reason=selected', 'post'); ?>
     <input type="hidden" name="do_not_save" value="1" />
     <?php foreach ($reasons as $key=>$reason): ?>
         <div>

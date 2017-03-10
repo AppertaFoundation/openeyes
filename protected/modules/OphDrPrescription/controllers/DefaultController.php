@@ -559,6 +559,7 @@ class DefaultController extends BaseEventTypeController
 
     public function actionUpdate($id, $reason = null)
     {
+        global $reason_id;
         global $reason_other_text;
 
         if(is_null($reason))
@@ -569,6 +570,7 @@ class DefaultController extends BaseEventTypeController
         {
             if(isset($_POST['do_not_save']) && $_POST['do_not_save']=='1')
             {
+                $reason_id = isset($_POST['reason']) ? $_POST['reason'] : 0;
                 $reason_other_text = isset($_POST['reason_other']) ? $_POST['reason_other'] : '';
                 $_POST=null;
             }
