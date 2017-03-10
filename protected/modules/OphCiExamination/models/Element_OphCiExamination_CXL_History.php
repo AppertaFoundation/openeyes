@@ -41,6 +41,7 @@ namespace OEModule\OphCiExamination\models;
  * @property int $eczema_id
  * @property int $hayfever_id
  * @property int $ocular_surface_disease_id
+ * @property int $eye_rubber_id
  *
  * The followings are the available model relations:
  */
@@ -77,13 +78,13 @@ class Element_OphCiExamination_CXL_History extends \SplitEventTypeElement
         return array(
             array('eye_id, left_previous_cxl_value, right_previous_cxl_value, left_previous_refractive_value, right_previous_refractive_value,
             left_intacs_kera_ring_value, right_intacs_kera_ring_value, left_trans_prk_value, right_trans_prk_value, left_previous_hsk_keratitis_value, 
-            right_previous_hsk_keratitis_value, asthma_id, eczema_id, hayfever_id, ocular_surface_disease_id', 'safe'),
+            right_previous_hsk_keratitis_value, asthma_id, eczema_id, hayfever_id, ocular_surface_disease_id, eye_rubber_id', 'safe'),
 
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, eye_id, event_id, left_previous_cxl_value, right_previous_cxl_value, left_previous_refractive_value, right_previous_refractive_value,
             left_intacs_kera_ring_value, right_intacs_kera_ring_value, left_trans_prk_value, right_trans_prk_value, left_previous_hsk_keratitis_value, 
-            right_previous_hsk_keratitis_value, asthma_id, eczema_id, hayfever_id, ocular_surface_disease_id', 'safe', 'on' => 'search'),
+            right_previous_hsk_keratitis_value, asthma_id, eczema_id, hayfever_id, ocular_surface_disease_id, eye_rubber_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -124,7 +125,8 @@ class Element_OphCiExamination_CXL_History extends \SplitEventTypeElement
             'asthma_id' => 'Asthma',
             'eczema_id' => 'Eczema',
             'hayfever_id' => 'Hayfever',
-            'ocular_surface_disease_id' => 'Ocular Surface Disease'
+            'ocular_surface_disease_id' => 'Ocular Surface Disease',
+            'eye_rubber_id' => 'Eye Rubber'
         );
     }
 
@@ -156,6 +158,7 @@ class Element_OphCiExamination_CXL_History extends \SplitEventTypeElement
         $criteria->compare('eczema_id', $this->eczema_id);
         $criteria->compare('hayfever_id', $this->hayfever_id);
         $criteria->compare('ocular_surface_disease_id', $this->ocular_surface_disease_id);
+        $criteria->compare('eye_rubber_id', $this->eye_rubber_id);
 
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,

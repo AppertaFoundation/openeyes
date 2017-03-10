@@ -19,56 +19,22 @@
 ?>
 <div class="element-data">
     <div class="data-row">
-        <div class="large-3 column">
-            <div class="data-label">
-                <?php echo $element->getAttributeLabel('topographer_id')?>:
-            </div>
-        </div>
-        <div class="large-3 column">
-            <div class="data-value">
-                <?php
-                echo OEModule\OphCiExamination\models\OphCiExamination_Topographer_device::model()->getName($element->topographer_id);
-                ?>
-            </div>
-        </div>
-        <div class="large-3 column">
-            <div class="data-label">
-            <?php echo $element->getAttributeLabel('topographer_scan_quality_id')?>:
-            </div>
-        </div>
-        <div class="large-3 column">
-            <div class="data-value">
-                <?php
-                echo OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->getName($element->topographer_scan_quality_id);
-                ?>
-            </div>
-        </div>
     </div>
     <div class="data-row">
-        <div class="large-3 column">
+        <div class="large-2 column">
             <div class="data-label">
                 <?php echo $element->getAttributeLabel('tomographer_id')?>:
             </div>
         </div>
-        <div class="large-3 column">
+        <div class="large-2 column">
             <div class="data-value">
                 <?php
                 echo OEModule\OphCiExamination\models\OphCiExamination_Tomographer_device::model()->getName($element->tomographer_id);
                 ?>
             </div>
         </div>
-        <div class="large-3 column">
-            <div class="data-label">
-                <?php echo $element->getAttributeLabel('tomographer_scan_quality_id')?>:
+        <div class="large-8 column">
             </div>
-        </div>
-        <div class="large-3 column">
-            <div class="data-value">
-                <?php
-                echo OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->getName($element->tomographer_scan_quality_id);
-                ?>
-            </div>
-        </div>
     </div>
 </div>
 

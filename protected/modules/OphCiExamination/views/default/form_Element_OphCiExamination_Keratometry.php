@@ -23,17 +23,6 @@
 ?>
 <div class="element-fields row">
 	<div class="large-2 column">
-		<label><?php echo $element->getAttributeLabel('topographer_id')?>:</label>
-	</div>
-	<div class="large-2 column">
-	<?php
-	$allTopographerDevice = \OEModule\OphCiExamination\models\OphCiExamination_Topographer_device::model()->findAll(array('order' => 'display_order'));
-	echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[topographer_id]',
-		$element->topographer_id,
-		CHtml::listData($allTopographerDevice, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
-	</div>
-	<div class="large-2 column"> </div>
-	<div class="large-2 column">
 		<label><?php echo $element->getAttributeLabel('tomographer_id')?>:</label>
 	</div>
 	<div class="large-2 column">
@@ -42,30 +31,6 @@
 		echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[tomographer_id]',
 			$element->tomographer_id,
 			CHtml::listData($allTomographerDevice, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
-	</div>
-	<div class="large-2 column"> </div>
-</div>
-<div class="element-fields row">
-	<div class="large-2 column">
-		<label><?php echo $element->getAttributeLabel('topographer_scan_quality_id')?>:</label>
-	</div>
-	<div class="large-2 column">
-			<?php
-			$allScanQuality = \OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->findAll(array('order' => 'display_order'));
-			echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[topographer_scan_quality_id]',
-				$element->topographer_scan_quality_id,
-				CHtml::listData($allScanQuality, 'id', 'name')); ?>
-	</div>
-	<div class="large-2 column"> </div>
-	<div class="large-2 column">
-		<label><?php echo $element->getAttributeLabel('tomographer_scan_quality_id')?>:</label>
-	</div>
-	<div class="large-2 column">
-		<?php
-		$allScanQuality = \OEModule\OphCiExamination\models\OphCiExamination_Scan_Quality::model()->findAll(array('order' => 'display_order'));
-		echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[tomographer_scan_quality_id]',
-			$element->tomographer_scan_quality_id,
-			CHtml::listData($allScanQuality, 'id', 'name')); ?>
 	</div>
 	<div class="large-2 column"> </div>
 </div>
