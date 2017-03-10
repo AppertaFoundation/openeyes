@@ -462,7 +462,7 @@ class DefaultController extends BaseEventTypeController
             $this->pdf_print_suffix = 'all';
             $this->pdf_print_documents = count($print_outputs);
         }
-
+        
         if( $print_outputs ){
             foreach($print_outputs as $output){
                 $output->output_status = "COMPLETE";

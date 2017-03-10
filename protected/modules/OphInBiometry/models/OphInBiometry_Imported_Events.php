@@ -103,6 +103,6 @@ class OphInBiometry_Imported_Events extends BaseActiveRecord
      */
     public function is700()
     {
-        return $this->device_id === 'IOLMASTER700';
+        return $this->device_model === 'IOLMaster 700';
     }
 }
