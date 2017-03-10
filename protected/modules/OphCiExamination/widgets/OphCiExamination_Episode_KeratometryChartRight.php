@@ -61,6 +61,7 @@ class OphCiExamination_Episode_KeratometryChartRight extends \EpisodeSummaryWidg
             ->configureYAxis("KmaxY", array('position' => 'right', 'min' => 30, 'max' => 80))
             ->configureSeries('Kmax', array('yaxis' => "KmaxY", 'lines' => array('show' => true), 'points' => array('show' => true)))
             ->configureSeries('K1', array('yaxis' => $this->kera_axis, 'lines' => array('show' => true), 'points' => array('show' => true)))
+//            ->configureSeries('CXL Op', array('yaxis' => $this->kera_axis, 'lines' => array('show' => true), 'points' => array('show' => true)))
             ->configureSeries('K2', array('yaxis' => $this->kera_axis, 'lines' => array('show' => true), 'points' => array('show' => true)));
 
         return $chart;
@@ -76,49 +77,11 @@ class OphCiExamination_Episode_KeratometryChartRight extends \EpisodeSummaryWidg
                     $this->addKeraReading($event, $chart, $reading);
                 }
         }
-        $episode = $this->episode;
-        if ($eventtype = EventType::model()->find('class_name = "OphCiExamination"')){
-            $eventtypeid = $eventtype->id;
-        }
+        // For Operation Date line - just need to get the date from Op Note for this patient for Cross-Linking
+        // And also uncomment CXL Op series above.
+        //$chart->addPoint("CXL Op", Helper::mysqlDate2JsTimestamp($event->event_date), '1', "Op");
+        //$chart->addPoint("CXL Op", Helper::mysqlDate2JsTimestamp($event->event_date), '180', "Op");
 
-        $data = '';
-        /// GET VA
-        if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-
-            //Get All Events for episode.
-            $criteria = new CDbCriteria();
-            $criteria->condition = 'episode_id = :e_id AND event_type_id = :e_typeid';
-            $criteria->order = ' event_date DESC';
-            $criteria->params = array(':e_id' => $episode->id, ':e_typeid' => $eventtypeid);
-
-            //For each event, check if =event_id in _visualacuity.
-
-            if($events = Event::model()->findAll($criteria)){
-                for ($i = 0; $i < count($events); ++$i) {
-                    // Get Most Recent VA
-                    $vaID = $api->getMostRecentVA($events[$i]->id);
-                    if($vaID && !$data){
-                        $data = $api->getMostRecentVAData($vaID->id);
-                        $chosenVA = $vaID;
-                        $VAdate = "- (exam date " . date("d M Y", strtotime($events[$i]->event_date)) . ")";
-                    }
-                }
-            }
-            $unitId = $chosenVA->unit_id;
-
-            for ($i = 0; $i < count($data); ++$i) {
-                if($data[$i]->side == 1){
-                    $leftData[] = $data[$i];
-                }
-            }
-
-            for ($i = 0; $i < count($leftData); ++$i) {
-                $VAfinalleft = $api->getVAvalue($leftData[$i]->value, $unitId);
-            }
-            //var_dump($VAfinalleft);
-            //var_dump($leftData);
-
-        }
     }
 
     /**
