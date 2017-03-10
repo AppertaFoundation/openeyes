@@ -17,12 +17,18 @@
 ?>
 
 <?php
-    echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, array(
+    $contact_types = array(
         'GP' => 'GP',
         'PATIENT' => 'Patient',
         'DRSS' => 'DRSS',
         'OTHER' => 'Other'
-        ), 
+    );
+
+    if($is_internal_referral){
+        $contact_types['INTERNALREFERRAL'] = 'Internal Referral';
+    }
+
+    echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, $contact_types,
         array(  'empty' => '- Type -',
                 'nowrapper' => true,
                 'class' => 'full-width docman_contact_type',

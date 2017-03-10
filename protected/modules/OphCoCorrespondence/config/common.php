@@ -26,6 +26,7 @@ return array(
         'admin_menu' => array(
             'Letter macros' => '/OphCoCorrespondence/admin/letterMacros',
             'Letter Snippets' => '/OphCoCorrespondence/oeadmin/snippetGroup/list',
+            'Letter Types' => '/OphCoCorrespondence/oeadmin/letterType/list',
         ),
     ),
 );

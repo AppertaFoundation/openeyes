@@ -569,6 +569,11 @@ class ElementLetter extends BaseEventTypeElement
             Yii::app()->user->setState('correspondece_element_letter_saved', true);
         }
 
+        $internal_refferral = Yii::app()->request->post('OphCoCorrespondence_InternalReferral');
+        if( Yii::app()->request->isPost && $internal_refferral){
+            $this->saveInternalRefferralData($internal_refferral);
+        }
+
         return parent::afterSave();
     }
 
@@ -769,6 +774,15 @@ class ElementLetter extends BaseEventTypeElement
         }
 
         return DocumentTarget::model()->findAll($criteria);
+    }
+
+    /**
+     * Saving the POSTed internal refferral related data
+     * @param $post_internal_referral
+     */
+    protected function saveInternalRefferralData($post_internal_referral){
+        CVarDumper::dump($_POST);
+        die;
     }
     
 }

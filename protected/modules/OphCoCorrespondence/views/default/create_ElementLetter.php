@@ -71,8 +71,16 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
         </div>
         <div class="large-2 column end">
             
-            <?php echo $form->dropDownList($element, 'letter_type_id', CHtml::listData(LetterType::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+            <?php echo $form->dropDownList($element, 'letter_type_id', CHtml::listData(LetterType::model()->findAll(array('condition' => 'is_active = 1', 'order' => 'name asc')), 'id', 'name'),
                 array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
+        </div>
+    </div>
+    <div class="row field-row"">
+        <div class="large-2 column">
+
+        </div>
+        <div class="large-9 column end" style="border:1px solid black">
+         <h3> Internal Referral Placeholder</h3>
         </div>
     </div>
 
@@ -150,6 +158,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                 'macro_id' => $macro_id,
                 'element' => $element,
                 'can_send_electronically' => true,
+                'is_internal_referral' => false,
                 'defaults' => array(
                     'To' => array(
                         'contact_id' => $contact_id,

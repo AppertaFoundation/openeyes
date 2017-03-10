@@ -53,7 +53,7 @@ class LetterType extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name', 'safe'),
+            array('name, is_active', 'safe'),
             array('name', 'required'),
         );
     }

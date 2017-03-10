@@ -182,6 +182,7 @@ class DocmanController extends BaseController
                 'selected_contact_type' => $selected_contact_type, 
                 'contact_name' => $contact_name,
                 'can_send_electronically' => isset($patient->gp) || isset($patient->practice),
+                'is_internal_referral' => true,
             )
         );
         $this->getApp()->end();

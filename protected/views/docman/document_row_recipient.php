@@ -29,7 +29,8 @@
     <td>
         <?php $this->renderPartial('//docman/table/contact_type', array(
                                         'contact_type' => isset($selected_contact_type) ? $selected_contact_type : null,
-                                        'row_index' => $row_index));
+                                        'row_index' => $row_index,
+                                        'is_internal_referral' => $is_internal_referral));
                             ?>
     </td>
     <td class="docman_delivery_method">
