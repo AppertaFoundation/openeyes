@@ -27,11 +27,13 @@ class DefaultController extends BaseEventTypeController
         'markPrinted' => self::ACTION_TYPE_PRINT,
     );
 
-    public function __construct($id, $module = null)
-    {
-        parent::__construct($id, $module);
 
-        $this->editable = (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
+    public function actionView($id)
+    {
+        $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
+
+        $this->editable = $model->draft || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
+        return parent::actionView($id);
     }
 
     /**
@@ -562,7 +564,9 @@ class DefaultController extends BaseEventTypeController
         global $reason_id;
         global $reason_other_text;
 
-        if(is_null($reason))
+        $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
+
+        if(is_null($reason) && !$model->draft)
         {
             $this->render('ask_reason', array('id'=>$id));
         }
