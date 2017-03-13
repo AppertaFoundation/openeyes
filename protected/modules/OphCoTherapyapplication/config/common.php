@@ -34,11 +34,11 @@ return array(
         // The email address that sends therapy applications (key/value pair of address to name)
         // 'OphCoTherapyapplication_sender_email' => array('email@test.com' => 'Test'),
         // The email address displayed in the standard non-compliant form
-        'OphCoTherapyapplication_applicant_email' => 'Amd.Fellow@moorfields.nhs.uk',
+        // 'OphCoTherapyapplication_applicant_email' => 'Amd.Fellow@moorfields.nhs.uk',
         // postal details of the chief pharmacist (string of name and address)
         // 'OphCoTherapyapplication_chief_pharmacist' => '',
         // contact details of the chief pharmacist (string)
-         'OphCoTherapyapplication_chief_pharmacist_contact' => 'Tel: 020-7566-2360\nPharmacyIFRreview@moorfields.nhs.uk',
+        // 'OphCoTherapyapplication_chief_pharmacist_contact' => 'Tel: 020-7566-2360\nPharmacyIFRreview@moorfields.nhs.uk',
         //'OphCoTherapyapplication_email_size_limit' => '10MB',
         // whether the user submitting the application should receive a copy of the submission email
         //'OphCoTherapyapplication_cc_applicant' => true,
