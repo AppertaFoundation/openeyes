@@ -37,20 +37,20 @@
 		<span class="icon-patient-panel-info has-tooltip"></span>
 		<div id='patient_general_informations' class='hidden'>
     		<div class="row data-row">
-    			<div class="large-4 column">
+    			<div class="large-3 column">
     				<div class="data-label">Born:</div>
     			</div>
-    			<div class="large-8 column">
+    			<div class="large-9 column">
     				<div class="data-value">
     					<?php echo ($this->patient->dob) ? $this->patient->NHSDate('dob') : 'Unknown' ?>
     				</div>
     			</div>
     		</div>
     		<div class="row data-row">
-    			<div class="large-4 column">
+    			<div class="large-3 column">
     				<div class="data-label">Address:</div>
     			</div>
-    			<div class="large-8 column">
+    			<div class="large-9 column">
     				<div class="data-value">
     					<?php echo $this->patient->getSummaryAddress()?>
     				</div>

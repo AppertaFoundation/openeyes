@@ -5325,6 +5325,12 @@ tfoot.pagination-container .pagination-view-all {
   height:16px;
 }
 
+/* line 185, ../sass/openeyes/components/panels/_patient.scss */
+.patient_general_information_tooltip {
+    width: 280px;
+    background-color: white;    
+}
+
 
 /* line 55, ../components/foundation/scss/foundation/components/_panels.scss */
 .panel.patient > :first-child {

@@ -1,6 +1,7 @@
 
 $(document).ready(function() {
 	var patientGeneralInfoToolTip = new OpenEyes.UI.Tooltip({
+	    className: 'patient_general_information_tooltip tooltip',
 		offset: {
 			x: 16,
 			y: 16
