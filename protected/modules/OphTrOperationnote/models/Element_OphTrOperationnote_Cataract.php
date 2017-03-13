@@ -375,4 +375,28 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
             }
         }
     }
+
+
+    /**
+     * Returns comma separated list of complications on this procedure note.
+     *
+     * @param $default
+     *
+     * @return string
+     */
+    public function getComplicationsString($default = 'None')
+    {
+        $res = array();
+        foreach ($this->complications as $comp) {
+            $res[] = $comp->name;
+        }
+        if ($this->complication_notes) {
+            $res[] = $this->complication_notes;
+        }
+        if ($res) {
+            return implode(', ', $res);
+        } else {
+            return $default;
+        }
+    }
 }

@@ -81,4 +81,25 @@ class Element_OphTrOperationnote_Trabeculectomy extends Element_OnDemand
 
         return parent::afterValidate();
     }
+
+
+    /**
+     * Returns comma separated list of complications on this procedure note.
+     *
+     * @param $default
+     *
+     * @return string
+     */
+    public function getComplicationsString($default = 'None')
+    {
+        $res = array();
+        foreach ($this->complications as $comp) {
+                $res[] = $comp->name;
+        }
+        if ($res) {
+            return implode(', ', $res);
+        } else {
+            return $default;
+        }
+    }
 }
