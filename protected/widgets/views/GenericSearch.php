@@ -101,8 +101,34 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())):
                                 ));
                             ?>
                         </div>
-                        <?php
-                        break;
+                    <?php
+                    break;
+                    case 'datepicker':
+                        ?><div><?php
+
+                        $datePickerID = (!isset($value['id']) ? 'datepicker-id' : $value['id'] );
+
+                        $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                            'name'  => $datePickerID,
+                            'value' => @$_GET[$datePickerID],
+                            'id'    => $datePickerID,
+                            'options' => array(
+                                'showAnim'      => 'fold',
+                                'changeMonth'   => true,
+                                'changeYear'    => true,
+                                'altFormat'    => 'yy-mm-dd',
+                                'altField'      => '#'.$datePickerID.'_alt',
+                                'dateFormat'     => Helper::NHS_DATE_FORMAT_JS,
+                            ),
+                            'htmlOptions' =>array(
+                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'placeholder' => $search->getModel()->getAttributeLabel($key),
+                            )
+                        ))
+                        ?>
+                        <input type="hidden" name="<?php echo $name ?>" id="<?php echo $datePickerID.'_alt' ?>" />
+                        </div> <?php
+                    break;
                 }
             else: ?>
                 <div>
