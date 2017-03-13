@@ -556,15 +556,25 @@ $(document).ready(function() {
 
 	$('#ElementLetter_body').tabby();
         
-        if( $('#dm_table').length > 0 ){
-            // we have docman table here
-            docman2 = docman;
-            docman2.baseUrl = location.protocol + '//' + location.host + '/docman/'; // TODO add this to the config!
-            docman2.setDOMid('docman_block','dm_');
-            docman2.module_correspondence = 1;
-            
-            docman2.init();
-        }
+	if( $('#dm_table').length > 0 ){
+        // we have docman table here
+        docman2 = docman;
+        docman2.baseUrl = location.protocol + '//' + location.host + '/docman/'; // TODO add this to the config!
+        docman2.setDOMid('docman_block','dm_');
+        docman2.module_correspondence = 1;
+
+        docman2.init();
+    }
+
+    $('#ElementLetter_letter_type_id').on('change', function(){
+		if( $(this).find('option:selected').text() == 'Internal Referral' ){
+            $('.internal-referrer-wrapper').slideDown();
+		} else {
+            $('.internal-referrer-wrapper').slideUp();
+		}
+
+	})
+
 });
 
 var et_oph_correspondence_body_cursor_position = 0;

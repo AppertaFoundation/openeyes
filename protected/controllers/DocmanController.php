@@ -235,12 +235,14 @@ class DocmanController extends BaseController
             }
         }
 
+        $element = new ElementLetter();
         echo $this->renderPartial('/docman/_create', array(
                 'row_index' => (isset($row_index) ? $row_index : 0),
                 'macro_data' => $macro_data,
                 'macro_id' => $macro_id,
-                'element' => (new ElementLetter()),
-                'can_send_electronically' => true
+                'element' => $element,
+                'can_send_electronically' => true,
+                'is_internal_referral' => $element->isInternalReferralEnabled()
             )
         );
     }

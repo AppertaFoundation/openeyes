@@ -64,9 +64,10 @@ class ElementLetter extends BaseEventTypeElement
         return array(
             array(
                 'event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date,' .
-                'print_all, is_signed_off',
+                'print_all, is_signed_off, to_service_id, to_consultant_id, is_urgent, is_same_condition',
                 'safe'
             ),
+            array('to_service_id, is_same_condition', 'internalReferralValidator'),
             array('letter_type_id', 'letterTypeValidator'),
             array('site_id, date, introduction, body, footer', 'requiredIfNotDraft'),
             array('use_nickname', 'required'),
@@ -96,6 +97,7 @@ class ElementLetter extends BaseEventTypeElement
             'enclosures' => array(self::HAS_MANY, 'LetterEnclosure', 'element_letter_id', 'order' => 'display_order'),
             'document_instance' => array(self::HAS_MANY, 'DocumentInstance', array( 'correspondence_event_id' => 'event_id')),
             'letterType' => array(self::BELONGS_TO, 'LetterType', 'letter_type_id'),
+            'internalReferral' => array(self::BELONGS_TO, 'OphCoCorrespondence_InternalReferral', 'element_id'),
         );
     }
 
@@ -114,8 +116,30 @@ class ElementLetter extends BaseEventTypeElement
             'draft' => 'Draft',
             'direct_line' => 'Direct line',
             'fax' => 'Direct fax',
-            'is_signed_off' => 'Approved by a clinician'
+            'is_signed_off' => 'Approved by a clinician',
+            'to_service_id' => 'To Service',
+            'to_consultant_id' => 'To Consultant',
+            'is_urgent' => 'Urgent',
+            'is_same_condition' => '',
         );
+    }
+
+    public function internalReferralValidator($attribute, $params)
+    {
+        $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
+
+        if(!$letter_type){
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ": 'Internal Referral' letter type is not enabled.");
+        } else if( $letter_type->id == $this->letter_type_id ){
+            // internal referral posted
+            if(!$this->to_service_id){
+                $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Please select a service.");
+            }
+
+            if(is_null($this->is_same_condition)){
+                $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Please select a condition.");
+            }
+        }
     }
 
     /**
@@ -510,7 +534,8 @@ class ElementLetter extends BaseEventTypeElement
     }
 
     public function beforeSave()
-    {        
+    {
+
         if (in_array(Yii::app()->getController()->getAction()->id, array('create', 'update'))) {
             if (isset($_POST['saveprint'])) {
                 $this->print = 1;
@@ -567,11 +592,6 @@ class ElementLetter extends BaseEventTypeElement
         
         if(isset($_POST['saveprint'])){
             Yii::app()->user->setState('correspondece_element_letter_saved', true);
-        }
-
-        $internal_refferral = Yii::app()->request->post('OphCoCorrespondence_InternalReferral');
-        if( Yii::app()->request->isPost && $internal_refferral){
-            $this->saveInternalRefferralData($internal_refferral);
         }
 
         return parent::afterSave();
@@ -776,13 +796,8 @@ class ElementLetter extends BaseEventTypeElement
         return DocumentTarget::model()->findAll($criteria);
     }
 
-    /**
-     * Saving the POSTed internal refferral related data
-     * @param $post_internal_referral
-     */
-    protected function saveInternalRefferralData($post_internal_referral){
-        CVarDumper::dump($_POST);
-        die;
+    public function isInternalReferralEnabled(){
+        return LetterType::model()->findByAttributes(array('name' => 'Internal Referral')) ? true : false;
     }
     
 }

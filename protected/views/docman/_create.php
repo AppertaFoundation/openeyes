@@ -58,7 +58,7 @@
                     <?php $this->renderPartial('//docman/table/contact_type', array(
                         'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
                         'row_index' => $row_index,
-                        'is_internal_referral' => $is_internal_referral,
+                        'is_internal_referral' => $element->isInternalReferralEnabled(),
                     ));
                     ?>
                 </td>
@@ -86,7 +86,7 @@
                             'selected_contact_type' => null, 
                             'contact_name' => null, 
                             'can_send_electronically' => $can_send_electronically,
-                            'is_internal_referral' => $is_internal_referral,
+                            'is_internal_referral' => $element->isInternalReferralEnabled(),
                         )
                     );
                 ?>
@@ -117,7 +117,7 @@
                         <?php $this->renderPartial('//docman/table/contact_type', array(
                             'contact_type' => strtoupper($macro["contact_type"]),
                             'row_index' => $index,
-                            'is_internal_referral' => $is_internal_referral,
+                            'is_internal_referral' => $element->isInternalReferralEnabled(),
                         ));
                         ?>
                     </td>
@@ -170,7 +170,7 @@
                         'selected_contact_type' => $contact_type, 
                         'contact_name' => $contact_name, 
                         'can_send_electronically' => $can_send_electronically,
-                        'is_internal_referral' => $is_internal_referral,
+                        'is_internal_referral' => $element->isInternalReferralEnabled(),
                     )
                 );
             }
@@ -207,7 +207,7 @@
                         'selected_contact_type' => $contact_type, 
                         'contact_name' => $contact_name,
                         'can_send_electronically' => $can_send_electronically,
-                        'is_internal_referral' => $is_internal_referral,
+                        'is_internal_referral' => $element->isInternalReferralEnabled(),
                     )
                 );
             }

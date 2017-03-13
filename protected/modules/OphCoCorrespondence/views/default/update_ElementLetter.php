@@ -82,6 +82,18 @@ $patient = Patient::model()->findByPk($patient_id);
         </div>
     </div>
 
+    <?php if($element->isInternalReferralEnabled()): ?>
+
+        <div class="row field-row internal-referrer-wrapper">
+            <div class="large-2 column"></div>
+
+            <div class="large-10 column">
+                <?php $this->renderPartial('_internal_referral', array('element' => $element)); ?>
+            </div>
+        </div>
+
+    <?php endif; ?>
+
 
     <div class="row field-row">
         <div id="docman_block" class="large-12 column">

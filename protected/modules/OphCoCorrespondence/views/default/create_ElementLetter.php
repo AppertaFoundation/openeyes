@@ -75,14 +75,18 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                 array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
         </div>
     </div>
-    <div class="row field-row"">
-        <div class="large-2 column">
 
+    <?php if($element->isInternalReferralEnabled()): ?>
+
+        <div class="row field-row internal-referrer-wrapper">
+            <div class="large-2 column"></div>
+
+            <div class="large-10 column">
+                <?php $this->renderPartial('_internal_referral', array('element' => $element)); ?>
+            </div>
         </div>
-        <div class="large-9 column end" style="border:1px solid black">
-         <h3> Internal Referral Placeholder</h3>
-        </div>
-    </div>
+
+    <?php endif; ?>
 
     <div class="row field-row">
         <div id="docman_block" class="large-12 column">
@@ -158,7 +162,6 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                 'macro_id' => $macro_id,
                 'element' => $element,
                 'can_send_electronically' => true,
-                'is_internal_referral' => false,
                 'defaults' => array(
                     'To' => array(
                         'contact_id' => $contact_id,
