@@ -701,6 +701,34 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
             'parent_element_type_id' => 34,
         ));
 
+        $this->insert('ophciexamination_cxl_outcome', array(
+            'name' => '6 month review',
+            'display_order' => 1,
+        ));
+        $this->insert('ophciexamination_cxl_outcome', array(
+            'name' => '12 month review',
+            'display_order' => 2,
+        ));
+        $this->insert('ophciexamination_cxl_outcome', array(
+            'name' => 'List R CXL',
+            'display_order' => 3,
+        ));
+        $this->insert('ophciexamination_cxl_outcome', array(
+            'name' => 'List L CXL',
+            'display_order' => 4,
+        ));
+        $this->insert('ophciexamination_cxl_outcome', array(
+            'name' => 'List BE CXL',
+            'display_order' => 5,
+        ));
+        $this->insert('ophciexamination_cxl_outcome', array(
+            'name' => 'Discharge - CL Dependent',
+            'display_order' => 6,
+        ));
+        $this->insert('ophciexamination_cxl_outcome', array(
+            'name' => 'Discharge - Stable',
+            'display_order' => 7,
+        ));
 
         $this->insert('episode_summary_item', array(
             'event_type_id' => 27,
