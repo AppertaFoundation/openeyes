@@ -62,6 +62,7 @@ class GeneticsPatient extends BaseActiveRecord
         // will receive user inputs.
         return array(
             array('studies', 'isProposable'),
+            array('patient_id', 'unique', 'on'=>'insert', 'message'=>'This Patient subject is already exists!'),
             array('patient_id, comments, gender_id, is_deceased, relationships, studies, pedigrees, diagnoses', 'safe'),
         );
     }
