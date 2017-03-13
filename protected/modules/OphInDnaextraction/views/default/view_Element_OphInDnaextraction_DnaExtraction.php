@@ -63,7 +63,7 @@
 				<div class="data-value">
                     <?php
                         if(isset($element->extracted_by->username)){
-                            echo CHtml::encode($element->extracted_by->username);
+                            echo CHtml::encode($element->extracted_by->first_name . ' ' . $element->extracted_by->last_name);
                         } else {
                             echo 'Not set';
                         }
