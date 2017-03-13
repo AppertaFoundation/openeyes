@@ -84,10 +84,14 @@ $(document).ready(function() {
                     title: "Add new storage",
                     autoOpen: false,
                     onClose: function() { enableButtons(); },
+                    open: function (event, ui) {
+                        $('#save-new-storage-btn').css({'color':'#FFF'});
+                    },
                     buttons: {
                         "Close" : {
                             text: "Close",
-                            id: "my-button-id-close",
+                            id: "close-new-storage-btn",
+                            class: 'cancel event-action button small',
                             click: function(){
                                 $( this ).dialog( "close" );
                                 enableButtons();
@@ -95,9 +99,10 @@ $(document).ready(function() {
                         },
                         "Save":{
                             text: "Save",
-                            id: "my-button-id-save",
+                            class: 'button small secondary',
+                            id: "save-new-storage-btn",
+                            css:'color:#FFF',
                             click: function(){
-                                
                                 if(saveNewStorage()){
                                     $( this ).dialog( "close" );
                                     enableButtons();
@@ -106,6 +111,7 @@ $(document).ready(function() {
                             }   
                         }
                     }
+
                 });
 
                 storageDialog.open();

@@ -19,7 +19,9 @@
 ?>
 <section class="sub-element">
 	<header class="sub-element-header">
-		<h3 class="sub-element-title"><?php echo $element->elementType->name?></h3>
+		<h3 class="sub-element-title">
+            <?php echo $element->elementType->name ?>
+        </h3>
 		&nbsp;&nbsp;
 		<?php echo CHtml::link('edit', Yii::app()->createUrl('/'.$element->elementType->eventType->class_name.'/default/update/'.$element->event_id))?>&nbsp;&nbsp;
 		<?php echo CHtml::link('delete', Yii::app()->createUrl('/'.$element->elementType->eventType->class_name.'/default/delete/'.$element->event_id))?>
@@ -58,7 +60,15 @@
 				<div class="data-label"><?php echo $element->getAttributeLabel('extracted_by')?>:</div>
 			</div>
 			<div class="large-10 column">
-				<div class="data-value"><?php echo CHtml::encode($element->extracted_by)?></div>
+				<div class="data-value">
+                    <?php
+                        if(isset($element->extracted_by->username)){
+                            echo CHtml::encode($element->extracted_by->username);
+                        } else {
+                            echo 'Not set';
+                        }
+                    ?>
+                </div>
 			</div>
 		</div>
 	</div>
