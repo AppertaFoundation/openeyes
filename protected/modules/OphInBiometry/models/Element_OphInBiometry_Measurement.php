@@ -69,7 +69,6 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
     
     
     public function beforeSave(){
-        echo 'run';
         if($this->snr_left==='')$this->snr_left = null;
         if($this->snr_right==='')$this->snr_right = null;
         return parent::beforeSave();
