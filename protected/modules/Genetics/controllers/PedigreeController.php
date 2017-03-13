@@ -139,7 +139,7 @@ class PedigreeController extends BaseModuleController
             'getSubjectsCount',
             'getAffectedSubjectsCount'
         ));
-        $admin->getSearch()->addSearchItem('id');
+        $admin->getSearch()->addSearchItem('id', array( 'type' => 'id' ));
         $admin->getSearch()->addSearchItem('inheritance_id', array(
             'type' => 'dropdown',
             'options' => CHtml::listData(PedigreeInheritance::model()->findAll(), 'id', 'name'),

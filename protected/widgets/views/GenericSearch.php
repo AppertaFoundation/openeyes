@@ -86,6 +86,20 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())):
                         </div>
                         <?php
                         break;
+                    case 'id':
+                        ?>
+                        <div>
+                            <?php
+                            $comparePlaceholder = $search->getModel()->getAttributeLabel($key);
+                            $name = 'search[precision][' . $key . ']';
+                            
+                            echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array(
+                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'placeholder' => $comparePlaceholder,
+                            )); ?>
+                        </div>
+                        <?php
+                        break;                        
                     case 'disorder':
                         ?>
                         <div id="diagnosis-search">
