@@ -432,7 +432,7 @@ $logoHelper = new LogoHelper();
 					<?php
 
                     } else {
-                        echo 'None';
+                        echo '';
                     }
                     ?>
 				</td>
@@ -481,7 +481,7 @@ $logoHelper = new LogoHelper();
 					<?php
 
                     } else {
-                        echo 'None';
+                        echo '';
                     }
                     ?>
 				</td>
