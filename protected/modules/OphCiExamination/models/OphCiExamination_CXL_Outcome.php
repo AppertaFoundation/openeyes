@@ -20,19 +20,17 @@
 namespace OEModule\OphCiExamination\models;
 
 /**
- * This is the model class for table "et_ophciexamination_cxl_outcome".
+ * This is the model class for table "ophciexamination_cxl_outcome".
  *
  * The followings are the available columns in table:
  *
  * @property int $id
- * @property int $event_id
- * @property int $eye_id
- * @property int $diagnosis_id
- * @property int $outcome_id
+ * @property var $name
+ * @property int $display_order
  *
  * The followings are the available model relations:
  */
-class Element_OphCiExamination_CXL_Outcome extends \SplitEventTypeElement
+class OphCiExamination_CXL_Outcome extends \SplitEventTypeElement
 {
     public $service;
 
@@ -51,7 +49,7 @@ class Element_OphCiExamination_CXL_Outcome extends \SplitEventTypeElement
      */
     public function tableName()
     {
-        return 'et_ophciexamination_cxl_outcome';
+        return 'ophciexamination_cxl_outcome';
     }
 
     /**
@@ -62,11 +60,10 @@ class Element_OphCiExamination_CXL_Outcome extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('eye_id, diagnosis_id, outcome_id', 'safe'),
-
+            array('name', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, eye_id, event_id, diagnosis_id, outcome_id', 'safe', 'on' => 'search'),
+            array('id, name', 'safe', 'on' => 'search'),
         );
     }
 
@@ -79,9 +76,7 @@ class Element_OphCiExamination_CXL_Outcome extends \SplitEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
     }
@@ -93,12 +88,9 @@ class Element_OphCiExamination_CXL_Outcome extends \SplitEventTypeElement
     {
         return array(
             'id' => 'ID',
-            'event_id' => 'Event',
-            'diagnosis_id' => 'Diagnosis',
-            'outcome_id' => 'Outcome'
+            'name' => 'Name',
         );
     }
-
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
@@ -113,13 +105,15 @@ class Element_OphCiExamination_CXL_Outcome extends \SplitEventTypeElement
         $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
-        $criteria->compare('event_id', $this->event_id, true);
-        $criteria->compare('diagnosis_id', $this->diagnosis_id);
-        $criteria->compare('outcome_id', $this->outcome_id);
+        $criteria->compare('name', $this->name, true);
 
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
     }
-
+    public function getName($id)
+    {
+        $chosenName = $this->find("id = " . $id);
+        return $chosenName->name;
+    }
 }

@@ -28,7 +28,15 @@
             ?>
 
         </div>
-        <div class="data-value column large-8">
+        <div class="data-value column large-2">
+            <?php echo $element->getAttributeLabel('outcome_id')?>:
+        </div>
+        <div class="data-value column large-2">
+            <?php
+            echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Outcome::model()->getName($element->outcome_id);
+            ?>
+        </div>
+        <div class="data-value column large-6">
             </div>
     </div>
 </div>
