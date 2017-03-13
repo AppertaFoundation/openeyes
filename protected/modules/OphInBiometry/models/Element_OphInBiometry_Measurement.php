@@ -67,6 +67,14 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
         $this->snr_right = null;
     }
     
+    
+    public function beforeSave(){
+        echo 'run';
+        if($this->snr_left==='')$this->snr_left = null;
+        if($this->snr_right==='')$this->snr_right = null;
+        return parent::beforeSave();
+    }
+    
     /**
      * Returns the static model of the specified AR class.
      *
