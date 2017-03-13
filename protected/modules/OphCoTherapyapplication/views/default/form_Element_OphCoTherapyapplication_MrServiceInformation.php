@@ -34,6 +34,4 @@
 ?> Yes
         </div>
     </fieldset>
-    <?php
-//    echo $form->radioBoolean($element, 'patient_sharedata_consent')?>
 </div>
