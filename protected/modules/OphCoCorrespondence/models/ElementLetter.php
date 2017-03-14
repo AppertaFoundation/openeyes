@@ -67,7 +67,8 @@ class ElementLetter extends BaseEventTypeElement
                 'print_all, is_signed_off, to_service_id, to_consultant_id, is_urgent, is_same_condition',
                 'safe'
             ),
-            array('to_service_id, is_same_condition', 'internalReferralValidator'),
+            array('to_service_id', 'internalReferralServiceValidator'),
+            array('is_same_condition', 'internalReferralConditionValidator'),
             array('letter_type_id', 'letterTypeValidator'),
             array('site_id, date, introduction, body, footer', 'requiredIfNotDraft'),
             array('use_nickname', 'required'),
@@ -124,7 +125,7 @@ class ElementLetter extends BaseEventTypeElement
         );
     }
 
-    public function internalReferralValidator($attribute, $params)
+    public function internalReferralServiceValidator($attribute, $params)
     {
         $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
 
@@ -132,15 +133,26 @@ class ElementLetter extends BaseEventTypeElement
             $this->addError($attribute, $this->getAttributeLabel($attribute) . ": 'Internal Referral' letter type is not enabled.");
         } else if( $letter_type->id == $this->letter_type_id ){
             // internal referral posted
-            if(!$this->to_service_id){
+            if(!$this->to_service_id && $this->draft == 0){
                 $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Please select a service.");
-            }
-
-            if(is_null($this->is_same_condition)){
-                $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Please select a condition.");
             }
         }
     }
+    public function internalReferralConditionValidator($attribute, $params)
+    {
+        $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
+
+        if(!$letter_type){
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ": 'Internal Referral' letter type is not enabled.");
+        } else if( $letter_type->id == $this->letter_type_id ){
+            // internal referral posted
+
+            if(!is_numeric($this->is_same_condition) && $this->draft == 0){
+                $this->addError($attribute, "Same Condition" . ": Please select a condition.");
+            }
+        }
+    }
+
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
@@ -798,6 +810,16 @@ class ElementLetter extends BaseEventTypeElement
 
     public function isInternalReferralEnabled(){
         return LetterType::model()->findByAttributes(array('name' => 'Internal Referral')) ? true : false;
+    }
+
+    /**
+     * In the letter is internal referral or not
+     */
+    public function isInternalReferral()
+    {
+        $internal_referral_letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral'));
+
+        return $this->letter_type_id == $internal_referral_letter_type->id;
     }
     
 }

@@ -69,13 +69,49 @@ function togglePrintDisabled (isSignedOff) {
 	$('#et_save_print').prop('disabled', !isSignedOff);
 }
 
+		/** Internal Referral **/
+/**
+ * Reset all Internal referral input fields
+ */
+function resetInternalReferralFields(){
+
+    $.each( $('.internal-referral-section').find(':input'), function(i, input){
+        $(input).val('');
+        $(input).prop('checked', false);
+    });
+}
+
+function setRecipientToInternalReferral(){
+	$('#docman_recipient_0').attr('disabled', true).css({'background-color':'lightgray'});
+	$('#DocumentTarget_0_attributes_contact_name').prop('readonly', true).val('Central Booking');
+	$('#Document_Target_Address_0').prop('readonly', true).val(institution_name + "\n" + institution_address.join("\n"));
+    $('#DocumentTarget_0_attributes_contact_type').css({'background-color':'lightgray'}).find('option').toggleClass("hidden").find('option');
+	$('#DocumentTarget_0_attributes_contact_type').val('INTERNALREFERRAL');
+
+    $('#dm_table tr:first-child td:last-child').html('Change letter type <br> to amend this recipient').css({'font-size':'10px'});
+}
+
+function resetRecipientToInternalReferral(){
+	$('#docman_recipient_0').attr('disabled', false).css({'background-color':'white'});
+	$('#DocumentTarget_0_attributes_contact_name').prop('readonly', false).val('');
+	$('#Document_Target_Address_0').prop('readonly', false).val('');
+	$('#DocumentTarget_0_attributes_contact_type').css({'background-color':'white'}).find('option').toggleClass("hidden").find('option');
+	$('#DocumentTarget_0_attributes_contact_type').val('');
+
+    $('#dm_table tr:first-child td:last-child').html('');
+}
+
+
+
+		/** End of Internal Referral **/
+
 $(document).ready(function() {
 	var $letterIsSignedOff = $('#ElementLetter_is_signed_off');
 // leave this for a while until the requirements gets clear
-//	togglePrintDisabled($letterIsSignedOff.is(':checked'));
-//	$letterIsSignedOff.change(function() {
-//		togglePrintDisabled(this.checked);
-//	});
+// 	togglePrintDisabled($letterIsSignedOff.is(':checked'));
+//     $letterIsSignedOff.change(function() {
+//         togglePrintDisabled(this.checked);
+//     });
 
 	$(this).delegate('#ElementLetter_site_id', 'change', function() {
 		if (correspondence_directlines) {
@@ -569,8 +605,11 @@ $(document).ready(function() {
     $('#ElementLetter_letter_type_id').on('change', function(){
 		if( $(this).find('option:selected').text() == 'Internal Referral' ){
             $('.internal-referrer-wrapper').slideDown();
+            setRecipientToInternalReferral();
 		} else {
             $('.internal-referrer-wrapper').slideUp();
+            resetInternalReferralFields();
+            resetRecipientToInternalReferral();
 		}
 
 	})

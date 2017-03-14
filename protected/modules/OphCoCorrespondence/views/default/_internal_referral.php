@@ -1,5 +1,5 @@
 
-<section class="element required">
+<section class="element required internal-referral-section" style="border: 1px solid #fafafa;">
 
     <header class="element-header" style="background-color: #fafafa">
 
@@ -14,7 +14,8 @@
                 <label>To Service:* </label>
             </div>
             <div class="large-3 column">
-                    <?php echo CHtml::activeDropDownList($element, "to_service_id", CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- None -')) ?>
+                    <?php echo CHtml::activeDropDownList($element, "to_service_id",
+                                    CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- None -')) ?>
             </div>
 
             <div class="large-1 column">&nbsp;</div>
@@ -33,7 +34,10 @@
 
             <div class="large-3 column end">
                 <label class="inline">
-                    <input type="checkbox"> Urgent
+                    <label>
+                        <?php echo CHTML::activeCheckBox($element, 'is_urgent'); ?>
+                        <?php echo $element->getAttributeLabel('is_urgent'); ?>
+                    </label>
                 </label>
             </div>
 

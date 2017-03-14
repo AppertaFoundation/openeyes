@@ -84,7 +84,7 @@ $patient = Patient::model()->findByPk($patient_id);
 
     <?php if($element->isInternalReferralEnabled()): ?>
 
-        <div class="row field-row internal-referrer-wrapper">
+        <div class="row field-row internal-referrer-wrapper <?php echo $element->isInternalreferral() ? '' : 'hidden'; ?> ">
             <div class="large-2 column"></div>
 
             <div class="large-10 column">

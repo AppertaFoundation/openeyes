@@ -77,7 +77,7 @@
                         <?php if($element->draft): ?>
                             <?php $this->renderPartial('//docman/table/contact_type', array(
                                         'contact_type' => strtoupper($target->contact_type),
-                                        'is_internal_referral' => $element->isInternalReferralEnabled(),
+                                        'is_internal_referral' => $element->isInternalReferral(),
                                         'row_index' => $row_index));
                             ?>
                         <?php else: ?>

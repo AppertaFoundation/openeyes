@@ -19,16 +19,16 @@
 ?>
 
 <table id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
-    
-    <tr id="dm_0">
-        <th>To/CC</th>
-        <th>Recipient/Address</th>
-        <th>Role</th>
-        <th>Delivery Method(s)</th>
-        <th class="actions">
-            <img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="display: none;">
-        </th>
-    </tr>
+    <thead>
+        <tr id="dm_0">
+            <th>To/CC</th>
+            <th>Recipient/Address</th>
+            <th>Role</th>
+            <th>Delivery Method(s)</th>
+            <th class="actions"><img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="display: none;"></th>
+        </tr>
+    </thead>
+
     <tbody>
     <?php /* Generate recipients by macro */ ?>
     <?php if (!empty($macro_data)):?>
@@ -58,7 +58,7 @@
                     <?php $this->renderPartial('//docman/table/contact_type', array(
                         'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
                         'row_index' => $row_index,
-                        'is_internal_referral' => $element->isInternalReferralEnabled(),
+                        'is_internal_referral' => $element->isInternalReferral(),
                     ));
                     ?>
                 </td>
@@ -80,11 +80,11 @@
                 $this->renderPartial(
                         '//docman/document_row_recipient',
                         array(
-                            'contact_id' => null, 
-                            'address' => null, 
+                            'contact_id' => null,
+                            'address' => null,
                             'row_index' => 0,
-                            'selected_contact_type' => null, 
-                            'contact_name' => null, 
+                            'selected_contact_type' => null,
+                            'contact_name' => null,
                             'can_send_electronically' => $can_send_electronically,
                             'is_internal_referral' => $element->isInternalReferralEnabled(),
                         )
@@ -117,7 +117,7 @@
                         <?php $this->renderPartial('//docman/table/contact_type', array(
                             'contact_type' => strtoupper($macro["contact_type"]),
                             'row_index' => $index,
-                            'is_internal_referral' => $element->isInternalReferralEnabled(),
+                            'is_internal_referral' => $element->isInternalReferral(),
                         ));
                         ?>
                     </td>
@@ -141,7 +141,7 @@
         <?php endif; ?>
     <?php endif; ?>
 
-    <tr class="rowindex-0" data-indexrow="0">
+
         <?php 
             /* generates a default 'To' and 'Cc' rows */
             if(empty($macro_data)){
@@ -175,9 +175,9 @@
                 );
             }
         ?>
-    </tr>
+
     
-    <tr class="rowindex-1" data-indexrow="1">
+
         <?php 
             if(empty($macro_data)){
                 $contact_id = null;
@@ -212,11 +212,13 @@
                 );
             }
         ?>
-        
-        <td colspan="5">
-            <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
-        </td>
-    </tr>
+
+        <tr class="new_entry_row">
+            <td colspan="5">
+                <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
+            </td>
+        </tr>
+
     
     </tbody>
 </table>
