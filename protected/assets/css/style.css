@@ -5329,6 +5329,7 @@ tfoot.pagination-container .pagination-view-all {
 .patient_general_information_tooltip {
     width: 280px;
     background-color: white;    
+    z-index: 10000;
 }
 
 
