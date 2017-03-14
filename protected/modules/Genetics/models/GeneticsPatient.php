@@ -83,6 +83,10 @@ class GeneticsPatient extends BaseActiveRecord
                     }
                     //New study has been added, make sure that it's possible for the user to propose this.
                     if(!$study->canBeProposedByUser(Yii::app()->user)){
+                        $this->addError($attribute, 'You do not have permission to propose subjects for ' . $study->name);
+                    }
+
+                    if(!$study->canBeProposedByUserDateCheck(Yii::app()->user)){
                         $this->addError($attribute, 'You cannot propose subjects for ' . $study->name. ' as it has ended');
                     }
                 }
