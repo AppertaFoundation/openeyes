@@ -128,6 +128,15 @@ class DefaultController extends OphTrOperationbookingEventController
         $this->jsVars['OE_patientId'] = $this->patient->id;
     }
 
+    public function actionCreate(){
+        $event_type = EventType::model()->find('name = "Examination"');
+        $events = $this->event->episode->getAllEventsByType($event_type->id);
+        $cancel_url = ($this->episode) ? '/patient/episode/' . $this->episode->id : '/patient/episodes/' . $this->patient->id;
+        $this->jsVars['examination_events_count'] = count($events);
+        $this->jsVars['no_examination_cancel_url'] = $cancel_url;
+        parent::actionCreate();
+    }
+
     /**
      * Checks whether schedule now has been requested.
      *
