@@ -41,7 +41,7 @@ function AlertMissingIfExaminationEvent(){
           '<span id="ui-id-1" class="ui-dialog-title">Confirm booking</span>' +
           '</div><div id="site-and-firm-dialog" class="ui-dialog-content ui-widget-content" scrolltop="0" scrollleft="0" style="display: block; width: auto; min-height: 0px; height: auto;">' +
           '<div class="alert-box alert with-icon"> <strong>WARNING: ' + warning_message + ' </strong></div>' +
-          '<p>For the purposes of providing data to the RCOphtp National Ophthalmology Dataset (NOD), an Examination event with pre-surgery details must be created before a patient can be listed surgery.</p>' +
+          '<p>For the purposes of providing data to the RCOphth National Ophthalmology Dataset (NOD), an Examination event with pre-surgery details must be created before a patient can be listed for surgery.</p>' +
           '<p>Do you want to continue without examination?</p>' +
           '<div style = "margin-top:20px; float:right">' +
           '<input class="secondary small" id="prescription-yes" type="submit" name="yt0" style = "margin-right:10px" value="Yes" onclick="hide_dialog()">' +
