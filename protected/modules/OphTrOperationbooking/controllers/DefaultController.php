@@ -131,7 +131,7 @@ class DefaultController extends OphTrOperationbookingEventController
     public function actionCreate(){
         $event_type = EventType::model()->find('name = "Examination"');
         $events = $this->event->episode->getAllEventsByType($event_type->id);
-        $cancel_url = ($this->episode) ? '/patient/episode/' . $this->episode->id : '/patient/episodes/' . $this->patient->id;
+        $cancel_url = Yii::app()->getBaseUrl(true).'/OphCiExamination/Default/create?patient_id=' . $this->patient->id;
         $this->jsVars['examination_events_count'] = count($events);
         $this->jsVars['no_examination_cancel_url'] = $cancel_url;
         $require_exam_before_booking = SettingMetadata::model()->findByAttributes(array('key' => 'require_exam_before_booking'))->getSettingName();
