@@ -106,7 +106,10 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())):
                     case 'datepicker':
                         ?><div><?php
 
-                        $datePickerID = (!isset($value['id']) ? 'datepicker-id' : $value['id'] );
+                        $changeMonth = (isset($value['changeMonth']) ? $value['changeMonth'] : false);
+                        $changeYear = (isset($value['changeYear']) ? $value['changeYear'] : false);
+                        $datePickerID = (isset($value['id']) ? $value['id'] : 'datepicker-id' );
+                        $yearRange = (isset($value['yearRange']) ? $value['yearRange'] : '-100:+0');
 
                         $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                             'name'  => $datePickerID,
@@ -114,11 +117,12 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())):
                             'id'    => $datePickerID,
                             'options' => array(
                                 'showAnim'      => 'fold',
-                                'changeMonth'   => true,
-                                'changeYear'    => true,
-                                'altFormat'    => 'yy-mm-dd',
+                                'changeMonth'   => $changeMonth,
+                                'changeYear'    => $changeYear,
+                                'altFormat'     => 'yy-mm-dd',
                                 'altField'      => '#'.$datePickerID.'_alt',
-                                'dateFormat'     => Helper::NHS_DATE_FORMAT_JS,
+                                'dateFormat'    => Helper::NHS_DATE_FORMAT_JS,
+                                'yearRange'     => $yearRange
                             ),
                             'htmlOptions' =>array(
                                 'autocomplete' => Yii::app()->params['html_autocomplete'],
