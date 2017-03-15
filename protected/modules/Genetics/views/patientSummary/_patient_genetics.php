@@ -45,8 +45,16 @@
                  </div>
                 <div class="large-8 column">
                     <div class="data-value">
+
                         <?php echo $pedigree->id ?>
-                        ( <?php echo CHtml::link('View', Yii::app()->createUrl('/Genetics/pedigree/view/' . $pedigree->id)) ?> )
+                        <?php echo '(Gene:'.$pedigree->gene->name.')' ?>
+                        <?php
+                        $status = GeneticsPatientPedigree::model()->findByAttributes(array('patient_id' => $subject->id, 'pedigree_id' => $pedigree->id));
+                        if($status->status !== NULL){
+                            echo $status->status->name;
+                        }
+                        ?>
+                        <?php echo CHtml::link('( View )', Yii::app()->createUrl('/Genetics/pedigree/view/' . $pedigree->id)); ?>
                     </div>
                 </div>
             </div>
@@ -66,25 +74,6 @@
                                 }
                             } 
                         ?>
-                    </div>
-                </div>
-            </div>
-            <div class="row data-row">
-                <div class="large-4 column">
-                    <div class="data-label">Status:</div>
-                 </div>
-                <div class="large-8 column">
-                    <div class="data-value">
-                        <?php 
-                        
-                        foreach($subject->pedigrees as $pedigree) {
-                            $status = GeneticsPatientPedigree::model()->findByAttributes(array('patient_id' => $subject->id, 'pedigree_id' => $pedigree->id));
-                            if($status->status !== NULL){
-                                echo $status->status->name;
-                            }
-                        }
-                        ?>
-
                     </div>
                 </div>
             </div>
