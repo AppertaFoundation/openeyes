@@ -11,11 +11,17 @@ class m170315_102839_ask_correspondence_approval extends OEMigration
             'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
             'default_value' => 'on',
         ));
+
+        $this->insert('setting_installation', array(
+            'key' => 'ask_correspondence_approval',
+            'value' => 'on',
+        ));
 	}
 
 	public function down()
 	{
-        $this->delete('setting_metadata', 'key = ask_correspondence_approval');
+        $this->delete('setting_metadata', '`key` = "ask_correspondence_approval"');
+        $this->delete('setting_installation', '`key` = "ask_correspondence_approval"');
 	}
 
 	/*
