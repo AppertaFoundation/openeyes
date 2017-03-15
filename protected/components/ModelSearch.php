@@ -302,6 +302,12 @@ class ModelSearch
             return;
         }
 
+        if(method_exists($this->model, $attribute) ){
+            $compareArguments = $this->model->{$attribute}();
+            $criteria->compare($compareArguments['field'], $value, $compareArguments['exactmatch'], $compareArguments['operator']);
+            return;
+        }
+
         $search = $attribute;
         $search = $this->relationalAttribute($criteria, $attribute, $search);
 
@@ -365,7 +371,7 @@ class ModelSearch
         $this->searchItems[$key] = $search;
         if (is_array($search) && array_key_exists('default', $search) && !array_key_exists($key, $this->searchTerms)) {
             $criteria = $this->getCriteria();
-            $criteria->addCondition($key.' = '.$search['default']);
+            $criteria->addCondition($key . ' = ' . $search['default']);
         }
     }
 

@@ -160,6 +160,7 @@ class GeneticsPatient extends BaseActiveRecord
             'patient_id' => 'Patient',
             'gender_id' => 'Karyotypic Sex',
             'is_deceased' => 'Is Deceased',
+            'searchYob' => 'Year of Birth',
         );
     }
 
@@ -247,5 +248,14 @@ class GeneticsPatient extends BaseActiveRecord
         }
 
         return $patientPedigree->status->name;
+    }
+
+    public function searchYob($search = '')
+    {
+        return array(
+            'field' => "patient.dob",
+            'exactmatch' => true,
+            'operator'  => 'AND'
+        );
     }
 }
