@@ -19,7 +19,7 @@ $reasons = OphDrPrescriptionEditReasons::model()->findAll(array('order'=>'displa
     <?php foreach ($reasons as $key=>$reason): ?>
         <div>
             <button class="secondary small submit" data-value="<?php echo $reason->id; ?>" id="reason_<?php echo $reason->id; ?>" style="margin-bottom: 5px;"><?php echo htmlentities($reason->caption); ?></button>
-           
+
         </div>
     <?php endforeach; ?>
     <div class="row">

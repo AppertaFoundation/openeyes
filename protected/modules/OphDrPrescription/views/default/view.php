@@ -16,8 +16,11 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+$Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array($this->event->id));
+
 ?>
-<?php $this->beginContent('//patient/event_container'); ?>
+<?php $this->beginContent('event_container', ['Element' => $Element]); ?>
 
 	<?php
         // Event actions
@@ -32,7 +35,7 @@
 		<div class="alert-box alert with-icon">
 			This event is pending deletion and has been locked.
 		</div>
-	<?php } elseif (Element_OphDrPrescription_Details::model()->find('event_id=?', array($this->event->id))->draft) {?>
+	<?php } elseif ($Element->draft) {?>
 		<div class="alert-box alert with-icon">
 			This prescription is a draft and can still be edited
 		</div>
