@@ -64,7 +64,7 @@ class FormularyDrugs extends BaseActiveRecordVersioned
         return array(
             array('name', 'required'),
             array(
-                'name, aliases, tallman, type_id, form_id, dose_unit,default_dose,default_route_id,default_frequency_id,default_duration_id, preservative_free, active, allergy_warnings',
+                'name, aliases, tallman, type_id, form_id, dose_unit,default_dose,default_route_id,default_frequency_id,default_duration_id, preservative_free, active, allergy_warnings, national_code',
                 'safe',
             ),
         );
@@ -94,6 +94,7 @@ class FormularyDrugs extends BaseActiveRecordVersioned
             'default_frequency_id' => 'Default Frequency',
             'default_duration_id' => 'Default Duration',
             'drug_type.name' => 'Type',
+            'national_code' => 'National code'
         );
     }
 }
