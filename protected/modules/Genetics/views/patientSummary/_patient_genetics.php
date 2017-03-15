@@ -47,14 +47,14 @@
                     <div class="data-value">
 
                         <?php echo $pedigree->id ?>
-                        <?php echo '(Gene:'.$pedigree->gene->name.')' ?>
+                        <?php echo '(Gene: '.$pedigree->gene->name.')' ?>
                         <?php
                         $status = GeneticsPatientPedigree::model()->findByAttributes(array('patient_id' => $subject->id, 'pedigree_id' => $pedigree->id));
                         if($status->status !== NULL){
                             echo $status->status->name;
                         }
                         ?>
-                        <?php echo CHtml::link('( View )', Yii::app()->createUrl('/Genetics/pedigree/view/' . $pedigree->id)); ?>
+                        ( <?php echo CHtml::link('View', Yii::app()->createUrl('/Genetics/pedigree/view/' . $pedigree->id)); ?> )
                     </div>
                 </div>
             </div>
