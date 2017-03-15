@@ -14,10 +14,6 @@ trait Study {
      */
     public function canBeProposedByUser(CWebUser $user)
     {
-        if (new DateTime($this->end_date) < new DateTime('midnight')) {
-            return false;
-        }
-
         foreach ($this->proposers as $proposer) {
             if ($proposer->id === $user->id || $user->checkAccess('Genetics Admin')) {
                 return true;
@@ -25,6 +21,19 @@ trait Study {
         }
 
         return false;
+    }
+
+    /**
+     * @param User $user
+     *
+     *  @return bool
+     */
+    public function canBeProposedByUserDateCheck(CWebUser $user)
+    {
+        if (new DateTime($this->end_date) < new DateTime('midnight')) {
+            return false;
+        }
+        return true;
     }
 
     /**
