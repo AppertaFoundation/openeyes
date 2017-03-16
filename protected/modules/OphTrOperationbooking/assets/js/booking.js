@@ -20,8 +20,12 @@ function hide_dialog() {
     $('#dialog-msg').hide();
 }
 
+function cancelBookingEvent() {
+    window.location.href = cancel_url;
+}
+
 function goToExaminationEvent() {
-    window.location.href = no_examination_cancel_url;
+    window.location.href = create_examination_url;
 }
 
 function AlertMissingIfExaminationEvent(){
@@ -42,10 +46,11 @@ function AlertMissingIfExaminationEvent(){
           '</div><div id="site-and-firm-dialog" class="ui-dialog-content ui-widget-content" scrolltop="0" scrollleft="0" style="display: block; width: auto; min-height: 0px; height: auto;">' +
           '<div class="alert-box alert with-icon"> <strong>WARNING: ' + warning_message + ' </strong></div>' +
           '<p>For the purposes of providing data to the RCOphth National Ophthalmology Dataset (NOD), an Examination event with pre-surgery details must be created before a patient can be listed for surgery.</p>' +
-          '<p>Do you want to continue without examination?</p>' +
+          //'<p>Do you want to continue without examination?</p>' +
           '<div style = "margin-top:20px; float:right">' +
-          '<input class="secondary small" id="prescription-yes" type="submit" name="yt0" style = "margin-right:10px" value="Yes" onclick="hide_dialog()">' +
-          '<input class="warning small" id="prescription-no" type="submit" name="yt0" value="Create Examination Event" onclick="goToExaminationEvent()">' +
+          //'<input class="secondary small" id="operationbooking-yes" type="submit" name="yt0" style = "margin-right:10px" value="Yes" onclick="hide_dialog();;">' +
+          '<input class=" cancel event-action button small" id="operationbooking-cancel" type="submit" name="yt1" style = "margin-right:10px" value="Cancel" onclick="cancelBookingEvent();">' +
+          '<input class="event-action small" id="operationbooking-create-_examination" type="submit" name="yt2" value="Create Examination Event" onclick="goToExaminationEvent()">' +
           '</div>';
 
         var blackout_box = '<div id="blackout-box" style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:black;opacity:0.6;z-index:10000">';
