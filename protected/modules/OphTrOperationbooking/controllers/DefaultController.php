@@ -128,6 +128,10 @@ class DefaultController extends OphTrOperationbookingEventController
         $this->jsVars['OE_patientId'] = $this->patient->id;
     }
 
+     /**
+     * add the number of existing examination events to JS
+     *
+     */
     public function actionCreate(){
         $event_type = EventType::model()->find('name = "Examination"');
         $events = $this->event->episode->getAllEventsByType($event_type->id);
