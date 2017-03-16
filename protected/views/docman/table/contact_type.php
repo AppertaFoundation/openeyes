@@ -23,7 +23,7 @@
             'PATIENT' => 'Patient',
             'DRSS' => 'DRSS',
             'OTHER' => 'Other',
-            'INTERNALREFERRAL' => 'Internal Referral'
+            'INTERNALREFERRAL' => 'Booking'
         ),
         array(  'empty' => '- Type -',
                 'nowrapper' => true,

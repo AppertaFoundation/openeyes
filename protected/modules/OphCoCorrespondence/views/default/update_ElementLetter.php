@@ -77,7 +77,7 @@ $patient = Patient::model()->findByPk($patient_id);
             <label>Letter type:</label>
         </div>
         <div class="large-2 column end">
-            <?php echo $form->dropDownList($element, 'letter_type_id', CHtml::listData(LetterType::model()->findAll(array('condition' => 'is_active = 1', 'order' => 'name asc')), 'id', 'name'),
+            <?php echo $form->dropDownList($element, 'letter_type_id', CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
                 array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
         </div>
     </div>

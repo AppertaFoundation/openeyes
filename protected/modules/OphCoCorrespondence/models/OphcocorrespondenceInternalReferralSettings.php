@@ -163,15 +163,7 @@ class OphcocorrespondenceInternalReferralSettings extends BaseActiveRecordVersio
         $site_id = $site ? $site->id : null;
         $institution_id = $site ? $site->institution_id : null;
 
-        foreach (array(
-                     'SettingUser' => 'user_id',
-                     'SettingFirm' => 'firm_id',
-                     'SettingSubspecialty' => 'subspecialty_id',
-                     'SettingSpecialty' => 'specialty_id',
-                     'SettingSite' => 'site_id',
-                     'SettingInstitution' => 'institution_id',
-                     'SettingInstallation' => null,
-                 ) as $class => $field) {
+        foreach (array('SettingInternalReferral' => null) as $class => $field) {
             if ($field) {
                 if (${$field}) {
                     if ($setting = $this->getSettingValue($class, $key, $field, ${$field}, $element_type)) {

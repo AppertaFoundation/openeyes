@@ -97,4 +97,18 @@ class LetterType extends BaseActiveRecordVersioned
             'criteria' => $criteria,
         ));
     }
+
+    public function getActiveLetterTypes()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->compare('is_active', 1);
+
+        $is_internal_referral_enabled = OphcocorrespondenceInternalReferralSettings::model()->getSetting('is_enabled');
+
+        if($is_internal_referral_enabled == 'off'){
+            $criteria->addCondition('name != "Internal Referral"');
+        }
+
+        return LetterType::model()->findAll($criteria);
+    }
 }

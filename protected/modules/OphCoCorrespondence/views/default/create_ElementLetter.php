@@ -71,12 +71,12 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
         </div>
         <div class="large-2 column end">
             
-            <?php echo $form->dropDownList($element, 'letter_type_id', CHtml::listData(LetterType::model()->findAll(array('condition' => 'is_active = 1', 'order' => 'name asc')), 'id', 'name'),
+            <?php echo $form->dropDownList($element, 'letter_type_id', CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
                 array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
         </div>
     </div>
 
-    <?php if($element->isInternalReferralEnabled()): ?>
+    <?php if($element->getInternalReferralSettings('is_enabled')): ?>
 
         <div class="row field-row internal-referrer-wrapper <?php echo $element->isInternalreferral() ? '' : 'hidden'; ?>">
             <div class="large-2 column"></div>

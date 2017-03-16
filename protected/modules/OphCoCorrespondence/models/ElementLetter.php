@@ -141,8 +141,9 @@ class ElementLetter extends BaseEventTypeElement
     public function internalReferralConditionValidator($attribute, $params)
     {
         $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
+        $is_internal_referral_enabled = OphcocorrespondenceInternalReferralSettings::model()->getSetting('is_enabled');
 
-        if(!$letter_type){
+        if($is_internal_referral_enabled == 'off'){
             $this->addError($attribute, $this->getAttributeLabel($attribute) . ": 'Internal Referral' letter type is not enabled.");
         } else if( $letter_type->id == $this->letter_type_id ){
             // internal referral posted
@@ -821,5 +822,10 @@ class ElementLetter extends BaseEventTypeElement
 
         return $this->letter_type_id == $internal_referral_letter_type->id;
     }
-    
+
+    public function getInternalReferralSettings($key, $default = null)
+    {
+        $value = OphcocorrespondenceInternalReferralSettings::model()->getSetting($key);
+        return is_null($value) ? $default : $value;
+    }
 }

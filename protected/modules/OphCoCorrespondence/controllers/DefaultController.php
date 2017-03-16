@@ -54,15 +54,14 @@ class DefaultController extends BaseEventTypeController
         parent::initAction($action);
         $this->jsVars['electronic_sending_method_label'] = Yii::app()->params['electronic_sending_method_label'];
 
-        $this->jsVars['institution_name'] = Institution::model()->getCurrent()->name;
-        $this->jsVars['institution_address'] = Institution::model()->getCurrent()->getLetterAddress();
+        $this->jsVars['internal_referral_booking_address'] = ElementLetter::model()->getInternalReferralSettings('internal_referral_booking_address');
+        $this->jsVars['internal_referral_delivery_label'] = ElementLetter::model()->getInternalReferralSettings('internal_referral_delivery_label');
 
         $event_id = Yii::app()->request->getQuery('id');
         if($event_id){
             $letter = ElementLetter::model()->find('event_id=?', array($event_id));
             $this->editable = $letter->isEditable();
             $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
-
 
             if($action == 'update'){
                 if( !Yii::app()->request->isPostRequest && $letter->draft){

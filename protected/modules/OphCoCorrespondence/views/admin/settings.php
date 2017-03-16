@@ -20,27 +20,12 @@
 <div class="box admin">
 	<div class="row">
 		<div class="large-8 column">
-			<h2>Settings</h2>
+			<h2>Internal Referral Settings</h2>
 		</div>
 		<div class="large-4 column">
-			<?php
-            $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-                'id' => 'searchform',
-                'enableAjaxValidation' => false,
-                'focus' => '#search',
-                'action' => Yii::app()->createUrl('/OphCoCorrespondence/oeadmin/internalReferralSettings/settings'),
-            ))?>
-				<div class="row">
-					<div class="large-12 column">
-						<input type="text" name="search" id="search" placeholder="Enter search query..." value="<?php echo strip_tags(@$_POST['search'])?>" />
-					</div>
-				</div>
-			<?php $this->endWidget()?>
 		</div>
 	</div>
-	<p>
-		Settings added here will be overridden by any settings in local config files. eg common.php or core.php
-	</p>
+
 	<form id="internal_referral_settings">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
 		<table class="grid">

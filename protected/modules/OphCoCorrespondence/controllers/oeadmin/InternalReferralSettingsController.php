@@ -42,7 +42,7 @@ class InternalReferralSettingsController extends ModuleAdminController
             foreach (OphcocorrespondenceInternalReferralSettings::model()->findAll() as $metadata) {
                 if (@$_POST['hidden_' . $metadata->key] || @$_POST[$metadata->key]) {
                     if (!$setting = $metadata->getSetting($metadata->key, null, true)) {
-                        $setting = new OphcocorrespondenceInternalReferralSettings();
+                        $setting = new SettingInternalReferral();
                         $setting->key = $metadata->key;
                     }
                     $setting->value = @$_POST[$metadata->key];

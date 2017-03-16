@@ -4,70 +4,77 @@ class m170314_153701_create_internal_referral_settings_table extends OEMigration
 {
 	public function up()
 	{
-        $this->execute(
-            "CREATE TABLE `ophcocorrespondence_internal_referral_settings` (
-							 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-							 `display_order` tinyint(3) unsigned DEFAULT '0',
-							 `field_type_id` int(10) unsigned NOT NULL,
-							 `key` varchar(64) NOT NULL,
-							 `name` varchar(64) NOT NULL,
-							 `data` varchar(4096) NOT NULL,
-							 `default_value` varchar(64) NOT NULL,
-							 `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
-							 `last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
-							 `created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
-							 `created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
-							 PRIMARY KEY (`id`),
-							 KEY `ophcocorrespondence_int_ref_set_type_id_fk` (`field_type_id`),
-							 KEY `ophcocorrespondence_int_ref_set_last_modified_user_id_fk` (`last_modified_user_id`),
-							 KEY `ophcocorrespondence_int_ref_set_created_user_id_fk` (`created_user_id`),
-							 CONSTRAINT `ophcocorrespondence_int_ref_set_field_type_id_fk` FOREIGN KEY (`field_type_id`) REFERENCES `setting_field_type` (`id`),
-							 CONSTRAINT `ophcocorrespondence_int_ref_set_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
-							 CONSTRAINT `ophcocorrespondence_int_ref_set_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
+	    $this->createOETable('ophcocorrespondence_internal_referral_settings',array(
+            'id' => 'pk',
+            'display_order' => "tinyint(3) unsigned DEFAULT '0'",
+            'field_type_id' => 'int(10) unsigned NOT NULL',
+            'key' =>  'varchar(64) NOT NULL',
+            'name' => 'varchar(64) NOT NULL',
+            'data' =>  'varchar(4096) NOT NULL',
+            'default_value' =>  'varchar(64) NOT NULL',
+        ), $versioned = true);
 
-        $this->execute(
-            "CREATE TABLE `ophcocorrespondence_internal_referral_settings_version` (
-							 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-							 `display_order` tinyint(3) unsigned DEFAULT '0',
-							 `field_type_id` int(10) unsigned NOT NULL,
-							 `key` varchar(64) NOT NULL,
-							 `name` varchar(64) NOT NULL,
-							 `data` varchar(4096) NOT NULL,
-							 `default_value` varchar(64) NOT NULL,
-							 `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
-							 `last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
-							 `created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
-							 `created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
-							 PRIMARY KEY (`id`),
-							 KEY `ophcocorrespondence_int_ref_set_type_id_fk` (`field_type_id`),
-							 KEY `ophcocorrespondence_int_ref_set_last_modified_user_id_fk` (`last_modified_user_id`),
-							 KEY `ophcocorrespondence_int_ref_set_created_user_id_fk` (`created_user_id`)
-							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci");
+	    $this->addForeignKey('ophcocorrespondence_int_ref_set_field_type_id_fk', 'ophcocorrespondence_internal_referral_settings', 'field_type_id', 'setting_field_type', 'id');
+	    $this->addForeignKey('ophcocorrespondence_int_ref_set_created_user_id_fk', 'ophcocorrespondence_internal_referral_settings', 'created_user_id', 'user', 'id');
+	    $this->addForeignKey('ophcocorrespondence_int_ref_set_last_modified_user_id_fk', 'ophcocorrespondence_internal_referral_settings', 'last_modified_user_id', 'user', 'id');
+
+	    $this->createOETable('setting_internal_referral', array(
+	        'id' => 'pk',
+            'element_type_id' => 'int(10) unsigned DEFAULT NULL',
+            'key' =>  'varchar(64) NOT NULL',
+            'value' => 'varchar(255) COLLATE utf8_bin NOT NULL',
+        ), $versioned = true);
 
         $this->insert('ophcocorrespondence_internal_referral_settings',array(
             'field_type_id' => 3,
-            'key' => 'is_active',
+            'key' => 'is_enabled',
             'name' => 'Enable Internal referral',
             'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
-            'default_value' => 1
+            'default_value' => 'on'
         ));
 
         $this->insert('ophcocorrespondence_internal_referral_settings',array(
             'field_type_id' => 4,
-            'key' => 'booking_address',
+            'key' => 'internal_referral_booking_address',
             'name' => 'Booking Address'
         ));
 
+        $this->alterColumn('document_target', 'contact_type', "enum('PATIENT','GP','DRSS','LEGACY','OTHER', 'INTERNALREFERRAL') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'OTHER'");
+        $this->alterColumn('document_output', 'output_type', 'varchar(20) COLLATE utf8_unicode_ci NOT NULL');
 
+        $internal_referral_booking_address = SettingInternalReferral::model()->findByAttributes(array('key' => 'internal_referral_booking_address'));
 
+        if(!$internal_referral_booking_address){
+            $internal_referral_booking_address = new SettingInternalReferral();
+            $internal_referral_booking_address->key = 'internal_referral_booking_address';
+        }
+
+        $internal_referral_booking_address->value = Institution::model()->getCurrent()->name . ',' . (implode(',', Institution::model()->getCurrent()->getLetterAddress()));
+        $internal_referral_booking_address->save();
+
+        $this->insert('ophcocorrespondence_internal_referral_settings',array(
+            'field_type_id' => 4,
+            'key' => 'internal_referral_delivery_label',
+            'name' => 'Delivery Method Label'
+        ));
+
+        $delivery_method_label = SettingInternalReferral::model()->findByAttributes(array('key' => 'internal_referral_delivery_label'));
+
+        if(!$delivery_method_label){
+            $delivery_method_label = new SettingInternalReferral();
+            $delivery_method_label->key = 'internal_referral_delivery_label';
+        }
+
+        $delivery_method_label->value = 'Electronic (WinDip)';
+        $delivery_method_label->save();
 	}
 
 	public function down()
 	{
-		$this->dropOETable('ophcocorrespondence_internal_referral_settings');
-		$this->dropOETable('ophcocorrespondence_internal_referral_settings_version');
+		$this->dropOETable('ophcocorrespondence_internal_referral_settings', $versioned = true);
+		$this->dropOETable('setting_internal_referral', $versioned = true);
+
+        $this->alterColumn('document_target', 'contact_type', "enum('PATIENT','GP','DRSS','LEGACY','OTHER') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'OTHER'");
+        $this->alterColumn('document_output', 'output_type', 'varchar(10) COLLATE utf8_unicode_ci NOT NULL');
 	}
 }
