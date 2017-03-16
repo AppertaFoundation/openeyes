@@ -62,7 +62,7 @@ class OphInBiometry_LensType_Lens extends BaseActiveRecordVersionedSoftDelete
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, display_name,  description, comments, position_id, acon, sf, pACD, a0, a1, a2, active', 'safe'),
+            array('name, display_name, description, comments, position_id, acon, sf, pACD, a0, a1, a2, active', 'safe'),
             array('name, display_name, description, acon', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.

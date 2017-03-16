@@ -30,7 +30,7 @@
             </div>
             <div class="large-6 column end">
                 <div class="field-info iolDisplay"
-                     id="lens_<?php echo $side ?>"><?php echo $element->{'lens_'.$side} ? $element->{'lens_'.$side}->name : 'None' ?></div>
+                     id="lens_<?php echo $side ?>"><?php echo $element->{'lens_'.$side} ? $element->{'lens_'.$side}->display_name : 'None' ?></div>
             </div>
         </div>
         <div class="row data-row">
