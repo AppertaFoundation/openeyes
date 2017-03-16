@@ -17,6 +17,4 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="logo">
-  <?php echo CHtml::link('OpenEyes', $this->createUrl('/'))?>
-</div>
+<?php echo CHtml::link('<div class="logo"/></div>', $this->createUrl('/site/index')); ?>
