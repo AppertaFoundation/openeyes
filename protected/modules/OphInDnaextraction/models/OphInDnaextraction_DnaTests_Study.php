@@ -24,7 +24,6 @@
  *
  * @property int $id
  * @property string $value
- * @property int $display_order
  */
 class OphInDnaextraction_DnaTests_Study extends BaseActiveRecord
 {
@@ -43,7 +42,8 @@ class OphInDnaextraction_DnaTests_Study extends BaseActiveRecord
      */
     public function tableName()
     {
-        return 'ophindnaextraction_dnatests_study';
+        //return 'ophindnaextraction_dnatests_study';
+        return 'genetics_study';
     }
 
     /**
@@ -53,9 +53,6 @@ class OphInDnaextraction_DnaTests_Study extends BaseActiveRecord
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
-            array('value, display_order', 'safe'),
-        );
     }
 
     /**
