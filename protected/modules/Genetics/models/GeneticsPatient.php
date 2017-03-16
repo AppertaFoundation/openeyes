@@ -61,6 +61,7 @@ class GeneticsPatient extends BaseActiveRecord
         // will receive user inputs.
         return array(
             array('studies', 'isProposable'),
+            array('patient_id', 'unique', 'on'=>'insert', 'message'=>'The selected patient is already linked to a genetics subject.'),
             array('patient_id, comments, gender_id, is_deceased, relationships, studies, pedigrees, diagnoses', 'safe'),
         );
     }
@@ -83,6 +84,10 @@ class GeneticsPatient extends BaseActiveRecord
                     //New study has been added, make sure that it's possible for the user to propose this.
                     if(!$study->canBeProposedByUser(Yii::app()->user)){
                         $this->addError($attribute, 'You do not have permission to propose subjects for ' . $study->name);
+                    }
+
+                    if(!$study->canBeProposedByUserDateCheck(Yii::app()->user)){
+                        $this->addError($attribute, 'You cannot propose subjects for ' . $study->name. ' as it has ended');
                     }
                 }
             }
@@ -154,6 +159,7 @@ class GeneticsPatient extends BaseActiveRecord
             'patient_id' => 'Patient',
             'gender_id' => 'Karyotypic Sex',
             'is_deceased' => 'Is Deceased',
+            'searchYob' => 'Year of Birth',
         );
     }
 
@@ -244,5 +250,14 @@ class GeneticsPatient extends BaseActiveRecord
         }
 
         return $patientPedigree->status->name;
+    }
+
+    public function searchYob($search = '')
+    {
+        return array(
+            'field' => "patient.dob",
+            'exactmatch' => true,
+            'operator'  => 'AND'
+        );
     }
 }

@@ -215,7 +215,14 @@ class SubjectController extends BaseModuleController
         ));
         $admin->getSearch()->addSearchItem('patient.contact.first_name');
         $admin->getSearch()->addSearchItem('patient.contact.last_name');
-        $admin->getSearch()->addSearchItem('patient.dob');
+        $admin->getSearch()->addSearchItem('patient.dob', array(
+            'id'            => 'patient-dob-id',
+            'type'          => 'datepicker',
+            'yearRange'     => '-120:+0',
+            'changeMonth'   => true,
+            'changeYear'    => true,
+        ));
+        $admin->getSearch()->addSearchItem('searchYob');
         $admin->getSearch()->addSearchItem('comments');
         $admin->getSearch()->addSearchItem('diagnoses.id', array('type' => 'disorder'));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
