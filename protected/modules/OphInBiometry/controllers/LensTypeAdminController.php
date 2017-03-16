@@ -23,6 +23,7 @@ class LensTypeAdminController  extends BaseAdminController
         $admin->setListFields(array(
             'id',
             'name',
+            'display_name',
             'description',
             'acon',
             'active',
@@ -50,6 +51,7 @@ class LensTypeAdminController  extends BaseAdminController
         $admin->setModelDisplayName('Lens types');
         $admin->setEditFields(array(
             'name' => 'text',
+            'display_name' => 'text',
             'description' => 'text',
             'acon' => 'text',
             'active' => 'checkbox',
