@@ -1,5 +1,21 @@
 <?php $this->beginContent('//patient/event_container'); ?>
 
+<?php
+
+    $this->event_actions[] = EventAction::link('Cancel', '/OphDrPrescriptio/default/view/'.$id, [], ['class'=>'button small cancel']);
+    $this->event_tabs[] = array(
+        'label' => 'View',
+        'href' => '/OphDrPrescriptio/default/view/'.$id
+    );
+
+    $this->event_tabs[] = array(
+        'label' => 'Edit',
+        'href' => '#',
+        'active' => true
+    );
+?>
+
+
 <div style="padding-left: 25px;">
 
 <h1><i class="fa fa-exclamation-triangle" style="color: #eb5911;"></i> Reason required</h1>
