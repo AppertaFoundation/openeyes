@@ -15,20 +15,33 @@
 * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
+
+/**
+ * Close the dialog window
+ */
 function hide_dialog() {
     $('#blackout-box').hide();
     $('#dialog-msg').hide();
 }
 
+/**
+ * Cancel booking, and redirect to cancel url
+ */
 function cancelBookingEvent() {
     window.location.href = cancel_url;
 }
 
+/**
+ * Cancel booking, and redirect to examination event
+ */
 function goToExaminationEvent() {
     window.location.href = create_examination_url;
 }
 
-function AlertMissingIfExaminationEvent(){
+/**
+ * Open alert dialog, if examination event is missing
+ */
+function AlertDialogIfExaminationEventIsMissing(){
 	if(examination_events_count < 1 && require_exam_before_booking) {
         var warning_message = "You didn't create examination yet.";
         
@@ -228,7 +241,7 @@ $(document).ready(function() {
 		}
 	});
 	
-	AlertMissingIfExaminationEvent();
+	AlertDialogIfExaminationEventIsMissing();
 	
 });
 
