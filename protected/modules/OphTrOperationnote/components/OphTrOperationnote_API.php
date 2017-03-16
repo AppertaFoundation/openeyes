@@ -276,6 +276,51 @@ class OphTrOperationnote_API extends BaseAPI
     }
 
     /**
+     * Get the last operation peri-operative complications to cataract, trabeculectomy and trabectome
+     * @param Patient $patient
+     * @return string
+     */
+    public function getLastOperationPeriOperativeComplications(\Patient $patient)
+    {
+        $result = '';
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+
+            if($latestCataract =  $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_Cataract')){
+                $result .= 'Cataract complications: '.$latestCataract->getComplicationsString();
+                $result .="\n";
+            }
+
+            if($latestTrabeculectomy =  $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_Trabeculectomy')){
+                $result .= 'Trabeculectomy complications: '.$latestTrabeculectomy->getComplicationsString();
+                $result .="\n";
+            }
+
+            if($latestTrabectome =  $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_Trabectome')){
+                $result .= 'Trabectome complications: '.$latestTrabectome->getComplicationsString();
+                $result .="\n";
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Get the last operation comments
+     * @param Patient $patient
+     * @return string
+     */
+    public function getLastOperationComments(\Patient $patient)
+    {
+        $comments = '';
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            $comments = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_Comments');
+            if ($comments) {
+                return $comments->comments;
+            }
+        }
+        return $comments;
+    }
+
+    /**
      * Get the last operation Post-op instructions
      * @param Patient $patient
      * @return string

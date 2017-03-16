@@ -25,7 +25,17 @@ if($correspondeceApp->value === "on") {
             <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_signed_off')) . ': '; ?></div>
         </div>
         <div class="large-9 column end">
-            <div class="data-value"><?php echo $element->is_signed_off == 1 ? 'Yes' : ($element->is_signed_off === 0 ? 'No' : 'N/A'); ?></div>
+                <div class="data-value">
+                    <?php
+                        if($element->is_signed_off == NULL){
+                            echo 'N/A';
+                        } else if((int)$element->is_signed_off == 1){
+                            echo 'Yes';
+                        } else {
+                            echo 'No';
+                        }
+                    ?>
+                </div>
         </div>
     </div>
     <?php
