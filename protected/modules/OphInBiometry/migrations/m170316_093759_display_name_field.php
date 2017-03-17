@@ -7,7 +7,7 @@ class m170316_093759_display_name_field extends CDbMigration
         $this->addColumn('ophinbiometry_lenstype_lens', 'display_name', 'varchar(255) NOT NULL');
         $this->addColumn('ophinbiometry_lenstype_lens_version', 'display_name', 'varchar(255) NOT NULL');
 
-        $this->execute('UPDATE ophinbiometry_lenstype_lens SET display_name = description');
+        $this->execute('UPDATE ophinbiometry_lenstype_lens SET display_name = name');
 
         $this->execute('CREATE OR REPLACE VIEW et_ophtroperationnote_biometry AS SELECT
                              eol.id AS id,eol.eye_id AS eye_id,eol.last_modified_date AS last_modified_date,
