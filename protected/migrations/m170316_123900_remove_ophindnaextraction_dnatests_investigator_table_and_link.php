@@ -1,11 +1,34 @@
 <?php
 
-class m170316_123900_remove_ophindnaextraction_dnatests_investigator_table_and_link extends CDbMigration
+class m170316_123900_remove_investigator_table_and_dnatests_transaction_add_comments_field extends CDbMigration
 {
 	public function up()
 	{
+	    $this->dropColumn('ophindnaextraction_dnatests_transaction','investigator_id');
+	    
 	    $this->dropTable('ophindnaextraction_dnatests_investigator');
 	    $this->dropTable('ophindnaextraction_dnatests_investigator_version');
+	    
+        $this->addColumn('ophindnaextraction_dnatests_transaction','comments','varchar(255)');
+        
+	    $this->dropForeignKey('ophindnaextraction_dnatests_transaction_sti_fk', 'ophindnaextraction_dnatests_transaction');
+	    $this->alterColumn('ophindnaextraction_dnatests_transaction', 'study_id', 'INT(11) NOT NULL');
+	    
+	    $this->alterColumn('ophindnaextraction_dnatests_transaction', 'study_id', 'INT(11) NOT NULL');
+	    
+	    $this->addForeignKey(
+	        'ophindnaextraction_dnatests_transaction_sti_fk', 
+	        'ophindnaextraction_dnatests_transaction',
+	        'study_id',
+	        'genetics_study',
+	        'id',
+	        'RESTRICT',
+	        'RESTRICT'
+	    );
+	    
+	    
+	    $this->addColumn('ophindnaextraction_dnatests_transaction_version','comments','varchar(255)');
+        $this->dropColumn('ophindnaextraction_dnatests_transaction_version','investigator_id');	    
 	}
 
 	public function down()
@@ -26,6 +49,26 @@ class m170316_123900_remove_ophindnaextraction_dnatests_investigator_table_and_l
             ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
         
         $this->versionExistingTable('ophindnaextraction_dnatests_investigator');
+        
+        $this->addColumn('ophindnaextraction_dnatests_transaction','investigator_id','int(10) unsigned NOT NULL');
+		$this->dropColumn('ophindnaextraction_dnatests_transaction','comments');
+		
+	    $this->dropForeignKey('ophindnaextraction_dnatests_transaction_sti_fk', 'ophindnaextraction_dnatests_transaction');
+	    $this->alterColumn('ophindnaextraction_dnatests_transaction', 'study_id', 'INT(10) UNSIGNED NOT NULL');
+	    
+	    $this->alterColumn('ophindnaextraction_dnatests_transaction', 'study_id', 'INT(10) UNSIGNED NOT NULL');
+	    $this->addForeignKey(
+	        'ophindnaextraction_dnatests_transaction_sti_fk', 
+	        'ophindnaextraction_dnatests_transaction',
+	        'study_id',
+	        'ophindnaextraction_dnatests_study',
+	        'id',
+	        'RESTRICT',
+	        'RESTRICT'
+	    );		
+	    
+		
+		$this->addColumn('ophindnaextraction_dnatests_transaction_version','investigator_id','int(10) unsigned NOT NULL');
+	    $this->dropColumn('ophindnaextraction_dnatests_transaction_version','comments');
 	}
-
 }
