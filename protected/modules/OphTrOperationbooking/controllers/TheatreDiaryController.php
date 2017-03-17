@@ -155,13 +155,11 @@ class TheatreDiaryController extends BaseModuleController
     public function actionSearch()
     {
         Audit::add('diary', 'search');
-
         $list = $this->renderPartial('_list', array(
             'diary' => $this->getDiaryTheatres($_POST),
             'assetPath' => $this->assetPath,
             'ward_id' => @$_POST['ward-id'],
         ), true, true);
-
         echo json_encode(array('status' => 'success', 'data' => $list));
     }
 
@@ -569,11 +567,11 @@ class TheatreDiaryController extends BaseModuleController
             if (empty($errors)) {
                 $transaction->commit();
                 if($order_is_changed) {
-                    Audit::add('diary', 'change-of-order', $booking_data['booking_id']);
+                    Audit::add('diary', 'change-of-order', $booking_data['booking_id'],null,array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
                 }
                 
                 if($comments_is_changed){
-                    Audit::add('diary', 'change-of-comment');
+                    Audit::add('diary', 'change-of-comment', $booking_data['booking_id'],null,array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
                 }
             } else {
                 $transaction->rollback();
