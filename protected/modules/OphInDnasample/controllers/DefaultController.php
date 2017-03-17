@@ -2,6 +2,7 @@
 
 class DefaultController extends BaseEventTypeController
 {
+ 
     public function volumeRemaining($event_id)
     {
         $volume_remaining = 0;
@@ -16,11 +17,11 @@ class DefaultController extends BaseEventTypeController
     {
         return array(
             array('allow',
-                'actions' => array('Create', 'Update', 'View', 'Print' ),
+                'actions' => array('Create', 'Update', 'View', 'Print','saveCanvasImages','PDFprint' ),
                 'roles' => array('OprnEditDnaSample'),
             ),
             array('allow',
-                'actions' => array('View', 'Print'),
+                'actions' => array('View', 'Print','saveCanvasImages','PDFprint'),
                 'roles' => array('OprnViewDnaSample'),
             ),
         );
