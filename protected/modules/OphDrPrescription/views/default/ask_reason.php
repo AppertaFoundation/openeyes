@@ -2,7 +2,7 @@
 
 <?php
 
-    $this->event_actions[] = EventAction::link('Cancel', '/OphDrPrescriptio/default/view/'.$id, [], ['class'=>'button small cancel']);
+    $this->event_actions[] = EventAction::link('Cancel', '/OphDrPrescription/default/view/'.$id, [], ['class'=>'button small cancel']);
     $this->event_tabs[] = array(
         'label' => 'View',
         'href' => '/OphDrPrescription/default/view/'.$id
