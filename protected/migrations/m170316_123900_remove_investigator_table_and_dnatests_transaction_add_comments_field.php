@@ -4,6 +4,7 @@ class m170316_123900_remove_investigator_table_and_dnatests_transaction_add_comm
 {
 	public function up()
 	{
+	    $this->dropForeignKey('ophindnaextraction_dnatests_transaction_inv_fk', 'ophindnaextraction_dnatests_transaction');
 	    $this->dropColumn('ophindnaextraction_dnatests_transaction','investigator_id');
 	    
 	    $this->dropTable('ophindnaextraction_dnatests_investigator');
