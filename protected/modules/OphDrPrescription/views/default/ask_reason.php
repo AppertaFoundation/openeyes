@@ -5,7 +5,7 @@
     $this->event_actions[] = EventAction::link('Cancel', '/OphDrPrescriptio/default/view/'.$id, [], ['class'=>'button small cancel']);
     $this->event_tabs[] = array(
         'label' => 'View',
-        'href' => '/OphDrPrescriptio/default/view/'.$id
+        'href' => '/OphDrPrescription/default/view/'.$id
     );
 
     $this->event_tabs[] = array(
@@ -34,8 +34,7 @@ $reasons = OphDrPrescriptionEditReasons::model()->findAll(array('order'=>'displa
     <input type="hidden" name="reason" id="reason" />
     <?php foreach ($reasons as $key=>$reason): ?>
         <div>
-            <button class="secondary small submit" data-value="<?php echo $reason->id; ?>" id="reason_<?php echo $reason->id; ?>" style="margin-bottom: 5px;"><?php echo htmlentities($reason->caption); ?></button>
-
+            <button class="secondary small submit" data-value="<?php echo $reason->id; ?>" id="reason_<?php echo $reason->id; ?>" style="margin-bottom: 15px;"><?php echo htmlentities($reason->caption); ?></button>
         </div>
     <?php endforeach; ?>
     <div class="row">
