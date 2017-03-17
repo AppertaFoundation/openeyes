@@ -44,6 +44,9 @@ class LensTypeAdminController  extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
+        $modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphInBiometry.assets'));
+        Yii::app()->clientScript->registerScriptFile($modulePath.'/js/admin.js', CClientScript::POS_HEAD);
+
         $admin = new Admin(OphInBiometry_LensType_Lens::model(), $this);
         if ($id) {
             $admin->setModelId($id);

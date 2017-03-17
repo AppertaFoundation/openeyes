@@ -17,6 +17,9 @@
  */
 
 $(document).ready(function() {
+	/*
+	* 2017-03-17: Maybe unused part of code, because this file was not included to admin view
+	*
 	$('.lensAdmin #et_cancel').die('click').live('click',function(e) {
 		e.preventDefault();
 		window.location.href = baseUrl+'/OphInBiometry/admin/lensTypes';
@@ -50,4 +53,8 @@ $(document).ready(function() {
 			}
 		});
 	});
+	*/
+	$('#OphInBiometry_LensType_Lens_name').bind('focusout blur',function(){
+		$('#OphInBiometry_LensType_Lens_display_name').val( $(this).val());
+    });
 });
