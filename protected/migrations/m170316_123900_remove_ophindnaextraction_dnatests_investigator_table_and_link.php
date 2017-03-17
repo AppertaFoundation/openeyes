@@ -67,8 +67,16 @@ class m170316_123900_remove_investigator_table_and_dnatests_transaction_add_comm
 	        'RESTRICT'
 	    );		
 	    
-		
 		$this->addColumn('ophindnaextraction_dnatests_transaction_version','investigator_id','int(10) unsigned NOT NULL');
+        $this->addForeignKey(
+	        'ophindnaextraction_dnatests_transaction_inv_fk', 
+	        'ophindnaextraction_dnatests_transaction',
+	        'investigator_id',
+	        'ophindnaextraction_dnatests_investigator',
+	        'id',
+	        'RESTRICT',
+	        'RESTRICT'
+	    );					
 	    $this->dropColumn('ophindnaextraction_dnatests_transaction_version','comments');
 	}
 }
