@@ -76,7 +76,9 @@ class ElementType extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
             'parent_element_type' => array(self::BELONGS_TO, 'ElementType', 'parent_element_type_id'),
-            'child_element_types' => array(self::HAS_MANY, 'ElementType', 'parent_element_type_id', 'order' => 'display_order ASC'),
+            'child_element_types' => array(self::HAS_MANY, 'ElementType', 'parent_element_type_id',
+                'alias' => 'child',
+                'order' => 'child.display_order ASC'),
         );
     }
 

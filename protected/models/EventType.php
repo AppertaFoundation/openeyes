@@ -349,4 +349,23 @@ class EventType extends BaseActiveRecordVersioned
 
         return ElementType::model()->findAll($criteria);
     }
+
+    /**
+     * Get the root event type elements with associated children.
+     *
+     * @return BaseEventTypeElement[]
+     */
+    public function getRootElementTypes()
+    {
+        $criteria = new CDbCriteria();
+        $ids = array($this->id);
+        foreach ($this->getParentEventTypes() as $parent) {
+            $ids[] = $parent->id;
+        }
+        $criteria->addInCondition('t.event_type_id', $ids);
+        $criteria->addCondition('t.parent_element_type_id IS NULL');
+        $criteria->order = 't.display_order asc';
+
+        return ElementType::model()->with('child_element_types')->findAll($criteria);
+    }
 }

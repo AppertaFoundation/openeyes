@@ -21,6 +21,7 @@
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Sidebar.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.EpisodeSidebar.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.PatientSidebar.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.StickyElement.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Tooltip.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js')?>

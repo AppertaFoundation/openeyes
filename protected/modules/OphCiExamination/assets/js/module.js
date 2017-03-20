@@ -851,8 +851,20 @@ $(document).ready(function() {
         }
         removeElement($(target).closest('.sub-element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]'), true);
         var el = $('.event-content').find('ul.sub-elements-list li[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]');
-        el.addClass('clicked');
-        addElement(el, true, true, false, {unit_id: $(target).val()});
+        if (el.length) {
+            el.addClass('clicked');
+            addElement(el, true, true, false, {unit_id: $(target).val()});
+        } else {
+            // use a different selector
+            var sidebar = $('aside.episodes-and-events').data('patient-sidebar');
+            if (sidebar) {
+                sidebar.addElementByTypeClass(OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix, {unit_id: $(target).val()});
+            } else {
+                console.log('Cannot find sidebar to manipulate elements for VA change');
+            }
+
+        }
+
     }
 
     $(this).delegate('#nearvisualacuity_unit_change', 'change', function(e) {
@@ -2183,7 +2195,18 @@ function OphCiExamination_AddFinding(finding_id, label) {
     if($('.OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings').length > 0) {
         updateFindings();
     } else {
-        addElement($("[data-element-type-class='OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings']").first(), false, true, 0, {}, updateFindings);
+        var el = $("[data-element-type-class='OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings']");
+        if (el.length) {
+            addElement(el.first(), false, true, 0, {}, updateFindings);
+        } else {
+            var sidebar = $('aside.episodes-and-events').data('patient-sidebar');
+            if (sidebar) {
+                sidebar.addElementByTypeClass('OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings', {}, updateFindings);
+            } else {
+                console.log('Cannot find sidebar to manipulate elements for VA change');
+            }
+        }
+
     }
 
 }

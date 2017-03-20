@@ -258,6 +258,39 @@ class BaseEventTypeController extends BaseModuleController
         return $elements;
     }
 
+    public function getElementTree($remove_list = array())
+    {
+        $element_types_tree = array();
+        foreach ($this->event_type->getRootElementTypes() as $et) {
+            if (count($remove_list) && in_array($et->class_name, $remove_list)) {
+                continue;
+            }
+            $struct = array(
+                'name'          => $et->name,
+                'class_name'    => CHtml::modelName($et->class_name),
+                'id'            => $et->id,
+                'display_order' => $et->display_order,
+                'children'      => array(),
+            );
+
+            foreach ($et->child_element_types as $child) {
+                if (count($remove_list) && in_array($child->class_name, $remove_list)) {
+                    continue;
+                }
+                $struct['children'][] = array(
+                    'name'          => $child->name,
+                    'id'            => $child->id,
+                    'display_order' => $child->display_order,
+                    'class_name'    => CHtml::modelName($child->class_name),
+                );
+            }
+
+            $element_types_tree[] = $struct;
+        }
+
+        return json_encode($element_types_tree);
+    }
+
     /**
      * Get the open child elements for the given ElementType.
      *

@@ -17,11 +17,18 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+
+<?php
+	if (Yii::app()->params['element_sidebar']) {
+		$this->renderPartial('//patient/_patient_element_sidebar');
+	}
+?>
+
 <div class="js-active-elements">
 	<?php $this->renderOpenElements($this->action->id, $form)?>
 </div>
 
-<?php if (count($this->getOptionalElements())) {?>
+<?php if (count($this->getOptionalElements()) && !Yii::app()->params['element_sidebar']) {?>
 	<section class="optional-elements">
 		<header class="optional-elements-header">
 			<h3 class="optional-elements-title">Optional Elements</h3>
