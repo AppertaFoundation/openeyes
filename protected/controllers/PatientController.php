@@ -1561,8 +1561,9 @@ class PatientController extends BaseController
         
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
-        
+
         $patient = $this->loadModel($id);
+        $patient->scenario = 'manual';
         
         //only local patient can be edited
         if($patient->is_local == 0){
