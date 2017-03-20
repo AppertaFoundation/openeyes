@@ -38,6 +38,7 @@
             'data-name' => 'DocumentTarget['.$row_index.'][attributes][contact_id]',
             'id' => 'docman_recipient_' . $row_index,
             'disabled' => !$is_editable_contact_targets,
+            'style' => (!$is_editable_contact_targets ? 'background-color: lightgray' : ''),
         )
     );
 

@@ -72,17 +72,21 @@
                                     'is_editable_contact_targets' => $target->contact_type != 'INTERNALREFERRAL',
                                     'is_editable_contact_name' => ($target->contact_type != 'INTERNALREFERRAL'),
                                     'is_editable_address' => ($target->contact_type != 'GP') && ($target->contact_type != 'INTERNALREFERRAL'),
-
-
                                 ));
                         ?>
                     </td>
                     <td>
                         <?php if($element->draft): ?>
-                            <?php $this->renderPartial('//docman/table/contact_type', array(
+                            <?php
+                                    $class = ($target->contact_type != 'INTERNALREFERRAL') ? 'hidden' : '';
+                                    $this->renderPartial('//docman/table/contact_type', array(
                                         'contact_type' => strtoupper($target->contact_type),
-                                        'is_internal_referral' => $element->isInternalReferral(),
+                                        'option_styles' => array('INTERNALREFERRAL' => array('class' => $class )),
+                                        'is_editable' => $target->contact_type != 'INTERNALREFERRAL',
                                         'row_index' => $row_index));
+
+
+
                             ?>
                         <?php else: ?>
                             <?php echo $target->contact_type != 'GP' ? (ucfirst(strtolower($target->contact_type))) : $target->contact_type; ?>

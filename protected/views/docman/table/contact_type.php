@@ -18,17 +18,31 @@
 
 <?php
 
-    echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type,  array(
+    $is_editable = isset($is_editable) ? $is_editable : true;
+    $option_styles = isset($option_styles) ? $option_styles : [];
+
+    echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, [
             'GP' => 'GP',
             'PATIENT' => 'Patient',
             'DRSS' => 'DRSS',
             'OTHER' => 'Other',
             'INTERNALREFERRAL' => 'Booking'
-        ),
-        array(  'empty' => '- Type -',
+        ],
+        [       'empty' => '- Type -',
                 'nowrapper' => true,
                 'class' => 'full-width docman_contact_type',
                 'data-rowindex' => $row_index,
-                'options' => array('INTERNALREFERRAL' => array('class'=> ($is_internal_referral ? '' : 'hidden') )),
-            )
-    );?>
+                'options' => $option_styles,
+                'disabled' => !$is_editable,
+                'style' => !$is_editable ? 'background-color:lightgray' : ''
+        ]
+    );
+
+    if(!$is_editable){
+        echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, array(
+            'id' => 'yDocumentTarget_'.$row_index.'_attributes_contact_type')
+        );
+    }
+
+
+    ?>

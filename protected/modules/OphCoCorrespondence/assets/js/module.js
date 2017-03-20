@@ -85,20 +85,32 @@ function setRecipientToInternalReferral(){
 	$('#docman_recipient_0').attr('disabled', true).css({'background-color':'lightgray'});
 	$('#DocumentTarget_0_attributes_contact_name').prop('readonly', true).val('Central Booking');
 	$('#Document_Target_Address_0').prop('readonly', true).val(internal_referral_booking_address.replace(/,/g, "\n"));
+
     $('#DocumentTarget_0_attributes_contact_type').css({'background-color':'lightgray'}).find('option').toggleClass("hidden");
 	$('#DocumentTarget_0_attributes_contact_type').val('INTERNALREFERRAL');
+    $('#DocumentTarget_0_attributes_contact_type').attr('disabled', true);
 
-    $('#dm_table tr:first-child td:last-child').html('Change the letter type <br> to amend this recipient').css({'font-size':'10px'});
+	if( !$('#yDocumentTarget_0_attributes_contact_type').length ){
+	    var $input = $('</input>',{'type':'hidden','id':'yDocumentTarget_0_attributes_contact_type','name':'DocumentTarget[0][attributes][contact_type]'}).val('INTERNALREFERRAL');
+        $('#DocumentTarget_0_attributes_contact_type').after($input);
+    } else {
+        $('#yDocumentTarget_0_attributes_contact_type').val('INTERNALREFERRAL');
+    }
+
+    $('#dm_table tr:first-child td:last-child').html('Change the letter type <br> to amend this recipient').css({'font-size':'11px'});
 }
 
 function resetRecipientToInternalReferral(){
 	$('#docman_recipient_0').attr('disabled', false).css({'background-color':'white'});
 	$('#DocumentTarget_0_attributes_contact_name').prop('readonly', false).val('');
 	$('#Document_Target_Address_0').prop('readonly', false).val('');
+
+	$('#DocumentTarget_0_attributes_contact_type').attr('disabled', false);
 	$('#DocumentTarget_0_attributes_contact_type').css({'background-color':'white'}).find('option').toggleClass("hidden");
 	$('#DocumentTarget_0_attributes_contact_type').val('');
 
     $('#dm_table tr:first-child td:last-child').html('');
+    $('#yDocumentTarget_0_attributes_contact_type').remove();
 }
 
 

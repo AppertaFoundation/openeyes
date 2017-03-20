@@ -17,7 +17,7 @@
                 'contact_id' => $contact_id,
                 'contact_name' => $contact_name,
                 'address_targets' => $element->address_targets,
-                'is_editable' => $contact_type != 'GP',
+                'is_editable_address' => $contact_type != 'GP',
                 'contact_type' => $contact_type,
                 'row_index' => $row_index,
                 'address' => $address,
@@ -28,9 +28,12 @@
     </td>
     <td>
         <?php $this->renderPartial('//docman/table/contact_type', array(
-                                        'contact_type' => isset($selected_contact_type) ? $selected_contact_type : null,
-                                        'row_index' => $row_index,
-                                        'is_internal_referral' => $element->isInternalReferral()));
+                                            'contact_type' => isset($selected_contact_type) ? $selected_contact_type : null,
+                                            'row_index' => $row_index,
+                                            'option_styles' => array('INTERNALREFERRAL' => array('class'=> ($element->isInternalReferral() ? '' : 'hidden') )),
+                                            'is_editable' => !$element->isInternalReferral(),
+                                        )
+                                    );
                             ?>
     </td>
     <td class="docman_delivery_method">
