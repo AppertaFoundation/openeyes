@@ -141,21 +141,34 @@ var docman = (function() {
             $('#dm_table tr').each(function()
             {
                 if($(this).data("rowindex") == row)
-                {                            
-                    if($(this).find('.docman_contact_type').val() == 'GP')
+                {
+                    var contact_type = $(this).find('.docman_contact_type').val();
+                    if( contact_type == 'GP')
                     {
-                            //electronic_sending_method_label is coming from config
-                            electronic_sending_method_label = electronic_sending_method_label ? electronic_sending_method_label : 'Electronic';
+                        //electronic_sending_method_label is coming from config
+                        electronic_sending_method_label = electronic_sending_method_label ? electronic_sending_method_label : 'Electronic';
                             
-                            delivery_methods = '<label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + electronic_sending_method_label;
-                            delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label>';
+                        delivery_methods = '<label><input value="Docman" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + electronic_sending_method_label;
+                        delivery_methods += '<input type="hidden" value="Docman" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label>';
 
-                            // if the print option is not set we will not display the button
-                            if( $('button#et_saveprint').length ){
-                                delivery_methods += '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label>';
-                            }
+                        // if the print option is not set we will not display the button
+                        if( $('button#et_saveprint').length ){
+                            delivery_methods += '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label>';
+                        }
 
-                    }else
+                    }
+                    else if(contact_type == 'INTERNALREFERRAL'){
+                        internal_referral_method_label = internal_referral_method_label ? internal_referral_method_label : 'Electronic (Internal Referral)';
+
+                        delivery_methods = '<label><input value="Internalreferral" name="DocumentTarget_' + row + '_DocumentOutput_0_output_type" type="checkbox" disabled checked> ' + internal_referral_method_label;
+                        delivery_methods += '<input type="hidden" value="Internalreferral" name="DocumentTarget[' + row + '][DocumentOutput][0][output_type]"></label>';
+
+                        // if the print option is not set we will not display the button
+                        if( $('button#et_saveprint').length ){
+                            delivery_methods += '<label><input value="Print" name="DocumentTarget[' + row + '][DocumentOutput][1][output_type]" type="checkbox"> Print</label>';
+                        }
+                    }
+                    else
                     {
                         // if the print option is not set we will not display the button
                         if( $('button#et_saveprint').length ){

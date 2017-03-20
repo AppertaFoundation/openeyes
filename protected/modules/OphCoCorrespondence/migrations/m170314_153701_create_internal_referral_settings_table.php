@@ -54,15 +54,15 @@ class m170314_153701_create_internal_referral_settings_table extends OEMigration
 
         $this->insert('ophcocorrespondence_internal_referral_settings',array(
             'field_type_id' => 4,
-            'key' => 'internal_referral_delivery_label',
+            'key' => 'internal_referral_method_label',
             'name' => 'Delivery Method Label'
         ));
 
-        $delivery_method_label = SettingInternalReferral::model()->findByAttributes(array('key' => 'internal_referral_delivery_label'));
+        $delivery_method_label = SettingInternalReferral::model()->findByAttributes(array('key' => 'internal_referral_method_label'));
 
         if(!$delivery_method_label){
             $delivery_method_label = new SettingInternalReferral();
-            $delivery_method_label->key = 'internal_referral_delivery_label';
+            $delivery_method_label->key = 'internal_referral_method_label';
         }
 
         $delivery_method_label->value = 'Electronic (WinDip)';

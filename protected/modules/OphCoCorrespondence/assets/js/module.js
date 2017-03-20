@@ -85,17 +85,17 @@ function setRecipientToInternalReferral(){
 	$('#docman_recipient_0').attr('disabled', true).css({'background-color':'lightgray'});
 	$('#DocumentTarget_0_attributes_contact_name').prop('readonly', true).val('Central Booking');
 	$('#Document_Target_Address_0').prop('readonly', true).val(internal_referral_booking_address.replace(/,/g, "\n"));
-    $('#DocumentTarget_0_attributes_contact_type').css({'background-color':'lightgray'}).find('option').toggleClass("hidden").find('option');
+    $('#DocumentTarget_0_attributes_contact_type').css({'background-color':'lightgray'}).find('option').toggleClass("hidden");
 	$('#DocumentTarget_0_attributes_contact_type').val('INTERNALREFERRAL');
 
-    $('#dm_table tr:first-child td:last-child').html('Change letter type <br> to amend this recipient').css({'font-size':'10px'});
+    $('#dm_table tr:first-child td:last-child').html('Change the letter type <br> to amend this recipient').css({'font-size':'10px'});
 }
 
 function resetRecipientToInternalReferral(){
 	$('#docman_recipient_0').attr('disabled', false).css({'background-color':'white'});
 	$('#DocumentTarget_0_attributes_contact_name').prop('readonly', false).val('');
 	$('#Document_Target_Address_0').prop('readonly', false).val('');
-	$('#DocumentTarget_0_attributes_contact_type').css({'background-color':'white'}).find('option').toggleClass("hidden").find('option');
+	$('#DocumentTarget_0_attributes_contact_type').css({'background-color':'white'}).find('option').toggleClass("hidden");
 	$('#DocumentTarget_0_attributes_contact_type').val('');
 
     $('#dm_table tr:first-child td:last-child').html('');
@@ -606,12 +606,21 @@ $(document).ready(function() {
 		if( $(this).find('option:selected').text() == 'Internal Referral' ){
             $('.internal-referrer-wrapper').slideDown();
             setRecipientToInternalReferral();
+
 		} else {
             $('.internal-referrer-wrapper').slideUp();
             resetInternalReferralFields();
             resetRecipientToInternalReferral();
+
+            if (typeof docman != "undefined" && typeof docman.setDeliveryMethods == 'function') {
+                docman.setDeliveryMethods(0);
+            }
 		}
 
+
+        //call the setDeliveryMethods with row index 0 as the Internal referral will be the main recipient
+        //we have to trigger to set it
+        docman.setDeliveryMethods(0);
 	})
 
 });

@@ -69,7 +69,11 @@
                                     'contact_type' => $target->contact_type,
                                     'row_index' => $row_index,
                                     'address' => $target->address,
-                                    'is_editable' => $target->contact_type != 'GP',
+                                    'is_editable_contact_targets' => $target->contact_type != 'INTERNALREFERRAL',
+                                    'is_editable_contact_name' => ($target->contact_type != 'INTERNALREFERRAL'),
+                                    'is_editable_address' => ($target->contact_type != 'GP') && ($target->contact_type != 'INTERNALREFERRAL'),
+
+
                                 ));
                         ?>
                     </td>

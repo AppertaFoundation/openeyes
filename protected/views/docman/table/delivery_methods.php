@@ -20,6 +20,7 @@
     $pre_output_key = 0;
     // check if the it is a GP and if the GP has a Docman or Print
     $document_output = null;
+    $internalreferral_output = null;
     $print_output = null;
     if( isset($target->document_output)){
         foreach($target->document_output as $output_key => $doc_output){
@@ -27,6 +28,8 @@
                 $document_output = $doc_output;
             } else if($doc_output->output_type == 'Print'){
                 $print_output = $doc_output;
+            } else if($doc_output->output_type == 'InternalReferral'){
+                $internalreferral_output = $doc_output;
             }
         }
     }
@@ -56,7 +59,7 @@
     <?php endif; ?>
 
     <?php if($contact_type == 'INTERNALREFERRAL'): ?>
-        <?php $label = ElementLetter::model()->getInternalReferralSettings('internal_referral_delivery_label', 'Electronic'); ?>
+        <?php $label = ElementLetter::model()->getInternalReferralSettings('internal_referral_method_label', 'Electronic'); ?>
         <label class="electronic-label internal-referral">
             <?php
 
@@ -68,9 +71,8 @@
                 <?php echo $is_checked; ?>> <?php echo $label; ?>
             <input type="hidden" value="InternalReferral" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" >
         </label>
-
-        <?php if($document_output):?>
-            <?php echo CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $document_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
+        <?php if($internalreferral_output):?>
+            <?php echo CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $internalreferral_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
         <?php endif; ?>
         <?php $pre_output_key++; ?>
     <?php endif; ?>
