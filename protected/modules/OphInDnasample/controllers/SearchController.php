@@ -58,7 +58,7 @@ class SearchController extends BaseController
                 $page = $_GET['page'];
             }
 
-            $search_command = $this->buildSearchCommand('event.id,patient.hos_num,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments', $page);
+            $search_command = $this->buildSearchCommand('DISTINCT(patient.id),patient.hos_num,event.id,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments', $page);
 
             $dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
@@ -123,7 +123,8 @@ class SearchController extends BaseController
             ->join('patient', 'episode.patient_id = patient.id')
             ->join('ophindnasample_sample_type', 'et_ophindnasample_sample.type_id = ophindnasample_sample_type.id')
             ->join('contact', 'patient.contact_id = contact.id')
-            ->leftJoin('secondary_diagnosis', 'secondary_diagnosis.patient_id = patient.id');
+            ->join('genetics_patient', 'genetics_patient.patient_id = patient.id')
+            ->leftJoin('genetics_patient_diagnosis', 'genetics_patient_diagnosis.patient_id = genetics_patient.id');
 
         if ($date_from) {
             $command->andWhere('event_date <= :date_from', array(':date_from' => Helper::convertNHS2MySQL($date_from)));
@@ -141,7 +142,7 @@ class SearchController extends BaseController
             $command->andWhere((array('like', 'comments', '%'.$comment.'%')));
         }
         if ($disorder_id) {
-            $command->andWhere('secondary_diagnosis.disorder_id = :disorder_id', array(':disorder_id' => $disorder_id));
+            $command->andWhere('genetics_patient_diagnosis.disorder_id = :disorder_id', array(':disorder_id' => $disorder_id));
         }
 
         if($first_name){
@@ -155,8 +156,6 @@ class SearchController extends BaseController
         if($hos_num){
             $command->andWhere('hos_num = :hos_num', array(':hos_num' => $hos_num));
         }
-
-
 
         return $command;
     }
