@@ -74,10 +74,17 @@ class SubjectController extends BaseModuleController
     public function actionEdit($id = false)
     {
         $admin = new Crud(GeneticsPatient::model(), $this);
+
         if ($id) {
             $admin->setModelId($id);
             $this->renderPatientPanel = true;
             $this->patient = isset($admin->getModel()->patient) ? $admin->getModel()->patient : null;
+        }
+
+        if(isset($_GET['patient']) && ((int)$_GET['patient'] > 0) && ($this->patient == NULL)){
+            $this->patient = Patient::model()->findByPk((int)$_GET['patient']);
+            $admin->getModel()->patient = $this->patient;
+            $admin->getModel()->patient_id = $this->patient->id;
         }
 
         $admin->setModelDisplayName('Genetics Subject');
@@ -175,7 +182,7 @@ class SubjectController extends BaseModuleController
         ));
 
         $valid = $admin->editModel(false);
-       
+
         if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 $post = Yii::app()->request->getPost('GeneticsPatient', array());
@@ -227,8 +234,8 @@ class SubjectController extends BaseModuleController
         $admin->getSearch()->addSearchItem('diagnoses.id', array('type' => 'disorder'));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->getSearch()->setDefaultResults(false);
-        $display_buttons = $this->checkAccess('OprnEditGeneticPatient');
-        $admin->listModel($display_buttons);
+        //$display_buttons = $this->checkAccess('OprnEditGeneticPatient');
+        $admin->listModel( false );
     }
 
     /**
