@@ -454,4 +454,22 @@ class Episode extends BaseActiveRecordVersioned
         $properties['patient_id'] = $this->patient_id;
         parent::audit($target, $action, $data, $log, $properties);
     }
+
+    /**
+     * @TODO change to configuration
+     * @return string
+     */
+    public static function getEpisodeLabel()
+    {
+				return 'Specialty';
+    }
+
+    /**
+     * @TODO Change to configuration
+     * @return string
+     */
+    public static function getEpisodeLabelPlural()
+    {
+        return 'Specialties';
+    }
 }

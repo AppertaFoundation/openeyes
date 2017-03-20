@@ -1,0 +1,88 @@
+/**
+ * OpenEyes
+ *
+ * (C) OpenEyes Foundation, 2016
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2016, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
+
+(function(exports) {
+    function Sidebar(element, options) {
+        this.$el = $(element);
+        // store the sidebar controller on the element it's controlling.
+        this.$el.data('sidebar', this);
+        this.options = $.extend(true, {}, Sidebar._defaultOptions, options);
+        this.initialise();
+    }
+
+    Sidebar._defaultOptions = {
+        showHelpOnce: true,
+        scrollTip: 'scroll down',
+        minimumHeight: 300 // this needs to match initial in-line style height
+    };
+
+    Sidebar.prototype.initialise = function()
+    {
+        var self = this;
+
+        self.$tip = self.$el.parent().find('.show-scroll-tip');
+        self.$blueFade = self.$el.parent().find('.scroll-blue-top');
+
+        self.showHelp = true;
+
+        self.$el.scroll(function() {
+            if ($(this).scrollTop() == 0) {
+                self.$blueFade.fadeOut(200);
+            }
+            else {
+                self.$blueFade.fadeIn(200);
+            }
+            if (self.showHelp && self.options.showHelpOnce) {
+                self.showHelp = false;
+                self.$tip.text('');
+                self.showHelp = false;
+            }
+        });
+
+        self.checkSideNavHeight();
+        // make sure we re-do all the sizing when the window resizes
+        $(window).on('resize', function() {
+            self.checkSideNavHeight()
+        });
+
+    };
+
+    Sidebar.prototype.checkSideNavHeight = function()
+    {
+        var self = this;
+
+        var nh = self.$el.find('.all-panels').height() + 48; // need to add this to make sure last event is shown!
+        var wh = $('footer').position().top + $('footer').height();
+        if (window.innerHeight < wh) {
+            wh = window.innerHeight;
+        }
+        var h = wh  - 165; // bottom footer + top panels height
+
+        if(h > nh) {
+            // showing all!
+            h = nh;
+            self.$tip.fadeOut();
+        } else {
+            self.$tip.fadeIn();
+        }
+
+        if(h < self.options.minimumHeight)
+            h = self.options.minimumHeight;
+        self.$el.height(h+'px');
+    };
+
+    exports.Sidebar = Sidebar;
+}(OpenEyes.UI));
