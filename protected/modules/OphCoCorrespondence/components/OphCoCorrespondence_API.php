@@ -127,10 +127,7 @@ class OphCoCorrespondence_API extends BaseAPI
 
     public function getOphthalmicDiagnoses(\Patient $patient)
     {
-        $allDiagnoses ='';
-        foreach ($patient->ophthalmicDiagnoses as $diagnosis) {
-            return $diagnosis->eye->adjective . ' ' . $diagnosis->disorder->term;
-        }
+        return $patient->getUniqueDiagnosesString('- ', "\r\n", true);
     }
 
     public function getLastIOLType(\Patient $patient)
@@ -264,13 +261,8 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getAllergiesBulleted($patient)
     {
-        $multiAllergies = '';
-        foreach ($patient->allergyAssignments as $aa) {
-            $multiAllergies .= " - " . $aa->allergy->name . "\r\n";
-        }
-        return $multiAllergies;
+        return $patient->getAllergiesSeparatedString(" - ", "\r\n", true);
     }
-
 
     public function getMacroTargets($patient_id, $macro_id)
     {

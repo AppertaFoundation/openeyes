@@ -6,6 +6,37 @@ class m170223_155003_create_genetics_clinical_role extends OEMigration
     // Use safeUp/safeDown to do migration with transaction
     public function safeUp()
     {
+		$this->delete('authitemchild', "parent = 'Genetics Admin' AND child = 'TaskEditGeneticTest'");
+        $this->delete('authitemchild', "parent = 'Genetics Admin' AND child = 'TaskViewGeneticTest'");
+        $this->delete('authitemchild', "parent = 'Genetics User' AND child = 'TaskViewGeneticTest'");
+
+        $this->delete('authitemchild', "parent = 'TaskEditGeneticTest' AND child = 'OprnEditGeneticTest'");
+        $this->delete('authitemchild', "parent = 'TaskViewGeneticTest' AND child = 'OprnViewGeneticTest'");
+
+
+        $this->update('authitem', array('name' => 'OprnViewGeneticResults', 'type' => 1), "name = 'OprnViewGeneticTest'");
+        $this->update('authitem', array('name' => 'OprnEditGeneticResults', 'type' => 1), "name = 'OprnEditGeneticTest'");
+
+
+        $this->update('authitem', array('name' => 'TaskEditGeneticResults', 'type' => 1), "name = 'TaskEditGeneticTest'");
+        $this->update('authitem', array('name' => 'TaskViewGeneticResults', 'type' => 1), "name = 'TaskViewGeneticTest'");
+
+        $this->insert('authitemchild', array('parent' => 'Genetics Admin', 'child' => 'TaskEditGeneticResults'));
+        $this->insert('authitemchild', array('parent' => 'Genetics Admin', 'child' => 'TaskViewGeneticResults'));
+        $this->insert('authitemchild', array('parent' => 'Genetics User', 'child' => 'TaskViewGeneticResults'));
+
+        $this->insert('authitemchild', array('parent' => 'TaskEditGeneticResults', 'child' => 'OprnEditGeneticResults'));
+        $this->insert('authitemchild', array('parent' => 'TaskViewGeneticResults', 'child' => 'OprnViewGeneticResults'));
+
+        $this->delete('authitemchild', "parent = 'Genetics User' AND child = 'TaskCreateGeneticTest'");
+        $this->delete('authitemchild', "parent = 'TaskCreateGeneticTest' AND child = 'OprnCreateGeneticTest'");
+
+        $this->update('authitem', array('name' => 'TaskCreateGeneticResults', 'type' => 1), "name = 'TaskCreateGeneticTest'");
+        $this->insert('authitemchild', array('parent' => 'Genetics User', 'child' => 'TaskCreateGeneticResults'));
+        $this->update('authitem', array('name' => 'OprnCreateGeneticResults', 'type' => 0), "name = 'OprnCreateGeneticTest'");
+        $this->insert('authitemchild', array('parent' => 'TaskCreateGeneticResults', 'child' => 'OprnCreateGeneticResults'));
+
+
         //New role required
         $this->addRole("Genetics Clinical");
         

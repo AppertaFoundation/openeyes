@@ -14,7 +14,7 @@
 class DnaExtractionBoxAdminController extends \ModuleAdminController
 {
     protected $itemsPerPage = 100;
-    
+
     public function actionList()
     {
        

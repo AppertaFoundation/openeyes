@@ -43,7 +43,9 @@
         </div>
         
         <?php echo $form->datePicker($element, 'extracted_date', array('maxDate' => 'today'), array(), array('label' => 3, 'field' => 2))?>
-		<?php echo $form->textField($element, 'extracted_by', array(), array(), array('label' => 3, 'field' => 2))?>
+		<?php
+            echo $form->dropDownList($element, 'extracted_by_id', CHtml::listData($element->user->geneticLabTechs(), 'id', function($row){return $row->last_name.', '.$row->first_name;}), array('empty' => '- Select -', 'options'=>array(Yii::app()->user->id => array("selected"=>true))), false, array('label' => 3, 'field' => 2 ))
+        ?>
 		<?php echo $form->textField($element, 'dna_concentration', array(), array(), array('label' => 3, 'field' => 2))?>
 		<?php echo $form->textField($element, 'volume', array(), array(), array('label' => 3, 'field' => 2));?>
         <?php echo $form->textField($element, 'dna_quality', array(), array(), array('label' => 3, 'field' => 1));?>

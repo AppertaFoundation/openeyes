@@ -57,9 +57,9 @@ class OphInDnaextraction_DnaExtraction_Box extends BaseActiveRecord
             array('value, maxletter, maxnumber', 'required'),
             array('maxletter', 'match', 'pattern' => '/^[a-zA-Z\s]{1}+$/',
                     'message' => '{attribute} can only contain 1 word character'
-                ),
-
+            ),
             array('value, maxletter, maxnumber, display_order', 'safe'),
+            array('maxnumber', 'numerical', 'integerOnly'=>true, 'min'=> 1 ),
         );
     }
 
