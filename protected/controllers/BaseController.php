@@ -109,6 +109,7 @@ class BaseController extends Controller
 
         // Register the main stylesheet without pre-registering to ensure it's always output first.
         $assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
+        $assetManager->registerCssFile('css/new_ui.css', null, null, AssetManager::OUTPUT_ALL, false);
 
         // Prevent certain assets from being outputted in certain conditions.
         $assetManager->adjustScriptMapping();

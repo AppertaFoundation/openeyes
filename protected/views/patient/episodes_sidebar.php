@@ -23,14 +23,14 @@ extract($this->getEpisodes());
 $current_episode = @$this->current_episode;
 ?>
 <aside class="column sidebar episodes-and-events">
-
+	<div class="oe-sidebar-top-buttons">
 	<?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && $this->checkAccess('OprnCreateEpisode')) {?>
 		<button class="secondary small add-episode" type="button" id="add-episode">
-			<span class="icon-button-small-plus-sign"></span>
-			Add Episode
+			Episode
 		</button>
 	<?php }?>
-
+	</div>
+	<div class="all-panels">
 	<!-- Legacy events -->
 	<?php $this->renderPartial('//patient/_legacy_events', array('legacyepisodes' => $legacyepisodes))?>
 
@@ -101,8 +101,7 @@ $current_episode = @$this->current_episode;
 									type="button"
 									data-attr-subspecialty-id="<?php echo $episode->firm ? $episode->firm->getSubspecialtyID() : ''; ?>"
 									<?php if (!$enabled) echo 'title="Please switch firm to add an event to this episode"'; ?>>
-									<span class="icon-button-small-plus-sign"></span>
-									Add event
+									Event
 								</button>
 
 								<?php
@@ -123,11 +122,11 @@ $current_episode = @$this->current_episode;
 							<ol class="events">
 								<?php	foreach ($episode->events as $event) {
                                     $highlight = false;
-                                
+
                                     if (isset($this->event) && $this->event->id == $event->id) {
                                         $highlight = true;
                                     }
-                                
+
                                     $event_path = Yii::app()->createUrl($event->eventType->class_name.'/default/view').'/';
                                     ?>
 									<li id="eventLi<?php echo $event->id ?>"<?php if ($highlight) { ?> class="selected"<?php }?>>
@@ -182,6 +181,7 @@ $current_episode = @$this->current_episode;
 			</div>
 		<?php } ?>
 	<?php } ?>
+	</div>
 
 	<script type="text/javascript">
 		$(document).ready(function() {

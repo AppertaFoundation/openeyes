@@ -290,68 +290,49 @@ return array(
         'profile_user_show_menu' => true,
         'profile_user_can_change_password' => true,
         'menu_bar_items' => array(
-            'home' => array(
-                'title' => 'Home',
-                'uri' => '',
-                'position' => 1,
-            ),
-            'admin' => array(
-                'title' => 'More',
-                'uri' => '#',
-                'position' => 2,
-                'userrule' => 'isSurgeon',
-                'restricted' => array('admin', 'Report', 'NOD Export'),
-                'sub' => array(
-                    'admin' => array(
-                        'title' => 'Admin',
-                        'uri' => 'admin',
-                        'position' => 1,
-                        'restricted' => array('admin'),
-                    ),
-                    'audit' => array(
-                        'title' => 'Audit',
-                        'uri' => 'audit',
-                        'position' => 2,
-                        'restricted' => array('admin'),
-                    ),
-                    'reports' => array(
-                        'title' => 'Reports',
-                        'uri' => 'report',
-                        'position' => 3,
-                        'restricted' => array('Report'),
-                    ),
-                    'cataract' => array(
-                        'title' => 'Cataract Audit',
-                        'uri' => 'dashboard/cataract',
-                        'position' => 4,
-                        'userrule' => 'isSurgeon',
-                        'restricted' => array('admin'),
-                        'options' => array('target' => '_blank'), ),
-                    'nodexport' => array(
-                        'title' => 'NOD Export',
-                        'uri' => 'NodExport',
-                        'position' => 5,
-                        'restricted' => array('NOD Export'),
-                    ),
-                    'patientmergerequest' => array(
-                        'title' => 'Patient Merge',
-                        'uri' => 'patientMergeRequest/index',
-                        'position' => 6,
-                        'restricted' => array('Patient Merge', 'Patient Merge Request'),
-                    ),
+                'admin' => array(
+                    'title' => 'Admin',
+                    'uri' => 'admin',
+                    'position' => 1,
+                    'restricted' => array('admin'),
                 ),
-            ),
+                'audit' => array(
+                    'title' => 'Audit',
+                    'uri' => 'audit',
+                    'position' => 2,
+                    'restricted' => array('admin'),
+                ),
+                'reports' => array(
+                    'title' => 'Reports',
+                    'uri' => 'report',
+                    'position' => 3,
+                    'restricted' => array('Report'),
+                ),
+                'cataract' => array(
+                    'title' => 'Cataract Audit',
+                    'uri' => 'dashboard/cataract',
+                    'position' => 4,
+                    'userrule' => 'isSurgeon',
+                    'restricted' => array('admin'),
+                    'options' => array('target' => '_blank'), ),
+                'nodexport' => array(
+                    'title' => 'NOD Export',
+                    'uri' => 'NodExport',
+                    'position' => 5,
+                    'restricted' => array('NOD Export'),
+                ),
+                'patientmergerequest' => array(
+                    'title' => 'Patient Merge',
+                    'uri' => 'patientMergeRequest/index',
+                    'position' => 6,
+                    'restricted' => array('Patient Merge', 'Patient Merge Request'),
+                ),
 // temporarily disabled
 //			'worklist' => array(
 //				'title' => 'Worklists',
 //				'uri' => '/worklist',
 //				'position' => 3,
 //			),
-            'logout' => array(
-                'title' => 'Logout',
-                'uri' => 'site/logout',
-                'position' => 9999,
-            ),
         ),
         'admin_menu' => array(
         ),

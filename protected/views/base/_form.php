@@ -47,31 +47,23 @@ if (!Yii::app()->user->isGuest) {
     ?>
 
 	<div class="panel user">
-		<?= $menuHelper->render() ?>
-		<div class="row">
-			<div class="large-3 column">
-				<div class="user-id">
-					You are logged in as:
-					<div class="user-name">
+		<ul class="oe-user-panel">
+			<li class="oe-user-info">
+				<ul class="oe-user-profile-firm">
+					<li><em>User</em><?= $user->first_name.' '.$user->last_name; ?>
 						<?php if (Yii::app()->params['profile_user_can_edit']) { ?>
-							<a href="<?php echo Yii::app()->createUrl('/profile'); ?>">
-								<span class="icon-user-panel-cog"></span>
-								<strong><?php echo $user->first_name.' '.$user->last_name; ?></strong>
-							</a>
-						<?php } else { ?>
-							<strong><?php echo $user->first_name ?> <?php echo $user->last_name ?></strong>
+							<a href="<?= Yii::app()->createUrl('/profile'); ?>">profile</a>
 						<?php } ?>
-					</div>
-				</div>
-			</div>
-			<div class="large-9 column">
-				<div class="user-firm text-right">
-					Site: <strong><?php echo Site::model()->findByPk($this->selectedSiteId)->short_name; ?></strong>,
-					Firm:
-					<strong><?php echo Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?></strong>
-					<span class="change-firm">(<a href="#">Change</a>)</span>
-				</div>
-			</div>
-		</div>
+					</li>
+
+					<li><em>Site</em><?= Site::model()->findByPk($this->selectedSiteId)->short_name; ?></li>
+					<li><em>Firm</em><?= Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?><span class="change-firm"><a href="#">change</a></span></li>
+				</ul>
+			</li>
+			<li class="oe-user-home"><a class="oe-user-big-icon home" href="/">Home</a></li>
+			<?= $menuHelper->render() ?>
+			<li class="oe-user-logout"><a class="oe-user-big-icon logout" href="<?= Yii::app()->createUrl('/site/logout'); ?>">Logout</a></li>
+		</ul>
+
 	</div>
 <?php } ?>

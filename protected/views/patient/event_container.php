@@ -1,4 +1,3 @@
-<h1 class="badge">Episodes and events</h1>
 <?php $this->renderPartial('//patient/_patient_alerts')?>
 <div class="box content row">
 
