@@ -33,8 +33,7 @@ class GeneticsPatient extends BaseActiveRecord
     protected $statuses = array();
 
     protected $preExistingPedigreesIds = array();
-    
-    var $pedigree_id;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -174,7 +173,7 @@ class GeneticsPatient extends BaseActiveRecord
             $this->preExistingPedigreesIds[] = $pedigree->attributes['id'];
         }
     }
-    
+
     /**
      * Update the pedigrees this patient has been added to.
      */
@@ -184,13 +183,15 @@ class GeneticsPatient extends BaseActiveRecord
 
         if($this->getIsNewRecord()) {
             $this->updateDiagnoses();
-            $this->updatePedigrees();
         }
 
         $pedigrees = GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $this->id), array('select' =>  'pedigree_id'));
         $pedigreeIds = array();
         foreach($pedigrees as $pedigree) {
-            $pedigreeIds[] = $pedigree->attributes['pedigree_id'];
+            if($pedigree->pedigree_id){
+                $pedigreeIds[] = $pedigree->pedigree_id;
+            }
+
         }
 
         $added = array_diff($this->preExistingPedigreesIds, $pedigreeIds);
@@ -219,13 +220,8 @@ class GeneticsPatient extends BaseActiveRecord
         }
     }
     
-    protected function updatePedigrees()
-    {
-        $geneticsPatientPedigree = new GeneticsPatientPedigree();
-        $geneticsPatientPedigree->patient_id = $this->id;
-        $geneticsPatientPedigree->pedigree_id = $this->pedigree_id;
-        $geneticsPatientPedigree->save();
-    }
+
+
 
     /**
      * @param int $pedigree_id
