@@ -33,8 +33,14 @@ class m170314_153701_create_internal_referral_settings_table extends OEMigration
             'default_value' => 'on'
         ));
 
+        $this->insert('setting_field_type', array(
+            'name' => 'Textarea'
+        ));
+
+        $textarea = SettingFieldType::model()->find('name = "Textarea"');
+
         $this->insert('ophcocorrespondence_internal_referral_settings',array(
-            'field_type_id' => 5,
+            'field_type_id' => $textarea->id,
             'key' => 'internal_referral_booking_address',
             'name' => 'Booking Address'
         ));
@@ -49,7 +55,7 @@ class m170314_153701_create_internal_referral_settings_table extends OEMigration
             $internal_referral_booking_address->key = 'internal_referral_booking_address';
         }
 
-        $internal_referral_booking_address->value = Institution::model()->getCurrent()->name . ',' . (implode(',', Institution::model()->getCurrent()->getLetterAddress()));
+        $internal_referral_booking_address->value = Institution::model()->getCurrent()->name . "\r" . (implode("\r", Institution::model()->getCurrent()->getLetterAddress()));
         $internal_referral_booking_address->save();
 
         $this->insert('ophcocorrespondence_internal_referral_settings',array(
