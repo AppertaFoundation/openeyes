@@ -24,8 +24,8 @@ if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'small'));
     $this->event_actions[] = EventAction::button('Print all', 'printall', null, array('id' => 'et_print_all', 'class' => 'small'));
 }
-$is_local = $this->getOpenElementByClassName('Element_OphInDnasample_Sample')->is_local;
-if ($this->event_type->children && $is_local) {
+//$is_local = $this->getOpenElementByClassName('Element_OphInDnasample_Sample')->is_local;
+if ($this->event_type->children) {
     $this->event_actions[] = EventAction::button('Add child', 'add_test', null, array('class' => 'button small'));
 }
 ?>

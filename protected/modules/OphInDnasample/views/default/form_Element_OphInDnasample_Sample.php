@@ -52,7 +52,7 @@
         ));
 
     $form->activeWidget('TextField', $element, 'volume');
-    $form->radioBoolean($element, 'is_local', array(), array('label' => 3, 'field' => 9));
+   // $form->radioBoolean($element, 'is_local', array(), array('label' => 3, 'field' => 9));
     $form->activeWidget('TextField', $element, 'destination');
 
     $users = array_filter(
