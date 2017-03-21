@@ -139,6 +139,12 @@ class SubjectController extends BaseModuleController
                 ),
                 'link' => '/Genetics/pedigree/edit/%s'
             ),
+            'create_new_pedigree' => array(
+                'widget' => 'LinkTo',
+                'label'  => 'Create new pedigree',
+                'linkTo' => '/Genetics/pedigree/edit'
+
+            ),
             'previous_studies' => array(
                 'widget' => 'CustomView',
                 'viewName' => '//studies/list',

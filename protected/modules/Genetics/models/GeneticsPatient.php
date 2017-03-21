@@ -62,6 +62,7 @@ class GeneticsPatient extends BaseActiveRecord
         // will receive user inputs.
         return array(
             array('studies', 'isProposable'),
+            array('pedigrees', 'isEmptyPedigrees' ),
             array('patient_id', 'unique', 'on'=>'insert', 'message'=>'The selected patient is already linked to a genetics subject.'),
             array('patient_id, comments, gender_id, is_deceased, relationships, studies, pedigrees, diagnoses', 'safe'),
         );
@@ -174,7 +175,14 @@ class GeneticsPatient extends BaseActiveRecord
             $this->preExistingPedigreesIds[] = $pedigree->attributes['id'];
         }
     }
-    
+
+    public function isEmptyPedigrees()
+    {
+        if(empty($_POST['GeneticsPatient']['pedigrees'])){
+            $this->addError('pedigrees', 'Please add least one pedigree!');
+        }
+    }
+
     /**
      * Update the pedigrees this patient has been added to.
      */
