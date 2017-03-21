@@ -42,6 +42,10 @@ function goToExaminationEvent() {
  * Open alert dialog, if examination event is missing
  */
 function AlertDialogIfExaminationEventIsMissing(){
+    if(typeof examination_events_count == 'undefined' || typeof require_exam_before_booking == 'undefined'){
+        return true;
+    }
+    
 	if(examination_events_count < 1 && require_exam_before_booking) {
         var warning_message = "You didn't create examination yet.";
         
@@ -62,7 +66,7 @@ function AlertDialogIfExaminationEventIsMissing(){
           //'<p>Do you want to continue without examination?</p>' +
           '<div style = "margin-top:20px; float:right">' +
           //'<input class="secondary small" id="operationbooking-yes" type="submit" name="yt0" style = "margin-right:10px" value="Yes" onclick="hide_dialog();;">' +
-          '<input class=" cancel event-action button small" id="operationbooking-cancel" type="submit" name="yt1" style = "margin-right:10px" value="Cancel" onclick="cancelBookingEvent();">' +
+          '<input class=" cancel event-action button small" id="operationbooking-cancel" type="button" name="yt1" style = "margin-right:10px" value="Cancel" onclick="cancelBookingEvent();">' +
           '<input class="event-action small" id="operationbooking-create-_examination" type="submit" name="yt2" value="Create Examination Event" onclick="goToExaminationEvent()">' +
           '</div>';
 
@@ -72,9 +76,21 @@ function AlertDialogIfExaminationEventIsMissing(){
         $(dialog_msg).prependTo("body");
         $(blackout_box).prependTo("body");
         $('div#blackout_box').css.opacity = 0.6;
-        $("input#prescription-no").focus();
-        $("input#prescription-yes").keyup(function (e) {
-          hide_dialog();
+
+        $(document).keyup(function (e) {
+            var keyCode = (event.keyCode ? event.keyCode : event.which);   
+            if(keyCode == 13){
+                e.preventDefault();
+                $("input#operationbooking-create-_examination").trigger('click');
+            }
+        });
+        
+        $(document).keyup(function (e) {
+            var keyCode = (event.keyCode ? event.keyCode : event.which);   
+            if(keyCode == 27){
+                e.preventDefault();
+                $("input#operationbooking-cancel").trigger('click');
+            }
         });
     }    
 }

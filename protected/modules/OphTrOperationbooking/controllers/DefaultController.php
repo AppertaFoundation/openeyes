@@ -128,18 +128,26 @@ class DefaultController extends OphTrOperationbookingEventController
         $this->jsVars['OE_patientId'] = $this->patient->id;
     }
 
+    /**
+     * get number of existing examination events
+     *
+     */
+    public function getExaminationEventCount()
+    {
+        $event_type = EventType::model()->find('name = "Examination"');
+        $events = $this->event->episode->getAllEventsByType($event_type->id);
+        return count($events);
+    }
+
      /**
      * add the number of existing examination events to JS
      *
      */
     public function actionCreate(){
-        $event_type = EventType::model()->find('name = "Examination"');
-        $events = $this->event->episode->getAllEventsByType($event_type->id);
-        
         $cancel_url = ($this->episode) ? '/patient/episode/' . $this->episode->id : '/patient/episodes/' . $this->patient->id;
         $create_examination_url = Yii::app()->getBaseUrl(true).'/OphCiExamination/Default/create?patient_id=' . $this->patient->id;
         
-        $this->jsVars['examination_events_count'] = count($events);
+        $this->jsVars['examination_events_count'] = $this->getExaminationEventCount();
         $this->jsVars['cancel_url'] = $cancel_url;
         $this->jsVars['create_examination_url'] = $create_examination_url;
         
@@ -186,7 +194,6 @@ class DefaultController extends OphTrOperationbookingEventController
     {
         $this->operation_required = true;
         parent::initActionView();
-
         $this->extraViewProperties = array(
             'operation' => $this->operation,
         );
