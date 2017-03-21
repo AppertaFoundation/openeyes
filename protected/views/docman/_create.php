@@ -45,10 +45,13 @@
                                     'contact_id' => $macro_data["to"]["contact_id"],
                                     'contact_name' => $macro_data["to"]["contact_name"],
                                     'address_targets' => $element->address_targets,
-                                    'is_editable_address' => ucfirst(strtolower($contact_type)) != 'Gp',
                                     'contact_type' => $contact_type,
                                     'row_index' => $row_index,
                                     'address' => $macro_data["to"]["address"],
+
+                                    'is_editable_contact_targets' => $contact_type != 'INTERNALREFERRAL',
+                                    'is_editable_contact_name' => ($contact_type != 'INTERNALREFERRAL'),
+                                    'is_editable_address' => ($contact_type != 'Gp') && ($contact_type != 'INTERNALREFERRAL'),
                                 ));
                     ?>
 
@@ -58,8 +61,9 @@
                     <?php $this->renderPartial('//docman/table/contact_type', array(
                         'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
                         'row_index' => $row_index,
-                        'option_styles' => array('INTERNALREFERRAL' => array('class'=> ($element->isInternalReferral() ? '' : 'hidden') )),
-                        'is_editable' => $element->isInternalReferral(),
+                        // Internal referral will always be the first row - indexed 0
+                        'contact_types' => Document::getContactTypes() + ((strtoupper($macro_data["to"]["contact_type"]) == 'INTERNALREFERRAL' && $row_index == 0) ? Document::getInternalReferralContactType() : []),
+                        'is_editable' => strtoupper($macro_data["to"]["contact_type"]) != 'INTERNALREFERRAL',
                     ));
                     ?>
                 </td>
@@ -102,7 +106,7 @@
                         <?php 
                             $contact_name = isset($macro["contact_name"]) ? $macro["contact_name"] : null;
                             $contact_type = isset($macro["contact_type"]) ? $macro["contact_type"] : null;
-                            
+
                             $this->renderPartial('//docman/table/contact_name_address', array(
                                         'contact_id' => $macro["contact_id"],
                                         'contact_name' => $contact_name,
@@ -118,8 +122,8 @@
                         <?php $this->renderPartial('//docman/table/contact_type', array(
                             'contact_type' => strtoupper($macro["contact_type"]),
                             'row_index' => $index,
-                            'option_styles' => array('INTERNALREFERRAL' => array('class'=> ($element->isInternalReferral() ? '' : 'hidden') )),
-                            'is_editable' => !$element->isInternalReferral(),
+                            'is_editable' => strtoupper($macro["contact_type"]) != 'INTERNALREFERRAL',
+                            'contact_types' => Document::getContactTypes() + ((strtoupper($macro["contact_type"]) == 'INTERNALREFERRAL' && $row_index == 0) ? Document::getInternalReferralContactType() : []),
                         ));
                         ?>
                     </td>

@@ -21,13 +21,9 @@
     $is_editable = isset($is_editable) ? $is_editable : true;
     $option_styles = isset($option_styles) ? $option_styles : [];
 
-    echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, [
-            'GP' => 'GP',
-            'PATIENT' => 'Patient',
-            'DRSS' => 'DRSS',
-            'OTHER' => 'Other',
-            'INTERNALREFERRAL' => 'Booking'
-        ],
+    $contact_types = isset($contact_types) ? $contact_types : Document::getContactTypes();
+
+    echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, $contact_types,
         [       'empty' => '- Type -',
                 'nowrapper' => true,
                 'class' => 'full-width docman_contact_type',

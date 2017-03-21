@@ -30,7 +30,6 @@
         <?php $this->renderPartial('//docman/table/contact_type', array(
                                             'contact_type' => isset($selected_contact_type) ? $selected_contact_type : null,
                                             'row_index' => $row_index,
-                                            'option_styles' => array('INTERNALREFERRAL' => array('class'=> ($element->isInternalReferral() ? '' : 'hidden') )),
                                             'is_editable' => !$element->isInternalReferral(),
                                         )
                                     );

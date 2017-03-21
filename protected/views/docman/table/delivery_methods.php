@@ -28,7 +28,7 @@
                 $document_output = $doc_output;
             } else if($doc_output->output_type == 'Print'){
                 $print_output = $doc_output;
-            } else if($doc_output->output_type == 'InternalReferral'){
+            } else if($doc_output->output_type == 'Internalreferral'){
                 $internalreferral_output = $doc_output;
             }
         }
@@ -67,9 +67,9 @@
             // if we want to allow users to tick/untick the checkbox remove the following line
             $is_checked = 'checked disabled';
             ?>
-            <input type="checkbox" value="InternalReferral" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_<?php echo $pre_output_key; ?>_output_type"
+            <input type="checkbox" value="Internalreferral" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_<?php echo $pre_output_key; ?>_output_type"
                 <?php echo $is_checked; ?>> <?php echo $label; ?>
-            <input type="hidden" value="InternalReferral" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" >
+            <input type="hidden" value="Internalreferral" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" >
         </label>
         <?php if($internalreferral_output):?>
             <?php echo CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $internalreferral_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>

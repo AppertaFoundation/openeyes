@@ -78,15 +78,12 @@
                     <td>
                         <?php if($element->draft): ?>
                             <?php
-                                    $class = ($target->contact_type != 'INTERNALREFERRAL') ? 'hidden' : '';
                                     $this->renderPartial('//docman/table/contact_type', array(
                                         'contact_type' => strtoupper($target->contact_type),
-                                        'option_styles' => array('INTERNALREFERRAL' => array('class' => $class )),
+                                        // Internal referral will always be the first row - indexed 0
+                                        'contact_types' => Document::getContactTypes() + (($element->isInternalReferral() && $row_index == 0) ? Document::getInternalReferralContactType() : []),
                                         'is_editable' => $target->contact_type != 'INTERNALREFERRAL',
                                         'row_index' => $row_index));
-
-
-
                             ?>
                         <?php else: ?>
                             <?php echo $target->contact_type != 'GP' ? (ucfirst(strtolower($target->contact_type))) : $target->contact_type; ?>
