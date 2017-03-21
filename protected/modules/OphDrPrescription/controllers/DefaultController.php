@@ -578,6 +578,11 @@ class DefaultController extends BaseEventTypeController
                 $reason_other_text = isset($_POST['reason_other']) ? $_POST['reason_other'] : '';
                 $_POST=null;
             }
+            else
+            {
+                $reason_id = $model->edit_reason_id;
+                $reason_other_text = $model->edit_reason_other;
+            }
 
             parent::actionUpdate($id);
         }
