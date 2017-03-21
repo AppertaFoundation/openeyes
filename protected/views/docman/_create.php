@@ -37,7 +37,7 @@
             <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
                 <td> To <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", 'To'); ?> </td>
                 <td>
-                    <?php 
+                    <?php
 
                         $contact_type = isset($macro_data["to"]["contact_type"]) ? $macro_data["to"]["contact_type"] : null;
 
@@ -51,7 +51,7 @@
 
                                     'is_editable_contact_targets' => $contact_type != 'INTERNALREFERRAL',
                                     'is_editable_contact_name' => ($contact_type != 'INTERNALREFERRAL'),
-                                    'is_editable_address' => ($contact_type != 'Gp') && ($contact_type != 'INTERNALREFERRAL'),
+                                    'is_editable_address' => (ucfirst(strtolower($contact_type)) != 'Gp') && ($contact_type != 'INTERNALREFERRAL'),
                                 ));
                     ?>
 
@@ -91,7 +91,6 @@
                             'selected_contact_type' => null,
                             'contact_name' => null,
                             'can_send_electronically' => $can_send_electronically,
-                            'is_internal_referral' => $element->isInternalReferralEnabled(),
                         )
                     );
                 ?>
@@ -148,7 +147,7 @@
     <?php endif; ?>
 
 
-        <?php 
+        <?php
             /* generates a default 'To' and 'Cc' rows */
             if(empty($macro_data)){
                 $contact_id = null;
@@ -176,7 +175,6 @@
                         'selected_contact_type' => $contact_type, 
                         'contact_name' => $contact_name, 
                         'can_send_electronically' => $can_send_electronically,
-                        'is_internal_referral' => $element->isInternalReferralEnabled(),
                     )
                 );
             }

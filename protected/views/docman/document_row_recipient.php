@@ -11,7 +11,7 @@
     </td>
     <td>
         
-        <?php 
+        <?php
             $contact_type = ( isset($selected_contact_type) ? $selected_contact_type : null );
             $this->renderPartial('//docman/table/contact_name_address', array(
                 'contact_id' => $contact_id,

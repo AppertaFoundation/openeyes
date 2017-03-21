@@ -242,7 +242,6 @@ class DocmanController extends BaseController
                 'macro_id' => $macro_id,
                 'element' => $element,
                 'can_send_electronically' => true,
-                'is_internal_referral' => $element->isInternalReferralEnabled()
             )
         );
     }
