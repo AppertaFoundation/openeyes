@@ -29,6 +29,73 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
         ),true);
 
+        $this->createOETable('ophciexamination_cxl_outcome', array(
+            'id' => 'pk',
+            'name' => 'varchar(128)',
+            'display_order' => 'int(10)',
+            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+        ),true);
+
+        $this->createOETable('ophciexamination_cxl_outcome_version', array(
+            'version_id' => 'pk',
+            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+            'id' => 'int(10) NOT NULL',
+            'name' => 'varchar(128)',
+            'display_order' => 'int(10)',
+            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+        ),true);
+
+        $this->createOETable('ophciexamination_cxl_outcome_diagnosis', array(
+            'id' => 'pk',
+            'name' => 'varchar(128)',
+            'display_order' => 'int(10)',
+            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+        ),true);
+
+        $this->createOETable('ophciexamination_cxl_outcome_diagnosis_version', array(
+            'version_id' => 'pk',
+            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+            'id' => 'int(10) NOT NULL',
+            'name' => 'varchar(128)',
+            'display_order' => 'int(10)',
+            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+        ),true);
+
+        $this->createOETable('ophciexamination_slit_lamp_cornea', array(
+            'id' => 'pk',
+            'name' => 'varchar(128)',
+            'display_order' => 'int(10)',
+            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+        ),true);
+
+        $this->createOETable('ophciexamination_slit_lamp_cornea_version', array(
+            'version_id' => 'pk',
+            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+            'id' => 'int(10) NOT NULL',
+            'name' => 'varchar(128)',
+            'display_order' => 'int(10)',
+            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+        ),true);
+
+
         $this->createOETable('et_ophciexamination_cxl_outcome', array(
             'id' => 'pk',
             'event_id' => 'int(10) unsigned NOT NULL',
@@ -163,6 +230,7 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'allergic_conjunctivitis_id' => 'int(10)',
             'blepharitis_id' => 'int(10)',
             'dry_eye_id' => 'int(10)',
+            'cornea_id' => 'int(10)',
             'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
             'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
             'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
@@ -178,6 +246,7 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'allergic_conjunctivitis_id' => 'int(10)',
             'blepharitis_id' => 'int(10)',
             'dry_eye_id' => 'int(10)',
+            'cornea_id' => 'int(10)',
             'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
             'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
             'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
@@ -281,6 +350,27 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
             'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
         ),true);
+
+        $this->createOETable('ophciexamination_topographer_device', array(
+            'id' => 'pk',
+            'name' => 'VARCHAR(128)',
+            'display_order' => 'int(10)',
+            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+        ),true);
+
+        $this->createOETable('ophciexamination_tomographer_device', array(
+            'id' => 'pk',
+            'name' => 'VARCHAR(128)',
+            'display_order' => 'int(10)',
+            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+        ),true);
+
 
         $this->createOETable('ophciexamination_scan_quality', array(
             'id' => 'pk',
