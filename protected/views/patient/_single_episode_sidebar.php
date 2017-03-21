@@ -1,4 +1,3 @@
-<div class="oe-scroll-wrapper" style="height:300px">
 <?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && $this->checkAccess('OprnCreateEpisode')) {?>
     <div class="oe-sidebar-top-buttons">
         <?php
@@ -16,14 +15,14 @@
         }
         ?>
         <button class="secondary tiny add-episode" type="button" id="add-episode"><?= Episode::getEpisodeLabel(); ?></button><button
-            class="secondary tiny add-event addEvent <?= $class ?>"
-            type="button"
-            id="add-event"
-            data-attr-subspecialty-id="<?= $this->firm->getSubspecialtyID();?>"
-        <?= $change_firm ? 'data-window-title="Please switch to a ' . $current_episode->getSubspecialtyText() . ' Firm"' : ''; ?>
+                class="secondary tiny add-event addEvent <?= $class ?>"
+                type="button"
+                id="add-event"
+                data-attr-subspecialty-id="<?= $this->firm->getSubspecialtyID();?>"
+            <?= $change_firm ? 'data-window-title="Please switch to a ' . $current_episode->getSubspecialtyText() . ' Firm"' : ''; ?>
         >Event</button></div>
 <?php }?>
-
+<div class="oe-scroll-wrapper" style="height:300px">
 <?php
 $subspecialty_colour_codes = array(
     'AE' => '#916865',

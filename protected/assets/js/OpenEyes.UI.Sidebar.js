@@ -65,11 +65,19 @@
         var self = this;
 
         var nh = self.$el.find('.all-panels').height() + 48; // need to add this to make sure last event is shown!
-        var wh = $('footer').position().top + $('footer').height();
-        if (window.innerHeight < wh) {
-            wh = window.innerHeight;
+        //var wh = $('footer').position().top + $('footer').height();
+        var ch = $('.container.content').outerHeight();
+        var wh = window.innerHeight;
+        var h;
+
+        // allow for top panel height : 122px
+        if((ch + 122) > wh){
+            // content is higher than window, use wh:
+            h = wh - 185; // 195 is arbitrary, a visually tweaked offset
+        } else {
+            // else:
+            h = ch - 50; // 50 is arbitrary, a visually tweaked offset
         }
-        var h = wh  - 165; // bottom footer + top panels height
 
         if(h > nh) {
             // showing all!

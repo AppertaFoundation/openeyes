@@ -67,7 +67,7 @@ html, body {
   font-size: 0.6875rem;
   font-weight: 500;
   text-align: right;
-  width: 35px;
+  width: 28px;
   height: 16px;
   line-height: 16px;
   color: #666;
@@ -75,6 +75,20 @@ html, body {
   .event-content .oe-prev-mods-icon:hover {
     background-position: left bottom;
     color: #0a62d3; }
+
+.event-content .oe-element-edit-icon {
+  display: inline-block;
+  margin: 0 8px 0 0;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  background: transparent url("../img/_elements/btns/element-edit-icon.png") left top no-repeat;
+  overflow: hidden;
+  text-indent: -500px;
+  position: relative;
+  top: 6px; }
+  .event-content .oe-element-edit-icon:hover {
+    background-position: left bottom; }
 
 .event .event-content {
   background-image: none !important; }
@@ -371,7 +385,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     .open-eyes .header .oe-user-hotlist-submenu table tr {
       background: #747782; }
       .open-eyes .header .oe-user-hotlist-submenu table tr:hover {
-        background: #575961;
+        background: #575962;
         cursor: pointer;
         cursor: hand; }
       .open-eyes .header .oe-user-hotlist-submenu table tr td {
@@ -424,7 +438,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     background: transparent url("../img/_user-panel/submenu-arrow.png") no-repeat 95% 50%; }
     .open-eyes .header ul.oe-user-navigation-submenu > li > a:hover {
       color: #fff;
-      background-color: #063e88; }
+      background-color: #063e89; }
 .open-eyes .header .icon-alert {
   background-image: url("../img/sprites/_elements/icons/white-alerts.png"); }
 .open-eyes .header .alert-box {
@@ -444,7 +458,9 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   top: 82px; }
   .open-eyes .sidebar.episodes-and-events .oe-scroll-wrapper {
     position: relative;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    top: 2px;
     width: 180px;
     padding: 0;
     margin: 0;
@@ -464,10 +480,11 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     color: white; }
   .open-eyes .sidebar.episodes-and-events .scroll-blue-top {
     position: absolute;
-    top: 0;
+    top: 38px;
     width: 180px;
-    height: 20px;
-    background: transparent url("../img/_elements/gradients/bg_scroll_blue_top.png") top left repeat-x; }
+    height: 8px;
+    background: transparent url("../img/_elements/gradients/bg_scroll_blue_top.png") top left repeat-x;
+    background-size: contain; }
 .open-eyes .oe-sidebar-top-buttons {
   width: 180px;
   white-space: nowrap;
@@ -520,11 +537,11 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     font-size: 0.6875rem;
     font-weight: 400;
     color: #fff;
-    background: #84888c url("../img/_elements/icons/sidebar/element-edit-sprites.png") top right no-repeat; }
+    background: #85898c url("../img/_elements/icons/sidebar/element-edit-sprites.png") top right no-repeat; }
     .oe-element-list a.selected {
       background-image: url("../img/_elements/icons/sidebar/element-edit-arrow.png"); }
     .oe-element-list a.selected, .oe-element-list a:hover, .oe-element-list a:active {
-      color: #4b4d54;
+      color: #4b4d55;
       background-color: #e9e9e9;
       background-position: 100% -114px; }
       .oe-element-list a.selected .icon.expand, .oe-element-list a:hover .icon.expand, .oe-element-list a:active .icon.expand {
@@ -586,6 +603,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     width: 100%;
     background: #fff;
     height: 21px;
+    line-height: 21px;
     padding-left: 10px;
     font-size: 12px;
     font-size: 0.75rem;
@@ -740,7 +758,6 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   display: block;
   border-radius: 0;
   border: none;
-  position: absolute;
   padding: 5px 0;
   font-size: 11px;
   font-size: 0.6875rem;
@@ -752,6 +769,8 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   top: 20px;
   width: 176px;
   box-shadow: none; }
+  .oe-panel.specialty ol.events .tooltip.makestatic, .oe-panel.specialty ol.events .quicklook.makestatic {
+    position: static !important; }
   .oe-panel.specialty ol.events .tooltip .event-name, .oe-panel.specialty ol.events .quicklook .event-name {
     font-weight: 400;
     text-shadow: none;
@@ -900,7 +919,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   .oe-header-panel h1 {
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
     font-weight: 300;
-    color: #5c6068;
+    color: #5d6068;
     padding: 10px 0 0 10px;
     margin: 0; }
   .oe-header-panel .panel.actions {
@@ -1126,7 +1145,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     display: inline-block;
     height: 45px;
     line-height: 35px;
-    background: #c8cbcf;
+    background: #c8cccf;
     padding: 0 10px;
     margin: 0 3px 0 0;
     color: #444;
@@ -1215,7 +1234,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
         .oe-clinic-list table tr .oe-status-block.grey.dr {
           border: 2px solid #fff; }
       .oe-clinic-list table tr .oe-status-block.grey:hover, .oe-clinic-list table tr .oe-status-block.grey.dr:hover {
-        background: #666666 url("../img/_elements/btns/oe-cross-icon.png") center center no-repeat;
+        background: #666 url("../img/_elements/btns/oe-cross-icon.png") center center no-repeat;
         color: #333;
         color: rgba(33, 33, 33, 0);
         cursor: pointer; }
@@ -1410,3 +1429,166 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 .oe-letter-quick-view {
   margin-top: 5px;
   text-align: center; }
+
+.oe-event-header .event-title {
+  font-weight: 300; }
+
+.event-content, .element-title, .sub-element-title {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  background: #e9e9e9; }
+
+.js-close-demo-popup {
+  cursor: pointer; }
+
+.blue_txt {
+  color: #0a62d3;
+  font-weight: 500; }
+
+.oe-ed-gonio-popup-demo {
+  display: none;
+  position: absolute;
+  top: 205px;
+  right: 7px;
+  width: 1035px;
+  background: #e1e1e1;
+  border: 3px solid #0a62d3;
+  border-radius: 5px;
+  z-index: 3;
+  padding: 10px 0 10px 0; }
+  .oe-ed-gonio-popup-demo img {
+    width: auto; }
+
+.oe-ed-gonio-popup-demo:after, .oe-ed-gonio-popup-demo:before {
+  bottom: 100%;
+  left: 95.5%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none; }
+
+.oe-ed-gonio-popup-demo:after {
+  border-color: rgba(225, 225, 225, 0);
+  border-bottom-color: #e1e1e1;
+  border-width: 7px;
+  margin-left: -7px; }
+
+.oe-ed-gonio-popup-demo:before {
+  border-color: rgba(153, 153, 153, 0);
+  border-bottom-color: #0a62d3;
+  border-width: 11px;
+  margin-left: -11px; }
+
+.oe-meds-popup-demo {
+  display: none;
+  position: absolute;
+  top: 221px;
+  left: 350px;
+  width: 400px;
+  background: #e1e1e1;
+  border: 3px solid #0a62d3;
+  border-radius: 5px;
+  z-index: 3;
+  padding: 10px;
+  font-size: 12px;
+  font-size: 0.75rem; }
+  .oe-meds-popup-demo > .row {
+    margin-bottom: 8px; }
+
+.oe-meds-popup-demo:after, .oe-meds-popup-demo:before {
+  right: 100%;
+  top: 10%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none; }
+
+.oe-meds-popup-demo:after {
+  border-color: rgba(225, 225, 225, 0);
+  border-right-color: #e1e1e1;
+  border-width: 7px;
+  margin-top: -7px; }
+
+.oe-meds-popup-demo:before {
+  border-color: rgba(153, 153, 153, 0);
+  border-right-color: #0a62d3;
+  border-width: 11px;
+  margin-top: -11px; }
+
+.event-content .element-title {
+  color: #333;
+  font-size: 11px;
+  font-size: 0.6875rem;
+  padding-top: 8px;
+  padding-bottom: 5px;
+  font-weight: 500; }
+  .event-content .element-title em {
+    font-style: normal;
+    color: #aaa; }
+.event-content .element-header .oe-prev-mods-icon {
+  position: relative;
+  top: 6px; }
+.event-content .element-header.underline {
+  border-top: 3px solid white; }
+.event-content .element-data {
+  background: #fff;
+  color: #333; }
+  .event-content .element-data .data-value {
+    font-size: 12px;
+    font-size: 0.75rem;
+    font-weight: 400; }
+    .event-content .element-data .data-value.oe-small-txt {
+      font-size: 11px;
+      font-size: 0.6875rem; }
+  .event-content .element-data.oe-no-padding {
+    padding: 0; }
+  .event-content .element-data .oe-new-data-table {
+    background: none;
+    border: none; }
+    .event-content .element-data .oe-new-data-table th {
+      background: #fff;
+      font-weight: 400;
+      padding: 0 0 3px 0;
+      border-bottom: 1px solid #ddd; }
+    .event-content .element-data .oe-new-data-table tr {
+      background: none;
+      border-bottom: 1px solid #ddd; }
+      .event-content .element-data .oe-new-data-table tr:nth-of-type(even) {
+        background: none; }
+      .event-content .element-data .oe-new-data-table tr:last-child {
+        border-bottom: none; }
+    .event-content .element-data .oe-new-data-table td {
+      padding: 5px 0;
+      font-size: 12px;
+      font-size: 0.75rem;
+      font-weight: 400;
+      line-height: 1.2; }
+    .event-content .element-data .oe-new-data-table.center th, .event-content .element-data .oe-new-data-table.center td {
+      text-align: center; }
+
+.fake-ed {
+  padding-left: 180px; }
+
+.oe-small-txt {
+  font-size: 11px;
+  font-size: 0.6875rem; }
+
+.OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy .element-data {
+  background: #e9e9e9 url("../../design/img/_ed_mini_1.png") left center no-repeat; }
+
+.OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment .element-data {
+  background: #e9e9e9 url("../../design/img/_ed_mini_2.png") left top no-repeat;
+  padding-top: 170px;
+  border-bottom: 3px solid white; }
+
+.OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc .element-data {
+  background: #e9e9e9 url("../../design/img/_ed_mini_3.png") left top no-repeat;
+  min-height: 150px; }
+
+.OEModule_OphCiExamination_models_Element_OphCiExamination_Retina .element-data {
+  background: #e9e9e9 url("../../design/img/_ed_mini_4.png") left top no-repeat;
+  min-height: 170px;
+  border-bottom: 3px solid white; }
