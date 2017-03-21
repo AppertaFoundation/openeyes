@@ -72,6 +72,7 @@ $reasons = OphDrPrescriptionEditReasons::model()->findAll(array('order'=>'displa
                 $('#reason').val(1);
                 $('#reason_other_text').removeAttr("readonly").focus();
                 $('#other_reason_controls').show();
+                $('button.submit').not(this).attr("disabled", "disabled");
             }
             else
             {
@@ -86,6 +87,7 @@ $reasons = OphDrPrescriptionEditReasons::model()->findAll(array('order'=>'displa
             $('#reason_other_text').val("").attr("readonly", "readonly");
             $('#other_reason_controls').hide();
             $('#reason').val('');
+            $('button.submit').removeAttr("disabled");
         });
 
         $("#submit_other").click(function(e){
