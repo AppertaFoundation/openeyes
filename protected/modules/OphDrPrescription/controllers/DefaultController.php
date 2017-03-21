@@ -27,12 +27,22 @@ class DefaultController extends BaseEventTypeController
         'markPrinted' => self::ACTION_TYPE_PRINT,
     );
 
+    private function userIsAdmin()
+    {
+        $user = Yii::app()->session['user'];
+
+        if ($user->role == 'admin role') {
+            return true;
+        }
+
+        return false;
+    }
 
     public function actionView($id)
     {
         $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
 
-        $this->editable = $model->draft || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
+        $this->editable = $this->userIsAdmin() || $model->draft || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
         return parent::actionView($id);
     }
 
