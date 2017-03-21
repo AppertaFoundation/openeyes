@@ -34,7 +34,7 @@ class m170314_153701_create_internal_referral_settings_table extends OEMigration
         ));
 
         $this->insert('ophcocorrespondence_internal_referral_settings',array(
-            'field_type_id' => 4,
+            'field_type_id' => 5,
             'key' => 'internal_referral_booking_address',
             'name' => 'Booking Address'
         ));
