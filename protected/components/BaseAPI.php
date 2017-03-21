@@ -19,6 +19,34 @@
 class BaseAPI
 {
     /**
+     * @var CApplication
+     */
+    protected $yii;
+
+    /**
+     * @var DataContext
+     */
+    protected $current_context;
+
+    /**
+     * BaseAPI constructor.
+     * @param DataContext|null $context
+     */
+    public function __construct(CApplication $yii = null, DataContext $context = null)
+    {
+        if ($yii === null) {
+            $yii = Yii::app();
+        }
+        $this->yii = $yii;
+        $this->current_context = $context;
+    }
+
+    /**
+     * @var EventType
+     */
+    private $event_type;
+
+    /**
      * Returns the non-namespaced module class of the module API Instance.
      *
      * @return mixed
@@ -30,18 +58,68 @@ class BaseAPI
 
     /**
      * gets the event type for the api instance.
-     *
      * @return EventType $event_type
+     * @throws Exception
      */
     protected function getEventType()
     {
-        $module_class = $this->getModuleClass();
-
-        if (!$event_type = EventType::model()->find('class_name=?', array($module_class))) {
-            throw new Exception("Module is not migrated: $module_class");
+        if (!$this->event_type) {
+            $module_class = $this->getModuleClass();
+            if (!$this->event_type = EventType::model()->find('class_name=?', array($module_class))) {
+                throw new Exception("Module is not migrated: $module_class");
+            }
         }
+        return $this->event_type;
+    }
 
-        return $event_type;
+    /**
+     * @param Patient $patient
+     * @param bool $use_context
+     * @return Event|null
+     */
+    public function getLatestEvent(Patient $patient, $use_context = false)
+    {
+        $event_type = $this->getEventType();
+        $criteria = new CDbCriteria();
+        $criteria->compare('event_type_id', $event_type->id);
+        $criteria->compare('episode.patient_id', $patient->id);
+        $criteria->order = 't.event_date desc';
+        $criteria->limit = 1;
+        if ($use_context) {
+            $this->current_context->addEventConstraints($criteria);
+        }
+        return Event::model()->with(
+            array('episode' =>
+                array('with' =>
+                    array(
+                        'firm' => array(
+                            'with' => 'serviceSubspecialtyAssignment'
+                        ),
+                        'patient'
+                    )
+                )
+            ))->find($criteria);
+    }
+
+    /**
+     * Returns the given element type from the most recent Event for this module, if that element is present. Otherwise
+     * will return null.
+     *
+     * @param $element
+     * @param Patient $patient
+     * @param boolean $use_context
+     * @return BaseEventTypeElement
+     */
+    public function getElementFromLatestEvent($element, Patient $patient, $use_context = false)
+    {
+        if ($event = $this->getLatestEvent($patient, $use_context)) {
+            $criteria =  new CDbCriteria();
+            $criteria->compare('event_id', $event->id);
+
+            return $element::model()
+                ->with('event')
+                ->find($criteria);
+        }
     }
 
     /**
@@ -50,10 +128,12 @@ class BaseAPI
      * @param Episode $episode - the episode
      * @param string  $element - the element class
      *
-     * @return unknown - the element type requested, or null
+     * @return BaseEventTypeElement|null - Will actually be an instance of the class requested
+     * @deprecated since 2.0
      */
     public function getElementForLatestEventInEpisode($episode, $element)
     {
+        trigger_error('getElementForLatestEventInEpisode is deprecated as of version 2.0, please use getElementFromLatestEvent instead', E_USER_NOTICE);
         $event_type = $this->getEventType();
 
         if ($event = $episode->getMostRecentEventByType($event_type->id)) {
@@ -74,7 +154,8 @@ class BaseAPI
      * @param Episode $episode - the episode
      * @param string  $element - the element class
      *
-     * @return unknown - the element type requested, or null
+     * @return BaseEventTypeElement|null - Will actually be an instance of the class requested
+     * @deprecated - since 2.0
      */
     public function getElementForAllEventInEpisode($episode, $element)
     {
@@ -104,6 +185,7 @@ class BaseAPI
      * @param Episode $episode - the episode
      *
      * @return array - list of events of the type for this API instance
+     * @deprecated - since 2.0
      */
     public function getEventsInEpisode($patient, $episode)
     {
@@ -116,6 +198,12 @@ class BaseAPI
         return array();
     }
 
+    /**
+     * @param $episode_id
+     * @param $event_type_id
+     * @return Event
+     * @deprecated since 2.0
+     */
     public function getMostRecentEventInEpisode($episode_id, $event_type_id)
     {
         $criteria = new CDbCriteria();
@@ -132,7 +220,9 @@ class BaseAPI
      * @param $event_type_id
      * @param $model
      * @param string $before_date
-     * @return bool
+     * @return BaseEventTypeElement|false - Will actually be an instance of the class requested
+     *
+     * @deprecated - since 2.0
      */
     public function getMostRecentElementInEpisode($episode_id, $event_type_id, $model, $before_date = '')
     {

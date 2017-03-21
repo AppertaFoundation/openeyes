@@ -30,21 +30,6 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
  */
 class OphCoCvi_API extends \BaseAPI
 {
-    protected $yii;
-
-    /**
-     * OphCoCvi_API constructor.
-     *
-     * @param \CApplication|null $yii
-     */
-    public function __construct(\CApplication $yii = null)
-    {
-        if (is_null($yii)) {
-            $yii = \Yii::app();
-        }
-
-        $this->yii = $yii;
-    }
 
     public $createOprn = 'OprnCreateCvi';
     public $createOprnArgs = array('user_id', 'firm', 'episode');
