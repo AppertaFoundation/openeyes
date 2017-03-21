@@ -61,7 +61,7 @@
             echo $form->dropDownList(
                 $element, 'lens_id_' . $side,
                 CHtml::listData(
-                    $lenses, 'id', 'name'
+                    $lenses, 'id', 'display_name'
                 ),
                 array('empty' => '- Please select -'),
                 null,
