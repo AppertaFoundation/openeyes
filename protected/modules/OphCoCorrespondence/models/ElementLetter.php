@@ -64,10 +64,10 @@ class ElementLetter extends BaseEventTypeElement
         return array(
             array(
                 'event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date,' .
-                'print_all, is_signed_off, to_service_id, to_consultant_id, is_urgent, is_same_condition',
+                'print_all, is_signed_off, to_subspecialty_id, to_consultant_id, is_urgent, is_same_condition',
                 'safe'
             ),
-            array('to_service_id', 'internalReferralServiceValidator'),
+            array('to_subspecialty_id', 'internalReferralServiceValidator'),
             array('is_same_condition', 'internalReferralConditionValidator'),
             array('letter_type_id', 'letterTypeValidator'),
             array('site_id, date, introduction, body, footer', 'requiredIfNotDraft'),
@@ -98,7 +98,9 @@ class ElementLetter extends BaseEventTypeElement
             'enclosures' => array(self::HAS_MANY, 'LetterEnclosure', 'element_letter_id', 'order' => 'display_order'),
             'document_instance' => array(self::HAS_MANY, 'DocumentInstance', array( 'correspondence_event_id' => 'event_id')),
             'letterType' => array(self::BELONGS_TO, 'LetterType', 'letter_type_id'),
-            'internalReferral' => array(self::BELONGS_TO, 'OphCoCorrespondence_InternalReferral', 'element_id'),
+            'toConsultant' => array(self::BELONGS_TO, 'User', 'to_consultant_id'),
+            'toSubspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'to_subspecialty_id'),
+
         );
     }
 
@@ -118,7 +120,7 @@ class ElementLetter extends BaseEventTypeElement
             'direct_line' => 'Direct line',
             'fax' => 'Direct fax',
             'is_signed_off' => 'Approved by a clinician',
-            'to_service_id' => 'To Service',
+            'to_subspecialty_id' => 'To Service',
             'to_consultant_id' => 'To Consultant',
             'is_urgent' => 'Urgent',
             'is_same_condition' => '',
@@ -133,7 +135,7 @@ class ElementLetter extends BaseEventTypeElement
             $this->addError($attribute, $this->getAttributeLabel($attribute) . ": 'Internal Referral' letter type is not enabled.");
         } else if( $letter_type->id == $this->letter_type_id ){
             // internal referral posted
-            if(!$this->to_service_id && $this->draft == 0){
+            if(!$this->to_subspecialty_id && $this->draft == 0){
                 $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Please select a service.");
             }
         }

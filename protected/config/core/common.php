@@ -426,6 +426,11 @@ return array(
          */
         'OphCoCorrespondence_printout_draft_background' => true,
 
+        'OphCoCorrespondence_Internalreferral' => array(
+            'generate_csv' => false,
+            'export_dir' => '/tmp/internalreferral_delievery',
+        ),
+
         /**
          *  Operation bookings will be automatically scheduled to the next available slot (regardless of the firm)
          */

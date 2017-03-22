@@ -14,7 +14,7 @@
                 <label>To Service:* </label>
             </div>
             <div class="large-3 column">
-                    <?php echo CHtml::activeDropDownList($element, "to_service_id",
+                    <?php echo CHtml::activeDropDownList($element, "to_subspecialty_id",
                                     CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- None -')) ?>
             </div>
 
