@@ -154,6 +154,20 @@ $assetManager = Yii::app()->getAssetManager();
                     </div>
                     <?php
                     break;
+                case 'LinkTo':
+                    ?>
+                    <div class="row field-row">
+                        <div class="large-2 column">
+                            <label></label>
+                        </div>
+                        <div class="large-5 column end">
+                            <?php
+                                echo CHtml::link($type['label'],array( $type['linkTo']));
+                            ?>
+                        </div>
+                    </div>
+                    <?php
+                    break;
             }
         } else {
             switch ($type) {
