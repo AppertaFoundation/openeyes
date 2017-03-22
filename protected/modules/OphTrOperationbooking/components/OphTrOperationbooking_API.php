@@ -238,12 +238,12 @@ class OphTrOperationbooking_API extends BaseAPI
                     $latestDate = substr($latest->event->event_date, 0, 10);
                     if(strtotime($detailDate) === strtotime($latestDate)){
                         foreach ($detail->procedures as $procedure) {
-                            $result .= $detail->eye->adjective . ' ' . $procedure->term."\n";;
+                            $result .= ($result === '' ? '' : ', ') . $detail->eye->adjective . ' ' . $procedure->term;
                         }
 
                     }
                 }
-                return $result;
+                return strtolower($result);
             }
         }
     }
