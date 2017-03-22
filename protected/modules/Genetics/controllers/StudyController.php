@@ -82,7 +82,7 @@ class StudyController extends BaseModuleController
         $admin->setListFields(array(
             'id',
             'name',
-            'formattedEndDate',
+            'end_date',
         ));
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
