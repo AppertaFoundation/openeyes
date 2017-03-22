@@ -110,6 +110,36 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
             'active' => 1,
         ));
 
+        $this->insert('ophciexamination_keratoconus_stage', array(
+            'name' => 'I',
+            'display_order' => 1,
+        ));
+        $this->insert('ophciexamination_keratoconus_stage', array(
+            'name' => 'II',
+            'display_order' => 2,
+        ));
+        $this->insert('ophciexamination_keratoconus_stage', array(
+            'name' => 'III',
+            'display_order' => 3,
+        ));
+        $this->insert('ophciexamination_keratoconus_stage', array(
+            'name' => 'IV',
+            'display_order' => 4,
+        ));
+
+        $this->insert('ophciexamination_slit_lamp_cornea', array(
+            'name' => 'Clear',
+            'display_order' => 1,
+        ));
+        $this->insert('ophciexamination_slit_lamp_cornea', array(
+            'name' => 'Scarring',
+            'display_order' => 2,
+        ));
+        $this->insert('ophciexamination_slit_lamp_cornea', array(
+            'name' => 'Other',
+            'display_order' => 3,
+        ));
+
 
         $this->insert('ophciexamination_cxl_quality_score', array(
             'name' => 'OK',
@@ -161,6 +191,38 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
         $this->insert('ophciexamination_tomographer_device', array(
             'name' => 'Casia',
             'display_order' => 4,
+        ));
+
+
+        $this->insert('ophciexamination_cxl_outcome_diagnosis', array(
+            'name' => 'Not Ectasia',
+            'display_order' => 1,
+        ));
+        $this->insert('ophciexamination_cxl_outcome_diagnosis', array(
+            'name' => 'Keratoconus',
+            'display_order' => 2,
+        ));
+        $this->insert('ophciexamination_cxl_outcome_diagnosis', array(
+            'name' => 'Post-Laser Ectasia',
+            'display_order' => 3,
+        ));
+        $this->insert('ophciexamination_cxl_outcome_diagnosis', array(
+            'name' => 'Pellucid Marginal Degeneration',
+            'display_order' => 4,
+        ));
+
+
+        $this->insert('ophciexamination_cxl_quality_score', array(
+            'name' => 'OK',
+            'display_order' => 1,
+        ));
+        $this->insert('ophciexamination_cxl_quality_score', array(
+            'name' => 'Borderline',
+            'display_order' => 2,
+        ));
+        $this->insert('ophciexamination_cxl_quality_score', array(
+            'name' => 'Poor',
+            'display_order' => 3,
         ));
 
 
