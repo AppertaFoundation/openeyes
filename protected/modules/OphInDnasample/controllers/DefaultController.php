@@ -13,19 +13,26 @@ class DefaultController extends BaseEventTypeController
         return $volume_remaining;
     }
 
-    public function accessRules()
+    public function checkCreateAccess()
     {
-        return array(
-            array('allow',
-                'actions' => array('Create', 'Update', 'View', 'Print','saveCanvasImages','PDFprint' ),
-                'roles' => array('OprnEditDnaSample'),
-            ),
-            array('allow',
-                'actions' => array('View', 'Print','saveCanvasImages','PDFprint'),
-                'roles' => array('OprnViewDnaSample'),
-            ),
-        );
+        return $this->checkAccess('OprnEditDnaSample')||;
     }
+
+    public function checkUpdateAccess()
+    {
+        return $this->checkAccess('OprnEditDnaSample');
+    }
+
+    public function checkViewAccess()
+    {
+        return $this->checkAccess('OprnEditDnaSample') || $this->checkAccess('OprnViewDnaSample')
+    }
+
+    public function checkPrintAccess()
+    {
+        return $this->checkAccess('OprnEditDnaSample') || $this->checkAccess('OprnViewDnaSample');
+    }   
+     
 
     public function actionCreate()
     {
