@@ -184,9 +184,7 @@ $assetManager = Yii::app()->getAssetManager();
                     echo $form->textArea($admin->getModel(), $field);
                     break;
                 case 'referer':
-                    if(isset($referer)){
-                        echo CHTML::hiddenField('referer', $referer);
-                    }
+                    echo CHTML::hiddenField('referer', Yii::app()->request->getUrlReferrer());
                     break;
                 case 'text':
                 default:
