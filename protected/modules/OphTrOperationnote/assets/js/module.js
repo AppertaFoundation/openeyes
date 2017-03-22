@@ -439,6 +439,11 @@ function showHideIOLFields(_drawing, resetPosition) {
             $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option').map(function () {
                 if ($(this).text() == '- Please select -') {
                     $(this).attr('selected', 'selected');
+                } else {
+                    if ($(this).text() == 'None') {
+                        $(this).attr('disabled','disabled');
+                    }
+                    $(this).removeAttr("selected");
                 }
             });
         }
@@ -450,7 +455,10 @@ function showHideIOLFields(_drawing, resetPosition) {
         if (resetPosition) {
             $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option').map(function () {
                 if ($(this).text() == 'None') {
+                    $(this).removeAttr('disabled');
                     $(this).attr('selected', 'selected');
+                } else {
+                    $(this).removeAttr("selected");
                 }
             });
         }
