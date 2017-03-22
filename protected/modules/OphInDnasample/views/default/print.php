@@ -16,26 +16,9 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-    $this->beginContent('//patient/event_container');
 ?>
-<?php
-// Event actions
-if ($this->checkPrintAccess()) {
-    $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'small'));
-    //$this->event_actions[] = EventAction::button('Print all', 'printall', null, array('id' => 'et_print_all', 'class' => 'small'));
-}
-//$is_local = $this->getOpenElementByClassName('Element_OphInDnasample_Sample')->is_local;
-if ($this->event_type->children) {
-    $this->event_actions[] = EventAction::button('Add child', 'add_test', null, array('class' => 'button small'));
-}
-?>
-<?php $this->renderOpenElements($this->action->id); ?>
-<?php $this->renderOptionalElements($this->action->id); ?>
-<?php $this->endContent() ?>
-<script type="text/html" id="add-new-test-template">
-    <?php $this->renderPartial('_add_new_test', array(
-        'patient' => $this->patient,
-        'children' => $this->event_type->children,
-        'parent_event_id' => $this->event->id,
-    )) ?>
-</script>
+
+<?php $this->renderPartial('//print/event', array(
+    'hide_modified' => @$hide_modified,
+    'hide_created' => @$hide_created,
+));?>
