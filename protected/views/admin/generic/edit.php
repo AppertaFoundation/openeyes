@@ -169,6 +169,11 @@ $assetManager = Yii::app()->getAssetManager();
                 case 'textarea':
                     echo $form->textArea($admin->getModel(), $field);
                     break;
+                case 'referer':
+                    if(isset($referer)){
+                        echo CHTML::hiddenField('referer', $referer);
+                    }
+                    break;
                 case 'text':
                 default:
                     echo $form->textField($admin->getModel(), $field, $autoComplete);

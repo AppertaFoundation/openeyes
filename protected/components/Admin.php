@@ -514,10 +514,13 @@ class Admin
                 }
             }
         }
+        
+        $referer = Yii::app()->request->getUrlReferrer();
+        
         if($partial === false){
-            $this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
+            $this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors,'referer' => $referer));
         } else {
-            $this->controller->renderPartial($this->editTemplate, array('admin' => $this, 'errors' => $errors));
+            $this->controller->renderPartial($this->editTemplate, array('admin' => $this, 'errors' => $errors,'referer' => $referer));
         }
         
     }

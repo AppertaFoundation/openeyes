@@ -68,6 +68,7 @@ class PedigreeController extends BaseModuleController
         }
 
         $admin->setEditFields(array(
+            'referer' => 'referer',
             'id' => 'label',
             'inheritance_id' => array(
                 'widget' => 'DropDownList',
@@ -121,7 +122,10 @@ class PedigreeController extends BaseModuleController
             ),
         ));
 
-        $admin->editModel();
+        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());    
+
+        $admin->editModel(false);
+        $this->redirect(Yii::app()->request->getPost('referer'));
     }
 
     /**
