@@ -104,7 +104,6 @@ class SubjectController extends BaseModuleController
             $htmlOprtions = array('options' => array($genderValue => array('selected'=>true)));
         }
 
-
         $admin->setModelDisplayName('Genetics Subject');
         $admin->setEditFields(array(
             'id' => 'label',
