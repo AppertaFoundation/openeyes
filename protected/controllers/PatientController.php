@@ -1513,18 +1513,26 @@ class PatientController extends BaseController
    private function performPatientSave(Contact $contact, Patient $patient, Address $address)
    {
         $transaction = Yii::app()->db->beginTransaction();
-
         try{
             if( $contact->save() ){
-
                 $patient->contact_id = $contact->id;
                 $address->contact_id = $contact->id;
                 $action = $patient->isNewRecord ? 'add' : 'edit';
+                $isNewPatient = $patient->isNewRecord ? true : false;
+
+                $issetGeneticsModule = isset(Yii::app()->modules["Genetics"]);
+                $issetGeneticsClinical = Yii::app()->user->checkAccess('Genetics Clinical');
+
                 if($patient->save() && $address->save()){
                     $transaction->commit();
 
-                    Audit::add('Patient', $action . '-patient', "Patient manually [id: $patient->id] {$action}ed.");
-                    $this->redirect(array('view', 'id' => $patient->id));
+                    if(($issetGeneticsModule !== FALSE ) && ($issetGeneticsClinical !== FALSE) && ($isNewPatient)){
+                        $this->redirect(array('Genetics/subject/edit?patient='.$patient->id));
+                    } else {
+                        Audit::add('Patient', $action . '-patient', "Patient manually [id: $patient->id] {$action}ed.");
+                        $this->redirect(array('view', 'id' => $patient->id));
+                    }
+
                 } else {
                     // patient or address failed to save
                     $transaction->rollback();
