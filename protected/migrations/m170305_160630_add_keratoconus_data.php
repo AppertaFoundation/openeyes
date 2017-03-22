@@ -725,40 +725,55 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
             'defaultChoice' => 0,
         ));
 
+        $eventTypeId = $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('event_type')
+            ->where('class_name=:class_name', array(':class_name' => 'OphCiExamination'))
+            ->queryScalar();
+
+
         $this->insert('element_type', array(
             'name' => 'Specular Microscopy',
             'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy',
-            'event_type_id' => 27,
+            'event_type_id' => $eventTypeId,
             'display_order' => 5,
         ));
         $this->insert('element_type', array(
             'name' => 'Keratometry',
             'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry',
-            'event_type_id' => 27,
+            'event_type_id' => $eventTypeId,
             'display_order' => 6,
         ));
         $this->insert('element_type', array(
             'name' => 'Slit Lamp',
             'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp',
-            'event_type_id' => 27,
+            'event_type_id' => $eventTypeId,
             'display_order' => 7,
         ));
         $this->insert('element_type', array(
             'name' => 'CXL History',
             'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History',
-            'event_type_id' => 27,
+            'event_type_id' => $eventTypeId,
             'display_order' => 8,
         ));
         $this->insert('element_type', array(
             'name' => 'CXL Outcome',
             'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_Outcome',
-            'event_type_id' => 27,
+            'event_type_id' => $eventTypeId,
             'display_order' => 8,
         ));
+
+        $opEventTypeId = $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('event_type')
+            ->where('class_name=:class_name', array(':class_name' => 'OphTrOperationnote'))
+            ->queryScalar();
+
+
         $this->insert('element_type', array(
             'name' => 'CXL (Cross-Linking)',
             'class_name' => 'Element_OphTrOperationnote_CXL',
-            'event_type_id' => 4,
+            'event_type_id' => $opEventTypeId,
             'display_order' => 10,
             'parent_element_type_id' => 34,
         ));
@@ -793,15 +808,15 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
         ));
 
         $this->insert('episode_summary_item', array(
-            'event_type_id' => 27,
+            'event_type_id' => $eventTypeId,
             'name' => 'Keratometry',
         ));
         $this->insert('episode_summary_item', array(
-            'event_type_id' => 27,
+            'event_type_id' => $eventTypeId,
             'name' => 'Keratometry Chart Right',
         ));
         $this->insert('episode_summary_item', array(
-            'event_type_id' => 27,
+            'event_type_id' => $eventTypeId,
             'name' => 'Keratometry Chart Left',
         ));
 
