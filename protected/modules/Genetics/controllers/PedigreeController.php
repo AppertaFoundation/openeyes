@@ -124,8 +124,16 @@ class PedigreeController extends BaseModuleController
 
         $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());    
 
-        $admin->editModel(false);
-        $this->redirect(Yii::app()->request->getPost('referer'));
+        $valid = $admin->editModel(false);
+
+        if (Yii::app()->request->isPostRequest) {        
+            if ($valid) {
+                Yii::app()->user->setFlash('success', "Family Saved");
+                $this->redirect(Yii::app()->request->getPost('referer'));
+            } else {
+                $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
+            }
+        }
     }
 
     /**

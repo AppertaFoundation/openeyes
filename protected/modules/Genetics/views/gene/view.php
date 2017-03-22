@@ -22,7 +22,7 @@
         <div class="large-10 column"><h2>View Gene</h2></div>
         <div class="large-2 column right">
             <?php if( $this->checkAccess('OprnEditGene') ): ?>
-                <a href="/Genetics/gene/edit/<?php echo $model->id; ?>" class="button small right" id="gene_edit">Edit</a>
+                <a href="/Genetics/gene/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/gene/view/').$model->id; ?>" class="button small right" id="gene_edit">Edit</a>
             <?php endif; ?>
         </div>
     </div>
