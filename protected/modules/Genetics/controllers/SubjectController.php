@@ -79,13 +79,31 @@ class SubjectController extends BaseModuleController
             $admin->setModelId($id);
             $this->renderPatientPanel = true;
             $this->patient = isset($admin->getModel()->patient) ? $admin->getModel()->patient : null;
+            $htmlOprtions = null;
         }
 
         if(isset($_GET['patient']) && ((int)$_GET['patient'] > 0) && ($this->patient == NULL)){
             $this->patient = Patient::model()->findByPk((int)$_GET['patient']);
             $admin->getModel()->patient = $this->patient;
             $admin->getModel()->patient_id = $this->patient->id;
+
+                switch($this->patient->gender){
+                    case 'M':
+                        $genderValue = 1;
+                        break;
+                    case 'F':
+                        $genderValue = 2;
+                        break;
+                    case 'U':
+                        $genderValue = 3;
+                        break;
+                    default:
+                        $genderValue = 4;
+                }
+            $admin->getModel()->is_deceased = $this->patient->is_deceased;
+            $htmlOprtions = array('options' => array($genderValue => array('selected'=>true)));
         }
+
 
         $admin->setModelDisplayName('Genetics Subject');
         $admin->setEditFields(array(
@@ -97,7 +115,7 @@ class SubjectController extends BaseModuleController
             'gender_id' => array(
                 'widget' => 'DropDownList',
                 'options' => CHtml::listData(Gender::model()->findAll(), 'id', 'name'),
-                'htmlOptions' => null,
+                'htmlOptions' => $htmlOprtions,
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
