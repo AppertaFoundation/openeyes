@@ -1,6 +1,6 @@
 <div class="row field-row">
   <div class="large-2 column">
-    <label for="patient-search">Patient Lookup</label>
+    <label for="patient-search">Patient:</label>
   </div>
   <div class="large-5 column end">
     <input type="hidden" name="<?= get_class($model) ?>[patient_lookup_gender]"/>
