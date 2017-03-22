@@ -48,7 +48,6 @@ class DefaultController extends BaseEventTypeController
 
         $transaction = new OphInDnaextraction_DnaTests_Transaction();
         $transaction->setDefaultOptions();
-
         $this->renderPartial('_dna_test', array(
             'i' => $_GET['i'],
             'transaction' => $transaction,
@@ -68,10 +67,9 @@ class DefaultController extends BaseEventTypeController
                     $_transaction = new OphInDnaextraction_DnaTests_Transaction();
                 }
                 $_transaction->date = date('Y-m-d', strtotime($date));
-                $_transaction->investigator_id = $_POST['investigator_id'][$i];
                 $_transaction->study_id = $_POST['study_id'][$i];
                 $_transaction->volume = $_POST['volume'][$i];
-
+                $_transaction->comments = $_POST['comments'][$i];
                 $transactions[] = $_transaction;
             }
         }

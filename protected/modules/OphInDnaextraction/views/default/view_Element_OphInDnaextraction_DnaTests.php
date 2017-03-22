@@ -29,9 +29,9 @@
 				<thead>
 					<tr>
 						<th>Date</th>
-						<th>Investigator</th>
 						<th>Study</th>
 						<th>Volume</th>
+						<th>Comments</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -39,9 +39,9 @@
 						<?php foreach ($element->transactions as $transaction) {?>
 							<tr>
 								<td><?php echo $transaction->NHSDate('date')?></td>
-								<td><?php echo $transaction->investigator->name?></td>
 								<td><?php echo $transaction->study->name?></td>
 								<td><?php echo $transaction->volume?></td>
+								<td><?php echo $transaction->comments?></td>
 							</tr>
 						<?php }?>
 					<?php }else{?>
