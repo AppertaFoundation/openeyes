@@ -24,8 +24,7 @@
  *
  * @property int $id
  * @property string $value
- * @property int $display_order
- */
+  */
 class OphInDnaextraction_DnaTests_Transaction extends BaseActiveRecord
 {
     /**
@@ -54,8 +53,8 @@ class OphInDnaextraction_DnaTests_Transaction extends BaseActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('element_id, date, investigator_id, study_id, volume', 'safe'),
-            array('date, investigator_id, study_id, volume', 'required'),
+            array('element_id, date, study_id, volume, comments', 'safe'),
+            array('date, study_id, volume', 'required'),
         );
     }
 
@@ -68,7 +67,6 @@ class OphInDnaextraction_DnaTests_Transaction extends BaseActiveRecord
         // class name for the relations automatically generated below.
         return array(
             'element' => array(self::BELONGS_TO, 'Element_OphInDnaextraction_DnaTests', 'element_id'),
-            'investigator' => array(self::BELONGS_TO, 'OphInDnaextraction_DnaTests_Investigator', 'investigator_id'),
             'study' => array(self::BELONGS_TO, 'OphInDnaextraction_DnaTests_Study', 'study_id'),
         );
     }
@@ -78,9 +76,9 @@ class OphInDnaextraction_DnaTests_Transaction extends BaseActiveRecord
         return array(
             'id' => 'ID',
             'date' => 'Date',
-            'investigator_id' => 'Investigator',
             'study_id' => 'Study',
             'volume' => 'Volume',
+            'comments' => 'Comments',
         );
     }
 
