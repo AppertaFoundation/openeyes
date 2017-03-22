@@ -218,6 +218,13 @@ class OphTrOperationbooking_API extends BaseAPI
         }
     }
 
+    /**
+     * get the procedures for this patient and episode for same date/episode
+     *
+     * @param Patient $patient
+     *
+     * @return string
+     */
     public function getLetterProceduresSameDay( $patient )
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
@@ -231,10 +238,7 @@ class OphTrOperationbooking_API extends BaseAPI
                     $latestDate = substr($latest->event->event_date, 0, 10);
                     if(strtotime($detailDate) === strtotime($latestDate)){
                         foreach ($detail->procedures as $procedure) {
-                            if ($i > 1) {
-                                $result .= "\n";
-                            }
-                            $result .= $detail->eye->adjective . ' ' . $procedure->term;
+                            $result .= $detail->eye->adjective . ' ' . $procedure->term."\n";;
                         }
 
                     }
