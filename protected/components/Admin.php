@@ -514,6 +514,7 @@ class Admin
                 }
             }
         }
+        
         if($partial === false){
             $this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
         } else {

@@ -33,9 +33,9 @@
           <thead>
           <tr>
             <th>Date</th>
-            <th>Investigator</th>
             <th>Study</th>
             <th>Volume</th>
+            <th>Comments</th>
             <th></th>
           </tr>
           </thead>

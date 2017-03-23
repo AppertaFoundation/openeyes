@@ -39,21 +39,15 @@ $pedigree = new Pedigree();
          data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
   <div class="element-fields">
-      <?php $form->widget('application.widgets.ElementSelection', array(
+      <?php 
+         
+         $form->widget('application.widgets.ElementSelection', array(
           'element' => $element,
           'field' => 'withdrawal_source_id',
           'relatedElements' => $withdrawals,
           'htmlOptions' => array('empty' => '- Select -'),
           'layoutColumns' => array('label' => 3, 'field' => 3),
-      )); ?>
-      <?php $form->dropDownList(
-          $element,
-          'external_source_id',
-          CHtml::listData(OphInGeneticresults_External_Source::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
-          array('empty' => '- Select -'),
-          false, array('label' => 3, 'field' => 3)
-      ) ?>
-      <?php $form->textField($element, 'external_source_identifier', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      ));  ?>
       <?php $form->dropDownList(
           $element,
           'gene_id',

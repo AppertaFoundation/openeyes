@@ -22,7 +22,7 @@
         <div class="large-10 column"><h2>View Genetics Study</h2></div>
         <div class="large-2 column right">
             <?php if( $this->checkAccess('OprnEditGeneticPatient') ): ?>
-                <a href="/Genetics/study/edit/<?php echo $model->id; ?>" class="button small right" id="study_edit">Edit</a>
+                <a href="/Genetics/study/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/study/view/').$model->id; ?>" class="button small right" id="study_edit">Edit</a>
             <?php endif; ?>
         </div>
     </div>

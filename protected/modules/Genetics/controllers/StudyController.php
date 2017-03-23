@@ -51,23 +51,24 @@ class StudyController extends BaseModuleController
         }
         $admin->setModelDisplayName('Genetics Study');
         $admin->setEditFields(array(
+            'referer' => 'referer',
             'name' => 'text',
             'criteria' => 'textarea',
             'end_date' => 'date',
-            'proposers' => array(
-                'widget' => 'MultiSelectList',
-                'relation_field_id' => 'id',
-                'label' => 'Investigator',
-                'options' => CHtml::encodeArray(CHtml::listData(
-                    User::model()->findAll(),
-                    'id',
-                    function ($model) {
-                        return $model->fullName;
-                    }
-                )),
-            ),
         ));
-        $admin->editModel();
+        
+        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());    
+
+        $valid = $admin->editModel(false);
+
+        if (Yii::app()->request->isPostRequest) {        
+            if ($valid) {
+                Yii::app()->user->setFlash('success', "Study Saved");
+                $this->redirect(Yii::app()->request->getPost('referer'));
+            } else {
+                $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
+            }
+        }
     }
 
     /**
@@ -81,7 +82,7 @@ class StudyController extends BaseModuleController
         $admin->setListFields(array(
             'id',
             'name',
-            'formattedEndDate',
+            'end_date',
         ));
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);

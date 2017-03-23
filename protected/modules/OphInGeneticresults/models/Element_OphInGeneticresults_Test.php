@@ -63,11 +63,11 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('event_id, gene_id, method_id, comments, exon, base_change, method_id, amino_acid_change_id, base_change_id,
-                 amino_acid_change, assay, effect_id, method_id homo, result, result_date, external_source_identifier, withdrawal_source_id, external_source_id,
+                 amino_acid_change, assay, effect_id, method_id homo, result, result_date, withdrawal_source_id, 
                  genomic_coordinate, genome_version, gene_transcript',
                 'safe'),
             array('gene_id, homo, method_id, effect_id, result', 'required'),
-            array('withdrawal_source_id', 'validateSource'),
+            array('withdrawal_source_id', 'required'),
             array('exon', 'validateForMethod', 'method' => 'Sanger'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -90,7 +90,6 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
             'effect' => array(self::BELONGS_TO, 'OphInGeneticresults_Test_Effect', 'effect_id'),
             'method' => array(self::BELONGS_TO, 'OphInGeneticresults_Test_Method', 'method_id'),
             'withdrawal_source' => array(self::BELONGS_TO, 'Element_OphInDnaextraction_DnaTests', 'withdrawal_source_id'),
-            'external_source' => array(self::BELONGS_TO, 'OphInGeneticresults_External_Source', 'external_source_id'),
             'base_change_type' => array(self::BELONGS_TO, 'PedigreeBaseChangeType', 'base_change_id'),
             'amino_acid_change_type' => array(self::BELONGS_TO, 'PedigreeAminoAcidChangeType', 'amino_acid_change_id'),
         );
@@ -115,9 +114,7 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
             'homo' => 'Homozygosity',
             'result' => 'Result',
             'result_date' => 'Result date',
-            'external_source_id' => 'External Source',
             'withdrawal_source_id' => 'Withdrawal Source',
-            'external_source_identifier' => 'External Source ID',
             'base_change_id' => 'Base Change Type',
             'amino_acid_change_id' => 'Amino Acid Change Type'
         );
@@ -163,20 +160,6 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
         );
 
         return Element_OphInDnaextraction_DnaTests::model()->with('event', 'event.episode')->findAll($criteria);
-    }
-
-    /**
-     * Validate that either a withdrawal source or an external source is provided
-     */
-    public function validateSource()
-    {
-        if ($this->withdrawal_source_id && $this->external_source_id) {
-            $this->addError('withdrawal_source_id', 'Only one of withdrawal and external sources can be selected');
-        }
-
-        if (!$this->withdrawal_source_id && !$this->external_source_id) {
-            $this->addError('withdrawal_source_id', 'Either a withdrawal or an external source must be selected');
-        }
     }
 
     /**

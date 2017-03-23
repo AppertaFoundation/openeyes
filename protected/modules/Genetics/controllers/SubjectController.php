@@ -89,6 +89,7 @@ class SubjectController extends BaseModuleController
 
         $admin->setModelDisplayName('Genetics Subject');
         $admin->setEditFields(array(
+            'referer' => 'referer',
             'id' => 'label',
             'patient_id' => array(
                 'widget' => 'PatientLookup',
@@ -186,7 +187,8 @@ class SubjectController extends BaseModuleController
                 ),
             ),
         ));
-
+        
+        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());    
         $valid = $admin->editModel(false);
 
         if (Yii::app()->request->isPostRequest) {
@@ -207,7 +209,7 @@ class SubjectController extends BaseModuleController
                     }
                 }
                 Yii::app()->user->setFlash('success', "Patient Saved");
-                $admin->redirect();
+                $this->redirect(Yii::app()->request->getPost('referer'));
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
             }

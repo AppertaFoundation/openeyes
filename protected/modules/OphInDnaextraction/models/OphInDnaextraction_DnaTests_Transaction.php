@@ -24,8 +24,7 @@
  *
  * @property int $id
  * @property string $value
- * @property int $display_order
- */
+  */
 class OphInDnaextraction_DnaTests_Transaction extends BaseActiveRecord
 {
     /**
@@ -54,8 +53,8 @@ class OphInDnaextraction_DnaTests_Transaction extends BaseActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('element_id, date, investigator_id, study_id, volume', 'safe'),
-            array('date, investigator_id, study_id, volume', 'required'),
+            array('element_id, date, study_id, volume, comments', 'safe'),
+            array('date, study_id, volume', 'required'),
         );
     }
 
@@ -68,9 +67,33 @@ class OphInDnaextraction_DnaTests_Transaction extends BaseActiveRecord
         // class name for the relations automatically generated below.
         return array(
             'element' => array(self::BELONGS_TO, 'Element_OphInDnaextraction_DnaTests', 'element_id'),
-            'investigator' => array(self::BELONGS_TO, 'OphInDnaextraction_DnaTests_Investigator', 'investigator_id'),
             'study' => array(self::BELONGS_TO, 'OphInDnaextraction_DnaTests_Study', 'study_id'),
         );
+    }
+    
+   
+    public function beforeValidate()
+    {
+        $volumes = array_sum(Yii::app()->request->getPost('volume'));
+        if($this->element_id){
+            $element = Element_OphInDnaextraction_DnaExtraction::model()->find('id = ?', array($this->element_id));
+            $event_id = $element->event->id;
+            $volume = intval($element->volume);
+            $used_volume = 0;
+            
+            $transactions_element = Element_OphInDnaextraction_DnaTests::model()->find('event_id = ?', array($event_id));
+            $transactions = OphInDnaextraction_DnaTests_Transaction::model()->findAll('element_id = ?', array($transactions_element->id));
+            foreach ($transactions as $transaction) {
+                $used_volume += $transaction->volume;
+            }
+            $remaining = $volume - $used_volume;
+            if($volume - $volumes < 0){
+               $this->addError(null, 'The remaining extraction volume is less than zero. Remaining: '.$remaining);
+            }
+            
+        }
+        return true;
+        
     }
 
     public function attributeLabels()
@@ -78,9 +101,9 @@ class OphInDnaextraction_DnaTests_Transaction extends BaseActiveRecord
         return array(
             'id' => 'ID',
             'date' => 'Date',
-            'investigator_id' => 'Investigator',
             'study_id' => 'Study',
             'volume' => 'Volume',
+            'comments' => 'Comments',
         );
     }
 
