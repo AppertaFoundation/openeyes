@@ -61,8 +61,14 @@
 ?>
 
 <?php echo $form->dropDownList($element, 'iol_position_id', 'OphTrOperationnote_IOLPosition',
-    array('empty' => '- Please select -', 'options'=>array(8=>array('disabled'=>'disabled'))), 
-    $element->iol_hidden, array('field' => 4)) ?>
+    array(
+        'empty' => '- Please select -', 
+        'options'=>array(
+            8=>array('disabled'=>'disabled'),
+        )
+    ), 
+    $element->iol_hidden, array('field' => 4)
+    ) ?>
 <?php echo $form->multiSelectList($element, 'OphTrOperationnote_CataractOperativeDevices', 'operative_devices', 'id',
     $this->getOperativeDeviceList($element), $this->getOperativeDeviceDefaults(),
     array('empty' => '- Agents -', 'label' => 'Agents'), false, false, null, false, false, array('field' => 4)) ?>
