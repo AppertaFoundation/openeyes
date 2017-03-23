@@ -19,6 +19,9 @@
  */
 class DocManDeliveryCommand extends CConsoleCommand
 {
+    //if export path provided it will overwrite the $path
+    public $export_path = null;
+
     private $path;
 
     private $event;
@@ -34,7 +37,8 @@ class DocManDeliveryCommand extends CConsoleCommand
      */
     public function __construct()
     {
-        $this->path = Yii::app()->params['docman_export_dir'];
+        $this->path = $this->export_path ? $this->export_path : Yii::app()->params['docman_export_dir'];
+
         $this->generate_xml = !isset(Yii::app()->params['docman_xml_format']) || Yii::app()->params['docman_xml_format'] !== 'none';
         $this->generate_csv = Yii::app()->params['docman_generate_csv'];
 
@@ -50,12 +54,34 @@ class DocManDeliveryCommand extends CConsoleCommand
     /**
      * Run the command.
      */
-    public function run($args)
+    public function actionIndex($args)
     {
         $pending_documents = $this->getPendingDocuments();
         foreach ($pending_documents as $document) {
             echo 'Processing event ' . $document->document_target->document_instance->correspondence_event_id . PHP_EOL;
             $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
+        }
+    }
+
+    public function actionGenerateOne($event_id, $path = null)
+    {
+
+        $criteria = new CDbCriteria();
+        $criteria->join = "JOIN document_target ON t.document_target_id = document_target.id";
+        $criteria->join .= " JOIN document_instance ON document_target.document_instance_id = document_instance.id";
+
+        $criteria->join .= " JOIN event ON document_instance.correspondence_event_id = event.id";
+
+        $criteria->addCondition("event.id = " . $event_id);
+        $criteria->addCondition("event.deleted = 0");
+        $criteria->addCondition("t.`output_type`= 'Docman' OR t.`output_type`= 'Internalreferral'");
+
+
+        $document_outputs = DocumentOutput::model()->findAll($criteria);
+
+        foreach ($document_outputs as $document) {
+            echo 'Processing event ' . $event_id . PHP_EOL;
+            $this->savePDFFile($event_id, $document->id);
         }
     }
 
@@ -69,7 +95,7 @@ class DocManDeliveryCommand extends CConsoleCommand
         $criteria->join .= " JOIN `document_instance` i ON tr.`document_instance_id` = i.`id`";
         $criteria->join .= " JOIN event e ON i.`correspondence_event_id` = e.id";
         $criteria->addCondition("e.deleted = 0");
-        $criteria->addCondition("t.`output_status` = 'PENDING' AND t.`output_type`= 'Docman'");
+        $criteria->addCondition("t.`output_status` = 'PENDING' AND (t.`output_type`= 'Docman' OR t.`output_type`= 'Internalreferral')");
         
         return DocumentOutput::model()->findAll($criteria);
     }
@@ -85,6 +111,9 @@ class DocManDeliveryCommand extends CConsoleCommand
         $pdf_generated = false;
         $xml_generated = false;
         $this->event = Event::model()->findByPk($event_id);
+        $document_output = DocumentOutput::model()->findByPk($output_id);
+        $print_only_gp = $document_output->output_type != 'Docman' ? '0' : '1';
+
         if ($this->event) {
             $login_page = Yii::app()->params['docman_login_url'];
             $username = Yii::app()->params['docman_user'];
@@ -120,10 +149,9 @@ class DocManDeliveryCommand extends CConsoleCommand
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
 
             curl_exec($ch);
-
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, false);
-            curl_setopt($ch, CURLOPT_URL, $print_url . $this->event->id . '?auto_print=' . (int)$inject_autoprint_js . '&print_only_gp=1');
+            curl_setopt($ch, CURLOPT_URL, $print_url . $this->event->id . '?auto_print=' . (int)$inject_autoprint_js . '&print_only_gp=' . $print_only_gp);
             $content = curl_exec($ch);
             
             curl_close($ch);
@@ -151,7 +179,7 @@ class DocManDeliveryCommand extends CConsoleCommand
             $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
 
             if ($this->generate_xml) {
-                $xml_generated = $this->generateXMLOutput($filename);
+                $xml_generated = $this->generateXMLOutput($filename, $document_output);
             }
 
             if (!$pdf_generated || ($this->generate_xml && !$xml_generated)) {
@@ -226,10 +254,11 @@ class DocManDeliveryCommand extends CConsoleCommand
 
     /**
      * @param string $filename
+     * @param DocumentOutput $document_output
      *
      * @return bool
      */
-    private function generateXMLOutput($filename)
+    private function generateXMLOutput($filename, $document_output)
     {
         $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $this->event->id));
         $subObj = $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty;
@@ -245,6 +274,12 @@ class DocManDeliveryCommand extends CConsoleCommand
         $city = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->city) : '';
         $post_code = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->postcode) : '';
         $letter_type = isset($element_letter->letterType->name) ? $element_letter->letterType->name : '';
+
+        //Internal referral reference
+        $service_to = isset($element_letter->toSubspecialty) ? $element_letter->toSubspecialty->ref_spec : '';
+        $consultant_to = isset($element_letter->event->episode->firm) ? $element_letter->event->episode->firm->consultant_id : '';
+        $is_urgent = $element_letter->is_urgent ? 'True' : 'False';
+        $is_same_condition = $element_letter->is_same_condition ? 'True' : 'False';
 
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
             <DocumentInformation>
@@ -269,7 +304,6 @@ class DocManDeliveryCommand extends CConsoleCommand
             <GPName>" . $gp_name . "</GPName>
             <Surgery>" . $practice_code . "</Surgery>
             <SurgeryName></SurgeryName>
-            <LetterType>" . $letter_type . "</LetterType>
             <ActivityID>" . $this->event->id . "</ActivityID>
             <ActivityDate>" . $this->event->event_date . "</ActivityDate>
             <ClinicianType></ClinicianType>
@@ -281,6 +315,16 @@ class DocManDeliveryCommand extends CConsoleCommand
             <LocationName>" . $element_letter->site->name . "</LocationName>
             <SubLocation></SubLocation>
             <SubLocationName></SubLocationName>
+            <!-- Internal Referral -->
+            <ServiceTo>" . $service_to . "</ServiceTo>
+            <ConsultantTo>" . $consultant_to . "</ConsultanTo>
+            <Urgent>" . $is_urgent . "</Urgent> 
+            <SameCondition>" . $is_same_condition . "</SameCondition>
+            
+            <LetterType>" . $letter_type . "</LetterType>
+            <!-- When main recipient is Internalreferral and a CC is a GP the Docman and Internalreferral XMLs look like the same. -->
+            <!-- SendTo tag contains the actual output type: Either 'Docman' or 'Internalreferral' -->
+            <SendTo>" . $document_output->output_type . "</SendTo>
             </DocumentInformation>";
 
         return (file_put_contents($this->path . "/" . $filename . ".XML", $this->cleanXML($xml)) !== false);

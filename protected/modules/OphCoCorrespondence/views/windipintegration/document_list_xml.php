@@ -18,35 +18,55 @@
 ?>
 <?php echo '<?xml version="1.0" encoding="utf-8" ?>'; ?>
 <linkparameters>
-    <security><authentication><?=$authentication_hash?></authentication>
+    <security>
+        <authentication><?=$authentication_hash?></authentication>
         <timestamp><?=$timestamp?></timestamp>
         <xmlid><?=$message_id?></xmlid>
-    </security>
-    <revision number="4.2" />
+    </security><revision number="4.2" />
     <applicationid><?=$application_id?></applicationid>
     <user>
         <id><?=$username?></id>
         <name><?=$user_displayname?></name>
     </user>
     <primarylink>
-        <process>2</process>
+        <process>0</process>
         <uniquereference type="I"><?=$event_id?></uniquereference>
-        <?php if(!$is_new_event): ?>
-            <uniquereference2></uniquereference2>
-            <typeid></typeid>
-        <?php else: ?>
-            <typeid><?=$windip_type_id?></typeid>
-        <?php endif; ?>
+        <typeid><?=$windip_type_id?></typeid>
         <eventdate><?=$event_date?></eventdate>
         <eventtime><?=$event_time?></eventtime>
+        <OUID>DID1</OUID>
     </primarylink>
     <additionalindexes count="<?=count($additional_indexes)?>">
         <?php foreach ($additional_indexes as $i=>$index) {?>
             <index_<?=$i+1?>>
-                <id><?=$index['id']?></id>
-                <value><?=$index['value']?></value>
+                    <id><?=$index['id']?></id>
+                    <value><?=	$index['value']?></value>
             </index_<?=$i+1?>>
-        <?php } ?>
+            <?php } ?>
     </additionalindexes>
-    <event><status>0</status><failuredescription></failuredescription></event>
+    <event>
+        <status>0</status>
+        <failuredescription></failuredescription>
+    </event>
+    <automation>
+        <application>
+            <sb value="1" />
+            <tb value="1" />
+            <ub value="1" />
+            <db value="1" />
+            <mb value="0" />
+            <rm value="0" />
+            <cm value="0" />
+            <em value="0" />
+        </application>
+        <formstyle>
+            <caption value="1" />
+        </formstyle>
+        <viewer>
+            <showdetail value="1" />
+            <icons value="0" />
+            <position value="0" />
+            <buttons value="111111111111" />
+        </viewer>
+    </automation>
 </linkparameters>

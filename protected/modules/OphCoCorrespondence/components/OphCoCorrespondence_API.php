@@ -29,7 +29,7 @@ class OphCoCorrespondence_API extends BaseAPI
 
         // for the new correspondence with DocMan
         // once the letter is generated for the DocMan only admin can edit
-        return !$letter->isGeneratedForDocMan();
+        return !$letter->isGeneratedFor(['Docman', 'Internalreferral']);
 
         // FIXME: Correspondence locking is suspended while draft usage is discussed
         return true;
@@ -41,7 +41,7 @@ class OphCoCorrespondence_API extends BaseAPI
     {
         $letter = ElementLetter::model()->find('event_id=?', array($event_id));
         
-        return !$letter->isGeneratedForDocMan();
+        return !$letter->isGeneratedFor(['Docman', 'Internalreferral']);
     }
 
     public function getLatestEvent($episode)

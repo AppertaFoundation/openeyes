@@ -101,7 +101,7 @@ class DefaultController extends BaseEventTypeController
         $title = '';
         $letter = ElementLetter::model()->find('event_id=?', array($id));
 
-        $output = $letter->getOutputByType($type = 'Docman');
+        $output = $letter->getOutputByType(['Docman', 'Internalreferral']);
         if($output){
             $docnam = $output[0]; //for now only one Docman allowed
             $title = $docnam->output_status;
@@ -425,7 +425,7 @@ class DefaultController extends BaseEventTypeController
 
             /**
              * this is a hotfix for DocMan, when we generate correspondences
-             * where the main recipient is NOT the GP the than we need to cherrypick it
+             * where the main recipient is NOT the GP than we need to cherrypick it
              */
             if( isset($_GET['print_only_gp']) && $_GET['print_only_gp'] == "1" ){
 

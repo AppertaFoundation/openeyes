@@ -78,9 +78,10 @@ function togglePrintDisabled (isSignedOff) {
  */
 function resetInternalReferralFields(){
 
-    $.each( $('.internal-referral-section').find(':input'), function(i, input){
+    $('.internal-referral-section').find(':input').not(':button, :submit, :reset, :hidden').removeAttr('checked').removeAttr('selected').not(':checkbox, :radio, select').val('');
+
+    $.each( $('.internal-referral-section select').find(':input'), function(i, input){
         $(input).val('');
-        $(input).prop('checked', false);
     });
 }
 

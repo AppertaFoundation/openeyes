@@ -98,7 +98,6 @@ class ElementLetter extends BaseEventTypeElement
             'enclosures' => array(self::HAS_MANY, 'LetterEnclosure', 'element_letter_id', 'order' => 'display_order'),
             'document_instance' => array(self::HAS_MANY, 'DocumentInstance', array( 'correspondence_event_id' => 'event_id')),
             'letterType' => array(self::BELONGS_TO, 'LetterType', 'letter_type_id'),
-            'toConsultant' => array(self::BELONGS_TO, 'User', 'to_consultant_id'),
             'toSubspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'to_subspecialty_id'),
 
         );
@@ -653,24 +652,28 @@ class ElementLetter extends BaseEventTypeElement
 
     public function isEditable()
     {
-        return !$this->isGeneratedForDocMan();
+        return !$this->isGeneratedFor(['Docman', 'Internalreferral']);
     }
     
-    
+
     /**
      * Determinate if wheter PDF and XML files are generated for the DocMan
      * @return type
      */
-    public function isGeneratedForDocMan()
+    public function isGeneratedFor($types)
     {
+        if(!is_array($types)){
+            $types = array($types);
+        }
+
         $criteria = new CDbCriteria();
         $criteria->join =   "JOIN document_instance ins ON t.id = ins.document_set_id " .
                             "JOIN document_target tar ON ins.id = tar.document_instance_id " .
                             "JOIN document_output output ON tar.id = output.document_target_id";
 
         $criteria->compare('t.event_id', $this->event_id);
-        $criteria->compare('output.output_type', 'Docman');
         $criteria->compare('output.output_status', 'COMPLETE');
+        $criteria->addInCondition('output.output_type', $types);
 
         return DocumentSet::model()->find($criteria) ? true : false;
         
@@ -783,16 +786,19 @@ class ElementLetter extends BaseEventTypeElement
      * @param type $type
      * @return \typeReturns  * @return typeReturns the Outputs by type
      */
-    public function getOutputByType($type = 'Print')
+    public function getOutputByType($types = 'Print')
     {
         $criteria = new CDbCriteria();
         $criteria->join =   "JOIN document_target target ON t.document_target_id = target.id " .
                             "JOIN document_instance instance ON target.document_instance_id = instance.id ";
 
         $criteria->compare('instance.correspondence_event_id', $this->event->id);
-        if($type){
-            $criteria->compare('t.output_type', $type);
+
+        if(!is_array($types)){
+            $types = array($types);
         }
+
+        $criteria->addInCondition('t.output_type', $types);
 
         return DocumentOutput::model()->findAll($criteria);
 

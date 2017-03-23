@@ -58,6 +58,7 @@
                                 1 => 'Same Condition',
                                 0 => 'Different Condition',
                         ),
+                        'selected_item' => $element->$field,
 
                     ));
 
