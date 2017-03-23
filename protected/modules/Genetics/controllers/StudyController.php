@@ -64,7 +64,8 @@ class StudyController extends BaseAdminController
         if (Yii::app()->request->isPostRequest) {        
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Study Saved");
-                $this->redirect(Yii::app()->request->getPost('referer'));
+                $url = str_replace('/edit','/view',(Yii::app()->request->requestUri)).'/'.$admin->getModel()->id;
+                $this->redirect($url);
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
             }
@@ -86,7 +87,7 @@ class StudyController extends BaseAdminController
         ));
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        
+        $admin->getSearch()->setDefaultResults(false);
         $display_buttons = $this->checkAccess('TaskEditGeneticStudy');
         $admin->listModel($display_buttons);
     }

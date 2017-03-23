@@ -231,7 +231,9 @@ class SubjectController extends BaseModuleController
                     }
                 }
                 Yii::app()->user->setFlash('success', "Patient Saved");
-                $this->redirect(Yii::app()->request->getPost('referer'));
+                //$this->redirect(Yii::app()->request->getPost('referer'));
+                $url = str_replace('/edit','/view',(Yii::app()->request->requestUri)).'/'.$admin->getModel()->id;
+                $this->redirect($url);
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
             }
