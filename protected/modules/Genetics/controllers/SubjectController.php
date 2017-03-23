@@ -62,6 +62,11 @@ class SubjectController extends BaseModuleController
 
     public function actionView($id)
     {
+        $admin = new Crud(GeneticsPatient::model(), $this);
+        $admin->setModelId($id);
+        $this->renderPatientPanel = true;
+        $this->patient = isset($admin->getModel()->patient) ? $admin->getModel()->patient : null;
+
         $genetics_patient = $this->loadModel($id);
         $this->render('view', array('model' => $genetics_patient));
     }
@@ -79,7 +84,7 @@ class SubjectController extends BaseModuleController
             $admin->setModelId($id);
             $this->renderPatientPanel = true;
             $this->patient = isset($admin->getModel()->patient) ? $admin->getModel()->patient : null;
-            $htmlOprtions = null;
+            $htmlOptions = null;
         }
 
         if(isset($_GET['patient']) && ((int)$_GET['patient'] > 0) && ($this->patient == NULL)){
@@ -101,7 +106,7 @@ class SubjectController extends BaseModuleController
                         $genderValue = 4;
                 }
             $admin->getModel()->is_deceased = $this->patient->is_deceased;
-            $htmlOprtions = array('options' => array($genderValue => array('selected'=>true)));
+            $htmlOptions = array('options' => array($genderValue => array('selected'=>true)));
         }
 
         $admin->setModelDisplayName('Genetics Subject');
@@ -115,7 +120,7 @@ class SubjectController extends BaseModuleController
             'gender_id' => array(
                 'widget' => 'DropDownList',
                 'options' => CHtml::listData(Gender::model()->findAll(), 'id', 'name'),
-                'htmlOptions' => $htmlOprtions,
+                'htmlOptions' => $htmlOptions,
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
