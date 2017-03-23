@@ -166,6 +166,7 @@ class PedigreeController extends BaseModuleController
         $admin->getSearch()->addSearchItem('consanguinity', array('type' => 'boolean'));
         $admin->getSearch()->addSearchItem('disorder_id', array('type' => 'disorder'));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+        $admin->getSearch()->setDefaultResults(false);
         $display_buttons = $this->checkAccess('OprnEditPedigree');
         $admin->listModel($display_buttons);
     }

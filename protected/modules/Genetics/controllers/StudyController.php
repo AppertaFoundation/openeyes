@@ -87,7 +87,7 @@ class StudyController extends BaseModuleController
         ));
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        
+        $admin->getSearch()->setDefaultResults(false);
         $display_buttons = $this->checkAccess('TaskEditGeneticStudy');
         $admin->listModel($display_buttons);
     }

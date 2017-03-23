@@ -34,6 +34,7 @@ class BaseChangeAdminController extends BaseAdminController
         ));
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+        $admin->getSearch()->setDefaultResults(false);
         $admin->listModel();
     }
 
