@@ -1,7 +1,14 @@
 
 /* Module-specific javascript can be placed here */
 
+function warningIfVolumeRemainingIsLessThanZero(){
+    //$('#warning-of-ramaining').show();
+}
+
 $(document).ready(function() {
+    
+    warningIfVolumeRemainingIsLessThanZero();
+    
     handleButton($('#et_save'),function() {
     });
     

@@ -48,9 +48,11 @@
         ?>
 		<?php echo $form->textField($element, 'dna_concentration', array(), array(), array('label' => 3, 'field' => 2))?>
 		<?php echo $form->textField($element, 'volume', array(), array(), array('label' => 3, 'field' => 2));?>
+		
         <?php echo $form->textField($element, 'dna_quality', array(), array(), array('label' => 3, 'field' => 1));?>
         <?php echo $form->textField($element, 'dna_quantity', array(), array(), array('label' => 3, 'field' => 1));
 
+        
         if ($this->action->id == 'update') {
             $form->widget('Caption',
                 array(
@@ -58,7 +60,15 @@
                     'value' => $this->volumeRemaining($element->event_id),
                 ));
         }
+        
         ?>
+        <?php echo CHtml::hiddenField('volume_remaining', $this->volumeRemaining($element->event_id)); ?>
+        <div 
+            class="cvi-alert alert-box warning round hidden" 
+            data-alert="Warning: Volume remaining is less than zero." 
+            id='warning-of-ramaining'
+            >Warning: Volume remaining is less than zero.</div>
+        
 		<?php echo $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 5))?>
 	</fieldset>
 </section>
