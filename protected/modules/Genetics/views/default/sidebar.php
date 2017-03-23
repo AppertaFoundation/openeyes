@@ -11,7 +11,6 @@
 
             'Genetic Results Method' => '/OphInGeneticresults/methodAdmin/list',
             'Genetic Results Effect' => '/OphInGeneticresults/effectAdmin/list',
-            'External Source' => '/OphInGeneticresults/externalSourceAdmin/list',
         );
 
         foreach ($sidebarLinks as $title => $uri) { ?>
