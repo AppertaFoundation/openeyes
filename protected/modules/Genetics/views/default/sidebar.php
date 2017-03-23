@@ -11,6 +11,8 @@
 
             'Genetic Results Method' => '/OphInGeneticresults/methodAdmin/list',
             'Genetic Results Effect' => '/OphInGeneticresults/effectAdmin/list',
+            'Studies' => Yii::app()->createUrl('/Genetics/study/list'),
+            'Genes' => Yii::app()->createUrl('/Genetics/gene/list'),
         );
 
         foreach ($sidebarLinks as $title => $uri) { ?>
@@ -35,8 +37,7 @@
             'Families' => Yii::app()->createUrl('/Genetics/pedigree/list'),
             'Genetic test/result' => Yii::app()->createUrl('/OphInGeneticresults/search/geneticResults'),
             'Samples' => Yii::app()->createUrl('/OphInDnasample/search/DnaSample'),
-            'Studies' => Yii::app()->createUrl('/Genetics/study/list'),
-            'Genes' => Yii::app()->createUrl('/Genetics/gene/list'),
+
         );
 
         $current_uri = '/' . $this->module->id . '/' . $this->id . '/' . $this->action->id;

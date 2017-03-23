@@ -23,7 +23,7 @@
         <div class="large-10 column"><h2>View Family</h2></div>
         <div class="large-2 column right">
             <?php if( $this->checkAccess('TaskEditPedigreeData') ): ?>
-                <a href="/Genetics/pedigree/edit/<?php echo $model->id; ?>" class="button small right" id="pedigree_edit">Edit</a>
+                <a href="/Genetics/pedigree/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/pedigree/view/').$model->id; ?>" class="button small right" id="pedigree_edit">Edit</a>
             <?php endif; ?>
         </div>
     </div>

@@ -84,22 +84,12 @@ class GeneticsStudy extends BaseActiveRecordVersioned
     }
 
     /**
-     * @return array customized attribute labels (name=>label)
-     */
-    public function attributeLabels()
-    {
-        return array(
-            'formattedEndDate' => 'End Date'
-        );
-    }
-
-    /**
-     * This is here because of the Crud class cannot accept parameters, to format date, or any other solution, really....
+     * format date after search
      * @return string
      */
-    public function getFormattedEndDate()
+    public function afterFind()
     {
-        return Helper::convertMySQL2NHS($this->end_date);
+        $this->end_date = Helper::convertMySQL2NHS($this->end_date);
     }
 
     /**
@@ -108,10 +98,10 @@ class GeneticsStudy extends BaseActiveRecordVersioned
     public function beforeSave()
     {
         //Set the date to null if it's not truthy so empty strings don't convert to 0000-00-00....
+
         if (!$this->end_date) {
             $this->end_date = null;
         }
-
         return parent::beforeSave();
     }
 
