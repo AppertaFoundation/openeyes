@@ -5,7 +5,7 @@
  *
  * Contains the actions pertaining to genes
  */
-class StudyController extends BaseModuleController
+class StudyController extends BaseAdminController
 {
     public $layout = 'genetics';
 
