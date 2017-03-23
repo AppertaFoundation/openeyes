@@ -31,6 +31,7 @@
             'htmlOptions' => array('class'=>'detailview'),
             'attributes'=>array(
                 'name',
+                'criteria',
                 array(
                     'label' => $model->getAttributeLabel('end_date'),
                     'type' => 'raw',
@@ -55,8 +56,22 @@
                         }
                         return $html;
                     }
+                ),
+                array(
+                    'label' => 'Investigators',
+                    'type' => 'raw',
+                    'value' => function() use ($model){
+                        $investigators = '';
+                        if($model->proposers){
+                            $investigators = '<ul>';
+                            foreach($model->proposers as $proposer){
+                                $investigators .= '<li>'.$proposer->first_name.' '.$proposer->last_name.'</li>';
+                            }
+                            $investigators .= '</ul>';
+                        }
+                        return $investigators;
+                    }
                 )
-                
             ) 
 
             ));
