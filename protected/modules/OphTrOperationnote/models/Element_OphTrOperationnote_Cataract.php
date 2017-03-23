@@ -98,13 +98,15 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
     
     public function validateIolType()
     {
-        if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != '8'){
-            if (!$this->iol_type_id) {
-                $this->addError('iol_type_id', 'IOL type cannot be blank');
-            }
+        if(isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
+            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != '8'){
+                if (!$this->iol_type_id) {
+                    $this->addError('iol_type_id', 'IOL type cannot be blank');
+                }
 
-            if (!isset($this->iol_power)) {
-                $this->addError('iol_power', 'IOL power cannot be blank');
+                if (!isset($this->iol_power)) {
+                    $this->addError('iol_power', 'IOL power cannot be blank');
+                }
             }
         }
     }
@@ -116,12 +118,14 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
      */
     public function validatePredictedRefraction()
     {
-        if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != '8'){
-            $value = $this->predicted_refraction;
-            if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
-                $message = $this->addError('predicted_refraction', 'Predicted refraction must be between -30.00 and 30.00');
-            } elseif ($value < -10 || $value > 40) {
-                $message = $this->addError('predicted_refraction', 'Predicted refraction must be between -30.00 and 30.00');
+        if(isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
+            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != '8'){
+                $value = $this->predicted_refraction;
+                if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
+                    $message = $this->addError('predicted_refraction', 'Predicted refraction must be between -30.00 and 30.00');
+                } elseif ($value < -10 || $value > 40) {
+                    $message = $this->addError('predicted_refraction', 'Predicted refraction must be between -30.00 and 30.00');
+                }
             }
         }
     }
@@ -132,12 +136,14 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
      */
     public function validateIolPower()
     {
-        if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != '8'){
-            $value = $this->iol_power;
-            if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
-                $message = $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -10.00 and 40.00');
-            } elseif ($value < -10 || $value > 40) {
-                $message = $this->addError('iol_power', 'IOL Power must be between -10 to 40');
+        if(isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
+            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != '8'){
+                $value = $this->iol_power;
+                if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
+                    $message = $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -10.00 and 40.00');
+                } elseif ($value < -10 || $value > 40) {
+                    $message = $this->addError('iol_power', 'IOL Power must be between -10 to 40');
+                }
             }
         }
     }
