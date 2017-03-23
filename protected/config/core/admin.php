@@ -50,6 +50,7 @@ return array(
                 'Risks' => '/oeadmin/risk/list',
                 'Unique Codes' => '/oeadmin/uniqueCodes/list',
                 'Examination Event Logs' => '/oeadmin/eventLog/list',
+                'Patient Shortcodes' => '/admin/patientshortcodes'
             ),
             'Worklists' => array(
                 'Automatic Worklists Definitions' => '/worklistAdmin/definitions',
