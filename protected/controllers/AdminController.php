@@ -2053,7 +2053,7 @@ class AdminController extends BaseAdminController
                 ),
                 array(
                     'field' => 'description',
-                    'type' => 'text'
+                    'type' => 'textarea'
                 ),
                 array(
                     'field' => 'event_type_id',
@@ -2072,7 +2072,7 @@ class AdminController extends BaseAdminController
                 ),
                 array(
                     'field' => 'codedoc',
-                    'type' => 'textarea',
+                    'type' => 'textdisplay',
                     'htmlOptions' => array(
                         'disabled' => true,
                     )
