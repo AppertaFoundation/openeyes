@@ -33,7 +33,9 @@ class GeneticsStudy extends BaseActiveRecordVersioned
     protected $auto_update_relations = true;
 
     protected $pivot = 'genetics_study_subject';
-
+    
+    public $formatted_end_date = null;
+    
     protected $pivot_model = 'GeneticsStudySubject';
 
     /**
@@ -89,7 +91,7 @@ class GeneticsStudy extends BaseActiveRecordVersioned
      */
     public function afterFind()
     {
-        $this->end_date = Helper::convertMySQL2NHS($this->end_date);
+        $this->formatted_end_date = Helper::convertMySQL2NHS($this->end_date);
     }
 
     /**

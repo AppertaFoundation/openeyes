@@ -35,8 +35,7 @@
                     'label' => $model->getAttributeLabel('end_date'),
                     'type' => 'raw',
                     'value' => function() use ($model){
-                        $date = new DateTime($model->end_date);
-                        return $date->format('d M Y');
+                        return $model->formatted_end_date;
                     }
                 ),
                 array(
