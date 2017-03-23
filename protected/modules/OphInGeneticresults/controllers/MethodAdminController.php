@@ -10,7 +10,7 @@ class MethodAdminController extends BaseAdminController
     /**
      * @var string
      */
-    public $layout = '//../modules/genetics/views/layouts/genetics';
+    public $layout = 'application.modules.Genetics.views.layouts.genetics';
 
     protected $itemsPerPage = 100;
 
