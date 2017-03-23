@@ -2034,4 +2034,50 @@ class AdminController extends BaseAdminController
             'agent' => $agent,
         ));
     }
+
+    public function actionPatientShortcodes()
+    {
+        $this->genericAdmin('Edit Shortcodes', 'PatientShortcode', array(
+            'description' => 'You may alter the shortcode for this installation below. Otherwise this screen is purely for information',
+            'cannot_add' => true,
+            'cannot_delete' => true,
+            'label_field' => 'code',
+            'extra_fields' => array(
+                array(
+                    'field' => 'default_code',
+                    'type' => 'text',
+                    'htmlOptions' => array(
+                        'disabled' => true,
+                        'size' => 4
+                    )
+                ),
+                array(
+                    'field' => 'description',
+                    'type' => 'text'
+                ),
+                array(
+                    'field' => 'event_type_id',
+                    'type' => 'lookup',
+                    'model' => 'EventType',
+                    'htmlOptions' => array(
+                        'disabled' => true
+                    )
+                ),
+                array(
+                    'field' => 'method',
+                    'type' => 'text',
+                    'htmlOptions' => array(
+                        'disabled' => true,
+                    )
+                ),
+                array(
+                    'field' => 'codedoc',
+                    'type' => 'textarea',
+                    'htmlOptions' => array(
+                        'disabled' => true,
+                    )
+                )
+            )
+        ));
+    }
 }
