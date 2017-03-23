@@ -114,10 +114,13 @@ class DataContext
     public function addEventConstraints(CDbCriteria $criteria)
     {
         if ($this->support_services) {
+            // This is actually fairly meaningless, because support services episodes currently only support
+            // correspondence events. The model may change though, so for now this logically would be the
+            // appropriate behaviour in terms of backwards compatibility. In the future, support services
+            // may well simply imply no subspecialty and therefore pull from across all "episodes"
             $criteria->compare('episode.support_services', true);
         }
         else {
-            print_r($this->subspecialty);
             $criteria->addInCondition('serviceSubspecialtyAssignment.subspecialty_id', array_map(
                 function($ss) {
                     return $ss->id;
@@ -125,5 +128,20 @@ class DataContext
             ));
         }
     }
+
+    /**
+     * @param Patient $patient
+     * @return \Eye|null
+     */
+    public function getPrincipalEye(\Patient $patient)
+    {
+        $ss = $this->subspecialties;
+        if (count($ss) == 1) {
+            if ($episode = Episode::model()->getCurrentEpisodeBySubspecialtyId($patient->id, $ss[0]->id)) {
+                return $episode->eye;
+            }
+        }
+    }
+
 
 }

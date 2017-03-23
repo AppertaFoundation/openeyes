@@ -102,18 +102,18 @@ class BaseAPI
     }
 
     /**
-     * Returns the given element type from the most recent Event for this module, if that element is present. Otherwise
-     * will return null.
+     * Returns the given element type from the most recent Event for this module, if that element is present.
+     * Otherwise will return null.
      *
      * @param $element
      * @param Patient $patient
      * @param boolean $use_context
-     * @return BaseEventTypeElement
+     * @return BaseEventTypeElement|null
      */
     public function getElementFromLatestEvent($element, Patient $patient, $use_context = false)
     {
         if ($event = $this->getLatestEvent($patient, $use_context)) {
-            $criteria =  new CDbCriteria();
+            $criteria = new CDbCriteria();
             $criteria->compare('event_id', $event->id);
 
             return $element::model()
@@ -121,6 +121,45 @@ class BaseAPI
                 ->find($criteria);
         }
     }
+
+    /**
+     * Returns the most recent instance of the given element type if it exists.
+     *
+     * @param $element
+     * @param Patient $patient
+     * @param bool $use_context
+     * @param string $before - date formatted string
+     * @return BaseEventTypeElement|null
+     */
+    public function getLatestElement($element, Patient $patient, $use_context = false, $before = null)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->compare('episode.patient_id', $patient->id);
+        if ($before_date) {
+            $criteria->compare('event.event_date', '<='.$before_date);
+        }
+        $criteria->order = 'event.event_date desc';
+        $criteria->limit = 1;
+
+        if ($use_context) {
+            $this->current_context->addEventConstraints($criteria);
+        }
+        return $element::model()
+            ->with(array(
+                'event' => array('episode' =>
+                    array('with' =>
+                        array(
+                            'firm' => array(
+                                'with' => 'serviceSubspecialtyAssignment'
+                            ),
+                            'patient'
+                        )
+                    )
+                )
+            ))
+            ->find($criteria);
+    }
+
 
     /**
      * gets the element of type $element for the given patient in the given episode.
