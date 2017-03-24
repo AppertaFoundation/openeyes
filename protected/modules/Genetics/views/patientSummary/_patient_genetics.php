@@ -47,7 +47,7 @@
                     <div class="data-value">
 
                         <?php echo $pedigree->id ?>
-                        <?php echo '(Gene: '.$pedigree->gene->name.')' ?>
+                        <?php if ($pedigree->gene) { echo '(Gene: '.$pedigree->gene->name.')'; } ?>
                         <?php
                         $status = GeneticsPatientPedigree::model()->findByAttributes(array('patient_id' => $subject->id, 'pedigree_id' => $pedigree->id));
                         if($status->status !== NULL){
