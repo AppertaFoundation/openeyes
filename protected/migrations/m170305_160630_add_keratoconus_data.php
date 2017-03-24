@@ -733,34 +733,39 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
 
 
         $this->insert('element_type', array(
-            'name' => 'Specular Microscopy',
-            'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy',
-            'event_type_id' => $eventTypeId,
-            'display_order' => 5,
-        ));
-        $this->insert('element_type', array(
-            'name' => 'Keratometry',
-            'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry',
-            'event_type_id' => $eventTypeId,
-            'display_order' => 6,
-        ));
-        $this->insert('element_type', array(
-            'name' => 'Slit Lamp',
-            'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp',
-            'event_type_id' => $eventTypeId,
-            'display_order' => 7,
-        ));
-        $this->insert('element_type', array(
-            'name' => 'CXL History',
+            'name' => 'Keratoconus Monitoring',
             'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History',
             'event_type_id' => $eventTypeId,
             'display_order' => 8,
         ));
+
+        // get id for above for use below
+        $keraMonTypeId = $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('element_type')
+            ->where('class_name=:class_name', array(':class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History'))
+            ->queryScalar();
+
         $this->insert('element_type', array(
-            'name' => 'CXL Outcome',
-            'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_Outcome',
+            'name' => 'Corneal Tomography',
+            'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry',
             'event_type_id' => $eventTypeId,
-            'display_order' => 8,
+            'display_order' => 1,
+            'parent_element_type_id' => $keraMonTypeId,
+        ));
+        $this->insert('element_type', array(
+            'name' => 'Specular Microscopy',
+            'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy',
+            'event_type_id' => $eventTypeId,
+            'display_order' => 2,
+            'parent_element_type_id' => $keraMonTypeId,
+        ));
+        $this->insert('element_type', array(
+            'name' => 'KC/CXL-Specific Slit Lamp',
+            'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp',
+            'event_type_id' => $eventTypeId,
+            'display_order' => 3,
+            'parent_element_type_id' => $keraMonTypeId,
         ));
 
         $opEventTypeId = $this->dbConnection->createCommand()

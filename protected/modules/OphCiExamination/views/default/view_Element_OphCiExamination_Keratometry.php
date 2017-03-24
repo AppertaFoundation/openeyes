@@ -17,6 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+
 <div class="element-data">
     <div class="data-row">
     </div>
@@ -53,21 +54,33 @@
                 </div>
                 <div class="row">
                 <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_axis_anterior_k1_value')?>:
+                    <?php echo $element->getAttributeLabel('right_anterior_k2_value')?>:
                 </div>
                     <div class="large-5 column data-value">
                         <?php
-                    echo $element->right_axis_anterior_k1_value;
+                        echo $element->right_anterior_k2_value;
                     ?>
                     </div>
                 </div>
+            <div class="row">
+                <div class="large-6 column data-value">
+                    <?php echo $element->getAttributeLabel('right_quality_front')?>:
+                </div>
+                <div class="large-5 column data-value">
+                    <?php
+                    if($element->right_quality_front){
+                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->right_quality_front);
+                    }
+                    ?>
+                </div>
+            </div>
         <div class="row">
             <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_anterior_k2_value')?>:
+                    <?php echo $element->getAttributeLabel('right_axis_anterior_k1_value')?>:
             </div>
             <div class="large-5 column data-value">
                 <?php
-                    echo $element->right_anterior_k2_value;
+                echo $element->right_axis_anterior_k1_value;
                     ?>
             </div>
         </div>
@@ -81,6 +94,18 @@
             ?>
             </div>
         </div>
+            <div class="row">
+                <div class="large-6 column data-value">
+                    <?php echo $element->getAttributeLabel('right_quality_back')?>:
+                </div>
+                <div class="large-5 column data-value">
+                    <?php
+                    if($element->right_quality_back){
+                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->right_quality_back);
+                    }
+                    ?>
+                </div>
+            </div>
         <div class="row">
             <div class="large-6 column data-value">
                     <?php echo $element->getAttributeLabel('right_kmax_value')?>:
@@ -113,25 +138,11 @@
         </div>
             <div class="row">
                 <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_quality_front')?>:
+                    <?php echo $element->getAttributeLabel('right_flourescein_value')?>:
                 </div>
                 <div class="large-5 column data-value">
                     <?php
-                    if($element->right_quality_front){
-                    echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->right_quality_front);
-                    }
-                    ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="large-6 column data-value">
-                    <?php echo $element->getAttributeLabel('right_quality_back')?>:
-                </div>
-                <div class="large-5 column data-value">
-                    <?php
-                    if($element->right_quality_back){
-                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->right_quality_back);
-                    }
+                    echo yesOrNo($element->right_flourescein_value);
                     ?>
                 </div>
             </div>
@@ -172,16 +183,6 @@
                 </div>
                 <div class="row">
                     <div class="large-6 column data-value">
-                        <?php echo $element->getAttributeLabel('left_axis_anterior_k1_value')?>:
-                    </div>
-                    <div class="large-5 column data-value">
-                        <?php
-                        echo $element->left_axis_anterior_k1_value;
-                        ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-6 column data-value">
                         <?php echo $element->getAttributeLabel('left_anterior_k2_value')?>:
                     </div>
                     <div class="large-5 column data-value">
@@ -192,11 +193,45 @@
                 </div>
                 <div class="row">
                     <div class="large-6 column data-value">
+                        <?php echo $element->getAttributeLabel('left_quality_front')?>:
+                    </div>
+                    <div class="large-5 column data-value">
+                        <?php
+                        if($element->left_quality_front){
+                            echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->left_quality_front);
+                        }
+                        ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="large-6 column data-value">
+                        <?php echo $element->getAttributeLabel('left_axis_anterior_k1_value')?>:
+                    </div>
+                    <div class="large-5 column data-value">
+                        <?php
+                        echo $element->left_axis_anterior_k1_value;
+                        ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="large-6 column data-value">
                         <?php echo $element->getAttributeLabel('left_axis_anterior_k2_value')?>:
                     </div>
                     <div class="large-5 column data-value">
                         <?php
                         echo $element->left_axis_anterior_k2_value;
+                        ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="large-6 column data-value">
+                        <?php echo $element->getAttributeLabel('left_quality_back')?>:
+                    </div>
+                    <div class="large-5 column data-value">
+                        <?php
+                        if($element->left_quality_back){
+                            echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->left_quality_back);
+                        }
                         ?>
                     </div>
                 </div>
@@ -232,25 +267,11 @@
                 </div>
                 <div class="row">
                     <div class="large-6 column data-value">
-                        <?php echo $element->getAttributeLabel('left_quality_front')?>:
+                        <?php echo $element->getAttributeLabel('left_flourescein_value')?>:
                     </div>
                     <div class="large-5 column data-value">
                         <?php
-                        if($element->left_quality_front){
-                            echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->left_quality_front);
-                        }
-                        ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-6 column data-value">
-                        <?php echo $element->getAttributeLabel('left_quality_back')?>:
-                    </div>
-                    <div class="large-5 column data-value">
-                        <?php
-                        if($element->left_quality_back){
-                            echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->left_quality_back);
-                        }
+                        echo yesOrNo($element->left_flourescein_value);
                         ?>
                     </div>
                 </div>

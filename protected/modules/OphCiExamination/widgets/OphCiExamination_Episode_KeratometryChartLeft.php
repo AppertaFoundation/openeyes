@@ -59,8 +59,8 @@ class OphCiExamination_Episode_KeratometryChartLeft extends \EpisodeSummaryWidge
             ->configureYAxis( $this->kera_axis, array('position' => 'left', 'min' => 0, 'max' => 180))
             ->configureYAxis("KmaxY", array('position' => 'right', 'min' => 30, 'max' => 80))
             ->configureSeries('Kmax', array('yaxis' => "KmaxY", 'lines' => array('show' => true), 'points' => array('show' => true)))
-//            ->configureSeries('CXL Op', array('yaxis' => $this->kera_axis, 'lines' => array('show' => true), 'points' => array('show' => true)))
             ->configureSeries('K1', array('yaxis' => $this->kera_axis, 'lines' => array('show' => true), 'points' => array('show' => true)))
+            ->configureSeries('CXL Op', array('yaxis' => $this->kera_axis, 'lines' => array('show' => true), 'points' => array('show' => true)))
             ->configureSeries('K2', array('yaxis' => $this->kera_axis, 'lines' => array('show' => true), 'points' => array('show' => true)));
 
         return $chart;
@@ -78,8 +78,8 @@ class OphCiExamination_Episode_KeratometryChartLeft extends \EpisodeSummaryWidge
         }
         // For Operation Date line - just need to get the date from Op Note for this patient for Cross-Linking
         // And also uncomment CXL Op series above.
-        //$chart->addPoint("CXL Op", Helper::mysqlDate2JsTimestamp($event->event_date), '1', "Op");
-        //$chart->addPoint("CXL Op", Helper::mysqlDate2JsTimestamp($event->event_date), '180', "Op");
+        $chart->addPoint("CXL Op", Helper::mysqlDate2JsTimestamp('2017-03-02 00:00:00'), '1', "Op");
+        $chart->addPoint("CXL Op", Helper::mysqlDate2JsTimestamp('2017-03-02 00:00:00'), '180', "Op");
 
 
     }

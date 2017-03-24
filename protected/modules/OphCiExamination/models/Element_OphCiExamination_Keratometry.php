@@ -28,11 +28,8 @@ namespace OEModule\OphCiExamination\models;
  * @property int $id
  * @property int $event_id
  * @property int $eye_id
- * @property int $topographer_id
- * @property int $topographer_scan_quality_id
  *
  * @property var $tomographer_id
- * @property int $tomographer_scan_quality_id
  *
  * @property int $right_anterior_k1_value
  * @property dec $right_axis_anterior_k1_value
@@ -92,43 +89,41 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('eye_id, topographer_id, topographer_scan_quality_id, 
+                array('eye_id, 
                 right_anterior_k1_value, right_axis_anterior_k1_value,
                  right_anterior_k2_value, right_axis_anterior_k2_value, right_kmax_value, 
                  right_posterior_k2_value, right_thinnest_point_pachymetry_value, right_ba_index_value, 
-                 tomographer_id, tomographer_scan_quality_id,
+                 tomographer_id,
                  left_anterior_k1_value, left_axis_anterior_k1_value,
                  left_anterior_k2_value, left_axis_anterior_k2_value, left_kmax_value, 
                  left_posterior_k2_value, left_thinnest_point_pachymetry_value, left_ba_index_value,
                  keratoconus_stage_id, right_quality_front, right_quality_back, left_quality_front, left_quality_back, 
-                 right_cl_removed, left_cl_removed', 'safe'),
+                 right_cl_removed, left_cl_removed, right_flourescein_value, left_flourescein_value', 'safe'),
 
-                array('right_anterior_k1_value, right_anterior_k2_value, right_kmax_value,  
-                    left_anterior_k1_value, left_anterior_k2_value, left_kmax_value',
-                    'in','range'=>range(30,80)),
-
-                array('right_axis_anterior_k1_value, right_axis_anterior_k2_value, left_axis_anterior_k1_value, left_axis_anterior_k2_value',
-                        'in','range'=>range(0,180)),
+            array('right_anterior_k1_value, right_anterior_k2_value, right_kmax_value,
+                    left_anterior_k1_value, left_anterior_k2_value, left_kmax_value, right_axis_anterior_k1_value,
+                     right_axis_anterior_k2_value, left_axis_anterior_k1_value, left_axis_anterior_k2_value', 'numerical',
+                'integerOnly'=>false,'min'=>1, 'max'=>150),
 
             array('right_thinnest_point_pachymetry_value, left_thinnest_point_pachymetry_value',
-                'in','range'=>range(100,800)),
+                'in','range'=>range(10,800)),
 
             array('right_ba_index_value, left_ba_index_value', 'numerical',
-                'integerOnly'=>false,'min'=>0, 'max'=>10),
+                'integerOnly'=>false,'min'=>1, 'max'=>100),
 
 
             // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
-                array('id, event_id, topographer_id, topographer_scan_quality_id, 
+                array('id, event_id,
                 right_anterior_k1_value, right_axis_anterior_k1_value,
                  right_anterior_k2_value, right_axis_anterior_k2_value, right_kmax_value, 
                  right_thinnest_point_pachymetry_value, right_ba_index_value, 
-                 tomographer_id, tomographer_scan_quality_id,
+                 tomographer_id,
                  left_anterior_k1_value, left_axis_anterior_k1_value,
                  left_anterior_k2_value, left_axis_anterior_k2_value, left_kmax_value, 
                  left_thinnest_point_pachymetry_value, left_ba_index_value, keratoconus_stage_id,
                  right_quality_front, right_quality_back, left_quality_front, left_quality_back, 
-                 right_cl_removed, left_cl_removed', 'safe', 'on' => 'search'),
+                 right_cl_removed, left_cl_removed, right_flourescein_value, left_flourescein_value', 'safe', 'on' => 'search'),
         );
     }
 
@@ -145,10 +140,7 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'topographer_id' => array(self::BELONGS_TO, 'ophciexamination_topographer_device', 'id'),
-            'topographer_scan_quality_id' => array(self::BELONGS_TO, 'ophciexamination_scan_quality', 'id'),
             'tomographer_id' => array(self::BELONGS_TO, 'ophciexamination_tomographer_device', 'id'),
-            'tomographer_scan_quality_id' => array(self::BELONGS_TO, 'ophciexamination_scan_quality', 'id'),
             'keratoconus_stage_id' => array(self::BELONGS_TO, 'ophciexamination_keratoconus_stage', 'id'),
             'right_quality_front' => array(self::BELONGS_TO, 'ophciexamination_cxl_quality_score', 'id'),
             'right_quality_back' => array(self::BELONGS_TO, 'ophciexamination_cxl_quality_score', 'id'),
@@ -156,7 +148,6 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
             'left_quality_back' => array(self::BELONGS_TO, 'ophciexamination_cxl_quality_score', 'id'),
             'right_cl_removed' => array(self::BELONGS_TO, 'ophciexamination_cxl_cl_removed', 'id'),
             'left_cl_removed' => array(self::BELONGS_TO, 'ophciexamination_cxl_cl_removed', 'id'),
-
         );
     }
 
@@ -167,8 +158,6 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
     {
         return array(
             'id' => 'ID',
-            'topographer_id' => 'Topographer Device',
-            'topographer_scan_quality_id' => 'Topographer Scan Quality',
             'right_anterior_k1_value' => 'Front K1 Value (D)',
             'right_axis_anterior_k1_value' => 'Back K1 Value (degrees)',
             'right_anterior_k2_value' => 'Front K2 Value (D)',
@@ -180,7 +169,6 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
             'left_axis_anterior_k2_value' => 'Back K2 Value (degrees)',
             'left_kmax_value' => 'Kmax range (D)',
             'tomographer_id' => 'Tomographer Device',
-            'tomographer_scan_quality_id' => 'Tomographer Scan Quality',
             'right_posterior_k2_value' => 'Posterior K2 Value (D)',
             'right_thinnest_point_pachymetry_value' => 'Thinnest Point Pachymetry Value (µm)',
             'right_ba_index_value' => 'B-A Index Value',
@@ -194,6 +182,8 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
             'left_quality_back' => 'Quality Score - Back',
             'right_cl_removed' => 'CL Removed?',
             'left_cl_removed' => 'CL Removed?',
+            'right_flourescein_value' => 'Flourescein',
+            'left_flourescein_value' => 'Flourescein',
         );
     }
 
@@ -212,8 +202,6 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
         $criteria->compare('id', $this->id, true);
         $criteria->compare('eye_id', $this->eye_id, true);
         $criteria->compare('event_id', $this->event_id, true);
-        $criteria->compare('topographer_id', $this->topographer_id, true);
-        $criteria->compare('topographer_scan_quality_id', $this->topographer_scan_quality_id, true);
         $criteria->compare('right_anterior_k1_value', $this->right_anterior_k1_value, true);
         $criteria->compare('right_axis_anterior_k1_value', $this->right_axis_anterior_k1_value, true);
         $criteria->compare('right_anterior_k2_value', $this->right_anterior_k2_value, true);
@@ -225,7 +213,6 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
         $criteria->compare('left_axis_anterior_k2_value', $this->left_axis_anterior_k2_value, true);
         $criteria->compare('left_kmax_value', $this->left_kmax_value, true);
         $criteria->compare('tomographer_id', $this->tomographer_id, true);
-        $criteria->compare('tomographer_scan_quality_id', $this->tomographer_scan_quality_id, true);
         $criteria->compare('right_thinnest_point_pachymetry_value', $this->right_thinnest_point_pachymetry_value, true);
         $criteria->compare('right_ba_index_value', $this->right_ba_index_value, true);
         $criteria->compare('left_thinnest_point_pachymetry_value', $this->left_thinnest_point_pachymetry_value, true);
@@ -237,6 +224,8 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
         $criteria->compare('left_quality_back', $this->left_quality_back, true);
         $criteria->compare('right_cl_removed', $this->right_cl_removed, true);
         $criteria->compare('left_cl_removed', $this->left_cl_removed, true);
+        $criteria->compare('right_flourescein', $this->right_flourescein_value, true);
+        $criteria->compare('left_flourescein', $this->left_flourescein_value, true);
 
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,

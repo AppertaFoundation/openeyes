@@ -18,7 +18,7 @@
  */
 ?>
 <?php
-  function yesOrNo($item)
+function yesOrNo($item)
 {
     if($item == 1){
         echo "Yes";
@@ -26,8 +26,7 @@
         echo "No";
     }
 }
-?>
-<div class="element-data">
+?><div class="element-data">
     <div class="data-row">
         <div class="data-value column large-4">
             <?php echo $element->getAttributeLabel('asthma_id')?>:
