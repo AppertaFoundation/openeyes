@@ -32,6 +32,8 @@ namespace OEModule\OphCoCorrespondence\components;
 class WinDipIntegration extends \CApplicationComponent implements ExternalIntegration
 {
     protected $yii;
+
+    // At this stage (only WIF xml generation implemented) these params are not required
     /*protected static $required_params = array(
         'launch_uri',
         'application_id',
@@ -44,13 +46,28 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
     public $hashing_function;
     public $form_id;
 
+    protected $template_path = 'application.modules.OphCoCorrespondence.views.windipintegration';
+
     /**
      * Template path for the WinDip request
      *
      * @var string
      */
+
+    //@TODO: fix the following paths as the filename and the path is separated now
     protected $request_template = 'OphCoCorrespondence.views.windipintegration.request_xml';
     protected $new_event_template = 'OphCoCorrespondence.views.windipintegration.popup_newreferral';
+    protected $wif_xml_template = 'wif_xml';
+
+    public function getTemplatePath()
+    {
+        return $this->template_path;
+    }
+
+    public function getWIFxmlTemplate()
+    {
+        return $this->wif_xml_template;
+    }
 
     /**
      * WinDipIntegration constructor.
@@ -65,11 +82,12 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
             $this->yii = \Yii::app();
         }
 
-        foreach (static::$required_params as $p) {
-            if (!isset($this->$p) || $this->$p === null) {
-                throw new \Exception("Missing required parameter {$p}");
-            }
-        }
+        //TODO: set this validation back if more WinDip services will be integrated
+//        foreach (static::$required_params as $p) {
+//            if (!isset($this->$p) || $this->$p === null) {
+//                throw new \Exception("Missing required parameter {$p}");
+//            }
+//        }
     }
 
     /**
@@ -106,20 +124,61 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
             'value' => $event->episode->patient->hos_num
         );
 
-        $user = \User::model()->findByPk(\Yii::app()->user->id);
+        if( isset(\Yii::app()->user->id) ){
+            $user = \User::model()->findByPk(\Yii::app()->user->id);
+        }
+
 
         return array(
             'timestamp' => $when->format('Y-m-d H:i:s'),
             'message_id' => $message_id,
             'application_id' => $this->application_id,
-            'username' => $user->username,
-            'user_displayname' => $user->getReversedFullName(),
+            'username' => isset($user) ? $user->username : '',
+            'user_displayname' => isset($user) ? $user->getReversedFullName() : '',
             'event_id' => $event->id,
             'windip_type_id' => !$is_new_event ? '' : $this->form_id,
             'event_date' => $event_date->format('Y-m-d'),
             'event_time' => $event_date->format('H:i:s'),
             'additional_indexes' => !$is_new_event ? array() : $indexes,
             'is_new_event' => $is_new_event
+        );
+    }
+
+    public function generateWIFxmlRequestData(\Event $event, $file_with_path = null)
+    {
+
+        $letter = \ElementLetter::model()->findByAttributes(array('event_id' => $event->id));
+
+        $indexes = array();
+        $indexes[] = array(
+            'id' => 'hos_num',
+            'value' => $event->episode->patient->hos_num
+        );
+        $indexes[] = array(
+            'id' => 'event_id',
+            'value' => $event->id
+        );
+        $indexes[] = array(
+            'id' => 'event_date',
+            'value' => $event->event_date
+        );
+        $indexes[] = array(
+            'id' => 'generated_date',
+            'value' => date('Y-m-d H:i:s'),
+        );
+        $indexes[] = array(
+            'id' => 'is_urgent',
+            'value' => $letter->is_urgent ? 'True' : 'False',
+        );
+
+        return array(
+            'event_id' => $event->id,
+            'windip_type_id' => '', // $this->form_id, // not sure
+            'keep_prior_documents' => 'True',
+            'workflow_importance' => (int)$letter->is_urgent,
+            'file_path' => $file_with_path,
+            'additional_indexes' => $indexes,
+
         );
     }
 
