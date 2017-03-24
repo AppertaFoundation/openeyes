@@ -83,6 +83,8 @@ class PatientShortcode extends BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
+            'event_type_id' => 'Event Type',
+            'codedoc' => 'Code Documentation'
         );
     }
 
