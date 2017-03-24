@@ -75,14 +75,18 @@ class BaseAPI
     /**
      * @param Patient $patient
      * @param bool $use_context
+     * @param string $before - date formatted string
      * @return Event|null
      */
-    public function getLatestEvent(Patient $patient, $use_context = false)
+    public function getLatestEvent(Patient $patient, $use_context = false, $before = null)
     {
         $event_type = $this->getEventType();
         $criteria = new CDbCriteria();
         $criteria->compare('event_type_id', $event_type->id);
         $criteria->compare('episode.patient_id', $patient->id);
+        if ($before) {
+            $criteria->compare('event.event_date', '<='.$before);
+        }
         $criteria->order = 't.event_date desc';
         $criteria->limit = 1;
         if ($use_context) {
@@ -108,11 +112,12 @@ class BaseAPI
      * @param $element
      * @param Patient $patient
      * @param boolean $use_context
+     * @param string $before - date formatted string
      * @return BaseEventTypeElement|null
      */
-    public function getElementFromLatestEvent($element, Patient $patient, $use_context = false)
+    public function getElementFromLatestEvent($element, Patient $patient, $use_context = false, $before = null)
     {
-        if ($event = $this->getLatestEvent($patient, $use_context)) {
+        if ($event = $this->getLatestEvent($patient, $use_context, $before)) {
             $criteria = new CDbCriteria();
             $criteria->compare('event_id', $event->id);
 
@@ -135,8 +140,8 @@ class BaseAPI
     {
         $criteria = new CDbCriteria();
         $criteria->compare('episode.patient_id', $patient->id);
-        if ($before_date) {
-            $criteria->compare('event.event_date', '<='.$before_date);
+        if ($before) {
+            $criteria->compare('event.event_date', '<='.$before);
         }
         $criteria->order = 'event.event_date desc';
         $criteria->limit = 1;
