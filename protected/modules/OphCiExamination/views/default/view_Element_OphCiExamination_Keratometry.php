@@ -20,8 +20,6 @@
 
 <div class="element-data">
     <div class="data-row">
-    </div>
-    <div class="data-row">
         <div class="large-2 column">
             <div class="data-label">
                 <?php echo $element->getAttributeLabel('tomographer_id')?>:

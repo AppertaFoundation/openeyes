@@ -39,7 +39,6 @@ namespace OEModule\OphCiExamination\models;
  * @property int $right_posterior_k2_value
  * @property var $right_thinnest_point_pachymetry_value
  * @property dec $right_b-a_index_value
- * @property int $right_keratoconus_stage_id
  *
  * @property int $left_anterior_k1_value
  * @property dec $left_axis_anterior_k1_value
@@ -49,7 +48,6 @@ namespace OEModule\OphCiExamination\models;
  * @property int $left_posterior_k2_value
  * @property var $left_thinnest_point_pachymetry_value
  * @property dec $left_b-a_index_value
- * @property int $left_keratoconus_stage_id
  *
  * @property int $left_quality_front
  * @property int $left_quality_back
@@ -97,7 +95,7 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
                  left_anterior_k1_value, left_axis_anterior_k1_value,
                  left_anterior_k2_value, left_axis_anterior_k2_value, left_kmax_value, 
                  left_posterior_k2_value, left_thinnest_point_pachymetry_value, left_ba_index_value,
-                 keratoconus_stage_id, right_quality_front, right_quality_back, left_quality_front, left_quality_back, 
+                 right_quality_front, right_quality_back, left_quality_front, left_quality_back, 
                  right_cl_removed, left_cl_removed, right_flourescein_value, left_flourescein_value', 'safe'),
 
             array('right_anterior_k1_value, right_anterior_k2_value, right_kmax_value,
@@ -121,7 +119,7 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
                  tomographer_id,
                  left_anterior_k1_value, left_axis_anterior_k1_value,
                  left_anterior_k2_value, left_axis_anterior_k2_value, left_kmax_value, 
-                 left_thinnest_point_pachymetry_value, left_ba_index_value, keratoconus_stage_id,
+                 left_thinnest_point_pachymetry_value, left_ba_index_value,
                  right_quality_front, right_quality_back, left_quality_front, left_quality_back, 
                  right_cl_removed, left_cl_removed, right_flourescein_value, left_flourescein_value', 'safe', 'on' => 'search'),
         );
@@ -141,7 +139,6 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'tomographer_id' => array(self::BELONGS_TO, 'ophciexamination_tomographer_device', 'id'),
-            'keratoconus_stage_id' => array(self::BELONGS_TO, 'ophciexamination_keratoconus_stage', 'id'),
             'right_quality_front' => array(self::BELONGS_TO, 'ophciexamination_cxl_quality_score', 'id'),
             'right_quality_back' => array(self::BELONGS_TO, 'ophciexamination_cxl_quality_score', 'id'),
             'left_quality_front' => array(self::BELONGS_TO, 'ophciexamination_cxl_quality_score', 'id'),
@@ -158,24 +155,23 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
     {
         return array(
             'id' => 'ID',
-            'right_anterior_k1_value' => 'Front K1 Value (D)',
-            'right_axis_anterior_k1_value' => 'Back K1 Value (degrees)',
-            'right_anterior_k2_value' => 'Front K2 Value (D)',
-            'right_axis_anterior_k2_value' => 'Back K2 Value (degrees)',
-            'right_kmax_value' => 'Kmax range (D)',
-            'left_anterior_k1_value' => 'Front K1 Value (D)',
-            'left_axis_anterior_k1_value' => 'Back K1 Value (degrees)',
-            'left_anterior_k2_value' => 'Front K2 Value (D)',
-            'left_axis_anterior_k2_value' => 'Back K2 Value (degrees)',
-            'left_kmax_value' => 'Kmax range (D)',
+            'right_anterior_k1_value' => 'Front K1',
+            'right_axis_anterior_k1_value' => 'Back K1',
+            'right_anterior_k2_value' => 'Front K2',
+            'right_axis_anterior_k2_value' => 'Back K2',
+            'right_kmax_value' => 'Kmax',
+            'left_anterior_k1_value' => 'Front K1',
+            'left_axis_anterior_k1_value' => 'Back K1',
+            'left_anterior_k2_value' => 'Front K2',
+            'left_axis_anterior_k2_value' => 'Back K2',
+            'left_kmax_value' => 'Kmax',
             'tomographer_id' => 'Tomographer Device',
-            'right_posterior_k2_value' => 'Posterior K2 Value (D)',
-            'right_thinnest_point_pachymetry_value' => 'Thinnest Point Pachymetry Value (µm)',
-            'right_ba_index_value' => 'B-A Index Value',
-            'left_posterior_k2_value' => 'Posterior K2 Value (D)',
-            'left_thinnest_point_pachymetry_value' => 'Thinnest Point Pachymetry Value (µm)',
-            'left_ba_index_value' => 'B-A Index Value',
-            'keratoconus_stage_id' => 'Keratoconus Stage',
+            'right_posterior_k2_value' => 'Posterior K2',
+            'right_thinnest_point_pachymetry_value' => 'Thinnest Point Pachymetry (µm)',
+            'right_ba_index_value' => 'B-A Index',
+            'left_posterior_k2_value' => 'Posterior K2',
+            'left_thinnest_point_pachymetry_value' => 'Thinnest Point Pachymetry (µm)',
+            'left_ba_index_value' => 'B-A Index',
             'right_quality_front' => 'Quality Score - Front',
             'right_quality_back' => 'Quality Score - Back',
             'left_quality_front' => 'Quality Score - Front',
@@ -217,7 +213,6 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
         $criteria->compare('right_ba_index_value', $this->right_ba_index_value, true);
         $criteria->compare('left_thinnest_point_pachymetry_value', $this->left_thinnest_point_pachymetry_value, true);
         $criteria->compare('left_ba_index_value', $this->left_ba_index_value, true);
-        $criteria->compare('keratoconus_stage_id', $this->keratoconus_stage_id, true);
         $criteria->compare('right_quality_front', $this->right_quality_front, true);
         $criteria->compare('right_quality_back', $this->right_quality_back, true);
         $criteria->compare('left_quality_front', $this->left_quality_front, true);

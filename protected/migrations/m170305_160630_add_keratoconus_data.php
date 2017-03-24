@@ -110,23 +110,6 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
             'active' => 1,
         ));
 
-        $this->insert('ophciexamination_keratoconus_stage', array(
-            'name' => 'I',
-            'display_order' => 1,
-        ));
-        $this->insert('ophciexamination_keratoconus_stage', array(
-            'name' => 'II',
-            'display_order' => 2,
-        ));
-        $this->insert('ophciexamination_keratoconus_stage', array(
-            'name' => 'III',
-            'display_order' => 3,
-        ));
-        $this->insert('ophciexamination_keratoconus_stage', array(
-            'name' => 'IV',
-            'display_order' => 4,
-        ));
-
         $this->insert('ophciexamination_slit_lamp_cornea', array(
             'name' => 'Clear',
             'display_order' => 1,
@@ -731,12 +714,19 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
             ->where('class_name=:class_name', array(':class_name' => 'OphCiExamination'))
             ->queryScalar();
 
+        $anteriorSegmentDisplayId = $this->dbConnection->createCommand()
+            ->select('display_order')
+            ->from('element_type')
+            ->where('class_name=:class_name', array(':class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment'))
+            ->queryScalar();
+
+        $anteriorSegmentDisplayId = $anteriorSegmentDisplayId + 1;
 
         $this->insert('element_type', array(
             'name' => 'Keratoconus Monitoring',
             'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History',
             'event_type_id' => $eventTypeId,
-            'display_order' => 8,
+            'display_order' => $anteriorSegmentDisplayId,
         ));
 
         // get id for above for use below

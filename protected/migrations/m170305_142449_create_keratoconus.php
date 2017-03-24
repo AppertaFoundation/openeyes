@@ -171,7 +171,6 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'left_posterior_k2_value' => 'DECIMAL(5,2)',
             'left_thinnest_point_pachymetry_value' => 'int(10)',
             'left_ba_index_value' => 'DECIMAL(5,2)',
-            'keratoconus_stage_id' => 'int(10)',
             'right_quality_front' => 'int(10)',
             'right_quality_back' => 'int(10)',
             'left_quality_front' => 'int(10)',
@@ -212,7 +211,6 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'left_posterior_k2_value' => 'DECIMAL(5,2)',
             'left_thinnest_point_pachymetry_value' => 'int(10)',
             'left_ba_index_value' => 'DECIMAL(5,2)',
-            'keratoconus_stage_id' => 'int(10)',
             'right_quality_front' => 'int(10)',
             'right_quality_back' => 'int(10)',
             'left_quality_front' => 'int(10)',
@@ -339,16 +337,6 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'iontophoresis_duration_value' => 'int(10)',
             'cxl_comments' => 'VARCHAR(1024)',
             'cxl_complications_id' => 'int(10',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
-        ),true);
-
-        $this->createOETable('ophciexamination_keratoconus_stage', array(
-            'id' => 'pk',
-            'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
             'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
             'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
             'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
@@ -796,7 +784,6 @@ class m170305_142449_create_keratoconus extends CDbMigration
         $this->dropTable('et_ophciexamination_specular_microscopy_version');
         $this->dropTable('et_ophtroperationnote_cxl');
         $this->dropTable('et_ophtroperationnote_cxl_version');
-        $this->dropTable('ophciexamination_keratoconus_stage');
         $this->dropTable('ophciexamination_scan_quality');
         $this->dropTable('ophciexamination_slit_lamp_conditions');
         $this->dropTable('ophciexamination_specular_microscope');

@@ -107,9 +107,9 @@ class Element_OphCiExamination_Specular_Microscopy extends \SplitEventTypeElemen
                 'specular_microscope_id' => 'Specular Microscope',
                 'scan_quality_id' => 'Scan Quality',
                 'right_endothelial_cell_density_value' => 'Endothelial Cell Density (cells/mm<sup>2</sup>)',
-                'right_coefficient_variation_value' => 'Coefficient of Variation',
+                'right_coefficient_variation_value' => 'Coefficient of Variation (CV)',
                 'left_endothelial_cell_density_value' => 'Endothelial Cell Density (cells/mm<sup>2</sup>)',
-                'left_coefficient_variation_value' => 'Coefficient of Variation'
+                'left_coefficient_variation_value' => 'Coefficient of Variation (CV)'
         );
     }
 

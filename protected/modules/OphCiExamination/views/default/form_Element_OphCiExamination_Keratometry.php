@@ -171,20 +171,6 @@
 			</div>
 			<div class="row field-row">
 				<div class="large-4 column">
-					<label><?php echo $element->getAttributeLabel('keratoconus_stage_id')?>:</label>
-				</div>
-				<div class="large-4 column">
-					<?php
-					$allKeraStage = \OEModule\OphCiExamination\models\OphCiExamination_Keratoconus_Stage::model()->findAll(array('order' => 'display_order'));
-					echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[keratoconus_stage_id]',
-						$element->keratoconus_stage_id,
-						CHtml::listData($allKeraStage, 'id', 'name')); ?>
-				</div>
-				<div class="large-4 column">
-				</div>
-			</div>
-			<div class="row field-row">
-				<div class="large-4 column">
 					<label><?php echo $element->getAttributeLabel('right_cl_removed')?>:</label>
 				</div>
 				<div class="large-4 column">
@@ -334,20 +320,6 @@
 						'field' => 8,
 					));
 				?>
-			</div>
-			<div class="large-4 column">
-			</div>
-		</div>
-		<div class="row field-row">
-			<div class="large-4 column">
-				<label><?php echo $element->getAttributeLabel('keratoconus_stage_id')?>:</label>
-			</div>
-			<div class="large-4 column">
-				<?php
-				$allKeraStage = \OEModule\OphCiExamination\models\OphCiExamination_Keratoconus_Stage::model()->findAll(array('order' => 'display_order'));
-				echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[keratoconus_stage_id]',
-					$element->keratoconus_stage_id,
-					CHtml::listData($allKeraStage, 'id', 'name')); ?>
 			</div>
 			<div class="large-4 column">
 			</div>
