@@ -566,12 +566,20 @@ class TheatreDiaryController extends BaseModuleController
             }
             if (empty($errors)) {
                 $transaction->commit();
+                
+                $booking_data_id = null;
+                if( isset($booking_data) ){
+                    $booking_data_id = $booking_data['booking_id'];
+                }
+                
                 if($order_is_changed) {
-                    Audit::add('diary', 'change-of-order', $booking_data['booking_id'],null,array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
+                    Audit::add('diary', 'change-of-order', $booking_data_id,null,array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
                 }
                 
                 if($comments_is_changed){
-                    Audit::add('diary', 'change-of-comment', $booking_data['booking_id'],null,array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
+                    if( isset($booking_data) )
+                    
+                    Audit::add('diary', 'change-of-comment', $booking_data_id,null,array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
                 }
             } else {
                 $transaction->rollback();
