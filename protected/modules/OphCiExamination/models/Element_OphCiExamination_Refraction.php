@@ -72,10 +72,12 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
         return array(
             array('left_sphere, left_cylinder, left_axis, left_axis_eyedraw, left_type_id, left_type_other, right_sphere, right_cylinder, right_axis, right_axis_eyedraw, right_type_id, right_type_other, eye_id, left_notes, right_notes', 'safe'),
             array('left_sphere', 'requiredSphere', 'side' => 'left'),
+            array('left_cylinder', 'requiredCylinder', 'side' => 'left'),
             array('left_axis', 'requiredIfSide', 'side' => 'left'),
             array('left_axis', 'numerical', 'integerOnly' => true),
             array('left_type_other', 'requiredIfRefractionTypeOther', 'side' => 'left'),
             array('right_sphere', 'requiredSphere', 'side' => 'right'),
+            array('right_cylinder', 'requiredCylinder', 'side' => 'right'),
             array('right_axis', 'requiredIfSide', 'side' => 'right'),
             array('right_axis', 'numerical', 'integerOnly' => true),
             array('right_type_other', 'requiredIfRefractionTypeOther', 'side' => 'right'),
@@ -87,6 +89,13 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
     {
         if (empty($this->{$params['side'].'_sphere'})) {
             $this->addError($attribute, ucfirst($params['side']).' sphere cannot be blank. Please specify a valid refraction.');
+        }
+    }
+
+    public function requiredCylinder( $attribute, $params )
+    {
+        if (empty($this->{$params['side'].'_cylinder'})) {
+            $this->addError($attribute, ucfirst($params['side']).' cylinder cannot be blank. Please specify a valid refraction.');
         }
     }
 
