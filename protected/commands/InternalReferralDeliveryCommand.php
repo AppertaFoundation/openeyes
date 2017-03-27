@@ -24,9 +24,11 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
 
     private $generate_xml = true;
 
+    private $xml_template_file;
+
     private $generate_csv = false;
 
-    private $xml_template_file;
+    private $csv_format = 'OEInternalReferralLetterReport_%s.csv';
 
     /**
      * InternalReferralDelivery constructor.
@@ -67,9 +69,27 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
         foreach ($pending_documents as $document) {
             echo 'Processing event ' . $document->document_target->document_instance->correspondence_event_id . PHP_EOL;
 
-            $data = \Yii::app()->internalReferralIntegration->generateWIFxmlRequestData($document->document_target->document_instance->event);
-
             $xml = $this->savePDFFile($document->document_target->document_instance->event->id, $document->id);
+        }
+    }
+
+    public function actionGenerateOne($event_id)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->join = "JOIN document_target ON t.document_target_id = document_target.id";
+        $criteria->join .= " JOIN document_instance ON document_target.document_instance_id = document_instance.id";
+        $criteria->join .= " JOIN event ON document_instance.correspondence_event_id = event.id";
+
+        $criteria->addCondition("event.id = " . $event_id);
+        $criteria->addCondition("event.deleted = 0");
+        $criteria->addCondition("t.`output_type`= 'Internalreferral'");
+
+
+        $document_outputs = DocumentOutput::model()->findAll($criteria);
+
+        foreach ($document_outputs as $document) {
+            echo 'Processing event ' . $event_id . PHP_EOL;
+            $this->savePDFFile($event_id, $document->id);
         }
     }
 
@@ -168,16 +188,11 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
             $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
 
             if ($this->generate_xml) {
-
-                $wif_data = Yii::app()->internalReferralIntegration->generateWIFxmlRequestData($event, $this->path . "/" . $filename . ".pdf");
-                $xml = $this->renderFile($this->xml_template_file, $wif_data, true);
-
-                $xml_generated = $this->generateXMLOutput($filename, $xml);
+                $xml_generated = $this->generateXMLOutput($event, $filename);
             }
 
             if (!$pdf_generated || ($this->generate_xml && !$xml_generated)) {
-                echo 'Generating for file ' . $filename . ' failed' . PHP_EOL;
-
+                echo 'Generating Internal referral file ' . $filename . ' failed' . PHP_EOL;
                 return false;
             }
 
@@ -197,8 +212,10 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
         }
     }
 
-    private function generateXMLOutput($filename, $xml)
+    private function generateXMLOutput(\Event $event, $filename)
     {
+        $data = Yii::app()->internalReferralIntegration->constructRequestData($event, $this->path . "/" . $filename . ".pdf");
+        $xml = $this->renderFile($this->xml_template_file, $data, true);
         return (file_put_contents($this->path . "/" . $filename . ".XML", $this->cleanXML($xml)) !== false);
     }
 
@@ -213,14 +230,48 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
         return str_replace("&", "and", $xml);
     }
 
+    /**
+     * Sets document's output status to COMPLETE
+     *
+     * @param int $output_id
+     * @return boolean
+     */
     private function updateDelivery($output_id)
     {
-        throw new Exception("Updating database after XML/PDF generation is not implemented yet.");
+        $output = DocumentOutput::model()->findByPk($output_id);
+        $output->output_status = "COMPLETE";
+
+        return $output->save();
     }
 
-    private function logData()
+    /**
+     * @param $data
+     */
+    private function logData($data)
     {
-        return true;
+        if ($this->generate_csv) {
+            $doc_log = new DocumentLog();
+            $doc_log->attributes = $data;
+            $doc_log->save();
+
+            $csv_filename = implode(DIRECTORY_SEPARATOR, array($this->path, sprintf($this->csv_format, date('Ymd'))));
+            $put_header = !file_exists($csv_filename);
+
+            $fp = fopen($csv_filename, 'ab');
+            if($put_header){
+                fputcsv($fp, array_keys($data));
+            }
+            fputcsv($fp, $data);
+            fclose($fp);
+        }
+    }
+
+    private function updateFailedDelivery($output_id)
+    {
+        $output = DocumentOutput::model()->findByPk($output_id);
+        $output->output_status = "FAILED";
+
+        return $output->save();
     }
 
 }

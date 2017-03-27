@@ -103,6 +103,11 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
     }
 
     /**
+     *
+     *      This function generates data for other WinDip services we did not implemented yet.
+     *
+     *      Keep in mind when refactor: commands/InternalReferralCommand using this (constructRequestData) method to get the data
+     *
      * Build a request for the given event
      *
      * @param \Event $event
@@ -110,7 +115,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
      * @param $message_id
      * @return array
      */
-    protected function constructRequestData(\Event $event, \DateTime $when, $message_id)
+    /*protected function constructRequestData(\Event $event, \DateTime $when, $message_id)
     {
 
         $is_new_event = \Yii::app()->user->getState("new_referral", false);
@@ -142,33 +147,31 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
             'additional_indexes' => !$is_new_event ? array() : $indexes,
             'is_new_event' => $is_new_event
         );
-    }
+    }*/
 
-    public function generateWIFxmlRequestData(\Event $event, $file_with_path = null)
+    /**
+     * Generates data for WinDip XML
+     *
+     * @param \Event $event
+     * @param null $file_with_path
+     * @return array
+     */
+    public function constructRequestData(\Event $event, $file_with_path = null)
     {
 
         $letter = \ElementLetter::model()->findByAttributes(array('event_id' => $event->id));
 
-        $indexes = array();
-        $indexes[] = array(
-            'id' => 'hos_num',
-            'value' => $event->episode->patient->hos_num
-        );
-        $indexes[] = array(
-            'id' => 'event_id',
-            'value' => $event->id
-        );
-        $indexes[] = array(
-            'id' => 'event_date',
-            'value' => $event->event_date
-        );
-        $indexes[] = array(
-            'id' => 'generated_date',
-            'value' => date('Y-m-d H:i:s'),
-        );
-        $indexes[] = array(
-            'id' => 'is_urgent',
-            'value' => $letter->is_urgent ? 'True' : 'False',
+        $indexes = array(
+            array('id' => 'hos_num', 'value' => $event->episode->patient->hos_num),
+            array('id' => 'date_od_birth', 'value' => $event->episode->patient->dob),
+            array('id' => 'event_id', 'value' => $event->id),
+            array('id' => 'event_date', 'value' => $event->event_date),
+            array('id' => 'generated_date', 'value' => date('Y-m-d H:i:s')),
+
+            array('id' => 'service_to', 'value' => ( isset($letter->toSubspecialty) ? $letter->toSubspecialty->ref_spec : '' ) ),
+            array('id' => 'consultant_to', 'value' => ( isset($letter->event->episode->firm) ? $letter->event->episode->firm->pas_code : '' ) ),
+            array('id' => 'is_same_condition', 'value' => ( $letter->is_same_condition ? 'True' : 'False' ) ),
+            array('id' => 'is_urgent', 'value' => $letter->is_urgent ? 'True' : 'False'),
         );
 
         return array(
@@ -178,7 +181,6 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
             'workflow_importance' => (int)$letter->is_urgent,
             'file_path' => $file_with_path,
             'additional_indexes' => $indexes,
-
         );
     }
 

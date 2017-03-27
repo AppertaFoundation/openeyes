@@ -398,6 +398,22 @@ return array(
                 'temp_path' => realpath(dirname(__FILE__).'/../..').'/data/hscic/temp',
             ),
         ),
+
+        //'docman_export_dir' => '/tmp/docman_delievery',
+        //'docman_login_url' => 'http://{youropeneyeshost}/site/login',
+        //'docman_user' => '',
+        //'docman_password' => '',
+        //'docman_print_url' => 'http://{youropeneyeshost}/OphCoCorrespondence/default/PDFprint/',
+
+        /* injecting autoprint JS into generated PDF */
+        //'docman_inject_autoprint_js' => false,
+
+        //'docman_generate_csv' => true,
+
+        /*Docman ConsoleCommand can generate Internal referral XML/PDF along with it's own(Docman) XML/PDF
+          In case a trust integrated engine can use the same XML to decide where to forward the document to */
+        //'docman_with_internal_referral' => false,
+
         /**
          * Text to be displayed for sending correspondence electronically e.g.: 'Electronic (DocMan)'
          * To be overriden in local config
