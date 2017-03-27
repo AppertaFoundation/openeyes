@@ -17,29 +17,19 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="admin box">
+    <div class="admin box">
     <div class="row">
-        <div class="large-10 column"><h2>View Gene</h2></div>
+        <div class="large-10 column"><h2>View Base Change Type</h2></div>
         <div class="large-2 column right">
-            <?php if( $this->checkAccess('OprnEditGene') ): ?>
-                <a href="/Genetics/gene/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/gene/view/').$model->id; ?>" class="button small right" id="gene_edit">Edit</a>
+            <?php if( $this->checkAccess('OprnEditGeneticPatient') ): ?>
+                <a href="/Genetics/baseChangeAdmin/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/baseChangeAdmin/view/').$model->id; ?>" class="button small right" id="baseChangeAdmin_edit">Edit</a>
             <?php endif; ?>
         </div>
     </div>
-    
-    <?php $this->widget('zii.widgets.CDetailView', array(
-        'data'=>$model,
-        'htmlOptions' => array('class'=>'detailview'),
-        'attributes'=>array(
-            'name',
-            'location',
-            array(
-                'label' => $model->getAttributeLabel('priority'),
-                'value' => ($model->priority ? 'Yes' : 'No'),
-            ),
-            'description',
-            'details',
-            'refs',
-            
-        ),
-        ));
+        <?php 
+            $this->widget('zii.widgets.CDetailView', array(
+                'data'=>$model,
+                'htmlOptions' => array('class'=>'detailview'),
+                'attributes'=>array('id','change') 
+            )); 
+        ?>

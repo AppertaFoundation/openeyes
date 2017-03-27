@@ -45,6 +45,7 @@ class GeneController extends BaseModuleController
 
         $admin->setModelDisplayName('Gene');
         $admin->setEditFields(array(
+            'referer' => 'referer',
             'name' => 'text',
             'location' => 'text',
             'priority' => 'checkbox',
@@ -53,7 +54,20 @@ class GeneController extends BaseModuleController
             'refs' => 'text',
         ));
 
-        $admin->editModel();
+        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());
+        
+        $valid = $admin->editModel(false);
+        
+        if (Yii::app()->request->isPostRequest) {        
+            if($valid) {
+                Yii::app()->user->setFlash('success', "Gene Saved");
+                $url = str_replace('/edit','/view',(Yii::app()->request->requestUri)).'/'.$admin->getModel()->id;
+                $this->redirect($url);
+                
+            } else {
+                $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
+            }
+        }
     }
     
     public function actionView($id)
@@ -78,8 +92,10 @@ class GeneController extends BaseModuleController
         ));
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+        $admin->getSearch()->setDefaultResults(false);
         $display_buttons = $this->checkAccess('OprnEditGene');
         $admin->listModel($display_buttons);
+        
     }
 
     /**

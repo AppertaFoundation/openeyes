@@ -62,6 +62,11 @@ class SubjectController extends BaseModuleController
 
     public function actionView($id)
     {
+        $admin = new Crud(GeneticsPatient::model(), $this);
+        $admin->setModelId($id);
+        $this->renderPatientPanel = true;
+        $this->patient = isset($admin->getModel()->patient) ? $admin->getModel()->patient : null;
+
         $genetics_patient = $this->loadModel($id);
         $this->render('view', array('model' => $genetics_patient));
     }
@@ -74,14 +79,39 @@ class SubjectController extends BaseModuleController
     public function actionEdit($id = false)
     {
         $admin = new Crud(GeneticsPatient::model(), $this);
+
         if ($id) {
             $admin->setModelId($id);
             $this->renderPatientPanel = true;
             $this->patient = isset($admin->getModel()->patient) ? $admin->getModel()->patient : null;
+            $htmlOptions = null;
+        }
+
+        if(isset($_GET['patient']) && ((int)$_GET['patient'] > 0) && ($this->patient == NULL)){
+            $this->patient = Patient::model()->findByPk((int)$_GET['patient']);
+            $admin->getModel()->patient = $this->patient;
+            $admin->getModel()->patient_id = $this->patient->id;
+
+                switch($this->patient->gender){
+                    case 'M':
+                        $genderValue = 1;
+                        break;
+                    case 'F':
+                        $genderValue = 2;
+                        break;
+                    case 'U':
+                        $genderValue = 3;
+                        break;
+                    default:
+                        $genderValue = 4;
+                }
+            $admin->getModel()->is_deceased = $this->patient->is_deceased;
+            $htmlOptions = array('options' => array($genderValue => array('selected'=>true)));
         }
 
         $admin->setModelDisplayName('Genetics Subject');
         $admin->setEditFields(array(
+            'referer' => 'referer',
             'id' => 'label',
             'patient_id' => array(
                 'widget' => 'PatientLookup',
@@ -90,7 +120,7 @@ class SubjectController extends BaseModuleController
             'gender_id' => array(
                 'widget' => 'DropDownList',
                 'options' => CHtml::listData(Gender::model()->findAll(), 'id', 'name'),
-                'htmlOptions' => null,
+                'htmlOptions' => $htmlOptions,
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
@@ -131,6 +161,12 @@ class SubjectController extends BaseModuleController
                     ),
                 ),
                 'link' => '/Genetics/pedigree/edit/%s'
+            ),
+            'create_new_pedigree' => array(
+                'widget' => 'LinkTo',
+                'label'  => 'Create new pedigree',
+                'linkTo' => '/Genetics/pedigree/edit'
+
             ),
             'previous_studies' => array(
                 'widget' => 'CustomView',
@@ -174,8 +210,9 @@ class SubjectController extends BaseModuleController
             ),
         ));
 
+        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());    
         $valid = $admin->editModel(false);
-       
+
         if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 $post = Yii::app()->request->getPost('GeneticsPatient', array());
@@ -193,8 +230,13 @@ class SubjectController extends BaseModuleController
                         }
                     }
                 }
+
                 Yii::app()->user->setFlash('success', "Patient Saved");
-                $admin->redirect();
+                //$this->redirect(Yii::app()->request->getPost('referer'));
+                //$url = str_replace('/edit','/view',(Yii::app()->request->requestUri)).'/'.$admin->getModel()->id;
+                //$url = str_replace('/edit','/view/'.$admin->getModel()->id,(Yii::app()->request->requestUri));
+                $url = '/Genetics/subject/view/'.$admin->getModel()->id;
+                $this->redirect($url);
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
             }
@@ -227,8 +269,8 @@ class SubjectController extends BaseModuleController
         $admin->getSearch()->addSearchItem('diagnoses.id', array('type' => 'disorder'));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->getSearch()->setDefaultResults(false);
-        $display_buttons = $this->checkAccess('OprnEditGeneticPatient');
-        $admin->listModel($display_buttons);
+        //$display_buttons = $this->checkAccess('OprnEditGeneticPatient');
+        $admin->listModel( false );
     }
 
     /**

@@ -26,7 +26,7 @@
   </a>
   <div class="js-toggle-body">
     <?php $subject = GeneticsPatient::model()->findByAttributes(array('patient_id' => $patient->id));?>
-      <?php if ($subject && $subject->pedigrees) { ?>
+      <?php if ($subject) { ?>
             <div class="row data-row">
                 <div class="large-4 column">
                     <div class="data-label">Genetic database ID:</div>
@@ -38,7 +38,8 @@
                      </div>
                 </div>
             </div>
-          <?php foreach($subject->pedigrees as $pedigree) {  ?>
+          <?php if ($subject->pedigrees) {
+            foreach($subject->pedigrees as $pedigree) {  ?>
             <div class="row data-row">
                 <div class="large-4 column">
                     <div class="data-label">Pedigree ID:</div>
@@ -47,7 +48,7 @@
                     <div class="data-value">
 
                         <?php echo $pedigree->id ?>
-                        <?php echo '(Gene: '.$pedigree->gene->name.')' ?>
+                        <?php if ($pedigree->gene) { echo '(Gene: '.$pedigree->gene->name.')'; } ?>
                         <?php
                         $status = GeneticsPatientPedigree::model()->findByAttributes(array('patient_id' => $subject->id, 'pedigree_id' => $pedigree->id));
                         if($status->status !== NULL){
@@ -58,7 +59,8 @@
                     </div>
                 </div>
             </div>
-          <?php } ?>
+          <?php }
+            } ?>
            
             <div class="row data-row">
                 <div class="large-4 column">
@@ -82,48 +84,15 @@
                     <div class="data-label"><?php echo $subject->getAttributeLabel('comments') ?>:</div>
                 </div>
                 <div class="large-8 column">
-                     <div class="data-value"><?php echo Yii::app()->format->ntext($pedigree->comments) ?></div>
+                     <div class="data-value"><?php echo Yii::app()->format->ntext($subject->comments) ?></div>
                 </div>
             </div>
       <?php } else { ?>
         <div class="row data-row">
             
-            <div class="data-label column" style="margin-bottom:10px;">This patient has no recorded pedigree.</div>
-            <div id="add_new_pedigree">
-                <div class="large-3 column">
-                    <label class="align">Set pedigree:</label>
-                </div>
-                <div class="large-5 column">   
-                <?php
-                    $model = Pedigree::model()->getAllIdAndText();
-                    echo CHtml::dropDownList('pedigreeSelect','pedigreeSelect', CHtml::listData(
-                        $model,
-                        'id',
-                        'text'
-                    ));
-                ?>
-                    <input type="hidden" id="patient_id" name="patient_id" value="<?php echo $patient->id; ?>" />
-                </div>
-                <div class="large-4 column">
-                    <button id="btn-save_pedigree" class="secondary small btn_save_pedigree">Save</button>
-                    <img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="save_pedigree_loader hide" />
-                </div>
-                
-                <div class="clearfix"></div>
-                
-                <div class="large-4 column">
-                    <label class="align">Or create new pedigree:</label>
-                </div>
-                <div class="large-8 column">   
-                    <div class="data-value">
-                        <label class="align">
-                            <?php echo CHtml::link('Create', Yii::app()->createUrl('/Genetics/pedigree/edit')) ?>
-                        </label>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
+            <div class="data-label column" style="margin-bottom:10px;">
+                <?php echo CHtml::link('Assign Patient to Genetics', Yii::app()->createUrl('Genetics/subject/edit?patient='.$patient->id)) ?>
             </div>
-           
         </div>
       <?php } ?>
       <?php
@@ -206,34 +175,3 @@
       ?>
   </div>
 </section>
-<script type="text/javascript">
-    $(document).ready(function(){
-        
-       
-        $('#btn-save_pedigree').click(function(){
-            $('#btn-save_pedigree').attr('disabled',true);
-            $.ajax({
-                'type': 'POST',
-                'url': baseUrl+'/Genetics/default/savePedigree',
-                'data': {
-                    YII_CSRF_TOKEN:YII_CSRF_TOKEN, 
-                    pedigree_id: $('#pedigreeSelect').val(),
-                    patient_id: $('#patient_id').val()
-                },
-                beforeSend:function(){
-                    $('.save_pedigree_loader').removeClass('hide');
-                },
-                'success': function(response) {
-                    window.location.reload();
-                },
-                'error': function() {
-                    new OpenEyes.UI.Dialog.Alert({
-                        content: "Sorry, an internal error occurred.\n\nPlease contact support for assistance."
-                    }).open();
-                    $('#btn-save_pedigree').attr('disabled',false);
-                    $('.save_pedigree_loader').addClass('hide');
-                }
-            });
-        });
-    }); 
-</script>

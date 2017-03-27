@@ -22,7 +22,7 @@
         <div class="large-10 column"><h2>View Genetics Study</h2></div>
         <div class="large-2 column right">
             <?php if( $this->checkAccess('OprnEditGeneticPatient') ): ?>
-                <a href="/Genetics/study/edit/<?php echo $model->id; ?>" class="button small right" id="study_edit">Edit</a>
+                <a href="/Genetics/study/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/study/view/').$model->id; ?>" class="button small right" id="study_edit">Edit</a>
             <?php endif; ?>
         </div>
     </div>
@@ -31,12 +31,12 @@
             'htmlOptions' => array('class'=>'detailview'),
             'attributes'=>array(
                 'name',
+                'criteria',
                 array(
                     'label' => $model->getAttributeLabel('end_date'),
                     'type' => 'raw',
                     'value' => function() use ($model){
-                        $date = new DateTime($model->end_date);
-                        return $date->format('d M Y');
+                        return $model->formatted_end_date;
                     }
                 ),
                 array(
@@ -55,8 +55,22 @@
                         }
                         return $html;
                     }
+                ),
+                array(
+                    'label' => 'Investigators',
+                    'type' => 'raw',
+                    'value' => function() use ($model){
+                        $investigators = '';
+                        if($model->proposers){
+                            $investigators = '<ul>';
+                            foreach($model->proposers as $proposer){
+                                $investigators .= '<li>'.$proposer->first_name.' '.$proposer->last_name.'</li>';
+                            }
+                            $investigators .= '</ul>';
+                        }
+                        return $investigators;
+                    }
                 )
-                
             ) 
 
             ));

@@ -154,6 +154,20 @@ $assetManager = Yii::app()->getAssetManager();
                     </div>
                     <?php
                     break;
+                case 'LinkTo':
+                    ?>
+                    <div class="row field-row">
+                        <div class="large-2 column">
+                            <label></label>
+                        </div>
+                        <div class="large-5 column end">
+                            <?php
+                                echo CHtml::link($type['label'],array( $type['linkTo']));
+                            ?>
+                        </div>
+                    </div>
+                    <?php
+                    break;
             }
         } else {
             switch ($type) {
@@ -168,6 +182,9 @@ $assetManager = Yii::app()->getAssetManager();
                     break;
                 case 'textarea':
                     echo $form->textArea($admin->getModel(), $field);
+                    break;
+                case 'referer':
+                    echo CHTML::hiddenField('referer', Yii::app()->request->getUrlReferrer());
                     break;
                 case 'text':
                 default:

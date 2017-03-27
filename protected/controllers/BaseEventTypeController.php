@@ -1666,7 +1666,6 @@ class BaseEventTypeController extends BaseModuleController
     protected function printHTML($id, $elements, $template = 'print')
     {
         $this->layout = '//layouts/print';
-
         $this->render($template, array(
             'elements' => $elements,
             'eventId' => $id,
