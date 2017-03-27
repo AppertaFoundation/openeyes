@@ -73,25 +73,33 @@ class BaseAPI
     }
 
     /**
+     * Get all the Events for this Patient, in order of event date, most recent first.
+     * Defaults to returning all Events regardless of context.
+     *
      * @param Patient $patient
      * @param bool $use_context
-     * @param string $before - date formatted string
-     * @return Event|null
+     * @param null $before
+     * @param null $limit
+     * @return Event[]|null
      */
-    public function getLatestEvent(Patient $patient, $use_context = false, $before = null)
+    public function getEvents(\Patient $patient, $use_context = false, $before = null, $limit = null)
     {
         $event_type = $this->getEventType();
         $criteria = new CDbCriteria();
         $criteria->compare('event_type_id', $event_type->id);
         $criteria->compare('episode.patient_id', $patient->id);
-        if ($before) {
-            $criteria->compare('event.event_date', '<='.$before);
-        }
         $criteria->order = 't.event_date desc';
-        $criteria->limit = 1;
+
         if ($use_context) {
             $this->current_context->addEventConstraints($criteria);
         }
+        if ($before) {
+            $criteria->compare('event.event_date', '<='.$before);
+        }
+        if ($limit !== null) {
+            $criteria->limit = $limit;
+        }
+
         return Event::model()->with(
             array('episode' =>
                 array('with' =>
@@ -102,7 +110,19 @@ class BaseAPI
                         'patient'
                     )
                 )
-            ))->find($criteria);
+            ))->findAll($criteria);
+    }
+
+    /**
+     * @param Patient $patient
+     * @param bool $use_context
+     * @param string $before - date formatted string
+     * @return Event|null
+     */
+    public function getLatestEvent(Patient $patient, $use_context = false, $before = null)
+    {
+        $result = $this->getEvents($patient, $use_context, $before, 1);
+        return count($result) ? $result[0] : null;
     }
 
     /**
@@ -128,6 +148,50 @@ class BaseAPI
     }
 
     /**
+     * Returns the most recent instances of the given element type for the Patient.
+     *
+     * @param $element
+     * @param Patient $patient
+     * @param bool $use_context
+     * @param string $before - date formatted string
+     * @param integer $limit
+     * @return BaseEventTypeElement|null
+     */
+    public function getElements($element, Patient $patient, $use_context = false, $before = null, $limit = null)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->compare('episode.patient_id', $patient->id);
+        $criteria->order = 'event.event_date desc';
+
+        if ($before !== null) {
+            $criteria->compare('event.event_date', '<='.$before);
+        }
+        if ($limit !== null) {
+            $criteria->limit = 1;
+        }
+
+        if ($use_context) {
+            $this->current_context->addEventConstraints($criteria);
+        }
+        return $element::model()
+            ->with(array(
+                'event' => array('with' => array(
+                    'episode' =>
+                        array('with' =>
+                            array(
+                                'firm' => array(
+                                    'with' => 'serviceSubspecialtyAssignment'
+                                ),
+                                'patient'
+                            )
+                        )
+                    )
+                )
+            ))
+            ->findAll($criteria);
+    }
+
+    /**
      * Returns the most recent instance of the given element type if it exists.
      *
      * @param $element
@@ -138,33 +202,9 @@ class BaseAPI
      */
     public function getLatestElement($element, Patient $patient, $use_context = false, $before = null)
     {
-        $criteria = new CDbCriteria();
-        $criteria->compare('episode.patient_id', $patient->id);
-        if ($before) {
-            $criteria->compare('event.event_date', '<='.$before);
-        }
-        $criteria->order = 'event.event_date desc';
-        $criteria->limit = 1;
-
-        if ($use_context) {
-            $this->current_context->addEventConstraints($criteria);
-        }
-        return $element::model()
-            ->with(array(
-                'event' => array('episode' =>
-                    array('with' =>
-                        array(
-                            'firm' => array(
-                                'with' => 'serviceSubspecialtyAssignment'
-                            ),
-                            'patient'
-                        )
-                    )
-                )
-            ))
-            ->find($criteria);
+        $result = $this->getElements($element, $patient, $use_context, $before, 1);
+        return count($result) ? $result[0] : null;
     }
-
 
     /**
      * gets the element of type $element for the given patient in the given episode.
