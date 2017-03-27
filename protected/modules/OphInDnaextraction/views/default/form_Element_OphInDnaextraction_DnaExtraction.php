@@ -53,21 +53,27 @@
         <?php echo $form->textField($element, 'dna_quantity', array(), array(), array('label' => 3, 'field' => 1));
 
         $show_warning = false;
+        $volume_remaining = 0;
+        
         if ($this->action->id == 'update') {
+            
+            $volume_remaining = $this->volumeRemaining($element->event_id);
+            
             $form->widget('Caption',
                 array(
                     'label' => 'Volume Remaining',
-                    'value' => $this->volumeRemaining($element->event_id),
+                    'value' => $volume_remaining,
                 ));
-            if($this->volumeRemaining($element->event_id)<0){
+            
+            if($volume_remaining<0){
                 $show_warning = true;
             }
         }
         
         ?>
-        <?php echo CHtml::hiddenField('volume_remaining', $this->volumeRemaining($element->event_id)); ?>
+        <?php echo CHtml::hiddenField('volume_remaining', $volume_remaining); ?>
         <div 
-            class="cvi-alert alert-box warning round <?php $show_warning ? '' : 'hidden'; ?>" 
+            class="cvi-alert alert-box warning round <?php if(!$show_warning) echo 'hidden'; ?>" 
             data-alert="Warning: Volume remaining is less than zero." 
             id='warning-of-ramaining'
             >Warning: Volume remaining is less than zero.</div>
