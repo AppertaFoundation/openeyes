@@ -17,39 +17,110 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="element-data">
-    <div class="data-row">
-        <div class="data-value column large-4">
-            <?php echo $element->getAttributeLabel('allergic_conjunctivitis_id')?>:
-            <?php
-            echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->allergic_conjunctivitis_id);
-            ?>
+<div class="element-data element-eyes row">
+    <div class="element-eye right-eye column">
+        <?php if ($element->hasRight()) {?>
+            <div class="row">
+                <div class="large-6 column data-value">
+
+                    <?php echo $element->getAttributeLabel('right_allergic_conjunctivitis_id')?>:
+                </div>
+                <div class="large-5 column data-value">
+                    <?php
+                    echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->right_allergic_conjunctivitis_id);
+                    ?>
+                </div>
             </div>
-            <div class="data-value column large-4">
-            <?php echo $element->getAttributeLabel('blepharitis_id')?>:
-            <?php
-            echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->blepharitis_id);
-            ?>
+            <div class="row">
+                <div class="large-6 column data-value">
+                    <?php echo $element->getAttributeLabel('right_blepharitis_id')?>:
+                </div>
+                <div class="large-5 column data-value">
+                    <?php
+                    echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->right_blepharitis_id);
+                    ?>
+                </div>
             </div>
-        <div class="data-value column large-4">
-        <?php echo $element->getAttributeLabel('dry_eye_id')?>:
+            <div class="row">
+                <div class="large-6 column data-value">
+                    <?php echo $element->getAttributeLabel('right_dry_eye_id')?>:
+                </div>
+                <div class="large-5 column data-value">
+                    <?php
+                    echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->right_dry_eye_id);
+                    ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="large-6 column data-value">
+                    <?php echo $element->getAttributeLabel('right_cornea_id')?>:
+                </div>
+                <div class="large-5 column data-value">
+                    <?php
+                    if($element->right_cornea_id){
+                        echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Cornea::model()->getName($element->right_cornea_id);
+                    }
+                    ?>
+                </div>
+            </div>
             <?php
-            echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->dry_eye_id);
-            ?><br/>
-        </div>
+        } else {
+            ?>
+            Not recorded
+            <?php
+        }?>
     </div>
-</div>
-<div class="element-data">
-    <div class="data-row">
-        <div class="data-value column large-2">
-            <?php echo $element->getAttributeLabel('cornea_id')?>:
-            <?php
-            if($element->cornea_id){
-            echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Cornea::model()->getName($element->cornea_id);
-            }
-            ?>
-        </div>
-        <div class="data-value column large-8">
+
+    <div class="element-eye left-eye column">
+        <?php if ($element->hasLeft()) {?>
+            <div class="row">
+                <div class="large-6 column data-value">
+
+                    <?php echo $element->getAttributeLabel('left_allergic_conjunctivitis_id')?>:
+                </div>
+                <div class="large-5 column data-value">
+                    <?php
+                    echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->left_allergic_conjunctivitis_id);
+                    ?>
+                </div>
             </div>
+            <div class="row">
+                <div class="large-6 column data-value">
+                    <?php echo $element->getAttributeLabel('left_blepharitis_id')?>:
+                </div>
+                <div class="large-5 column data-value">
+                    <?php
+                    echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->left_blepharitis_id);
+                    ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="large-6 column data-value">
+                    <?php echo $element->getAttributeLabel('left_dry_eye_id')?>:
+                </div>
+                <div class="large-5 column data-value">
+                    <?php
+                    echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Conditions::model()->getName($element->left_dry_eye_id);
+                    ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="large-6 column data-value">
+                    <?php echo $element->getAttributeLabel('left_cornea_id')?>:
+                </div>
+                <div class="large-5 column data-value">
+                    <?php
+                    if($element->left_cornea_id){
+                        echo OEModule\OphCiExamination\models\OphCiExamination_Slit_Lamp_Cornea::model()->getName($element->left_cornea_id);
+                    }
+                    ?>
+                </div>
+            </div>
+            <?php
+        } else {
+            ?>
+            Not recorded
+            <?php
+        }?>
     </div>
 </div>

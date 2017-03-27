@@ -289,7 +289,7 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
             'defaultChoice' => 0,
         ));
         $this->insert('ophtroperationnote_cxl_epithelial_removal_method', array(
-            'name' => 'PTK',
+            'name' => 'Trans-PTK',
             'display_order' => 3,
             'defaultChoice' => 0,
         ));
@@ -301,6 +301,11 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
         $this->insert('ophtroperationnote_cxl_epithelial_removal_method', array(
             'name' => 'Epithelium-on',
             'display_order' => 5,
+            'defaultChoice' => 0,
+        ));
+        $this->insert('ophtroperationnote_cxl_epithelial_removal_method', array(
+            'name' => 'Trans-PRK',
+            'display_order' => 6,
             'defaultChoice' => 0,
         ));
 
@@ -315,7 +320,7 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
             'defaultChoice' => 0,
         ));
         $this->insert('ophtroperationnote_cxl_epithelial_removal_method_version', array(
-            'name' => 'PTK',
+            'name' => 'Trans-PTK',
             'display_order' => 3,
             'defaultChoice' => 0,
         ));
@@ -327,6 +332,11 @@ class m170305_160630_add_keratoconus_data extends CDbMigration
         $this->insert('ophtroperationnote_cxl_epithelial_removal_method_version', array(
             'name' => 'Epithelium-on',
             'display_order' => 5,
+            'defaultChoice' => 0,
+        ));
+        $this->insert('ophtroperationnote_cxl_epithelial_removal_method_version', array(
+            'name' => 'Trans-PRK',
+            'display_order' => 6,
             'defaultChoice' => 0,
         ));
 

@@ -27,9 +27,14 @@ namespace OEModule\OphCiExamination\models;
  * @property int $id
  * @property int $event_id
  * @property int $eye_id
- * @property int $allergic_conjunctivitis_id
- * @property int $blepharitis_id
- * @property int $dry_eye_id
+ * @property int $right_allergic_conjunctivitis_id
+ * @property int $right_blepharitis_id
+ * @property int $right_dry_eye_id
+ * @property int $right_cornea_id
+ * @property int $left_allergic_conjunctivitis_id
+ * @property int $left_blepharitis_id
+ * @property int $left_dry_eye_id
+ * @property int $left_cornea_id
  *
  * The followings are the available model relations:
  */
@@ -63,11 +68,13 @@ class Element_OphCiExamination_Slit_Lamp extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('eye_id, allergic_conjunctivitis_id, blepharitis_id, dry_eye_id, cornea_id', 'safe'),
+            array('eye_id, right_allergic_conjunctivitis_id, right_blepharitis_id, right_dry_eye_id, right_cornea_id, 
+            left_allergic_conjunctivitis_id, left_blepharitis_id, left_dry_eye_id, left_cornea_id', 'safe'),
 
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, eye_id, event_id, allergic_conjunctivitis_id, blepharitis_id, dry_eye_id, cornea_id', 'safe', 'on' => 'search'),
+            array('id, eye_id, event_id, right_allergic_conjunctivitis_id, right_blepharitis_id, right_dry_eye_id, 
+            right_cornea_id, left_allergic_conjunctivitis_id, left_blepharitis_id, left_dry_eye_id, left_cornea_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -95,10 +102,14 @@ class Element_OphCiExamination_Slit_Lamp extends \SplitEventTypeElement
         return array(
             'id' => 'ID',
             'event_id' => 'Event',
-            'allergic_conjunctivitis_id' => 'Allergic Conjunctivitis',
-            'blepharitis_id' => 'Blepharitis',
-            'dry_eye_id' => 'Dry Eye',
-            'cornea_id' => 'Cornea'
+            'right_allergic_conjunctivitis_id' => 'Allergic Conjunctivitis',
+            'right_blepharitis_id' => 'Blepharitis',
+            'right_dry_eye_id' => 'Dry Eye',
+            'right_cornea_id' => 'Cornea',
+            'left_allergic_conjunctivitis_id' => 'Allergic Conjunctivitis',
+            'left_blepharitis_id' => 'Blepharitis',
+            'left_dry_eye_id' => 'Dry Eye',
+            'left_cornea_id' => 'Cornea'
         );
     }
 
@@ -117,10 +128,14 @@ class Element_OphCiExamination_Slit_Lamp extends \SplitEventTypeElement
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
-        $criteria->compare('allergic_conjunctivitis_id', $this->allergic_conjunctivitis_id);
-        $criteria->compare('blepharitis_id', $this->blepharitis_id);
-        $criteria->compare('dry_eye_id', $this->dry_eye_id);
-        $criteria->compare('cornea_id', $this->cornea_id);
+        $criteria->compare('right_allergic_conjunctivitis_id', $this->allergic_conjunctivitis_id);
+        $criteria->compare('right_blepharitis_id', $this->blepharitis_id);
+        $criteria->compare('right_dry_eye_id', $this->dry_eye_id);
+        $criteria->compare('right_cornea_id', $this->cornea_id);
+        $criteria->compare('left_allergic_conjunctivitis_id', $this->allergic_conjunctivitis_id);
+        $criteria->compare('left_blepharitis_id', $this->blepharitis_id);
+        $criteria->compare('left_dry_eye_id', $this->dry_eye_id);
+        $criteria->compare('left_cornea_id', $this->cornea_id);
 
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,

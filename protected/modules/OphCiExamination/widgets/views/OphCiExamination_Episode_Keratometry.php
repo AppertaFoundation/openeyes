@@ -208,7 +208,7 @@ if ($keratometry) { ?>
         </div>
 </div>
 
-        </div>
+        </div><br/>
         <?php
     }
     ?>
