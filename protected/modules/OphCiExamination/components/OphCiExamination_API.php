@@ -32,13 +32,13 @@ class OphCiExamination_API extends \BaseAPI
     /**
      * @inheritdoc
      */
-    public function getElementFromLatestEvent($element, Patient $patient, $use_context = false)
+    public function getElementFromLatestEvent($element, Patient $patient, $use_context = false, $before = null)
     {
         // Ensure namespace prepended appropriately if necessary
         if (strpos($element, 'models') == 0) {
             $element = 'OEModule\OphCiExamination\\' . $element;
         }
-        return parent::getElementFromLatestEvent($element, $patient, $use_context);
+        return parent::getElementFromLatestEvent($element, $patient, $use_context, $before);
     }
 
     /**
@@ -80,19 +80,19 @@ class OphCiExamination_API extends \BaseAPI
 
     /**
      * Get the patient history description field from the latest Examination event.
-     * Limited to current data context.
+     * Limited to current data context by default.
      * Returns nothing if the latest Examination does not contain History.
      *
      * @param Patient $patient
-     *
+     * @param boolean $use_context - defaults to true
      * @return string|void
      */
-    public function getLetterHistory(\Patient $patient)
+    public function getLetterHistory(\Patient $patient, $use_context = true)
     {
         if ($history = $this->getElementFromLatestEvent(
             'models\Element_OphCiExamination_History',
             $patient,
-            true)
+            $use_context)
         ) {
             return strtolower($history->description);
         }
@@ -100,19 +100,20 @@ class OphCiExamination_API extends \BaseAPI
 
     /**
      * Get the Intraocular Pressure reading for both eyes from the most recent Examination event.
-     * Limited to current data context.
+     * Limited to current data context by default.
      * Will return the average for multiple readings on either eye.
      * Returns nothing if the latest Examination does not contain IOP.
      *
      * @param Patient $patient
+     * @param boolean $use_context - defaults to true
      * @return string
      */
-    public function getLetterIOPReadingBoth(\Patient $patient)
+    public function getLetterIOPReadingBoth(\Patient $patient, $use_context = true)
     {
         if ($iop = $this->getElementFromLatestEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
-            true)
+            $use_context)
         ) {
             return $iop->getLetter_reading('right') . ' on the right, and ' . $iop->getLetter_reading('left') . ' on the left';
         }
@@ -120,19 +121,20 @@ class OphCiExamination_API extends \BaseAPI
 
     /**
      * Get the Intraocular Pressure reading for both eyes from the most recent Examination event.
-     * Limited to current data context.
+     * Limited to current data context by default.
      * Will only return the first reading for either eye if there is more than one.
      * Returns nothing if the latest Examination does not contain IOP.
      *
      * @param Patient $patient
+     * @param boolean $use_context - defaults to true
      * @return string
      */
-    public function getLetterIOPReadingBothFirst(\Patient $patient)
+    public function getLetterIOPReadingBothFirst(\Patient $patient, $use_context = true)
     {
         if ($iop = $this->getElementFromLatestEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
-            true)
+            $use_context)
         ) {
             return $iop->getLetter_reading_first('right') . ' on the right, and ' . $iop->getLetter_reading_first('left') . ' on the left';
         }
@@ -140,19 +142,20 @@ class OphCiExamination_API extends \BaseAPI
 
     /**
      * Get the Intraocular Pressure reading for the left eye from the most recent Examination event.
-     * Limited to current data context.
+     * Limited to current data context by default.
      * Will return the average for multiple readings.
      * Returns nothing if the latest Examination does not contain IOP.
      *
      * @param \Patient $patient
+     * @param boolean $use_context - defaults to true
      * @return mixed
      */
-    public function getLetterIOPReadingLeft($patient)
+    public function getLetterIOPReadingLeft(\Patient $patient, $use_context = true)
     {
         if ($iop = $this->getElementFromLatestEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
-            true)
+            $use_context)
         ) {
             return $iop->getLetter_reading('left');
         }
@@ -161,19 +164,20 @@ class OphCiExamination_API extends \BaseAPI
 
     /**
      * Get the Intraocular Pressure reading for the right eye from the most recent Examination event.
-     * Limited to current data context.
+     * Limited to current data context by default.
      * Will return the average for multiple readings.
      * Returns nothing if the latest Examination does not contain IOP.
      *
      * @param \Patient $patient
+     * @param boolean $use_context - defaults to true
      * @return mixed
      */
-    public function getLetterIOPReadingRight($patient)
+    public function getLetterIOPReadingRight(\Patient $patient, $use_context = true)
     {
         if ($iop = $this->getElementFromLatestEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
-            true)
+            $use_context)
         ) {
             return $iop->getLetter_reading('right');
         }
@@ -181,19 +185,20 @@ class OphCiExamination_API extends \BaseAPI
 
     /**
      * Get an abbreviated form of the IOP readings for both eyes from the most recent Examination.
-     * Limited to current data context.
+     * Limited to current data context by default.
      * Will return the average for multiple readings.
      * Returns nothing if the latest Examination does not contain IOP.
      *
      * @param \Patient $patient
+     * @param boolean $use_context - defaults to true
      * @return string|null
      */
-    public function getLetterIOPReadingAbbr(\Patient $patient)
+    public function getLetterIOPReadingAbbr(\Patient $patient, $use_context = true)
     {
         if ($iop = $this->getElementFromLatestEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
-            true)
+            $use_context)
         ) {
             $readings = array();
             if (($reading = $iop->getReading('right'))) {
@@ -209,19 +214,20 @@ class OphCiExamination_API extends \BaseAPI
 
     /**
      * Gets IOP reading for the left eye from the latest Examination.
-     * Limited to current data context.
+     * Limited to current data context by default.
      * Will return the average for multiple readings.
      * Returns nothing if the latest Examination does not contain IOP.
      *
      * @param \Patient $patient
+     * @param boolean $use_context - defaults to true
      * @return mixed
      */
-    public function getIOPReadingLeft(\Patient $patient)
+    public function getIOPReadingLeft(\Patient $patient, $use_context = true)
     {
         if ($iop = $this->getElementFromLatestEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
-            true)
+            $use_context)
         ) {
             return $iop->getReading('left');
         }
@@ -229,19 +235,20 @@ class OphCiExamination_API extends \BaseAPI
 
     /**
      * Gets IOP reading for the right eye from the latest Examination.
-     * Limited to current data context.
+     * Limited to current data context by default.
      * Will return the average for multiple readings.
      * Returns nothing if the latest Examination does not contain IOP.
      *
      * @param \Patient $patient
+     * @param boolean $use_context - defaults to true
      * @return mixed
      */
-    public function getIOPReadingRight(\Patient $patient)
+    public function getIOPReadingRight(\Patient $patient, $use_context = true)
     {
         if ($iop = $this->getElementFromLatestEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
-            true)
+            $use_context)
         ) {
             return $iop->getReading('right');
         }
@@ -255,13 +262,14 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @todo verify if in use
      * @param \Patient $patient
+     * @param boolean $use_context - defaults to true
      * @return string|void
      */
-    public function getLastIOPReadingLeft($patient)
+    public function getLastIOPReadingLeft(\Patient $patient, $use_context = true)
     {
         if ($iop = $this->getLatestElement('models\Element_OphCiExamination_IntraocularPressure',
             $patient,
-            true)
+            $use_context)
         ) {
             return $iop->getReading('left');
         }
@@ -275,14 +283,15 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @todo verify if in use
      * @param \Patient $patient
+     * @param boolean $use_context - defaults to true
      * @return string|void
      */
-    public function getLastIOPReadingRight($patient)
+    public function getLastIOPReadingRight(\Patient $patient, $use_context = true)
     {
         if ($iop = $this->getLatestElement(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
-            true)
+            $use_context)
         ) {
             return $iop->getReading('right');
         }
@@ -295,13 +304,14 @@ class OphCiExamination_API extends \BaseAPI
      * Returns nothing if the latest Examination does not contain IOP.
      *
      * @param \Patient $patient
+     * @param boolean $use_context - defaults to true
      * @return mixed
      */
-    public function getLetterIOPReadingPrincipal(\Patient $patient)
+    public function getLetterIOPReadingPrincipal(\Patient $patient, $use_context = true)
     {
         if ($eye = $this->current_context->getPrincipalEye($patient)) {
             $method = 'getLetterIOPReading' . $eye->name;
-            return $this->{$method}($patient);
+            return $this->{$method}($patient, $use_context);
         }
     }
 
