@@ -26,7 +26,7 @@
   </a>
   <div class="js-toggle-body">
     <?php $subject = GeneticsPatient::model()->findByAttributes(array('patient_id' => $patient->id));?>
-      <?php if ($subject && $subject->pedigrees) { ?>
+      <?php if ($subject) { ?>
             <div class="row data-row">
                 <div class="large-4 column">
                     <div class="data-label">Genetic database ID:</div>
@@ -38,7 +38,8 @@
                      </div>
                 </div>
             </div>
-          <?php foreach($subject->pedigrees as $pedigree) {  ?>
+          <?php if ($subject->pedigrees) {
+            foreach($subject->pedigrees as $pedigree) {  ?>
             <div class="row data-row">
                 <div class="large-4 column">
                     <div class="data-label">Pedigree ID:</div>
@@ -58,7 +59,8 @@
                     </div>
                 </div>
             </div>
-          <?php } ?>
+          <?php }
+            } ?>
            
             <div class="row data-row">
                 <div class="large-4 column">
@@ -82,13 +84,12 @@
                     <div class="data-label"><?php echo $subject->getAttributeLabel('comments') ?>:</div>
                 </div>
                 <div class="large-8 column">
-                     <div class="data-value"><?php echo Yii::app()->format->ntext($pedigree->comments) ?></div>
+                     <div class="data-value"><?php echo Yii::app()->format->ntext($subject->comments) ?></div>
                 </div>
             </div>
       <?php } else { ?>
         <div class="row data-row">
             
-            <div class="data-label column" style="margin-bottom:10px;">This patient has no recorded pedigree.</div>
             <div class="data-label column" style="margin-bottom:10px;">
                 <?php echo CHtml::link('Assign Patient to Genetics', Yii::app()->createUrl('Genetics/subject/edit?patient='.$patient->id)) ?>
             </div>
