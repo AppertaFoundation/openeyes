@@ -38,18 +38,24 @@ class OphCoCvi_API extends \BaseAPI
      * Get all events regardless of episode.
      *
      * @param Patient $patient
+     * @param boolean $use_context
+     * @param string $before - date formatted
+     * @param integer $limit
+     * @param integer $limit
      * @return \Event[]
      * @throws \Exception
      */
-    public function getEvents(Patient $patient)
+    public function getEvents(Patient $patient, $use_context = false, $before = null, $limit = null)
     {
-        return $this->getManager()->getEventsForPatient($patient);
+        // This was implemented before the core implementation of getEvents, and expects events in
+        // the opposite order
+        return array_reverse(parent::getEvents($patient, $use_context, $before, $limit));
     }
 
     /**
      * Convenience wrapper to allow template rendering.
      *
-     * @param       $view
+     * @param string $view
      * @param array $parameters
      * @return mixed
      */
