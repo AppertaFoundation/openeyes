@@ -44,7 +44,7 @@
     //echo CHtml::dropDownList(CHTML::modelName($element).'_'.$side.'_'.$field.'_integer', abs((int) $element->{$side.'_'.$field}), CHtml::listData($model::model()->findAll('sign_id='.$sign_id), 'value', 'value'), array('empty'=> 'Select', 'class' => 'inline'));
     echo CHtml::dropDownList(CHTML::modelName($element).'_'.$side.'_'.$field.'_integer', $_integerDefault, CHtml::listData($model::model()->findAll('sign_id='.$sign_id), 'value', 'value'), array('empty'=> '', 'class' => 'inline'));
     //echo CHtml::dropDownList(CHTML::modelName($element).'_'.$side.'_'.$field.'_fraction', number_format(abs($element->{$side.'_'.$field}) - (abs((int) $element->{$side.'_'.$field})), 2), CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Refraction_Fraction::model()->findAll(), 'name', 'value'), array('empty'=> ' ', 'class' => 'inline' ));
-    echo CHtml::dropDownList(CHTML::modelName($element).'_'.$side.'_'.$field.'_fraction', $_fractionDefaultVal, CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Refraction_Fraction::model()->findAll(), 'name', 'value'), array('empty'=> ' ', 'class' => 'inline' ));
+    echo CHtml::dropDownList(CHTML::modelName($element).'_'.$side.'_'.$field.'_fraction', $_fractionDefaultVal, CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Refraction_Fraction::model()->findAll(), 'name', 'value'), array('class' => 'inline' ));
     echo CHtml::activeHiddenField($element, $side.'_'.$field);
     ?>
 </div>
