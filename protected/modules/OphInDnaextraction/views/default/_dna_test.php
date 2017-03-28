@@ -32,7 +32,7 @@
       ) ?>
   </td>
   <td>
-      <?php echo CHtml::textField('volume[]', $transaction->volume, array('disabled' => $disabled)) ?>
+      <?php echo CHtml::textField('volume[]', $transaction->volume, array('disabled' => $disabled, 'class' => 'volume_input')) ?>
   </td>
   <td>
       <?php echo CHtml::textField('comments[]', $transaction->comments, array('disabled' => $disabled)) ?>
@@ -49,4 +49,7 @@
     showAnim: 'fold',
     dateFormat: '<?php echo Helper::NHS_DATE_FORMAT_JS?>'
   });
+  $('.volume_input').keyup(function() {
+    warningIfVolumeRemainingIsLessThanZero(2);
+  });  
 </script>

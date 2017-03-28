@@ -2,9 +2,9 @@
 /* Module-specific javascript can be placed here */
 
 $(document).ready(function() {
+    
     handleButton($('#et_save'),function() {
     });
-    
 
     handleButton($('#et_cancel'),function(e) {
         if (m = window.location.href.match(/\/update\/[0-9]+/)) {
@@ -121,6 +121,23 @@ $(document).ready(function() {
         
     });
 });
+
+function summaVolumes(){
+    var sum = 0;
+    $('.volume_input').each(function(){
+        sum+=parseInt($(this).val());
+    });
+    return sum;
+}
+
+function warningIfVolumeRemainingIsLessThanZero(ref){
+    sum = summaVolumes();
+    if(sum>parseInt($('#Element_OphInDnaextraction_DnaExtraction_volume').val())){
+        $('#warning-of-ramaining').show();
+    } else {
+        $('#warning-of-ramaining').hide();
+    }
+}
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
 
