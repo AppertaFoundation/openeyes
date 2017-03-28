@@ -140,13 +140,6 @@
         array('options' => array($default_interpulse_duration_id=>array('selected'=>true))),
         null, array('field' => 2));?>
 
-    <?php
-    echo $form->dropDownList($element, 'cxl_complications_id',
-        CHtml::listData(OphTrOperationnote_CXL_Complications::model()->findAll(), 'id', 'name'),
-        array('options' => array($element->cxl_complications_id=>array('selected'=>true))),
-        null, array('field' => 3));?>
-
-
     <?php echo $form->textArea($element, 'cxl_comments', array(), false, array('rows' => 4))?>
 
 </div>

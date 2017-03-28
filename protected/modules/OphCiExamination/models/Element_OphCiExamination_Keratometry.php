@@ -99,9 +99,13 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
                  right_cl_removed, left_cl_removed, right_flourescein_value, left_flourescein_value', 'safe'),
 
             array('right_anterior_k1_value, right_anterior_k2_value, right_kmax_value,
-                    left_anterior_k1_value, left_anterior_k2_value, left_kmax_value, right_axis_anterior_k1_value,
-                     right_axis_anterior_k2_value, left_axis_anterior_k1_value, left_axis_anterior_k2_value', 'numerical',
+                    left_anterior_k1_value, left_anterior_k2_value, left_kmax_value', 'numerical',
                 'integerOnly'=>false,'min'=>1, 'max'=>150),
+
+            array('right_axis_anterior_k1_value, right_axis_anterior_k2_value, 
+            left_axis_anterior_k1_value, left_axis_anterior_k2_value', 'numerical',
+                'integerOnly'=>false,'min'=>-150, 'max'=>-1),
+
 
             array('right_thinnest_point_pachymetry_value, left_thinnest_point_pachymetry_value',
                 'in','range'=>range(10,800)),
@@ -109,6 +113,11 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
             array('right_ba_index_value, left_ba_index_value', 'numerical',
                 'integerOnly'=>false,'min'=>1, 'max'=>100),
 
+            array('right_kmax_value, right_anterior_k2_value', 'kmaxRValueCompare'),
+            array('left_kmax_value, left_anterior_k2_value', 'kmaxLValueCompare'),
+
+            array('right_anterior_k1_value, right_anterior_k2_value', 'k2RValueCompare'),
+            array('left_anterior_k1_value, left_anterior_k2_value', 'k2LValueCompare'),
 
             // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
@@ -125,6 +134,33 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
         );
     }
 
+    public function kmaxRValueCompare($KmaxValue,$params)
+    {
+        if($this->right_kmax_value <= $this->right_anterior_k2_value){
+            $this->addError($KmaxValue, 'KMax must be bigger than K2');
+        }
+    }
+
+    public function kmaxLValueCompare($KmaxValue,$params)
+    {
+        if($this->left_kmax_value <= $this->left_anterior_k2_value){
+            $this->addError($KmaxValue, 'KMax must be bigger than K2');
+        }
+    }
+
+    public function k2RValueCompare($KmaxValue,$params)
+    {
+        if($this->right_anterior_k2_value <= $this->right_anterior_k1_value){
+            $this->addError($KmaxValue, 'K2 must be bigger than K1');
+        }
+    }
+
+    public function k2LValueCompare($KmaxValue,$params)
+    {
+        if($this->left_anterior_k2_value <= $this->left_anterior_k1_value){
+            $this->addError($KmaxValue, 'K2 must be bigger than K1');
+        }
+    }
 
     /**
      * @return array relational rules.

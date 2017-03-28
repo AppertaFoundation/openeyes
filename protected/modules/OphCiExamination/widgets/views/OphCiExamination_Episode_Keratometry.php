@@ -21,7 +21,9 @@ if ($keratometry) { ?>
     <div class="element-data element-eyes row">
     <div class="element-eye right-eye column">
         <div class="row">
-            <div class="large-12 column">
+            <div class="large-4 column">
+            </div>
+            <div class="large-8 column">
                 <h3 class="element-title">RIGHT</h3>
             </div>
         </div>
