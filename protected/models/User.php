@@ -745,14 +745,25 @@ class User extends BaseActiveRecordVersioned
     }
 
     /**
-     * @return array|mixed|null
+     * Returns users who can access the roles in the given param
+     *
+     * @param array $roles
+     * @param bool $return_models
+     * @return array user ids
      */
-    public function geneticLabTechs()
+    public function findAllByRoles(array $roles, $return_models = false)
     {
-        $criteria = new CDbCriteria();
-        $criteria->join = 'join authassignment on authassignment.userid = t.id';
-        $criteria->addCondition('itemname = "Genetics Laboratory Technician"');
+        $users_with_roles = [];
 
-        return User::model()->findAll($criteria);
+        $users = $this->findAll();
+        foreach($users as $id => $user) {
+            foreach($roles as $role){
+                if(Yii::app()->authManager->checkAccess($role, $user->id)) {
+                    $users_with_roles[] = $return_models ? $user : $user->id;
+                }
+            }
+        }
+        return $users_with_roles;
+
     }
 }
