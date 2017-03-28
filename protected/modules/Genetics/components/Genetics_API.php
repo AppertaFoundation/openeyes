@@ -38,14 +38,21 @@ class Genetics_API extends BaseAPI
 
     /**
      * Validating Genes
-     * 
+     *
      * @param $variant
      * @return mixed
      */
     public function validateGeneTranscript($variant)
     {
+        $return = json_encode(['valid' => false]);
         if (is_callable(Yii::app()->params['external_gene_validation'])) {
-            return call_user_func(Yii::app()->params['external_gene_validation'], $variant);
+            $data = call_user_func(Yii::app()->params['external_gene_validation'], $variant);
+            $json = json_decode($data, true);
+            if( isset($json['valid']) ){
+                $return = $data;
+            }
         }
+
+        echo $return;
     }
 }

@@ -53,7 +53,7 @@ return array(
             $result = curl_exec ($ch);
             curl_close ($ch);
 
-            return $result;
+            return $result === false ? json_encode(['valid' => false]) : $result;
         },
     ),
 );
