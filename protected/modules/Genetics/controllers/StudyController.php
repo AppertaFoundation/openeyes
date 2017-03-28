@@ -55,6 +55,18 @@ class StudyController extends BaseAdminController
             'name' => 'text',
             'criteria' => 'textarea',
             'end_date' => 'date',
+            'proposers' => array(
+                'widget' => 'MultiSelectList',
+                'relation_field_id' => 'id',
+                'label' => 'Investigator',
+                'options' => CHtml::encodeArray(CHtml::listData(
+                    User::model()->findAll(),
+                    'id',
+                    function ($model) {
+                        return $model->fullName;
+                    }
+                )),
+            ),
         ));
         
         $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());    
