@@ -315,57 +315,53 @@ class DocManDeliveryCommand extends CConsoleCommand
         $is_urgent = $element_letter->is_urgent ? 'True' : 'False';
         $is_same_condition = $element_letter->is_same_condition ? 'True' : 'False';
 
-        $xml = <<<EOH
-<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-    <DocumentInformation>
-        <PatientNumber>" . $this->event->episode->patient->hos_num . "</PatientNumber>
-        <NhsNumber>" . $this->event->episode->patient->nhs_num . "</NhsNumber>
-        <Name>" . $this->event->episode->patient->contact->getFullName() . "</Name>
-        <Surname>" . $this->event->episode->patient->contact->last_name . "</Surname>
-        <FirstForename>" . $this->event->episode->patient->contact->first_name . "</FirstForename>
-        <SecondForename></SecondForename>
-        <Title>" . $this->event->episode->patient->contact->title . "</Title>
-        <DateOfBirth>" . $this->event->episode->patient->dob . "</DateOfBirth>
-        <Sex>" . $this->event->episode->patient->gender . "</Sex>
-        <Address>" . implode(", ", $address) . "</Address>
-        <AddressName></AddressName>
-        <AddressNumber></AddressNumber>
-        <AddressStreet>" . $address1 . "</AddressStreet>
-        <AddressDistrict></AddressDistrict>
-        <AddressTown>" . $city . "</AddressTown>
-        <AddressCounty>" . $county . "</AddressCounty>
-        <AddressPostcode>" . $post_code . "</AddressPostcode>
-        <GP>" . $nat_id . "</GP>
-        <GPName>" . $gp_name . "</GPName>
-        <Surgery>" . $practice_code . "</Surgery>
-        <SurgeryName></SurgeryName>
-        <ActivityID>" . $this->event->id . "</ActivityID>
-        <ActivityDate>" . $this->event->event_date . "</ActivityDate>
-        <ClinicianType></ClinicianType>
-        <Clinician></Clinician>
-        <ClinicianName></ClinicianName>
-        <Specialty>" . $subspeciality . "</Specialty>
-        <SpecialtyName>" . $subspeciality_name . "</SpecialtyName>
-        <Location>" . $element_letter->site->short_name . "</Location>
-        <LocationName>" . $element_letter->site->name . "</LocationName>
-        <SubLocation></SubLocation>
-        <SubLocationName></SubLocationName>
-        <LetterType>" . $letter_type . "</LetterType>"
-EOH;
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+            <DocumentInformation>
+            <PatientNumber>" . $this->event->episode->patient->hos_num . "</PatientNumber>
+            <NhsNumber>" . $this->event->episode->patient->nhs_num . "</NhsNumber>
+            <Name>" . $this->event->episode->patient->contact->getFullName() . "</Name>
+            <Surname>" . $this->event->episode->patient->contact->last_name . "</Surname>
+            <FirstForename>" . $this->event->episode->patient->contact->first_name . "</FirstForename>
+            <SecondForename></SecondForename>
+            <Title>" . $this->event->episode->patient->contact->title . "</Title>
+            <DateOfBirth>" . $this->event->episode->patient->dob . "</DateOfBirth>
+            <Sex>" . $this->event->episode->patient->gender . "</Sex>
+            <Address>" . implode(", ", $address) . "</Address>
+            <AddressName></AddressName>
+            <AddressNumber></AddressNumber>
+            <AddressStreet>" . $address1 . "</AddressStreet>
+            <AddressDistrict></AddressDistrict>
+            <AddressTown>" . $city . "</AddressTown>
+            <AddressCounty>" . $county . "</AddressCounty>
+            <AddressPostcode>" . $post_code . "</AddressPostcode>
+            <GP>" . $nat_id . "</GP>
+            <GPName>" . $gp_name . "</GPName>
+            <Surgery>" . $practice_code . "</Surgery>
+            <SurgeryName></SurgeryName>
+            <ActivityID>" . $this->event->id . "</ActivityID>
+            <ActivityDate>" . $this->event->event_date . "</ActivityDate>
+            <ClinicianType></ClinicianType>
+            <Clinician></Clinician>
+            <ClinicianName></ClinicianName>
+            <Specialty>" . $subspeciality . "</Specialty>
+            <SpecialtyName>" . $subspeciality_name . "</SpecialtyName>
+            <Location>" . $element_letter->site->short_name . "</Location>
+            <LocationName>" . $element_letter->site->name . "</LocationName>
+            <SubLocation></SubLocation>
+            <SubLocationName></SubLocationName>
+            <LetterType>" . $letter_type . "</LetterType>";
 
         if($this->with_internal_referral) {
-            $xml .= <<<EOH
-        <!--Internal Referral-->
-        <ServiceTo >" . $service_to . "</ServiceTo >
-        <ConsultantTo >" . $consultant_to . "</ConsultanTo >
-        <Urgent>" . $is_urgent . "</Urgent > 
-        <SameCondition>" . $is_same_condition . "</SameCondition >
+            $xml .= "
+            <!--Internal Referral-->
+            <ServiceTo >" . $service_to . "</ServiceTo >
+            <ConsultantTo >" . $consultant_to . "</ConsultanTo >
+            <Urgent>" . $is_urgent . "</Urgent > 
+            <SameCondition>" . $is_same_condition . "</SameCondition >
         
-        <!-- When main recipient is Internalreferral and a CC is a GP the Docman and Internalreferral XMLs look like the same. -->
-        <!-- SendTo tag contains the actual output type: Either 'Docman' or 'Internalreferral' -->
-        <SendTo>" . $document_output->output_type . "</SendTo>";
-EOH;
-
+            <!-- When main recipient is Internalreferral and a CC is a GP the Docman and Internalreferral XMLs look like the same. -->
+            <!-- SendTo tag contains the actual output type: Either 'Docman' or 'Internalreferral' -->
+            <SendTo>" . $document_output->output_type . "</SendTo>";
         }
         $xml .= "</DocumentInformation>";
 
