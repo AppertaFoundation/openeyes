@@ -31,5 +31,29 @@ return array(
                 'class' => 'Genetics_AuthRules'
             ),
         ),
+
+        /**
+         * Returned result must be in JSON format
+         *
+         * Minimum expected structure: {valid: false}
+         */
+        'external_gene_validation' => function($variant){
+
+            $url = "https://mutalyzer.nl/json/checkSyntax?variant=" . $variant;
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+            // The maximum number of seconds to allow cURL functions to execute.
+            curl_setopt($ch, CURLOPT_TIMEOUT, 2); //timeout in seconds
+
+            // The number of seconds to wait while trying to connect. Use 0 to wait indefinitely.
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,2);
+            $result = curl_exec ($ch);
+            curl_close ($ch);
+
+            return $result;
+        },
     ),
 );

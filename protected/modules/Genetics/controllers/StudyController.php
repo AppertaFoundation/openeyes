@@ -61,7 +61,7 @@ class StudyController extends BaseAdminController
                 'label' => 'Investigator',
                 'options' => CHtml::encodeArray(CHtml::listData(
                     //All users with Genetics Users privileges - means all genetics roles are included from Genetics User to Genetics Admin
-                    User::model()->findAllByRoles(['Genetics User']),
+                    User::model()->findAllByRoles(['Genetics User'],true),
 
                     'id',
                     function ($model) {
@@ -71,7 +71,7 @@ class StudyController extends BaseAdminController
             ),
         ));
         
-        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());    
+        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());
 
         $valid = $admin->editModel(false);
 

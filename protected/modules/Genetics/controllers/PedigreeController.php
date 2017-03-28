@@ -21,7 +21,12 @@ class PedigreeController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('Edit', 'EditStudyStatus'),
+                'actions' => array('ValidateGeneTranscript'),
+                'roles' => array('User'), // any user can perform gene validation
+            ),
+            array(
+                'allow',
+                'actions' => array('Edit', 'EditStudyStatus', 'ValidateGeneTranscript'),
                 'roles' => array('TaskEditPedigreeData','OprnEditPedigree'),
             ),
             array(
@@ -209,5 +214,14 @@ class PedigreeController extends BaseModuleController
         }
 
         return $model;
+    }
+
+    public function actionValidateGeneTranscript($variant)
+    {
+       // $variant = 12;
+        $api = Yii::app()->moduleAPI->get('Genetics');
+        if($api){
+            echo $api->validateGeneTranscript($variant);
+        }
     }
 }
