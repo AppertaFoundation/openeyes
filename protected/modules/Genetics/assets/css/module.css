@@ -50,6 +50,6 @@
 }
 
 /* line 26, ../sass/module.scss */
-#Pedigree_gene_transcript.error {
+#generic-admin-form .error{
     background: #FF9494;
- }
+}

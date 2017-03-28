@@ -12,11 +12,12 @@ $(document).ready(function () {
         $transcript.addClass('error');
     }
 
-    function validateGeneTranscript() {
-        var $transcript = $(this);
+    function validateGeneTranscript($element) {
+
+        var $transcript = $element;
 
         if( $transcript.val() !== ''){
-        $('.gene-validation-loader').show();
+            $transcript.closest('.row').find('.gene-validation-loader').show();
             $.getJSON('/' + OE_module_name + '/pedigree/validateGeneTranscript', {variant: $transcript.val()}, function(data){
                 if(data.valid){
                     $transcript.removeClass('error');
@@ -26,13 +27,20 @@ $(document).ready(function () {
             }).fail(function() {
                 errorTranscript($transcript);
             }).always(function(){
-                $('.gene-validation-loader').hide();
+                $transcript.closest('.row').find('.gene-validation-loader').hide();
             });
         }
     }
 
-    var $pedigree_gene_transcript = $('#Pedigree_gene_transcript');
-    $pedigree_gene_transcript.on('change, keyup', validateGeneTranscript);
+    var gene_validation_timeout = null;
+
+    var $pedigree_gene_transcript = $('#Pedigree_base_change, #Pedigree_amino_acid_change');
+    $pedigree_gene_transcript.on('change, keyup', function(){
+        var $element = $(this);
+        var gene_validation_timeout = setTimeout(function(){
+            var result = validateGeneTranscript( $element );
+        }, 750);
+    });
     $pedigree_gene_transcript.trigger('change');
 
     $pedigree_gene_transcript.closest('div').removeClass('end').after('<div class="large-3 column end hidden gene-validation-loader"><img src="'+baseUrl+OE_core_asset_path+'/img/ajax-loader.gif" class="loader" /> validating gene</div>');
