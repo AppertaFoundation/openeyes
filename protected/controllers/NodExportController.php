@@ -2401,7 +2401,7 @@ EOL;
                     , IF(
                         oc.pupil_size = 'Large'
                       , 3
-                      , ''
+                      , NULL
                     )
                   )
                 ) AS PupilSizeId
