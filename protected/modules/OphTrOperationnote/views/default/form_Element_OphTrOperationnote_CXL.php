@@ -150,7 +150,76 @@
 </div>
 <script type="text/javascript">
     $('#Element_OphTrOperationnote_CXL_protocol_id').on('change', function(){
-        alert("boo");
-        otherJsFn();
+        protocolSelection($('#Element_OphTrOperationnote_CXL_protocol_id').val());
     });
+
+    function protocolSelection(chosenProtocol){
+        if(chosenProtocol == 1){
+            var epDiam = "9mm";
+            var epDiamSel = $("#Element_OphTrOperationnote_CXL_epithelial_removal_diameter_id option:contains(" + epDiam + ")").attr('selected', 'selected').val();
+            $('#Element_OphTrOperationnote_CXL_epithelial_removal_method_id_1').prop("checked", true);
+            $('#Element_OphTrOperationnote_CXL_epithelial_removal_diameter_id').val(epDiamSel);
+            $('#Element_OphTrOperationnote_CXL_riboflavin_preparation_id_1').prop("checked", true);
+            $('#Element_OphTrOperationnote_CXL_interval_between_drops_id_2').prop("checked", true);
+            var soakDur = "10 minutes";
+            var soakDurSel = $("#Element_OphTrOperationnote_CXL_soak_duration_range_id option:contains(" + soakDur + ")").attr('selected', 'selected').val();
+            $('#Element_OphTrOperationnote_CXL_soak_duration_range_id').val(soakDurSel);
+            var uvIrr = "30";
+            var uvIrrSel = $("#Element_OphTrOperationnote_CXL_uv_irradiance_range_id option:contains(" + uvIrr + ")").attr('selected', 'selected').val();
+            $('#Element_OphTrOperationnote_CXL_uv_irradiance_range_id').val(uvIrrSel);
+            var totalExp = "4";
+            var totalExpSel = $("#Element_OphTrOperationnote_CXL_total_exposure_time_id option:contains(" + totalExp + ")").attr('selected', 'selected').val();
+            $('#Element_OphTrOperationnote_CXL_total_exposure_time_id').val(totalExpSel);
+        }
+        if(chosenProtocol == 2){
+            var epDiam = "9mm";
+            var epDiamSel = $("#Element_OphTrOperationnote_CXL_epithelial_removal_diameter_id option:contains(" + epDiam + ")").attr('selected', 'selected').val();
+            $('#Element_OphTrOperationnote_CXL_epithelial_removal_method_id_1').prop("checked", true);
+            $('#Element_OphTrOperationnote_CXL_epithelial_removal_diameter_id').val(epDiamSel);
+            $('#Element_OphTrOperationnote_CXL_riboflavin_preparation_id_1').prop("checked", true);
+            $('#Element_OphTrOperationnote_CXL_interval_between_drops_id_2').prop("checked", true);
+            var soakDur = "10 minutes";
+            var soakDurSel = $("#Element_OphTrOperationnote_CXL_soak_duration_range_id option:contains(" + soakDur + ")").attr('selected', 'selected').val();
+            $('#Element_OphTrOperationnote_CXL_soak_duration_range_id').val(soakDurSel);
+            var uvIrr = "30";
+            var uvIrrSel = $("#Element_OphTrOperationnote_CXL_uv_irradiance_range_id option:contains(" + uvIrr + ")").attr('selected', 'selected').val();
+            $('#Element_OphTrOperationnote_CXL_uv_irradiance_range_id').val(uvIrrSel);
+            var totalExp = "8";
+            var totalExpSel = $("#Element_OphTrOperationnote_CXL_total_exposure_time_id option:contains(" + totalExp + ")").attr('selected', 'selected').val();
+            $('#Element_OphTrOperationnote_CXL_total_exposure_time_id').val(totalExpSel);
+        }
+        if(chosenProtocol == 3){
+            var epDiam = "9mm";
+            var epDiamSel = $("#Element_OphTrOperationnote_CXL_epithelial_removal_diameter_id option:contains(" + epDiam + ")").attr('selected', 'selected').val();
+            $('#Element_OphTrOperationnote_CXL_epithelial_removal_method_id_1').prop("checked", true);
+            $('#Element_OphTrOperationnote_CXL_epithelial_removal_diameter_id').val(epDiamSel);
+            $('#Element_OphTrOperationnote_CXL_riboflavin_preparation_id_2').prop("checked", true);
+            $('#Element_OphTrOperationnote_CXL_interval_between_drops_id_2').prop("checked", true);
+            var soakDur = "30 minutes";
+            var soakDurSel = $("#Element_OphTrOperationnote_CXL_soak_duration_range_id option:contains(" + soakDur + ")").attr('selected', 'selected').val();
+            $('#Element_OphTrOperationnote_CXL_soak_duration_range_id').val(soakDurSel);
+            var uvIrr = "3";
+            var uvIrrSel = $("#Element_OphTrOperationnote_CXL_uv_irradiance_range_id option:contains(" + uvIrr + ")").attr('selected', 'selected').val();
+            $('#Element_OphTrOperationnote_CXL_uv_irradiance_range_id').val(uvIrrSel);
+            var totalExp = "30";
+            var totalExpSel = $("#Element_OphTrOperationnote_CXL_total_exposure_time_id option:contains(" + totalExp + ")").attr('selected', 'selected').val();
+            $('#Element_OphTrOperationnote_CXL_total_exposure_time_id').val(totalExpSel);
+        }
+        if(chosenProtocol == 4){
+            $('#Element_OphTrOperationnote_CXL_epithelial_removal_method_id_1').prop("checked", true);
+            $('#Element_OphTrOperationnote_CXL_riboflavin_preparation_id_2').prop("checked", true);
+            $('#Element_OphTrOperationnote_CXL_interval_between_drops_id_1').prop("checked", true);
+            var soakDur = "3 minutes";
+            var soakDurSel = $("#Element_OphTrOperationnote_CXL_soak_duration_range_id option:contains(" + soakDur + ")").attr('selected', 'selected').val();
+            $('#Element_OphTrOperationnote_CXL_soak_duration_range_id').val(soakDurSel);
+            var uvIrr = "30";
+            var uvIrrSel = $("#Element_OphTrOperationnote_CXL_uv_irradiance_range_id option:contains(" + uvIrr + ")").attr('selected', 'selected').val();
+            $('#Element_OphTrOperationnote_CXL_uv_irradiance_range_id').val(uvIrrSel);
+            var totalExp = "1";
+            var totalExpSel = $("#Element_OphTrOperationnote_CXL_total_exposure_time_id option:contains(" + totalExp + ")").attr('selected', 'selected').val();
+            $('#Element_OphTrOperationnote_CXL_total_exposure_time_id').val(totalExpSel);
+        }
+
+
+    }
 </script>
