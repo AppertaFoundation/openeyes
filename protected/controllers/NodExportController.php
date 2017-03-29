@@ -1374,14 +1374,22 @@ EOL;
                         (SELECT CASE WHEN m.drug_id IS NOT NULL THEN (SELECT name  FROM drug WHERE id = m.drug_id)
                                     WHEN m.medication_drug_id IS NOT NULL THEN (SELECT name FROM medication_drug WHERE id = m.medication_drug_id)
                                     WHEN m.medication_drug_id IS NULL THEN '' END) AS DrugId,
-                      IFNULL(
-                      (
-                        SELECT nod_id FROM tmp_episode_drug_route
-                        WHERE 
-                       (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id = opi.route_option_id) OR
-                       (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id IS NULL) )
-                        , ""
-                    ) AS DrugRouteId,
+
+                      ( SELECT CASE
+                                 WHEN opi.id IS NOT NULL
+                                 THEN ( SELECT nod_id FROM tmp_episode_drug_route
+                                        WHERE 
+                                        (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id = opi.route_option_id) OR
+                                        (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id IS NULL)
+                                      )
+                                 ELSE ( SELECT nod_id FROM tmp_episode_drug_route
+                                        WHERE
+                                        (m.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id = m.option_id) OR
+                                        (m.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id IS NULL)
+                                      )
+                               END
+                      ) AS DrugRouteId,
+
                         (SELECT CASE WHEN m.start_date IS NULL THEN '' ELSE m.start_date END) AS StartDate,
                         (SELECT CASE WHEN m.end_date IS NULL THEN '' ELSE m.end_date END) AS StopDate,
                         (SELECT CASE WHEN opi.prescription_id IS NOT NULL THEN 1 ELSE 0 END ) AS IsAddedByPrescription,
@@ -1410,13 +1418,10 @@ EOL;
                     (SELECT CASE WHEN route_option_id = 1 THEN 'L' WHEN route_option_id = 2 THEN 'R' WHEN route_option_id = 3 THEN 'B'  ELSE 'N' END) AS Eye,
                     drug.name AS DrugId,
 
-                    IFNULL(
-                    (
-                      SELECT nod_id FROM tmp_episode_drug_route
+                    ( SELECT nod_id FROM tmp_episode_drug_route
                       WHERE
                       (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id = opi.route_option_id) OR
-                      (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id IS NULL) )
-                      , ""
+                      (opi.route_id = tmp_episode_drug_route.oe_route_id AND tmp_episode_drug_route.oe_option_id IS NULL)
                     ) AS DrugRouteId,
 
                     DATE(event.event_date) AS StartDate,
