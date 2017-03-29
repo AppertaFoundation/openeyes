@@ -244,7 +244,7 @@ class NodExportController extends BaseController
         $query .= $this->createTmpRcoNodEpisodeOperation();
         $query .= $this->createTmpRcoNodEpisodeTreatment();
         $query .= $this->createTmpRcoNodEpisodeTreatmentCataract();
-        $query .= $this->createTmpRcoNodEpisodeOperationAnesthesia();
+        $query .= $this->createTmpRcoNodEpisodeOperationAnaesthesia();
         $query .= $this->createTmpRcoNodEpisodeOperationIndication();
         $query .= $this->createTmpRcoNodEpisodeOperationComplication();
         $query .= $this->createTmpRcoNodEpisodeVisualAcuity();
@@ -329,24 +329,43 @@ FROM disorder d;
 				(5, 'Iris fixated'),
 				(13, 'Other');
 
-			DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
+			DROP TEMPORARY TABLE IF EXISTS tmp_anaesthesia_type;
 
-			CREATE TEMPORARY TABLE tmp_anesthesia_type(
+			CREATE TEMPORARY TABLE tmp_anaesthesia_type(
 				`id` INT(10) UNSIGNED NOT NULL,
 				`name` VARCHAR(50),
 				`code` VARCHAR(50),
 				`nod_code` VARCHAR(50),
 				`nod_desc` VARCHAR(50),
-				KEY `tmp_anesthesia_type_name` (`name`)
+				KEY `tmp_anaesthesia_type_name` (`name`)
 			);
 
-			INSERT INTO tmp_anesthesia_type(`id`, `name`, `code`, `nod_code`, `nod_desc`)
+			INSERT INTO tmp_anaesthesia_type(`id`, `name`, `code`, `nod_code`, `nod_desc`)
 			VALUE
 			(1, 'Topical', 'Top', 4, 'Topical anaesthesia alone'),
 			(2, 'LAC',     'LAC', 2, 'Local anaesthesia alone'),
 			(3, 'LA',      'LA',  2, 'Local anaesthesia alone'),
 			(4, 'LAS',     'LAS', 2, 'Local anaesthesia alone'),
 			(5, 'GA',      'GA',  1, 'General anaesthesia alone');
+
+                        DROP TEMPORARY TABLE IF EXISTS tmp_sedation_type;
+
+                        CREATE TEMPORARY TABLE tmp_sedation_type(
+                                `id` INT(10) UNSIGNED NOT NULL,
+                                `name` VARCHAR(50),
+                                `code` VARCHAR(50),
+                                `nod_code` VARCHAR(50),
+                                `nod_desc` VARCHAR(50),
+                                KEY `tmp_sedation_type_name` (`name`)
+                        );
+
+                        INSERT INTO tmp_sedation_type(`id`, `name`, `code`, `nod_code`, `nod_desc`)
+                        VALUE
+                        (1, 'Topical', 'Top', 0, 'No sedation'),
+                        (2, 'LAC',     'LAC', 0, 'No sedation'),
+                        (3, 'LA',      'LA',  0, 'No sedation'),
+                        (4, 'LAS',     'LAS', 2, 'Sedation + anaesthesia'),
+                        (5, 'GA',      'GA',  0, 'No sedation');
 			
 					
 		DROP TABLE IF EXISTS tmp_complication_type;
@@ -547,7 +566,7 @@ EOL;
         $query .= $this->populateTmpRcoNodEpisodeOperationCoPathology();
         $query .= $this->populateTmpRcoNodEpisodeTreatment();
         $query .= $this->populateTmpRcoNodEpisodeTreatmentCataract();
-        $query .= $this->populateTmpRcoNodEpisodeOperationAnesthesia();
+        $query .= $this->populateTmpRcoNodEpisodeOperationAnaesthesia();
         $query .= $this->populateTmpRcoNodEpisodeOperationIndication();
         $query .= $this->populateTmpRcoNodEpisodeOperationComplication();
         $query .= $this->populateTmpRcoNodEpisodeDiagnosis();
@@ -575,7 +594,7 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_{$this->extractIdentifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatmentCataract_{$this->extractIdentifier};
-                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extractIdentifier};
+                DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationAnaesthesia_{$this->extractIdentifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationComplication_{$this->extractIdentifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationIndication_{$this->extractIdentifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeTreatment_{$this->extractIdentifier};
@@ -583,10 +602,11 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDiagnoses_{$this->extractIdentifier};
                 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
-                DROP TEMPORARY TABLE IF EXISTS tmp_anesthesia_type;
+                DROP TEMPORARY TABLE IF EXISTS tmp_anaesthesia_type;
+                DROP TEMPORARY TABLE IF EXISTS tmp_sedation_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_anaesthetic_delivery;
                 DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
-                DROP TEMPORARY TABLE IF EXISTS tmp_rco_nod_pathology_type;
+                DROP TABLE IF EXISTS tmp_rco_nod_pathology_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_operation_ids;
                 DROP TABLE IF EXISTS tmp_complication_type;
                 DROP TABLE IF EXISTS tmp_biometry_formula;
@@ -2508,13 +2528,13 @@ EOL;
     
     
     
-    /*********** EpisodeOperationAnesthesia ****************/
+    /*********** EpisodeOperationAnaesthesia ****************/
     
-    private function createTmpRcoNodEpisodeOperationAnesthesia()
+    private function createTmpRcoNodEpisodeOperationAnaesthesia()
     {
         $query = <<<EOL
-            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extractIdentifier};
-            CREATE TABLE tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extractIdentifier} (
+            DROP TABLE IF EXISTS tmp_rco_nod_EpisodeOperationAnaesthesia_{$this->extractIdentifier};
+            CREATE TABLE tmp_rco_nod_EpisodeOperationAnaesthesia_{$this->extractIdentifier} (
                 oe_event_id INT(10) NOT NULL,
                 AnaesthesiaTypeId INT(10),
                 AnaesthesiaNeedle INT(10),
@@ -2526,9 +2546,9 @@ EOL;
         return $query;
     }
     
-    private function populateTmpRcoNodEpisodeOperationAnesthesia()
+    private function populateTmpRcoNodEpisodeOperationAnaesthesia()
     {
-        $query = "INSERT INTO tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extractIdentifier}(
+        $query = "INSERT INTO tmp_rco_nod_EpisodeOperationAnaesthesia_{$this->extractIdentifier}(
                       oe_event_id,
                       AnaesthesiaTypeId,
                       AnaesthesiaNeedle,
@@ -2537,12 +2557,15 @@ EOL;
                       ComplicationId
                   )
                       SELECT event_id AS oe_event_id,
-                        (SELECT nod_code FROM tmp_anesthesia_type WHERE at.name = name) AS AnaesthesiaTypeId,
+                        (SELECT nod_code FROM tmp_anaesthesia_type WHERE at.name = name) AS AnaesthesiaTypeId,
                         IFNULL(
                             (SELECT nod_id FROM tmp_anaesthetic_delivery WHERE a.anaesthetic_delivery_id = oe_id),
                             0
                         ) AS AnaesthesiaNeedle,
-                        '9' as Sedation,
+                        IFNULL(
+                            (SELECT nod_code FROM tmp_sedation_type WHERE at.name = name),
+                            9
+                        ) AS Sedation,
                         '' as SurgeonId,
                         (
                             SELECT tmp_complication.nod_id FROM tmp_complication WHERE oe_id = acs.id
@@ -2560,7 +2583,7 @@ EOL;
     private function getEpisodeOperationAnaesthesia()
     {
         $query = "SELECT oe_event_id AS OperationId, AnaesthesiaTypeId, AnaesthesiaNeedle, Sedation, SurgeonId, ComplicationId
-                    FROM tmp_rco_nod_EpisodeOperationAnesthesia_{$this->extractIdentifier}";
+                    FROM tmp_rco_nod_EpisodeOperationAnaesthesia_{$this->extractIdentifier}";
 
         $dataQuery = array(
             'query' => $query,
@@ -2570,7 +2593,7 @@ EOL;
         return $this->saveCSVfile($dataQuery, 'EpisodeOperationAnaesthesia');
     }
 
-    /********* end of EpisodeOperationAnesthesia***********/  
+    /********* end of EpisodeOperationAnaesthesia***********/  
     
     
     
