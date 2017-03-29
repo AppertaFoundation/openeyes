@@ -68,13 +68,21 @@ class DocManDeliveryCommand extends CConsoleCommand
     {
         $pending_documents = $this->getPendingDocuments();
         foreach ($pending_documents as $document) {
-            echo 'Processing event ' . $document->document_target->document_instance->correspondence_event_id . PHP_EOL;
+
             $this->event = Event::model()->findByPk($document->document_target->document_instance->correspondence_event_id);
 
             if($document->output_type == 'Docman'){
+                echo 'Processing event ' . $document->document_target->document_instance->correspondence_event_id . ' :: Docman' . PHP_EOL;
                 $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
             } else if($document->output_type == 'Internalreferral'){
-                $this->generateXMLOutput($this->getFileName(), $document);
+                $xml_generated = $this->generateXMLOutput($this->getFileName('Internal'), $document);
+
+                if ($xml_generated){
+                    if( $this->with_internal_referral && \Yii::app()->internalReferralIntegration){
+                        $command = new InternalReferralDeliveryCommand();
+                        $command->actionGenerateOne($this->event->id);
+                    }
+                }
             }
         }
     }
@@ -267,17 +275,17 @@ class DocManDeliveryCommand extends CConsoleCommand
         }
     }
 
-    private function getFileName()
+    private function getFileName($prefix = '')
     {
         if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] === 'format1') {
-            $filename = "OPENEYES_" . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . $this->event->id . "_" . rand();
+            $filename = "OPENEYES_{$prefix}_" . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . $this->event->id . "_" . rand();
         } else {
             if (Yii::app()->params['docman_filename_format'] === 'format2') {
-                $filename = (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . date('YmdHi',
+                $filename = "{$prefix}_" . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . date('YmdHi',
                         strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
             } else {
                 if (Yii::app()->params['docman_filename_format'] === 'format3') {
-                    $filename = (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_edtdep-OEY_' .
+                    $filename = "{$prefix}_" . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_edtdep-OEY_' .
                         date('Ymd_His', strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
                 }
             }
@@ -365,15 +373,7 @@ class DocManDeliveryCommand extends CConsoleCommand
         }
         $xml .= "</DocumentInformation>";
 
-        $xml_generated = file_put_contents($this->path . "/" . $filename . ".XML", $this->cleanXML($xml)) !== false;
-        if ($xml_generated){
-            if( $this->with_internal_referral && \Yii::app()->internalReferralIntegration){
-                $command = new InternalReferralDeliveryCommand();
-                $command->actionGenerateOne($this->event->id);
-            }
-        }
-
-        return $xml_generated;
+        return file_put_contents($this->path . "/" . $filename . ".XML", $this->cleanXML($xml)) !== false;
     }
 
     /**

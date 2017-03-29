@@ -22,7 +22,8 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
 
     private $path;
 
-    private $generate_xml = true;
+    // integration required to generate xml
+    private $generate_xml = false;
 
     private $xml_template_file;
 
@@ -35,19 +36,11 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
      */
     public function __construct()
     {
-        //checking the integration
+        /*
+            checking the integration if needed
+
         if( !\Yii::app()->internalReferralIntegration){
             throw new Exception("No Internal Referral integration found");
-        }
-
-        $this->path = \Yii::app()->params['OphCoCorrespondence_Internalreferral']['export_dir'];
-        $this->generate_xml = !isset(\Yii::app()->params['OphCoCorrespondence_Internalreferral']['xml_format']) || Yii::app()->params['OphCoCorrespondence_Internalreferral']['xml_format'] !== 'none';
-        $this->generate_csv = \Yii::app()->params['OphCoCorrespondence_Internalreferral']['generate_csv'];
-
-        // check if directory exists
-        if (!is_dir($this->path)) {
-            mkdir($this->path);
-            echo "ALERT! Directory " . $this->path . " has been created!";
         }
 
         $template_path = \Yii::app()->internalReferralIntegration->getTemplatePath();
@@ -55,6 +48,20 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
 
         if(!file_exists($this->xml_template_file)){
             throw new \Exception('Template '.$template_path.' does not exist.');
+        }
+       */
+
+        $this->path = \Yii::app()->params['OphCoCorrespondence_Internalreferral']['export_dir'];
+
+        // requires integration
+        //$this->generate_xml = !isset(\Yii::app()->params['OphCoCorrespondence_Internalreferral']['xml_format']) || Yii::app()->params['OphCoCorrespondence_Internalreferral']['xml_format'] !== 'none';
+
+        $this->generate_csv = \Yii::app()->params['OphCoCorrespondence_Internalreferral']['generate_csv'];
+
+        // check if directory exists
+        if (!is_dir($this->path)) {
+            mkdir($this->path);
+            echo "ALERT! Directory " . $this->path . " has been created!";
         }
 
         parent::__construct(null, null);
@@ -67,9 +74,7 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
     {
         $pending_documents = $this->getPendingDocuments();
         foreach ($pending_documents as $document) {
-            echo 'Processing event ' . $document->document_target->document_instance->correspondence_event_id . PHP_EOL;
-
-            $xml = $this->savePDFFile($document->document_target->document_instance->event->id, $document->id);
+            $this->actionGenerateOne($document->document_target->document_instance->correspondence_event_id);
         }
     }
 
@@ -84,12 +89,36 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
         $criteria->addCondition("event.deleted = 0");
         $criteria->addCondition("t.`output_type`= 'Internalreferral'");
 
-
         $document_outputs = DocumentOutput::model()->findAll($criteria);
 
         foreach ($document_outputs as $document) {
-            echo 'Processing event ' . $event_id . PHP_EOL;
-            $this->savePDFFile($event_id, $document->id);
+            $event = $document->document_target->document_instance->event;
+
+            echo 'Processing event ' . $event->id . ' :: Internal Referral' . PHP_EOL;
+
+            $pdf_generated = $this->savePDFFile($event->id, $document->id);
+            $filename = $this->getFileName($event);
+
+            if ($this->generate_xml) {
+                $xml_generated = $this->generateXMLOutput($event, $filename);
+            }
+
+            if (!$pdf_generated || ($this->generate_xml && !$xml_generated)) {
+                echo 'Generating Internal referral file ' . $filename . ' failed' . PHP_EOL;
+                return false;
+            }
+
+            if ($this->updateDelivery($document->id)) {
+                $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $event->id));
+                $this->logData(array(
+                    'hos_num' => $event->episode->patient->hos_num,
+                    'clinician_name' => $event->user->getFullName(),
+                    'letter_type' => (isset($element_letter->letterType->name) ? $element_letter->letterType->name : ''),
+                    'letter_finalised_date' => $event->last_modified_date,
+                    'letter_created_date' => $event->created_date,
+                    'letter_sent_date' => date('Y-m-d H:i:s'),
+                ));
+            }
         }
     }
 
@@ -171,50 +200,47 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
                 return false;
             }
 
-            if (!isset(Yii::app()->params['filename_format']) || Yii::app()->params['filename_format'] === 'format1') {
-                $filename = "OPENEYES_" . (str_replace(' ', '', $event->episode->patient->hos_num)) . '_' . $event->id . "_" . rand();
-            } else {
-                if (Yii::app()->params['filename_format'] === 'format2') {
-                    $filename = (str_replace(' ', '', $event->episode->patient->hos_num)) . '_' . date('YmdHi',
-                            strtotime($event->last_modified_date)) . '_' . $event->id;
-                } else {
-                    if (Yii::app()->params['filename_format'] === 'format3') {
-                        $filename = (str_replace(' ', '', $event->episode->patient->hos_num)) . '_edtdep-OEY_' .
-                            date('Ymd_His', strtotime($event->last_modified_date)) . '_' . $event->id;
-                    }
-                }
-            }
+            $filename = $this->getFileName($event);
 
-            $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
-
-            if ($this->generate_xml) {
-                $xml_generated = $this->generateXMLOutput($event, $filename);
-            }
-
-            if (!$pdf_generated || ($this->generate_xml && !$xml_generated)) {
-                echo 'Generating Internal referral file ' . $filename . ' failed' . PHP_EOL;
-                return false;
-            }
-
-            if ($this->updateDelivery($output_id)) {
-                $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $event->id));
-                $this->logData(array(
-                    'hos_num' => $event->episode->patient->hos_num,
-                    'clinician_name' => $event->user->getFullName(),
-                    'letter_type' => (isset($element_letter->letterType->name) ? $element_letter->letterType->name : ''),
-                    'letter_finalised_date' => $event->last_modified_date,
-                    'letter_created_date' => $event->created_date,
-                    'letter_sent_date' => date('Y-m-d H:i:s'),
-                ));
-            }
-
-            return true;
+            return $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
         }
     }
 
+    /**
+     * Returns file name based on the event
+     *
+     * @param Event $event
+     * @return string
+     */
+    private function getFileName(\Event $event)
+    {
+        if (!isset(Yii::app()->params['filename_format']) || Yii::app()->params['filename_format'] === 'format1') {
+            $filename = "OPENEYES_Internal_" . (str_replace(' ', '', $event->episode->patient->hos_num)) . '_' . $event->id . "_" . rand();
+        } else {
+            if (Yii::app()->params['filename_format'] === 'format2') {
+                $filename = 'Internal_' . (str_replace(' ', '', $event->episode->patient->hos_num)) . '_' . date('YmdHi',
+                        strtotime($event->last_modified_date)) . '_' . $event->id;
+            } else {
+                if (Yii::app()->params['filename_format'] === 'format3') {
+                    $filename = 'Internal_' . (str_replace(' ', '', $event->episode->patient->hos_num)) . '_edtdep-OEY_' .
+                        date('Ymd_His', strtotime($event->last_modified_date)) . '_' . $event->id;
+                }
+            }
+        }
+
+        return $filename;
+    }
+
+    /**
+     * Generate XML file
+     *
+     * @param Event $event
+     * @param $filename
+     * @return bool
+     */
     private function generateXMLOutput(\Event $event, $filename)
     {
-        $data = Yii::app()->internalReferralIntegration->constructRequestData($event, $this->path . "/" . $filename . ".pdf");
+        $data = Yii::app()->internalReferralIntegration->constructRequestData($event, $this->path . "/" . $this->getFileName($event) . ".pdf");
         $xml = $this->renderFile($this->xml_template_file, $data, true);
         return (file_put_contents($this->path . "/" . $filename . ".XML", $this->cleanXML($xml)) !== false);
     }
