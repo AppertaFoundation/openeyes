@@ -949,7 +949,7 @@ EOL;
     {
         $query = <<<EOL
         
-# Load main control table with ALL operation events
+# Load main control table with ALL operation events within the specified period
 INSERT INTO tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
   oe_event_id
 , patient_id
@@ -972,12 +972,40 @@ WHERE et.name = 'Operation Note'
 
 EOL;
 
-    if( $this->startDate && $this->endDate ){
-        $query .= " AND DATE(ev.event_date) BETWEEN STR_TO_DATE('{$this->startDate}', '%Y-%m-%d') AND STR_TO_DATE('{$this->endDate}', '%Y-%m-%d') ";
+    if( $this->startDate ){
+        $query .= " AND DATE(ev.event_date) >= STR_TO_DATE('{$this->startDate}', '%Y-%m-%d') ";
+    }
+
+    if( $this->endDate ){
+        $query .= " AND DATE(ev.event_date) <= STR_TO_DATE('{$this->endDate}', '%Y-%m-%d') ";
     }
 
     $query .= <<<EOL
 
+AND ev.deleted = 0;
+
+#Load main control table with ALL OTHER operation note events (using previously identified patients in control table)
+INSERT INTO  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} (
+  oe_event_id
+, patient_id
+, nod_episode_id
+, nod_date
+, oe_event_type_name
+, nod_episode_seq
+)
+SELECT
+  ev.id AS oe_event_id
+, ep.patient_id AS patient_id
+, ev.id AS nod_episode_id
+, DATE(ev.event_date) AS nod_date
+, et.name AS oe_event_type_name
+, 1 AS nod_episode_seq
+FROM event ev
+JOIN episode ep ON ev.episode_id = ep.id
+JOIN event_type et ON ev.event_type_id = et.id
+WHERE ep.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
+AND ev.id NOT IN (SELECT c.oe_event_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
+AND et.name = 'Operation Note'
 AND ev.deleted = 0;
 
 #Load main control table with ALL examination events (using previously identified patients in control table)
