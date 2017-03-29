@@ -25,8 +25,13 @@
     }else{
         $default_protocol_id = $element->protocol_id;
     }
-    echo $form->radioButtons($element, 'protocol_id',  'OphTrOperationnote_CXL_Protocol', $default_protocol_id, false,
-        false, false, false, array('class' => 'resizeselect'));
+    echo $form->dropDownList($element, 'protocol_id',
+        CHtml::listData(OphTrOperationnote_CXL_Protocol::model()->findAll(), 'id', 'name'),
+        array('options' => array($default_protocol_id=>array('selected'=>true))),
+        null, array('field' => 3));
+
+//    echo $form->radioButtons($element, 'protocol_id',  'OphTrOperationnote_CXL_Protocol', $default_protocol_id, false,
+//        false, false, false, array('options' => array('class' => 'protocolChoice')));
 
 
     if(!$element->device_id)
@@ -143,4 +148,9 @@
     <?php echo $form->textArea($element, 'cxl_comments', array(), false, array('rows' => 4))?>
 
 </div>
-
+<script type="text/javascript">
+    $('#Element_OphTrOperationnote_CXL_protocol_id').on('change', function(){
+        alert("boo");
+        otherJsFn();
+    });
+</script>
