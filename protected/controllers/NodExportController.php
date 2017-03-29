@@ -2556,7 +2556,7 @@ EOL;
                       SurgeonId,
                       ComplicationId
                   )
-                      SELECT event_id AS oe_event_id,
+                      SELECT a.event_id AS oe_event_id,
                         (SELECT nod_code FROM tmp_anaesthesia_type WHERE at.name = name) AS AnaesthesiaTypeId,
                         IFNULL(
                             (SELECT nod_id FROM tmp_anaesthetic_delivery WHERE a.anaesthetic_delivery_id = oe_id),
@@ -2566,7 +2566,12 @@ EOL;
                             (SELECT nod_code FROM tmp_sedation_type WHERE at.name = name),
                             9
                         ) AS Sedation,
-                        '' as SurgeonId,
+                        ( SELECT CASE
+                                   WHEN a.anaesthetist_id = 2
+                                   THEN s.surgeon_id
+                                   ELSE NULL
+                                 END
+                        ) as SurgeonId,
                         (
                             SELECT tmp_complication.nod_id FROM tmp_complication WHERE oe_id = acs.id
                         ) as ComplicationId
@@ -2575,7 +2580,8 @@ EOL;
                         JOIN anaesthetic_type at ON a.anaesthetic_type_id = at.id
                         JOIN ophtroperationnote_anaesthetic_anaesthetic_complication ac ON a.id = ac.et_ophtroperationnote_anaesthetic_id
                         JOIN ophtroperationnote_anaesthetic_anaesthetic_complications acs ON ac.anaesthetic_complication_id = acs.id
-                        JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON c.oe_event_id = a.event_id;";
+                        JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON c.oe_event_id = a.event_id
+                        LEFT JOIN et_ophtroperationnote_surgeon s ON s.event_id = a.event_id;";
 
         return $query;
     }
