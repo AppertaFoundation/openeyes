@@ -138,8 +138,8 @@
             <th><?php echo CHtml::link('Gene', $this->getUri(array('sortby' => 'gene'))) ?></th>
             <th><?php echo CHtml::link('Method', $this->getUri(array('sortby' => 'method'))) ?></th>
             <th><?php echo CHtml::link('Homozygosity', $this->getUri(array('sortby' => 'homo'))) ?></th>
-            <th><?php echo CHtml::link('Base change', $this->getUri(array('sortby' => 'base_change'))) ?></th>
-            <th><?php echo CHtml::link('Amino acid change', $this->getUri(array('sortby' => 'amino_acid_change'))) ?></th>
+            <th><?php echo CHtml::link('Base Change', $this->getUri(array('sortby' => 'base_change'))) ?></th>
+            <th><?php echo CHtml::link('Amino Acid Change', $this->getUri(array('sortby' => 'amino_acid_change'))) ?></th>
             <th><?php echo CHtml::link('Result', $this->getUri(array('sortby' => 'result'))) ?></th>
           </tr>
           </thead>

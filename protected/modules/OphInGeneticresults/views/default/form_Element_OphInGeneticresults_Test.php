@@ -80,7 +80,7 @@ $pedigree = new Pedigree();
           array('empty' => '- Select -'),
           false, array('label' => 3, 'field' => 3)
       ) ?>
-      <?php $form->textField($element, 'base_change', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->textField($element, 'base_change', array('class' => 'gene-validation'), array(), array('label' => 3, 'field' => 3)) ?>
       <?php $form->dropDownList(
           $element,
           'amino_acid_change_id',
@@ -88,7 +88,7 @@ $pedigree = new Pedigree();
           array('empty' => '- Select -'),
           false, array('label' => 3, 'field' => 3)
       ) ?>
-      <?php $form->textField($element, 'amino_acid_change', array(), array(), array('label' => 3, 'field' => 3)) ?>
+      <?php $form->textField($element, 'amino_acid_change', array('class' => 'gene-validation'), array(), array('label' => 3, 'field' => 3)) ?>
       <?php $form->textField($element, 'genomic_coordinate', array(), array(), array('label' => 3, 'field' => 3)) ?>
       <?php $form->dropDownList(
           $element,

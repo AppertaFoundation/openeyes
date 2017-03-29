@@ -24,7 +24,10 @@
 }
 
 #generic-admin-form{
-  .error{
+  .error-invalid{
     background: #FF9494;
+  }
+  .error-failed{
+    background: #FFC98B;
   }
 }

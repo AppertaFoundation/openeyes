@@ -42,13 +42,19 @@ class Genetics_API extends BaseAPI
      * @param $variant
      * @return mixed
      */
-    public function validateGeneTranscript($variant)
+    public function validateGene($variant)
     {
-        $return = json_encode(['valid' => false]);
+        $return = json_encode(['valid' => 'failed']);
+
         if (is_callable(Yii::app()->params['external_gene_validation'])) {
             $data = call_user_func(Yii::app()->params['external_gene_validation'], $variant);
             $json = json_decode($data, true);
-            if( isset($json['valid']) ){
+
+            // false means the external service failed to validate the gene, eg. cURL wasn't able to access the internet
+            if( isset($json['valid']) && $json['valid'] === 'failed' ){
+                // return value already set - default value
+            } else {
+                // external service returned valid json
                 $return = $data;
             }
         }

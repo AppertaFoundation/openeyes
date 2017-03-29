@@ -50,6 +50,10 @@
 }
 
 /* line 26, ../sass/module.scss */
-#generic-admin-form .error{
+#generic-admin-form .error-invalid{
     background: #FF9494;
+}
+/* line 26, ../sass/module.scss */
+#generic-admin-form .error-failed{
+    background: #FFC98B;
 }

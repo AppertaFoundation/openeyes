@@ -35,7 +35,7 @@ return array(
         /**
          * Returned result must be in JSON format
          *
-         * Minimum expected structure: {valid: false}
+         * Minimum expected structure: {valid: false, 'message':''}
          */
         'external_gene_validation' => function($variant){
 
@@ -51,9 +51,15 @@ return array(
             // The number of seconds to wait while trying to connect. Use 0 to wait indefinitely.
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,2);
             $result = curl_exec ($ch);
+
+            $message = '';
+            if(curl_error($ch)){
+                $message = curl_error($ch);
+            }
+
             curl_close ($ch);
 
-            return $result === false ? json_encode(['valid' => false]) : $result;
+            return $result === false ? json_encode(['valid' => 'failed', 'message' => $message ]) : $result;
         },
     ),
 );

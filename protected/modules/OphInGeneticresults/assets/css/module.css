@@ -28,3 +28,11 @@
 .event.ophingeneticresults .event-title {
   background-image: url('../img/medium.png?1484740801');
 }
+/* line 7, ../sass/modules.scss */
+.element input.error-invalid{
+  background: #FF9494;
+}
+/* line 7, ../sass/modules.scss */
+.element input.error-failed{
+    background: #FFC98B;
+}
