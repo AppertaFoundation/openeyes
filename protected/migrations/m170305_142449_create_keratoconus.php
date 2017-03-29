@@ -1,6 +1,6 @@
 <?php
 
-class m170305_142449_create_keratoconus extends CDbMigration
+class m170305_142449_create_keratoconus extends OEMigration
 {
     public function up()
     {
@@ -22,21 +22,13 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'eye_rubber_id' => 'int(10)',
             'hayfever_id' => 'int(10)',
             'eye_id' => 'int(10)',
-            'ocular_surface_disease_id' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'ocular_surface_disease_id' => 'int(10)'
         ),true);
 
         $this->createOETable('ophciexamination_cxl_outcome', array(
             'id' => 'pk',
             'name' => 'varchar(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophciexamination_cxl_outcome_version', array(
@@ -44,21 +36,13 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
             'id' => 'int(10) NOT NULL',
             'name' => 'varchar(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophciexamination_cxl_outcome_diagnosis', array(
             'id' => 'pk',
             'name' => 'varchar(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophciexamination_cxl_outcome_diagnosis_version', array(
@@ -66,21 +50,13 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
             'id' => 'int(10) NOT NULL',
             'name' => 'varchar(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophciexamination_slit_lamp_cornea', array(
             'id' => 'pk',
             'name' => 'varchar(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophciexamination_slit_lamp_cornea_version', array(
@@ -88,11 +64,7 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
             'id' => 'int(10) NOT NULL',
             'name' => 'varchar(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
 
@@ -101,11 +73,7 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'event_id' => 'int(10) unsigned NOT NULL',
             'eye_id' => 'int(10)',
             'diagnosis_id' => 'int(10)',
-            'outcome_id' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'outcome_id' => 'int(10)'
         ),true);
 
         $this->createOETable('et_ophciexamination_cxl_outcome_version', array(
@@ -115,11 +83,7 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'event_id' => 'int(10) unsigned NOT NULL',
             'eye_id' => 'int(10)',
             'diagnosis_id' => 'int(10)',
-            'outcome_id' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'outcome_id' => 'int(10)'
         ),true);
 
 
@@ -142,9 +106,7 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'eye_rubber_id' => 'int(10)',
             'hayfever_id' => 'int(10)',
             'eye_id' => 'int(10)',
-            'ocular_surface_disease_id' => 'int(10)',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'ocular_surface_disease_id' => 'int(10)'
         ),true);
 
         $this->createOETable('et_ophciexamination_keratometry', array(
@@ -176,11 +138,7 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'right_cl_removed' => 'int(10)',
             'left_cl_removed' => 'int(10)',
             'right_flourescein_value' => 'int(1)',
-            'left_flourescein_value' => 'int(1)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'left_flourescein_value' => 'int(1)' 
         ),true);
 
         $this->createOETable('et_ophciexamination_keratometry_version', array(
@@ -214,11 +172,7 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'right_cl_removed' => 'int(10)',
             'left_cl_removed' => 'int(10)',
             'right_flourescein_value' => 'int(1)',
-            'left_flourescein_value' => 'int(1)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'left_flourescein_value' => 'int(1)' 
         ),true);
 
         $this->createOETable('et_ophciexamination_slit_lamp', array(
@@ -232,11 +186,7 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'left_allergic_conjunctivitis_id' => 'int(10)',
             'left_blepharitis_id' => 'int(10)',
             'left_dry_eye_id' => 'int(10)',
-            'left_cornea_id' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'left_cornea_id' => 'int(10)' 
         ),true);
 
         $this->createOETable('et_ophciexamination_slit_lamp_version', array(
@@ -252,11 +202,7 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'left_allergic_conjunctivitis_id' => 'int(10)',
             'left_blepharitis_id' => 'int(10)',
             'left_dry_eye_id' => 'int(10)',
-            'left_cornea_id' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'left_cornea_id' => 'int(10)' 
         ),true);
 
         $this->createOETable('et_ophciexamination_specular_microscopy', array(
@@ -268,11 +214,7 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'right_endothelial_cell_density_value' => 'int(10)',
             'right_coefficient_variation_value' => 'dec(5,2)',
             'left_endothelial_cell_density_value' => 'int(10)',
-            'left_coefficient_variation_value' => 'dec(5,2)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'left_coefficient_variation_value' => 'dec(5,2)'
         ),true);
 
         $this->createOETable('et_ophciexamination_specular_microscopy_version', array(
@@ -286,11 +228,7 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'right_endothelial_cell_density_value' => 'int(10)',
             'right_coefficient_variation_value' => 'dec(5,2)',
             'left_endothelial_cell_density_value' => 'int(10)',
-            'left_coefficient_variation_value' => 'dec(5,2)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'left_coefficient_variation_value' => 'dec(5,2)'
         ),true);
 
         $this->createOETable('et_ophtroperationnote_cxl', array(
@@ -311,11 +249,7 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'iontophoresis_id' => 'int(10)',
             'iontophoresis_current_value' => 'int(10)',
             'iontophoresis_duration_value' => 'int(10)',
-            'cxl_comments' => 'VARCHAR(1024)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'cxl_comments' => 'VARCHAR(1024)'
         ),true);
 
         $this->createOETable('et_ophtroperationnote_cxl_version', array(
@@ -338,73 +272,45 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'iontophoresis_id' => 'int(10)',
             'iontophoresis_current_value' => 'int(10)',
             'iontophoresis_duration_value' => 'int(10)',
-            'cxl_comments' => 'VARCHAR(1024)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'cxl_comments' => 'VARCHAR(1024)'
         ),true);
 
         $this->createOETable('ophciexamination_topographer_device', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophciexamination_tomographer_device', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
 
         $this->createOETable('ophciexamination_scan_quality', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophciexamination_slit_lamp_conditions', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophciexamination_specular_microscope', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_epithelial_removal_diameter', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_epithelial_removal_diameter_version', array(
@@ -413,21 +319,13 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_iontophoresis', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_iontophoresis_version', array(
@@ -435,22 +333,14 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
             'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_complications', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'active' => 'tinyint(1)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'active' => 'tinyint(1)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_complications_version', array(
@@ -459,22 +349,14 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'active' => 'tinyint(1)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'active' => 'tinyint(1)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_epithelial_removal_method', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_epithelial_removal_method_version', array(
@@ -483,21 +365,13 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophciexamination_cxl_ocular_surface_disease', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophciexamination_cxl_ocular_surface_disease_version', array(
@@ -505,21 +379,13 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
             'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophciexamination_cxl_cl_removed', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophciexamination_cxl_cl_removed_version', array(
@@ -527,21 +393,13 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
             'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophciexamination_cxl_quality_score', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophciexamination_cxl_quality_score_version', array(
@@ -549,22 +407,14 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
             'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'display_order' => 'int(10)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_interpulse_duration', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_interpulse_duration_version', array(
@@ -573,22 +423,14 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_interval_between_drops', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_interval_between_drops_version', array(
@@ -597,22 +439,14 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_protocol', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_protocol_version', array(
@@ -621,22 +455,14 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_riboflavin_preparation', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_riboflavin_preparation_version', array(
@@ -645,22 +471,14 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_soak_duration', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_soak_duration_version', array(
@@ -669,22 +487,14 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_total_exposure_time', array(
             'id' => 'pk',
             'name' => 'int(10)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_total_exposure_time_version', array(
@@ -693,22 +503,14 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'id' => 'int(10) NOT NULL',
             'name' => 'int(10)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_devices', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_devices_version', array(
@@ -717,22 +519,14 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_uv_irradiance', array(
             'id' => 'pk',
             'name' => 'int(10)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_uv_irradiance_version', array(
@@ -741,22 +535,14 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'id' => 'int(10) NOT NULL',
             'name' => 'INT(10)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_uv_pulse_duration', array(
             'id' => 'pk',
             'name' => 'int(10)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
 
         $this->createOETable('ophtroperationnote_cxl_uv_pulse_duration_version', array(
@@ -765,11 +551,7 @@ class m170305_142449_create_keratoconus extends CDbMigration
             'id' => 'int(10) NOT NULL',
             'name' => 'INT(10)',
             'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)',
-            'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-            'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\''
+            'defaultChoice' => 'int(11)'
         ),true);
     }
 

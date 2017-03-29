@@ -1,6 +1,6 @@
 <?php
 
-class m170305_160630_add_keratoconus_data extends CDbMigration
+class m170305_160630_add_keratoconus_data extends OEMigration
 {
 	public function up()
 	{
