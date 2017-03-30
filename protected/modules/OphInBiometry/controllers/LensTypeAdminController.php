@@ -56,6 +56,7 @@ class LensTypeAdminController  extends BaseAdminController
             'name' => 'text',
             'display_name' => 'text',
             'description' => 'text',
+            'comments' => 'text',
             'acon' => 'text',
             'active' => 'checkbox',
         ));
