@@ -88,6 +88,19 @@ class DefaultController extends \BaseEventTypeController
     }
 
 
+    protected function checkChildElementsForData($elements)
+    {
+        foreach($elements as $element)
+        {
+            if($element->id > 0)
+            {
+                var_dump($element->id);
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Filters elements based on coded dependencies.
      *
@@ -106,47 +119,21 @@ class DefaultController extends \BaseEventTypeController
         }
 
         if ($this->set) {
-            $datas = array();
-            foreach($elements as $el) {
-                $datas[get_class($el)]=$el->id;
-            }
-
-            $has_data_from_child = array();
-            foreach($elements as $el) {
-                $childrens = array();
-                $has_data = false;
-                $element_type = $el->getElementType();
-                
-                $childrens = $this->getChildOptionalElements($element_type);
-                if(!empty($childrens)){
-                    if( $el->id != null && $el->id != '' ){
-                        $has_data_from_child[get_class($el)] = true;
-                    } else {
-                        foreach($childrens as $child){
-                            if(isset($datas[get_class($child)])){
-                                $has_data = $datas[get_class($child)] != null && $datas[get_class($child)] != '';
-                                $has_data_from_child[get_class($el)] = $has_data;
-                            }
-                        }
-                    }
-                }
-            }
-          
-            
             foreach ($this->set->HiddenElementTypes as $element) {
-                if(isset($has_data_from_child[$element->class_name]) && ( !$has_data_from_child[$element->class_name])){
-                    $remove[] = $element->class_name;
-                }
+                $remove[] = $element->class_name;
             }
         }
 
         $final = array();
         foreach ($elements as $el) {
-            if (!in_array(get_class($el), $remove)) {
+            if (in_array(get_class($el), $remove)) {
+                if($el->id > null || $this->checkChildElementsForData($this->getChildElements($el->getElementType()))) {
+                    $final[] = $el;
+                }
+            }else{
                 $final[] = $el;
             }
         }
-
         return $final;
     }
 
