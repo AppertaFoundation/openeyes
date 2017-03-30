@@ -87,14 +87,19 @@ class DefaultController extends \BaseEventTypeController
         return $this->filterElements($elements);
     }
 
-
+    /**
+     * Check data in child elements
+     *
+     * @param BaseEventTypeElements[] $elements
+     *
+     * @return boolean
+     */
     protected function checkChildElementsForData($elements)
     {
         foreach($elements as $element)
         {
             if($element->id > 0)
             {
-                var_dump($element->id);
                 return true;
             }
         }
