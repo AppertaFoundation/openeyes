@@ -95,7 +95,7 @@ class Pedigree extends BaseActiveRecord
             ),
             'members' => array(self::HAS_MANY, 'GeneticsPatientPedigree', 'pedigree_id', 'with' => array('patient')),
             'base_change_type' => array(self::BELONGS_TO, 'PedigreeBaseChangeType', 'base_change_id'),
-            'aminod_acid_change_type' => array(self::BELONGS_TO, 'PedigreeAminoAcidChangeType', 'amino_acid_change_id'),
+            'amino_acid_change_type' => array(self::BELONGS_TO, 'PedigreeAminoAcidChangeType', 'amino_acid_change_id'),
         );
     }
 

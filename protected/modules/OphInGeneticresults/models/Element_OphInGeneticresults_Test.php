@@ -107,7 +107,7 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
             'method_id' => 'Method',
             'comments' => 'Comments',
             'exon' => 'Exon',
-            'base_change' => 'Base change',
+            'base_change' => 'Base Change',
             'amino_acid_change' => 'Amino Acid Change',
             'assay' => 'Assay',
             'effect_id' => 'Effect',

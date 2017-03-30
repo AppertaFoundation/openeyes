@@ -49,13 +49,21 @@
                     }
                 }
             ),
-            //'base_change_type',
+            array(
+                'label' => $model->getAttributeLabel('base_change_type'),
+                'value' => $model->base_change_type ? $model->base_change_type->change : null,
+                'type'=>'raw',
+            ), 
             array(
                 'label' => $model->getAttributeLabel('base_change'),
                 'value' => $model->base_change ? $model->base_change : null,
                 'type'=>'raw',
             ),
-            'amino_acid_change_id',
+            array(
+                'label' => $model->getAttributeLabel('amino_acid_change_type'),
+                'value' => $model->amino_acid_change_type ? $model->amino_acid_change_type->change : null,
+                'type'=>'raw',
+            ),
             array(
                 'label' => $model->getAttributeLabel('amino_acid_change'),
                 'value' => $model->amino_acid_change ? $model->amino_acid_change : null,
