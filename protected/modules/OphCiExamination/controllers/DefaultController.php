@@ -1373,4 +1373,5 @@ class DefaultController extends \BaseEventTypeController
             \PatientRiskAssignment::model()->deleteByPk($patient_risk->id);
         }
     }
+
 }

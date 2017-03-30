@@ -16,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
 class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
 {
     /**
@@ -39,7 +40,7 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('id,event_id,unique_code,examination_data,examination_date,import_status', 'safe'),
+            array('id,event_id,unique_code,examination_data,examination_date,import_status,invoice_status_id,comment', 'safe'),
             array('event_id,unique_code,examination_data', 'required'),
         );
     }
@@ -56,6 +57,7 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
         return array(
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'import_status' => array(self::BELONGS_TO, 'ImportStatus', 'import_success'),
+            'invoice_status' =>array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\InvoiceStatus', 'invoice_status_id')
         );
     }
 
@@ -87,5 +89,111 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
         $criteria->limit = 1;
 
         return $this->find($criteria);
+    }
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function optomSearch($filter = array())
+    {
+
+
+        $criteria = $this->buildOptomFilterCriteria($filter);
+
+        //$criteria->compare('created_date',$this->created_date,true);
+       // $criteria->compare('invoice_status.id',$this->invoice_status_id,true);
+       // $criteria->compare('comment',$this->comment,true);
+
+        //$criteria->compare('patient.id',$this->patient->id,true);
+
+        return new CActiveDataProvider(get_class($this), array(
+            'criteria'=>$criteria,
+            'sort'=>array(
+                'defaultOrder'=>'t.created_date DESC',
+            ),
+            'pagination'=>array(
+                'pageSize'=>25
+            ),
+        ));
+    }
+
+    protected function buildOptomFilterCriteria( $filter = array())
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->with = array('event.episode.patient');
+
+        $this->handleDateRangeFilter($criteria, $filter);
+        $this->invoiceStatusSearch($criteria, $filter);
+        $this->patientNumberSearch($criteria, $filter);
+
+        return $criteria;
+
+    }
+
+    /**
+     * @param \CDbCriteria $criteria
+     * @param array        $filter
+     */
+
+    private function handleDateRangeFilter(\CDbCriteria $criteria, $filter = array())
+    {
+        $from = null;
+        if (isset($filter['date_from'])) {
+            $from = \Helper::convertNHS2MySQL($filter['date_from']);
+        }
+        $to = null;
+        if (isset($filter['date_to'])) {
+            $to = \Helper::convertNHS2MySQL($filter['date_to']);
+        }
+        if ($from && $to) {
+            if ($from > $to) {
+                $criteria->addBetweenCondition('t.created_date', $to, $from);
+            } else {
+                $criteria->addBetweenCondition('t.created_date', $from, $to);
+            }
+        } elseif ($from) {
+            $criteria->addCondition('t.created_date >= :from');
+            $criteria->params[':from'] = $from;
+        } elseif ($to) {
+            $criteria->addCondition('t.created_date <= :to');
+            $criteria->params[':to'] = $to;
+        }
+    }
+
+    /*
+     * Invoice status search
+     */
+    private function invoiceStatusSearch(\CDbCriteria $criteria, $filter )
+    {
+        if (array_key_exists('status_id', $filter) && $filter['status_id'] !== '') {
+            $criteria->addCondition('invoice_status_id = :invoice_status_id');
+            $criteria->params[':invoice_status_id'] = $filter['status_id'];
+        }
+    }
+
+    /*
+     * Patient search
+     */
+    private function patientNumberSearch(\CDbCriteria $criteria, $filter )
+    {
+        if (array_key_exists('patient_number', $filter) && $filter['patient_number'] !== '') {
+            $criteria->addCondition('patient_id = :patient_id');
+            $criteria->params[':patient_id'] = $filter['patient_number'];
+        }
+    }
+
+    /*
+     * Generate invoice status dropdown to view
+     */
+    public function invoiceStatusSelect( $default )
+    {
+        $status = \OEModule\OphCiExamination\models\InvoiceStatus::model();
+        return CHtml::dropDownList(
+            'invoice_status_id',
+            $default ,
+            CHtml::listData($status->findAll(),'id','name')
+        );
     }
 }
