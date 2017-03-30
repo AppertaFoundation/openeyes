@@ -444,7 +444,7 @@ return array(
 
         'OphCoCorrespondence_Internalreferral' => array(
             'generate_csv' => false,
-            'export_dir' => '/tmp/docman_delievery',
+            'export_dir' => '/tmp/internalreferral_delievery',
             'filename_format' => 'format1',
         ),
 
