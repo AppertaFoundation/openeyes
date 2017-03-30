@@ -168,6 +168,9 @@ $assetManager = Yii::app()->getAssetManager();
                     </div>
                     <?php
                     break;
+                case 'text':
+                    echo $form->textField($admin->getModel(), $field, $type['htmlOptions']);
+                    break;
             }
         } else {
             switch ($type) {

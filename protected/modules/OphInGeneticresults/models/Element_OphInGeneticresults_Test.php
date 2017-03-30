@@ -108,7 +108,7 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
             'comments' => 'Comments',
             'exon' => 'Exon',
             'base_change' => 'Base change',
-            'amino_acid_change' => 'Amino acid change',
+            'amino_acid_change' => 'Amino Acid Change',
             'assay' => 'Assay',
             'effect_id' => 'Effect',
             'homo' => 'Homozygosity',

@@ -19,6 +19,11 @@ class GeneController extends BaseModuleController
     public function accessRules()
     {
         return array(
+            array(
+                'allow',
+                'actions' => array('ValidateGene'),
+                'roles' => array('User'), // any user can perform gene validation
+            ),
             array('allow',
                 'actions' => array('Edit', 'Delete'),
                 'roles' => array('OprnEditGene'),
@@ -121,5 +126,19 @@ class GeneController extends BaseModuleController
         }
 
         return $model;
+    }
+
+    /**
+     * Validating a gene and echoes json string
+     *
+     * @param $variant
+     */
+    public function actionValidateGene($variant)
+    {
+        // $variant = 12;
+        $api = Yii::app()->moduleAPI->get('Genetics');
+        if($api){
+            echo $api->validateGene($variant);
+        }
     }
 }
