@@ -28,7 +28,11 @@
 					<?php
                     if ($this->is_auto) {
                         if (!$element->{"al_modified_$side"}) {
-                            echo '<span class="readonly-box">'.$element->{"snr_$side"}.'</span>';
+                            if ($this->getAutoBiometryEventData($this->event->id)[0]->is700()) {
+                                echo '<span class="field-value">N/A</span>';
+                            } else {
+                                echo '<span class="readonly-box">'.$element->{"snr_$side"}.'</span>';
+                            }
                         } else {
                             echo '<span class="field-value">* AL entered manually</span>';
                         }

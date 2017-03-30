@@ -88,7 +88,7 @@
             </div>
             <div class="large-6 column end">
                 <div class="field-info"
-                     id="tr_<?php echo $side ?>"><?php echo CHtml::encode($element->{'predicted_refraction_'.$side}) ?></div>
+                     id="tr_<?php echo $side ?>"><?php if (($element->{'predicted_refraction_' . $side}) > 0) { echo '+'; } echo CHtml::encode($element->{'predicted_refraction_'.$side}) ?></div>
             </div>
         </div>
         <?php
