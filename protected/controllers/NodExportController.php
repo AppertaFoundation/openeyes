@@ -412,27 +412,21 @@ FROM disorder d;
                                 `nod_desc` VARCHAR(100)
                         );
                 
-#complication mapping is not finished yet
-
                         INSERT INTO tmp_complication (`oe_id`, `oe_desc`, `nod_id`, `nod_desc` )
                         VALUES
                         (1, 'Eyelid haemorrage/bruising', 2, 'Eyelid haemorrhage / bruising'),
                         (2, 'Conjunctivital chemosis', 1, 'Conjunctival chemosis'),
                         (3, 'Retro bulbar / peribulbar haemorrage', 8, 'Retrobulbar / peribulbar haemorrhage'),
                         (4, 'Globe/optic nerve penetration', 4, 'Globe / optic nerve perforation'),
-                        
+                        (5, 'Inadequate akinesia', 3, 'Excessive eye movement'),
                         (6, 'Patient pain - Mild', 5, 'Patient discomfort / pain mild;'),
                         (7, 'Patient pain - Moderate', 6, 'Patient discomfort / pain moderate;'),
                         (8, 'Patient pain - Severe', 7, 'Patient discomfort / pain severe;'),
                         (9, 'Systemic problems', 10, 'Systemic problems (bradycardia / hypotension / apnoea etc.)'),
                         (10, 'Operation abandoned due to complication', 11, 'Operation cancelled due to complication'),
-                        (11, 'None', 0, 'None');
-                        
-                        -- (5, 'Inadequate akinesia', 0, ''),
-                        
-                        -- (0, '', 9, 'Sub-conjunctival haemorrhage'),
-                        -- (0, '', 3, 'Excessive eye movement'),
-                        -- (0, '', 12, 'Other'),
+                        (11, 'None', 0, 'None'),
+                        (12, 'Sub-conjunctival haemorrhage', 9, 'Sub-conjunctival haemorrhage'),
+                        (13, 'Other', 12, 'Other');
                         -- (0, '', 99, 'Not recorded');
 
 #anaesthetic delivery mapping is not finished yet
