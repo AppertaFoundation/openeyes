@@ -9,18 +9,19 @@ use OEModule\OphCiExamination\components;
 //class OptomFeedbackController extends \BaseController
 class OptomFeedbackController extends \BaseEventTypeController
 {
-    const ACTION_TYPE_LIST = 'List';
+    //const ACTION_TYPE_LIST = 'List';
     protected static $FILTER_LIST_KEY = 'OptomFeedbackManager_list_filter';
     private $is_list_filtered = false;
     protected static $action_types = array(
         'list' => self::ACTION_TYPE_FORM,
+        'optomAjaxEdit' => self::ACTION_TYPE_FORM,
     );
 
     public function accessRules()
     {
         return array(
             array('allow',
-                'actions' => array('list'),
+                'actions' => array('list', 'optomAjaxEdit'),
                 'roles' => array('Optom co-ordinator')
             ),
         );
@@ -54,9 +55,33 @@ class OptomFeedbackController extends \BaseEventTypeController
         );
     }
 
-    public function actionEdit( $id )
+    public function actionOptomAjaxEdit( $id )
     {
-        var_dump($id);
+        if ($this->request->isPostRequest) {
+            $model = \AutomaticExaminationEventLog::model()->findByAttributes(
+                array('event_id' => $id)
+            );
+
+            if(!$model){
+                $result = json_encode(array(
+                    's'     => 0,
+                    'msg'   => 'Something went wrong!'
+                ));
+
+            } else{
+                $model->invoice_status_id = $this->request->getPost('invoice_status_id');
+                $model->comment = $this->request->getPost('comment');
+                $model->update();
+                $result = json_encode(array(
+                    's'     => 1,
+                    'msg'   => 'Success update'
+                ));
+            }
+
+            echo $result;
+
+        }
+
     }
 
     /**

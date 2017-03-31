@@ -98,15 +98,7 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
      */
     public function optomSearch($filter = array())
     {
-
-
         $criteria = $this->buildOptomFilterCriteria($filter);
-
-        //$criteria->compare('created_date',$this->created_date,true);
-       // $criteria->compare('invoice_status.id',$this->invoice_status_id,true);
-       // $criteria->compare('comment',$this->comment,true);
-
-        //$criteria->compare('patient.id',$this->patient->id,true);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria'=>$criteria,

@@ -26,46 +26,94 @@ $cols = array(
         'name'      => 'optometrist_address',
         'type'      => 'raw',
         'header'    => 'Optom Address',
-        // 'value'     => 'Helper::convertMySQL2NHS($data->created_date)',
     ),
     array(
         'name'      => 'invoice_status_id',
         'header'    => 'Invoice status',
         'type'      => 'raw',
-        'value'     => '$data->invoice_status->name'
-       // 'value' => '$data->invoiceStatusSelect( $data->invoice_status_id )'
+        //'value'     => '$data->invoice_status->name',
+        'value' => '$data->invoiceStatusSelect( $data->invoice_status_id )',
+        'htmlOptions'   => array('class' => 'editable-select')
 
     ),
     array(
-        'id'        => 'comment',
-        'name'      => 'comment',
-        'type'      => 'raw',
-        'value'     => '$data->comment',
-        'header'    => 'Comment',
+        'id'            => 'optom-comment',
+        'name'          => 'comment',
+        'type'          => 'raw',
+        //'value'         => '$data->comment',
+        'header'        => 'Comment',
+        'value'         => 'CHtml::textArea( "comment", $data->comment)',
+        //'htmlOptions'   => array('class' => 'editable-text'),
     ),
     array(
         'id'                    => 'actions',
         'header'                => 'Actions',
         'class'                 => 'CButtonColumn',
         'htmlOptions'           => array('class' => 'left'),
-        'template'              => '<span style="white-space: nowrap;">{view} {edit}</span>',
+        'template'              => '<span style="white-space: nowrap;">{view} {save}</span>',
         'viewButtonImageUrl'    => false,
         'buttons' => array(
             'view' => array(
                 'options'   => array('title' => 'View CVI', 'class' => ''),
                 'url'       => 'Yii::app()->createURL("/OphCiExamination/default/view/", array("id" => $data->event_id))',
-                'label'     => '<button class="secondary small">View</button>'
+                'label'     => '<button  class="secondary small">View</button>'
             ),
-            'edit' => array(
-                'options'   => array('title' => 'Edit'),
-                'url'       => 'Yii::app()->createURL("/OphCiExamination/OptomFeedback/update/", array("id" => $data->event_id))',
-                'label'     => '<button type="button" id="edit-optom-row" class="secondary small ajax-button">Edit</button>',
+            'save' => array(
+                'options'   => array('title' => 'Save', 'data-id' => '$data->event_id'),
+                'url'       => '',
+                'label'     => '<button type="button" class="edit-optom-row secondary small ajax-button">Save</button>'
             ),
+
         ),
     )
 );
 
 ?>
+<script type="text/javascript">
+   $(document).ready(function() {
+       $('.edit-optom-row').click(function(){
+           var row = $(this).closest('tr');
+           var td = $(this).closest('td');
+           var rowID = row.attr('id');
+
+           var data = {};
+           row.find('input,select,textarea').each(function(){
+               data[$(this).attr('name')]=$(this).val();
+           });
+           data['event_id'] = rowID;
+           data['YII_CSRF_TOKEN'] = YII_CSRF_TOKEN;
+
+
+           $.ajax({
+               'type': 'POST',
+               'data': data,
+               'url': baseUrl+'/OphCiExamination/OptomFeedback/optomAjaxEdit/'+rowID,
+               'dataType': 'json',
+               'success': function(resp) {
+
+                    if(resp.s == 1){
+
+                        div = '<div id="flash-success" class="optom-ajax-msg alert-box with-icon info">'+ resp.msg +'</div>';
+                        td.append(div);
+                        setTimeout(function() {
+                            $(".optom-ajax-msg").hide(300)
+                        }, 2000);
+
+                    } else {
+                        new OpenEyes.UI.Dialog.Alert({
+                            content:  resp.msg}).open();
+                    }
+               },
+               'error': function(resp, status, error) {
+                   new OpenEyes.UI.Dialog.Alert({
+                       content: "Something went wrong " + status + ": " + error}).open();
+               }
+           });
+
+       });
+   });
+
+</script>
 
 <h1 class="badge">Optometrist Feedback Manager</h1>
 <div class="box content">
@@ -79,8 +127,8 @@ $cols = array(
                     <?php
                         $this->widget('zii.widgets.grid.CGridView', array(
                             'itemsCssClass' => 'grid',
+                            'rowHtmlOptionsExpression' => 'array("id" => $data->event_id)',
                             'dataProvider' => $dp,
-                           // 'filter' => $model,
                             'htmlOptions' => array('id' => 'inbox-table'),
                             'summaryText' => '<small> {start}-{end} of {count} </small>',
                             'columns' => $cols,
