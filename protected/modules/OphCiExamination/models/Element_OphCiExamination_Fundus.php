@@ -38,11 +38,9 @@ class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('eye_id, left_eyedraw, left_description, right_eyedraw, right_description', 'safe'),
-            array('left_eyedraw', 'requiredIfSide', 'side' => 'left'),
-            array('right_eyedraw', 'requiredIfSide', 'side' => 'right'),
-            array('left_description', 'requiredIfSide', 'side' => 'left'),
-            array('right_description', 'requiredIfSide', 'side' => 'right'),
+            array('eye_id, left_eyedraw, left_ed_report, left_description, right_eyedraw, right_ed_report, right_description', 'safe'),
+            array('left_eyedraw, left_ed_report', 'requiredIfSide', 'side' => 'left'),
+            array('right_eyedraw, right_ed_report', 'requiredIfSide', 'side' => 'right'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, left_eyedraw, right_eyedraw, left_description, right_description, eye_id', 'safe', 'on' => 'search'),
@@ -84,8 +82,10 @@ class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
             'id' => 'ID',
             'event_id' => 'Event',
             'left_eyedraw' => 'Eyedraw',
+            'left_ed_report' => 'Report',
             'left_description' => 'Description',
             'right_eyedraw' => 'Eyedraw',
+            'right_ed_report' => 'Report',
             'right_description' => 'Description',
         );
     }
