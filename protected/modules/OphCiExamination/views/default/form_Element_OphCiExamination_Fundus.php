@@ -30,7 +30,7 @@
                     'side' => 'right',
                     'element' => $element,
                 ))?>
-			</div>
+			</div>section
 		</div>
 		<div class="inactive-form">
 			<div class="add-side">
@@ -62,3 +62,5 @@
 		</div>
 	</div>
 </div>
+
+<?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/AutoReport.js", CClientScript::POS_HEAD); ?>

@@ -83,10 +83,10 @@ class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
             'event_id' => 'Event',
             'left_eyedraw' => 'Eyedraw',
             'left_ed_report' => 'Report',
-            'left_description' => 'Description',
+            'left_description' => 'Comments',
             'right_eyedraw' => 'Eyedraw',
             'right_ed_report' => 'Report',
-            'right_description' => 'Description',
+            'right_description' => 'Comments',
         );
     }
 

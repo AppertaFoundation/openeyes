@@ -30,6 +30,12 @@
         ))?>
 	</div>
 	<div class="column fluid">
+        <div class="data-row">
+            <div class="data-value">
+                <?= Yii::app()->format->Ntext($element->{$side.'_ed_report'}) ?>
+            </div>
+        </div>
+
 		<?php if ($element->{$side.'_description'}) {
     ?>
 			<div class="data-row">

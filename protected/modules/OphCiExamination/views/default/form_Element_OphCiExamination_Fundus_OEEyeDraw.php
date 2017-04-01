@@ -28,7 +28,7 @@
             array('addDoodle', array('Fundus')),
             array('deselectDoodles', array()),
         ),
-        //'listenerArray' => array('posteriorListener'),
+        'listenerArray' => array('autoReportListener'),
         'idSuffix' => $side.'_'.$element->elementType->id,
         'side' => ($side == 'right') ? 'R' : 'L',
         'mode' => 'edit',
@@ -36,6 +36,8 @@
         'attribute' => $side.'_eyedraw',
         'template' => 'OEEyeDrawWidget_InlineToolbar',
         'maxToolbarButtons' => 7,
+        'autoReport' => CHtml::modelName($element) . '_'.$side.'_ed_report',// 'OEModule_OphCiExamination_models_Element_OphCiExamination_Fundus_'.$side.'_ed_report',
+        //'autoReportEditable' => false,
         'fields' => $this->renderPartial($element->form_view.'_OEEyeDraw_fields', array(
             'form' => $form,
             'side' => $side,
