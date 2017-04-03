@@ -6,6 +6,7 @@ class m170328_095257_optom_feedback_role extends OEMigration
 	public function up()
 	{
         $this->insert('authitem', array('name' => 'Optom co-ordinator', 'type' => 2));
+
         $this->createOETable('ophciexamination_invoice_status', array(
             'id' => 'pk',
             'name' => 'VARCHAR(64) NOT NULL',
@@ -16,7 +17,7 @@ class m170328_095257_optom_feedback_role extends OEMigration
         $this->insert('ophciexamination_invoice_status', array('name' => 'Paid'));
         $this->insert('ophciexamination_invoice_status', array('name' => 'Rejected'));
 
-        $this->addColumn('automatic_examination_event_log', 'invoice_status_id','integer unsigned not null DEFAULT 1');
+        $this->addColumn('automatic_examination_event_log', 'invoice_status_id','integer unsigned not null DEFAULT 0');
         $this->addColumn('automatic_examination_event_log', 'comment','text');
 
         $this->addColumn('automatic_examination_event_log_version', 'invoice_status_id','integer unsigned not null');

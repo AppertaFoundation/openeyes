@@ -59,7 +59,7 @@ $cols = array(
                 'label'     => '<button  class="secondary small">View</button>'
             ),
             'save' => array(
-                'options'   => array('title' => 'Save', 'data-id' => '$data->event_id'),
+                'options'   => array('title' => 'Save', 'data-id' => '$data->id'),
                 'url'       => '',
                 'label'     => '<button type="button" class="edit-optom-row secondary small ajax-button">Save</button>'
             ),
@@ -80,7 +80,7 @@ $cols = array(
            row.find('input,select,textarea').each(function(){
                data[$(this).attr('name')]=$(this).val();
            });
-           data['event_id'] = rowID;
+           data['id'] = rowID;
            data['YII_CSRF_TOKEN'] = YII_CSRF_TOKEN;
 
 
@@ -127,7 +127,7 @@ $cols = array(
                     <?php
                         $this->widget('zii.widgets.grid.CGridView', array(
                             'itemsCssClass' => 'grid',
-                            'rowHtmlOptionsExpression' => 'array("id" => $data->event_id)',
+                            'rowHtmlOptionsExpression' => 'array("id" => $data->id)',
                             'dataProvider' => $dp,
                             'htmlOptions' => array('id' => 'inbox-table'),
                             'summaryText' => '<small> {start}-{end} of {count} </small>',

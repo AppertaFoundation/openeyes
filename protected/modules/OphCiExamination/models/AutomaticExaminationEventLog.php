@@ -185,7 +185,10 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
         return CHtml::dropDownList(
             'invoice_status_id',
             $default ,
-            CHtml::listData($status->findAll(),'id','name')
+            CHtml::listData($status->findAll(),'id','name'),
+            array(
+                'empty'=>' - '
+            )
         );
     }
 }

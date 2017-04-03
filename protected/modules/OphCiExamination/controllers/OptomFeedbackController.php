@@ -58,10 +58,7 @@ class OptomFeedbackController extends \BaseEventTypeController
     public function actionOptomAjaxEdit( $id )
     {
         if ($this->request->isPostRequest) {
-            $model = \AutomaticExaminationEventLog::model()->findByAttributes(
-                array('event_id' => $id)
-            );
-
+            $model = \AutomaticExaminationEventLog::model()->findByPk($id);
             if(!$model){
                 $result = json_encode(array(
                     's'     => 0,
