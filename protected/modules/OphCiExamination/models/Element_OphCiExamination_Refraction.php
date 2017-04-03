@@ -88,7 +88,7 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
     public function requiredSphere( $attribute, $params )
     {
 
-        $eyeID = (int)$_POST['OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction']['eye_id'];
+        $eyeID = (int)$this->eye_id;
 
         if(empty($this->{$params['side'].'_sphere'}) && ($params['eye_id'] == $eyeID) && ($eyeID != 3)){
             $this->addError($attribute, ucfirst($params['side']).' sphere cannot be blank. Please specify a valid refraction.');
@@ -97,13 +97,12 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
         if(empty($this->{$params['side'].'_sphere'}) && $eyeID == 3){
             $this->addError($attribute, ucfirst($params['side']).' sphere cannot be blank. Please specify a valid refraction.');
         }
-
     }
 
     public function requiredCylinder( $attribute, $params )
     {
-        $eyeID = (int)$_POST['OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction']['eye_id'];
 
+        $eyeID = (int)$this->eye_id;
         if(empty($this->{$params['side'].'_cylinder'}) && ($params['eye_id'] == $eyeID) && ($eyeID != 3)){
             $this->addError($attribute, ucfirst($params['side']).' cylinder cannot be blank. Please specify a valid refraction.');
         }
@@ -111,7 +110,7 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
         if(empty($this->{$params['side'].'_cylinder'}) && $eyeID == 3){
             $this->addError($attribute, ucfirst($params['side']).' cylinder cannot be blank. Please specify a valid refraction.');
         }
-        
+
     }
 
     public function requiredIfRefractionTypeOther($attribute, $params)
