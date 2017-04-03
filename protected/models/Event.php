@@ -141,9 +141,19 @@ class Event extends BaseActiveRecordVersioned
         return parent::beforeSave();
     }
 
+    /**
+     * @return BaseAPI|null
+     */
+    public function getApi()
+    {
+        if ($this->eventType) {
+            return Yii::app()->moduleAPI->get($this->eventType->class_name);
+        }
+    }
+
     public function moduleAllowsEditing()
     {
-        if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
+        if ($api = $this->getApi()) {
             if (method_exists($api, 'canUpdate')) {
                 return $api->canUpdate($this->id);
             }
@@ -302,7 +312,7 @@ class Event extends BaseActiveRecordVersioned
 
     public function showDeleteIcon()
     {
-        if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
+        if ($api = $this->getApi()) {
             if (method_exists($api, 'showDeleteIcon')) {
                 return $api->showDeleteIcon($this->id);
             }
@@ -578,5 +588,39 @@ class Event extends BaseActiveRecordVersioned
         $criteria->compare('event_type_id', $event_type->id);
         $criteria->order = 'event_date asc';
         return Event::model()->with('episode')->findAll($criteria);
+    }
+
+    /**
+     * @param string $type
+     * @return string
+     */
+    public function getEventIcon($type = 'small')
+    {
+        if ($api = $this->getApi()) {
+            if (method_exists($api, 'getEventIcon')) {
+                return $api->getEventIcon($this, $type);
+            }
+        }
+
+        if ($this->eventType && file_exists(Yii::getPathOfAlias('application.modules.' . $this->eventType->class_name . '.assets'))) {
+            $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->eventType->class_name . '.assets')) . '/';
+        } else {
+            $asset_path = '/assets/';
+        }
+
+        return $asset_path . 'img/' . $type . '.png';
+    }
+
+    /**
+     * @return string
+     */
+    public function getEventName()
+    {
+        if ($api = $this->getApi()) {
+            if (method_exists($api, 'getEventName')) {
+                return $api->getEventName($this);
+            }
+        }
+        return $this->eventType ? $this->eventType->name : 'Event';
     }
 }

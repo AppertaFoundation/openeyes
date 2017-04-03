@@ -117,14 +117,8 @@ if (is_array($ordered_episodes)) {
 
                         $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
 
-                        if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
-                            $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/';
-                        } else {
-                            $assetpath = '/assets/';
-                        }
-
-                        $icon = $assetpath . 'img/small.png';
-                        $event_name =  $event->eventType->name;
+                        $icon = $event->getEventIcon();
+                        $event_name = $event->getEventName();
                     ?>
 
                         <li id="eventLi<?php echo $event->id ?>"
