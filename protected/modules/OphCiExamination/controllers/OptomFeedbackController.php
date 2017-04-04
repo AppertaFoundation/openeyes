@@ -5,6 +5,7 @@ namespace OEModule\OphCiExamination\controllers;
 use Yii;
 use OEModule\OphCiExamination\modules;
 use OEModule\OphCiExamination\components;
+use Audit;
 
 //class OptomFeedbackController extends \BaseController
 class OptomFeedbackController extends \BaseEventTypeController
@@ -13,15 +14,16 @@ class OptomFeedbackController extends \BaseEventTypeController
     protected static $FILTER_LIST_KEY = 'OptomFeedbackManager_list_filter';
     private $is_list_filtered = false;
     protected static $action_types = array(
-        'list' => self::ACTION_TYPE_FORM,
-        'optomAjaxEdit' => self::ACTION_TYPE_FORM,
+        'list'              => self::ACTION_TYPE_FORM,
+        'optomAjaxEdit'     => self::ACTION_TYPE_FORM,
+        'getAuditEventLog'  => self::ACTION_TYPE_FORM,
     );
 
     public function accessRules()
     {
         return array(
             array('allow',
-                'actions' => array('list', 'optomAjaxEdit'),
+                'actions' => array('list', 'optomAjaxEdit', 'getAuditEventLog'),
                 'roles' => array('Optom co-ordinator')
             ),
         );
@@ -72,6 +74,21 @@ class OptomFeedbackController extends \BaseEventTypeController
                 $model->invoice_status_id = $this->request->getPost('invoice_status_id');
                 $model->comment = $this->request->getPost('comment');
                 $model->update();
+
+                $properties = array(
+                    'module'    => 'OphCiExamination',
+                    'event_id'  => $model->event->id,
+                    'episode_id'  => $model->event->episode_id,
+                    'patient_id'  => $model->event->episode->patient->id
+                );
+                
+                Audit::add(
+                    'Optom feedback manager',
+                    'Update invoice status and comment',
+                    null,
+                    null,
+                    $properties);
+
                 $result = json_encode(array(
                     's'     => 1,
                     'msg'   => 'Success update'
@@ -120,5 +137,27 @@ class OptomFeedbackController extends \BaseEventTypeController
     public function isListFiltered()
     {
         return $this->is_list_filtered;
+    }
+
+    public function actionGetAuditEventLog( $id )
+    {
+        if ($this->request->isPostRequest) {
+            $model = \AutomaticExaminationEventLog::model();
+            $allEvent = $model->findByPk($id);
+
+            if($allEvent->event_id > 0){
+                $auditEventRow = Audit::model()->findAll(array("condition" => "event_id = '".$allEvent->event_id."'","order" => "last_modified_date DESC"));
+                if($auditEventRow){
+                    $result = $this->renderPartial('/optom/audit_list', array( 'data' => $auditEventRow));
+
+                } else {
+                    $result = 'No results found.';
+                }
+            } else{
+                $result = 'No event found.';
+            }
+
+        }
+        echo $result;
     }
 }

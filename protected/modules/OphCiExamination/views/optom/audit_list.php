@@ -1,0 +1,35 @@
+<?php
+
+?>
+<div class="row">
+    <div class="large-12 column">
+        <div class="box generic">
+            <?php
+            if (count($data) == 0) {?>
+                <div class="alert-box">
+                    No audit logs match the search criteria.
+                </div>
+                <?php
+            } else {?>
+                <div class="pagination"></div>
+                <table class="grid audit-logs">
+                    <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Target type</th>
+                        <th>Event type</th>
+                    </tr>
+                    </thead>
+                    <tbody id="auditListData">
+                    <?php foreach ($data as $i => $log) {
+                        $this->renderPartial('/optom/audit_list_row', array('i' => $i, 'log' => $log));
+                    }?>
+                    </tbody>
+                </table>
+                <div class="pagination last"></div>
+            <?php }?>
+        </div>
+    </div>
+</div>

@@ -41,17 +41,15 @@ $cols = array(
         'id'            => 'optom-comment',
         'name'          => 'comment',
         'type'          => 'raw',
-        //'value'         => '$data->comment',
         'header'        => 'Comment',
         'value'         => 'CHtml::textArea( "comment", $data->comment)',
-        //'htmlOptions'   => array('class' => 'editable-text'),
     ),
     array(
         'id'                    => 'actions',
         'header'                => 'Actions',
         'class'                 => 'CButtonColumn',
         'htmlOptions'           => array('class' => 'left'),
-        'template'              => '<span style="white-space: nowrap;">{view} {save}</span>',
+        'template'              => '<span style="white-space: nowrap;">{view} {save} <br> {log}</span>',
         'viewButtonImageUrl'    => false,
         'buttons' => array(
             'view' => array(
@@ -63,6 +61,11 @@ $cols = array(
                 'options'   => array('title' => 'Save', 'data-id' => '$data->id'),
                 'url'       => '',
                 'label'     => '<button type="button" class="edit-optom-row secondary small ajax-button">Save</button>'
+            ),
+            'log' => array(
+                'options'   => array('View log' => 'Save', 'data-id' => '$data->id', 'style' => 'margin-top:10px; display:block; text-align:center;'),
+                'url'       => '',
+                'label'     => '<button type="button" class="view-audit-log primary small ajax-button" style="display:block; width: 100%;">View log</button>'
             ),
 
         ),
@@ -104,6 +107,34 @@ $cols = array(
                         new OpenEyes.UI.Dialog.Alert({
                             content:  resp.msg}).open();
                     }
+               },
+               'error': function(resp, status, error) {
+                   new OpenEyes.UI.Dialog.Alert({
+                       content: "Something went wrong " + status + ": " + error}).open();
+               }
+           });
+
+       });
+
+       $('.view-audit-log').click(function(){
+           var row = $(this).closest('tr');
+           var rowID = row.attr('id');
+
+           var data = {};
+           data['YII_CSRF_TOKEN'] = YII_CSRF_TOKEN;
+
+           $.ajax({
+               'type': 'POST',
+               'data': data,
+               'url': baseUrl+'/OphCiExamination/OptomFeedback/getAuditEventLog/'+rowID,
+               'success': function(resp) {
+                   new OpenEyes.UI.Dialog({
+                       title: 'Event log',
+                       content: resp,
+                       dialogClass: 'dialog event',
+                       width: "90%",
+                   }).open();
+
                },
                'error': function(resp, status, error) {
                    new OpenEyes.UI.Dialog.Alert({
