@@ -134,8 +134,9 @@ class OphCoCorrespondence_API extends BaseAPI
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract');
+            if ($element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract')) {
                 return $element->iol_type->name;
+            }
         }
     }
 
@@ -143,8 +144,9 @@ class OphCoCorrespondence_API extends BaseAPI
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract');
-            return $element->iol_power;
+            if ($element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract')) {
+                return $element->iol_power;
+            }
         }
     }
 
@@ -152,9 +154,9 @@ class OphCoCorrespondence_API extends BaseAPI
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
-                'Element_OphTrOperationnote_ProcedureList');
-            return $element->eye->adjective;
+            if ($element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_ProcedureList')) {
+                return $element->eye->adjective;
+            }
         }
     }
 
