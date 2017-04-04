@@ -35,7 +35,7 @@
             <th>Date</th>
             <th>Study</th>
             <th>Volume</th>
-            <th>Comments</th>
+            <th>Withdrawn by</th>
             <th></th>
           </tr>
           </thead>

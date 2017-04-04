@@ -79,7 +79,7 @@ class OphInDnaextraction_DnaTests_Transaction extends BaseActiveRecord
             'date' => 'Date',
             'study_id' => 'Study',
             'volume' => 'Volume',
-            'comments' => 'Comments',
+            'comments' => 'Withdrawn by',
         );
     }
 
