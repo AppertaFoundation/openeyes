@@ -48,6 +48,7 @@ class PortalExamsCommand extends CConsoleCommand
         foreach ($eyes as $eye) {
             $eyeIds[strtolower($eye->name)] = $eye->id;
         }
+
         foreach ($examinations as $examination) {
             $uidArray = explode('-', $examination['patient']['unique_identifier']);
             $uniqueCode = $uidArray[1];
@@ -67,6 +68,9 @@ class PortalExamsCommand extends CConsoleCommand
                 $examinationEventLog->comment = $examination['patient']['comments'];
                 $importStatus = ImportStatus::model()->find('status_value = "Unfound Event"');
                 $examinationEventLog->import_success = $importStatus->id;
+                $examinationEventLog->optometrist = $examination['op_tom']['name'];
+                $examinationEventLog->goc_number = $examination['op_tom']['goc_number'];
+                $examinationEventLog->optometrist_address = $examination['op_tom']['address'];
                 if (!$examinationEventLog->save()) {
                     echo '$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true);
                 }
@@ -88,6 +92,9 @@ class PortalExamsCommand extends CConsoleCommand
                     $examinationEventLog->invoice_status_id = 0;
                     $examinationEventLog->comment = $examination['patient']['comments'];
                     $examinationEventLog->import_success = $importStatus->id;
+                    $examinationEventLog->optometrist = $examination['op_tom']['name'];
+                    $examinationEventLog->goc_number = $examination['op_tom']['goc_number'];
+                    $examinationEventLog->optometrist_address = $examination['op_tom']['address'];
                     if (!$examinationEventLog->save()) {
                         throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
                     }
@@ -103,6 +110,9 @@ class PortalExamsCommand extends CConsoleCommand
                 $examinationEventLog->invoice_status_id = 0;
                 $examinationEventLog->comment = $examination['patient']['comments'];
                 $examinationEventLog->import_success = $importStatus->id;
+                $examinationEventLog->optometrist = $examination['op_tom']['name'];
+                $examinationEventLog->goc_number = $examination['op_tom']['goc_number'];
+                $examinationEventLog->optometrist_address = $examination['op_tom']['address'];
                 if (!$examinationEventLog->save()) {
                     throw new CDbException('$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true));
                 }
@@ -119,6 +129,9 @@ class PortalExamsCommand extends CConsoleCommand
                     $examinationEventLog->comment = $examination['patient']['comments'];
                     $importStatus = ImportStatus::model()->find('status_value = "Duplicate Event"');
                     $examinationEventLog->import_success = $importStatus->id;
+                    $examinationEventLog->optometrist = $examination['op_tom']['name'];
+                    $examinationEventLog->goc_number = $examination['op_tom']['goc_number'];
+                    $examinationEventLog->optometrist_address = $examination['op_tom']['address'];
                     echo 'Duplicate record found for '.$examination['patient']['unique_identifier'].PHP_EOL;
                     if (!$examinationEventLog->save()) {
                         echo '$examination_event_log failed: '.print_r($examinationEventLog->getErrors(), true).PHP_EOL;

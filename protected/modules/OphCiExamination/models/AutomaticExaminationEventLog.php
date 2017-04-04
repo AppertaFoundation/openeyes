@@ -111,6 +111,10 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
         ));
     }
 
+    /*
+     * Optometrist feedback manager filter handle function
+     * @param array        $filter
+     */
     protected function buildOptomFilterCriteria( $filter = array())
     {
         $criteria = new \CDbCriteria();
@@ -119,12 +123,15 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
         $this->handleDateRangeFilter($criteria, $filter);
         $this->invoiceStatusSearch($criteria, $filter);
         $this->patientNumberSearch($criteria, $filter);
+        $this->optomNameSearch($criteria, $filter);
+        $this->gocNumberSearch($criteria, $filter);
 
         return $criteria;
 
     }
 
     /**
+     * Date range search in optometrist feedback manager
      * @param \CDbCriteria $criteria
      * @param array        $filter
      */
@@ -155,7 +162,9 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
     }
 
     /*
-     * Invoice status search
+     * Invoice status search in optometrist feedback manager
+     * @param \CDbCriteria $criteria
+     * @param array        $filter
      */
     private function invoiceStatusSearch(\CDbCriteria $criteria, $filter )
     {
@@ -166,7 +175,9 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
     }
 
     /*
-     * Patient search
+     * Patient search in optometrist feedback manager
+     * @param \CDbCriteria $criteria
+     * @param array        $filter
      */
     private function patientNumberSearch(\CDbCriteria $criteria, $filter )
     {
@@ -177,7 +188,35 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
     }
 
     /*
-     * Generate invoice status dropdown to view
+     * Optometrist search in optometrist feedback manager
+     * @param \CDbCriteria $criteria
+     * @param array        $filter
+     */
+    private function optomNameSearch( \CDbCriteria $criteria, $filter  )
+    {
+        if (array_key_exists('optometrist', $filter) && $filter['optometrist'] !== '') {
+            //$criteria->addCondition('optometrist = :optometrist');
+            $criteria->addSearchCondition('optometrist', $filter['optometrist']);
+           // $criteria->params[':optometrist'] = $filter['optometrist'];
+        }
+    }
+
+    /*
+     * GOC number search in optometrist feedback manager
+     * @param \CDbCriteria $criteria
+     * @param array        $filter
+     */
+    private function gocNumberSearch(\CDbCriteria $criteria, $filter)
+    {
+        if (array_key_exists('goc_number', $filter) && $filter['goc_number'] !== '') {
+            $criteria->addCondition('goc_number = :goc_number');
+            $criteria->params[':goc_number'] = $filter['goc_number'];
+        }
+    }
+
+    /*
+     * Generate invoice status dropdown to optometrist feedback manager view
+     * @param integer        $default
      */
     public function invoiceStatusSelect( $default )
     {

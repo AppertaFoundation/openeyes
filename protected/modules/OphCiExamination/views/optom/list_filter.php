@@ -79,13 +79,13 @@
 
                     <div class="column large-4">
                         <div class="row">
-                            <div class="column large-4 text-right"><label for="optometrist_name">Optometrist name:</label></div>
+                            <div class="column large-4 text-right"><label for="optometrist">Optometrist name:</label></div>
                             <div class="column large-8">
                                 <?php
-                                echo CHtml::textField('optometrist_name', (array_key_exists('optometrist_name', $list_filter) ? $list_filter['optometrist_name'] : null),
+                                echo CHtml::textField('optometrist', (array_key_exists('optometrist', $list_filter) ? $list_filter['optometrist'] : null),
                                     array(
-                                        'id'=>'optometrist_name',
-                                        'name'=>'optometrist_name'
+                                        'id'=>'optometrist',
+                                        'name'=>'optometrist'
                                     )
                                 );
                                 ?>
@@ -93,13 +93,13 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="column large-4 text-right"><label for="optometrist_goc_code">Optometrist GOC code:</label></div>
+                            <div class="column large-4 text-right"><label for="goc_number">Optometrist GOC code:</label></div>
                             <div class="column large-8">
                                 <?php
-                                echo CHtml::textField('optometrist_goc_code',  (array_key_exists('optometrist_goc_code', $list_filter) ? $list_filter['optometrist_goc_code'] : null),
+                                echo CHtml::textField('goc_number',  (array_key_exists('goc_number', $list_filter) ? $list_filter['goc_number'] : null),
                                     array(
-                                        'id'=>'optometrist_goc_code',
-                                        'name'=>'optometrist_goc_code'
+                                        'id'=>'goc_number',
+                                        'name'=>'goc_number'
                                     )
                                 );
                                 ?>
@@ -128,8 +128,8 @@
             $('#date_to').val('');
             $('#status_id').val('');
             $('#patient_number').val('');
-            $('#optometrist_name').val('');
-            $('#optometrist_goc_code').val('');
+            $('#optometrist').val('');
+            $('#goc_number').val('');
             $('#optomfeedbackmanager-filter').submit();
         });
 

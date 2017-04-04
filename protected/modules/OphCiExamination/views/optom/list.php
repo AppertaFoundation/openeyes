@@ -15,17 +15,18 @@ $cols = array(
         'labelExpression'   => '$data->event->episode->patient->getDisplayName() . "<br> (" . $data->event->episode->patient->hos_num . ")"',
     ),
     array(
-        'id'        => 'optometrist_name',
-        'name'      => 'optometrist_name',
+        'id'        => 'optometrist',
+        'name'      => 'optometrist',
         'type'      => 'raw',
         'header'    => 'Optometrist',
-        'value'     => '$data->event->episode->user->first_name ." ". $data->event->episode->user->last_name',
+        'value'     => '$data->optometrist',
     ),
     array(
         'id'        => 'optometrist_address',
         'name'      => 'optometrist_address',
         'type'      => 'raw',
         'header'    => 'Optom Address',
+        'value'     => '$data->optometrist_address',
     ),
     array(
         'name'      => 'invoice_status_id',
@@ -71,6 +72,7 @@ $cols = array(
 ?>
 <script type="text/javascript">
    $(document).ready(function() {
+
        $('.edit-optom-row').click(function(){
            var row = $(this).closest('tr');
            var td = $(this).closest('td');
@@ -83,7 +85,6 @@ $cols = array(
            data['id'] = rowID;
            data['YII_CSRF_TOKEN'] = YII_CSRF_TOKEN;
 
-
            $.ajax({
                'type': 'POST',
                'data': data,
@@ -94,7 +95,7 @@ $cols = array(
                     if(resp.s == 1){
 
                         div = '<div id="flash-success" class="optom-ajax-msg alert-box with-icon info">'+ resp.msg +'</div>';
-                        td.append(div);
+                        row.append(div);
                         setTimeout(function() {
                             $(".optom-ajax-msg").hide(300)
                         }, 2000);
@@ -127,7 +128,7 @@ $cols = array(
                     <?php
                         $this->widget('zii.widgets.grid.CGridView', array(
                             'itemsCssClass' => 'grid',
-                            'rowHtmlOptionsExpression' => 'array("id" => $data->id)',
+                            'rowHtmlOptionsExpression' => 'array("id" => $data->id, "class" => "optom-result-row")',
                             'dataProvider' => $dp,
                             'htmlOptions' => array('id' => 'inbox-table'),
                             'summaryText' => '<small> {start}-{end} of {count} </small>',

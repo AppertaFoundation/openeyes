@@ -55,6 +55,9 @@ class OptomFeedbackController extends \BaseEventTypeController
         );
     }
 
+    /**
+     *  Optom Feedback manager row save
+     */
     public function actionOptomAjaxEdit( $id )
     {
         if ($this->request->isPostRequest) {
@@ -90,7 +93,7 @@ class OptomFeedbackController extends \BaseEventTypeController
 
         // if POST, then a new filter is to be applied, otherwise retrieve from the session
         if ($this->request->isPostRequest) {
-            foreach (array('date_from', 'date_to', 'status_id', 'patient_number','optometrist_name', 'optometrist_goc_code' ) as $key) {
+            foreach (array('date_from', 'date_to', 'status_id', 'patient_number','optometrist', 'goc_number' ) as $key) {
                 $val = $this->request->getPost($key, null);
                 $filter[$key] = $val;
             }
