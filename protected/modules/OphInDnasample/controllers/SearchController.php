@@ -127,11 +127,11 @@ class SearchController extends BaseController
             ->leftJoin('genetics_patient_diagnosis', 'genetics_patient_diagnosis.patient_id = genetics_patient.id');
 
         if ($date_from) {
-            $command->andWhere('event_date <= :date_from', array(':date_from' => Helper::convertNHS2MySQL($date_from)));
+            $command->andWhere('event_date >= :date_from', array(':date_from' => Helper::convertNHS2MySQL($date_from)));
         }
 
         if ($date_to) {
-            $command->andWhere('event_date >= :date_to', array(':date_to' => Helper::convertNHS2MySQL($date_to)));
+            $command->andWhere('event_date <= :date_to', array(':date_to' => Helper::convertNHS2MySQL($date_to)));
         }
 
         if ($sample_type) {
