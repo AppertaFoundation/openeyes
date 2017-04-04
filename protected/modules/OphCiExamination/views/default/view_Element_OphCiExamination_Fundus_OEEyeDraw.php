@@ -36,14 +36,27 @@
             </div>
         </div>
 
-		<?php if ($element->{$side.'_description'}) {
-    ?>
+		<?php if ($element->{$side.'_description'}): ?>
 			<div class="data-row">
 				<div class="data-value">
 					<?= Yii::app()->format->Ntext($element->{$side.'_description'}) ?>
 				</div>
 			</div>
-		<?php 
-}?>
+		<?php endif; ?>
+
+        <?php if ($element->{$side . '_vitreous'}): ?>
+            <div class="data-row">
+                <div class="column large-4">
+                    <div class="data-label">
+                        <?= $element->getAttributeLabel('vitreous') ?>:</div>
+                    </div>
+                <div class="column large-8">
+                    <div class="data-value">
+                            <?= implode('<br />', $element->{$side . '_vitreous'}) ?>
+                        </div>
+                    </div>
+                </div>
+        <?php endif; ?>
+
 	</div>
 </div>

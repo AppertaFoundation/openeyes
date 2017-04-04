@@ -2,6 +2,7 @@
 
 class m170401_110717_autoreport_eyedraw_fundus extends CDbMigration
 {
+
 	public function up()
 	{
         $this->addColumn('et_ophciexamination_fundus', 'right_ed_report', 'text');

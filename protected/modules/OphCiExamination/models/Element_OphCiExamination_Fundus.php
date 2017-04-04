@@ -10,6 +10,15 @@ namespace OEModule\OphCiExamination\models;
 
 class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
 {
+    public $auto_update_relations = true;
+    public $relation_defaults = array(
+        'left_vitreous' => array(
+            'side_id' => \Eye::LEFT,
+        ),
+        'right_vitreous' => array(
+            'side_id' => \Eye::RIGHT
+        ));
+
     public $service;
 
     /**
@@ -38,7 +47,7 @@ class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('eye_id, left_eyedraw, left_ed_report, left_description, right_eyedraw, right_ed_report, right_description', 'safe'),
+            array('eye_id, left_eyedraw, left_ed_report, left_description, right_eyedraw, right_ed_report, right_description, left_vitreous, right_vitreous', 'safe'),
             array('left_eyedraw, left_ed_report', 'requiredIfSide', 'side' => 'left'),
             array('right_eyedraw, right_ed_report', 'requiredIfSide', 'side' => 'right'),
             // The following rule is used by search().
@@ -70,6 +79,14 @@ class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'left_vitreous' => array(self::MANY_MANY, 'OEModule\OphCiExamination\models\Vitreous',
+                                'ophciexamination_fundus_vitreous(element_id, vitreous_id)',
+                                'on' => 'side_id = ' . \Eye::LEFT,
+                                'order' => 'left_vitreous.display_order asc'),
+            'right_vitreous' => array(self::MANY_MANY, 'OEModule\OphCiExamination\models\Vitreous',
+                                'ophciexamination_fundus_vitreous(element_id, vitreous_id)',
+                                'on' => 'side_id = ' . \Eye::RIGHT,
+                                'order' => 'right_vitreous.display_order asc')
         );
     }
 
