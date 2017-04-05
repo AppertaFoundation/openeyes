@@ -14,6 +14,7 @@ class m170328_095257_optom_feedback_role extends OEMigration
         ));
 
         $this->insert('ophciexamination_invoice_status', array('name' => 'Recieved'));
+        $this->insert('ophciexamination_invoice_status', array('name' => 'Order raised'));
         $this->insert('ophciexamination_invoice_status', array('name' => 'Paid'));
         $this->insert('ophciexamination_invoice_status', array('name' => 'Rejected'));
 

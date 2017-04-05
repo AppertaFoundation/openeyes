@@ -91,7 +91,7 @@ class OptomFeedbackController extends \BaseEventTypeController
 
                 $result = json_encode(array(
                     's'     => 1,
-                    'msg'   => 'Success update'
+                    'msg'   => 'Update successful'
                 ));
             }
 

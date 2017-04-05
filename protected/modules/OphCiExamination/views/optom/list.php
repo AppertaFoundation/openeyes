@@ -18,7 +18,7 @@ $cols = array(
         'id'        => 'optometrist',
         'name'      => 'optometrist',
         'type'      => 'raw',
-        'header'    => 'Optometrist',
+        'header'    => 'Optometrist Name',
         'value'     => '$data->optometrist',
     ),
     array(
@@ -30,7 +30,7 @@ $cols = array(
     ),
     array(
         'name'      => 'invoice_status_id',
-        'header'    => 'Invoice status',
+        'header'    => 'Invoice Status',
         'type'      => 'raw',
         //'value'     => '$data->invoice_status->name',
         'value' => '$data->invoiceStatusSelect( $data->invoice_status_id )',

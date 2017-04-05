@@ -34,7 +34,8 @@
                 </span>
             </a>
             <div class=" js-toggle-body">
-                <div class="row">
+
+                <div class="row" style="margin-bottom:10px;">
                     <div class="column large-4">
                         <div class="row">
                             <div class="column large-4 text-right"><label for="date_from">Date From:</label></div>
@@ -43,18 +44,11 @@
                                        value="<?= array_key_exists('date_from', $list_filter) ? $list_filter['date_from'] : ''; ?>" />
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="column large-4 text-right"><label for="date_to">Date To:</label></div>
-                            <div class="column large-8">
-                                <input type="text" id="date_to" name="date_to" class="datepicker filter-field"
-                                       value="<?= array_key_exists('date_to', $list_filter) ? $list_filter['date_to'] : ''; ?>" />
-                            </div>
-                        </div>
                     </div>
 
                     <div class="column large-4">
                         <div class="row">
-                            <div class="column large-4 text-right"><label for="status_id">Status:</label></div>
+                            <div class="column large-4 text-right"><label for="status_id">Invoice Status:</label></div>
                             <div class="column large-8">
                                 <?php
                                 echo
@@ -65,7 +59,38 @@
                                 ?>
                             </div>
                         </div>
+                    </div>
 
+                    <div class="column large-4">
+                        <div class="row">
+                            <div class="column large-5 text-right"><label for="optometrist">Optometrist Name:</label></div>
+                            <div class="column large-7">
+                                <?php
+                                echo CHtml::textField('optometrist', (array_key_exists('optometrist', $list_filter) ? $list_filter['optometrist'] : null),
+                                    array(
+                                        'id'=>'optometrist',
+                                        'name'=>'optometrist'
+                                    )
+                                );
+                                ?>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-bottom:10px;">
+                    <div class="column large-4">
+                        <div class="row">
+                            <div class="column large-4 text-right"><label for="date_to">Date To:</label></div>
+                            <div class="column large-8">
+                                <input type="text" id="date_to" name="date_to" class="datepicker filter-field"
+                                       value="<?= array_key_exists('date_to', $list_filter) ? $list_filter['date_to'] : ''; ?>" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column large-4">
                         <div class="column large-4  text-right"><label for="patient_number">Patient number:</label></div>
                         <div class="column large-8"><?php
                             echo CHtml::textField('patient_number', (array_key_exists('patient_number', $list_filter) ? $list_filter['patient_number'] : null),
@@ -78,23 +103,10 @@
                     </div>
 
                     <div class="column large-4">
-                        <div class="row">
-                            <div class="column large-4 text-right"><label for="optometrist">Optometrist name:</label></div>
-                            <div class="column large-8">
-                                <?php
-                                echo CHtml::textField('optometrist', (array_key_exists('optometrist', $list_filter) ? $list_filter['optometrist'] : null),
-                                    array(
-                                        'id'=>'optometrist',
-                                        'name'=>'optometrist'
-                                    )
-                                );
-                                ?>
 
-                            </div>
-                        </div>
                         <div class="row">
-                            <div class="column large-4 text-right"><label for="goc_number">Optometrist GOC code:</label></div>
-                            <div class="column large-8">
+                            <div class="column large-5 text-right"><label for="goc_number">Optometrist GOC code:</label></div>
+                            <div class="column large-7">
                                 <?php
                                 echo CHtml::textField('goc_number',  (array_key_exists('goc_number', $list_filter) ? $list_filter['goc_number'] : null),
                                     array(
@@ -106,17 +118,18 @@
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="row">
-                        <div class="column large-12 text-right end">
-                            <?php if ($this->isListFiltered()) { ?>
-                                <button id="reset_button" class="warning" type="submit">Reset</button>
-                            <?php } ?>
-                            <button id="search_button" class="secondary" type="submit" >Search</button>
-                        </div>
+                <div class="row">
+                    <div class="column large-12 text-right">
+                        <?php if ($this->isListFiltered()) { ?>
+                            <button id="reset_button" class="warning" type="submit">Reset</button>
+                        <?php } ?>
+                        <button id="search_button" class="secondary" type="submit" >Search</button>
                     </div>
                     <div class="clearfix"></div>
                 </div>
+
             </div>
         </div>
         <?php $this->endWidget()?>
