@@ -19,6 +19,16 @@
 ?>
 <section class="element">
 	<div class="element-data">
+        <div class="row data-row">
+            <div class="large-2 column">
+                <div class="data-label"><?php echo $element->getAttributeLabel('id')?>:</div>
+            </div>
+            <div class="large-10 column">
+                <div class="data-value">
+                    <?php echo $element->id; ?>
+                </div>
+            </div>
+        </div>
 		<div class="row data-row">
 			<div class="large-2 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel('type_id')?>:</div>
