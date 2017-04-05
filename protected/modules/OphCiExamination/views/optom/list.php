@@ -53,7 +53,7 @@ $cols = array(
         'viewButtonImageUrl'    => false,
         'buttons' => array(
             'view' => array(
-                'options'   => array('title' => 'View CVI', 'class' => ''),
+                'options'   => array('title' => 'View examination'),
                 'url'       => 'Yii::app()->createURL("/OphCiExamination/default/view/", array("id" => $data->event_id))',
                 'label'     => '<button  class="secondary small">View</button>'
             ),
@@ -63,7 +63,7 @@ $cols = array(
                 'label'     => '<button type="button" class="edit-optom-row secondary small ajax-button">Save</button>'
             ),
             'log' => array(
-                'options'   => array('View log' => 'Save', 'data-id' => '$data->id', 'style' => 'margin-top:10px; display:block; text-align:center;'),
+                'options'   => array('title' => 'View log', 'data-id' => '$data->id', 'style' => 'margin-top:10px; display:block; text-align:center;'),
                 'url'       => '',
                 'label'     => '<button type="button" class="view-audit-log primary small ajax-button" style="display:block; width: 100%;">View log</button>'
             ),

@@ -81,7 +81,7 @@ class OptomFeedbackController extends \BaseEventTypeController
                     'episode_id'  => $model->event->episode_id,
                     'patient_id'  => $model->event->episode->patient->id
                 );
-                
+
                 Audit::add(
                     'Optom feedback manager',
                     'Update invoice status and comment',
