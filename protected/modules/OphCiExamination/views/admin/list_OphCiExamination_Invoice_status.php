@@ -18,17 +18,7 @@
  */
 ?>
 <?php $this->renderPartial('//base/_messages')?>
-<div class="hidden" id="add-new-form" style="margin-bottom: 10px">
-    <?php
-    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'invoice-status-create',
-        'enableAjaxValidation' => false,
-        'action' => Yii::app()->createURL($this->module->getName().'/admin/addEmailRecipient'),
-    ));
 
-    $this->endWidget();
-    ?>
-</div>
 <div class="box admin">
     <h2><?php echo $title ?></h2>
     <form id="admin_InvoiceStatus">

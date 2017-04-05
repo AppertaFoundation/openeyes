@@ -13,7 +13,7 @@ class m170328_095257_optom_feedback_role extends OEMigration
             'active' => 'TINYINT(1) NOT NULL DEFAULT 1',
         ));
 
-        $this->insert('ophciexamination_invoice_status', array('name' => 'Recieved'));
+        $this->insert('ophciexamination_invoice_status', array('name' => 'Received'));
         $this->insert('ophciexamination_invoice_status', array('name' => 'Order raised'));
         $this->insert('ophciexamination_invoice_status', array('name' => 'Paid'));
         $this->insert('ophciexamination_invoice_status', array('name' => 'Rejected'));

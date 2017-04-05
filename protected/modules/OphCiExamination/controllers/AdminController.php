@@ -784,14 +784,13 @@ class AdminController extends \ModuleAdminController
      */
     public function actionInvoiceStatusList()
     {
-       // $admin = new Admin(AutomaticExaminationEventLog::model(), $this);
-        $model = new models\InvoiceStatus();
 
+        $model = new models\InvoiceStatus();
 
         $this->render('list_OphCiExamination_Invoice_status', array(
             'model_class' => $model,
             'model_list' => $model::model()->findAll(array('order' => 'id asc')),
-            'title' => 'Invoice status',
+            'title' => 'Invoice Statuses',
         ));
 
     }
