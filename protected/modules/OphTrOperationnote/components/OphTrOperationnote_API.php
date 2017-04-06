@@ -26,7 +26,7 @@ class OphTrOperationnote_API extends BaseAPI
      * @param Patient $patient
      *
      * @return string
-     */
+     * deprecated since 2.0
     public function getLetterProcedures($patient)
     {
         $return = '';
@@ -46,7 +46,28 @@ class OphTrOperationnote_API extends BaseAPI
 
         return $return;
     }
+    */
+    public function getLetterProcedures($patient)
+    {
+        $return = '';
 
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if($plist =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_ProcedureList', $patient)){
+                foreach ($plist->procedures as $i => $procedure) {
+                    if ($i) {
+                        $return .= ', ';
+                    }
+                    $return .= $plist->eye->adjective . ' ' . $procedure->term;
+                }
+            }
+        }
+
+        return $return;
+    }
+
+    /*
+     * OE-6554: I can't find where this function should be used
+     */
     public function getLetterProceduresBookingEventID($patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
@@ -58,16 +79,28 @@ class OphTrOperationnote_API extends BaseAPI
         }
     }
 
+    /*
+     * deprecated since 2.0
     public function getLastEye($patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($plist = $this->getElementForLatestEventInEpisode($episode,
-                'Element_OphTrOperationnote_ProcedureList')
-            ) {
+            if ($plist = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_ProcedureList')) {
                 return $plist->eye_id;
             }
         }
     }
+    */
+    public function getLastEye( $patient )
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if($plist =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_ProcedureList', $patient)){
+                return $plist->eye_id;
+            }
+        }
+    }
+
+    /*
+     * deprecated since 2.0
 
     public function getLetterProceduresSNOMED($patient)
     {
@@ -77,6 +110,24 @@ class OphTrOperationnote_API extends BaseAPI
             if ($plist = $this->getElementForLatestEventInEpisode($episode,
                 'Element_OphTrOperationnote_ProcedureList')
             ) {
+                foreach ($plist->procedures as $i => $procedure) {
+                    if ($i) {
+                        $return .= ', ';
+                    }
+                    $return .= $plist->eye->adjective . ' ' . $procedure->snomed_term;
+                }
+            }
+        }
+
+        return $return;
+    }
+    */
+    public function getLetterProceduresSNOMED($patient)
+    {
+        $return = '';
+
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if($plist =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_ProcedureList', $patient)){
                 foreach ($plist->procedures as $i => $procedure) {
                     if ($i) {
                         $return .= ', ';
@@ -131,12 +182,25 @@ class OphTrOperationnote_API extends BaseAPI
      * @param Patient $patient
      *
      * @return false|string
-     */
-    public function getLastOperationDate(\Patient $patient)
+     * deprecated since 2.0
+
+     public function getLastOperationDate(\Patient $patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
             $event = $this->getMostRecentEventInEpisode($episode->id, $event_type->id);
+            if (isset($event->event_date)) {
+                return Helper::convertDate2NHS($event->event_date);
+            }
+        }
+
+        return '';
+    }
+    */
+    public function getLastOperationDate(\Patient $patient)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            $event = $this->getLatestEvent($patient);
             if (isset($event->event_date)) {
                 return Helper::convertDate2NHS($event->event_date);
             }
@@ -151,12 +215,25 @@ class OphTrOperationnote_API extends BaseAPI
      * @param Patient $patient
      *
      * @return false|string
-     */
+     * deprecated since 2.0
+
     public function getLastOperationDateUnformatted(\Patient $patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
             $event = $this->getMostRecentEventInEpisode($episode->id, $event_type->id);
+            if (isset($event->event_date)) {
+                return $event->event_date;
+            }
+        }
+
+        return '';
+    }
+    */
+    public function getLastOperationDateUnformatted(\Patient $patient)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            $event = $this->getLatestEvent($patient);
             if (isset($event->event_date)) {
                 return $event->event_date;
             }
@@ -173,7 +250,8 @@ class OphTrOperationnote_API extends BaseAPI
      * @param Patient $patient
      *
      * @return string
-     */
+     * deprecated since 2.0
+
     public function getLastOperationSurgeonName(\Patient $patient)
     {
         $surgeon_name = '';
@@ -187,6 +265,20 @@ class OphTrOperationnote_API extends BaseAPI
         
         return $surgeon_name;
     }
+     */
+    public function getLastOperationSurgeonName(\Patient $patient)
+    {
+        $surgeon_name = '';
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        if ($episode) {
+            if($surgeon_element =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_Surgeon', $patient)){
+                $surgeon_name = ($surgeon = User::model()->findByPk($surgeon_element->surgeon_id)) ? $surgeon->getFullNameAndTitle() : '';
+            }
+        }
+
+        return $surgeon_name;
+    }
+
 
     /**
      * Get the last operation's location
@@ -194,7 +286,8 @@ class OphTrOperationnote_API extends BaseAPI
      * @param Patient $patient
      *
      * @return string
-     */
+     * deprecated since 2.0
+
     public function getLastOperationLocation(\Patient $patient)
     {
         $site = '';
@@ -208,6 +301,19 @@ class OphTrOperationnote_API extends BaseAPI
 
         return $site;
     }
+     */
+    public function getLastOperationLocation(\Patient $patient)
+    {
+        $site = '';
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        if ($episode) {
+            if($site_element =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_SiteTheatre', $patient)){
+                $site = $site_element->site->name;
+            }
+        }
+
+        return $site;
+    }
 
     /**
      * Cataract Element from the latest operation note
@@ -215,13 +321,27 @@ class OphTrOperationnote_API extends BaseAPI
      * @param Patient $patient
      *
      * @return Element_OphTrOperationnote_Cataract | bool
-     */
+     * deprecated since 2.0
+
     public function getLatestCataractElementForEpisode(\Patient $patient)
     {
         $episode = $patient->getEpisodeForCurrentSubspecialty();
         if ($episode) {
             $cataract_element = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_Cataract');
             if ($cataract_element) {
+                return $cataract_element;
+            }
+        }
+
+        return false;
+    }
+     */
+
+    public function getLatestCataractElementForEpisode(\Patient $patient)
+    {
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        if ($episode) {
+            if($cataract_element =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_Cataract', $patient)){
                 return $cataract_element;
             }
         }
@@ -279,15 +399,31 @@ class OphTrOperationnote_API extends BaseAPI
      * Get the last operation Post-op instructions
      * @param Patient $patient
      * @return string
-     */
+     * deprecated since 2.0
+
     public function getLastOperationPostOpInstructions(\Patient $patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if($latest =  $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_Comments')){
+            if($latest =  $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationnote_Comments')) {
                 return $latest->postop_instructions;
             }
         }
 
+        return '';
+    }
+    */
+
+    /**
+     * Get the last operation Post-op instructions
+     * @param Patient $patient
+     * @return string
+     */
+
+    public function getLastOperationPostOpInstructions(\Patient $patient)
+    {
+        if($latest =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_Comments', $patient)){
+            return $latest->postop_instructions;
+        }
         return '';
     }
 
