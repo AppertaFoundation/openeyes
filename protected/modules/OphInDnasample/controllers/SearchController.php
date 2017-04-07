@@ -59,7 +59,7 @@ class SearchController extends BaseController
                 $page = $_GET['page'];
             }
 
-            $search_command = $this->buildSearchCommand('DISTINCT(patient.id),patient.hos_num,event.id,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments', $page);
+            $search_command = $this->buildSearchCommand('DISTINCT(patient.id),patient.hos_num,event.id,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments,et_ophindnasample_sample.id AS sample_id', $page);
 
             $dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
