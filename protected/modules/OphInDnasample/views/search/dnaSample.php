@@ -198,7 +198,7 @@
 					<?php
 					foreach ($results as $result) {?>
 						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInDnasample/default/view/'.$result['id'])?>">
-                            <td><?php echo $result['sammple_id']?></td>
+                            <td><?php echo $result['sample_id']?></td>
                             <td><?php echo $result['hos_num']?></td>
 							<td><?php echo strtoupper($result['last_name'])?>, <?php echo $result['first_name']?></td>
 							<td>
