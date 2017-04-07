@@ -39,6 +39,7 @@ class SearchController extends BaseController
 
     public function actionDnaSample()
     {
+
         $pages = 1;
         $page = 1;
         $results = array();
@@ -58,11 +59,14 @@ class SearchController extends BaseController
                 $page = $_GET['page'];
             }
 
-            $search_command = $this->buildSearchCommand('DISTINCT(patient.id),patient.hos_num,event.id,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments', $page);
+            $search_command = $this->buildSearchCommand('DISTINCT(patient.id),patient.hos_num,event.id,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments,et_ophindnasample_sample.id AS sample_id', $page);
 
             $dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
             switch (@$_GET['sortby']) {
+                case 'sample_id':
+                    $order = "et_ophindnasample_sample.id $dir";
+                    break;
                 case 'hos_num':
                     $order = "hos_num $dir";
                     break;
@@ -91,6 +95,7 @@ class SearchController extends BaseController
 
             $results = $search_command
                 ->queryAll();
+
         }
 
         $pagination = new CPagination($total_items);
@@ -106,6 +111,7 @@ class SearchController extends BaseController
 
     private function buildSearchCommand($select)
     {
+        $sample_id = @$_GET['sample_id'];
         $date_from = @$_GET['date-from'];
         $date_to = @$_GET['date-to'];
         $sample_type = @$_GET['sample-type'];
@@ -125,6 +131,11 @@ class SearchController extends BaseController
             ->join('contact', 'patient.contact_id = contact.id')
             ->join('genetics_patient', 'genetics_patient.patient_id = patient.id')
             ->leftJoin('genetics_patient_diagnosis', 'genetics_patient_diagnosis.patient_id = genetics_patient.id');
+
+        if(!is_null($sample_id))
+        {
+            $command->andWhere('et_ophindnasample_sample.id = :sample_id', array(':sample_id'=>$sample_id));
+        }
 
         if ($date_from) {
             $command->andWhere('event_date >= :date_from', array(':date_from' => Helper::convertNHS2MySQL($date_from)));

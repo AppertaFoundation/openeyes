@@ -17,11 +17,15 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+
 <div class="box admin">
 	<h2>Sample Search</h2>
 
 	<div class="large-12 column">
 		<?php
+
+        // DEV warning: form submit click overridden in module.js
+
         $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'searchform',
             'enableAjaxValidation' => false,
@@ -29,6 +33,7 @@
             'action' => Yii::app()->createUrl('/OphInDnasample/search/DnaSample'),
             'method' => 'GET',
         ))?>
+
 		<div class="large-12 column">
 			<div class="panel">
 				<div class="row">
@@ -36,6 +41,7 @@
 						<table class="grid">
 							<thead>
                                 <tr>
+                                    <th>ID</th>
                                     <th>Hospital Num:</th>
                                     <th>First Name:</th>
                                     <th>Last Name:</th>
@@ -44,8 +50,12 @@
 							<tbody>
                                 <tr>
                                     <td>
+                                        <?php echo CHtml::textField('sample_id', @$_GET['sample_id'], array('placeholder' => 'ID'))?>
+                                    </td>
+                                    <td>
                                         <?php echo CHtml::textField('hos_num', @$_GET['hos_num'], array('placeholder' => 'Hospital Number'))?>
-                                    </td><td>
+                                    </td>
+                                    <td>
                                         <?php echo CHtml::textField('first_name', @$_GET['first_name'], array('placeholder' => 'First Name'))?>
                                     </td>
                                     <td>
@@ -174,6 +184,7 @@
 			<table class="grid">
 				<thead>
 					<tr>
+                        <th><?php echo CHtml::link('ID', $this->getUri(array('sortby' => 'sample_id')))?></th>
 						<th><?php echo CHtml::link('Hospital no', $this->getUri(array('sortby' => 'hos_num')))?></th>
 						<th><?php echo CHtml::link('Patient name', $this->getUri(array('sortby' => 'patient_name')))?></th>
 						<th><?php echo CHtml::link('Date Taken', $this->getUri(array('sortby' => 'date_taken')))?></th>
@@ -187,7 +198,8 @@
 					<?php
 					foreach ($results as $result) {?>
 						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInDnasample/default/view/'.$result['id'])?>">
-							<td><?php echo $result['hos_num']?></td>
+                            <td><?php echo $result['sample_id']?></td>
+                            <td><?php echo $result['hos_num']?></td>
 							<td><?php echo strtoupper($result['last_name'])?>, <?php echo $result['first_name']?></td>
 							<td>
                                 <?php
