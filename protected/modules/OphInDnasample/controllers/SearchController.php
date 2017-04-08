@@ -129,8 +129,8 @@ class SearchController extends BaseController
             ->leftJoin('patient', 'episode.patient_id = patient.id')
             ->leftJoin('ophindnasample_sample_type', 'et_ophindnasample_sample.type_id = ophindnasample_sample_type.id')
             ->leftJoin('contact', 'patient.contact_id = contact.id')
-            ->leftJoin('genetics_patient', 'genetics_patient.patient_id = patient.id')
-            ->leftJoin('genetics_patient_diagnosis', 'genetics_patient_diagnosis.patient_id = genetics_patient.id');
+            ->leftJoin('genetics_patient', 'genetics_patient.patient_id = patient.id');
+            //->leftJoin('genetics_patient_diagnosis', 'genetics_patient_diagnosis.patient_id = genetics_patient.id');
 
         if($sample_id)
         {
