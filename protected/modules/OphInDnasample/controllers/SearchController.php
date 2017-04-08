@@ -153,7 +153,7 @@ class SearchController extends BaseController
             $command->andWhere((array('like', 'comments', '%'.$comment.'%')));
         }
         if ($disorder_id) {
-            $command->andWhere('genetics_patient_diagnosis.disorder_id = :disorder_id', array(':disorder_id' => $disorder_id));
+            $command->andWhere('genetics_patient.id IN (SELECT patient_id FROM genetics_patient_diagnosis WHERE genetics_patient_diagnosis.disorder_id = :disorder_id)', array(':disorder_id' => $disorder_id));
         }
 
         if($first_name){
