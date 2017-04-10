@@ -71,6 +71,7 @@ class OptomFeedbackController extends \BaseEventTypeController
                 ));
 
             } else{
+                $model->created_user_id = Yii::app()->user->id;
                 $model->invoice_status_id = $this->request->getPost('invoice_status_id');
                 $model->comment = $this->request->getPost('comment');
 
