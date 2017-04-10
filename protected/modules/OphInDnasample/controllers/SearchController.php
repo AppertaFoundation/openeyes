@@ -74,7 +74,7 @@ class SearchController extends BaseController
                     $order = "last_name $dir, first_name $dir";
                     break;
                 case 'date_taken':
-                    $order = "dna_date $dir";
+                    $order = "event_date $dir";
                     break;
                 case 'sample_type':
                     $order = "ophindnasample_sample_type.name $dir";
@@ -150,7 +150,7 @@ class SearchController extends BaseController
         }
 
         if ($comment) {
-            $command->andWhere((array('like', 'comments', '%'.$comment.'%')));
+            $command->andWhere((array('like', 'et_ophindnasample_sample.comments', '%'.$comment.'%')));
         }
         if ($disorder_id) {
             $command->andWhere('genetics_patient.id IN (SELECT patient_id FROM genetics_patient_diagnosis WHERE genetics_patient_diagnosis.disorder_id = :disorder_id)', array(':disorder_id' => $disorder_id));
