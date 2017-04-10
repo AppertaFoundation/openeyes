@@ -1,22 +1,9 @@
-<tr class="<?php
-echo (($i % 2 == 0) ? 'even' : 'edd');
-echo ' '.strtolower($log->colour);?>"
-    id="audit<?php echo $log->id?>" <?php if (@$hidden) {?> style="display: none;"<?php }?>>
-    <td>
-        <a href="#" id="auditItem<?php echo $log->id?>" class="auditItem">
-            <?php echo $log->NHSDate('created_date').' '.substr($log->created_date, 11, 8)?>
-        </a>
-    </td>
-    <td><?php echo $log->user ? $log->user->first_name.' '.$log->user->last_name : '-'?></td>
-    <td><?php echo $log->action->name?></td>
-    <td><?php echo $log->target_type ? $log->target_type->name : ''?></td>
-    <td>
-        <?php if ($log->event) { ?>
-            <a href="/<?php echo $log->event->eventType->class_name?>/default/view/<?php echo $log->event_id?>">
-                <?php echo $log->event->eventType->name?>
-            </a>
-        <?php } else {?>
-            -
-        <?php }?>
-    </td>
+<?php
+    $version_date = Yii::app()->db->createCommand('select version_date from automatic_examination_event_log_version WHERE version_id = '.$log->version_id)->queryScalar();
+?>
+<tr class="<?php echo (($i % 2 == 0) ? 'even' : 'edd'); ?>">
+    <td><?php echo  Helper::convertMySQL2NHS($version_date, '').' '.substr($version_date, 11, 8)?></td>
+    <td><?php echo $log->event->user->getFullName() ?></td>
+    <td><?php echo $log->invoice_status ? $log->invoice_status->name : ' - ' ?></td>
+    <td><?php echo $log->comment ?></td>
 </tr>

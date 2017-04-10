@@ -73,21 +73,8 @@ class OptomFeedbackController extends \BaseEventTypeController
             } else{
                 $model->invoice_status_id = $this->request->getPost('invoice_status_id');
                 $model->comment = $this->request->getPost('comment');
+
                 $model->update();
-
-                $properties = array(
-                    'module'    => 'OphCiExamination',
-                    'event_id'  => $model->event->id,
-                    'episode_id'  => $model->event->episode_id,
-                    'patient_id'  => $model->event->episode->patient->id
-                );
-
-                Audit::add(
-                    'Optom feedback manager',
-                    'Update invoice status and comment',
-                    null,
-                    null,
-                    $properties);
 
                 $result = json_encode(array(
                     's'     => 1,
@@ -142,21 +129,16 @@ class OptomFeedbackController extends \BaseEventTypeController
     public function actionGetAuditEventLog( $id )
     {
         if ($this->request->isPostRequest) {
+
             $model = \AutomaticExaminationEventLog::model();
-            $allEvent = $model->findByPk($id);
+            $model->id = $id;
+            $previousVersions = $model->getPreviousVersions();
+            if(!empty($previousVersions)){
+                $result = $this->renderPartial('/optom/audit_list', array( 'data' => $previousVersions));
 
-            if($allEvent->event_id > 0){
-                $auditEventRow = Audit::model()->findAll(array("condition" => "event_id = '".$allEvent->event_id."'","order" => "last_modified_date DESC"));
-                if($auditEventRow){
-                    $result = $this->renderPartial('/optom/audit_list', array( 'data' => $auditEventRow));
-
-                } else {
-                    $result = 'No results found.';
-                }
-            } else{
-                $result = 'No event found.';
+            } else {
+                $result = 'No results found.';
             }
-
         }
         echo $result;
     }

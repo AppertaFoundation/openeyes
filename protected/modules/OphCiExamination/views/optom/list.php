@@ -32,7 +32,6 @@ $cols = array(
         'name'      => 'invoice_status_id',
         'header'    => 'Invoice Status',
         'type'      => 'raw',
-        //'value'     => '$data->invoice_status->name',
         'value' => '$data->invoiceStatusSelect( $data->invoice_status_id )',
         'htmlOptions'   => array('class' => 'editable-select')
 

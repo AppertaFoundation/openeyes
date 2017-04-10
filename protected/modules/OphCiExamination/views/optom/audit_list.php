@@ -15,11 +15,10 @@
                 <table class="grid audit-logs">
                     <thead>
                     <tr>
-                        <th>Timestamp</th>
+                        <th>Created date</th>
                         <th>User</th>
-                        <th>Action</th>
-                        <th>Target type</th>
-                        <th>Event type</th>
+                        <th>Invoice Status</th>
+                        <th>Comment</th>
                     </tr>
                     </thead>
                     <tbody id="auditListData">

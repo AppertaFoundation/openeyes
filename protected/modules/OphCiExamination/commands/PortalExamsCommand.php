@@ -65,7 +65,7 @@ class PortalExamsCommand extends CConsoleCommand
                 $examinationEventLog->examination_date = $examination['examination_date'];
                 $examinationEventLog->examination_data = json_encode($examination);
                 $examinationEventLog->invoice_status_id = 0;
-                $examinationEventLog->comment = $examination['patient']['comments'];
+
                 $importStatus = ImportStatus::model()->find('status_value = "Unfound Event"');
                 $examinationEventLog->import_success = $importStatus->id;
                 $examinationEventLog->optometrist = $examination['op_tom']['name'];
@@ -90,7 +90,7 @@ class PortalExamsCommand extends CConsoleCommand
                     $examinationEventLog->examination_date = $examination['examination_date'];
                     $examinationEventLog->examination_data = json_encode($examination);
                     $examinationEventLog->invoice_status_id = 0;
-                    $examinationEventLog->comment = $examination['patient']['comments'];
+
                     $examinationEventLog->import_success = $importStatus->id;
                     $examinationEventLog->optometrist = $examination['op_tom']['name'];
                     $examinationEventLog->goc_number = $examination['op_tom']['goc_number'];
@@ -108,7 +108,7 @@ class PortalExamsCommand extends CConsoleCommand
                 $examinationEventLog->examination_date = $examination['examination_date'];
                 $examinationEventLog->examination_data = json_encode($examination);
                 $examinationEventLog->invoice_status_id = 0;
-                $examinationEventLog->comment = $examination['patient']['comments'];
+
                 $examinationEventLog->import_success = $importStatus->id;
                 $examinationEventLog->optometrist = $examination['op_tom']['name'];
                 $examinationEventLog->goc_number = $examination['op_tom']['goc_number'];
@@ -126,7 +126,7 @@ class PortalExamsCommand extends CConsoleCommand
                     $examinationEventLog->examination_date = $examination['examination_date'];
                     $examinationEventLog->examination_data = json_encode($examination);
                     $examinationEventLog->invoice_status_id = 0;
-                    $examinationEventLog->comment = $examination['patient']['comments'];
+
                     $importStatus = ImportStatus::model()->find('status_value = "Duplicate Event"');
                     $examinationEventLog->import_success = $importStatus->id;
                     $examinationEventLog->optometrist = $examination['op_tom']['name'];
