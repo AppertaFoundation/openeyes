@@ -276,7 +276,11 @@ class Patient extends BaseActiveRecordVersioned
             return false;
         }
 
-        //If someone is marked as dead by date, set the boolean flag.
+        // Pull an update from PAS
+
+        Yii::app()->event->dispatch('patient_before_validate', array('patient'=>$this));
+
+        // If someone is marked as dead by date, set the boolean flag.
         if ($this->isAttributeDirty('date_of_death') && $this->date_of_death) {
             $this->is_deceased = 1;
         }
