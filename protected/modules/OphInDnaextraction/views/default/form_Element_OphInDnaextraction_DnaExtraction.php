@@ -48,36 +48,17 @@
         ?>
 		<?php echo $form->textField($element, 'dna_concentration', array(), array(), array('label' => 3, 'field' => 2))?>
 		<?php echo $form->textField($element, 'volume', array(), array(), array('label' => 3, 'field' => 2));?>
-		
         <?php echo $form->textField($element, 'dna_quality', array(), array(), array('label' => 3, 'field' => 1));?>
         <?php echo $form->textField($element, 'dna_quantity', array(), array(), array('label' => 3, 'field' => 1));
 
-        $show_warning = false;
-        $volume_remaining = 0;
-        
         if ($this->action->id == 'update') {
-            
-            $volume_remaining = $this->volumeRemaining($element->event_id);
-            
             $form->widget('Caption',
                 array(
                     'label' => 'Volume Remaining',
-                    'value' => $volume_remaining,
+                    'value' => $this->volumeRemaining($element->event_id),
                 ));
-            
-            if($volume_remaining<0){
-                $show_warning = true;
-            }
         }
-        
         ?>
-        <?php echo CHtml::hiddenField('volume_remaining', $volume_remaining); ?>
-        <div 
-            class="cvi-alert alert-box warning round <?php if(!$show_warning) echo 'hidden'; ?>" 
-            data-alert="Warning: Volume remaining is less than zero." 
-            id='warning-of-ramaining'
-            >Warning: Volume remaining is less than zero.</div>
-        
 		<?php echo $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 5))?>
 	</fieldset>
 </section>
