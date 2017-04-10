@@ -30,7 +30,7 @@
         </div>
         <div class="large-10 column end">
             <div class="data-value iolDisplayHighlited"
-                 id="lens_<?php echo $side ?>"><?php echo $element->{'lens_'.$side} ? $element->{'lens_'.$side} : 'None' ?></div>
+                 id="lens_<?php echo $side ?>"><?php echo $element->{'lens_display_name_'.$side} ? $element->{'lens_display_name_'.$side} : 'None' ?></div>
         </div>
     </div>
     <div class="row field-row">

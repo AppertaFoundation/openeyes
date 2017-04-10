@@ -71,9 +71,13 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
     {
         return array(
             array('left_sphere, left_cylinder, left_axis, left_axis_eyedraw, left_type_id, left_type_other, right_sphere, right_cylinder, right_axis, right_axis_eyedraw, right_type_id, right_type_other, eye_id, left_notes, right_notes', 'safe'),
+            array('left_sphere', 'requiredSphere', 'side' => 'left', 'eye_id' => '1'),
+            array('left_cylinder', 'requiredCylinder', 'side' => 'left','eye_id' => '1'),
             array('left_axis', 'requiredIfSide', 'side' => 'left'),
             array('left_axis', 'numerical', 'integerOnly' => true),
             array('left_type_other', 'requiredIfRefractionTypeOther', 'side' => 'left'),
+            array('right_sphere', 'requiredSphere', 'side' => 'right','eye_id' => '2'),
+            array('right_cylinder', 'requiredCylinder', 'side' => 'right','eye_id' => '2'),
             array('right_axis', 'requiredIfSide', 'side' => 'right'),
             array('right_axis', 'numerical', 'integerOnly' => true),
             array('right_type_other', 'requiredIfRefractionTypeOther', 'side' => 'right'),
@@ -81,11 +85,39 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
         );
     }
 
+    public function requiredSphere( $attribute, $params )
+    {
+
+        $eyeID = (int)$this->eye_id;
+
+        if(empty($this->{$params['side'].'_sphere'}) && ($params['eye_id'] == $eyeID) && ($eyeID != 3)){
+            $this->addError($attribute, ucfirst($params['side']).' sphere cannot be blank. Please specify a valid refraction.');
+        }
+
+        if(empty($this->{$params['side'].'_sphere'}) && $eyeID == 3){
+            $this->addError($attribute, ucfirst($params['side']).' sphere cannot be blank. Please specify a valid refraction.');
+        }
+    }
+
+    public function requiredCylinder( $attribute, $params )
+    {
+
+        $eyeID = (int)$this->eye_id;
+        if(empty($this->{$params['side'].'_cylinder'}) && ($params['eye_id'] == $eyeID) && ($eyeID != 3)){
+            $this->addError($attribute, ucfirst($params['side']).' cylinder cannot be blank. Please specify a valid refraction.');
+        }
+
+        if(empty($this->{$params['side'].'_cylinder'}) && $eyeID == 3){
+            $this->addError($attribute, ucfirst($params['side']).' cylinder cannot be blank. Please specify a valid refraction.');
+        }
+
+    }
+
     public function requiredIfRefractionTypeOther($attribute, $params)
     {
         if (($params['side'] === 'left' && $this->left_type_id === '') || ($params['side'] === 'right' && $this->right_type_id === '')) {
             if (empty($this->{$params['side'].'_type_other'})) {
-                $this->addError($attribute, ucfirst($params['side']).' Other cannot be blank.');
+                $this->addError($attribute, ucfirst($params['side']).' Other cannot be blank. Please specify a valid refraction.');
             }
         }
     }
