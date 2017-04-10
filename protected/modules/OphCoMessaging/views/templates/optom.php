@@ -21,6 +21,8 @@ Message regarding patient: <?= $patient->hos_num ?>
 
 Message from Optometrist: <?= $optom ?>
 
+Optometrist Address: <?= $optom_address ?>
+
 Patient ready for second eye?: <?= $ready ?>
 
 Comments: <?= $comments ?>
