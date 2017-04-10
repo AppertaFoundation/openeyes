@@ -1,6 +1,6 @@
 <?php
 
-class m170410_191928_medical_lids extends EOMigration
+class m170410_191928_medical_lids extends OEMigration
 {
     public function up()
     {
