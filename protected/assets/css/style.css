@@ -5316,6 +5316,23 @@ tfoot.pagination-container .pagination-view-all {
   border-width: 0 2px 2px 2px;
   margin: 0;
 }
+
+/* line 178, ../sass/openeyes/components/panels/_patient.scss */
+.icon-patient-panel-info {
+  background: url('../img/_elements/icons/information.png?1473759481');
+  margin: 0;
+  width:16px;
+  height:16px;
+}
+
+/* line 185, ../sass/openeyes/components/panels/_patient.scss */
+.patient_general_information_tooltip {
+    width: 280px;
+    background-color: white;    
+    z-index: 10000;
+}
+
+
 /* line 55, ../components/foundation/scss/foundation/components/_panels.scss */
 .panel.patient > :first-child {
   margin-top: 0;

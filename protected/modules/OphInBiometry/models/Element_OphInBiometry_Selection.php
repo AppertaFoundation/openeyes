@@ -38,6 +38,17 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
 {
     public $service;
 
+    
+    /**
+     * set defaults
+     */    
+    public function init(){
+        $this->iol_power_left = null;    
+        $this->iol_power_right = null;
+        $this->predicted_refraction_left = null;
+        $this->predicted_refraction_right = null;
+    }
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -67,8 +78,6 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
             array('event_id, eye_id, iol_power_left, predicted_refraction_left, iol_power_right, predicted_refraction_right, lens_id_left, lens_id_right ,formula_id_left, formula_id_right', 'safe'),
             // The following rule is used by search().
             array('iol_power_left, predicted_refraction_left, iol_power_right, predicted_refraction_right', 'match', 'pattern' => '/([0-9]*?)(\.[0-9]{0,2})?/'),
-            array('iol_power_left, predicted_refraction_left', 'requiredIfSide', 'side' => 'left'),
-            array('iol_power_right, predicted_refraction_right', 'requiredIfSide', 'side' => 'right'),
             array('iol_power_left', 'checkNumericRangeIfSide', 'side' => 'left', 'max' => 40, 'min' => -10),
             array('iol_power_right', 'checkNumericRangeIfSide', 'side' => 'right', 'max' => 40, 'min' => -10),
             array('predicted_refraction_left', 'checkNumericRangeIfSide', 'side' => 'left', 'max' => 10, 'min' => -10),
