@@ -46,7 +46,7 @@ class SearchController extends BaseController
         $total_items = 0;
 
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
-        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/module.js');
+        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/module.js?v=20170408');
 
         if (@$_GET['search']) {
             $page = 1;
@@ -59,7 +59,7 @@ class SearchController extends BaseController
                 $page = $_GET['page'];
             }
 
-            $search_command = $this->buildSearchCommand('DISTINCT(patient.id),patient.hos_num,event.id,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments,et_ophindnasample_sample.id AS sample_id', $page);
+            $search_command = $this->buildSearchCommand('patient.id,patient.hos_num,event.id,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments,et_ophindnasample_sample.id AS sample_id', $page);
 
             $dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
@@ -124,15 +124,15 @@ class SearchController extends BaseController
         $command = Yii::app()->db->createCommand()
             ->select($select)
             ->from('et_ophindnasample_sample')
-            ->join('event', 'et_ophindnasample_sample.event_id = event.id')
-            ->join('episode', 'event.episode_id = episode.id')
-            ->join('patient', 'episode.patient_id = patient.id')
-            ->join('ophindnasample_sample_type', 'et_ophindnasample_sample.type_id = ophindnasample_sample_type.id')
-            ->join('contact', 'patient.contact_id = contact.id')
-            ->join('genetics_patient', 'genetics_patient.patient_id = patient.id')
-            ->leftJoin('genetics_patient_diagnosis', 'genetics_patient_diagnosis.patient_id = genetics_patient.id');
+            ->leftJoin('event', 'et_ophindnasample_sample.event_id = event.id')
+            ->leftJoin('episode', 'event.episode_id = episode.id')
+            ->leftJoin('patient', 'episode.patient_id = patient.id')
+            ->leftJoin('ophindnasample_sample_type', 'et_ophindnasample_sample.type_id = ophindnasample_sample_type.id')
+            ->leftJoin('contact', 'patient.contact_id = contact.id')
+            ->leftJoin('genetics_patient', 'genetics_patient.patient_id = patient.id');
+            //->leftJoin('genetics_patient_diagnosis', 'genetics_patient_diagnosis.patient_id = genetics_patient.id');
 
-        if(!is_null($sample_id))
+        if($sample_id)
         {
             $command->andWhere('et_ophindnasample_sample.id = :sample_id', array(':sample_id'=>$sample_id));
         }
@@ -153,7 +153,7 @@ class SearchController extends BaseController
             $command->andWhere((array('like', 'comments', '%'.$comment.'%')));
         }
         if ($disorder_id) {
-            $command->andWhere('genetics_patient_diagnosis.disorder_id = :disorder_id', array(':disorder_id' => $disorder_id));
+            $command->andWhere('genetics_patient.id IN (SELECT patient_id FROM genetics_patient_diagnosis WHERE genetics_patient_diagnosis.disorder_id = :disorder_id)', array(':disorder_id' => $disorder_id));
         }
 
         if($first_name){
