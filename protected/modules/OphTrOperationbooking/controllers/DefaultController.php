@@ -129,6 +129,35 @@ class DefaultController extends OphTrOperationbookingEventController
     }
 
     /**
+     * get number of existing examination events
+     *
+     */
+    public function getExaminationEventCount()
+    {
+        $event_type = EventType::model()->find('name = "Examination"');
+        $events = $this->event->episode->getAllEventsByType($event_type->id);
+        return count($events);
+    }
+
+     /**
+     * add the number of existing examination events to JS
+     *
+     */
+    public function actionCreate(){
+        $cancel_url = ($this->episode) ? '/patient/episode/' . $this->episode->id : '/patient/episodes/' . $this->patient->id;
+        $create_examination_url = Yii::app()->getBaseUrl(true).'/OphCiExamination/Default/create?patient_id=' . $this->patient->id;
+        
+        $this->jsVars['examination_events_count'] = $this->getExaminationEventCount();
+        $this->jsVars['cancel_url'] = $cancel_url;
+        $this->jsVars['create_examination_url'] = $create_examination_url;
+        
+        $require_exam_before_booking = SettingMetadata::model()->findByAttributes(array('key' => 'require_exam_before_booking'))->getSettingName();
+        $this->jsVars['require_exam_before_booking'] = strtolower($require_exam_before_booking) == 'on';
+        
+        parent::actionCreate();
+    }
+
+    /**
      * Checks whether schedule now has been requested.
      *
      * (non-phpdoc)
@@ -165,7 +194,6 @@ class DefaultController extends OphTrOperationbookingEventController
     {
         $this->operation_required = true;
         parent::initActionView();
-
         $this->extraViewProperties = array(
             'operation' => $this->operation,
         );

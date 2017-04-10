@@ -61,7 +61,7 @@
             echo $form->dropDownList(
                 $element, 'lens_id_' . $side,
                 CHtml::listData(
-                    $lenses, 'id', 'name'
+                    $lenses, 'id', 'display_name'
                 ),
                 array('empty' => '- Please select -'),
                 null,
@@ -85,7 +85,7 @@
             $element->lens_id_left = null;
             $element->lens_id_right = null;
         }
-        echo $form->dropDownList($element, 'lens_id_'.$side, CHtml::listData(OphInBiometry_LensType_Lens::model()->activeOrPk($element->{'lens_id_'.$side})->findAll(array('order' => 'display_order asc')), 'id', 'name'), array('empty' => '- Please select -'), null, array('label' => 4, 'field' => 6))
+        echo $form->dropDownList($element, 'lens_id_'.$side, CHtml::listData(OphInBiometry_LensType_Lens::model()->activeOrPk($element->{'lens_id_'.$side})->findAll(array('order' => 'display_order asc')), 'id', 'display_name'), array('empty' => '- Please select -'), null, array('label' => 4, 'field' => 6))
                 ?>
             </div>
         </div>
@@ -228,15 +228,15 @@
                                         if (($this->selectionValues[0]->{'predicted_refraction_left'} == $iolData['REF'][$j]) && ($this->selectionValues[0]->{'iol_power_left'} == $iolData['IOL'][$j])) {
                                             $found = 1;
                                             if ($iolData['REF'][$j] == $closest) {
-                                                echo "<tr  class='highlighted closest' id='iolreftr-$radid'><td><input type='radio' checked  id='iolrefrad-$radid' name='iolrefval_left'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.$iolData['REF'][$j].'</td></tr>';
+                                                echo "<tr  class='highlighted closest' id='iolreftr-$radid'><td><input type='radio' checked  id='iolrefrad-$radid' name='iolrefval_left'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.(($iolData['REF'][$j] > 0) ? '+' : '').$iolData['REF'][$j].'</td></tr>';
                                             } else {
-                                                echo "<tr  class='highlighted' id='iolreftr-$radid'><td><input type='radio' checked  id='iolrefrad-$radid' name='iolrefval_left'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.$iolData['REF'][$j].'</td></tr>';
+                                                echo "<tr  class='highlighted' id='iolreftr-$radid'><td><input type='radio' checked  id='iolrefrad-$radid' name='iolrefval_left'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.(($iolData['REF'][$j] > 0) ? '+' : '').$iolData['REF'][$j].'</td></tr>';
                                             }
                                         } else {
                                             if ($iolData['REF'][$j] == $closest) {
-                                                echo "<tr class='closest' id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_left'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.$iolData['REF'][$j].'</td></tr>';
+                                                echo "<tr class='closest' id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_left'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.(($iolData['REF'][$j] > 0) ? '+' : '').$iolData['REF'][$j].'</td></tr>';
                                             } else {
-                                                echo "<tr id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_left'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.$iolData['REF'][$j].'</td></tr>';
+                                                echo "<tr id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_left'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.(($iolData['REF'][$j] > 0) ? '+' : '').$iolData['REF'][$j].'</td></tr>';
                                             }
                                         }
                                         echo "<input type='hidden'  id='iolval-$radid' value=".number_format((float) $iolData['IOL'][$j], 2, '.', '')."><input type='hidden'  id='refval-$radid' value=".$iolData['REF'][$j].'>';
@@ -263,15 +263,15 @@
                                         if (($this->selectionValues[0]->{'predicted_refraction_right'} == $iolData['REF'][$j]) && ($this->selectionValues[0]->{'iol_power_right'} == $iolData['IOL'][$j])) {
                                             $found = 1;
                                             if ($iolData['REF'][$j] == $closest) {
-                                                echo "<tr class='highlighted closest' id='iolreftr-$radid'><td><input type='radio' checked id='iolrefrad-$radid' name='iolrefval_right'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.$iolData['REF'][$j].'</td></tr>';
+                                                echo "<tr class='highlighted closest' id='iolreftr-$radid'><td><input type='radio' checked id='iolrefrad-$radid' name='iolrefval_right'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.(($iolData['REF'][$j] > 0) ? '+' : '').$iolData['REF'][$j].'</td></tr>';
                                             } else {
-                                                echo "<tr class='highlighted' id='iolreftr-$radid'><td><input type='radio' checked id='iolrefrad-$radid' name='iolrefval_right'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.$iolData['REF'][$j].'</td></tr>';
+                                                echo "<tr class='highlighted' id='iolreftr-$radid'><td><input type='radio' checked id='iolrefrad-$radid' name='iolrefval_right'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.(($iolData['REF'][$j] > 0) ? '+' : '').$iolData['REF'][$j].'</td></tr>';
                                             }
                                         } else {
                                             if ($iolData['REF'][$j] == $closest) {
-                                                echo "<tr class='closest' id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_right'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.$iolData['REF'][$j].'</td></tr>';
+                                                echo "<tr class='closest' id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_right'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.(($iolData['REF'][$j] > 0) ? '+' : '').$iolData['REF'][$j].'</td></tr>';
                                             } else {
-                                                echo "<tr id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_right'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.$iolData['REF'][$j].'</td></tr>';
+                                                echo "<tr id='iolreftr-$radid'><td><input type='radio'  id='iolrefrad-$radid' class='iolrefselection' name='iolrefselection_right'></td><td>".number_format((float) $iolData['IOL'][$j], 2, '.', '').'</td><td>'.(($iolData['REF'][$j] > 0) ? '+' : '').$iolData['REF'][$j].'</td></tr>';
                                             }
                                         }
                                         echo "<input type='hidden'  id='iolval-$radid' value=".number_format((float) $iolData['IOL'][$j], 2, '.', '')."><input type='hidden'  id='refval-$radid' value=".$iolData['REF'][$j].'>';
@@ -292,8 +292,9 @@
     <div id="div_Element_OphInBiometry_Selection_<?php echo $side ?>">
         <?php
         if (!$this->is_auto) {
-            echo $form->textField($element, 'iol_power_'.$side, ($this->is_auto) ? array('readonly' => true) : null, null, array('label' => 4, 'field' => 2));
-            echo $form->textField($element, 'predicted_refraction_'.$side, ($this->is_auto) ? array('readonly' => true) : null, null, array('label' => 4, 'field' => 2));
+            //$element->iol_power_left = null;
+            echo $form->textField($element, 'iol_power_'.$side, ($this->is_auto) ? array('readonly' => true) : array('placeholder' => '0.00'), null, array('label' => 4, 'field' => 2));
+            echo $form->textField($element, 'predicted_refraction_'.$side, ($this->is_auto) ? array('readonly' => true) : array('placeholder' => '0.00'), null, array('label' => 4, 'field' => 2));
         }
         ?>
     </div>

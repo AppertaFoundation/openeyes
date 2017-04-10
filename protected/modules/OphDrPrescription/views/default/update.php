@@ -16,11 +16,13 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+global $reason_id;
+global $reason_other_text;
 ?>
 
 <?php $this->beginContent('//patient/event_container'); ?>
 
-	<?php
+        <?php
         $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'prescription-update',
             'enableAjaxValidation' => false,
@@ -29,13 +31,16 @@
         // Event actions
         $this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('level' => 'secondary'), array('id' => 'et_save_draft', 'class' => 'button small', 'form' => 'prescription-update'));
         $this->event_actions[] = EventAction::button('Save and print', 'saveprint', array('level' => 'secondary'), array('id' => 'et_save_print', 'class' => 'button small', 'form' => 'prescription-update'));
-    ?>
+        ?>
 
-		<?php $this->displayErrors($errors)?>
-		<?php $this->renderOpenElements($this->action->id, $form); ?>
-		<?php $this->renderOptionalElements($this->action->id, $form); ?>
-		<?php $this->displayErrors($errors, true)?>
+		<input type="hidden" id="Element_OphDrPrescription_Details_edit_reason_id" name="Element_OphDrPrescription_Details[edit_reason_id]" value="<?php echo htmlentities($reason_id); ?>" />
+		<input type="hidden" id="Element_OphDrPrescription_Details_edit_reason_other_text" name="Element_OphDrPrescription_Details[edit_reason_other]" value="<?php echo htmlentities($reason_other_text); ?>" />
 
-	<?php $this->endWidget(); ?>
+        <?php $this->displayErrors($errors)?>
+        <?php $this->renderOpenElements($this->action->id, $form); ?>
+        <?php $this->renderOptionalElements($this->action->id, $form); ?>
+        <?php $this->displayErrors($errors, true)?>
+
+        <?php $this->endWidget(); ?>
 
 <?php $this->endContent();?>

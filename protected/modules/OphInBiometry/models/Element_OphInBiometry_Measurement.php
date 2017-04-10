@@ -40,6 +40,41 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
     public $service;
 
     /**
+     * set defaults
+     */    
+    public function init(){
+        $this->axial_length_left = null;
+        $this->axial_length_right = null;
+        
+        $this->k1_left = null;
+        $this->k1_right = null;
+        $this->k2_left = null;
+        $this->k2_right = null;
+        
+        $this->axis_k1_left = null;
+        $this->axis_k1_right = null;
+        
+        $this->delta_k_left = null;
+        $this->delta_k_right = null;
+        $this->delta_k_axis_left = null;
+        $this->delta_k_axis_right = null;
+        
+        $this->k2_axis_left = null;
+        $this->k2_axis_right = null;
+        $this->acd_left = null;
+        $this->acd_right = null;
+        $this->snr_left = null;
+        $this->snr_right = null;
+    }
+    
+    
+    public function beforeSave(){
+        if($this->snr_left==='')$this->snr_left = null;
+        if($this->snr_right==='')$this->snr_right = null;
+        return parent::beforeSave();
+    }
+    
+    /**
      * Returns the static model of the specified AR class.
      *
      * @return the static model class
@@ -81,17 +116,17 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
                     'pattern' => '/([0-9]*?)(\.[0-9]{0,1})?/',
                 ),
                 array(
-                    'snr_left, k1_left, k2_left, axis_k1_left, axial_length_left',
+                    'k1_left, k2_left, axis_k1_left, axial_length_left',
                     'requiredIfSide',
                     'side' => 'left',
                 ),
                 array(
-                    'snr_right, k1_right, k2_right, axis_k1_right, axial_length_right',
+                    'k1_right, k2_right, axis_k1_right, axial_length_right',
                     'requiredIfSide',
                     'side' => 'right',
                 ),
-                array('snr_left', 'checkNumericRangeIfSide', 'side' => 'left', 'integerOnly' => true, 'max' => 2000, 'min' => 10),
-                array('snr_right', 'checkNumericRangeIfSide', 'side' => 'right', 'integerOnly' => true, 'max' => 2000, 'min' => 10),
+                array('snr_left', 'checkNumericRangeIfSide', 'side' => 'left',  'max' => 2000, 'min' => 10),
+                array('snr_right', 'checkNumericRangeIfSide', 'side' => 'right', 'max' => 2000, 'min' => 10),
                 array('k1_left, k2_left', 'checkNumericRangeIfSide', 'side' => 'left', 'max' => 60, 'min' => 30),
                 array('k1_right, k2_right', 'checkNumericRangeIfSide', 'side' => 'right', 'max' => 60, 'min' => 30),
                 array('axis_k1_left', 'checkNumericRangeIfSide', 'side' => 'left', 'max' => 180, 'min' => 0),
