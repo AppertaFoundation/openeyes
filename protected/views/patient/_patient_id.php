@@ -21,6 +21,7 @@
     $clinical = $this->checkAccess('OprnViewClinical');
     $warnings = $this->patient->getWarnings($clinical);
     Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
+    Yii::app()->assetManager->registerScriptFile('js/patientGeneralInformations.js');
 ?>
 
 <div class="panel patient<?php if ($warnings): echo ' warning'; endif; ?>" id="patientID">
@@ -36,6 +37,29 @@
                             <a style="color:#0b59da" href="<?php echo $this->createUrl('patient/update/' . $this->patient->id); ?>"> edit</a>
                         <?php endif; ?>
 		</span>
+		<span class="icon-patient-panel-info has-tooltip"></span>
+		<div id='patient_general_informations' class='hidden'>
+    		<div class="row data-row">
+    			<div class="large-3 column">
+    				<div class="data-label">Born:</div>
+    			</div>
+    			<div class="large-9 column">
+    				<div class="data-value">
+    					<?php echo ($this->patient->dob) ? $this->patient->NHSDate('dob') : 'Unknown' ?>
+    				</div>
+    			</div>
+    		</div>
+    		<div class="row data-row">
+    			<div class="large-3 column">
+    				<div class="data-label">Address:</div>
+    			</div>
+    			<div class="large-9 column">
+    				<div class="data-value">
+    					<?php echo $this->patient->getSummaryAddress()?>
+    				</div>
+    			</div>
+    		</div>    		    
+		</div>
 	</div>
 	<div class="hospital-number">
 		<span>
