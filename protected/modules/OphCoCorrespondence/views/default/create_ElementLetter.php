@@ -161,7 +161,7 @@ $element->letter_type = ($element->letter_type ? $element->letter_type : ( $macr
                     ),
                     'Cc' => array(
                         'contact_id' => isset($patient->contact->id) ? $patient->contact->id : null,
-                        'contact_name' => isset($patient->contact->id) ? $patient->contact->getFullName() : null,
+                        'contact_name' => isset($patient->contact->id) ? $patient->getCorrespondenceName() : null,
                         'contact_type' => 'PATIENT',
                         'address' => $patient_address
                     ),
