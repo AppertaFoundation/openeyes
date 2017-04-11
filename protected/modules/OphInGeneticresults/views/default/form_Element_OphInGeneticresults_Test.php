@@ -40,14 +40,15 @@ $pedigree = new Pedigree();
 
   <div class="element-fields">
       <?php 
-         
+         /*
          $form->widget('application.widgets.ElementSelection', array(
           'element' => $element,
           'field' => 'withdrawal_source_id',
           'relatedElements' => $withdrawals,
           'htmlOptions' => array('empty' => '- Select -'),
           'layoutColumns' => array('label' => 3, 'field' => 3),
-      ));  ?>
+      ));
+         */?>
       <?php $form->dropDownList(
           $element,
           'gene_id',
