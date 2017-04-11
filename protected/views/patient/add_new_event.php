@@ -38,7 +38,9 @@
                 </select>
 
                 <h6 style="margin-top:5px">Service</h6>
-                <select class="select-service">
+                <div class="no-subspecialty">Select Subspecialty</div>
+                <div class="fixed-service" style="display: none;"></div>
+                <select class="select-service" style="display: none;">
                 </select>
 
                 <button class="add-subspecialty-btn tiny" style="padding:3px 6px;" id="js-add-subspecialty-btn">+</button>

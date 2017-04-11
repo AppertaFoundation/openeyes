@@ -63,7 +63,7 @@ class NewEventDialogHelper
         if ($subspecialties === false) {
             $subspecialties = array();
             foreach (Subspecialty::model()->findAll() as $subspecialty) {
-                $ss_firms = Firm::model()
+                $related_firms = Firm::model()
                     ->active()
                     ->with('serviceSubspecialtyAssignment')
                     ->findAll(array(
@@ -71,15 +71,15 @@ class NewEventDialogHelper
                         'params' => array(':ssid' => $subspecialty->id),
                         'order' => 't.name asc'
                     ));
-                if (count($ss_firms)) {
-                    $ss = static::structureSubspecialty($subspecialty);
+                if (count($related_firms)) {
+                    $structure = static::structureSubspecialty($subspecialty);
                     $firms = array();
-                    foreach ($ss_firms as $f) {
+                    foreach ($related_firms as $f) {
                         array_push($firms, static::structureFirm($f));
                     }
-                    $ss['services'] = $firms;
-                    $ss['contexts'] = $firms;
-                    array_push($subspecialties, $ss);
+                    $structure['services'] = $firms;
+                    $structure['contexts'] = $firms;
+                    array_push($subspecialties, $structure);
                 }
             }
             Yii::app()->cache->set('new-event-subspecialties', $subspecialties, 30);
