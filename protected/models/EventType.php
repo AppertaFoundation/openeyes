@@ -368,4 +368,18 @@ class EventType extends BaseActiveRecordVersioned
 
         return ElementType::model()->with('child_element_types')->findAll($criteria);
     }
+
+    /**
+     * @param string $type
+     * @return string
+     */
+    public function getEventIcon($type='small')
+    {
+        if (file_exists(Yii::getPathOfAlias('application.modules.' . $this->class_name . '.assets'))) {
+            $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->class_name . '.assets')) . '/';
+        } else {
+            $asset_path = '/assets/';
+        }
+        return $asset_path . 'img/' . $type . '.png';
+    }
 }

@@ -602,13 +602,11 @@ class Event extends BaseActiveRecordVersioned
             }
         }
 
-        if ($this->eventType && file_exists(Yii::getPathOfAlias('application.modules.' . $this->eventType->class_name . '.assets'))) {
-            $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->eventType->class_name . '.assets')) . '/';
-        } else {
-            $asset_path = '/assets/';
+        if ($this->eventType) {
+            return $this->eventType->getEventIcon($type);
         }
 
-        return $asset_path . 'img/' . $type . '.png';
+        return '/assets/img/' . $type . '.png';
     }
 
     /**
