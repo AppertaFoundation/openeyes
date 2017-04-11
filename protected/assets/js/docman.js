@@ -259,78 +259,45 @@ var docman = (function() {
                 document_set_id = $('#DocumentSet_id').val();
                 document_set_id_param = '&document_set_id=' + document_set_id;
             }
-            
+
+            var current_type =  $('#DocumentTarget_' + rowindex + '_attributes_contact_type option:selected').text();
+            var selected_type = contact_id.match(/^([a-zA-Z]+)([0-9]+)$/);
+            var other_rowindex;
+            var other_id;
+
+            if(selected_type){
+                other_rowindex = $('#docman_block select option[value="' + selected_type[1].toUpperCase() + '"]:selected').closest('tr').data('rowindex');
+        }
+
             if(contact_id != 'OTHER' ){
-                $('#dm_table .docman_loader').show();
-                $.ajax({
-                    'type': 'GET',
-                    'url': '/' + moduleName  + '/default/getAddress?contact='+contact_id+'&patient_id='+OE_patient_id + document_set_id_param,
-                    context: this,
-                    dataType: 'json',
-                    'success': function(resp) {
-                        var this_recipient = $(element).data('previous');
 
-                        var this_contact_name = $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val();
-                        var this_address = $('#Document_Target_Address_' + rowindex).val();
-                        var this_contact_id = $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val();
-                        var this_contact_type = $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val();
+                //update the row where the dropdown change event happend
+                this.updateRow(rowindex, contact_id, OE_patient_id, document_set_id_param);
 
-                        var other_rowindex = $('#docman_block select option[value="' + resp.contact_type.toUpperCase() + '"]:selected').closest('tr').data('rowindex');
-                        var $other_docman_recipient = $('tr.rowindex-' + other_rowindex + ' .docman_recipient');
+                if(other_rowindex !== undefined){
+                    current_type = current_type.toLowerCase();
+                    type = current_type[0].toUpperCase() + current_type.slice(1);
 
-                        var other_contact_name = $('#DocumentTarget_' + other_rowindex + '_attributes_contact_name').val();
-                        var other_contact_id = $('#DocumentTarget_' + other_rowindex + '_attributes_contact_id').val();
+                    if(type !== 'Other' && type !== undefined && type !== '- type -'){
+                        other_id = $("#docman_recipient_" + other_rowindex + " option[value*='" + type + "']" ).val();
+                    }
+                }
 
-                        $('#Document_Target_Address_' + rowindex).val(resp.address);
-                        $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val(resp.contact_name);
-                        $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val(resp.contact_id);
-                        $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase()).trigger('change');
+                other_id = $("#docman_recipient_" + other_rowindex + " option[value*='" + type + "']" ).val();
 
-                        //set readonly
-                        //$('#DocumentTarget_' + rowindex + '_attributes_contact_name').attr('readonly', (resp.contact_type.toUpperCase() === 'GP'));
-                        $('#Document_Target_Address_' + rowindex).attr('readonly', (resp.contact_type.toUpperCase() === 'GP'));
-
-                        if((resp.contact_type.toUpperCase() === 'GP' || resp.contact_type.toUpperCase() === 'PATIENT') && rowindex !== other_rowindex){
-                            $other_docman_recipient.val(this_recipient);
-                            $('#Document_Target_Address_' + other_rowindex).val(this_address);
-                            $('#DocumentTarget_' + other_rowindex + '_attributes_contact_name').val(this_contact_name);
-                            $('#DocumentTarget_' + other_rowindex + '_attributes_contact_id').val(this_contact_id);
-                            $('#DocumentTarget_' + other_rowindex + '_attributes_contact_type').val(this_contact_type).trigger('change');
-
-                            $(element).data('previous', $(element).val());
-                            $other_docman_recipient.data('previous', $other_docman_recipient.val());
+                $.when( this.updateRow(rowindex, contact_id, OE_patient_id, document_set_id_param),this.updateRow(other_rowindex, other_id, OE_patient_id, document_set_id_param) ).done(function ( v1, v2 ) {
+                    if(selected_type[1] === 'Gp'){
+                        if(!docman.isContactTypeAdded("PATIENT")){
+                            docman.createNewRecipientEntry('PATIENT');
                         }
-                        
-                        var other_contact_type = $('#DocumentTarget_' + other_rowindex + '_attributes_contact_type').val();
-                        //$('#DocumentTarget_' + other_rowindex + '_attributes_contact_name').attr('readonly', (other_contact_type === 'GP'));
-                        $('#Document_Target_Address_' + other_rowindex).attr('readonly', (other_contact_type === 'GP'));
-                        
-                        // if the 'To' dropdown has changed we check the Cc and add recipients
-                        if( rowindex === 0 ){
-                            /* If gp selected add Patient */
-                            if(resp.contact_type === 'Gp'){
-                                if(!this.isContactTypeAdded("PATIENT")){
-                                    docman.createNewRecipientEntry('PATIENT');
-                                }
-                            } else {
-                                /* anyone else is the Recipient other than GP than a cc goes to GP */
-                                if(!this.isContactTypeAdded("GP")){
-                                    docman.createNewRecipientEntry('GP');
-                                }
-                            }
-                            $("#ElementLetter_introduction").val( resp.text_ElementLetter_introduction );
-                        } else {
-                            // copy salution from the main recipient's box
-                            $("#ElementLetter_introduction").val( $('#DocumentTarget_0_attributes_contact_name').val() );
+                    } else {
+                        // anyone else is the Recipient other than GP than a cc goes to GP
+                        if(!docman.isContactTypeAdded("GP")){
+                            docman.createNewRecipientEntry('GP');
                         }
-
-                        $('#docman_recipient_' + rowindex).val('');
-                        $('#docman_recipient_' + other_rowindex).val('');
-
-                        /* If DRSS selected add GP and Patient */
-                        $('#dm_table .docman_loader').hide();
                     }
                 });
+
             } else if(contact_id == 'OTHER'){
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val('');
                 $('#Document_Target_Address_' + rowindex ).val('');
@@ -351,6 +318,38 @@ var docman = (function() {
                 }
             });
             return is_added;
+        },
+
+        updateRow: function(rowindex, contact_id, OE_patient_id, document_set_id_param) {
+
+            if(contact_id === undefined){
+                return;
+            }
+
+            return $.ajax({
+                'type': 'GET',
+                'url': '/' + moduleName + '/default/getAddress?contact=' + contact_id + '&patient_id=' + OE_patient_id + document_set_id_param,
+                context: this,
+                dataType: 'json',
+                'beforeSend': function(){
+                    $('#dm_table .docman_loader').show();
+                },
+                'success': function (resp) {
+
+                    $('#Document_Target_Address_' + rowindex).val(resp.address);
+                    $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val(resp.contact_name);
+                    $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val(resp.contact_id);
+                    $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase()).trigger('change');
+
+                    $('#Document_Target_Address_' + rowindex).attr('readonly', (resp.contact_type.toUpperCase() === 'GP'));
+
+                    if(rowindex === 0){
+                        $("#ElementLetter_introduction").val( resp.text_ElementLetter_introduction );
+                    }
+                    $('#docman_recipient_' + rowindex).val('');
+                    $('#dm_table .docman_loader').hide();
+                }
+            });
         },
 
         //------------------------------------------------------------
