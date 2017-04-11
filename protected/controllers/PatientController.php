@@ -1508,7 +1508,7 @@ class PatientController extends BaseController
     * @param Contact $contact
     * @param Patient $patient
     * @param Address $address
-    * @return on validation error returns the 3 objects otherwise redirects to the patient view page
+    * @return array on validation error returns the 3 objects otherwise redirects to the patient view page
     */
    private function performPatientSave(Contact $contact, Patient $patient, Address $address)
    {
@@ -1536,6 +1536,10 @@ class PatientController extends BaseController
                 } else {
                     // patient or address failed to save
                     $transaction->rollback();
+
+                    // to show validation error messages to the user
+                    $patient->validate();
+                    $address->validate();
                 }
             } else {
                 // to show validation error messages to the user

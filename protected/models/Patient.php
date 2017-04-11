@@ -113,6 +113,7 @@ class Patient extends BaseActiveRecordVersioned
             array('pas_key', 'length', 'max' => 10),
             array('hos_num', 'required', 'on' => 'pas'),
             array('hos_num, nhs_num', 'length', 'max' => 40),
+            array('hos_num', 'unique', 'message'=>'A patient already exists with this hospital number'),
             array('gender,is_local', 'length', 'max' => 1),
             array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id', 'safe'),
             array('gender, dob', 'required', 'on' => 'manual'),
@@ -275,7 +276,11 @@ class Patient extends BaseActiveRecordVersioned
             return false;
         }
 
-        //If someone is marked as dead by date, set the boolean flag.
+        // Pull an update from PAS
+
+        Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));
+
+        // If someone is marked as dead by date, set the boolean flag.
         if ($this->isAttributeDirty('date_of_death') && $this->date_of_death) {
             $this->is_deceased = 1;
         }

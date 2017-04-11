@@ -138,7 +138,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                     'showAnim' => 'fold',
                     'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                 ),
-                'value' => $patient->NHSDate('dob'),
+                'value' => $patient->NHSDate('dob', $patient->dob),
                 'htmlOptions' => array(
                     'class' => 'small fixed-width',
                 ),
@@ -222,7 +222,7 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                     'showAnim' => 'fold',
                     'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                 ),
-                'value' => $patient->NHSDate('date_of_death'),
+                'value' => $patient->NHSDate('date_of_death', $patient->date_of_death),
                 'htmlOptions' => array(
                     'class' => 'small fixed-width',
                 ),
