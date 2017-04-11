@@ -67,7 +67,7 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
                  genomic_coordinate, genome_version, gene_transcript',
                 'safe'),
             array('gene_id, homo, method_id, effect_id, result', 'required'),
-            array('withdrawal_source_id', 'required'),
+            //array('withdrawal_source_id', 'required'),
             array('exon', 'validateForMethod', 'method' => 'Sanger'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
