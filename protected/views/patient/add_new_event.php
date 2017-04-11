@@ -24,7 +24,7 @@
 
             <ul class="subspecialties-list" id="js-subspecialties-list">
                 {{#currentSubspecialties}}
-                <li class="step-1 oe-specialty-service" data-id="{{id}}">{{name}}<div class="tag">{{shortName}}</div><span class="service">{{serviceName}}</span></li>
+                <li class="step-1 oe-specialty-service" data-id="{{id}}" data-subspecialty-id="{{subspecialtyId}}">{{name}}<div class="tag">{{shortName}}</div><span class="service">{{serviceName}}</span></li>
                 {{/currentSubspecialties}}
             </ul>
 
@@ -47,10 +47,9 @@
             </div>
 
         </td>
-        <td class="step-context">
+        <td class="step-context" style="visibility: hidden;">
             <h3>Context</h3>
             <ul class="context-list">
-                <li class="step-2" id="mirco">Microsoft</li><li class="step-2" id="apple">Apple</li><li class="step-2" id="next">Next</li><li class="step-2" id="xerox">Xerox</li>
             </ul>
         </td>
         <td class="step-event-types" style="visibility: hidden;">

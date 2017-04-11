@@ -53,6 +53,7 @@
         for (var i in self.options.currentSubspecialties) {
             current.push({
                 id: self.options.currentSubspecialties[i].id,
+                subspecialtyId: self.options.currentSubspecialties[i].subspecialty.id,
                 name: self.options.currentSubspecialties[i].subspecialty.name,
                 shortName: self.options.currentSubspecialties[i].subspecialty.shortName,
                 serviceName: self.options.currentSubspecialties[i].service
@@ -86,6 +87,7 @@
             if (!$(this).hasClass('new')) {
                 self.removeNewSubspecialty();
             }
+            self.updateContextList();
         });
 
         // change of the new subspecialty
@@ -101,7 +103,9 @@
         // removal of new subspecialty selection
         self.content.on('click', '.change-new-specialty', function(e) {
             self.removeNewSubspecialty();
-        })
+        });
+
+
     };
 
     /**
@@ -197,8 +201,9 @@
                 break;
             }
         }
-        var html = '<li class="step-1 oe-specialty-service new">'+self.subspecialtiesById[id].name;
-        html += '<span class="tag">'+self.subspecialtiesById[id].shortName+'</span>';
+        var subspecialty = self.subspecialtiesById[id];
+        var html = '<li class="step-1 oe-specialty-service new" data-subspecialty-id="'+subspecialty.id+'">'+subspecialty.name;
+        html += '<span class="tag">'+subspecialty.shortName+'</span>';
         html += '<span class="service">'+service.name+'</span>';
         html += '<div class="change-new-specialty"></div>';
         html += '</li>';
@@ -215,7 +220,29 @@
         var self = this;
         self.content.find('.oe-specialty-service.new').remove();
         self.content.find('.change-subspecialty').show();
-    }
+    };
+
+    NewEventDialog.prototype.updateContextList = function()
+    {
+        var self = this;
+        // get selected subspecialty
+        var selected = self.content.find('.oe-specialty-service.selected');
+        if (selected.length) {
+            var subspecialtyId = selected.data('subspecialty-id');
+            // get the context options for the subspecialty
+            var list = '';
+            for (var i in self.contextsBySubspecialtyId[subspecialtyId]) {
+                var context = self.contextsBySubspecialtyId[subspecialtyId][i];
+                list += '<li class="step-2" data-context-id="'+context.id+'">' + context.name + '</li>';
+            }
+            self.content.find('.context-list').html(list);
+            self.content.find('.step-context').css('visibility', 'visible');
+        } else {
+            self.content.find('.step-context').css('visibility', 'hidden');
+        }
+
+        // select context if matches current firm
+    };
 
     exports.NewEvent = NewEventDialog;
 }(OpenEyes.UI.Dialog, OpenEyes.Util));
