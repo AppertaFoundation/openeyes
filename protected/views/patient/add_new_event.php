@@ -30,7 +30,7 @@
 
             <div class="change-subspecialty">
                 <h6>Add New Subspecialty</h6>
-                <select id="select-subspecialty">
+                <select class="new-subspecialty">
                     <option value="">- Please Select -</option>
                     {{#selectableSubspecialties}}
                     <option value="{{id}}">{{name}} ({{shortName}})</option>
@@ -38,7 +38,7 @@
                 </select>
 
                 <h6 style="margin-top:5px">Service</h6>
-                <select id="select-service">
+                <select class="select-service">
                 </select>
 
                 <button class="add-subspecialty-btn tiny" style="padding:3px 6px;" id="js-add-subspecialty-btn">+</button>

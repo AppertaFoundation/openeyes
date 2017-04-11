@@ -41,35 +41,52 @@
         subspecialties: []
     };
 
+    /**
+     * Manage all the provided option data into required internal data structures for initialisation.
+     */
     NewEventDialog.prototype.create = function ()
     {
+        var self = this;
+
         var current = [];
         var currentIds = [];
-        for (var i in this.options.currentSubspecialties) {
+        for (var i in self.options.currentSubspecialties) {
             current.push({
-                id: this.options.currentSubspecialties[i].id,
-                name: this.options.currentSubspecialties[i].subspecialty.name,
-                shortName: this.options.currentSubspecialties[i].subspecialty.shortName,
-                serviceName: this.options.currentSubspecialties[i].service
+                id: self.options.currentSubspecialties[i].id,
+                name: self.options.currentSubspecialties[i].subspecialty.name,
+                shortName: self.options.currentSubspecialties[i].subspecialty.shortName,
+                serviceName: self.options.currentSubspecialties[i].service
             });
-            currentIds.push(this.options.currentSubspecialties[i].id);
+            currentIds.push(self.options.currentSubspecialties[i].id);
         }
-        this.current = current;
+        self.current = current;
         var selectableSubspecialties = [];
         var contextsBySubspecialtyId = {};
-        for (var i in this.options.subspecialties) {
-            var subspecialty = this.options.subspecialties[i];
+        var servicesBySubspecialtyId = {};
+        for (var i in self.options.subspecialties) {
+            var subspecialty = self.options.subspecialties[i];
             if (!inArray(subspecialty.id, currentIds)) {
                 selectableSubspecialties.push(subspecialty);
             }
             contextsBySubspecialtyId[subspecialty.id] = subspecialty.contexts;
+            servicesBySubspecialtyId[subspecialty.id] = subspecialty.services;
         }
-        this.selectableSubspecialties = selectableSubspecialties;
-        this.contextsBySubspecialtyId = contextsBySubspecialtyId;
+        self.selectableSubspecialties = selectableSubspecialties;
+        self.contextsBySubspecialtyId = contextsBySubspecialtyId;
+        self.servicesBySubspecialtyId = servicesBySubspecialtyId;
 
-        NewEventDialog._super.prototype.create.call(this);
+        NewEventDialog._super.prototype.create.call(self);
+
+        self.content.on('change', '.new-subspecialty', function(e) {
+            self.newSubspecialty();
+        });
     };
 
+    /**
+     *
+     * @param options
+     * @returns {string}
+     */
     NewEventDialog.prototype.getContent = function (options)
     {
         return this.compileTemplate({
@@ -77,11 +94,50 @@
             data: {
                 currentSubspecialties: this.current,
                 selectableSubspecialties: this.selectableSubspecialties
-
             }
         });
     };
 
-    exports.NewEvent = NewEventDialog;
+    /**
+     * Manages changes when a new subspecialty is selected for creating a new subspecialty for the event.
+     */
+    NewEventDialog.prototype.newSubspecialty = function ()
+    {
+        var self = this;
+        var id = self.content.find('.new-subspecialty').val();
+        var contexts = self.contextsBySubspecialtyId[id];
+        if (contexts.length === 1) {
+            self.setService(contexts[0]);
+        } else {
+            self.setServiceOptions(contexts);
+        }
+    };
 
+    /**
+     * Set the service to a fixed value when creating a new subspecialty for the event.
+     * @param service
+     */
+    NewEventDialog.prototype.setService = function(service)
+    {
+        // TODO: complete me
+    };
+
+    /**
+     * Sets the services that can be chosen when creating a new subspecialty for the event.
+     *
+     * @param services
+     */
+    NewEventDialog.prototype.setServiceOptions = function(services)
+    {
+        var self = this;
+        var select = self.content.find('.select-service');
+        select.html('');
+        var options = '';
+        for (var i in services) {
+            options += '<option value="'+services[i].id+'">' + services[i].name + '</option>';
+        }
+        select.html(options);
+    };
+
+    exports.NewEvent = NewEventDialog;
 }(OpenEyes.UI.Dialog, OpenEyes.Util));
