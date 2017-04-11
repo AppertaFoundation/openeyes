@@ -67,13 +67,23 @@ class OphTrOperationnote_API extends BaseAPI
 
     /*
      * OE-6554: I can't find where this function should be used
-     */
+     * deprecated since 2.0
+
     public function getLetterProceduresBookingEventID($patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             if ($plist = $this->getElementForLatestEventInEpisode($episode,
                 'Element_OphTrOperationnote_ProcedureList')
             ) {
+                return $plist->booking_event_id;
+            }
+        }
+    }
+    */
+    public function getLetterProceduresBookingEventID($patient, $use_context = true)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if($plist =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
                 return $plist->booking_event_id;
             }
         }
@@ -414,7 +424,7 @@ class OphTrOperationnote_API extends BaseAPI
     */
 
     /**
-     * Get the last operation Post-op instructions
+     * Get the last operation Post-op instructions, shortcode::[poi]
      * @param Patient $patient
      * @return string
      */

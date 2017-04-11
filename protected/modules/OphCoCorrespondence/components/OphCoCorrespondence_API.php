@@ -110,7 +110,8 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param Patient $patient
      *
      * @return string
-     */
+     * deprecated since 2.0
+
     public function getLastExaminationDate(\Patient $patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
@@ -123,12 +124,33 @@ class OphCoCorrespondence_API extends BaseAPI
 
         return '';
     }
+     */
+
+    public function getLastExaminationDate(\Patient $patient, $use_context = true)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            $event = $this->getLatestEvent($patient, $use_context);
+            if (isset($event->event_date)) {
+                return Helper::convertDate2NHS($event->event_date);
+            }
+        }
+
+        return '';
+    }
 
 
+    /*
+     * List of Ophthalmic Diagnoses
+     * @param Patient $patient
+     * shortcode:: [aod]
+     */
     public function getOphthalmicDiagnoses(\Patient $patient)
     {
         return $patient->getUniqueDiagnosesString('- ', "\r\n", true);
     }
+
+    /*
+     * deprecated since 2.0
 
     public function getLastIOLType(\Patient $patient)
     {
@@ -138,6 +160,26 @@ class OphCoCorrespondence_API extends BaseAPI
                 return $element->iol_type->name;
         }
     }
+    */
+
+    /*
+     * IOL type from last cataract Operation Note
+     * @param $patient
+     * @param $use_context
+     * shortcode::[ilt]
+     */
+    public function getLastIOLType(\Patient $patient, $use_context = true)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if ($element = $this->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)){
+                return $element->iol_type->name;
+            }
+        }
+    }
+
+    /*
+     * IOL Power from last cataract operation note
+     * deprecated since 2.0
 
     public function getLastIOLPower(\Patient $patient)
     {
@@ -147,6 +189,24 @@ class OphCoCorrespondence_API extends BaseAPI
             return $element->iol_power;
         }
     }
+    */
+    /*
+     * IOL Power from last cataract operation note
+     * @param $patient
+     * @param $use_context
+     * shortcode::[ilp]
+     */
+    public function getLastIOLPower(\Patient $patient, $use_context = true)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if ($element = $this->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)){
+                return $element->iol_power;
+            }
+        }
+    }
+
+    /*
+     * deprecated since 2.02
 
     public function getLastOperatedEye(\Patient $patient)
     {
@@ -157,6 +217,22 @@ class OphCoCorrespondence_API extends BaseAPI
             return $element->eye->adjective;
         }
     }
+    */
+    /*
+     * Operated Eye (left/right) from last operation note
+     * @param $patient
+     * @param $use_context
+     * shortcode:: [loe]
+     */
+    public function getLastOperatedEye(\Patient $patient, $use_context = true)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if ($element = $this->getLatestElement('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
+                return $element->eye->adjective;
+            }
+        }
+    }
+
 
     /**
      * Get the Pre-Op Visual Acuity - both eyes.
@@ -213,7 +289,7 @@ class OphCoCorrespondence_API extends BaseAPI
     }
 
     /**
-     * Get the Pre-Op Refraction - both eyes.
+     * Get the Pre-Op Refraction - both eyes. shortcode::[por]
      *
      * @param $patient
      *
@@ -253,7 +329,7 @@ class OphCoCorrespondence_API extends BaseAPI
     }
 
     /**
-     * Get Allergies in a bullet format.
+     * Get Allergies in a bullet format. shortcode::[alg]
      *
      * @param $patient
      *
