@@ -42,6 +42,7 @@
         user_subspecialty: null,
         event_button_selector: '#add-event',
         subspecialty_labels: {},
+        subspecialty_list_selector: '.subspecialties li',
         event_list_selector: '.events li',
         controls_container_selector: '.fixed-section',
         grouping_picker_class: 'grouping-picker',
@@ -150,18 +151,23 @@
         }
     };
 
+    EpisodeSidebar.prototype.getCurrentSubspecialties = function() {
+        var self = this;
+        var currentSubspecialties = [];
+        self.element.find(self.options.subspecialty_list_selector).each(function() {
+            currentSubspecialties.push($(this).data('definition'));
+        });
+        return currentSubspecialties;
+    };
+
     EpisodeSidebar.prototype.openNewEventDialog = function() {
         var self = this;
         if (!self.newEventDialog) {
-            self.newEventDialog = new OpenEyes.UI.Dialog({
-                destroyOnClose: false,
+            self.newEventDialog = new OpenEyes.UI.Dialog.NewEvent({
                 title: 'Add a new ' + self.getSubspecialtyLabel() + ' event',
-                content: Mustache.render($('#add-new-event-template').html(), {
-                    subspecialty: self.getSubspecialtyLabel()
-                }),
-                dialogClass: 'dialog event add-event',
-                width: 580,
                 id: 'add-new-event-dialog',
+                currentSubspecialties: self.getCurrentSubspecialties(),
+                subspecialties: self.options.subspecialties
             });
 
         }

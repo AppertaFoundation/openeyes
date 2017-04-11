@@ -17,34 +17,94 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<table class="oe-create-event-step-through">
+    <tbody><tr>
+        <td class="step-subspecialties">
+            <h3>Subspecialties</h3>
 
-<div class="title">
-	<strong>Select event to add to
-	<?php echo $subspecialty ? (is_object($subspecialty) ? $subspecialty->name : $subspecialty) : 'Support services'?>:</strong>
-</div>
-<ul class="events">
-    <?php foreach ($eventTypes as $eventType) {
-        if ($subspecialty || $eventType->support_services) {
-            if (file_exists(Yii::getPathOfAlias('application.modules.' . $eventType->class_name . '.assets.img'))) {
-                $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $eventType->class_name . '.assets.img') . '/') . '/';
-            } else {
-                $assetpath = '/assets/';
-            }
+            <ul class="subspecialties-list" id="js-subspecialties-list">
+                {{#currentSubspecialties}}
+                <li class="step-1 oe-specialty-service" data-id="{{id}}">{{name}}<div class="tag">{{shortName}}</div><span class="service">{{serviceName}}</span></li>
+                {{/currentSubspecialties}}
+            </ul>
 
-            $args = $this->getCreateArgsForEventTypeOprn($eventType);
-            if (call_user_func_array(array($this, 'checkAccess'), $args)) {
-                ?>
-                <li>
-                    <?php echo CHtml::link('<img src="' . $assetpath . 'small.png" alt="operation" /> - <strong>' . $eventType->name . '</strong>',
-                        Yii::app()->createUrl($eventType->class_name . '/Default/create') . '?patient_id=' . $patient->id) ?>
-                </li>
-            <?php } else { ?>
-                <li id="<?php echo $eventType->class_name ?>_disabled" class="add_event_disabled"
-                    title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add ' . $eventType->name ?>">
-                    <?php echo CHtml::link('<img src="' . $assetpath . 'small.png" alt="operation" /> - <strong>' . $eventType->name . '</strong>',
-                        '#') ?>
-                </li>
-            <?php } ?>
-        <?php } ?>
-    <?php } ?>
-</ul>
+            <div class="change-subspecialty">
+                <h6>Add New Subspecialty</h6>
+                <select id="select-subspecialty">
+                    <option value="">- Please Select -</option>
+                    {{#selectableSubspecialties}}
+                    <option value="{{id}}">{{name}} ({{shortName}})</option>
+                    {{/selectableSubspecialties}}
+                </select>
+
+                <h6 style="margin-top:5px">Service</h6>
+                <select id="select-service">
+                </select>
+
+                <button class="add-subspecialty-btn tiny" style="padding:3px 6px;" id="js-add-subspecialty-btn">+</button>
+            </div>
+
+        </td>
+        <td class="step-context">
+            <h3>Context</h3>
+            <ul class="context-list">
+                <li class="step-2" id="mirco">Microsoft</li><li class="step-2" id="apple">Apple</li><li class="step-2" id="next">Next</li><li class="step-2" id="xerox">Xerox</li>
+            </ul>
+        </td>
+        <td class="step-event-types" style="visibility: hidden;">
+            <h3 class="no-arrow">Select event to add to <?= $subspecialty ?>:</h3>
+            <ul class="event-type-list">
+                <?php foreach ($eventTypes as $eventType) {
+                    if ($subspecialty || $eventType->support_services) {
+                        if (file_exists(Yii::getPathOfAlias('application.modules.' . $eventType->class_name . '.assets.img'))) {
+                            $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $eventType->class_name . '.assets.img') . '/') . '/';
+                        } else {
+                            $assetpath = '/assets/';
+                        }
+
+                        $args = $this->getCreateArgsForEventTypeOprn($eventType);
+                        if (call_user_func_array(array($this, 'checkAccess'), $args)) {
+                            ?>
+                            <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3">
+                                <?php echo CHtml::link('<img src="' . $eventType->getEventIcon() . '" title="' . $eventType->name . ' icon" /> - <strong>' . $eventType->name . '</strong>',
+                                    Yii::app()->createUrl($eventType->class_name . '/Default/create') . '?patient_id=' . $patient->id) ?>
+                            </li>
+                        <?php } else { ?>
+                            <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3 add_event_disabled"
+                                title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add ' . $eventType->name ?>">
+                                <?php echo CHtml::link('<img src="' . $eventType->getEventIcon() . '" title="' . $eventType->name . ' icon" /> - <strong>' . $eventType->name . '</strong>',
+                                    '#') ?>
+                            </li>
+                        <?php } ?>
+                    <?php } ?>
+                <?php } ?>
+            </ul>
+
+            <div class="back-date-event">
+                <label><input id="back-date-event" type="checkbox"> Back Date Event</label>
+                <div class="back-date-options">
+                    <div style="margin-bottom:10px">
+                        <input class="event-date" type="date" placeholder="DD/MM/YYYY">
+                    </div>
+                    <div>
+                        <label>
+                            <select style="width:40px;">
+                                <option>01</option>
+                                <option>02</option>
+                                <option>03</option>
+                                <option>..</option>
+                            </select>
+                            <select style="width:40px;">
+                                <option>01</option>
+                                <option>02</option>
+                                <option>03</option>
+                                <option>..</option>
+                            </select>
+                            HH:MM</label>
+                    </div>
+                </div>
+            </div>
+        </td>
+
+    </tr>
+    </tbody></table>

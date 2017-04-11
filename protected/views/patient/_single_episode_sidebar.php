@@ -14,12 +14,12 @@
             $class = $change_firm ? "change-firm" : "enabled";
         }
         ?>
-        <button class="secondary tiny add-episode" type="button" id="add-episode"><?= Episode::getEpisodeLabel(); ?></button><button
-                class="secondary tiny add-event addEvent <?= $class ?>"
-                type="button"
-                id="add-event"
-                data-attr-subspecialty-id="<?= $this->firm->getSubspecialtyID();?>"
-            <?= $change_firm ? 'data-window-title="Please switch to a ' . $current_episode->getSubspecialtyText() . ' Firm"' : ''; ?>
+        <button
+            class="secondary tiny add-event addEvent <?= $class ?>"
+            type="button"
+            id="add-event"
+            data-attr-subspecialty-id="<?= $this->firm->getSubspecialtyID();?>"
+        <?= $change_firm ? 'data-window-title="Please switch to a ' . $current_episode->getSubspecialtyText() . ' Firm"' : ''; ?>
         >Event</button></div>
 <?php }?>
 <div class="oe-scroll-wrapper" style="height:300px">
@@ -87,7 +87,8 @@ if (is_array($ordered_episodes)) {
                             $subspecialty_labels[$id] = $subspecialty_name; ?>
 
                             <li class="subspecialty <?= $current_episode && $current_episode->getSubspecialtyID() == $id ? "selected" : ""; ?>"
-                                data-subspecialty-id="<?= $id ?>">
+                                data-subspecialty-id="<?= $id ?>"
+                                data-definition='<?= CJSON::encode(NewEventDialogHelper::structureEpisode($episode)) ?>'>
                                 <a href="<?= Yii::app()->createUrl('/patient/episode/' . $episode->id) ?>">
                                 <?= $subspecialty_name ?><span class="tag"><?= $tag ?></span>
                                 </a></li>
@@ -191,7 +192,8 @@ if (is_array($ordered_episodes)) {
                 user_subspecialty: <?= $this->firm->getSubspecialtyID() ?>,
                 subspecialty_labels: {
                     <?= implode(",", $subspecialty_label_list); ?>
-                }
+                },
+                subspecialties: <?= CJSON::encode(NewEventDialogHelper::structureAllSubspecialties()) ?>
             });
         });
 
