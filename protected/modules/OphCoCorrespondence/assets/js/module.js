@@ -627,7 +627,7 @@ $(document).ready(function() {
             $('.internal-referrer-wrapper').slideDown();
             setRecipientToInternalReferral();
 
-		} else {
+		} else if($('.internal-referrer-wrapper').is(':visible')) {
             $('.internal-referrer-wrapper').slideUp();
             resetInternalReferralFields();
             resetRecipientToInternalReferral();
