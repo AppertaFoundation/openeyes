@@ -207,7 +207,7 @@ class OphTrOperationnote_API extends BaseAPI
         return '';
     }
     */
-    public function getLastOperationDate(\Patient $patient , $use_context = true)
+    public function getLastOperationDate(\Patient $patient , $use_context = false)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
 
@@ -242,7 +242,7 @@ class OphTrOperationnote_API extends BaseAPI
         return '';
     }
     */
-    public function getLastOperationDateUnformatted(\Patient $patient , $use_context = true)
+    public function getLastOperationDateUnformatted(\Patient $patient , $use_context = false)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $operationNote = new OphTrOperationnote_API();

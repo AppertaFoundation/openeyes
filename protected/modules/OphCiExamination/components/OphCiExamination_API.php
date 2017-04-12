@@ -1690,12 +1690,31 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
+    /*
+     * deprecated since 2.0
+
     public function getCCTLeftNoUnits($patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             if ($el = $this->getMostRecentElementInEpisode($episode->id, $this->getEventType()->id,
                 'OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT')
             ) {
+                if ($el->hasLeft()) {
+                    return $el->left_value;
+                }
+            }
+        }
+
+        return 'NR';
+    }
+    */
+    public function getCCTLeftNoUnits($patient, $use_context = true)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if ($el = $this->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
+                $patient,
+                $use_context)
+            ){
                 if ($el->hasLeft()) {
                     return $el->left_value;
                 }
@@ -1725,6 +1744,9 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
+    /*
+     * depreacted since 2.0
+
     public function getCCTRightNoUnits($patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
@@ -1739,12 +1761,29 @@ class OphCiExamination_API extends \BaseAPI
 
         return 'NR';
     }
+    */
+    public function getCCTRightNoUnits($patient, $use_context = true)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if ($el = $this->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
+                $patient,
+                $use_context)
+            ){
+                if ($el->hasRight()) {
+                    return $el->right_value;
+                }
+            }
+        }
+
+        return 'NR';
+    }
 
     /**
      * @param Patient $patient
      *
      * @return string|null;
-     */
+     * deprecated since 2.0
+
     public function getCCTAbbr(\Patient $patient)
     {
         if (($episode = $patient->getEpisodeForCurrentSubspecialty()) &&
@@ -1762,6 +1801,29 @@ class OphCiExamination_API extends \BaseAPI
             return implode(', ', $readings);
         } else {
             return;
+        }
+    }
+    */
+    public function getCCTAbbr(\Patient $patient, $use_context = true)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()){
+             if ($cct = $this->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
+                 $patient,
+                 $use_context)
+             ){
+                $readings = array();
+                if ($cct->hasRight()) {
+                    $readings[] = 'r:' . $cct->right_value;
+                }
+                if ($cct->hasLeft()) {
+                    $readings[] = 'l:' . $cct->left_value;
+                }
+
+                 return implode(', ', $readings);
+            } else {
+                return;
+             }
+
         }
     }
 
@@ -1785,6 +1847,9 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
+    /*
+     * deprecated since 2.0
+
     public function getIOPReadingLeftNoUnits($patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
@@ -1799,6 +1864,27 @@ class OphCiExamination_API extends \BaseAPI
 
         return 'NR';
     }
+    */
+
+    public function getIOPReadingLeftNoUnits($patient, $use_context = true)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if ($iop = $this->getElementFromLatestEvent(
+                'models\Element_OphCiExamination_IntraocularPressure',
+                $patient,
+                $use_context)
+            ){
+                if ($reading = $iop->getReading('left')) {
+                    return $reading;
+                }
+            }
+        }
+
+        return 'NR';
+    }
+
+    /*
+     * depreacted since 2.0
 
     public function getIOPReadingRightNoUnits($patient)
     {
@@ -1814,13 +1900,39 @@ class OphCiExamination_API extends \BaseAPI
 
         return 'NR';
     }
-
-    public function getIOPValuesAsTable($patient)
+    */
+    public function getIOPReadingRightNoUnits($patient, $use_context = true)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($iop = $this->getElementForLatestEventInEpisode($episode,
+            if ($iop = $this->getElementFromLatestEvent(
+                'models\Element_OphCiExamination_IntraocularPressure',
+                $patient,
+                $use_context)
+            ){
+                if ($reading = $iop->getReading('right')) {
+                    return $reading;
+                }
+            }
+        }
+
+        return 'NR';
+    }
+
+    public function getIOPValuesAsTable($patient, $use_context = true)
+    {
+            if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            /*
+             * deprecated since 2.0
+                if ($iop = $this->getElementForLatestEventInEpisode($episode,
                 'models\Element_OphCiExamination_IntraocularPressure')
             ) {
+            */
+
+                if ($iop = $this->getElementFromLatestEvent(
+                    'models\Element_OphCiExamination_IntraocularPressure',
+                    $patient,
+                    $use_context)
+                ){
                 $iopVals = $iop->getValues();
                 $i = 0;
                 $output = '<table>';
