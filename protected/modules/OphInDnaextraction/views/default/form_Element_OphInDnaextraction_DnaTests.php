@@ -60,6 +60,12 @@
           <?php } ?>
           </tbody>
         </table>
+
+              <div class="button-bar right">
+                  <button class="button warning small" href="javascript:void(-1)" id="cancelTest">Cancel</button>
+                  <button class="button small default submitTest">Save</button>
+              </div>
+
         <button class="button small secondary addTest">
           Add
         </button>

@@ -17,42 +17,60 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section class="sub-element">
-	<header class="sub-element-header">
-		<h3 class="sub-element-title"><?php echo $element->elementType->name?></h3>
-	</header>
-	<div class="row field-row">
-		<div class="large-3 column">
-		</div>
-		<div class="large-9 column">
-			<table>
-				<thead>
-					<tr>
-						<th>Date</th>
-						<th>Study</th>
-						<th>Volume</th>
-						<th>Withdrawn by</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php if ($element->transactions) {?>
-						<?php foreach ($element->transactions as $transaction) {?>
-							<tr>
-								<td><?php echo $transaction->NHSDate('date')?></td>
-								<td><?php echo $transaction->study->name?></td>
-								<td><?php echo $transaction->volume?></td>
-								<td><?php echo $transaction->comments?></td>
-							</tr>
-						<?php }?>
-					<?php }else{?>
-						<tr>
-							<td colspan="4">
-								No tests have been logged for this DNA.
-							</td>
-						</tr>
-					<?php }?>
-				</tbody>
-			</table>
-		</div>
-	</div>
+
+<section class="element <?php echo $element->elementType->class_name ?>"
+         data-element-type-id="<?php echo $element->elementType->id ?>"
+         data-element-type-class="<?php echo $element->elementType->class_name ?>"
+         data-element-type-name="<?php echo $element->elementType->name ?>"
+         data-element-display-order="<?php echo $element->elementType->display_order ?>">
+  <input type="hidden" name="<?php echo CHtml::modelName($element); ?>[force_validation]"/>
+  <fieldset class="element-fields">
+    <div class="row field-row">
+      <div class="large-3 column">
+        <label>Tests:</label>
+      </div>
+      <div class="large-9 column">
+        <table>
+          <thead>
+          <tr>
+            <th>Date</th>
+            <th>Study</th>
+            <th>Volume</th>
+            <th>Withdrawn by</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody class="transactions">
+          <?php if (!empty($_POST)) {
+              $transactions = $this->getFormTransactions();
+          } else {
+              $transactions = $element->transactions;
+          }
+
+          if ($transactions) {
+              foreach ($transactions as $i => $transaction) {
+                  $disabled = !$this->checkAccess('TaskEditGeneticsWithdrawals');
+                  $this->renderPartial('application.modules.OphInDnaextraction.views.default._dna_test', array('transaction' => $transaction, 'i' => $i, 'disabled' => $disabled));
+              }
+          } else { ?>
+            <tr>
+              <td id="no-tests" colspan="4">
+                No tests have been logged for this DNA.
+              </td>
+            </tr>
+          <?php } ?>
+          </tbody>
+        </table>
+
+              <div class="button-bar right">
+                  <button class="button warning small" href="javascript:void(-1)" id="cancelTest">Cancel</button>
+                  <button class="button small default submitTest">Save</button>
+              </div>
+
+        <button class="button small secondary addTest">
+          Add
+        </button>
+      </div>
+    </div>
+  </fieldset>
 </section>
