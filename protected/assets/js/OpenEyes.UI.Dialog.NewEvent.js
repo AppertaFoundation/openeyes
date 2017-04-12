@@ -245,6 +245,7 @@
             subspecialtyId: subspecialty.id,
             name: subspecialty.name,
             shortName: subspecialty.shortName,
+            serviceId: service.id,
             serviceName: service.name,
             classes: 'new'
         });
@@ -316,9 +317,21 @@
     NewEventDialog.prototype.createEvent = function(eventTypeId) {
         var self = this;
         // build params for the new event request
-        console.log('create:' + eventTypeId);
-        // set window location to the new event request URL
+        var requestParams = {
+            patient_id: self.options.patientId,
+            event_type_id: eventTypeId,
+            context_id: self.content.find('.step-2.selected').data('context-id')
+        };
 
+        var subspecialty = self.content.find('.oe-specialty-service.selected');
+        if (subspecialty.hasClass('new')) {
+            requestParams['service_id'] = subspecialty.data('service-id');
+        } else {
+            requestParams['episode_id'] = subspecialty.data('id');
+        }
+
+        // set window location to the new event request URL
+        window.location = '/patientevent/create?'+$.param(requestParams);
     };
 
     exports.NewEvent = NewEventDialog;

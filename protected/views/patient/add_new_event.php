@@ -18,7 +18,11 @@
  */
 ?>
 <script type="text/html" id="add-new-event-subspecialty-step">
-    <li class="step-1 oe-specialty-service {{classes}}" data-id="{{id}}" data-subspecialty-id="{{subspecialtyId}}">{{name}}
+    <li class="step-1 oe-specialty-service {{classes}}"
+        data-id="{{id}}"
+        data-subspecialty-id="{{subspecialtyId}}"
+        data-service-id="{{serviceId}}"
+    >{{name}}
         <div class="tag">{{shortName}}</div>
         <span class="service">{{serviceName}}</span>
         {{^id}}<div class="change-new-specialty"></div>{{/id}}

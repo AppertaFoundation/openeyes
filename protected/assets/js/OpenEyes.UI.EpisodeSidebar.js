@@ -165,6 +165,7 @@
         if (!self.newEventDialog) {
             self.newEventDialog = new OpenEyes.UI.Dialog.NewEvent({
                 id: 'add-new-event-dialog',
+                patientId: self.options.patient_id,
                 userSubspecialtyId: self.options.user_subspecialty,
                 userContext: self.options.user_context,
                 currentSubspecialties: self.getCurrentSubspecialties(),
