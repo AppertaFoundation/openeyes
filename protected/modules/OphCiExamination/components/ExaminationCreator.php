@@ -295,6 +295,7 @@ class ExaminationCreator
                 $messageCreator->setMessageTemplate('application.modules.OphCoMessaging.views.templates.optom');
                 $messageCreator->setMessageData(array(
                     'optom' => $examination['op_tom']['name'] . ' (' . $examination['op_tom']['goc_number'] . ')',
+                    'optom_address' => $examination['op_tom']['address'],
                     'ready' => $ready,
                     'comments' => ($examination['patient']['comments']) ? $examination['patient']['comments'] : 'No Comments',
                     'patient' => $episode->patient,
