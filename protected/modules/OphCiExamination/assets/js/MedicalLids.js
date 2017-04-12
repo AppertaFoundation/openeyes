@@ -49,7 +49,6 @@ OpenEyes.OphCiExamination.MedicalLidsController = (function () {
 function medicalLidsListener(_drawing)
 {
   var canvas = $(_drawing.canvas);
-  console.log('here');
   var controller = canvas.data('controller');
   if (!controller) {
     controller = new OpenEyes.OphCiExamination.MedicalLidsController(
