@@ -1,6 +1,6 @@
 
 /* Module-specific javascript can be placed here */
-
+var dnaExtractionPrintUrl;
 $(document).ready(function() {
     handleButton($('#et_save'),function() {
     });
@@ -13,6 +13,15 @@ $(document).ready(function() {
                 window.location.href = baseUrl+'/patient/episodes/'+et_patient_id;
         }
         e.preventDefault();
+    });
+
+    handleButton($('#et_print'),function(e) {
+       // e.preventDefault();
+       // printEvent(null);
+        printIFrameUrl(dnaExtractionPrintUrl, null);
+        enableButtons();
+        e.preventDefault();
+
     });
 
     handleButton($('#et_deleteevent'));

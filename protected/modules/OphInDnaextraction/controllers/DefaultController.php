@@ -12,13 +12,14 @@ class DefaultController extends BaseEventTypeController
         'getAvailableLetterNumberToBox' => self::ACTION_TYPE_FORM,
         'saveNewStorage' => self::ACTION_TYPE_FORM,
         'refreshStorageSelect' => self::ACTION_TYPE_FORM,
+        'print' => self::ACTION_TYPE_PRINT
     );
 
     public function accessRules()
     {
         return array(
             array('allow',
-                'actions' => array('Create', 'Update', 'View', 'Print', 'AddTransaction','GetNewStorageFields','getAvailableLetterNumberToBox','saveNewStorage', 'refreshStorageSelect'),
+                'actions' => array('Create', 'Update','View', 'Print', 'AddTransaction','GetNewStorageFields','getAvailableLetterNumberToBox','saveNewStorage', 'refreshStorageSelect'),
                 'roles' => array('OprnEditDNAExtraction'),
             ),
             array('allow',
@@ -33,6 +34,13 @@ class DefaultController extends BaseEventTypeController
         $api = Yii::app()->moduleAPI->get('OphInDnaextraction');
 
         return $api->volumeRemaining($event_id);
+    }
+
+    public function initActionView()
+    {
+        parent::initActionView();
+
+        $this->jsVars['dnaExtractionPrintUrl'] = Yii::app()->createUrl('OphInDnaextraction/Default/print/'.$this->event->id);
     }
 
     public function actionPrint($id)
