@@ -48,10 +48,11 @@
     {
         var self = this;
 
-        var current = [];
+        // current subspecialties for patient initialisation
+        self.current = [];
         var currentIds = [];
         for (var i in self.options.currentSubspecialties) {
-            current.push({
+            self.current.push({
                 id: self.options.currentSubspecialties[i].id,
                 subspecialtyId: self.options.currentSubspecialties[i].subspecialty.id,
                 name: self.options.currentSubspecialties[i].subspecialty.name,
@@ -60,25 +61,23 @@
             });
             currentIds.push(self.options.currentSubspecialties[i].id);
         }
-        self.current = current;
-        var selectableSubspecialties = [];
-        var contextsBySubspecialtyId = {};
-        var servicesBySubspecialtyId = {};
-        var subspecialtiesById = {};
+
+        // subspecialties/services/contexts initialisation
+        self.selectableSubspecialties = [];
+        self.contextsBySubspecialtyId = {};
+        self.servicesBySubspecialtyId = {};
+        self.subspecialtiesById = {};
         for (var i in self.options.subspecialties) {
             var subspecialty = self.options.subspecialties[i];
             if (!inArray(subspecialty.id, currentIds)) {
-                selectableSubspecialties.push(subspecialty);
+                self.selectableSubspecialties.push(subspecialty);
             }
-            subspecialtiesById[subspecialty.id] = subspecialty;
-            contextsBySubspecialtyId[subspecialty.id] = subspecialty.contexts;
-            servicesBySubspecialtyId[subspecialty.id] = subspecialty.services;
+            self.subspecialtiesById[subspecialty.id] = subspecialty;
+            self.contextsBySubspecialtyId[subspecialty.id] = subspecialty.contexts;
+            self.servicesBySubspecialtyId[subspecialty.id] = subspecialty.services;
         }
-        self.selectableSubspecialties = selectableSubspecialties;
-        self.subspecialtiesById = subspecialtiesById;
-        self.contextsBySubspecialtyId = contextsBySubspecialtyId;
-        self.servicesBySubspecialtyId = servicesBySubspecialtyId;
 
+        // parent initialisation
         NewEventDialog._super.prototype.create.call(self);
 
         self.content.on('click', '.oe-specialty-service', function(e) {
