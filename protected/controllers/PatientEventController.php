@@ -155,6 +155,12 @@ class PatientEventController extends BaseController
         $this->getApp()->session['selected_firm_id'] = $context->id;
     }
 
+    /**
+     * Handles the request to carry out required back end actions before redirecting to the appropriate controller
+     * action for the event to be created.
+     *
+     * @throws CHttpException
+     */
     public function actionCreate()
     {
         $app = $this->getApp();

@@ -53,7 +53,7 @@
 
         // current subspecialties for patient initialisation
         self.current = [];
-        var currentIds = [];
+        var currentSubspecialtyIds = [];
         for (var i in self.options.currentSubspecialties) {
             self.current.push({
                 id: self.options.currentSubspecialties[i].id,
@@ -62,7 +62,7 @@
                 shortName: self.options.currentSubspecialties[i].subspecialty.shortName,
                 serviceName: self.options.currentSubspecialties[i].service
             });
-            currentIds.push(self.options.currentSubspecialties[i].id);
+            currentSubspecialtyIds.push(self.options.currentSubspecialties[i].subspecialty.id);
         }
 
         // subspecialties/services/contexts initialisation
@@ -72,7 +72,7 @@
         self.subspecialtiesById = {};
         for (var i in self.options.subspecialties) {
             var subspecialty = self.options.subspecialties[i];
-            if (!inArray(subspecialty.id, currentIds)) {
+            if (!inArray(subspecialty.id, currentSubspecialtyIds)) {
                 self.selectableSubspecialties.push(subspecialty);
             }
             self.subspecialtiesById[subspecialty.id] = subspecialty;
@@ -277,13 +277,17 @@
         var contextListIdx = undefined;
         if (selected.length) {
             self.updateTitle(self.subspecialtiesById[selected.data('subspecialtyId')]);
+            var defaultContextId = parseInt(self.options.userContext.id);
+            if (selected.hasClass('new')) {
+                defaultContextId = parseInt(selected.data('service-id'));
+            }
             var subspecialtyId = selected.data('subspecialty-id');
             // get the context options for the subspecialty
             var list = '';
             for (var i in self.contextsBySubspecialtyId[subspecialtyId]) {
                 var context = self.contextsBySubspecialtyId[subspecialtyId][i];
                 list += '<li class="step-2" data-context-id="'+context.id+'">' + context.name + '</li>';
-                if (context.id === self.options.userContext.id) {
+                if (parseInt(context.id) === defaultContextId) {
                     contextListIdx = i;
                 }
             }
