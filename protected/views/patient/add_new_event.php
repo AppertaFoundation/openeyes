@@ -17,17 +17,24 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<script type="text/html" id="add-new-event-subspecialty-step">
+    <li class="step-1 oe-specialty-service {{classes}}" data-id="{{id}}" data-subspecialty-id="{{subspecialtyId}}">{{name}}
+        <div class="tag">{{shortName}}</div>
+        <span class="service">{{serviceName}}</span>
+        {{^id}}<div class="change-new-specialty"></div>{{/id}}
+    </li>
+</script>
+<script type="text/html" id="add-new-event-template">
 <table class="oe-create-event-step-through">
-    <tbody><tr>
+    <tbody>
+    <tr>
         <td class="step-subspecialties">
             <h3>Subspecialties</h3>
-
             <ul class="subspecialties-list" id="js-subspecialties-list">
                 {{#currentSubspecialties}}
-                <li class="step-1 oe-specialty-service" data-id="{{id}}" data-subspecialty-id="{{subspecialtyId}}">{{name}}<div class="tag">{{shortName}}</div><span class="service">{{serviceName}}</span></li>
+                {{>subspecialty}}
                 {{/currentSubspecialties}}
             </ul>
-
             <div class="change-subspecialty">
                 <h6>Add New Subspecialty</h6>
                 <select class="new-subspecialty">
@@ -108,4 +115,6 @@
         </td>
 
     </tr>
-    </tbody></table>
+    </tbody>
+</table>
+</script>

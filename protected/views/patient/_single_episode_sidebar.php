@@ -167,14 +167,12 @@ if (is_array($ordered_episodes)) {
 }?>
 </div>
 
-<script type="text/html" id="add-new-event-template">
-    <?php $this->renderPartial('//patient/add_new_event',array(
-        'episode' => "{{episode}}",
-        'subspecialty' => "{{subspecialty}}",
-        'patient' => $this->patient,
-        'eventTypes' => EventType::model()->getEventTypeModules(),
-    ));?>
-</script>
+<?php $this->renderPartial('//patient/add_new_event',array(
+    'episode' => "{{episode}}",
+    'subspecialty' => "{{subspecialty}}",
+    'patient' => $this->patient,
+    'eventTypes' => EventType::model()->getEventTypeModules(),
+));?>
 
 <?php
     $subspecialty_label_list = array();

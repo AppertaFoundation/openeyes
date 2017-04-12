@@ -119,6 +119,9 @@
             data: {
                 currentSubspecialties: this.current,
                 selectableSubspecialties: this.selectableSubspecialties
+            },
+            partials: {
+                subspecialty: $('#add-new-event-subspecialty-step').html()
             }
         });
     };
@@ -201,12 +204,15 @@
             }
         }
         var subspecialty = self.subspecialtiesById[id];
-        var html = '<li class="step-1 oe-specialty-service new" data-subspecialty-id="'+subspecialty.id+'">'+subspecialty.name;
-        html += '<span class="tag">'+subspecialty.shortName+'</span>';
-        html += '<span class="service">'+service.name+'</span>';
-        html += '<div class="change-new-specialty"></div>';
-        html += '</li>';
-        $('.change-subspecialty').hide();
+        var html = Mustache.render($('#add-new-event-subspecialty-step').html(), {
+            subspecialtyId: subspecialty.id,
+            name: subspecialty.name,
+            shortName: subspecialty.shortName,
+            serviceName: service.name,
+            classes: 'new'
+        });
+
+        self.content.find('.change-subspecialty').hide();
         self.content.find('.subspecialties-list').append(html);
         self.content.find('.subspecialties-list li:last').trigger('click');
     };
