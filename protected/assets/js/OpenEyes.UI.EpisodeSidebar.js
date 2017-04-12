@@ -40,6 +40,7 @@
     EpisodeSidebar._defaultOptions = {
         switch_firm_text: 'Please switch firm to add an event to this episode',
         user_subspecialty: null,
+        user_context: null,
         event_button_selector: '#add-event',
         subspecialty_labels: {},
         subspecialty_list_selector: '.subspecialties li',
@@ -166,6 +167,8 @@
             self.newEventDialog = new OpenEyes.UI.Dialog.NewEvent({
                 title: 'Add a new ' + self.getSubspecialtyLabel() + ' event',
                 id: 'add-new-event-dialog',
+                userSubspecialtyId: self.options.user_subspecialty,
+                userContext: self.options.user_context,
                 currentSubspecialties: self.getCurrentSubspecialties(),
                 subspecialties: self.options.subspecialties
             });

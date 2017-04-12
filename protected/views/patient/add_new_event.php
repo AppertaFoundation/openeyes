@@ -61,7 +61,7 @@
         </td>
         <td class="step-event-types" style="visibility: hidden;">
             <h3 class="no-arrow">Select event to add to <?= $subspecialty ?>:</h3>
-            <ul class="event-type-list">
+            <ul class="event-type-list" data-patient-id="<?= $patient->id ?>">
                 <?php foreach ($eventTypes as $eventType) {
                     if ($subspecialty || $eventType->support_services) {
                         if (file_exists(Yii::getPathOfAlias('application.modules.' . $eventType->class_name . '.assets.img'))) {
@@ -73,15 +73,13 @@
                         $args = $this->getCreateArgsForEventTypeOprn($eventType);
                         if (call_user_func_array(array($this, 'checkAccess'), $args)) {
                             ?>
-                            <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3">
-                                <?php echo CHtml::link('<img src="' . $eventType->getEventIcon() . '" title="' . $eventType->name . ' icon" /> - <strong>' . $eventType->name . '</strong>',
-                                    Yii::app()->createUrl($eventType->class_name . '/Default/create') . '?patient_id=' . $patient->id) ?>
+                            <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3" data-eventType-id="<?= $eventType->id ?>">
+                                <img src="<?= $eventType->getEventIcon() ?>" title="<?= $eventType->name ?> icon" /><?= $eventType->name ?>
                             </li>
                         <?php } else { ?>
                             <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3 add_event_disabled"
                                 title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add ' . $eventType->name ?>">
-                                <?php echo CHtml::link('<img src="' . $eventType->getEventIcon() . '" title="' . $eventType->name . ' icon" /> - <strong>' . $eventType->name . '</strong>',
-                                    '#') ?>
+                                <img src="<?= $eventType->getEventIcon() ?>" title="<?= $eventType->name ?> icon" /><?= $eventType->name ?>
                             </li>
                         <?php } ?>
                     <?php } ?>

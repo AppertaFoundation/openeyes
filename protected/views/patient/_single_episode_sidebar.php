@@ -188,6 +188,7 @@ if (is_array($ordered_episodes)) {
         $('div.specialty').each(function() {
             new OpenEyes.UI.EpisodeSidebar(this, {
                 user_subspecialty: <?= $this->firm->getSubspecialtyID() ?>,
+                user_context: <?= CJSON::encode(NewEventDialogHelper::structureFirm($this->firm)) ?>,
                 subspecialty_labels: {
                     <?= implode(",", $subspecialty_label_list); ?>
                 },

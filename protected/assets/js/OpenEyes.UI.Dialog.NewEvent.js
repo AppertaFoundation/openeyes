@@ -38,7 +38,9 @@
         dialogClass: 'dialog oe-create-event-popup',
         selector: '#add-new-event-template',
         currentSubspecialties: [],
-        subspecialties: []
+        subspecialties: [],
+        userSubspecialtyId: undefined,
+        userContext: undefined
     };
 
     /**
@@ -80,6 +82,7 @@
         // parent initialisation
         NewEventDialog._super.prototype.create.call(self);
 
+        // event handling setup
         self.content.on('click', '.oe-specialty-service', function(e) {
             self.content.find('.oe-specialty-service').removeClass('selected');
             $(this).addClass('selected');
@@ -104,6 +107,12 @@
             self.removeNewSubspecialty();
         });
 
+        // selection of context
+        self.content.on('click', '.step-2', function(e) {
+            self.content.find('.step-2').removeClass('selected');
+            $(this).addClass('selected');
+            self.updateEventList();
+        });
 
     };
 
@@ -180,6 +189,9 @@
         self.content.find('.no-subspecialty').hide();
     };
 
+    /**
+     * Add new subspecialty to list based on form, if it's complete.
+     */
     NewEventDialog.prototype.addNewSubspecialty = function()
     {
         var self = this;
@@ -227,11 +239,15 @@
         self.content.find('.change-subspecialty').show();
     };
 
+    /**
+     * Update the context list to reflect the currently selected subspecialty
+     */
     NewEventDialog.prototype.updateContextList = function()
     {
         var self = this;
         // get selected subspecialty
         var selected = self.content.find('.oe-specialty-service.selected');
+        var contextListIdx = undefined;
         if (selected.length) {
             var subspecialtyId = selected.data('subspecialty-id');
             // get the context options for the subspecialty
@@ -239,14 +255,35 @@
             for (var i in self.contextsBySubspecialtyId[subspecialtyId]) {
                 var context = self.contextsBySubspecialtyId[subspecialtyId][i];
                 list += '<li class="step-2" data-context-id="'+context.id+'">' + context.name + '</li>';
+                if (context.id === self.options.userContext.id) {
+                    contextListIdx = i;
+                }
             }
             self.content.find('.context-list').html(list);
             self.content.find('.step-context').css('visibility', 'visible');
+            if (contextListIdx !== undefined) {
+                self.content.find('.context-list li:eq('+contextListIdx+')').trigger('click');
+            }
         } else {
             self.content.find('.step-context').css('visibility', 'hidden');
         }
 
-        // select context if matches current firm
+        self.updateEventList();
+
+        // TODO: select context if matches current firm
+    };
+
+    /**
+     * show or hide the event list
+     */
+    NewEventDialog.prototype.updateEventList = function() {
+        var self = this;
+        var selected = self.content.find('.step-2.selected');
+        if (selected.length) {
+            self.content.find('.step-event-types').css('visibility', 'visible');
+        } else {
+            self.content.find('.step-event-types').css('visibility', 'hidden');
+        }
     };
 
     exports.NewEvent = NewEventDialog;
