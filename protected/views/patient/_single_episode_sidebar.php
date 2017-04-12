@@ -1,26 +1,9 @@
 <?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && $this->checkAccess('OprnCreateEpisode')) {?>
     <div class="oe-sidebar-top-buttons">
-        <?php
-        $enabled = false;
-        $change_firm = false;
-        if ($current_episode) {
-            $enabled = true;
-            if ($current_episode->getSubspecialtyID() != $this->firm->getSubspecialtyID()) {
-                $change_firm = true;
-            }
-        }
-        $class = "disabled";
-        if ($enabled) {
-            $class = $change_firm ? "change-firm" : "enabled";
-        }
-        ?>
         <button
-            class="secondary tiny add-event addEvent <?= $class ?>"
+            class="secondary tiny add-event addEvent enabled"
             type="button"
-            id="add-event"
-            data-attr-subspecialty-id="<?= $this->firm->getSubspecialtyID();?>"
-        <?= $change_firm ? 'data-window-title="Please switch to a ' . $current_episode->getSubspecialtyText() . ' Firm"' : ''; ?>
-        >Event</button></div>
+            id="add-event">Event</button></div>
 <?php }?>
 <div class="oe-scroll-wrapper" style="height:300px">
 <?php

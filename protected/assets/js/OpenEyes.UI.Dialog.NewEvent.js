@@ -29,12 +29,13 @@
 
     Util.inherits(Dialog, NewEventDialog);
 
+    //TODO: ensure support for OprnCreateEpisode checking (i.e. only allow new 'episode' creation where appropriate)
     NewEventDialog._defaultOptions = {
         destroyOnClose: false,
+        title: 'Add a new event',
         modal: true,
         width: 1000,
         minHeight: 'auto',
-        title: 'Create new event',
         dialogClass: 'dialog oe-create-event-popup',
         selector: '#add-new-event-template',
         currentSubspecialties: [],
@@ -114,6 +115,20 @@
             self.updateEventList();
         });
 
+        self.content.on('click', '.step-3', function(e) {
+            if (!$(this).hasClass('add_event_disabled')) {
+                // can proceed
+                self.createEvent($(this).data('eventtype-id'));
+            }
+        });
+
+        // auto selection of subspecialty for the current user subspecialty
+        self.content.find('.step-1').each(function() {
+            if ($(this).data('subspecialty-id') === self.options.userSubspecialtyId) {
+                $(this).trigger('click');
+                return;
+            }
+        });
     };
 
     /**
@@ -134,6 +149,16 @@
             }
         });
     };
+
+    NewEventDialog.prototype.updateTitle = function(subspecialty)
+    {
+        var title = this.options.title;
+        if (subspecialty !== undefined) {
+            title = 'Add a new ' + subspecialty.name + ' event';
+        }
+        this.setTitle(title);
+    }
+
 
     /**
      * Manages changes when a new subspecialty is selected for creating a new subspecialty for the event.
@@ -247,8 +272,10 @@
         var self = this;
         // get selected subspecialty
         var selected = self.content.find('.oe-specialty-service.selected');
+
         var contextListIdx = undefined;
         if (selected.length) {
+            self.updateTitle(self.subspecialtiesById[selected.data('subspecialtyId')]);
             var subspecialtyId = selected.data('subspecialty-id');
             // get the context options for the subspecialty
             var list = '';
@@ -265,12 +292,12 @@
                 self.content.find('.context-list li:eq('+contextListIdx+')').trigger('click');
             }
         } else {
+            self.updateTitle();
+            self.content.find('.step-2').removeClass('selected');
             self.content.find('.step-context').css('visibility', 'hidden');
         }
 
         self.updateEventList();
-
-        // TODO: select context if matches current firm
     };
 
     /**
@@ -284,6 +311,14 @@
         } else {
             self.content.find('.step-event-types').css('visibility', 'hidden');
         }
+    };
+
+    NewEventDialog.prototype.createEvent = function(eventTypeId) {
+        var self = this;
+        // build params for the new event request
+        console.log('create:' + eventTypeId);
+        // set window location to the new event request URL
+
     };
 
     exports.NewEvent = NewEventDialog;

@@ -109,8 +109,7 @@
         $(self.options.event_button_selector).unbind();
 
         $(document).on('click', self.options.event_button_selector + '.enabled', function() {
-            if (self.subspecialty)
-                self.openNewEventDialog();
+            self.openNewEventDialog();
         });
 
         self.element.on('click', '.collapse-all', function(e) {
@@ -165,7 +164,6 @@
         var self = this;
         if (!self.newEventDialog) {
             self.newEventDialog = new OpenEyes.UI.Dialog.NewEvent({
-                title: 'Add a new ' + self.getSubspecialtyLabel() + ' event',
                 id: 'add-new-event-dialog',
                 userSubspecialtyId: self.options.user_subspecialty,
                 userContext: self.options.user_context,
