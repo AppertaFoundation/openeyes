@@ -117,6 +117,7 @@ class OphCoCorrespondence_API extends BaseAPI
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
             $event = $this->getMostRecentEventInEpisode($episode->id, $event_type->id);
+
             if (isset($event->event_date)) {
                 return Helper::convertDate2NHS($event->event_date);
             }
@@ -126,10 +127,13 @@ class OphCoCorrespondence_API extends BaseAPI
     }
      */
 
-    public function getLastExaminationDate(\Patient $patient, $use_context = true)
+    public function getLastExaminationDate(\Patient $patient, $use_context = false)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            $event = $this->getLatestEvent($patient, $use_context);
+
+            $OphCiExamination = new \OEModule\OphCiExamination\components\OphCiExamination_API();
+            $event = $OphCiExamination->getLatestEvent($patient, $use_context);
+
             if (isset($event->event_date)) {
                 return Helper::convertDate2NHS($event->event_date);
             }

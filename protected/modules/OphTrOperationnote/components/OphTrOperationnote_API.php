@@ -210,7 +210,9 @@ class OphTrOperationnote_API extends BaseAPI
     public function getLastOperationDate(\Patient $patient , $use_context = true)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            $event = $this->getLatestEvent($patient , $use_context);
+
+            $operationNote = new OphTrOperationnote_API();
+            $event = $operationNote->getLatestEvent($patient , $use_context);
             if (isset($event->event_date)) {
                 return Helper::convertDate2NHS($event->event_date);
             }
@@ -243,7 +245,8 @@ class OphTrOperationnote_API extends BaseAPI
     public function getLastOperationDateUnformatted(\Patient $patient , $use_context = true)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            $event = $this->getLatestEvent($patient, $use_context);
+            $operationNote = new OphTrOperationnote_API();
+            $event = $operationNote->getLatestEvent($patient, $use_context);
             if (isset($event->event_date)) {
                 return $event->event_date;
             }
