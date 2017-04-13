@@ -440,7 +440,17 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
       color: #fff;
       background-color: #063e89; }
 .open-eyes .header .icon-alert {
-  background-image: url("../img/sprites/_elements/icons/white-alerts.png"); }
+  background-image: url("../img/sprites/_elements/icons/icons-17x17.png"); }
+.open-eyes .header .icon-alert.female-white-bg {
+  background-position: -17px 0; }
+.open-eyes .header .icon-alert.female-white-trans {
+  background-position: -17px -17px; }
+.open-eyes .header .icon-alert.male-white-bg {
+  background-position: -17px -34px; }
+.open-eyes .header .icon-alert.male-white-trans {
+  background-position: -17px -51px; }
+.open-eyes .header .icon-alert.icon-alert-warning {
+  background-position: -17px -68px; }
 .open-eyes .header .alert-box {
   border: none; }
   .open-eyes .header .alert-box strong {

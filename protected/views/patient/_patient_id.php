@@ -79,7 +79,7 @@
 			</div>
 
 			<!-- Gender -->
-			<span class="icon icon-alert icon-alert-<?php echo strtolower($this->patient->getGenderString()) ?>_trans">
+			<span class="icon icon-alert <?php echo strtolower($this->patient->getGenderString()) ?>-white-trans">
 				<?php echo $this->patient->getGenderString() ?>
 			</span>
 
