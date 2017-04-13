@@ -28,7 +28,7 @@ if ($this->canMarkRead()) {
 }
 
 if ($this->checkPrintAccess()) {
-    $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'button small'));
+    $this->event_actions[] = EventAction::printButton();
 }
 ?>
 

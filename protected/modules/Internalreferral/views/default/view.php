@@ -22,7 +22,7 @@ $this->beginContent('//patient/event_container');
 
 <?php
 if ($this->checkPrintAccess()) {
-	$this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'small button'));
+	$this->event_actions[] = EventAction::printButton();
 }
 ?>
 

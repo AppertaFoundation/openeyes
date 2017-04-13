@@ -922,6 +922,15 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     background: #505050 url("../img/_elements/btns/oescape-graph-icon.png") center center no-repeat; }
     .open-eyes button.event-action .oe-btn-icon.oescape:hover, .open-eyes a.event-action .oe-btn-icon.oescape:hover {
       background-color: #333; }
+  .open-eyes button.event-action .oe-btn-icon.print, .open-eyes a.event-action .oe-btn-icon.print {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    height: 38px;
+    width: 40px;
+    text-indent: 500px;
+    background: transparent url("../img/_elements/btns/oe-print-icon.png") center center no-repeat; }
+
 
 .oe-header-panel {
   background: #b1b6bb;
