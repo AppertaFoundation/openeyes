@@ -124,6 +124,7 @@
             if (newEventDialog === undefined) {
                 newEventDialog = new OpenEyes.UI.Dialog.NewEvent({
                     id: 'add-new-event-dialog',
+                    viewSubspecialtyId: <?= @$view_subspecialty ? $view_subspecialty->id : 'undefined' ?>,
                     patientId: <?= $patient_id ?>,
                     userSubspecialtyId: <?= $context_firm->getSubspecialtyID() ?>,
                     userContext: <?= CJSON::encode(NewEventDialogHelper::structureFirm($context_firm)) ?>,

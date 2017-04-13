@@ -79,6 +79,10 @@
             self.contextsBySubspecialtyId[subspecialty.id] = subspecialty.contexts;
             self.servicesBySubspecialtyId[subspecialty.id] = subspecialty.services;
         }
+        self.defaultSubspecialtyId = undefined;
+        if (self.options.viewSubspecialtyId === undefined || self.options.viewSubspecialtyId === self.options.userSubspecialtyId) {
+            self.defaultSubspecialtyId = self.options.userSubspecialtyId;
+        }
 
         // parent initialisation
         NewEventDialog._super.prototype.create.call(self);
@@ -122,11 +126,21 @@
             }
         });
 
-        // auto selection of subspecialty for the current user subspecialty
+        // auto selection of subspecialty based on current view
+        // Either subspecialty already active for the patient ...
         self.content.find('.step-1').each(function() {
-            if ($(this).data('subspecialty-id') === self.options.userSubspecialtyId) {
+            if ($(this).data('subspecialty-id') === self.defaultSubspecialtyId) {
                 $(this).trigger('click');
-                return;
+                return false;
+            }
+        });
+
+        // ... or we short cut selection of default subspecialty for new container
+        self.content.find('.new-subspecialty option').each(function() {
+            if (parseInt($(this).val()) === self.options.userSubspecialtyId) {
+                $(this).prop('selected', true);
+                self.content.find('.new-subspecialty').trigger('change');
+                return false;
             }
         });
     };
@@ -206,7 +220,12 @@
         select.html('');
         var options = '<option>- Please Select -</option>';
         for (var i in services) {
-            options += '<option value="'+services[i].id+'">' + services[i].name + '</option>';
+            options += '<option value="'+services[i].id+'"';
+            // default to current runtime firm
+            if (services[i].id === self.options.userContext.id) {
+                options += ' selected';
+            }
+            options += '>' + services[i].name + '</option>';
         }
         select.html(options);
         select.show();

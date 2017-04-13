@@ -53,6 +53,7 @@ if (count($legacyepisodes)) {
 <div class="all-panels">
 <?php
 $subspecialty_labels = array();
+$current_subspecialty = null;
 
 if (is_array($ordered_episodes)) {
     foreach ($ordered_episodes as $specialty_episodes) { ?>
@@ -71,11 +72,15 @@ if (is_array($ordered_episodes)) {
                         else {
                             $tag = $episode->subspecialty ? $episode->subspecialty->ref_spec : 'Ss';
                         }
+                        if ($current_episode && $current_episode->getSubspecialtyID() == $id) {
+                            $selected = 'selected';
+                            $current_subspecialty = $current_episode->getSubspecialty();
+                        }
 
                         if (!array_key_exists($id, $subspecialty_labels)) {
                             $subspecialty_labels[$id] = $subspecialty_name; ?>
 
-                            <li class="subspecialty <?= $current_episode && $current_episode->getSubspecialtyID() == $id ? "selected" : ""; ?>"
+                            <li class="subspecialty <?= $selected ?>"
                                 data-subspecialty-id="<?= $id ?>"
                                 data-definition='<?= CJSON::encode(NewEventDialogHelper::structureEpisode($episode)) ?>'>
                                 <a href="<?= Yii::app()->createUrl('/patient/episode/' . $episode->id) ?>">
@@ -103,6 +108,7 @@ if (is_array($ordered_episodes)) {
 
                         if (isset($this->event) && $this->event->id == $event->id) {
                             $highlight = TRUE;
+                            $current_subspecialty = $episode->subspecialty;
                         }
 
                         $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
@@ -156,8 +162,11 @@ if (is_array($ordered_episodes)) {
 }?>
 </div>
 
-<?php $this->renderPartial('//patient/add_new_event',array(
+<?php
+
+$this->renderPartial('//patient/add_new_event',array(
     'button_selector' => '#add-event',
+    'view_subspecialty' => $current_subspecialty,
     'episodes' => $active_episodes,
     'context_firm' => $this->firm,
     'patient_id' => $this->patient->id,
