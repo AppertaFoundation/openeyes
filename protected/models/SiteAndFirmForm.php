@@ -31,7 +31,7 @@ class SiteAndFirmForm extends CFormModel
     public function attributeLabels()
     {
         return array(
-            'firm_id' => 'Firm',
+            'firm_id' => Firm::contextLabel(),
             'site_id' => 'Site',
         );
     }
