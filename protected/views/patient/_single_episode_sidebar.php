@@ -1,26 +1,9 @@
 <?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && $this->checkAccess('OprnCreateEpisode')) {?>
     <div class="oe-sidebar-top-buttons">
-        <?php
-        $enabled = false;
-        $change_firm = false;
-        if ($current_episode) {
-            $enabled = true;
-            if ($current_episode->getSubspecialtyID() != $this->firm->getSubspecialtyID()) {
-                $change_firm = true;
-            }
-        }
-        $class = "disabled";
-        if ($enabled) {
-            $class = $change_firm ? "change-firm" : "enabled";
-        }
-        ?>
-        <button class="secondary tiny add-episode" type="button" id="add-episode"><?= Episode::getEpisodeLabel(); ?></button><button
-                class="secondary tiny add-event addEvent <?= $class ?>"
-                type="button"
-                id="add-event"
-                data-attr-subspecialty-id="<?= $this->firm->getSubspecialtyID();?>"
-            <?= $change_firm ? 'data-window-title="Please switch to a ' . $current_episode->getSubspecialtyText() . ' Firm"' : ''; ?>
-        >Event</button></div>
+        <button
+            class="secondary tiny add-event addEvent enabled"
+            type="button"
+            id="add-event">Event</button></div>
 <?php }?>
 <div class="oe-scroll-wrapper" style="height:300px">
 <?php
@@ -43,6 +26,12 @@ $subspecialty_colour_codes = array(
     'VR' => '#F4B4A6',
     'Le' => '#cccccc'
 );
+// Note, we are ignoring the possibility of additional specialties here and only supporting the first,
+// which is expected to be opthalmology.
+$active_episodes = array();
+if (is_array($ordered_episodes)) {
+    $active_episodes = $ordered_episodes[0]['episodes'];
+}
 
 // flatten the data structure to include legacy events into the core navigation. Note here we are
 // simply assuming that the first entry will be Ophthalmology specialty (for the purposes of this PoC
@@ -64,6 +53,7 @@ if (count($legacyepisodes)) {
 <div class="all-panels">
 <?php
 $subspecialty_labels = array();
+$current_subspecialty = null;
 
 if (is_array($ordered_episodes)) {
     foreach ($ordered_episodes as $specialty_episodes) { ?>
@@ -82,12 +72,17 @@ if (is_array($ordered_episodes)) {
                         else {
                             $tag = $episode->subspecialty ? $episode->subspecialty->ref_spec : 'Ss';
                         }
+                        if ($current_episode && $current_episode->getSubspecialtyID() == $id) {
+                            $selected = 'selected';
+                            $current_subspecialty = $current_episode->getSubspecialty();
+                        }
 
                         if (!array_key_exists($id, $subspecialty_labels)) {
                             $subspecialty_labels[$id] = $subspecialty_name; ?>
 
-                            <li class="subspecialty <?= $current_episode && $current_episode->getSubspecialtyID() == $id ? "selected" : ""; ?>"
-                                data-subspecialty-id="<?= $id ?>">
+                            <li class="subspecialty <?= $selected ?>"
+                                data-subspecialty-id="<?= $id ?>"
+                                data-definition='<?= CJSON::encode(NewEventDialogHelper::structureEpisode($episode)) ?>'>
                                 <a href="<?= Yii::app()->createUrl('/patient/episode/' . $episode->id) ?>">
                                 <?= $subspecialty_name ?><span class="tag"><?= $tag ?></span>
                                 </a></li>
@@ -113,18 +108,13 @@ if (is_array($ordered_episodes)) {
 
                         if (isset($this->event) && $this->event->id == $event->id) {
                             $highlight = TRUE;
+                            $current_subspecialty = $episode->subspecialty;
                         }
 
                         $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
 
-                        if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
-                            $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/';
-                        } else {
-                            $assetpath = '/assets/';
-                        }
-
-                        $icon = $assetpath . 'img/small.png';
-                        $event_name =  $event->eventType->name;
+                        $icon = $event->getEventIcon();
+                        $event_name = $event->getEventName();
                     ?>
 
                         <li id="eventLi<?php echo $event->id ?>"
@@ -172,14 +162,16 @@ if (is_array($ordered_episodes)) {
 }?>
 </div>
 
-<script type="text/html" id="add-new-event-template">
-    <?php $this->renderPartial('//patient/add_new_event',array(
-        'episode' => "{{episode}}",
-        'subspecialty' => "{{subspecialty}}",
-        'patient' => $this->patient,
-        'eventTypes' => EventType::model()->getEventTypeModules(),
-    ));?>
-</script>
+<?php
+
+$this->renderPartial('//patient/add_new_event',array(
+    'button_selector' => '#add-event',
+    'view_subspecialty' => $current_subspecialty,
+    'episodes' => $active_episodes,
+    'context_firm' => $this->firm,
+    'patient_id' => $this->patient->id,
+    'eventTypes' => EventType::model()->getEventTypeModules(),
+));?>
 
 <?php
     $subspecialty_label_list = array();
@@ -194,10 +186,13 @@ if (is_array($ordered_episodes)) {
 
         $('div.specialty').each(function() {
             new OpenEyes.UI.EpisodeSidebar(this, {
+                patient_id: OE_patient_id,
                 user_subspecialty: <?= $this->firm->getSubspecialtyID() ?>,
+                user_context: <?= CJSON::encode(NewEventDialogHelper::structureFirm($this->firm)) ?>,
                 subspecialty_labels: {
                     <?= implode(",", $subspecialty_label_list); ?>
-                }
+                },
+                subspecialties: <?= CJSON::encode(NewEventDialogHelper::structureAllSubspecialties()) ?>
             });
         });
 

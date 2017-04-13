@@ -29,15 +29,22 @@ $noEpisodes = (count($episodes) < 1 && count($supportserviceepisodes) < 1 && cou
 			<div class="box content">
 				<div class="oe-no-episodes">
 					<div class="alert-box alert">
-						There are currently no events for this patient, please click the Add <?= strtolower(Episode::getEpisodeLabel()) ?> button to begin recording events.
+						There are currently no events for this patient, please click the button below to begin recording events.
 					</div>
-					<button class="add-episode" id="add-episode">
-						Add <?= strtolower(Episode::getEpisodeLabel()) ?>
+					<button class="add-event tiny" id="add-event">
+						Add Event
 					</button>
 				</div>
 			</div>
 		</div>
 	</div>
+    <?php $this->renderPartial('//patient/add_new_event',array(
+        'button_selector' => '#add-event',
+        'episodes' => array(),
+        'context_firm' => $this->firm,
+        'patient_id' => $this->patient->id,
+        'eventTypes' => EventType::model()->getEventTypeModules(),
+    ));?>
 <?php } else {
 
     $this->beginContent('//patient/episodes_container', array(

@@ -1361,6 +1361,11 @@ class PatientController extends BaseController
         echo '1';
     }
 
+    /**
+     * @return mixed|string
+     * @throws Exception
+     * @deprecated - since version 2.0
+     */
     public function actionAddNewEpisode()
     {
         if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
