@@ -23,6 +23,6 @@
         'subspecialty' => @$subspecialty,
         'support_services' => @$support_services,
         'patient' => @$patient,
-        'title' => 'Select a new Site and/or Firm',
+        'title' => 'Select a new Site and/or ' . Firm::contextLabel(),
     ));
 ?>

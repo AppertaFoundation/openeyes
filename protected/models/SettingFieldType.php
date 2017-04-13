@@ -57,7 +57,7 @@ class SettingFieldType extends BaseActiveRecordVersioned
             array('name', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, phrase, phrase_name_id, section_id, display_order', 'safe', 'on' => 'search'),
+            array('id, name', 'safe', 'on' => 'search'),
         );
     }
 
