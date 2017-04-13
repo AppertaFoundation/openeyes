@@ -68,12 +68,6 @@
             <ul class="event-type-list" data-patient-id="<?= $patient->id ?>">
                 <?php foreach ($eventTypes as $eventType) {
                     if ($subspecialty || $eventType->support_services) {
-                        if (file_exists(Yii::getPathOfAlias('application.modules.' . $eventType->class_name . '.assets.img'))) {
-                            $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $eventType->class_name . '.assets.img') . '/') . '/';
-                        } else {
-                            $assetpath = '/assets/';
-                        }
-
                         $args = $this->getCreateArgsForEventTypeOprn($eventType);
                         if (call_user_func_array(array($this, 'checkAccess'), $args)) {
                             ?>
@@ -90,7 +84,8 @@
                 <?php } ?>
             </ul>
 
-            <div class="back-date-event">
+            <div class="back-date-event" style="display: none;">
+                <!-- TODO: implement back dated event changes -->
                 <label><input id="back-date-event" type="checkbox"> Back Date Event</label>
                 <div class="back-date-options">
                     <div style="margin-bottom:10px">
