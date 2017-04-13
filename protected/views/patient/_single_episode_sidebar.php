@@ -72,6 +72,7 @@ if (is_array($ordered_episodes)) {
                         else {
                             $tag = $episode->subspecialty ? $episode->subspecialty->ref_spec : 'Ss';
                         }
+                        $selected = '';
                         if ($current_episode && $current_episode->getSubspecialtyID() == $id) {
                             $selected = 'selected';
                             $current_subspecialty = $current_episode->getSubspecialty();

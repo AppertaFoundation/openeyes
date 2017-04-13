@@ -360,7 +360,7 @@
         }
 
         // set window location to the new event request URL
-        window.location = '/patientevent/create?'+$.param(requestParams);
+        window.location = '/patientEvent/create?'+$.param(requestParams);
     };
 
     exports.NewEvent = NewEventDialog;
