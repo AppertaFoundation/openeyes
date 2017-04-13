@@ -180,14 +180,16 @@ class DefaultController extends BaseEventTypeController
     public function actionSaveNewStorage()
     {
         $storage = new OphInDnaextraction_DnaExtraction_Storage();
-        
+
+
         $storage->box_id = Yii::app()->request->getPost('dnaextraction_box_id');
         $storage->letter = Yii::app()->request->getPost('dnaextraction_letter');
         $storage->number = Yii::app()->request->getPost('dnaextraction_number');
         $storage->letter = $storage->letter ? strtoupper($storage->letter) : $storage->letter;
 
         if( $storage->save() ){
-            $result = array('s' => 1);
+            $selectedID = $storage->getPrimaryKey();
+            $result = array('s' => 1 , 'selected' => $selectedID);
         } else {
             $errors = '';
             foreach( $storage->getErrors() as $attribute => $error ){

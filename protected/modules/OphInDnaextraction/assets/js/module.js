@@ -182,7 +182,7 @@ function saveNewStorage(){
                 }).open();
             } else {
                 
-                refreshStorageSelect();
+                refreshStorageSelect( response.selected );
                 result = true;
             }
         }
@@ -191,7 +191,7 @@ function saveNewStorage(){
     return result;
 }
 
-function refreshStorageSelect(){
+function refreshStorageSelect( selectedID ){
     $.ajax({
         'type': 'GET',
         'url': baseUrl+'/OphInDnaextraction/default/refreshStorageSelect',    
@@ -204,8 +204,13 @@ function refreshStorageSelect(){
             for(var i = 0; i < count; i++){
                 key = Object.keys(response)[i];
                 value = Object.values(response)[i];
-                
-                option += '<option value="'+key+'">'+value+'</option>';
+
+                if(key == selectedID){
+                    option += '<option value="'+key+'" SELECTED>'+value+'</option>';
+                } else {
+                    option += '<option value="'+key+'">'+value+'</option>';
+                }
+
             }
             
             $('#Element_OphInDnaextraction_DnaExtraction_storage_id').html(option);
