@@ -106,12 +106,6 @@
 
         self.updateGrouping();
 
-        $(self.options.event_button_selector).unbind();
-
-        $(document).on('click', self.options.event_button_selector + '.enabled', function() {
-            self.openNewEventDialog();
-        });
-
         self.element.on('click', '.collapse-all', function(e) {
             self.collapseAll();
             e.preventDefault();
@@ -158,22 +152,6 @@
             currentSubspecialties.push($(this).data('definition'));
         });
         return currentSubspecialties;
-    };
-
-    EpisodeSidebar.prototype.openNewEventDialog = function() {
-        var self = this;
-        if (!self.newEventDialog) {
-            self.newEventDialog = new OpenEyes.UI.Dialog.NewEvent({
-                id: 'add-new-event-dialog',
-                patientId: self.options.patient_id,
-                userSubspecialtyId: self.options.user_subspecialty,
-                userContext: self.options.user_context,
-                currentSubspecialties: self.getCurrentSubspecialties(),
-                subspecialties: self.options.subspecialties
-            });
-
-        }
-        self.newEventDialog.open();
     };
 
     EpisodeSidebar.prototype.orderEvents = function() {

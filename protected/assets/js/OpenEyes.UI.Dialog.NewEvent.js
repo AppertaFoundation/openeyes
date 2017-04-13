@@ -311,6 +311,7 @@
     NewEventDialog.prototype.updateEventList = function() {
         var self = this;
         var selected = self.content.find('.step-2.selected');
+        // TODO: filter list based on whether Support Services is being chosen.
         if (selected.length) {
             self.content.find('.step-event-types').css('visibility', 'visible');
         } else {
@@ -318,6 +319,11 @@
         }
     };
 
+    /**
+     * Trigger request for creating the new event
+     *
+     * @param eventTypeId
+     */
     NewEventDialog.prototype.createEvent = function(eventTypeId) {
         var self = this;
         // build params for the new event request

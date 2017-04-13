@@ -3,7 +3,7 @@
  * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2011-2017
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,10 +13,13 @@
  *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js')?>
+<?php Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.NewEvent.js', null, -10)?>
+
 <script type="text/html" id="add-new-event-subspecialty-step">
     <li class="step-1 oe-specialty-service {{classes}}"
         data-id="{{id}}"
@@ -64,22 +67,20 @@
             </ul>
         </td>
         <td class="step-event-types" style="visibility: hidden;">
-            <h3 class="no-arrow">Select event to add to <?= $subspecialty ?>:</h3>
-            <ul class="event-type-list" data-patient-id="<?= $patient->id ?>">
+            <h3 class="no-arrow title">Select event to add:</h3>
+            <ul class="event-type-list">
                 <?php foreach ($eventTypes as $eventType) {
-                    if ($subspecialty || $eventType->support_services) {
-                        $args = $this->getCreateArgsForEventTypeOprn($eventType);
-                        if (call_user_func_array(array($this, 'checkAccess'), $args)) {
-                            ?>
-                            <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3" data-eventType-id="<?= $eventType->id ?>">
-                                <img src="<?= $eventType->getEventIcon() ?>" title="<?= $eventType->name ?> icon" /><?= $eventType->name ?>
-                            </li>
-                        <?php } else { ?>
-                            <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3 add_event_disabled"
-                                title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add ' . $eventType->name ?>">
-                                <img src="<?= $eventType->getEventIcon() ?>" title="<?= $eventType->name ?> icon" /><?= $eventType->name ?>
-                            </li>
-                        <?php } ?>
+                    $args = $this->getCreateArgsForEventTypeOprn($eventType);
+                    if (call_user_func_array(array($this, 'checkAccess'), $args)) {
+                        ?>
+                        <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3" data-eventType-id="<?= $eventType->id ?>" data-support-services="<?=$eventType->support_services?>">
+                            <img src="<?= $eventType->getEventIcon() ?>" title="<?= $eventType->name ?> icon" /><?= $eventType->name ?>
+                        </li>
+                    <?php } else { ?>
+                        <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3 add_event_disabled"
+                            title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add ' . $eventType->name ?>">
+                            <img src="<?= $eventType->getEventIcon() ?>" title="<?= $eventType->name ?> icon" /><?= $eventType->name ?>
+                        </li>
                     <?php } ?>
                 <?php } ?>
             </ul>
@@ -114,4 +115,24 @@
     </tr>
     </tbody>
 </table>
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var newEventDialog;
+
+        $(document).on('click', '<?= $button_selector ?>', function() {
+            if (newEventDialog === undefined) {
+                newEventDialog = new OpenEyes.UI.Dialog.NewEvent({
+                    id: 'add-new-event-dialog',
+                    patientId: <?= $patient_id ?>,
+                    userSubspecialtyId: <?= $context_firm->getSubspecialtyID() ?>,
+                    userContext: <?= CJSON::encode(NewEventDialogHelper::structureFirm($context_firm)) ?>,
+                    currentSubspecialties: <?= CJSON::encode(NewEventDialogHelper::structureEpisodes($episodes)) ?>,
+                    subspecialties: <?= CJSON::encode(NewEventDialogHelper::structureAllSubspecialties()) ?>
+                });
+            }
+            newEventDialog.open();
+        });
+    });
+
 </script>

@@ -26,6 +26,12 @@ $subspecialty_colour_codes = array(
     'VR' => '#F4B4A6',
     'Le' => '#cccccc'
 );
+// Note, we are ignoring the possibility of additional specialties here and only supporting the first,
+// which is expected to be opthalmology.
+$active_episodes = array();
+if (is_array($ordered_episodes)) {
+    $active_episodes = $ordered_episodes[0]['episodes'];
+}
 
 // flatten the data structure to include legacy events into the core navigation. Note here we are
 // simply assuming that the first entry will be Ophthalmology specialty (for the purposes of this PoC
@@ -151,9 +157,10 @@ if (is_array($ordered_episodes)) {
 </div>
 
 <?php $this->renderPartial('//patient/add_new_event',array(
-    'episode' => "{{episode}}",
-    'subspecialty' => "{{subspecialty}}",
-    'patient' => $this->patient,
+    'button_selector' => '#add-event',
+    'episodes' => $active_episodes,
+    'context_firm' => $this->firm,
+    'patient_id' => $this->patient->id,
     'eventTypes' => EventType::model()->getEventTypeModules(),
 ));?>
 

@@ -23,6 +23,10 @@
 class NewEventDialogHelper
 {
 
+    /**
+     * @param Episode $episode
+     * @return array
+     */
     public static function structureEpisode(Episode $episode)
     {
         if ($subspecialty = $episode->getSubspecialty()) {
@@ -40,6 +44,23 @@ class NewEventDialogHelper
         );
     }
 
+    /**
+     * @param Episode[] $episodes
+     * @return array
+     */
+    public static function structureEpisodes(array $episodes)
+    {
+        $res = array();
+        foreach ($episodes as $ep) {
+            $res[] = static::structureEpisode($ep);
+        }
+        return $res;
+    }
+
+    /**
+     * @param Subspecialty $subspecialty
+     * @return array
+     */
     public static function structureSubspecialty(Subspecialty $subspecialty)
     {
         return array(
@@ -49,6 +70,10 @@ class NewEventDialogHelper
         );
     }
 
+    /**
+     * @param Firm $firm
+     * @return array
+     */
     public static function structureFirm(Firm $firm)
     {
         return array(
@@ -57,6 +82,9 @@ class NewEventDialogHelper
         );
     }
 
+    /**
+     * @return array|bool
+     */
     public static function structureAllSubspecialties()
     {
         $subspecialties = Yii::app()->cache->get('new-event-subspecialties');
