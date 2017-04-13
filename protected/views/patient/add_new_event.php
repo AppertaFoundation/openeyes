@@ -51,7 +51,7 @@
                     {{/selectableSubspecialties}}
                 </select>
 
-                <h6 style="margin-top:5px">Service</h6>
+                <h6 style="margin-top:5px"><?= Firm::serviceLabel() ?></h6>
                 <div class="no-subspecialty">Select Subspecialty</div>
                 <div class="fixed-service" style="display: none;"></div>
                 <select class="select-service" style="display: none;">
@@ -62,7 +62,7 @@
 
         </td>
         <td class="step-context" style="visibility: hidden;">
-            <h3>Context</h3>
+            <h3><?= Firm::contextLabel() ?></h3>
             <ul class="context-list">
             </ul>
         </td>

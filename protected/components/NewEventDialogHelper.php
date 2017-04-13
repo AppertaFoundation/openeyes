@@ -101,12 +101,18 @@ class NewEventDialogHelper
                     ));
                 if (count($related_firms)) {
                     $structure = static::structureSubspecialty($subspecialty);
+                    $structure['services'] = array();
+                    $structure['contexts'] = array();
                     $firms = array();
                     foreach ($related_firms as $f) {
-                        array_push($firms, static::structureFirm($f));
+                        $structured_firm = static::structureFirm($f);
+                        if ($f->can_own_an_episode) {
+                            $structure['services'][] = $structured_firm;
+                        }
+                        if ($f->runtime_selectable) {
+                            $structure['contexts'][] = $structured_firm;
+                        }
                     }
-                    $structure['services'] = $firms;
-                    $structure['contexts'] = $firms;
                     array_push($subspecialties, $structure);
                 }
             }
