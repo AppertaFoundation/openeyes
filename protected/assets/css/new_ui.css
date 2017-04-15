@@ -1036,7 +1036,8 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   transform: translate(-50%, -50%);
   z-index: 1002;
   width: 1000px;
-  border-radius: 5px; }
+  border-radius: 5px;
+  max-height: 650px; }
 
 .ui-dialog.ui-widget.ui-widget-content.dialog.oe-create-event-popup {
   background: #fff;
@@ -1073,7 +1074,8 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   .oe-create-event-popup table.oe-create-event-step-through td {
     vertical-align: top;
     border-left: 1px solid #aaa;
-    padding: 0 8px 0 8px; }
+    padding: 0 8px 0 8px;
+    max-height: 400px; }
     .oe-create-event-popup table.oe-create-event-step-through td.step-subspecialties {
       width: 25%; }
     .oe-create-event-popup table.oe-create-event-step-through td.step-context {
@@ -1083,6 +1085,12 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   .oe-create-event-popup table.oe-create-event-step-through ul {
     margin: 0;
     padding: 0; }
+    .oe-create-event-popup table.oe-create-event-step-through ul.subspecialties-list {
+      max-height: 390px;
+      overflow-y: auto; }
+    .oe-create-event-popup table.oe-create-event-step-through ul.context-list {
+      max-height: 500px;
+      overflow-y: auto; }
   .oe-create-event-popup table.oe-create-event-step-through li {
     display: block;
     margin: 0 0 2px 0;
@@ -1161,6 +1169,16 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     margin: 0 0 5px 0; }
 .oe-create-event-popup .change-subspecialty {
   background: #ddd; }
+  .oe-create-event-popup .change-subspecialty .no-subspecialty {
+    padding: 2px;
+    color: #333;
+    font-size: 11px;
+    font-size: 0.6875rem; }
+  .oe-create-event-popup .change-subspecialty .fixed-service {
+    margin-left: 2px;
+    padding: 3px;
+    background: #ccc;
+    border-radius: 3px; }
   .oe-create-event-popup .change-subspecialty select {
     width: 80%; }
   .oe-create-event-popup .change-subspecialty .add-subspecialty-btn {
