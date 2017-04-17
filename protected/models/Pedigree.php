@@ -75,7 +75,7 @@ class Pedigree extends BaseActiveRecord
                 'base_change_id, amino_acid_change_id, genomic_coordinate, genome_version, gene_transcript',
                 'safe'
             ),
-            array('consanguinity', 'required'),
+            array('consanguinity', 'required')
         );
     }
 
@@ -111,11 +111,18 @@ class Pedigree extends BaseActiveRecord
             'gene_id' => 'Gene',
             'amino_acid_change' => 'Amino Acid Change',
             'disorder_id' => 'Disorder',
+            'disorder.fully_specified_name' => 'Disorder',
             'base_change_id' => 'Base Change Type',
             'amino_acid_change_id' => 'Amino Acid Change Type',
             'getSubjectsCount' => 'Subjects count',
-            'getAffectedSubjectsCount' => 'Affected subjects count'
+            'getAffectedSubjectsCount' => 'Affected subjects count',
+            'getConsanguinityAsBoolean' => 'Consanguinity'
         );
+    }
+
+    public function getConsanguinityAsBoolean()
+    {
+        return $this->consanguinity == 1;
     }
 
     /**
