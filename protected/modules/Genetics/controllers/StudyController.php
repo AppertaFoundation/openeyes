@@ -99,7 +99,10 @@ class StudyController extends BaseAdminController
             'end_date',
             'getProposerNames'
         ));
-        $admin->searchAll();
+
+        $searchArray = array('type' => 'compare', 'compare_to' => array('name', 'end_date'));
+        $admin->getSearch()->addSearchItem('id', $searchArray);
+
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->getSearch()->setDefaultResults(false);
         $display_buttons = $this->checkAccess('TaskEditGeneticStudy');
