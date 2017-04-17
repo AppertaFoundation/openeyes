@@ -59,7 +59,7 @@ class SearchController extends BaseController
                 $page = $_GET['page'];
             }
 
-            $search_command = $this->buildSearchCommand('patient.id,patient.hos_num,event.id,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments,et_ophindnasample_sample.id AS sample_id', $page);
+            $search_command = $this->buildSearchCommand('patient.id,patient.hos_num,event.id,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments,et_ophindnasample_sample.id AS sample_id, genetics_patient.id AS genetics_patient_id', $page);
 
             $dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
@@ -99,14 +99,14 @@ class SearchController extends BaseController
             foreach($results as $key=>$row)
             {
                 $subquery = Yii::app()->db->createCommand()
-                    ->select('fully_specified_name')
+                    ->select('term')
                     ->from('disorder')
-                    ->where('id IN (SELECT disorder_id FROM genetics_patient_diagnosis WHERE patient_id = :patient_id)', array(':patient_id'=>$row['id']))
+                    ->where('id IN (SELECT disorder_id FROM genetics_patient_diagnosis WHERE patient_id = :patient_id)', array(':patient_id'=>$row['genetics_patient_id']))
                     ->queryColumn();
 
                 $results[$key]['diagnosis'] = implode(', ', $subquery);
             }
-
+            
         }
 
         $pagination = new CPagination($total_items);
