@@ -96,6 +96,17 @@ class SearchController extends BaseController
             $results = $search_command
                 ->queryAll();
 
+            foreach($results as $key=>$row)
+            {
+                $subquery = Yii::app()->db->createCommand()
+                    ->select('fully_specified_name')
+                    ->from('disorder')
+                    ->where('id IN (SELECT disorder_id FROM genetics_patient_diagnosis WHERE patient_id = :patient_id)', array(':patient_id'=>$row['id']))
+                    ->queryColumn();
+
+                $results[$key]['diagnosis'] = implode(', ', $subquery);
+            }
+
         }
 
         $pagination = new CPagination($total_items);
