@@ -97,6 +97,7 @@ class StudyController extends BaseAdminController
             'id',
             'name',
             'end_date',
+            'getProposerNames'
         ));
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);

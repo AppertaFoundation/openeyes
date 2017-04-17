@@ -85,6 +85,13 @@ class GeneticsStudy extends BaseActiveRecordVersioned
         );
     }
 
+    public function attributeLabels()
+    {
+        return array(
+            'getProposerNames' => 'Investigators'
+        );
+    }
+
     /**
      * format date after search
      * @return string
@@ -123,5 +130,20 @@ class GeneticsStudy extends BaseActiveRecordVersioned
         }
 
         return $is_proposer;
+    }
+
+    /**
+     * @return string
+     */
+
+    public function getProposerNames()
+    {
+        $p = [];
+        foreach($this->proposers as $proposer)
+        {
+            $p[] = $proposer->getFullName();
+        }
+
+        return implode(', ', $p);
     }
 }
