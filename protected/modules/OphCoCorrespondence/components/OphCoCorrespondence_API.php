@@ -638,4 +638,36 @@ class OphCoCorrespondence_API extends BaseAPI
         
         
     }
+
+    /*
+     * Glaucoma Overall Management Plan from latest Examination
+     * @param $patient
+     * @return string
+     */
+    public function getGlaucomaManagement( \Patient $patient )
+    {
+        $result = '';
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
+
+        if ($el = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan')
+        ) {
+            $result .= 'Clinic Interval: '.$el->clinic_internal->name."\n";
+            $result .= 'Photo: '.$el->photo->name."\n";
+            $result .= 'OCT: '.$el->oct->name."\n";
+            $result .= 'Gonioscopy: '.$el->gonio->name."\n";
+            $result .= 'HRT: '.$el->hfa->name."\n";
+
+            if(!empty($el->comments)){
+                $result .= 'Glaucoma Management comments: '.$el->comments."\n";
+            }
+
+            $result .= 'Target IOP Right Eye: '.$el->right_target_iop->name." mmHg\n";
+            $result .= 'Target IOP Left Eye: '.$el->left_target_iop->name." mmHg\n";
+
+        }
+        return $result;
+
+    }
 }
