@@ -663,7 +663,7 @@ class OphCoCorrespondence_API extends BaseAPI
                 $result .= 'Glaucoma Management comments: '.$el->comments."\n";
             }
 
-            $result .= 'Target IOP Right Eye: '.$el->right_target_iop->name." mmHg\n";
+            $result .= "\n".'Target IOP Right Eye: '.$el->right_target_iop->name." mmHg\n";
             $result .= 'Target IOP Left Eye: '.$el->left_target_iop->name." mmHg\n";
 
         }
