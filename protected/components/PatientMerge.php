@@ -154,9 +154,9 @@ class PatientMerge
         if($secondary->is_local == 0 && $primary->is_local == 1){
             $conflict = array(
                     'column' => 'is_local',
-                    'primary' => $primary->$column,
-                    'secondary' => $secondary->$column,
-                    'message' => 'Non local patient cannot be merged into local patient.'
+                    'primary' => $primary->id,
+                    'secondary' => $secondary->id,
+                    'message' => 'Non local patient(hos_num:' . $secondary->hos_num  . ') cannot be merged into local patient(hos_num: ' . $primary->hos_num . ').'
                 );
         }
         
@@ -202,6 +202,9 @@ class PatientMerge
 
             // Update Systemic Diagnoses
             $is_merged = $is_merged && $this->updateSystemicDiagnoses($this->primary_patient, $this->secondary_patient->systemicDiagnoses);
+
+            // Update Genetics
+            $is_merged = $is_merged && $this->updateGenetics($this->primary_patient, $this->secondary_patient);
 
             if ($is_merged) {
                 $secondary_patient = $this->secondary_patient;
@@ -571,6 +574,78 @@ class PatientMerge
         }
         
         return true;
+    }
+
+    public function updateGenetics(Patient $primary_patient, Patient $secondary_patient)
+    {
+        $primary_genetics_patient = GeneticsPatient::model()->findByAttributes(['patient_id' => $primary_patient->id]);
+        $secondary_genetics_patient = GeneticsPatient::model()->findByAttributes(['patient_id' => $secondary_patient->id]);
+
+        //if primary is genetics patient but secondary is not
+        if($primary_genetics_patient && !$secondary_genetics_patient){
+            //nothing to do here, as we would need to move genetics data from secondary to primary but the secondary is not a genetics patient
+
+        }elseif(!$primary_genetics_patient && $secondary_genetics_patient){
+            //else if secondary is genetics patient but primary is not
+
+            //now here we have to move all the genetics data from secondary to primary
+            //as the primary is not a genetics user we can just update the Geneticspatient->patient_id attribute
+
+            $secondary_genetics_patient->patient_id = $primary_patient->id;
+
+            if($secondary_genetics_patient->save()){
+                $this->addLog("Secondary Genetics Patient's (hos_num:{$secondary_patient->hos_num}) data moved to Primary Patient(hos_num:{$primary_patient->hos_num})");
+            }
+
+        } else{
+            //else both are genetics patients
+
+            //here we cannot just re-wire the GeneticsPatient table, actually we are not even update the GeneticsPatient table but
+            //all the other tables that are referencing to the GeneticsPatient table.
+            //We change the patient_id (which will be the genetics_patient.id ) e.g.: genetics_patient_diagnosis.patient_id <- again, this is the genetics_patient.id
+
+            if($genetics_patient_diagnosis = GeneticsPatientDiagnosis::model()->findByAttributes(['patient_id' => $secondary_genetics_patient->id])){
+                $genetics_patient_diagnosis->patient_id = $primary_genetics_patient->id;
+                if( $genetics_patient_diagnosis->save() ){
+                    $this->addLog("Genetics Patient Diagnoses {$genetics_patient_diagnosis->id} moved from Patient(hos_num:) {$secondary_patient->hos_num} to {$primary_patient->hos_num}");
+                }
+            }
+
+            if($genetics_patient_pedigree = GeneticsPatientPedigree::model()->findByAttributes(['patient_id' => $secondary_genetics_patient->id])){
+                $genetics_patient_pedigree->patient_id = $primary_genetics_patient->id;
+                if( $genetics_patient_pedigree->save() ){
+                    $this->addLog("Genetics Patient Pedigree {$genetics_patient_pedigree->id} moved from Patient(hos_num:) {$secondary_patient->hos_num} to {$primary_patient->hos_num}");
+                }
+            }
+
+            if($genetics_study_subject = GeneticsStudySubject::model()->findByAttributes(['patient_id' => $secondary_genetics_patient->id])){
+                $genetics_study_subject->patient_id = $primary_genetics_patient->id;
+                if( $genetics_study_subject->save() ){
+                    $this->addLog("Genetics Study Subject {$genetics_study_subject->id} moved from Patient(hos_num:) {$secondary_patient->hos_num} to {$primary_patient->hos_num}");
+                }
+            }
+
+            if($genetics_patient_relationship = GeneticsPatientRelationship::model()->findByAttributes(['patient_id' => $secondary_genetics_patient->id])){
+                $genetics_patient_relationship->patient_id = $primary_genetics_patient->id;
+                if( $genetics_patient_relationship->save() ){
+                    $this->addLog("Genetics Patient Relationship {$genetics_patient_relationship->id} moved from Patient(hos_num:) {$secondary_patient->hos_num} to {$primary_patient->hos_num}");
+                }
+            }
+
+//@TODO : implement proper return value
+return false;
+
+
+
+
+
+
+
+
+
+
+        }
+
     }
     
     
