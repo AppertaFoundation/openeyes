@@ -21,7 +21,16 @@
          data-element-type-id="<?php echo $element->elementType->id ?>"
          data-element-type-class="<?php echo $element->elementType->class_name ?>"
          data-element-type-name="<?php echo $element->elementType->name ?>"
-         data-element-display-order="<?php echo $element->elementType->display_order ?>">
+         data-element-display-order="<?php echo $element->elementType->display_order ?>"
+        <?php if($this->action->Id === 'view'): ?>
+            data-element-id="<?php echo $element->id; ?>"
+        <?php endif; ?>
+>
+    <?php if($this->action->Id === 'view') {
+            $form=$this->beginWidget('CActiveForm');
+            echo $form->errorSummary($element);
+        } ?>
+
   <input type="hidden" name="<?php echo CHtml::modelName($element); ?>[force_validation]"/>
   <fieldset class="element-fields">
     <div class="row field-row">
@@ -49,7 +58,7 @@
           if ($transactions) {
               foreach ($transactions as $i => $transaction) {
                   $disabled = !$this->checkAccess('TaskEditGeneticsWithdrawals');
-                  $this->renderPartial('_dna_test', array('transaction' => $transaction, 'i' => $i, 'disabled' => $disabled));
+                  $this->renderPartial('application.modules.OphInDnaextraction.views.default._dna_test', array('transaction' => $transaction, 'i' => $i, 'disabled' => $disabled));
               }
           } else { ?>
             <tr>
@@ -60,16 +69,21 @@
           <?php } ?>
           </tbody>
         </table>
-
+          <?php if($this->action->Id === 'view'): ?>
               <div class="button-bar right">
                   <button class="button warning small" href="javascript:void(-1)" id="cancelTest">Cancel</button>
                   <button class="button small default submitTest">Save</button>
               </div>
-
+          <?php endif; ?>
         <button class="button small secondary addTest">
           Add
         </button>
       </div>
     </div>
   </fieldset>
+
+    <?php if($this->action->Id === 'view') {
+        $this->endWidget();
+    } ?>
+
 </section>

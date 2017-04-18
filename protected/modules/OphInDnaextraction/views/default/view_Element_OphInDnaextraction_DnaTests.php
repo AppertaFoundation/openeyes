@@ -18,6 +18,14 @@
  */
 ?>
 
+<?php
+$this->renderPartial(
+    'application.modules.OphInDnaextraction.views.default.form_Element_OphInDnaextraction_DnaTests',
+    array('element' => $element, 'data' => array('view_mode'=>true), 'form' => @$form),
+    false, false
+)?>
+
+<?php /*
 <section class="element <?php echo $element->elementType->class_name ?>"
          data-element-type-id="<?php echo $element->elementType->id ?>"
          data-element-type-class="<?php echo $element->elementType->class_name ?>"
@@ -62,10 +70,10 @@
           </tbody>
         </table>
 
-              <div class="button-bar right">
-                  <button class="button warning small" href="javascript:void(-1)" id="cancelTest">Cancel</button>
-                  <button class="button small default submitTest">Save</button>
-              </div>
+          <div class="button-bar right">
+              <button class="button warning small" href="javascript:void(-1)" id="cancelTest">Cancel</button>
+              <button class="button small default submitTest">Save</button>
+          </div>
 
         <button class="button small secondary addTest">
           Add
@@ -74,3 +82,4 @@
     </div>
   </fieldset>
 </section>
+ */ ?>
