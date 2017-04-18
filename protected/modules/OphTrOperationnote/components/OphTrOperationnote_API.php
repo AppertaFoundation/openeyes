@@ -47,6 +47,15 @@ class OphTrOperationnote_API extends BaseAPI
         return $return;
     }
     */
+
+    /**
+     * Return the list of procedures as a string for use in correspondence for the given patient and episode.
+     * if the $snomed_terms is true, return the snomed_term, otherwise the standard text term.
+     *
+     * @param Patient $patient
+     * @param boolean $use_context - defaults to true
+     * @return string
+     */
     public function getLetterProcedures($patient , $use_context = true)
     {
         $return = '';
@@ -77,6 +86,12 @@ class OphTrOperationnote_API extends BaseAPI
         }
     }
     */
+
+    /*
+     * @param Patient $patient
+     * @param boolean $use_context - defaults to true
+     * @return integer
+     */
     public function getLetterProceduresBookingEventID($patient, $use_context = true)
     {
         if($plist =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
@@ -95,6 +110,11 @@ class OphTrOperationnote_API extends BaseAPI
         }
     }
     */
+    /*
+     * @param Patient $patient
+     * @param boolean $use_context - defaults to true
+     * @return integer
+     */
     public function getLastEye( $patient , $use_context = true )
     {
         if($plist =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
@@ -125,6 +145,13 @@ class OphTrOperationnote_API extends BaseAPI
         return $return;
     }
     */
+
+    /*
+     * Operations carried out with SNOMED terms
+     * @param Patient $patient
+     * @param boolean $use_context - defaults to true
+     * @return string
+     */
     public function getLetterProceduresSNOMED($patient , $use_context = true)
     {
         $return = '';
@@ -139,13 +166,14 @@ class OphTrOperationnote_API extends BaseAPI
         return $return;
     }
 
-    public function getOpnoteWithCataractElementInCurrentEpisode($patient)
+    public function getOpnoteWithCataractElementInCurrentEpisode($patient, $use_context = true)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+        //if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+        if($episode = $this->getLatestEvent($patient, $use_context)){
             $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
 
             $criteria = new CDbCriteria();
-            $criteria->compare('episode_id', $episode->id);
+            $criteria->compare('episode_id', $episode->episode_id);
             $criteria->compare('event_type_id', $event_type->id);
 
             return Element_OphTrOperationnote_Cataract::model()
@@ -200,7 +228,8 @@ class OphTrOperationnote_API extends BaseAPI
     /**
      * Last operation date
      * @param Patient $patient
-     * @param boolean $use_context - defaults to true
+     * @param boolean $use_context
+     * @return false|string
      */
 
     public function getLastOperationDate(\Patient $patient , $use_context = true)
@@ -235,8 +264,10 @@ class OphTrOperationnote_API extends BaseAPI
     */
 
     /**
+     * Get the last operation date
      * @param Patient $patient
      * @param boolean $use_context - defaults to true
+     * @return false|string
      */
     public function getLastOperationDateUnformatted(\Patient $patient , $use_context = true)
     {
