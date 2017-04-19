@@ -55,6 +55,6 @@
 /* line 57, ../sass/whiteboard.scss */
 .mdl-grid .mdl-card .mdl-card__supporting-text textarea {
   font-size: inherit;
-  color: inherit;
+  color: black;
   width: 100%;
 }

@@ -63,8 +63,15 @@ class DocManDeliveryCommand extends CConsoleCommand
      * @return CActiveRecord[]
      */
     private function getPendingDocuments()
-    {
-        return DocumentOutput::model()->findAllByAttributes(array("output_status" => "PENDING", "output_type" => "Docman"));
+    {   
+        $criteria = new CDbCriteria();
+        $criteria->join = "JOIN `document_target` tr ON t.`document_target_id` = tr.id";
+        $criteria->join .= " JOIN `document_instance` i ON tr.`document_instance_id` = i.`id`";
+        $criteria->join .= " JOIN event e ON i.`correspondence_event_id` = e.id";
+        $criteria->addCondition("e.deleted = 0");
+        $criteria->addCondition("t.`output_status` = 'PENDING' AND t.`output_type`= 'Docman'");
+        
+        return DocumentOutput::model()->findAll($criteria);
     }
 
     /**
@@ -118,23 +125,29 @@ class DocManDeliveryCommand extends CConsoleCommand
             curl_setopt($ch, CURLOPT_POST, false);
             curl_setopt($ch, CURLOPT_URL, $print_url . $this->event->id . '?auto_print=' . (int)$inject_autoprint_js . '&print_only_gp=1');
             $content = curl_exec($ch);
-
+            
             curl_close($ch);
-
+            
+            if(substr($content, 0, 4) !== "%PDF"){
+                echo 'File is not a PDF for event id: '.$this->event->id."\n";
+                $this->updateFailedDelivery($output_id);
+                return false;
+            }
+            
             if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] === 'format1') {
-                $filename = "OPENEYES_" . $this->event->episode->patient->hos_num . '_' . $this->event->id . "_" . rand();
+                $filename = "OPENEYES_" . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . $this->event->id . "_" . rand();
             } else {
                 if (Yii::app()->params['docman_filename_format'] === 'format2') {
-                    $filename = $this->event->episode->patient->hos_num . '_' . date('YmdHi',
+                    $filename = (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . date('YmdHi',
                             strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
                 } else {
                     if (Yii::app()->params['docman_filename_format'] === 'format3') {
-                        $filename = $this->event->episode->patient->hos_num . '_edtdep-OEY_' .
+                        $filename = (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_edtdep-OEY_' .
                             date('Ymd_His', strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
                     }
                 }
             }
-
+            
             $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
 
             if ($this->generate_xml) {
@@ -147,13 +160,63 @@ class DocManDeliveryCommand extends CConsoleCommand
                 return false;
             }
 
+            $correspondenceDate = $this->event->event_date;
+
+            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
+            $event_type_id = $event_type->id;
+
+            $criteria = new CDbCriteria();
+            $criteria->condition = "episode_id = '" . $this->event->episode->id
+                . "' AND event_date <= '$correspondenceDate' AND deleted = 0 AND event_type_id = '$event_type_id'";
+            $criteria->order = 'event_date desc, created_date desc';
+
+            $lastOpNoteDate = '';
+            if($opNote = Event::model()->find($criteria)){
+                $lastOpNoteDate = $opNote->event_date;
+            }
+
+            $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
+            $event_type_id = $event_type->id;
+
+            $criteria = new CDbCriteria();
+            $criteria->condition = "episode_id = '" . $this->event->episode->id
+                . "' AND event_date <= '$correspondenceDate' AND deleted = 0 AND event_type_id = '$event_type_id'";
+            $criteria->order = 'event_date desc, created_date desc';
+
+            $lastExamDate = '';
+            if($examEvent = Event::model()->find($criteria)){
+                $lastExamDate = $examEvent->event_date;
+            }
+
+            $lastSignificantEventDate = '';
+            if(!$lastExamDate && $lastOpNoteDate) {
+                $lastSignificantEventDate = $lastOpNoteDate;
+            }
+            if($lastExamDate && !$lastOpNoteDate) {
+                $lastSignificantEventDate = $lastExamDate;
+            }
+            if(!$lastExamDate && !$lastOpNoteDate) {
+                $lastSignificantEventDate = NULL;
+            }
+            if($lastExamDate && $lastOpNoteDate){
+                $diff = date_diff(date_create($lastExamDate), date_create($lastOpNoteDate));
+                if($diff->days >= 0){
+                    $lastSignificantEventDate = $lastOpNoteDate;
+                }else{
+                    $lastSignificantEventDate = $lastExamDate;
+                }
+            }
+
             if ($this->updateDelivery($output_id)) {
+                $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $this->event->id));
                 $this->logData(array(
                     'hos_num' => $this->event->episode->patient->hos_num,
                     'clinician_name' => $this->event->user->getFullName(),
-                    'event_updated' => $this->event->last_modified_date,
-                    'event_date' => $this->event->created_date,
-                    'output_date' => date('Y-m-d H:i:s'),
+                    'letter_type' => (isset($element_letter->letterType->name) ? $element_letter->letterType->name : ''),
+                    'letter_finalised_date' => $this->event->last_modified_date,
+                    'letter_created_date' => $this->event->created_date,
+                    'last_significant_event_date' => $lastSignificantEventDate,
+                    'letter_sent_date' => date('Y-m-d H:i:s'),
                 ));
             }
 
@@ -169,8 +232,6 @@ class DocManDeliveryCommand extends CConsoleCommand
     private function generateXMLOutput($filename)
     {
         $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $this->event->id));
-        $letter_types = array("0" => "", "1" => "Clinic discharge letter", "2" => "Post-op letter", "3" => "Clinic letter", "4" => "Other letter");
-
         $subObj = $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty;
         $subspeciality = isset($subObj->ref_spec) ? $subObj->ref_spec : 'SS';
         $subspeciality_name = isset($subObj->name) ? $subObj->name : 'Support Services';
@@ -183,6 +244,7 @@ class DocManDeliveryCommand extends CConsoleCommand
         $county = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->county) : '';
         $city = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->city) : '';
         $post_code = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->postcode) : '';
+        $letter_type = isset($element_letter->letterType->name) ? $element_letter->letterType->name : '';
 
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
             <DocumentInformation>
@@ -207,7 +269,7 @@ class DocManDeliveryCommand extends CConsoleCommand
             <GPName>" . $gp_name . "</GPName>
             <Surgery>" . $practice_code . "</Surgery>
             <SurgeryName></SurgeryName>
-            <LetterType>" . $letter_types[$element_letter->letter_type] . "</LetterType>
+            <LetterType>" . $letter_type . "</LetterType>
             <ActivityID>" . $this->event->id . "</ActivityID>
             <ActivityDate>" . $this->event->event_date . "</ActivityDate>
             <ClinicianType></ClinicianType>
@@ -246,6 +308,14 @@ class DocManDeliveryCommand extends CConsoleCommand
 
         return $output->save();
     }
+    
+    private function updateFailedDelivery($output_id)
+    {
+        $output = DocumentOutput::model()->findByPk($output_id);
+        $output->output_status = "FAILED";
+
+        return $output->save();
+    }
 
     /**
      * @param $data
@@ -258,9 +328,10 @@ class DocManDeliveryCommand extends CConsoleCommand
             $doc_log->save();
 
             $csv_filename = implode(DIRECTORY_SEPARATOR, array($this->path, sprintf($this->csv_format, date('Ymd'))));
+            $put_header = !file_exists($csv_filename);
 
             $fp = fopen($csv_filename, 'ab');
-            if(!filesize($csv_filename)){
+            if($put_header){
                 fputcsv($fp, array_keys($data));
             }
             fputcsv($fp, $data);

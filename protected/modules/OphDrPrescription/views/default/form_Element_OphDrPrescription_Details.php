@@ -139,7 +139,9 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
 		<th>Drug</th>
 		<th>Dose</th>
 		<th>Route</th>
-		<th>Options</th>
+		<?php if (strpos($this->uniqueid, 'default')) { // we need to display this column on the front-end only?>
+			<th>Options</th>
+		<?php } ?>
 		<th>Frequency</th>
 		<th>Duration</th>
 		<th></th>

@@ -57,9 +57,10 @@ class DrugSet extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
                 array('name, subspecialty_id', 'required'),
+                array('drug_set_id','safe'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
-                array('id, name, subspecialty_id', 'safe', 'on' => 'search'),
+                array('id, name, subspecialty_id, drug_set_id', 'safe', 'on' => 'search'),
         );
     }
 

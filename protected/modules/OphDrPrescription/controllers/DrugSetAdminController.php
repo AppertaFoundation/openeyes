@@ -40,7 +40,7 @@ class DrugSetAdminController extends BaseAdminController
         }
         $element = Element_OphDrPrescription_Details::model();
         $admin->setCustomSaveURL('/OphDrPrescription/DrugSetAdmin/SaveDrugSet');
-        $admin->setCustomCancelURL('/OphDrPrescription/DrugSetAdmin/DrugSets');
+        $admin->setCustomCancelURL('/OphDrPrescription/DrugSetAdmin/list');
 
         $admin->setEditFields(array(
             'active' => 'checkbox',
@@ -65,7 +65,7 @@ class DrugSetAdminController extends BaseAdminController
     /**
      * Render the basic drug set admin page.
      */
-    public function actionDrugSets()
+    public function actionList()
     {
         $admin = new Admin(DrugSet::model(), $this);
         $admin->setListFields(array(
@@ -167,7 +167,7 @@ class DrugSetAdminController extends BaseAdminController
                 Yii::app()->user->setFlash('info.save_message',
                     'Unable to save drugs, please add at least one drug to the set. Set name and subspecialty saved.');
             }
-            $this->redirect('/OphDrPrescription/DrugSetAdmin/DrugSets');
+            $this->redirect('/OphDrPrescription/DrugSetAdmin/list');
         } else {
             // TODO: maybe more error handling need to be added here!!
             if ($drugSetId > 0) {

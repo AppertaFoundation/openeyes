@@ -29,13 +29,14 @@ $macro_id = isset($_POST['macro_id']) ? $_POST['macro_id'] : (isset($element->ma
 if( !$macro_id ){
     $macro_id = isset($element->document_instance[0]->document_instance_data[0]->macro_id) ? $element->document_instance[0]->document_instance_data[0]->macro_id : null;
 }
-$macro_name = null;
+
+$macro_letter_type_id = null;
 if($macro_id){
     $macro = LetterMacro::model()->findByPk($macro_id);
-    $macro_name = $macro ? $macro->name : null;
+    $macro_letter_type_id = $macro->letter_type_id;
 }
 
-$element->letter_type = ($element->letter_type ? $element->letter_type : ( $macro_name == 'Post-op' ? 2 : null  ) );
+$element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id : $macro_letter_type_id );
 $patient_id = Yii::app()->request->getQuery('patient_id', null);
 $patient = Patient::model()->findByPk($patient_id);
 
@@ -76,7 +77,7 @@ $patient = Patient::model()->findByPk($patient_id);
             <label>Letter type:</label>
         </div>
         <div class="large-2 column end">
-            <?php echo $form->dropDownList($element, 'letter_type', array('1' => 'Clinic discharge letter', '2' => 'Post-op letter', '3' => 'Clinic letter', '4' => 'Other letter'),
+            <?php echo $form->dropDownList($element, 'letter_type_id', CHtml::listData(LetterType::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
                 array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
         </div>
     </div>
@@ -332,14 +333,18 @@ $patient = Patient::model()->findByPk($patient_id);
             </div>
         </div>
     </div>
-    <div class="row field-row">
-        <div class="large-<?php echo $layoutColumns['label']; ?> column">
-            <label for="<?php echo get_class($element) . '_is_signed_off'; ?>">
-                <?php echo $element->getAttributeLabel('is_signed_off') ?>:
-            </label>
-        </div>
-        <div class="large-8 column end">
-            <?php echo $form->radioButtons($element, 'is_signed_off', array(
+    <?php
+    $correspondeceApp = \SettingInstallation::model()->find('`key` = "ask_correspondence_approval"');
+    if($correspondeceApp->value === "on") {
+        ?>
+        <div class="row field-row">
+            <div class="large-<?php echo $layoutColumns['label']; ?> column">
+                <label for="<?php echo get_class($element) . '_is_signed_off'; ?>">
+                    <?php echo $element->getAttributeLabel('is_signed_off') ?>:
+                </label>
+            </div>
+            <div class="large-8 column end">
+                <?php echo $form->radioButtons($element, 'is_signed_off', array(
                     1 => 'Yes',
                     0 => 'No',
                 ),
@@ -347,6 +352,9 @@ $patient = Patient::model()->findByPk($patient_id);
                     false, false, false, false,
                     array('nowrapper' => true)
                 ); ?>
+            </div>
         </div>
-    </div>
+        <?php
+    }
+    ?>
 </div>

@@ -1,4 +1,18 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+    var confirm_exit = function(e){
+        e = e || window.event;
+        var message = "You have unsaved changes. Are you sure you want to leave this page?";
+        if (e)
+        {
+            e.returnValue = message;
+        }
+
+        return message;
+    };
+
+    window.onbeforeunload = null;
+
   OpenEyes.Dialog.init(
     document.getElementById('dialog-container'),
     document.getElementById('refresh-button'),
@@ -25,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
       icon.textContent = 'done';
       textArea[0].value = $cardContent.get(0).textContent.trim();
       $cardContent.html(textArea);
+      window.onbeforeunload = confirm_exit;
     } else {
       contentId = $cardContent.get(0).id;
       text = $cardContent.find('textarea').val();
@@ -37,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
         'success': function () {
           $cardContent.text(text);
           icon.textContent = 'create';
+          window.onbeforeunload = null;
         },
         'error': function () {
           alert('Something went wrong, please try again.');
@@ -44,4 +60,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
   });
+
+
 });
