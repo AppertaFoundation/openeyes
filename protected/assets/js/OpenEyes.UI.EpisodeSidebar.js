@@ -39,7 +39,6 @@
 
     EpisodeSidebar._defaultOptions = {
         switch_firm_text: 'Please switch firm to add an event to this episode',
-        user_subspecialty: null,
         user_context: null,
         event_button_selector: '#add-event',
         subspecialty_labels: {},
@@ -80,7 +79,7 @@
 
     EpisodeSidebar.prototype.create = function() {
         var self = this;
-        self.subspecialty = self.options.user_subspecialty;
+
         if (self.options.default_sort == 'asc') {
             self.sortOrder = 'asc';
         }
@@ -134,24 +133,6 @@
             var $iconHover = $(e.target);
             $iconHover.parents('li:first').find('.quicklook').hide();
         });
-    };
-
-    EpisodeSidebar.prototype.getSubspecialtyLabel = function() {
-        if (this.subspecialty) {
-            return this.options.subspecialty_labels[this.subspecialty];
-        }
-        else {
-            return "Support services"
-        }
-    };
-
-    EpisodeSidebar.prototype.getCurrentSubspecialties = function() {
-        var self = this;
-        var currentSubspecialties = [];
-        self.element.find(self.options.subspecialty_list_selector).each(function() {
-            currentSubspecialties.push($(this).data('definition'));
-        });
-        return currentSubspecialties;
     };
 
     EpisodeSidebar.prototype.orderEvents = function() {

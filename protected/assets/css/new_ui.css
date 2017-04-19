@@ -1170,12 +1170,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   margin-top: 10px;
   color: #30823e;
   background: #eee; }
-.oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service.new.selected {
-  color: #fff;
-  background: #2a7236; }
-.oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service.new .tag {
-  background-color: #3ca24d; }
-.oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service.new .change-new-specialty {
+.oe-create-event-popup table.oe-create-event-step-through .change-new-specialty {
   position: absolute;
   bottom: 3px;
   right: 2px;
