@@ -120,7 +120,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         $data->where($where, $where_params);
 
         if ($this->match_correspondence) {
-            $data->join('site', 'l.site_id = site.id');
+            $data->leftJoin('site', 'l.site_id = site.id');
             $select[] = 'site.name';
 
             if ($this->site_id) {
@@ -129,7 +129,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         }
         $data->select(implode(',', $select));
         $data->andWhere('e.deleted = 0');
-        
+
         $this->executeQuery($data);
     }
 
@@ -174,9 +174,13 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 
         $data->leftJoin("{$letter_table[0]} {$letter_table[1]}", "{$letter_table[1]}.event_id = e.id");
 
-        $clause = "({$letter_table[1]}.id is not null and e.event_type_id = :et_{$letter_table[1]}_id ";
-        $where_params[":et_{$letter_table[1]}_id"] = $et->id;
-
+        if($type == 'Correspondence'  ){
+            $clause = "({$letter_table[1]}.id is not null and e.event_type_id = :et_{$letter_table[1]}_id ";
+            $where_params[":et_{$letter_table[1]}_id"] = $et->id;
+        } else {
+            $clause = "({$letter_table[1]}.id is not null";
+        }
+        
         if ($this->phrases) {
             $clause .= ' and (';
             foreach ($this->phrases as $i => $phrase) {

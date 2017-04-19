@@ -56,7 +56,7 @@ class DocumentLog extends BaseActiveRecordVersioned
         return array(
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, hos_num, clinician_name, event_updated, event_date, output_date', 'safe'),
+            array('id, hos_num, clinician_name, letter_finalised_date, letter_created_date, letter_sent_date, last_significant_event_date, letter_type', 'safe'),
         );
     }
 

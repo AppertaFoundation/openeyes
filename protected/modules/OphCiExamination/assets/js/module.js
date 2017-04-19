@@ -841,7 +841,8 @@ $(document).ready(function() {
 
     $('#event-content').delegate('.element .segmented select', 'change', function() {
         var field = $(this).nextAll('input');
-        OphCiExamination_Refraction_updateSegmentedField(field);
+        var containerEL = $(this).parent();
+        OphCiExamination_Refraction_updateSegmentedField(field , containerEL);
     });
 
     function visualAcuityChange(target, near) {
@@ -1295,13 +1296,15 @@ $(document).ready(function() {
             var threshold = parseInt($cviAlert.data('threshold'));
 
             if( $section.find('.cvi_alert_dismissed').val() !== "1"){
-                var show_alert = false;
+                var show_alert = null;
                 $section.find('.va-selector').each(function(k,v){
                     var val = parseInt($(this).val());
                     if (val < threshold) {
-                        show_alert = true;
-                        return;
+                        show_alert = (show_alert === null) ? true : show_alert;
+                    } else {
+                        show_alert = false;
                     }
+                    return;
                 });
 
                 if (show_alert) {
@@ -1535,10 +1538,29 @@ rootItem = element.children('li:first').text();
 element.append(element.children('li').sort(selectSort));
 }
 
-function OphCiExamination_Refraction_updateSegmentedField(field) {
+function OphCiExamination_Refraction_updateSegmentedField(field , containerEL) {
     var parts = $(field).parent().children('select');
-    var value = $(parts[0]).val() * (parseFloat($(parts[1]).val()) + parseFloat($(parts[2]).val()));
-    $(field).val(value.toFixed(2));
+
+    /*
+    If error box exists, the parent-children structure breaks
+     */
+    if (typeof parts[0] === "undefined"){
+        var parts = containerEL.children('select');
+        var value = $(parts[0]).val() * (parseFloat($(parts[1]).val()) + parseFloat($(parts[2]).val()));
+
+        if(isNaN(value)){
+            $(field).val('');
+        } else {
+            containerEL.find('input').val(value.toFixed(2));
+        }
+    } else {
+        var value = $(parts[0]).val() * (parseFloat($(parts[1]).val()) + parseFloat($(parts[2]).val()));
+        if(isNaN(value)){
+            $(field).val('');
+        } else {
+            $(field).val(value.toFixed(2));
+        }
+    }
 }
 
 /**

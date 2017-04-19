@@ -35,7 +35,7 @@
         if(Yii::app()->controller->action->id === 'oescape'){ ?>
             <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highstock.js')?>"></script>
         <?php } else { ?>
-        <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highcharts.js')?>"></script>
+            <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/highcharts.js')?>"></script>
         <?php } ?>
 
         <script src="<?= Yii::app()->assetManager->createUrl('components/highcharts/modules/exporting.js')?>"></script>
@@ -49,7 +49,12 @@
         <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="format-detection" content="telephone=no">
-        <title>OpenEyes Analytics</title>
+        <?php
+        if(Yii::app()->controller->id === 'whiteboard'){ ?>
+            <title>Whiteboard</title>
+        <?php } else { ?>
+            <title>OpenEyes Analytics</title>
+        <?php } ?>
 
         <!-- Tile icon for Win8 (144x144 + tile color) -->
         <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">

@@ -295,7 +295,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
         {
             $patient_id = \Yii::app()->request->getParam('patient_id');
 
-            if (!$patient_id) {
+            if (!$patient_id && isset($this->event->episode->patient->id) ) {
                 $patient_id = $this->event->episode->patient->id;
             }
 

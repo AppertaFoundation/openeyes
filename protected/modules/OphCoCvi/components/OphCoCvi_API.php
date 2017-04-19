@@ -192,13 +192,19 @@ class OphCoCvi_API extends \BaseAPI
         $threshold = $this->yii->params['thresholds']['visualAcuity']['alert_base_value'];
 
         if (is_array($va_base_value)) {
+            $result = NULL;
+
             foreach ($va_base_value as $value) {
-                if (is_numeric($value) && ($value < $threshold)) {
-                    return true;
+                if (is_numeric($value)) {
+                    if ($value < $threshold) {
+                        $result = is_null($result) ? true : $result;
+                    } else {
+                        $result = false;
+                    }
                 }
             }
 
-            return false;
+            return is_null($result) ? false : $result;
         } else {
             return is_numeric($va_base_value) && ($va_base_value < $threshold);
         }

@@ -127,18 +127,16 @@ class OphCoCorrespondence_API extends BaseAPI
 
     public function getOphthalmicDiagnoses(\Patient $patient)
     {
-        $allDiagnoses ='';
-        foreach ($patient->ophthalmicDiagnoses as $diagnosis) {
-            return $diagnosis->eye->adjective . ' ' . $diagnosis->disorder->term;
-        }
+        return $patient->getUniqueDiagnosesString('- ', "\r\n", true);
     }
 
     public function getLastIOLType(\Patient $patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract');
-                return CHtml::encode($element->iol_type->name);
+            if ($element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract')) {
+                return $element->iol_type->name;
+            }
         }
     }
 
@@ -146,8 +144,9 @@ class OphCoCorrespondence_API extends BaseAPI
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract');
-            return CHtml::encode($element->iol_power);
+            if ($element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract')) {
+                return $element->iol_power;
+            }
         }
     }
 
@@ -155,9 +154,9 @@ class OphCoCorrespondence_API extends BaseAPI
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
-                'Element_OphTrOperationnote_ProcedureList');
-            return $element->eye->adjective;
+            if ($element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_ProcedureList')) {
+                return $element->eye->adjective;
+            }
         }
     }
 
@@ -194,21 +193,30 @@ class OphCoCorrespondence_API extends BaseAPI
             }
         }
 
-        for ($i = 0; $i < count($data); ++$i) {
-            if($data[$i]->side == 0){
-                $rightData[] = $data[$i];
+        if($data){
+            for ($i = 0; $i < count($data); ++$i) {
+                if($data[$i]->side == 0){
+                    $rightData[] = $data[$i];
+                }
+                if($data[$i]->side == 1){
+                    $leftData[] = $data[$i];
+                }
             }
-            if($data[$i]->side == 1){
-                $leftData[] = $data[$i];
+            $unitId = $chosenVA->unit_id;
+
+            if(isset($rightData)) {
+                $rightVA = $api->getVAvalue($rightData[0]->value, $unitId);
             }
+
+            if(isset($leftData)) {
+                $leftVA = $api->getVAvalue($leftData[0]->value, $unitId);
+            }
+
+            return (isset($rightVA) ? $rightVA : "not recorded") . " Right Eye" . ", " . (isset($leftVA) ? $leftVA : "not recorded") . " Left Eye";
+        }else{
+            return;
         }
 
-        $unitId = $chosenVA->unit_id;
-
-        $rightVA = $api->getVAvalue($rightData[0]->value, $unitId);
-        $leftVA = $api->getVAvalue($leftData[0]->value, $unitId);
-
-        return $rightVA . " Right Eye" . " " . $leftVA . " Left Eye";
     }
 
     /**
@@ -260,13 +268,8 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getAllergiesBulleted($patient)
     {
-        $multiAllergies = '';
-        foreach ($patient->allergyAssignments as $aa) {
-            $multiAllergies .= " - " . $aa->allergy->name . "\r\n";
-        }
-        return $multiAllergies;
+        return $patient->getAllergiesSeparatedString(" - ", "\r\n", true);
     }
-
 
     public function getMacroTargets($patient_id, $macro_id)
     {

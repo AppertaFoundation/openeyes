@@ -30,7 +30,7 @@
             </div>
             <div class="large-6 column end">
                 <div class="field-info iolDisplay"
-                     id="lens_<?php echo $side ?>"><?php echo $element->{'lens_'.$side} ? $element->{'lens_'.$side}->name : 'None' ?></div>
+                     id="lens_<?php echo $side ?>"><?php echo $element->{'lens_'.$side} ? $element->{'lens_'.$side}->display_name : 'None' ?></div>
             </div>
         </div>
         <div class="row data-row">
@@ -54,18 +54,20 @@
             <div class="large-6 column">
                 <div class="field-info" id="acon_<?php echo $side ?>">
                     <?php
+                        $aconst='None';
                         if ($this->is_auto) {
                             $iolrefValues = Element_OphInBiometry_IolRefValues::model()->findAllByAttributes(array('event_id' => $element->event->id));
                             foreach ($iolrefValues as $iolrefData) {
                                 if (isset($data)) {
                                     if ($iolrefData->lens_id == $element->{'lens_'.$side}->id && $iolrefData->formula_id == $data[0]->id) {
-                                        echo $this->formatAconst($iolrefData->constant);
+                                        $aconst = $this->formatAconst($iolrefData->constant);
                                     }
                                 }
                             }
                         } else {
-                            echo ($element->{'lens_'.$side}) ? $this->formatAconst($element->{'lens_'.$side}->acon) : 'None';
+                            $aconst = ($element->{'lens_'.$side}) ? $this->formatAconst($element->{'lens_'.$side}->acon) : 'None';
                         }
+                        echo $aconst;
 
         ?></div>
             </div>
@@ -86,7 +88,7 @@
             </div>
             <div class="large-6 column end">
                 <div class="field-info"
-                     id="tr_<?php echo $side ?>"><?php echo CHtml::encode($element->{'predicted_refraction_'.$side}) ?></div>
+                     id="tr_<?php echo $side ?>"><?php if (($element->{'predicted_refraction_' . $side}) > 0) { echo '+'; } echo CHtml::encode($element->{'predicted_refraction_'.$side}) ?></div>
             </div>
         </div>
         <?php
