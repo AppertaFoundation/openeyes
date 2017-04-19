@@ -17,33 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
-<div class="box admin">
-	<?php
-        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'OphCiExamination_adminform',
-            'enableAjaxValidation' => false,
-            'layoutColumns' => array(
-                'label' => 2,
-                'field' => 5,
-            ),
-        ));
-        $this->renderPartial('form_'.Helper::getNSShortname($model), array(
-                'model' => $model,
-                'form' => $form,
-        ));
-        echo $form->formActions(array(
-            'submit' => $model->isNewRecord ? 'Create' : 'Save',
-            'cancel' => 'Cancel',
-            'delete' => false,
-            'cancel-uri' => @$cancel_uri,
-        ));
-        $this->endWidget();
-    ?>
-</div>
-<?php if (@$related_view) {
-    $this->renderPartial($related_view, array(
-            'model' => $model,
-    ))?>
-<?php 
-}?>
+<?php echo $form->hiddenField($model, 'id')?>
+<?php echo $form->textField($model, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+<?php
+    $isActive = ($model->active == 1 ? 'checked' : '');
+    echo $form->checkBox($model, 'active',  array('checked'=> $isActive));
+?>

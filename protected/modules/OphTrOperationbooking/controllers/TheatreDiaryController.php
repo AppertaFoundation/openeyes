@@ -155,13 +155,11 @@ class TheatreDiaryController extends BaseModuleController
     public function actionSearch()
     {
         Audit::add('diary', 'search');
-
         $list = $this->renderPartial('_list', array(
             'diary' => $this->getDiaryTheatres($_POST),
             'assetPath' => $this->assetPath,
             'ward_id' => @$_POST['ward-id'],
         ), true, true);
-
         echo json_encode(array('status' => 'success', 'data' => $list));
     }
 
@@ -448,6 +446,9 @@ class TheatreDiaryController extends BaseModuleController
      */
     public function actionSaveSession()
     {
+        $order_is_changed = false;
+        $comments_is_changed = false;
+        
         if (!$session = OphTrOperationbooking_Operation_Session::model()->findByPk(@$_POST['session_id'])) {
             throw new Exception('Session not found: '.@$_POST['session_id']);
         }
@@ -505,8 +506,13 @@ class TheatreDiaryController extends BaseModuleController
                 $session->max_procedures = $_POST['max_procedures_'.$session->id];
             }
 
+            
+            $old_comments = $session->comments;
             $session->comments = $_POST['comments_'.$session->id];
-
+            if($session->comments!=$old_comments){
+                $comments_is_changed = true;
+            }
+            
             if (!$session->save()) {
                 foreach ($session->getErrors() as $k => $v) {
                     $errors[$session->getAttributeLabel($k)] = $v;
@@ -522,6 +528,7 @@ class TheatreDiaryController extends BaseModuleController
             }
             $original_booking_ids = array();
             ksort($original_bookings);
+            
             foreach ($original_bookings as $booking_ids) {
                 sort($booking_ids);
                 foreach ($booking_ids as $booking_id) {
@@ -542,7 +549,9 @@ class TheatreDiaryController extends BaseModuleController
                         && $booking_data['booking_id'] < $previous_booking_booking_id)) {
                     $booking_data['booking']->display_order = $previous_booking_display_order + 1;
                     $booking_data['changed'] = true;
+                    $order_is_changed = true;
                 }
+
                 $previous_booking_display_order = $booking_data['booking']->display_order;
                 $previous_booking_booking_id = $booking_data['booking_id'];
 
@@ -553,9 +562,25 @@ class TheatreDiaryController extends BaseModuleController
                         throw new Exception('Unable to save booking');
                     }
                 }
+                
             }
             if (empty($errors)) {
                 $transaction->commit();
+                
+                $booking_data_id = null;
+                if( isset($booking_data) ){
+                    $booking_data_id = $booking_data['booking_id'];
+                }
+                
+                if($order_is_changed) {
+                    Audit::add('diary', 'change-of-order', $booking_data_id,null,array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
+                }
+                
+                if($comments_is_changed){
+                    if( isset($booking_data) )
+                    
+                    Audit::add('diary', 'change-of-comment', $booking_data_id,null,array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
+                }
             } else {
                 $transaction->rollback();
             }
