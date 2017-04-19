@@ -31,38 +31,15 @@ class m170305_142449_create_keratoconus extends OEMigration
             'display_order' => 'int(10)'
         ),true);
 
-        $this->createOETable('ophciexamination_cxl_outcome_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
-            'name' => 'varchar(128)',
-            'display_order' => 'int(10)'
-        ),true);
-
         $this->createOETable('ophciexamination_cxl_outcome_diagnosis', array(
             'id' => 'pk',
             'name' => 'varchar(128)',
             'display_order' => 'int(10)'
         ),true);
 
-        $this->createOETable('ophciexamination_cxl_outcome_diagnosis_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
-            'name' => 'varchar(128)',
-            'display_order' => 'int(10)'
-        ),true);
 
         $this->createOETable('ophciexamination_slit_lamp_cornea', array(
             'id' => 'pk',
-            'name' => 'varchar(128)',
-            'display_order' => 'int(10)'
-        ),true);
-
-        $this->createOETable('ophciexamination_slit_lamp_cornea_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
             'name' => 'varchar(128)',
             'display_order' => 'int(10)'
         ),true);
@@ -74,39 +51,6 @@ class m170305_142449_create_keratoconus extends OEMigration
             'eye_id' => 'int(10)',
             'diagnosis_id' => 'int(10)',
             'outcome_id' => 'int(10)'
-        ),true);
-
-        $this->createOETable('et_ophciexamination_cxl_outcome_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
-            'event_id' => 'int(10) unsigned NOT NULL',
-            'eye_id' => 'int(10)',
-            'diagnosis_id' => 'int(10)',
-            'outcome_id' => 'int(10)'
-        ),true);
-
-
-        $this->createOETable('et_ophciexamination_cxl_history_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
-            'right_previous_cxl_value' => 'int(10)',
-            'right_previous_refractive_value' => 'int(10)',
-            'right_intacs_kera_ring_value' => 'int(10)',
-            'right_trans_prk_value' => 'int(10)',
-            'right_previous_hsk_keratitis_value' => 'int(10)',
-            'left_previous_cxl_value' => 'int(10)',
-            'left_previous_refractive_value' => 'int(10)',
-            'left_intacs_kera_ring_value' => 'int(10)',
-            'left_trans_prk_value' => 'int(10)',
-            'left_previous_hsk_keratitis_value' => 'int(10)',
-            'asthma_id' => 'int(10)',
-            'eczema_id' => 'int(10)',
-            'eye_rubber_id' => 'int(10)',
-            'hayfever_id' => 'int(10)',
-            'eye_id' => 'int(10)',
-            'ocular_surface_disease_id' => 'int(10)'
         ),true);
 
         $this->createOETable('et_ophciexamination_keratometry', array(
@@ -141,58 +85,9 @@ class m170305_142449_create_keratoconus extends OEMigration
             'left_flourescein_value' => 'int(1)' 
         ),true);
 
-        $this->createOETable('et_ophciexamination_keratometry_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
-            'event_id' => 'int(10) unsigned NOT NULL',
-            'eye_id' => 'int(10)',
-            'right_anterior_k1_value' => 'DECIMAL(5,2)',
-            'right_axis_anterior_k1_value' => 'DECIMAL(5,2)',
-            'right_anterior_k2_value' => 'DECIMAL(5,2)',
-            'right_axis_anterior_k2_value' => 'DECIMAL(5,2)',
-            'right_kmax_value' => 'DECIMAL(5,2)',
-            'left_anterior_k1_value' => 'DECIMAL(5,2)',
-            'left_axis_anterior_k1_value' => 'DECIMAL(5,2)',
-            'left_anterior_k2_value' => 'DECIMAL(5,2)',
-            'left_axis_anterior_k2_value' => 'DECIMAL(5,2)',
-            'left_kmax_value' => 'DECIMAL(5,2)',
-            'tomographer_id' => 'int(10)',
-            'tomographer_scan_quality_id' => 'int(10)',
-            'right_posterior_k2_value' => 'DECIMAL(5,2)',
-            'right_thinnest_point_pachymetry_value' => 'int(10)',
-            'right_ba_index_value' => 'DECIMAL(5,2)',
-            'left_posterior_k2_value' => 'DECIMAL(5,2)',
-            'left_thinnest_point_pachymetry_value' => 'int(10)',
-            'left_ba_index_value' => 'DECIMAL(5,2)',
-            'right_quality_front' => 'int(10)',
-            'right_quality_back' => 'int(10)',
-            'left_quality_front' => 'int(10)',
-            'left_quality_back' => 'int(10)',
-            'right_cl_removed' => 'int(10)',
-            'left_cl_removed' => 'int(10)',
-            'right_flourescein_value' => 'int(1)',
-            'left_flourescein_value' => 'int(1)' 
-        ),true);
 
         $this->createOETable('et_ophciexamination_slit_lamp', array(
             'id' => 'pk',
-            'event_id' => 'int(10) unsigned NOT NULL',
-            'eye_id' => 'int(10)',
-            'right_allergic_conjunctivitis_id' => 'int(10)',
-            'right_blepharitis_id' => 'int(10)',
-            'right_dry_eye_id' => 'int(10)',
-            'right_cornea_id' => 'int(10)',
-            'left_allergic_conjunctivitis_id' => 'int(10)',
-            'left_blepharitis_id' => 'int(10)',
-            'left_dry_eye_id' => 'int(10)',
-            'left_cornea_id' => 'int(10)' 
-        ),true);
-
-        $this->createOETable('et_ophciexamination_slit_lamp_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
             'event_id' => 'int(10) unsigned NOT NULL',
             'eye_id' => 'int(10)',
             'right_allergic_conjunctivitis_id' => 'int(10)',
@@ -217,45 +112,8 @@ class m170305_142449_create_keratoconus extends OEMigration
             'left_coefficient_variation_value' => 'dec(5,2)'
         ),true);
 
-        $this->createOETable('et_ophciexamination_specular_microscopy_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
-            'event_id' => 'int(10) unsigned NOT NULL',
-            'eye_id' => 'int(10)',
-            'scan_quality_id' => 'int(10)',
-            'specular_microscope_id' => 'int(10)',
-            'right_endothelial_cell_density_value' => 'int(10)',
-            'right_coefficient_variation_value' => 'dec(5,2)',
-            'left_endothelial_cell_density_value' => 'int(10)',
-            'left_coefficient_variation_value' => 'dec(5,2)'
-        ),true);
-
         $this->createOETable('et_ophtroperationnote_cxl', array(
             'id' => 'pk',
-            'event_id' => 'int(10) unsigned NOT NULL',
-            'protocol_id' => 'int(10)',
-            'epithelial_removal_method_id' => 'int(10)',
-            'epithelial_removal_diameter_id' => 'int(10)',
-            'riboflavin_preparation_id' => 'int(10)',
-            'interval_between_drops_id' => 'dec(5,2)',
-            'soak_duration_range_id' => 'int(10)',
-            'uv_irradiance_range_id' => 'dec(5,2)',
-            'total_exposure_time_id' => 'int(10)',
-            'uv_pulse_duration_id' => 'int(10)',
-            'interpulse_duration_id' => 'int(10)',
-            'uv_total_energy_value' => 'int(10)',
-            'device_id' => 'int(10)',
-            'iontophoresis_id' => 'int(10)',
-            'iontophoresis_current_value' => 'int(10)',
-            'iontophoresis_duration_value' => 'int(10)',
-            'cxl_comments' => 'VARCHAR(1024)'
-        ),true);
-
-        $this->createOETable('et_ophtroperationnote_cxl_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
             'event_id' => 'int(10) unsigned NOT NULL',
             'protocol_id' => 'int(10)',
             'epithelial_removal_method_id' => 'int(10)',
@@ -313,40 +171,14 @@ class m170305_142449_create_keratoconus extends OEMigration
             'defaultChoice' => 'int(11)'
         ),true);
 
-        $this->createOETable('ophtroperationnote_cxl_epithelial_removal_diameter_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
-            'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)'
-        ),true);
-
         $this->createOETable('ophtroperationnote_cxl_iontophoresis', array(
             'id' => 'pk',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)'
         ),true);
 
-        $this->createOETable('ophtroperationnote_cxl_iontophoresis_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
-            'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)'
-        ),true);
-
         $this->createOETable('ophtroperationnote_cxl_complications', array(
             'id' => 'pk',
-            'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'active' => 'tinyint(1)'
-        ),true);
-
-        $this->createOETable('ophtroperationnote_cxl_complications_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
             'active' => 'tinyint(1)'
@@ -359,25 +191,8 @@ class m170305_142449_create_keratoconus extends OEMigration
             'defaultChoice' => 'int(11)'
         ),true);
 
-        $this->createOETable('ophtroperationnote_cxl_epithelial_removal_method_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
-            'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)'
-        ),true);
-
         $this->createOETable('ophciexamination_cxl_ocular_surface_disease', array(
             'id' => 'pk',
-            'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)'
-        ),true);
-
-        $this->createOETable('ophciexamination_cxl_ocular_surface_disease_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)'
         ),true);
@@ -388,24 +203,8 @@ class m170305_142449_create_keratoconus extends OEMigration
             'display_order' => 'int(10)'
         ),true);
 
-        $this->createOETable('ophciexamination_cxl_cl_removed_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
-            'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)'
-        ),true);
-
         $this->createOETable('ophciexamination_cxl_quality_score', array(
             'id' => 'pk',
-            'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)'
-        ),true);
-
-        $this->createOETable('ophciexamination_cxl_quality_score_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)'
         ),true);
@@ -417,26 +216,9 @@ class m170305_142449_create_keratoconus extends OEMigration
             'defaultChoice' => 'int(11)'
         ),true);
 
-        $this->createOETable('ophtroperationnote_cxl_interpulse_duration_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
-            'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)'
-        ),true);
 
         $this->createOETable('ophtroperationnote_cxl_interval_between_drops', array(
             'id' => 'pk',
-            'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)'
-        ),true);
-
-        $this->createOETable('ophtroperationnote_cxl_interval_between_drops_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
             'defaultChoice' => 'int(11)'
@@ -449,26 +231,8 @@ class m170305_142449_create_keratoconus extends OEMigration
             'defaultChoice' => 'int(11)'
         ),true);
 
-        $this->createOETable('ophtroperationnote_cxl_protocol_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
-            'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)'
-        ),true);
-
         $this->createOETable('ophtroperationnote_cxl_riboflavin_preparation', array(
             'id' => 'pk',
-            'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)'
-        ),true);
-
-        $this->createOETable('ophtroperationnote_cxl_riboflavin_preparation_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
             'name' => 'VARCHAR(128)',
             'display_order' => 'int(10)',
             'defaultChoice' => 'int(11)'
@@ -481,26 +245,8 @@ class m170305_142449_create_keratoconus extends OEMigration
             'defaultChoice' => 'int(11)'
         ),true);
 
-        $this->createOETable('ophtroperationnote_cxl_soak_duration_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
-            'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)'
-        ),true);
-
         $this->createOETable('ophtroperationnote_cxl_total_exposure_time', array(
             'id' => 'pk',
-            'name' => 'int(10)',
-            'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)'
-        ),true);
-
-        $this->createOETable('ophtroperationnote_cxl_total_exposure_time_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
             'name' => 'int(10)',
             'display_order' => 'int(10)',
             'defaultChoice' => 'int(11)'
@@ -513,27 +259,9 @@ class m170305_142449_create_keratoconus extends OEMigration
             'defaultChoice' => 'int(11)'
         ),true);
 
-        $this->createOETable('ophtroperationnote_cxl_devices_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
-            'name' => 'VARCHAR(128)',
-            'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)'
-        ),true);
-
         $this->createOETable('ophtroperationnote_cxl_uv_irradiance', array(
             'id' => 'pk',
             'name' => 'int(10)',
-            'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)'
-        ),true);
-
-        $this->createOETable('ophtroperationnote_cxl_uv_irradiance_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
-            'name' => 'INT(10)',
             'display_order' => 'int(10)',
             'defaultChoice' => 'int(11)'
         ),true);
@@ -545,52 +273,30 @@ class m170305_142449_create_keratoconus extends OEMigration
             'defaultChoice' => 'int(11)'
         ),true);
 
-        $this->createOETable('ophtroperationnote_cxl_uv_pulse_duration_version', array(
-            'version_id' => 'pk',
-            'version_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
-            'id' => 'int(10) NOT NULL',
-            'name' => 'INT(10)',
-            'display_order' => 'int(10)',
-            'defaultChoice' => 'int(11)'
-        ),true);
     }
 
     public function down()
     {
 
         $this->dropTable('et_ophciexamination_cxl_history');
-        $this->dropTable('et_ophciexamination_cxl_history_version');
         $this->dropTable('et_ophciexamination_keratometry');
-        $this->dropTable('et_ophciexamination_keratometry_version');
         $this->dropTable('et_ophciexamination_slit_lamp');
-        $this->dropTable('et_ophciexamination_slit_lamp_version');
         $this->dropTable('et_ophciexamination_specular_microscopy');
-        $this->dropTable('et_ophciexamination_specular_microscopy_version');
         $this->dropTable('et_ophtroperationnote_cxl');
-        $this->dropTable('et_ophtroperationnote_cxl_version');
         $this->dropTable('ophciexamination_scan_quality');
         $this->dropTable('ophciexamination_slit_lamp_conditions');
         $this->dropTable('ophciexamination_specular_microscope');
         $this->dropTable('ophtroperationnote_cxl_epithelial_removal_diameter');
-        $this->dropTable('ophtroperationnote_cxl_epithelial_removal_diameter_version');
         $this->dropTable('ophtroperationnote_cxl_epithelial_removal_method');
-        $this->dropTable('ophtroperationnote_cxl_epithelial_removal_method_version');
         $this->dropTable('ophtroperationnote_cxl_interpulse_duration');
-        $this->dropTable('ophtroperationnote_cxl_interpulse_duration_version');
         $this->dropTable('ophtroperationnote_cxl_interval_between_drops');
-        $this->dropTable('ophtroperationnote_cxl_interval_between_drops_version');
         $this->dropTable('ophtroperationnote_cxl_protocol');
         $this->dropTable('ophtroperationnote_cxl_protocol_version');
         $this->dropTable('ophtroperationnote_cxl_riboflavin_preparation');
-        $this->dropTable('ophtroperationnote_cxl_riboflavin_preparation_version');
         $this->dropTable('ophtroperationnote_cxl_soak_duration');
-        $this->dropTable('ophtroperationnote_cxl_soak_duration_version');
         $this->dropTable('ophtroperationnote_cxl_total_exposure_time');
-        $this->dropTable('ophtroperationnote_cxl_total_exposure_time_version');
         $this->dropTable('ophtroperationnote_cxl_uv_irradiance');
-        $this->dropTable('ophtroperationnote_cxl_uv_irradiance_version');
         $this->dropTable('ophtroperationnote_cxl_uv_pulse_duration');
-        $this->dropTable('ophtroperationnote_cxl_uv_pulse_duration_version');
     }
 
     /*
