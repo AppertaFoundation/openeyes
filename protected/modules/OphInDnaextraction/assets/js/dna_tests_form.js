@@ -1,4 +1,17 @@
 $(function(){
+
+    var showControls = function(){
+        $(".frmDnaTests_controls").show();
+        $("#frmDnaTests_successmessage").hide();
+    };
+
+    var hideControls = function(){
+        $(".frmDnaTests_controls").hide();
+    };
+
+    $(document).on("change", ".transactions input, .transactions select", showControls);
+    $(document).on("keyup", ".transactions input", showControls);
+
     $('.addTest').click(function(e) {
         e.preventDefault();
 
@@ -18,6 +31,8 @@ $(function(){
             'success': function(html) {
                 $('tbody.transactions').append(html);
                 $('#no-tests').hide();
+
+                showControls();
             }
         });
     });
@@ -28,6 +43,8 @@ $(function(){
         if(!$('.removeTransaction').length) {
             $('#no-tests').show();
         }
+
+        showControls();
     });
 
     $("#cancelTest").click(function(e){
@@ -39,6 +56,7 @@ $(function(){
         });
         alert.open();
         alert.on("ok", function(){
+            window.onbeforeunload = null;
             window.location.reload();
         });
     });
@@ -48,11 +66,15 @@ $(function(){
         var $form = $("#frmDnaTests");
         $form.find(".msg").hide();
         var data = $form.serializeArray();
+        $("#frmDnaTests_loader").show();
+        hideControls();
         $.post($form.attr("action"), data,
             function(response){
                 if(response.success)
                 {
                     $form.find(".successmessage").show();
+                    $("#frmDnaTests_loader").hide();
+                    window.onbeforeunload = null;
                 }
                 else
                 {
@@ -60,6 +82,8 @@ $(function(){
                         content: response.message
                     });
                     alert.open();
+                    $("#frmDnaTests_loader").hide();
+                    showControls();
                 }
             }
         );

@@ -234,6 +234,12 @@ class DefaultController extends BaseEventTypeController
         parent::actionUpdate($id);
     }
 
+    public function actionCreate()
+    {
+        $this->_registerDnaTestFormJs();
+        parent::actionCreate();
+    }
+
     public function actionUpdateDnaTests($id)
     {
         header('Content-type: application/json');

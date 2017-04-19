@@ -77,9 +77,12 @@
         </table>
           <?php if($this->action->Id === 'view'): ?>
               <div class="button-bar right">
-                  <span class="successmessage msg success" style="display: none; color: #43b124; font-size: 12px;"><i class="fa fa-check"></i> Saved</span>
-                  <button class="button warning small" id="cancelTest">Cancel</button>
-                  <button class="button small default submitTest">Save</button>
+                  <span id="frmDnaTests_loader" style="display: none"><i class="fa fa-spinner fa-spin"></i></span>
+                  <span id="frmDnaTests_successmessage" class="successmessage msg success" style="display: none; font-size: 12px;"><i class="fa fa-check"></i> Saved</span>
+                  <div class="frmDnaTests_controls" style="display: none;">
+                      <button class="button warning small" id="cancelTest">Cancel</button>
+                      <button class="button small default submitTest">Save changes</button>
+                  </div>
               </div>
           <?php endif; ?>
         <button class="button small secondary addTest">
