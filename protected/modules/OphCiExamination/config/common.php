@@ -37,8 +37,21 @@ return array(
             'Clinic Outcome Statuses' => '/OphCiExamination/admin/manageClinicOutcomesStatus',
             'Cataract surgery reasons' => '/OphCiExamination/admin/primaryReasonForSurgery',
             'Common Post-Op Complications' => '/OphCiExamination/admin/postOpComplications',
+            'Invoice Statuses' => '/OphCiExamination/admin/InvoiceStatusList'
         ),
         'ophciexamination_drgrading_type_required' => false,
         'ophciexamination_visualacuity_correspondence_unit' => 'Snellen Metre',
+        'menu_bar_items' => array(
+            'admin' => array(
+                'sub' => array(
+                    'ofm' => array(
+                        'title' => 'OF Manager',
+                        'position' => 10,
+                        'uri' => '/OphCiExamination/OptomFeedback/list',
+                        'restricted' => array(array('Optom co-ordinator', 'user_id')),
+                    ),
+                )
+            ),
+        ),
     ),
 );

@@ -35,7 +35,8 @@
         title: 'Add a new event',
         modal: true,
         width: 1000,
-        minHeight: 'auto',
+        minHeight: 400,
+        maxHeight: 400,
         dialogClass: 'dialog oe-create-event-popup',
         selector: '#add-new-event-template',
         currentSubspecialties: [],
@@ -91,7 +92,8 @@
         self.content.on('click', '.oe-specialty-service', function(e) {
             self.content.find('.oe-specialty-service').removeClass('selected');
             $(this).addClass('selected');
-            if (!$(this).hasClass('new')) {
+            // check whether the new subspecialty should be removed because they've reverted to an existing subspecialty
+            if (!$(this).hasClass('new-added-subspecialty-service')) {
                 self.removeNewSubspecialty();
             }
             self.updateContextList();
@@ -159,7 +161,7 @@
                 selectableSubspecialties: this.selectableSubspecialties
             },
             partials: {
-                subspecialty: $('#add-new-event-subspecialty-step').html()
+                subspecialty: $('#subspecialty-template').html()
             }
         });
     };
@@ -260,7 +262,7 @@
             }
         }
         var subspecialty = self.subspecialtiesById[id];
-        var html = Mustache.render($('#add-new-event-subspecialty-step').html(), {
+        var html = Mustache.render($('#new-subspecialty-template').html(), {
             subspecialtyId: subspecialty.id,
             name: subspecialty.name,
             shortName: subspecialty.shortName,
@@ -269,9 +271,10 @@
             classes: 'new'
         });
 
+        debugger;
         self.content.find('.change-subspecialty').hide();
-        self.content.find('.subspecialties-list').append(html);
-        self.content.find('.subspecialties-list li:last').trigger('click');
+        self.content.find('.step-subspecialties').append(html);
+        self.content.find('.new-added-subspecialty-service').trigger('click');
     };
 
     /**
@@ -280,7 +283,7 @@
     NewEventDialog.prototype.removeNewSubspecialty = function()
     {
         var self = this;
-        self.content.find('.oe-specialty-service.new').remove();
+        self.content.find('.new-added-subspecialty-service').remove();
         self.content.find('.change-subspecialty').show();
     };
 
