@@ -271,7 +271,6 @@
             classes: 'new'
         });
 
-        debugger;
         self.content.find('.change-subspecialty').hide();
         self.content.find('.step-subspecialties').append(html);
         self.content.find('.new-added-subspecialty-service').trigger('click');
@@ -356,7 +355,7 @@
         };
 
         var subspecialty = self.content.find('.oe-specialty-service.selected');
-        if (subspecialty.hasClass('new')) {
+        if (subspecialty.hasClass('new-added-subspecialty-service')) {
             requestParams['service_id'] = subspecialty.data('service-id');
         } else {
             requestParams['episode_id'] = subspecialty.data('id');
