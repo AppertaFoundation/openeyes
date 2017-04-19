@@ -1086,74 +1086,107 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     margin: 0;
     padding: 0; }
     .oe-create-event-popup table.oe-create-event-step-through ul.subspecialties-list {
-      max-height: 390px;
+      max-height: 180px;
       overflow-y: auto; }
     .oe-create-event-popup table.oe-create-event-step-through ul.context-list {
-      max-height: 500px;
+      max-height: 270px;
       overflow-y: auto; }
-  .oe-create-event-popup table.oe-create-event-step-through li {
-    display: block;
-    margin: 0 0 2px 0;
-    padding-left: 10px;
-    height: 19px;
-    width: auto;
-    line-height: 19px;
-    background: #eeeeee url("../img/_elements/icons/add-event-arrow.png") right top no-repeat;
-    color: #0b59da;
-    cursor: pointer; }
-    .oe-create-event-popup table.oe-create-event-step-through li:hover, .oe-create-event-popup table.oe-create-event-step-through li:focus, .oe-create-event-popup table.oe-create-event-step-through li:active, .oe-create-event-popup table.oe-create-event-step-through li.selected {
-      background-color: #3665ff;
-      color: #fff; }
-      .oe-create-event-popup table.oe-create-event-step-through li:hover .tag, .oe-create-event-popup table.oe-create-event-step-through li:focus .tag, .oe-create-event-popup table.oe-create-event-step-through li:active .tag, .oe-create-event-popup table.oe-create-event-step-through li.selected .tag {
-        background: #2b51cc;
-        color: #fff; }
-    .oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service {
-      position: relative;
-      height: 45px;
-      line-height: normal;
-      padding: 8px;
-      font-size: 13px;
-      font-size: 0.8125rem; }
-      .oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service .tag {
-        position: absolute;
-        top: 0;
-        right: 0; }
-      .oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service .service {
-        display: block;
-        font-size: 11px;
-        font-size: 0.6875rem; }
-      .oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service.new {
-        margin-top: 10px;
-        color: #30823e;
-        background: #eee; }
-        .oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service.new.selected {
-          color: #fff;
-          background: #2a7236; }
-        .oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service.new .tag {
-          background-color: #3ca24d; }
-        .oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service.new .change-new-specialty {
-          position: absolute;
-          bottom: 3px;
-          right: 2px;
-          height: 17px;
-          width: 17px;
-          background: transparent url("../img/_elements/btns/oe-cross-icon.png") center center no-repeat; }
-    .oe-create-event-popup table.oe-create-event-step-through li.oe-event-type {
-      background-image: none;
-      padding-left: 0; }
-      .oe-create-event-popup table.oe-create-event-step-through li.oe-event-type img {
-        margin-right: 10px; }
-    .oe-create-event-popup table.oe-create-event-step-through li .tag {
-      float: right;
-      width: 19px;
-      height: 19px;
-      line-height: 19px;
-      background: #9ea1a9;
-      color: #d9def3;
-      text-align: center;
-      font-size: 10px;
-      font-size: 0.625rem;
-      font-weight: 400; }
+.oe-create-event-popup table.oe-create-event-step-through .tag {
+  float: right;
+  width: 19px;
+  height: 19px;
+  line-height: 19px;
+  background: #9ea1a9;
+  color: #d9def3;
+  text-align: center;
+  font-size: 10px;
+  font-size: 0.625rem;
+  font-weight: 400; }
+.oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service {
+  position: relative;
+  height: 45px;
+  line-height: normal;
+  padding: 8px;
+  font-size: 13px;
+  font-size: 0.8125rem;
+  margin-top: 10px;
+  color: #30823e;
+  background: #eee; }
+.oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service .tag {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #3ca24d; }
+.oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service .service {
+  display: block;
+  font-size: 11px;
+  font-size: 0.6875rem; }
+.oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service .change-new-specialty {
+  position: absolute;
+  bottom: 3px;
+  right: 2px;
+  height: 17px;
+  width: 17px;
+  background: transparent url("../img/_elements/btns/oe-cross-icon.png") center center no-repeat; }
+.oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service:hover {
+  background-color: #3665ff;
+  color: #fff;
+  cursor: pointer; }
+.oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service.selected {
+  color: #fff;
+  background: #2a7236; }
+.oe-create-event-popup table.oe-create-event-step-through li {
+  display: block;
+  margin: 0 0 2px 0;
+  padding-left: 10px;
+  height: 19px;
+  width: auto;
+  line-height: 19px;
+  background: #eeeeee url("../img/_elements/icons/add-event-arrow.png") right top no-repeat;
+  color: #0b59da;
+  cursor: pointer; }
+.oe-create-event-popup table.oe-create-event-step-through li:hover, .oe-create-event-popup table.oe-create-event-step-through li:focus, .oe-create-event-popup table.oe-create-event-step-through li:active, .oe-create-event-popup table.oe-create-event-step-through li.selected {
+  background-color: #3665ff;
+  color: #fff; }
+.oe-create-event-popup table.oe-create-event-step-through li:hover .tag, .oe-create-event-popup table.oe-create-event-step-through li:focus .tag, .oe-create-event-popup table.oe-create-event-step-through li:active .tag, .oe-create-event-popup table.oe-create-event-step-through li.selected .tag {
+  background: #2b51cc;
+  color: #fff; }
+.oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service {
+  position: relative;
+  height: 45px;
+  line-height: normal;
+  padding: 8px;
+  font-size: 13px;
+  font-size: 0.8125rem; }
+.oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service .tag {
+  position: absolute;
+  top: 0;
+  right: 0; }
+.oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service .service {
+  display: block;
+  font-size: 11px;
+  font-size: 0.6875rem; }
+.oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service.new {
+  margin-top: 10px;
+  color: #30823e;
+  background: #eee; }
+.oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service.new.selected {
+  color: #fff;
+  background: #2a7236; }
+.oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service.new .tag {
+  background-color: #3ca24d; }
+.oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service.new .change-new-specialty {
+  position: absolute;
+  bottom: 3px;
+  right: 2px;
+  height: 17px;
+  width: 17px;
+  background: transparent url("../img/_elements/btns/oe-cross-icon.png") center center no-repeat; }
+.oe-create-event-popup table.oe-create-event-step-through li.oe-event-type {
+  background-image: none;
+  padding-left: 0; }
+.oe-create-event-popup table.oe-create-event-step-through li.oe-event-type img {
+  margin-right: 10px; }
 
 .oe-create-event-popup .change-subspecialty,
 .oe-create-event-popup .back-date-event {

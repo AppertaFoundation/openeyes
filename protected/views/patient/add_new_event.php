@@ -20,7 +20,7 @@
 <?php Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js')?>
 <?php Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.NewEvent.js', null, -10)?>
 
-<script type="text/html" id="add-new-event-subspecialty-step">
+<script type="text/html" id="subspecialty-template">
     <li class="step-1 oe-specialty-service {{classes}}"
         data-id="{{id}}"
         data-subspecialty-id="{{subspecialtyId}}"
@@ -30,6 +30,16 @@
         <span class="service">{{serviceName}}</span>
         {{^id}}<div class="change-new-specialty"></div>{{/id}}
     </li>
+</script>
+<script type="text/html" id="new-subspecialty-template">
+    <div class="step-1 oe-specialty-service new-added-subspecialty-service selected"
+         data-subspecialty-id="{{subspecialtyId}}"
+         data-service-id="{{serviceId}}"
+    >{{name}}
+        <span class="tag">{{shortName}}</span>
+        <span class="service">{{serviceName}}</span>
+        <div class="change-new-specialty"></div>
+    </div>
 </script>
 <script type="text/html" id="add-new-event-template">
 <table class="oe-create-event-step-through">
@@ -59,7 +69,6 @@
 
                 <button class="add-subspecialty-btn tiny" style="padding:3px 6px;" id="js-add-subspecialty-btn">+</button>
             </div>
-
         </td>
         <td class="step-context" style="visibility: hidden;">
             <h3><?= Firm::contextLabel() ?></h3>
