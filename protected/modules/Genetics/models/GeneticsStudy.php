@@ -88,7 +88,9 @@ class GeneticsStudy extends BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
-            'getProposerNames' => 'Investigators'
+            'getProposerNames' => 'Investigators',
+            'proposers.first_name' => 'Investigator first name',
+            'proposers.last_name' => 'Investigator last name',
         );
     }
 
@@ -146,4 +148,10 @@ class GeneticsStudy extends BaseActiveRecordVersioned
 
         return implode(', ', $p);
     }
+
+    public function get_getProposerNames()
+    {
+        die("Im here");
+    }
+
 }

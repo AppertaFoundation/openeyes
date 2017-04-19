@@ -97,10 +97,13 @@ class StudyController extends BaseAdminController
             'id',
             'name',
             'end_date',
+            'criteria',
             'getProposerNames'
         ));
 
-        $searchArray = array('type' => 'compare', 'compare_to' => array('name', 'end_date'));
+        $searchArray = array(
+            'type' => 'compare',
+            'compare_to' => array('name', 'end_date', 'criteria', 'proposers.first_name', 'proposers.last_name'));
         $admin->getSearch()->addSearchItem('id', $searchArray);
 
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
