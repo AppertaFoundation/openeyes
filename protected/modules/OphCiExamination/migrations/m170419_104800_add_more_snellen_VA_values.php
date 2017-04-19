@@ -26,13 +26,12 @@ class m170419_104800_add_more_snellen_VA_values extends OEMigration
                         'base_value' => '100',
                 ));
 		}
-
     }
 
     public function down()
     {
 		$unit = $this->dbConnection->createCommand()->select('id')->from('ophciexamination_visual_acuity_unit')->where('name = :name', array(':name' => 'Snellen Metre'))->queryRow();
-        
+
         $this->delete('ophciexamination_visual_acuity_unit_value', 'value = :value AND unit_id = :unit_id', array(':value' => '6/7.5', ':unit_id' => $unit['id']));
 		$this->delete('ophciexamination_visual_acuity_unit_value', 'value = :value AND unit_id = :unit_id', array(':value' => '6/9.5', ':unit_id' => $unit['id']));
     }
