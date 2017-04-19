@@ -39,10 +39,31 @@
         maxHeight: 400,
         dialogClass: 'dialog oe-create-event-popup',
         selector: '#add-new-event-template',
+        subspecialtyTemplateSelector: '#subspecialty-template',
+        newSubspecialtyTemplateSelector: '#new-subspecialty-template',
         currentSubspecialties: [],
         subspecialties: [],
         userSubspecialtyId: undefined,
         userContext: undefined
+    };
+
+    // selectors for finding and hooking into various of the key elements.
+    var selectors = {
+        subspecialtyColumn: '.step-subspecialties',
+        subspecialtyItem: '.oe-specialty-service',
+        newSubspecialtyItem: '.new-added-subspecialty-service',
+        contextItem: '.step-2',
+        newSubspecialtyContainer: '.change-subspecialty',
+        newSubspecialtyList: '.new-subspecialty',
+        // container displaying instructions to user to select a subspecialty before choosing a service
+        noSubspecialty: '.no-subspecialty',
+        // container for displaying single service option for new subspecialty
+        fixedService: '.fixed-service',
+        // container for the service options list for new subspecialty
+        serviceList: '.select-service',
+        addNewSubspecialty: '#js-add-subspecialty-btn',
+        removeNewSubspecialty: '.change-new-specialty',
+        eventTypeItem: '.oe-event-type'
     };
 
     /**
@@ -88,63 +109,9 @@
         // parent initialisation
         NewEventDialog._super.prototype.create.call(self);
 
-        // event handling setup
-        self.content.on('click', '.oe-specialty-service', function(e) {
-            self.content.find('.oe-specialty-service').removeClass('selected');
-            $(this).addClass('selected');
-            // check whether the new subspecialty should be removed because they've reverted to an existing subspecialty
-            if (!$(this).hasClass('new-added-subspecialty-service')) {
-                self.removeNewSubspecialty();
-            }
-            self.updateContextList();
-        });
+        self.setupEventHandlers();
 
-        // change of the new subspecialty
-        self.content.on('change', '.new-subspecialty', function(e) {
-            self.newSubspecialty();
-        });
-
-        // add new subspecialty
-        self.content.on('click', '#js-add-subspecialty-btn', function(e) {
-            self.addNewSubspecialty();
-        });
-
-        // removal of new subspecialty selection
-        self.content.on('click', '.change-new-specialty', function(e) {
-            self.removeNewSubspecialty();
-        });
-
-        // selection of context
-        self.content.on('click', '.step-2', function(e) {
-            self.content.find('.step-2').removeClass('selected');
-            $(this).addClass('selected');
-            self.updateEventList();
-        });
-
-        self.content.on('click', '.step-3', function(e) {
-            if (!$(this).hasClass('add_event_disabled')) {
-                // can proceed
-                self.createEvent($(this).data('eventtype-id'));
-            }
-        });
-
-        // auto selection of subspecialty based on current view
-        // Either subspecialty already active for the patient ...
-        self.content.find('.step-1').each(function() {
-            if ($(this).data('subspecialty-id') === self.defaultSubspecialtyId) {
-                $(this).trigger('click');
-                return false;
-            }
-        });
-
-        // ... or we short cut selection of default subspecialty for new container
-        self.content.find('.new-subspecialty option').each(function() {
-            if (parseInt($(this).val()) === self.options.userSubspecialtyId) {
-                $(this).prop('selected', true);
-                self.content.find('.new-subspecialty').trigger('change');
-                return false;
-            }
-        });
+        self.setDefaultSelections();
     };
 
     /**
@@ -161,7 +128,7 @@
                 selectableSubspecialties: this.selectableSubspecialties
             },
             partials: {
-                subspecialty: $('#subspecialty-template').html()
+                subspecialty: $(this.options.subspecialtyTemplateSelector).html()
             }
         });
     };
@@ -173,8 +140,77 @@
             title = 'Add a new ' + subspecialty.name + ' event';
         }
         this.setTitle(title);
-    }
+    };
 
+    /**
+     * Setup all the interaction event hooks for clicking and updating form elements in the dialog.
+     */
+    NewEventDialog.prototype.setupEventHandlers = function()
+    {
+        var self = this;
+
+        self.content.on('click', selectors.subspecialtyItem, function(e) {
+            self.content.find(selectors.subspecialtyItem).removeClass('selected');
+            $(this).addClass('selected');
+            // check whether the new subspecialty should be removed because they've reverted to an existing subspecialty
+            if (!$(this).hasClass('new')) {
+                self.removeNewSubspecialty();
+            }
+            self.updateContextList();
+        });
+
+        // change of the new subspecialty
+        self.content.on('change', selectors.newSubspecialtyList, function(e) {
+            self.newSubspecialty();
+        });
+
+        // add new subspecialty
+        self.content.on('click', selectors.addNewSubspecialty, function(e) {
+            self.addNewSubspecialty();
+        });
+
+        // removal of new subspecialty selection
+        self.content.on('click', selectors.removeNewSubspecialty, function(e) {
+            self.removeNewSubspecialty();
+        });
+
+        // selection of context
+        self.content.on('click', selectors.contextItem, function(e) {
+            self.content.find(selectors.contextItem).removeClass('selected');
+            $(this).addClass('selected');
+            self.updateEventList();
+        });
+
+        self.content.on('click', selectors.eventTypeItem, function(e) {
+            if (!$(this).hasClass('add_event_disabled')) {
+                // can proceed
+                self.createEvent($(this).data('eventtype-id'));
+            }
+        });
+    };
+
+    NewEventDialog.prototype.setDefaultSelections = function()
+    {
+        var self = this;
+        // auto selection of subspecialty based on current view
+        // Either subspecialty already active for the patient ...
+        self.content.find(selectors.subspecialtyItem).each(function() {
+            if ($(this).data('subspecialty-id') === self.defaultSubspecialtyId) {
+                $(this).trigger('click');
+                return false;
+            }
+        });
+
+        // ... or we short cut selection of default subspecialty for new container
+        self.content.find(selectors.newSubspecialtyList + ' option').each(function() {
+            if ($(this).val() === String(self.options.userSubspecialtyId)) {
+                $(this).prop('selected', true);
+                self.content.find(selectors.newSubspecialtyList).trigger('change');
+                // end iteration through options
+                return false;
+            }
+        });
+    }
 
     /**
      * Manages changes when a new subspecialty is selected for creating a new subspecialty for the event.
@@ -182,7 +218,7 @@
     NewEventDialog.prototype.newSubspecialty = function ()
     {
         var self = this;
-        var id = self.content.find('.new-subspecialty').val();
+        var id = self.content.find(selectors.newSubspecialtyList).val();
         if (id) {
             var services = self.servicesBySubspecialtyId[id];
             if (services.length === 1) {
@@ -191,23 +227,24 @@
                 self.setServiceOptions(services);
             }
         } else {
-            self.content.find('.no-subspecialty').show();
-            self.content.find('.fixed-service').hide();
-            self.content.find('.select-service').hide();
+            self.content.find(selectors.noSubspecialty).show();
+            self.content.find(selectors.fixedService).hide();
+            self.content.find(selectors.serviceList).hide();
         }
     };
 
     /**
      * Set the service to a fixed value when creating a new subspecialty for the event.
+     *
      * @param service
      */
     NewEventDialog.prototype.setService = function(service)
     {
         var self = this;
-        self.content.find('.fixed-service').html(service.name);
-        self.content.find('.fixed-service').show();
-        self.content.find('.no-subspecialty').hide();
-        self.content.find('.select-service').hide();
+        self.content.find(selectors.fixedService).html(service.name);
+        self.content.find(selectors.fixedService).show();
+        self.content.find(selectors.noSubspecialty).hide();
+        self.content.find(selectors.serviceList).hide();
     };
 
     /**
@@ -218,7 +255,7 @@
     NewEventDialog.prototype.setServiceOptions = function(services)
     {
         var self = this;
-        var select = self.content.find('.select-service');
+        var select = self.content.find(selectors.serviceList);
         select.html('');
         var options = '<option>- Please Select -</option>';
         for (var i in services) {
@@ -231,8 +268,8 @@
         }
         select.html(options);
         select.show();
-        self.content.find('.fixed-service').hide();
-        self.content.find('.no-subspecialty').hide();
+        self.content.find(selectors.fixedService).hide();
+        self.content.find(selectors.noSubspecialty).hide();
     };
 
     /**
@@ -241,7 +278,7 @@
     NewEventDialog.prototype.addNewSubspecialty = function()
     {
         var self = this;
-        var id = self.content.find('.new-subspecialty').val();
+        var id = self.content.find(selectors.newSubspecialtyList).val();
         if (!id) {
             return;
         }
@@ -249,7 +286,7 @@
         if (self.servicesBySubspecialtyId[id].length === 1) {
             serviceId = self.servicesBySubspecialtyId[id][0].id;
         } else {
-            serviceId = self.content.find('.select-service').val();
+            serviceId = self.content.find(selectors.serviceList).val();
         }
         if (!serviceId) {
             return;
@@ -262,7 +299,7 @@
             }
         }
         var subspecialty = self.subspecialtiesById[id];
-        var html = Mustache.render($('#new-subspecialty-template').html(), {
+        var html = Mustache.render($(self.options.newSubspecialtyTemplateSelector).html(), {
             subspecialtyId: subspecialty.id,
             name: subspecialty.name,
             shortName: subspecialty.shortName,
@@ -271,9 +308,9 @@
             classes: 'new'
         });
 
-        self.content.find('.change-subspecialty').hide();
-        self.content.find('.step-subspecialties').append(html);
-        self.content.find('.new-added-subspecialty-service').trigger('click');
+        self.content.find(selectors.newSubspecialtyContainer).hide();
+        self.content.find(selectors.subspecialtyColumn).append(html);
+        self.content.find(selectors.newSubspecialtyItem).trigger('click');
     };
 
     /**
@@ -282,8 +319,8 @@
     NewEventDialog.prototype.removeNewSubspecialty = function()
     {
         var self = this;
-        self.content.find('.new-added-subspecialty-service').remove();
-        self.content.find('.change-subspecialty').show();
+        self.content.find(selectors.newSubspecialtyItem).remove();
+        self.content.find(selectors.newSubspecialtyContainer).show();
     };
 
     /**
@@ -293,14 +330,15 @@
     {
         var self = this;
         // get selected subspecialty
-        var selected = self.content.find('.oe-specialty-service.selected');
+        var selected = self.content.find(selectors.subspecialtyItem + '.selected');
 
         var contextListIdx = undefined;
         if (selected.length) {
             self.updateTitle(self.subspecialtiesById[selected.data('subspecialtyId')]);
-            var defaultContextId = parseInt(self.options.userContext.id);
+            var defaultContextId = self.options.userContext.id;
             if (selected.hasClass('new')) {
-                defaultContextId = parseInt(selected.data('service-id'));
+                // default to the same context as the service for the new subspecialty
+                defaultContextId = String(selected.data('service-id'));
             }
             var subspecialtyId = selected.data('subspecialty-id');
             // get the context options for the subspecialty
@@ -308,7 +346,7 @@
             for (var i in self.contextsBySubspecialtyId[subspecialtyId]) {
                 var context = self.contextsBySubspecialtyId[subspecialtyId][i];
                 list += '<li class="step-2" data-context-id="'+context.id+'">' + context.name + '</li>';
-                if (parseInt(context.id) === defaultContextId) {
+                if (String(context.id) === defaultContextId) {
                     contextListIdx = i;
                 }
             }
@@ -332,9 +370,20 @@
     NewEventDialog.prototype.updateEventList = function() {
         var self = this;
         var selected = self.content.find('.step-2.selected');
-        // TODO: filter list based on whether Support Services is being chosen.
         if (selected.length) {
+            var selectedSubspecialty = self.subspecialtiesById[self.content.find(selectors.subspecialtyItem + '.selected').data('subspecialtyId')];
+            if (selectedSubspecialty.supportServices) {
+                // Filter list based on whether Support Services is being chosen.
+                self.content.find(selectors.eventTypeItem).each(function() {
+                    if (!$(this).data('support-services')) {
+                        $(this).hide();
+                    }
+                });
+            } else {
+                self.content.find(selectors.eventTypeItem).show();
+            }
             self.content.find('.step-event-types').css('visibility', 'visible');
+
         } else {
             self.content.find('.step-event-types').css('visibility', 'hidden');
         }

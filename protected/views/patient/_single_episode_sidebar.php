@@ -7,30 +7,14 @@
 <?php }?>
 <div class="oe-scroll-wrapper" style="height:300px">
 <?php
-$subspecialty_colour_codes = array(
-    'AE' => '#916865',
-    'AD' => '#D4AA7D',
-    'AN' => '#D2D8B3',
-    'CA' => '#90A9B7',
-    'CO' => '#006992',
-    'EX' => '#ECA400',
-    'GL' => '#D5C4BB',
-    'MR' => '#D46A6A',
-    'PH' => '#BBA698',
-    'ON' => '#D4B483',
-    'PE' => '#E4DFDA',
-    'PC' => '#4281A4',
-    'RF' => '#957186',
-    'SP' => '#B3B749',
-    'UV' => '#A6AA7B',
-    'VR' => '#F4B4A6',
-    'Le' => '#cccccc'
-);
 // Note, we are ignoring the possibility of additional specialties here and only supporting the first,
 // which is expected to be opthalmology.
 $active_episodes = array();
 if (is_array($ordered_episodes)) {
-    $active_episodes = $ordered_episodes[0]['episodes'];
+    foreach ($ordered_episodes as $specialty) {
+        $active_episodes = array_merge($active_episodes, $specialty['episodes']);
+    }
+    //$active_episodes = $ordered_episodes[0]['episodes'];
 }
 
 // flatten the data structure to include legacy events into the core navigation. Note here we are
@@ -66,11 +50,16 @@ if (is_array($ordered_episodes)) {
                         $id = $episode->getSubspecialtyID();
                         $subspecialty_name = $episode->getSubspecialtyText();
                         if (!$id) {
-                            $id = "Le";
-                            $tag = $id;
+                            if ($episode->support_services) {
+                                $id = 'SS';
+                                $tag = 'Ss';
+                            } else {
+                                $id = "Le";
+                                $tag = $id;
+                            }
                         }
                         else {
-                            $tag = $episode->subspecialty ? $episode->subspecialty->ref_spec : 'Ss';
+                            $tag = $episode->subspecialty->ref_spec;
                         }
                         $selected = '';
                         if ($current_episode && $current_episode->getSubspecialtyID() == $id) {
@@ -188,7 +177,6 @@ $this->renderPartial('//patient/add_new_event',array(
         $('div.specialty').each(function() {
             new OpenEyes.UI.EpisodeSidebar(this, {
                 patient_id: OE_patient_id,
-                user_subspecialty: <?= $this->firm->getSubspecialtyID() ?>,
                 user_context: <?= CJSON::encode(NewEventDialogHelper::structureFirm($this->firm)) ?>,
                 subspecialty_labels: {
                     <?= implode(",", $subspecialty_label_list); ?>

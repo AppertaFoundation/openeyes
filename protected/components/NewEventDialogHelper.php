@@ -22,6 +22,12 @@
  */
 class NewEventDialogHelper
 {
+    protected static $support_services_subspecialty = array(
+        'id' => 'SS',
+        'name' => 'Support Services',
+        'shortName' => 'SS',
+        'supportServices' => 1
+    );
 
     /**
      * @param Episode $episode
@@ -32,10 +38,7 @@ class NewEventDialogHelper
         if ($subspecialty = $episode->getSubspecialty()) {
             $structured_subspecialty = static::structureSubspecialty($subspecialty);
         } else {
-            $structured_subspecialty = array(
-                'name' => 'Support Services',
-                'shortName' => 'SS'
-            );
+            $structured_subspecialty = static::$support_services_subspecialty;
         }
         return array(
             'id' => $episode->id,
@@ -103,7 +106,7 @@ class NewEventDialogHelper
                     $structure = static::structureSubspecialty($subspecialty);
                     $structure['services'] = array();
                     $structure['contexts'] = array();
-                    $firms = array();
+
                     foreach ($related_firms as $f) {
                         $structured_firm = static::structureFirm($f);
                         if ($f->can_own_an_episode) {
@@ -115,6 +118,22 @@ class NewEventDialogHelper
                     }
                     array_push($subspecialties, $structure);
                 }
+            }
+            // create Support Services subspecialty if there are the relevant firms
+            if ($support_service_firms = Firm::model()->findAll('service_subspecialty_assignment_id is null')) {
+                $structure = static::$support_services_subspecialty;
+                $structure['services'] = array();
+                $structure['contexts'] = array();
+                foreach ($support_service_firms as $f) {
+                    $structured_firm = static::structureFirm($f);
+                    if ($f->can_own_an_episode) {
+                        $structure['services'][] = $structured_firm;
+                    }
+                    if ($f->runtime_selectable) {
+                        $structure['contexts'][] = $structured_firm;
+                    }
+                }
+                array_push($subspecialties, $structure);
             }
             Yii::app()->cache->set('new-event-subspecialties', $subspecialties, 30);
         }
