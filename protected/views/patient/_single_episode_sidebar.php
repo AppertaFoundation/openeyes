@@ -188,7 +188,6 @@ $this->renderPartial('//patient/add_new_event',array(
         $('div.specialty').each(function() {
             new OpenEyes.UI.EpisodeSidebar(this, {
                 patient_id: OE_patient_id,
-                user_subspecialty: <?= $this->firm->getSubspecialtyID() ?>,
                 user_context: <?= CJSON::encode(NewEventDialogHelper::structureFirm($this->firm)) ?>,
                 subspecialty_labels: {
                     <?= implode(",", $subspecialty_label_list); ?>
