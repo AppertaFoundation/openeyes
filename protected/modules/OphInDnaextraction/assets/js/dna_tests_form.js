@@ -46,11 +46,21 @@ $(function(){
     $(".submitTest").click(function(e){
         e.preventDefault();
         var $form = $("#frmDnaTests");
+        $form.find(".msg").hide();
         var data = $form.serializeArray();
-        console.log(data);
         $.post($form.attr("action"), data,
             function(response){
-
+                if(response.success)
+                {
+                    $form.find(".successmessage").show();
+                }
+                else
+                {
+                    var alert = new OpenEyes.UI.Dialog.Alert({
+                        content: response.message
+                    });
+                    alert.open();
+                }
             }
         );
     });

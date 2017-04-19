@@ -12,13 +12,14 @@ class DefaultController extends BaseEventTypeController
         'getAvailableLetterNumberToBox' => self::ACTION_TYPE_FORM,
         'saveNewStorage' => self::ACTION_TYPE_FORM,
         'refreshStorageSelect' => self::ACTION_TYPE_FORM,
+        'updateDnaTests' => self::ACTION_TYPE_FORM
     );
 
     public function accessRules()
     {
         return array(
             array('allow',
-                'actions' => array('Create', 'Update', 'View', 'Print', 'AddTransaction','GetNewStorageFields','getAvailableLetterNumberToBox','saveNewStorage', 'refreshStorageSelect'),
+                'actions' => array('Create', 'Update', 'View', 'Print', 'AddTransaction','GetNewStorageFields','getAvailableLetterNumberToBox','saveNewStorage', 'refreshStorageSelect', 'updateDnaTests'),
                 'roles' => array('OprnEditDNAExtraction'),
             ),
             array('allow',
@@ -100,7 +101,7 @@ class DefaultController extends BaseEventTypeController
         return $errors;
     }
 
-    protected function saveComplexAttributes_Element_OphInDnaextraction_DnaTests($element, $data, $index)
+    protected function saveComplexAttributes_Element_OphInDnaextraction_DnaTests($element, $data, $index, $handle_errors = false)
     {
         $item_ids = array();
 
@@ -108,7 +109,14 @@ class DefaultController extends BaseEventTypeController
             $transaction->element_id = $element->id;
 
             if (!$transaction->save()) {
-                throw new Exception('Unable to save transaction: '.print_r($transaction->getErrors(), true));
+                if(!$handle_errors)
+                {
+                    throw new Exception('Unable to save transaction: '.print_r($transaction->getErrors(), true));
+                }
+                else{
+                    $errors = $transaction->getErrors();
+                    throw new Exception('Unable to save transaction: '.$errors[''][0]);
+                }
             }
 
             $item_ids[] = $transaction->id;
@@ -121,7 +129,14 @@ class DefaultController extends BaseEventTypeController
 
         foreach (OphInDnaextraction_DnaTests_Transaction::model()->findAll($criteria) as $transaction) {
             if (!$transaction->delete()) {
-                throw new Exception('Unable to delete transaction: '.print_r($transaction->getErrors(), true));
+                if(!$handle_errors)
+                {
+                    throw new Exception('Unable to delete transaction: '.print_r($transaction->getErrors(), true));
+                }
+                else{
+                    $errors = $transaction->getErrors();
+                    throw new Exception('Unable to save transaction: '.$errors[''][0]);
+                }
             }
         }
     }
@@ -221,46 +236,21 @@ class DefaultController extends BaseEventTypeController
 
     public function actionUpdateDnaTests($id)
     {
-        $errors = $this->setAndValidateElementsFromData($_POST);
+        header('Content-type: application/json');
 
-        if (empty($errors)) {
-            $transaction = Yii::app()->db->beginTransaction();
-
-            try {
-                //TODO: should all the auditing be moved into the saving of the event
-                $success = $this->saveEvent($_POST);
-
-                if ($success) {
-                    //TODO: should not be pasing event?
-                    $this->afterUpdateElements($this->event);
-                    $this->logActivity('updated event');
-
-                    $this->event->audit('event', 'update');
-
-                    $this->event->user = Yii::app()->user->id;
-
-                    if (!$this->event->save()) {
-                        throw new SystemException('Unable to update event: '.print_r($this->event->getErrors(), true));
-                    }
-
-                    OELog::log("Updated event {$this->event->id}");
-                    $transaction->commit();
-                    if ($this->event->parent_id) {
-                        $this->redirect(Yii::app()->createUrl('/'.$this->event->parent->eventType->class_name.'/default/view/'.$this->event->parent_id));
-                    } else {
-                        $this->redirect(array('default/view/'.$this->event->id));
-                    }
-                } else {
-                    throw new Exception('Unable to save edits to event');
-                }
-            } catch (Exception $e) {
-                $transaction->rollback();
-                throw $e;
-            }
+        try
+        {
+            $element_id = filter_var($_POST['et_id'], FILTER_SANITIZE_NUMBER_INT);
+            $element = Element_OphInDnaextraction_DnaTests::model()->find('id = :id', array(':id'=>$element_id));
+            $this->saveComplexAttributes_Element_OphInDnaextraction_DnaTests($element, null, null, true);
+        }
+        catch (Exception $e)
+        {
+            echo CJSON::encode(['success'=>false, 'message'=>$e->getMessage()]);
+            Yii::app()->end();
         }
 
-        echo json_encode(array('success'=>true));
-        exit;
+        echo CJSON::encode(['success'=>true]);
     }
 
 }

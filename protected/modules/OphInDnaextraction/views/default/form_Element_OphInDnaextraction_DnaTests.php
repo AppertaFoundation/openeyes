@@ -30,10 +30,12 @@
             $form=$this->beginWidget('CActiveForm',
                 array(
                     "id"=>"frmDnaTests",
-                    "action"=>"/OphInDnaextraction/default/update-dna-tests/".$element->event_id
+                    "action"=>"/OphInDnaextraction/default/updateDnaTests/".$element->event_id
                 ));
-            echo $form->errorSummary($element);
         } ?>
+
+    <input type="hidden" name="et_id" value="<?php echo $element->id; ?>" />
+
 
   <input type="hidden" name="<?php echo CHtml::modelName($element); ?>[force_validation]"/>
   <fieldset class="element-fields">
@@ -75,6 +77,7 @@
         </table>
           <?php if($this->action->Id === 'view'): ?>
               <div class="button-bar right">
+                  <span class="successmessage msg success" style="display: none; color: #43b124; font-size: 12px;"><i class="fa fa-check"></i> Saved</span>
                   <button class="button warning small" id="cancelTest">Cancel</button>
                   <button class="button small default submitTest">Save</button>
               </div>
