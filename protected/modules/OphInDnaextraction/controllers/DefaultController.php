@@ -216,6 +216,10 @@ class DefaultController extends BaseEventTypeController
         $this->renderPartial('_boxSelectRefresh', array('element'=> $element), false, true);
     }
 
+    /*
+     * Add shared js to the page
+     */
+
     private function _registerDnaTestFormJs()
     {
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
@@ -239,6 +243,12 @@ class DefaultController extends BaseEventTypeController
         $this->_registerDnaTestFormJs();
         parent::actionCreate();
     }
+
+    /**
+     * @param $id
+     *
+     * Ajax action to separately save DNA Tests
+     */
 
     public function actionUpdateDnaTests($id)
     {
