@@ -219,4 +219,48 @@ class DefaultController extends BaseEventTypeController
         parent::actionUpdate($id);
     }
 
+    public function actionUpdateDnaTests($id)
+    {
+        $errors = $this->setAndValidateElementsFromData($_POST);
+
+        if (empty($errors)) {
+            $transaction = Yii::app()->db->beginTransaction();
+
+            try {
+                //TODO: should all the auditing be moved into the saving of the event
+                $success = $this->saveEvent($_POST);
+
+                if ($success) {
+                    //TODO: should not be pasing event?
+                    $this->afterUpdateElements($this->event);
+                    $this->logActivity('updated event');
+
+                    $this->event->audit('event', 'update');
+
+                    $this->event->user = Yii::app()->user->id;
+
+                    if (!$this->event->save()) {
+                        throw new SystemException('Unable to update event: '.print_r($this->event->getErrors(), true));
+                    }
+
+                    OELog::log("Updated event {$this->event->id}");
+                    $transaction->commit();
+                    if ($this->event->parent_id) {
+                        $this->redirect(Yii::app()->createUrl('/'.$this->event->parent->eventType->class_name.'/default/view/'.$this->event->parent_id));
+                    } else {
+                        $this->redirect(array('default/view/'.$this->event->id));
+                    }
+                } else {
+                    throw new Exception('Unable to save edits to event');
+                }
+            } catch (Exception $e) {
+                $transaction->rollback();
+                throw $e;
+            }
+        }
+
+        echo json_encode(array('success'=>true));
+        exit;
+    }
+
 }

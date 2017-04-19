@@ -27,7 +27,11 @@
         <?php endif; ?>
 >
     <?php if($this->action->Id === 'view') {
-            $form=$this->beginWidget('CActiveForm');
+            $form=$this->beginWidget('CActiveForm',
+                array(
+                    "id"=>"frmDnaTests",
+                    "action"=>"/OphInDnaextraction/default/update-dna-tests/".$element->event_id
+                ));
             echo $form->errorSummary($element);
         } ?>
 
@@ -71,7 +75,7 @@
         </table>
           <?php if($this->action->Id === 'view'): ?>
               <div class="button-bar right">
-                  <button class="button warning small" href="javascript:void(-1)" id="cancelTest">Cancel</button>
+                  <button class="button warning small" id="cancelTest">Cancel</button>
                   <button class="button small default submitTest">Save</button>
               </div>
           <?php endif; ?>

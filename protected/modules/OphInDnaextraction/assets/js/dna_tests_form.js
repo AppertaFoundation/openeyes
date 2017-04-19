@@ -30,7 +30,8 @@ $(function(){
         }
     });
 
-    $("#cancelTest").click(function(){
+    $("#cancelTest").click(function(e){
+        e.preventDefault();
         var alert = new OpenEyes.UI.Dialog.Confirm({
             content: 'Are you sure you want to cancel editing tests?',
             okButton: 'Yes, cancel',
@@ -44,13 +45,11 @@ $(function(){
 
     $(".submitTest").click(function(e){
         e.preventDefault();
-        var DNAExtraction_id = 1;
-        $.post(
-            "OphInDnaextraction/default/update-dna-withdrawals/"+DNAExtraction_id,
-            {
-
-            },
-            function(data){
+        var $form = $("#frmDnaTests");
+        var data = $form.serializeArray();
+        console.log(data);
+        $.post($form.attr("action"), data,
+            function(response){
 
             }
         );
