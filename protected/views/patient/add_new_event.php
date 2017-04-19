@@ -21,7 +21,7 @@
 <?php Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.NewEvent.js', null, -10)?>
 
 <script type="text/html" id="subspecialty-template">
-    <li class="step-1 oe-specialty-service {{classes}}"
+    <li class="oe-specialty-service {{classes}}"
         data-id="{{id}}"
         data-subspecialty-id="{{subspecialtyId}}"
         data-service-id="{{serviceId}}"
@@ -32,7 +32,7 @@
     </li>
 </script>
 <script type="text/html" id="new-subspecialty-template">
-    <div class="step-1 oe-specialty-service new-added-subspecialty-service selected"
+    <div class="oe-specialty-service new-added-subspecialty-service selected {{classes}}"
          data-subspecialty-id="{{subspecialtyId}}"
          data-service-id="{{serviceId}}"
     >{{name}}
