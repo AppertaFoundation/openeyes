@@ -19,40 +19,22 @@
  */
 class OphInBiometry_API extends BaseAPI
 {
-    /*
-     *  Last Biometry target refraction
-     * @params $patient
-     * deprecated since 2.0
+    /**
+     * Last Biometry target refraction
+     *
+     * @param $patient
+     * @param $use_context
+     * @return string|null
+     */
 
-    public function getLastBiometryTargetRefraction(\Patient $patient)
+    public function getLastBiometryTargetRefraction(\Patient $patient, $use_context = true)
     {
         $biometry_left = 'LEFT: Not Recorded ';
         $biometry_right = 'RIGHT: Not Recorded';
-        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        $episode = $this->getLatestEvent($patient, $use_context);
 
         if ($episode) {
-            $biometry_element = $this->getElementForLatestEventInEpisode($episode, 'Element_OphInBiometry_Calculation');
-            if($biometry_element){
-                if ($biometry_element->hasLeft() && !empty($biometry_element->target_refraction_left)) {
-                    $biometry_left = 'LEFT: ' . $biometry_element->target_refraction_left;
-                }
-                if ($biometry_element->hasRight() && !empty($biometry_element->target_refraction_right)) {
-                    $biometry_right = 'RIGHT: ' . $biometry_element->target_refraction_right;
-                }
-            }
-        }
-
-         return $biometry_left . ' ' . $biometry_right;
-    }
-    */
-    public function getLastBiometryTargetRefraction(\Patient $patient, $use_Context = true)
-    {
-        $biometry_left = 'LEFT: Not Recorded ';
-        $biometry_right = 'RIGHT: Not Recorded';
-        $episode = $patient->getEpisodeForCurrentSubspecialty();
-
-        if ($episode) {
-            $biometry_element = $this->getLatestElement('Element_OphInBiometry_Calculation', $patient, $use_Context);
+            $biometry_element = $this->getLatestElement('Element_OphInBiometry_Calculation', $patient, $use_context);
 
             if($biometry_element){
                 if ($biometry_element->hasLeft() && !empty($biometry_element->target_refraction_left)) {

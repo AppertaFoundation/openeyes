@@ -27,9 +27,11 @@ class OphDrPrescription_API extends BaseAPI
      * @param Episode $episode
      *
      * @return string
-     */
-    public function getLetterPrescription($patient)
+     * depreacted since 2.0
+
+    public function getLetterPrescription($patient, $use_context = true)
     {
+
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             if ($details = $this->getElementForAllEventInEpisode($episode, 'Element_OphDrPrescription_Details')) {
                 
@@ -45,6 +47,32 @@ class OphDrPrescription_API extends BaseAPI
                 }
                 return $result;
             }
+        }
+    }
+    */
+
+    /**
+     * get the prescription letter text for the latest prescription in the episode for the patient.
+     *
+     * @param Patient $patient
+     * @param $use_context
+     * @return string
+     */
+    public function getLetterPrescription($patient, $use_context = true)
+    {
+        if($details = $this->getElements('Element_OphDrPrescription_Details', $patient, $use_context)){
+            $result = '';
+            $latest = $this->getElementFromLatestEvent('Element_OphDrPrescription_Details', $patient, $use_context);
+
+            foreach($details as $detail)
+            {
+                $detailDate = substr($detail->event->event_date, 0, 10);
+                $latestDate = substr($latest->event->event_date, 0, 10);
+                if(strtotime($detailDate) === strtotime($latestDate)){
+                    $result .= $detail->getLetterText()."\n";
+                }
+            }
+            return $result;
         }
     }
 

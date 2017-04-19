@@ -103,30 +103,6 @@ class OphCoCorrespondence_API extends BaseAPI
         return $patient->last_name;
     }
 
-
-    /**
-     * get the last Examination Date for patient for use in correspondence.
-     *
-     * @param Patient $patient
-     *
-     * @return string
-     * deprecated since 2.0
-
-    public function getLastExaminationDate(\Patient $patient)
-    {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
-            $event = $this->getMostRecentEventInEpisode($episode->id, $event_type->id);
-
-            if (isset($event->event_date)) {
-                return Helper::convertDate2NHS($event->event_date);
-            }
-        }
-
-        return '';
-    }
-     */
-
     /*
      * get the last Examination Date for patient for use in correspondence.
      *
@@ -157,19 +133,6 @@ class OphCoCorrespondence_API extends BaseAPI
     }
 
     /*
-     * deprecated since 2.0
-
-    public function getLastIOLType(\Patient $patient)
-    {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract');
-                return $element->iol_type->name;
-        }
-    }
-    */
-
-    /*
      * IOL type from last cataract Operation Note
      * @param $patient
      * @param $use_context
@@ -185,19 +148,6 @@ class OphCoCorrespondence_API extends BaseAPI
 
     /*
      * IOL Power from last cataract operation note
-     * deprecated since 2.0
-
-    public function getLastIOLPower(\Patient $patient)
-    {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract');
-            return $element->iol_power;
-        }
-    }
-    */
-    /*
-     * IOL Power from last cataract operation note
      * @param $patient
      * @param $use_context
      * @return string
@@ -210,19 +160,6 @@ class OphCoCorrespondence_API extends BaseAPI
         }
     }
 
-    /*
-     * deprecated since 2.02
-
-    public function getLastOperatedEye(\Patient $patient)
-    {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
-                'Element_OphTrOperationnote_ProcedureList');
-            return $element->eye->adjective;
-        }
-    }
-    */
     /*
      * Operated Eye (left/right) from last operation note
      * @param $patient
