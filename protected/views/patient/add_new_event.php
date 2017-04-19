@@ -135,7 +135,7 @@
                     id: 'add-new-event-dialog',
                     viewSubspecialtyId: <?= @$view_subspecialty ? $view_subspecialty->id : 'undefined' ?>,
                     patientId: <?= $patient_id ?>,
-                    userSubspecialtyId: <?= $context_firm->getSubspecialtyID() ?>,
+                    userSubspecialtyId: '<?= $context_firm->getSubspecialtyID() ? : 'SS'; ?>',
                     userContext: <?= CJSON::encode(NewEventDialogHelper::structureFirm($context_firm)) ?>,
                     currentSubspecialties: <?= CJSON::encode(NewEventDialogHelper::structureEpisodes($episodes)) ?>,
                     subspecialties: <?= CJSON::encode(NewEventDialogHelper::structureAllSubspecialties()) ?>

@@ -110,6 +110,8 @@
         NewEventDialog._super.prototype.create.call(self);
 
         self.setupEventHandlers();
+
+        self.setDefaultSelections();
     };
 
     /**
@@ -185,7 +187,11 @@
                 self.createEvent($(this).data('eventtype-id'));
             }
         });
+    };
 
+    NewEventDialog.prototype.setDefaultSelections = function()
+    {
+        var self = this;
         // auto selection of subspecialty based on current view
         // Either subspecialty already active for the patient ...
         self.content.find(selectors.subspecialtyItem).each(function() {
@@ -197,15 +203,14 @@
 
         // ... or we short cut selection of default subspecialty for new container
         self.content.find(selectors.newSubspecialtyList + ' option').each(function() {
-            if (parseInt($(this).val()) === self.options.userSubspecialtyId) {
+            if ($(this).val() === String(self.options.userSubspecialtyId)) {
                 $(this).prop('selected', true);
                 self.content.find(selectors.newSubspecialtyList).trigger('change');
                 // end iteration through options
                 return false;
             }
         });
-    };
-
+    }
 
     /**
      * Manages changes when a new subspecialty is selected for creating a new subspecialty for the event.
@@ -230,6 +235,7 @@
 
     /**
      * Set the service to a fixed value when creating a new subspecialty for the event.
+     *
      * @param service
      */
     NewEventDialog.prototype.setService = function(service)
@@ -303,7 +309,6 @@
         });
 
         self.content.find(selectors.newSubspecialtyContainer).hide();
-        debugger;
         self.content.find(selectors.subspecialtyColumn).append(html);
         self.content.find(selectors.newSubspecialtyItem).trigger('click');
     };
@@ -330,10 +335,10 @@
         var contextListIdx = undefined;
         if (selected.length) {
             self.updateTitle(self.subspecialtiesById[selected.data('subspecialtyId')]);
-            var defaultContextId = parseInt(self.options.userContext.id);
+            var defaultContextId = self.options.userContext.id;
             if (selected.hasClass('new')) {
                 // default to the same context as the service for the new subspecialty
-                defaultContextId = parseInt(selected.data('service-id'));
+                defaultContextId = String(selected.data('service-id'));
             }
             var subspecialtyId = selected.data('subspecialty-id');
             // get the context options for the subspecialty
@@ -341,7 +346,7 @@
             for (var i in self.contextsBySubspecialtyId[subspecialtyId]) {
                 var context = self.contextsBySubspecialtyId[subspecialtyId][i];
                 list += '<li class="step-2" data-context-id="'+context.id+'">' + context.name + '</li>';
-                if (parseInt(context.id) === defaultContextId) {
+                if (String(context.id) === defaultContextId) {
                     contextListIdx = i;
                 }
             }
