@@ -149,9 +149,4 @@ class GeneticsStudy extends BaseActiveRecordVersioned
         return implode(', ', $p);
     }
 
-    public function get_getProposerNames()
-    {
-        die("Im here");
-    }
-
 }
