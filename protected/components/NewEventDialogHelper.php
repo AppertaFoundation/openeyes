@@ -25,7 +25,8 @@ class NewEventDialogHelper
     protected static $support_services_subspecialty = array(
         'id' => 'SS',
         'name' => 'Support Services',
-        'shortName' => 'SS'
+        'shortName' => 'SS',
+        'supportServices' => 1
     );
 
     /**

@@ -63,7 +63,7 @@
         serviceList: '.select-service',
         addNewSubspecialty: '#js-add-subspecialty-btn',
         removeNewSubspecialty: '.change-new-specialty',
-        eventTypeItem: 'step-3'
+        eventTypeItem: '.oe-event-type'
     };
 
     /**
@@ -370,9 +370,20 @@
     NewEventDialog.prototype.updateEventList = function() {
         var self = this;
         var selected = self.content.find('.step-2.selected');
-        // TODO: filter list based on whether Support Services is being chosen.
         if (selected.length) {
+            var selectedSubspecialty = self.subspecialtiesById[self.content.find(selectors.subspecialtyItem + '.selected').data('subspecialtyId')];
+            if (selectedSubspecialty.supportServices) {
+                // Filter list based on whether Support Services is being chosen.
+                self.content.find(selectors.eventTypeItem).each(function() {
+                    if (!$(this).data('support-services')) {
+                        $(this).hide();
+                    }
+                });
+            } else {
+                self.content.find(selectors.eventTypeItem).show();
+            }
             self.content.find('.step-event-types').css('visibility', 'visible');
+
         } else {
             self.content.find('.step-event-types').css('visibility', 'hidden');
         }
