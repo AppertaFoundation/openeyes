@@ -278,25 +278,25 @@ class m170305_142449_create_keratoconus extends OEMigration
     public function down()
     {
 
-        $this->dropTable('et_ophciexamination_cxl_history');
-        $this->dropTable('et_ophciexamination_keratometry');
-        $this->dropTable('et_ophciexamination_slit_lamp');
-        $this->dropTable('et_ophciexamination_specular_microscopy');
-        $this->dropTable('et_ophtroperationnote_cxl');
-        $this->dropTable('ophciexamination_scan_quality');
-        $this->dropTable('ophciexamination_slit_lamp_conditions');
-        $this->dropTable('ophciexamination_specular_microscope');
-        $this->dropTable('ophtroperationnote_cxl_epithelial_removal_diameter');
-        $this->dropTable('ophtroperationnote_cxl_epithelial_removal_method');
-        $this->dropTable('ophtroperationnote_cxl_interpulse_duration');
-        $this->dropTable('ophtroperationnote_cxl_interval_between_drops');
-        $this->dropTable('ophtroperationnote_cxl_protocol');
-        $this->dropTable('ophtroperationnote_cxl_protocol_version');
-        $this->dropTable('ophtroperationnote_cxl_riboflavin_preparation');
-        $this->dropTable('ophtroperationnote_cxl_soak_duration');
-        $this->dropTable('ophtroperationnote_cxl_total_exposure_time');
-        $this->dropTable('ophtroperationnote_cxl_uv_irradiance');
-        $this->dropTable('ophtroperationnote_cxl_uv_pulse_duration');
+        $this->dropOETable('et_ophciexamination_cxl_history',true);
+        $this->dropOETable('et_ophciexamination_keratometry',true);
+        $this->dropOETable('et_ophciexamination_slit_lamp',true);
+        $this->dropOETable('et_ophciexamination_specular_microscopy',true);
+        $this->dropOETable('et_ophtroperationnote_cxl',true);
+        $this->dropOETable('ophciexamination_scan_quality',true);
+        $this->dropOETable('ophciexamination_slit_lamp_conditions',true);
+        $this->dropOETable('ophciexamination_specular_microscope',true);
+        $this->dropOETable('ophtroperationnote_cxl_epithelial_removal_diameter',true);
+        $this->dropOETable('ophtroperationnote_cxl_epithelial_removal_method',true);
+        $this->dropOETable('ophtroperationnote_cxl_interpulse_duration',true);
+        $this->dropOETable('ophtroperationnote_cxl_interval_between_drops',true);
+        $this->dropOETable('ophtroperationnote_cxl_protocol',true);
+        $this->dropOETable('ophtroperationnote_cxl_protocol_version',true);
+        $this->dropOETable('ophtroperationnote_cxl_riboflavin_preparation',true);
+        $this->dropOETable('ophtroperationnote_cxl_soak_duration',true);
+        $this->dropOETable('ophtroperationnote_cxl_total_exposure_time',true);
+        $this->dropOETable('ophtroperationnote_cxl_uv_irradiance',true);
+        $this->dropOETable('ophtroperationnote_cxl_uv_pulse_duration',true);
     }
 
     /*
