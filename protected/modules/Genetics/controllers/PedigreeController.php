@@ -161,7 +161,7 @@ class PedigreeController extends BaseModuleController
             'gene.name',
             'getSubjectsCount',
             'getAffectedSubjectsCount',
-            'disorder.fully_specified_name',
+            'disorder.term',
             'getConsanguinityAsBoolean'
         ));
         $admin->getSearch()->addSearchItem('id', array( 'type' => 'id' ));

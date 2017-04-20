@@ -116,7 +116,8 @@ class Pedigree extends BaseActiveRecord
             'amino_acid_change_id' => 'Amino Acid Change Type',
             'getSubjectsCount' => 'Subjects count',
             'getAffectedSubjectsCount' => 'Affected subjects count',
-            'getConsanguinityAsBoolean' => 'Consanguinity'
+            'getConsanguinityAsBoolean' => 'Consanguinity',
+            'disorder.term' => 'Disorder'
         );
     }
 
