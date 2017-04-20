@@ -28,7 +28,7 @@
         <div class="large-2 column">
             <div class="data-value">
                 <?php
-                echo OEModule\OphCiExamination\models\OphCiExamination_Tomographer_device::model()->getName($element->tomographer_id);
+                echo OEModule\OphCiExamination\models\OphCiExamination_Tomographer_Device::model()->getName($element->tomographer_id);
                 ?>
             </div>
         </div>
@@ -151,7 +151,7 @@
                 <div class="large-5 column data-value">
                     <?php
                     if($element->right_cl_removed){
-                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Cl_Removed::model()->getName($element->right_cl_removed);
+                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_CL_Removed::model()->getName($element->right_cl_removed);
                     }
                     ?>
                 </div>
@@ -280,7 +280,7 @@
                     <div class="large-5 column data-value">
                         <?php
                         if($element->left_cl_removed){
-                            echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Cl_Removed::model()->getName($element->left_cl_removed);
+                            echo OEModule\OphCiExamination\models\OphCiExamination_CXL_CL_Removed::model()->getName($element->left_cl_removed);
                         }
                         ?>
                     </div>
