@@ -102,7 +102,7 @@
             self.servicesBySubspecialtyId[subspecialty.id] = subspecialty.services;
         }
         self.defaultSubspecialtyId = undefined;
-        if (self.options.viewSubspecialtyId === undefined || self.options.viewSubspecialtyId === self.options.userSubspecialtyId) {
+        if (self.options.viewSubspecialtyId === undefined || String(self.options.viewSubspecialtyId) === String(self.options.userSubspecialtyId)) {
             self.defaultSubspecialtyId = self.options.userSubspecialtyId;
         }
 
@@ -195,7 +195,7 @@
         // auto selection of subspecialty based on current view
         // Either subspecialty already active for the patient ...
         self.content.find(selectors.subspecialtyItem).each(function() {
-            if ($(this).data('subspecialty-id') === self.defaultSubspecialtyId) {
+            if (String($(this).data('subspecialty-id')) === String(self.defaultSubspecialtyId)) {
                 $(this).trigger('click');
                 return false;
             }
@@ -210,7 +210,7 @@
                 return false;
             }
         });
-    }
+    };
 
     /**
      * Manages changes when a new subspecialty is selected for creating a new subspecialty for the event.
