@@ -1865,4 +1865,33 @@ class OphCiExamination_API extends \BaseAPI
         $best_reading = $element->getBestReadingByMethods($side, $methods);
         return $best_reading;
     }
+
+    /**
+     * @param \Patient $patient
+     * @returns string
+     *
+     * Outcome details from latest Examination
+     * (ode shortcode handler)
+     */
+
+    public function getLatestOutcomeDetails(\Patient $patient)
+    {
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        if($element = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_ClinicOutcome'))
+        {
+            $str = $element->status->name;
+            if($element->status->followup)
+            {
+                $str.=" in {$element->followup_quantity} {$element->followup_period} by {$element->role->name}";
+                if ($element->role_comments != '')
+                {
+                    $str.= " ({$element->role_comments})";
+                }
+            }
+
+            return $str;
+        }
+
+        return "";
+    }
 }
