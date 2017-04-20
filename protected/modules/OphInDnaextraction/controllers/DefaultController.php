@@ -12,7 +12,8 @@ class DefaultController extends BaseEventTypeController
         'getAvailableLetterNumberToBox' => self::ACTION_TYPE_FORM,
         'saveNewStorage' => self::ACTION_TYPE_FORM,
         'refreshStorageSelect' => self::ACTION_TYPE_FORM,
-        'updateDnaTests' => self::ACTION_TYPE_FORM
+        'updateDnaTests' => self::ACTION_TYPE_FORM,
+        'print' => self::ACTION_TYPE_PRINT
     );
 
     public function accessRules()
@@ -34,6 +35,13 @@ class DefaultController extends BaseEventTypeController
         $api = Yii::app()->moduleAPI->get('OphInDnaextraction');
 
         return $api->volumeRemaining($event_id);
+    }
+
+    public function initActionView()
+    {
+        parent::initActionView();
+
+        $this->jsVars['dnaExtractionPrintUrl'] = Yii::app()->createUrl('OphInDnaextraction/Default/print/'.$this->event->id);
     }
 
     public function actionPrint($id)
@@ -187,14 +195,16 @@ class DefaultController extends BaseEventTypeController
     public function actionSaveNewStorage()
     {
         $storage = new OphInDnaextraction_DnaExtraction_Storage();
-        
+
+
         $storage->box_id = Yii::app()->request->getPost('dnaextraction_box_id');
         $storage->letter = Yii::app()->request->getPost('dnaextraction_letter');
         $storage->number = Yii::app()->request->getPost('dnaextraction_number');
         $storage->letter = $storage->letter ? strtoupper($storage->letter) : $storage->letter;
 
         if( $storage->save() ){
-            $result = array('s' => 1);
+            $selectedID = $storage->getPrimaryKey();
+            $result = array('s' => 1 , 'selected' => $selectedID);
         } else {
             $errors = '';
             foreach( $storage->getErrors() as $attribute => $error ){
