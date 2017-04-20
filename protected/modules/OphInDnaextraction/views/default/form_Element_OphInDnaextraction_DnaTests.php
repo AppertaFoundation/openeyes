@@ -21,7 +21,22 @@
          data-element-type-id="<?php echo $element->elementType->id ?>"
          data-element-type-class="<?php echo $element->elementType->class_name ?>"
          data-element-type-name="<?php echo $element->elementType->name ?>"
-         data-element-display-order="<?php echo $element->elementType->display_order ?>">
+         data-element-display-order="<?php echo $element->elementType->display_order ?>"
+        <?php if($this->action->Id === 'view'): ?>
+            data-element-id="<?php echo $element->id; ?>"
+        <?php endif; ?>
+>
+    <?php if($this->action->Id === 'view') {
+            $form=$this->beginWidget('CActiveForm',
+                array(
+                    "id"=>"frmDnaTests",
+                    "action"=>"/OphInDnaextraction/default/updateDnaTests/".$element->event_id
+                ));
+        } ?>
+
+    <input type="hidden" name="et_id" value="<?php echo $element->id; ?>" />
+
+
   <input type="hidden" name="<?php echo CHtml::modelName($element); ?>[force_validation]"/>
   <fieldset class="element-fields">
     <div class="row field-row">
@@ -49,7 +64,7 @@
           if ($transactions) {
               foreach ($transactions as $i => $transaction) {
                   $disabled = !$this->checkAccess('TaskEditGeneticsWithdrawals');
-                  $this->renderPartial('_dna_test', array('transaction' => $transaction, 'i' => $i, 'disabled' => $disabled));
+                  $this->renderPartial('application.modules.OphInDnaextraction.views.default._dna_test', array('transaction' => $transaction, 'i' => $i, 'disabled' => $disabled));
               }
           } else { ?>
             <tr>
@@ -60,10 +75,25 @@
           <?php } ?>
           </tbody>
         </table>
+          <?php if($this->action->Id === 'view'): ?>
+              <div class="button-bar right">
+                  <span id="frmDnaTests_loader" style="display: none"><i class="fa fa-spinner fa-spin"></i></span>
+                  <span id="frmDnaTests_successmessage" class="successmessage msg success" style="display: none; font-size: 12px;"><i class="fa fa-check"></i> Saved</span>
+                  <div class="frmDnaTests_controls" style="display: none;">
+                      <button class="button warning small" id="cancelTest">Cancel</button>
+                      <button class="button small default submitTest">Save changes</button>
+                  </div>
+              </div>
+          <?php endif; ?>
         <button class="button small secondary addTest">
           Add
         </button>
       </div>
     </div>
   </fieldset>
+
+    <?php if($this->action->Id === 'view') {
+        $this->endWidget();
+    } ?>
+
 </section>
