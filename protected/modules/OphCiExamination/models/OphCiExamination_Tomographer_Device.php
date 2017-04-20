@@ -30,7 +30,7 @@ namespace OEModule\OphCiExamination\models;
  *
  * The followings are the available model relations:
  */
-class OphCiExamination_Tomographer_device extends \SplitEventTypeElement
+class OphCiExamination_Tomographer_Device extends \SplitEventTypeElement
 {
     public $service;
 

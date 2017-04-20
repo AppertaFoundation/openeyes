@@ -27,7 +27,7 @@
 	</div>
 	<div class="large-2 column">
 		<?php
-		$allTomographerDevice = \OEModule\OphCiExamination\models\OphCiExamination_Tomographer_device::model()->findAll(array('order' => 'display_order'));
+		$allTomographerDevice = \OEModule\OphCiExamination\models\OphCiExamination_Tomographer_Device::model()->findAll(array('order' => 'display_order'));
 		echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[tomographer_id]',
 			$element->tomographer_id,
 			CHtml::listData($allTomographerDevice, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
