@@ -177,7 +177,7 @@ class GeneticsPatient extends BaseActiveRecord
 
     public function isEmptyPedigrees()
     {
-        if(empty($_POST['GeneticsPatient']['pedigrees'])){
+        if(!isset($_POST['no_pedigree']) && empty($_POST['GeneticsPatient']['pedigrees'])){
             $this->addError('pedigrees', 'Please add at least one pedigree!');
         }
     }
@@ -191,6 +191,28 @@ class GeneticsPatient extends BaseActiveRecord
 
         if($this->getIsNewRecord()) {
             $this->updateDiagnoses();
+
+            /*
+             * Auto-generate a new pedigree and
+             * assign it to the genetic subject
+             */
+
+            if(isset($_POST['no_pedigree']))
+            {
+                $pedigree = new Pedigree();
+                $pedigree->consanguinity = false;
+                $pedigree->comments = '';
+                $pedigree->save(false);
+
+                $p_id = $pedigree->id;
+
+                $link = new GeneticsPatientPedigree();
+                $link->pedigree_id = $p_id;
+                $link->patient_id = $this->id;
+
+                $link->save(false);
+            }
+
         }
 
         $pedigrees = GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $this->id), array('select' =>  'pedigree_id'));
