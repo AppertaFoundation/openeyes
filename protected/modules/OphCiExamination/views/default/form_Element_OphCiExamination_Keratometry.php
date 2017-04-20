@@ -175,7 +175,7 @@
 				</div>
 				<div class="large-4 column">
 			<?php
-			$allCLRemoved = \OEModule\OphCiExamination\models\OphCiExamination_CXL_Cl_Removed::model()->findAll(array('order' => 'display_order'));
+			$allCLRemoved = \OEModule\OphCiExamination\models\OphCiExamination_CXL_CL_Removed::model()->findAll(array('order' => 'display_order'));
 			echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[right_cl_removed]',
 				$element->right_cl_removed,
 				CHtml::listData($allCLRemoved, 'id', 'name')); ?>
