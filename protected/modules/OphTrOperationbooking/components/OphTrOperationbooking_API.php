@@ -219,11 +219,13 @@ class OphTrOperationbooking_API extends BaseAPI
 
     public function getAdmissionDate($patient)
     {
+
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             if ($booking = $this->getMostRecentBookingForEpisode($episode)) {
                 return $booking->session->NHSDate('date');
             }
         }
+
     }
 
     /* TODO: this should be refactored at some point */
