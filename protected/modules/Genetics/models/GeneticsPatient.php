@@ -177,8 +177,10 @@ class GeneticsPatient extends BaseActiveRecord
 
     public function isEmptyPedigrees()
     {
-        if(empty($_POST['GeneticsPatient']['pedigrees'])){
-            $this->addError('pedigrees', 'Please add at least one pedigree!');
+        if( Yii::app()->request->isPostRequest ){
+            if( !isset(Yii::app()->request->getPost('GeneticsPatient')['pedigrees']) ){
+                $this->addError('pedigrees', 'Please add at least one pedigree!');
+            }
         }
     }
 
