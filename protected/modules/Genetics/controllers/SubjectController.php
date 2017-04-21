@@ -26,12 +26,12 @@ class SubjectController extends BaseModuleController
             array(
                 'allow',
                 'actions' => array('Edit', 'EditStudyStatus'),
-                'roles' => array('OprnEditGeneticPatient'),
+                'roles' => array('TaskEditGeneticPatient'),
             ),
             array(
                 'allow',
                 'actions' => array('List', 'View'),
-                'roles' => array('OprnViewGeneticPatient'),
+                'roles' => array('TaskViewGeneticPatient'),
             ),
         );
     }
