@@ -270,7 +270,7 @@ class GeneticsPatient extends BaseActiveRecord
         $patientPedigree = GeneticsPatientPedigree::model()->find($criteria);
 
         if(!$patientPedigree || !$patientPedigree->status) {
-            return 'Uknown';
+            return 'Unknown';
         }
 
         return $patientPedigree->status->name;

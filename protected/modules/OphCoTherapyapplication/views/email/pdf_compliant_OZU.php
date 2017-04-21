@@ -66,7 +66,7 @@ $gp_cb = $patient->gp ? $patient->practice->getCommissioningBodyOfType($cbody_ty
 <td>Consultant Making Request:</td>
 <td><?php echo $service_info->consultant->getConsultantName() ?></td>
 <td>GP Practice Code:</td>
-<td><?php echo $patient->gp ? $patient->gp->nat_id : 'Uknown' ?></td>
+<td><?php echo $patient->gp ? $patient->gp->nat_id : 'Unknown' ?></td>
 </tr>
 
 <tr>
