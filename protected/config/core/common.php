@@ -300,7 +300,7 @@ return array(
                 'uri' => '#',
                 'position' => 2,
                 'userrule' => 'isSurgeon',
-                'restricted' => array('admin', 'Report', 'NOD Export'),
+                'restricted' => array('admin', 'Report', 'NOD Export','Optom co-ordinator'),
                 'sub' => array(
                     'admin' => array(
                         'title' => 'Admin',
