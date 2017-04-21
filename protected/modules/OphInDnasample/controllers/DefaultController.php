@@ -33,18 +33,27 @@ class DefaultController extends BaseEventTypeController
         return $this->checkAccess('OprnEditDnaSample') || $this->checkAccess('OprnViewDnaSample');
     }   
 
+    private function _registerDnaTestFormJs()
+    {
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'));
+        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dna_tests_form.js');
+    }
+
     public function actionCreate()
     {
+        $this->_registerDnaTestFormJs();
         parent::actionCreate();
     }
 
     public function actionUpdate($id)
     {
+        $this->_registerDnaTestFormJs();
         parent::actionUpdate($id);
     }
 
     public function actionView($id)
     {
+        $this->_registerDnaTestFormJs();
         parent::actionView($id);
     }
 

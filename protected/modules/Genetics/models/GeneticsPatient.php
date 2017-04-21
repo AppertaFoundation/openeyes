@@ -193,6 +193,28 @@ class GeneticsPatient extends BaseActiveRecord
 
         if($this->getIsNewRecord()) {
             $this->updateDiagnoses();
+
+            /*
+             * Auto-generate a new pedigree and
+             * assign it to the genetic subject
+             */
+
+            if(isset($_POST['no_pedigree']))
+            {
+                $pedigree = new Pedigree();
+                $pedigree->consanguinity = false;
+                $pedigree->comments = '';
+                $pedigree->save(false);
+
+                $p_id = $pedigree->id;
+
+                $link = new GeneticsPatientPedigree();
+                $link->pedigree_id = $p_id;
+                $link->patient_id = $this->id;
+
+                $link->save(false);
+        }
+
         }
 
         $pedigrees = GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $this->id), array('select' =>  'pedigree_id'));
@@ -250,7 +272,7 @@ class GeneticsPatient extends BaseActiveRecord
         $patientPedigree = GeneticsPatientPedigree::model()->find($criteria);
 
         if(!$patientPedigree || !$patientPedigree->status) {
-            return 'Uknown';
+            return 'Unknown';
         }
 
         return $patientPedigree->status->name;

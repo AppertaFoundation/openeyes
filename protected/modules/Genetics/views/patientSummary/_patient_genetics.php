@@ -72,7 +72,7 @@
                             
                             if($subject->diagnoses !== NULL){
                                 foreach($subject->diagnoses as $diagnose){
-                                    echo $diagnose->fully_specified_name."<br>";
+                                    echo $diagnose->term."<br>";
                                 }
                             } 
                         ?>

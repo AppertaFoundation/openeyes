@@ -12,6 +12,7 @@ class DefaultController extends BaseEventTypeController
         'getAvailableLetterNumberToBox' => self::ACTION_TYPE_FORM,
         'saveNewStorage' => self::ACTION_TYPE_FORM,
         'refreshStorageSelect' => self::ACTION_TYPE_FORM,
+        'updateDnaTests' => self::ACTION_TYPE_FORM,
         'print' => self::ACTION_TYPE_PRINT
     );
 
@@ -19,7 +20,7 @@ class DefaultController extends BaseEventTypeController
     {
         return array(
             array('allow',
-                'actions' => array('Create', 'Update','View', 'Print', 'AddTransaction','GetNewStorageFields','getAvailableLetterNumberToBox','saveNewStorage', 'refreshStorageSelect'),
+                'actions' => array('Create', 'Update', 'View', 'Print', 'AddTransaction','GetNewStorageFields','getAvailableLetterNumberToBox','saveNewStorage', 'refreshStorageSelect', 'updateDnaTests'),
                 'roles' => array('OprnEditDNAExtraction'),
             ),
             array('allow',
@@ -108,7 +109,7 @@ class DefaultController extends BaseEventTypeController
         return $errors;
     }
 
-    protected function saveComplexAttributes_Element_OphInDnaextraction_DnaTests($element, $data, $index)
+    protected function saveComplexAttributes_Element_OphInDnaextraction_DnaTests($element, $data, $index, $handle_errors = false)
     {
         $item_ids = array();
 
@@ -116,7 +117,14 @@ class DefaultController extends BaseEventTypeController
             $transaction->element_id = $element->id;
 
             if (!$transaction->save()) {
-                throw new Exception('Unable to save transaction: '.print_r($transaction->getErrors(), true));
+                if(!$handle_errors)
+                {
+                    throw new Exception('Unable to save transaction: '.print_r($transaction->getErrors(), true));
+                }
+                else{
+                    $errors = $transaction->getErrors();
+                    throw new Exception('Unable to save transaction: '.$errors[''][0]);
+                }
             }
 
             $item_ids[] = $transaction->id;
@@ -129,7 +137,14 @@ class DefaultController extends BaseEventTypeController
 
         foreach (OphInDnaextraction_DnaTests_Transaction::model()->findAll($criteria) as $transaction) {
             if (!$transaction->delete()) {
-                throw new Exception('Unable to delete transaction: '.print_r($transaction->getErrors(), true));
+                if(!$handle_errors)
+                {
+                    throw new Exception('Unable to delete transaction: '.print_r($transaction->getErrors(), true));
+                }
+                else{
+                    $errors = $transaction->getErrors();
+                    throw new Exception('Unable to save transaction: '.$errors[''][0]);
+                }
             }
         }
     }
@@ -209,6 +224,59 @@ class DefaultController extends BaseEventTypeController
     {
         $element = new Element_OphInDnaextraction_DnaExtraction();
         $this->renderPartial('_boxSelectRefresh', array('element'=> $element), false, true);
+    }
+
+    /*
+     * Add shared js to the page
+     */
+
+    private function _registerDnaTestFormJs()
+    {
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
+        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dna_tests_form.js');
+    }
+
+    public function actionView($id)
+    {
+        $this->_registerDnaTestFormJs();
+        parent::actionView($id);
+    }
+
+    public function actionUpdate($id)
+    {
+        $this->_registerDnaTestFormJs();
+        parent::actionUpdate($id);
+    }
+
+    public function actionCreate()
+    {
+        $this->_registerDnaTestFormJs();
+        parent::actionCreate();
+    }
+
+    /**
+     * @param $id
+     *
+     * Ajax action to separately save DNA Tests
+     */
+
+    public function actionUpdateDnaTests($id)
+    {
+        header('Content-type: application/json');
+
+        try
+        {
+            $element_id = filter_var($_POST['et_id'], FILTER_SANITIZE_NUMBER_INT);
+            $element = Element_OphInDnaextraction_DnaTests::model()->find('id = :id', array(':id'=>$element_id));
+            $this->saveComplexAttributes_Element_OphInDnaextraction_DnaTests($element, null, null, true);
+        }
+        catch (Exception $e)
+        {
+            echo CJSON::encode(['success'=>false, 'message'=>$e->getMessage()]);
+            Yii::app()->end();
+        }
+
+        echo CJSON::encode(['success'=>true]);
     }
 
 }

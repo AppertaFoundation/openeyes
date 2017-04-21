@@ -191,6 +191,7 @@
 						<th><?php echo CHtml::link('Sample Type', $this->getUri(array('sortby' => 'sample_type')))?></th>
 						<th><?php echo CHtml::link('Volume', $this->getUri(array('sortby' => 'volume')))?></th>
 						<th><?php echo CHtml::link('Comment', $this->getUri(array('sortby' => 'comment')))?></th>
+						<th><?php echo CHtml::link('Diagnosis', $this->getUri(array('sortby' => 'diagnosis')))?></th>
 
 					</tr>
 				</thead>
@@ -210,6 +211,7 @@
 							<td><?php echo $result['name']?></td>
 							<td><?php echo $result['volume']?></td>
 							<td><?php echo $result['comments']?></td>
+							<td><?php echo $result['diagnosis']?></td>
 						</tr>
 					<?php }?>
 				</tbody>
