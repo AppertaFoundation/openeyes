@@ -1,0 +1,54 @@
+<div class="row field-row">
+    <div class="large-2 column">&nbsp;</div>
+    <div class="large-5 column end">
+        <input type="checkbox" id="no_pedigree" name="no_pedigree" />
+        <label for="no_pedigree" style="display: inline">No pedigree</label>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("#no_pedigree").click(function(){
+            var checked = $(this).prop("checked");
+            if(checked)
+            {
+                $("#div_GeneticsPatient_Pedigree .MultiSelectList .MultiSelectRemove").trigger("click");
+                $('#GeneticsPatient_pedigrees').prop('disabled', true).trigger("chosen:updated");
+            }
+            else
+            {
+                $('#GeneticsPatient_pedigrees').prop('disabled', false).trigger("chosen:updated");
+            }
+        });
+
+        var confirmed = false;
+
+        $("#generic-admin-form").submit(function(){
+
+            if(confirmed === true)
+            {
+                return true;
+            }
+
+            if($("#no_pedigree").prop("checked"))
+            {
+                var confirm = new OpenEyes.UI.Dialog.Confirm({
+                    content: 'Are you sure there is no pedigree?'
+                });
+
+
+                confirm.content.on("click", '.ok', function(){
+                    confirmed = true;
+                    $("#generic-admin-form").submit();
+                });
+
+                confirm.open();
+            }
+            else
+            {
+                return true;
+            }
+
+            return false;
+        });
+    });
+</script>

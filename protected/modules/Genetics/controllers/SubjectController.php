@@ -162,6 +162,11 @@ class SubjectController extends BaseModuleController
                 ),
                 'link' => '/Genetics/pedigree/edit/%s'
             ),
+            'no_pedigree' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'application.modules.Genetics.views.subject.nopedigree',
+                'viewArguments'=> array()
+            ),
             'create_new_pedigree' => array(
                 'widget' => 'LinkTo',
                 'label'  => 'Create new pedigree',
