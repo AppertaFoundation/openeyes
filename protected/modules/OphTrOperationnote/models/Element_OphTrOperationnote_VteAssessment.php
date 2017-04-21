@@ -56,11 +56,13 @@ class Element_OphTrOperationnote_VteAssessment extends Element_OpNote
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
+
+        $rules = array(
             array('event_id', 'safe'),
-            // The following rule is used by search().
-            // Please remove those attributes that should not be searched.
+            array('selected_option', 'required', 'message'=>'Please select an option')
         );
+
+        return $rules;
     }
 
     /**
@@ -85,6 +87,7 @@ class Element_OphTrOperationnote_VteAssessment extends Element_OpNote
     {
         return array(
             'id' => 'ID',
+            'selected_option' => 'Please select'
         );
     }
 

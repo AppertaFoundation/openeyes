@@ -12,7 +12,8 @@ class m170421_142834_add_element_vte_assessment extends OEMigration
             'class_name' => 'Element_OphTrOperationnote_VteAssessment',
             'event_type_id' => $eventTypeId,
             'display_order' => 55,
-            'default' => 0
+            'default' => 1,
+            'required' => 1
         ));
 
         $this->createOETable('et_ophtroperationnote_vte_assessment',
@@ -38,12 +39,22 @@ class m170421_142834_add_element_vte_assessment extends OEMigration
 
         $this->insert('ophtroperationnote_vte_assessment_option',
             array('name'=>'Patient stayed for less than 4 hours', 'active'=>1, 'display_order'=>30));
+
+        $this->insert('setting_metadata', array(
+            'field_type_id' => 3,
+            'key' => 'vte_assessment_element_enabled',
+            'name' => 'VTE Assessment element enabled',
+            'default_value' => 'on',
+            'data' => serialize(array('on'=>'On', 'off'=>'Off'))
+        ));
 	}
 
 	public function safeDown()
 	{
 		$this->delete('element_type', 'class_name = :class_name',
             array(':class_name' => 'Element_OphTrOperationnote_VteAssessment'));
+
+		$this->delete('setting_metadata', '`key`=:key', array(':key'=>'vte_assessment_element_enabled'));
 
         $this->dropOETable('et_ophtroperationnote_vte_assessment', true);
         $this->dropOETable('ophtroperationnote_vte_assessment_option', true);
