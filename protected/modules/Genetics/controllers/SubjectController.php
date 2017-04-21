@@ -259,6 +259,9 @@ class SubjectController extends BaseModuleController
         $admin->setListFields(array(
             'id',
             'patient.fullName',
+            'patient.dob',
+            'comments',
+            'diagnoses',
         ));
         $admin->getSearch()->addSearchItem('patient.contact.first_name');
         $admin->getSearch()->addSearchItem('patient.contact.last_name');
@@ -274,6 +277,7 @@ class SubjectController extends BaseModuleController
         $admin->getSearch()->addSearchItem('diagnoses.id', array('type' => 'disorder'));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->getSearch()->setDefaultResults(false);
+        $admin->setUnsortableColumns(['patient.fullName','diagnoses']);
         //$display_buttons = $this->checkAccess('OprnEditGeneticPatient');
         $admin->listModel( false );
     }
