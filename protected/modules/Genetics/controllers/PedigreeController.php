@@ -22,7 +22,7 @@ class PedigreeController extends BaseModuleController
             array(
                 'allow',
                 'actions' => array('Edit', 'EditStudyStatus'),
-                'roles' => array('TaskEditPedigreeData','OprnEditPedigree'),
+                'roles' => array('TaskEditPedigreeData'),
             ),
             array(
                 'allow',
