@@ -34,6 +34,8 @@ class PortalExamsCommand extends CConsoleCommand
         $this->config = $connection->getConfig();
         $examinations = $this->examinationSearch();
 
+        $defaultInvoiceStatus = \OEModule\OphCiExamination\models\InvoiceStatus::model()->findByAttributes( array('name' => 'No status'));
+
         $eventType = EventType::model()->find('name = "Examination"');
         $portalUser = $user->portalUser();
         if (!$portalUser) {
@@ -64,7 +66,7 @@ class PortalExamsCommand extends CConsoleCommand
                 $examinationEventLog->event_id = 0;
                 $examinationEventLog->examination_date = $examination['examination_date'];
                 $examinationEventLog->examination_data = json_encode($examination);
-                $examinationEventLog->invoice_status_id = 0;
+                $examinationEventLog->invoice_status_id = $defaultInvoiceStatus->id;
 
                 $importStatus = ImportStatus::model()->find('status_value = "Unfound Event"');
                 $examinationEventLog->import_success = $importStatus->id;
@@ -89,7 +91,7 @@ class PortalExamsCommand extends CConsoleCommand
                     $examinationEventLog->unique_code = $uniqueCode;
                     $examinationEventLog->examination_date = $examination['examination_date'];
                     $examinationEventLog->examination_data = json_encode($examination);
-                    $examinationEventLog->invoice_status_id = 0;
+                    $examinationEventLog->invoice_status_id = $defaultInvoiceStatus->id;
 
                     $examinationEventLog->import_success = $importStatus->id;
                     $examinationEventLog->optometrist = $examination['op_tom']['name'];
@@ -107,7 +109,7 @@ class PortalExamsCommand extends CConsoleCommand
                 $examinationEventLog->unique_code = $uniqueCode;
                 $examinationEventLog->examination_date = $examination['examination_date'];
                 $examinationEventLog->examination_data = json_encode($examination);
-                $examinationEventLog->invoice_status_id = 0;
+                $examinationEventLog->invoice_status_id = $defaultInvoiceStatus->id;
 
                 $examinationEventLog->import_success = $importStatus->id;
                 $examinationEventLog->optometrist = $examination['op_tom']['name'];
@@ -125,7 +127,7 @@ class PortalExamsCommand extends CConsoleCommand
                     $examinationEventLog->unique_code = $uniqueCode;
                     $examinationEventLog->examination_date = $examination['examination_date'];
                     $examinationEventLog->examination_data = json_encode($examination);
-                    $examinationEventLog->invoice_status_id = 0;
+                    $examinationEventLog->invoice_status_id = $defaultInvoiceStatus->id;
 
                     $importStatus = ImportStatus::model()->find('status_value = "Duplicate Event"');
                     $examinationEventLog->import_success = $importStatus->id;
