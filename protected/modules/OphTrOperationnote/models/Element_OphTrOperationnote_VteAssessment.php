@@ -111,4 +111,43 @@ class Element_OphTrOperationnote_VteAssessment extends Element_OpNote
             ));
     }
 
+    /**
+     * @return bool
+     *
+     * Is this element enabled by system setting?
+     */
+
+    public function isEnabled()
+    {
+        $element_enabled = \SettingInstallation::model()->find('`key` = "vte_assessment_element_enabled"');
+        return $element_enabled->value === 'on';
+    }
+
+    /**
+     * @inheritdoc
+     */
+
+    public function isRequired()
+    {
+        return $this->isEnabled();
+    }
+
+    /**
+     * @inheritdoc
+     */
+
+    public function isRequiredInUI()
+    {
+        return $this->isEnabled();
+    }
+
+    /**
+     * @inheritdoc
+     */
+
+    public function isHiddenInUI()
+    {
+        return !$this->isEnabled();
+    }
+
 }

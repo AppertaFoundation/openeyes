@@ -1006,4 +1006,66 @@ class DefaultController extends BaseEventTypeController
 
         return $formatted;
     }
+
+    /**
+     * @inheritdoc
+     */
+
+    protected function setAndValidateElementsFromData($data)
+    {
+        $errors = array();
+        $elements = array();
+
+        // only process data for elements that are part of the element type set for the controller event type
+        foreach ($this->event_type->getAllElementTypes() as $element_type) {
+            $from_data = $this->getElementsForElementType($element_type, $data);
+            if (count($from_data) > 0) {
+                $elements = array_merge($elements, $from_data);
+            } elseif ($element_type->required && (!method_exists($element_type->getInstance(), "isEnabled") || $element_type->getInstance()->isEnabled())) {
+                $errors[$this->event_type->name][] = $element_type->name.' is required';
+                $elements[] = $element_type->getInstance();
+            }
+        }
+
+        // Filter disabled elements from validation
+
+        $elements = array_filter($elements, function($e){
+           return !method_exists($e, "isEnabled") || $e->isEnabled();
+        });
+
+        if (!count($elements)) {
+            $errors[$this->event_type->name][] = 'Cannot create an event without at least one element';
+        }
+
+        // assign
+        $this->open_elements = $elements;
+
+        // validate
+        foreach ($this->open_elements as $element) {
+            $this->setValidationScenarioForElement($element);
+            if (!$element->validate()) {
+                $name = $element->getElementTypeName();
+                foreach ($element->getErrors() as $errormsgs) {
+                    foreach ($errormsgs as $error) {
+                        $errors[$name][] = $error;
+                    }
+                }
+            }
+        }
+
+        //event date
+        if (isset($data['Event']['event_date'])) {
+            $event = $this->event;
+            $event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
+            if (!$event->validate()) {
+                foreach ($event->getErrors() as $errormsgs) {
+                    foreach ($errormsgs as $error) {
+                        $errors[$this->event_type->name][] = $error;
+                    }
+                }
+            }
+        }
+
+        return $errors;
+    }
 }
