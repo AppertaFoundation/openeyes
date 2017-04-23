@@ -120,7 +120,7 @@ class Element_OphTrOperationnote_VteAssessment extends Element_OpNote
     public function isEnabled()
     {
         $element_enabled = \SettingInstallation::model()->find('`key` = "vte_assessment_element_enabled"');
-        return $element_enabled->value === 'on';
+        return (isset($element_enabled->value) && $element_enabled->value === 'on');
     }
 
     /**
