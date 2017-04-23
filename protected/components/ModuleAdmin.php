@@ -31,6 +31,26 @@ class ModuleAdmin
         foreach (EventType::model()->findAll(array('order' => 'name')) as $event_type) {
             foreach (Yii::app()->params['admin_menu'] as $item => $uri) {
                 if (is_array($uri)) {
+
+                    /*
+                     * Check if menu item requires a system setting
+                     * in order to be displayed
+                     */
+
+                    if(isset($uri['requires_setting']))
+                    {
+                        $setting_key = $uri['requires_setting']['setting_key'];
+                        $required_value = $uri['requires_setting']['required_value'];
+                        $item_enabled = \SettingInstallation::model()->find('`key` = :setting_key', array(':setting_key'=>$setting_key));
+                        if(isset($item_enabled->value) && $item_enabled->value != $required_value)
+                        {
+                            continue;
+                        }
+
+                        $module_admin[$event_type->name][$item] = $uri['uri'];
+                        continue;
+                    }
+
                     foreach ($uri as $key => $value) {
                         if ($event_type->class_name == 'OphCiExamination') {
                             $module_admin[$event_type->name][$item] = $value;
