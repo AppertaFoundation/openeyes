@@ -44,7 +44,7 @@ class m170421_142834_add_element_vte_assessment extends OEMigration
             'field_type_id' => 3,
             'key' => 'vte_assessment_element_enabled',
             'name' => 'VTE Assessment element enabled',
-            'default_value' => 'on',
+            'default_value' => 'off',
             'data' => serialize(array('on'=>'On', 'off'=>'Off'))
         ));
 	}
