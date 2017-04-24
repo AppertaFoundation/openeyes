@@ -517,4 +517,10 @@ class WaitingListController extends BaseModuleController
             }
         }
     }
+
+    public function isTheatreDiaryDisabled()
+    {
+        $element_enabled = \SettingInstallation::model()->find('`key` = :setting_key', array(':setting_key'=>'disable_theatre_diary'));
+        return isset($element_enabled->value) && $element_enabled->value == 'on';
+    }
 }

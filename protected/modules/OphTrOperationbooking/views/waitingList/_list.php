@@ -48,6 +48,9 @@
 					<input type="checkbox" id="checkall" value="" /> All
 				</label>
 			</th>
+            <?php if($this->isTheatreDiaryDisabled()): ?>
+            <th></th>
+            <?php endif; ?>
 		</tr>
 		</thead>
 		<tbody>
@@ -138,6 +141,11 @@
 							<span class="no-address error">No Address</span>
 						<?php }?>
 					</td>
+                    <?php if($this->isTheatreDiaryDisabled()): ?>
+                    <td>
+                        <button data-patient-id="<?php echo $patient->id; ?>" class="small btn-booked">Booked</button>
+                    </td>
+                    <?php endif; ?>
 				</tr>
 				<?php
                 ++$i;
