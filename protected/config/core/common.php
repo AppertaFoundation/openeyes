@@ -434,7 +434,7 @@ return array(
         'clinical_management_pcr' => true,
         'docman_generate_csv' => false,
         /**
-        * Enables the admin->Settings->Logo socket_create_listen**/
+        * Enables the admin->Settings->Logo screen */
         'letter_logo_upload' => true,
 
     ),
