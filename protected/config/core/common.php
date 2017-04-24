@@ -403,14 +403,14 @@ return array(
          * To be overriden in local config
          */
         'electronic_sending_method_label' => 'Electronic',
-        
+
         /**
          * Action buttons to be displayed when create/update a correspondence letter
          * Available actions
          *      - 'savedraft' => 'Save draft',
          *      - 'save' => 'Save',
          *      - 'saveprint' => 'Save and print'
-         * To remove an option set it to NULL 
+         * To remove an option set it to NULL
          * e.g: saveprint' => null,
          */
         'OphCoCorrespondence_event_actions' => array(
@@ -433,6 +433,9 @@ return array(
 
         'clinical_management_pcr' => true,
         'docman_generate_csv' => false,
+        /**
+        * Enables the admin->Settings->Logo socket_create_listen**/
+        'letter_logo_upload' => true,
 
     ),
 );
