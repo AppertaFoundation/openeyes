@@ -24,7 +24,7 @@ class WaitingListController extends BaseModuleController
     {
         return array(
             array('allow',
-                'actions' => array('index', 'search', 'filterFirms', 'filterSetFirm', 'filterSetStatus', 'filterSetSiteId', 'filterSetHosNum'),
+                'actions' => array('index', 'search', 'filterFirms', 'filterSetFirm', 'filterSetStatus', 'filterSetSiteId', 'filterSetHosNum', 'setBooked'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -518,9 +518,39 @@ class WaitingListController extends BaseModuleController
         }
     }
 
+    /**
+     * @return bool
+     *
+     * Returns true if Theatre Diary is disabled by system setting
+     */
+
     public function isTheatreDiaryDisabled()
     {
         $element_enabled = \SettingInstallation::model()->find('`key` = :setting_key', array(':setting_key'=>'disable_theatre_diary'));
         return isset($element_enabled->value) && $element_enabled->value == 'on';
+    }
+
+
+    /**
+     * @param $event_id
+     *
+     * Marks an Operation Booking "booked"
+     */
+
+    public function actionSetBooked($event_id)
+    {
+        if(!$event = Element_OphTrOperationbooking_Operation::model()->find("event_id = :event_id", array(":event_id" => $event_id)))
+        {
+            header('Content-type: application/json');
+            echo CJSON::encode(array('success'=>false, 'This event could not be found.'));
+            exit;
+        }
+
+        $event->status_id = 2;
+        $event->save();
+
+        header('Content-type: application/json');
+        echo CJSON::encode(array('success'=>true));
+        exit;
     }
 }

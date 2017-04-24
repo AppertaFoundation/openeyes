@@ -143,7 +143,7 @@
 					</td>
                     <?php if($this->isTheatreDiaryDisabled()): ?>
                     <td>
-                        <button data-patient-id="<?php echo $patient->id; ?>" class="small btn-booked">Booked</button>
+                        <button data-event-id="<?php echo $eo->event_id; ?>" class="small btn-booked">Booked</button>
                     </td>
                     <?php endif; ?>
 				</tr>
@@ -219,4 +219,24 @@
 		var $tr = $(this).closest("tr");
 		$tr.toggleClass('hover');
 	});
+
+    // Mark item as booked (in case theatre diary is disabled)
+    $(document).on("click", ".btn-booked", function(e){
+        e.preventDefault();
+        var event_id = $(this).data("event-id");
+        $.get("/OphTrOperationbooking/waitingList/setBooked?event_id="+event_id,
+                function(data){
+                    if(data.success)
+                    {
+                        window.location.reload();
+                    }
+                    else
+                    {
+                        var alert = new OpenEyes.UI.Dialog.Alert({
+                            content: 'An error occured: '+data.message
+                        });
+                        alert.open();
+                    }
+                });
+    })
 </script>
