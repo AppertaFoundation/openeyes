@@ -71,9 +71,17 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
     {
         return array(
             array('left_sphere, left_cylinder, left_axis, left_axis_eyedraw, left_type_id, left_type_other, right_sphere, right_cylinder, right_axis, right_axis_eyedraw, right_type_id, right_type_other, eye_id, left_notes, right_notes', 'safe'),
+            array('left_sphere', 'requiredIfSide', 'side' => 'left'),
+            array('left_sphere', 'numerical'),
+            array('left_cylinder', 'requiredIfSide', 'side' => 'left'),
+            array('left_cylinder', 'numerical'),
             array('left_axis', 'requiredIfSide', 'side' => 'left'),
             array('left_axis', 'numerical', 'integerOnly' => true),
             array('left_type_other', 'requiredIfRefractionTypeOther', 'side' => 'left'),
+            array('right_sphere', 'requiredIfSide', 'side' => 'right'),
+            array('right_sphere', 'numerical'),
+            array('right_cylinder', 'requiredIfSide', 'side' => 'right'),
+            array('right_cylinder', 'numerical'),
             array('right_axis', 'requiredIfSide', 'side' => 'right'),
             array('right_axis', 'numerical', 'integerOnly' => true),
             array('right_type_other', 'requiredIfRefractionTypeOther', 'side' => 'right'),
@@ -85,7 +93,7 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
     {
         if (($params['side'] === 'left' && $this->left_type_id === '') || ($params['side'] === 'right' && $this->right_type_id === '')) {
             if (empty($this->{$params['side'].'_type_other'})) {
-                $this->addError($attribute, ucfirst($params['side']).' Other cannot be blank.');
+                $this->addError($attribute, ucfirst($params['side']).' Other cannot be blank. Please specify a valid refraction.');
             }
         }
     }
