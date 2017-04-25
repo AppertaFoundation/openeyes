@@ -48,7 +48,7 @@
 					<input type="checkbox" id="checkall" value="" /> All
 				</label>
 			</th>
-            <?php if($this->isTheatreDiaryDisabled()): ?>
+            <?php if($this->module->isTheatreDiaryDisabled()): ?>
             <th></th>
             <?php endif; ?>
 		</tr>
@@ -141,7 +141,7 @@
 							<span class="no-address error">No Address</span>
 						<?php }?>
 					</td>
-                    <?php if($this->isTheatreDiaryDisabled()): ?>
+                    <?php if($this->module->isTheatreDiaryDisabled()): ?>
                     <td>
                         <button data-event-id="<?php echo $eo->event_id; ?>" class="small btn-booked">Booked</button>
                     </td>
