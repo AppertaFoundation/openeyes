@@ -176,7 +176,7 @@ class Element_OphCiExamination_OverallManagementPlan  extends  \SplitEventTypeEl
         return parent::afterSave();
     }
 
-    public function setDefaultOptions()
+    public function setDefaultOptions(\Patient $patient = null)
     {
         $element_type = \ElementType::model()->find('class_name=?', array(get_class($this)));
         $defaults = \SettingMetadata::model()->findAll('element_type_id=? ', array($element_type->id));

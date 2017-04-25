@@ -150,7 +150,7 @@ class OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention extends 
     /**
      * Set default values for forms on create.
      */
-    public function setDefaultOptions()
+    public function setDefaultOptions(Patient $patient = null)
     {
         $this->start_date = date(Helper::NHS_DATE_FORMAT);
         $this->end_date = date(Helper::NHS_DATE_FORMAT);

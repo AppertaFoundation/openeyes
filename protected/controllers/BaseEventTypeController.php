@@ -435,7 +435,7 @@ class BaseEventTypeController extends BaseModuleController
     protected function setElementDefaultOptions($element, $action)
     {
         if ($action == 'create') {
-            $element->setDefaultOptions();
+            $element->setDefaultOptions($this->patient);
         } elseif ($action == 'update') {
             $element->setUpdateOptions();
         }
