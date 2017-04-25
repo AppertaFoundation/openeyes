@@ -126,14 +126,7 @@ if (is_array($ordered_episodes)) {
 
                             <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
                                     <span class="event-type<?= ($event->hasIssue()) ? ($event->hasIssue('ready') ? ' ready' : ' alert') : '' ?>">
-                                        <?php
-                                        if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
-                                            $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/';
-                                        } else {
-                                            $assetpath = '/assets/';
-                                        }
-                                        ?>
-                                        <img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op"
+                                        <img src="<?= $icon ?>" alt="op"
                                              width="19" height="19"/>
                                     </span>
                                 <span

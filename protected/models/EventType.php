@@ -371,15 +371,28 @@ class EventType extends BaseActiveRecordVersioned
 
     /**
      * @param string $type
+     * @param Event $event
      * @return string
      */
-    public function getEventIcon($type='small')
+    public function getEventIcon($type='small', Event $event = null)
     {
-        if (file_exists(Yii::getPathOfAlias('application.modules.' . $this->class_name . '.assets'))) {
-            $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->class_name . '.assets')) . '/';
-        } else {
-            $asset_path = '/assets/';
+        $asset_manager = Yii::app()->getAssetManager();
+        $module_path = Yii::getPathOfAlias('application.modules.' . $this->class_name . '.assets.img');
+
+        $possible_images = array();
+        if ($event && $event->is_automated) {
+            $possible_images[] = $type . '-auto.png';
         }
-        return $asset_path . 'img/' . $type . '.png';
+        $possible_images[] = $type . '.png';
+
+        // module specific
+        foreach ($possible_images as $possible) {
+            $file = $module_path . '/' . $possible;
+            if (file_exists($file)) {
+                return $asset_manager->publish($file);
+            }
+        }
+
+        return '';
     }
 }
