@@ -1203,7 +1203,7 @@ $(document).ready(function() {
             $(this).next('select').append('<option value="' + list[i] + '">' + list[i] + '</option>');
         }
 
-        $(this).next('select').val(value);
+        $(this).next('select').val(value).change();
     });
         
         /** Post Operative Complication  Event Bindings **/
