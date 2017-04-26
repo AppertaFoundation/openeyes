@@ -195,7 +195,7 @@
     </div>
 </section>
 
-<?php if ($element->booking) { ?>
+<?php if ($element->booking && !$this->module->isTheatreDiaryDisabled()) { ?>
     <section class="element">
         <h3 class="element-title highlight">Booking Details</h3>
         <div class="element-data">

@@ -65,7 +65,7 @@
 											<span class="large-1 column">
 												<img src="<?php echo Yii::app()->assetManager->createUrl('img/small.png', $assetAliasPath)?>" alt="op" style="height:15px" />
 											</span>
-											<span class="large-3 column <?php echo $is_auto_schedule_operation || $theatre_diary_disabled ? 'hide':''?>">
+											<span class="large-3 column <?php echo ($is_auto_schedule_operation || $theatre_diary_disabled) ? 'hide':''?>">
 												<?php if(!$theatre_diary_disabled){ echo $booking->operation->booking->session->NHSDate('date'); } ?>
 											</span>
 
@@ -78,12 +78,14 @@
 											</span>
 											<span class="large-4 column">
 												<?php
-                                                if(!$theatre_diary_disabled){
-                                                    foreach ($booking->operation->procedures as $i => $procedure) {
+
+                                                    $procedures = $theatre_diary_disabled ? $booking->procedures : $booking->operation->procedures;
+                                                    $eye = $theatre_diary_disabled ? $booking->eye : $booking->operation->eye;
+
+                                                    foreach ($procedures as $i => $procedure) {
                                                         if ($i > 0) { echo '<br/>'; }
-                                                        echo $booking->operation->eye->name.' '.$procedure->term;
+                                                        echo $eye->name.' '.$procedure->term;
                                                     }
-                                                }
                                                ?>
 											</span>
 										</span>
