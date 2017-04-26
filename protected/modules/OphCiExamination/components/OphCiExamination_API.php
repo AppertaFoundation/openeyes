@@ -1865,4 +1865,33 @@ class OphCiExamination_API extends \BaseAPI
         $best_reading = $element->getBestReadingByMethods($side, $methods);
         return $best_reading;
     }
+
+    public function getCataractSurgicalManagement(\Patient $patient)
+    {
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+
+        if($element = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_CataractSurgicalManagement'))
+        {
+            $str = "Eye: {$element->eye()->name}".PHP_EOL;
+            $str.= "Straight Forward: ".($element->fast_track == 1 ? 'Yes' : 'No').PHP_EOL;
+            $str.= "Post Operative Target: {$element->target_postop_refraction}D".PHP_EOL;
+            $str.= "Suitable for: {$element->suitable_for_surgeon->name}".($element->supervised == 1 ? " (supervised)" : "").PHP_EOL;
+            $str.= ($element->previous_refractive_surgery == 1 ? "Patient has had previous refractive surgery".PHP_EOL : "");
+            $str.= ($element->vitrectomised_eye == 1 ? "Vitrectomised eye".PHP_EOL : "");
+            $reasons = [];
+            foreach($element->reasonForSurgery as $reason)
+            {
+                $reasons[]=$reason->name;
+            }
+
+            if(!empty($reasons))
+            {
+                $str.= "Primary reason for surgery: ".implode(", ", $reasons).PHP_EOL;
+            }
+
+            return $str;
+        }
+
+        return "";
+    }
 }
