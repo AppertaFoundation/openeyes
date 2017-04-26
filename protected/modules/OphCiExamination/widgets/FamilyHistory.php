@@ -20,6 +20,14 @@ use OEModule\OphCiExamination\models\FamilyHistory_Entry;
 class FamilyHistory extends \BaseEventElementWidget
 {
     /**
+     * @return FamilyHistoryElement
+     */
+    protected function getNewElement()
+    {
+        return new FamilyHistoryElement();
+    }
+
+    /**
      * @param FamilyHistoryElement $element
      * @param $data
      * @throws \CException
@@ -87,7 +95,7 @@ class FamilyHistory extends \BaseEventElementWidget
                 return 'FamilyHistory_event_edit';
                 break;
             default:
-                return 'FamilyHistory';
+                return 'FamilyHistory_patient_mode';
         }
     }
 

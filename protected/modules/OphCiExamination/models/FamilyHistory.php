@@ -100,23 +100,25 @@ class FamilyHistory extends \BaseEventTypeElement
         return parent::afterValidate();
     }
 
+    public function loadFromExisting($element)
+    {
+        $this->no_family_history_date = $element->no_family_history_date;
+        $entries = array();
+        foreach ($element->entries as $entry) {
+            $new = new FamilyHistory_Entry();
+            $new->loadFromExisting($entry);
+            $entries[] = $new;
+        }
+        $this->entries = $entries;
+    }
+
     /**
      * @param \Patient $patient
      */
     public function setDefaultOptions(\Patient $patient = null)
     {
-        // TODO: update to retrieve data from the previous element
-        if ($patient->no_family_history_date) {
-            $this->no_family_history_date = $patient->no_family_history_date;
-        }
-        else {
-            $entries = array();
-//            foreach ($patient->familyHistory as $fh) {
-//                $entry = new FamilyHistory_Entry();
-//                $entry->setFromPatientEntry($fh);
-//                $entries[] = $entry;
-//            }
-            $this->entries = $entries;
+        if ($previous = $this->getModuleApi()->getLatestElement(static::class, $patient)) {
+            $this->loadFromExisting($previous);
         }
     }
 
