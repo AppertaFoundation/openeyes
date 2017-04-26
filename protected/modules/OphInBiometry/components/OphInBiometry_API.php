@@ -31,9 +31,9 @@ class OphInBiometry_API extends BaseAPI
     {
         $biometry_left = 'LEFT: Not Recorded ';
         $biometry_right = 'RIGHT: Not Recorded';
-        $episode = $this->getLatestEvent($patient, $use_context);
+        $event = $this->getLatestEvent($patient, $use_context);
 
-        if ($episode) {
+        if ($event) {
             $biometry_element = $this->getLatestElement('Element_OphInBiometry_Calculation', $patient, $use_context);
 
             if($biometry_element){

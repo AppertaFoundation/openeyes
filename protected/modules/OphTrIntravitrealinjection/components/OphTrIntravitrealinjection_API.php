@@ -80,16 +80,14 @@ class OphTrIntravitrealinjection_API extends BaseAPI
 
         $injections = $this->injectionsSinceByEpisodeSideAndDrug($episode, $side, $drug, $since);
 
-        if(empty($injections)){
-            foreach ($injections as $injection) {
-                $res[] = array(
-                    $side . '_drug_id' => $injection->{$side . '_drug_id'},
-                    $side . '_drug' => $injection->{$side . '_drug'}->name,
-                    $side . '_number' => $injection->{$side . '_number'},
-                    'date' => $injection->event->event_date,
-                    'event_id' => $injection->event_id,
-                );
-            }
+        foreach ($injections as $injection) {
+            $res[] = array(
+                $side . '_drug_id' => $injection->{$side . '_drug_id'},
+                $side . '_drug' => $injection->{$side . '_drug'}->name,
+                $side . '_number' => $injection->{$side . '_number'},
+                'date' => $injection->event->event_date,
+                'event_id' => $injection->event_id,
+            );
         }
         return $res;
     }
@@ -169,12 +167,12 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      *
      * @param $patient
      * @param $side
-     *
+     * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentDrugForSide($patient, $side)
+    public function getLetterTreatmentDrugForSide($patient, $side, $use_content = true)
     {
-        if ($injection = $this->getPreviousTreatmentForSide($patient, $side)) {
+        if ($injection = $this->getPreviousTreatmentForSide($patient, $side, $use_content)) {
             return $injection->{$side . '_drug'}->name;
         }
     }
@@ -183,39 +181,39 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * get the most recent drug for the left side in the current subspecialty episode for the patient.
      *
      * @param $patient
-     *
+     * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentDrugLeft($patient)
+    public function getLetterTreatmentDrugLeft($patient, $use_content = true)
     {
-        return $this->getLetterTreatmentDrugForSide($patient, 'left');
+        return $this->getLetterTreatmentDrugForSide($patient, 'left', $use_content);
     }
 
     /**
      * get the most recent drug for the right side in the current subspecialty episode for the patient.
      *
      * @param $patient
-     *
+     * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentDrugRight($patient)
+    public function getLetterTreatmentDrugRight($patient, $use_content = true)
     {
-        return $this->getLetterTreatmentDrugForSide($patient, 'right');
+        return $this->getLetterTreatmentDrugForSide($patient, 'right', $use_content);
     }
 
     /**
      * get the most recent drug for both sides in the current subspecialty episode for the patient.
      *
      * @param $patient
-     *
+     * @param $use_content
      * @return string
      */
-    public function getLetterTreatmentDrugBoth($patient)
+    public function getLetterTreatmentDrugBoth($patient, $use_content = true)
     {
 
         $res = '';
-        $right = $this->getLetterTreatmentDrugForSide($patient, 'right');
-        $left = $this->getLetterTreatmentDrugForSide($patient, 'left');
+        $right = $this->getLetterTreatmentDrugForSide($patient, 'right', $use_content);
+        $left = $this->getLetterTreatmentDrugForSide($patient, 'left', $use_content);
         if ($right) {
             $res = $right . ' injection to the right eye';
             if ($left) {
@@ -234,12 +232,12 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      *
      * @param $patient
      * @param $side
-     *
+     * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentNumberForSide($patient, $side)
+    public function getLetterTreatmentNumberForSide($patient, $side, $use_content = true)
     {
-        if ($injection = $this->getPreviousTreatmentForSide($patient, $side)) {
+        if ($injection = $this->getPreviousTreatmentForSide($patient, $side, $use_content)) {
             return $injection->{$side . '_number'};
         }
     }
@@ -248,35 +246,36 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * get the most recent treatment number for the left side in the current subspecialty episode for the patient.
      *
      * @param $patient
-     *
+     * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentNumberLeft($patient)
+    public function getLetterTreatmentNumberLeft($patient, $use_content = true)
     {
-        return $this->getLetterTreatmentNumberForSide($patient, 'left');
+        return $this->getLetterTreatmentNumberForSide($patient, 'left', $use_content);
     }
 
     /**
      * get the most recent treatment number for the right side in the current subspecialty episode for the patient.
      *
      * @param $patient
-     *
+     * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentNumberRight($patient)
+    public function getLetterTreatmentNumberRight($patient, $use_content = true)
     {
-        return $this->getLetterTreatmentNumberForSide($patient, 'right');
+        return $this->getLetterTreatmentNumberForSide($patient, 'right', $use_content);
     }
 
     /**
      * get the most recent treatment number for both eyes in the current subspecialty episode for the patient.
      *
      * @param Patient $patient
+     * @param $use_content
      */
-    public function getLetterTreatmentNumberBoth($patient)
+    public function getLetterTreatmentNumberBoth($patient, $use_content = true)
     {
-        $right = $this->getLetterTreatmentNumberRight($patient);
-        $left = $this->getLetterTreatmentNumberLeft($patient);
+        $right = $this->getLetterTreatmentNumberRight($patient, $use_content);
+        $left = $this->getLetterTreatmentNumberLeft($patient, $use_content);
         $res = '';
         if ($right) {
             $res = $right . ' on the right eye';
