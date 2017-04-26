@@ -1094,9 +1094,19 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function setElementComplexAttributesFromData($element, $data, $index = null)
     {
-        $element_method = 'setComplexAttributes_'.Helper::getNSShortname($element);
-        if (method_exists($this, $element_method)) {
-            $this->$element_method($element, $data, $index);
+        if ($element->widgetClass) {
+            $model_name = \CHtml::modelName($element);
+            $el_data = $index ? $data[$model_name][$index] : $data[$model_name];
+            $widget = $this->createWidget($element->widgetClass, array(
+                'element' => $element,
+                'data' => $el_data,
+                'mode' => \OEModule\OphCiExamination\widgets\FamilyHistory::$EVENT_EDIT_MODE
+            ));
+        } else {
+            $element_method = 'setComplexAttributes_'.Helper::getNSShortname($element);
+            if (method_exists($this, $element_method)) {
+                $this->$element_method($element, $data, $index);
+            }
         }
     }
 
@@ -1438,7 +1448,18 @@ class BaseEventTypeController extends BaseModuleController
 
         // Render the view.
         ($use_container_view) && $this->beginContent($container_view, $view_data);
-        $this->renderPartial($this->getElementViewPathAlias($element).$view, $view_data, $return, $processOutput);
+        if ($element->widgetClass) {
+            $widget = $this->createWidget($element->widgetClass,
+                array(
+                    'element' => $view_data['element'],
+                    'data' => $view_data['data'],
+                    'form' => $view_data['form'],
+                    'mode' => in_array($action, array('create', 'update')) ? BaseEventElementWidget::$EVENT_EDIT_MODE : BaseEventElementWidget::$EVENT_VIEW_MODE
+                ));
+            $widget->run();
+        } else {
+            $this->renderPartial($this->getElementViewPathAlias($element).$view, $view_data, $return, $processOutput);
+        }
         ($use_container_view) && $this->endContent();
     }
 

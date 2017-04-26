@@ -29,10 +29,12 @@ class BaseEventTypeElement extends BaseElement
     public $userId;
     public $patientId;
     public $useContainerView = true;
+    public $widgetClass = null;
 
     protected $_element_type;
     protected $_children;
     protected $frontEndErrors = array();
+    // TODO: these should be defined in their relevant classes
     protected $errorExceptions = array(
         'Element_OphTrOperationbooking_Operation_procedures' => 'select_procedure_id_procs',
         'Element_OphDrPrescription_Details_items' => 'prescription_items',

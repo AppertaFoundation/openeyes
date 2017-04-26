@@ -106,4 +106,12 @@ class FamilyHistoryCondition extends BaseActiveRecordVersioned
             'criteria' => $criteria,
         ));
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->name;
+    }
 }
