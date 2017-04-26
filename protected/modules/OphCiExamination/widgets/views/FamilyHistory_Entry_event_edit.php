@@ -54,7 +54,7 @@ if (!isset($values)) {
         <input type="hidden" name="<?= $model_name ?>[comments][]" value="<?=$values['comments'] ?>" />
         <?= $values['comments'] ?>
     </td>
-    <td>
+    <td class="edit-column" <?php if (!$editable) {?>style="display: none;"<?php } ?>>
         <button class="button small warning remove">remove</button>
     </td>
 </tr>

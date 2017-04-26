@@ -65,12 +65,22 @@ class BaseEventElementWidget extends CWidget
             if (!$this->patient) {
                 throw new \CHttpException('Patient required to initialise ' . static::class . ' with no element.');
             }
-            $this->element = new FamilyHistoryElement();
+            $this->element = $this->getNewElement();
             $this->element->setDefaultOptions($this->patient);
         }
         elseif ($this->data) {
             $this->updateElementFromData($this->element, $this->data);
         }
+    }
+
+    /**
+     * Should be overridden in specific widget classes
+     *
+     * @return BaseEventTypeElement
+     */
+    protected function getNewElement()
+    {
+        return new BaseEventTypeElement();
     }
 
     /**
@@ -97,5 +107,10 @@ class BaseEventElementWidget extends CWidget
             $path .= $filename;
         }
         return $this->getApp()->getAssetManager()->publish($path);
+    }
+
+    public function checkAccess($operation)
+    {
+        return $this->controller->checkAccess($operation);
     }
 }

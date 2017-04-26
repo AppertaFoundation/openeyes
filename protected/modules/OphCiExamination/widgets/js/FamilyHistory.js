@@ -18,7 +18,7 @@ var OpenEyes = OpenEyes || {};
 
 OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
-OpenEyes.OphCiExamination.FamilyHistoryController = (function() {
+(function(exports) {
     function FamilyHistoryController(options) {
         this.options = $.extend(true, {}, FamilyHistoryController._defaultOptions, options);
 
@@ -35,7 +35,6 @@ OpenEyes.OphCiExamination.FamilyHistoryController = (function() {
         this.$otherConditionWrapper = $('#' + this.options.modelName + '_other_condition_wrapper');
         this.$commentFld = $('#' + this.options.modelName + '_comments');
         this.$table = $('#' + this.options.modelName + '_entry_table');
-
         this.templateText = $('#' + this.options.modelName + '_entry_template').text();
 
         this.initialiseTriggers();
@@ -192,6 +191,7 @@ OpenEyes.OphCiExamination.FamilyHistoryController = (function() {
     {
         this.$noHistoryWrapper.hide();
         this.$noHistoryFld.prop('checked', false);
+        this.$entryFormWrapper.show();
     };
 
     /**
@@ -199,8 +199,10 @@ OpenEyes.OphCiExamination.FamilyHistoryController = (function() {
      */
     FamilyHistoryController.prototype.showNoHistory = function()
     {
-        if (this.$table.find('tr').length == 1) {
+        if (this.$table.find('tr').length === 1) {
             this.$noHistoryWrapper.show();
+        } else {
+            this.hideNoHistory();
         }
     };
 
@@ -217,9 +219,51 @@ OpenEyes.OphCiExamination.FamilyHistoryController = (function() {
         }
     };
 
-    return FamilyHistoryController;
-})();
+    exports.FamilyHistoryController = FamilyHistoryController;
 
-$(document).ready(function() {
-    new OpenEyes.OphCiExamination.FamilyHistoryController();
-});
+})(OpenEyes.OphCiExamination);
+
+(function(exports, Util) {
+    'use strict';
+
+    var FamilyHistoryController = exports.FamilyHistoryController;
+
+    function FamilyHistoryPatientController(options) {
+        options = $.extend(true, {}, FamilyHistoryPatientController._defaultOptions, options);
+
+        this.$showEditButton = $('#btn-edit-family-history');
+        this.$cancelEditButton = $('#btn-cancel-family-history');
+        this.$editForm = $('#family-history-form');
+        FamilyHistoryController.call(this, options);
+
+        this.originalTable = this.$table.html();
+    }
+
+    Util.inherits(FamilyHistoryController, FamilyHistoryPatientController);
+
+    FamilyHistoryPatientController._defaultOptions = {};
+
+    FamilyHistoryPatientController.prototype.initialiseTriggers = function()
+    {
+        var controller = this;
+        controller.$showEditButton.on('click', function(e) {
+            e.preventDefault();
+            controller.$editForm.slideDown('fast');
+            // TODO: make more specific
+            $('.edit-column').show();
+            controller.$showEditButton.hide();
+        });
+
+        controller.$cancelEditButton.on('click', function(e) {
+            e.preventDefault();
+            controller.$table.html(controller.originalTable);
+            controller.showNoHistory();
+            controller.$editForm.slideToggle('fast');
+            controller.$showEditButton.show();
+        })
+
+        FamilyHistoryPatientController._super.prototype.initialiseTriggers.call(controller);
+    };
+
+    exports.FamilyHistoryPatientController = FamilyHistoryPatientController;
+})(OpenEyes.OphCiExamination, OpenEyes.Util);
