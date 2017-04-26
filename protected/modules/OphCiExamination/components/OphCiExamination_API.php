@@ -635,11 +635,7 @@ class OphCiExamination_API extends \BaseAPI
      * get the va from the given episode for the left side of the episode patient.
      * @param Episode $episode
      * @param bool $include_nr_values
-    <<<<<<< HEAD
-     *
-    =======
      * @param string $before_date
-    >>>>>>> develop
      * @return OphCiExamination_VisualAcuity_Reading
      */
     public function getLetterVisualAcuityForEpisodeLeft($episode, $include_nr_values = false, $before_date = '')
@@ -664,13 +660,8 @@ class OphCiExamination_API extends \BaseAPI
     /**
      * get the va from the given episode for the right side of the episode patient.
      * @param Episode $episode
-    <<<<<<< HEAD
-     * @param bool $include_nr_values
-     *
-    =======
      * @param bool    $include_nr_values
-     * @param string $before_date
-    >>>>>>> develop
+     * @param string  $before_date
      * @return OphCiExamination_VisualAcuity_Reading
      */
     public function getLetterVisualAcuityForEpisodeRight($episode, $include_nr_values = false, $before_date = '')
@@ -1866,6 +1857,35 @@ class OphCiExamination_API extends \BaseAPI
         return $best_reading;
     }
 
+    /**
+     * @param \Patient $patient
+     * @returns string
+     *
+     * Outcome details from latest Examination
+     * (ode shortcode handler)
+     */
+
+    public function getLatestOutcomeDetails(\Patient $patient)
+    {
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        if($element = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_ClinicOutcome'))
+        {
+            $str = $element->status->name;
+            if($element->status->followup)
+            {
+                $str.=" in {$element->followup_quantity} {$element->followup_period} by {$element->role->name}";
+                if ($element->role_comments != '')
+                {
+                    $str.= " ({$element->role_comments})";
+                }
+            }
+
+            return $str;
+        }
+
+        return "";
+    }
+  
     public function getCataractSurgicalManagement(\Patient $patient)
     {
         $episode = $patient->getEpisodeForCurrentSubspecialty();
