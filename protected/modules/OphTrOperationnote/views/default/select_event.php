@@ -60,13 +60,13 @@
 									<label class="highlight booking">
 										<span class="row">
 											<span class="large-1 column">
-												<input type="radio" value="booking<?php echo $booking->operation->event_id?>" name="SelectBooking" />
+												<input type="radio" value="booking<?php echo $theatre_diary_disabled ? $booking->event_id : $booking->operation->event_id; ?>" name="SelectBooking" />
 											</span>
 											<span class="large-1 column">
 												<img src="<?php echo Yii::app()->assetManager->createUrl('img/small.png', $assetAliasPath)?>" alt="op" style="height:15px" />
 											</span>
-											<span class="large-3 column <?php echo $is_auto_schedule_operation ? 'hide':''?>">
-												<?php echo $booking->operation->booking->session->NHSDate('date')?>
+											<span class="large-3 column <?php echo $is_auto_schedule_operation || $theatre_diary_disabled ? 'hide':''?>">
+												<?php if(!$theatre_diary_disabled){ echo $booking->operation->booking->session->NHSDate('date'); } ?>
 											</span>
 
 											<span class="large-3 column">
@@ -74,13 +74,17 @@
 											</span>
 
                                                       <span class="large-3 column <?php echo $is_auto_schedule_operation ? '':'hide'?>">
-                                                      <?php echo $booking->operation->comments; ?>
+                                                      <?php echo $theatre_diary_disabled ? "" : $booking->operation->comments; ?>
 											</span>
 											<span class="large-4 column">
-												<?php foreach ($booking->operation->procedures as $i => $procedure) {
-                                                if ($i > 0) { echo '<br/>'; }
-    echo $booking->operation->eye->name.' '.$procedure->term;
-                                            }?>
+												<?php
+                                                if(!$theatre_diary_disabled){
+                                                    foreach ($booking->operation->procedures as $i => $procedure) {
+                                                        if ($i > 0) { echo '<br/>'; }
+                                                        echo $booking->operation->eye->name.' '.$procedure->term;
+                                                    }
+                                                }
+                                               ?>
 											</span>
 										</span>
 									</label>

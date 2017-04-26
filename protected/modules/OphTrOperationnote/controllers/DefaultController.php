@@ -265,9 +265,26 @@ class DefaultController extends BaseEventTypeController
             // set up form for selecting a booking for the Op note
             $bookings = array();
 
-            if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-                $bookings = $api->getOpenBookingsForEpisode($this->episode->id);
+
+            $element_enabled = \SettingInstallation::model()->find('`key` = :setting_key', array(':setting_key'=>'disable_theatre_diary'));
+            $theatre_diary_disabled = isset($element_enabled->value) && $element_enabled->value == 'on';
+
+            if($theatre_diary_disabled)
+            {
+                $bookings = Element_OphTrOperationbooking_Operation::model()
+                    ->with('event')
+                    ->findAll('status_id IN (1, 2, 3)
+                            AND event.episode_id = :episode_id
+                            AND operation_cancellation_date IS NULL',
+                    array(':episode_id'=>$this->episode->id));
             }
+            else
+            {
+                if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
+                    $bookings = $api->getOpenBookingsForEpisode($this->episode->id);
+                }
+            }
+
 
             $this->title = 'Please select booking';
             $this->event_tabs = array(
@@ -287,7 +304,8 @@ class DefaultController extends BaseEventTypeController
             $this->render('select_event', array(
                 'errors' => $errors,
                 'bookings' => $bookings,
-                'is_auto_schedule_operation' => Yii::app()->params['auto_schedule_operation']
+                'is_auto_schedule_operation' => Yii::app()->params['auto_schedule_operation'],
+                'theatre_diary_disabled' => $theatre_diary_disabled
             ));
         }
     }
