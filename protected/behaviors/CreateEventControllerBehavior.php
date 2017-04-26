@@ -42,13 +42,14 @@ class CreateEventControllerBehavior extends CBehavior
      * through the relevant module controllers for any given event type.
      *
      * @param $event_type
+     * @param array $initial_args
      * @return array
      * @throws Exception
      */
-    public function getCreateArgsForEventTypeOprn($event_type)
+    public function getCreateArgsForEventTypeOprn($event_type, $initial_args = array('firm', 'episode'))
     {
         $create_oprn = 'OprnCreateEvent';
-        $args = array('firm', 'episode');
+        $args = $initial_args;
 
         if ($api = $event_type->getApi()) {
             if (property_exists($api, 'createOprn')) {
