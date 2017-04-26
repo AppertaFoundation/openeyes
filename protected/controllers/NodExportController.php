@@ -2238,10 +2238,11 @@ WHERE ev.event_date <= op.ListedDate
 UNION
 /* Op-Procedures: LEFT 23 (previous vitrectomy for FTMH / ERM / other reason) or 25 (Previous trabeculectomy) */
 SELECT
-  c.oe_event_id AS OperationId
+  op.oe_event_id AS OperationId
 , CASE WHEN proc_list.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
 , IF(element_type.name = 'Trabeculectomy', 25, 23)  AS CoPathologyId
-FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON c.patient_id = op.patient_id
 JOIN et_ophtroperationnote_procedurelist AS proc_list ON proc_list.event_id = c.oe_event_id
 JOIN ophtroperationnote_procedurelist_procedure_assignment AS proc_list_asgn ON proc_list_asgn.procedurelist_id = proc_list.id
 JOIN proc ON proc_list_asgn.proc_id = proc.id
@@ -2249,14 +2250,16 @@ JOIN ophtroperationnote_procedure_element ON ophtroperationnote_procedure_elemen
 JOIN element_type ON ophtroperationnote_procedure_element.element_type_id = element_type.id
 WHERE element_type.name IN ('Vitrectomy', 'Trabeculectomy')
 /* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
-AND proc_list.eye_id IN (1, 3)                    
+AND proc_list.eye_id IN (1, 3)
+AND c.nod_date < op.ListedDate  /* Do NOT include operations on same day. */
 UNION
 /* Op-Procedures: RIGHT 23 (previous vitrectomy for FTMH / ERM / other reason) or 25 (Previous trabeculectomy) */
 SELECT
-  c.oe_event_id AS OperationId
+  op.oe_event_id AS OperationId
 , CASE WHEN proc_list.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
 , IF(element_type.name = 'Trabeculectomy', 25, 23)  AS CoPathologyId
-FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON c.patient_id = op.patient_id
 JOIN et_ophtroperationnote_procedurelist AS proc_list ON proc_list.event_id = c.oe_event_id
 JOIN ophtroperationnote_procedurelist_procedure_assignment AS proc_list_asgn ON proc_list_asgn.procedurelist_id = proc_list.id
 JOIN proc ON proc_list_asgn.proc_id = proc.id
@@ -2264,14 +2267,16 @@ JOIN ophtroperationnote_procedure_element ON ophtroperationnote_procedure_elemen
 JOIN element_type ON ophtroperationnote_procedure_element.element_type_id = element_type.id
 WHERE element_type.name IN ('Vitrectomy', 'Trabeculectomy')
 /* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
-AND proc_list.eye_id IN (2, 3)                    
+AND proc_list.eye_id IN (2, 3)
+AND c.nod_date < op.ListedDate  /* Do NOT include operations on same day. */
 UNION
 /* Op-Procedures: LEFT 21 (Previous retinal detachment surgery) */
 SELECT
-  c.oe_event_id AS OperationId
+  op.oe_event_id AS OperationId
 , CASE WHEN proc_list.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
 , 21 AS CoPathologyId
-FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON c.patient_id = op.patient_id
 JOIN et_ophtroperationnote_procedurelist AS proc_list ON proc_list.event_id = c.oe_event_id
 JOIN ophtroperationnote_procedurelist_procedure_assignment AS proc_list_asgn ON proc_list_asgn.procedurelist_id = proc_list.id
 JOIN proc ON proc_list_asgn.proc_id = proc.id
@@ -2279,14 +2284,16 @@ JOIN procedure_benefit ON procedure_benefit.proc_id = proc.id
 JOIN benefit ON procedure_benefit.benefit_id = benefit.id
 WHERE benefit.name = 'to prevent retinal detachment'
 /* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
-AND proc_list.eye_id IN (1, 3)  
+AND proc_list.eye_id IN (1, 3)
+AND c.nod_date < op.ListedDate  /* Do NOT include operations on same day. */
 UNION
 /* Op-Procedures: RIGHT 21 (Previous retinal detachment surgery) */
 SELECT
-  c.oe_event_id AS OperationId
+  op.oe_event_id AS OperationId
 , CASE WHEN proc_list.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye /* Belt+Brace with WHERE clause or NULL */
 , 21 AS CoPathologyId
-FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON c.patient_id = op.patient_id
 JOIN et_ophtroperationnote_procedurelist AS proc_list ON proc_list.event_id = c.oe_event_id
 JOIN ophtroperationnote_procedurelist_procedure_assignment AS proc_list_asgn ON proc_list_asgn.procedurelist_id = proc_list.id
 JOIN proc ON proc_list_asgn.proc_id = proc.id
@@ -2294,31 +2301,33 @@ JOIN procedure_benefit ON procedure_benefit.proc_id = proc.id
 JOIN benefit ON procedure_benefit.benefit_id = benefit.id
 WHERE benefit.name = 'to prevent retinal detachment'
 /* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
-AND proc_list.eye_id IN (2, 3)  
+AND proc_list.eye_id IN (2, 3)
+AND c.nod_date < op.ListedDate  /* Do NOT include operations on same day. */
 UNION         
 /* Examination: LEFT 14 Brunescent / white cataract */
 SELECT 
-  c.oe_event_id
+  op.oe_event_id
 , 'L' AS Eye
 , 14 AS CoPathologyId
-FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON c.patient_id = op.patient_id
 JOIN et_ophciexamination_anteriorsegment a
   ON a.event_id = c.oe_event_id
 WHERE (left_cortical_id = 4 OR left_nuclear_id = 4)
+AND c.nod_date <= op.ListedDate
 UNION
 /* Examination: RIGHT 14 Brunescent / white cataract */
 SELECT 
-  c.oe_event_id
+  op.oe_event_id
 , 'R' AS Eye
 , 14 AS CoPathologyId
-FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op
+JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON c.patient_id = op.patient_id
 JOIN et_ophciexamination_anteriorsegment a
   ON a.event_id = c.oe_event_id
-WHERE (right_cortical_id = 4 OR right_nuclear_id = 4);
-
-    
-    
-            
+WHERE (right_cortical_id = 4 OR right_nuclear_id = 4)
+AND c.nod_date <= op.ListedDate
+;
 EOL;
         return $query;    
     }
