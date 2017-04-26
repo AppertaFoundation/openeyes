@@ -578,7 +578,11 @@ class DefaultController extends BaseEventTypeController
 
         if(is_null($reason) && !$model->draft)
         {
-            $this->render('ask_reason', array('id'=>$id));
+            $this->render('ask_reason', array(
+                'id'        =>  $id,
+                'draft'     => $model->draft,
+                'printed'   => $model->printed
+            ));
         }
         else
         {
