@@ -23,7 +23,7 @@
     <?php
         $text = '';
         if(($draft == 0) && ($printed == 0)){
-            $text = 'saved';
+            $text = 'finalised';
         } else {
             $text = 'printed';
         }
