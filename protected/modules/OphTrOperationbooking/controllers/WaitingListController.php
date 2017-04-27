@@ -526,15 +526,18 @@ class WaitingListController extends BaseModuleController
 
     public function actionSetBooked($event_id)
     {
-        if(!$event = Element_OphTrOperationbooking_Operation::model()->find("event_id = :event_id", array(":event_id" => $event_id)))
+        if(!$element = Element_OphTrOperationbooking_Operation::model()->find("event_id = :event_id", array(":event_id" => $event_id)))
         {
             header('Content-type: application/json');
             echo CJSON::encode(array('success'=>false, 'This event could not be found.'));
             exit;
         }
 
-        $event->status_id = 2;
-        $event->save();
+        $element->status_id = 2;
+        $element->save();
+
+        $event = Event::model()->find("id = :event_id", array(":event_id"=>$event_id));
+        $event->deleteIssue("Operation requires scheduling");
 
         header('Content-type: application/json');
         echo CJSON::encode(array('success'=>true));
