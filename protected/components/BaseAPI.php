@@ -88,7 +88,7 @@ class BaseAPI
         $criteria = new CDbCriteria();
         $criteria->compare('event_type_id', $event_type->id);
         $criteria->compare('episode.patient_id', $patient->id);
-        $criteria->order = 't.event_date desc';
+        $criteria->order = 't.event_date desc, t.created_date desc';
 
         if ($use_context) {
             $this->current_context->addEventConstraints($criteria);
@@ -161,7 +161,7 @@ class BaseAPI
     {
         $criteria = new CDbCriteria();
         $criteria->compare('episode.patient_id', $patient->id);
-        $criteria->order = 'event.event_date desc';
+        $criteria->order = 'event.event_date desc, event.created_date desc';
 
         if ($before !== null) {
             $criteria->compare('event.event_date', '<='.$before);
