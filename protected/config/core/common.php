@@ -414,7 +414,13 @@ return array(
 
         'clinical_management_pcr' => true,
         'docman_generate_csv' => false,
-        'element_sidebar' => true
+        'element_sidebar' => true,
+        'patient_summary_id_widgets' => array(
+            array(
+                'class' => 'application.widgets.PatientSummaryPopup',
+                'order' => PHP_INT_MAX
+            )
+        )
 
     ),
 );

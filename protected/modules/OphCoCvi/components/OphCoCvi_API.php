@@ -91,6 +91,23 @@ class OphCoCvi_API extends \BaseAPI
     }
 
     /**
+     * Convenience wrapper to get the current Patient CVI Status as a piece of text.
+     *
+     * @throws \Exception
+     */
+    public function getSummaryText(Patient $patient)
+    {
+        if ($events = $this->getEvents($patient)) {
+            $ids = array_map(function($e) { return $e->id;}, $events);
+            $latest = array_pop($events);
+            return $this->getManager()->getDisplayStatusForEvent($latest);
+        }
+        else {
+            return $patient->getOphInfo()->cvi_status->name;
+        }
+    }
+
+    /**
      * Render a patient summary widget to display CVI status based on the eCVI event and the core static model.
      *
      * @param Patient $patient
