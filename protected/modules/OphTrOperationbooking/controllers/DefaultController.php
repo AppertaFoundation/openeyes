@@ -52,11 +52,6 @@ class DefaultController extends OphTrOperationbookingEventController
             $this->jsVars['priority_canschedule'][$priority->id] = $this->checkScheduleAccess($priority);
         }
 
-        if($this->module->isTheatreDiaryDisabled())
-        {
-            $this->eventIssueCreate = null;
-        }
-
         return $return;
     }
 
