@@ -29,6 +29,10 @@
             <?php echo $form->label($model, 'id'); ?>
             <?php echo $form->textField($model, 'id'); ?>
         </div>
+        <div>
+            <?php echo $form->label($model, 'patient.dob'); ?>
+            <?php echo $form->textField($model, 'patient_dob'); ?>
+        </div>
 
 
         <div class="submit-row">

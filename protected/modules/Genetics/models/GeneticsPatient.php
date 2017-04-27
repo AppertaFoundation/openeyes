@@ -34,6 +34,9 @@ class GeneticsPatient extends BaseActiveRecord
 
     protected $preExistingPedigreesIds = array();
 
+    //for searching
+    public $patient_dob;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -64,6 +67,9 @@ class GeneticsPatient extends BaseActiveRecord
             array('pedigrees', 'isEmptyPedigrees'),
             array('patient_id', 'unique', 'on'=>'insert', 'message'=>'The selected patient is already linked to a genetics subject.'),
             array('id, patient_id, comments, gender_id, is_deceased, relationships, studies, pedigrees, diagnoses', 'safe'),
+
+            //for searching
+            array('patient_dob', 'safe')
         );
     }
 
@@ -307,6 +313,7 @@ class GeneticsPatient extends BaseActiveRecord
         // @todo Please modify the following code to remove attributes that should not be searched.
 
         $criteria=new CDbCriteria;
+        $criteria->with = array('patient', 'patient.contact');
 
         $criteria->compare('id',$this->id);
         $criteria->compare('patient_id',$this->patient_id,true);
@@ -314,19 +321,20 @@ class GeneticsPatient extends BaseActiveRecord
         $criteria->compare('gender_id',$this->gender_id,true);
         $criteria->compare('is_deceased',$this->is_deceased);
 
-        return new CActiveDataProvider($this, array(
+        $criteria->compare( 'patient.dob', $this->patient_dob, true );
+
+        $dataProvider = new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
+            'sort' => array(
+                'attributes' => array(
+                    'id',
+                    'patient.fullName' => array(
+                        'asc'=>"CONCAT(contact.first_name, ' ', contact.last_name)",
+                        'desc'=>"CONCAT(contact.first_name, ' ', contact.last_name) DESC"
+                    )
+                )
+             )
+
         ));
-
-        /* possible solution to order by concatenated model attributes
-        $dataProvider->sort->attributes = array(
-            '*',
-            'name'=>array(
-                'asc'=>"CONCAT(first_name, ' ', last_name)",
-                'desc'=>"CONCAT(first_name, ' ', last_name) DESC")
-        );
-        */
-
-
     }
 }
