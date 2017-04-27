@@ -331,10 +331,14 @@ class GeneticsPatient extends BaseActiveRecord
                     'patient.fullName' => array(
                         'asc'=>"CONCAT(contact.first_name, ' ', contact.last_name)",
                         'desc'=>"CONCAT(contact.first_name, ' ', contact.last_name) DESC"
-                    )
+                    ),
+                    'patient.dob',
+                    'comments'
                 )
              )
 
         ));
+
+        return $dataProvider;
     }
 }

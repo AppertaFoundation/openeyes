@@ -38,6 +38,15 @@
         'pager' => array(
             'header' => '',
         ),
+
+        //click on a row - only one row can be selected
+        'selectableRows' => 1,
+
+        //here we say what should happen when a row selected
+        'selectionChanged'=>'function(id){ location.href = "'.$this->createUrl('view').'/id/"+$.fn.yiiGridView.getSelection(id);}',
+
+        'rowCssClass' => ['clickable'],
+
         'columns' => array(
             'id',
             'patient.fullName',
