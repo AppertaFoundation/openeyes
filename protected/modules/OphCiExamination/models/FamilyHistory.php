@@ -118,6 +118,7 @@ class FamilyHistory extends \BaseEventTypeElement
     public function setDefaultOptions(\Patient $patient = null)
     {
         if ($previous = $this->getModuleApi()->getLatestElement(static::class, $patient)) {
+            \Yii::log($previous->id);
             $this->loadFromExisting($previous);
         }
     }

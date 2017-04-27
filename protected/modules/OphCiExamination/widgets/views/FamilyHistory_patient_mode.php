@@ -77,7 +77,7 @@ $model_name = CHtml::modelName($element);
 
     <div class="buttons">
         <img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_family_history_loader" style="display: none;" />
-        <button type="submit" class="secondary small btn_save_family_history">
+        <button type="submit" class="secondary small" id="btn-save-family-history">
             Save
         </button>
         <button class="warning small" id="btn-cancel-family-history">

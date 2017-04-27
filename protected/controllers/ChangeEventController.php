@@ -132,6 +132,9 @@ class ChangeEventController extends BaseController
                 $episode->save();
             }
             $event = new Event();
+            // standard events only store the date not the time, so we override the current default
+            // to just use the date for the event, and not the time.
+            $event->event_date = substr($event->event_date, 0, 10) . ' 00:00:00';
             $event->event_type_id = $this->event_type->id;
             $event->episode_id = $episode->id;
             $event->save();
