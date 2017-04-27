@@ -28,6 +28,11 @@ class ChangeEventController extends BaseController
      */
     public $firm;
 
+    /**
+     * @var Episode
+     */
+    protected $currentEpisode;
+
     public function behaviors()
     {
         return array(
@@ -57,15 +62,21 @@ class ChangeEventController extends BaseController
         $this->element = $this->element_type->getInstance();
     }
 
+    /**
+     * @throws CHttpException
+     */
     public function checkCreateAccess()
     {
-        $args = $this->getCreateArgsForEventTypeOprn($this->event_type, array());
-        Yii::log(print_r($args, true));
+        $args = $this->getCreateArgsForEventTypeOprn($this->event_type);
         if (!call_user_func_array(array($this, 'checkAccess'), $args)) {
             throw new CHttpException(403, 'Permission denied for creating change event type of ' . get_class($this->event_type));
         }
     }
 
+    /**
+     * @param $request
+     * @throws CHttpException
+     */
     protected function resolvePatient($request)
     {
         $patient_id = $request->getParam('patient_id', null);
@@ -74,19 +85,31 @@ class ChangeEventController extends BaseController
         }
     }
 
-    protected function findOrCreateEpisode()
+    /**
+     * @return CActiveRecord|Episode
+     */
+    protected function getCurrent_episode()
     {
-        //TODO: this needs significant change as we don't really want to be using support services for this.
-        if (!$episode = Episode::model()->findByAttributes(array(
-            'patient_id' => $this->patient->id,
-            'support_services' => true,
-            ))) {
-            $episode = new Episode();
-            $episode->support_services = true;
-            $episode->patient_id = $this->patient->id;
-            $episode->save();
+        if (!$this->currentEpisode) {
+            $this->currentEpisode = Episode::getChangeEpisode($this->patient);
         }
-        return $episode;
+
+        return $this->currentEpisode;
+    }
+
+    /**
+     * Sets the firm property on the controller from the session.
+     * @TODO: consolidate with duplication in BaseModuleController
+     * @throws HttpException
+     */
+    protected function setFirmFromSession()
+    {
+        if (!$firm_id = $this->app->session->get('selected_firm_id')) {
+            throw new HttpException('Firm not selected');
+        }
+        if (!$this->firm || $this->firm->id != $firm_id) {
+            $this->firm = Firm::model()->findByPk($firm_id);
+        }
     }
 
     /**
@@ -103,7 +126,11 @@ class ChangeEventController extends BaseController
         }
         $transaction = $this->app->db->beginTransaction();
         try {
-            $episode = $this->findOrCreateEpisode();
+            $episode = $this->current_episode;
+            if ($episode->isNewRecord) {
+                // The first change event for this patient
+                $episode->save();
+            }
             $event = new Event();
             $event->event_type_id = $this->event_type->id;
             $event->episode_id = $episode->id;
@@ -129,12 +156,14 @@ class ChangeEventController extends BaseController
     public function actionSave()
     {
         $request = $this->getApp()->request;
+
+        $this->setFirmFromSession();
         $this->resolveElementAndEventType($request);
         $this->resolvePatient($request);
         $this->checkCreateAccess();
 
-
-        $widget = $this->createWidget($this->element->widgetClass, array(
+        // the widget will initialise the values correctly on the element.
+        $this->createWidget($this->element->widgetClass, array(
             'element' => $this->element,
             'data' => $request->getParam(CHtml::modelName($this->element)),
             'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
@@ -142,6 +171,6 @@ class ChangeEventController extends BaseController
 
         $this->validateAndCreateEvent();
 
-        $this->redirect('patient/view', array('id' => $this->patient->id));
+        $this->redirect('/patient/view/'.$this->patient->id);
     }
 }

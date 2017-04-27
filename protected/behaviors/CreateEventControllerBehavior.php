@@ -28,7 +28,7 @@ class CreateEventControllerBehavior extends CBehavior
     public function getOwnerCurrentEpisode()
     {
         if (!$this->current_episode) {
-            $this->current_episode = Episode::getCurrentEpisodeByFirm($this->owner->patient->id, $this->owner->firm);
+            $this->current_episode = $this->owner->current_episode ? : Episode::getCurrentEpisodeByFirm($this->owner->patient->id, $this->owner->firm);
         }
 
         return $this->current_episode;
@@ -46,10 +46,10 @@ class CreateEventControllerBehavior extends CBehavior
      * @return array
      * @throws Exception
      */
-    public function getCreateArgsForEventTypeOprn($event_type, $initial_args = array('firm', 'episode'))
+    public function getCreateArgsForEventTypeOprn($event_type)
     {
         $create_oprn = 'OprnCreateEvent';
-        $args = $initial_args;
+        $args = array('firm', 'episode');
 
         if ($api = $event_type->getApi()) {
             if (property_exists($api, 'createOprn')) {
