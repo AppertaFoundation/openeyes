@@ -109,15 +109,22 @@ class m170421_142858_create_family_history extends OEMigration
         // archive the old tables (note that the data migration command will operate on the archived table names)
         foreach (static::$archive_tables as $table) {
             $this->renameTable($table, static::$archive_prefix . $table);
+            $this->renameTable($table . '_version', static::$archive_prefix . $table . '_version');
         }
+
+        $this->renameColumn('patient', 'no_family_history_date', static::$archive_prefix . 'no_family_history_date');
+        $this->renameColumn('patient_version', 'no_family_history_date', static::$archive_prefix . 'no_family_history_date');
 
     }
 
     public function down()
     {
+        $this->renameColumn('patient', static::$archive_prefix . 'no_family_history_date', 'no_family_history_date');
+        $this->renameColumn('patient_version', static::$archive_prefix . 'no_family_history_date', 'no_family_history_date');
         // restore archived tables
         foreach (static::$archive_tables as $table) {
             $this->renameTable(static::$archive_prefix . $table, $table);
+            $this->renameTable(static::$archive_prefix . $table . '_version', $table . '_version');
         }
         $this->dropOETable('ophciexamination_familyhistory_entry', true);
         $this->dropOETable('et_ophciexamination_familyhistory', true);

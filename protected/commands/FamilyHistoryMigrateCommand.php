@@ -56,10 +56,20 @@ class FamilyHistoryMigrateCommand extends CConsoleCommand
             }
             $patient_rows[] = $row;
         }
-        if ($this->processPatient($patient_id, $patient_rows)) {
+        // repeat for last patient
+        if ($this->processPatient($patient_id, null, $patient_rows)) {
             $processed_count++;
         }
         $patient_count++;
+
+        $query = $db->createCommand('select archive_no_family_history_date, id from patient where archive_no_family_history_date is not null and archive_no_family_history_date != ""');
+        foreach ($query->queryAll() as $row) {
+            if ($this->processPatient($row['id'], $row['archive_no_family_history_date'])) {
+                $processed_count++;
+            }
+            $patient_count++;
+        }
+
         echo "\nProcessed " . $processed_count . "/" . $patient_count . " patients.\n";
     }
 
@@ -77,11 +87,12 @@ class FamilyHistoryMigrateCommand extends CConsoleCommand
      * Process an individual set of records for a patient.
      *
      * @param $patient_id
+     * @param $no_history_date
      * @param $rows
      * @return bool
      * @throws Exception
      */
-    public function processPatient($patient_id, $rows)
+    public function processPatient($patient_id, $no_history_date = null, $rows = array())
     {
         $patient = Patient::model()->findByPk($patient_id);
 
@@ -108,7 +119,11 @@ class FamilyHistoryMigrateCommand extends CConsoleCommand
 
             $element = new static::$element_class();
             $element->event_id = $event->id;
-            $element->entries = $entries;
+            if ($no_history_date) {
+                $element->no_family_history_date = $no_history_date;
+            } else {
+                $element->entries = $entries;
+            }
             $element->save();
 
             $transaction->commit();
