@@ -243,16 +243,15 @@ class OphCoCorrespondence_API extends BaseAPI
             $opDate = $apiNote->getLastOperationDateUnformatted($patient);
         }
         $api = Yii::app()->moduleAPI->get('OphCiExamination');
-       // $episode = $patient->getEpisodeForCurrentSubspecialty();
 
-        $episode = $this->getLatestEvent($patient, $use_context);
+        $event = $this->getLatestEvent($patient, $use_context);
         $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
         $eventtypeid = $event_type->id;
 // Refraction here
         $refractfound = false;
 
         if ($eventid = Event::model()->findAll(array(
-            'condition' => 'event_type_id = ' . $eventtypeid . ' AND episode_id = ' . $episode->episode_id . " AND event_date <= '" . $opDate . "'",
+            'condition' => 'event_type_id = ' . $eventtypeid . ' AND episode_id = ' . $event->episode_id . " AND event_date <= '" . $opDate . "'",
             'order' => 'event_date DESC',
         ))
         ) {
