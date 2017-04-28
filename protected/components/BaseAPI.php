@@ -61,7 +61,7 @@ class BaseAPI
      * @return EventType $event_type
      * @throws Exception
      */
-    protected function getEventType()
+    public function getEventType()
     {
         if (!$this->event_type) {
             $module_class = $this->getModuleClass();
