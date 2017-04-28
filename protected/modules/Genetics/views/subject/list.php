@@ -64,7 +64,8 @@
                 'name' => 'diagnoses',
                 'value' => function($data){
                     return implode(', ', $data->diagnoses);
-                }
+                },
+                'htmlOptions'=>array('width'=>'300px'),
             ),
 
 

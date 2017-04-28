@@ -253,9 +253,19 @@ class SubjectController extends BaseModuleController
      */
     public function actionList()
     {
+        $path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets'));
+        Yii::app()->clientScript->registerScriptFile($path . '/js/DiagnosisSelection.js');
+
         $model = new GeneticsPatient('search');
         $model->unsetAttributes();  // clear any default values
         if (isset($_GET['GeneticsPatient'])) {
+
+            //thanks for the awesome implementation of the //disorder/disorderAutoComplete.php
+            //I cannot remove the 'search' from the name attribute without refactoring several things
+            if( isset($_GET['search']['patient_disorder_id']) ){
+                $_GET['GeneticsPatient']['patient_disorder_id'] = $_GET['search']['patient_disorder_id'];
+            }
+
             $model->attributes = $_GET['GeneticsPatient'];
         }
 

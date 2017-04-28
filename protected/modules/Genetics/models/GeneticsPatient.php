@@ -34,8 +34,12 @@ class GeneticsPatient extends BaseActiveRecord
 
     protected $preExistingPedigreesIds = array();
 
-    //for searching
+    //for searching on the subject/list page
     public $patient_dob;
+    public $patient_firstname;
+    public $patient_lastname;
+    public $patient_yob;
+    public $patient_disorder_id;
 
     /**
      * Returns the static model of the specified AR class.
@@ -68,8 +72,8 @@ class GeneticsPatient extends BaseActiveRecord
             array('patient_id', 'unique', 'on'=>'insert', 'message'=>'The selected patient is already linked to a genetics subject.'),
             array('id, patient_id, comments, gender_id, is_deceased, relationships, studies, pedigrees, diagnoses', 'safe'),
 
-            //for searching
-            array('patient_dob', 'safe')
+            //for searching on the subject/list page
+            array('patient_dob, patient_firstname, patient_lastname, patient_yob, patient_disorder_id', 'safe')
         );
     }
 
@@ -153,6 +157,7 @@ class GeneticsPatient extends BaseActiveRecord
                 'Disorder',
                 'genetics_patient_diagnosis(patient_id, disorder_id)',
             ),
+            'genetics_diagnosis' => array(self::HAS_MANY, 'GeneticsPatientDiagnosis', 'patient_id'),
         );
     }
 
@@ -166,7 +171,7 @@ class GeneticsPatient extends BaseActiveRecord
             'patient_id' => 'Patient',
             'gender_id' => 'Karyotypic Sex',
             'is_deceased' => 'Is Deceased',
-            'searchYob' => 'Year of Birth',
+            'patient_yob' => 'Year of Birth',
         );
     }
 
@@ -287,15 +292,6 @@ class GeneticsPatient extends BaseActiveRecord
         return $patientPedigree->status->name;
     }
 
-    public function searchYob($search = '')
-    {
-        return array(
-            'field' => "patient.dob",
-            'exactmatch' => true,
-            'operator'  => 'AND'
-        );
-    }
-
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
@@ -315,13 +311,22 @@ class GeneticsPatient extends BaseActiveRecord
         $criteria=new CDbCriteria;
         $criteria->with = array('patient', 'patient.contact');
 
-        $criteria->compare('id',$this->id);
+        $criteria->compare('t.id',$this->id);
         $criteria->compare('patient_id',$this->patient_id,true);
         $criteria->compare('comments',$this->comments,true);
         $criteria->compare('gender_id',$this->gender_id,true);
         $criteria->compare('is_deceased',$this->is_deceased);
 
         $criteria->compare( 'patient.dob', $this->patient_dob, true );
+        $criteria->compare( 'patient.dob', $this->patient_yob, true );
+        $criteria->compare( 'contact.first_name', $this->patient_firstname, true );
+        $criteria->compare( 'contact.last_name', $this->patient_lastname, true );
+
+        //because of the 'together' => true , yii returns wrong row counts when 'patient_disorder_id' is not present
+        if($this->patient_disorder_id > 0){
+            $criteria->with['genetics_diagnosis'] = array('select' => 'genetics_diagnosis.disorder_id', 'together' => true);
+            $criteria->compare( 'genetics_diagnosis.disorder_id', $this->patient_disorder_id, false );
+        }
 
         $dataProvider = new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -335,7 +340,10 @@ class GeneticsPatient extends BaseActiveRecord
                     'patient.dob',
                     'comments'
                 )
-             )
+            ),
+            'pagination' => array(
+                'pageSize' => 20,
+            ),
 
         ));
 
