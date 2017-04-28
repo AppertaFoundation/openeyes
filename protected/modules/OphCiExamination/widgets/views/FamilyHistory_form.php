@@ -15,7 +15,7 @@
             </div>
             <div class="large-3 column end">
                 <?php
-                $relatives = FamilyHistoryRelative::model()->findAll(array('order' => 'display_order'));
+                $relatives = $element->getRelativeOptions();
                 $relatives_opts = array(
                     'options' => array(),
                     'empty' => '- select -',
@@ -42,7 +42,7 @@
                 <label for="<?=$model_name?>side_id">Side:</label>
             </div>
             <div class="large-3 column end">
-                <?php echo CHtml::dropDownList($model_name . '_side_id', '', CHtml::listData(FamilyHistorySide::model()->findAll(array('order' => 'display_order')), 'id', 'name'))?>
+                <?php echo CHtml::dropDownList($model_name . '_side_id', '', CHtml::listData($element->getSideOptions(), 'id', 'name'))?>
             </div>
         </div>
 
@@ -52,7 +52,7 @@
             </div>
             <div class="large-3 column end">
                 <?php
-                $conditions = FamilyHistoryCondition::model()->findAll(array('order' => 'display_order'));
+                $conditions = $element->getConditionOptions();
                 $conditions_opts = array(
                     'options' => array(),
                     'empty' => '- select -',

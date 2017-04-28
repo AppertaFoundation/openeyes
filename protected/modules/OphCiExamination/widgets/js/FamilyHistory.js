@@ -244,10 +244,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$showEditButton = $('#btn-edit-family-history');
         this.$cancelEditButton = $('#btn-cancel-family-history');
         this.$saveEditButton = $('#btn-save-family-history');
-
         this.$editForm = $('#family-history-form');
-        FamilyHistoryController.call(this, options);
 
+        FamilyHistoryController.call(this, options);
+        
+        this.$editColumn = this.$table.find('.edit-column');
         this.originalTable = this.$table.html();
         this.originalNoHistory = this.$noHistoryFld.prop('checked');
     }
@@ -262,8 +263,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         controller.$showEditButton.on('click', function(e) {
             e.preventDefault();
             controller.$editForm.slideDown('fast');
-            // TODO: make more specific
-            $('.edit-column').show();
+            controller.$table.show();
+            controller.$editColumn.show();
             controller.$showEditButton.hide();
         });
 

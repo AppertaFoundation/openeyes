@@ -123,6 +123,33 @@ class FamilyHistory extends \BaseEventTypeElement
         }
     }
 
+    public function getRelativeOptions()
+    {
+        $force = array();
+        foreach ($this->entries as $entry) {
+            $force[] = $entry->relative_id;
+        }
+        return FamilyHistoryRelative::model()->activeOrPk($force)->findAll();
+    }
+
+    public function getConditionOptions()
+    {
+        $force = array();
+        foreach ($this->entries as $entry) {
+            $force[] = $entry->condition_id;
+        }
+        return FamilyHistoryCondition::model()->activeOrPk($force)->findAll();
+    }
+
+    public function getSideOptions()
+    {
+        $force = array();
+        foreach ($this->entries as $entry) {
+            $force[] = $entry->relative_id;
+        }
+        return FamilyHistorySide::model()->activeOrPk($force)->findAll();
+    }
+
     /**
      * @return string
      */

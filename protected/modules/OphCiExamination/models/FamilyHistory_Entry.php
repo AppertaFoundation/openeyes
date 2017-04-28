@@ -81,9 +81,9 @@ class FamilyHistory_Entry extends \BaseEventTypeElement
         // class name for the relations automatically generated below.
         return array(
             'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\Element_OphCiExamination_PastSurgery', 'element_id'),
-            'relative' => array(self::BELONGS_TO, 'FamilyHistoryRelative', 'relative_id'),
-            'side' => array(self::BELONGS_TO, 'FamilyHistorySide', 'side_id'),
-            'condition' => array(self::BELONGS_TO, 'FamilyHistoryCondition', 'condition_id')
+            'relative' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\FamilyHistoryRelative', 'relative_id'),
+            'side' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\FamilyHistorySide', 'side_id'),
+            'condition' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\FamilyHistoryCondition', 'condition_id')
         );
     }
 
