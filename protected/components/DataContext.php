@@ -57,7 +57,10 @@ class DataContext
     protected function initialiseFromApp()
     {
         $firm = $this->getCurrentFirm();
-
+        if (!$firm) {
+            // should only arise on the command line
+            return;
+        }
         if ($subspecialty = $firm->getSubspecialty()) {
             $this->setAttribute('subspecialties', $subspecialty);
         } else {
