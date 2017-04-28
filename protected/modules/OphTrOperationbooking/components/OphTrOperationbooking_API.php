@@ -205,6 +205,7 @@ class OphTrOperationbooking_API extends BaseAPI
             if ($operation = $this->getElementForLatestEventInEpisode($episode,
                 'Element_OphTrOperationbooking_Operation')
             ) {
+
                 foreach ($operation->procedures as $i => $procedure) {
                     if ($i) {
                         $return .= ', ';
@@ -214,6 +215,36 @@ class OphTrOperationbooking_API extends BaseAPI
             }
 
             return strtolower($return);
+        }
+    }
+
+    /**
+     * get the procedures for this patient and episode for same date/episode
+     *
+     * @param Patient $patient
+     *
+     * @return string
+     */
+    public function getLetterProceduresSameDay( $patient )
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if ($operations = $this->getElementForAllEventInEpisode($episode, 'Element_OphTrOperationbooking_Operation')) {
+
+                $result = '';
+                $latest =  $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrOperationbooking_Operation');
+                foreach($operations as $i => $detail)
+                {
+                    $detailDate = substr($detail->event->event_date, 0, 10);
+                    $latestDate = substr($latest->event->event_date, 0, 10);
+                    if(strtotime($detailDate) === strtotime($latestDate)){
+                        foreach ($detail->procedures as $procedure) {
+                            $result .= ($result === '' ? '' : ', ') . $detail->eye->adjective . ' ' . $procedure->term;
+                        }
+
+                    }
+                }
+                return strtolower($result);
+            }
         }
     }
 

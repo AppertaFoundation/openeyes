@@ -69,7 +69,7 @@ class Firm extends BaseActiveRecordVersioned
             array('service_subspecialty_assignment_id', 'length', 'max' => 10),
             array('pas_code', 'length', 'max' => 20),
             array('name', 'length', 'max' => 40),
-            array('name, pas_code, subspecialty_id, consultant_id, active', 'safe'),
+            array('name, pas_code, subspecialty_id, consultant_id, active, runtime_selectable, can_own_an_episode', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, service_subspecialty_assignment_id, pas_code, name', 'safe', 'on' => 'search'),
@@ -116,6 +116,34 @@ class Firm extends BaseActiveRecordVersioned
         return array(
             'LookupTable' => 'LookupTable',
         );
+    }
+
+    public function scopes()
+    {
+        return array(
+            'runtime' => array(
+                'condition' => 'runtime_selectable = 1'
+            ),
+            'episodeOwner' => array(
+                'condition' => 'can_own_an_episode = 1'
+            )
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public static function contextLabel()
+    {
+        return ucwords(strtolower(Yii::app()->params['context_firm_label']));
+    }
+
+    /**
+     * @return string
+     */
+    public static function serviceLabel()
+    {
+        return ucwords(strtolower(Yii::app()->params['service_firm_label']));
     }
 
     /**

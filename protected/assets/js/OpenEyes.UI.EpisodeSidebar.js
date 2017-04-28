@@ -39,9 +39,10 @@
 
     EpisodeSidebar._defaultOptions = {
         switch_firm_text: 'Please switch firm to add an event to this episode',
-        user_subspecialty: null,
+        user_context: null,
         event_button_selector: '#add-event',
         subspecialty_labels: {},
+        subspecialty_list_selector: '.subspecialties li',
         event_list_selector: '.events li',
         controls_container_selector: '.fixed-section',
         grouping_picker_class: 'grouping-picker',
@@ -78,7 +79,7 @@
 
     EpisodeSidebar.prototype.create = function() {
         var self = this;
-        self.subspecialty = self.options.user_subspecialty;
+
         if (self.options.default_sort == 'asc') {
             self.sortOrder = 'asc';
         }
@@ -103,13 +104,6 @@
         self.addControls();
 
         self.updateGrouping();
-
-        $(self.options.event_button_selector).unbind();
-
-        $(document).on('click', self.options.event_button_selector + '.enabled', function() {
-            if (self.subspecialty)
-                self.openNewEventDialog();
-        });
 
         self.element.on('click', '.collapse-all', function(e) {
             self.collapseAll();
@@ -139,33 +133,6 @@
             var $iconHover = $(e.target);
             $iconHover.parents('li:first').find('.quicklook').hide();
         });
-    };
-
-    EpisodeSidebar.prototype.getSubspecialtyLabel = function() {
-        if (this.subspecialty) {
-            return this.options.subspecialty_labels[this.subspecialty];
-        }
-        else {
-            return "Support services"
-        }
-    };
-
-    EpisodeSidebar.prototype.openNewEventDialog = function() {
-        var self = this;
-        if (!self.newEventDialog) {
-            self.newEventDialog = new OpenEyes.UI.Dialog({
-                destroyOnClose: false,
-                title: 'Add a new ' + self.getSubspecialtyLabel() + ' event',
-                content: Mustache.render($('#add-new-event-template').html(), {
-                    subspecialty: self.getSubspecialtyLabel()
-                }),
-                dialogClass: 'dialog event add-event',
-                width: 580,
-                id: 'add-new-event-dialog',
-            });
-
-        }
-        self.newEventDialog.open();
     };
 
     EpisodeSidebar.prototype.orderEvents = function() {

@@ -24,6 +24,7 @@
  *
  * @property int $id
  * @property string $name
+ * @property string $ref_spec
  * @property string $class_name
  *
  * The followings are the available model relations:

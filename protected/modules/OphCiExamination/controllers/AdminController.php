@@ -778,4 +778,79 @@ class AdminController extends \ModuleAdminController
 
         $this->redirect(array('/OphCiExamination/admin/postOpComplications', 'subspecialty_id' => $subspecialty_id));
     }
+
+    /*
+     * Invoice status admin list
+     */
+    public function actionInvoiceStatusList()
+    {
+
+        $model = new models\InvoiceStatus();
+
+        $this->render('list_OphCiExamination_Invoice_status', array(
+            'model_class' => $model,
+            'model_list' => $model::model()->findAll(array('order' => 'id asc')),
+            'title' => 'Invoice Statuses',
+        ));
+
+    }
+
+    /*
+     * Add new invoice status in admin screen
+     */
+    public function actionAddInvoiceStatus()
+    {
+        $model = new models\InvoiceStatus();
+
+        if (isset($_POST[\CHtml::modelName($model)])) {
+            $model->attributes = $_POST[\CHtml::modelName($model)];
+
+            if ($model->save()) {
+                // Audit::add('admin', 'create', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Workflow'));
+                Yii::app()->user->setFlash('success', 'Invoice status added');
+
+                $this->redirect(array('InvoiceStatusList'));
+            }
+        }
+
+        $this->render('update', array(
+            'model' => $model,
+            'title' => 'Add invoice status',
+            'cancel_uri' => '/OphCiExamination/admin/InvoiceStatusList'
+        ));
+    }
+
+    /*
+     * Edit exist invoice
+     */
+    public function actionEditInvoiceStatus( $id )
+    {
+        $model = models\InvoiceStatus::model()->findByPk((int) $id);
+
+        if (isset($_POST[\CHtml::modelName($model)])) {
+
+            $model->attributes = $_POST[\CHtml::modelName($model)];
+            if ($model->save()) {
+               // Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_ElementSet'));
+                Yii::app()->user->setFlash('success', 'Invoice status updated');
+
+                $this->redirect(array('InvoiceStatusList'));
+            }
+        }
+
+        $this->render('update', array(
+            'model' => $model,
+            'title' => 'Edit invoice status',
+            'cancel_uri' => '/OphCiExamination/admin/InvoiceStatusList'
+        ));
+    }
+
+
+    /*
+     * Delete invoice
+     */
+    public function deleteInvoiceStatus( $id )
+    {
+
+    }
 }

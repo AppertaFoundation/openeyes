@@ -19,7 +19,7 @@
  */
 class SiteAndFirmWidget extends CWidget
 {
-    public $title = 'Please confirm Site and Firm';
+    public $title;
     public $subspecialty;
     public $support_services;
     public $patient;
@@ -27,6 +27,7 @@ class SiteAndFirmWidget extends CWidget
 
     public function init()
     {
+        $this->title = $this->title ? : 'Please confirm Site and ' . Firm::contextLabel();
         if (!$this->returnUrl) {
             $this->returnUrl = Yii::app()->request->url;
         }
@@ -89,7 +90,7 @@ class SiteAndFirmWidget extends CWidget
         if ($preferred_firms = $user->preferred_firms) {
             foreach ($preferred_firms as $preferred_firm) {
                 if (
-                    $preferred_firm->active &&
+                    $preferred_firm->active && $preferred_firm->runtime_selectable &&
                     (count($user_firm_ids) === 0 || in_array($preferred_firm->id, $user_firm_ids)) &&
                     (!$this->subspecialty || ($preferred_firm->serviceSubspecialtyAssignment && $this->subspecialty->id == $preferred_firm->serviceSubspecialtyAssignment->subspecialty_id))
                 ) {
@@ -107,7 +108,7 @@ class SiteAndFirmWidget extends CWidget
                         $user_firm_ids)) && !isset($firms['Recent'][$firm_id])
             ) {
                 $firm = Firm::model()->findByPk($firm_id);
-                if ($firm instanceof Firm && $firm->active &&
+                if ($firm instanceof Firm && $firm->active && $firm->runtime_selectable &&
                     (!$this->subspecialty || ($firm->serviceSubspecialtyAssignment && $firm->serviceSubspecialtyAssignment->subspecialty_id == $this->subspecialty->id))
                 ) {
                     if ($preferred_firms) {

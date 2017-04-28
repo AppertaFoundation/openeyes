@@ -90,7 +90,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->hos_num = $patient['hos_num'];
         $this->procedure = implode(', ', array_column($operation, 'term'));
         $this->allergies = $allergyString;
-        $this->iol_model = ($biometry) ? $biometry->attributes['lens_description_' . $eyeLabel] . ' <br /> ' . $biometry->attributes['formula_' . $eyeLabel] : 'Unknown';
+        $this->iol_model = ($biometry) ? $biometry->attributes['lens_display_name_' . $eyeLabel] . ' <br /> ' . $biometry->attributes['formula_' . $eyeLabel] : 'Unknown';
         $this->iol_power = ($biometry) ? $biometry->attributes['iol_power_' . $eyeLabel] : 'None';
         $this->predicted_refractive_outcome = ($biometry) ? $biometry->attributes['predicted_refraction_' . $eyeLabel] : 'Unknown';
         $this->alpha_blockers = $patient->hasRisk('Alpha blockers');
