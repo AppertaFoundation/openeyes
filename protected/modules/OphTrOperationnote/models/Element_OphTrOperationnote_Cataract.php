@@ -95,11 +95,16 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
             //array('id, event_id, incision_site_id, length, meridian, incision_type_id, eyedraw, report, wound_burn, iris_trauma, zonular_dialysis, pc_rupture, decentered_iol, iol_exchange, dropped_nucleus, op_cancelled, corneal_odema, iris_prolapse, zonular_rupture, vitreous_loss, iol_into_vitreous, other_iol_problem, choroidal_haem', 'on' => 'search'),
         );
     }
-    
+
+    /**
+     * Check if iol position is not 'None'
+     */
     public function validateIolType()
     {
+        $none_position = $this->getNoneIolPosition();
+
         if(isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
-            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != '8'){
+            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != $none_position->id){
                 if (!$this->iol_type_id) {
                     $this->addError('iol_type_id', 'IOL type cannot be blank');
                 }
@@ -118,8 +123,10 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
      */
     public function validatePredictedRefraction()
     {
+        $none_position = $this->getNoneIolPosition();
+
         if(isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
-            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != '8'){
+            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != $none_position->id){
                 $value = $this->predicted_refraction;
                 if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
                     $message = $this->addError('predicted_refraction', 'Predicted refraction must be between -30.00 and 30.00');
@@ -136,8 +143,10 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
      */
     public function validateIolPower()
     {
+        $none_position = $this->getNoneIolPosition();
+
         if(isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
-            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != '8'){
+            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != $none_position->id){
                 $value = $this->iol_power;
                 if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
                     $message = $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -10.00 and 40.00');
@@ -226,12 +235,16 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
 
     protected function beforeSave()
     {
-        if(!isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
+        $position_none = $this->getNoneIolPosition();
+
+        //if(!isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
+        if(! $this->iol_position_id || $this->iol_position_id == $position_none->id)
+        {
             $this->iol_power = null;
             $this->iol_type_id = null;
             $this->predicted_refraction = null;
-            $this->iol_position_id = 8;
-        }    
+            $this->iol_position_id = $position_none->id;
+        }
         return parent::beforeSave();
     }
 
@@ -268,7 +281,6 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
                 $ca = new OphTrOperationnote_CataractComplication();
                 $ca->cataract_id = $this->id;
                 $ca->complication_id = $c_id;
-
                 if (!$ca->save()) {
                     throw new Exception('Unable to save complication assignment: '.print_r($ca->getErrors(), true));
                 }
@@ -419,11 +431,14 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
      */
     public function validateComplications()
     {
-        $noneId = 18;
+        $complications_none = OphTrOperationnote_CataractComplications::model()->findByAttributes(array('name'=>'None'));
+        $noneId = $complications_none->id;
 
         $complications = Yii::app()->request->getPost('OphTrOperationnote_CataractComplications');
         if (!$complications || !count($complications)) {
-            $this->addError('Complications', 'Cataract Complications cannot be blank.');
+            if(!$this->complications || !count($this->complications)) {
+                $this->addError('Complications', 'Cataract Complications cannot be blank.');
+            }
         } else {
             foreach ($complications as $complication) {
                 if ($complication == $noneId && count($complications) > 1) {
@@ -454,6 +469,18 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
             return implode(', ', $res);
         } else {
             return $default;
+        }
+    }
+
+    private function getNoneIolPosition()
+    {
+        $position_none = OphTrOperationnote_IOLPosition::model()->findByAttributes(array('name'=>'None'));
+        if($position_none)
+        {
+            return $position_none;
+        }else
+        {
+            return false;
         }
     }
 }
