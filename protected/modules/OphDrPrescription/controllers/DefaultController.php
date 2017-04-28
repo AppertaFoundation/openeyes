@@ -104,7 +104,6 @@ class DefaultController extends BaseEventTypeController
     protected function initActionCreate()
     {
         parent::initActionCreate();
-
         $this->initEdit();
     }
 
@@ -115,6 +114,7 @@ class DefaultController extends BaseEventTypeController
     {
         parent::initActionUpdate();
         $this->initEdit();
+
     }
 
     /**
