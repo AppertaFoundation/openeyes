@@ -212,7 +212,7 @@
       </div>
       <div class="large-10 column end">
         <div class="data-value">
-            <?php echo CHtml::encode($element->homo) ?>
+            <?php echo $element->homo === '1' ? 'Yes' : 'No'; ?>
         </div>
       </div>
     </div>

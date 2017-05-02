@@ -272,10 +272,11 @@ class ModelSearch
             $sortColumn = $this->request->getParam('c');
             if ($sortColumn) {
                 $this->relationalAttribute($this->criteria, $sortColumn, $attr);
+
                 if ($order) {
                     $sortColumn .= ' DESC';
                 }
-                $this->criteria->order = $sortColumn;
+                $this->criteria->order = 't.'.$sortColumn;
             }
         }
     }

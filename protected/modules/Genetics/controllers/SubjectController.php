@@ -253,27 +253,55 @@ class SubjectController extends BaseModuleController
      */
     public function actionList()
     {
+        $path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets'));
+        Yii::app()->clientScript->registerScriptFile($path . '/js/DiagnosisSelection.js');
+
+        $model = new GeneticsPatient('search');
+        $model->unsetAttributes();  // clear any default values
+        if (isset($_GET['GeneticsPatient'])) {
+
+            //thanks for the awesome implementation of the //disorder/disorderAutoComplete.php
+            //I cannot remove the 'search' from the name attribute without refactoring several things
+            if( isset($_GET['search']['patient_disorder_id']) ){
+                $_GET['GeneticsPatient']['patient_disorder_id'] = $_GET['search']['patient_disorder_id'];
+            }
+
+            $model->attributes = $_GET['GeneticsPatient'];
+        }
+
+        $this->render('list', array(
+            'model' => $model,
+        ));
+
+    }
+
+    public function actionList2()
+    {
         $admin = new Crud(GeneticsPatient::model(), $this);
         $admin->setModelDisplayName('Patients');
         $admin->setListFieldsAction('view');
         $admin->setListFields(array(
             'id',
             'patient.fullName',
+            'patient.dob',
+            'comments',
+            'diagnoses',
         ));
         $admin->getSearch()->addSearchItem('patient.contact.first_name');
-        $admin->getSearch()->addSearchItem('patient.contact.last_name');
-        $admin->getSearch()->addSearchItem('patient.dob', array(
-            'id'            => 'patient-dob-id',
-            'type'          => 'datepicker',
-            'yearRange'     => '-120:+0',
-            'changeMonth'   => true,
-            'changeYear'    => true,
-        ));
-        $admin->getSearch()->addSearchItem('searchYob');
-        $admin->getSearch()->addSearchItem('comments');
-        $admin->getSearch()->addSearchItem('diagnoses.id', array('type' => 'disorder'));
-        $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        $admin->getSearch()->setDefaultResults(false);
+              $admin->getSearch()->addSearchItem('patient.contact.last_name');
+              $admin->getSearch()->addSearchItem('patient.dob', array(
+                  'id'            => 'patient-dob-id',
+                  'type'          => 'datepicker',
+                  'yearRange'     => '-120:+0',
+                  'changeMonth'   => true,
+                  'changeYear'    => true,
+              ));
+              $admin->getSearch()->addSearchItem('searchYob');
+              $admin->getSearch()->addSearchItem('comments');
+              $admin->getSearch()->addSearchItem('diagnoses.id', array('type' => 'disorder'));
+//$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+              $admin->getSearch()->setDefaultResults(false);
+              $admin->setUnsortableColumns(['patient.fullName','diagnoses']);
         //$display_buttons = $this->checkAccess('OprnEditGeneticPatient');
         $admin->listModel( false );
     }
