@@ -31,6 +31,18 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
 
     private $csv_format = 'OEInternalReferralLetterReport_%s.csv';
 
+    private $file_random_number;
+
+    public function setFileRandomNumber($number){
+        $this->file_random_number = $number;
+    }
+
+    public function getFileRandomNumber(){
+        return $this->file_random_number ? $this->file_random_number : rand();
+    }
+
+
+
     /**
      * InternalReferralDelivery constructor.
      */
@@ -215,7 +227,7 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
     private function getFileName(\Event $event)
     {
         if (!isset(Yii::app()->params['filename_format']) || Yii::app()->params['filename_format'] === 'format1') {
-            $filename = "OPENEYES_Internal_" . (str_replace(' ', '', $event->episode->patient->hos_num)) . '_' . $event->id . "_" . rand();
+            $filename = "OPENEYES_Internal_" . (str_replace(' ', '', $event->episode->patient->hos_num)) . '_' . $event->id . "_" . $this->getFileRandomNumber();
         } else {
             if (Yii::app()->params['filename_format'] === 'format2') {
                 $filename = 'Internal_' . (str_replace(' ', '', $event->episode->patient->hos_num)) . '_' . date('YmdHi',

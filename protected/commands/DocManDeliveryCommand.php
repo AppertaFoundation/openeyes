@@ -76,11 +76,13 @@ class DocManDeliveryCommand extends CConsoleCommand
                 $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
             } else if($document->output_type == 'Internalreferral'){
 
+                $file_name = $this->getFileName('Internal');
                 //Docman xml will be used
-                $xml_generated = $this->generateXMLOutput($this->getFileName('Internal'), $document);
+                $xml_generated = $this->generateXMLOutput($file_name, $document);
 
                 if ($xml_generated){
                     $command = new InternalReferralDeliveryCommand();
+                    $command->setFileRandomNumber( explode('_', $file_name)[4] );
 
                     //now we only generate PDF file, until the integration, the generate_xml is set to false in the InternalReferralDeliveryCommand
                     $command->actionGenerateOne($this->event->id);
