@@ -3082,6 +3082,12 @@ table.white, table.white tr:nth-of-type(even) {
   background: #fff;
 }
 
+/* line 128, ../sass/openeyes/components/_tables.scss */
+.table-summary{
+  font-size: 0.6875rem;
+  font-weight: bold;
+}
+
 /* line 150, ../sass/openeyes/components/_tables.scss */
 table.plain, table.plain td, table.plain th, table.plain tr {
   border: 0;

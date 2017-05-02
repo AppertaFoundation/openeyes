@@ -27,15 +27,15 @@
     <div>
 
         <div>
-            <?php echo $form->label($model, 'contact.first_name'); ?>
+            <?php // echo $form->label($model, 'contact.first_name'); ?>
             <?php echo $form->textField($model, 'patient_firstname', ['placeholder' => 'First name']); ?>
         </div>
         <div>
-            <?php echo $form->label($model, 'contact.last_name'); ?>
+            <?php // echo $form->label($model, 'contact.last_name'); ?>
             <?php echo $form->textField($model, 'patient_lastname', ['placeholder' => 'Last name']); ?>
         </div>
         <div>
-            <?php echo $form->label($model, 'patient.dob'); ?>
+            <?php // echo $form->label($model, 'patient.dob'); ?>
             <?php
                 $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                     'name'  => 'patient-dob-id',
@@ -59,16 +59,16 @@
             <input type="hidden" name="GeneticsPatient[patient_dob]" id="GeneticsPatient_patient_dob_alt" value="<?=$model->patient_dob;?>"/>
         </div>
         <div>
-            <?php echo $form->label($model, 'patient_yob'); ?>
+            <?php // echo $form->label($model, 'patient_yob'); ?>
             <?php echo $form->textField($model, 'patient_yob', ['placeholder' => 'Year of Birth']); ?>
         </div>
 
         <div>
-            <?php echo $form->label($model, 'id'); ?>
+            <?php // echo $form->label($model, 'id'); ?>
             <?php echo $form->textField($model, 'id', ['placeholder' => 'Subject Id']); ?>
         </div>
         <div>
-            <?php echo $form->label($model, 'comments'); ?>
+            <?php // echo $form->label($model, 'comments'); ?>
             <?php echo $form->textField($model, 'comments', ['placeholder' => 'Comments']); ?>
         </div>
         <div id="diagnosis-search">
@@ -76,7 +76,7 @@
                 $query = Yii::app()->request->getQuery('search');
                 $value = isset($query['patient_disorder_id']) ? $query['patient_disorder_id'] : '';
             ?>
-            <label for="GeneticsPatient_comments">Search for a diagnosis</label>
+            <!-- <label for="GeneticsPatient_comments">Search for a diagnosis</label> -->
             <span id="enteredDiagnosisText" class="<?php echo $value ? '' : 'hidden' ?>">
                 <?php
                     if($value){

@@ -28,15 +28,26 @@
     </div><!-- search-form -->
 
     <?php
+    $dataProvider = $model->search();
+
+    //we do not display any results until the user click on the search button - and post his/her query
+    if( !Yii::app()->request->getQuery('GeneticsPatient')){
+        $criteria = $dataProvider->getCriteria();
+        $criteria->addCondition("1 != 1");
+        $dataProvider->setCriteria($criteria);
+    }
+
     $this->widget('zii.widgets.grid.CGridView', array(
         'id' => 'geneticspatient-list-view',
-        'dataProvider' => $model->search(),
+        'dataProvider' => $dataProvider,
         'template' => '{items}{summary}{pager}',
-        'summaryCssClass' => 'left',
+        'summaryCssClass' => 'left table-summary',
         'itemsCssClass' => 'grid',
         'summaryText' => 'Showing {start} to {end} of {count}',
         'pager' => array(
             'header' => '',
+            'selectedPageCssClass' => 'current',
+            'htmlOptions' => array('class' => 'pagination right'),
         ),
 
         //click on a row - only one row can be selected
@@ -48,8 +59,14 @@
         'rowCssClass' => ['clickable'],
 
         'columns' => array(
-            'id',
-            'patient.fullName',
+            array(
+                'name' => 'id',
+                'htmlOptions'=>array('width'=>'50px'),
+            ),
+            array(
+                'name' => 'patient.fullName',
+                'htmlOptions'=>array('width'=>'110px'),
+            ),
          //   'patient.dob',
             array(
                 'name' => 'patient.dob',
@@ -57,15 +74,19 @@
                     $date = new DateTime($data->patient->dob);
                     return $data->patient->dob ? $date->format("j M Y") : null;
                 },
+                'htmlOptions'=>array('width'=>'85px'),
             ),
 
-            'comments',
+            array(
+                'name' => 'comments',
+                'htmlOptions'=>array('width'=>'150px'),
+            ),
             array(
                 'name' => 'diagnoses',
                 'value' => function($data){
                     return implode(', ', $data->diagnoses);
                 },
-                'htmlOptions'=>array('width'=>'300px'),
+                'htmlOptions'=>array('width'=>'200px'),
             ),
 
 
