@@ -367,10 +367,10 @@ class DocManDeliveryCommand extends CConsoleCommand
         if($this->with_internal_referral) {
             $xml .= "
             <!--Internal Referral-->
-            <ServiceTo >" . $service_to . "</ServiceTo >
-            <ConsultantTo >" . $consultant_to . "</ConsultanTo >
-            <Urgent>" . $is_urgent . "</Urgent > 
-            <SameCondition>" . $is_same_condition . "</SameCondition >
+            <ServiceTo>" . $service_to . "</ServiceTo>
+            <ConsultantTo>" . $consultant_to . "</ConsultantTo>
+            <Urgent>" . $is_urgent . "</Urgent> 
+            <SameCondition>" . $is_same_condition . "</SameCondition>
         
             <!-- When main recipient is Internalreferral and a CC is a GP the Docman and Internalreferral XMLs look like the same. -->
             <!-- SendTo tag contains the actual output type: Either 'Docman' or 'Internalreferral' -->
