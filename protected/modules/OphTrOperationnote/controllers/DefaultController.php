@@ -209,18 +209,6 @@ class DefaultController extends BaseEventTypeController
         } elseif (isset($_GET['unbooked'])) {
             $this->unbooked = true;
         }
-        
-        $is_auto_schedule_operation = Yii::app()->params['auto_schedule_operation'];
-
-        if ($api && $is_auto_schedule_operation) {
-            $schedule_result = $api->autoScheduleOperationBookings($this->current_episode);
-            if( $schedule_result !== true ){
-                foreach($schedule_result as $error){
-                    Yii::app()->user->setFlash('error.alert', $error);
-                }
-
-            }
-        }
 
         $this->initEdit();
     }
@@ -304,7 +292,6 @@ class DefaultController extends BaseEventTypeController
             $this->render('select_event', array(
                 'errors' => $errors,
                 'bookings' => $bookings,
-                'is_auto_schedule_operation' => Yii::app()->params['auto_schedule_operation'],
                 'theatre_diary_disabled' => $theatre_diary_disabled
             ));
         }
