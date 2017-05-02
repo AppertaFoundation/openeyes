@@ -27,6 +27,25 @@ class DefaultController extends BaseEventTypeController
         'markPrinted' => self::ACTION_TYPE_PRINT,
     );
 
+    private function userIsAdmin()
+    {
+        $user = Yii::app()->session['user'];
+
+        if ($user->role == 'admin role') {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function actionView($id)
+    {
+        $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
+
+        $this->editable = $this->userIsAdmin() || $model->draft || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
+        return parent::actionView($id);
+    }
+
     /**
      * Defines JS data structure for common drug lookup in prescription.
      */
@@ -549,4 +568,34 @@ class DefaultController extends BaseEventTypeController
             return $output;
         }
     }
+
+    public function actionUpdate($id, $reason = null)
+    {
+        global $reason_id;
+        global $reason_other_text;
+
+        $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
+
+        if(is_null($reason) && !$model->draft)
+        {
+            $this->render('ask_reason', array('id'=>$id));
+        }
+        else
+        {
+            if(isset($_POST['do_not_save']) && $_POST['do_not_save']=='1')
+            {
+                $reason_id = isset($_POST['reason']) ? $_POST['reason'] : 0;
+                $reason_other_text = isset($_POST['reason_other']) ? $_POST['reason_other'] : '';
+                $_POST=null;
+            }
+            else
+            {
+                $reason_id = $model->edit_reason_id;
+                $reason_other_text = $model->edit_reason_other;
+            }
+
+            parent::actionUpdate($id);
+        }
+    }
+
 }

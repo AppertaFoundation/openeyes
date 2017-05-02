@@ -22,5 +22,16 @@
     $subspecialty = Subspecialty::model()->find('ref_spec=:ref_spec', array(':ref_spec' => 'MR'));
     echo $form->dropDownList($element, 'consultant_id', Firm::model()->getList($subspecialty->id, $element->consultant_id), array('empty' => '- Please select -'), false, array('field' => 3));
     echo $form->dropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Please select -'), false, array('field' => 3));
-    echo $form->radioBoolean($element, 'patient_sharedata_consent')?>
+    ?>
+    <fieldset id="Element_OphCoTherapyapplication_MrServiceInformation_patient_sharedata_consent" class="row field-row">
+        <legend class="large-2 column">
+            Patient consents to share data:		</legend>
+        <input type="hidden" value="" name="Element_OphCoTherapyapplication_MrServiceInformation[patient_sharedata_consent]">
+        <div class="large-10 column end">
+            <label class="inline highlight">
+                <?php
+                echo $form->radioButton($element, 'patient_sharedata_consent');
+?> Yes
+        </div>
+    </fieldset>
 </div>
