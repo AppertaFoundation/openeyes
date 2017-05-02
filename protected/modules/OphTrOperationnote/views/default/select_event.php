@@ -74,7 +74,7 @@
 											</span>
 
                                                       <span class="large-3 column">
-                                                      <?php echo $theatre_diary_disabled ? "" : $booking->operation->comments; ?>
+                                                      <?php echo $theatre_diary_disabled ? $booking->comments : $booking->operation->comments; ?>
 											</span>
 											<span class="large-4 column">
 												<?php
