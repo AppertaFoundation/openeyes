@@ -29,6 +29,7 @@
 
     <?php
     $dataProvider = $model->search();
+    $item_count = GeneticsPatient::model()->count();
 
     //we do not display any results until the user click on the search button - and post his/her query
     if( !Yii::app()->request->getQuery('GeneticsPatient')){
@@ -49,6 +50,8 @@
             'selectedPageCssClass' => 'current',
             'htmlOptions' => array('class' => 'pagination right'),
         ),
+        'emptyText' => 'Total of ' . $item_count . ' items',
+        "emptyTagName" => 'span',
 
         //click on a row - only one row can be selected
         'selectableRows' => 1,
