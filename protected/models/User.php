@@ -639,9 +639,9 @@ class User extends BaseActiveRecordVersioned
     /**
      * @return array
      */
-    public function getAllConsultants()
+    public function getAllConsultants($subspecialty = null)
     {
-        $consultant_names = User::model()->findAll(array('order' => 'first_name asc'), 'id', 'first_name');
+        $consultant_names = User::model()->findAll(array('condition' => 'is_consultant = 1', 'order' => 'first_name asc'), 'id', 'first_name');
         $consultant_name = array();
         $i = 0;
         foreach ($consultant_names as $consultant) {
@@ -649,7 +649,6 @@ class User extends BaseActiveRecordVersioned
             $consultant_name[$i]['name'] = $consultant->getFullName();
             $i++;
         }
-
         return $consultant_name;
     }
 

@@ -24,11 +24,12 @@
                 <label>For Consultant: </label>
             </div>
             <div class="large-3 column end">
-                    <?php echo CHtml::activeDropDownList($element, "to_consultant_id",
-                                CHtml::listData(User::model()->getAllConsultants(), 'id', 'name'), array('empty' => '- None -')) ?>
+                    <?php echo CHtml::activeDropDownList($element, "to_consultant_id", Firm::model()->getListWithSpecialties(), array('empty' => '- None -')) ?>
             </div>
         </div>
+
         <br>
+
         <div class="row">
             <div class="large-2 column">&nbsp;</div>
 
@@ -43,22 +44,23 @@
 
             <div class="large-1 column">&nbsp;</div>
 
-            <div class="large-4 column end">
+            <div class="large-2 column "> <label>Condition: </label> </div>
 
+            <div class="large-3 column end">
                 <?php
 
-                    $field = 'is_same_condition';
+
                     $this->widget('application.widgets.RadioButtonList', array(
                         'element' => $element,
-                        'name' => CHtml::modelName($element)."[$field]",
-                        'label_above' => false,
+                        'name' => CHtml::modelName($element)."[is_same_condition]",
+                        'label_above' => true,
                         'field_value' => false,
-                        'field' => $field,
+                        'field' => 'is_same_condition',
                         'data' => array(
                                 1 => 'Same Condition',
                                 0 => 'Different Condition',
                         ),
-                        'selected_item' => $element->$field,
+                        'selected_item' => $element->is_same_condition,
 
                     ));
 

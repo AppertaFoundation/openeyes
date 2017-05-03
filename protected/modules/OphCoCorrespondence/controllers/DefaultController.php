@@ -23,6 +23,7 @@ class DefaultController extends BaseEventTypeController
         'getMacroData' => self::ACTION_TYPE_FORM,
         'getString' => self::ACTION_TYPE_FORM,
         'getCc' => self::ACTION_TYPE_FORM,
+        'getConsultantsBySubspecialty' => self::ACTION_TYPE_FORM,
         'expandStrings' => self::ACTION_TYPE_FORM,
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
@@ -633,6 +634,14 @@ class DefaultController extends BaseEventTypeController
         if ($this->setPrintForEvent($id)) {
             echo '1';
         }
+    }
+
+    public function actionGetConsultantsBySubspecialty($subspecialty_id = null)
+    {
+        $firms = Firm::model()->getListWithSpecialties(false, $subspecialty_id);
+        echo CJSON::encode($firms);
+
+        Yii::app()->end();
     }
   
 }
