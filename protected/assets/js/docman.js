@@ -271,9 +271,6 @@ var docman = (function() {
 
             if(contact_id != 'OTHER' ){
 
-                //update the row where the dropdown change event happend
-                this.updateRow(rowindex, contact_id, OE_patient_id, document_set_id_param);
-
                 if(other_rowindex !== undefined){
                     current_type = current_type.toLowerCase();
                     type = current_type[0].toUpperCase() + current_type.slice(1);
@@ -281,9 +278,9 @@ var docman = (function() {
                     if(type !== 'Other' && type !== undefined && type !== '- type -'){
                         other_id = $("#docman_recipient_" + other_rowindex + " option[value*='" + type + "']" ).val();
                     }
-                }
 
-                other_id = $("#docman_recipient_" + other_rowindex + " option[value*='" + type + "']" ).val();
+                    other_id = $("#docman_recipient_" + other_rowindex + " option[value*='" + type + "']" ).val();
+                }
 
                 $.when( this.updateRow(rowindex, contact_id, OE_patient_id, document_set_id_param),this.updateRow(other_rowindex, other_id, OE_patient_id, document_set_id_param) ).done(function ( v1, v2 ) {
                     if(selected_type[1] === 'Gp'){

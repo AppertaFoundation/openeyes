@@ -93,9 +93,7 @@ function setRecipientToInternalReferral(){
     var $option = $('<option>',{value:'INTERNALREFERRAL',text:'Booking'});
     $('#DocumentTarget_0_attributes_contact_type').append($option);
 
-    $('#DocumentTarget_0_attributes_contact_type').css({'background-color':'lightgray'});
 	$('#DocumentTarget_0_attributes_contact_type').val('INTERNALREFERRAL');
-    $('#DocumentTarget_0_attributes_contact_type').attr('disabled', true);
 
     $('#dm_table tr:first-child td:last-child').html('Change the letter type <br> to amend this recipient').css({'font-size':'11px'});
 
@@ -112,13 +110,21 @@ function resetRecipientToInternalReferral(){
 	$('#DocumentTarget_0_attributes_contact_name').prop('readonly', false).val('');
 	$('#Document_Target_Address_0').prop('readonly', false).val('');
 
-	$('#DocumentTarget_0_attributes_contact_type').attr('disabled', false);
-	$('#DocumentTarget_0_attributes_contact_type').css({'background-color':'white'});
     $('#DocumentTarget_0_attributes_contact_type').find('option[value="INTERNALREFERRAL"]').remove();
 	$('#DocumentTarget_0_attributes_contact_type').val('');
 
     $('#dm_table tr:first-child td:last-child').html('');
     $('#yDocumentTarget_0_attributes_contact_type').remove();
+
+    //find the GP row and remove then select GP as TO recipient
+    $('.docman_contact_type').each(function(i, $element){
+        if( $($element).val() === "GP"){
+            $element.closest('tr').remove();
+        }
+    });
+    $('#docman_recipient_0 option:contains("GP")').val();
+    $('#docman_recipient_0').val( $('#docman_recipient_0 option:contains("GP")').val() ).change();
+
 }
 
 function updateConsultantDropdown(subspecialty_id){
@@ -150,10 +156,14 @@ function updateConsultantDropdown(subspecialty_id){
         });
     });
 }
+function updateSalutation(text){
+    $("#ElementLetter_introduction").val(text);
+}
 
 $(document).ready(function() {
     $('#ElementLetter_to_subspecialty_id').on('change',function(){
         updateConsultantDropdown( $(this).val() );
+        updateSalutation("Dear " + $(this).find('option:selected').text() + ' service,');
     });
 
     $('#ElementLetter_to_consultant_id').on('change',function(){
@@ -164,12 +174,17 @@ $(document).ready(function() {
         subspecialty_id = $('#ElementLetter_to_subspecialty_id').find('option:contains("' + subspecialty_name + '")').val();
         $('#ElementLetter_to_subspecialty_id').val(subspecialty_id);
 
+        $.getJSON(baseUrl + "/" + moduleName + "/Default/getSalutation", {
+            firm_id: $('#ElementLetter_to_consultant_id').val(),
+        }, function (data) {
+            updateSalutation(data);
+        });
+
+
     });
 
 
 });
-
-
 
 		/** End of Internal Referral **/
 

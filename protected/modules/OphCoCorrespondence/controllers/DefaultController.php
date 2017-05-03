@@ -24,6 +24,7 @@ class DefaultController extends BaseEventTypeController
         'getString' => self::ACTION_TYPE_FORM,
         'getCc' => self::ACTION_TYPE_FORM,
         'getConsultantsBySubspecialty' => self::ACTION_TYPE_FORM,
+        'getSalutation' => self::ACTION_TYPE_FORM,
         'expandStrings' => self::ACTION_TYPE_FORM,
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
@@ -636,10 +637,28 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    /**
+     * Returns the consultants by subspecialty
+     * @param null $subspecialty_id
+     */
     public function actionGetConsultantsBySubspecialty($subspecialty_id = null)
     {
         $firms = Firm::model()->getListWithSpecialties(false, $subspecialty_id);
         echo CJSON::encode($firms);
+
+        Yii::app()->end();
+    }
+
+    /**
+     * Returns the consultant's salutation
+     * @param $firm_id
+     */
+    public function actionGetSalutation($firm_id)
+    {
+        $firm = Firm::model()->findByPk($firm_id);
+        $user = User::model()->findByPk($firm->consultant_id);
+
+        echo CJSON::encode($user->getLetterIntroduction());
 
         Yii::app()->end();
     }
