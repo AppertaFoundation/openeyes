@@ -63,7 +63,9 @@
                         'row_index' => $row_index,
                         // Internal referral will always be the first row - indexed 0
                         'contact_types' => Document::getContactTypes() + ((strtoupper($macro_data["to"]["contact_type"]) == 'INTERNALREFERRAL' && $row_index == 0) ? Document::getInternalReferralContactType() : []),
-                        'is_editable' => strtoupper($macro_data["to"]["contact_type"]) != 'INTERNALREFERRAL',
+
+                        //contact_type is not editable as per requested, former validation left until the req finalized
+                        'is_editable' => false, //strtoupper($macro_data["to"]["contact_type"]) != 'INTERNALREFERRAL',
                     ));
                     ?>
                 </td>
@@ -121,7 +123,9 @@
                         <?php $this->renderPartial('//docman/table/contact_type', array(
                             'contact_type' => strtoupper($macro["contact_type"]),
                             'row_index' => $index,
-                            'is_editable' => strtoupper($macro["contact_type"]) != 'INTERNALREFERRAL',
+
+                            //contact_type is not editable as per requested, former validation left until the req finalized
+                            'is_editable' => false, //strtoupper($macro["contact_type"]) != 'INTERNALREFERRAL',
                             'contact_types' => Document::getContactTypes() + ((strtoupper($macro["contact_type"]) == 'INTERNALREFERRAL' && $row_index == 0) ? Document::getInternalReferralContactType() : []),
                         ));
                         ?>

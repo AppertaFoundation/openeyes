@@ -677,6 +677,16 @@ $(document).ready(function() {
             $('.internal-referrer-wrapper').slideDown();
             setRecipientToInternalReferral();
 
+            //add GP to recipients
+            if(typeof docman != "undefined" && !docman.isContactTypeAdded("GP")){
+                docman.createNewRecipientEntry('GP');
+            }
+            //add Patient to recipients
+            if(typeof docman != "undefined" && !docman.isContactTypeAdded("PATIENT")){
+                docman.createNewRecipientEntry('PATIENT');
+            }
+
+
 		} else if($('.internal-referrer-wrapper').is(':visible')) {
             $('.internal-referrer-wrapper').slideUp();
             resetInternalReferralFields();

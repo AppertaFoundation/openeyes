@@ -82,7 +82,9 @@
                                         'contact_type' => strtoupper($target->contact_type),
                                         // Internal referral will always be the first row - indexed 0
                                         'contact_types' => Document::getContactTypes() + (($element->isInternalReferral() && $row_index == 0) ? Document::getInternalReferralContactType() : []),
-                                        'is_editable' => $target->contact_type != 'INTERNALREFERRAL',
+
+                                        //contact_type is not editable as per requested, former validation left until the req finalized
+                                        'is_editable' => false, //$target->contact_type != 'INTERNALREFERRAL',
                                         'row_index' => $row_index));
                             ?>
                         <?php else: ?>
