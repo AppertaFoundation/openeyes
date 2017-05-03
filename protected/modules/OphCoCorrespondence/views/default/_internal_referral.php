@@ -24,22 +24,23 @@
                 <label>For Consultant: </label>
             </div>
             <div class="large-3 column end">
-                    <?php echo CHtml::activeDropDownList($element, "to_consultant_id", Firm::model()->getListWithSpecialties(), array('empty' => '- None -')) ?>
+                    <?php echo CHtml::activeDropDownList($element, "to_firm_id", Firm::model()->getListWithSpecialties(), array('empty' => '- None -')) ?>
             </div>
         </div>
 
         <br>
 
         <div class="row">
-            <div class="large-2 column">&nbsp;</div>
+            <div class="large-2 column">
+                <label>To Location:* </label>
+            </div>
 
-            <div class="large-3 column end">
-                <label class="inline">
-                    <label>
-                        <?php echo CHTML::activeCheckBox($element, 'is_urgent'); ?>
-                        <?php echo $element->getAttributeLabel('is_urgent'); ?>
-                    </label>
-                </label>
+            <div class="large-3 column">
+                <?php
+                    $element->to_site_id = Yii::app()->session['selected_site_id'];
+
+                    echo CHtml::activeDropDownList($element, "to_site_id",
+                         CHtml::listData($sites = Institution::model()->getCurrent()->sites, 'id', 'short_name'), array('empty' => '- None -')) ?>
             </div>
 
             <div class="large-1 column">&nbsp;</div>
@@ -69,7 +70,21 @@
             </div>
 
         </div>
+ <div class="row">
+            <div class="large-2 column">&nbsp;</div>
 
+            <div class="large-3 column end">
+                <label class="inline">
+                    <label>
+                        <?php echo CHTML::activeCheckBox($element, 'is_urgent'); ?>
+                        <?php echo $element->getAttributeLabel('is_urgent'); ?>
+                    </label>
+                </label>
+            </div>
+
+            <div class="large-1 column end">&nbsp;</div>
+
+        </div>
     </div>
 
 </section>

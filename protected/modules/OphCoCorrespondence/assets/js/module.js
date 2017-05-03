@@ -135,7 +135,7 @@ function updateConsultantDropdown(subspecialty_id){
 	    var options = [];
 
         //remove old options
-        $('#ElementLetter_to_consultant_id option:gt(0)').remove();
+        $('#ElementLetter_to_firm_id option:gt(0)').remove();
 
         //create js array from obj to sort
         for(item in data){
@@ -151,7 +151,7 @@ function updateConsultantDropdown(subspecialty_id){
 
         //append new option to the dropdown
         $.each(options, function(key, value) {
-            $('#ElementLetter_to_consultant_id').append($("<option></option>")
+            $('#ElementLetter_to_firm_id').append($("<option></option>")
                 .attr("value", value[0]).text(value[1]));
         });
     });
@@ -166,7 +166,7 @@ $(document).ready(function() {
         updateSalutation("Dear " + $(this).find('option:selected').text() + ' service,');
     });
 
-    $('#ElementLetter_to_consultant_id').on('change',function(){
+    $('#ElementLetter_to_firm_id').on('change',function(){
         var reg_exp = /\(([^)]+)\)/;
         var subspecialty_name = reg_exp.exec( $(this).find('option:selected').text() )[1];
         var subspecialty_id;
@@ -175,7 +175,7 @@ $(document).ready(function() {
         $('#ElementLetter_to_subspecialty_id').val(subspecialty_id);
 
         $.getJSON(baseUrl + "/" + moduleName + "/Default/getSalutation", {
-            firm_id: $('#ElementLetter_to_consultant_id').val(),
+            firm_id: $('#ElementLetter_to_firm_id').val(),
         }, function (data) {
             updateSalutation(data);
         });
