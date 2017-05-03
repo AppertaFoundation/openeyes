@@ -64,7 +64,7 @@ class FormularyDrugs extends BaseActiveRecordVersioned
         return array(
             array('name', 'required'),
             array(
-                'name, aliases, tallman, type_id, form_id, dose_unit,default_dose,default_route_id,default_frequency_id,default_duration_id, preservative_free, active, allergy_warnings, national_code',
+                'name, aliases, tallman, type_id, form_id, dose_unit,default_dose,default_route_id,default_frequency_id,default_duration_id, preservative_free, active, allergy_warnings, national_code, tags',
                 'safe',
             ),
         );
@@ -78,6 +78,12 @@ class FormularyDrugs extends BaseActiveRecordVersioned
         return array(
             'allergy_warnings' => array(self::MANY_MANY, 'Drug', 'drug_allergy_assignment(drug_id,allergy_id)'),
             'drug_type' => array(self::BELONGS_TO, 'DrugType', 'type_id'),
+            'form' => array(self::BELONGS_TO, 'DrugForm', 'form_id'),
+            'default_duration' => array(self::BELONGS_TO, 'DrugDuration', 'default_duration_id'),
+            'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'default_frequency_id'),
+            'default_route' => array(self::BELONGS_TO, 'DrugRoute', 'default_route_id'),
+            'subspecialtyAssignments' => array(self::HAS_MANY, 'SiteSubspecialtyDrug', 'drug_id'),
+            'tags' => array(self::MANY_MANY, 'Drug', 'drug_tag(drug_id, tag_id)'),
         );
     }
 

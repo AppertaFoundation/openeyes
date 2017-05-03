@@ -70,6 +70,8 @@ class FormularyDrugsController extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
+        Yii::import('application.modules.OphDrPrescription.models.Tag');
+
         $admin = new Admin(FormularyDrugs::model(), $this);
         if ($id) {
             $admin->setModelId($id);
@@ -118,7 +120,6 @@ class FormularyDrugsController extends BaseAdminController
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
-            'preservative_free' => 'checkbox',
             'active' => 'checkbox',
             'allergy_warnings' => array(
                 'widget' => 'MultiSelectList',
@@ -126,6 +127,16 @@ class FormularyDrugsController extends BaseAdminController
                 'label' => 'Allergy Warnings',
                 'options' => CHtml::encodeArray(CHtml::listData(
                     Allergy::model()->findAll($criteria->condition = "name != 'Other'"),
+                    'id',
+                    'name'
+                )),
+            ),
+            'tags' => array(
+                'widget' => 'MultiSelectList',
+                'relation_field_id' => 'id',
+                'label' => 'Tags',
+                'options' => CHtml::encodeArray(CHtml::listData(
+                    Tag::model()->findAll(),
                     'id',
                     'name'
                 )),
