@@ -114,4 +114,10 @@ class AdminController extends BaseAdminController
                
             ));
     }
+
+    public function actionTags()
+    {
+        $this->genericAdmin('Edit tags', 'Tag');
+    }
+
 }
