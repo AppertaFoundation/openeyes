@@ -205,11 +205,20 @@ class Event extends BaseActiveRecordVersioned
     /**
      * Does this event have some kind of issue that the user should know about.
      *
+     * @param string $type
      * @return bool
      */
-    public function hasIssue()
+    public function hasIssue($type = null)
     {
-        return (boolean)$this->issues;
+        if ($type === null) {
+            return (boolean)$this->issues;
+        }
+        foreach ($this->issues as $event_issue) {
+            if (strtolower($event_issue->issue->name) === strtolower($type)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
