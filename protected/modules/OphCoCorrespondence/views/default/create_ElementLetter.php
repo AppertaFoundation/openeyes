@@ -110,12 +110,25 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                             'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
                         );
                     } else {
-                        if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'Cc') {                      
+
+                        $is_mandatory = true;
+
+                        if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'Cc') {
+
+                            //if the contact_type is (GP or Patient) and the letter type is Internal referral than the fielsd is mandatory (no remove link)
+                            if($document_target['attributes']['contact_type'] == 'GP' || $document_target['attributes']['contact_type'] == 'PATIENT'){
+
+                                if( $element->letterType->name == 'Internal Referral' ){
+                                    $is_mandatory = true;
+                                }
+                            }
+
                             $macro_data['cc'][] = array(
                                 'contact_type' => $document_target['attributes']['contact_type'],
                                 'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
                                 'contact_name' => isset($document_target['attributes']['contact_name']) ? $document_target['attributes']['contact_name'] : null,
                                 'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
+                                'is_mandatory' => $is_mandatory,
                             );
                         }
                     }
@@ -155,7 +168,9 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
             $contact_id = isset($address_data['contact_id']) ? $address_data['contact_id'] : null;
             $contact_name = isset($address_data['contact_name']) ? $address_data['contact_name'] : null;
             $address = isset($address_data['address']) ? $address_data['address'] : null;
-            
+
+            $internal_referral = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
+
             $this->renderPartial('//docman/_create', array(
                 'row_index' => (isset($row_index) ? $row_index : 0),
                 'macro_data' => $macro_data,

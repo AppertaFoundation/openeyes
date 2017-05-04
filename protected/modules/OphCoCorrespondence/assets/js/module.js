@@ -105,7 +105,7 @@ function setRecipientToInternalReferral(){
     }
 }
 
-function resetRecipientToInternalReferral(){
+function resetRecipientFromInternalReferral(){
 	$('#docman_recipient_0').attr('disabled', false).css({'background-color':'white'});
 	$('#DocumentTarget_0_attributes_contact_name').prop('readonly', false).val('');
 	$('#Document_Target_Address_0').prop('readonly', false).val('');
@@ -114,7 +114,6 @@ function resetRecipientToInternalReferral(){
 	$('#DocumentTarget_0_attributes_contact_type').val('');
 
     $('#dm_table tr:first-child td:last-child').html('');
-    $('#yDocumentTarget_0_attributes_contact_type').remove();
 
     //find the GP row and remove then select GP as TO recipient
     $('.docman_contact_type').each(function(i, $element){
@@ -700,25 +699,40 @@ $(document).ready(function() {
             $('.internal-referrer-wrapper').slideDown();
             setRecipientToInternalReferral();
 
-            //add GP to recipients
-            if(typeof docman != "undefined" && !docman.isContactTypeAdded("GP")){
-                docman.createNewRecipientEntry('GP');
-            }
-            //add Patient to recipients
-            if(typeof docman != "undefined" && !docman.isContactTypeAdded("PATIENT")){
-                docman.createNewRecipientEntry('PATIENT');
-            }
+            if( typeof docman !== "undefined" ){
 
+                //add GP to recipients
+                if( !docman.isContactTypeAdded("GP") ){
+                    docman.createNewRecipientEntry('GP');
+                }
+                //hide remove button as GP is mandatory
+                docman.toggleRemoveLink( docman.getRowIndexByContactType('GP') );
+
+                //add Patient to recipients
+                if( !docman.isContactTypeAdded("PATIENT") ){
+                    docman.createNewRecipientEntry('PATIENT');
+                }
+                docman.toggleRemoveLink( docman.getRowIndexByContactType('PATIENT') );
+            }
 
 		} else if($('.internal-referrer-wrapper').is(':visible')) {
             $('.internal-referrer-wrapper').slideUp();
             resetInternalReferralFields();
-            resetRecipientToInternalReferral();
+            resetRecipientFromInternalReferral();
 
-            if (typeof docman != "undefined" && typeof docman.setDeliveryMethods == 'function') {
-                docman.setDeliveryMethods(0);
-            }
-		}
+            if (typeof docman !== "undefined"){
+
+                if( typeof docman.setDeliveryMethods === 'function') {
+                    docman.setDeliveryMethods(0);
+                }
+
+                //restore the remove link
+                docman.toggleRemoveLink( docman.getRowIndexByContactType('GP') );
+                docman.toggleRemoveLink( docman.getRowIndexByContactType('PATIENT') );
+
+
+		    }
+        }
 
 
         //call the setDeliveryMethods with row index 0 as the Internal referral will be the main recipient

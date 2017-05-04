@@ -18,6 +18,10 @@
  */
 ?>
 
+<?php
+    $is_mandatory = isset($is_mandatory) ? $is_mandatory : false;
+?>
+
 <table id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
     <thead>
         <tr id="dm_0">
@@ -142,7 +146,7 @@
 
                     </td>
                     <td>
-                        <a class="remove_recipient removeItem" data-rowindex="<?php echo $index ?>">Remove</a>
+                        <a class="remove_recipient removeItem <?php echo $macro['is_mandatory']? 'hidden' : '' ?>" data-rowindex="<?php echo $index ?>">Remove</a>
                     </td>
 
                 </tr>

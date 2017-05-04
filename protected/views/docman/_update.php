@@ -18,9 +18,13 @@
  */
 ?>
 
-    <?php echo CHtml::activeHiddenField($document_set, 'id') ?>
-    <?php echo CHtml::activeHiddenField($document_set->document_instance[0], 'id') ?>
-    <?php echo CHtml::activeHiddenField($document_set->document_instance[0]->document_instance_data[0], 'id') ?>
+<?php echo CHtml::activeHiddenField($document_set, 'id') ?>
+<?php echo CHtml::activeHiddenField($document_set->document_instance[0], 'id') ?>
+<?php echo CHtml::activeHiddenField($document_set->document_instance[0]->document_instance_data[0], 'id') ?>
+
+<?php
+    $is_mandatory = isset($is_mandatory) ? $is_mandatory : false;
+?>
 
 <?php $element->draft = 1; ?>
 
@@ -104,7 +108,7 @@
                     </td>
                     <td>
                         <?php if($element->draft == "1" && $target->ToCc != 'To'): ?>
-                            <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
+                            <a class="remove_recipient removeItem <?php echo $is_mandatory ? 'hidden' : '' ?>" data-rowindex="<?php echo $row_index ?>">Remove</a>
                         <?php endif; ?>
                     </td>
                 </tr>

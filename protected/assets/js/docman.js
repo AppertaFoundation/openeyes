@@ -199,6 +199,21 @@ var docman = (function() {
             }
         },
 
+        getRowIndexByContactType: function(contact_type){
+            var rowindex;
+            $('.docman_contact_type').each(function(i,$element){
+                if( $($element).val() === contact_type){
+                    rowindex =  $($element).data('rowindex');
+                }
+            });
+
+            return rowindex;
+        },
+
+        toggleRemoveLink: function(rowindex){
+            $('#dm_table').find('tr.rowindex-' + rowindex + ' .remove_recipient').toggle();
+        },
+
 
         //-------------------------------------------------------------
         //  Fetches all the data for the entire document set, in JSON
@@ -299,8 +314,10 @@ var docman = (function() {
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_name').val('');
                 $('#Document_Target_Address_' + rowindex ).val('');
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_id').val('');
-                $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val('OTHER').trigger('change');
-                
+
+                $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val('OTHER');
+                $('#yDocumentTarget_' + rowindex + '_attributes_contact_type').val('OTHER');
+
                 //set readonly
                 //$('#DocumentTarget_' + rowindex + '_attributes_contact_name').attr('readonly', false);
                 $('#Document_Target_Address_' + rowindex).attr('readonly', false);
@@ -340,6 +357,11 @@ var docman = (function() {
 
                     $('#Document_Target_Address_' + rowindex).attr('readonly', (resp.contact_type.toUpperCase() === 'GP'));
 
+                    //check if the contact_type is disabled - if it is we have to insert a hidden field
+                    if( $('#DocumentTarget_' + rowindex + '_attributes_contact_type').is(':disabled') ){
+                        $('#yDocumentTarget_' + rowindex + '_attributes_contact_type').val(resp.contact_type.toUpperCase());
+                    }
+
                     if(rowindex === 0){
                         $("#ElementLetter_introduction").val( resp.text_ElementLetter_introduction );
                     }
@@ -377,7 +399,14 @@ var docman = (function() {
             $('#dm_table .docman_loader').show();
             $.ajax({
                 'type': 'GET',
-                'url': this.baseUrl + 'ajaxGetDocTableRecipientRow?patient_id='+OE_patient_id+'&last_row_index='+last_row_index+'&selected_contact_type='+selected_contact_type,
+                'url': this.baseUrl + 'ajaxGetDocTableRecipientRow',
+                data: {
+                    patient_id: OE_patient_id,
+                    last_row_index: last_row_index,
+                    selected_contact_type: selected_contact_type,
+                    is_mandatory: $('#ElementLetter_letter_type_id option:selected').text() === 'Internal Referral'
+
+                },
                 'context': this,
                 'success': function(resp) {
                     $('#dm_table tr:last').before(resp);

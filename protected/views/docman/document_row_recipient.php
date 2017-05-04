@@ -3,6 +3,8 @@
         $element = new ElementLetter();
     }
 
+    $is_mandatory = isset($is_mandatory) ? $is_mandatory : false;
+
 ?>
 <tr class="new_entry_row rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
     <td>
@@ -48,7 +50,7 @@
     </td>
     <td>
         <?php if($row_index > 0): ?>
-            <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
+            <a class="remove_recipient removeItem <?php echo $is_mandatory ? 'hidden' : '' ?>" data-rowindex="<?php echo $row_index ?>">Remove</a>
         <?php endif; ?>
     </td>
 </tr>

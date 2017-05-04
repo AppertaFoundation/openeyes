@@ -179,19 +179,40 @@ class ElementLetter extends BaseEventTypeElement
 
     public function afterValidate()
     {
-        $document_target = Yii::app()->request->getPost('DocumentTarget', null);
+
+        $gp_found = false;
+        $patient_found = false;
+
+        $document_target = Yii::app()->request->getPost('DocumentTarget');
+
         if(!isset($document_target[0]['attributes']['ToCc']) && Yii::app()->getController()->getAction()->id == 'create'){
             $this->addError('toAddress', 'Please add at least one recipient!');
         }
+
         if(isset($document_target)){
             foreach($document_target as $target){
                 if( !isset($target['attributes']['address']) || empty($target['attributes']['address']) ){
                     $this->addError('toAddress', 'Address cannot be empty!');
                 }
+
+                if($target['attributes']['contact_type'] === 'PATIENT'){
+                    $patient_found = true;
+                }
+                if($target['attributes']['contact_type'] === 'GP'){
+                    $gp_found = true;
+                }
             }
+
+            //if the letter_type is Internal referral than the GP and Patient are mandatory to copy into
+            $internalreferral_letter_type = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
+
+            if($this->letter_type_id == $internalreferral_letter_type->id ){
+                if( !$gp_found || !$patient_found ){
+                    $this->addError('letter_type_id', 'GP and Patient must copied into when letter type is Internal Referral!');
+                }
+            }
+
         }
-        
-        
 
         parent::afterValidate();
     }
