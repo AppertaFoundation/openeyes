@@ -1964,4 +1964,23 @@ class OphCiExamination_API extends \BaseAPI
         $best_reading = $element->getBestReadingByMethods($side, $methods);
         return $best_reading;
     }
+
+    /**
+     * Get clinic outcome comments from the most recent Examination.
+     * Limited to current data context by default.
+     * Returns nothing if the latest Examination does not contain the clinic outcome element (or the comments are empty)
+     *
+     * @param Patient $patient
+     * @param bool $use_context
+     * @return mixed|null
+     */
+    public function getLetterClinicOutcomeComments(\Patient $patient, $use_context = true)
+    {
+        if ($outcome = $this->getElementFromLatestEvent('models\Element_OphCiExamination_ClinicOutcome',
+            $patient,
+            $use_context)
+        ) {
+            return $outcome->description;
+        }
+    }
 }

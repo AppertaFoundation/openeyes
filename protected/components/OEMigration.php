@@ -659,4 +659,38 @@ class OEMigration extends CDbMigration
     {
         $this->verbose = $verbose;
     }
+
+    /**
+     * @param $event_type_id
+     * @param $code
+     * @param $method
+     * @param $description
+     * @throws Exceptio
+     */
+    public function registerShortcode($event_type_id, $code, $method, $description)
+    {
+        if (!preg_match('/^[a-zA-Z]{3}$/', $code)) {
+            throw new Exception("Invalid shortcode: $code");
+        }
+
+        $default_code = $code;
+
+        if ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where('code = :code', array(':code' => strtolower($code)))->queryRow()) {
+            $n = '00';
+            while ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where('code = :code', array(':code' => 'z'.$n))->queryRow()) {
+                $n = str_pad((int) $n + 1, 2, '0', STR_PAD_LEFT);
+            }
+            $code = "z$n";
+
+            echo "Warning: attempt to register duplicate shortcode '$default_code', replaced with 'z$n'\n";
+        }
+
+        $this->insert('patient_shortcode', array(
+            'event_type_id' => $event_type_id,
+            'code' => $code,
+            'default_code' => $default_code,
+            'method' => $method,
+            'description' => $description,
+        ));
+    }
 }
