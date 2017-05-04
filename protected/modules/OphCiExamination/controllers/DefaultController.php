@@ -117,8 +117,7 @@ class DefaultController extends \BaseEventTypeController
         } else {
             $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
         }
-        $remove[] = 'OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion';
-
+        
         if ($this->set) {
             foreach ($this->set->HiddenElementTypes as $element) {
                 $remove[] = $element->class_name;
