@@ -22,10 +22,6 @@
 <?php echo CHtml::activeHiddenField($document_set->document_instance[0], 'id') ?>
 <?php echo CHtml::activeHiddenField($document_set->document_instance[0]->document_instance_data[0], 'id') ?>
 
-<?php
-    $is_mandatory = isset($is_mandatory) ? $is_mandatory : false;
-?>
-
 <?php $element->draft = 1; ?>
 
     <table id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
@@ -108,7 +104,10 @@
                     </td>
                     <td>
                         <?php if($element->draft == "1" && $target->ToCc != 'To'): ?>
-                            <a class="remove_recipient removeItem <?php echo (isset($macro['is_mandatory']) && $macro['is_mandatory'])? 'hidden' : '' ?>" data-rowindex="<?php echo $row_index ?>">Remove</a>
+                            <?php
+                                $is_mandatory = $element->letterType->name == 'Internal Referral';
+                            ?>
+                            <a class="remove_recipient removeItem <?php echo $is_mandatory ? 'hidden' : '' ?>" data-rowindex="<?php echo $row_index ?>">Remove</a>
                         <?php endif; ?>
                     </td>
                 </tr>
