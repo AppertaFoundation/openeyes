@@ -279,7 +279,8 @@ class ExaminationCreator
     {
         if (isset(\Yii::app()->modules['OphCoMessaging'])) {
             $episode = \Episode::model()->findByPk($episodeId);
-            $recipient = \User::model()->findByPk($episode->firm->consultant_id);
+            //$recipient = \User::model()->findByPk($episode->firm->consultant_id);
+            $recipient = \Element_OphTrOperationnote_Surgeon::model()->findByAttributes(array('event_id' => $examinationEvent->id));
             if ($recipient) {
                 $sender = \User::model()->findByPk($userId);
                 $type = OphCoMessaging_Message_MessageType::model()->findByAttributes(array('name' => 'General'));
