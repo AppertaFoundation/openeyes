@@ -87,7 +87,7 @@ function resetInternalReferralFields(){
 
 function setRecipientToInternalReferral(){
 	$('#docman_recipient_0').attr('disabled', true).css({'background-color':'lightgray'});
-	$('#DocumentTarget_0_attributes_contact_name').prop('readonly', true).val('Central Booking');
+	$('#DocumentTarget_0_attributes_contact_name').prop('readonly', true).val('Internal Referral');
 	$('#Document_Target_Address_0').prop('readonly', true).val(internal_referral_booking_address);
 
     var $option = $('<option>',{value:'INTERNALREFERRAL',text:'Booking'});
@@ -179,7 +179,15 @@ $(document).ready(function() {
         }, function (data) {
             updateSalutation(data);
         });
+    });
 
+    $('#ElementLetter_to_site_id').on('change', function(){
+
+        $.getJSON(baseUrl + "/" + moduleName + "/Default/getSiteInfo", {
+            site_id: $('#ElementLetter_to_site_id').val(),
+        }, function (data) {
+            $('#Document_Target_Address_0').val(data.correspondence_name);
+        });
 
     });
 

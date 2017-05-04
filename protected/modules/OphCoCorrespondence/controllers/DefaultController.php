@@ -25,6 +25,7 @@ class DefaultController extends BaseEventTypeController
         'getCc' => self::ACTION_TYPE_FORM,
         'getConsultantsBySubspecialty' => self::ACTION_TYPE_FORM,
         'getSalutation' => self::ACTION_TYPE_FORM,
+        'getSiteInfo' => self::ACTION_TYPE_FORM,
         'expandStrings' => self::ACTION_TYPE_FORM,
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
@@ -662,5 +663,16 @@ class DefaultController extends BaseEventTypeController
 
         Yii::app()->end();
     }
-  
+
+    public function actionGetSiteInfo($site_id)
+    {
+        $site = Site::model()->findByPk($site_id);
+
+        $attributes = $site->attributes;
+        $attributes['correspondence_name'] = $site->getCorrespondenceName();
+        echo CJSON::encode($attributes);
+
+        Yii::app()->end();
+    }
+
 }
