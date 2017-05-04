@@ -65,12 +65,12 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('followup_quantity, followup_period_id, role_id, role_comments, community_patient', 'safe'),
+                array('description, followup_quantity, followup_period_id, role_id, role_comments, community_patient', 'safe'),
                 array('status_id', 'required'),
                 array('status_id', 'statusDependencyValidation'),
                 array('role_id', 'roleDependencyValidation'),
                 array('followup_quantity', 'numerical', 'integerOnly' => true, 'min' => self::FOLLOWUP_Q_MIN, 'max' => self::FOLLOWUP_Q_MAX),
-                array('id, event_id, status_id, followup_quantity, followup_period_id, role_id, role_comments', 'safe', 'on' => 'search'),
+                array('id, event_id, status_id, description, followup_quantity, followup_period_id, role_id, role_comments', 'safe', 'on' => 'search'),
         );
     }
 
@@ -99,6 +99,7 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
         return array(
                 'id' => 'ID',
                 'event_id' => 'Event',
+                'description' => 'Outcome comments',
                 'status_id' => 'Status',
                 'followup_quantity' => 'Follow-up',
                 'followup_period_id' => 'Follow-up period',
@@ -119,7 +120,7 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
-
+        $criteria->compare('description', $this->description);
         $criteria->compare('status_id', $this->status_id);
         $criteria->compare('followup_quanityt', $this->followup_quantity);
         $criteria->compare('followup_quantity', $this->followup_quantity);
