@@ -26,6 +26,11 @@
  * @property string $episode_id
  * @property string $user_id
  * @property string $event_type_id
+ * @property string $info
+ * @property boolean $deleted
+ * @property string $delete_reason
+ * @property boolean $is_automated
+ * @property array $automated_source - json structure
  *
  * The followings are the available model relations:
  * @property Episode $episode
@@ -566,10 +571,16 @@ class Event extends BaseActiveRecordVersioned
             32)) . '/{{PAGE}}';
     }
 
+    /**
+     * Returns the automated source text
+     *
+     * @return string
+     */
     public function automatedText()
     {
         $result = '';
-        if ($this->is_automated) {
+        if ($this->is_automated && $this->automated_source) {
+            // TODO: this really should be in the module API with some kind of default text here
             if (property_exists($this->automated_source, 'goc_number')) {
                 $result .= ' - Community optometric examination by ' . $this->automated_source->name . ' (' . $this->automated_source->goc_number . ')'. "<br>";
 
@@ -605,15 +616,16 @@ class Event extends BaseActiveRecordVersioned
     {
         if ($api = $this->getApi()) {
             if (method_exists($api, 'getEventIcon')) {
-                return $api->getEventIcon($this, $type);
+                return $api->getEventIcon($type, $this);
             }
         }
 
         if ($this->eventType) {
-            return $this->eventType->getEventIcon($type);
+            return $this->eventType->getEventIcon($type, $this);
         }
 
-        return '/assets/img/' . $type . '.png';
+        // TODO: add default images that can be returned
+        return '';
     }
 
     /**
