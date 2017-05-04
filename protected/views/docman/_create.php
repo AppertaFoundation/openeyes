@@ -146,7 +146,7 @@
 
                     </td>
                     <td>
-                        <a class="remove_recipient removeItem <?php echo $macro['is_mandatory']? 'hidden' : '' ?>" data-rowindex="<?php echo $index ?>">Remove</a>
+                        <a class="remove_recipient removeItem <?php echo (isset($macro['is_mandatory']) && $macro['is_mandatory'])? 'hidden' : '' ?>" data-rowindex="<?php echo $index ?>">Remove</a>
                     </td>
 
                 </tr>
