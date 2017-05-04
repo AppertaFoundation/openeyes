@@ -90,8 +90,7 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Check data in child elements
      *
-     * @param BaseEventTypeElements[] $elements
-     *
+     * @param \BaseEventTypeElement[] $elements
      * @return boolean
      */
     protected function checkChildElementsForData($elements)
@@ -107,27 +106,36 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Filters elements based on coded dependencies.
+     * List of elements that should be filtered out from the event.
      *
-     * @TODO: need to ensure that we don't filter out elements that do exist when configuration changes
-     *
-     * @param BaseEventTypeElement[] $elements
-     *
-     * @return BaseEventTypeElement[]
+     * @return array
      */
-    protected function filterElements($elements)
+    protected function getElementFilterList()
     {
-        if (Yii::app()->hasModule('OphCoTherapyapplication')) {
+        if ($this->getApp()->hasModule('OphCoTherapyapplication')) {
             $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagement');
         } else {
             $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
         }
+        $remove[] = 'OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion';
 
         if ($this->set) {
             foreach ($this->set->HiddenElementTypes as $element) {
                 $remove[] = $element->class_name;
             }
         }
+        return $remove;
+    }
+
+    /**
+     * Filters elements based on coded dependencies.
+     *
+     * @param \BaseEventTypeElement[] $elements
+     * @return \BaseEventTypeElement[]
+     */
+    protected function filterElements($elements)
+    {
+        $remove = $this->getElementFilterList();
 
         $final = array();
         foreach ($elements as $el) {
@@ -140,6 +148,11 @@ class DefaultController extends \BaseEventTypeController
             }
         }
         return $final;
+    }
+
+    public function getElementTree($remove_list = array())
+    {
+        return parent::getElementTree($this->getElementFilterList());
     }
 
     /**

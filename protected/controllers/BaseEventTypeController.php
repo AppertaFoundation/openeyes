@@ -296,7 +296,7 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @param ElementType $parent_type
      *
-     * @return BaseEventTypeElement[] $open_elements
+     * @return \BaseEventTypeElement[] $open_elements
      */
     public function getChildElements($parent_type)
     {
