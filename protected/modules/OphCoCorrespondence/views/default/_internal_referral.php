@@ -37,7 +37,7 @@
 
             <div class="large-3 column">
                 <?php
-                    $element->to_site_id = Yii::app()->session['selected_site_id'];
+                    $element->to_site_id = $element->to_site_id ? $element->to_site_id : Yii::app()->session['selected_site_id'];
 
                     echo CHtml::activeDropDownList($element, "to_site_id",
                          CHtml::listData($sites = Institution::model()->getCurrent()->sites, 'id', 'short_name'), array('empty' => '- None -')) ?>
