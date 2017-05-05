@@ -18,6 +18,44 @@
  */
 ?>
 <?php
+$cross_section_ed = null;
+
+if ($element->isNewRecord || $element->{$side . '_eyedraw2'}) {
+    $cross_section_ed = $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+        'onReadyCommandArray' => array(
+            array('addDoodle', array('CorneaCrossSection')),
+            array('addDoodle', array('AntSegCrossSection')),
+            array('addDoodle', array('LensCrossSection')),
+            array('deselectDoodles', array()),
+        ),
+        'listenerArray' => array('anteriorSegmentListener'),
+        'syncArray' => array(
+            $side.'_'.$element->elementType->id => array(
+                'AntSegCrossSection' => array('AntSeg' => array('parameters' => array('apexY') ) ),
+                'LensCrossSection' => array('Lens' => array('parameters' => array('originY') ) ),
+                'ACIOLCrossSection' => array('ACIOL' => array('parameters' => array('originY') ) ),
+                'PCIOLCrossSection' => array('PCIOL' => array('parameters' => array('originY', 'fx') ) ),
+                //'CornealOpacityCrossSection' => array('CornealOpacity' => array('parameters' => array('yMidPoint', 'd', 'h', 'w', 'iW') ) )
+            ),
+        ),
+        'idSuffix' => $side.'_'.$element->elementType->id . '_side',
+        'side' => ($side == 'right') ? 'R' : 'L',
+        'mode' => 'edit',
+        'width' => 198,
+        'height' => 300,
+        'model' => $element,
+        'attribute' => $side . '_eyedraw2',
+        'offsetX' => 10,
+        'offsetY' => 10,
+        'toolbar' => false,
+        'showDrawingControls' => false,
+        'showDoodlePopup' => true,
+        'showDoodlePopupForDoodles' => array('CorneaCrossSection'),
+        'popupDisplaySide' => 'left',
+        'template' => 'OEEyeDrawWidget_InlineToolbar',
+    ), true);
+}
+
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
         array('Lens', 'PCIOL', 'Bleb', 'PI', 'Fuchs', 'CornealOedema', 'PosteriorCapsule', 'CornealPigmentation',
@@ -55,39 +93,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'popupDisplaySide' => 'left',
     'autoReport' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_ed_report',
     'autoReportEditable' => false,
-    'fields' => $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-        'onReadyCommandArray' => array(
-            array('addDoodle', array('CorneaCrossSection')),
-            array('addDoodle', array('AntSegCrossSection')),
-            array('addDoodle', array('LensCrossSection')),
-            array('deselectDoodles', array()),
-        ),
-        'listenerArray' => array('anteriorSegmentListener'),
-        'syncArray' => array(
-            $side.'_'.$element->elementType->id => array(
-                'AntSegCrossSection' => array('AntSeg' => array('parameters' => array('apexY') ) ),
-                'LensCrossSection' => array('Lens' => array('parameters' => array('originY') ) ),
-                'ACIOLCrossSection' => array('ACIOL' => array('parameters' => array('originY') ) ),
-                'PCIOLCrossSection' => array('PCIOL' => array('parameters' => array('originY', 'fx') ) ),
-                //'CornealOpacityCrossSection' => array('CornealOpacity' => array('parameters' => array('yMidPoint', 'd', 'h', 'w', 'iW') ) )
-            ),
-        ),
-        'idSuffix' => $side.'_'.$element->elementType->id . '_side',
-        'side' => ($side == 'right') ? 'R' : 'L',
-        'mode' => 'edit',
-        'width' => 198,
-        'height' => 300,
-        'model' => $element,
-        'attribute' => $side . '_eyedraw2',
-        'offsetX' => 10,
-        'offsetY' => 10,
-        'toolbar' => false,
-        'showDrawingControls' => false,
-        'showDoodlePopup' => true,
-        'showDoodlePopupForDoodles' => array('CorneaCrossSection'),
-        'popupDisplaySide' => 'left',
-        'template' => 'OEEyeDrawWidget_InlineToolbar',
-    ), true)
+    'fields' => $cross_section_ed
 ));
 
 ?>

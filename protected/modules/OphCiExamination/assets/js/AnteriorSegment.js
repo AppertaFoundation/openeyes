@@ -82,6 +82,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     {
         this.$edReportField = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_' + this.options.side + '_ed_report');
         this.$edReportDisplay = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'+this.options.side+'_ed_report_display');
+        this.$nuclearCataract = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'+this.options.side+'_nuclear_id');
 
     };
 
@@ -98,6 +99,17 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     AnteriorSegmentController.prototype.updateReport = function()
     {
         this.$edReportDisplay.html(this.$edReportField.val().replace(/\n/g,'<br />'));
+    };
+
+    AnteriorSegmentController.prototype.storeToHiddenField = function($el, lookupValue)
+    {
+        var map = $el.data('eyedraw-map');
+        var value = '';
+        if (lookupValue in map) {
+            $el.val(map[lookupValue]);
+        } else {
+            $el.val($el.data('eyedraw-default'));
+        }
     };
 
     AnteriorSegmentController.prototype.primaryDrawingNotification = function(msgArray)
@@ -162,8 +174,15 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
             }
             this.updateReport();
             break;
-        case 'parameterChanged':
+            case 'parameterChanged':
             this.updateReport();
+            var change = msgArray['object'];
+            if (change.doodle.className === 'Lens') {
+                // TODO: map for cortical as well as nuclear
+                if (change.parameter === 'nuclearGrade') {
+                    this.storeToHiddenField(this.$nuclearCataract, change.value);
+                }
+            }
             break;
         }
     };

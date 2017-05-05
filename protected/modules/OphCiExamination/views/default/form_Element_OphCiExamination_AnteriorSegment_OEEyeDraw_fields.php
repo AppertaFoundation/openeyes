@@ -32,6 +32,33 @@
             <?php echo $element->getAttributeLabel($side . '_description') ?>:
         </label>
     </div>
+    <?php
+        $eyedraw_map = array();
+        $eyedraw_default = null;
+        foreach (OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Nuclear::model()->findAll() as $option) {
+            if ($option->value) {
+                $eyedraw_map[$option->value] = $option->id;
+            }
+            else {
+                $eyedraw_default = $option->id;
+            }
+        }
+        echo $form->hiddenField($element, $side.'_nuclear_id', array('data-eyedraw-map' => CJSON::encode($eyedraw_map), 'data-eyedraw-default' => $eyedraw_default));
+    ?>
+
+    <!-- TODO: switch to hidden field as well and then ensure still saving value correctly -->
+    <div class="field-row">
+        <label for="<?php echo CHtml::modelName($element).'_'.$side.'_cortical_id';?>">
+            <?php echo $element->getAttributeLabel($side.'_cortical_id')?>:
+        </label>
+        <?php
+        $html_options = array();
+        foreach (OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Cortical::model()->findAll() as $option) {
+            $html_options[(string) $option->id] = array('data-value' => $option->value);
+        }
+        echo $form->dropDownList($element, $side.'_cortical_id', 'OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Cortical', array('options' => $html_options, 'nowrapper' => true));
+        ?>
+    </div>
     <div class="large-10 column end">
         <?php echo CHtml::activeTextArea($element, $side . '_description',
             array('rows' => '2', 'class' => 'autosizejs')) ?>
