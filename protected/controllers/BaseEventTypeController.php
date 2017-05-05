@@ -1456,7 +1456,7 @@ class BaseEventTypeController extends BaseModuleController
                     'form' => $view_data['form'],
                     'mode' => in_array($action, array('create', 'update')) ? BaseEventElementWidget::$EVENT_EDIT_MODE : BaseEventElementWidget::$EVENT_VIEW_MODE
                 ));
-            $widget->run();
+            $this->renderPartial('//elements/widget_element', array('widget' => $widget),$return, $processOutput);
         } else {
             $this->renderPartial($this->getElementViewPathAlias($element).$view, $view_data, $return, $processOutput);
         }
