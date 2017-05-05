@@ -24,7 +24,7 @@
         echo $form->dropDownList(
             $element,
             'site_id',
-            CHtml::listData(Site::model()->findAll(array('condition' => "active=1 and short_name !=''", 'order' => 'short_name')), 'id', 'short_name'),
+            CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id), 'id', 'short_name'),
             array('empty' => '- None -'),
             false);
     ?>
