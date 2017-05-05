@@ -311,7 +311,7 @@ class Document //extends BaseActiveRecord
                                 $data['id'] = $document_output['id'];
                             }
 
-                            if( $this->is_draft && $data['output_type'] == 'Docman' ){
+                            if( $this->is_draft && ($data['output_type'] == 'Docman' || $data['output_type'] == 'Internalreferral') ){
                                 $data['output_status'] = "DRAFT";
                             } else if($this->is_draft == 0 && ( $data['output_type'] == 'Docman' || $data['output_type'] == 'Internalreferral') ){
                                 $data['output_status'] = "PENDING";

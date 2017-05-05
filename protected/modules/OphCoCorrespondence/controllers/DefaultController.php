@@ -101,7 +101,6 @@ class DefaultController extends BaseEventTypeController
     
     public function actionView($id)
     {
-        $title = '';
         $letter = ElementLetter::model()->find('event_id=?', array($id));
 
         $output = $letter->getOutputByType(['Docman', 'Internalreferral']);
