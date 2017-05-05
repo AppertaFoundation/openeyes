@@ -22,19 +22,19 @@
 }
 /* line 19, ../sass/components/_event.scss */
 .event .event-content {
-  background-image: url('../img/watermark.png?1460033156');
+  background-image: url('../img/watermark.png?1475157092');
 }
 /* line 21, ../sass/components/_event.scss */
 .event .event-content.auto {
-  background-image: url('../img/watermark-auto.png?1471611444');
+  background-image: url('../img/watermark-auto.png?1475157092');
 }
 /* line 25, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1460033156');
+  background-image: url('../img/medium.png?1475157092');
 }
 /* line 27, ../sass/components/_event.scss */
 .event .event-title.auto {
-  background-image: url('../img/medium-auto.png?1471611444');
+  background-image: url('../img/medium-auto.png?1475157092');
 }
 
 /* line 33, ../sass/components/_event.scss */
@@ -101,8 +101,14 @@
 }
 
 /* line 18, ../sass/components/elements/_anterior-segment.scss */
-.OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment .eyedraw-fields {
-  padding-top: 36px;
+.OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment .ed-fields-container {
+  padding-top: 111px;
+  left: -15px;
+}
+
+/* line 25, ../sass/components/elements/_anterior-segment.scss */
+.anterior-segment .ed-widget.display {
+  display: inline-block;
 }
 
 /* line 18, ../sass/components/elements/_posterior-pole.scss */
