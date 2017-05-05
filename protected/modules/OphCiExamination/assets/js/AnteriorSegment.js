@@ -83,6 +83,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         this.$edReportField = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_' + this.options.side + '_ed_report');
         this.$edReportDisplay = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'+this.options.side+'_ed_report_display');
         this.$nuclearCataract = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'+this.options.side+'_nuclear_id');
+        this.$corticalCataract = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'+this.options.side+'_cortical_id');
 
     };
 
@@ -133,7 +134,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
 
             // Newly added doodle is passed in message object
             var newDoodle = msgArray['object'];
-
+            
             // Remove biological lens if IOL inserted
             if (newDoodle.className == 'ACIOL' || newDoodle.className == 'PCIOL') {
                 var biologicalLens = newDoodle.drawing.lastDoodleOfClass('Lens');
@@ -153,6 +154,11 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                         }
                     }
                 }
+            }
+
+            if (newDoodle.className === 'Lens') {
+                this.storeToHiddenField(this.$nuclearCataract, newDoodle.nuclearGrade);
+                this.storeToHiddenField(this.$corticalCataract, newDoodle.corticalGrade);
             }
             this.updateReport();
             break;
@@ -181,6 +187,9 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                 // TODO: map for cortical as well as nuclear
                 if (change.parameter === 'nuclearGrade') {
                     this.storeToHiddenField(this.$nuclearCataract, change.value);
+                }
+                if (change.parameter === 'corticalGrade') {
+                    this.storeToHiddenField(this.$corticalCataract, change.value);
                 }
             }
             break;
