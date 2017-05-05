@@ -57,7 +57,10 @@ class DefaultController extends BaseEventTypeController
         parent::initAction($action);
         $this->jsVars['electronic_sending_method_label'] = Yii::app()->params['electronic_sending_method_label'];
 
-        $this->jsVars['internal_referral_booking_address'] = ElementLetter::model()->getInternalReferralSettings('internal_referral_booking_address');
+        $site = Site::model()->findByPk( Yii::app()->session['selected_site_id'] );
+
+        $this->jsVars['internal_referral_booking_address'] = $site->getCorrespondenceName();
+
         $this->jsVars['internal_referral_method_label'] = ElementLetter::model()->getInternalReferralSettings('internal_referral_method_label');
 
         $event_id = Yii::app()->request->getQuery('id');
