@@ -1,6 +1,6 @@
 <?php
 
-class m161102_145600_antseg_sideview extends CDbMigration
+class m170505_145600_antseg_v2 extends CDbMigration
 {
 	public function up()
 	{
@@ -8,10 +8,20 @@ class m161102_145600_antseg_sideview extends CDbMigration
 		$this->addColumn('et_ophciexamination_anteriorsegment', 'left_eyedraw2', 'text');
 		$this->addColumn('et_ophciexamination_anteriorsegment_version', 'right_eyedraw2', 'text');
 		$this->addColumn('et_ophciexamination_anteriorsegment_version', 'left_eyedraw2', 'text');
+
+        $this->addColumn('et_ophciexamination_anteriorsegment', 'right_ed_report', 'text');
+        $this->addColumn('et_ophciexamination_anteriorsegment', 'left_ed_report', 'text');
+        $this->addColumn('et_ophciexamination_anteriorsegment_version', 'right_ed_report', 'text');
+        $this->addColumn('et_ophciexamination_anteriorsegment_version', 'left_ed_report', 'text');
 	}
 
 	public function down()
 	{
+        $this->dropColumn('et_ophciexamination_anteriorsegment_version', 'left_ed_report');
+        $this->dropColumn('et_ophciexamination_anteriorsegment_version', 'right_ed_report');
+        $this->dropColumn('et_ophciexamination_anteriorsegment', 'left_ed_report');
+        $this->dropColumn('et_ophciexamination_anteriorsegment', 'right_ed_report');
+
 		$this->dropColumn('et_ophciexamination_anteriorsegment_version', 'left_eyedraw2');
 		$this->dropColumn('et_ophciexamination_anteriorsegment_version', 'right_eyedraw2');
 		$this->dropColumn('et_ophciexamination_anteriorsegment', 'left_eyedraw2');
