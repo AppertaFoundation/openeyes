@@ -60,7 +60,7 @@ class ExaminationCreator
 
             $this->createComments($userId, $examination, $examinationEvent);
 
-            $this->createMessage($episodeId, $userId, $examination, $examinationEvent);
+            $this->createMessage($episodeId, $userId, $examination, $examinationEvent, $opNoteEventId);
 
             if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity']) || count($examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'])) {
                 $this->createVisualFunction($userId, $examinationEvent);
@@ -275,12 +275,16 @@ class ExaminationCreator
      * @param $examinationEvent
      * @throws \CDbException
      */
-    protected function createMessage($episodeId, $userId, $examination, $examinationEvent)
+    protected function createMessage($episodeId, $userId, $examination, $examinationEvent, $opNoteEventId = NULL)
     {
         if (isset(\Yii::app()->modules['OphCoMessaging'])) {
             $episode = \Episode::model()->findByPk($episodeId);
             //$recipient = \User::model()->findByPk($episode->firm->consultant_id);
-            $recipient = \Element_OphTrOperationnote_Surgeon::model()->findByAttributes(array('event_id' => $examinationEvent->id));
+            $recipient = NULL;
+            if($opNoteEventId !== NULL){
+                $recipient = \Element_OphTrOperationnote_Surgeon::model()->findByAttributes(array('event_id' => $opNoteEventId ));
+            }
+
             if ($recipient) {
                 $sender = \User::model()->findByPk($userId);
                 $type = OphCoMessaging_Message_MessageType::model()->findByAttributes(array('name' => 'General'));
