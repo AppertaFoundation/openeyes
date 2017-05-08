@@ -57,7 +57,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, comments, draft, print', 'safe'),
+            array('event_id, comments, draft, print, edit_reason_id, edit_reason_other', 'safe'),
             array('items', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -79,6 +79,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'items' => array(self::HAS_MANY, 'OphDrPrescription_Item', 'prescription_id'),
+            'edit_reason' => array(self::BELONGS_TO, 'OphDrPrescriptionEditReasons', 'edit_reason_id')
         );
     }
 
@@ -240,7 +241,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      */
     public function isEditable()
     {
-        return $this->draft;
+        return true;
     }
 
     /**
@@ -258,6 +259,20 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
         }
 
         return parent::afterValidate();
+    }
+
+    protected function afterSave()
+    {
+        if($this->draft)
+        {
+            $this->event->addIssue('Draft');
+        }
+        else
+        {
+            $this->event->deleteIssue('Draft');
+        }
+
+        return parent::afterSave();
     }
 
     /**
@@ -307,6 +322,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                 // Save main item attributes
                 $item_model->dose = $item['dose'];
                 $item_model->route_id = $item['route_id'];
+
                 if (isset($item['route_option_id'])) {
                     $item_model->route_option_id = $item['route_option_id'];
                 } else {

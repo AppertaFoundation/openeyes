@@ -130,6 +130,7 @@ class FormularyDrugsController extends BaseAdminController
                     'name'
                 )),
             ),
+            'national_code' => 'text',
         ));
         $admin->editModel();
     }

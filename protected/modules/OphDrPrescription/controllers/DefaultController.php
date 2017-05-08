@@ -27,6 +27,25 @@ class DefaultController extends BaseEventTypeController
         'markPrinted' => self::ACTION_TYPE_PRINT,
     );
 
+    private function userIsAdmin()
+    {
+        $user = Yii::app()->session['user'];
+
+        if ($user->role == 'admin role') {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function actionView($id)
+    {
+        $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
+
+        $this->editable = $this->userIsAdmin() || $model->draft || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
+        return parent::actionView($id);
+    }
+
     /**
      * Defines JS data structure for common drug lookup in prescription.
      */
@@ -157,7 +176,6 @@ class DefaultController extends BaseEventTypeController
     protected function setElementDefaultOptions($element, $action)
     {
         parent::setElementDefaultOptions($element, $action);
-
         if ($action == 'create' && get_class($element) == 'Element_OphDrPrescription_Details') {
             // Prepopulate prescription with set by episode status
             // FIXME: It's brittle relying on the set name matching the status
@@ -165,19 +183,32 @@ class DefaultController extends BaseEventTypeController
             $status_name = $this->episode->status->name;
             $subspecialty_id = $this->firm->getSubspecialtyID();
             $params = array(':subspecialty_id' => $subspecialty_id, ':status_name' => $status_name);
+            
             $set = DrugSet::model()->find(array(
-                    'condition' => 'subspecialty_id = :subspecialty_id AND name = :status_name',
-                    'params' => $params,
-                ));
+                'condition' => 'subspecialty_id = :subspecialty_id AND name = :status_name',
+                'params' => $params,
+            ));
+            
             if ($set) {
                 foreach ($set->items as $item) {
                     $item_model = new OphDrPrescription_Item();
                     $item_model->drug_id = $item->drug_id;
                     $item_model->loadDefaults();
+                    $attr = $item->getAttributes();
+                    unset($attr['drug_set_id']);
+                    $item_model->attributes = $attr;
+                    
+                    $item_model->tapers = $item->tapers;
+                    
+                    if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
+                        if ($apieye = $api->getLastEye($this->patient)) {
+                            $item_model->route_option_id = $apieye;
+                        }
+                    }
+                    
                     $items[] = $item_model;
                 }
             }
-
             $element->items = $items;
         }
     }
@@ -483,7 +514,7 @@ class DefaultController extends BaseEventTypeController
                 // Source is an drug set item which contains frequency and duration data
                 $item->drug_id = $source->drug_id;
                 $item->loadDefaults();
-                foreach (array('duration_id', 'frequency_id', 'dose') as $field) {
+                foreach (array('duration_id', 'frequency_id', 'dose', 'route_id') as $field) {
                     if ($source->$field) {
                         $item->$field = $source->$field;
                     }
@@ -537,4 +568,34 @@ class DefaultController extends BaseEventTypeController
             return $output;
         }
     }
+
+    public function actionUpdate($id, $reason = null)
+    {
+        global $reason_id;
+        global $reason_other_text;
+
+        $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
+
+        if(is_null($reason) && !$model->draft)
+        {
+            $this->render('ask_reason', array('id'=>$id));
+        }
+        else
+        {
+            if(isset($_POST['do_not_save']) && $_POST['do_not_save']=='1')
+            {
+                $reason_id = isset($_POST['reason']) ? $_POST['reason'] : 0;
+                $reason_other_text = isset($_POST['reason_other']) ? $_POST['reason_other'] : '';
+                $_POST=null;
+            }
+            else
+            {
+                $reason_id = $model->edit_reason_id;
+                $reason_other_text = $model->edit_reason_other;
+            }
+
+            parent::actionUpdate($id);
+        }
+    }
+
 }

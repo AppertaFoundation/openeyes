@@ -411,10 +411,6 @@ class Document //extends BaseActiveRecord
         $criteria->addCondition('document_target_id = :document_target_id');
         $criteria->params[':document_target_id'] = $document_target_id;
         
-        // we do not delete docman
-        $criteria->addCondition('output_type != :output_type');
-        $criteria->params[':output_type'] = "Docman";
-        
         $criteria->addNotInCondition('id', $document_output_ids);
         
         DocumentOutput::model()->deleteAll($criteria);

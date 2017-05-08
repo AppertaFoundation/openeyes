@@ -160,7 +160,7 @@ $criteria = new CDbCriteria();
             <div class="row field-row">
                 <div class="large-2 column">
                     <label>
-                        No fundal view/ vitreous opacities
+                        Fundus Obscured
                     </label>
                 </div>
                 <div class="large-2 column">
