@@ -17,9 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
 <div class="element-fields element-eyes row">
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
     <div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {
         ?> inactive<?php
     }?>" data-side="right">
@@ -156,7 +156,7 @@
                 <div class="large-4 column">
                 </div>
             </div>
-
+        </div>
         <div class="inactive-form">
             <div class="add-side">
                 <a href="#">

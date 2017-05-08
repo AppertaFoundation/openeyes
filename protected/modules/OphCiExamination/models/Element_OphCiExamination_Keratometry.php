@@ -98,6 +98,17 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
                  right_quality_front, right_quality_back, left_quality_front, left_quality_back, 
                  right_cl_removed, left_cl_removed, right_flourescein_value, left_flourescein_value', 'safe'),
 
+            array('right_anterior_k1_value, left_anterior_k1_value, right_anterior_k2_value, left_anterior_k2_value, 
+                    right_quality_front, right_quality_back, left_quality_front, left_quality_back, 
+                    right_axis_anterior_k1_value, left_axis_anterior_k1_value, right_axis_anterior_k2_value, left_axis_anterior_k2_value,
+                    right_kmax_value, left_kmax_value, right_thinnest_point_pachymetry_value, left_thinnest_point_pachymetry_value,
+                    right_flourescein_value, left_flourescein_value, right_cl_removed, left_cl_removed', 'required'),
+
+            array('right_anterior_k1_value, right_anterior_k2_value, right_kmax_value,
+                    left_anterior_k1_value, left_anterior_k2_value, left_kmax_value', 'numerical',
+                'integerOnly'=>false,'min'=>1, 'max'=>150),
+
+
             array('right_anterior_k1_value, right_anterior_k2_value, right_kmax_value,
                     left_anterior_k1_value, left_anterior_k2_value, left_kmax_value', 'numerical',
                 'integerOnly'=>false,'min'=>1, 'max'=>150),
@@ -107,17 +118,17 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
                 'integerOnly'=>false,'min'=>-150, 'max'=>-1),
 
 
-            array('right_thinnest_point_pachymetry_value, left_thinnest_point_pachymetry_value',
-                'in','range'=>range(10,800)),
+            array('right_thinnest_point_pachymetry_value, left_thinnest_point_pachymetry_value', 'numerical',
+                'integerOnly'=>false,'min'=>10, 'max'=>800),
+
 
             array('right_ba_index_value, left_ba_index_value', 'numerical',
                 'integerOnly'=>false,'min'=>1, 'max'=>100),
 
-            array('right_kmax_value, right_anterior_k2_value', 'kmaxRValueCompare'),
-            array('left_kmax_value, left_anterior_k2_value', 'kmaxLValueCompare'),
-
-            array('right_anterior_k1_value, right_anterior_k2_value', 'k2RValueCompare'),
-            array('left_anterior_k1_value, left_anterior_k2_value', 'k2LValueCompare'),
+            array('right_kmax_value', 'kValueCompare', 'compare' => 'right_anterior_k2_value', 'side' => 'Right'),
+            array('left_kmax_value', 'kValueCompare', 'compare' => 'left_anterior_k2_value', 'side' => 'Left'),
+            array('right_anterior_k2_value', 'kValueCompare', 'compare' => 'right_anterior_k1_value', 'side' => 'Right'),
+            array('left_anterior_k2_value', 'kValueCompare', 'compare' => 'left_anterior_k1_value', 'side' => 'Left'),
 
             // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
@@ -134,31 +145,12 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
         );
     }
 
-    public function kmaxRValueCompare($KmaxValue,$params)
+    public function kValueCompare($KValue, $params)
     {
-        if($this->right_kmax_value <= $this->right_anterior_k2_value){
-            $this->addError($KmaxValue, 'KMax must be bigger than K2');
-        }
-    }
-
-    public function kmaxLValueCompare($KmaxValue,$params)
-    {
-        if($this->left_kmax_value <= $this->left_anterior_k2_value){
-            $this->addError($KmaxValue, 'KMax must be bigger than K2');
-        }
-    }
-
-    public function k2RValueCompare($KmaxValue,$params)
-    {
-        if($this->right_anterior_k2_value <= $this->right_anterior_k1_value){
-            $this->addError($KmaxValue, 'K2 must be bigger than K1');
-        }
-    }
-
-    public function k2LValueCompare($KmaxValue,$params)
-    {
-        if($this->left_anterior_k2_value <= $this->left_anterior_k1_value){
-            $this->addError($KmaxValue, 'K2 must be bigger than K1');
+        if($this->{$KValue} < $this->{$params['compare']}){
+            $this->addError($KValue, $this->getAttributeLabel($KValue) . ' (' . $params['side']
+                . ') must be bigger than ' . $this->getAttributeLabel($params['compare']) . ' ('
+                . $params['side'] . ')');
         }
     }
 

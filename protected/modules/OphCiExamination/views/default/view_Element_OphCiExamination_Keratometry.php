@@ -20,19 +20,19 @@
 
 <div class="element-data">
     <div class="data-row">
-        <div class="large-2 column">
+        <div class="large-3 column">
             <div class="data-label">
                 <?php echo $element->getAttributeLabel('tomographer_id')?>:
             </div>
         </div>
-        <div class="large-2 column">
+        <div class="large-3 column">
             <div class="data-value">
                 <?php
                 echo OEModule\OphCiExamination\models\OphCiExamination_Tomographer_Device::model()->getName($element->tomographer_id);
                 ?>
             </div>
         </div>
-        <div class="large-8 column">
+        <div class="large-6 column">
             </div>
     </div>
 </div>

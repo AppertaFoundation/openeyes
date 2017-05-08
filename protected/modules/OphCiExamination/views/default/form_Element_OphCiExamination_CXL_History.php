@@ -140,13 +140,14 @@
     </div>
 </div>
 <div class="element-fields element-eyes row">
-    <div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+    <div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
         ?> inactive<?php
     }?>" data-side="right">
         <div class="active-form">
             <a href="#" class="icon-remove-side remove-side">Remove side</a>
             <div class="row field-row">
-                <div class="large-4 column">
+                <div class="large-5 column">
                     <label><?php echo $element->getAttributeLabel('right_previous_cxl_value')?>:</label>
                 </div>
                 <div class="large-4 column">
@@ -172,12 +173,12 @@
                         ));
                     ?>
                 </div>
-                <div class="large-4 column">
+                <div class="large-3 column">
                 </div>
             </div>
 
             <div class="row field-row">
-                <div class="large-4 column">
+                <div class="large-5 column">
                     <label><?php echo $element->getAttributeLabel('right_previous_refractive_value')?>:</label>
                 </div>
                 <div class="large-4 column">
@@ -203,11 +204,11 @@
                         ));
                     ?>
                 </div>
-                <div class="large-4 column">
+                <div class="large-3 column">
                 </div>
             </div>
             <div class="row field-row">
-                <div class="large-4 column">
+                <div class="large-5 column">
                     <label><?php echo $element->getAttributeLabel('right_intacs_kera_ring_value')?>:</label>
                 </div>
                 <div class="large-4 column">
@@ -233,12 +234,12 @@
                         ));
                     ?>
                 </div>
-                <div class="large-4 column">
+                <div class="large-3 column">
                 </div>
             </div>
 
             <div class="row field-row">
-                <div class="large-4 column">
+                <div class="large-5 column">
                     <label><?php echo $element->getAttributeLabel('right_previous_hsk_keratitis_value')?>:</label>
                 </div>
                 <div class="large-4 column">
@@ -264,7 +265,7 @@
                         ));
                     ?>
                 </div>
-                <div class="large-4 column">
+                <div class="large-3 column">
                 </div>
             </div>
 
@@ -279,13 +280,13 @@
             </div>
         </div>
     </div>
-    <div class="element-eye left-eye column side right<?php if (!$element->hasLeft()) {
+    <div class="element-eye left-eye column right side <?php if (!$element->hasLeft()) {
         ?> inactive<?php
     }?>" data-side="left">
         <div class="active-form">
             <a href="#" class="icon-remove-side remove-side">Remove side</a>
             <div class="row field-row">
-                <div class="large-4 column">
+                <div class="large-5 column">
                     <label><?php echo $element->getAttributeLabel('left_previous_cxl_value')?>:</label>
                 </div>
                 <div class="large-4 column">
@@ -311,12 +312,12 @@
                         ));
                     ?>
                 </div>
-                <div class="large-4 column">
+                <div class="large-3 column">
                 </div>
             </div>
 
             <div class="row field-row">
-                <div class="large-4 column">
+                <div class="large-5 column">
                     <label><?php echo $element->getAttributeLabel('left_previous_refractive_value')?>:</label>
                 </div>
                 <div class="large-4 column">
@@ -342,11 +343,11 @@
                         ));
                     ?>
                 </div>
-                <div class="large-4 column">
+                <div class="large-3 column">
                 </div>
             </div>
             <div class="row field-row">
-                <div class="large-4 column">
+                <div class="large-5 column">
                     <label><?php echo $element->getAttributeLabel('left_intacs_kera_ring_value')?>:</label>
                 </div>
                 <div class="large-4 column">
@@ -372,12 +373,12 @@
                         ));
                     ?>
                 </div>
-                <div class="large-4 column">
+                <div class="large-3 column">
                 </div>
             </div>
 
             <div class="row field-row">
-                <div class="large-4 column">
+                <div class="large-5 column">
                     <label><?php echo $element->getAttributeLabel('left_previous_hsk_keratitis_value')?>:</label>
                 </div>
                 <div class="large-4 column">
@@ -402,7 +403,7 @@
                             'field' => 8,
                         ));
                     ?>                </div>
-                <div class="large-4 column">
+                <div class="large-3 column">
                 </div>
             </div>
 
