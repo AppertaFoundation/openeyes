@@ -282,7 +282,8 @@ class ExaminationCreator
             //$recipient = \User::model()->findByPk($episode->firm->consultant_id);
             $recipient = NULL;
             if($opNoteEventId !== NULL){
-                $recipient = \Element_OphTrOperationnote_Surgeon::model()->findByAttributes(array('event_id' => $opNoteEventId ));
+                $surgeon = \Element_OphTrOperationnote_Surgeon::model()->findByAttributes(array('event_id' => $opNoteEventId ));
+                $recipient = $surgeon->surgeon;
             }
 
             if ($recipient) {
