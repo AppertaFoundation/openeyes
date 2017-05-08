@@ -132,14 +132,18 @@ class FormularyDrugsController extends BaseAdminController
                 )),
             ),
             'tags' => array(
-                'widget' => 'MultiSelectList',
+                'widget' => 'TagsInput',
+                'relation' => 'tags',
                 'relation_field_id' => 'id',
                 'label' => 'Tags',
-                'options' => CHtml::encodeArray(CHtml::listData(
+                /*'options' => CHtml::encodeArray(CHtml::listData(
                     Tag::model()->findAll(),
                     'id',
                     'name'
-                )),
+                )),*/
+                'htmlOptions' => array(
+                    'autocomplete_url' => $this->createAbsoluteUrl('/oeadmin/formularyDrugs/tagsAutocomplete')
+                )
             ),
             'national_code' => 'text',
         ));
@@ -153,5 +157,18 @@ class FormularyDrugsController extends BaseAdminController
     {
         $admin = new Admin(FormularyDrugs::model(), $this);
         $admin->deleteModel();
+    }
+
+    public function actionTagsAutocomplete($term)
+    {
+        $tags = Tag::model()->findAllBySql("SELECT * FROM tag WHERE name LIKE CONCAT('%', :term, '%')", array(':term'=>$term));
+        $tnames = array();
+        foreach ($tags as $tag)
+        {
+            $tnames[] = $tag->name;
+        }
+
+        header('content-type: application/json');
+        echo CJSON::encode($tnames);
     }
 }
