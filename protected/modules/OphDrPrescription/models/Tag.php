@@ -55,6 +55,7 @@ class Tag extends BaseActiveRecordVersioned
 		// class name for the relations automatically generated below.
 		return array(
 			'drugs' => array(self::MANY_MANY, 'Drug', 'drug_tag(drug_id, tag_id)'),
+            'drug_type' => array(self::HAS_MANY, 'DrugType', 'tag_id'),
             'medications' => array(self::MANY_MANY, 'Medication', 'medication_tag(medication_id, tag_id)'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),

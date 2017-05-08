@@ -4,7 +4,7 @@ class m170502_184511_tags_feature extends OEMigration
 {
 	public function safeUp()
 	{
-	    $this->createOETable('tag', array(
+        $this->createOETable('tag', array(
 	        'id' => 'pk',
             'name' => 'string NOT NULL'
         ), true);
@@ -21,6 +21,10 @@ class m170502_184511_tags_feature extends OEMigration
             'constraint drug_tags_di_fk foreign key (drug_id) references drug (id)'
         ), true);
 
+	    $this->addColumn('drug_type', 'tag_id', 'int(11) null');
+        $this->addColumn('drug_type_version', 'tag_id', 'int(11) null');
+
+        $this->execute("ALTER TABLE `drug_type` ADD CONSTRAINT drug_type_tags_fk foreign key (tag_id) references tag (id)");
 
         $this->execute("INSERT IGNORE INTO `tag` (`name`)
                         SELECT `name` FROM `drug_type`;");
@@ -34,6 +38,11 @@ class m170502_184511_tags_feature extends OEMigration
         $this->execute("INSERT INTO `drug_tag` (`drug_id`, `tag_id`)
                         SELECT `drug`.`id`, 1 FROM `drug` WHERE `preservative_free` = 1;");
 
+        $this->execute("UPDATE drug_type, `tag`, drug_tag, drug SET drug_type.tag_id = tag.id 
+                        WHERE tag.id = drug_tag.tag_id
+                        AND drug.type_id = drug_type.id
+                        AND tag.name = drug_type.name");
+
         $this->createOETable('medication_tag', array(
             'id' => 'pk',
             'medication_id' => 'int(10) unsigned not null',
@@ -42,6 +51,12 @@ class m170502_184511_tags_feature extends OEMigration
             'constraint medication_tags_mi_fk foreign key (medication_id) references medication (id)'
         ), true);
 
+        $this->execute("CREATE VIEW `drug_drug_type` AS SELECT drug.id AS drug_id, drug_type.id AS drug_type_id
+                            FROM drug_tag
+                            LEFT JOIN drug ON drug.id = drug_tag.drug_id
+                            LEFT JOIN drug_type ON drug_type.tag_id = drug_tag.tag_id
+                            WHERE drug_type.id IS NOT NULL");
+
 
 	}
 
@@ -49,7 +64,12 @@ class m170502_184511_tags_feature extends OEMigration
 	{
         $this->dropOETable('drug_tag', true);
         $this->dropOETable('medication_tag', true);
+        $this->execute('ALTER TABLE openeyes.drug_type DROP FOREIGN KEY drug_type_tags_fk;');
+        $this->execute('DROP INDEX drug_type_tags_fk ON openeyes.drug_type;');
+        $this->execute('ALTER TABLE openeyes.drug_type DROP tag_id;');
+        $this->dropColumn('drug_type_version', 'tag_id');
         $this->dropOETable('tag', true);
+        $this->execute("DROP VIEW IF EXISTS `drug_drug_type`");
 	}
 
 }

@@ -77,7 +77,7 @@ class FormularyDrugs extends BaseActiveRecordVersioned
     {
         return array(
             'allergy_warnings' => array(self::MANY_MANY, 'Drug', 'drug_allergy_assignment(drug_id,allergy_id)'),
-            'drug_type' => array(self::BELONGS_TO, 'DrugType', 'type_id'),
+            'drug_type' => array(self::MANY_MANY, 'DrugType', 'drug_drug_type(drug_id, drug_type_id)'),
             'form' => array(self::BELONGS_TO, 'DrugForm', 'form_id'),
             'default_duration' => array(self::BELONGS_TO, 'DrugDuration', 'default_duration_id'),
             'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'default_frequency_id'),
@@ -93,13 +93,12 @@ class FormularyDrugs extends BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
-            'type_id' => 'Type',
             'tallman' => 'Tall Man Name',
             'form_id' => 'Form',
             'default_route_id' => 'Default Route',
             'default_frequency_id' => 'Default Frequency',
             'default_duration_id' => 'Default Duration',
-            'drug_type.name' => 'Type',
+            'drug_type.name' => 'Type(s)',
             'national_code' => 'National code'
         );
     }
