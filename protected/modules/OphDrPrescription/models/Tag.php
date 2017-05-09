@@ -17,6 +17,7 @@
  * @property Medication[] $medications
  * @property User $createdUser
  * @property User $lastModifiedUser
+ * @property Int $active
  */
 class Tag extends BaseActiveRecordVersioned
 {
@@ -42,7 +43,7 @@ class Tag extends BaseActiveRecordVersioned
 			array('last_modified_date, created_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, name, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+			array('id, name, last_modified_user_id, last_modified_date, created_user_id, created_date, active', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -74,6 +75,7 @@ class Tag extends BaseActiveRecordVersioned
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
 			'created_date' => 'Created Date',
+            'relateddrugscount' => 'No. of drugs tagged'
 		);
 	}
 
@@ -127,5 +129,10 @@ class Tag extends BaseActiveRecordVersioned
         }
 
         return true;
+    }
+
+    public function getRelatedDrugsCount()
+    {
+        return (int)count($this->drugs);
     }
 }

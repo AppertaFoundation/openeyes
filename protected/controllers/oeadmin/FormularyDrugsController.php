@@ -81,13 +81,6 @@ class FormularyDrugsController extends BaseAdminController
         $admin->setEditFields(array(
             'id' => 'label',
             'name' => 'text',
-            'type_id' => array(
-                'widget' => 'DropDownList',
-                'options' => CHtml::listData(DrugType::model()->findAll(), 'id', 'name'),
-                'htmlOptions' => null,
-                'hidden' => false,
-                'layoutColumns' => null,
-            ),
             'aliases' => 'text',
             'tallman' => 'text',
             'form_id' => array(

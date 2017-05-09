@@ -117,7 +117,12 @@ class AdminController extends BaseAdminController
 
     public function actionTags()
     {
-        $this->genericAdmin('Edit tags', 'Tag');
+        $this->genericAdmin('Edit tags', 'Tag',
+            array(
+                'extra_fields'=>array(
+                    array('field')
+                )
+            ));
     }
 
     public function actionDrugType()

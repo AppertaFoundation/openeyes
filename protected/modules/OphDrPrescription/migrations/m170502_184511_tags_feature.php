@@ -6,7 +6,8 @@ class m170502_184511_tags_feature extends OEMigration
 	{
         $this->createOETable('tag', array(
 	        'id' => 'pk',
-            'name' => 'string NOT NULL'
+            'name' => 'string NOT NULL',
+            'active' => 'TINYINT NOT NULL DEFAULT 1'
         ), true);
 
 	    $this->createIndex('idx_tag_name', 'tag', 'name', true);
