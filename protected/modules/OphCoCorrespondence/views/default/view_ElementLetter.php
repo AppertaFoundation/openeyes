@@ -16,15 +16,31 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<div class="row data-row">
+
+$correspondeceApp = \SettingInstallation::model()->find('`key` = "ask_correspondence_approval"');
+if($correspondeceApp->value === "on") {
+    ?>
+    <div class="row data-row">
         <div class="large-2 column" style="margin-left: 10px;">
-                <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_signed_off')) . ': '; ?></div>
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_signed_off')) . ': '; ?></div>
         </div>
         <div class="large-9 column end">
-                <div class="data-value"><?php echo $element->is_signed_off == 1 ? 'Yes' : ( $element->is_signed_off === 0 ? 'No' : 'N/A' ); ?></div>
+                <div class="data-value">
+                    <?php
+                        if($element->is_signed_off == NULL){
+                            echo 'N/A';
+                        } else if((int)$element->is_signed_off == 1){
+                            echo 'Yes';
+                        } else {
+                            echo 'No';
+                        }
+                    ?>
+                </div>
         </div>
-</div>
+    </div>
+    <?php
+}
+?>
         
 <div id="correspondence_out" class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?>">
 	<header>

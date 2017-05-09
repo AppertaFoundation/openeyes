@@ -134,8 +134,9 @@ class OphCoCorrespondence_API extends BaseAPI
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract');
+            if ($element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract')) {
                 return $element->iol_type->name;
+            }
         }
     }
 
@@ -143,8 +144,9 @@ class OphCoCorrespondence_API extends BaseAPI
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract');
-            return $element->iol_power;
+            if ($element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract')) {
+                return $element->iol_power;
+            }
         }
     }
 
@@ -152,9 +154,9 @@ class OphCoCorrespondence_API extends BaseAPI
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-            $element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
-                'Element_OphTrOperationnote_ProcedureList');
-            return $element->eye->adjective;
+            if ($element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_ProcedureList')) {
+                return $element->eye->adjective;
+            }
         }
     }
 
@@ -192,20 +194,25 @@ class OphCoCorrespondence_API extends BaseAPI
         }
 
         if($data){
-        for ($i = 0; $i < count($data); ++$i) {
-            if($data[$i]->side == 0){
-                $rightData[] = $data[$i];
+            for ($i = 0; $i < count($data); ++$i) {
+                if($data[$i]->side == 0){
+                    $rightData[] = $data[$i];
+                }
+                if($data[$i]->side == 1){
+                    $leftData[] = $data[$i];
+                }
             }
-            if($data[$i]->side == 1){
-                $leftData[] = $data[$i];
-            }
-        }
             $unitId = $chosenVA->unit_id;
 
-            $rightVA = $api->getVAvalue($rightData[0]->value, $unitId);
-            $leftVA = $api->getVAvalue($leftData[0]->value, $unitId);
+            if(isset($rightData)) {
+                $rightVA = $api->getVAvalue($rightData[0]->value, $unitId);
+            }
 
-            return $rightVA . " Right Eye" . " " . $leftVA . " Left Eye";
+            if(isset($leftData)) {
+                $leftVA = $api->getVAvalue($leftData[0]->value, $unitId);
+            }
+
+            return (isset($rightVA) ? $rightVA : "not recorded") . " Right Eye" . ", " . (isset($leftVA) ? $leftVA : "not recorded") . " Left Eye";
         }else{
             return;
         }
