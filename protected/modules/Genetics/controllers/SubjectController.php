@@ -80,6 +80,12 @@ class SubjectController extends BaseModuleController
     {
         $admin = new Crud(GeneticsPatient::model(), $this);
 
+
+        // ok, so this awesome solution pre-selects a freshly created pedigree
+        if( isset($_GET['pedigree_id']) && $_GET['pedigree_id'] ){
+            $_POST['GeneticsPatient[pedigrees]'] = array($_GET['pedigree_id']);
+        }
+
         if ($id) {
             $admin->setModelId($id);
             $this->renderPatientPanel = true;
@@ -170,7 +176,7 @@ class SubjectController extends BaseModuleController
             'create_new_pedigree' => array(
                 'widget' => 'LinkTo',
                 'label'  => 'Create new pedigree',
-                'linkTo' => '/Genetics/pedigree/edit'
+                'linkTo' => '/Genetics/pedigree/edit' . (isset($_GET['patient']) ? ('?patient=' . $_GET['patient']) : null)
 
             ),
             'previous_studies' => array(
