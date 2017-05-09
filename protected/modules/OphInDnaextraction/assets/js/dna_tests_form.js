@@ -102,7 +102,10 @@ $(function(){
                 {
                     $form.find(".successmessage").show();
                     $(".frmDnaTests_loader").hide();
-                    window.onBeforeUnload = null;
+
+                    //set input to disabled
+                    $("tr.transaction-row", $form).last().find('input').prop('disabled', true);
+
                 }
                 else
                 {

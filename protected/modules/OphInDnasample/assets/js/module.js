@@ -83,6 +83,15 @@ $(document).ready(function() {
 		}
 	});
 
+    //invode datepicker on ajax inputs
+    $('.transactions').on('click', '.dna-hasDatepicker', function(){
+        $(this).datepicker({
+            maxDate: 'today',
+            dateFormat: 'd M yy'
+        });
+        $(this).datepicker("show");
+    });
+
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }

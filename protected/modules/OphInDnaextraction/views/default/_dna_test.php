@@ -29,7 +29,7 @@
       $dateTime = new DateTime( $transaction->date ? $transaction->date : $value);
       $this->widget('zii.widgets.jui.CJuiDatePicker', array(
           'name'  => "OphInDnaextraction_DnaTests_Transaction[$i][date]",
-          'value' => isset($value[$i]['date']) ? $value[$i]['date'] : $dateTime->format('d M Y'),
+          'value' => isset($value[$i]['date']) ? $value[$i]['date'] : $dateTime->format('j M Y'),
           'id'    => "OphInDnaextraction_DnaTests_Transaction_{$i}_date",
           'options' => array(
               'showAnim'      => 'fold',
@@ -38,6 +38,7 @@
               'altFormat'     => 'yy-mm-dd',
               'altField'      => "OphInDnaextraction_DnaTests_Transaction_{$i}_date_alt",
               'dateFormat'    => Helper::NHS_DATE_FORMAT_JS,
+              'maxDate'       => 'today'
           ),
           'htmlOptions' =>array(
                 'class' => 'dna-hasDatepicker',
