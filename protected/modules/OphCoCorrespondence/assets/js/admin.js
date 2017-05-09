@@ -111,6 +111,12 @@ $(document).ready(function() {
 	if ($('#LetterMacro_body').length >0) {
 		macro_cursor_position = $('#LetterMacro_body').val().length;
 	}
+
+    $('#internal_referral_settings tr.clickable').click(function (e) {
+        e.preventDefault();
+        window.location.href = baseUrl + '/OphCoCorrespondence/oeadmin/internalReferralSettings/editSetting?key=' + $(this).data('key');
+    });
+
 });
 
 var macro_cursor_position = 0;

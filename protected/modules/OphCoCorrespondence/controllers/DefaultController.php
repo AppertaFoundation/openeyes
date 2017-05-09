@@ -23,6 +23,9 @@ class DefaultController extends BaseEventTypeController
         'getMacroData' => self::ACTION_TYPE_FORM,
         'getString' => self::ACTION_TYPE_FORM,
         'getCc' => self::ACTION_TYPE_FORM,
+        'getConsultantsBySubspecialty' => self::ACTION_TYPE_FORM,
+        'getSalutation' => self::ACTION_TYPE_FORM,
+        'getSiteInfo' => self::ACTION_TYPE_FORM,
         'expandStrings' => self::ACTION_TYPE_FORM,
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
@@ -53,13 +56,18 @@ class DefaultController extends BaseEventTypeController
     {
         parent::initAction($action);
         $this->jsVars['electronic_sending_method_label'] = Yii::app()->params['electronic_sending_method_label'];
-        
+
+        $site = Site::model()->findByPk( Yii::app()->session['selected_site_id'] );
+
+        $this->jsVars['internal_referral_booking_address'] = $site->getCorrespondenceName();
+
+        $this->jsVars['internal_referral_method_label'] = ElementLetter::model()->getInternalReferralSettings('internal_referral_method_label');
+
         $event_id = Yii::app()->request->getQuery('id');
         if($event_id){
             $letter = ElementLetter::model()->find('event_id=?', array($event_id));
             $this->editable = $letter->isEditable();
             $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
-
 
             if($action == 'update'){
                 if( !Yii::app()->request->isPostRequest && $letter->draft){
@@ -96,10 +104,9 @@ class DefaultController extends BaseEventTypeController
     
     public function actionView($id)
     {
-        $title = '';
         $letter = ElementLetter::model()->find('event_id=?', array($id));
 
-        $output = $letter->getOutputByType($type = 'Docman');
+        $output = $letter->getOutputByType(['Docman', 'Internalreferral']);
         if($output){
             $docnam = $output[0]; //for now only one Docman allowed
             $title = $docnam->output_status;
@@ -423,7 +430,7 @@ class DefaultController extends BaseEventTypeController
 
             /**
              * this is a hotfix for DocMan, when we generate correspondences
-             * where the main recipient is NOT the GP the than we need to cherrypick it
+             * where the main recipient is NOT the GP than we need to cherrypick it
              */
             if( isset($_GET['print_only_gp']) && $_GET['print_only_gp'] == "1" ){
 
@@ -632,5 +639,42 @@ class DefaultController extends BaseEventTypeController
             echo '1';
         }
     }
-  
+
+    /**
+     * Returns the consultants by subspecialty
+     * @param null $subspecialty_id
+     */
+    public function actionGetConsultantsBySubspecialty($subspecialty_id = null)
+    {
+        $firms = Firm::model()->getListWithSpecialties(false, $subspecialty_id);
+        echo CJSON::encode($firms);
+
+        Yii::app()->end();
+    }
+
+    /**
+     * Returns the consultant's salutation
+     * @param $firm_id
+     */
+    public function actionGetSalutation($firm_id)
+    {
+        $firm = Firm::model()->findByPk($firm_id);
+        $user = User::model()->findByPk($firm->consultant_id);
+
+        echo CJSON::encode($user->getLetterIntroduction());
+
+        Yii::app()->end();
+    }
+
+    public function actionGetSiteInfo($site_id)
+    {
+        $site = Site::model()->findByPk($site_id);
+
+        $attributes = $site->attributes;
+        $attributes['correspondence_name'] = $site->getCorrespondenceName();
+        echo CJSON::encode($attributes);
+
+        Yii::app()->end();
+    }
+
 }

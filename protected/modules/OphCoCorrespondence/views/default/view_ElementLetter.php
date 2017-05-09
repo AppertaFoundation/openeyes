@@ -55,7 +55,9 @@ if($correspondeceApp->value === "on") {
                     if($target->ToCc == 'To'){
                         $toAddress = $target->contact_name . "\n" . $target->address;
                     } else {
-                        $ccString .= "CC: ".ucfirst(strtolower($target->contact_type)). ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
+                        $contact_type = $target->contact_type != 'GP' ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+
+                        $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
                     }
                 }
             }
@@ -67,7 +69,7 @@ if($correspondeceApp->value === "on") {
                     $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
                 }
             }
-        }        
+        }
         $this->renderPartial('letter_start', array(
             'toAddress' => $toAddress,
             'patient' => $this->patient,

@@ -14,31 +14,29 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-
-<?php
-
-    $is_editable = isset($is_editable) ? $is_editable : true;
-    $option_styles = isset($option_styles) ? $option_styles : [];
-
-    $contact_types = isset($contact_types) ? $contact_types : Document::getContactTypes();
-
-    echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, $contact_types,
-        [       'empty' => '- Type -',
-                'nowrapper' => true,
-                'class' => 'full-width docman_contact_type',
-                'data-rowindex' => $row_index,
-                'options' => $option_styles,
-                'disabled' => !$is_editable,
-                'style' => !$is_editable ? 'background-color:lightgray' : ''
-        ]
-    );
-
-    if(!$is_editable){
-        echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, array(
-            'id' => 'yDocumentTarget_'.$row_index.'_attributes_contact_type')
-        );
-    }
 
 
-    ?>
+namespace OEModule\OphCoCorrespondence\components;
+
+
+interface ExternalIntegration
+{
+
+    /**
+     * Render content to be included in the event view page for the given Event object.
+     * Responsible for generating links to the external integration, automatic popups etc.
+     *
+     * @param \Event $event
+     * @return string
+     */
+    public function renderEventView(\Event $event);
+
+    /**
+     * Will be passed the GET or POST array (depending on the nature of the request received
+     * by the controller, and should return a status code and a body response.
+     *
+     * @param array $data
+     * @return array(status_code, $response)
+     */
+    public function processExternalResponse($data = array());
+}

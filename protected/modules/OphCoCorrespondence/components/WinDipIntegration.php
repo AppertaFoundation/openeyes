@@ -16,7 +16,7 @@
  */
 
 
-namespace OEModule\Internalreferral\components;
+namespace OEModule\OphCoCorrespondence\components;
 
 /**
  * Class WinDipIntegration
@@ -27,11 +27,13 @@ namespace OEModule\Internalreferral\components;
  * In current implementation, is only example of 3rd party; aspects should be abstracted as and when
  * further integrations are created.
  *
- * @package OEModule\Internalreferral\components
+ * @package OEModule\OphCoCorrespondence\components
  */
 class WinDipIntegration extends \CApplicationComponent implements ExternalIntegration
 {
     protected $yii;
+
+    // At this stage (only WIF xml generation implemented) these params are not required
     /*protected static $required_params = array(
         'launch_uri',
         'application_id',
@@ -44,13 +46,28 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
     public $hashing_function;
     public $form_id;
 
+    protected $template_path = 'application.modules.OphCoCorrespondence.views.windipintegration';
+
     /**
      * Template path for the WinDip request
      *
      * @var string
      */
-    protected $request_template = 'Internalreferral.views.windipintegration.request_xml';
-    protected $new_event_template = 'Internalreferral.views.windipintegration.popup_newreferral';
+
+    //@TODO: fix the following paths as the filename and the path is separated now
+    protected $request_template = 'OphCoCorrespondence.views.windipintegration.request_xml';
+    protected $new_event_template = 'OphCoCorrespondence.views.windipintegration.popup_newreferral';
+    protected $wif_xml_template = 'wif_xml';
+
+    public function getTemplatePath()
+    {
+        return $this->template_path;
+    }
+
+    public function getWIFxmlTemplate()
+    {
+        return $this->wif_xml_template;
+    }
 
     /**
      * WinDipIntegration constructor.
@@ -64,12 +81,13 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
         if ($this->yii === null) {
             $this->yii = \Yii::app();
         }
-        
-        foreach (static::$required_params as $p) {
-            if (!isset($this->$p) || $this->$p === null) {
-                throw new \Exception("Missing required parameter {$p}");
-            }
-        }
+
+        //TODO: set this validation back if more WinDip services will be integrated
+//        foreach (static::$required_params as $p) {
+//            if (!isset($this->$p) || $this->$p === null) {
+//                throw new \Exception("Missing required parameter {$p}");
+//            }
+//        }
     }
 
     /**
@@ -85,6 +103,11 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
     }
 
     /**
+     *
+     *      This function generates data for other WinDip services we did not implemented yet.
+     *
+     *      Keep in mind when refactor: commands/InternalReferralCommand using this (constructRequestData) method to get the data
+     *
      * Build a request for the given event
      *
      * @param \Event $event
@@ -92,11 +115,11 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
      * @param $message_id
      * @return array
      */
-    protected function constructRequestData(\Event $event, \DateTime $when, $message_id)
+    /*protected function constructRequestData(\Event $event, \DateTime $when, $message_id)
     {
-        
+
         $is_new_event = \Yii::app()->user->getState("new_referral", false);
-        
+
         //TODO: better way of handling mysql date to datetime
         $event_date = \DateTime::createFromFormat('Y-m-d H:i:s', $event->event_date);
 
@@ -106,20 +129,58 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
             'value' => $event->episode->patient->hos_num
         );
 
-        $user = \User::model()->findByPk(\Yii::app()->user->id);
+        if( isset(\Yii::app()->user->id) ){
+            $user = \User::model()->findByPk(\Yii::app()->user->id);
+        }
+
 
         return array(
             'timestamp' => $when->format('Y-m-d H:i:s'),
             'message_id' => $message_id,
             'application_id' => $this->application_id,
-            'username' => $user->username,
-            'user_displayname' => $user->getReversedFullName(),
+            'username' => isset($user) ? $user->username : '',
+            'user_displayname' => isset($user) ? $user->getReversedFullName() : '',
             'event_id' => $event->id,
             'windip_type_id' => !$is_new_event ? '' : $this->form_id,
             'event_date' => $event_date->format('Y-m-d'),
             'event_time' => $event_date->format('H:i:s'),
             'additional_indexes' => !$is_new_event ? array() : $indexes,
             'is_new_event' => $is_new_event
+        );
+    }*/
+
+    /**
+     * Generates data for WinDip XML
+     *
+     * @param \Event $event
+     * @param null $file_with_path
+     * @return array
+     */
+    public function constructRequestData(\Event $event, $file_with_path = null)
+    {
+
+        $letter = \ElementLetter::model()->findByAttributes(array('event_id' => $event->id));
+
+        $indexes = array(
+            array('id' => 'hos_num', 'value' => $event->episode->patient->hos_num),
+            array('id' => 'date_od_birth', 'value' => $event->episode->patient->dob),
+            array('id' => 'event_id', 'value' => $event->id),
+            array('id' => 'event_date', 'value' => $event->event_date),
+            array('id' => 'generated_date', 'value' => date('Y-m-d H:i:s')),
+
+            array('id' => 'service_to', 'value' => ( isset($letter->toSubspecialty) ? $letter->toSubspecialty->ref_spec : '' ) ),
+            array('id' => 'consultant_to', 'value' => ( isset($letter->event->episode->firm) ? $letter->event->episode->firm->pas_code : '' ) ),
+            array('id' => 'is_same_condition', 'value' => ( $letter->is_same_condition ? 'True' : 'False' ) ),
+            array('id' => 'is_urgent', 'value' => $letter->is_urgent ? 'True' : 'False'),
+        );
+
+        return array(
+            'event_id' => $event->id,
+            'windip_type_id' => '', // $this->form_id, // not sure
+            'keep_prior_documents' => 'True',
+            'workflow_importance' => (int)$letter->is_urgent,
+            'file_path' => $file_with_path,
+            'additional_indexes' => $indexes,
         );
     }
 
@@ -170,7 +231,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
         $request = $this->renderPartial($this->request_template, $data);
         return $this->cleanRequest($request);
     }
-    
+
     /**
      * Generate a request XML for document list
      * @return type
@@ -179,7 +240,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
     {
         //$this->request_template = 'Internalreferral.views.windipintegration.document_list_xml_test';
         $user = \User::model()->findByPk(\Yii::app()->user->id);
-        
+
         $when = new \DateTime();
         $data['username'] = $user->username;
         $data['user_displayname'] = $user->getReversedFullName();
@@ -191,7 +252,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
         $data['event_time'] = $when->format('H:i:s');
         $data['is_new_event'] = false;
         $data['additional_indexes'] = array();//array(array('id' => 'HosNum','value' => 0123456));
-        
+
         $data['authentication_hash'] = $this->generateAuthenticationHash($data);
 
         $request = $this->renderPartial($this->request_template, $data);
@@ -210,7 +271,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
         $xml = $this->generateXmlRequest($event);
         return $this->launch_uri . '?XML=' . urlencode($xml);
     }
-    
+
     /**
      * Generate the external application URL for document list
      * @return string

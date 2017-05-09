@@ -18,9 +18,9 @@
  */
 ?>
 
-    <?php echo CHtml::activeHiddenField($document_set, 'id') ?>
-    <?php echo CHtml::activeHiddenField($document_set->document_instance[0], 'id') ?>
-    <?php echo CHtml::activeHiddenField($document_set->document_instance[0]->document_instance_data[0], 'id') ?>
+<?php echo CHtml::activeHiddenField($document_set, 'id') ?>
+<?php echo CHtml::activeHiddenField($document_set->document_instance[0], 'id') ?>
+<?php echo CHtml::activeHiddenField($document_set->document_instance[0]->document_instance_data[0], 'id') ?>
 
 <?php $element->draft = 1; ?>
 
@@ -69,14 +69,22 @@
                                     'contact_type' => $target->contact_type,
                                     'row_index' => $row_index,
                                     'address' => $target->address,
-                                    'is_editable' => $target->contact_type != 'GP',
+                                    'is_editable_contact_targets' => $target->contact_type != 'INTERNALREFERRAL',
+                                    'is_editable_contact_name' => ($target->contact_type != 'INTERNALREFERRAL'),
+                                    'is_editable_address' => ($target->contact_type != 'GP') && ($target->contact_type != 'INTERNALREFERRAL'),
                                 ));
                         ?>
                     </td>
                     <td>
                         <?php if($element->draft): ?>
-                            <?php $this->renderPartial('//docman/table/contact_type', array(
+                            <?php
+                                    $this->renderPartial('//docman/table/contact_type', array(
                                         'contact_type' => strtoupper($target->contact_type),
+                                        // Internal referral will always be the first row - indexed 0
+                                        'contact_types' => Document::getContactTypes() + (($element->isInternalReferral() && $row_index == 0) ? Document::getInternalReferralContactType() : []),
+
+                                        //contact_type is not editable as per requested, former validation left until the req finalized
+                                        'is_editable' => false, //$target->contact_type != 'INTERNALREFERRAL',
                                         'row_index' => $row_index));
                             ?>
                         <?php else: ?>
@@ -96,7 +104,10 @@
                     </td>
                     <td>
                         <?php if($element->draft == "1" && $target->ToCc != 'To'): ?>
-                            <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
+                            <?php
+                                $is_mandatory = $element->letterType->name == 'Internal Referral';
+                            ?>
+                            <a class="remove_recipient removeItem <?php echo $is_mandatory ? 'hidden' : '' ?>" data-rowindex="<?php echo $row_index ?>">Remove</a>
                         <?php endif; ?>
                     </td>
                 </tr>

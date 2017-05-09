@@ -14,31 +14,20 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
 
-<?php
-
-    $is_editable = isset($is_editable) ? $is_editable : true;
-    $option_styles = isset($option_styles) ? $option_styles : [];
-
-    $contact_types = isset($contact_types) ? $contact_types : Document::getContactTypes();
-
-    echo CHtml::dropDownList('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, $contact_types,
-        [       'empty' => '- Type -',
-                'nowrapper' => true,
-                'class' => 'full-width docman_contact_type',
-                'data-rowindex' => $row_index,
-                'options' => $option_styles,
-                'disabled' => !$is_editable,
-                'style' => !$is_editable ? 'background-color:lightgray' : ''
-        ]
-    );
-
-    if(!$is_editable){
-        echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, array(
-            'id' => 'yDocumentTarget_'.$row_index.'_attributes_contact_type')
-        );
-    }
-
-
-    ?>
+// Defines the component to be used for integration with a 3rd party referral management
+// system. For WinDip, the hashing function is not available publicly and must be implemented
+// for the specific location. The component class indicates the functionality required,
+// and will be straight forward to implement for users with a genuine need and appropriate
+// documentation from WinDip themselves.
+return array(
+    'internalReferralIntegration' => array(
+        'class' => '\OEModule\OphCoCorrespondence\components\WinDipIntegration',
+        'launch_uri' => 'http://172.20.10.3:9001',
+        'application_id' => 'OpenEyes',
+        // form id is specific to the instance of WinDIP being integrated with.
+        'form_id' => '',
+        // private function to be implemented for specific installations
+        'hashing_function' => null
+    )
+);
