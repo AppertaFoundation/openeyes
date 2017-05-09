@@ -17,8 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-
 <div class="element-fields row">
 <div class="large-2 column">
     <label><?php echo $element->getAttributeLabel('ocular_surface_disease_id')?>:</label>

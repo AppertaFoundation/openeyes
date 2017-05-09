@@ -76,7 +76,6 @@ class Element_OphCiExamination_CXL_History extends \SplitEventTypeElement
         // will receive user inputs.
 
         return array(
-            array('eye_id', 'required'),
             array('eye_id, left_previous_cxl_value, right_previous_cxl_value, left_previous_refractive_value, right_previous_refractive_value,
             left_intacs_kera_ring_value, right_intacs_kera_ring_value, left_trans_prk_value, right_trans_prk_value, left_previous_hsk_keratitis_value, 
             right_previous_hsk_keratitis_value, asthma_id, eczema_id, hayfever_id, ocular_surface_disease_id, eye_rubber_id', 'safe'),
