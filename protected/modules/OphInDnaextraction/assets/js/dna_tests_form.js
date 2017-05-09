@@ -1,53 +1,57 @@
 $(function(){
 
-    var showControls = function(){
-        $(".frmDnaTests_controls").show();
-        $("#frmDnaTests_successmessage").hide();
+    var showControls = function($element){
+
+        $element.find(".frmDnaTests_controls").show();
+        $element.find(".frmDnaTests_successmessage").hide();
+
+        $element.find('.addTest').hide();
     };
 
-    var hideControls = function(){
-        $(".frmDnaTests_controls").hide();
-    };
+    var hideControls = function($element){
+        $element.find(".frmDnaTests_controls").hide();
 
-    $(document).on("change", ".transactions input, .transactions select", showControls);
-    $(document).on("keyup", ".transactions input", showControls);
+        $element.find('.addTest').show();
+    };
 
     $('.addTest').click(function(e) {
         e.preventDefault();
+        var index,
+            $fieldset = $(this).closest('fieldset'),
+            $transactions = $fieldset.find('tbody.transactions');
 
-        var i = 0;
-
-        $('tbody.transactions').children('tr').children('td').children('input:first').map(function() {
-            var id = $(this).attr('name').match(/[0-9]+/);
-
-            if (id >= i) {
-                i = id;
-            }
-        });
+        index = $("tr.transaction-row", $fieldset).last().data('index');
 
         $.ajax({
             'type': 'GET',
-            'url': baseUrl+'/OphInDnaextraction/default/addTransaction?i='+i,
+            'url': baseUrl + '/OphInDnaextraction/default/addTransaction',
+            data:{
+                i: (index === undefined ? 0 : index + 1),
+                is_remove_allowed: false
+            },
             'success': function(html) {
-                $('tbody.transactions').append(html);
-                $('#no-tests').hide();
+                $transactions.append(html);
+                $fieldset.find('.no-tests').hide();
 
-                showControls();
+                showControls( $fieldset );
             }
         });
     });
 
-    $('.removeTransaction').die('click').live('click',function(e) {
-        e.preventDefault();
-        $(this).parent().parent().remove();
-        if(!$('.removeTransaction').length) {
-            $('#no-tests').show();
+    $('form.frmDnaTests').on('click', '.removeTransaction', function(){
+        var $form = $(this).closest('form');
+        $(this).closest('tr').remove();
+
+        if(!$form.find('tr.transaction-row').length) {
+            $form.find('.no-tests').show();
         }
 
-        showControls();
+        showControls($form);
+
     });
 
-    $("#cancelTest").click(function(e){
+    $(".cancelTest").click(function(e){
+        var $form = $(this).closest('form');
         e.preventDefault();
         var alert = new OpenEyes.UI.Dialog.Confirm({
             content: 'Are you sure you want to cancel editing tests?',
@@ -56,25 +60,49 @@ $(function(){
         });
         alert.open();
         alert.on("ok", function(){
-            window.onbeforeunload = null;
-            window.location.reload();
+            $form.find('tbody.transactions tr.transaction-row:last-child').remove();
+            hideControls($form);
+
+            if(!$form.find('tr.transaction-row').length) {
+                $form.find('.no-tests').show();
+            }
         });
     });
 
     $(".submitTest").click(function(e){
         e.preventDefault();
-        var $form = $("#frmDnaTests");
+
+        var $form = $(this).closest(".frmDnaTests"),
+            $prev_section =  $form.closest('section').prev(),
+            element_id = $(this).closest('section').data('element-id');
+
         $form.find(".msg").hide();
-        var data = $form.serializeArray();
-        $("#frmDnaTests_loader").show();
-        hideControls();
+
+        var data = [], $tr = $form.find('tr:last-child');
+
+        data.push(
+           {name: "YII_CSRF_TOKEN", value: YII_CSRF_TOKEN},
+           {name: "OphInDnaextraction_DnaTests_Transaction[0][element_id]", value: element_id},
+           {name: "OphInDnaextraction_DnaTests_Transaction[0][date]", value: $tr.find('.dna-hasDatepicker').val()},
+           {name: "OphInDnaextraction_DnaTests_Transaction[0][study_id]", value: $tr.find('select').val()},
+           {name: "OphInDnaextraction_DnaTests_Transaction[0][volume]", value: $tr.find('td:nth-child(3) input').val()},
+           {name: "OphInDnaextraction_DnaTests_Transaction[0][comments]", value: $tr.find('td:nth-child(3) input').val()},
+           {name: "Element_OphInDnaextraction_DnaExtraction[volume]", value: $prev_section.find('.volume').data('volume')}
+        );
+
+        $(".frmDnaTests_loader").show();
+
+        hideControls($form);
+
         $.post($form.attr("action"), data,
             function(response){
+                var response = JSON.parse(response);
+
                 if(response.success)
                 {
                     $form.find(".successmessage").show();
-                    $("#frmDnaTests_loader").hide();
-                    window.onbeforeunload = null;
+                    $(".frmDnaTests_loader").hide();
+                    window.onBeforeUnload = null;
                 }
                 else
                 {
@@ -82,8 +110,8 @@ $(function(){
                         content: response.message
                     });
                     alert.open();
-                    $("#frmDnaTests_loader").hide();
-                    showControls();
+                    $(".frmDnaTests_loader").hide();
+                    showControls($form);
                 }
             }
         );

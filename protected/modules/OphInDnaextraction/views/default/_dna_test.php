@@ -18,35 +18,50 @@
  */
 ?>
 
-<tr>
+<?php $is_remove_allowed = isset($is_remove_allowed) ? $is_remove_allowed : true; ?>
+
+<tr class="transaction-row" data-index="<?php echo $i; ?>">
   <td>
-      <?php echo CHtml::hiddenField('transactionID[]', $transaction->id) ?>
-      <?php echo CHtml::textField('date[]', $transaction->date, array('id' => "date$i", 'disabled' => $disabled)) ?>
+      <?php echo CHtml::activeHiddenField($transaction, "[$i]id") ?>
+
+      <?php
+      $value = Yii::app()->request->getQuery('OphInDnaextraction_DnaTests_Transaction');
+      $dateTime = new DateTime( $transaction->date ? $transaction->date : $value);
+      $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+          'name'  => "OphInDnaextraction_DnaTests_Transaction[$i][date]",
+          'value' => isset($value[$i]['date']) ? $value[$i]['date'] : $dateTime->format('d M Y'),
+          'id'    => "OphInDnaextraction_DnaTests_Transaction_{$i}_date",
+          'options' => array(
+              'showAnim'      => 'fold',
+              'changeMonth'   => true,
+              'changeYear'    => true,
+              'altFormat'     => 'yy-mm-dd',
+              'altField'      => "OphInDnaextraction_DnaTests_Transaction_{$i}_date_alt",
+              'dateFormat'    => Helper::NHS_DATE_FORMAT_JS,
+          ),
+          'htmlOptions' =>array(
+                'class' => 'dna-hasDatepicker',
+                'disabled' => $disabled ? 'disabled' : ''
+          )
+      ));
+      ?>
   </td>
   <td>
-      <?php echo CHtml::dropDownList(
-          'study_id[]',
-          $transaction->study_id,
+      <?php echo CHtml::activeDropDownList(
+          $transaction, "[$i]study_id",
           CHtml::listData(OphInDnaextraction_DnaTests_Study::model()->findAll(), 'id', 'name'),
           array('empty' => '- Select -', 'disabled' => $disabled)
       ) ?>
   </td>
   <td>
-      <?php echo CHtml::textField('volume[]', $transaction->volume, array('disabled' => $disabled)) ?>
+      <?php echo CHtml::activeTextField($transaction, "[$i]volume", array('disabled' => $disabled)) ?>
   </td>
   <td>
-      <?php echo CHtml::textField('comments[]', $transaction->comments, array('disabled' => $disabled)) ?>
+      <?php echo CHtml::activeTextField($transaction, "[$i]comments", array('disabled' => $disabled)) ?>
   </td>  
-  <td>
+  <td class="<?php echo $is_remove_allowed ? '': 'hidden'?> ">
       <?php if (!$disabled) {
-          echo CHtml::link('(remove)', '#', array('class' => 'removeTransaction'));
+          echo CHtml::link('(remove)', 'javascript:void(0)', array('class' => 'removeTransaction'));
       } ?>
   </td>
 </tr>
-<script type="text/javascript">
-  $('#date<?php echo $i?>').datepicker({
-    maxDate: 'today',
-    showAnim: 'fold',
-    dateFormat: '<?php echo Helper::NHS_DATE_FORMAT_JS?>'
-  });
-</script>

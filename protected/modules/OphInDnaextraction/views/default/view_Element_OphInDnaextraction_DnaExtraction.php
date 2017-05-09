@@ -138,7 +138,7 @@
                 </div>
             </div>
             <div class="large-9 column end">
-                <div class="data-value">
+                <div class="volume data-value" data-volume="<?php echo $this->volumeRemaining($element->event_id); ?>">
                     <?php echo CHtml::encode($this->volumeRemaining($element->event_id))?>
                 </div>
             </div>
