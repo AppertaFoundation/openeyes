@@ -215,7 +215,7 @@ class SubjectController extends BaseModuleController
             ),
         ));
 
-        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());    
+        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());
         $valid = $admin->editModel(false);
 
         if (Yii::app()->request->isPostRequest) {
@@ -272,39 +272,8 @@ class SubjectController extends BaseModuleController
         $this->render('list', array(
             'model' => $model,
         ));
-
     }
 
-    public function actionList2()
-    {
-        $admin = new Crud(GeneticsPatient::model(), $this);
-        $admin->setModelDisplayName('Patients');
-        $admin->setListFieldsAction('view');
-        $admin->setListFields(array(
-            'id',
-            'patient.fullName',
-            'patient.dob',
-            'comments',
-            'diagnoses',
-        ));
-        $admin->getSearch()->addSearchItem('patient.contact.first_name');
-              $admin->getSearch()->addSearchItem('patient.contact.last_name');
-              $admin->getSearch()->addSearchItem('patient.dob', array(
-                  'id'            => 'patient-dob-id',
-                  'type'          => 'datepicker',
-                  'yearRange'     => '-120:+0',
-                  'changeMonth'   => true,
-                  'changeYear'    => true,
-              ));
-              $admin->getSearch()->addSearchItem('searchYob');
-              $admin->getSearch()->addSearchItem('comments');
-              $admin->getSearch()->addSearchItem('diagnoses.id', array('type' => 'disorder'));
-//$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-              $admin->getSearch()->setDefaultResults(false);
-              $admin->setUnsortableColumns(['patient.fullName','diagnoses']);
-        //$display_buttons = $this->checkAccess('OprnEditGeneticPatient');
-        $admin->listModel( false );
-    }
 
     /**
      * Edit the status of a study - subject relationship.
