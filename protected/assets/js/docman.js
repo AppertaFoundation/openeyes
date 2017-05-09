@@ -306,6 +306,9 @@ var docman = (function() {
                                 }
                             }
                             $("#ElementLetter_introduction").val( resp.text_ElementLetter_introduction );
+                        } else {
+                            // copy salution from the main recipient's box
+                            $("#ElementLetter_introduction").val( $('#DocumentTarget_0_attributes_contact_name').val() );
                         }
 
                         $('#docman_recipient_' + rowindex).val('');
