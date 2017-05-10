@@ -105,12 +105,12 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     AnteriorSegmentController.prototype.storeToHiddenField = function($el, lookupValue)
     {
         var map = $el.data('eyedraw-map');
-        var value = '';
         if (lookupValue in map) {
             $el.val(map[lookupValue]);
         } else {
             $el.val($el.data('eyedraw-default'));
         }
+        $el.trigger('change');
     };
 
     AnteriorSegmentController.prototype.primaryDrawingNotification = function(msgArray)
