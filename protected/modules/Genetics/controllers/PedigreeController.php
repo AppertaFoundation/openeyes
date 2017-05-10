@@ -164,6 +164,9 @@ class PedigreeController extends BaseModuleController
             'disorder.term',
             'getConsanguinityAsBoolean'
         ));
+
+        $admin->setUnsortableColumns(['inheritance.name', 'gene.name', 'getSubjectsCount', 'getAffectedSubjectsCount', 'disorder.term', 'getConsanguinityAsBoolean']);
+
         $admin->getSearch()->addSearchItem('id', array( 'type' => 'id' ));
         $admin->getSearch()->addSearchItem('inheritance_id', array(
             'type' => 'dropdown',
