@@ -78,7 +78,8 @@ class User extends BaseActiveRecordVersioned
             array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
             array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on' => 'search'),
             array(
-                'username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon, has_selected_firms,doctor_grade_id, registration_code, signature_file_id',
+                'username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon,
+                 has_selected_firms,doctor_grade_id, registration_code, signature_file_id',
                 'safe',
             ),
         );
@@ -735,7 +736,6 @@ class User extends BaseActiveRecordVersioned
 
                 if (strlen($image_data) > 100) {
                     return $image_data;
-
                 }
             }
         }
@@ -743,4 +743,26 @@ class User extends BaseActiveRecordVersioned
         return false;
     }
 
+    /**
+     * Returns users who can access the roles in the given param
+     *
+     * @param array $roles
+     * @param bool $return_models
+     * @return array user ids
+     */
+    public function findAllByRoles(array $roles, $return_models = false)
+    {
+        $users_with_roles = [];
+
+        $users = $this->findAll();
+        foreach($users as $id => $user) {
+            foreach($roles as $role){
+                if(Yii::app()->authManager->checkAccess($role, $user->id)) {
+                    $users_with_roles[] = $return_models ? $user : $user->id;
+                }
+            }
+        }
+        return $users_with_roles;
+
+    }
 }

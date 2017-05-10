@@ -18,6 +18,18 @@
 //
 // A navigation component for displaying page-specifc navigation links in a sidebar.
 
+
+.genetics .navigation {
+  @include navigation;
+}
+
+.box {
+  &.genetics, &.search {
+    @include radius;
+    @include sidebar-box;
+  }
+}
+
 .side-nav {
   @include side-nav;
   padding-top: 0;

@@ -300,7 +300,7 @@ return array(
                 'uri' => '#',
                 'position' => 2,
                 'userrule' => 'isSurgeon',
-                'restricted' => array('admin', 'Report', 'NOD Export'),
+                'restricted' => array('admin', 'Report', 'NOD Export', 'Add patient', 'Patient Merge', 'Patient Merge Request'),
                 'sub' => array(
                     'admin' => array(
                         'title' => 'Admin',
@@ -339,6 +339,13 @@ return array(
                         'position' => 6,
                         'restricted' => array('Patient Merge', 'Patient Merge Request'),
                     ),
+                    'patient' => array(
+                        'title' => 'Add Patient',
+                        'uri' => 'patient/create',
+                        'position' => 9,
+                        'restricted' => array('TaskAddPatient'),
+                    ),
+
                 ),
             ),
 // temporarily disabled

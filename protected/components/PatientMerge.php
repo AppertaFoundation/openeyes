@@ -130,11 +130,37 @@ class PatientMerge
                 );
             }
         }
-
+        
         return array(
             'is_conflict' => !empty($conflict),
             'details' => $conflict,
         );
+    }
+    
+    /**
+     * Check if there is anything prevents the merging
+     * e.g.: PAS patient cannot be merged into local patient
+     * 
+     * note: personal details are not checked here
+     * 
+     * @param Patient $secondary
+     * @param Patient $primary
+     */
+    public function isMergable(Patient $primary, Patient $secondary)
+    {
+        
+        $conflict = array();
+        
+        if($secondary->is_local == 0 && $primary->is_local == 1){
+            $conflict = array(
+                    'column' => 'is_local',
+                    'primary' => $primary->$column,
+                    'secondary' => $secondary->$column,
+                    'message' => 'Non local patient cannot be merged into local patient.'
+                );
+        }
+        
+        return $conflict;
     }
 
     /**
@@ -145,41 +171,62 @@ class PatientMerge
     public function merge()
     {
         $is_merged = false;
-
-        // Update Episode
-        $is_merged = $this->updateEpisodes($this->primary_patient, $this->secondary_patient);
-
-        // Update legacy episodes
-        $is_merged = $is_merged && $this->updateLegacyEpisodes($this->primary_patient, $this->secondary_patient);
-
-        // Update allergyAssignments
-        $is_merged = $is_merged && $this->updateAllergyAssignments($this->primary_patient, $this->secondary_patient);
-
-        // Updates riskAssignments
-        $is_merged = $is_merged && $this->updateRiskAssignments($this->primary_patient, $this->secondary_patient->riskAssignments);
-
-        // Update previousOperations
-        $is_merged = $is_merged && $this->updatePreviousOperations($this->primary_patient, $this->secondary_patient->previousOperations);
-
-        //Update Other ophthalmic diagnoses
-        $is_merged = $is_merged && $this->updateOphthalmicDiagnoses($this->primary_patient, $this->secondary_patient->ophthalmicDiagnoses);
         
-        // Update Systemic Diagnoses
-        $is_merged = $is_merged && $this->updateSystemicDiagnoses($this->primary_patient, $this->secondary_patient->systemicDiagnoses);
+        $is_mergable = $this->isMergable($this->primary_patient, $this->secondary_patient);
+        if( !empty($is_mergable) ){
+            $msg = isset($is_mergable['message']) ? $is_mergable['message'] : ('Patients cannot be merged ' . print_r($is_mergable, true) );
+            throw new Exception($msg);
+        }
+        
+        $transaction = Yii::app()->db->beginTransaction();
+        
+        try
+        {
+            // Update Episode
+            $is_merged = $this->updateEpisodes($this->primary_patient, $this->secondary_patient);
 
-        if ($is_merged) {
-            $secondary_patient = $this->secondary_patient;
+            // Update legacy episodes
+            $is_merged = $is_merged && $this->updateLegacyEpisodes($this->primary_patient, $this->secondary_patient);
 
-            $secondary_patient->deleted = 1;
+            // Update allergyAssignments
+            $is_merged = $is_merged && $this->updateAllergyAssignments($this->primary_patient, $this->secondary_patient);
 
-            if ($secondary_patient->save()) {
-                $msg = 'Patient hos_num: '.$this->secondary_patient->hos_num.' flagged as deleted.';
-                $this->addLog($msg);
-                Audit::add('Patient Merge', 'Patient flagged as deleted', $msg);
-                $is_merged = $is_merged && true;
-            } else {
-                throw new Exception('Failed to update Patient: '.print_r($secondary_patient->errors, true));
+            // Updates riskAssignments
+            $is_merged = $is_merged && $this->updateRiskAssignments($this->primary_patient, $this->secondary_patient->riskAssignments);
+
+            // Update previousOperations
+            $is_merged = $is_merged && $this->updatePreviousOperations($this->primary_patient, $this->secondary_patient->previousOperations);
+
+            //Update Other ophthalmic diagnoses
+            $is_merged = $is_merged && $this->updateOphthalmicDiagnoses($this->primary_patient, $this->secondary_patient->ophthalmicDiagnoses);
+
+            // Update Systemic Diagnoses
+            $is_merged = $is_merged && $this->updateSystemicDiagnoses($this->primary_patient, $this->secondary_patient->systemicDiagnoses);
+
+            if ($is_merged) {
+                $secondary_patient = $this->secondary_patient;
+
+                $secondary_patient->deleted = 1;
+
+                if ($secondary_patient->save()) {
+                    $msg = 'Patient hos_num: '.$this->secondary_patient->hos_num.' flagged as deleted.';
+                    $this->addLog($msg);
+                    Audit::add('Patient Merge', 'Patient flagged as deleted', $msg);
+                    $is_merged = $is_merged && true;
+
+                    $transaction->commit();
+
+                } else {
+                    $transaction->rollback();
+                    \OELog::log('Patient merge - secondary patient[id:' . $secondary_patient->id .'] could not be saved');
+                    return false;
+                }
             }
+        }
+        catch(Exception $e)
+        {
+            \OELog::logException($e);
+            $transaction->rollback();
         }
 
         return $is_merged;
@@ -227,7 +274,7 @@ class PatientMerge
 
                         /* We have to keep the episode with the highest status */             
 
-                        if ($primary_episode->status->order > $secondary_episode->status->order) {
+                        if ($primary_episode->status->order > $secondary_episode->status->order) {                            
                             // the primary episode has greater status than the secondary so we move the events from the Secondary into the Primary
                             $this->updateEventsEpisodeId($primary_episode->id, $secondary_episode->events);
 

@@ -192,4 +192,12 @@ class Disorder extends BaseActiveRecordVersioned
 
         return true;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->term;
+    }
 }

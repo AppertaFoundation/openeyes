@@ -55,7 +55,6 @@
                 </button>
             </div>
         </div>
-
         <?php $this->endWidget(); ?>
 
         <div id="dashboard">
