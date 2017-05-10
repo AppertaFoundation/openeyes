@@ -41,7 +41,7 @@
               'maxDate'       => 'today'
           ),
           'htmlOptions' =>array(
-                'class' => 'dna-hasDatepicker',
+                'class' => "dna-hasDatepicker",
                 'disabled' => $disabled ? 'disabled' : ''
           )
       ));
@@ -51,14 +51,14 @@
       <?php echo CHtml::activeDropDownList(
           $transaction, "[$i]study_id",
           CHtml::listData(OphInDnaextraction_DnaTests_Study::model()->findAll(), 'id', 'name'),
-          array('empty' => '- Select -', 'disabled' => $disabled)
+          array('empty' => '- Select -', 'disabled' => $disabled, 'class' => "study",)
       ) ?>
   </td>
   <td>
-      <?php echo CHtml::activeTextField($transaction, "[$i]volume", array('disabled' => $disabled)) ?>
+      <?php echo CHtml::activeTextField($transaction, "[$i]volume", array('class' => "volume", 'disabled' => $disabled)) ?>
   </td>
   <td>
-      <?php echo CHtml::activeTextField($transaction, "[$i]comments", array('disabled' => $disabled)) ?>
+      <?php echo CHtml::activeTextField($transaction, "[$i]comments", array('class' => "comments", 'disabled' => $disabled)) ?>
   </td>  
   <td class="<?php echo $is_remove_allowed ? '': 'hidden'?> ">
       <?php if (!$disabled) {

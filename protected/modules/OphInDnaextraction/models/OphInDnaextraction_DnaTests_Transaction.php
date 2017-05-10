@@ -54,6 +54,7 @@ class OphInDnaextraction_DnaTests_Transaction extends BaseActiveRecord
         // will receive user inputs.
         return array(
             array('element_id, date, study_id, volume, comments', 'safe'),
+            array('volume', 'compare', 'operator' => '>', 'compareValue' => 0),
             array('date, study_id, volume', 'required'),
         );
     }
@@ -73,22 +74,58 @@ class OphInDnaextraction_DnaTests_Transaction extends BaseActiveRecord
 
     public function beforeValidate()
     {
+        $is_error = false;
         $posted_volume = 0;
         $transactions = Yii::app()->request->getPost('OphInDnaextraction_DnaTests_Transaction', array());
 
+        $existing_volumes = 0;
+        $new_volumes = 0;
+
         foreach($transactions as $transaction){
             $posted_volume = $posted_volume + $transaction['volume'];
+
+            //lets collect all transactions with id, as user can modify the volume
+            if( isset($transaction['id']) && $transaction['id'] ){
+                $existing_volumes += $transaction['volume'];
+            } else {
+                $new_volumes += $transaction['volume'];
+            }
         }
-        if (($api = Yii::app()->moduleAPI->get('OphInDnaextraction')) && isset($this->element->event_id)) {
-            $volume_remaining = $api->volumeRemaining($this->element->event_id);
+
+        //ok, so the all the existing and modified volumes cannot be less than the original extracted values
+        if($existing_volumes == 0 && $new_volumes > 0){
+            // if no existing value present it means the user wants to add a new transaction from elsewhere (didn't post all the transaction) or there is just none
+            //we can just check the remaining value
+
+            if (($api = Yii::app()->moduleAPI->get('OphInDnaextraction')) && isset($this->element->event_id)) {
+                $volume_remaining = $api->volumeRemaining($this->element->event_id);
+
+                if( ($volume_remaining - $new_volumes) < 0){
+                    $is_error = true;
+                }
+            }
+
         } else {
-            // probably this is a brand new Model, wehave to do the calculation from the POSTed data
+            //this is when the POST probably coming from the update page where all the transactions listed and posted back
 
-            $extraction = Yii::app()->request->getPost('Element_OphInDnaextraction_DnaExtraction');
-            $volume_remaining = isset($extraction['volume']) ? $extraction['volume'] : 0;
+            $element = Element_OphInDnaextraction_DnaExtraction::model()->find('event_id = ?',array($this->element->event_id));
+
+            //$existing_volumes means they were already saved but the user may/or may not modified them
+            //so we subtract from the original value and check
+            $volume_remaining = $element->volume - $existing_volumes;
+
+            if ($volume_remaining < 0) {
+                $is_error = true;
+            }
+
+            //now we have to make sure the volume wont't go below 0 when we add the new extractions
+            if( ($volume_remaining - $new_volumes) < 0 ){
+                $is_error = true;
+            }
         }
 
-        if( ($volume_remaining - $posted_volume) < 0){
+
+        if ($is_error){
             $this->addError('volume', 'The remaining extraction volume cannot be less zero. Current remaining volume: ' . $volume_remaining);
         }
 

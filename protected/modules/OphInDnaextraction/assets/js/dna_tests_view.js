@@ -85,8 +85,8 @@ $(function(){
            {name: "OphInDnaextraction_DnaTests_Transaction[0][element_id]", value: element_id},
            {name: "OphInDnaextraction_DnaTests_Transaction[0][date]", value: $tr.find('.dna-hasDatepicker').val()},
            {name: "OphInDnaextraction_DnaTests_Transaction[0][study_id]", value: $tr.find('select').val()},
-           {name: "OphInDnaextraction_DnaTests_Transaction[0][volume]", value: $tr.find('td:nth-child(3) input').val()},
-           {name: "OphInDnaextraction_DnaTests_Transaction[0][comments]", value: $tr.find('td:nth-child(3) input').val()},
+           {name: "OphInDnaextraction_DnaTests_Transaction[0][volume]", value: $tr.find('.volume').val()},
+           {name: "OphInDnaextraction_DnaTests_Transaction[0][comments]", value: $tr.find('td:nth-child(4) input').val()},
            {name: "Element_OphInDnaextraction_DnaExtraction[volume]", value: $prev_section.find('.volume').data('volume')}
         );
 
@@ -119,4 +119,14 @@ $(function(){
             }
         );
     });
+
+    //invode datepicker on ajax inputs
+    $('.transactions').on('click', '.dna-hasDatepicker', function(){
+        $(this).datepicker({
+            maxDate: 'today',
+            dateFormat: 'd M yy'
+        });
+        $(this).datepicker("show");
+    });
+
 });

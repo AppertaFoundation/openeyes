@@ -244,11 +244,17 @@ class DefaultController extends BaseEventTypeController
 
     public function actionView($id)
     {
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'));
+        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dna_tests_view.js');
+
         parent::actionView($id);
     }
 
     public function actionUpdate($id)
     {
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'));
+        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dna_tests_update.js');
+
         parent::actionUpdate($id);
     }
 
