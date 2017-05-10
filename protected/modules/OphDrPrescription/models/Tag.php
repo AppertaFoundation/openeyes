@@ -38,6 +38,7 @@ class Tag extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
+			array('name', 'unique'),
 			array('name', 'length', 'max'=>255),
 			array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
 			array('last_modified_date, created_date', 'safe'),
@@ -55,7 +56,7 @@ class Tag extends BaseActiveRecordVersioned
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'drugs' => array(self::MANY_MANY, 'Drug', 'drug_tag(drug_id, tag_id)'),
+			'drugs' => array(self::MANY_MANY, 'FormularyDrugs', 'drug_tag(tag_id, drug_id)'),
             'drug_type' => array(self::HAS_MANY, 'DrugType', 'tag_id'),
             'medications' => array(self::MANY_MANY, 'Medication', 'medication_tag(medication_id, tag_id)'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),

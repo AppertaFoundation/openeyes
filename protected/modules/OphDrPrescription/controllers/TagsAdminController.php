@@ -22,6 +22,10 @@ class TagsAdminController extends BaseAdminController
 {
     public $itemsPerPage = 50;
 
+    /**
+     * Show the list of tags
+     */
+
     public function actionList()
     {
         $admin = new Admin(Tag::model(), $this);
@@ -34,6 +38,70 @@ class TagsAdminController extends BaseAdminController
         $admin->getSearch()->addActiveFilter();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->listModel();
+    }
+
+    public function actionEdit($id = null)
+    {
+        $admin = new Admin(Tag::model(), $this);
+        if (!is_null($id)) {
+            $admin->setModelId($id);
+        }
+        $element = Tag::model();
+        $admin->setCustomSaveURL('/OphDrPrescription/TagsAdmin/save');
+        //$admin->setCustomCancelURL('/OphDrPrescription/DrugSetAdmin/list');
+
+
+        $admin->setEditFields(array(
+            'name' => is_null($id) ? 'text' : 'label',
+            'active' => 'checkbox',
+            'drugs' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'application.modules.OphDrPrescription.views.admin.tag_druglist',
+                'viewArguments' => array(
+                    'items' => is_null($id) ? array() : Tag::model()->findByPk($id)->drugs
+                )
+            )
+
+        ));
+
+        $admin->editModel();
+    }
+
+    public function actionSave()
+    {
+        $id = $_POST['Tag']['id'];
+
+        if($id === '')
+        {
+            $tag = new Tag();
+            $is_new = true;
+        }
+        else
+        {
+            $tag = Tag::model()->findByPk($id);
+            $is_new = false;
+        }
+
+        $tag->name = filter_var($_POST['Tag']['name'], FILTER_SANITIZE_STRING);
+        $tag->active = $_POST['Tag']['active'] == '1';
+
+        if ($tag->save())
+        {
+            Yii::app()->user->setFlash('success', 'Tag '.($is_new ? 'created' : 'updated'));
+            $this->redirect(array('/OphDrPrescription/TagsAdmin/list'));
+        }
+        else
+        {
+            $errors = $tag->getErrors();
+            $err_str = '';
+            foreach ($errors as $field=>$error_msg)
+            {
+                $err_str.= implode('<br/>', $error_msg).'<br/>';
+            }
+            Yii::app()->user->setFlash('warning.alert', $err_str);
+            $this->redirect(array('/OphDrPrescription/TagsAdmin/edit/'.$id));
+        }
+
     }
 
 }
