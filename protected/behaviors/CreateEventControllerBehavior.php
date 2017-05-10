@@ -28,7 +28,7 @@ class CreateEventControllerBehavior extends CBehavior
     public function getOwnerCurrentEpisode()
     {
         if (!$this->current_episode) {
-            $this->current_episode = Episode::getCurrentEpisodeByFirm($this->owner->patient->id, $this->owner->firm);
+            $this->current_episode = $this->owner->current_episode ? : Episode::getCurrentEpisodeByFirm($this->owner->patient->id, $this->owner->firm);
         }
 
         return $this->current_episode;
@@ -42,6 +42,7 @@ class CreateEventControllerBehavior extends CBehavior
      * through the relevant module controllers for any given event type.
      *
      * @param $event_type
+     * @param array $initial_args
      * @return array
      * @throws Exception
      */

@@ -112,6 +112,31 @@ class BaseActiveRecord extends CActiveRecord
     }
 
     /**
+     * @var CApplication
+     */
+    protected $app;
+
+    /**
+     * @param CApplication $app
+     */
+    public function setApp(CApplication $app)
+    {
+        $this->app = $app;
+    }
+
+    /**
+     * @return CApplication
+     */
+    public function getApp()
+    {
+        if (!$this->app) {
+            $this->app = Yii::app();
+        }
+
+        return $this->app;
+    }
+
+    /**
      * If an array of arrays is passed for a HAS_MANY relation attribute, will create appropriate objects
      * to assign to the attribute. Sets up the afterSave method to saves these objects if they have validated.
      *
@@ -233,8 +258,8 @@ class BaseActiveRecord extends CActiveRecord
         $user_id = null;
 
         try {
-            if (isset(Yii::app()->user)) {
-                $user_id = Yii::app()->user->id;
+            if (isset($this->getApp()->user)) {
+                $user_id = $this->getApp()->user->id;
             }
         } catch (Exception $e) {
         }
@@ -393,7 +418,7 @@ class BaseActiveRecord extends CActiveRecord
         }
         // array of ids that should be saved
         if ($new_objs) {
-            $_table = Yii::app()->db->schema->getTable($tbl_name);
+            $_table = $this->getApp()->db->schema->getTable($tbl_name);
 
             foreach ($new_objs as $i => $new) {
                 $pk = $new->getPrimaryKey();

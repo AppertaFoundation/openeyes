@@ -17,20 +17,22 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+namespace OEModule\OphCiExamination\models;
+
+
 /**
- * This is the model class for table "family_history_condition".
- *
- * The followings are the available columns in table 'family_history_condition':
+ * This is the model class for table "ophciexamination_familyhistory_side".
  *
  * @property int $id
  * @property string $name
+ * @property int $display_order
  */
-class FamilyHistoryCondition extends BaseActiveRecordVersioned
+class FamilyHistorySide extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return FamilyHistoryCondition the static model class
+     * @return FamilyHistorySide the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -42,12 +44,19 @@ class FamilyHistoryCondition extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'family_history_condition';
+        return 'ophciexamination_familyhistory_side';
     }
 
     public function defaultScope()
     {
         return array('order' => $this->getTableAlias(true, false).'.display_order');
+    }
+
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
     }
 
     /**
@@ -62,17 +71,6 @@ class FamilyHistoryCondition extends BaseActiveRecordVersioned
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, name', 'safe', 'on' => 'search'),
-        );
-    }
-
-    /**
-     * @return array relational rules.
-     */
-    public function relations()
-    {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
-        return array(
         );
     }
 
@@ -105,5 +103,13 @@ class FamilyHistoryCondition extends BaseActiveRecordVersioned
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->name;
     }
 }

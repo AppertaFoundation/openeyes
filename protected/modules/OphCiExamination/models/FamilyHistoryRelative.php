@@ -3,7 +3,7 @@
  * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2017
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,19 +13,22 @@
  *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+namespace OEModule\OphCiExamination\models;
+
+
 /**
- * This is the model class for table "family_history_relative".
- *
- * The followings are the available columns in table 'family_history_relative':
+ * This is the model class for table "ophciexamination_familyhistory_relative".
  *
  * @property int $id
  * @property string $name
+ * @property int $display_order
+ * @property boolean $is_other
  */
-class FamilyHistoryRelative extends BaseActiveRecordVersioned
+class FamilyHistoryRelative extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
@@ -42,12 +45,19 @@ class FamilyHistoryRelative extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'family_history_relative';
+        return 'ophciexamination_familyhistory_relative';
     }
 
     public function defaultScope()
     {
         return array('order' => $this->getTableAlias(true, false).'.display_order');
+    }
+
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
     }
 
     /**
@@ -58,21 +68,10 @@ class FamilyHistoryRelative extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, display_order', 'safe'),
+            array('name, display_order, is_other', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, name', 'safe', 'on' => 'search'),
-        );
-    }
-
-    /**
-     * @return array relational rules.
-     */
-    public function relations()
-    {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
-        return array(
         );
     }
 
@@ -84,6 +83,7 @@ class FamilyHistoryRelative extends BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
+            'is_other' => 'Other'
         );
     }
 

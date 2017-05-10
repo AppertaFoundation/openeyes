@@ -29,10 +29,12 @@ class BaseEventTypeElement extends BaseElement
     public $userId;
     public $patientId;
     public $useContainerView = true;
+    public $widgetClass = null;
 
     protected $_element_type;
     protected $_children;
     protected $frontEndErrors = array();
+    // TODO: these should be defined in their relevant classes
     protected $errorExceptions = array(
         'Element_OphTrOperationbooking_Operation_procedures' => 'select_procedure_id_procs',
         'Element_OphDrPrescription_Details_items' => 'prescription_items',
@@ -59,6 +61,15 @@ class BaseEventTypeElement extends BaseElement
         }
 
         return $this->_element_type;
+    }
+
+    /**
+     * @return BaseAPI
+     */
+    protected function getModuleApi()
+    {
+        $event_type = $this->getElementType()->event_type;
+        return $this->getApp()->moduleAPI->get($event_type->class_name);
     }
 
     /**
@@ -235,8 +246,9 @@ class BaseEventTypeElement extends BaseElement
     /**
      * Stubbed method to set default options
      * Used by child objects to set defaults for forms on create.
+     * @param \Patient $patient
      */
-    public function setDefaultOptions()
+    public function setDefaultOptions(\Patient $patient = null)
     {
     }
 

@@ -3,7 +3,7 @@
  * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2017
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,24 +13,27 @@
  *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+namespace OEModule\OphCiExamination\models;
+
+
 /**
- * This is the model class for table "family_history".
- *
- * The followings are the available columns in table 'family_history':
+ * This is the model class for table "ophciexamination_familyhistory_condition".
  *
  * @property int $id
  * @property string $name
+ * @property int $display_order
+ * @property boolean $is_other
  */
-class FamilyHistory extends BaseActiveRecordVersioned
+class FamilyHistoryCondition extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return FamilyHistory the static model class
+     * @return FamilyHistoryCondition the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -42,7 +45,19 @@ class FamilyHistory extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'family_history';
+        return 'ophciexamination_familyhistory_condition';
+    }
+
+    public function defaultScope()
+    {
+        return array('order' => $this->getTableAlias(true, false).'.display_order');
+    }
+
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
     }
 
     /**
@@ -53,25 +68,10 @@ class FamilyHistory extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('patient_id, relative_id, other_relative, side_id, condition_id, other_condition, comments', 'safe'),
-            array('patient_id, relative_id, side_id, condition_id', 'required'),
+            array('name, display_order, is_other', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, name', 'safe', 'on' => 'search'),
-        );
-    }
-
-    /**
-     * @return array relational rules.
-     */
-    public function relations()
-    {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
-        return array(
-            'relative' => array(self::BELONGS_TO, 'FamilyHistoryRelative', 'relative_id'),
-            'side' => array(self::BELONGS_TO, 'FamilyHistorySide', 'side_id'),
-            'condition' => array(self::BELONGS_TO, 'FamilyHistoryCondition', 'condition_id'),
         );
     }
 
@@ -83,6 +83,7 @@ class FamilyHistory extends BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
+            'is_other' => 'Other'
         );
     }
 
@@ -107,38 +108,10 @@ class FamilyHistory extends BaseActiveRecordVersioned
     }
 
     /**
-     * Wrapper function for getting the relative name for this family history (checks for other value).
-     *
-     * @return mixed|string
+     * @return string
      */
-    public function getRelativeName()
+    public function __toString()
     {
-        if ($this->relative) {
-            if ($this->relative->is_other) {
-                return $this->other_relative;
-            } else {
-                return $this->relative->name;
-            }
-        } else {
-            return 'N/A';
-        }
-    }
-
-    /**
-     * Wrapper function for getting the condition name for this family history (checks for other value).
-     *
-     * @return mixed|string
-     */
-    public function getConditionName()
-    {
-        if ($this->condition) {
-            if ($this->condition->is_other) {
-                return $this->other_condition;
-            } else {
-                return $this->condition->name;
-            }
-        } else {
-            return 'N/A';
-        }
+        return $this->name;
     }
 }

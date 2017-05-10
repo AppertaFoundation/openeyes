@@ -319,11 +319,16 @@ class ElementLetter extends BaseEventTypeElement
         return $re.', DOB: '.$patient->NHSDate('dob').', Hosp No: '.$patient->hos_num.', NHS No: '.$patient->nhsnum;
     }
 
-    public function setDefaultOptions()
+    /**
+     * @param Patient|null $patient
+     * @throws Exception
+     */
+    public function setDefaultOptions(Patient $patient = null)
     {
         if (Yii::app()->getController()->getAction()->id == 'create') {
             $this->site_id = Yii::app()->session['selected_site_id'];
 
+            // TODO: determine if there are any circumstances where this is necessary. Almost certainly very redundant
             if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))->findByPk(@$_GET['patient_id'])) {
                 throw new Exception('Patient not found: '.@$_GET['patient_id']);
             }
