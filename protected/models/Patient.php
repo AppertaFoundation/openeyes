@@ -496,6 +496,11 @@ class Patient extends BaseActiveRecordVersioned
         return false;
     }
 
+    public function get_no_allergies_date()
+    {
+        return null;
+    }
+
     /**
      * returns true if the allergy status of the patient is known (has allergies, or no known allergies) false otherwise.
      *

@@ -2,8 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2017
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -12,21 +11,23 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+namespace OEModule\OphCiExamination\models;
+
+
 /**
- * This is the model class for table "allergy".
- *
- * The followings are the available columns in table 'allergy':
+ * This is the model class for table "ophciexamination_allergy".
  *
  * @property int $id
  * @property string $name
- * @property Drug[] $drugs
+ * @property int $display_order
+ * @property boolean $is_other
+ * @todo: rename
  */
-class Allergy extends BaseActiveRecordVersioned
+class ExamAllergy extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
@@ -43,21 +44,19 @@ class Allergy extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'allergy';
-    }
-
-    /**
-     * Set for view as no PK defined in view
-     * @return string
-     */
-    public function primaryKey()
-    {
-        return 'id';
+        return 'ophciexamination_allergy';
     }
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.name');
+        return array('order' => $this->getTableAlias(true, false).'.display_order');
+    }
+
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
     }
 
     /**
@@ -68,23 +67,10 @@ class Allergy extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, comments', 'safe'),
-                array('name', 'required'),
-                // The following rule is used by search().
-                // Please remove those attributes that should not be searched.
-                array('id, name', 'safe', 'on' => 'search'),
-        );
-    }
-
-    /**
-     * @return array relational rules.
-     */
-    public function relations()
-    {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
-        return array(
-                'drugs' => array(self::MANY_MANY, 'Drug', 'drug_allergy_assignment(allergy_id,drug_id)'),
+            array('name, display_order', 'safe'),
+            // The following rule is used by search().
+            // Please remove those attributes that should not be searched.
+            array('id, name', 'safe', 'on' => 'search'),
         );
     }
 
@@ -94,13 +80,8 @@ class Allergy extends BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
-        );
-    }
-
-    public function behaviors()
-    {
-        return array(
-            'LookupTable' => 'LookupTable',
+            'id' => 'ID',
+            'name' => 'Name',
         );
     }
 
@@ -120,12 +101,16 @@ class Allergy extends BaseActiveRecordVersioned
         $criteria->compare('name', $this->name, true);
 
         return new CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
+            'criteria' => $criteria,
         ));
     }
 
-    public function __toString()
+    /**
+     * @TODO: replace with DB property
+     * @return bool
+     */
+    public function isOther()
     {
-        return $this->name;
+        return $this->name === 'Other';
     }
 }

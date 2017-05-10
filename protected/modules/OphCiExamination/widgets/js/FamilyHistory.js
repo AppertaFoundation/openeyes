@@ -22,7 +22,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     function FamilyHistoryController(options) {
         this.options = $.extend(true, {}, FamilyHistoryController._defaultOptions, options);
 
-        this.$noHistoryWrapper = $('#' + this.options.modelName + '_no_family_history_wrapper');
+        this.$noAllergiesWrapper = $('#' + this.options.modelName + '_no_family_history_wrapper');
         this.$noHistoryFld = $('#' + this.options.modelName + '_no_family_history');
         this.$entryFormWrapper = $('#' + this.options.modelName + '_form_wrapper');
 
@@ -190,9 +190,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     /**
      * hide the no family history section of the form.
      */
-    FamilyHistoryController.prototype.hideNoHistory = function()
+    FamilyHistoryController.prototype.hideNoAllergies = function()
     {
-        this.$noHistoryWrapper.hide();
+        this.$noAllergiesWrapper.hide();
         this.$noHistoryFld.prop('checked', false);
         this.$entryFormWrapper.show();
     };
@@ -203,9 +203,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     FamilyHistoryController.prototype.showNoHistory = function()
     {
         if (this.$table.find('tr').length === 1) {
-            this.$noHistoryWrapper.show();
+            this.$noAllergiesWrapper.show();
         } else {
-            this.hideNoHistory();
+            this.hideNoAllergies();
         }
     };
 
@@ -216,7 +216,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         var data = this.generateDataFromForm();
         if (this.validateData(data)) {
-            this.hideNoHistory();
+            this.hideNoAllergies();
 
             this.$table.append(this.createRow(data));
             this.resetForm();

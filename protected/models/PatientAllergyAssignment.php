@@ -48,6 +48,15 @@ class PatientAllergyAssignment extends BaseEventTypeElement
     }
 
     /**
+     * Set for view as no PK defined in view
+     * @return string
+     */
+    public function primaryKey()
+    {
+        return 'id';
+    }
+
+    /**
      * @return array validation rules for model attributes.
      */
     public function rules()
