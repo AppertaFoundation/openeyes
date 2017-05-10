@@ -21,6 +21,8 @@
 $cross_section_ed = null;
 
 if ($element->isNewRecord || $element->{$side . '_eyedraw2'}) {
+    // only display the cross section eyedraw for elements created after it was introduced
+    // legacy records will not have the the eyedraw2 property
     $cross_section_ed = $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'onReadyCommandArray' => array(
             array('addDoodle', array('CorneaCrossSection')),
@@ -35,6 +37,7 @@ if ($element->isNewRecord || $element->{$side . '_eyedraw2'}) {
                 'LensCrossSection' => array('Lens' => array('parameters' => array('originY') ) ),
                 'ACIOLCrossSection' => array('ACIOL' => array('parameters' => array('originY') ) ),
                 'PCIOLCrossSection' => array('PCIOL' => array('parameters' => array('originY', 'fx') ) ),
+                // no controls for corneal opacity in cross section so don't need to sync back to primary
                 //'CornealOpacityCrossSection' => array('CornealOpacity' => array('parameters' => array('yMidPoint', 'd', 'h', 'w', 'iW') ) )
             ),
         ),

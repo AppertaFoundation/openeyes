@@ -3,67 +3,39 @@ var OpenEyes = OpenEyes || {};
 OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
 OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
+    /**
+     *
+     * @param options
+     * @constructor
+     */
     function AnteriorSegmentController(options)
     {
         this.options = $.extend(true, {}, AnteriorSegmentController._defaultOptions, options);
         this.initialise();
     }
 
+    /**
+     * Data structure containing all the configuration options for the controller
+     * N.B. parameter syncing between the eyedraws is taken care of in standard OEEyedraw
+     * sync array config
+     *
+     * @private
+     */
     AnteriorSegmentController._defaultOptions = {
+        // pairing of doodles from primary to secondary (cross section) eyedraw canvas
         pairArray: {
             Lens:'LensCrossSection',
             PCIOL:'PCIOLCrossSection',
             ACIOL: 'ACIOLCrossSection',
             CornealOpacity: 'CornealOpacityCrossSection'
-        },
-        syncArray: {
-            primary: {
-                other: {
-                    AntSeg: { AntSegCrossSection: {parameters:['apexY']} },
-                    Lens: {
-                        LensCrossSection: { parameters: ['originY', 'nuclearGrade', 'corticalGrade', 'posteriorSubcapsularGrade'] }
-                    },
-                    ACIOL: { ACIOLCrossSection: { parameters: ['originY'] } },
-                    PCIOL: { PCIOLCrossSection: { parameters: ['originY', 'fx'] } },
-                    NuclearCataract: { NuclearCataractCrossSection: { parameters: ['apexY'] } },
-                    CorticalCataract: { CorticalCataractCrossSection: { parameters:['apexY'] } },
-                    PostSubcapCataract: { PostSubcapCataractCrossSection: { parameters:['apexY'] } },
-                    CornealOpacity: { CornealOpacityCrossSection: {parameters: ['yMidPoint','d','h','w','iW','originY'] } }
-                },
-                own: {
-                    Lens:{
-                        NuclearCataract:{parameters:['originX', 'originY']},
-                        CorticalCataract:{parameters:['originX', 'originY']},
-                        PostSubcapCataract:{parameters:['originX', 'originY']},
-                    },
-                    NuclearCataract:{Lens:{parameters:['originX', 'originY']}},
-                    CorticalCataract:{Lens:{parameters:['originX', 'originY']}},
-                }
-
-            },
-            secondary: {
-                other: {
-                    AntSegCrossSection: {AntSeg: {parameters: ['apexY']}},
-                    LensCrossSection: {Lens: {parameters: ['originY']}},
-                    ACIOLCrossSection: {ACIOL: {parameters: ['originY']}},
-                    PCIOLCrossSection: {PCIOL: {parameters: ['originY', 'fx']}},
-                    NuclearCataractCrossSection: {NuclearCataract: {parameters: ['apexY']}},
-                    CorticalCataractCrossSection: {CorticalCataract: {parameters: ['apexY']}},
-                    CornealOpacityCrossSection: {CornealOpacity: {parameters: ['yMidPoint', 'd', 'h', 'w', 'iW']}}
-                },
-                own: {
-                    LensCrossSection:{
-                        NuclearCataractCrossSection:{parameters:['originX', 'originY']},
-                        CorticalCataractCrossSection:{parameters:['originX', 'originY']},
-                        PostSubcapCataractCrossSection:{parameters:['originX', 'originY']}
-                    },
-                    NuclearCataractCrossSection:{LensCrossSection:{parameters:['originX', 'originY']}},
-                    CorticalCataractCrossSection:{LensCrossSection:{parameters:['originX', 'originY']}},
-                }
-            }
         }
     };
 
+    /**
+     * Assign the primary drawing canvas to the controller
+     *
+     * @param drawing
+     */
     AnteriorSegmentController.prototype.setPrimary = function(drawing)
     {
         if (!this.primaryDrawing) {
@@ -72,14 +44,23 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         }
     };
 
+    /**
+     * Assign the secondary (cross section) canvas to the controller
+     *
+     * @param drawing
+     */
     AnteriorSegmentController.prototype.setSecondary = function(drawing)
     {
         this.secondaryDrawing = drawing;
         this.secondaryDrawing.registerForNotifications(this, 'secondaryDrawingNotification', ['doodlesLoaded', 'doodleSelected']);
     };
 
+    /**
+     * Set up any internal references needed by the controller
+     */
     AnteriorSegmentController.prototype.initialise = function()
     {
+        // Cache references to the form elements that will be affected by changes to the Eyedraws
         this.$edReportField = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_' + this.options.side + '_ed_report');
         this.$edReportDisplay = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'+this.options.side+'_ed_report_display');
         this.$nuclearCataract = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'+this.options.side+'_nuclear_id');
@@ -87,21 +68,41 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
 
     };
 
+    /**
+     * Check if the primary canvas is ready
+     *
+     * @returns boolean
+     */
     AnteriorSegmentController.prototype.primaryDrawingReady = function()
     {
         return this.primaryDrawing && this.primaryDrawing.isReady;
     };
 
+    /**
+     * Check if the secondary canvas is ready
+     *
+     * @returns boolean
+     */
     AnteriorSegmentController.prototype.secondaryDrawingReady = function()
     {
         return this.secondaryDrawing && this.secondaryDrawing.isReady;
     };
 
+    /**
+     * Update the display div of the eyedraw report
+     */
     AnteriorSegmentController.prototype.updateReport = function()
     {
         this.$edReportDisplay.html(this.$edReportField.val().replace(/\n/g,'<br />'));
     };
 
+    /**
+     * Store the given value to the provided input element (syncing of data items that need to
+     * be recorded against the element (and therefore in the backend db) for reporting/analysis)
+     *
+     * @param $el
+     * @param lookupValue
+     */
     AnteriorSegmentController.prototype.storeToHiddenField = function($el, lookupValue)
     {
         var map = $el.data('eyedraw-map');
@@ -113,6 +114,13 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         $el.trigger('change');
     };
 
+    /**
+     * Handler of notifications from the primary Eyedraw canvas
+     * All changes require the report to be updated, but additional behaviours also arise
+     * depending on the notification type.
+     *
+     * @param msgArray
+     */
     AnteriorSegmentController.prototype.primaryDrawingNotification = function(msgArray)
     {
         switch (msgArray['eventName'])
@@ -143,7 +151,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                 }
             }
 
-            // Check pair array
+            // Check pair array for doodle to add to secondary
             if (this.secondaryDrawingReady()) {
                 for (var primaryClass in this.options.pairArray) {
                     if (newDoodle.className == primaryClass) {
@@ -157,6 +165,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
             }
 
             if (newDoodle.className === 'Lens') {
+                // ensure the initial value is stored correctly.
                 this.storeToHiddenField(this.$nuclearCataract, newDoodle.nuclearGrade);
                 this.storeToHiddenField(this.$corticalCataract, newDoodle.corticalGrade);
             }
@@ -166,6 +175,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
 
             // Class of deleted doodle
             var deletedDoodleClass = msgArray['object'];
+            // check if a pair doodle should be removed from secondary
             if (this.secondaryDrawingReady()) {
                 for (var primaryClass in this.options.pairArray) {
                     if (deletedDoodleClass == primaryClass) {
@@ -178,13 +188,18 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                     }
                 }
             }
+
+            if (deletedDoodleClass === 'Lens') {
+                // reset to the null value as this removes any cataract value
+                this.storeToHiddenField(this.$nuclearCataract, '');
+                this.storeToHiddenField(this.$corticalCataract, '');
+            }
             this.updateReport();
             break;
-            case 'parameterChanged':
+        case 'parameterChanged':
             this.updateReport();
             var change = msgArray['object'];
             if (change.doodle.className === 'Lens') {
-                // TODO: map for cortical as well as nuclear
                 if (change.parameter === 'nuclearGrade') {
                     this.storeToHiddenField(this.$nuclearCataract, change.value);
                 }
@@ -196,6 +211,11 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         }
     };
 
+    /**
+     * Handle secondary drawing notifications
+     *
+     * @param msgArray
+     */
     AnteriorSegmentController.prototype.secondaryDrawingNotification = function(msgArray)
     {
         switch (msgArray['eventName']) {
