@@ -44,7 +44,7 @@ class FamilyHistoryMigrateCommand extends CConsoleCommand
         foreach ($query->queryAll() as $row) {
             if ($row['patient_id'] !== $patient_id) {
                 if (count($patient_rows)) {
-                    if ($this->processPatient($patient_id, $patient_rows)) {
+                    if ($this->processPatient($patient_id, null, $patient_rows)) {
                         $processed_count++;
                     }
                     $patient_count++;
@@ -75,6 +75,9 @@ class FamilyHistoryMigrateCommand extends CConsoleCommand
 
     private $api;
 
+    /**
+     * @return OEModule\OphCiExamination\components\OphCiExamination_API
+     */
     protected function getApi()
     {
         if (!$this->api) {
