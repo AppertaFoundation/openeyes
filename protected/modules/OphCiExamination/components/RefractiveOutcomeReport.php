@@ -153,17 +153,17 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             if ($row['eye_id'] === '1') {
                 $side = 'left';
             }
-            $diff = (float) $row['predicted_refraction'] - ((float) $row[$side.'_sphere'] - ((float) $row[$side.'_cylinder'] / 2));
+            $diff = (float) $row['predicted_refraction'] - ((float) $row[$side.'_sphere'] + ((float) $row[$side.'_cylinder'] / 2));
 
             $diff = round($diff * 2) / 2;
 
-            $diff = array_search($diff, $this->graphConfig['xAxis']['categories']);
+            $diff_index = array_search($diff, $this->graphConfig['xAxis']['categories']);
 
-            if ($diff >= 0 && $diff <= (count($this->graphConfig['xAxis']['categories']) - 1)) {
-                if (!array_key_exists($row['patient_id'], $bestvalues)) {
-                    $bestvalues[$row['patient_id']] = $diff;
-                } elseif ($diff < $bestvalues[$row['patient_id']]) {
-                    $bestvalues[$row['patient_id']] = $diff;
+            if ($diff_index >= 0 && $diff_index <= (count($this->graphConfig['xAxis']['categories']) - 1)) {
+                if (!array_key_exists($row['patient_id'].$side, $bestvalues)) {
+                    $bestvalues[$row['patient_id'].$side] = $diff_index;
+                } elseif (abs($this->graphConfig['xAxis']['categories'][$diff_index]) < abs($this->graphConfig['xAxis']['categories'][$bestvalues[$row['patient_id'].$side]])) {
+                    $bestvalues[$row['patient_id'].$side] = $diff_index;
                 }
             }
         }
