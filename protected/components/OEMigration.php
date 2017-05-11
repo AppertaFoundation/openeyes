@@ -372,6 +372,9 @@ class OEMigration extends CDbMigration
         if (isset($params['parent_name'])) {
             $parent_class = "Element_{$event_type}_{$params['parent_name']}";
             $row['parent_element_type_id'] = $this->getIdOfElementTypeByClassName($parent_class);
+        } elseif (isset($params['parent_class'])) {
+            // introduced for supporting elements that are a little more flexible on class name vs name
+            $row['parent_element_type_id'] = $this->getIdOfElementTypeByClassName($params['parent_class']);
         }
 
         $this->insert('element_type', $row);

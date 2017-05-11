@@ -49,15 +49,15 @@ class m170510_131532_event_allergy_record extends OEMigration
             'id = :eid',
             array(':eid' => $original_allergies_element_id));
 
-	    $original_element_data = $this->dbConnection->createCommand()
-            ->select(array('display_order', 'parent_event_type_id'))
+	    $display_order = $this->dbConnection->createCommand()
+            ->select(array('display_order'))
             ->from('element_type')
             ->where('id = :id', array(':id' => $original_allergies_element_id))->queryScalar();
 
 	    $this->createElementType('OphCiExamination', 'Allergies', array(
 	        'class_name' => 'OEModule\OphCiExamination\models\Allergies',
-            'display_order' => $original_element_data['display_order'],
-            'parent_element_type_id' => $original_element_data['parent_element_type_id']
+            'display_order' => $display_order,
+            'parent_class' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_History'
         ));
 
         $this->createOETable('et_ophciexamination_allergies', array(
@@ -132,8 +132,8 @@ EOSQL
 	    $this->dropView('latest_allergy_examination_events');
 	    $this->dropView('allergy_examination_events');
 
-//        $this->renameColumn('patient', static::$archive_prefix . 'no_allergies_date', 'no_allergies_date');
-//        $this->renameColumn('patient_version', static::$archive_prefix . 'no_allergies_date', 'no_allergies_date');
+        $this->renameColumn('patient', static::$archive_prefix . 'no_allergies_date', 'no_allergies_date');
+        $this->renameColumn('patient_version', static::$archive_prefix . 'no_allergies_date', 'no_allergies_date');
         foreach (static::$archive_tables as $table) {
             $this->renameTable(static::$archive_prefix . $table, $table);
             $this->renameTable(static::$archive_prefix . $table . '_version', $table . '_version');
