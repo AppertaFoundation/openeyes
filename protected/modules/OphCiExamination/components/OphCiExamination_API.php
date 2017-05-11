@@ -42,6 +42,18 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getLatestElement($element, Patient $patient, $use_context = false, $before = null)
+    {
+        // Ensure namespace prepended appropriately if necessary
+        if (strpos($element, 'models') == 0) {
+            $element = 'OEModule\OphCiExamination\\' . $element;
+        }
+        return parent::getLatestElement($element, $patient, $use_context, $before);
+    }
+
+    /**
      * Extends parent method to prepend model namespace.
      *
      * @param \Episode $episode
