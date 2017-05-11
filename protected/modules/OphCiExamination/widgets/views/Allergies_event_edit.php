@@ -30,8 +30,6 @@ $this->render(
 ?>
 <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
-
-
 <table id="<?= $model_name ?>_entry_table">
     <thead>
     <tr>

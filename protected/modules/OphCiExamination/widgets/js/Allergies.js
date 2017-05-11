@@ -79,7 +79,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     /**
-     * Generates a hash of the form data to use in rendering table rows for family history
+     * Generates a json object of the form data to use in rendering table rows for family history
      *
      * @returns {{}}
      */
@@ -184,82 +184,3 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
 })(OpenEyes.OphCiExamination);
 
-// TODO: implement patient level editing if we want it
-// (function(exports, Util) {
-//     'use strict';
-//
-//     var AllergiesController = exports.AllergiesController;
-//
-//     /**
-//      * Controller in the patient summary context
-//      *
-//      * @param options
-//      * @constructor
-//      */
-//     function AllergiesPatientController(options) {
-//         options = $.extend(true, {}, AllergiesPatientController._defaultOptions, options);
-//
-//         this.$showEditButton = $('#btn-edit-family-history');
-//         this.$cancelEditButton = $('#btn-cancel-family-history');
-//         this.$saveEditButton = $('#btn-save-family-history');
-//         this.$editForm = $('#family-history-form');
-//
-//         AllergiesController.call(this, options);
-//
-//         this.$editColumn = this.$table.find('.edit-column');
-//         this.originalTable = this.$table.html();
-//         this.originalNoHistory = this.$noAllergiesFld.prop('checked');
-//     }
-//
-//     Util.inherits(AllergiesController, AllergiesPatientController);
-//
-//     AllergiesPatientController._defaultOptions = {};
-//
-//     AllergiesPatientController.prototype.initialiseTriggers = function()
-//     {
-//         var controller = this;
-//         controller.$showEditButton.on('click', function(e) {
-//             e.preventDefault();
-//             controller.$editForm.slideDown('fast');
-//             controller.$table.show();
-//             controller.$editColumn.show();
-//             controller.$showEditButton.hide();
-//         });
-//
-//         controller.$cancelEditButton.on('click', function(e) {
-//             e.preventDefault();
-//             controller.$table.html(controller.originalTable);
-//             controller.$noAllergiesFld.prop('checked', controller.originalNoHistory);
-//             if (controller.originalNoHistory) {
-//                 controller.$entryFormWrapper.hide();
-//             }
-//             controller.showNoAllergies();
-//             if (controller.$table.find('tr').length === 1) {
-//                 controller.$table.hide();
-//             }
-//             controller.$editForm.slideToggle('fast');
-//             controller.$showEditButton.show();
-//         });
-//
-//         controller.$saveEditButton.on('click', function(e) {
-//             if (!controller.validateSave()) {
-//                 e.preventDefault();
-//             }
-//         });
-//
-//         AllergiesPatientController._super.prototype.initialiseTriggers.call(controller);
-//     };
-//
-//     AllergiesPatientController.prototype.validateSave = function()
-//     {
-//         if (this.$table.find('tr').length === 1 && !this.$noAllergiesFld.prop('checked')) {
-//             new OpenEyes.UI.Dialog.Alert({
-//                 content: 'Please confirm there are no family history entries to be recorded.'
-//             }).open();
-//             return false;
-//         }
-//         return true;
-//     };
-//
-//     exports.AllergiesPatientController = AllergiesPatientController;
-// })(OpenEyes.OphCiExamination, OpenEyes.Util);

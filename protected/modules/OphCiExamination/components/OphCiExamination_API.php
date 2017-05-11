@@ -1904,10 +1904,23 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * @param Patient $patient
+     * @param bool $use_context
+     * @return mixed|null
+     */
+    public function getNoAllergiesDate(\Patient $patient, $use_context = false)
+    {
+        if ($element = $this->getLatestElement('models\Allergies', $patient, $use_context)) {
+            return $element->no_allergies_date;
+        }
+        return null;
+    }
+
+    /**
      * Return list of allergies belonging to a patient.
      *
      * @param \Patient $patient
-     *
+     * @todo: update to reflect change to allergies
      * @return string
      */
     public function getAllergies(\Patient $patient)
