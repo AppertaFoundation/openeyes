@@ -49,14 +49,15 @@ class m170510_131532_event_allergy_record extends OEMigration
             'id = :eid',
             array(':eid' => $original_allergies_element_id));
 
-	    $display_order = $this->dbConnection->createCommand()
-            ->select(array('display_order'))
+	    $original_element_data = $this->dbConnection->createCommand()
+            ->select(array('display_order', 'parent_event_type_id'))
             ->from('element_type')
             ->where('id = :id', array(':id' => $original_allergies_element_id))->queryScalar();
 
 	    $this->createElementType('OphCiExamination', 'Allergies', array(
 	        'class_name' => 'OEModule\OphCiExamination\models\Allergies',
-            'display_order' => $display_order
+            'display_order' => $original_element_data['display_order'],
+            'parent_element_type_id' => $original_element_data['parent_element_type_id']
         ));
 
         $this->createOETable('et_ophciexamination_allergies', array(

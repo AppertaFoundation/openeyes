@@ -118,7 +118,11 @@ class DefaultController extends \BaseEventTypeController
             $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
         }
 
-        $remove[] = 'OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion';
+        // Deprecated elements that we keep in place for backward compatibility with rendering
+        $remove = array_merge($remove, array(
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy',
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion'
+        ));
 
         if ($this->set) {
             foreach ($this->set->HiddenElementTypes as $element) {

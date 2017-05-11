@@ -114,7 +114,7 @@ class Allergies extends \BaseEventTypeElement
         foreach ($this->entries as $entry) {
             $force[] = $entry->allergy_id;
         }
-        return ExamAllergy::model()->activeOrPk($force)->findAll();
+        return OphCiExaminationAllergy::model()->activeOrPk($force)->findAll();
     }
 
     /**

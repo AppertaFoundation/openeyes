@@ -73,7 +73,7 @@ class AllergyEntry extends \BaseEventTypeElement
         // class name for the relations automatically generated below.
         return array(
             'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\Element_OphCiExamination_PastSurgery', 'element_id'),
-            'allergy' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\ExamAllergy', 'allergy_id'),
+            'allergy' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExaminationAllergy', 'allergy_id'),
         );
     }
     /**
