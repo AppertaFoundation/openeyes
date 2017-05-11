@@ -26,7 +26,8 @@ class InternalReferralSettingsController extends ModuleAdminController
     public function actionSettings()
     {
         $this->render('/admin/settings',array(
-            'settings' => OphcocorrespondenceInternalReferralSettings::model()->findAll()
+            'settings' => OphcocorrespondenceInternalReferralSettings::model()->findAll(),
+            'to_locations' => OphCoCorrespondence_InternalReferral_ToLocation::model()->findAll(),
         ));
     }
 
@@ -56,6 +57,69 @@ class InternalReferralSettingsController extends ModuleAdminController
         }
 
         $this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors));
+    }
+
+
+    public function actionUpdateToLocationList()
+    {
+        $return = array('success' => false);
+
+        $site_ids = array();
+        $locations_post = Yii::app()->request->getPost('OphCoCorrespondence_InternalReferral_ToLocation', array());
+
+        foreach($locations_post as $location_post){
+            $site_ids[] = $location_post['site_id'];
+        }
+
+        $transaction = Yii::app()->db->beginTransaction();
+
+        try
+        {
+
+            //make sure no duplications are saved
+            $site_ids = array_unique($site_ids);
+
+            // remove all site that's ids were not posted back - means they were removed
+            $criteria = new CDbCriteria();
+            $criteria->addNotInCondition('site_id', $site_ids);
+
+            OphCoCorrespondence_InternalReferral_ToLocation::model()->deleteAll($criteria);
+
+            $is_ok = true;
+
+            //now we save the new ones
+            foreach($site_ids as $site_id){
+                $site = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByAttributes(array('site_id' => $site_id));
+
+                if(!$site){
+                    $site = new OphCoCorrespondence_InternalReferral_ToLocation();
+                    $site->site_id = $site_id;
+
+                    if( !$site->save()){
+                        $is_ok = false;
+                    }
+                }
+            }
+
+            if($is_ok){
+                $transaction->commit();
+                $return = array('success' => true);
+            } else {
+                $transaction->rollback();
+                $return = array('success' => false);
+            }
+
+        }
+        catch(Exception $e)
+        {
+            $transaction->rollback();
+            $return = array('success' => false);
+        }
+
+        echo CJSON::encode($return);
+        Yii::app()->end();
+
+
     }
 
 

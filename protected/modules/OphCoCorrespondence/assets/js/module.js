@@ -180,10 +180,10 @@ $(document).ready(function() {
         });
     });
 
-    $('#ElementLetter_to_site_id').on('change', function(){
+    $('#ElementLetter_to_location_id').on('change', function(){
 
         $.getJSON(baseUrl + "/" + moduleName + "/Default/getSiteInfo", {
-            site_id: $('#ElementLetter_to_site_id').val(),
+            site_id: $('#ElementLetter_to_location_id').val(),
         }, function (data) {
             $('#Document_Target_Address_0').val(data.correspondence_name);
         });
@@ -699,22 +699,6 @@ $(document).ready(function() {
             $('.internal-referrer-wrapper').slideDown();
             setRecipientToInternalReferral();
 
-            if( typeof docman !== "undefined" ){
-
-                //add GP to recipients
-                if( !docman.isContactTypeAdded("GP") ){
-                    docman.createNewRecipientEntry('GP');
-                }
-                //hide remove button as GP is mandatory
-                docman.toggleRemoveLink( docman.getRowIndexByContactType('GP') );
-
-                //add Patient to recipients
-                if( !docman.isContactTypeAdded("PATIENT") ){
-                    docman.createNewRecipientEntry('PATIENT');
-                }
-                docman.toggleRemoveLink( docman.getRowIndexByContactType('PATIENT') );
-            }
-
 		} else if($('.internal-referrer-wrapper').is(':visible')) {
             $('.internal-referrer-wrapper').slideUp();
             resetInternalReferralFields();
@@ -725,12 +709,6 @@ $(document).ready(function() {
                 if( typeof docman.setDeliveryMethods === 'function') {
                     docman.setDeliveryMethods(0);
                 }
-
-                //restore the remove link
-                docman.toggleRemoveLink( docman.getRowIndexByContactType('GP') );
-                docman.toggleRemoveLink( docman.getRowIndexByContactType('PATIENT') );
-
-
 		    }
         }
 

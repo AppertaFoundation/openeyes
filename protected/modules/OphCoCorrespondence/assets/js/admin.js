@@ -117,6 +117,75 @@ $(document).ready(function() {
         window.location.href = baseUrl + '/OphCoCorrespondence/oeadmin/internalReferralSettings/editSetting?key=' + $(this).data('key');
     });
 
+	/** Internal Referral Settings **/
+	function saveSiteList(){
+		data = $('#to_location_sites_grid input').serializeArray();
+
+		data.push({name: 'YII_CSRF_TOKEN', value: YII_CSRF_TOKEN});
+
+        $.ajax({
+            'type': 'POST',
+            'url': '/OphCoCorrespondence/oeadmin/internalReferralSettings/updateToLocationList',
+            'data': data,
+			'beforeSend':function (){
+            	$('#internal_referral_to_location .loader').show();
+			},
+            'success': function (data) {
+			    data = JSON.parse(data);
+
+                if(data.success === true){
+                    $('#internal_referral_to_location span.saved').show();
+                    $('#internal_referral_to_location span.saved').fadeOut(2000);
+                } else {
+                    $('#internal_referral_to_location span.error').show();
+                }
+            },
+			'error': function(){
+                $('#internal_referral_to_location span.error').show();
+			},
+            'complete': function(){
+                $('#internal_referral_to_location .loader').hide();
+			}
+        });
+
+	}
+
+    //Add site to the To Location dropdown in the Internal
+	$('#internal_referral_to_location').on('change', '#to_location_site_id', function() {
+        var $hidden_input = $('<input>', {type: 'hidden', name: 'OphCoCorrespondence_InternalReferral_ToLocation[][site_id]', value: $(this).val()}),
+            $tr = $('<tr>', {class: 'site-row'}),
+            $td_name = $('<td>', {class: 'site_name'}).text($(this).find('option:selected').text()),
+            $td_action = $('<td>', {class: 'site_action'}).html($('<a>', {
+                class: 'remove',
+                href: 'javascript:void(0)'
+            }).text('remove'));
+
+        if ($(this).val() > 0) {
+            $tr.append($td_name.append($hidden_input)).append($td_action);
+
+			$('#to_location_sites_grid .no-sites').hide();
+			$('#to_location_sites_grid').append($tr);
+
+			saveSiteList();
+		}
+
+        $('#to_location_site_id').val(null);
+	});
+
+    $('#internal_referral_to_location').on('click', '.remove', function(){
+    	var $table = $(this).closest('table');
+    	$(this).closest('tr').remove();
+
+    	if( !$table.find('tr.site-row').length ){
+            $('#to_location_sites_grid .no-sites').show();
+		}
+
+        saveSiteList();
+
+	});
+
+	/** End of Internal Referral Settings **/
+
 });
 
 var macro_cursor_position = 0;

@@ -64,20 +64,20 @@ class ElementLetter extends BaseEventTypeElement
         return array(
             array(
                 'event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date,' .
-                'print_all, is_signed_off, to_subspecialty_id, to_firm_id, is_urgent, is_same_condition, to_site_id',
+                'print_all, is_signed_off, to_subspecialty_id, to_firm_id, is_urgent, is_same_condition, to_location_id',
                 'safe'
             ),
             array('to_subspecialty_id', 'internalReferralServiceValidator'),
             array('is_same_condition', 'internalReferralConditionValidator'),
             array('letter_type_id', 'letterTypeValidator'),
             array('site_id, date, introduction, body, footer', 'requiredIfNotDraft'),
-            array('use_nickname, to_site_id', 'required'),
+            array('use_nickname, to_location_id', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
             //array('is_signed_off', 'isSignedOffValidator'), // they do not want this at the moment - waiting for the demo/feedback
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, site_id, use_nickname, date, introduction, re, body, footer, draft, direct_line, letter_type_id, to_site_id', 'safe', 'on' => 'search'),
+            array('id, event_id, site_id, use_nickname, date, introduction, re, body, footer, draft, direct_line, letter_type_id, to_location_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -99,7 +99,7 @@ class ElementLetter extends BaseEventTypeElement
             'document_instance' => array(self::HAS_MANY, 'DocumentInstance', array( 'correspondence_event_id' => 'event_id')),
             'letterType' => array(self::BELONGS_TO, 'LetterType', 'letter_type_id'),
             'toSubspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'to_subspecialty_id'),
-            'toSite' => array(self::BELONGS_TO, 'Site', 'to_site_id'),
+            'toLocation' => array(self::BELONGS_TO, 'OphCoCorrespondence_InternalReferral_ToLocation', 'to_location_id'),
 
         );
     }
@@ -857,5 +857,20 @@ class ElementLetter extends BaseEventTypeElement
     {
         $value = OphcocorrespondenceInternalReferralSettings::model()->getSetting($key);
         return is_null($value) ? $default : $value;
+    }
+
+
+    /**
+     * Returns the list of selected sites
+     *
+     * @param bool $list
+     * @return array|CActiveRecord[]
+     */
+    public function getToLocations($list = false)
+    {
+        $locations = OphCoCorrespondence_InternalReferral_ToLocation::model()->with('site')->findAll();
+
+        return $list ? CHtml::listData($locations, 'site.id', 'site.short_name') : $locations;
+
     }
 }

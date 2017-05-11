@@ -416,8 +416,6 @@ class Document //extends BaseActiveRecord
     
     protected function removeOutputs($document_target_id, $new_document_outputs)
     {
-        $document_target = DocumentTarget::model()->findByPk($document_target_id);
-
         $document_output_ids = array();
         foreach($new_document_outputs as $document_output){
             if( isset($document_output['id']) && isset($document_output['output_type']) ){
