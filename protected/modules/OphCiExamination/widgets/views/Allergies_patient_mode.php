@@ -21,7 +21,7 @@ $model_name = CHtml::modelName($element);
 <p class="allergy-status-none" <?php if (!$element->no_allergies_date) { echo 'style="display: none;"'; }?>>Patient has no known allergies</p>
 <p class="allergy-status-unknown"  <?php if (!empty($element->entries) || $element->no_allergies_date) { echo 'style="display: none;"'; }?>>Patient allergy status is unknown</p>
 
-<table id="<?= $model_name ?>_entry_table">
+<table id="<?= $model_name ?>_entry_table" <?php if (empty($element->entries)) { echo 'style="display: none;"'; }?>>
     <thead>
     <tr>
         <th>Allergy</th>
