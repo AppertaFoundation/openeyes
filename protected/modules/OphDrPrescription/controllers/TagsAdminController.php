@@ -104,4 +104,10 @@ class TagsAdminController extends BaseAdminController
 
     }
 
+    public function actionDelete()
+    {
+        $admin = new Admin(Tag::model(), $this);
+        $admin->deleteModel();
+    }
+
 }
