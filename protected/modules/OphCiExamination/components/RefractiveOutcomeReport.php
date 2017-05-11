@@ -160,9 +160,9 @@ class RefractiveOutcomeReport extends \Report implements \ReportInterface
             $diff_index = array_search($diff, $this->graphConfig['xAxis']['categories']);
 
             if ($diff_index >= 0 && $diff_index <= (count($this->graphConfig['xAxis']['categories']) - 1)) {
-                if (!array_key_exists($row['patient_id'], $bestvalues)) {
+                if (!array_key_exists($row['patient_id'].$side, $bestvalues)) {
                     $bestvalues[$row['patient_id'].$side] = $diff_index;
-                } elseif (abs($this->graphConfig['xAxis']['categories'][$diff_index]) < abs($this->graphConfig['xAxis']['categories'][$bestvalues[$row['patient_id']]])) {
+                } elseif (abs($this->graphConfig['xAxis']['categories'][$diff_index]) < abs($this->graphConfig['xAxis']['categories'][$bestvalues[$row['patient_id'].$side]])) {
                     $bestvalues[$row['patient_id'].$side] = $diff_index;
                 }
             }
