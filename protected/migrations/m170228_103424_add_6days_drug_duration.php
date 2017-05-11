@@ -16,6 +16,10 @@ class m170228_103424_add_6days_drug_duration extends CDbMigration
 //      If not then continue
 //      Get display_order for '5 days'
             $fivedays_display = $this->dbConnection->createCommand('SELECT display_order FROM drug_duration WHERE name = "5 days"')->queryScalar();
+            if(!$fivedays_display){
+                // There is no row for '5 days' so treat it as if the new row should go at the end of the list.
+                $fivedays_display = $this->dbConnection->createCommand('SELECT max(display_order) FROM drug_duration')->queryScalar();
+            }
             echo "5 days is " . $fivedays_display;
 //      Update by one all rows where display_order is greater than '5 days'
             $seq = $fivedays_display + 2;
