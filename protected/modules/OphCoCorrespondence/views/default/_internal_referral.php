@@ -45,7 +45,7 @@
 
             <div class="large-1 column">&nbsp;</div>
 
-            <div class="large-2 column "> <label>Condition: </label> </div>
+            <div class="large-2 column "> <label>Condition:* </label> </div>
 
             <div class="large-3 column end">
                 <?php

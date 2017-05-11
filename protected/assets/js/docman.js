@@ -403,9 +403,7 @@ var docman = (function() {
                 data: {
                     patient_id: OE_patient_id,
                     last_row_index: last_row_index,
-                    selected_contact_type: selected_contact_type,
-                    is_mandatory: $('#ElementLetter_letter_type_id option:selected').text() === 'Internal Referral'
-
+                    selected_contact_type: selected_contact_type
                 },
                 'context': this,
                 'success': function(resp) {

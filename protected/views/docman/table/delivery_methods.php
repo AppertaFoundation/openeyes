@@ -82,7 +82,7 @@
             $is_checked = 'checked';
             
             $is_post_checked = isset($_POST['DocumentTarget'][$row_index]['DocumentOutput'][$pre_output_key]['output_type']);
-            if( $contact_type == 'GP' ){
+            if( $contact_type == 'GP' || $contact_type == 'INTERNALREFERRAL'){
                 $is_checked = $is_post_checked ? 'checked' : '';
             } else {
                 $is_checked = (Yii::app()->request->isPostRequest && !$is_post_checked) ? '' : 'checked';

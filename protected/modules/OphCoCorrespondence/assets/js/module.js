@@ -173,7 +173,7 @@ $(document).ready(function() {
         subspecialty_id = $('#ElementLetter_to_subspecialty_id').find('option:contains("' + subspecialty_name + '")').val();
         $('#ElementLetter_to_subspecialty_id').val(subspecialty_id);
 
-        $.getJSON(baseUrl + "/" + moduleName + "/Default/getSalutation", {
+        $.getJSON(baseUrl + "/" + moduleName + "/Default/getSalutationByFirm", {
             firm_id: $('#ElementLetter_to_firm_id').val(),
         }, function (data) {
             updateSalutation(data);
@@ -698,6 +698,19 @@ $(document).ready(function() {
 		if( $(this).find('option:selected').text() == 'Internal Referral' ){
             $('.internal-referrer-wrapper').slideDown();
             setRecipientToInternalReferral();
+
+            if( typeof docman !== "undefined" ){
+
+                //add GP to recipients
+                if( !docman.isContactTypeAdded("GP") ){
+                    docman.createNewRecipientEntry('GP');
+                }
+
+                //add Patient to recipients
+                if( !docman.isContactTypeAdded("PATIENT") ){
+                    docman.createNewRecipientEntry('PATIENT');
+                }
+            }
 
 		} else if($('.internal-referrer-wrapper').is(':visible')) {
             $('.internal-referrer-wrapper').slideUp();

@@ -24,7 +24,7 @@ class DefaultController extends BaseEventTypeController
         'getString' => self::ACTION_TYPE_FORM,
         'getCc' => self::ACTION_TYPE_FORM,
         'getConsultantsBySubspecialty' => self::ACTION_TYPE_FORM,
-        'getSalutation' => self::ACTION_TYPE_FORM,
+        'getSalutationByFirm' => self::ACTION_TYPE_FORM,
         'getSiteInfo' => self::ACTION_TYPE_FORM,
         'expandStrings' => self::ACTION_TYPE_FORM,
         'users' => self::ACTION_TYPE_FORM,
@@ -653,16 +653,27 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * Returns the consultant's salutation
+     * Returns the consultant's or subspecialty salutation
      * @param $firm_id
+     * @throws Exception when firm not found by ID
+     * @return json salutation
      */
-    public function actionGetSalutation($firm_id)
+    public function actionGetSalutationByFirm($firm_id)
     {
         $firm = Firm::model()->findByPk($firm_id);
+
+        if(!$firm){
+            throw new Exception("Firm not found. ID: $firm_id");
+        }
         $user = User::model()->findByPk($firm->consultant_id);
 
-        echo CJSON::encode($user->getLetterIntroduction());
+        if($user){
+            $salutation = $user->getSalutationName() . " ({$firm->getSubspecialtyText()}),";
+        } else {
+            $salutation = 'Dear ' . $firm->getSubspecialtyText() . ' Service,';
+        }
 
+        echo CJSON::encode($salutation);
         Yii::app()->end();
     }
 

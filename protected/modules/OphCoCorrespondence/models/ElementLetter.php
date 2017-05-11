@@ -206,11 +206,13 @@ class ElementLetter extends BaseEventTypeElement
             //if the letter_type is Internal referral than the GP and Patient are mandatory to copy into
             $internalreferral_letter_type = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
 
-            if($this->letter_type_id == $internalreferral_letter_type->id ){
+            //this throws an error if GP or Patient not found in Internal referral
+            // awaiting for requirements... ...
+            /*if($this->letter_type_id == $internalreferral_letter_type->id ){
                 if( !$gp_found || !$patient_found ){
                     $this->addError('letter_type_id', 'GP and Patient must copied into when letter type is Internal Referral!');
                 }
-            }
+            }*/
 
         }
 
@@ -870,7 +872,7 @@ class ElementLetter extends BaseEventTypeElement
     {
         $locations = OphCoCorrespondence_InternalReferral_ToLocation::model()->with('site')->findAll();
 
-        return $list ? CHtml::listData($locations, 'site.id', 'site.short_name') : $locations;
+        return $list ? CHtml::listData($locations, 'id', 'site.short_name') : $locations;
 
     }
 }
