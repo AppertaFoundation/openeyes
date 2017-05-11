@@ -24,6 +24,7 @@ class DefaultController extends BaseEventTypeController
         $transaction = Yii::app()->db->beginTransaction();
         try {
             $unlinkedEvent->episode_id = $this->episode->id;
+            $unlinkedEvent->created_user_id = Yii::app()->user->getId();
 
             if ($unlinkedEvent->save()) {
                 $importedEvent->is_linked = 1;
