@@ -1121,9 +1121,13 @@ class Patient extends BaseActiveRecordVersioned
      * marks the patient as having no family history.
      *
      * @throws Exception
+     * @deprecated - since 2.0
+     * @deprecated family history now contained within examination module
      */
     public function setNoFamilyHistory()
     {
+        trigger_error("Family History is now part of the Examination Module.", E_USER_DEPRECRATED);
+        
         if (!empty($this->familyHistory)) {
             throw new Exception('Unable to set no family history date as patient still has family history assigned');
         }
@@ -1493,9 +1497,13 @@ class Patient extends BaseActiveRecordVersioned
      * @param $comments
      *
      * @throws Exception
+     * @deprecated since 2.0.0
+     * @deprecated family history is part of examination module now
      */
     public function addFamilyHistory($relative_id, $other_relative, $side_id, $condition_id, $other_condition, $comments)
     {
+        trigger_error("Family History is now part of the Examination Module.", E_USER_DEPRECRATED);
+
         $check_sql = 'patient_id=? and relative_id=? and side_id=? and condition_id=?';
         $params = array($this->id, $relative_id, $side_id, $condition_id);
         if ($other_relative) {
