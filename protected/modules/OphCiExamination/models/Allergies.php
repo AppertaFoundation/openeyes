@@ -84,6 +84,33 @@ class Allergies extends \BaseEventTypeElement
         return parent::afterValidate();
     }
 
+    /**
+     * Check for auditable changes
+     *
+     */
+    protected function checkForAudits()
+    {
+
+        if ($this->isAttributeDirty('no_allergies_date')) {
+            if ($this->no_allergies_date) {
+                $this->addAudit('set-noallergydate');
+            } else {
+                $this->addAudit('remove-noallergydate');
+            }
+        }
+        return parent::checkForAudits();
+    }
+
+    protected function doAudit()
+    {
+        if ($this->isAtTip()) {
+            parent::doAudit();
+        }
+    }
+
+    /**
+     * @param \BaseEventTypeElement $element
+     */
     public function loadFromExisting($element)
     {
         $this->no_allergies_date = $element->no_allergies_date;
@@ -94,15 +121,41 @@ class Allergies extends \BaseEventTypeElement
             $entries[] = $new;
         }
         $this->entries = $entries;
+        $this->originalAttributes = $this->getAttributes();
     }
+
+    /**
+     * @param \Patient|null $patient
+     * @return \BaseEventTypeElement|null
+     */
+    public function getTipElement(\Patient $patient = null)
+    {
+        if (!$patient) {
+            $patient = $this->event->getPatient();
+        }
+        return $this->getModuleApi()->getLatestElement(static::class, $patient);
+    }
+
     /**
      * @param \Patient $patient
      */
     public function setDefaultOptions(\Patient $patient = null)
     {
-        if ($previous = $this->getModuleApi()->getLatestElement(static::class, $patient)) {
-            $this->loadFromExisting($previous);
+        if ($tip = $this->getTipElement($patient)) {
+            $this->loadFromExisting($tip);
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isAtTip()
+    {
+        if ($this->getIsNewRecord()) {
+            return true;
+        }
+        $tip = $this->getTipElement();
+        return $tip && $tip->id === $this->id;
     }
 
     /**

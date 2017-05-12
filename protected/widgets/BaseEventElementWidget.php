@@ -66,10 +66,17 @@ class BaseEventElementWidget extends CWidget
                 throw new \CHttpException('Patient required to initialise ' . static::class . ' with no element.');
             }
             $this->element = $this->getNewElement();
+        }
+
+        if ($this->element->getIsNewRecord()) {
+            // when new we want to always set to default so we can track changes
+            // but if this element already exists then we don't want to override
+            // it with the tip data
             $this->element->setDefaultOptions($this->patient);
         }
 
         if ($this->data) {
+            // we set the element to the provided data
             $this->updateElementFromData($this->element, $this->data);
         }
     }

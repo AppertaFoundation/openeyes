@@ -31,7 +31,7 @@ namespace OEModule\OphCiExamination\models;
  * @property Allergy $allergy
  * @property Allergies $element
  */
-class AllergyEntry extends \BaseEventTypeElement
+class AllergyEntry extends \BaseElement
 {
     /**
      * Returns the static model of the specified AR class.
@@ -72,7 +72,7 @@ class AllergyEntry extends \BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\Element_OphCiExamination_PastSurgery', 'element_id'),
+            'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy', 'element_id'),
             'allergy' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExaminationAllergy', 'allergy_id'),
         );
     }
@@ -102,6 +102,14 @@ class AllergyEntry extends \BaseEventTypeElement
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+
+    protected function beforeSave()
+    {
+        if ($this->isModelDirty()) {
+            $this->element->addAudit('edited-allergies');
+        }
+        return parent::beforeSave();
     }
 
     /**
