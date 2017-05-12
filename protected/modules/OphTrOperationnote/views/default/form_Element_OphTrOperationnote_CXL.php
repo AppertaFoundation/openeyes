@@ -63,6 +63,10 @@
         null, array('field' => 2));?>
 
     <?php
+    echo $form->radioButtons($element, 'mitomycin_c',
+        'OphTrOperationnote_CXL_Mitomycin', $element->mitomycin_c);
+    ?>
+    <?php
     echo $form->radioButtons($element, 'iontophoresis_id',
         'OphTrOperationnote_CXL_Iontophoresis', $element->iontophoresis_id);
     ?>
