@@ -356,6 +356,22 @@ class BaseActiveRecord extends CActiveRecord
     }
 
     /**
+     * @param $obj
+     * @param $rel
+     * @return mixed
+     */
+    private function getReverseRelation($obj, $rel)
+    {
+        foreach ($obj->getMetaData()->relations as $possible_reverse) {
+            if (get_class($possible_reverse) === self::BELONGS_TO) {
+                if ($possible_reverse->foreignKey === $rel->foreignKey) {
+                    return $possible_reverse;
+                }
+            }
+        }
+    }
+
+    /**
      * Save objects to the given relation.
      *
      * @param $name
@@ -369,8 +385,14 @@ class BaseActiveRecord extends CActiveRecord
     {
         $saved_ids = array();
         if ($new_objs) {
+            $reverse_relation = $this->getReverseRelation($new_objs[0],$rel);
+
             foreach ($new_objs as $i => $new) {
                 $new->{$rel->foreignKey} = $this->getPrimaryKey();
+                // set the relation so that it does not need to be retrieved from the db.
+                if ($reverse_relation) {
+                    $new->{$reverse_relation->name} = $this;
+                }
 
                 if ($new->hasAttribute('display_order')) {
                     $new->display_order = $i + 1;
@@ -486,8 +508,6 @@ class BaseActiveRecord extends CActiveRecord
                 $orig_objs = $this->getRelated($name, true);
 
                 if (get_class($rel) == self::MANY_MANY) {
-                    foreach ($orig_objs as $obj) {
-                    }
                     $this->afterSaveManyMany($name, $rel, $new_objs, $orig_objs);
                 } else {
                     if ($thru_name = $rel->through) {
@@ -503,6 +523,9 @@ class BaseActiveRecord extends CActiveRecord
                         $this->afterSaveHasMany($name, $rel, $new_objs, $orig_objs);
                     }
                 }
+                // retrieving the original objects above resets the relation to what was in the db before this save
+                // process. We restore it the 'new objects' here, thereby maintaining consistency with the db.
+                $this->$name = $new_objs;
             }
         }
         $this->originalAttributes = $this->getAttributes();
