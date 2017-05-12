@@ -209,18 +209,6 @@ class DefaultController extends BaseEventTypeController
         } elseif (isset($_GET['unbooked'])) {
             $this->unbooked = true;
         }
-        
-        $is_auto_schedule_operation = Yii::app()->params['auto_schedule_operation'];
-
-        if ($api && $is_auto_schedule_operation) {
-            $schedule_result = $api->autoScheduleOperationBookings($this->current_episode);
-            if( $schedule_result !== true ){
-                foreach($schedule_result as $error){
-                    Yii::app()->user->setFlash('error.alert', $error);
-                }
-
-            }
-        }
 
         $this->initEdit();
     }
@@ -265,9 +253,26 @@ class DefaultController extends BaseEventTypeController
             // set up form for selecting a booking for the Op note
             $bookings = array();
 
-            if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-                $bookings = $api->getOpenBookingsForEpisode($this->episode->id);
+
+            $element_enabled = \SettingInstallation::model()->find('`key` = :setting_key', array(':setting_key'=>'disable_theatre_diary'));
+            $theatre_diary_disabled = isset($element_enabled->value) && $element_enabled->value == 'on';
+
+            if($theatre_diary_disabled)
+            {
+                $bookings = Element_OphTrOperationbooking_Operation::model()
+                    ->with('event')
+                    ->findAll('status_id IN (1, 2, 3)
+                            AND event.episode_id = :episode_id
+                            AND operation_cancellation_date IS NULL',
+                    array(':episode_id'=>$this->episode->id));
             }
+            else
+            {
+                if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
+                    $bookings = $api->getOpenBookingsForEpisode($this->episode->id);
+                }
+            }
+
 
             $this->title = 'Please select booking';
             $this->event_tabs = array(
@@ -287,7 +292,7 @@ class DefaultController extends BaseEventTypeController
             $this->render('select_event', array(
                 'errors' => $errors,
                 'bookings' => $bookings,
-                'is_auto_schedule_operation' => Yii::app()->params['auto_schedule_operation']
+                'theatre_diary_disabled' => $theatre_diary_disabled
             ));
         }
     }
@@ -958,14 +963,21 @@ class DefaultController extends BaseEventTypeController
                 'condition' => 'active=1 and site_id='.$siteId,
                 'order' => 'name',
             ));
-            //var_dump($optionValues);
-            echo CHtml::dropDownList(
-                'theatre_id',
-                false,
-                CHtml::listData($optionValues, 'id', 'name'),
-                array(
-                    'empty' => '-- Please select --', )
+
+            if(count($optionValues) == 1){
+                echo CHtml::dropDownList(
+                    'theatre_id',
+                    false,
+                    CHtml::listData($optionValues, 'id', 'name')
                 );
+            } else {
+                echo CHtml::dropDownList(
+                    'theatre_id',
+                    false,
+                    CHtml::listData($optionValues, 'id', 'name'),
+                    array('empty' => '-- Please select --', )
+                );
+            }
         }
     }
 

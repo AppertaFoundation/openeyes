@@ -426,11 +426,6 @@ return array(
          */
         'OphCoCorrespondence_printout_draft_background' => true,
 
-        /**
-         *  Operation bookings will be automatically scheduled to the next available slot (regardless of the firm)
-         */
-        "auto_schedule_operation" => false,
-
         'clinical_management_pcr' => true,
         'docman_generate_csv' => false,
         /**
