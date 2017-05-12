@@ -129,15 +129,19 @@ $(document).ready(function() {
             'data': data,
 			'beforeSend':function (){
             	$('#internal_referral_to_location .loader').show();
+                $('#internal_referral_to_location span.error').fadeOut(500);
 			},
             'success': function (data) {
 			    data = JSON.parse(data);
 
                 if(data.success === true){
                     $('#internal_referral_to_location span.saved').show();
-                    $('#internal_referral_to_location span.saved').fadeOut(2000);
+                    $('#internal_referral_to_location span.saved').fadeOut(3000);
                 } else {
                     $('#internal_referral_to_location span.error').show();
+                    if(data.message){
+                        $('#internal_referral_to_location span.error').text(data.message);
+                    }
                 }
             },
 			'error': function(){
@@ -152,21 +156,32 @@ $(document).ready(function() {
 
     //Add site to the To Location dropdown in the Internal
 	$('#internal_referral_to_location').on('change', '#to_location_site_id', function() {
-        var $hidden_input = $('<input>', {type: 'hidden', name: 'OphCoCorrespondence_InternalReferral_ToLocation[][site_id]', value: $(this).val()}),
+	    var index = $('#to_location_sites_grid tr.site-row').length;
+
+	    //if i is 0 there are no sites added we have to start with 0 otherwise we increment with
+	    //index = index > 0 ? (index + 1) : 0;
+
+        var $hidden_input = $('<input>', {type: 'hidden', name: 'OphCoCorrespondence_InternalReferral_ToLocation[' + index + '][site_id]', value: $(this).val()}),
             $tr = $('<tr>', {class: 'site-row'}),
             $td_name = $('<td>', {class: 'site_name'}).text($(this).find('option:selected').text()),
+            $td_location = $('<td>',{class:'location'}).append( $('<input>',{type: 'text', name:'OphCoCorrespondence_InternalReferral_ToLocation[' + index + '][location]'}) );
+            $td_location_name = $('<td>',{class:'location_name'}).append( $('<input>',{type: 'text', name:'OphCoCorrespondence_InternalReferral_ToLocation[' + index + '][location_name]'}) );
             $td_action = $('<td>', {class: 'site_action'}).html($('<a>', {
                 class: 'remove',
                 href: 'javascript:void(0)'
             }).text('remove'));
 
         if ($(this).val() > 0) {
-            $tr.append($td_name.append($hidden_input)).append($td_action);
+            $tr.append($td_name.append($hidden_input)).append($td_location).append($td_location_name).append($td_action);
 
 			$('#to_location_sites_grid .no-sites').hide();
-			$('#to_location_sites_grid').append($tr);
 
-			saveSiteList();
+			if( $('#to_location_sites_grid tr.site-row').length ){
+                $('#to_location_sites_grid tr.site-row').last().after($tr);
+            } else {
+                $('#to_location_sites_grid tbody').prepend($tr);
+            }
+
 		}
 
         $('#to_location_site_id').val(null);
@@ -180,9 +195,11 @@ $(document).ready(function() {
             $('#to_location_sites_grid .no-sites').show();
 		}
 
-        saveSiteList();
-
 	});
+
+    $('#save_to_location_table').on('click', function(){
+        saveSiteList();
+    });
 
 	/** End of Internal Referral Settings **/
 

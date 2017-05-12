@@ -67,38 +67,45 @@ class InternalReferralSettingsController extends ModuleAdminController
         $site_ids = array();
         $locations_post = Yii::app()->request->getPost('OphCoCorrespondence_InternalReferral_ToLocation', array());
 
+        //make the posted array unique
+        $unique_post = array();
         foreach($locations_post as $location_post){
-            $site_ids[] = $location_post['site_id'];
+            if( !array_key_exists($location_post['site_id'],$unique_post)  ){
+                $unique_post[$location_post['site_id']] = $location_post;
+            }
         }
+        $locations_post = $unique_post;
 
         $transaction = Yii::app()->db->beginTransaction();
 
         try
         {
 
-            //make sure no duplications are saved
-            $site_ids = array_unique($site_ids);
-
             // remove all site that's ids were not posted back - means they were removed
             $criteria = new CDbCriteria();
-            $criteria->addNotInCondition('site_id', $site_ids);
+            $criteria->addNotInCondition('site_id', array_keys($locations_post));
 
             OphCoCorrespondence_InternalReferral_ToLocation::model()->deleteAll($criteria);
 
             $is_ok = true;
 
             //now we save the new ones
-            foreach($site_ids as $site_id){
-                $site = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByAttributes(array('site_id' => $site_id));
+            foreach($locations_post as $location_post){
+                $site = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByAttributes(array('site_id' => $location_post['site_id']));
 
                 if(!$site){
                     $site = new OphCoCorrespondence_InternalReferral_ToLocation();
-                    $site->site_id = $site_id;
-
-                    if( !$site->save()){
-                        $is_ok = false;
-                    }
                 }
+
+                $site->site_id = $location_post['site_id'];
+                $site->location = $location_post['location'];
+                $site->location_name = $location_post['location_name'];
+
+                if( !$site->save()){
+                    $is_ok = false;
+                    break;
+                }
+
             }
 
             if($is_ok){
@@ -106,20 +113,26 @@ class InternalReferralSettingsController extends ModuleAdminController
                 $return = array('success' => true);
             } else {
                 $transaction->rollback();
-                $return = array('success' => false);
+
+                $message = null;
+                // we just return the first error now
+                if($site->getErrors()){
+                    $message = array_shift($site->getErrors());
+                    $message = $message[0];
+                }
+
+
+                $return = array('success' => false, 'message' => $message);
             }
 
-        }
-        catch(Exception $e)
+        }catch(Exception $e)
         {
             $transaction->rollback();
-            $return = array('success' => false);
+            $return = array('success' => false, 'message' => $e->getMessage());
         }
 
         echo CJSON::encode($return);
         Yii::app()->end();
-
-
     }
 
 

@@ -64,7 +64,7 @@ class DocManDeliveryCommand extends CConsoleCommand
     private function checkPath($path)
     {
         if (!is_dir($path)) {
-            mkdir($path);
+            mkdir($path, 0777, true);
             echo "ALERT! Directory " . $this->path . " has been created!";
         }
     }

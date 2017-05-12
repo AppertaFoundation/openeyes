@@ -72,7 +72,7 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
 
         // check if directory exists
         if (!is_dir($this->path)) {
-            mkdir($this->path);
+            mkdir($this->path, 0777, true);
             echo "ALERT! Directory " . $this->path . " has been created!";
         }
 
