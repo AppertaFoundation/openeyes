@@ -109,6 +109,30 @@ class BaseEventElementWidget extends CWidget
         return $this->getApp()->getAssetManager()->publish($path);
     }
 
+    /**
+     * Determine whether this widget should support editing
+     *
+     * @return bool
+     */
+    public function canEdit()
+    {
+        // Note, the decision was taken during implementation to disable editing at the patient level
+        // but because it was implemented for Family History already, it made sense to simply disable
+        // the behaviour in case it was required later. Turning this on will require further work on those
+        // elements that were not developed prior to this decision. Use Family History as a model.
+        if ($this->mode === static::$PATIENT_SUMMARY_MODE &&
+            !$this->getApp()->params['allow_patient_summary_clinic_changes']) {
+            return  false;
+        }
+        return $this->getApp()->user->checkAccess('OprnCreateEvent', array($this->controller->firm));
+    }
+
+    /**
+     * Wrapper to the controller method to do standard access checking
+     *
+     * @param $operation
+     * @return mixed
+     */
     public function checkAccess($operation)
     {
         return $this->controller->checkAccess($operation);

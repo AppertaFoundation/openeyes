@@ -414,7 +414,10 @@ return array(
 
         'clinical_management_pcr' => true,
         'docman_generate_csv' => false,
-        'element_sidebar' => true
+        'element_sidebar' => true,
+        // flag to enable editing of clinical data at the patient summary level - editing is not full implemented
+        // in v2.0.0, so this should only be turned on if you really know what you are doing.
+        'allow_patient_summary_clinic_changes' => false
 
     ),
 );

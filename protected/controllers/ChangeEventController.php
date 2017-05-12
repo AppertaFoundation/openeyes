@@ -67,6 +67,13 @@ class ChangeEventController extends BaseController
      */
     public function checkCreateAccess()
     {
+        // Change events are only necessary for editing from the patient summary screen, and at initial implementation
+        // this has been disabled. The code has been kept in place though to enable it to be easily enabled
+        // at a later stage if necessary.
+        if (!$this->getApp()->params['allow_patient_summary_clinic_changes']) {
+            return false;
+        }
+
         $args = $this->getCreateArgsForEventTypeOprn($this->event_type);
         if (!call_user_func_array(array($this, 'checkAccess'), $args)) {
             throw new CHttpException(403, 'Permission denied for creating change event type of ' . get_class($this->event_type));

@@ -55,7 +55,7 @@ $model_name = CHtml::modelName($element);
     ?>
     </tbody>
 </table>
-<?php if ($this->checkAccess('OprnEditFamilyHistory')) { ?>
+<?php if ($this->canEdit()) { ?>
 <div class="box-actions">
     <button id="btn-edit-family-history" class="secondary small">
         Edit Family History
