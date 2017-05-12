@@ -52,6 +52,13 @@ class BaseActiveRecord extends CActiveRecord
     protected $originalAttributes = array();
 
     /**
+     * Caching property to store the user responsible for change. Automatically derived.
+     * @see self::getChangeUser
+     * @var User
+     */
+    private $change_user;
+
+    /**
      * Flag to indicate that model should only save to the db if actual changes have taken place on the model.
      *
      * @var bool
@@ -241,6 +248,26 @@ class BaseActiveRecord extends CActiveRecord
         return parent::beforeSave();
     }
 
+    protected function getChangeUser()
+    {
+        if (!$this->change_user) {
+            $this->change_user = \User::model()->findByPk($this->getChangeUserId());
+        }
+        return $this->change_user;
+    }
+
+    protected function getChangeUserId()
+    {
+        try {
+            if (isset($this->getApp()->user)) {
+                return $this->getApp()->user->id;
+            }
+        } catch (Exception $e) {
+            return 1;
+        }
+
+    }
+
     /**
      * @param bool  $runValidation
      * @param array $attributes
@@ -255,24 +282,11 @@ class BaseActiveRecord extends CActiveRecord
             return false;
         }
 
-        $user_id = null;
-
-        try {
-            if (isset($this->getApp()->user)) {
-                $user_id = $this->getApp()->user->id;
-            }
-        } catch (Exception $e) {
-        }
+        $user_id = $this->getChangeUserId();
 
         if ($this->getIsNewRecord() || !isset($this->id)) {
             if (!$allow_overriding) {
-                // Set creation properties
-                if ($user_id === null) {
-                    // Revert to the admin user
-                    $this->created_user_id = 1;
-                } else {
-                    $this->created_user_id = $user_id;
-                }
+                $this->created_user_id = $user_id;
             }
             if (!$allow_overriding || $this->created_date == '1900-01-01 00:00:00') {
                 $this->created_date = date('Y-m-d H:i:s');
@@ -282,13 +296,7 @@ class BaseActiveRecord extends CActiveRecord
         try {
             if (!$allow_overriding) {
                 // Set the last_modified_user_id and last_modified_date fields
-                if ($user_id === null) {
-                    // Revert to the admin user
-                    // need this try/catch block here to make older migrations pass with this hook in place
-                    $this->last_modified_user_id = 1;
-                } else {
-                    $this->last_modified_user_id = $user_id;
-                }
+                $this->last_modified_user_id = $user_id;
             }
             if (!$allow_overriding || $this->last_modified_date == '1900-01-01 00:00:00') {
                 $this->last_modified_date = date('Y-m-d H:i:s');
