@@ -31,6 +31,9 @@ class BaseEventTypeElement extends BaseElement
     public $useContainerView = true;
     public $widgetClass = null;
 
+    // array of audit messages
+    protected $audit = array();
+
     protected $_element_type;
     protected $_children;
     protected $frontEndErrors = array();
@@ -180,52 +183,6 @@ class BaseEventTypeElement extends BaseElement
         }
 
         return $this->_children;
-    }
-
-    /**
-     * Fields which are copied by the loadFromExisting() method
-     * By default these are taken from the "safe" scenario of the model rules, but
-     * should be overridden for more complex requirements.
-     *
-     * @return array:
-     */
-    protected function copiedFields()
-    {
-        $rules = $this->rules();
-        $fields = null;
-        foreach ($rules as $rule) {
-            if ($rule[1] == 'safe') {
-                $fields = $rule[0];
-                break;
-            }
-        }
-        $fields = explode(',', $fields);
-        $no_copy = array('event_id', 'id');
-        foreach ($fields as $index => $field) {
-            if (in_array($field, $no_copy)) {
-                unset($fields[$index]);
-            } else {
-                $fields[$index] = trim($field);
-            }
-        }
-
-        return $fields;
-    }
-
-    /**
-     * Load an existing element's data into this one
-     * The base implementation simply uses copiedFields(), but it may be
-     * overridden to allow for more complex relationships.
-     *
-     * @param BaseEventTypeElement $element
-     */
-    public function loadFromExisting($element)
-    {
-        foreach ($this->copiedFields() as $attribute) {
-            if (isset($element->$attribute)) {
-                $this->$attribute = $element->$attribute;
-            }
-        }
     }
 
     public function render($action)
@@ -426,5 +383,62 @@ class BaseEventTypeElement extends BaseElement
         !empty($_ids) && $criteria->addNotInCondition('id', $_ids);
 
         $model::model()->deleteAll($criteria);
+    }
+
+    /**
+     * Store 1 or more audit messages if not already set for auditing
+     *
+     * @param $audit string or array of strings
+     */
+    public function addAudit($audit)
+    {
+        if ($audit && !is_array($audit)) {
+            $audit = array($audit);
+        }
+        foreach ($audit as $a) {
+            if (!in_array($a, $this->audit)) {
+                $this->audit[] = $a;
+            }
+        }
+    }
+
+    /**
+     * Stub method for audit checking before an element is saved.
+     */
+    protected function checkForAudits()
+    {}
+
+    /**
+     * @inheritdoc
+     * @return bool
+     */
+    protected function beforeSave()
+    {
+        $this->checkForAudits();
+        return parent::beforeSave();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function afterSave()
+    {
+        parent::afterSave();
+        $this->doAudit();
+    }
+
+    /**
+     * Audit the stored audit items
+     */
+    protected function doAudit()
+    {
+        if (count($this->audit)) {
+            $user = \User::model()->findByPk($this->getApp()->user->id);
+            $patient = $this->event->getPatient();
+            foreach ($this->audit as $a) {
+                $user->audit('patient', $a, null, false, array('patient_id' => $patient->id));
+            }
+            $this->audit = array();
+        }
     }
 }

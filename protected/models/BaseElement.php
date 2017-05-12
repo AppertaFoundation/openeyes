@@ -22,4 +22,49 @@
  */
 class BaseElement extends BaseActiveRecordVersioned
 {
+    /**
+     * Fields which are copied by the loadFromExisting() method
+     * By default these are taken from the "safe" scenario of the model rules, but
+     * should be overridden for more complex requirements.
+     *
+     * @return array:
+     */
+    protected function copiedFields()
+    {
+        $rules = $this->rules();
+        $fields = null;
+        foreach ($rules as $rule) {
+            if ($rule[1] == 'safe') {
+                $fields = $rule[0];
+                break;
+            }
+        }
+        $fields = explode(',', $fields);
+        $no_copy = array('event_id', 'id');
+        foreach ($fields as $index => $field) {
+            if (in_array($field, $no_copy)) {
+                unset($fields[$index]);
+            } else {
+                $fields[$index] = trim($field);
+            }
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Load an existing element's data into this one
+     * The base implementation simply uses copiedFields(), but it may be
+     * overridden to allow for more complex relationships.
+     *
+     * @param BaseEventTypeElement $element
+     */
+    public function loadFromExisting($element)
+    {
+        foreach ($this->copiedFields() as $attribute) {
+            if (isset($element->$attribute)) {
+                $this->$attribute = $element->$attribute;
+            }
+        }
+    }
 }
