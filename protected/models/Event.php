@@ -649,4 +649,16 @@ class Event extends BaseActiveRecordVersioned
         }
         return $this->eventType ? $this->eventType->name : 'Event';
     }
+
+    /**
+     * Convenience function to retrieve the patient for event.
+     *
+     * @return Patient
+     */
+    public function getPatient()
+    {
+        if ($this->episode) {
+            return $this->episode->patient;
+        }
+    }
 }
