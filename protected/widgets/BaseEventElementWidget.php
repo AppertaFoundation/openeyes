@@ -68,7 +68,8 @@ class BaseEventElementWidget extends CWidget
             $this->element = $this->getNewElement();
             $this->element->setDefaultOptions($this->patient);
         }
-        elseif ($this->data) {
+
+        if ($this->data) {
             $this->updateElementFromData($this->element, $this->data);
         }
     }

@@ -1098,9 +1098,10 @@ class BaseEventTypeController extends BaseModuleController
             $model_name = \CHtml::modelName($element);
             $el_data = $index ? $data[$model_name][$index] : $data[$model_name];
             $widget = $this->createWidget($element->widgetClass, array(
+                'patient' => $this->patient,
                 'element' => $element,
                 'data' => $el_data,
-                'mode' => \OEModule\OphCiExamination\widgets\FamilyHistory::$EVENT_EDIT_MODE
+                'mode' => \BaseEventElementWidget::$EVENT_EDIT_MODE
             ));
         } else {
             $element_method = 'setComplexAttributes_'.Helper::getNSShortname($element);
@@ -1451,6 +1452,7 @@ class BaseEventTypeController extends BaseModuleController
         if ($element->widgetClass) {
             $widget = $this->createWidget($element->widgetClass,
                 array(
+                    'patient' => $this->patient,
                     'element' => $view_data['element'],
                     'data' => $view_data['data'],
                     'form' => $view_data['form'],
