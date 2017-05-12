@@ -433,7 +433,7 @@ class BaseEventTypeElement extends BaseElement
     protected function doAudit()
     {
         if (count($this->audit)) {
-            $user = \User::model()->findByPk($this->getApp()->user->id);
+            $user = $this->getChangeUser();
             $patient = $this->event->getPatient();
             foreach ($this->audit as $a) {
                 $user->audit('patient', $a, null, false, array('patient_id' => $patient->id));
