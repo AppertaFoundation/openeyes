@@ -17,7 +17,7 @@
 
 class FamilyHistoryMigrateCommand extends PatientLevelMigration
 {
-    protected $event_type = 'OphCiExamination';
+    protected $event_type_cls = 'OphCiExamination';
     // Original table is renamed to this during the module database migration
     protected static $archived_entry_table = 'archive_family_history';
     // column on patient record indicating no entries have been explicitly recorded

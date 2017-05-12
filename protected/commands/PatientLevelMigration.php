@@ -1,7 +1,25 @@
 <?php
+/**
+ * OpenEyes.
+ *
+ * (C) OpenEyes Foundation, 2017
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2017, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
 
 /**
- * Created by Mike Smith <mike.smith@camc-ltd.co.uk>.
+ * Class PatientLevelMigration
+ *
+ * Base class to support the migration of various patient level data items to the new
+ * event level model being introduced as part of v2.0.0
  */
 class PatientLevelMigration extends CConsoleCommand
 {
@@ -9,8 +27,12 @@ class PatientLevelMigration extends CConsoleCommand
      * Module name where the data is moving to
      * @var
      */
-    protected $event_type;
+    protected $event_type_cls;
     protected $api;
+    /**
+     * @var EventType
+     */
+    protected $event_type;
 
     // Original table is renamed to this during the module database migration
     protected static $archived_entry_table = '';
@@ -31,9 +53,17 @@ class PatientLevelMigration extends CConsoleCommand
     protected function getApi()
     {
         if (!$this->api) {
-            $this->api = Yii::app()->moduleAPI->get($this->event_type);
+            $this->api = Yii::app()->moduleAPI->get($this->event_type_cls);
         }
         return $this->api;
+    }
+
+    protected function getEventType()
+    {
+        if (!$this->event_type) {
+            $this->event_type = $this->getApi()->getEventType();
+        }
+        return $this->event_type;
     }
 
     /**
@@ -45,12 +75,20 @@ class PatientLevelMigration extends CConsoleCommand
     protected function getChangeEvent(\Patient $patient)
     {
         $episode = Episode::getChangeEpisode($patient);
-        $event = new Event();
+
         if ($episode->isNewRecord) {
             $episode->save();
+        } elseif (count($episode->events)) {
+            foreach ($episode->events as $ev) {
+                if ($ev->event_type_id == $this->getEventType()->id) {
+                    return $ev;
+                }
+            }
         }
+
+        $event = new Event();
         $event->episode_id = $episode->id;
-        $event->event_type_id = $this->getApi()->getEventType()->id;
+        $event->event_type_id = $this->getEventType()->id;
         $event->save();
 
         return $event;

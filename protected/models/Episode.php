@@ -274,7 +274,7 @@ class Episode extends BaseActiveRecordVersioned
      */
     public static function getChangeEpisode(Patient $patient)
     {
-        $episode = self::model()->findByAttributes(array(
+        $episode = self::model()->with('events')->findByAttributes(array(
             'patient_id' => $patient->id,
             'change_tracker' => true
         ));
