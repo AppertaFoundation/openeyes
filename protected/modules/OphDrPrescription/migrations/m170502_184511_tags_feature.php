@@ -58,7 +58,7 @@ class m170502_184511_tags_feature extends OEMigration
                             LEFT JOIN drug_type ON drug_type.tag_id = drug_tag.tag_id
                             WHERE drug_type.id IS NOT NULL");
 
-
+        $this->dropColumn('drug', 'preservative_free');
 	}
 
 	public function safeDown()
@@ -71,6 +71,7 @@ class m170502_184511_tags_feature extends OEMigration
         $this->dropColumn('drug_type_version', 'tag_id');
         $this->dropOETable('tag', true);
         $this->execute("DROP VIEW IF EXISTS `drug_drug_type`");
+        //$this->addColumn('drug', 'preservative_free', 'TINYINT unsigned NOT NULL DEFAULT 0');
 	}
 
 }

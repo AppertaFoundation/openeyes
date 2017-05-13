@@ -64,7 +64,7 @@ class FormularyDrugs extends BaseActiveRecordVersioned
         return array(
             array('name', 'required'),
             array(
-                'name, aliases, tallman, type_id, form_id, dose_unit,default_dose,default_route_id,default_frequency_id,default_duration_id, preservative_free, active, allergy_warnings, national_code, tags',
+                'name, aliases, tallman, type_id, form_id, dose_unit,default_dose,default_route_id,default_frequency_id,default_duration_id, active, allergy_warnings, national_code, tags',
                 'safe',
             ),
         );
@@ -147,5 +147,17 @@ class FormularyDrugs extends BaseActiveRecordVersioned
         }
 
         return parent::beforeSave();
+    }
+
+    /**
+     * @return bool
+     *
+     * Returns true if the tag 'Preservative free' is
+     * added to this drug
+     */
+
+    public function isPreservativeFree()
+    {
+        return in_array(1, array_map(function($e){ return $e->id; }, $this->tags));
     }
 }

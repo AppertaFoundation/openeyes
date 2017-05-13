@@ -29,7 +29,6 @@
  * @property string $aliases
  * @property string $dose_unit
  * @property string $default_dose
- * @property int $preservative_free
  * @property Allergy[] $allergies
  * @property DrugType[] $type
  * @property DrugForm $form
@@ -71,7 +70,7 @@ class Drug extends BaseActiveRecordVersioned
         return array(
             array('name, tallman', 'required'),
             array('name', 'unsafe', 'on' => 'update'),
-            array('tallman, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe'),
+            array('tallman, dose_unit, default_dose, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe'),
         );
     }
 
