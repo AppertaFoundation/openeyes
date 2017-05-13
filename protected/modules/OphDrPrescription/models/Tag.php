@@ -14,7 +14,7 @@
  * The followings are the available model relations:
 
  * @property Drug[] $drugs
- * @property Medication[] $medications
+ * @property MedicationDrug[] $medication_drugs
  * @property User $createdUser
  * @property User $lastModifiedUser
  * @property Int $active
@@ -58,7 +58,7 @@ class Tag extends BaseActiveRecordVersioned
 		return array(
 			'drugs' => array(self::MANY_MANY, 'FormularyDrugs', 'drug_tag(tag_id, drug_id)'),
             'drug_type' => array(self::HAS_MANY, 'DrugType', 'tag_id'),
-            'medications' => array(self::MANY_MANY, 'Medication', 'medication_tag(medication_id, tag_id)'),
+            'medication_drugs' => array(self::MANY_MANY, 'MedicationDrug', 'medication_drug_tag(medication_drug_id, tag_id)'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 		);
@@ -123,7 +123,7 @@ class Tag extends BaseActiveRecordVersioned
 
 	public function beforeDelete()
     {
-        if(!empty($this->drugs) || !empty($this->medications))
+        if(!empty($this->drugs) || !empty($this->medication_drugs))
         {
             $this->addError('name', "Tag '{$this->name}' cannot be deleted being associated to one or more drugs or medications.");
             return false;

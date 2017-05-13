@@ -74,6 +74,15 @@ class MedicationController extends BaseAdminController
                 'layoutColumns' => null,
             ),
             'external_code' => 'text',
+            'tags' => array(
+                'widget' => 'TagsInput',
+                'relation' => 'tags',
+                'relation_field_id' => 'id',
+                'label' => 'Tags',
+                'htmlOptions' => array(
+                    'autocomplete_url' => $this->createAbsoluteUrl('/oeadmin/formularyDrugs/tagsAutocomplete')
+                )
+            ),
         ));
         $admin->editModel();
     }

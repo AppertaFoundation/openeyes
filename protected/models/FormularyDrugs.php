@@ -37,6 +37,17 @@ class FormularyDrugs extends BaseActiveRecordVersioned
     protected $auto_update_relations = true;
 
     /**
+     * @inheritdoc
+     */
+
+    public function behaviors()
+    {
+        return array(
+            TaggedActiveRecordBehavior::class
+        );
+    }
+
+    /**
      * Returns the static model of the specified AR class.
      *
      * @return Benefit the static model class
@@ -101,52 +112,6 @@ class FormularyDrugs extends BaseActiveRecordVersioned
             'drug_type.name' => 'Type(s)',
             'national_code' => 'National code'
         );
-    }
-
-    /**
-     * Translates tag names from user input
-     * into an array of tag ids. If tag name
-     * cant be found, creates one.
-     *
-     * @return bool
-     */
-
-    public function beforeSave()
-    {
-        if(is_array($this->tags))
-        {
-            return parent::beforeSave();
-        }
-
-        if($this->tags !== '')
-        {
-            $tags = explode(",", $this->tags);
-            $tag_ids=array();
-            foreach($tags as $tag)
-            {
-                // Get tag id...
-                if($t = Tag::model()->findByAttributes(['name'=>$tag]))
-                {
-                    $tag_ids[] = $t->id;
-                }
-                // ...or create new tag
-                else
-                {
-                    $t = new Tag();
-                    $t->name = $tag;
-                    $t->save();
-                    $tag_ids[] = $t->id;
-                }
-            }
-
-            $this->tags = $tag_ids;
-        }
-        else
-        {
-            $this->tags = array();
-        }
-
-        return parent::beforeSave();
     }
 
     /**

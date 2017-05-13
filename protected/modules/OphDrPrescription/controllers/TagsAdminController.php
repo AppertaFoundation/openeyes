@@ -31,8 +31,7 @@ class TagsAdminController extends BaseAdminController
         $admin = new Admin(Tag::model(), $this);
         $admin->setListFields(array(
             'name',
-            'active',
-            'relateddrugscount'
+            'active'
         ));
         $admin->getSearch()->addSearchItem('name');
         $admin->getSearch()->addActiveFilter();
@@ -46,10 +45,8 @@ class TagsAdminController extends BaseAdminController
         if (!is_null($id)) {
             $admin->setModelId($id);
         }
-        $element = Tag::model();
-        $admin->setCustomSaveURL('/OphDrPrescription/TagsAdmin/save');
-        //$admin->setCustomCancelURL('/OphDrPrescription/DrugSetAdmin/list');
 
+        $admin->setCustomSaveURL('/OphDrPrescription/TagsAdmin/save');
 
         $admin->setEditFields(array(
             'name' => is_null($id) ? 'text' : 'label',
@@ -59,6 +56,13 @@ class TagsAdminController extends BaseAdminController
                 'viewName' => 'application.modules.OphDrPrescription.views.admin.tag_druglist',
                 'viewArguments' => array(
                     'items' => is_null($id) ? array() : Tag::model()->findByPk($id)->drugs
+                )
+            ),
+            'medication_drugs' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'application.modules.OphDrPrescription.views.admin.tag_medication_druglist',
+                'viewArguments' => array(
+                    'items' => is_null($id) ? array() : Tag::model()->findByPk($id)->medication_drugs
                 )
             )
 

@@ -44,12 +44,12 @@ class m170502_184511_tags_feature extends OEMigration
                         AND drug.type_id = drug_type.id
                         AND tag.name = drug_type.name");
 
-        $this->createOETable('medication_tag', array(
+        $this->createOETable('medication_drug_tag', array(
             'id' => 'pk',
-            'medication_id' => 'int(10) unsigned not null',
+            'medication_drug_id' => 'int(11) not null',
             'tag_id' => 'int(11) not null',
             'constraint medication_tags_ti_fk foreign key (tag_id) references tag (id)',
-            'constraint medication_tags_mi_fk foreign key (medication_id) references medication (id)'
+            'constraint medication_tags_mi_fk foreign key (medication_drug_id) references medication_drug (id)'
         ), true);
 
         $this->execute("CREATE VIEW `drug_drug_type` AS SELECT drug.id AS drug_id, drug_type.id AS drug_type_id
@@ -59,19 +59,21 @@ class m170502_184511_tags_feature extends OEMigration
                             WHERE drug_type.id IS NOT NULL");
 
         $this->dropColumn('drug', 'preservative_free');
+        $this->dropColumn('drug_version', 'preservative_free');
 	}
 
 	public function safeDown()
 	{
         $this->dropOETable('drug_tag', true);
-        $this->dropOETable('medication_tag', true);
+        $this->dropOETable('medication_drug_tag', true);
         $this->execute('ALTER TABLE openeyes.drug_type DROP FOREIGN KEY drug_type_tags_fk;');
         $this->execute('DROP INDEX drug_type_tags_fk ON openeyes.drug_type;');
         $this->execute('ALTER TABLE openeyes.drug_type DROP tag_id;');
         $this->dropColumn('drug_type_version', 'tag_id');
         $this->dropOETable('tag', true);
         $this->execute("DROP VIEW IF EXISTS `drug_drug_type`");
-        //$this->addColumn('drug', 'preservative_free', 'TINYINT unsigned NOT NULL DEFAULT 0');
+        $this->addColumn('drug', 'preservative_free', 'TINYINT unsigned NOT NULL DEFAULT 0');
+        $this->addColumn('drug_version', 'preservative_free', 'TINYINT unsigned NOT NULL DEFAULT 0');
 	}
 
 }
