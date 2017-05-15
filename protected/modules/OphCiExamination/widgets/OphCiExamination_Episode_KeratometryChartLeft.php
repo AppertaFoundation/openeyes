@@ -56,7 +56,7 @@ class OphCiExamination_Episode_KeratometryChartLeft extends \EpisodeSummaryWidge
 
         $chart = $this->createWidget('FlotChart', array('chart_id' => $this->chart_id))
             ->configureXAxis(array('mode' => 'time'))
-            ->configureYAxis($this->kera_axis, array('position' => 'left', 'min' => 30, 'max' => 110))
+            ->configureYAxis($this->kera_axis, array('position' => 'left', 'min' => 30, 'max' => 11 0))
             ->configureYAxis("KmaxY", array('position' => 'right', 'min' => 30, 'max' => 110))
             ->configureSeries('Kmax', array('yaxis' => "KmaxY", 'lines' => array('show' => true), 'points' => array('show' => true)))
             ->configureSeries('K1', array('yaxis' => $this->kera_axis, 'lines' => array('show' => true), 'points' => array('show' => true)))

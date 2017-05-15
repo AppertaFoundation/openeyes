@@ -47,6 +47,18 @@
             </div>
             <div class="large-3 column">
                 <h4 class="data-title">
+                    <?php echo CHtml::encode($element->getAttributeLabel('epithelial_status_id'))?>:
+                </h4>
+                <div class="data-value">
+                    <?php
+                    if($element->epithelial_status_id){
+                        echo OphTrOperationnote_CXL_Epithelial_Status::model()->getName($element->epithelial_status_id);
+                    }
+                    ?>
+                </div>
+            </div>
+            <div class="large-3 column">
+                <h4 class="data-title">
                     <?php echo CHtml::encode($element->getAttributeLabel('epithelial_removal_method_id'))?>:
                 </h4>
                 <div class="data-value">
