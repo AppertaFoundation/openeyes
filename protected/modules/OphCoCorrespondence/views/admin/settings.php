@@ -61,7 +61,7 @@
             <div class="large-4 column">
                  <?php echo CHtml::dropDownList('to_location_site_id', null, Site::model()->getListForCurrentInstitution(), array('empty' => '- select -'))?>
             </div>
-            <div class="large-3 end column right">
+            <div class="large-5 end column right">
                 <img class="loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
                 <span class="right saved hidden" style="font-size:13px; color:#19b910">Saved</span>
                 <span class="right error hidden" style="font-size:13px"">Error, try again later</span>
@@ -69,33 +69,57 @@
         </div>
         <br>
         <div class="row">
-            <div class="large-8 column">
+            <div class="large-10 column">
+                <span style="font-size:13px"><strong>Please note:</strong> If any correspondence using a site listed below you will not be able to delete from here.</span>
                 <table class="grid" id="to_location_sites_grid">
                     <thead>
                     <tr>
-                        <th style="width:400px">Site</th>
+                        <th style="width:200px">Site</th>
+                        <th <th style="width:100px">Location</th>
+                        <th >Location Name (XML)</th>
                         <th>action</th>
                     </tr>
                     </thead>
                     <tbody>
                     <?php
-                    foreach ($to_locations as $to_location) {?>
+                    foreach ($to_locations as $index => $to_location) {?>
+                        <?php
+                            $criteria = new CDbCriteria();
+                            $criteria->join = 'JOIN ophcocorrespondence_internal_referral_to_location l ON t.to_location_id = l.id';
+                            $criteria->addCondition('to_location_id = :to_location_id');
+                            $criteria->params = array(':to_location_id' => $to_location->id);
+
+                            $letter_count = ElementLetter::model()->count($criteria);
+                        ?>
+
                         <tr class="site-row">
                             <td>
                                 <?php echo $to_location->site->short_name; ?>
-                                <?php echo CHtml::activeHiddenField($to_location, '[]site_id'); ?>
+                                <?php echo CHtml::activeHiddenField($to_location, "[$index]site_id"); ?>
                             </td>
+                            <td>
+                                <?php echo CHtml::activeTextField($to_location, "[$index]location"); ?>
+                            </td>
+                            <td>
+                                <?php echo CHtml::activeTextField($to_location, "[$index]location_name"); ?>
+                            </td>
+
                             <td class="site_action">
-                                <a href="javascript:void(0)" class="remove">remove</a>
+                                <a href="javascript:void(0)" class="remove <?php echo $letter_count ? 'hidden' : ''; ?>">remove</a>
                             </td>
                         </tr>
                     <?php }?>
 
                     <tr class="no-sites <?php echo $to_locations ? 'hidden' : ''?>"><td colspan="2">No sites</td></tr>
+                    <tr class="buttons-row">
+                        <td class="buttons text-right" colspan="4">
+                            <button type="button" class="classy blue mini small" id="save_to_location_table"><span class="button-span button-span-blue">Save</span></button>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="large-4 column"></div>
+            <div class="large-2 column"></div>
         </div>
     </div>
 </div>
