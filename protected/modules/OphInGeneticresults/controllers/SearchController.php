@@ -68,6 +68,17 @@ class SearchController extends BaseController
 
     public function actionGeneticResults()
     {
+        if (empty($_GET)) {
+            if (($data = YiiSession::get('genetics_results_searchoptions'))) {
+                $_GET = $data;
+            }
+            Audit::add('Genetics result list', 'view');
+        } else {
+            Audit::add('Genetics result list', 'search');
+
+            YiiSession::set('genetics_results_searchoptions', $_GET);
+        }
+
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'));
         Yii::app()->clientScript->registerScriptFile($assetPath . '/js/module.js');
         Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);

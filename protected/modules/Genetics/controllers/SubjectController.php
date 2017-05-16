@@ -259,6 +259,15 @@ class SubjectController extends BaseModuleController
      */
     public function actionList()
     {
+        if (empty($_GET)) {
+            if (($data = YiiSession::get('genetics_patient_searchoptions'))) {
+                $_GET = $data;
+            }
+            Audit::add('Genetics patient list', 'view');
+        } else {
+            Audit::add('Genetics patient list', 'search');
+        }
+
         $path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets'));
         Yii::app()->clientScript->registerScriptFile($path . '/js/DiagnosisSelection.js');
 
@@ -273,6 +282,8 @@ class SubjectController extends BaseModuleController
             }
 
             $model->attributes = $_GET['GeneticsPatient'];
+
+            YiiSession::set('genetics_patient_searchoptions', $_GET);
         }
 
         $this->render('list', array(

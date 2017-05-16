@@ -39,6 +39,16 @@ class SearchController extends BaseController
 
     public function actionDnaSample()
     {
+        if (empty($_GET)) {
+            if (($data = YiiSession::get('genetics_dnasample_searchoptions'))) {
+                $_GET = $data;
+            }
+            Audit::add('Genetics dnasample list', 'view');
+        } else {
+            Audit::add('Genetics dnasample list', 'search');
+
+            YiiSession::set('genetics_dnasample_searchoptions', $_GET);
+        }
 
         $pages = 1;
         $page = 1;
