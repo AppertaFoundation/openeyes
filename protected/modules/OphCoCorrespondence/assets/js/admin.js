@@ -154,49 +154,6 @@ $(document).ready(function() {
 
 	}
 
-    //Add site to the To Location dropdown in the Internal
-	$('#internal_referral_to_location').on('change', '#to_location_site_id', function() {
-	    var index = $('#to_location_sites_grid tr.site-row').length;
-
-	    //if i is 0 there are no sites added we have to start with 0 otherwise we increment with
-	    //index = index > 0 ? (index + 1) : 0;
-
-        var $hidden_input = $('<input>', {type: 'hidden', name: 'OphCoCorrespondence_InternalReferral_ToLocation[' + index + '][site_id]', value: $(this).val()}),
-            $tr = $('<tr>', {class: 'site-row'}),
-            $td_name = $('<td>', {class: 'site_name'}).text($(this).find('option:selected').text()),
-            $td_location = $('<td>',{class:'location'}).append( $('<input>',{type: 'text', name:'OphCoCorrespondence_InternalReferral_ToLocation[' + index + '][location]'}) );
-            $td_location_name = $('<td>',{class:'location_name'}).append( $('<input>',{type: 'text', name:'OphCoCorrespondence_InternalReferral_ToLocation[' + index + '][location_name]'}) );
-            $td_action = $('<td>', {class: 'site_action'}).html($('<a>', {
-                class: 'remove',
-                href: 'javascript:void(0)'
-            }).text('remove'));
-
-        if ($(this).val() > 0) {
-            $tr.append($td_name.append($hidden_input)).append($td_location).append($td_location_name).append($td_action);
-
-			$('#to_location_sites_grid .no-sites').hide();
-
-			if( $('#to_location_sites_grid tr.site-row').length ){
-                $('#to_location_sites_grid tr.site-row').last().after($tr);
-            } else {
-                $('#to_location_sites_grid tbody').prepend($tr);
-            }
-
-		}
-
-        $('#to_location_site_id').val(null);
-	});
-
-    $('#internal_referral_to_location').on('click', '.remove', function(){
-    	var $table = $(this).closest('table');
-    	$(this).closest('tr').remove();
-
-    	if( !$table.find('tr.site-row').length ){
-            $('#to_location_sites_grid .no-sites').show();
-		}
-
-	});
-
     $('#save_to_location_table').on('click', function(){
         saveSiteList();
     });

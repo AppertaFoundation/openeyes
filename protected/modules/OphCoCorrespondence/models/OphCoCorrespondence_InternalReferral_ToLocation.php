@@ -35,11 +35,11 @@ class OphCoCorrespondence_InternalReferral_ToLocation extends BaseActiveRecordVe
 		// will receive user inputs.
 		return array(
 			array('site_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
-			array('site_id, location, location_name', 'required'),
+			array('site_id', 'required'),
 			array('last_modified_date, created_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, site_id, location, location_name, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+			array('id, site_id, is_active, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -66,8 +66,7 @@ class OphCoCorrespondence_InternalReferral_ToLocation extends BaseActiveRecordVe
 		return array(
 			'id' => 'ID',
 			'site_id' => 'Site',
-			'location' => 'Location',
-			'location_name' => 'Location Name',
+			'is_active' => 'Is Active',
 			'last_modified_user_id' => 'Last Modified User',
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
@@ -95,8 +94,7 @@ class OphCoCorrespondence_InternalReferral_ToLocation extends BaseActiveRecordVe
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('site_id',$this->site_id,true);
-		$criteria->compare('location',$this->location,true);
-		$criteria->compare('location_name',$this->location_name,true);
+		$criteria->compare('is_active',$this->is_active,false);
 		$criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
 		$criteria->compare('last_modified_date',$this->last_modified_date,true);
 		$criteria->compare('created_user_id',$this->created_user_id,true);

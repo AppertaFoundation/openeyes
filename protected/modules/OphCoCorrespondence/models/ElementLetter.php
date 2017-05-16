@@ -870,7 +870,7 @@ class ElementLetter extends BaseEventTypeElement
      */
     public function getToLocations($list = false)
     {
-        $locations = OphCoCorrespondence_InternalReferral_ToLocation::model()->with('site')->findAll();
+        $locations = OphCoCorrespondence_InternalReferral_ToLocation::model()->with('site')->findAll('t.is_active = 1');
 
         return $list ? CHtml::listData($locations, 'id', 'site.short_name') : $locations;
 
