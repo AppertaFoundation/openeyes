@@ -18,20 +18,6 @@
  */
 ?>
 <div class="element-fields row">
-<div class="large-2 column">
-    <label><?php echo $element->getAttributeLabel('ocular_surface_disease_id')?>:</label>
-</div>
-<div class="large-2 column">
-    <?php
-    $allCXLOcularSurfaceDisease = \OEModule\OphCiExamination\models\OphCiExamination_CXL_Ocular_Surface_Disease::model()->findAll(array('order' => 'display_order'));
-    echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_CXL_History[ocular_surface_disease_id]',
-        $element->ocular_surface_disease_id,
-        CHtml::listData($allCXLOcularSurfaceDisease, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
-</div>
-    <div class="large-8 column">
-        </div>
-</div>
-<div class="element-fields row">
     <div class="large-1 column">
         <label><?php echo $element->getAttributeLabel('asthma_id')?>:</label>
     </div>

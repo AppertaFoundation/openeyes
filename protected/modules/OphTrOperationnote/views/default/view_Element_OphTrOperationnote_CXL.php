@@ -47,6 +47,18 @@
             </div>
             <div class="large-3 column">
                 <h4 class="data-title">
+                    <?php echo CHtml::encode($element->getAttributeLabel('epithelial_status_id'))?>:
+                </h4>
+                <div class="data-value">
+                    <?php
+                    if($element->epithelial_status_id){
+                        echo OphTrOperationnote_CXL_Epithelial_Status::model()->getName($element->epithelial_status_id);
+                    }
+                    ?>
+                </div>
+            </div>
+            <div class="large-3 column">
+                <h4 class="data-title">
                     <?php echo CHtml::encode($element->getAttributeLabel('epithelial_removal_method_id'))?>:
                 </h4>
                 <div class="data-value">
@@ -64,6 +76,18 @@
                 <div class="data-value">
                     <?php
                     echo OphTrOperationnote_CXL_Epithelial_Removal_Diameter::model()->getName($element->epithelial_removal_diameter_id);
+                    ?>
+                </div>
+            </div>
+            <div class="large-3 column">
+                <h4 class="data-title">
+                    <?php echo CHtml::encode($element->getAttributeLabel('mitomycin_c'))?>:
+                </h4>
+                <div class="data-value">
+                    <?php
+                    if($element->mitomycin_c){
+                        echo OphTrOperationnote_CXL_Mitomycin::model()->getName($element->mitomycin_c);
+                    }
                     ?>
                 </div>
             </div>
@@ -104,6 +128,8 @@
                 </div>
             </div>
 
+        </div>
+        <div class="row">
             <div class="large-3 column">
                 <h4 class="data-title">
                     <?php echo CHtml::encode($element->getAttributeLabel('riboflavin_preparation_id'))?>:
@@ -111,13 +137,11 @@
                 <div class="data-value">
                     <?php
                     if($element->riboflavin_preparation_id){
-                    echo OphTrOperationnote_CXL_Riboflavin_Preparation::model()->getName($element->riboflavin_preparation_id);
+                        echo OphTrOperationnote_CXL_Riboflavin_Preparation::model()->getName($element->riboflavin_preparation_id);
                     }
                     ?>
                 </div>
             </div>
-        </div>
-        <div class="row">
             <div class="large-3 column">
                 <h4 class="data-title">
                     <?php echo CHtml::encode($element->getAttributeLabel('interval_between_drops_id'))?>:
@@ -148,6 +172,8 @@
                     ?>
                 </div>
             </div>
+        </div>
+        <div class="row">
             <div class="large-3 column">
                 <h4 class="data-title">
                     <?php echo CHtml::encode($element->getAttributeLabel('total_exposure_time_id'))?>:
@@ -158,8 +184,6 @@
                     ?>
                 </div>
             </div>
-        </div>
-        <div class="row">
             <div class="large-3 column">
                 <h4 class="data-title">
                     <?php echo CHtml::encode($element->getAttributeLabel('uv_total_energy_value'))?>:

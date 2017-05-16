@@ -45,6 +45,20 @@
         array('options' => array($default_device_id=>array('selected'=>true))),
         null, array('field' => 3));
 
+
+    if(!$element->epithelial_status_id)
+    {
+        $epithelial_status_id = OphTrOperationnote_CXL_Epithelial_Status::model()->getDefault();
+    }else{
+        $epithelial_status_id = $element->epithelial_status_id;
+    }
+    echo $form->dropDownList($element, 'epithelial_status_id',
+        CHtml::listData(OphTrOperationnote_CXL_Epithelial_Status::model()->findAll(), 'id', 'name'),
+        array('options' => array($epithelial_status_id=>array('selected'=>true))),
+        null, array('field' => 3));
+
+
+
     echo $form->radioButtons($element, 'epithelial_removal_method_id',
         'OphTrOperationnote_CXL_Epithelial_Removal_Method', $element->epithelial_removal_method_id)?>
 
@@ -62,6 +76,10 @@
         array('options' => array($default_epithelial_removal_diameter_id=>array('selected'=>true))),
         null, array('field' => 2));?>
 
+    <?php
+    echo $form->radioButtons($element, 'mitomycin_c',
+        'OphTrOperationnote_CXL_Mitomycin', $element->mitomycin_c);
+    ?>
     <?php
     echo $form->radioButtons($element, 'iontophoresis_id',
         'OphTrOperationnote_CXL_Iontophoresis', $element->iontophoresis_id);

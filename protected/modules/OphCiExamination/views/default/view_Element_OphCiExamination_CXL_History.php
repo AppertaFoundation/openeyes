@@ -56,14 +56,8 @@ function yesOrNo($item)
             ?>
         </div>
         <div class="data-value column large-3">
-                    <?php echo $element->getAttributeLabel('ocular_surface_disease_id')?>:
         </div>
         <div class="data-value column large-3">
-                    <?php
-                    if($element->ocular_surface_disease_id){
-                    echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Ocular_Surface_Disease::model()->getName($element->ocular_surface_disease_id);
-                    }
-                    ?>
         </div>
     </div>
 </div>
