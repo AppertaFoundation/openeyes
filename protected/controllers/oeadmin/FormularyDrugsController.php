@@ -50,7 +50,7 @@ class FormularyDrugsController extends BaseAdminController
         $admin->setListFields(array(
             'name',
             //'type_id',
-            'drug_type.name',
+            'tags.name',
             'aliases',
             'active',
         ));

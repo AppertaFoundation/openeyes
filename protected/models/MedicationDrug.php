@@ -87,7 +87,8 @@ class MedicationDrug extends BaseActiveRecordVersioned
             'external_code' => 'Source Code',
             'external_source' => 'Source',
             'aliases' => 'Aliases',
-            'tags' => 'Tags'
+            'tags' => 'Tags',
+            'tags.name' => 'Tags'
         );
     }
 

@@ -43,6 +43,7 @@ class MedicationController extends BaseAdminController
             'external_code',
             'external_source',
             'aliases',
+            'tags.name'
         ));
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);

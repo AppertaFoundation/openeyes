@@ -110,6 +110,7 @@ class FormularyDrugs extends BaseActiveRecordVersioned
             'default_frequency_id' => 'Default Frequency',
             'default_duration_id' => 'Default Duration',
             'drug_type.name' => 'Type(s)',
+            'tags.name' => 'Tags',
             'national_code' => 'National code'
         );
     }
