@@ -846,15 +846,13 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   padding: 6px 3px 8px 6px; }
 
 .open-eyes .event {
-  padding-top: 40px;
   position: relative; }
   .open-eyes .event .event-header {
     display: block;
     height: 40px;
     border-bottom: 2px solid #7d818c;
     padding: 0 1px 0 10px;
-    position: fixed;
-    top: 82px;
+    position: relative;
     width: 1051px;
     z-index: 190;
     background: #b1b6bb url("../img/_elements/icons/face-left-right.png") center center no-repeat; }
