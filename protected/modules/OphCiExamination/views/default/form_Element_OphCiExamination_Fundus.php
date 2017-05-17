@@ -30,7 +30,7 @@
                     'side' => 'right',
                     'element' => $element,
                 ))?>
-			</div>section
+			</div>
 		</div>
 		<div class="inactive-form">
 			<div class="add-side">

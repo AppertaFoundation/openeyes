@@ -30,26 +30,35 @@
         ))?>
 	</div>
 	<div class="column fluid">
-        <div class="data-row">
-            <div class="data-value">
-                <?= Yii::app()->format->Ntext($element->{$side.'_ed_report'}) ?>
+        <div class="row">
+            <div class="column large-4">
+                <div class="data-label"><?= $element->getAttributeLabel($side.'_ed_report') ?>:</div>
+            </div>
+            <div class="column large-8">
+                <div class="data-value">
+                    <?= Yii::app()->format->Ntext($element->{$side.'_ed_report'}) ?>
+                </div>
             </div>
         </div>
 
 		<?php if ($element->{$side.'_description'}): ?>
-			<div class="data-row">
-				<div class="data-value">
-					<?= Yii::app()->format->Ntext($element->{$side.'_description'}) ?>
-				</div>
+			<div class="row">
+                <div class="column large-4">
+                    <div class="data-label"><?= $element->getAttributeLabel($side.'_description') ?>:</div>
+                </div>
+                <div class="column large-8">
+                    <div class="data-value">
+                        <?= Yii::app()->format->Ntext($element->{$side.'_description'}) ?>
+                    </div>
+                </div>
 			</div>
 		<?php endif; ?>
 
         <?php if ($element->{$side . '_vitreous'}): ?>
-            <div class="data-row">
+            <div class="row">
                 <div class="column large-4">
-                    <div class="data-label">
-                        <?= $element->getAttributeLabel('vitreous') ?>:</div>
-                    </div>
+                    <div class="data-label"><?= $element->getAttributeLabel('vitreous') ?>:</div>
+                </div>
                 <div class="column large-8">
                     <div class="data-value">
                             <?= implode('<br />', $element->{$side . '_vitreous'}) ?>
