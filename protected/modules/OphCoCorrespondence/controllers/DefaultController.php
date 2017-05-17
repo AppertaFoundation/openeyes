@@ -398,8 +398,8 @@ class DefaultController extends BaseEventTypeController
             
             // check if the first recipient is GP
             $docunemt_instance = $letter->document_instance[0];
-            $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND contact_type=:type',array(
-                ':id' => $docunemt_instance->id, ':ToCc' => 'To', ':type' => 'GP'));
+            $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)',array(
+                ':id' => $docunemt_instance->id, ':ToCc' => 'To', ':type_gp' => 'GP', ':type_ir' => 'INTERNALREFERRAL', ));
             
             if($to_recipient_gp){
                 // print an extra copy to note
