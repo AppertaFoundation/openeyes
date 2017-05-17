@@ -88,7 +88,8 @@ class MedicationDrug extends BaseActiveRecordVersioned
             'external_source' => 'Source',
             'aliases' => 'Aliases',
             'tags' => 'Tags',
-            'tags.name' => 'Tags'
+            'tags.name' => 'Tags',
+            'tagnames' => 'Tags'
         );
     }
 
@@ -102,4 +103,6 @@ class MedicationDrug extends BaseActiveRecordVersioned
             'tags' => array(self::MANY_MANY, 'Tag', 'medication_drug_tag(medication_drug_id, tag_id)')
         );
     }
+
+
 }

@@ -111,9 +111,32 @@ class FormularyDrugs extends BaseActiveRecordVersioned
             'default_duration_id' => 'Default Duration',
             'drug_type.name' => 'Type(s)',
             'tags.name' => 'Tags',
+            'tagnames' => 'Tags',
             'national_code' => 'National code'
         );
     }
+
+    public function search()
+    {
+        $criteria=new CDbCriteria;
+
+        $criteria->compare('name',$this->name, true);
+        $criteria->compare('tallman',$this->tallman, true);
+        $criteria->compare('default_route_id',$this->default_route_id, true);
+        $criteria->compare('default_frequency_id',$this->default_frequency_id, true);
+        $criteria->addInCondition('tagnames', $this->tags);
+
+        return new CActiveDataProvider(get_class($this), array(
+            'criteria'=>$criteria,
+            'sort'=>array(
+                'defaultOrder'=>'name ASC',
+            ),
+            'pagination'=>array(
+                'pageSize'=>20
+            ),
+        ));
+    }
+
 
     /**
      * @return bool

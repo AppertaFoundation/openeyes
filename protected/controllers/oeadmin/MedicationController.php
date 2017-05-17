@@ -43,9 +43,34 @@ class MedicationController extends BaseAdminController
             'external_code',
             'external_source',
             'aliases',
-            'tags.name'
+            'tagnames'
         ));
-        $admin->searchAll();
+
+        $admin->getSearch()->addSearchItem('name');
+        $admin->getSearch()->addSearchItem('external_code');
+        $admin->getSearch()->addSearchItem('external_source');
+        $admin->getSearch()->addSearchItem('aliases');
+        $admin->getSearch()->addSearchItem('tags.name');
+
+        $criteria = new CDbCriteria();
+
+        foreach (array('name', 'external_code', 'external_source', 'aliases') as $field)
+        {
+            if(isset($_GET['search'][$field]) && $_GET['search'][$field] != '')
+            {
+                $criteria->compare($field, $_GET['search'][$field], ($field != 'active'));
+            }
+        }
+
+        if(isset($_GET['search']['tags.name']) && $_GET['search']['tags.name'] != '')
+        {
+            $command = Yii::app()->db->createCommand("SELECT medication_drug_id FROM medication_drug_tag WHERE tag_id IN (SELECT id FROM tag WHERE name LIKE CONCAT('%', :tagname ,'%'))");
+            $matching_ids = $command->queryColumn(array(':tagname' => $_GET['search']['tags.name']));
+            $criteria->addInCondition('id', $matching_ids, 'AND');
+        }
+
+        $admin->getSearch()->setCriteria($criteria);
+
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->listModel();
     }

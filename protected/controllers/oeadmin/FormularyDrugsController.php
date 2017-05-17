@@ -49,15 +49,36 @@ class FormularyDrugsController extends BaseAdminController
         $admin = new Admin(FormularyDrugs::model(), $this);
         $admin->setListFields(array(
             'name',
-            //'type_id',
-            'tags.name',
+            'tagnames',
             'aliases',
             'active',
         ));
-        $admin->searchAll();
+        $admin->getSearch()->addSearchItem('name');
+        $admin->getSearch()->addSearchItem('aliases');
+        $admin->getSearch()->addSearchItem('tags.name');
         $admin->setModelDisplayName('Formulary Drugs');
         $admin->getSearch()->addActiveFilter();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+
+        $criteria = new CDbCriteria();
+
+        foreach (array('name', 'aliases', 'active') as $field)
+        {
+            if(isset($_GET['search'][$field]) && $_GET['search'][$field] != '')
+            {
+                $criteria->compare($field, $_GET['search'][$field], ($field != 'active'));
+            }
+        }
+
+        if(isset($_GET['search']['tags.name']) && $_GET['search']['tags.name'] != '')
+        {
+            $command = Yii::app()->db->createCommand("SELECT drug_id FROM drug_tag WHERE tag_id IN (SELECT id FROM tag WHERE name LIKE CONCAT('%', :tagname ,'%'))");
+            $matching_ids = $command->queryColumn(array(':tagname' => $_GET['search']['tags.name']));
+            $criteria->addInCondition('id', $matching_ids, 'AND');
+        }
+
+        $admin->getSearch()->setCriteria($criteria);
+
         $admin->listModel();
     }
 

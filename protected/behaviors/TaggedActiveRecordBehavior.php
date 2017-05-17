@@ -72,4 +72,16 @@ class TaggedActiveRecordBehavior extends CActiveRecordBehavior
 
         return parent::beforeSave($event);
     }
+
+    /**
+     * @return string
+     *
+     * Returns the list of tag names,
+     * separated by comma+space (', ')
+     */
+
+    public function getTagNames()
+    {
+        return implode(', ', array_map(function($e){ return $e->name; }, $this->owner->tags));
+    }
 }
