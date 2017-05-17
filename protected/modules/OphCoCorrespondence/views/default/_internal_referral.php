@@ -37,7 +37,12 @@
 
             <div class="large-3 column">
                 <?php
-                    $element->to_location_id = $element->to_location_id ? $element->to_location_id : Yii::app()->session['selected_site_id'];
+                    $site_id = Yii::app()->session['selected_site_id'];
+
+                    if(!$element->to_location_id){
+                        $to_location = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByAttributes(array('site_id' => $site_id));
+                        $element->to_location_id = $to_location->id;
+                    }
 
                     echo CHtml::activeDropDownList($element, "to_location_id",
                         $element->getToLocations(true), array('empty' => '- None -')) ?>

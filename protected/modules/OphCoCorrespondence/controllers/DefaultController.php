@@ -677,9 +677,10 @@ class DefaultController extends BaseEventTypeController
         Yii::app()->end();
     }
 
-    public function actionGetSiteInfo($site_id)
+    public function actionGetSiteInfo($to_location_id)
     {
-        $site = Site::model()->findByPk($site_id);
+        $to_location = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByPk($to_location_id);
+        $site = $to_location->site;
 
         $attributes = $site->attributes;
         $attributes['correspondence_name'] = $site->getCorrespondenceName();

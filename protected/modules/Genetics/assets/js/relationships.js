@@ -2,24 +2,13 @@ $(document).ready(function () {
   OpenEyes.Genetics.Relationships.init(geneticsRelationships, []);
   var search = OpenEyes.UI.Search.init($('#genetics_patient_lookup'));
 
-  search.setRenderItem(function (ul, item) {
-    ul.addClass("z-index-1000 patient-ajax-list");
-    return $("<li></li>")
-      .data("item.autocomplete", item)
-      .append('<a>' + item['patient.fullName'] + '</a>')
-      .appendTo(ul);
-  });
 
-  search.getElement().autocomplete('option', 'source', function (request, response) {
-    $.getJSON('/Genetics/subject/list', {
-      search: {
-        'patient.contact.first_name': {
-          value: request.term,
-          compare_to: ['patient.contact.last_name']
-        }
-      }
-    }, response);
-  });
+    OpenEyes.UI.Search.setSourceURL('/Genetics/subject/patientSearch');
+
+    search.getElement().autocomplete('option', 'select', function (event, uid) {
+        $('#relationships_list').append(OpenEyes.Genetics.Relationships.newRelationshipForm(uid.item));
+    });
+
 
   search.getElement().autocomplete('option', 'select', function (event, uid) {
     $('#relationships_list').append(OpenEyes.Genetics.Relationships.newRelationshipForm(uid.item));

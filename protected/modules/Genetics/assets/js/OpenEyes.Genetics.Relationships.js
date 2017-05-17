@@ -24,8 +24,8 @@ this.OpenEyes.Genetics = this.OpenEyes.Genetics || {};
 
   Relationships.newRelationshipForm = function(item) {
     return Mustache.render(template, {
-      name: item['patient.fullName'],
-      relatedId: item.id,
+      name: item['first_name'] + ' ' + item['last_name'],
+      relatedId: item.genetics_patient_id,
       relationships: possibleRelationships
     });
   };

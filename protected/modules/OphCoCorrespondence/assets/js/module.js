@@ -183,7 +183,7 @@ $(document).ready(function() {
     $('#ElementLetter_to_location_id').on('change', function(){
 
         $.getJSON(baseUrl + "/" + moduleName + "/Default/getSiteInfo", {
-            site_id: $('#ElementLetter_to_location_id').val(),
+            to_location_id: $('#ElementLetter_to_location_id').val(),
         }, function (data) {
             $('#Document_Target_Address_0').val(data.correspondence_name);
         });

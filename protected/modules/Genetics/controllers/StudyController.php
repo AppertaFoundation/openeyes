@@ -24,7 +24,7 @@ class StudyController extends BaseAdminController
                 'roles' => array('TaskViewGeneticStudy'),
             ),
             array('allow',
-                'actions' => array('Edit'),
+                'actions' => array('Edit', 'Delete'),
                 'roles' => array('TaskEditGeneticStudy'),
             ),
         );
