@@ -288,24 +288,6 @@ function anteriorListener(_drawing) {
         }
     }
 }
-function pupilListener(_drawing) {
-    this.drawing = _drawing;
-    
-    this.drawing.registerForNotifications(this, 'trigger', ['parameterChanged']);
-    
-    this.trigger = function(_messageArray) {
-        var param = _messageArray.object.parameter;
-
-        if(param === 'pupilSize'){
-            $("select[id*='_pupilSize_control']").trigger('change');
-        }
-     
-        if(param === 'grade'){
-            $("select[id*='_nuclear_id']").trigger('change');
-            $("select[id*='_cortical_id']").trigger('change');
-        }
-    } 
-}
 
 $(document).ready(function() {
 
@@ -2445,21 +2427,5 @@ function removeAllergyFromSelect( allergy_id, allergy_name ){
         $('#allergy_id').find("option[value='" + allergy_id + "']").remove();
     }
 }
-
-$('#Element_OphCiExamination_AnteriorSegment_right_pupil_id').live('change',function() {
-    var eyedraw = ED.getInstance('ed_drawing_edit_right_' + $(this).closest('.element').attr('data-element-type-id'));
-    var doodle = eyedraw.firstDoodleOfClass('AntSeg');
-    doodle.setParameter('grade',$('#Element_OphCiExamination_AnteriorSegment_right_pupil_id').children('option:selected').text());
-    eyedraw.repaint();
-    return false;
-});
-
-$('#Element_OphCiExamination_AnteriorSegment_left_pupil_id').live('change',function() {
-    var eyedraw = ED.getInstance('ed_drawing_edit_left_' + $(this).closest('.element').attr('data-element-type-id'));;
-    var doodle = eyedraw.firstDoodleOfClass('AntSeg');
-    doodle.setParameter('grade',$('#Element_OphCiExamination_AnteriorSegment_left_pupil_id').children('option:selected').text());
-    eyedraw.repaint();
-    return false;
-});
 
 var eyedraw_added_diagnoses = [];
