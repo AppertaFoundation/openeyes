@@ -26,7 +26,7 @@ $warnings = $this->patient->getWarnings($clinical);
 
 <div class="container content">
 
-	<div class="messages patient">
+	<div class="row messages patient">
 
 		<?php $this->renderPartial('//base/_messages'); ?>
 
@@ -76,7 +76,7 @@ $warnings = $this->patient->getWarnings($clinical);
 		<?php $this->renderPartial('//patient/_patient_alerts')?>
 		</div>
 
-	<div class="row">
+	<div class="row patient-content">
 		<div class="large-6 column">
 			<?php if (($refresh_url = Yii::app()->params['patient_refresh_url'])): ?>
 				<section class="box patient-info">
