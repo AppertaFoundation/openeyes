@@ -464,7 +464,8 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   padding: 0 0 5px 0;
   width: 14.6%;
-  position: relative; }
+  position: fixed;
+  top: 82px; }
   .open-eyes .sidebar.episodes-and-events .oe-scroll-wrapper {
     position: relative;
     overflow-y: auto;
@@ -846,13 +847,15 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   padding: 6px 3px 8px 6px; }
 
 .open-eyes .event {
+  padding-top: 40px;
   position: relative; }
   .open-eyes .event .event-header {
     display: block;
     height: 40px;
     border-bottom: 2px solid #7d818c;
     padding: 0 1px 0 10px;
-    position: relative;
+    position: fixed;
+    top: 82px;
     width: 1051px;
     z-index: 190;
     background: #b1b6bb url("../img/_elements/icons/face-left-right.png") center center no-repeat; }
@@ -1230,3 +1233,8 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     font-size: 0.6875rem;
     color: #444;
     font-weight: 400; }
+.messages.patient.fixed {
+  position: fixed;
+  z-index: 100;
+  background-color: #d2dde8;
+}
