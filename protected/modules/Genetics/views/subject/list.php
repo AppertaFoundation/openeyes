@@ -64,11 +64,11 @@
         'columns' => array(
             array(
                 'name' => 'id',
-                'htmlOptions'=>array('width'=>'50px'),
+                'htmlOptions'=>array('width'=>'70px'),
             ),
             array(
                 'header' => 'Family Id',
-                'htmlOptions'=>array('width'=>'50px'),
+                'htmlOptions'=>array('width'=>'70px'),
                 'type' => 'raw',
                 'value' => function($data){
 
@@ -85,11 +85,17 @@
 
             array(
                 'name' => 'patient.hos_num',
-                'htmlOptions'=>array('width'=>'90px'),
+                'htmlOptions'=>array('width'=>'110px'),
             ),
             array(
-                'name' => 'patient.fullName',
-                'htmlOptions'=>array('width'=>'110px'),
+                'name' => 'patient.firstName',
+                'htmlOptions'=>array('width'=>'60x'),
+                'value' => '$data->patient->first_name'
+            ),
+            array(
+                'name' => 'patient.lastName',
+                'htmlOptions'=>array('width'=>'60px'),
+                'value' => '$data->patient->last_name'
             ),
 
             array(

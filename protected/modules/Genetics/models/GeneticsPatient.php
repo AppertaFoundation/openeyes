@@ -351,6 +351,15 @@ class GeneticsPatient extends BaseActiveRecord
                     ),
                     'patient.dob',
                     'patient.hos_num',
+                    'patient.firstName' => array(
+                        'asc' => "contact.first_name",
+                        'desc' => "contact.first_name DESC"
+                    ),
+                    'patient.lastName' => array(
+                        'asc' => "contact.last_name",
+                        'desc' => "contact.last_name DESC"
+                    ),
+
                     'comments'
                 )
             ),
