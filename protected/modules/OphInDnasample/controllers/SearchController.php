@@ -95,6 +95,9 @@ class SearchController extends BaseController
                 case 'comment':
                     $order = "comments $dir";
                     break;
+                case 'genetics_patient_id':
+                    $order = "genetics_patient.id $dir";
+                    break;
                 default:
                     $order = "last_name $dir, first_name $dir";
             }
@@ -103,8 +106,7 @@ class SearchController extends BaseController
                 ->offset(($page - 1) * $this->items_per_page)
                 ->limit($this->items_per_page);
 
-            $results = $search_command
-                ->queryAll();
+            $results = $search_command->queryAll();
 
             foreach($results as $key=>$row)
             {
@@ -141,6 +143,7 @@ class SearchController extends BaseController
         $first_name = @$_GET['first_name'];
         $last_name = @$_GET['last_name'];
         $hos_num = @$_GET['hos_num'];
+        $genetics_patient_id = @$_GET['genetics_patient_id'];
 
         $command = Yii::app()->db->createCommand()
             ->select($select)
@@ -188,6 +191,11 @@ class SearchController extends BaseController
         if($hos_num){
             $command->andWhere('hos_num = :hos_num', array(':hos_num' => $hos_num));
         }
+
+        if($genetics_patient_id){
+            $command->andWhere('genetics_patient.id = :genetics_patient_id', array(':genetics_patient_id' => $genetics_patient_id));
+        }
+
 
         return $command;
     }
