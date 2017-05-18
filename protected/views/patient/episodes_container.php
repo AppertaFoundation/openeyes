@@ -17,9 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
+<div class="row messages patient fixed">
 <?php $this->renderPartial('//patient/_patient_alerts')?>
-
+</div>
 <div class="box content row">
 
 	<?php if ($this->patient->isDeceased()) {?>

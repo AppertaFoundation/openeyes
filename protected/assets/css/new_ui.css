@@ -1233,3 +1233,8 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     font-size: 0.6875rem;
     color: #444;
     font-weight: 400; }
+.messages.patient.fixed {
+  position: fixed;
+  z-index: 100;
+  background-color: #d2dde8;
+}

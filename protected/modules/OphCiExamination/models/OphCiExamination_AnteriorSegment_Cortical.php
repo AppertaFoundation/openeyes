@@ -64,15 +64,6 @@ class OphCiExamination_AnteriorSegment_Cortical extends \BaseActiveRecordVersion
     }
 
     /**
-     * @return array relational rules.
-     */
-    public function relations()
-    {
-        return array(
-        );
-    }
-
-    /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
@@ -86,5 +77,29 @@ class OphCiExamination_AnteriorSegment_Cortical extends \BaseActiveRecordVersion
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * Mapping array of eyedraw lookup values to model ids
+     *
+     * @return array
+     */
+    public static function getEyedrawMapping()
+    {
+        $res = array();
+        foreach (static::model()->findAll('value is not null') as $item) {
+            $res[$item->value] = $item->id;
+        }
+        return $res;
+    }
+
+    /**
+     * Model instance that should be used as default value for recording nuclear cataract state
+     *
+     * @return array|mixed|null
+     */
+    public static function getEyedrawDefault()
+    {
+        return static::model()->find("value is null or value = ''");
     }
 }

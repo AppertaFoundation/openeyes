@@ -53,7 +53,9 @@ $(document).ready(function(){
 			trigger
 			.removeClass('toggle-hide')
 			.addClass('toggle-show');
-			body.slideUp('fast');
+			body.slideUp('fast', function() {
+                $(container).trigger('oe:toggled');
+			});
 		// open
 		} else {
 			// set state to open
@@ -63,6 +65,7 @@ $(document).ready(function(){
 			.addClass('toggle-hide');
 			body.slideDown('fast', function() {
 				body.css('overflow', 'visible');
+                $(container).trigger('oe:toggled');
 			});
 		}
 

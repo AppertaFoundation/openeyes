@@ -37,7 +37,7 @@
 	<input type="hidden" name="from_queue_id" value="<?= $this->ticket->current_queue->id ?>" />
 	<input type="hidden" name="ticket_id" value="<?= $this->ticket->id ?>" />
 	<div>
-		<h2><?= $t_svc->getTicketActionLabel($this->ticket) ?></h2>
+		<h3><?= $t_svc->getTicketActionLabel($this->ticket) ?></h3>
 		<?php
             if (count($this->outcome_options) > 1) { ?>
 				<fieldset class="field-row row">
