@@ -82,18 +82,6 @@ Yii::app()->assetManager->registerScriptFile('js/patientGeneralInformations.js')
 				<?php echo $this->patient->getGenderString() ?>
 			</span>
 
-            <!-- Warnings -->
-            <?php if (is_array($warnings) && count($warnings) > 0) {
-                $msgs = array();
-                foreach ($warnings as $warn) {
-                    $msgs[] = $warn['short_msg'];
-                }?>
-                <span class="warning">
-					<span class="icon icon-alert icon-alert-warning"></span>
-					<span class="messages"><?php echo implode(', ', $msgs); ?></span>
-				</span>
-            <?php } ?>
-
         </div>
         <div class="large-4 column end">
             <div class="row">
