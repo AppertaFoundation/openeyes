@@ -122,9 +122,17 @@ class DefaultController extends BaseEventTypeController
     public function actionUpdate($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
+
+        // admin can go to edit mode event if the document has been sent
         if(!$letter->isEditable()){
             $this->redirect(array('default/view/'.$id));
         }
+
+        //if the letter is generated than we set a warning (only admin should reach this point, handled in $letter->isEditable())
+        if( $letter->isGeneratedFor(['Docman', 'Internalreferral']) ){
+            Yii::app()->user->setFlash('warning.letter_warning', 'Please note this letter has already been sent. Only modify if it is really necessary!');
+        }
+
         parent::actionUpdate($id);
     }
     

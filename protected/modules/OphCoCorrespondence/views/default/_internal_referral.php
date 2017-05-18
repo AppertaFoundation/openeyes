@@ -66,7 +66,7 @@
                                 1 => 'Same Condition',
                                 0 => 'Different Condition',
                         ),
-                        'selected_item' => $element->is_same_condition,
+                        'selected_item' => $element->is_same_condition ? $element->is_same_condition : 0,
 
                     ));
 

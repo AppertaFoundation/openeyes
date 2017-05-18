@@ -110,22 +110,26 @@ textarea[name="LetterMacro[body]"], textarea[name="LetterString[body]"] {
   margin-bottom: 10px;
 }
 /* line 60, ../sass/components/_letter.scss */
+.correspondence-letter .reply-address .internal-referral-heading{
+  font-size:18px;
+}
+/* line 64, ../sass/components/_letter.scss */
 .correspondence-letter .to-address {
   display: inline-block;
   padding-left: 0;
   margin-top: 4em;
 }
-/* line 65, ../sass/components/_letter.scss */
+/* line 69, ../sass/components/_letter.scss */
 .correspondence-letter .from-address {
   float: right;
   margin-bottom: 18px;
   text-align: right;
 }
-/* line 70, ../sass/components/_letter.scss */
+/* line 74, ../sass/components/_letter.scss */
 .correspondence-letter .date, .correspondence-letter .clinic-date {
   padding-top: 15px;
 }
-/* line 73, ../sass/components/_letter.scss */
+/* line 77, ../sass/components/_letter.scss */
 .correspondence-letter .big {
   font-size: 14pt;
 }

@@ -83,6 +83,7 @@ if($correspondeceApp->value === "on") {
 	<?php 
             $this->renderPartial('reply_address', array(
                 'site' => $element->site,
+                'is_internal_referral' => $element->isInternalReferral(),
             ));  
 
             $this->renderPartial('print_ElementLetter', array(
