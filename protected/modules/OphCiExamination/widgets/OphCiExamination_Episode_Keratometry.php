@@ -18,18 +18,17 @@ class OphCiExamination_Episode_Keratometry extends \EpisodeSummaryWidget
 {
     public function run()
     {
-        $criteria = new CDbCriteria();
-        $criteria->compare('episode_id', $this->episode->id);
-        $criteria->compare('event_type_id', $this->event_type->id);
-        $criteria->order = 'event_date';
+        $kera_events = [];
+        foreach(Event::model()->getEventsOfTypeForPatient($this->event_type, $this->episode->patient) as $event){
 
-        $keratometry = null;
-        foreach (Event::model()->findAll($criteria) as $event) {
-            if (($keratometry = models\Element_OphCiExamination_Keratometry::model()->findAll())) {
-                break;
+            $kera_models = models\Element_OphCiExamination_Keratometry::model()->findAll('event_id = ' . $event->id);
+            foreach($kera_models as $kera_model){
+                if($kera_model){
+                    $kera_events[] = $kera_model->attributes;
+                }
             }
-        }
 
-        $this->render('OphCiExamination_Episode_Keratometry', array('keratometry' => $keratometry));
+        }
+        $this->render('OphCiExamination_Episode_Keratometry', array('keratometry' => $kera_events));
     }
 }
