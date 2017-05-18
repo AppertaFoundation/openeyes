@@ -91,7 +91,7 @@ class FormularyDrugsController extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
-        Yii::import('application.modules.OphDrPrescription.models.Tag');
+        Yii::import('application.models.Tag');
 
         $admin = new Admin(FormularyDrugs::model(), $this);
         if ($id) {
