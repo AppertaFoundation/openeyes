@@ -38,16 +38,6 @@ class TheatreDiaryController extends BaseModuleController
             ),
         );
     }
-    
-    protected function beforeAction($action)
-    {
-        $is_auto_schedule_operation = isset(Yii::app()->params['auto_schedule_operation']) && Yii::app()->params['auto_schedule_operation'] === true;
-
-        if($is_auto_schedule_operation){
-            Yii::app()->user->setFlash('warning.alert', 'Operation bookings are automatically scheduled to the next available slot, regardless of the firms.');
-        }
-        return parent::beforeAction($action);
-    }
 
     /**
      * @return array

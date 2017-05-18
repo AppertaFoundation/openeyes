@@ -118,6 +118,22 @@ class MenuHelper
                 }
             }
 
+            /*
+             * Check if menu item requires a system setting
+             * in order to be displayed
+             */
+
+            if(isset($menu_item['requires_setting']))
+            {
+                $setting_key = $menu_item['requires_setting']['setting_key'];
+                $required_value = $menu_item['requires_setting']['required_value'];
+                $element_enabled = \SettingInstallation::model()->find('`key` = :setting_key', array(':setting_key'=>$setting_key));
+                if(isset($element_enabled->value) && $element_enabled->value != $required_value)
+                {
+                    continue;
+                }
+            }
+
             if (isset($menu_item['api'])) {
                 $api = Yii::app()->moduleAPI->get($menu_item['api']);
                 foreach ($api->getMenuItems($menu_item['position']) as $item) {

@@ -17,45 +17,35 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="eyedraw-fields">
-	<div class="field-row">
-		<label for="<?php echo CHtml::modelName($element).'_'.$side.'_nuclear_id';?>">
-			<?php echo $element->getAttributeLabel($side.'_nuclear_id')?>:
-		</label>
-		<?php
-            $html_options = array();
-            foreach (OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Nuclear::model()->findAll() as $option) {
-                $html_options[(string) $option->id] = array('data-value' => $option->value);
-            }
-            echo $form->dropDownList($element, $side.'_nuclear_id', 'OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Nuclear', array('options' => $html_options, 'nowrapper' => true));
-        ?>
-	</div>
-	<div class="field-row">
-		<label for="<?php echo CHtml::modelName($element).'_'.$side.'_cortical_id';?>">
-			<?php echo $element->getAttributeLabel($side.'_cortical_id')?>:
-		</label>
-		<?php
-            $html_options = array();
-            foreach (OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Cortical::model()->findAll() as $option) {
-                $html_options[(string) $option->id] = array('data-value' => $option->value);
-            }
-            echo $form->dropDownList($element, $side.'_cortical_id', 'OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Cortical', array('options' => $html_options, 'nowrapper' => true));
-        ?>
-	</div>
-	<div class="field-row">
-		<label for="<?php echo CHtml::modelName($element).'_'.$side.'_description';?>">
-			<?php echo $element->getAttributeLabel($side.'_description')?>:
-		</label>
-		<?php echo CHtml::activeTextArea($element, $side.'_description', array('rows' => '2', 'class' => 'autosize clearWithEyedraw'))?>
-	</div>
-	<div class="field-row">
-		<label>
-			<?php echo CHtml::activeCheckBox($element, $side.'_phako', array('class' => 'clearWithEyedraw')) ?>
-			<?php echo $element->getAttributeLabel($side.'_phako')?>
-		</label>
-	</div>
-	<div class="field-row">
-		<button class="ed_report secondary small">Report</button>
-		<button class="ed_clear secondary small">Clear</button>
-	</div>
+<div class="field-row">
+    <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
+    <div class="large-2 column">
+        <label>
+            <?php echo $element->getAttributeLabel($side . '_ed_report') ?>:
+        </label>
+    </div>
+    <div class="large-10 column end" style="line-height: 1; margin-bottom:10px;">
+        <span id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>" class="data-value"></span>
+    </div>
+    <div class="large-2 column">
+        <label for="<?php echo CHtml::modelName($element) . '_' . $side . '_description'; ?>">
+            <?php echo $element->getAttributeLabel($side . '_description') ?>:
+        </label>
+    </div>
+    <?php
+        $default = OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Nuclear::getEyedrawDefault();
+        echo $form->hiddenField($element, $side.'_nuclear_id', array(
+            'data-eyedraw-map' => CJSON::encode(OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Nuclear::getEyedrawMapping()),
+            'data-eyedraw-default' => $default ? $default->id : ''));
+
+    $default = OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Cortical::getEyedrawDefault();
+    echo $form->hiddenField($element, $side.'_cortical_id', array(
+        'data-eyedraw-map' => CJSON::encode(OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Cortical::getEyedrawMapping()),
+        'data-eyedraw-default' => $default ? $default->id : ''));
+    ?>
+    <div class="large-10 column end">
+        <?php echo CHtml::activeTextArea($element, $side . '_description',
+            array('rows' => '2', 'class' => 'autosizejs')) ?>
+    </div>
 </div>
+
