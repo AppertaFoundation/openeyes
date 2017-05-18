@@ -242,7 +242,8 @@ class DefaultController extends BaseEventTypeController
                 $params[':type_id'] = $type_id;
             }
             if (isset($_GET['preservative_free']) && $preservative_free = $_GET['preservative_free']) {
-                $criteria->addCondition('id IN (SELECT drug_id FROM drug_tag WHERE tag_id = 1)');
+                $tag_id = Yii::app()->params['preservative_free_tag_id'];
+                $criteria->addCondition("id IN (SELECT drug_id FROM drug_tag WHERE tag_id = $tag_id)");
             }
             $criteria->order = 'name';
             // we don't need 'select *' here
