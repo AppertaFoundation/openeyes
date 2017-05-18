@@ -1982,7 +1982,6 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-<<<<<<< HEAD
      * Get clinic outcome comments from the most recent Examination.
      * Limited to current data context by default.
      * Returns nothing if the latest Examination does not contain the clinic outcome element (or the comments are empty)
