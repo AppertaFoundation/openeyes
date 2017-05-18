@@ -17,8 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+namespace OEModule\OphCiExamination\models;
+
 /**
- * This is the model class for table "socialhistory_driving_status".
+ * This is the model class for table "ophciexamination_socialhistory_smoking_status".
  *
  * The followings are the available columns in table:
  *
@@ -29,7 +31,7 @@
  * @property User $user
  * @property User $usermodified
  */
-class SocialHistoryDrivingStatus extends BaseActiveRecord
+class SocialHistorySmokingStatus extends BaseActiveRecord
 {
     /**
      * Returns the static model of the specified AR class.
@@ -46,7 +48,7 @@ class SocialHistoryDrivingStatus extends BaseActiveRecord
      */
     public function tableName()
     {
-        return 'socialhistory_driving_status';
+        return 'ophciexamination_socialhistory_smoking_status';
     }
 
     /**
@@ -67,7 +69,6 @@ class SocialHistoryDrivingStatus extends BaseActiveRecord
     public function relations()
     {
         return array(
-                'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
                 'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
                 'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
@@ -84,20 +85,10 @@ class SocialHistoryDrivingStatus extends BaseActiveRecord
         );
     }
 
-    /**
-     * Retrieves a list of models based on the current search/filter conditions.
-     *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-     */
-    public function search()
+    public function behaviors()
     {
-        $criteria = new CDbCriteria();
-
-        $criteria->compare('id', $this->id, true);
-        $criteria->compare('name', $this->name, true);
-
-        return new CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
-        ));
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
     }
 }

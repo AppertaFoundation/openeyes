@@ -17,8 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+namespace OEModule\OphCiExamination\models;
+
 /**
- * This is the model class for table "socialhistory_driving_status_assignment".
+ * This is the model class for table "ophciexamination_substancemisuse".
  *
  * The followings are the available columns in table:
  *
@@ -26,10 +28,9 @@
  * @property string $name
  *
  * The followings are the available model relations:
- * @property User $user
  * @property User $usermodified
  */
-class SocialHistoryDrivingStatusAssignment extends BaseActiveRecord
+class SocialHistorySubstanceMisuse extends BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
@@ -46,7 +47,7 @@ class SocialHistoryDrivingStatusAssignment extends BaseActiveRecord
      */
     public function tableName()
     {
-        return 'socialhistory_driving_status_assignment';
+        return 'ophciexamination_socialhistory_substance_misuse';
     }
 
     /**
@@ -55,8 +56,9 @@ class SocialHistoryDrivingStatusAssignment extends BaseActiveRecord
     public function rules()
     {
         return array(
-                array('driving_status_id', 'safe'),
-                array('driving_status_id', 'required'),
+                array('name', 'safe'),
+                array('name', 'required'),
+                array('id, name', 'safe', 'on' => 'search'),
         );
     }
 
@@ -66,8 +68,8 @@ class SocialHistoryDrivingStatusAssignment extends BaseActiveRecord
     public function relations()
     {
         return array(
-            'socialhistory' => array(self::BELONGS_TO, 'SocialHistory', 'socialhistory_id'),
-            'driving_status' => array(self::BELONGS_TO, 'SocialHistoryDrivingStatus', 'driving_status_id'),
+                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
     }
 
@@ -77,8 +79,8 @@ class SocialHistoryDrivingStatusAssignment extends BaseActiveRecord
     public function attributeLabels()
     {
         return array(
-            'id' => 'ID',
-            'driving_status_id' => 'Driving status',
+                'id' => 'ID',
+                'name' => 'Name',
         );
     }
 
@@ -92,6 +94,7 @@ class SocialHistoryDrivingStatusAssignment extends BaseActiveRecord
         $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
+        $criteria->compare('name', $this->name, true);
 
         return new CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,

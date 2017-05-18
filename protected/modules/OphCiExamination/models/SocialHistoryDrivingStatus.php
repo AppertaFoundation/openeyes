@@ -17,8 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+namespace OEModule\OphCiExamination\models;
+
 /**
- * This is the model class for table "socialhistory_carer".
+ * This is the model class for table "ophciexamination_socialhistory_driving_status".
  *
  * The followings are the available columns in table:
  *
@@ -26,11 +28,10 @@
  * @property string $name
  *
  * The followings are the available model relations:
- * @property Event $event
  * @property User $user
  * @property User $usermodified
  */
-class SocialHistoryCarer extends BaseActiveRecordVersioned
+class SocialHistoryDrivingStatus extends BaseActiveRecord
 {
     /**
      * Returns the static model of the specified AR class.
@@ -47,7 +48,7 @@ class SocialHistoryCarer extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'socialhistory_carer';
+        return 'ophciexamination_socialhistory_driving_status';
     }
 
     /**
@@ -68,6 +69,7 @@ class SocialHistoryCarer extends BaseActiveRecordVersioned
     public function relations()
     {
         return array(
+                'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
                 'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
                 'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );

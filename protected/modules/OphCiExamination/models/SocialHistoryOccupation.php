@@ -17,8 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+namespace OEModule\OphCiExamination\models;
+
 /**
- * This is the model class for table "socialhistory_occupation".
+ * This is the model class for table "ophciexamination_socialhistory_occupation".
  *
  * The followings are the available columns in table:
  *
@@ -46,7 +48,7 @@ class SocialHistoryOccupation extends BaseActiveRecord
      */
     public function tableName()
     {
-        return 'socialhistory_occupation';
+        return 'ophciexamination_socialhistory_occupation';
     }
 
     /**
