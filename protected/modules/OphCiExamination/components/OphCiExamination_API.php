@@ -1964,7 +1964,7 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @param Patient $patient
      * @param bool $use_context
-     * @return mixed|null
+     * @return string|null
      */
     public function getLetterClinicOutcomeComments(\Patient $patient, $use_context = true)
     {
@@ -1976,60 +1976,66 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
-    /*
-     * @param \Patient $patient
-     * @returns string
+    /**
+     * Get clinic out details from the most recent Examination.
+     * Limited to the current data context by default.
+     * Returns nothing if the latest Examination does not contain the clinic outcome element.
      *
-     * Outcome details from latest Examination
-     * (ode shortcode handler)
+     * @param \Patient $patient
+     * @param bool $use_context
+     * @returns string
      */
-    public function getLatestOutcomeDetails(\Patient $patient)
+    public function getLatestOutcomeDetails(\Patient $patient, $use_context = true)
     {
-        $episode = $patient->getEpisodeForCurrentSubspecialty();
-        if($element = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_ClinicOutcome'))
+        $str = '';
+        if($element = $this->getElementFromLatestEvent('models\Element_OphCiExamination_ClinicOutcome',
+            $patient,
+            $use_context))
         {
             $str = $element->status->name;
             if($element->status->followup)
             {
-                $str.=" in {$element->followup_quantity} {$element->followup_period} by {$element->role->name}";
+                $str .= " in {$element->followup_quantity} {$element->followup_period} by {$element->role->name}";
                 if ($element->role_comments != '')
                 {
-                    $str.= " ({$element->role_comments})";
+                    $str .= " ({$element->role_comments})";
                 }
             }
-
-            return $str;
         }
-
-        return "";
+        return $str;
     }
-  
-    public function getCataractSurgicalManagement(\Patient $patient)
-    {
-        $episode = $patient->getEpisodeForCurrentSubspecialty();
 
-        if($element = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_CataractSurgicalManagement'))
+    /**
+     * Letter string for the latest Cataract Surgical Management element.
+     * Limited to the current data context by default.
+     * Returns nothing if the latest Examination does not contain the Cataract Surgical Management element.
+     *
+     * @param Patient $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getCataractSurgicalManagement(\Patient $patient, $use_context = true)
+    {
+        $str = '';
+        if ($element = $this->getElementFromLatestEvent('models\Element_OphCiExamination_CataractSurgicalManagement',
+            $patient,
+            $use_context))
         {
             $str = "Eye: {$element->eye()->name}".PHP_EOL;
-            $str.= "Straight Forward: ".($element->fast_track == 1 ? 'Yes' : 'No').PHP_EOL;
-            $str.= "Post Operative Target: {$element->target_postop_refraction}D".PHP_EOL;
-            $str.= "Suitable for: {$element->suitable_for_surgeon->name}".($element->supervised == 1 ? " (supervised)" : "").PHP_EOL;
-            $str.= ($element->previous_refractive_surgery == 1 ? "Patient has had previous refractive surgery".PHP_EOL : "");
-            $str.= ($element->vitrectomised_eye == 1 ? "Vitrectomised eye".PHP_EOL : "");
+            $str .= "Straight Forward: ".($element->fast_track == 1 ? 'Yes' : 'No').PHP_EOL;
+            $str .= "Post Operative Target: {$element->target_postop_refraction}D".PHP_EOL;
+            $str .= "Suitable for: {$element->suitable_for_surgeon->name}".($element->supervised == 1 ? " (supervised)" : "").PHP_EOL;
+            $str .= ($element->previous_refractive_surgery == 1 ? "Patient has had previous refractive surgery".PHP_EOL : "");
+            $str .= ($element->vitrectomised_eye == 1 ? "Vitrectomised eye".PHP_EOL : "");
             $reasons = [];
-            foreach($element->reasonForSurgery as $reason)
-            {
+            foreach ($element->reasonForSurgery as $reason) {
                 $reasons[]=$reason->name;
             }
 
-            if(!empty($reasons))
-            {
+            if (!empty($reasons)) {
                 $str.= "Primary reason for surgery: ".implode(", ", $reasons).PHP_EOL;
             }
-
-            return $str;
         }
-
-        return "";
+        return $str;
     }
 }
