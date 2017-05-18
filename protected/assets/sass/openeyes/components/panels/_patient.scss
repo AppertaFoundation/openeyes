@@ -118,11 +118,11 @@
 			}
 		}
         .clinical-summary-anchor  {
-          bottom: 12px;
+          bottom: 0px;
           font-size: rem-calc(11px);
           padding-right: 8px;
           position: absolute;
-          right: 63px;
+          right: 180px;
           @media screen {
             .stuck & {
               display: none;

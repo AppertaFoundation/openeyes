@@ -2805,7 +2805,7 @@ html, body {
 /* line 18, ../sass/openeyes/components/containers/_main.scss */
 .container.main {
   border-radius: 5px;
-  background: #dae6f1 url('../img/_structure/gradient_bg.png?1492601674') 0 0 repeat-x;
+  background: #dae6f1 url('../img/_structure/gradient_bg.png?1495101950') 0 0 repeat-x;
   border: 2px solid #b3b0ae;
   margin-bottom: 40px;
   width: 1234px;
@@ -3252,7 +3252,7 @@ table.grid tfoot tr {
 }
 /* line 24, ../sass/openeyes/components/_header.scss */
 .header .logo {
-  background: url('../img/_structure/openeyes.png?1492601674') no-repeat;
+  background: url('../img/_structure/openeyes.png?1495101950') no-repeat;
   background-size: 100%;
   display: block;
   height: 70px;
@@ -3262,7 +3262,7 @@ table.grid tfoot tr {
   /* line 24, ../sass/openeyes/components/_header.scss */
   .header .logo {
     -webkit-print-color-adjust: exact;
-    background: url('../img/_structure/openeyes.png?1492601674') no-repeat !important;
+    background: url('../img/_structure/openeyes.png?1495101950') no-repeat !important;
     background-size: 100% !important;
   }
 }
@@ -3292,7 +3292,7 @@ table.grid tfoot tr {
 
 /* line 19, ../sass/openeyes/components/_footer.scss */
 .footer {
-  background: #b3b0ae url('../img/_structure/openeyes_footer.png?1492601674') no-repeat right top;
+  background: #b3b0ae url('../img/_structure/openeyes_footer.png?1495101950') no-repeat right top;
 }
 /* line 22, ../sass/openeyes/components/_footer.scss */
 .footer .info {
@@ -5422,11 +5422,11 @@ tfoot.pagination-container .pagination-view-all {
 }
 /* line 120, ../sass/openeyes/components/panels/_patient.scss */
 .panel.patient .clinical-summary-anchor {
-  bottom: 12px;
+  bottom: 0px;
   font-size: 0.6875rem;
   padding-right: 8px;
   position: absolute;
-  right: 63px;
+  right: 180px;
 }
 @media screen {
   /* line 127, ../sass/openeyes/components/panels/_patient.scss */
@@ -5653,7 +5653,7 @@ tfoot.pagination-container .pagination-view-all {
 
 /* line 315, ../sass/openeyes/components/panels/_patient.scss */
 .icon-patient-panel-info {
-  background: url('../img/_elements/icons/information.png?1493047825');
+  background: url('../img/_elements/icons/information.png?1495034656');
   margin: 0;
   width: 16px;
   height: 16px;
