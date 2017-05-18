@@ -39,6 +39,16 @@ class SearchController extends BaseController
 
     public function actionDnaSample()
     {
+        if (empty($_GET)) {
+            if (($data = YiiSession::get('genetics_dnasample_searchoptions'))) {
+                $_GET = $data;
+            }
+            Audit::add('Genetics dnasample list', 'view');
+        } else {
+            Audit::add('Genetics dnasample list', 'search');
+
+            YiiSession::set('genetics_dnasample_searchoptions', $_GET);
+        }
 
         $pages = 1;
         $page = 1;
@@ -59,7 +69,7 @@ class SearchController extends BaseController
                 $page = $_GET['page'];
             }
 
-            $search_command = $this->buildSearchCommand('patient.id,patient.hos_num,event.id,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments,et_ophindnasample_sample.id AS sample_id, genetics_patient.id AS genetics_patient_id', $page);
+            $search_command = $this->buildSearchCommand('patient.id,patient.hos_num,event.id,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments,et_ophindnasample_sample.id AS sample_id, genetics_patient.id AS genetics_patient_id, genetics_patient_pedigree.pedigree_id as genetics_pedigree_id', $page);
 
             $dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
@@ -85,6 +95,12 @@ class SearchController extends BaseController
                 case 'comment':
                     $order = "comments $dir";
                     break;
+                case 'genetics_patient_id':
+                    $order = "genetics_patient.id $dir";
+                    break;
+                case 'genetics_pedigree_id':
+                    $order = "genetics_patient_pedigree.pedigree_id $dir";
+                    break;
                 default:
                     $order = "last_name $dir, first_name $dir";
             }
@@ -93,8 +109,7 @@ class SearchController extends BaseController
                 ->offset(($page - 1) * $this->items_per_page)
                 ->limit($this->items_per_page);
 
-            $results = $search_command
-                ->queryAll();
+            $results = $search_command->queryAll();
 
             foreach($results as $key=>$row)
             {
@@ -123,6 +138,7 @@ class SearchController extends BaseController
     private function buildSearchCommand($select)
     {
         $sample_id = @$_GET['sample_id'];
+        $pedigree_id = @$_GET['genetics_pedigree_id'];
         $date_from = @$_GET['date-from'];
         $date_to = @$_GET['date-to'];
         $sample_type = @$_GET['sample-type'];
@@ -131,6 +147,7 @@ class SearchController extends BaseController
         $first_name = @$_GET['first_name'];
         $last_name = @$_GET['last_name'];
         $hos_num = @$_GET['hos_num'];
+        $genetics_patient_id = @$_GET['genetics_patient_id'];
 
         $command = Yii::app()->db->createCommand()
             ->select($select)
@@ -140,14 +157,18 @@ class SearchController extends BaseController
             ->leftJoin('patient', 'episode.patient_id = patient.id')
             ->leftJoin('ophindnasample_sample_type', 'et_ophindnasample_sample.type_id = ophindnasample_sample_type.id')
             ->leftJoin('contact', 'patient.contact_id = contact.id')
-            ->leftJoin('genetics_patient', 'genetics_patient.patient_id = patient.id');
+            ->leftJoin('genetics_patient', 'genetics_patient.patient_id = patient.id')
+            ->leftJoin('genetics_patient_pedigree', 'genetics_patient.id = genetics_patient_pedigree.patient_id');
             //->leftJoin('genetics_patient_diagnosis', 'genetics_patient_diagnosis.patient_id = genetics_patient.id');
 
         if($sample_id)
         {
             $command->andWhere('et_ophindnasample_sample.id = :sample_id', array(':sample_id'=>$sample_id));
         }
-
+        if($pedigree_id)
+        {
+            $command->andWhere('genetics_patient_pedigree.pedigree_id = :pedigree_id', array(':pedigree_id'=>$pedigree_id));
+        }
         if ($date_from) {
             $command->andWhere('event_date >= :date_from', array(':date_from' => Helper::convertNHS2MySQL($date_from)));
         }
@@ -178,6 +199,11 @@ class SearchController extends BaseController
         if($hos_num){
             $command->andWhere('hos_num = :hos_num', array(':hos_num' => $hos_num));
         }
+
+        if($genetics_patient_id){
+            $command->andWhere('genetics_patient.id = :genetics_patient_id', array(':genetics_patient_id' => $genetics_patient_id));
+        }
+
 
         return $command;
     }

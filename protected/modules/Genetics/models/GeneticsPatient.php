@@ -40,6 +40,8 @@ class GeneticsPatient extends BaseActiveRecord
     public $patient_lastname;
     public $patient_yob;
     public $patient_disorder_id;
+    public $patient_hos_num;
+    public $patient_pedigree_id;
 
     /**
      * Returns the static model of the specified AR class.
@@ -73,7 +75,7 @@ class GeneticsPatient extends BaseActiveRecord
             array('id, patient_id, comments, gender_id, is_deceased, relationships, studies, pedigrees, diagnoses', 'safe'),
 
             //for searching on the subject/list page
-            array('patient_dob, patient_firstname, patient_lastname, patient_yob, patient_disorder_id', 'safe')
+            array('patient_dob, patient_firstname, patient_lastname, patient_hos_num, patient_pedigree_id, patient_yob, patient_disorder_id', 'safe')
         );
     }
 
@@ -158,6 +160,10 @@ class GeneticsPatient extends BaseActiveRecord
                 'genetics_patient_diagnosis(patient_id, disorder_id)',
             ),
             'genetics_diagnosis' => array(self::HAS_MANY, 'GeneticsPatientDiagnosis', 'patient_id'),
+
+            'genetics_patient_pedigree' => array(self::HAS_MANY, 'GeneticsPatientPedigree', 'patient_id'),
+
+
         );
     }
 
@@ -310,7 +316,6 @@ class GeneticsPatient extends BaseActiveRecord
 
         $criteria=new CDbCriteria;
         $criteria->with = array('patient', 'patient.contact');
-
         $criteria->compare('t.id',$this->id);
         $criteria->compare('patient_id',$this->patient_id,true);
         $criteria->compare('comments',$this->comments,true);
@@ -319,6 +324,13 @@ class GeneticsPatient extends BaseActiveRecord
 
         $criteria->compare( 'patient.dob', $this->patient_dob, true );
         $criteria->compare( 'patient.dob', $this->patient_yob, true );
+        $criteria->compare( 'patient.hos_num', $this->patient_hos_num, false );
+
+        if( $this->patient_pedigree_id ){
+            $criteria->with['genetics_patient_pedigree'] = array('select' => 'genetics_patient_pedigree.pedigree_id', 'together' => true);
+            $criteria->compare( 'genetics_patient_pedigree.pedigree_id', $this->patient_pedigree_id, false );
+        }
+
         $criteria->compare( 'contact.first_name', $this->patient_firstname, true );
         $criteria->compare( 'contact.last_name', $this->patient_lastname, true );
 
@@ -338,6 +350,16 @@ class GeneticsPatient extends BaseActiveRecord
                         'desc'=>"CONCAT(contact.first_name, ' ', contact.last_name) DESC"
                     ),
                     'patient.dob',
+                    'patient.hos_num',
+                    'patient.firstName' => array(
+                        'asc' => "contact.first_name",
+                        'desc' => "contact.first_name DESC"
+                    ),
+                    'patient.lastName' => array(
+                        'asc' => "contact.last_name",
+                        'desc' => "contact.last_name DESC"
+                    ),
+
                     'comments'
                 )
             ),

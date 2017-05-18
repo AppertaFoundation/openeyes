@@ -193,8 +193,8 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
             $params = array(
                 'LoginForm[username]' => $username,
                 'LoginForm[password]' => $password,
-                'LoginForm[YII_CSRF_TOKEN]' => $token[0],
-                'YII_CSRF_TOKEN' => $token[0],
+//                'LoginForm[YII_CSRF_TOKEN]' => $token[0],
+//                'YII_CSRF_TOKEN' => $token[0],
             );
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
 

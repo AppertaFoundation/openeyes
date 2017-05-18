@@ -212,8 +212,6 @@ class DocManDeliveryCommand extends CConsoleCommand
             $params = array(
                 'LoginForm[username]' => $username,
                 'LoginForm[password]' => $password,
-                'LoginForm[YII_CSRF_TOKEN]' => $token[0],
-                'YII_CSRF_TOKEN' => $token[0],
             );
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
 
@@ -310,8 +308,7 @@ class DocManDeliveryCommand extends CConsoleCommand
         $is_urgent = $element_letter->is_urgent ? 'True' : 'False';
         $is_same_condition = $element_letter->is_same_condition ? 'True' : 'False';
 
-        $location = isset($element_letter->toLocation) ? $element_letter->toLocation->location : '';
-        $location_name = isset($element_letter->toLocation) ? $element_letter->toLocation->location_name : '';
+        $location_code = isset($element_letter->toLocation) ? $element_letter->toLocation->site->location_code : '';
 
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
             <DocumentInformation>
@@ -356,8 +353,7 @@ class DocManDeliveryCommand extends CConsoleCommand
             <ConsultantTo>" . $consultant_to . "</ConsultantTo>
             <Urgent>" . $is_urgent . "</Urgent> 
             <SameCondition>" . $is_same_condition . "</SameCondition>
-            <Location>" . $location . "</Location>
-            <LocationName>" . $location_name . "</LocationName>
+            <ToLocationCode>" . $location_code . "</ToLocationCode>
         
             <!-- When main recipient is Internalreferral and a CC is a GP the Docman and Internalreferral XMLs look like the same. -->
             <!-- SendTo tag contains the actual output type: Either 'Docman' or 'Internalreferral' -->

@@ -152,6 +152,18 @@ class PedigreeController extends BaseModuleController
      */
     public function actionList()
     {
+        if (empty($_GET)) {
+            if (($data = YiiSession::get('genetics_pedigree_searchoptions'))) {
+                $_GET = $data;
+            }
+            Audit::add('Genetics pedigree list', 'view');
+        } else {
+            Audit::add('Genetics pedigree list', 'search');
+
+            YiiSession::set('genetics_pedigree_searchoptions', $_GET);
+        }
+
+
         $admin = new Crud(Pedigree::model(), $this);
         $admin->setListFieldsAction('view');
         $admin->setModelDisplayName('Families');

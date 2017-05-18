@@ -33,6 +33,12 @@ class SubjectController extends BaseModuleController
                 'actions' => array('List', 'View'),
                 'roles' => array('TaskViewGeneticPatient'),
             ),
+            array(
+                'allow',
+                'actions' => array('patientSearch'),
+                'users' => array('@'),
+            ),
+
         );
     }
 
@@ -79,7 +85,6 @@ class SubjectController extends BaseModuleController
     public function actionEdit($id = false)
     {
         $admin = new Crud(GeneticsPatient::model(), $this);
-
 
         // ok, so this awesome solution pre-selects a freshly created pedigree
         if( isset($_GET['pedigree_id']) && $_GET['pedigree_id'] ){
@@ -221,7 +226,8 @@ class SubjectController extends BaseModuleController
             ),
         ));
 
-        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());
+        $redirect = $id ? ('/Genetics/subject/view/' . $id) : '/patient/view/' . $_GET['patient'];
+        $admin->setCustomCancelURL($redirect);
         $valid = $admin->editModel(false);
 
         if (Yii::app()->request->isPostRequest) {
@@ -259,6 +265,15 @@ class SubjectController extends BaseModuleController
      */
     public function actionList()
     {
+        if (empty($_GET)) {
+            if (($data = YiiSession::get('genetics_patient_searchoptions'))) {
+                $_GET = $data;
+            }
+            Audit::add('Genetics patient list', 'view');
+        } else {
+            Audit::add('Genetics patient list', 'search');
+        }
+
         $path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets'));
         Yii::app()->clientScript->registerScriptFile($path . '/js/DiagnosisSelection.js');
 
@@ -273,11 +288,14 @@ class SubjectController extends BaseModuleController
             }
 
             $model->attributes = $_GET['GeneticsPatient'];
+
+            YiiSession::set('genetics_patient_searchoptions', $_GET);
         }
 
         $this->render('list', array(
             'model' => $model,
         ));
+
     }
 
 
@@ -323,5 +341,38 @@ class SubjectController extends BaseModuleController
         }
 
         return $model;
+    }
+
+    /**
+     * Ajax search.
+     */
+    public function actionPatientSearch()
+    {
+        $term = trim(\Yii::app()->request->getParam('term', ''));
+        $result = array();
+        $patientSearch = new PatientSearch();
+        if ($patientSearch->isValidSearchTerm($term)) {
+            $dataProvider = $patientSearch->search($term);
+
+            foreach ($dataProvider->getData() as $patient) {
+                $result[] = array(
+                    'id' => $patient->id,
+                    'genetics_patient_id' => $patient->geneticsPatient->id,
+                    'first_name' => $patient->first_name,
+                    'last_name' => $patient->last_name,
+                    'age' => ($patient->isDeceased() ? 'Deceased' : $patient->getAge()),
+                    'gender' => $patient->getGenderString(),
+                    'genderletter' => $patient->gender,
+                    'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
+                    'hos_num' => $patient->hos_num,
+                    'nhsnum' => $patient->nhsnum,
+                    // in script.js we override the behaviour for showing search results and its require the label key to be present
+                    'label' => $patient->first_name.' '.$patient->last_name.' ('.$patient->hos_num.')',
+                    'is_deceased' => $patient->is_deceased,
+                );
+            }
+        }
+        echo CJavaScript::jsonEncode($result);
+        Yii::app()->end();
     }
 }

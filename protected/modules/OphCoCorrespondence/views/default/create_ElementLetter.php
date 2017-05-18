@@ -37,6 +37,32 @@ $patient = Patient::model()->findByPk($patient_id);
 $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id : $macro_letter_type_id );
 ?>
 <div class="element-fields">
+
+    <?php
+    $correspondeceApp = \SettingInstallation::model()->find('`key` = "ask_correspondence_approval"');
+    if($correspondeceApp->value === "on") {
+        ?>
+        <div class="row field-row">
+            <div class="large-<?php echo $layoutColumns['label']; ?> column">
+                <label for="<?php echo get_class($element) . '_is_signed_off'; ?>">
+                    <?php echo $element->getAttributeLabel('is_signed_off') ?>:
+                </label>
+            </div>
+            <div class="large-8 column end">
+                <?php echo $form->radioButtons($element, 'is_signed_off', array(
+                    1 => 'Yes',
+                    0 => 'No',
+                ),
+                    $element->is_signed_off,
+                    false, false, false, false,
+                    array('nowrapper' => true)
+                ); ?>
+            </div>
+        </div>
+        <?php
+    }
+    ?>
+
     <div class="row field-row">
         <div class="large-<?php echo $layoutColumns['label']; ?> column">
             <label>Site:</label>
@@ -373,30 +399,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
             </div>
         </div>
     </div>
-    <?php
-    $correspondeceApp = \SettingInstallation::model()->find('`key` = "ask_correspondence_approval"');
-    if($correspondeceApp->value === "on") {
-    ?>
-        <div class="row field-row">
-            <div class="large-<?php echo $layoutColumns['label']; ?> column">
-                <label for="<?php echo get_class($element) . '_is_signed_off'; ?>">
-                    <?php echo $element->getAttributeLabel('is_signed_off') ?>:
-                </label>
-            </div>
-            <div class="large-8 column end">
-                <?php echo $form->radioButtons($element, 'is_signed_off', array(
-                    1 => 'Yes',
-                    0 => 'No',
-                ),
-                    $element->is_signed_off,
-                    false, false, false, false,
-                    array('nowrapper' => true)
-                ); ?>
-            </div>
-        </div>
-    <?php
-    }
-    ?>
+
 </div>
 <script type="text/javascript">
     setDropDownWidth('macro_id');

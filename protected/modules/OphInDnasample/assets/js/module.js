@@ -19,10 +19,9 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-	$('tr.clickable').click(function(e) {
-		e.preventDefault();
-		window.location.href = $(this).data('uri');
-	});
+	$('#sample_result').on('click','tr.clickable', function(){
+        window.location.href = $(this).data('uri');
+    });
 	
 	handleButton($('#et_deleteevent'));
 
@@ -36,8 +35,10 @@ $(document).ready(function() {
 	});
 
 	$('#search_dna_sample').click(function(e) {
+
 		e.preventDefault();
-		window.location.href = baseUrl+'/OphInDnasample/search/dnaSample?date-from='+$('#date-from').val()+'&date-to='+$('#date-to').val()+'&sample-type='+$('#sample-type').val()+'&comment='+$('#comment').val()+'&disorder-id='+$('#savedDiagnosis').val() + '&first_name=' + $('#first_name').val() + '&last_name=' + $('#last_name').val() + '&hos_num=' + $('#hos_num').val() + '&search=search&sample_id=' + $("#sample_id").val();
+        var query = $.param( $('#searchform').serializeArray() );
+		window.location.href = baseUrl+'/OphInDnasample/search/dnaSample?date-from='+$('#date-from').val()+'&genetics_patient_id=' + $('#genetics_patient_id').val() + '&genetics_pedigree_id=' + $('#genetics_pedigree_id').val()  + '&date-to='+$('#date-to').val()+'&sample-type='+$('#sample-type').val()+'&comment='+$('#comment').val()+'&disorder-id='+$('#savedDiagnosis').val() + '&first_name=' + $('#first_name').val() + '&last_name=' + $('#last_name').val() + '&hos_num=' + $('#hos_num').val() + '&search=search&sample_id=' + $("#sample_id").val();
 	});
 
 	$('select.populate_textarea').unbind('change').change(function() {

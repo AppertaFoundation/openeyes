@@ -166,6 +166,7 @@ class Patient extends BaseActiveRecordVersioned
             'socialhistory' => array(self::HAS_ONE, 'SocialHistory', 'patient_id'),
             'adherence' => array(self::HAS_ONE, 'MedicationAdherence', 'patient_id'),
             'nhsNumberStatus' => array(self::BELONGS_TO, 'NhsNumberVerificationStatus', 'nhs_num_status_id'),
+            'geneticsPatient' => array(self::HAS_ONE, 'GeneticsPatient', 'patient_id'),
         );
     }
 
@@ -235,7 +236,7 @@ class Patient extends BaseActiveRecordVersioned
         } else {
             $criteria->compare('hos_num', $this->hos_num, false);
         }
-        $criteria->compare('deleted', 0);
+        $criteria->compare('t.deleted', 0);
 
         $criteria->order = $params['sortBy'].' '.$params['sortDir'];
 

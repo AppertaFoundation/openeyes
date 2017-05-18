@@ -676,7 +676,8 @@ class ElementLetter extends BaseEventTypeElement
 
     public function isEditable()
     {
-        return !$this->isGeneratedFor(['Docman', 'Internalreferral']);
+        // admin can go to edit mode event if the document has been sent / warning set up in the actionUpdate()
+        return (Yii::app()->user->checkAccess('admin') || !$this->isGeneratedFor(['Docman', 'Internalreferral']));
     }
     
 
@@ -846,7 +847,7 @@ class ElementLetter extends BaseEventTypeElement
     }
 
     /**
-     * In the letter is internal referral or not
+     * If the letter is internal referral or not
      */
     public function isInternalReferral()
     {
@@ -870,7 +871,7 @@ class ElementLetter extends BaseEventTypeElement
      */
     public function getToLocations($list = false)
     {
-        $locations = OphCoCorrespondence_InternalReferral_ToLocation::model()->with('site')->findAll();
+        $locations = OphCoCorrespondence_InternalReferral_ToLocation::model()->with('site')->findAll('t.is_active = 1');
 
         return $list ? CHtml::listData($locations, 'id', 'site.short_name') : $locations;
 

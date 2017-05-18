@@ -35,6 +35,8 @@
             <table class="grid">
               <thead>
               <tr>
+                <th>Subject Id</th>
+                <th>Family Id</th>
                 <th>Gene</th>
                 <th>Method</th>
                 <th>Homozygosity</th>
@@ -43,6 +45,14 @@
               </thead>
               <tbody>
               <tr>
+
+                <td>
+                    <?php echo CHtml::textField('genetics-patient-id', @$_GET['genetics-patient-id']) ?>
+                </td>
+                 <td>
+                    <?php echo CHtml::textField('genetics-pedigree-id', @$_GET['genetics-pedigree-id']) ?>
+                </td>
+
                 <td>
                     <?php echo CHtml::dropDownList('gene-id', @$_GET['gene-id'], CHtml::listData(PedigreeGene::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
                         array('empty' => '- All -')) ?>
@@ -113,7 +123,7 @@
 
   <h2>Genetic test events</h2>
 
-  <form id="admin_sequences">
+  <form id="genetics_result">
     <input type="hidden" id="select_all" value="0"/>
 
       <?php if (count($genetic_tests) < 1) { ?>
@@ -133,6 +143,7 @@
           <thead>
           <tr>
             <th><?php echo CHtml::link('Result date', $this->getUri(array('sortby' => 'date'))) ?></th>
+            <th><?php echo CHtml::link('Subject Id', $this->getUri(array('sortby' => 'genetics-patient-id'))) ?></th>
             <th><?php echo CHtml::link('Hospital no', $this->getUri(array('sortby' => 'hos_num'))) ?></th>
             <th><?php echo CHtml::link('Patient name', $this->getUri(array('sortby' => 'patient_name'))) ?></th>
             <th><?php echo CHtml::link('Gene', $this->getUri(array('sortby' => 'gene'))) ?></th>
@@ -150,6 +161,7 @@
               ?>
             <tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInGeneticresults/default/view/' . $test->event_id) ?>">
                   <td><?php echo $test->NHSDate('result_date') ?></td>
+                  <td><?php echo CHtml::link($test->event->episode->patient->geneticsPatient->id, '/Genetics/subject/view/id/' . $test->event->episode->patient->geneticsPatient->id ); ?></td>
                   <td><?php echo $test->event->episode->patient->hos_num ?></td>
                   <td><?php echo strtoupper($test->event->episode->patient->last_name) ?>, <?php echo $test->event->episode->patient->first_name ?></td>
                   <td><?php echo $test->gene->name ?></td>

@@ -28,6 +28,7 @@ class InternalReferralSettingsController extends ModuleAdminController
         $this->render('/admin/settings',array(
             'settings' => OphcocorrespondenceInternalReferralSettings::model()->findAll(),
             'to_locations' => OphCoCorrespondence_InternalReferral_ToLocation::model()->findAll(),
+            'sites' => Institution::model()->getCurrent()->sites,
         ));
     }
 
@@ -62,44 +63,27 @@ class InternalReferralSettingsController extends ModuleAdminController
 
     public function actionUpdateToLocationList()
     {
-        $return = array('success' => false);
-
-        $site_ids = array();
         $locations_post = Yii::app()->request->getPost('OphCoCorrespondence_InternalReferral_ToLocation', array());
 
-        //make the posted array unique
-        $unique_post = array();
-        foreach($locations_post as $location_post){
-            if( !array_key_exists($location_post['site_id'],$unique_post)  ){
-                $unique_post[$location_post['site_id']] = $location_post;
-            }
-        }
-        $locations_post = $unique_post;
+
 
         $transaction = Yii::app()->db->beginTransaction();
 
         try
         {
 
-            // remove all site that's ids were not posted back - means they were removed
-            $criteria = new CDbCriteria();
-            $criteria->addNotInCondition('site_id', array_keys($locations_post));
-
-            OphCoCorrespondence_InternalReferral_ToLocation::model()->deleteAll($criteria);
-
             $is_ok = true;
 
             //now we save the new ones
             foreach($locations_post as $location_post){
-                $site = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByAttributes(array('site_id' => $location_post['site_id']));
+                $site = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByPk($location_post['id']);
 
                 if(!$site){
                     $site = new OphCoCorrespondence_InternalReferral_ToLocation();
                 }
 
                 $site->site_id = $location_post['site_id'];
-                $site->location = $location_post['location'];
-                $site->location_name = $location_post['location_name'];
+                $site->is_active = $location_post['is_active'];
 
                 if( !$site->save()){
                     $is_ok = false;

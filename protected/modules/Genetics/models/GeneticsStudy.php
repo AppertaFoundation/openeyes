@@ -100,7 +100,7 @@ class GeneticsStudy extends BaseActiveRecordVersioned
      */
     public function afterFind()
     {
-        $this->formatted_end_date = Helper::convertMySQL2NHS($this->end_date);
+        $this->end_date = Helper::convertMySQL2NHS($this->end_date);
     }
 
     /**

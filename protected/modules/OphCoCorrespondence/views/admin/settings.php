@@ -50,62 +50,72 @@
     <div id="internal_referral_to_location">
         <div class="row">
             <div class="large-8 column">
-                <h3>Add sites to the To Location dropdown</h3>
+                <h3>Add sites to the 'To Location' dropdown</h3>
             </div>
             <div class="large-4 column">
             </div>
         </div>
 
         <div class="row">
-            <div class="large-1 column">Site:</div>
             <div class="large-4 column">
-                 <?php echo CHtml::dropDownList('to_location_site_id', null, Site::model()->getListForCurrentInstitution(), array('empty' => '- select -'))?>
             </div>
-            <div class="large-5 end column right">
+            <div class="large-8 end column right">
                 <img class="loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
                 <span class="right saved hidden" style="font-size:13px; color:#19b910">Saved</span>
                 <span class="right error hidden" style="font-size:13px"">Error, try again later</span>
             </div>
         </div>
-        <br>
+
         <div class="row">
             <div class="large-10 column">
                 <span style="font-size:13px"><strong>Please note:</strong> If any correspondence using a site listed below you will not be able to delete from here.</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="large-8 column">
                 <table class="grid" id="to_location_sites_grid">
                     <thead>
                     <tr>
                         <th style="width:200px">Site</th>
-                        <th <th style="width:100px">Location</th>
-                        <th >Location Name (XML)</th>
-                        <th>action</th>
+                        <th >Location Code (XML)</th>
+                        <th class="text-center">Is Active</th>
                     </tr>
                     </thead>
                     <tbody>
                     <?php
-                    foreach ($to_locations as $index => $to_location) {?>
+                    foreach ($sites as $index => $site) {?>
                         <?php
+
+                            $to_location = isset($site->toLocation) ? $site->toLocation : null;
+                            if( !$to_location){
+                                $to_location = new OphCoCorrespondence_InternalReferral_ToLocation();
+                                $to_location->site_id = $site->id;
+                            }
+                        ?>
+
+                        <?php
+                            //@TODO : move this to API
                             $criteria = new CDbCriteria();
                             $criteria->join = 'JOIN ophcocorrespondence_internal_referral_to_location l ON t.to_location_id = l.id';
-                            $criteria->addCondition('to_location_id = :to_location_id');
-                            $criteria->params = array(':to_location_id' => $to_location->id);
+                            $criteria->addCondition('l.site_id = :site_id');
+                            $criteria->params = array(':site_id' => $site->id);
 
                             $letter_count = ElementLetter::model()->count($criteria);
                         ?>
 
                         <tr class="site-row">
                             <td>
-                                <?php echo $to_location->site->short_name; ?>
+                                <?php echo $site->short_name; ?>
+                                <?php echo CHtml::activeHiddenField($to_location, "[$index]id"); ?>
                                 <?php echo CHtml::activeHiddenField($to_location, "[$index]site_id"); ?>
+
                             </td>
-                            <td>
-                                <?php echo CHtml::activeTextField($to_location, "[$index]location"); ?>
-                            </td>
-                            <td>
-                                <?php echo CHtml::activeTextField($to_location, "[$index]location_name"); ?>
+                            <td style="width:150px">
+                                <?php echo CHtml::activeTextField($site, "[$index]location_code", array("disabled"=>"disabled") ); ?>
                             </td>
 
-                            <td class="site_action">
-                                <a href="javascript:void(0)" class="remove <?php echo $letter_count ? 'hidden' : ''; ?>">remove</a>
+                            <td class="text-center">
+                                <?php echo CHtml::activeCheckBox($to_location, "[$index]is_active"); ?>
                             </td>
                         </tr>
                     <?php }?>
@@ -119,7 +129,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="large-2 column"></div>
+            <div class="large-4 column"></div>
         </div>
     </div>
 </div>

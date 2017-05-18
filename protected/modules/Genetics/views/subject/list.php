@@ -64,13 +64,40 @@
         'columns' => array(
             array(
                 'name' => 'id',
-                'htmlOptions'=>array('width'=>'50px'),
+                'htmlOptions'=>array('width'=>'70px'),
             ),
             array(
-                'name' => 'patient.fullName',
+                'header' => 'Family Id',
+                'htmlOptions'=>array('width'=>'70px'),
+                'type' => 'raw',
+                'value' => function($data){
+
+                    $family_ids = '';
+                    foreach($data->pedigrees as $pedigrees){
+
+                        $family_ids .= $family_ids ? '<br>' : '';
+                        $family_ids .= CHtml::link($pedigrees->id, '/Genetics/pedigree/view/' . $pedigrees->id);
+                    }
+
+                    return $family_ids;
+                },
+            ),
+
+            array(
+                'name' => 'patient.hos_num',
                 'htmlOptions'=>array('width'=>'110px'),
             ),
-         //   'patient.dob',
+            array(
+                'name' => 'patient.firstName',
+                'htmlOptions'=>array('width'=>'60x'),
+                'value' => '$data->patient->first_name'
+            ),
+            array(
+                'name' => 'patient.lastName',
+                'htmlOptions'=>array('width'=>'60px'),
+                'value' => '$data->patient->last_name'
+            ),
+
             array(
                 'name' => 'patient.dob',
                 'value' => function($data){
@@ -81,16 +108,33 @@
             ),
 
             array(
-                'name' => 'comments',
-                'htmlOptions'=>array('width'=>'150px'),
-            ),
-            array(
                 'name' => 'diagnoses',
                 'value' => function($data){
                     return implode(', ', $data->diagnoses);
                 },
                 'htmlOptions'=>array('width'=>'200px'),
             ),
+            array(
+                'header' => 'Affected status',
+                'type' => 'raw',
+                'value' => function($model){
+                    if($model->pedigrees){
+                        $html = '';
+                        foreach($model->pedigrees as $pedigree){
+                            $html .= $html ? '<br>' : '';
+                            $gene = isset($pedigree->gene) ? ' (Gene: ' . $pedigree->gene->name . ')' : '';
+                            $html .= '<a href="/Genetics/pedigree/view/' . $pedigree->id . '">' . $pedigree->id . $gene . '</a>';
+                            $html .= " - " . $model->statusForPedigree($pedigree->id);
+                        }
+                    } else {
+                        $html = 'None';
+                    }
+                    return $html;
+                },
+                'htmlOptions'=>array('width'=>'150px'),
+            ),
+
+
 
 
         ),
