@@ -22,7 +22,7 @@
     <!-- Patient warnings -->
     <?php
     if ($this->warnings) { ?>
-        <div class="patient-warnings">
+        <div class="patient-warnings toggle-patient-summary-popup">
             <?php echo implode(', ', array_unique(array_map(function ($warning) {
                 return $warning['short_msg'];
             }, $this->warnings))); ?>
