@@ -93,7 +93,7 @@ class SocialHistory extends \BaseEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'occupation' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\SocialHistoryOccupation', 'occupation_id'),
-            'driving_status_assignments' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_SocialHistory_DrivingStatusAssignment', 'element_id', 'order' => 'display_order asc'),
+            'driving_status_assignments' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\SocialHistoryDrivingStatusAssignment', 'element_id', 'order' => 'display_order asc'),
             'driving_statuses' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\SocialHistoryDrivingStatus', 'driving_status_id', 'through' => 'driving_status_assignments'),
             'smoking_status' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\SocialHistorySmokingStatus', 'smoking_status_id'),
             'accommodation' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\SocialHistoryAccommodation', 'accommodation_id'),
@@ -148,6 +148,31 @@ class SocialHistory extends \BaseEventTypeElement
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * Override for consistent lookup option retrieval
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        if (substr($name, -8) === '_options') {
+            $relation_name = strtolower(substr($name, 0, -8));
+            if ($this->getMetaData()->hasRelation($relation_name)) {
+                $relation = $this->getMetaData()->relations[$relation_name];
+                $cls = $relation->className;
+                $pk = null;
+                if (is_a($relation, self::BELONGS_TO)) {
+                    $pk = $this->{$relation_name . '_id'};
+                } else {
+                    $pk = array_map(function($i) { return $i->id;}, $this->getRelated($relation_name));
+                }
+                return $cls::model()->activeOrPk($pk)->findAll(array('order' => 'display_order asc'));
+            }
+        }
+        return parent::__get($name);
     }
 
     /**

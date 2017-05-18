@@ -30,7 +30,7 @@ namespace OEModule\OphCiExamination\models;
  * The followings are the available model relations:
  * @property User $usermodified
  */
-class SocialHistorySubstanceMisuse extends BaseActiveRecordVersioned
+class SocialHistorySubstanceMisuse extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
@@ -99,5 +99,25 @@ class SocialHistorySubstanceMisuse extends BaseActiveRecordVersioned
         return new CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * Use standard Lookup behaviour
+     *
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->name;
     }
 }

@@ -43,6 +43,9 @@ class m170518_140328_add_social_history extends OEMigration
                 'ophciexamination_' . $table_name,
                 array_merge(array('name' => 'varchar(128)',
                     'display_order' => 'tinyint(3)'), $extra_cols) );
+            if (in_array('deleted', array_keys($extra_cols))) {
+                $this->update('ophciexamination_' . $table_name, array('active' => 0), 'deleted = :deleted', array(':deleted' => true));
+            }
         }
 
         $this->addForeignKey('et_ophciexamination_socialhistory_occ_fk',
@@ -57,7 +60,7 @@ class m170518_140328_add_social_history extends OEMigration
             'et_ophciexamination_socialhistory', 'substance_misuse_id', 'ophciexamination_socialhistory_substance_misuse', 'id');
 
 
-        $this->createOETable('ophciexamination_drivingstatus_assignment', array(
+        $this->createOETable('ophciexamination_socialhistory_driving_status_assignment', array(
             'id' => 'pk',
             'element_id' => 'int(11) NOT NULL',
             'driving_status_id' => 'int(11) NOT NULL',
@@ -65,9 +68,9 @@ class m170518_140328_add_social_history extends OEMigration
         ), true);
 
         $this->addForeignKey('ophciexamination_drivingstatus_assignment_el_fk',
-            'ophciexamination_drivingstatus_assignment', 'element_id', 'et_ophciexamination_socialhistory', 'id');
+            'ophciexamination_socialhistory_driving_status_assignment', 'element_id', 'et_ophciexamination_socialhistory', 'id');
         $this->addForeignKey('ophciexamination_drivingstatus_assignment_ds_fk',
-            'ophciexamination_drivingstatus_assignment', 'driving_status_id', 'ophciexamination_socialhistory_driving_status', 'id');
+            'ophciexamination_socialhistory_driving_status_assignment', 'driving_status_id', 'ophciexamination_socialhistory_driving_status', 'id');
 
         foreach (array_keys(static::$duplicate_tables) as $table) {
             $this->renameTable($table, static::$archive_prefix . $table);
@@ -86,7 +89,7 @@ class m170518_140328_add_social_history extends OEMigration
             }
         }
 
-        $this->dropOETable('ophciexamination_drivingstatus_assignment', true);
+        $this->dropOETable('ophciexamination_socialhistory_driving_status_assignment', true);
         $this->dropOETable('et_ophciexamination_socialhistory', true);
 
         foreach (array_keys(static::$duplicate_tables) as $table) {

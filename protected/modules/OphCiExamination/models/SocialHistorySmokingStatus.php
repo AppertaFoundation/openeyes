@@ -31,7 +31,7 @@ namespace OEModule\OphCiExamination\models;
  * @property User $user
  * @property User $usermodified
  */
-class SocialHistorySmokingStatus extends BaseActiveRecord
+class SocialHistorySmokingStatus extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
@@ -85,10 +85,23 @@ class SocialHistorySmokingStatus extends BaseActiveRecord
         );
     }
 
+    /**
+     * Use standard Lookup behaviour
+     *
+     * @return array
+     */
     public function behaviors()
     {
         return array(
             'LookupTable' => 'LookupTable',
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->name;
     }
 }

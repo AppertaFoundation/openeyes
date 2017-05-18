@@ -32,7 +32,7 @@ namespace OEModule\OphCiExamination\models;
  * @property User $user
  * @property User $usermodified
  */
-class SocialHistoryCarer extends BaseActiveRecordVersioned
+class SocialHistoryCarer extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
@@ -101,5 +101,25 @@ class SocialHistoryCarer extends BaseActiveRecordVersioned
         return new CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * Use standard Lookup behaviour
+     *
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->name;
     }
 }

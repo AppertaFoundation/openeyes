@@ -31,7 +31,7 @@ namespace OEModule\OphCiExamination\models;
  * @property User $user
  * @property User $usermodified
  */
-class SocialHistoryDrivingStatusAssignment extends BaseActiveRecord
+class SocialHistoryDrivingStatusAssignment extends \BaseActiveRecord
 {
     /**
      * Returns the static model of the specified AR class.
