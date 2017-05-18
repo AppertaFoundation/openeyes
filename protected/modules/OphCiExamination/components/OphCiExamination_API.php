@@ -2001,7 +2001,7 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * Get clinic out details from the most recent Examination.
+     * Get clinic outcome details from the most recent Examination.
      * Limited to the current data context by default.
      * Returns nothing if the latest Examination does not contain the clinic outcome element.
      *

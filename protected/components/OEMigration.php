@@ -696,4 +696,26 @@ class OEMigration extends CDbMigration
             'description' => $description,
         ));
     }
+
+    /**
+     * Create $dest table and duplicate data from $source into it
+     *
+     * @param $source
+     * @param $dest
+     * @param $cols
+     */
+    public function duplicateTable($source, $dest, $cols)
+    {
+        $this->createOETable($dest, array_merge(
+            array('id' => 'pk', 'active' => 'boolean default true'),
+            $cols
+        ), true);
+        $source_rows = $this->dbConnection->createCommand()
+            ->select(array_keys($cols))
+            ->from($source)
+            ->queryAll();
+        foreach ($source_rows as $row) {
+            $this->insert($dest, $row);
+        }
+    }
 }
