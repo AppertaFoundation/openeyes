@@ -407,17 +407,20 @@ return array(
          */
         'OphCoCorrespondence_printout_draft_background' => true,
 
-        /**
-         *  Operation bookings will be automatically scheduled to the next available slot (regardless of the firm)
-         */
-        "auto_schedule_operation" => false,
-
         'clinical_management_pcr' => true,
         'docman_generate_csv' => false,
         'element_sidebar' => true,
-        // flag to enable editing of clinical data at the patient summary level - editing is not full implemented
+        // flag to enable editing of clinical data at the patient summary level - editing is not fully implemented
         // in v2.0.0, so this should only be turned on if you really know what you are doing.
-        'allow_patient_summary_clinic_changes' => false
-
-    ),
+        'allow_patient_summary_clinic_changes' => false,
+        'patient_summary_id_widgets' => array(
+            array(
+                'class' => 'application.widgets.PatientSummaryPopup',
+                'order' => PHP_INT_MAX
+            )
+        ),
+        /**
+         * Enables the admin->Settings->Logo screen */
+        'letter_logo_upload' => true
+    )
 );

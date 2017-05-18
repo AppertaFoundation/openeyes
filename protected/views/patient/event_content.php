@@ -7,8 +7,7 @@
 		<?php $this->renderPartial('//patient/event_tabs'); ?>
 		<?php $this->renderPartial('//patient/event_actions'); ?>
 	</header>
-
-	<div class="event-content <?=($this->event->is_automated) ? 'auto' : ''?>" id="event-content">
+    <div class="event-content <?=($this->event->is_automated) ? 'auto' : ''?>" id="event-content">
 
 		<h2 class="event-title <?=($this->event->is_automated) ? 'auto' : ''?>" style="background-image: url('<?=$this->event->getEventIcon('medium')?>');"><?php echo $this->title?> <?php $this->renderPartial('//patient/event_automated'); ?></h2>
 

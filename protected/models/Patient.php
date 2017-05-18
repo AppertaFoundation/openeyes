@@ -1958,4 +1958,111 @@ class Patient extends BaseActiveRecordVersioned
 
         return $patient->episodes[0]->id;
     }
+
+    /**
+     * Returns an array of summarised patient Systemic diagnoses
+     * @return array
+     */
+    public function getSystemicDiagnosesSummary()
+    {
+        return array_map(function($diagnosis) {
+            return $diagnosis->systemicDescription;
+        }, $this->systemicDiagnoses);
+    }
+
+    /**
+     * Returns an array of summarised patient Ophthalmic diagnoses including the principal diagnoses from Episodes.
+     *
+     * @return array
+     */
+    public function getOphthalmicDiagnosesSummary()
+    {
+        $principals = array();
+        foreach ($this->episodes as $ep) {
+            $d = $ep->diagnosis;
+            if ($d && $d->specialty && $d->specialty->code == 130) {
+                $principals[] = ($ep->eye ? $ep->eye->adjective . ' ' : '') . $d->term;
+            }
+        }
+
+        return array_merge(
+            $principals,
+            array_map(function($diagnosis) {
+                return $diagnosis->ophthalmicDescription;
+            }, $this->ophthalmicDiagnoses)
+        );
+    }
+
+    /**
+     * Returns a summarised array of patient medications
+     * @return array
+     */
+    public function getMedicationsSummary()
+    {
+        return array_map(function($medication) {
+            $label = $medication->drug ? $medication->drug->label : $medication->medication_drug->name;
+            $option = $medication->option ? " ({$medication->option->name})" : '';
+            $frequency = $medication->frequency->name;
+            return $label.$option.' '.$frequency;
+        }, $this->medications);
+    }
+
+    /**
+     * Returns a summarised array of patient allergy status
+     * @return array An array containing a summarised allergy status or assigned allergy names
+     */
+    public function getAllergiesSummary()
+    {
+        if (!$this->hasAllergyStatus()) {
+            return array('Patient allergy status is unknown');
+        }
+        if ($this->no_allergies_date) {
+            return array('Patient has no known allergies');
+        }
+        return array_map(function($allergy) {
+            return $allergy->name;
+        }, $this->allergies);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCviSummary()
+    {
+        if ($cvi_api = Yii::app()->moduleAPI->get('OphCoCvi')) {
+            return $cvi_api->getSummaryText($this);
+        }
+        else {
+            return $this->getOPHInfo()->cvi_status->name;
+        }
+    }
+
+    /**
+     * Builds a sorted list of operations carried out on the patient either historically or across relevant events.
+     *
+     * @return array
+     */
+//    public function getOperationsSummary()
+//    {
+//        $summary = array();
+//        if ($op_api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
+//            $summary = array_merge($summary, $op_api->getOperationsSummaryData($this));
+//        }
+//
+//        foreach ($this->previousOperations as $prev) {
+//            $summary[] = array(
+//                'date' => $prev->date,
+//                'description' => $prev->getSummaryDescription()
+//            );
+//        }
+//
+//        // date descending sort
+//        uasort($summary, function($a , $b) {
+//            return $a['date'] >= $b['date'] ? -1 : 1;
+//        });
+//
+//        return array_map(
+//            function($item) { return $item['description'];},
+//            $summary);
+//    }
 }

@@ -133,4 +133,33 @@ class OphTrOperationbooking_Operation_Theatre extends BaseActiveRecordVersioned
     {
         return $this->name.' ('.$this->site->name.')';
     }
+
+    /**
+     * Get all Sites that have theatres attached
+     *
+     * @param null $current_site_id
+     * @return Site[]|null
+     */
+    public static function getSiteList($current_site_id = null)
+    {
+        $model = static::model();
+        $cmd = Yii::app()->db->createCommand()
+            ->selectDistinct('site_id')
+            ->where('active = 1')
+            ->from($model->tableName());
+
+        $ids = array_map(function($r) { return $r['site_id'];}, $cmd->queryAll());
+
+        $criteria = new CDbCriteria();
+        $criteria->addCondition("active = 1 and short_name != ''");
+        $criteria->addInCondition('id', $ids);
+        if ($current_site_id) {
+            $criteria->addCondition('id = :id', 'OR');
+            $criteria->params = array_merge($criteria->params, array(':id' => $current_site_id));
+        }
+        $criteria->order = 'short_name';
+
+        return Site::model()->findAll($criteria);
+    }
+
 }

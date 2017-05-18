@@ -17,8 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="column fixed">
-	<?php
+<div class="field-row">
+    <?php
     $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
         'side' => ($side == 'right') ? 'R' : 'L',
@@ -28,49 +28,90 @@
         'model' => $element,
         'attribute' => $side.'_eyedraw',
         'toggleScale' => 0.72,
-    ))?>
+    )); ?>
+    <?php
+    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+        'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id . '_side',
+        'side' => ($side == 'right') ? 'R' : 'L',
+        'mode' => 'view',
+        'width' => 132,
+        'height' => 200,
+        'model' => $element,
+        'attribute' => $side.'_eyedraw2',
+        'toggleScale' => 0.72,
+        ));
+    ?>
+
 </div>
 
-<div class="column fluid">
-	<?php if ($description = $element->{$side.'_description'}) {
+<div class="element-fields column">
+    <?php if ($report = $element->{$side.'_ed_report'}) {
+        ?>
+        <div class="row data-row description">
+            <div class="large-2 column">
+                <div class="data-label"><?php echo $element->getAttributeLabel($side.'_ed_report')?>:</div>
+            </div>
+            <div class="large-10 column">
+                <div class="data-value">
+                    <?php echo nl2br($report)?>
+                </div>
+            </div>
+        </div>
+        <?php
+    } ?>
+
+    <?php if ($description = $element->{$side.'_description'}) {
     ?>
-		<div class="data-row description">
-			<div class="data-value">
-				<?php echo CHtml::encode($description)?>
-			</div>
-		</div>
-	<?php 
-} ?>
-	<?php /* See OE-4283 */ ?>
-	<?php if ($element->{$side.'_pupil'}) {
+        <div class="row data-row">
+            <div class="large-2 column">
+                <div class="data-label"><?php echo $element->getAttributeLabel($side.'_description')?>:</div>
+            </div>
+            <div class="large-10 column">
+                <div class="data-value">
+                    <?php echo CHtml::encode($description)?>
+                </div>
+            </div>
+        </div>
+    <?php
+    } ?>
+    <?php /* See OE-4283 */ ?>
+    <?php if ($element->{$side.'_pupil'}) {
     ?>
-		<div class="row data-row">
-			<div class="large-4 column">
-				<div class="data-label"><?php echo $element->getAttributeLabel($side.'_pupil_id')?>:</div>
-			</div>
-			<div class="large-8 column">
-				<div class="data-value"><?php echo $element->{$side.'_pupil'}->name?></div>
-			</div>
-		</div>
-	<?php 
+        <div class="row data-row">
+            <div class="large-4 column">
+                <div class="data-label"><?php echo $element->getAttributeLabel($side.'_pupil_id')?>:</div>
+            </div>
+            <div class="large-8 column">
+                <div class="data-value"><?php echo $element->{$side.'_pupil'}->name?></div>
+            </div>
+        </div>
+    <?php
 } ?>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_nuclear_id')?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo $element->{$side.'_nuclear'}->name?></div>
-		</div>
-	</div>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_cortical_id')?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo $element->{$side.'_cortical'}->name?></div>
-		</div>
-	</div>
-	<?php
+    <?php if ($element->{$side . '_nuclear'}) {
+        ?>
+        <div class="row data-row">
+            <div class="large-4 column">
+                <div class="data-label"><?php echo $element->getAttributeLabel($side . '_nuclear_id') ?>:</div>
+            </div>
+            <div class="large-8 column">
+                <div class="data-value"><?php echo $element->{$side . '_nuclear'}->name ?></div>
+            </div>
+        </div>
+        <?php
+    }
+    if ($element->{$side . '_cortical'}) {
+        ?>
+    <div class="row data-row">
+        <div class="large-4 column">
+            <div class="data-label"><?php echo $element->getAttributeLabel($side.'_cortical_id')?>:</div>
+        </div>
+        <div class="large-8 column">
+            <div class="data-value"><?php echo $element->{$side.'_cortical'}->name?></div>
+        </div>
+    </div>
+    <?php
+    }
+
     /* See OE-4283 */
     /*
     <div class="row data-row">
@@ -81,13 +122,18 @@
             <div class="data-value"><?php echo $element->{$side.'_pxe'} ? 'Yes' : 'No'?></div>
         </div>
     </div>
-    */?>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_phako')?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo $element->{$side.'_phako'} ? 'Yes' : 'No'?></div>
-		</div>
-	</div>
+    */
+	if ($element->{$side . '_phako'}) {
+	?>
+
+    <div class="row data-row">
+        <div class="large-4 column">
+            <div class="data-label"><?php echo $element->getAttributeLabel($side.'_phako')?>:</div>
+        </div>
+        <div class="large-8 column">
+            <div class="data-value"><?php echo $element->{$side.'_phako'} ? 'Yes' : 'No'?></div>
+        </div>
+    </div>
+	<?php
+	} ?>
 </div>

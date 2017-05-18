@@ -458,11 +458,12 @@ class BaseActiveRecord extends CActiveRecord
                     // insert statement
                     $builder = $this->getCommandBuilder();
                     $criteria = new CDbCriteria();
-                    $data = array($tbl_keys[0] => $this->getPrimaryKey(), $tbl_keys[1] => $new->getPrimaryKey());
+                    $data = array_merge($this->getRelationsDefaults($name), array($tbl_keys[0] => $this->getPrimaryKey(), $tbl_keys[1] => $new->getPrimaryKey()));
 
                     if (isset($_table->columns['display_order'])) {
                         $data['display_order'] = $i + 1;
                     }
+
 
                     $cmd = $builder->createInsertCommand($tbl_name, $data);
 

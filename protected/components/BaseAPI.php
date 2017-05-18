@@ -94,7 +94,7 @@ class BaseAPI
             $this->current_context->addEventConstraints($criteria);
         }
         if ($before) {
-            $criteria->compare('event.event_date', '<='.$before);
+            $criteria->compare('t.event_date', '<='.$before);
         }
         if ($limit !== null) {
             $criteria->limit = $limit;
