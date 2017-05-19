@@ -30,6 +30,8 @@ class BaseEventTypeElement extends BaseElement
     public $patientId;
     public $useContainerView = true;
     public $widgetClass = null;
+    // allow us to store a widget on the element so that it doesn't have to widgetised twice
+    public $widget = null;
 
     // array of audit messages
     protected $audit = array();
