@@ -45,7 +45,8 @@ class SocialHistory extends \BaseEventTypeElement
 {
     protected $auto_update_relations = true;
     public $widgetClass = 'OEModule\OphCiExamination\widgets\SocialHistory';
-
+    protected $default_from_previous = true;
+    
     /**
      * Returns the static model of the specified AR class.
      *
@@ -118,16 +119,6 @@ class SocialHistory extends \BaseEventTypeElement
             'alcohol_intake' => 'Alcohol Intake',
             'substance_misuse_id' => 'Substance Misuse',
         );
-    }
-
-    /**
-     * @param \Patient $patient
-     */
-    public function setDefaultOptions(\Patient $patient = null)
-    {
-        if ($previous = $this->getModuleApi()->getLatestElement(static::class, $patient)) {
-            $this->loadFromExisting($previous);
-        }
     }
 
     /**

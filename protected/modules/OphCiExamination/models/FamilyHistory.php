@@ -37,6 +37,7 @@ class FamilyHistory extends \BaseEventTypeElement
 {
     protected $auto_update_relations = true;
     public $widgetClass = 'OEModule\OphCiExamination\widgets\FamilyHistory';
+    protected $default_from_previous = true;
     protected $errorExceptions = array(
         'OEModule_OphCiExamination_models_FamilyHistory_no_family_history_date' => 'OEModule_OphCiExamination_models_FamilyHistory_no_family_history'
     );
@@ -100,6 +101,10 @@ class FamilyHistory extends \BaseEventTypeElement
         return parent::afterValidate();
     }
 
+    /**
+     * @param \BaseEventTypeElement $element
+     * @inheritdoc
+     */
     public function loadFromExisting($element)
     {
         $this->no_family_history_date = $element->no_family_history_date;
@@ -113,15 +118,8 @@ class FamilyHistory extends \BaseEventTypeElement
     }
 
     /**
-     * @param \Patient $patient
+     * @return FamilyHistoryRelative[]
      */
-    public function setDefaultOptions(\Patient $patient = null)
-    {
-        if ($previous = $this->getModuleApi()->getLatestElement(static::class, $patient)) {
-            $this->loadFromExisting($previous);
-        }
-    }
-
     public function getRelativeOptions()
     {
         $force = array();
@@ -131,6 +129,9 @@ class FamilyHistory extends \BaseEventTypeElement
         return FamilyHistoryRelative::model()->activeOrPk($force)->findAll();
     }
 
+    /**
+     * @return FamilyHistoryCondition[]
+     */
     public function getConditionOptions()
     {
         $force = array();
@@ -140,6 +141,9 @@ class FamilyHistory extends \BaseEventTypeElement
         return FamilyHistoryCondition::model()->activeOrPk($force)->findAll();
     }
 
+    /**
+     * @return FamilyHistorySide[]
+     */
     public function getSideOptions()
     {
         $force = array();

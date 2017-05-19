@@ -83,8 +83,8 @@ class BaseEventElementWidget extends CWidget
             }
 
             if ($this->mode != static::$EVENT_EDIT_MODE) {
-                // must be in a view mode
-                $this->element = $this->getLatestElement();
+                // must be in a view mode so just load the most recent
+                $this->element = $this->getNewElement()->getMostRecentForPatient($this->patient);
             } else {
                 $this->element = $this->getNewElement();
             }

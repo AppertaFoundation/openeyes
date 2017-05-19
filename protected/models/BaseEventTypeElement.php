@@ -32,6 +32,11 @@ class BaseEventTypeElement extends BaseElement
     public $widgetClass = null;
     // allow us to store a widget on the element so that it doesn't have to widgetised twice
     public $widget = null;
+    /**
+     * set to true for the element to load from previous
+     * @see BaseElement::loadFromExisting
+    */
+    protected $default_from_previous = false;
 
     // array of audit messages
     protected $audit = array();
@@ -203,12 +208,29 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
+     * Get the most recent instance of this element type for the given patient
+     *
+     * @param Patient $patient
+     * @param bool $use_context
+     * @return BaseEventTypeElement|null
+     */
+    public function getMostRecentForPatient(\Patient $patient, $use_context = false)
+    {
+        return $this->getModuleApi()->getLatestElement(static::class, $patient, $use_context);
+    }
+
+    /**
      * Stubbed method to set default options
      * Used by child objects to set defaults for forms on create.
      * @param \Patient $patient
      */
     public function setDefaultOptions(\Patient $patient = null)
     {
+        if ($this->default_from_previous && $patient) {
+            if ($previous = $this->getMostRecentForPatient($patient)) {
+                $this->loadFromExisting($previous);
+            }
+        }
     }
 
     /**

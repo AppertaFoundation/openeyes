@@ -36,6 +36,7 @@ class Allergies extends \BaseEventTypeElement
 {
     protected $auto_update_relations = true;
     public $widgetClass = 'OEModule\OphCiExamination\widgets\Allergies';
+    protected $default_from_previous = true;
 
     public function tableName()
     {
@@ -134,16 +135,6 @@ class Allergies extends \BaseEventTypeElement
             $patient = $this->event->getPatient();
         }
         return $this->getModuleApi()->getLatestElement(static::class, $patient);
-    }
-
-    /**
-     * @param \Patient $patient
-     */
-    public function setDefaultOptions(\Patient $patient = null)
-    {
-        if ($tip = $this->getTipElement($patient)) {
-            $this->loadFromExisting($tip);
-        }
     }
 
     /**
