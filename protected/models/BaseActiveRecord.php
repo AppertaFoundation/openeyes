@@ -304,7 +304,12 @@ class BaseActiveRecord extends CActiveRecord
         } catch (Exception $e) {
         }
 
-        return parent::save($runValidation, $attributes);
+        $res = parent::save($runValidation, $attributes);
+
+        if ($res) {
+            $this->originalAttributes = $this->getAttributes();
+        }
+        return $res;
     }
 
     /**
@@ -537,7 +542,6 @@ class BaseActiveRecord extends CActiveRecord
                 $this->$name = $new_objs;
             }
         }
-        $this->originalAttributes = $this->getAttributes();
         parent::afterSave();
     }
 
