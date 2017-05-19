@@ -44,19 +44,13 @@ if (!empty($episode)) {
                     <?= $episode->patient->genderString ?>,
                     <?= $episode->patient->age ?>,
                     CVI status: <?= $episode->patient->ophInfo->cvi_status->name ?>,
-                    Driving status:
                     <?php
-                    if (!empty($episode->patient->socialhistory->driving_statuses)) {
-                        foreach ($episode->patient->socialhistory->driving_statuses as $i => $driving_status) {
-                            if ($i) {
-                                echo '/';
-                            }
-                            echo $driving_status->name;
-                        }
-                    } else {
-                        echo 'Unknown';
-                    }
+                    $this->widget('OEModule\OphCiExamination\widgets\SocialHistory', array(
+                        'patient' => $this->patient,
+                        'mode' => OEModule\OphCiExamination\widgets\SocialHistory::$EPISODE_SUMMARY_MODE
+                    ));
                     ?>
+
                 </div>
             </section>
 
