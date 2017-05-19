@@ -35,15 +35,15 @@ class PatientLevelMigration extends CConsoleCommand
     protected $event_type;
 
     // Original table is renamed to this during the module database migration
-    protected static $archived_entry_table = '';
+    protected static $archived_entry_table;
     // column on patient record indicating no entries have been explicitly recorded
-    protected static $archived_no_values_col = '';
+    protected static $archived_no_values_col;
     // column on the event level element to record explicit no entries date
-    protected static $no_values_col = '';
+    protected static $no_values_col;
     // fully qualified class name of the main element for storing the patient level data
-    protected static $element_class = '';
+    protected static $element_class;
     // fully qualified class name of the entry object for storing the patient level data entries
-    protected static $entry_class = '';
+    protected static $entry_class;
     // attributes to migrate for each entry
     protected static $entry_attributes = array();
 

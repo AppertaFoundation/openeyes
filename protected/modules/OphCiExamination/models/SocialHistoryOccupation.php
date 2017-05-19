@@ -17,8 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+namespace OEModule\OphCiExamination\models;
+
 /**
- * This is the model class for table "socialhistory_driving_status".
+ * This is the model class for table "ophciexamination_socialhistory_occupation".
  *
  * The followings are the available columns in table:
  *
@@ -29,7 +31,7 @@
  * @property User $user
  * @property User $usermodified
  */
-class SocialHistoryDrivingStatus extends BaseActiveRecord
+class SocialHistoryOccupation extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
@@ -46,7 +48,7 @@ class SocialHistoryDrivingStatus extends BaseActiveRecord
      */
     public function tableName()
     {
-        return 'socialhistory_driving_status';
+        return 'ophciexamination_socialhistory_occupation';
     }
 
     /**
@@ -67,7 +69,6 @@ class SocialHistoryDrivingStatus extends BaseActiveRecord
     public function relations()
     {
         return array(
-                'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
                 'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
                 'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
@@ -99,5 +100,17 @@ class SocialHistoryDrivingStatus extends BaseActiveRecord
         return new CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * Use standard Lookup behaviour
+     *
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
     }
 }

@@ -1103,6 +1103,7 @@ class BaseEventTypeController extends BaseModuleController
                 'data' => $el_data,
                 'mode' => \BaseEventElementWidget::$EVENT_EDIT_MODE
             ));
+            $element->widget = $widget;
         } else {
             $element_method = 'setComplexAttributes_'.Helper::getNSShortname($element);
             if (method_exists($this, $element_method)) {
@@ -1450,14 +1451,16 @@ class BaseEventTypeController extends BaseModuleController
         // Render the view.
         ($use_container_view) && $this->beginContent($container_view, $view_data);
         if ($element->widgetClass) {
-            $widget = $this->createWidget($element->widgetClass,
-                array(
-                    'patient' => $this->patient,
-                    'element' => $view_data['element'],
-                    'data' => $view_data['data'],
-                    'form' => $view_data['form'],
-                    'mode' => in_array($action, array('create', 'update')) ? BaseEventElementWidget::$EVENT_EDIT_MODE : BaseEventElementWidget::$EVENT_VIEW_MODE
-                ));
+            // only wrap the element in a widget if it's not already in one
+            $widget = $element->widget ? :
+                $this->createWidget($element->widgetClass,
+                    array(
+                        'patient' => $this->patient,
+                        'element' => $view_data['element'],
+                        'data' => $view_data['data'],
+                        'mode' => in_array($action, array('create', 'update')) ? BaseEventElementWidget::$EVENT_EDIT_MODE : BaseEventElementWidget::$EVENT_VIEW_MODE
+                    ));
+            $widget->form = $view_data['form'];
             $this->renderPartial('//elements/widget_element', array('widget' => $widget),$return, $processOutput);
         } else {
             $this->renderPartial($this->getElementViewPathAlias($element).$view, $view_data, $return, $processOutput);

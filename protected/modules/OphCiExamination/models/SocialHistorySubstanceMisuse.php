@@ -17,8 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+namespace OEModule\OphCiExamination\models;
+
 /**
- * This is the model class for table "socialhistory_carer".
+ * This is the model class for table "ophciexamination_substancemisuse".
  *
  * The followings are the available columns in table:
  *
@@ -26,11 +28,9 @@
  * @property string $name
  *
  * The followings are the available model relations:
- * @property Event $event
- * @property User $user
  * @property User $usermodified
  */
-class SocialHistoryCarer extends BaseActiveRecordVersioned
+class SocialHistorySubstanceMisuse extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
@@ -47,7 +47,7 @@ class SocialHistoryCarer extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'socialhistory_carer';
+        return 'ophciexamination_socialhistory_substance_misuse';
     }
 
     /**
@@ -99,5 +99,25 @@ class SocialHistoryCarer extends BaseActiveRecordVersioned
         return new CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * Use standard Lookup behaviour
+     *
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => 'LookupTable',
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->name;
     }
 }

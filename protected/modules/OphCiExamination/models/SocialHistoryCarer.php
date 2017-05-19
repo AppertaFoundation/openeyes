@@ -17,8 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+namespace OEModule\OphCiExamination\models;
+
 /**
- * This is the model class for table "socialhistory_smoking_status".
+ * This is the model class for table "ophciexamination_socialhistory_carer".
  *
  * The followings are the available columns in table:
  *
@@ -26,10 +28,11 @@
  * @property string $name
  *
  * The followings are the available model relations:
+ * @property Event $event
  * @property User $user
  * @property User $usermodified
  */
-class SocialHistorySmokingStatus extends BaseActiveRecord
+class SocialHistoryCarer extends \BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
@@ -46,7 +49,7 @@ class SocialHistorySmokingStatus extends BaseActiveRecord
      */
     public function tableName()
     {
-        return 'socialhistory_smoking_status';
+        return 'ophciexamination_socialhistory_carer';
     }
 
     /**
@@ -83,10 +86,40 @@ class SocialHistorySmokingStatus extends BaseActiveRecord
         );
     }
 
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        $criteria = new CDbCriteria();
+
+        $criteria->compare('id', $this->id, true);
+        $criteria->compare('name', $this->name, true);
+
+        return new CActiveDataProvider(get_class($this), array(
+                'criteria' => $criteria,
+        ));
+    }
+
+    /**
+     * Use standard Lookup behaviour
+     *
+     * @return array
+     */
     public function behaviors()
     {
         return array(
             'LookupTable' => 'LookupTable',
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->name;
     }
 }
