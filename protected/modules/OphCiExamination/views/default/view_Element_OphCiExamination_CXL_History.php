@@ -56,8 +56,12 @@ function yesOrNo($item)
             ?>
         </div>
         <div class="data-value column large-3">
+            <?php echo $element->getAttributeLabel('eye_rubber_id')?>:
         </div>
         <div class="data-value column large-3">
+            <?php
+            echo yesOrNo($element->eye_rubber_id);
+            ?>
         </div>
     </div>
 </div>

@@ -333,10 +333,16 @@ return array(
                         'position' => 5,
                         'restricted' => array('NOD Export'),
                     ),
+                    'cxldataset' => array(
+                        'title' => 'CXL Dataset',
+                        'uri' => 'CxlDataset',
+                        'position' => 6,
+                        'restricted' => array('CXL Dataset'),
+                    ),
                     'patientmergerequest' => array(
                         'title' => 'Patient Merge',
                         'uri' => 'patientMergeRequest/index',
-                        'position' => 6,
+                        'position' => 7,
                         'restricted' => array('Patient Merge', 'Patient Merge Request'),
                     ),
                     'patient' => array(

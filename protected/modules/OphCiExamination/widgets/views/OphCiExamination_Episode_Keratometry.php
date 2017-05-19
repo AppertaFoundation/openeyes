@@ -63,56 +63,48 @@ if ($keratometry) { ?>
         </div>
         <div class="row">
             <?php
-            if ($keratometry[0]->hasRight()) {
-                $keraCount = 0;
-                foreach ($keratometry as $kera){
-            ?>
+                foreach ($keratometry as $kera) {
+                    ?>
                     <div class="large-3 column">
-                        <?php
-                        $keraDate = new DateTime($keratometry[$keraCount]->created_date);
-                        echo $keraDate->format('d-m-Y');
-//                        echo $keratometry[$keraCount]->created_date;
+                    <?php
+                    $keraDate = new DateTime($kera['created_date']);
+                    echo $keraDate->format('d-m-Y');
                         ?>
                     </div>
             <div class="large-1 column">
                 <?php
-                echo $keratometry[$keraCount]->right_anterior_k1_value;
+                echo $kera['right_anterior_k1_value'];
                 ?>
             </div>
             <div class="large-1 column">
                 <?php
-                echo $keratometry[$keraCount]->right_axis_anterior_k1_value;
+                echo $kera['right_axis_anterior_k1_value'];
                 ?>
             </div>
             <div class="large-1 column">
                 <?php
-                echo $keratometry[$keraCount]->right_anterior_k2_value;
+                echo $kera['right_anterior_k2_value'];
                 ?>
             </div>
             <div class="large-1 column">
                 <?php
-                echo $keratometry[$keraCount]->right_axis_anterior_k2_value;
+                echo $kera['right_axis_anterior_k2_value'];
                 ?>
             </div>
             <div class="large-1 column">
                 <?php
-                echo $keratometry[$keraCount]->right_kmax_value;
+                echo $kera['right_kmax_value'];
                 ?>
             </div>
             <div class="large-1 column">
                 <?php
-                echo $keratometry[$keraCount]->right_thinnest_point_pachymetry_value;
+                echo $kera['right_thinnest_point_pachymetry_value'];
                 ?>
             </div>
             <div class="large-3 column"></div><br/>
                 <?php
-                    $keraCount = $keraCount + 1;
                 }
-            } else {
-                ?>
-                Not recorded
-                <?php
-            } ?>
+             ?>
         </div>
 </div>
     <br/>
@@ -164,56 +156,48 @@ if ($keratometry) { ?>
         </div>
         <div class="row">
             <?php
-            if ($keratometry[0]->hasLeft()) {
-                $keraCount = 0;
                 foreach ($keratometry as $kera){
                     ?>
                     <div class="large-3 column">
                         <?php
-                        $keraDate = new DateTime($keratometry[$keraCount]->created_date);
+                        $keraDate = new DateTime($kera['created_date']);
                         echo $keraDate->format('d-m-Y');
-                        //                        echo $keratometry[$keraCount]->created_date;
                         ?>
                     </div>
                     <div class="large-1 column">
                         <?php
-                        echo $keratometry[$keraCount]->left_anterior_k1_value;
+                        echo $kera['left_anterior_k1_value'];
                         ?>
                     </div>
                     <div class="large-1 column">
                         <?php
-                        echo $keratometry[$keraCount]->left_axis_anterior_k1_value;
+                        echo $kera['left_axis_anterior_k1_value'];
                         ?>
                     </div>
                     <div class="large-1 column">
                         <?php
-                        echo $keratometry[$keraCount]->left_anterior_k2_value;
+                        echo $kera['left_anterior_k2_value'];
                         ?>
                     </div>
                     <div class="large-1 column">
                         <?php
-                        echo $keratometry[$keraCount]->left_axis_anterior_k2_value;
+                        echo $kera['left_axis_anterior_k2_value'];
                         ?>
                     </div>
                     <div class="large-1 column">
                         <?php
-                        echo $keratometry[$keraCount]->left_kmax_value;
+                        echo $kera['left_kmax_value'];
                         ?>
                     </div>
                     <div class="large-1 column">
                         <?php
-                        echo $keratometry[$keraCount]->left_thinnest_point_pachymetry_value;
+                        echo $kera['left_thinnest_point_pachymetry_value'];
                         ?>
                     </div>
                     <div class="large-3 column"></div><br/>
                     <?php
-                    $keraCount = $keraCount + 1;
                 }
-            } else {
-                ?>
-                Not recorded
-                <?php
-            } ?>
+ ?>
         </div>
     </div>
     <br/>
