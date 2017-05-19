@@ -38,20 +38,3 @@
 	</div>
 </section>
 
-<!-- Confirm deletion dialog -->
-<div id="confirm_remove_family_history_dialog" title="Confirm remove family history" style="display: none;">
-	<div id="delete_family_history">
-		<div class="alert-box alert with-icon">
-			<strong>WARNING: This will remove the family history from the patient record.</strong>
-		</div>
-		<p>
-			<strong>Are you sure you want to proceed?</strong>
-		</p>
-		<div class="buttons">
-			<input type="hidden" id="family_history_id" value="" />
-			<button type="submit" class="warning small btn_remove_family_history">Remove family history</button>
-			<button type="submit" class="secondary small btn_cancel_remove_family_history">Cancel</button>
-			<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-		</div>
-	</div>
-</div>
