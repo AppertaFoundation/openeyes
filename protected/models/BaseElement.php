@@ -57,7 +57,7 @@ class BaseElement extends BaseActiveRecordVersioned
      * The base implementation simply uses copiedFields(), but it may be
      * overridden to allow for more complex relationships.
      *
-     * @param BaseEventTypeElement $element
+     * @param static $element
      */
     public function loadFromExisting($element)
     {

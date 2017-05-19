@@ -37,7 +37,8 @@ class PastSurgery extends \BaseEventTypeElement
 {
 
     protected $auto_update_relations = true;
-
+    public $widgetClass = 'OEModule\OphCiExamination\widgets\PastSurgery';
+    protected $default_from_previous = true;
     /**
      * Returns the static model of the specified AR class.
      *
@@ -88,65 +89,19 @@ class PastSurgery extends \BaseEventTypeElement
     /**
      * Will duplicate values from the current socialhistory property of the given patient.
      *
-     * @param \Patient $patient
+     * @param static $element
      */
-    public function initFromPatient(\Patient $patient)
+    public function loadFromExisting($element)
     {
         $operations = array();
-        foreach ($patient->previousOperations as $prev) {
-            $op = new OphCiExamination_PastSurgery_Operation();
+        foreach ($element->operations as $prev) {
+            $op = new PastSurgery_Operation();
             $op->operation = $prev->operation;
             $op->side_id = $prev->side_id;
             $op->date = $prev->date;
-            $op->previous_operation_id = $prev->id;
             $operations[] = $op;
         }
         $this->operations = $operations;
-    }
-
-    /**
-     * Update the patient record from the operations set on this element.
-     *
-     * Assumes that if its been called, the patient level past operations should be set to sync with the operations
-     * stored on this element.
-     *
-     * @param \Patient $patient
-     * @throws \CDbException
-     * @throws \Exception
-     */
-    public function updatePatient(\Patient $patient)
-    {
-        $to_keep = array();
-
-        foreach ($this->getRelated('operations', true) as $op) {
-            if (!$op->previousOperation) {
-                $previous = new \PreviousOperation();
-                $previous->patient_id = $patient->id;
-                $previous->side_id = $op->side_id;
-                $previous->date = $op->date;
-                $previous->operation = $op->operation;
-                if (!$previous->save()) {
-                    throw new \Exception('Could not save previous operation for patient');
-                }
-                $op->previous_operation_id = $previous->id;
-
-                if (!$op->save()) {
-                    throw new \Exception('Could not link past surgery operation to patient previous operation');
-                }
-                $to_keep[] = $previous->id;
-            } else {
-                $to_keep[] = $op->previous_operation_id;
-            }
-        }
-
-        $criteria = new \CDbCriteria();
-        $criteria->compare('patient_id', $patient->id);
-        $criteria->addNotInCondition('id', $to_keep);
-        foreach (\PreviousOperation::model()->findAll($criteria) as $prev) {
-            if (!$prev->delete()) {
-                throw new \Exception('Unable to remove redundant previous operations from patient.');
-            }
-        }
     }
 
     /**
