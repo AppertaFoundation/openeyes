@@ -170,15 +170,16 @@
           <thead>
           <tr>
             <th><?php echo CHtml::link('Result date', $this->getUri(array('sortby' => 'date'))) ?></th>
-            <th><?php echo CHtml::link('Subject Id', $this->getUri(array('sortby' => 'genetics-patient-id'))) ?></th>
+<!--            <th>--><?php //echo CHtml::link('Subject Id', $this->getUri(array('sortby' => 'genetics-patient-id'))) ?><!--</th>-->
             <th><?php echo CHtml::link('Hospital no', $this->getUri(array('sortby' => 'hos_num'))) ?></th>
+            <th><?php echo CHtml::link('Family Id', $this->getUri(array('sortby' => 'genetics-pedigree-id'))) ?></th>
             <th><?php echo CHtml::link('Patient name', $this->getUri(array('sortby' => 'patient_name'))) ?></th>
             <th style="width:93px"><?php echo CHtml::link('Gene', $this->getUri(array('sortby' => 'gene'))) ?></th>
-            <th><?php echo CHtml::link('Method', $this->getUri(array('sortby' => 'method'))) ?></th>
-            <th><?php echo CHtml::link('Homozygosity', $this->getUri(array('sortby' => 'homo'))) ?></th>
-<!--        <th><?php echo CHtml::link('Base Change', $this->getUri(array('sortby' => 'base_change'))) ?></th> -->
-<!--        <th><?php echo CHtml::link('Amino Acid Change', $this->getUri(array('sortby' => 'amino_acid_change'))) ?></th>-->
-            <th><?php echo CHtml::link('Result', $this->getUri(array('sortby' => 'result'))) ?></th>
+<!--            <th>--><?php //echo CHtml::link('Method', $this->getUri(array('sortby' => 'method'))) ?><!--</th>-->
+            <th><?php echo CHtml::link('Hom', $this->getUri(array('sortby' => 'homo'))) ?></th>
+        <th><?php echo CHtml::link('Base Change', $this->getUri(array('sortby' => 'base_change'))) ?></th>
+        <th><?php echo CHtml::link('Amino Acid Change', $this->getUri(array('sortby' => 'amino_acid_change'))) ?></th>
+<!--            <th>--><?php //echo CHtml::link('Result', $this->getUri(array('sortby' => 'result'))) ?><!--</th>-->
             <th><?php echo CHtml::link('Effect', $this->getUri(array('sortby' => 'effect'))) ?></th>
           </tr>
           </thead>
@@ -188,15 +189,21 @@
               ?>
             <tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInGeneticresults/default/view/' . $test->event_id) ?>">
                   <td><?php echo $test->NHSDate('result_date') ?></td>
-                  <td><?php echo CHtml::link($test->event->episode->patient->geneticsPatient->id, '/Genetics/subject/view/id/' . $test->event->episode->patient->geneticsPatient->id ); ?></td>
+<!--                  <td>--><?php //echo CHtml::link($test->event->episode->patient->geneticsPatient->id, '/Genetics/subject/view/id/' . $test->event->episode->patient->geneticsPatient->id ); ?><!--</td>-->
                   <td><?php echo $test->event->episode->patient->hos_num ?></td>
+                <td>
+                    <?php foreach($test->event->episode->patient->geneticsPatient->pedigrees as $i => $pedigrees): ?>
+                        <?php if($i > 0){ echo ", ";} ?>
+                        <?php echo CHtml::link($pedigrees->id, '/Genetics/pedigree/view/id/' . $pedigrees->id ); ?>
+                    <?php endforeach; ?>
+                </td>
                   <td><?php echo strtoupper($test->event->episode->patient->last_name) ?>, <?php echo $test->event->episode->patient->first_name ?></td>
-                  <td style="word-wrap: break-word"><?php echo $test->gene->name ?></td>
-                  <td><?php echo $test->method->name ?></td>
+                  <td><?php echo str_replace(',',', ', $test->gene->name) ?></td>
+<!--                  <td>--><?php //echo $test->method->name ?><!--</td>-->
                   <td><?php echo $test->homo ? 'Yes' : 'No' ?></td>
-<!--                  <td>--><?php //echo $test->base_change ?><!--</td>-->
-<!--                  <td>--><?php //echo $test->amino_acid_change ?><!--</td>-->
-                <td><?php echo $test->result ?></td>
+                  <td><?php echo $test->base_change ?></td>
+                  <td><?php echo $test->amino_acid_change ?></td>
+<!--                <td>--><?php //echo $test->result ?><!--</td>-->
                 <td><?php echo $test->effect->name ?></td>
             </tr>
           <?php } ?>
