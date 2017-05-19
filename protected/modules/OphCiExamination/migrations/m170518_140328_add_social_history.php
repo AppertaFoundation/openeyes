@@ -15,6 +15,11 @@ class m170518_140328_add_social_history extends OEMigration
         'socialhistory_accommodation'
     );
 
+    private static $archive_tables = array(
+        'socialhistory',
+        'socialhistory_driving_status_assignment'
+    );
+
     protected static $archive_prefix = 'archive_';
 
     public function up()
@@ -72,7 +77,7 @@ class m170518_140328_add_social_history extends OEMigration
         $this->addForeignKey('ophciexamination_drivingstatus_assignment_ds_fk',
             'ophciexamination_socialhistory_driving_status_assignment', 'driving_status_id', 'ophciexamination_socialhistory_driving_status', 'id');
 
-        foreach (array_keys(static::$duplicate_tables) as $table) {
+        foreach (array_merge(array_keys(static::$duplicate_tables), static::$archive_tables) as $table) {
             $this->renameTable($table, static::$archive_prefix . $table);
             if (!in_array($table, static::$duplicates_not_versioned)) {
                 $this->renameTable($table . '_version', static::$archive_prefix . $table . '_version');
@@ -82,7 +87,7 @@ class m170518_140328_add_social_history extends OEMigration
 
     public function down()
     {
-        foreach (array_keys(static::$duplicate_tables) as $table) {
+        foreach (array_merge(array_keys(static::$duplicate_tables), static::$archive_tables) as $table) {
             $this->renameTable(static::$archive_prefix . $table, $table);
             if (!in_array($table, static::$duplicates_not_versioned)) {
                 $this->renameTable(static::$archive_prefix . $table . '_version', $table . '_version');
