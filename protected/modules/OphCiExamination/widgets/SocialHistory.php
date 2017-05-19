@@ -12,7 +12,13 @@ use OEModule\OphCiExamination\models\SocialHistory as SocialHistoryElement;
 class SocialHistory extends \BaseEventElementWidget
 {
     public static $EPISODE_SUMMARY_MODE = 8;
+    public static $moduleName = 'OphCiExamination';
 
+    /**
+     * @param $mode
+     * @return bool
+     * @inheritdoc
+     */
     protected function validateMode($mode)
     {
         return $mode === static::$EPISODE_SUMMARY_MODE || parent::validateMode($mode);
