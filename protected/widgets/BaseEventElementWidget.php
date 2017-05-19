@@ -3,7 +3,7 @@
 /**
  * Created by Mike Smith <mike.smith@camc-ltd.co.uk>.
  */
-class BaseEventElementWidget extends CWidget
+class   BaseEventElementWidget extends CWidget
 {
     public static $PATIENT_SUMMARY_MODE = 1;
     public static $EVENT_VIEW_MODE = 2;
@@ -41,14 +41,18 @@ class BaseEventElementWidget extends CWidget
         return $this->app;
     }
 
+    protected function validateMode($mode)
+    {
+        return in_array($this->mode,
+            array(static::$PATIENT_SUMMARY_MODE, static::$EVENT_VIEW_MODE, static::$EVENT_EDIT_MODE));
+    }
+
     /**
      * @throws CHttpException
      */
     public function init()
     {
-        if (!in_array($this->mode,
-            array(static::$PATIENT_SUMMARY_MODE, static::$EVENT_VIEW_MODE, static::$EVENT_EDIT_MODE))
-        ) {
+        if (!$this->validateMode($this->mode)) {
             throw new \CHttpException('invalid mode value for ' . static::class);
         }
         $this->initialiseElement();

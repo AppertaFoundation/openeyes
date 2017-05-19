@@ -190,10 +190,10 @@ class SocialHistory extends \BaseEventTypeElement
     /**
      * @return string
      */
-    public function getDisplayDrivingStatuses()
+    public function getDisplayDrivingStatuses($separator = ', ')
     {
         if ($this->driving_statuses) {
-            return implode(', ', $this->driving_statuses);
+            return implode($separator, $this->driving_statuses);
         }
         return '';
     }
