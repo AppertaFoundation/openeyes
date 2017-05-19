@@ -3,12 +3,16 @@
 /**
  * Created by Mike Smith <mike.smith@camc-ltd.co.uk>.
  */
-class   BaseEventElementWidget extends CWidget
+class BaseEventElementWidget extends CWidget
 {
     public static $PATIENT_SUMMARY_MODE = 1;
     public static $EVENT_VIEW_MODE = 2;
     public static $EVENT_EDIT_MODE = 4;
 
+    /**
+     * @var string of the module name.
+     */
+    public static $moduleName;
     /**
      * @var \Patient
      */
@@ -61,6 +65,14 @@ class   BaseEventElementWidget extends CWidget
     }
 
     /**
+     * return the latest Element
+     */
+    protected function getLatestElement()
+    {
+        return $this->getApp()->moduleAPI->get(static::$moduleName)->getLatestElement(get_class($this->getNewElement()), $this->patient);
+    }
+
+    /**
      * @throws CHttpException
      */
     protected function initialiseElement()
@@ -69,10 +81,16 @@ class   BaseEventElementWidget extends CWidget
             if (!$this->patient) {
                 throw new \CHttpException('Patient required to initialise ' . static::class . ' with no element.');
             }
-            $this->element = $this->getNewElement();
+
+            if ($this->mode != static::$EVENT_EDIT_MODE) {
+                // must be in a view mode
+                $this->element = $this->getLatestElement();
+            } else {
+                $this->element = $this->getNewElement();
+            }
         }
 
-        if ($this->element->getIsNewRecord()) {
+        if ($this->element && $this->element->getIsNewRecord()) {
             // when new we want to always set to default so we can track changes
             // but if this element already exists then we don't want to override
             // it with the tip data

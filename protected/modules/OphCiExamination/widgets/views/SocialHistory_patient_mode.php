@@ -1,4 +1,4 @@
-<?php if ($element->isNewRecord) { ?>
+<?php if (!$element) { ?>
 <p>No Social History recorded.</p>
 <?php } else { ?>
     <table class="plain patient-data">

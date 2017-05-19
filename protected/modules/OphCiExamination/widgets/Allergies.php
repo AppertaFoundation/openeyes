@@ -19,6 +19,8 @@ use OEModule\OphCiExamination\models\AllergyEntry;
 
 class Allergies extends \BaseEventElementWidget
 {
+    public static $moduleName = 'OphCiExamination';
+
     /**
      * @return FamilyHistoryElement
      */

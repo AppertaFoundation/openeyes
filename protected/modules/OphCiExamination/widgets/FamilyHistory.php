@@ -19,6 +19,8 @@ use OEModule\OphCiExamination\models\FamilyHistory_Entry;
 
 class FamilyHistory extends \BaseEventElementWidget
 {
+    public static $moduleName = 'OphCiExamination';
+
     /**
      * @return FamilyHistoryElement
      */
