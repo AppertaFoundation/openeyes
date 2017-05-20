@@ -53,8 +53,7 @@ class FormularyDrugsController extends BaseAdminController
             'aliases',
             'active',
         ));
-        $admin->getSearch()->addSearchItem('name');
-        $admin->getSearch()->addSearchItem('aliases');
+        $admin->getSearch()->addSearchItem('name, aliases');
         $admin->getSearch()->addSearchItem('tags.name');
         $admin->setModelDisplayName('Formulary Drugs');
         $admin->getSearch()->addActiveFilter();
@@ -62,11 +61,26 @@ class FormularyDrugsController extends BaseAdminController
 
         $criteria = new CDbCriteria();
 
-        foreach (array('name', 'aliases', 'active') as $field)
+        foreach (array('name', 'name, aliases', 'active') as $field)
         {
             if(isset($_GET['search'][$field]) && $_GET['search'][$field] != '')
             {
-                $criteria->compare($field, $_GET['search'][$field], ($field != 'active'));
+                if(strpos($field, ', ') === false)
+                {
+                    // Single column fields
+                    $criteria->compare($field, $_GET['search'][$field], ($field != 'active'));
+                }
+                else
+                {
+                    // Combined fields
+                    $crit2 = new CDbCriteria();
+                    foreach (explode(', ', $field) as $column)
+                    {
+                        $crit2->compare($column, $_GET['search'][$field], true, 'OR');
+                    }
+
+                    $criteria->mergeWith($crit2, 'AND');
+                }
             }
         }
 
