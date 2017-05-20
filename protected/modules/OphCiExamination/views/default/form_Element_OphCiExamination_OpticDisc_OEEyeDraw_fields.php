@@ -58,14 +58,21 @@
 			</div>
 		</div>
 	</div>
+    <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
+    <div class="row">
+        <div class="large-6 column end">
+            <label>
+                <?php echo $element->getAttributeLabel($side . '_ed_report') ?>:
+            </label>
+        </div>
+        <div class="large-10 column end" style="line-height: 1; margin-bottom:10px;">
+            <span class="data-value" id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display' ?>"></span>
+        </div>
+    </div>
 	<div class="field-row">
 		<label for="<?php echo CHtml::modelName($element).'_'.$side.'_description';?>">
 			<?php echo $element->getAttributeLabel($side.'_description')?>:
 		</label>
 		<?php echo CHtml::activeTextArea($element, $side.'_description', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'rows' => '2', 'cols' => '20', 'class' => 'autosize clearWithEyedraw')) ?>
-	</div>
-	<div class="field-row">
-		<button class="ed_report secondary small">Report</button>
-		<button class="ed_clear secondary small">Clear</button>
 	</div>
 </div>
