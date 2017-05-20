@@ -48,6 +48,18 @@ $assetManager = Yii::app()->getAssetManager();
 	<?php foreach ($admin->getEditFields() as $field => $type) {
     if (is_array($type)) {
         switch ($type['widget']) {
+            case 'TagsInput':
+                $form->TagsInput(
+                    $type['label'],
+                    $admin->getModel(),
+                    $field,
+                    //$admin->getModelName().'['.$field.']',
+                    $type['relation'],
+                    $type['relation_field_id'],
+                    $type['htmlOptions']
+                );
+                break;
+
                 case 'MultiSelectList':
                     ?>
 					<div class="field-row furtherfindings-multi-select">

@@ -432,5 +432,8 @@ return array(
         * Enables the admin->Settings->Logo screen */
         'letter_logo_upload' => true,
 
+        /* ID of the Tag that indicates "preservative free" */
+        'preservative_free_tag_id' => 1
+
     ),
 );
