@@ -266,7 +266,7 @@ class ModelSearch
         }
 
         if ($this->model->hasAttribute('display_order')) {
-            $this->criteria->order = 'display_order asc';
+            $this->criteria->order = 't.display_order asc';
         } else {
             $order = $this->request->getParam('d');
             $sortColumn = $this->request->getParam('c');
