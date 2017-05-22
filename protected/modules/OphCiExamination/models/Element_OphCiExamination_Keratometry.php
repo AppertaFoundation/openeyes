@@ -98,20 +98,16 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
                  right_quality_front, right_quality_back, left_quality_front, left_quality_back, 
                  right_cl_removed, left_cl_removed, right_flourescein_value, left_flourescein_value', 'safe'),
 
-            array('right_anterior_k1_value, left_anterior_k1_value, right_anterior_k2_value, left_anterior_k2_value, 
-                    right_quality_front, right_quality_back, left_quality_front, left_quality_back, 
-                    right_axis_anterior_k1_value, left_axis_anterior_k1_value, right_axis_anterior_k2_value, left_axis_anterior_k2_value,
-                    right_kmax_value, left_kmax_value, right_thinnest_point_pachymetry_value, left_thinnest_point_pachymetry_value,
-                    right_flourescein_value, left_flourescein_value, right_cl_removed, left_cl_removed', 'required'),
+//            array('right_anterior_k1_value, left_anterior_k1_value, right_anterior_k2_value, left_anterior_k2_value,
+//                    right_quality_front, right_quality_back, left_quality_front, left_quality_back,
+//                    right_axis_anterior_k1_value, left_axis_anterior_k1_value, right_axis_anterior_k2_value, left_axis_anterior_k2_value,
+//                    right_kmax_value, left_kmax_value, right_thinnest_point_pachymetry_value, left_thinnest_point_pachymetry_value,
+//                    right_flourescein_value, left_flourescein_value, right_cl_removed, left_cl_removed', 'required'),
 
             array('right_anterior_k1_value, right_anterior_k2_value, right_kmax_value,
                     left_anterior_k1_value, left_anterior_k2_value, left_kmax_value', 'numerical',
                 'integerOnly'=>false,'min'=>1, 'max'=>150),
 
-
-            array('right_anterior_k1_value, right_anterior_k2_value, right_kmax_value,
-                    left_anterior_k1_value, left_anterior_k2_value, left_kmax_value', 'numerical',
-                'integerOnly'=>false,'min'=>1, 'max'=>150),
 
             array('right_axis_anterior_k1_value, right_axis_anterior_k2_value, 
             left_axis_anterior_k1_value, left_axis_anterior_k2_value', 'numerical',
@@ -147,10 +143,19 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
 
     public function kValueCompare($KValue, $params)
     {
-        if($this->{$KValue} < $this->{$params['compare']}){
-            $this->addError($KValue, $this->getAttributeLabel($KValue) . ' (' . $params['side']
-                . ') must be bigger than ' . $this->getAttributeLabel($params['compare']) . ' ('
-                . $params['side'] . ')');
+        if($this->hasLeft() AND $params['side'] == "Left"){
+            if($this->{$KValue} < $this->{$params['compare']}){
+                $this->addError($KValue, $this->getAttributeLabel($KValue) . ' (' . $params['side']
+                    . ') must be bigger than ' . $this->getAttributeLabel($params['compare']) . ' ('
+                    . $params['side'] . ')');
+            }
+        }
+        if($this->hasRight() AND $params['side'] == "Right"){
+            if($this->{$KValue} < $this->{$params['compare']}){
+                $this->addError($KValue, $this->getAttributeLabel($KValue) . ' (' . $params['side']
+                    . ') must be bigger than ' . $this->getAttributeLabel($params['compare']) . ' ('
+                    . $params['side'] . ')');
+            }
         }
     }
 
@@ -209,6 +214,26 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
             'right_flourescein_value' => 'Flourescein',
             'left_flourescein_value' => 'Flourescein',
         );
+    }
+
+    public function afterValidate()
+    {
+
+        // When an eye is closed we do not want to validate that eye's info.
+            $side_checks = array('_anterior_k1_value', '_axis_anterior_k1_value', '_anterior_k2_value',
+                '_axis_anterior_k2_value', '_kmax_value', '_thinnest_point_pachymetry_value', '_ba_index_value');
+            foreach (array('left', 'right') as $side) {
+                $check = 'has' . ucfirst($side);
+                if ($this->$check()) {
+                    foreach ($side_checks as $f) {
+                        if (!$this->{$side . $f}) {
+                            $this->addError($side.$f, ucfirst($side) . ' ' . $this->getAttributeLabel($f) . ' cannot be blank');
+                        }
+                    }
+                }
+            }
+
+        parent::afterValidate();
     }
 
     /**
