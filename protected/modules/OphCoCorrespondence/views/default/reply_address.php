@@ -20,7 +20,7 @@
 <div class="reply-address">
     <?php if($is_internal_referral): ?>
         <br>
-        <div class="text-center internal-referral-heading">Internal referral letter</div>
+        <div class="text-center internal-referral-heading">Internal Referral Letter</div>
     <?php endif; ?>
     <br>
 	<?php if ($site->replyTo) {?>

@@ -305,7 +305,7 @@ class DocManDeliveryCommand extends CConsoleCommand
         //Internal referral reference
         $service_to = isset($element_letter->toSubspecialty) ? $element_letter->toSubspecialty->ref_spec : '';
         $consultant_to = isset($element_letter->event->episode->firm) ? $element_letter->event->episode->firm->pas_code : '';
-        $is_urgent = $element_letter->is_urgent ? 'True' : 'False';
+        $is_urgent = $element_letter->is_urgent ? 1 : '';
         $is_same_condition = $element_letter->is_same_condition ? 'True' : 'False';
 
         $location_code = isset($element_letter->toLocation) ? $element_letter->toLocation->site->location_code : '';
@@ -351,7 +351,8 @@ class DocManDeliveryCommand extends CConsoleCommand
             <!--Internal Referral-->
             <ServiceTo>" . $service_to . "</ServiceTo>
             <ConsultantTo>" . $consultant_to . "</ConsultantTo>
-            <Urgent>" . $is_urgent . "</Urgent> 
+            <!-- is urgent or not -->
+            <workflowimportance>" . $is_urgent . "</workflowimportance>
             <SameCondition>" . $is_same_condition . "</SameCondition>
             <ToLocationCode>" . $location_code . "</ToLocationCode>
         
