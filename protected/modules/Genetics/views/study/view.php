@@ -32,13 +32,7 @@
             'attributes'=>array(
                 'name',
                 'criteria',
-                array(
-                    'label' => $model->getAttributeLabel('end_date'),
-                    'type' => 'raw',
-                    'value' => function() use ($model){
-                        return $model->formatted_end_date;
-                    }
-                ),
+                'end_date',
                 array(
                     'label' => 'Subjects',
                     'type' => 'raw',

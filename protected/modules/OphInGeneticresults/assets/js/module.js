@@ -41,7 +41,7 @@ $(document).ready(function () {
 
   $('#search_tests').click(function (e) {
     e.preventDefault();
-    window.location.href = baseUrl + '/OphInGeneticresults/search/geneticResults?' + 'genetics-pedigree-id=' + $('#genetics-pedigree-id').val() +'&genetics-patient-id='+ $('#genetics-patient-id').val() + '&gene-id=' + $('#gene-id').val() + '&method-id=' + $('#method-id').val() + '&homo=' + $('#homo').val() + '&effect-id=' + $('#effect-id').val() + '&date-from=' + $('#date-from').val() + '&date-to=' + $('#date-to').val() + '&query=' + $('#query').val() + '&search=search';
+    window.location.href = baseUrl + '/OphInGeneticresults/search/geneticResults?' + 'genetics-patient-disorder-id=' + $('#savedDiagnosis').val() + '&genetics-pedigree-id=' + $('#genetics-pedigree-id').val() +'&genetics-patient-id='+ $('#genetics-patient-id').val() + '&gene-id=' + $('#gene-id').val() + '&method-id=' + $('#method-id').val() + '&homo=' + $('#homo').val() + '&effect-id=' + $('#effect-id').val() + '&date-from=' + $('#date-from').val() + '&date-to=' + $('#date-to').val() + '&query=' + $('#query').val() + '&search=search';
   });
 
 

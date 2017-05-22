@@ -20,7 +20,7 @@
 <div class="box admin">
   <h2>Genetic test/result</h2>
 
-  <div class="large-12 column">
+
       <?php
       $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
           'id' => 'searchform',
@@ -29,7 +29,7 @@
           'action' => Yii::app()->createUrl('/OphInGeneticresults/search/geneticResults'),
       )) ?>
     <div class="large-12 column">
-      <div class="panel">
+
         <div class="row">
           <div class="large-12 column">
             <table class="grid">
@@ -77,11 +77,12 @@
                 <th>Result date from</th>
                 <th>Result date to</th>
                 <th>Text search</th>
+                <th>Diagnosis search</th>
               </tr>
               </thead>
               <tbody>
               <tr>
-                <td>
+                <td style="width:150px">
                     <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                         'name' => 'date-from',
                         'id' => 'date-from',
@@ -92,7 +93,7 @@
                         'value' => @$_GET['date-from'],
                     )) ?>
                 </td>
-                <td>
+                  <td style="width:150px">
                     <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                         'name' => 'date-to',
                         'id' => 'date-to',
@@ -107,19 +108,45 @@
                     <?php echo CHtml::textField('query', @$_GET['query']) ?>
                 </td>
                 <td>
-                  <button id="search_tests" class="secondary" type="submit">
-                    Search
-                  </button>
+                    <div id="diagnosis-search">
+                        <?php
+                            $value = Yii::app()->request->getQuery('genetics-patient-disorder-id');
+                        ?>
+                        <!-- <label for="GeneticsPatient_comments">Search for a diagnosis</label> -->
+                        <span id="enteredDiagnosisText" class="<?php echo $value ? '' : 'hidden' ?>" style="display:block; margin-bottom:5px;">
+                            <?php
+                            if($value){
+                                $disorder = Disorder::model()->findByPk($value);
+                                echo $disorder->term;
+                                ?><i class="fa fa-minus-circle" aria-hidden="true" id="clear-diagnosis-widget"></i><?php
+                            }
+                            ?>
+                        </span>
+                        <?php
+                        $this->renderPartial('//disorder/disorderAutoComplete', array(
+                            'class' => 'search',
+                            'name' => 'genetics-patient-disorder-id',
+                            'code' => '',
+                            'value' => $value,
+                            'clear_diagnosis' => '&nbsp;<i class="fa fa-minus-circle" aria-hidden="true" id="clear-diagnosis-widget"></i>',
+                            'placeholder' => 'Search for a diagnosis',
+                        ));
+                        ?>
+                    </div>
                 </td>
               </tr>
               </tbody>
+
             </table>
+              <button id="search_tests" class="secondary right" type="submit">
+                  Search
+              </button>
           </div>
         </div>
-      </div>
     </div>
       <?php $this->endWidget() ?>
-  </div>
+    <div style="clear:both"></div>
+    <hr>
 
   <h2>Genetic test events</h2>
 
@@ -143,15 +170,16 @@
           <thead>
           <tr>
             <th><?php echo CHtml::link('Result date', $this->getUri(array('sortby' => 'date'))) ?></th>
-            <th><?php echo CHtml::link('Subject Id', $this->getUri(array('sortby' => 'genetics-patient-id'))) ?></th>
+<!--            <th>--><?php //echo CHtml::link('Subject Id', $this->getUri(array('sortby' => 'genetics-patient-id'))) ?><!--</th>-->
             <th><?php echo CHtml::link('Hospital no', $this->getUri(array('sortby' => 'hos_num'))) ?></th>
+            <th><?php echo CHtml::link('Family Id', $this->getUri(array('sortby' => 'genetics-pedigree-id'))) ?></th>
             <th><?php echo CHtml::link('Patient name', $this->getUri(array('sortby' => 'patient_name'))) ?></th>
-            <th><?php echo CHtml::link('Gene', $this->getUri(array('sortby' => 'gene'))) ?></th>
-            <th><?php echo CHtml::link('Method', $this->getUri(array('sortby' => 'method'))) ?></th>
-            <th><?php echo CHtml::link('Homozygosity', $this->getUri(array('sortby' => 'homo'))) ?></th>
-            <th><?php echo CHtml::link('Base Change', $this->getUri(array('sortby' => 'base_change'))) ?></th>
-            <th><?php echo CHtml::link('Amino Acid Change', $this->getUri(array('sortby' => 'amino_acid_change'))) ?></th>
-            <th><?php echo CHtml::link('Result', $this->getUri(array('sortby' => 'result'))) ?></th>
+            <th style="width:93px"><?php echo CHtml::link('Gene', $this->getUri(array('sortby' => 'gene'))) ?></th>
+<!--            <th>--><?php //echo CHtml::link('Method', $this->getUri(array('sortby' => 'method'))) ?><!--</th>-->
+            <th><?php echo CHtml::link('Hom', $this->getUri(array('sortby' => 'homo'))) ?></th>
+        <th><?php echo CHtml::link('Base Change', $this->getUri(array('sortby' => 'base_change'))) ?></th>
+        <th><?php echo CHtml::link('Amino Acid Change', $this->getUri(array('sortby' => 'amino_acid_change'))) ?></th>
+<!--            <th>--><?php //echo CHtml::link('Result', $this->getUri(array('sortby' => 'result'))) ?><!--</th>-->
             <th><?php echo CHtml::link('Effect', $this->getUri(array('sortby' => 'effect'))) ?></th>
           </tr>
           </thead>
@@ -161,15 +189,21 @@
               ?>
             <tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInGeneticresults/default/view/' . $test->event_id) ?>">
                   <td><?php echo $test->NHSDate('result_date') ?></td>
-                  <td><?php echo CHtml::link($test->event->episode->patient->geneticsPatient->id, '/Genetics/subject/view/id/' . $test->event->episode->patient->geneticsPatient->id ); ?></td>
+<!--                  <td>--><?php //echo CHtml::link($test->event->episode->patient->geneticsPatient->id, '/Genetics/subject/view/id/' . $test->event->episode->patient->geneticsPatient->id ); ?><!--</td>-->
                   <td><?php echo $test->event->episode->patient->hos_num ?></td>
+                <td>
+                    <?php foreach($test->event->episode->patient->geneticsPatient->pedigrees as $i => $pedigrees): ?>
+                        <?php if($i > 0){ echo ", ";} ?>
+                        <?php echo CHtml::link($pedigrees->id, '/Genetics/pedigree/view/id/' . $pedigrees->id ); ?>
+                    <?php endforeach; ?>
+                </td>
                   <td><?php echo strtoupper($test->event->episode->patient->last_name) ?>, <?php echo $test->event->episode->patient->first_name ?></td>
-                  <td><?php echo $test->gene->name ?></td>
-                  <td><?php echo $test->method->name ?></td>
+                  <td><?php echo str_replace(',',', ', $test->gene->name) ?></td>
+<!--                  <td>--><?php //echo $test->method->name ?><!--</td>-->
                   <td><?php echo $test->homo ? 'Yes' : 'No' ?></td>
                   <td><?php echo $test->base_change ?></td>
                   <td><?php echo $test->amino_acid_change ?></td>
-                <td><?php echo $test->result ?></td>
+<!--                <td>--><?php //echo $test->result ?><!--</td>-->
                 <td><?php echo $test->effect->name ?></td>
             </tr>
           <?php } ?>

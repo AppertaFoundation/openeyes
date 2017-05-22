@@ -124,6 +124,19 @@ class OphInDnaextraction_DnaTests_Transaction extends BaseActiveRecord
             }
         }
 
+        // alright, alright, what if this post coming from the create page ?
+        // we have to validate the model based on only the post data
+        if( Yii::app()->controller->action->id === 'create' ){
+
+            $et_extraction = Yii::app()->request->getPost('Element_OphInDnaextraction_DnaExtraction');
+            $volume_remaining = isset($et_extraction['volume']) ? $et_extraction['volume'] : 0;
+
+            if( ($volume_remaining - $new_volumes) < 0){
+                $is_error = true;
+            } else {
+                $is_error = false;
+            }
+        }
 
         if ($is_error){
             $this->addError('volume', 'The remaining extraction volume cannot be less zero. Current remaining volume: ' . $volume_remaining);
