@@ -57,20 +57,15 @@
         </div>
 
         <div class="row">
-            <div class="large-4 column">
+            <div class="large-4 column">&nbsp
             </div>
-            <div class="large-8 end column right">
+            <div class="large-4 end column right">
                 <img class="loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
                 <span class="right saved hidden" style="font-size:13px; color:#19b910">Saved</span>
                 <span class="right error hidden" style="font-size:13px"">Error, try again later</span>
             </div>
         </div>
 
-        <div class="row">
-            <div class="large-10 column">
-                <span style="font-size:13px"><strong>Please note:</strong> If any correspondence using a site listed below you will not be able to delete from here.</span>
-            </div>
-        </div>
         <div class="row">
             <div class="large-8 column">
                 <table class="grid" id="to_location_sites_grid">
