@@ -41,7 +41,7 @@
 
                     if(!$element->to_location_id){
                         $to_location = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByAttributes(array('site_id' => $site_id));
-                        $element->to_location_id = $to_location->id;
+                        $element->to_location_id = $to_location ? $to_location->id : null;
                     }
 
                     echo CHtml::activeDropDownList($element, "to_location_id",
