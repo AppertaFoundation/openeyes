@@ -85,13 +85,22 @@ class GeneticsStudy extends BaseActiveRecordVersioned
         );
     }
 
+    public function attributeLabels()
+    {
+        return array(
+            'getProposerNames' => 'Investigators',
+            'proposers.first_name' => 'Investigator first name',
+            'proposers.last_name' => 'Investigator last name',
+        );
+    }
+
     /**
      * format date after search
      * @return string
      */
     public function afterFind()
     {
-        $this->formatted_end_date = Helper::convertMySQL2NHS($this->end_date);
+        $this->end_date = Helper::convertMySQL2NHS($this->end_date);
     }
 
     /**
@@ -124,4 +133,20 @@ class GeneticsStudy extends BaseActiveRecordVersioned
 
         return $is_proposer;
     }
+
+    /**
+     * @return string
+     */
+
+    public function getProposerNames()
+    {
+        $p = [];
+        foreach($this->proposers as $proposer)
+        {
+            $p[] = $proposer->getFullName();
+        }
+
+        return implode(', ', $p);
+    }
+
 }

@@ -3082,6 +3082,12 @@ table.white, table.white tr:nth-of-type(even) {
   background: #fff;
 }
 
+/* line 128, ../sass/openeyes/components/_tables.scss */
+.table-summary{
+  font-size: 0.6875rem;
+  font-weight: bold;
+}
+
 /* line 150, ../sass/openeyes/components/_tables.scss */
 table.plain, table.plain td, table.plain th, table.plain tr {
   border: 0;
@@ -3231,6 +3237,13 @@ table.grid th:last-child,
 table.grid td:last-child {
   border-right: none;
 }
+
+table.grid td:last-child span.empty{
+  font-size: 0.6875rem;
+  font-weight: bold;
+  font-style: normal;
+}
+
 /* line 364, ../sass/openeyes/components/_tables.scss */
 table.grid tfoot {
   border-top: 1px solid #DDDDDD;

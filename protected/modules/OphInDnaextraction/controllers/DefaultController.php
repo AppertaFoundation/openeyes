@@ -12,6 +12,7 @@ class DefaultController extends BaseEventTypeController
         'getAvailableLetterNumberToBox' => self::ACTION_TYPE_FORM,
         'saveNewStorage' => self::ACTION_TYPE_FORM,
         'refreshStorageSelect' => self::ACTION_TYPE_FORM,
+        'updateDnaTests' => self::ACTION_TYPE_FORM,
         'print' => self::ACTION_TYPE_PRINT
     );
 
@@ -19,7 +20,7 @@ class DefaultController extends BaseEventTypeController
     {
         return array(
             array('allow',
-                'actions' => array('Create', 'Update','View', 'Print', 'AddTransaction','GetNewStorageFields','getAvailableLetterNumberToBox','saveNewStorage', 'refreshStorageSelect'),
+                'actions' => array('Create', 'Update', 'View', 'Print', 'AddTransaction','GetNewStorageFields','getAvailableLetterNumberToBox','saveNewStorage', 'refreshStorageSelect', 'updateDnaTests'),
                 'roles' => array('OprnEditDNAExtraction'),
             ),
             array('allow',
@@ -54,35 +55,16 @@ class DefaultController extends BaseEventTypeController
             throw new Exception('Row number not set');
         }
 
+        $is_remove_allowed = Yii::app()->request->getQuery('is_remove_allowed');
+
         $transaction = new OphInDnaextraction_DnaTests_Transaction();
         $transaction->setDefaultOptions();
         $this->renderPartial('_dna_test', array(
             'i' => $_GET['i'],
             'transaction' => $transaction,
             'disabled' => false,
+            'is_remove_allowed' => $is_remove_allowed === 'false' ? false : true,
         ));
-    }
-
-    public function getFormTransactions()
-    {
-        $transactions = array();
-
-        if (!empty($_POST['date'])) {
-            foreach ($_POST['date'] as $i => $date) {
-                if ($_POST['transactionID'][$i]) {
-                    $_transaction = OphInDnaextraction_DnaTests_Transaction::model()->findByPk($_POST['transactionID'][$i]);
-                } else {
-                    $_transaction = new OphInDnaextraction_DnaTests_Transaction();
-                }
-                $_transaction->date = date('Y-m-d', strtotime($date));
-                $_transaction->study_id = $_POST['study_id'][$i];
-                $_transaction->volume = $_POST['volume'][$i];
-                $_transaction->comments = $_POST['comments'][$i];
-                $transactions[] = $_transaction;
-            }
-        }
-
-        return $transactions;
     }
 
     /*
@@ -93,12 +75,15 @@ class DefaultController extends BaseEventTypeController
     {
         $errors = parent::setAndValidateElementsFromData($data);
 
-        if (!empty($data['date'])) {
-            foreach ($this->getFormTransactions() as $transaction) {
+        if( isset($data['OphInDnaextraction_DnaTests_Transaction']) ){
+
+            foreach ($data['OphInDnaextraction_DnaTests_Transaction'] as $transaction_data) {
+                $transaction = $this->getTransactionModel($transaction_data, $data['Element_OphInDnaextraction_DnaTests']['id']);
+
                 if (!$transaction->validate()) {
-                    foreach ($transaction->getErrors() as $errormsgs) {
-                        foreach ($errormsgs as $error) {
-                            $errors['Tests'][] = $error;
+                    foreach ($transaction->getErrors() as $error_msgs) {
+                        foreach ($error_msgs as $error) {
+                            $errors['Tests']['volume'] = $error;
                         }
                     }
                 }
@@ -108,18 +93,28 @@ class DefaultController extends BaseEventTypeController
         return $errors;
     }
 
-    protected function saveComplexAttributes_Element_OphInDnaextraction_DnaTests($element, $data, $index)
+    protected function saveComplexAttributes_Element_OphInDnaextraction_DnaTests($element, $data, $index, $handle_errors = false)
     {
         $item_ids = array();
 
-        foreach ($this->getFormTransactions() as $transaction) {
-            $transaction->element_id = $element->id;
+        if( isset($data['OphInDnaextraction_DnaTests_Transaction']) ) {
+            foreach ($data['OphInDnaextraction_DnaTests_Transaction'] as $transaction_data) {
 
-            if (!$transaction->save()) {
-                throw new Exception('Unable to save transaction: '.print_r($transaction->getErrors(), true));
+                $transaction = $this->getTransactionModel($transaction_data, $element->id);
+
+                if (!$transaction->save()) {
+                    if(!$handle_errors)
+                    {
+                        //throw new Exception('Unable to save transaction: '.print_r($transaction->getErrors(), true));
+                    }
+                    else{
+                        $errors = $transaction->getErrors();
+                        //  throw new Exception('Unable to save transaction: '.$errors[''][0]);
+                    }
+                }
+
+                $item_ids[] = $transaction->id;
             }
-
-            $item_ids[] = $transaction->id;
         }
 
         $criteria = new CDbCriteria();
@@ -129,9 +124,45 @@ class DefaultController extends BaseEventTypeController
 
         foreach (OphInDnaextraction_DnaTests_Transaction::model()->findAll($criteria) as $transaction) {
             if (!$transaction->delete()) {
-                throw new Exception('Unable to delete transaction: '.print_r($transaction->getErrors(), true));
+                if(!$handle_errors)
+                {
+                    throw new Exception('Unable to delete transaction: '.print_r($transaction->getErrors(), true));
+                }
+                else{
+                    $errors = $transaction->getErrors();
+                    throw new Exception('Unable to save transaction: '.$errors[''][0]);
+                }
             }
         }
+    }
+
+    /**
+     * OphInDnaextraction_DnaTests_Transaction factory
+     *
+     * @param $transaction_data
+     * @param $element_id
+     * @return OphInDnaextraction_DnaTests_Transaction
+     */
+    public function getTransactionModel($transaction_data, $element_id)
+    {
+        $transaction = null;
+        if( isset($transaction_data['id']) && $transaction_data['id']){
+            $transaction = OphInDnaextraction_DnaTests_Transaction::model()->findByPk($transaction_data['id']);
+        }
+
+        if(!$transaction){
+            $transaction = new OphInDnaextraction_DnaTests_Transaction();
+        }
+
+        $date = new DateTime($transaction_data['date']);
+
+        $transaction->element_id = $element_id;
+        $transaction->date = $date->format('Y-m-d');
+        $transaction->study_id = $transaction_data['study_id'];
+        $transaction->volume = $transaction_data['volume'];
+        $transaction->comments = $transaction_data['comments'];
+
+        return $transaction;
     }
 
     public function isRequiredInUI(BaseEventTypeElement $element)
@@ -209,6 +240,61 @@ class DefaultController extends BaseEventTypeController
     {
         $element = new Element_OphInDnaextraction_DnaExtraction();
         $this->renderPartial('_boxSelectRefresh', array('element'=> $element), false, true);
+    }
+
+    public function actionView($id)
+    {
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'));
+        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dna_tests_view.js');
+
+        parent::actionView($id);
+    }
+
+    public function actionUpdate($id)
+    {
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'));
+        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dna_tests_update.js');
+
+        parent::actionUpdate($id);
+    }
+
+    public function actionCreate()
+    {
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'));
+        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dna_tests_update.js');
+
+        parent::actionCreate();
+    }
+
+    /**
+     * @param $id
+     *
+     * Ajax action to separately save DNA Tests
+     */
+
+    public function actionUpdateDnaTests($id)
+    {
+
+        $element_array = Yii::app()->request->getPost('OphInDnaextraction_DnaTests_Transaction');
+        $element_array = array_shift($element_array);
+
+        $transaction = new OphInDnaextraction_DnaTests_Transaction();
+
+        $transaction->setAttributes($element_array);
+
+        if($transaction->save()){
+            echo CJSON::encode(['success'=>true]);
+        } else {
+
+            $error_message = '';
+            foreach($transaction->getErrors() as $attr => $error){
+                $error_message .= "$attr: " . ( implode(',', $error) ) . PHP_EOL;
+            }
+
+            echo CJSON::encode(['success'=>false, 'message' => $error_message]);
+        }
+
+        Yii::app()->end();
     }
 
 }

@@ -300,7 +300,7 @@ return array(
                 'uri' => '#',
                 'position' => 2,
                 'userrule' => 'isSurgeon',
-                'restricted' => array('admin', 'Report', 'NOD Export'),
+                'restricted' => array('admin', 'Report', 'NOD Export', 'Add patient', 'Patient Merge', 'Patient Merge Request'),
                 'sub' => array(
                     'admin' => array(
                         'title' => 'Admin',
@@ -333,10 +333,16 @@ return array(
                         'position' => 5,
                         'restricted' => array('NOD Export'),
                     ),
+                    'cxldataset' => array(
+                        'title' => 'CXL Dataset',
+                        'uri' => 'CxlDataset',
+                        'position' => 6,
+                        'restricted' => array('CXL Dataset'),
+                    ),
                     'patientmergerequest' => array(
                         'title' => 'Patient Merge',
                         'uri' => 'patientMergeRequest/index',
-                        'position' => 6,
+                        'position' => 7,
                         'restricted' => array('Patient Merge', 'Patient Merge Request'),
                     ),
                     'patient' => array(
@@ -405,6 +411,22 @@ return array(
                 'temp_path' => realpath(dirname(__FILE__).'/../..').'/data/hscic/temp',
             ),
         ),
+
+        //'docman_export_dir' => '/tmp/docman_delievery',
+        //'docman_login_url' => 'http://{youropeneyeshost}/site/login',
+        //'docman_user' => '',
+        //'docman_password' => '',
+        //'docman_print_url' => 'http://{youropeneyeshost}/OphCoCorrespondence/default/PDFprint/',
+
+        /* injecting autoprint JS into generated PDF */
+        //'docman_inject_autoprint_js' => false,
+
+        //'docman_generate_csv' => true,
+
+        /*Docman ConsoleCommand can generate Internal referral XML/PDF along with it's own(Docman) XML/PDF
+          In case a trust integrated engine can use the same XML to decide where to forward the document to */
+        //'docman_with_internal_referral' => false,
+
         /**
          * Text to be displayed for sending correspondence electronically e.g.: 'Electronic (DocMan)'
          * To be overriden in local config
@@ -430,16 +452,22 @@ return array(
 
         /**
          * Enable or disable the draft printouts DRAFT background
+         * Please note: on the screen the DRAFT background will be still visible but removed from printouts
          */
-        'OphCoCorrespondence_printout_draft_background' => true,
+        'OphCoCorrespondence_printout_draft_background' => false,
+
+        'OphCoCorrespondence_Internalreferral' => array(
+            'generate_csv' => false,
+            'export_dir' => '/tmp/internalreferral_delievery',
+            'filename_format' => 'format1',
+        ),
 
         /**
          *  Operation bookings will be automatically scheduled to the next available slot (regardless of the firm)
          */
         "auto_schedule_operation" => false,
-
         'clinical_management_pcr' => true,
-        'docman_generate_csv' => false,
+
 
     ),
 );

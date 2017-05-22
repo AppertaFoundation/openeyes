@@ -22,7 +22,7 @@
         <div class="large-10 column"><h2>View Genetics Patient</h2></div>
         <div class="large-2 column right">
             <?php if( $this->checkAccess('OprnEditGeneticPatient') ): ?>
-                <a href="/Genetics/subject/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/subject/view/').$model->id; ?>" class="button small right" id="subject_edit">Edit</a>
+                <a href="/Genetics/subject/edit/<?php echo $model->id . '?patient=' . $model->patient_id; ?>&returnUri=<?php echo urlencode('/Genetics/subject/view/').$model->id; ?>" class="button small right" id="subject_edit">Edit</a>
             <?php endif; ?>
         </div>
     </div>
@@ -42,8 +42,11 @@
                 'label' => $model->patient->getAttributeLabel('dob'),
                 'type' => 'raw',
                 'value' => function() use ($model){
-                    $date = new DateTime($model->patient->dob);
-                    return $date->format('d M Y');
+                    if($model->patient->dob) {
+                        $date = new DateTime($model->patient->dob);
+                        return $date->format('d M Y');
+                    }
+                    return null;
                 }
             ),
             'patient.hos_num',

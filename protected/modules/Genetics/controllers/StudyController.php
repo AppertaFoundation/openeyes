@@ -24,7 +24,7 @@ class StudyController extends BaseAdminController
                 'roles' => array('TaskViewGeneticStudy'),
             ),
             array('allow',
-                'actions' => array('Edit'),
+                'actions' => array('Edit', 'Delete'),
                 'roles' => array('TaskEditGeneticStudy'),
             ),
         );
@@ -97,8 +97,17 @@ class StudyController extends BaseAdminController
             'id',
             'name',
             'end_date',
+            'criteria',
+            'getProposerNames'
         ));
-        $admin->searchAll();
+
+        $searchArray = array(
+            'type' => 'compare',
+            'compare_to' => array('name', 'end_date', 'criteria', 'proposers.first_name', 'proposers.last_name'));
+        $admin->getSearch()->addSearchItem('id', $searchArray);
+
+        $admin->setUnsortableColumns(array('getProposerNames'));
+
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->getSearch()->setDefaultResults(false);
         $display_buttons = $this->checkAccess('TaskEditGeneticStudy');

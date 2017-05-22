@@ -101,21 +101,7 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
             'storage' => array(self::BELONGS_TO, 'OphInDnaextraction_DnaExtraction_Storage', 'storage_id'),
         );
     }
-   
-    /*
-    public function boxAvailable($attribute, $params)
-    {
-        $box = Yii::app()->db->createCommand()
-            ->select('count(box_id)')
-            ->from('et_ophindnaextraction_dnaextraction')
-            ->where('box_id=:box_id and letter_id=:letter_id and number_id=:number_id and not event_id=:event_id', array(':box_id' => $this->box_id, ':letter_id' => $this->letter_id, ':number_id' => $this->number_id, ':event_id' => $this->event_id))
-            ->queryScalar();
 
-        if ($box > 0) {
-            $this->addError($attribute, 'this box number is already in use.');
-        }
-    }
-*/
     /**
      * @return array customized attribute labels (name=>label)
      */
@@ -169,6 +155,11 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+
+    public function beforeValidate()
+    {
+        return parent::beforeValidate();
     }
 
 }

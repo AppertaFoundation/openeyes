@@ -17,42 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section class="sub-element">
-	<header class="sub-element-header">
-		<h3 class="sub-element-title"><?php echo $element->elementType->name?></h3>
-	</header>
-	<div class="row field-row">
-		<div class="large-3 column">
-		</div>
-		<div class="large-9 column">
-			<table>
-				<thead>
-					<tr>
-						<th>Date</th>
-						<th>Study</th>
-						<th>Volume</th>
-						<th>Withdrawn by</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php if ($element->transactions) {?>
-						<?php foreach ($element->transactions as $transaction) {?>
-							<tr>
-								<td><?php echo $transaction->NHSDate('date')?></td>
-								<td><?php echo $transaction->study->name?></td>
-								<td><?php echo $transaction->volume?></td>
-								<td><?php echo $transaction->comments?></td>
-							</tr>
-						<?php }?>
-					<?php }else{?>
-						<tr>
-							<td colspan="4">
-								No tests have been logged for this DNA.
-							</td>
-						</tr>
-					<?php }?>
-				</tbody>
-			</table>
-		</div>
-	</div>
-</section>
+
+<?php
+$this->renderPartial(
+    'application.modules.OphInDnaextraction.views.default.form_Element_OphInDnaextraction_DnaTests',
+    array('element' => $element, 'data' => array('view_mode'=>true), 'form' => @$form),
+    false, false
+)?>

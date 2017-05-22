@@ -86,7 +86,6 @@ if (!empty($episode)) {
 			</section>
 		</div>
 	</div>
-
 	<?php
         $summaryItems = array();
     if ($episode->subspecialty) {

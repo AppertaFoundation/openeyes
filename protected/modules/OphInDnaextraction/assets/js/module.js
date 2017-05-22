@@ -4,7 +4,7 @@ var dnaExtractionPrintUrl;
 $(document).ready(function() {
     handleButton($('#et_save'),function() {
     });
-    
+
 
     handleButton($('#et_cancel'),function(e) {
         if (m = window.location.href.match(/\/update\/[0-9]+/)) {
@@ -50,37 +50,6 @@ $(document).ready(function() {
         }
     });
 
-    $('.addTest').click(function(e) {
-        e.preventDefault();
-
-        var i = 0;
-
-        $('tbody.transactions').children('tr').children('td').children('input:first').map(function() {
-                var id = $(this).attr('name').match(/[0-9]+/);
-
-                if (id >= i) {
-                        i = id;
-                }
-        });
-
-        $.ajax({
-            'type': 'GET',
-            'url': baseUrl+'/OphInDnaextraction/default/addTransaction?i='+i,
-            'success': function(html) {
-                    $('tbody.transactions').append(html);
-                    $('#no-tests').hide();
-            }
-        });
-    });
-
-    $('.removeTransaction').die('click').live('click',function(e) {
-        e.preventDefault();
-        $(this).parent().parent().remove();
-        if(!$('.removeTransaction').length) {
-                $('#no-tests').show();
-        }
-    });
-    
     handleButton( $('#addNewStoragePopup'),function(e) {
         $.ajax({
             'type': 'POST',
@@ -126,8 +95,6 @@ $(document).ready(function() {
                 storageDialog.open();
             },
         });
-        
-        
     });
 });
 

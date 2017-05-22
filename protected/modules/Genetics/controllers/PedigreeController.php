@@ -22,7 +22,7 @@ class PedigreeController extends BaseModuleController
             array(
                 'allow',
                 'actions' => array('Edit', 'EditStudyStatus'),
-                'roles' => array('TaskEditPedigreeData','OprnEditPedigree'),
+                'roles' => array('TaskEditPedigreeData'),
             ),
             array(
                 'allow',
@@ -132,14 +132,14 @@ class PedigreeController extends BaseModuleController
             ),
         ));
 
-        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());    
+        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());
 
         $valid = $admin->editModel(false);
 
-        if (Yii::app()->request->isPostRequest) {        
+        if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Family Saved");
-                     $url = '/Genetics/pedigree/view/'.$admin->getModel()->id;
+                     $url = '/Genetics/pedigree/view/'.$admin->getModel()->id . (isset($_GET['patient']) ? ('?patient=' . $_GET['patient']) : null);
                 $this->redirect($url);
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
@@ -152,6 +152,18 @@ class PedigreeController extends BaseModuleController
      */
     public function actionList()
     {
+        if (empty($_GET)) {
+            if (($data = YiiSession::get('genetics_pedigree_searchoptions'))) {
+                $_GET = $data;
+            }
+            Audit::add('Genetics pedigree list', 'view');
+        } else {
+            Audit::add('Genetics pedigree list', 'search');
+
+            YiiSession::set('genetics_pedigree_searchoptions', $_GET);
+        }
+
+
         $admin = new Crud(Pedigree::model(), $this);
         $admin->setListFieldsAction('view');
         $admin->setModelDisplayName('Families');
@@ -160,8 +172,13 @@ class PedigreeController extends BaseModuleController
             'inheritance.name',
             'gene.name',
             'getSubjectsCount',
-            'getAffectedSubjectsCount'
+            'getAffectedSubjectsCount',
+            'disorder.term',
+            'getConsanguinityAsBoolean'
         ));
+
+        $admin->setUnsortableColumns(['inheritance.name', 'gene.name', 'getSubjectsCount', 'getAffectedSubjectsCount', 'disorder.term', 'getConsanguinityAsBoolean']);
+
         $admin->getSearch()->addSearchItem('id', array( 'type' => 'id' ));
         $admin->getSearch()->addSearchItem('inheritance_id', array(
             'type' => 'dropdown',

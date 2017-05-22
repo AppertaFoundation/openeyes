@@ -34,6 +34,15 @@ class GeneticsPatient extends BaseActiveRecord
 
     protected $preExistingPedigreesIds = array();
 
+    //for searching on the subject/list page
+    public $patient_dob;
+    public $patient_firstname;
+    public $patient_lastname;
+    public $patient_yob;
+    public $patient_disorder_id;
+    public $patient_hos_num;
+    public $patient_pedigree_id;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -63,7 +72,10 @@ class GeneticsPatient extends BaseActiveRecord
             array('studies', 'isProposable'),
             array('pedigrees', 'isEmptyPedigrees'),
             array('patient_id', 'unique', 'on'=>'insert', 'message'=>'The selected patient is already linked to a genetics subject.'),
-            array('patient_id, comments, gender_id, is_deceased, relationships, studies, pedigrees, diagnoses', 'safe'),
+            array('id, patient_id, comments, gender_id, is_deceased, relationships, studies, pedigrees, diagnoses', 'safe'),
+
+            //for searching on the subject/list page
+            array('patient_dob, patient_firstname, patient_lastname, patient_hos_num, patient_pedigree_id, patient_yob, patient_disorder_id', 'safe')
         );
     }
 
@@ -147,6 +159,11 @@ class GeneticsPatient extends BaseActiveRecord
                 'Disorder',
                 'genetics_patient_diagnosis(patient_id, disorder_id)',
             ),
+            'genetics_diagnosis' => array(self::HAS_MANY, 'GeneticsPatientDiagnosis', 'patient_id'),
+
+            'genetics_patient_pedigree' => array(self::HAS_MANY, 'GeneticsPatientPedigree', 'patient_id'),
+
+
         );
     }
 
@@ -160,7 +177,7 @@ class GeneticsPatient extends BaseActiveRecord
             'patient_id' => 'Patient',
             'gender_id' => 'Karyotypic Sex',
             'is_deceased' => 'Is Deceased',
-            'searchYob' => 'Year of Birth',
+            'patient_yob' => 'Year of Birth',
         );
     }
 
@@ -177,8 +194,13 @@ class GeneticsPatient extends BaseActiveRecord
 
     public function isEmptyPedigrees()
     {
-        if(empty($_POST['GeneticsPatient']['pedigrees'])){
-            $this->addError('pedigrees', 'Please add at least one pedigree!');
+        if( Yii::app()->request->isPostRequest ){
+            $no_pedigree = Yii::app()->request->getPost('no_pedigree');
+            $genetics_patient = Yii::app()->request->getPost('GeneticsPatient');
+
+            if(!$no_pedigree && $genetics_patient && empty($genetics_patient['pedigrees']) ){
+                $this->addError('pedigrees', 'Please add at least one pedigree!');
+            }
         }
     }
 
@@ -191,6 +213,28 @@ class GeneticsPatient extends BaseActiveRecord
 
         if($this->getIsNewRecord()) {
             $this->updateDiagnoses();
+
+            /*
+             * Auto-generate a new pedigree and
+             * assign it to the genetic subject
+             */
+
+            if(isset($_POST['no_pedigree']))
+            {
+                $pedigree = new Pedigree();
+                $pedigree->consanguinity = false;
+                $pedigree->comments = '';
+                $pedigree->save(false);
+
+                $p_id = $pedigree->id;
+
+                $link = new GeneticsPatientPedigree();
+                $link->pedigree_id = $p_id;
+                $link->patient_id = $this->id;
+
+                $link->save(false);
+            }
+
         }
 
         $pedigrees = GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $this->id), array('select' =>  'pedigree_id'));
@@ -248,18 +292,83 @@ class GeneticsPatient extends BaseActiveRecord
         $patientPedigree = GeneticsPatientPedigree::model()->find($criteria);
 
         if(!$patientPedigree || !$patientPedigree->status) {
-            return 'Uknown';
+            return 'Unknown';
         }
 
         return $patientPedigree->status->name;
     }
 
-    public function searchYob($search = '')
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * Typical usecase:
+     * - Initialize the model fields with values from filter form.
+     * - Execute this method to get CActiveDataProvider instance which will filter
+     * models according to data in model fields.
+     * - Pass data provider to CGridView, CListView or any similar widget.
+     *
+     * @return CActiveDataProvider the data provider that can return the models
+     * based on the search/filter conditions.
+     */
+    public function search()
     {
-        return array(
-            'field' => "patient.dob",
-            'exactmatch' => true,
-            'operator'  => 'AND'
-        );
+        // @todo Please modify the following code to remove attributes that should not be searched.
+
+        $criteria=new CDbCriteria;
+        $criteria->with = array('patient', 'patient.contact');
+        $criteria->compare('t.id',$this->id);
+        $criteria->compare('patient_id',$this->patient_id,true);
+        $criteria->compare('comments',$this->comments,true);
+        $criteria->compare('gender_id',$this->gender_id,true);
+        $criteria->compare('is_deceased',$this->is_deceased);
+
+        $criteria->compare( 'patient.dob', $this->patient_dob, true );
+        $criteria->compare( 'patient.dob', $this->patient_yob, true );
+        $criteria->compare( 'patient.hos_num', $this->patient_hos_num, false );
+
+        if( $this->patient_pedigree_id ){
+            $criteria->with['genetics_patient_pedigree'] = array('select' => 'genetics_patient_pedigree.pedigree_id', 'together' => true);
+            $criteria->compare( 'genetics_patient_pedigree.pedigree_id', $this->patient_pedigree_id, false );
+        }
+
+        $criteria->compare( 'contact.first_name', $this->patient_firstname, true );
+        $criteria->compare( 'contact.last_name', $this->patient_lastname, true );
+
+        //because of the 'together' => true , yii returns wrong row counts when 'patient_disorder_id' is not present
+        if($this->patient_disorder_id > 0){
+            $criteria->with['genetics_diagnosis'] = array('select' => 'genetics_diagnosis.disorder_id', 'together' => true);
+            $criteria->compare( 'genetics_diagnosis.disorder_id', $this->patient_disorder_id, false );
+        }
+
+        $dataProvider = new CActiveDataProvider($this, array(
+            'criteria'=>$criteria,
+            'sort' => array(
+                'attributes' => array(
+                    'id',
+                    'patient.fullName' => array(
+                        'asc'=>"CONCAT(contact.first_name, ' ', contact.last_name)",
+                        'desc'=>"CONCAT(contact.first_name, ' ', contact.last_name) DESC"
+                    ),
+                    'patient.dob',
+                    'patient.hos_num',
+                    'patient.firstName' => array(
+                        'asc' => "contact.first_name",
+                        'desc' => "contact.first_name DESC"
+                    ),
+                    'patient.lastName' => array(
+                        'asc' => "contact.last_name",
+                        'desc' => "contact.last_name DESC"
+                    ),
+
+                    'comments'
+                )
+            ),
+            'pagination' => array(
+                'pageSize' => 20,
+            ),
+
+        ));
+
+        return $dataProvider;
     }
 }

@@ -3,6 +3,8 @@
         $element = new ElementLetter();
     }
 
+    $is_mandatory = isset($is_mandatory) ? $is_mandatory : false;
+
 ?>
 <tr class="new_entry_row rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
     <td>
@@ -11,13 +13,13 @@
     </td>
     <td>
         
-        <?php 
+        <?php
             $contact_type = ( isset($selected_contact_type) ? $selected_contact_type : null );
             $this->renderPartial('//docman/table/contact_name_address', array(
                 'contact_id' => $contact_id,
                 'contact_name' => $contact_name,
                 'address_targets' => $element->address_targets,
-                'is_editable' => $contact_type != 'GP',
+                'is_editable_address' => $contact_type != 'GP',
                 'contact_type' => $contact_type,
                 'row_index' => $row_index,
                 'address' => $address,
@@ -28,8 +30,12 @@
     </td>
     <td>
         <?php $this->renderPartial('//docman/table/contact_type', array(
-                                        'contact_type' => isset($selected_contact_type) ? $selected_contact_type : null,
-                                        'row_index' => $row_index));
+                                            'contact_type' => isset($selected_contact_type) ? $selected_contact_type : null,
+                                            'row_index' => $row_index,
+                                            //contact_type is not editable as per requested, former validation left until the req finalized
+                                            'is_editable' => false, //!$element->isInternalReferral(),
+                                        )
+                                    );
                             ?>
     </td>
     <td class="docman_delivery_method">
@@ -44,7 +50,7 @@
     </td>
     <td>
         <?php if($row_index > 0): ?>
-            <a class="remove_recipient removeItem" data-rowindex="<?php echo $row_index ?>">Remove</a>
+            <a class="remove_recipient removeItem <?php echo $is_mandatory ? 'hidden' : '' ?>" data-rowindex="<?php echo $row_index ?>">Remove</a>
         <?php endif; ?>
     </td>
 </tr>
