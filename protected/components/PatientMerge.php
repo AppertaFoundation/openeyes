@@ -176,15 +176,17 @@ class PatientMerge
             $primary_genetics_patient = GeneticsPatient::model()->findByAttributes(['patient_id' => $primary->id]);
             $secondary_genetics_patient = GeneticsPatient::model()->findByAttributes(['patient_id' => $secondary->id]);
 
-            //Abort if karyotypic sex or deceased flag are not the same
-            if( $primary_genetics_patient->gender_id !== $secondary_genetics_patient->gender_id){
-                $conflict[] = array(
-                    'column' => 'gender_id',
-                    'primary' => $primary->id,
-                    'secondary' => $secondary->id,
-                    'message' => "Genetics Patients' karyotypic sex must be the same.",
-                    'attribute' => 'secondary_id',
-                );
+            if($primary_genetics_patient && $secondary_genetics_patient){
+                //Abort if karyotypic sex or deceased flag are not the same
+                if( $primary_genetics_patient->gender_id !== $secondary_genetics_patient->gender_id){
+                    $conflict[] = array(
+                        'column' => 'gender_id',
+                        'primary' => $primary->id,
+                        'secondary' => $secondary->id,
+                        'message' => "Genetics Patients' karyotypic sex must be the same.",
+                        'attribute' => 'secondary_id',
+                    );
+                }
             }
         }
         
@@ -641,7 +643,7 @@ class PatientMerge
             Audit::add('Patient Merge', 'delete', "Genetics Patient id" . $secondary_genetics_patient->id . " hos_num:" . $secondary_genetics_patient->patient->hos_num);
             $this->addLog("Genetics Patient(subject) flagged as deleted (id): " . $secondary_genetics_patient->id );
 
-        } else {
+        } else if($primary_genetics_patient && $secondary_genetics_patient) {
             //else both are genetics patients
 
             //here we cannot just re-wire the GeneticsPatient table's patient_id, actually we are not even update the GeneticsPatient table but
@@ -706,6 +708,9 @@ class PatientMerge
 
             return true;
         }
+
+        //none of them genetics patients
+        return true;
     }
     
 
