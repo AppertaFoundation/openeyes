@@ -46,7 +46,7 @@ $model_name = CHtml::modelName($element);
     </div>
     <div class="row">
         <div class="large-8 column">
-            <?php $this->renderPartial('//patient/_fuzzy_date', array('class' => $model_name . '_previousOperation')) ?>
+            <?php $this->render('application.views.patient._fuzzy_date', array('class' => $model_name . '_previousOperation')) ?>
         </div>
         <div class="large-4 column end">
             <button class="button small primary" id="<?= $model_name ?>_add_previous_operation">Add</button>
@@ -66,8 +66,8 @@ $model_name = CHtml::modelName($element);
         <tbody>
         <?php
         foreach ($element->operations as $op) {
-            $this->renderPartial(
-                $op->form_view,
+            $this->render(
+                'PastSurgery_Operation_event_edit',
                 array(
                     'op' => $op,
                     'form' => $form,
@@ -83,8 +83,8 @@ $model_name = CHtml::modelName($element);
 <script type="text/template" id="<?= CHtml::modelName($element).'_operation_template' ?>" class="hidden">
     <?php
     $empty_operation = new \OEModule\OphCiExamination\models\PastSurgery_Operation();
-    $this->renderPartial(
-        $empty_operation->form_view,
+    $this->render(
+        'PastSurgery_Operation_event_edit',
         array(
             'op' => $empty_operation,
             'form' => $form,
