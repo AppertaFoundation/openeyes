@@ -69,7 +69,9 @@ class Element_OphCiExamination_Specular_Microscopy extends \SplitEventTypeElemen
                 right_coefficient_variation_value, left_endothelial_cell_density_value, left_coefficient_variation_value', 'safe'),
                 array('right_endothelial_cell_density_value, left_endothelial_cell_density_value', 'numerical',
                     'integerOnly'=>false,'min'=>500, 'max'=>4000),
-//                array('right_coefficient_variation_value, left_coefficient_variation_value', 'in','range'=>range(0,100)),
+
+                array('right_coefficient_variation_value, right_coefficient_variation_value', 'numerical',
+                'integerOnly'=>false),
 
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
