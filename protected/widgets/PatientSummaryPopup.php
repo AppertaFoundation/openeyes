@@ -67,6 +67,10 @@ class PatientSummaryPopup extends BaseCWidget
             $this->patient->allergiesSummary
         );
 
+        $widget = $this->createWidget('OEModule\OphCiExamination\widgets\PastSurgery', array(
+            'patient' => $this->patient
+        ));
+        $this->operations = $widget->summary();
 //        $this->operations = implode(
 //            self::$LIST_SEPARATOR,
 //            $this->patient->operationsSummary

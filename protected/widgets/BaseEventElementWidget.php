@@ -56,6 +56,9 @@ class BaseEventElementWidget extends CWidget
      */
     public function init()
     {
+        if (!isset($this->mode)) {
+            $this->mode = static::$PATIENT_SUMMARY_MODE;
+        }
         if (!$this->validateMode($this->mode)) {
             throw new \CHttpException('invalid mode value for ' . static::class);
         }
@@ -166,5 +169,14 @@ class BaseEventElementWidget extends CWidget
     public function checkAccess($operation)
     {
         return $this->controller->checkAccess($operation);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function summary()
+    {
+        $element = $this->element;
+        return (string) $element;
     }
 }
