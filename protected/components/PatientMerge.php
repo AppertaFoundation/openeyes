@@ -161,7 +161,7 @@ class PatientMerge
                 );
         }
 
-        if($secondary->is_deceased === $primary->is_deceased){
+        if($secondary->is_deceased !== $primary->is_deceased){
             $conflict[] = array(
                     'column' => 'is_deceased',
                     'primary' => $primary->id,
