@@ -342,7 +342,7 @@ return array(
                     'patientmergerequest' => array(
                         'title' => 'Patient Merge',
                         'uri' => 'patientMergeRequest/index',
-                        'position' => 7,
+                        'position' => 17,
                         'restricted' => array('Patient Merge', 'Patient Merge Request'),
                     ),
                     'patient' => array(
