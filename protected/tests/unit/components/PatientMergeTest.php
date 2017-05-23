@@ -37,6 +37,8 @@ class PatientMergeTest extends CDbTestCase
             'disorder' => 'Disorder',
             'genetics_patient' => 'geneticsPatient',
             'genetics_patient_relationship' => 'geneticsPatientRelationship',
+            'genetics_patient_diagnosis' => 'geneticsPatientDiagnosis',
+            'genetics_patient_pedigree' => 'geneticsPatientPedigree'
     );
 
     public function setUp()
@@ -678,6 +680,8 @@ class PatientMergeTest extends CDbTestCase
 
 
         $this->assertEquals(1, count($genetics_primary_patient_model->relationships));
+        $this->assertEquals(1, count($genetics_primary_patient_model->diagnoses));
+        $this->assertEquals(1, count($genetics_primary_patient_model->pedigrees));
 
         $merge_handler->updateGenetics($primary_patient, $secondary_patient);
 
@@ -692,9 +696,22 @@ class PatientMergeTest extends CDbTestCase
         $this->assertEquals($genetics_primary_patient->id, $relation2->patient_id);
 
         // genetics diagnosis
+        $this->assertEquals(2, count($genetics_primary_patient_model->diagnoses));
 
+        $diagnoses1 = $this->genetics_patient_diagnosis('genetics_patient_diagnosis1');
+        $diagnoses2 = $this->genetics_patient_diagnosis('genetics_patient_diagnosis2');
 
+        $this->assertEquals($genetics_primary_patient->id, $diagnoses1->patient_id); // this patient id is actually the genetics_patient.id
+        $this->assertEquals($genetics_primary_patient->id, $diagnoses2->patient_id);
 
+        //pedigree
+//        $this->assertEquals(2, count($genetics_primary_patient_model->pedigrees));
+//
+//        $pedigree1 = $this->genetics_patient_pedigree('genetics_patient_pedigree1');
+//        $pedigree2 = $this->genetics_patient_pedigree('genetics_patient_pedigree2');
+//
+//        $this->assertEquals($genetics_primary_patient->id, $pedigree1->patient_id); // this patient id is actually the genetics_patient.id
+//        $this->assertEquals($genetics_primary_patient->id, 1);
     }
     
     public function testGetTwoEpisodesStartEndDate()

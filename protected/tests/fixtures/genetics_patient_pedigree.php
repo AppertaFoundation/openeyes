@@ -18,16 +18,15 @@
  */
 
 return array(
-
-    'genetics_patient_diagnosis1' => array(
+    'genetics_patient_pedigree1' => array(
         'id' => 1,
-        'disorder_id' => 1,
-        'patient_id' => 1
+        'patient_id' => 1,
+        'pedigree_id' => 1
     ),
 
-    'genetics_patient_diagnosis2' => array(
+    'genetics_patient_pedigree2' => array(
         'id' => 2,
-        'disorder_id' => 2,
-        'patient_id' => 2
+        'patient_id' => 2,
+        'pedigree_id' => 2
     ),
 );

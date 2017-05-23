@@ -658,13 +658,17 @@ class PatientMerge
                 }
             }
 
-            if($genetics_patient_pedigree = GeneticsPatientPedigree::model()->findByAttributes(['patient_id' => $secondary_genetics_patient->id])){
-                $genetics_patient_pedigree->patient_id = $primary_genetics_patient->id;
-                if( $genetics_patient_pedigree->save() ){
-                    $this->addLog("Genetics Patient Pedigree {$genetics_patient_pedigree->id} moved from Patient(hos_num:) {$secondary_patient->hos_num} to {$primary_patient->hos_num}");
-                } else {
-                    $this->addLog("Genetics Patient Pedigree failed to save");
-                    return false;
+            if($genetics_patient_pedigrees = GeneticsPatientPedigree::model()->findAllByAttributes(['patient_id' => $secondary_genetics_patient->id])){
+
+                foreach($genetics_patient_pedigrees as $genetics_patient_pedigree) {
+                    $genetics_patient_pedigree->patient_id = $primary_genetics_patient->id;
+                    if ($genetics_patient_pedigree->save()) {
+
+                        $this->addLog("Genetics Patient Pedigree {$genetics_patient_pedigree->id} moved from Patient(hos_num:) {$secondary_patient->hos_num} to {$primary_patient->hos_num}");
+                    } else {
+                        $this->addLog("Genetics Patient Pedigree failed to save");
+                        return false;
+                    }
                 }
             }
 
