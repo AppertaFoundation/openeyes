@@ -330,23 +330,34 @@ class PatientMergeRequestController extends BaseController
                 // Load data from PatientMergeRequest AR record
                 $merge_handler->load($merge_request);
 
-                if ($merge_handler->merge()) {
-                    $msg = 'Merge Request '.$merge_request->secondaryPatient->hos_num.' INTO '.$merge_request->primaryPatient->hos_num.'(hos_num) successfully done.';
-                    $merge_handler->addLog($msg);
-                    $merge_request->status = $merge_request::STATUS_MERGED;
-                    $merge_request->merge_json = json_encode(array('log' => $merge_handler->getLog()));
-                    $merge_request->save();
-                    Audit::add('Patient Merge', 'Patient Merge Request successfully done.', $msg);
-                    $this->redirect(array('log', 'id' => $merge_request->id));
-                } else {
-                    $msg = 'Merge Request '.$merge_request->secondaryPatient->hos_num.' INTO '.$merge_request->primaryPatient->hos_num.' FAILED.';
-                    $merge_handler->addLog($msg);
-                    $merge_request->status = $merge_request::STATUS_CONFLICT;
-                    $merge_request->merge_json = json_encode(array('log' => $merge_handler->getLog()));
-                    $merge_request->save();
-                    Yii::app()->user->setFlash('warning.search_error', 'Merge failed.');
-                    $this->redirect(array('index'));
+                try{
+
+                    if ($merge_handler->merge()) {
+                        $msg = 'Merge Request '.$merge_request->secondaryPatient->hos_num.' INTO '.$merge_request->primaryPatient->hos_num.'(hos_num) successfully done.';
+                        $merge_handler->addLog($msg);
+                        $merge_request->status = $merge_request::STATUS_MERGED;
+                        $merge_request->merge_json = json_encode(array('log' => $merge_handler->getLog()));
+                        $merge_request->save();
+                        Audit::add('Patient Merge', 'Patient Merge Request successfully done.', $msg);
+                        $this->redirect(array('log', 'id' => $merge_request->id));
+                    } else {
+                        $msg = 'Merge Request '.$merge_request->secondaryPatient->hos_num.' INTO '.$merge_request->primaryPatient->hos_num.' FAILED.';
+                        $merge_handler->addLog($msg);
+                        $merge_request->status = $merge_request::STATUS_CONFLICT;
+                        $merge_request->merge_json = json_encode(array('log' => $merge_handler->getLog()));
+                        $merge_request->save();
+                        Yii::app()->user->setFlash('warning.search_error', 'Merge failed.');
+                        $this->redirect(array('index'));
+                    }
+
+                } catch (Exception $exception){
+                    Yii::app()->user->getFlashes(true);
+                    Yii::app()->user->setFlash('warning.merge_error', 'Merge failed.');
+                    Yii::app()->user->setFlash('warning.merge_exp', $exception->getMessage());
+
+                    $this->redirect(array('view', 'id' => $merge_request->id));
                 }
+
             }
         }
 
