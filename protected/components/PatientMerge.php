@@ -608,6 +608,13 @@ class PatientMerge
         return true;
     }
 
+    /**
+     * Merging Genetics patients
+     *
+     * @param Patient $primary_patient
+     * @param Patient $secondary_patient
+     * @return bool
+     */
     public function updateGenetics(Patient $primary_patient, Patient $secondary_patient)
     {
         $primary_genetics_patient = GeneticsPatient::model()->findByAttributes(['patient_id' => $primary_patient->id]);
@@ -631,7 +638,8 @@ class PatientMerge
 
             $secondary_genetics_patient->deleted = 1;
             $secondary_genetics_patient->save();
-            Audit::add('Patient Merge', 'delete', "Genetics Patient id" . $secondary_genetics_patient->id . " hos_num:" . $secondary_genetics_patient->hos_num);
+            Audit::add('Patient Merge', 'delete', "Genetics Patient id" . $secondary_genetics_patient->id . " hos_num:" . $secondary_genetics_patient->patient->hos_num);
+            $this->addLog("Genetics Patient(subject) flagged as deleted (id): " . $secondary_genetics_patient->id );
 
         } else {
             //else both are genetics patients
@@ -660,7 +668,7 @@ class PatientMerge
                 }
             }
 
-            if($genetics_study_subject = GeneticsStudySubject::model()->findByAttributes(['patient_id' => $secondary_genetics_patient->id])){
+            if($genetics_study_subject = GeneticsStudySubject::model()->findByAttributes(['subject_id' => $secondary_genetics_patient->id])){
                 $genetics_study_subject->patient_id = $primary_genetics_patient->id;
                 if( $genetics_study_subject->save() ){
                     $this->addLog("Genetics Study Subject {$genetics_study_subject->id} moved from Patient(hos_num:) {$secondary_patient->hos_num} to {$primary_patient->hos_num}");
@@ -680,10 +688,16 @@ class PatientMerge
                 }
             }
 
-            $primary_genetics_patient->comment = $primary_genetics_patient->comment . ", " . $secondary_genetics_patient->comment;
+            $primary_genetics_patient->comments .= ", " . $secondary_genetics_patient->comments;
 
             if( $primary_genetics_patient->save() ){
                 $this->addLog("Genetics Patient comment saved");
+            }
+
+            $secondary_genetics_patient->deleted = 1;
+            if( $secondary_genetics_patient->save() ){
+                Audit::add('Patient Merge', 'delete', "Genetics Patient id" . $secondary_genetics_patient->id . " hos_num:" . $secondary_genetics_patient->patient->hos_num);
+                $this->addLog("Genetics Patient(subject) flagged as deleted (id): " . $secondary_genetics_patient->id );
             }
 
             return true;
