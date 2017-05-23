@@ -673,7 +673,7 @@ class PatientMerge
             }
 
             if($genetics_study_subject = GeneticsStudySubject::model()->findByAttributes(['subject_id' => $secondary_genetics_patient->id])){
-                $genetics_study_subject->patient_id = $primary_genetics_patient->id;
+                $genetics_study_subject->subject_id = $primary_genetics_patient->id;
                 if( $genetics_study_subject->save() ){
                     $this->addLog("Genetics Study Subject {$genetics_study_subject->id} moved from Patient(hos_num:) {$secondary_patient->hos_num} to {$primary_patient->hos_num}");
                 } else {
