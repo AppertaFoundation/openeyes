@@ -29,7 +29,7 @@ class OphCoCorrespondence_API extends BaseAPI
 
         // for the new correspondence with DocMan
         // once the letter is generated for the DocMan only admin can edit
-        return !$letter->isGeneratedForDocMan();
+        return !$letter->isGeneratedFor(['Docman', 'Internalreferral']);
 
         // FIXME: Correspondence locking is suspended while draft usage is discussed
         return true;
@@ -41,7 +41,7 @@ class OphCoCorrespondence_API extends BaseAPI
     {
         $letter = ElementLetter::model()->find('event_id=?', array($event_id));
         
-        return !$letter->isGeneratedForDocMan();
+        return !$letter->isGeneratedFor(['Docman', 'Internalreferral']);
     }
 
     public function getLatestEvent($episode)
@@ -298,7 +298,7 @@ class OphCoCorrespondence_API extends BaseAPI
         }
 
         if (isset($contact)) {
-            $data['to']['contact_name'] = $contact->getFullName();
+            $data['to']['contact_name'] = method_exists($contact, "getCorrespondenceName") ? $contact->getCorrespondenceName() : $contact->getFullName();
             $data['to']['address'] = $contact->getLetterAddress(array(
                                     'patient' => $patient,
                                     'include_name' => false,
@@ -321,7 +321,7 @@ class OphCoCorrespondence_API extends BaseAPI
                 $data['cc'][$k]['contact_name'] = "Warning: the patient cannot be cc'd because they are deceased.";
                 $data['cc'][$k]['address'] = null;
             } elseif ($patient->contact->address) {
-                $data['cc'][$k]['contact_name'] = $patient->getFullName();
+                $data['cc'][$k]['contact_name'] = $patient->getCorrespondenceName();
                 $data['cc'][$k]['contact_id'] = $patient->contact->id;
                 $data['cc'][$k]['address'] = $patient->getLetterAddress(array(
                             'include_name' => false,
@@ -330,7 +330,7 @@ class OphCoCorrespondence_API extends BaseAPI
                             'include_prefix' => false,
                         ));
             } else {
-                $data['cc'][$k]['contact_name'] = $patient->getFullName();
+                $data['cc'][$k]['contact_name'] = $patient->getCorrespondenceName();
                 $data['cc'][$k]['contact_id'] = $patient->contact->id;
                 $data['cc'][$k]['address'] = "Letters to the GP should be cc'd to the patient, but this patient does not have a valid address.";
             }
@@ -339,7 +339,7 @@ class OphCoCorrespondence_API extends BaseAPI
 
         if ($macro->cc_doctor && $cc_contact = ($patient->gp) ? $patient->gp : $patient->practice) {
             $data['cc'][$k]['contact_type'] = 'GP';
-            $data['cc'][$k]['contact_name'] = $cc_contact->getFullName();
+            $data['cc'][$k]['contact_name'] = $cc_contact->getCorrespondenceName();
             $data['cc'][$k]['contact_id'] = $cc_contact->contact->id;
             $data['cc'][$k]['address'] = $cc_contact->getLetterAddress(array(
                     'patient' => $patient,

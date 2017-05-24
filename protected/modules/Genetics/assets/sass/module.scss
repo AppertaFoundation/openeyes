@@ -1,0 +1,33 @@
+/** Genetics */
+@import "openeyes/module";
+@import "openeyes/components/admin/sidebar";
+
+
+#relationships_list {
+  list-style: none;
+  margin: 0;
+  padding-top: 15px;
+  li {
+    .fa {
+      cursor: pointer;
+    }
+    select {
+      width: auto;
+    }
+  }
+}
+
+#enteredDiagnosisText {
+  .clear-diagnosis-widget {
+    cursor: pointer;
+  }
+}
+
+#generic-admin-form{
+  .error-invalid{
+    background: #FF9494;
+  }
+  .error-failed{
+    background: #FFC98B;
+  }
+}

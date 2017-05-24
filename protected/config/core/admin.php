@@ -80,6 +80,7 @@ return array(
                 'Leaflets' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/Leaflets/list'),
                 'Leaflet Subspecialty and Firm Assignment' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/LeafletSubspecialtyFirm/list'),
             ),
+
         ),
     ),
 );

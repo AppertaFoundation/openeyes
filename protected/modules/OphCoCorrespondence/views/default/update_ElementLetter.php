@@ -46,6 +46,31 @@ $patient = Patient::model()->findByPk($patient_id);
 
 <div class="element-fields">
 
+    <?php
+    $correspondeceApp = \SettingInstallation::model()->find('`key` = "ask_correspondence_approval"');
+    if($correspondeceApp->value === "on") {
+        ?>
+        <div class="row field-row">
+            <div class="large-<?php echo $layoutColumns['label']; ?> column">
+                <label for="<?php echo get_class($element) . '_is_signed_off'; ?>">
+                    <?php echo $element->getAttributeLabel('is_signed_off') ?>:
+                </label>
+            </div>
+            <div class="large-8 column end">
+                <?php echo $form->radioButtons($element, 'is_signed_off', array(
+                    1 => 'Yes',
+                    0 => 'No',
+                ),
+                    $element->is_signed_off,
+                    false, false, false, false,
+                    array('nowrapper' => true)
+                ); ?>
+            </div>
+        </div>
+        <?php
+    }
+    ?>
+
     <div class="row field-row">
         <div class="large-<?php echo $layoutColumns['label']; ?> column">
             <label>Site:</label>
@@ -77,10 +102,22 @@ $patient = Patient::model()->findByPk($patient_id);
             <label>Letter type:</label>
         </div>
         <div class="large-2 column end">
-            <?php echo $form->dropDownList($element, 'letter_type_id', CHtml::listData(LetterType::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+            <?php echo $form->dropDownList($element, 'letter_type_id', CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
                 array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
         </div>
     </div>
+
+    <?php if($element->isInternalReferralEnabled()): ?>
+
+        <div class="row field-row internal-referrer-wrapper <?php echo $element->isInternalreferral() ? '' : 'hidden'; ?> ">
+            <div class="large-2 column"></div>
+
+            <div class="large-10 column">
+                <?php $this->renderPartial('_internal_referral', array('element' => $element)); ?>
+            </div>
+        </div>
+
+    <?php endif; ?>
 
 
     <div class="row field-row">
@@ -333,28 +370,5 @@ $patient = Patient::model()->findByPk($patient_id);
             </div>
         </div>
     </div>
-    <?php
-    $correspondeceApp = \SettingInstallation::model()->find('`key` = "ask_correspondence_approval"');
-    if($correspondeceApp->value === "on") {
-        ?>
-        <div class="row field-row">
-            <div class="large-<?php echo $layoutColumns['label']; ?> column">
-                <label for="<?php echo get_class($element) . '_is_signed_off'; ?>">
-                    <?php echo $element->getAttributeLabel('is_signed_off') ?>:
-                </label>
-            </div>
-            <div class="large-8 column end">
-                <?php echo $form->radioButtons($element, 'is_signed_off', array(
-                    1 => 'Yes',
-                    0 => 'No',
-                ),
-                    $element->is_signed_off,
-                    false, false, false, false,
-                    array('nowrapper' => true)
-                ); ?>
-            </div>
-        </div>
-        <?php
-    }
-    ?>
+
 </div>

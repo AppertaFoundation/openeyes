@@ -33,6 +33,9 @@
 			<?php } else {
 				echo $this->patient->getAge(); } 
 			?>)
+                        <?php if($this->patient->isEditable() ):?>
+                            <a style="color:#0b59da" href="<?php echo $this->createUrl('patient/update/' . $this->patient->id); ?>"> edit</a>
+                        <?php endif; ?>
 		</span>
 		<span class="icon-patient-panel-info has-tooltip"></span>
 		<div id='patient_general_informations' class='hidden'>
