@@ -195,7 +195,7 @@
     </div>
 </section>
 
-<?php if ($element->booking && !$this->module->isTheatreDiaryDisabled()) { ?>
+<?php if ($element->booking) { ?>
     <section class="element">
         <h3 class="element-title highlight">Booking Details</h3>
         <div class="element-data">
@@ -332,12 +332,7 @@ $this->event_actions[] = EventAction::link(
     array('class' => 'small button', 'target' => '_blank')
 );
 if ($element->isEditable()) {
-
-    $td_disabled = $this->module->isTheatreDiaryDisabled();
-
-    $status = strtolower($element->status->name);
-
-    if ((!$td_disabled && empty($element->booking)) || ($td_disabled && $status != 'scheduled')) {
+    if (empty($element->booking)) {
         if ($element->letterType && $this->checkPrintAccess()) {
             $print_letter_options = null;
             if (!$element->has_gp || !$element->has_address) {
@@ -353,7 +348,7 @@ if ($element->isEditable()) {
                 $this->event_actions[] = EventAction::button('Print Admission form', 'print_admission_form', null, array('class' => 'small button'));
             }
         }
-        if ($this->checkScheduleAccess() && !$td_disabled) {
+        if ($this->checkScheduleAccess()) {
             $this->event_actions[] = EventAction::link('Schedule now',
                 Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/booking/schedule/' . $element->event_id),
                 array('level' => 'secondary'),
@@ -372,7 +367,7 @@ if ($element->isEditable()) {
             );
             $this->event_actions[] = EventAction::button('Print admission form', 'print_admission_form', null, array('class' => 'small button'));
         }
-        if ($this->checkScheduleAccess() && !$td_disabled) {
+        if ($this->checkScheduleAccess()) {
             $this->event_actions[] = EventAction::link(
                 'Reschedule now',
                 Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/booking/reschedule/' . $element->event_id),

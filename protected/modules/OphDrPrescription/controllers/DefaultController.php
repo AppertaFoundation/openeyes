@@ -54,8 +54,8 @@ class DefaultController extends BaseEventTypeController
         $this->jsVars['common_drug_metadata'] = array();
         foreach (Element_OphDrPrescription_Details::model()->commonDrugs() as $drug) {
             $this->jsVars['common_drug_metadata'][$drug->id] = array(
-                    'type_id' => array_map(function($e){ return $e->id; }, $drug->type),
-                    'preservative_free' => (int)$drug->isPreservativeFree(),
+                    'type_id' => $drug->type_id,
+                    'preservative_free' => $drug->preservative_free,
             );
         }
     }
@@ -237,17 +237,15 @@ class DefaultController extends BaseEventTypeController
                 $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
             }
             if (isset($_GET['type_id']) && $type_id = $_GET['type_id']) {
-
-                $criteria->addCondition('id IN (SELECT drug_id FROM drug_drug_type WHERE drug_type_id = :type_id)');
+                $criteria->addCondition('type_id = :type_id');
                 $params[':type_id'] = $type_id;
             }
             if (isset($_GET['preservative_free']) && $preservative_free = $_GET['preservative_free']) {
-                $tag_id = Yii::app()->params['preservative_free_tag_id'];
-                $criteria->addCondition("id IN (SELECT drug_id FROM drug_tag WHERE tag_id = $tag_id)");
+                $criteria->addCondition('preservative_free = 1');
             }
             $criteria->order = 'name';
             // we don't need 'select *' here
-            $criteria->select = 'id, tallman';
+            $criteria->select = 'id, tallman, preservative_free';
             $criteria->params = $params;
 
             $drugs = Drug::model()->active()->findAll($criteria);
