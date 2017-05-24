@@ -195,20 +195,6 @@ class m170305_160630_add_keratoconus_data extends OEMigration
         ));
 
 
-        $this->insert('ophciexamination_cxl_quality_score', array(
-            'name' => 'OK',
-            'display_order' => 1,
-        ));
-        $this->insert('ophciexamination_cxl_quality_score', array(
-            'name' => 'Borderline',
-            'display_order' => 2,
-        ));
-        $this->insert('ophciexamination_cxl_quality_score', array(
-            'name' => 'Poor',
-            'display_order' => 3,
-        ));
-
-
         $this->insert('ophciexamination_topographer_device', array(
             'name' => 'Pentacam',
             'display_order' => 1,
