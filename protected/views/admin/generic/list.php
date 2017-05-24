@@ -26,6 +26,7 @@ if (!isset($uniqueid)) {
     $uniqueid = $this->uniqueid;
 }
 ?>
+<?php $this->renderPartial('//base/_messages'); ?>
 <div class="admin box">
     <?php if (!$admin->isSubList()): ?>
         <h2><?php echo $admin->getModelDisplayName(); ?></h2>
@@ -82,7 +83,7 @@ if (!isset($uniqueid)) {
                 <?php
                 foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
                     <tr class="clickable" data-id="<?php echo $row->id ?>"
-                        data-uri="<?php echo $uniqueid ?>/edit/<?php echo $row->id ?>?returnUri=<?= $returnUri ?>">
+                        data-uri="<?php echo $uniqueid ?>/<?php echo $admin->getListFieldsAction() ?>/<?php echo $row->id ?>?returnUri=<?= $returnUri ?>">
                         <td>
                             <input type="checkbox" name="<?php echo $admin->getModelName(); ?>[id][]" value="<?php echo $row->id ?>"/>
                         </td>
@@ -166,6 +167,7 @@ if (!isset($uniqueid)) {
                         )->toHtml() ?>
                         <?php echo $this->renderPartial('//admin/_pagination', array(
                             'pagination' => $admin->getPagination(),
+                            'hide_links' => (!$admin->getSearch()->isDefaultResults() && !$admin->getSearch()->isSearching())
                         )) ?>
                     </td>
                 </tr>

@@ -18,61 +18,48 @@
  */
 ?>
 <div class="row field-row">
-	<div class="large-<?php echo $layoutColumns['label'];?> column">
-		<label for="<?php echo "{$class}_{$field}";?>">Diagnosis:</label>
-	</div>
-	<div class="large-<?php echo $layoutColumns['field'];?> column end">
+    <div class="large-<?php echo $layoutColumns['label']; ?> column">
+        <label for="<?php echo "{$class}_{$field}"; ?>">Diagnosis:</label>
+    </div>
+    <div class="large-<?php echo $layoutColumns['field']; ?> column end">
 
-		<!-- Here we show the selected diagnosis -->
-		<div id="enteredDiagnosisText" class="panel diagnosis<?php if (!$label) {?> hide<?php }?>">
-			<?php echo $label?>
-		</div>
+        <!-- Here we show the selected diagnosis -->
+        <div id="enteredDiagnosisText" class="panel diagnosis<?php if (!$label) { ?> hide<?php } ?>">
+            <?php echo $label ?>
+            <?php
+            $clear_diagnosis = '';
+            if ($allowClear) {
+                $clear_diagnosis = Chtml::link('(Remove)', "#", array("id" => "clear-diagnosis-widget"));
+                echo $clear_diagnosis;
+            } ?>
+        </div>
 
-		<div class="field-row">
-			<?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis'))?>
-		</div>
-		<div class="field-row">
-			<?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                'name' => "{$class}[$field]",
-                'id' => "{$class}_{$field}_0",
-                'value' => '',
-                'source' => "js:function(request, response) {
-					$.ajax({
-						'url': '".Yii::app()->createUrl('/disorder/autocomplete')."',
-						'type':'GET',
-						'data':{'term': request.term, 'code': ".CJavaScript::encode($code)."},
-						'success':function(data) {
-							data = $.parseJSON(data);
-							response(data);
-						}
-					});
-				}",
-                'options' => array(
-                    'minLength' => '3',
-                    'select' => "js:function(event, ui) {
-						$('#".$class.'_'.$field."_0').val('');
-						$('#enteredDiagnosisText').html(ui.item.value);
-						$('#enteredDiagnosisText').show();
-						$('input[id=savedDiagnosis]').val(ui.item.id);
-						$('#".$class.'_'.$field."').focus();
-						return false;
-					}",
-                ),
-                'htmlOptions' => array(
-                    'placeholder' => 'or type the first few characters of a diagnosis',
-                ),
+        <div class="field-row">
+            <?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis')) ?>
+        </div>
+        <div class="field-row">
+            <?php
+            $this->controller->renderPartial('//disorder/disorderAutoComplete', array(
+                'class' => $class,
+                'name' => $field,
+                'code' => $code,
+                'clear_diagnosis' => $clear_diagnosis,
+                'value' => $value,
+                'placeholder' => 'or type the first few characters of a diagnosis',
             ));
             ?>
-			<input type="hidden" name="<?php echo $class?>[<?php echo $field?>]"
-				   id="savedDiagnosis" value="<?php echo $value?>" />
-		</div>
-	</div>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
-	$('#<?php echo $class?>_<?php echo $field?>').change(function() {
-		$('#enteredDiagnosisText').html($('option:selected', this).text());
-		$('#enteredDiagnosisText').show();
-		$('#savedDiagnosis').val($(this).val());
-	});
+    $('#<?php echo $class?>_<?php echo $field?>').change(function () {
+        $('#enteredDiagnosisText').html($('option:selected', this).text()
+            <?php if ($allowClear) { ?>
+            + ' <?php echo $clear_diagnosis ?>'
+            <?php } ?>
+        );
+        $('#enteredDiagnosisText').show();
+        $('#savedDiagnosis').val($(this).val());
+    });
 </script>

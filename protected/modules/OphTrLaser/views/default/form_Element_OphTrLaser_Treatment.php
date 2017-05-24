@@ -27,40 +27,62 @@ $layoutColumns = array(
 ?>
 
 <div class="element-fields element-eyes row">
-	<?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')) ?>
-	<div class="element-eye right-eye column side left<?php if (!$element->hasRight()) { ?> inactive<?php } ?>" data-side="right">
-		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove eye</a>
-			<?php
-            $form->multiSelectList(
-                $element,
-                'treatment_right_procedures',
-                'right_procedures', 'id', CHtml::listData($procs, 'id', 'term'), array(), array('empty' => '- Procedures -', 'label' => $element->getAttributeLabel('procedures')), false,    false, null, false, false, $layoutColumns);?>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add right side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-	<div class="element-eye left-eye column side right<?php if (!$element->hasLeft()) { ?> inactive<?php } ?>" data-side="left">
-		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove eye</a>
-			<?php
-            $form->multiSelectList(
-                $element,
-                'treatment_left_procedures',
-                'left_procedures', 'id', CHtml::listData($procs, 'id', 'term'), array(), array('empty' => '- Procedures -', 'label' => $element->getAttributeLabel('procedures')), false, false, null, false, false, $layoutColumns);
-            ?>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add left side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
+    <?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')) ?>
+  <div class="element-eye right-eye column side left<?php if (!$element->hasRight()) { ?> inactive<?php } ?>" data-side="right">
+    <div class="active-form">
+      <a href="#" class="icon-remove-side remove-side">Remove eye</a>
+        <?php
+        $form->multiSelectList(
+            $element,
+            'treatment_right_procedures',
+            'right_procedures',
+            'id',
+            CHtml::listData($procs, 'id', 'term'),
+            array(),
+            array('empty' => '- Procedures -', 'label' => $element->getAttributeLabel('procedures')),
+            false,
+            false,
+            null,
+            false,
+            false,
+            $layoutColumns
+        ); ?>
+    </div>
+    <div class="inactive-form">
+      <div class="add-side">
+        <a href="#">
+          Add right side <span class="icon-add-side"></span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="element-eye left-eye column side right<?php if (!$element->hasLeft()) { ?> inactive<?php } ?>" data-side="left">
+    <div class="active-form">
+      <a href="#" class="icon-remove-side remove-side">Remove eye</a>
+        <?php
+        $form->multiSelectList(
+            $element,
+            'treatment_left_procedures',
+            'left_procedures',
+            'id',
+            CHtml::listData($procs, 'id', 'term'),
+            array(),
+            array('empty' => '- Procedures -', 'label' => $element->getAttributeLabel('procedures')),
+            false,
+            false,
+            null,
+            false,
+            false,
+            $layoutColumns
+        );
+        ?>
+    </div>
+    <div class="inactive-form">
+      <div class="add-side">
+        <a href="#">
+          Add left side <span class="icon-add-side"></span>
+        </a>
+      </div>
+    </div>
+  </div>
 </div>

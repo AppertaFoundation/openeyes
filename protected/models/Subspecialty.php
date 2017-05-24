@@ -24,7 +24,7 @@
  *
  * @property int $id
  * @property string $name
- * @property string $class_name
+ * @property string $ref_spec
  *
  * The followings are the available model relations:
  * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
@@ -42,6 +42,11 @@ class Subspecialty extends BaseActiveRecordVersioned
         return 'subspecialty';
     }
 
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.name');
+	}
+
     /**
      * @return array validation rules for model attributes.
      */
@@ -50,11 +55,11 @@ class Subspecialty extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, class_name', 'required'),
-            array('name, class_name', 'length', 'max' => 40),
+            array('name, ref_spec', 'required'),
+            array('name, ref_spec', 'length', 'max' => 40),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, class_name', 'safe', 'on' => 'search'),
+            array('id, name, ref_spec', 'safe', 'on' => 'search'),
         );
     }
 
@@ -97,7 +102,7 @@ class Subspecialty extends BaseActiveRecordVersioned
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
-        $criteria->compare('class_name', $this->class_name, true);
+        $criteria->compare('ref_spec', $this->ref_spec, true);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,

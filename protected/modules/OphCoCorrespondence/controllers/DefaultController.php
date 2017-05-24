@@ -23,6 +23,9 @@ class DefaultController extends BaseEventTypeController
         'getMacroData' => self::ACTION_TYPE_FORM,
         'getString' => self::ACTION_TYPE_FORM,
         'getCc' => self::ACTION_TYPE_FORM,
+        'getConsultantsBySubspecialty' => self::ACTION_TYPE_FORM,
+        'getSalutationByFirm' => self::ACTION_TYPE_FORM,
+        'getSiteInfo' => self::ACTION_TYPE_FORM,
         'expandStrings' => self::ACTION_TYPE_FORM,
         'users' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
@@ -53,13 +56,18 @@ class DefaultController extends BaseEventTypeController
     {
         parent::initAction($action);
         $this->jsVars['electronic_sending_method_label'] = Yii::app()->params['electronic_sending_method_label'];
-        
+
+        $site = Site::model()->findByPk( Yii::app()->session['selected_site_id'] );
+
+        $this->jsVars['internal_referral_booking_address'] = $site->getCorrespondenceName();
+
+        $this->jsVars['internal_referral_method_label'] = ElementLetter::model()->getInternalReferralSettings('internal_referral_method_label');
+
         $event_id = Yii::app()->request->getQuery('id');
         if($event_id){
             $letter = ElementLetter::model()->find('event_id=?', array($event_id));
             $this->editable = $letter->isEditable();
             $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
-
 
             if($action == 'update'){
                 if( !Yii::app()->request->isPostRequest && $letter->draft){
@@ -96,10 +104,9 @@ class DefaultController extends BaseEventTypeController
     
     public function actionView($id)
     {
-        $title = '';
         $letter = ElementLetter::model()->find('event_id=?', array($id));
 
-        $output = $letter->getOutputByType($type = 'Docman');
+        $output = $letter->getOutputByType(['Docman', 'Internalreferral']);
         if($output){
             $docnam = $output[0]; //for now only one Docman allowed
             $title = $docnam->output_status;
@@ -115,9 +122,17 @@ class DefaultController extends BaseEventTypeController
     public function actionUpdate($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
+
+        // admin can go to edit mode event if the document has been sent
         if(!$letter->isEditable()){
             $this->redirect(array('default/view/'.$id));
         }
+
+        //if the letter is generated than we set a warning (only admin should reach this point, handled in $letter->isEditable())
+        if( $letter->isGeneratedFor(['Docman', 'Internalreferral']) ){
+            Yii::app()->user->setFlash('warning.letter_warning', 'Please note this letter has already been sent. Only modify if it is really necessary!');
+        }
+
         parent::actionUpdate($id);
     }
     
@@ -391,8 +406,8 @@ class DefaultController extends BaseEventTypeController
             
             // check if the first recipient is GP
             $docunemt_instance = $letter->document_instance[0];
-            $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND contact_type=:type',array(
-                ':id' => $docunemt_instance->id, ':ToCc' => 'To', ':type' => 'GP'));
+            $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)',array(
+                ':id' => $docunemt_instance->id, ':ToCc' => 'To', ':type_gp' => 'GP', ':type_ir' => 'INTERNALREFERRAL', ));
             
             if($to_recipient_gp){
                 // print an extra copy to note
@@ -423,7 +438,7 @@ class DefaultController extends BaseEventTypeController
 
             /**
              * this is a hotfix for DocMan, when we generate correspondences
-             * where the main recipient is NOT the GP the than we need to cherrypick it
+             * where the main recipient is NOT the GP than we need to cherrypick it
              */
             if( isset($_GET['print_only_gp']) && $_GET['print_only_gp'] == "1" ){
 
@@ -632,5 +647,54 @@ class DefaultController extends BaseEventTypeController
             echo '1';
         }
     }
-  
+
+    /**
+     * Returns the consultants by subspecialty
+     * @param null $subspecialty_id
+     */
+    public function actionGetConsultantsBySubspecialty($subspecialty_id = null)
+    {
+        $firms = Firm::model()->getListWithSpecialties(false, $subspecialty_id);
+        echo CJSON::encode($firms);
+
+        Yii::app()->end();
+    }
+
+    /**
+     * Returns the consultant's or subspecialty salutation
+     * @param $firm_id
+     * @throws Exception when firm not found by ID
+     * @return json salutation
+     */
+    public function actionGetSalutationByFirm($firm_id)
+    {
+        $firm = Firm::model()->findByPk($firm_id);
+
+        if(!$firm){
+            throw new Exception("Firm not found. ID: $firm_id");
+        }
+        $user = User::model()->findByPk($firm->consultant_id);
+
+        if($user){
+            $salutation = $user->getSalutationName() . " ({$firm->getSubspecialtyText()}),";
+        } else {
+            $salutation = 'Dear ' . $firm->getSubspecialtyText() . ' Service,';
+        }
+
+        echo CJSON::encode($salutation);
+        Yii::app()->end();
+    }
+
+    public function actionGetSiteInfo($to_location_id)
+    {
+        $to_location = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByPk($to_location_id);
+        $site = $to_location->site;
+
+        $attributes = $site->attributes;
+        $attributes['correspondence_name'] = $site->getCorrespondenceName();
+        echo CJSON::encode($attributes);
+
+        Yii::app()->end();
+    }
+
 }

@@ -75,7 +75,7 @@ class FormularyDrugs extends BaseActiveRecordVersioned
         return array(
             array('name', 'required'),
             array(
-                'name, aliases, tallman, type_id, form_id, dose_unit,default_dose,default_route_id,default_frequency_id,default_duration_id, active, allergy_warnings, national_code, tags',
+                'name, aliases, tallman, type_id, form_id, dose_unit,default_dose,default_route_id,default_frequency_id,default_duration_id, preservative_free, active, allergy_warnings, national_code, tags',
                 'safe',
             ),
         );

@@ -60,6 +60,9 @@ function updateCorrespondence(macro_id)
                 
                 //set letter type
                 $('#ElementLetter_letter_type_id').val(data.sel_letter_type_id);
+                $('.internal-referrer-wrapper').slideUp();
+                resetInternalReferralFields();
+
             }
         });
     }
@@ -69,13 +72,138 @@ function togglePrintDisabled (isSignedOff) {
 	$('#et_save_print').prop('disabled', !isSignedOff);
 }
 
+		/** Internal Referral **/
+/**
+ * Reset all Internal referral input fields
+ */
+function resetInternalReferralFields(){
+
+    $('.internal-referral-section').find(':input').not(':button, :submit, :reset, :hidden').removeAttr('checked').removeAttr('selected').not(':checkbox, :radio, select').val('');
+
+    $.each( $('.internal-referral-section select').find(':input'), function(i, input){
+        $(input).val('');
+    });
+}
+
+function setRecipientToInternalReferral(){
+	$('#docman_recipient_0').attr('disabled', true).css({'background-color':'lightgray'});
+	$('#DocumentTarget_0_attributes_contact_name').prop('readonly', true).val('Internal Referral');
+	$('#Document_Target_Address_0').prop('readonly', true).val(internal_referral_booking_address);
+
+    var $option = $('<option>',{value:'INTERNALREFERRAL',text:'Booking'});
+    $('#DocumentTarget_0_attributes_contact_type').append($option);
+
+	$('#DocumentTarget_0_attributes_contact_type').val('INTERNALREFERRAL');
+
+    $('#dm_table tr:first-child td:last-child').html('Change the letter type <br> to amend this recipient').css({'font-size':'11px'});
+
+    if( !$('#yDocumentTarget_0_attributes_contact_type').length ){
+        var $input = $('<input>',{'type':'hidden','id':'yDocumentTarget_0_attributes_contact_type','name':'DocumentTarget[0][attributes][contact_type]'}).val('INTERNALREFERRAL');
+        $('#DocumentTarget_0_attributes_contact_type').after($input);
+    } else {
+        $('#yDocumentTarget_0_attributes_contact_type').val('INTERNALREFERRAL');
+    }
+}
+
+function resetRecipientFromInternalReferral(){
+	$('#docman_recipient_0').attr('disabled', false).css({'background-color':'white'});
+	$('#DocumentTarget_0_attributes_contact_name').prop('readonly', false).val('');
+	$('#Document_Target_Address_0').prop('readonly', false).val('');
+
+    $('#DocumentTarget_0_attributes_contact_type').find('option[value="INTERNALREFERRAL"]').remove();
+	$('#DocumentTarget_0_attributes_contact_type').val('');
+
+    $('#dm_table tr:first-child td:last-child').html('');
+
+    //find the GP row and remove then select GP as TO recipient
+    $('.docman_contact_type').each(function(i, $element){
+        if( $($element).val() === "GP"){
+            $element.closest('tr').remove();
+        }
+    });
+    $('#docman_recipient_0 option:contains("GP")').val();
+    $('#docman_recipient_0').val( $('#docman_recipient_0 option:contains("GP")').val() ).change();
+
+}
+
+function updateConsultantDropdown(subspecialty_id){
+
+	$.getJSON(baseUrl + "/" + moduleName + "/Default/getConsultantsBySubspecialty", {
+        subspecialty_id: subspecialty_id,
+    }, function (data) {
+	    var options = [];
+
+        //remove old options
+        $('#ElementLetter_to_firm_id option:gt(0)').remove();
+
+        //create js array from obj to sort
+        for(item in data){
+            options.push([item,data[item]]);
+        }
+
+        options.sort(function(a,b){
+            if (a[1] > b[1]) return -1;
+            else if (a[1] < b[1]) return 1;
+            else return 0;
+        });
+        options.reverse();
+
+        //append new option to the dropdown
+        $.each(options, function(key, value) {
+            $('#ElementLetter_to_firm_id').append($("<option></option>")
+                .attr("value", value[0]).text(value[1]));
+        });
+    });
+}
+function updateSalutation(text){
+    $("#ElementLetter_introduction").val(text);
+}
+
+$(document).ready(function() {
+    $('#ElementLetter_to_subspecialty_id').on('change',function(){
+        updateConsultantDropdown( $(this).val() );
+        updateSalutation("Dear " + $(this).find('option:selected').text() + ' service,');
+    });
+
+    $('#ElementLetter_to_firm_id').on('change',function(){
+        var reg_exp = /\(([^)]+)\)/;
+        var subspecialty_name = reg_exp.exec( $(this).find('option:selected').text() )[1];
+        var subspecialty_id;
+
+        subspecialty_id = $('#ElementLetter_to_subspecialty_id').find('option:contains("' + subspecialty_name + '")').val();
+        $('#ElementLetter_to_subspecialty_id').val(subspecialty_id);
+
+        $.getJSON(baseUrl + "/" + moduleName + "/Default/getSalutationByFirm", {
+            firm_id: $('#ElementLetter_to_firm_id').val(),
+        }, function (data) {
+            updateSalutation(data);
+        });
+    });
+
+    $('#ElementLetter_to_location_id').on('change', function(){
+
+        $.getJSON(baseUrl + "/" + moduleName + "/Default/getSiteInfo", {
+            to_location_id: $('#ElementLetter_to_location_id').val(),
+        }, function (data) {
+            $('#Document_Target_Address_0').val(data.correspondence_name);
+        });
+
+    });
+
+
+});
+
+		/** End of Internal Referral **/
+
+
+
 $(document).ready(function() {
 	var $letterIsSignedOff = $('#ElementLetter_is_signed_off');
 // leave this for a while until the requirements gets clear
-//	togglePrintDisabled($letterIsSignedOff.is(':checked'));
-//	$letterIsSignedOff.change(function() {
-//		togglePrintDisabled(this.checked);
-//	});
+// 	togglePrintDisabled($letterIsSignedOff.is(':checked'));
+//     $letterIsSignedOff.change(function() {
+//         togglePrintDisabled(this.checked);
+//     });
 
 	$(this).delegate('#ElementLetter_site_id', 'change', function() {
 		if (correspondence_directlines) {
@@ -556,15 +684,53 @@ $(document).ready(function() {
 
 	$('#ElementLetter_body').tabby();
         
-        if( $('#dm_table').length > 0 ){
-            // we have docman table here
-            docman2 = docman;
-            docman2.baseUrl = location.protocol + '//' + location.host + '/docman/'; // TODO add this to the config!
-            docman2.setDOMid('docman_block','dm_');
-            docman2.module_correspondence = 1;
-            
-            docman2.init();
+	if( $('#dm_table').length > 0 ){
+        // we have docman table here
+        docman2 = docman;
+        docman2.baseUrl = location.protocol + '//' + location.host + '/docman/'; // TODO add this to the config!
+        docman2.setDOMid('docman_block','dm_');
+        docman2.module_correspondence = 1;
+
+        docman2.init();
+    }
+
+    $('#ElementLetter_letter_type_id').on('change', function(){
+		if( $(this).find('option:selected').text() == 'Internal Referral' ){
+            $('.internal-referrer-wrapper').slideDown();
+            setRecipientToInternalReferral();
+
+            if( typeof docman !== "undefined" ){
+
+                //add GP to recipients
+                if( !docman.isContactTypeAdded("GP") ){
+                    docman.createNewRecipientEntry('GP');
+                }
+
+                //add Patient to recipients
+                if( !docman.isContactTypeAdded("PATIENT") ){
+                    docman.createNewRecipientEntry('PATIENT');
+                }
+            }
+
+		} else if($('.internal-referrer-wrapper').is(':visible')) {
+            $('.internal-referrer-wrapper').slideUp();
+            resetInternalReferralFields();
+            resetRecipientFromInternalReferral();
+
+            if (typeof docman !== "undefined"){
+
+                if( typeof docman.setDeliveryMethods === 'function') {
+                    docman.setDeliveryMethods(0);
+                }
+		    }
         }
+
+
+        //call the setDeliveryMethods with row index 0 as the Internal referral will be the main recipient
+        //we have to trigger to set it
+        docman.setDeliveryMethods(0);
+	})
+
 });
 
 var et_oph_correspondence_body_cursor_position = 0;

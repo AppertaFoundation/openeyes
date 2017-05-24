@@ -18,17 +18,21 @@
  */
 ?>
 
+<?php
+    $is_mandatory = isset($is_mandatory) ? $is_mandatory : false;
+?>
+
 <table id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
-    
-    <tr id="dm_0">
-        <th>To/CC</th>
-        <th>Recipient/Address</th>
-        <th>Role</th>
-        <th>Delivery Method(s)</th>
-        <th class="actions">
-            <img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="display: none;">
-        </th>
-    </tr>
+    <thead>
+        <tr id="dm_0">
+            <th>To/CC</th>
+            <th>Recipient/Address</th>
+            <th>Role</th>
+            <th>Delivery Method(s)</th>
+            <th class="actions"><img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="display: none;"></th>
+        </tr>
+    </thead>
+
     <tbody>
     <?php /* Generate recipients by macro */ ?>
     <?php if (!empty($macro_data)):?>
@@ -37,7 +41,7 @@
             <tr class="rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
                 <td> To <?php echo CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", 'To'); ?> </td>
                 <td>
-                    <?php 
+                    <?php
 
                         $contact_type = isset($macro_data["to"]["contact_type"]) ? $macro_data["to"]["contact_type"] : null;
 
@@ -45,10 +49,13 @@
                                     'contact_id' => $macro_data["to"]["contact_id"],
                                     'contact_name' => $macro_data["to"]["contact_name"],
                                     'address_targets' => $element->address_targets,
-                                    'is_editable' => ucfirst(strtolower($contact_type)) != 'Gp',
                                     'contact_type' => $contact_type,
                                     'row_index' => $row_index,
                                     'address' => $macro_data["to"]["address"],
+
+                                    'is_editable_contact_targets' => $contact_type != 'INTERNALREFERRAL',
+                                    'is_editable_contact_name' => ($contact_type != 'INTERNALREFERRAL'),
+                                    'is_editable_address' => (ucfirst(strtolower($contact_type)) != 'Gp') && ($contact_type != 'INTERNALREFERRAL'),
                                 ));
                     ?>
 
@@ -58,6 +65,11 @@
                     <?php $this->renderPartial('//docman/table/contact_type', array(
                         'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
                         'row_index' => $row_index,
+                        // Internal referral will always be the first row - indexed 0
+                        'contact_types' => Document::getContactTypes() + ((strtoupper($macro_data["to"]["contact_type"]) == 'INTERNALREFERRAL' && $row_index == 0) ? Document::getInternalReferralContactType() : []),
+
+                        //contact_type is not editable as per requested, former validation left until the req finalized
+                        'is_editable' => false, //strtoupper($macro_data["to"]["contact_type"]) != 'INTERNALREFERRAL',
                     ));
                     ?>
                 </td>
@@ -79,11 +91,11 @@
                 $this->renderPartial(
                         '//docman/document_row_recipient',
                         array(
-                            'contact_id' => null, 
-                            'address' => null, 
+                            'contact_id' => null,
+                            'address' => null,
                             'row_index' => 0,
-                            'selected_contact_type' => null, 
-                            'contact_name' => null, 
+                            'selected_contact_type' => null,
+                            'contact_name' => null,
                             'can_send_electronically' => $can_send_electronically,
                         )
                     );
@@ -99,12 +111,12 @@
                         <?php 
                             $contact_name = isset($macro["contact_name"]) ? $macro["contact_name"] : null;
                             $contact_type = isset($macro["contact_type"]) ? $macro["contact_type"] : null;
-                            
+
                             $this->renderPartial('//docman/table/contact_name_address', array(
                                         'contact_id' => $macro["contact_id"],
                                         'contact_name' => $contact_name,
                                         'address_targets' => $element->address_targets,
-                                        'is_editable' => ucfirst(strtolower($contact_type)) != 'Gp',
+                                        'is_editable_address' => ucfirst(strtolower($contact_type)) != 'Gp',
                                         'contact_type' => $contact_type,
                                         'row_index' => $index,
                                         'address' => $macro["address"],
@@ -115,6 +127,10 @@
                         <?php $this->renderPartial('//docman/table/contact_type', array(
                             'contact_type' => strtoupper($macro["contact_type"]),
                             'row_index' => $index,
+
+                            //contact_type is not editable as per requested, former validation left until the req finalized
+                            'is_editable' => false, //strtoupper($macro["contact_type"]) != 'INTERNALREFERRAL',
+                            'contact_types' => Document::getContactTypes() + ((strtoupper($macro["contact_type"]) == 'INTERNALREFERRAL' && $row_index == 0) ? Document::getInternalReferralContactType() : []),
                         ));
                         ?>
                     </td>
@@ -130,7 +146,7 @@
 
                     </td>
                     <td>
-                        <a class="remove_recipient removeItem" data-rowindex="<?php echo $index ?>">Remove</a>
+                        <a class="remove_recipient removeItem <?php echo (isset($macro['is_mandatory']) && $macro['is_mandatory'])? 'hidden' : '' ?>" data-rowindex="<?php echo $index ?>">Remove</a>
                     </td>
 
                 </tr>
@@ -138,8 +154,8 @@
         <?php endif; ?>
     <?php endif; ?>
 
-    <tr class="rowindex-0" data-indexrow="0">
-        <?php 
+
+        <?php
             /* generates a default 'To' and 'Cc' rows */
             if(empty($macro_data)){
                 $contact_id = null;
@@ -171,9 +187,9 @@
                 );
             }
         ?>
-    </tr>
+
     
-    <tr class="rowindex-1" data-indexrow="1">
+
         <?php 
             if(empty($macro_data)){
                 $contact_id = null;
@@ -203,15 +219,18 @@
                         'selected_contact_type' => $contact_type, 
                         'contact_name' => $contact_name,
                         'can_send_electronically' => $can_send_electronically,
+                        'is_internal_referral' => $element->isInternalReferralEnabled(),
                     )
                 );
             }
         ?>
-        
-        <td colspan="5">
-            <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
-        </td>
-    </tr>
+
+        <tr class="new_entry_row">
+            <td colspan="5">
+                <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
+            </td>
+        </tr>
+
     
     </tbody>
 </table>

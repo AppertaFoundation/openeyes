@@ -34,6 +34,12 @@ class PatientMergeTest extends CDbTestCase
             'patient_allergy_assignment' => 'patientAllergyAssignment',
             'secondary_diagnosis' => 'secondaryDiagnosis',
             'previous_operation' => 'previousOperation',
+            'disorder' => 'Disorder',
+            'genetics_patient' => 'geneticsPatient',
+            'genetics_patient_relationship' => 'geneticsPatientRelationship',
+            'genetics_patient_diagnosis' => 'geneticsPatientDiagnosis',
+            'genetics_patient_pedigree' => 'geneticsPatientPedigree',
+            'genetics_study_subject' => 'geneticsStudySubject'
     );
 
     public function setUp()
@@ -57,7 +63,7 @@ class PatientMergeTest extends CDbTestCase
         // Change the dob and gender 
         $primary_patient->gender = 'M';
         $primary_patient->dob = '1981-12-21';
-
+    
         $primary_patient->save();
 
         $result = $merge_handler->comparePatientDetails($primary_patient, $secondary_patient);
@@ -198,10 +204,10 @@ class PatientMergeTest extends CDbTestCase
         $this->assertEquals(count($primary_patient->episodes), 2);
 
         $event16 = $this->events('event16');
-        $this->assertEquals($event16->episode_id, 9);
+        $this->assertEquals($event16->episode_id, 7); // has not changed
 
         $event17 = $this->events('event17');
-        $this->assertEquals($event17->episode_id, 9);
+        $this->assertEquals($event17->episode_id, 7); // has not changed
 
         $episode8 = $this->episodes('episode8');
         $episode8->refresh();
@@ -209,13 +215,13 @@ class PatientMergeTest extends CDbTestCase
 
         $episode9 = $this->episodes('episode9');
         $episode9->refresh();
-        $this->assertEquals($episode9->patient_id, 7); // will be deleted
+        $this->assertEquals($episode9->patient_id, 8); // will be deleted
 
         $event20 = $this->events('event20');
-        $this->assertEquals($event20->episode_id, 9);
+        $this->assertEquals($event20->episode_id, 7);
 
         $event21 = $this->events('event21');
-        $this->assertEquals($event21->episode_id, 9);
+        $this->assertEquals($event21->episode_id, 7);
 
         $episode10 = $this->episodes('episode10');
         $episode10->refresh();
@@ -267,19 +273,22 @@ class PatientMergeTest extends CDbTestCase
         $this->assertTrue($result, 'Merge result FALSE.');
 
         $event16 = $this->events('event16');
-        $this->assertEquals($event16->episode_id, 7);
+        $this->assertEquals($event16->episode_id, 9);
 
         $event17 = $this->events('event17');
-        $this->assertEquals($event17->episode_id, 7);
+        $this->assertEquals($event17->episode_id, 9);
 
         $event20 = $this->events('event20');
-        $this->assertEquals($event20->episode_id, 7);
+        $this->assertEquals($event20->episode_id, 9);
 
         $event21 = $this->events('event21');
-        $this->assertEquals($event21->episode_id, 7);
+        $this->assertEquals($event21->episode_id, 9);
 
         $episode7->refresh();
-        $this->assertEquals(count($episode7->events), 4);
+        $this->assertEquals(count($episode7->events), 0);
+        
+        $episode9->refresh();
+        $this->assertEquals(count($episode9->events), 4);
 
         $episode10 = $this->episodes('episode10');
         $this->assertEquals($episode10->patient_id, 7);
@@ -626,6 +635,94 @@ class PatientMergeTest extends CDbTestCase
         
         $this->assertEquals(0, count($secondary_patient->systemicDiagnoses) );
         $this->assertEquals(1, count($primary_patient->systemicDiagnoses) );
+    }
+
+    public function testUpdateGenetics_Primary_not_genetics()
+    {
+        $merge_handler = new PatientMerge();
+
+        $primary_patient = $this->patients('patient3'); // is not a genetics patient
+        $secondary_patient = $this->patients('patient2'); // it is a genetics patient
+
+        $genetics_primary_patient = null;
+        $genetics_secondary_patient = $this->genetics_patient('genetics_patient2');
+
+        $this->assertEquals($secondary_patient->id, $genetics_secondary_patient->patient_id);
+
+        $merge_handler->updateGenetics($primary_patient, $secondary_patient);
+
+        // as the primary is not a genetics user we can just update the Geneticspatient->patient_id attribute
+
+        $genetics_secondary_patient->refresh();
+        $this->assertEquals($primary_patient->id, $genetics_secondary_patient->patient_id);
+
+    }
+
+    /**
+     * If secondary patient is not a genetics patient we have nothing to do here
+     */
+    public function testUpdateGenetics_Secondary_not_genetics(){}
+
+
+    public function testUpdateGenetics_Both_are_genetics()
+    {
+        $merge_handler = new PatientMerge();
+
+        $primary_patient = $this->patients('patient1');
+        $secondary_patient = $this->patients('patient2');
+
+        $genetics_primary_patient_model = GeneticsPatient::model()->findByPk($primary_patient->id);
+        $genetics_secondary_patient_model = GeneticsPatient::model()->findByPk($secondary_patient->id);
+
+        $genetics_primary_patient = $this->genetics_patient('genetics_patient1');
+        $genetics_secondary_patient = $this->genetics_patient('genetics_patient2');
+
+        $this->assertEquals($primary_patient->id, $genetics_primary_patient->patient_id);
+        $this->assertEquals($secondary_patient->id, $genetics_secondary_patient->patient_id);
+
+
+        $this->assertEquals(1, count($genetics_primary_patient_model->relationships));
+        $this->assertEquals(1, count($genetics_primary_patient_model->diagnoses));
+
+        $this->assertEquals(1, count($genetics_primary_patient_model->pedigrees));
+        $this->assertEquals(1, count($genetics_secondary_patient_model->pedigrees));
+
+        $merge_handler->updateGenetics($primary_patient, $secondary_patient);
+
+        // genetics relation
+        $genetics_primary_patient_model->refresh();
+        $this->assertEquals(2, count($genetics_primary_patient_model->relationships));
+
+        $relation1 = $this->genetics_patient_relationship('genetics_patient_relationship1');
+        $relation2 = $this->genetics_patient_relationship('genetics_patient_relationship2');
+
+        $this->assertEquals($genetics_primary_patient->id, $relation1->patient_id); // this patient id is actually the genetics_patient.id
+        $this->assertEquals($genetics_primary_patient->id, $relation2->patient_id);
+
+        // genetics diagnosis
+        $this->assertEquals(2, count($genetics_primary_patient_model->diagnoses));
+
+        $diagnoses1 = $this->genetics_patient_diagnosis('genetics_patient_diagnosis1');
+        $diagnoses2 = $this->genetics_patient_diagnosis('genetics_patient_diagnosis2');
+
+        $this->assertEquals($genetics_primary_patient->id, $diagnoses1->patient_id); // this patient id is actually the genetics_patient.id
+        $this->assertEquals($genetics_primary_patient->id, $diagnoses2->patient_id);
+
+        //pedigree
+        $pedigree1 = $this->genetics_patient_pedigree('genetics_patient_pedigree1');
+        $this->assertEquals($genetics_primary_patient->id, $pedigree1->patient_id); // this patient id is actually the genetics_patient.id
+
+        //$pedigree2 is null for some reason
+        //$pedigree2 = $this->genetics_patient_pedigree('genetics_patient_pedigree2');
+        //$this->assertEquals(1, $pedigree2->patient_id);
+
+        //study
+        $subject1 = $this->genetics_study_subject('genetics_study_subject1');
+        $this->assertEquals($genetics_primary_patient->id, $subject1->subject_id);
+
+        $subject2 = $this->genetics_study_subject('genetics_study_subject2');
+        $this->assertEquals($genetics_primary_patient->id, $subject2->subject_id);
+
     }
     
     public function testGetTwoEpisodesStartEndDate()

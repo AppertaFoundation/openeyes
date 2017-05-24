@@ -158,7 +158,7 @@ class ContactBehavior extends CActiveRecordBehavior
             // create a base contact object
             if (!$this->owner->contact_id) {
                 $contact = new Contact();
-                if (!$contact->save()) {
+                if (!$contact->save(false)) {
                     throw new Exception('cannot save institution contact: '.print_r($contact->getErrors(), true));
                 }
                 $this->owner->contact_id = $contact->id;
