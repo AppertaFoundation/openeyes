@@ -224,24 +224,12 @@ class DocManDeliveryCommand extends CConsoleCommand
             curl_close($ch);
             
             if(substr($content, 0, 4) !== "%PDF"){
-                echo 'File is not a PDF for event id: '.$this->event->id."\n";
+                echo 'File is not a PDF for event id: '.$event->id."\n";
                 $this->updateFailedDelivery($output_id);
                 return false;
             }
-            
-            if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] === 'format1') {
-                $filename = "OPENEYES_" . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . $this->event->id . "_" . rand();
-            } else {
-                if (Yii::app()->params['docman_filename_format'] === 'format2') {
-                    $filename = (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . date('YmdHi',
-                            strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
-                } else {
-                    if (Yii::app()->params['docman_filename_format'] === 'format3') {
-                        $filename = (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_edtdep-OEY_' .
-                            date('Ymd_His', strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
-                    }
-                }
-            }
+
+            $filename = $this->getFileName();
             
             $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
 

@@ -121,7 +121,6 @@ class MessageCreator
             $messageElement->event_id = $messageEvent->id;
             $messageElement->created_user_id = $messageElement->last_modified_user_id = $this->sender->id;
             $messageElement->for_the_attention_of_user_id = $this->recipient->id;
-
             $messageElement->message_type_id = $this->type->id;
             if ($this->messageTemplate) {
                 $messageElement->message_text = $this->renderTemplate();

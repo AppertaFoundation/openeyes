@@ -60,7 +60,7 @@ class Element_OphTrOperationnote_SiteTheatre extends Element_OpNote
         // will receive user inputs.
         return array(
             array('event_id, site_id, theatre_id', 'safe'),
-            array('site_id, theatre_id', 'required'),
+            array('site_id', 'required'),
         );
     }
 
@@ -96,25 +96,13 @@ class Element_OphTrOperationnote_SiteTheatre extends Element_OpNote
     {
         if (Yii::app()->controller->getBookingOperation()) {
             $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-            $event = Event::model()->findByPk(Yii::app()->controller->getBookingOperation()->event_id);
-
             if (!$this->site_id) {
-                $site = $api->findSiteForBookingEvent($event);
-                if($site)
-                {
-                    $this->site_id = $site->id;
-                }
-                elseif(isset(Yii::app()->controller->getBookingOperation()->site_id))
-                {
-                    $this->site_id = Yii::app()->controller->getBookingOperation()->site_id;
-                }
+                //var_dump(Yii::app()->controller->getBookingOperation()->event_id);
+                //die;
+                $this->site_id = $api->findSiteForBookingEvent(Event::model()->findByPk(Yii::app()->controller->getBookingOperation()->event_id))->id;
             }
             if (!$this->theatre_id) {
-                $theatre = $api->findTheatreForBookingEvent($event);
-                if($theatre)
-                {
-                    $this->theatre_id = $theatre->id;
-                }
+                $this->theatre_id = $api->findTheatreForBookingEvent(Event::model()->findByPk(Yii::app()->controller->getBookingOperation()->event_id))->id;
             }
         } else {
             if (!$this->site_id) {

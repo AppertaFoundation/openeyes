@@ -27,6 +27,7 @@
     "sebastian/phpcpd": "*",
     "phpdocumentor/phpdocumentor": "2.*",
     "guzzle/guzzle": "^3.9.3"
+    
   },
   "config": {
     "bin-dir": "bin"

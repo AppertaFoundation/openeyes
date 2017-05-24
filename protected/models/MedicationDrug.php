@@ -28,12 +28,9 @@
  * @property string $aliases
  * @property string $external_id
  * @property string $external_source
- * @property Tag[] $tags
  */
 class MedicationDrug extends BaseActiveRecordVersioned
 {
-    protected $auto_update_relations = true;
-
     /**
      * Returns the static model of the specified AR class.
      *
@@ -53,17 +50,6 @@ class MedicationDrug extends BaseActiveRecordVersioned
     }
 
     /**
-     * @inheritdoc
-     */
-
-    public function behaviors()
-    {
-        return array(
-            TaggedActiveRecordBehavior::class
-        );
-    }
-
-    /**
      * @return array validation rules for model attributes.
      */
     public function rules()
@@ -73,7 +59,6 @@ class MedicationDrug extends BaseActiveRecordVersioned
             array('external_code', 'safe'),
             array('external_source', 'safe'),
             array('aliases', 'safe'),
-            array('tags', 'safe'),
         );
     }
 
@@ -87,22 +72,6 @@ class MedicationDrug extends BaseActiveRecordVersioned
             'external_code' => 'Source Code',
             'external_source' => 'Source',
             'aliases' => 'Aliases',
-            'tags' => 'Tags',
-            'tags.name' => 'Tags',
-            'tagnames' => 'Tags'
         );
     }
-
-    /**
-     * @inheritdoc
-     */
-
-    public function relations()
-    {
-        return array(
-            'tags' => array(self::MANY_MANY, 'Tag', 'medication_drug_tag(medication_drug_id, tag_id)')
-        );
-    }
-
-
 }

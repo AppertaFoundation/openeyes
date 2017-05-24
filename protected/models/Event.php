@@ -561,17 +561,10 @@ class Event extends BaseActiveRecordVersioned
 
     public function automatedText()
     {
-        $result = '';
         if ($this->is_automated) {
             if (property_exists($this->automated_source, 'goc_number')) {
-                $result .= ' - Community optometric examination by ' . $this->automated_source->name . ' (' . $this->automated_source->goc_number . ')'. "<br>";
-
+                return ' - Community optometric examination by ' . $this->automated_source->name . ' (' . $this->automated_source->goc_number . ')';
             }
-            if(property_exists($this->automated_source, 'address')){
-                $result .= 'Optometrist Address: '.$this->automated_source->address;
-            }
-
-            return $result;
         }
     }
 

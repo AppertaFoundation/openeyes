@@ -202,18 +202,9 @@ class BaseAdminController extends BaseController
                         $this->addFilterCriteria($criteria, $options['filter_fields']);
 
                         $to_delete = $model::model()->findAll($criteria);
-                        foreach ($to_delete as $i=>$item) {
+                        foreach ($to_delete as $item) {
                             if (!$item->delete()) {
-                                $tx->rollback();
-                                $error = $item->getErrors();
-                                foreach ($error as $e)
-                                {
-                                    $errors[$i]=$e[0];
-                                }
-
-                                Yii::app()->user->setFlash('error.error', implode('<br/>', $errors));
-                                $this->redirect(Yii::app()->request->url);
-
+                                throw new Exception("Unable to delete {$model}:{$item->primaryKey}");
                             }
                             Audit::add('admin', 'delete', $item->primaryKey, null, array(
                                 'module' => (is_object($this->module)) ? $this->module->id : 'core',

@@ -88,25 +88,6 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Check data in child elements
-     *
-     * @param BaseEventTypeElements[] $elements
-     *
-     * @return boolean
-     */
-    protected function checkChildElementsForData($elements)
-    {
-        foreach($elements as $element)
-        {
-            if($element->id > 0)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Filters elements based on coded dependencies.
      *
      * @TODO: need to ensure that we don't filter out elements that do exist when configuration changes
@@ -131,14 +112,11 @@ class DefaultController extends \BaseEventTypeController
 
         $final = array();
         foreach ($elements as $el) {
-            if (in_array(get_class($el), $remove)) {
-                if($el->id > null || $this->checkChildElementsForData($this->getChildElements($el->getElementType()))) {
-                    $final[] = $el;
-                }
-            }else{
+            if (!in_array(get_class($el), $remove)) {
                 $final[] = $el;
             }
         }
+
         return $final;
     }
 
@@ -1395,5 +1373,4 @@ class DefaultController extends \BaseEventTypeController
             \PatientRiskAssignment::model()->deleteByPk($patient_risk->id);
         }
     }
-
 }
