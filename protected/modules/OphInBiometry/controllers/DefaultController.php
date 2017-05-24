@@ -610,8 +610,8 @@ class DefaultController extends BaseEventTypeController
         $measurementValues = $this->getMeasurementData();
         $measurementData = $measurementValues[0];
 
-        $data['left'] = $measurementData->{'al_modified_left'};
-        $data['right'] = $measurementData->{'al_modified_right'};
+        $data['left'] = $measurementData->{'al_modified_left'} && (($measurementData->{'eye_id'} == 1) || ($measurementData->{'eye_id'} == 3));
+        $data['right'] = $measurementData->{'al_modified_right'} && (($measurementData->{'eye_id'} == 2) || ($measurementData->{'eye_id'} == 3));
 
         return $data;
     }
@@ -626,8 +626,8 @@ class DefaultController extends BaseEventTypeController
         $measurementValues = $this->getMeasurementData();
         $measurementData = $measurementValues[0];
 
-        $data['left'] = $measurementData->{'k_modified_left'};
-        $data['right'] = $measurementData->{'k_modified_right'};
+        $data['left'] = $measurementData->{'k_modified_left'} && (($measurementData->{'eye_id'} == 1) || ($measurementData->{'eye_id'} == 3));
+        $data['right'] = $measurementData->{'k_modified_right'} && (($measurementData->{'eye_id'} == 2) || ($measurementData->{'eye_id'} == 3));
 
         return $data;
     }

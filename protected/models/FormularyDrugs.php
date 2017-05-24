@@ -37,6 +37,17 @@ class FormularyDrugs extends BaseActiveRecordVersioned
     protected $auto_update_relations = true;
 
     /**
+     * @inheritdoc
+     */
+
+    public function behaviors()
+    {
+        return array(
+            TaggedActiveRecordBehavior::class
+        );
+    }
+
+    /**
      * Returns the static model of the specified AR class.
      *
      * @return Benefit the static model class
@@ -64,7 +75,7 @@ class FormularyDrugs extends BaseActiveRecordVersioned
         return array(
             array('name', 'required'),
             array(
-                'name, aliases, tallman, type_id, form_id, dose_unit,default_dose,default_route_id,default_frequency_id,default_duration_id, preservative_free, active, allergy_warnings, national_code',
+                'name, aliases, tallman, type_id, form_id, dose_unit,default_dose,default_route_id,default_frequency_id,default_duration_id, preservative_free, active, allergy_warnings, national_code, tags',
                 'safe',
             ),
         );
@@ -77,7 +88,13 @@ class FormularyDrugs extends BaseActiveRecordVersioned
     {
         return array(
             'allergy_warnings' => array(self::MANY_MANY, 'Drug', 'drug_allergy_assignment(drug_id,allergy_id)'),
-            'drug_type' => array(self::BELONGS_TO, 'DrugType', 'type_id'),
+            'drug_type' => array(self::MANY_MANY, 'DrugType', 'drug_drug_type(drug_id, drug_type_id)'),
+            'form' => array(self::BELONGS_TO, 'DrugForm', 'form_id'),
+            'default_duration' => array(self::BELONGS_TO, 'DrugDuration', 'default_duration_id'),
+            'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'default_frequency_id'),
+            'default_route' => array(self::BELONGS_TO, 'DrugRoute', 'default_route_id'),
+            'subspecialtyAssignments' => array(self::HAS_MANY, 'SiteSubspecialtyDrug', 'drug_id'),
+            'tags' => array(self::MANY_MANY, 'Tag', 'drug_tag(drug_id, tag_id)'),
         );
     }
 
@@ -87,14 +104,49 @@ class FormularyDrugs extends BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
-            'type_id' => 'Type',
             'tallman' => 'Tall Man Name',
             'form_id' => 'Form',
             'default_route_id' => 'Default Route',
             'default_frequency_id' => 'Default Frequency',
             'default_duration_id' => 'Default Duration',
-            'drug_type.name' => 'Type',
+            'drug_type.name' => 'Type(s)',
+            'tags.name' => 'Tags',
+            'tagnames' => 'Tags',
             'national_code' => 'National code'
         );
+    }
+
+    public function search()
+    {
+        $criteria=new CDbCriteria;
+
+        $criteria->compare('name',$this->name, true);
+        $criteria->compare('tallman',$this->tallman, true);
+        $criteria->compare('default_route_id',$this->default_route_id, true);
+        $criteria->compare('default_frequency_id',$this->default_frequency_id, true);
+        $criteria->addInCondition('tagnames', $this->tags);
+
+        return new CActiveDataProvider(get_class($this), array(
+            'criteria'=>$criteria,
+            'sort'=>array(
+                'defaultOrder'=>'name ASC',
+            ),
+            'pagination'=>array(
+                'pageSize'=>20
+            ),
+        ));
+    }
+
+
+    /**
+     * @return bool
+     *
+     * Returns true if the tag 'Preservative free' is
+     * added to this drug
+     */
+
+    public function isPreservativeFree()
+    {
+        return in_array(1, array_map(function($e){ return $e->id; }, $this->tags));
     }
 }
