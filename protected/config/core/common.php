@@ -300,7 +300,7 @@ return array(
                 'uri' => '#',
                 'position' => 2,
                 'userrule' => 'isSurgeon',
-                'restricted' => array('admin', 'Report', 'NOD Export', 'Add patient', 'Patient Merge', 'Patient Merge Request'),
+                'restricted' => array('admin', 'Report', 'NOD Export', 'Add patient', 'Patient Merge', 'Patient Merge Request', 'Optom co-ordinator'),
                 'sub' => array(
                     'admin' => array(
                         'title' => 'Admin',
@@ -432,14 +432,14 @@ return array(
          * To be overriden in local config
          */
         'electronic_sending_method_label' => 'Electronic',
-        
+
         /**
          * Action buttons to be displayed when create/update a correspondence letter
          * Available actions
          *      - 'savedraft' => 'Save draft',
          *      - 'save' => 'Save',
          *      - 'saveprint' => 'Save and print'
-         * To remove an option set it to NULL 
+         * To remove an option set it to NULL
          * e.g: saveprint' => null,
          */
         'OphCoCorrespondence_event_actions' => array(
@@ -467,7 +467,13 @@ return array(
          */
         "auto_schedule_operation" => false,
         'clinical_management_pcr' => true,
+        'docman_generate_csv' => false,
+        /**
+        * Enables the admin->Settings->Logo screen */
+        'letter_logo_upload' => true,
 
+        /* ID of the Tag that indicates "preservative free" */
+        'preservative_free_tag_id' => 1
 
     ),
 );

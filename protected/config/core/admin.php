@@ -68,7 +68,9 @@ return array(
                 'Formulary Drugs' => '/oeadmin/formularyDrugs/list',
                 'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
                 'Per Op Drug Mappings' => array('module' => 'OphTrOperationnote', 'uri' => '/oeadmin/PostOpDrugMappings/list'),
-                'Prescription Edit Options' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/Admin/PrescriptionEditOptions')
+                'Prescription Edit Options' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/Admin/PrescriptionEditOptions'),
+                'Tags' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/TagsAdmin/list'),
+                'Drug types' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/Admin/drugType'),
             ),
             'Disorders' => array(
                 'Common Ophthalmic Disorder Groups' => '/admin/editcommonophthalmicdisordergroups',
