@@ -83,6 +83,10 @@ class PastSurgery extends \BaseEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'operations' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\PastSurgery_Operation', 'element_id'),
+            'orderedOperations' => array(self::HAS_MANY,
+                'OEModule\OphCiExamination\models\PastSurgery_Operation',
+                'element_id',
+                'order' => 'orderedOperations.date desc, orderedOperations.last_modified_date'),
         );
     }
 

@@ -65,36 +65,11 @@ class PastSurgery extends \BaseEventElementWidget
             $element->operations = array();
         }
     }
-
-    /**
-     * Determine the view file to use
-     */
-    protected function getView()
+    
+    public function popupList()
     {
-        if ($this->view_file) {
-            // manually overridden/set
-            return $this->view_file;
-        }
-        switch ($this->mode) {
-            case static::$EVENT_VIEW_MODE:
-                return 'PastSurgery_event_view';
-                break;
-            case static::$EVENT_EDIT_MODE:
-                return 'PastSurgery_event_edit';
-                break;
-            default:
-                return 'PastSurgery_patient_mode';
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function run()
-    {
-        return $this->render($this->getView(), array(
-            'element' => $this->element,
-            'form' => $this->form));
+        $res = array_map(function ($op) { return (string) $op ;}, $this->element->orderedOperations);
+        return implode($this->popupListSeparator, $res);
     }
 
 }
