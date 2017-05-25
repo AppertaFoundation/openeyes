@@ -27,13 +27,16 @@ OpenEyes.OphCiExamination.AutoReportHandler = (function () {
     AutoReportHandler.prototype.updateReport = function()
     {
         var markup = this.$edReportField.val().replace(/\n/g,'<br />');
-        markup = markup.replace('<br />', ''); // remove first <br>
+        markup = markup.replace('^<br />', ''); // remove first <br>
         this.$edReportDisplay.html(markup);
     };
 
     AutoReportHandler.prototype.drawingNotifications = function(msgArray)
     {
-        this.updateReport();
+        clearTimeout(this.updateTimer);
+        this.updateTimer = setTimeout(function() {
+            this.updateReport();
+        }.bind(this), 300);
     };
 
     return AutoReportHandler;
