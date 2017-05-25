@@ -30,7 +30,6 @@ class m170519_155155_event_previous_operation_record extends OEMigration
             'element_id' => 'int(11) NOT NULL',
             'side_id' => 'int(10) unsigned',
             'operation' => 'varchar(1024) NOT NULL',
-            'previous_operation_id' => 'int(10) unsigned',
             'date' => 'varchar(10)'
         ), true);
 
