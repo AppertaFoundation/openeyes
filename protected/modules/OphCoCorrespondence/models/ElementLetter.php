@@ -72,7 +72,7 @@ class ElementLetter extends BaseEventTypeElement
             array('is_same_condition', 'internalReferralConditionValidator'),
             array('letter_type_id', 'letterTypeValidator'),
             array('site_id, date, introduction, body, footer', 'requiredIfNotDraft'),
-            array('use_nickname, to_location_id', 'required'),
+            array('use_nickname', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
             //array('is_signed_off', 'isSignedOffValidator'), // they do not want this at the moment - waiting for the demo/feedback
