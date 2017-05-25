@@ -1478,7 +1478,7 @@ class PatientController extends BaseController
        
         $patient = new Patient('manual');
         $patient->noPas();
-        $contact = new Contact();
+        $contact = new Contact('manualAddPatient');
         $address = new Address();
         
         $this->performAjaxValidation(array($patient, $contact, $address));
