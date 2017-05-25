@@ -74,36 +74,4 @@ class Allergies extends \BaseEventElementWidget
             $element->entries = array();
         }
     }
-
-    /**
-     * Determine the view file to use
-     */
-    protected function getView()
-    {
-        if ($this->view_file) {
-            // manually overridden/set
-            return $this->view_file;
-        }
-        switch ($this->mode) {
-            case static::$EVENT_VIEW_MODE:
-                return 'Allergies_event_view';
-                break;
-            case static::$EVENT_EDIT_MODE:
-                return 'Allergies_event_edit';
-                break;
-            default:
-                return 'Allergies_patient_mode';
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function run()
-    {
-        return $this->render($this->getView(), array(
-            'element' => $this->element,
-            'form' => $this->form));
-    }
-
 }

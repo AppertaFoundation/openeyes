@@ -6,8 +6,10 @@
 class BaseEventElementWidget extends CWidget
 {
     public static $PATIENT_SUMMARY_MODE = 1;
-    public static $EVENT_VIEW_MODE = 2;
-    public static $EVENT_EDIT_MODE = 4;
+    public static $PATIENT_POPUP_MODE = 2;
+    public static $EVENT_VIEW_MODE = 4;
+    public static $EVENT_EDIT_MODE = 8;
+    public static $EPISODE_SUMMARY_MODE = 16;
 
     /**
      * @var string of the module name.
@@ -26,6 +28,7 @@ class BaseEventElementWidget extends CWidget
     public $view_file;
     public $data;
     public $form;
+    public $popupListSeparator = '<br />';
 
     /**
      * @var CApplication
@@ -48,7 +51,8 @@ class BaseEventElementWidget extends CWidget
     protected function validateMode($mode)
     {
         return in_array($this->mode,
-            array(static::$PATIENT_SUMMARY_MODE, static::$EVENT_VIEW_MODE, static::$EVENT_EDIT_MODE));
+            array(static::$PATIENT_SUMMARY_MODE, static::$PATIENT_POPUP_MODE,
+                static::$EVENT_VIEW_MODE, static::$EVENT_EDIT_MODE));
     }
 
     /**
@@ -174,9 +178,50 @@ class BaseEventElementWidget extends CWidget
     /**
      * @return mixed
      */
-    public function summary()
+    public function popupList()
     {
         $element = $this->element;
         return (string) $element;
+    }
+
+    /**
+     * Determine the view file to use
+     */
+    protected function getView()
+    {
+        if ($this->view_file) {
+            // manually overridden/set
+            return $this->view_file;
+        }
+
+        // quick way to get the base class name
+        $short_name = substr(strrchr(get_class($this), '\\'),1);
+
+        switch ($this->mode) {
+            case static::$EVENT_VIEW_MODE:
+                return $short_name . '_event_view';
+                break;
+            case static::$EVENT_EDIT_MODE:
+                return $short_name . '_event_edit';
+                break;
+            case static::$EPISODE_SUMMARY_MODE:
+                return $short_name . '_episodesummary';
+                break;
+            default:
+                return $short_name . '_patient_mode';
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function run()
+    {
+        if ($this->mode === static::$PATIENT_POPUP_MODE) {
+            return $this->popupList();
+        }
+        return $this->render($this->getView(), array(
+            'element' => $this->element,
+            'form' => $this->form));
     }
 }
