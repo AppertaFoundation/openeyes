@@ -279,7 +279,7 @@ class Patient extends BaseActiveRecordVersioned
 
         // Pull an update from PAS
 
-        Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));
+        #Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));
 
         // If someone is marked as dead by date, set the boolean flag.
         if ($this->isAttributeDirty('date_of_death') && $this->date_of_death) {
@@ -705,7 +705,7 @@ class Patient extends BaseActiveRecordVersioned
     {
         parent::afterFind();
         $this->use_pas = $this->is_local ? false : true;
-        Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));
+        #Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));
     }
 
     /**
