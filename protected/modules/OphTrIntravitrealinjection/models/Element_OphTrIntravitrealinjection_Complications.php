@@ -152,13 +152,13 @@ class Element_OphTrIntravitrealinjection_Complications extends SplitEventTypeEle
     {
         $other_comp = null;
         $complications = $this->{$params['side'].'_complications'};
-	if(is_array($complications)){
-		foreach ($complications as $comp) {
-            		if ($comp->description_required) {
-                		$other_comp = $comp;
-            		}
-		}
-	}
+        if( is_array($complications) ){
+            foreach ($complications as $comp) {
+                if ($comp->description_required) {
+                    $other_comp = $comp;
+                }
+            }
+        }
         if ($other_comp) {
             $v = CValidator::createValidator('requiredIfSide', $this, array($params['side'].'_oth_descrip'),
                     array('side' => $params['side'], 'message' => ucfirst($params['side']).' {attribute} required when '.$other_comp->name.' is selected'));
@@ -187,18 +187,18 @@ class Element_OphTrIntravitrealinjection_Complications extends SplitEventTypeEle
         // create assignment and store for saving
         // if there is, remove from the current complications array
         // anything left in current complications at the end is ripe for deleting
-	if(is_array($complication_ids)){
-	foreach ($complication_ids as $comp_id) {
-            if (!array_key_exists($comp_id, $current_complications)) {
-                $s = new OphTrIntravitrealinjection_ComplicationAssignment();
-                $s->attributes = array('element_id' => $this->id, 'eye_id' => $side, 'complication_id' => $comp_id);
-                $save_complications[] = $s;
-            } else {
-                // don't want to delete later
-                unset($current_complications[$comp_id]);
-            }
-	}
-	}
+        if( is_array($complication_ids) ){
+            foreach ($complication_ids as $comp_id) {
+                if (!array_key_exists($comp_id, $current_complications)) {
+                    $s = new OphTrIntravitrealinjection_ComplicationAssignment();
+                    $s->attributes = array('element_id' => $this->id, 'eye_id' => $side, 'complication_id' => $comp_id);
+                    $save_complications[] = $s;
+                } else {
+                    // don't want to delete later
+                    unset($current_complications[$comp_id]);
+                }
+          	}
+      	}
         // save what needs saving
         foreach ($save_complications as $save) {
             $save->save();

@@ -400,11 +400,11 @@ class Element_OphCoTherapyapplication_ExceptionalCircumstances extends SplitEven
     public function getDeviationReasonsForSide($side)
     {
         $in_use_reason_ids = array();
-	if(is_array($this->{$side.'_deviationreasons'})){
-	foreach ($this->{$side.'_deviationreasons'} as $curr) {
-            $in_use_reason_ids[] = $curr->id;
-	}
-	}
+        if( is_array($this->{$side.'_deviationreasons'}) ){
+            foreach ($this->{$side.'_deviationreasons'} as $curr) {
+                $in_use_reason_ids[] = $curr->id;
+            }
+        }
 
         return OphCoTherapyapplication_ExceptionalCircumstances_DeviationReason::model()->activeOrPk($in_use_reason_ids)->findAll();
     }
@@ -502,9 +502,11 @@ class Element_OphCoTherapyapplication_ExceptionalCircumstances extends SplitEven
     public function getFileCollectionValuesForSide($side)
     {
         $file_collection_values = array();
-	if(is_array($this->{$side.'_filecollections'})){
-        foreach ($this->{$side.'_filecollections'} as $file_collection) {
-            $file_collection_values[] = $file_collection->id;
+
+        if( is_array($this->{$side.'_filecollections'}) ){
+            foreach ($this->{$side.'_filecollections'} as $file_collection) {
+                $file_collection_values[] = $file_collection->id;
+            }
         }
 	}
         return $file_collection_values;

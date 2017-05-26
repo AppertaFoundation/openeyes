@@ -64,10 +64,10 @@ class ElementLetter extends BaseEventTypeElement
         return array(
             array(
                 'event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date,' .
-		'print_all, is_signed_off, to_subspecialty_id, to_firm_id, is_urgent, is_same_condition',
+                'print_all, is_signed_off, to_subspecialty_id, to_firm_id, is_urgent, is_same_condition',
                 'safe'
-	    ),
-	    array('to_location_id', 'internalReferralToLocationIdValidator'),
+            ),
+            array('to_location_id', 'internalReferralToLocationIdValidator'),
             array('to_subspecialty_id', 'internalReferralServiceValidator'),
             array('is_same_condition', 'internalReferralConditionValidator'),
             array('letter_type_id', 'letterTypeValidator'),
@@ -152,17 +152,17 @@ class ElementLetter extends BaseEventTypeElement
         }
     }
 
-   public function internalReferralToLocationIdValidator($attribute, $params)
-	       {
-		               $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
-			               $is_internal_referral_enabled = OphcocorrespondenceInternalReferralSettings::model()->getSetting('is_enabled');
+    public function internalReferralToLocationIdValidator($attribute, $params)
+    {
+        $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
+        $is_internal_referral_enabled = OphcocorrespondenceInternalReferralSettings::model()->getSetting('is_enabled');
 
-			               if( $is_internal_referral_enabled && ($letter_type->id == $this->letter_type_id) ){
+        if( $is_internal_referral_enabled && ($letter_type->id == $this->letter_type_id) ){
 
-					                   $validator = CValidator::createValidator('required', $this, $attribute, $params);
-							               $validator->validate($this);
-							           }
-				           }
+            $validator = CValidator::createValidator('required', $this, $attribute, $params);
+            $validator->validate($this);
+        }
+    }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.

@@ -144,7 +144,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                             //if the contact_type is (GP or Patient) and the letter type is Internal referral than the fielsd is mandatory (no remove link)
                             if($document_target['attributes']['contact_type'] == 'GP' || $document_target['attributes']['contact_type'] == 'PATIENT'){
 
-                                if( $element->letterType &&  $element->letterType->name == 'Internal Referral' ){
+                                if( $element->letterType && ($element->letterType->name == 'Internal Referral') ){
                                     $is_mandatory = true;
                                 }
                             }
