@@ -508,7 +508,7 @@ class Element_OphCoTherapyapplication_ExceptionalCircumstances extends SplitEven
                 $file_collection_values[] = $file_collection->id;
             }
         }
-	}
+	
         return $file_collection_values;
 	
     }
