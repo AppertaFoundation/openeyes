@@ -176,9 +176,9 @@ class PatientController extends BaseController
     {
         $term = \Yii::app()->request->getParam('term', '');
         $patientSearch = new PatientSearch();
-        $dataProvider = $patientSearch->search($term);
-        $itemCount = $dataProvider->totalItemCount;
-        $search_terms = $patientSearch->getSearchTerms();
+	$dataProvider = $patientSearch->search($term);
+	$itemCount = $dataProvider->totalItemCount;
+	$search_terms = $patientSearch->getSearchTerms();
 
         if ($itemCount == 0) {
             Audit::add('search', 'search-results', implode(',', $search_terms).' : No results');

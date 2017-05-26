@@ -164,7 +164,6 @@ class ElementLetter extends BaseEventTypeElement
         }
     }
 
-
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
