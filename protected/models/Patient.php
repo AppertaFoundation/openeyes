@@ -113,7 +113,7 @@ class Patient extends BaseActiveRecordVersioned
             array('pas_key', 'length', 'max' => 10),
             array('hos_num', 'required', 'on' => 'pas'),
             array('hos_num, nhs_num', 'length', 'max' => 40),
-            array('hos_num', 'unique', 'message'=>'A patient already exists with this hospital number'),
+            array('hos_num', 'unique', 'message'=>'A patient already exists with this hospital number', 'on' => 'manual'),
             array('gender,is_local', 'length', 'max' => 1),
             array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id', 'safe'),
             array('gender, dob', 'required', 'on' => 'manual'),
