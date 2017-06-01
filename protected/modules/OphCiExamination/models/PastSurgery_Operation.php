@@ -118,11 +118,16 @@ class PastSurgery_Operation extends \BaseEventTypeElement
         return \Helper::formatFuzzyDate($this->date);
     }
 
+    public function getDisplayOperation()
+    {
+        return ($this->side ? $this->side->adjective  . ' ' : '') . $this->operation;
+    }
+
     /**
      * @return string
      */
     public function __toString()
     {
-        return $this->getDisplayDate() . ' ' . ($this->side ? $this->side->adjective  . ' ' : '') . $this->operation;
+        return $this->getDisplayDate() . ' ' . $this->getDisplayOperation();
     }
 }

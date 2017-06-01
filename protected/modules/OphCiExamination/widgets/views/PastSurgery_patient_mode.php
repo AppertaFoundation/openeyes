@@ -24,14 +24,10 @@
     </tr>
     </thead>
     <tbody>
-    <?php foreach ($element->operations as $operation) {?>
+    <?php foreach ($operations as $operation) {?>
         <tr>
-            <td><?php echo $operation->getDisplayDate() ?></td>
-            <td><?php if ($operation->side) {
-                    echo $operation->side->adjective.' ';
-                }?>
-                <?php echo CHtml::encode($operation->operation)?>
-            </td>
+            <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date']); ?></td>
+            <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayOperation() : $operation['operation']; ?></td>
         </tr>
     <?php }?>
     </tbody>

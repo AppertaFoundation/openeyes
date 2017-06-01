@@ -74,15 +74,31 @@ class PastSurgery extends \BaseEventElementWidget
 
     public function getMergedOperations()
     {
-        
-        if ($api = $this->app()->moduleAPI->get('OphTrOperationnote')) {
+        // map the operations that have been recorded as entries in this element
+        $operations = array_map(
+            function($op) {
+                return array(
+                    'date' => $op->date,
+                    'object' => $op
+                );
+            }, $this->element->operations);
 
+        // append operations from op note
+        if ($api = $this->getApp()->moduleAPI->get('OphTrOperationnote')) {
+            $operations = array_merge($operations, $api->getOperationsSummaryData($this->patient));
         }
+
+        // merge by sorting by date
+        uasort($operations, function($a , $b) {
+            return $a['date'] >= $b['date'] ? -1 : 1;
+        });
+
+        return $operations;
     }
 
     public  function getViewData()
     {
-        return array_merge(parent::getData(), array(
+        return array_merge(parent::getViewData(), array(
             'operations' => $this->getMergedOperations()
         ));
     }
