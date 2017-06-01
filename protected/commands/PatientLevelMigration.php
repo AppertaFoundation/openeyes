@@ -42,6 +42,8 @@ class PatientLevelMigration extends CConsoleCommand
     protected static $no_values_col;
     // fully qualified class name of the main element for storing the patient level data
     protected static $element_class;
+    // the name of the element relation to its entries
+    protected static $element_entry_attribute = 'entries';
     // fully qualified class name of the entry object for storing the patient level data entries
     protected static $entry_class;
     // attributes to migrate for each entry
@@ -189,7 +191,7 @@ class PatientLevelMigration extends CConsoleCommand
             if ($no_entries_date) {
                 $element->{static::$no_values_col} = $no_entries_date;
             } else {
-                $element->entries = $entries;
+                $element->{static::$element_entry_attribute} = $entries;
             }
             $element->save();
 
