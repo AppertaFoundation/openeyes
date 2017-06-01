@@ -48,9 +48,13 @@ class BaseEventElementWidget extends CWidget
         return $this->app;
     }
 
+    /**
+     * @param $mode
+     * @return bool
+     */
     protected function validateMode($mode)
     {
-        return in_array($this->mode,
+        return in_array($mode,
             array(static::$PATIENT_SUMMARY_MODE, static::$PATIENT_POPUP_MODE,
                 static::$EVENT_VIEW_MODE, static::$EVENT_EDIT_MODE));
     }

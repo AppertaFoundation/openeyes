@@ -65,14 +65,35 @@ class PastSurgery extends \BaseEventElementWidget
             $element->operations = array();
         }
     }
-    
+
+    protected function popupFormatExternalOperation($operation)
+    {
+        $res = [\Helper::formatFuzzyDate($operation['date'])];
+        if (array_key_exists('side', $operation)) {
+            $res[] = $operation['side'];
+        }
+        $res[] = $operation['operation'];
+        return implode(' ', $res);
+    }
+
+    /**
+     * @return string
+     */
     public function popupList()
     {
-        $res = array_map(function ($op) { return (string) $op ;}, $this->element->orderedOperations);
+        $res = array_map(
+            function ($op) {
+               return array_key_exists('object', $op) ?
+                   (string) $op['object'] :
+                   $this->popupFormatExternalOperation($op);
+            }, $this->getMergedOperations());
         return implode($this->popupListSeparator, $res);
     }
 
-    public function getMergedOperations()
+    /**
+     * @return array
+     */
+    protected function getMergedOperations()
     {
         // map the operations that have been recorded as entries in this element
         $operations = array_map(
@@ -96,6 +117,9 @@ class PastSurgery extends \BaseEventElementWidget
         return $operations;
     }
 
+    /**
+     * @return array
+     */
     public  function getViewData()
     {
         return array_merge(parent::getViewData(), array(

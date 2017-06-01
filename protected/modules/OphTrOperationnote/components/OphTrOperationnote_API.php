@@ -346,15 +346,15 @@ class OphTrOperationnote_API extends BaseAPI
         foreach ($this->getElements('Element_OphTrOperationnote_ProcedureList', $patient, $use_context) as $element) {
             $operations[] = array(
                 'date' => $element->event->event_date,
-                'operation' => $element->eye->adjective . ' ' .
-                    implode(', ',
-                        array_map(
-                            function($proc) {
-                                return $proc->term;
-                            },
-                            $element->procedures
-                        )
-                    ),
+                'side' => $element->eye->adjective,
+                'operation' => implode(', ',
+                    array_map(
+                        function($proc) {
+                            return $proc->term;
+                        },
+                        $element->procedures
+                    )
+                ),
             );
         }
         return $operations;

@@ -65,6 +65,16 @@ $model_name = CHtml::modelName($element);
         </thead>
         <tbody>
         <?php
+        foreach ($operations as $op) {
+            if (!array_key_exists('object', $op)) { ?>
+                <tr>
+                    <td><?= $op['operation'] ?></td>
+                    <td><?= $op['side'] ?></td>
+                    <td><?= Helper::formatFuzzyDate($op['date']) ?></td>
+                    <td>read only</td>
+                </tr>
+            <?php }
+        }
         foreach ($element->operations as $op) {
             $this->render(
                 'PastSurgery_Operation_event_edit',

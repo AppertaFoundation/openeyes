@@ -21,7 +21,6 @@
 if (!isset($values)) {
     $values = array(
         'id' => $op->id,
-        'previous_operation_id' => $op->previous_operation_id,
         'operation' => $op->operation,
         'side_id' => $op->side_id,
         'side_display' => $op->side ? $op->side->adjective : '',
@@ -34,7 +33,6 @@ if (!isset($values)) {
 <tr>
     <td>
         <input type="hidden" name="<?= $model_name ?>[id][]" value="<?=$values['id'] ?>" />
-        <input type="hidden" name="<?= $model_name ?>[previous_operation_id][]" value="<?=$values['previous_operation_id'] ?>" />
         <input type="hidden" name="<?= $model_name ?>[operation][]" value="<?=$values['operation'] ?>" />
         <?= $values['operation'] ?>
     </td>
