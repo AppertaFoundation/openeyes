@@ -213,6 +213,17 @@ class BaseEventElementWidget extends CWidget
     }
 
     /**
+     * @return array
+     */
+    public function getViewData()
+    {
+        return array(
+            'element' => $this->element,
+            'form' => $this->form
+        );
+    }
+
+    /**
      * @return string
      */
     public function run()
@@ -220,8 +231,6 @@ class BaseEventElementWidget extends CWidget
         if ($this->mode === static::$PATIENT_POPUP_MODE) {
             return $this->popupList();
         }
-        return $this->render($this->getView(), array(
-            'element' => $this->element,
-            'form' => $this->form));
+        return $this->render($this->getView(), $this->getViewData());
     }
 }

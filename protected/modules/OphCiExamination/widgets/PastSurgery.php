@@ -72,4 +72,18 @@ class PastSurgery extends \BaseEventElementWidget
         return implode($this->popupListSeparator, $res);
     }
 
+    public function getMergedOperations()
+    {
+        
+        if ($api = $this->app()->moduleAPI->get('OphTrOperationnote')) {
+
+        }
+    }
+
+    public  function getViewData()
+    {
+        return array_merge(parent::getData(), array(
+            'operations' => $this->getMergedOperations()
+        ));
+    }
 }
