@@ -73,10 +73,10 @@
 	</form>
 	<h3>How the rules are applied</h3>
 	<p>
-		Rules set for a specific site override rules set for "All sites", so for example you could set a rule for "All sites" and then override it for a few sites that need different rules.
+		Rules set for a specific site are in addition to rules set for "All sites", so for example you could set a rule for "All sites" and then extend it for a few sites that need additional recipients.
 	</p>
 	<p>
-		If any rules are found that match the current site AND the letter type (compliant/non-compliant), they are ALL used.  So for example if you have three email addresses associated with St Georges and non-compliant, and the letter being sent is non-compliant, they will all be processed and all three recipients will receive the emails.
+		If any rules are found that match the current site or "All sites" AND the letter type (compliant/non-compliant), they are ALL used.  So for example if you have three email addresses associated with St Georges and non-compliant, and the letter being sent is non-compliant, they will all be processed and all three recipients will receive the emails.
 	</p>
 	<p>
 		If there are rules that match the current site but not the letter type, or no rules for the current site at all, it will fall back to looking for rules for "All sites" which do match the letter type.  In this case all rules found for "All sites" which match the letter type of the letter being sent will be processed and all recipients defined in these rules will receive the emails.
