@@ -704,7 +704,7 @@ class Patient extends BaseActiveRecordVersioned
     {
         parent::afterFind();
         $this->use_pas = $this->is_local ? false : true;
-        //Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));
+        Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));
     }
 
     /**
