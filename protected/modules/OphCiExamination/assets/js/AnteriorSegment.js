@@ -125,17 +125,12 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     {
         switch (msgArray['eventName'])
         {
-        case 'doodlesLoaded':
-            this.updateReport();
-            break;
-
         case 'doodleSelected':
             // Ensure that selecting a doodle in one drawing de-deselects the others
             if (this.secondaryDrawingReady()) {
                 this.secondaryDrawing.deselectDoodles();
 
             }
-            this.updateReport();
             break;
 
         case 'doodleAdded':
@@ -169,7 +164,6 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                 this.storeToHiddenField(this.$nuclearCataract, newDoodle.nuclearGrade);
                 this.storeToHiddenField(this.$corticalCataract, newDoodle.corticalGrade);
             }
-            this.updateReport();
             break;
         case 'doodleDeleted':
 
@@ -194,10 +188,8 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                 this.storeToHiddenField(this.$nuclearCataract, '');
                 this.storeToHiddenField(this.$corticalCataract, '');
             }
-            this.updateReport();
             break;
         case 'parameterChanged':
-            this.updateReport();
             var change = msgArray['object'];
             if (change.doodle.className === 'Lens') {
                 if (change.parameter === 'nuclearGrade') {
