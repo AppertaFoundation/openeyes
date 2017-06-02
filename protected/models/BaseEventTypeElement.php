@@ -208,15 +208,16 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
-     * Get the most recent instance of this element type for the given patient
+     * Get the most recent instance of this element type for the given patient. If there isn't one,
+     * then returns $this
      *
      * @param Patient $patient
      * @param bool $use_context
-     * @return BaseEventTypeElement|null
+     * @return BaseEventTypeElement
      */
     public function getMostRecentForPatient(\Patient $patient, $use_context = false)
     {
-        return $this->getModuleApi()->getLatestElement(static::class, $patient, $use_context);
+        return $this->getModuleApi()->getLatestElement(static::class, $patient, $use_context) ?: $this;
     }
 
     /**
