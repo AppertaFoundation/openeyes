@@ -13,6 +13,7 @@ class TherapyApplicationEvents
     {
         $criteria = new CDbCriteria();
         $criteria->addCondition('t.created_date >= :since');
+        $criteria->addCondition('event.deleted = 0');
         $criteria->params = array(':since' => $since);
         return array_map(
             function ($e) {
