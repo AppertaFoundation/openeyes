@@ -11,7 +11,7 @@ OpenEyes.OphCiExamination.AutoReportHandler = (function () {
     }
 
     AutoReportHandler._defaultOptions = {
-        containerSelector: '.ed-widget:first'
+        containerSelector: '.element-eye.column.side'
     };
 
     AutoReportHandler.prototype.initialise = function()
@@ -46,13 +46,12 @@ OpenEyes.OphCiExamination.AutoReportHandler = (function () {
 function autoReportListener(_drawing)
 {
     var canvas = $(_drawing.canvas);
-    var controller = canvas.data('controller');
-    if (!controller) {
-        controller = new OpenEyes.OphCiExamination.AutoReportHandler(
+    var autoreport = canvas.data('autoreport');
+    if (!autoreport) {
+        autoreport = new OpenEyes.OphCiExamination.AutoReportHandler(
             _drawing,
             {side: (_drawing.eye === 1 ? 'left' : 'right')}
         );
-        canvas.data('controller', controller);
+        canvas.data('autoreport', autoreport);
     }
-
 }

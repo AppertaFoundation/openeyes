@@ -73,7 +73,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         array('addDoodle', array('Lens')),
         array('deselectDoodles', array()),
     ),
-    'listenerArray' => array('anteriorSegmentListener'),
+    'listenerArray' => array('anteriorSegmentListener', 'autoReportListener'),
     'syncArray' => array(
         $side .'_'.$element->elementType->id . '_side' => array(
             'AntSeg' => array('AntSegCrossSection' => array('parameters' => array('apexY') ) ),

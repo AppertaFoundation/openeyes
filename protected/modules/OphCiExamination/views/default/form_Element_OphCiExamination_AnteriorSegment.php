@@ -76,5 +76,6 @@
 	</div>
 </div>
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/AnteriorSegment.js", CClientScript::POS_HEAD); ?>
+<?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/AutoReport.js", CClientScript::POS_HEAD); ?>
 
 
