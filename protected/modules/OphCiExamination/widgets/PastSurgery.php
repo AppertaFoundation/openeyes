@@ -66,7 +66,14 @@ class PastSurgery extends \BaseEventElementWidget
         }
     }
 
-    protected function popupFormatExternalOperation($operation)
+    /**
+     * Simple function to format a given array data object into a string for display in the
+     * popup list.
+     *
+     * @param array $operation ['date' => fuzzydatestring, 'side' => string, 'operation' => string]
+     * @return string
+     */
+    protected function formatExternalOperation($operation)
     {
         $res = [\Helper::formatFuzzyDate($operation['date'])];
         if (array_key_exists('side', $operation)) {
@@ -85,7 +92,7 @@ class PastSurgery extends \BaseEventElementWidget
             function ($op) {
                return array_key_exists('object', $op) ?
                    (string) $op['object'] :
-                   $this->popupFormatExternalOperation($op);
+                   $this->formatExternalOperation($op);
             }, $this->getMergedOperations());
         return implode($this->popupListSeparator, $res);
     }

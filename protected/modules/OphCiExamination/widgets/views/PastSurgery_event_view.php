@@ -14,8 +14,13 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+$widget = $this;
 ?>
 
 <div class="element-data">
-    <div class="data-value"><?= $element ?></div>
+    <div class="data-value"><?=
+        implode(' // ', array_map(function($op) use ($widget) {
+            return array_key_exists('object', $op) ? (string) $op['object'] : $widget->formatExternalOperation($op);
+        }, $operations))
+    ?></div>
 </div>
