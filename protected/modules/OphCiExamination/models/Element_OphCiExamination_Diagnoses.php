@@ -134,7 +134,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      *
      * @param $update_disorders
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function updateDiagnoses($update_disorders)
     {
