@@ -1078,6 +1078,33 @@ class BaseEventTypeController extends BaseModuleController
     }
 
     /**
+     * Determines if this is a widget based element or not, and then sets the attributes from the data accordingly
+     *
+     * @param $element
+     * @param $data
+     * @param null $index
+     */
+    protected function setElementAttributesFromData($element, $data, $index = null)
+    {
+        $model_name = \CHtml::modelName($element);
+        $el_data = is_null($index) ? $data[$model_name] : $data[$model_name][$index];
+
+        if ($element->widgetClass) {
+            $widget = $this->createWidget($element->widgetClass, array(
+                'patient' => $this->patient,
+                'element' => $element,
+                'data' => $el_data,
+                'mode' => \BaseEventElementWidget::$EVENT_EDIT_MODE
+            ));
+            $element->widget = $widget;
+        } else {
+            $element->attributes = Helper::convertNHS2MySQL($el_data);
+            $this->setElementComplexAttributesFromData($element, $data, $index);
+            $element->event = $this->event;
+        }
+    }
+
+    /**
      * Looks for custom methods to set many to many data defined on elements. This is called prior to validation so should set values without actually
      * touching the database.
      *
@@ -1094,21 +1121,9 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function setElementComplexAttributesFromData($element, $data, $index = null)
     {
-        if ($element->widgetClass) {
-            $model_name = \CHtml::modelName($element);
-            $el_data = $index ? $data[$model_name][$index] : $data[$model_name];
-            $widget = $this->createWidget($element->widgetClass, array(
-                'patient' => $this->patient,
-                'element' => $element,
-                'data' => $el_data,
-                'mode' => \BaseEventElementWidget::$EVENT_EDIT_MODE
-            ));
-            $element->widget = $widget;
-        } else {
-            $element_method = 'setComplexAttributes_'.Helper::getNSShortname($element);
-            if (method_exists($this, $element_method)) {
-                $this->$element_method($element, $data, $index);
-            }
+        $element_method = 'setComplexAttributes_'.Helper::getNSShortname($element);
+        if (method_exists($this, $element_method)) {
+            $this->$element_method($element, $data, $index);
         }
     }
 
@@ -1141,9 +1156,7 @@ class BaseEventTypeController extends BaseModuleController
                     } else {
                         $element = $element_type->getInstance();
                     }
-                    $element->attributes = Helper::convertNHS2MySQL($attrs);
-                    $this->setElementComplexAttributesFromData($element, $data, $i);
-                    $element->event = $this->event;
+                    $this->setElementAttributesFromData($element, $data, $i);
                     $elements[] = $element;
                 }
             } else {
@@ -1151,9 +1164,7 @@ class BaseEventTypeController extends BaseModuleController
                     || !$element = $el_cls_name::model()->find('event_id=?', array($this->event->id))) {
                     $element = $element_type->getInstance();
                 }
-                $element->attributes = Helper::convertNHS2MySQL($data[$f_key]);
-                $this->setElementComplexAttributesFromData($element, $data);
-                $element->event = $this->event;
+                $this->setElementAttributesFromData($element, $data);
                 $elements[] = $element;
             }
         }
