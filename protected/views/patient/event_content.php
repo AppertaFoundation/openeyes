@@ -1,7 +1,7 @@
 <div class="column event
 	<?php echo $this->moduleNameCssClass;?>
 	<?php echo $this->moduleStateCssClass; ?>
-">
+" style="margin-left:14.6%">
 
 	<header class="event-header">
 		<?php $this->renderPartial('//patient/event_tabs'); ?>
