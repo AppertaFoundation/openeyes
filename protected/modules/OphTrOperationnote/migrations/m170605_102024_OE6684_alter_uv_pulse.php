@@ -49,6 +49,9 @@ class m170605_102024_OE6684_alter_uv_pulse extends OEMigration
         $this->renameColumn('ophtroperationnote_cxl_uv_pulse_duration_version', 'nameTemp', 'name');
         echo "nameTemp column renamed to name";
 
+        //Drop nameOLD
+        $this->dropColumn('ophtroperationnote_cxl_uv_pulse_duration', 'nameOLD');
+        $this->dropColumn('ophtroperationnote_cxl_uv_pulse_duration_version', 'nameOLD');
 	}
 
 	public function down()
