@@ -354,6 +354,12 @@ class SubjectController extends BaseModuleController
         if ($patientSearch->isValidSearchTerm($term)) {
             $dataProvider = $patientSearch->search($term);
 
+            $criteria = $dataProvider->getCriteria();
+
+            // only genetics patient can be searched and added as a relative
+            $criteria->join .= ' JOIN genetics_patient ON t.id = genetics_patient.patient_id';
+            $dataProvider->setCriteria($criteria);
+
             foreach ($dataProvider->getData() as $patient) {
                 $result[] = array(
                     'id' => $patient->id,
