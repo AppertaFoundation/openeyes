@@ -138,7 +138,7 @@ $widgetOptionsJson = json_encode(array(
                       $currentField = isset($through['default_option']) ? $through['default_option'] : 0;
                       foreach ( $through['current'] as $current) {
                         if($current->{$through['related_by']} === $id){
-                            $currentField = $current->{$through['field']};
+                            $currentField = $current->{$through['field']} ? $current->{$through['field']} : $currentField;
                             break;
                         }
 
