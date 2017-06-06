@@ -121,6 +121,8 @@ class SubjectController extends BaseModuleController
         }
 
         $admin->setModelDisplayName('Genetics Subject');
+
+        $status = PedigreeStatus::model()->findByAttributes(array('name' => 'Unknown'));
         $admin->setEditFields(array(
             'referer' => 'referer',
             'id' => 'label',
@@ -170,6 +172,7 @@ class SubjectController extends BaseModuleController
                             'name'
                         )
                     ),
+                    'default_option' => $status ? $status->id : 0,
                 ),
                 'link' => '/Genetics/pedigree/edit/%s'
             ),
