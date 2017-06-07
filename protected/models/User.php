@@ -750,7 +750,7 @@ class User extends BaseActiveRecordVersioned
      * @param bool $return_models
      * @return array user ids or array of User models
      */
-    public function findAllByRole(array $role, $return_models = false)
+    public function findAllByRole($role, $return_models = false)
     {
         $user_ids = array();
 
