@@ -33,6 +33,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.sourceIndex = 0;
     }
 
+    /**
+     * @todo: implement this function for greater flexibility when more elements need to track external diagnoses
+     * @param element
+     */
     DiagnosisCore.prototype.registerForSync = function(element)
     {
         // ideally elements that are to be updated with diagnoses should register for notifications
@@ -73,57 +77,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * found from user interaction.
      *
      * @param diagnoses
-     * @param source
+     * @param sourceElement
      */
     DiagnosisCore.prototype.setForSource = function(diagnoses, sourceElement)
     {
-        source = this.getSourceId(sourceElement);
-        if (!(source in this.diagnosesBySource)) {
-            this.diagnosesBySource[source] = Array();
-        }
-        var removedDiagnoses = Array();
-        for (var i = 0; i < this.diagnosesBySource[source].length; i++) {
-            var diagnosis = this.diagnosesBySource[source][i];
-            if (!diagnosis in diagnoses) {
-                removedDiagnoses.push(diagnosis)
-            }
-        }
+        var source = this.getSourceId(sourceElement);
         this.diagnosesBySource[source] = diagnoses;
-        if (removedDiagnoses.length > 0)
-            this.removeDiagnosesFromSource(removedDiagnoses, source);
 
         // run a sync
         this.sync();
-    };
-
-    /**
-     * This function may be entirely unnecessary depending on how much work we can do with Diagnosis element control
-     *
-     * @param diagnoses
-     * @param removeSource
-     */
-    DiagnosisCore.prototype.removeDiagnosesFromSource = function(diagnoses, removeSource)
-    {
-        var dontRemove = Array();
-        for (source in this.diagnosesBySource) {
-            if (source === removeSource)
-                continue;
-
-            if (this.diagnosesBySource.hasOwnProperty(source)) {
-                for (var i = 0; i < this.diagnosesBySource[source]; i++) {
-                    var otherSourceDiagnosis = this.diagnosesBySource[source][i];
-                    if (otherSourceDiagnosis in diagnoses) {
-                        dontRemove.push(otherSourceDiagnosis);
-                    }
-                }
-            }
-        }
-        // sync the arrays
-
-        // do the remove
-
-
-        // run a sync
     };
 
     exports.Diagnosis = new DiagnosisCore();
