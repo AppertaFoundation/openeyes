@@ -49,8 +49,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if (diagnosesElement.length) {
             var controller = diagnosesElement.data('controller');
             controller.setExternalDiagnoses(this.diagnosesBySource);
-        } else {
-            console.log('the diagnoses element is not present');
         }
     };
 
@@ -79,7 +77,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     DiagnosisCore.prototype.setForSource = function(diagnoses, sourceElement)
     {
-        console.log(diagnoses);
         source = this.getSourceId(sourceElement);
         if (!(source in this.diagnosesBySource)) {
             this.diagnosesBySource[source] = Array();

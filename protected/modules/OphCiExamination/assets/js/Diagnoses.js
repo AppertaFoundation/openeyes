@@ -32,8 +32,14 @@ OpenEyes.OphCiExamination.DiagnosesController = (function (ED) {
 
     var externalDiagnoses = {};
 
+    /**
+     * Set the external diagnoses and update the element display accordingly.
+     *
+     * @param diagnosesBySource
+     */
     DiagnosesController.prototype.setExternalDiagnoses = function(diagnosesBySource)
     {
+        // reformat to controller usable structure
         var newExternalDiagnoses = {};
         for (var source in diagnosesBySource) {
             if (diagnosesBySource.hasOwnProperty(source)) {
@@ -50,32 +56,67 @@ OpenEyes.OphCiExamination.DiagnosesController = (function (ED) {
             }
         }
 
+        // check for external diagnoses that should be removed
+        for (var code in externalDiagnoses) {
+            if (externalDiagnoses.hasOwnProperty(code)) {
+                if (!(code in newExternalDiagnoses)) {
+                    this.removeExternalDiagnosis(code);
+                }
+            }
+        }
+
+        // assign private property
         externalDiagnoses = newExternalDiagnoses;
+        // update display
         this.renderExternalDiagnoses();
     };
 
+    /**
+     * Remove the diagnosis if it was added from an external source.
+     */
+    DiagnosesController.prototype.removeExternalDiagnosis = function(code)
+    {
+        this.$element.find('.external a.removeDiagnosis[rel="'+code+'"]').click();
+    };
+
+    /**
+     * Runs through the current external diagnoses and ensures they are displayed correctly
+     */
     DiagnosesController.prototype.renderExternalDiagnoses = function()
     {
         for (diagnosisCode in externalDiagnoses) {
             if (externalDiagnoses.hasOwnProperty(diagnosisCode)) {
-                this.updateDiagnosis(diagnosisCode, externalDiagnoses[diagnosisCode].sides);
+                this.updateExternalDiagnosis(diagnosisCode, externalDiagnoses[diagnosisCode].sides);
             }
         }
     };
 
-    DiagnosesController.prototype.updateDiagnosis = function(code, sides)
+    /**
+     * Update the given diagnosis to apply to sides
+     *
+     * @param code
+     * @param sides
+     */
+    DiagnosesController.prototype.updateExternalDiagnosis = function(code, sides)
     {
         var self = this;
-        // TODO: the callback function obviously should be moved into this controller
-        self.retrieveDiagnosisDetail(code, self.resolveEyeCode(sides), self.setDiagnosis);
+        self.retrieveDiagnosisDetail(code, self.resolveEyeCode(sides), self.setExternalDiagnosisDisplay);
     };
 
     var diagnosisDetail = {};
 
-    DiagnosesController.prototype.retrieveDiagnosisDetail = function(code, sides, callback)
+    /**
+     * This will retrieve the diagnosis detail via ajax (if it's not already been retrieved)
+     * and then pass the information to the given callback. The callback function should expect
+     * to receive args [diagnosisId, diagnosisName, sideId]
+     * @param code
+     * @param sides
+     * @param callback
+     */
+    DiagnosesController.prototype.retrieveDiagnosisDetail = function(code, side, callback)
     {
         if (diagnosisDetail.hasOwnProperty(code)) {
-            callback(diagnosisDetail[code].id, diagnosisDetail[code].name, sides);
+            callback(diagnosisDetail[code].id, diagnosisDetail[code].name, side);
         } else {
             $.ajax({
                 'type': 'GET',
@@ -83,7 +124,7 @@ OpenEyes.OphCiExamination.DiagnosesController = (function (ED) {
                 'url': '/OphCiExamination/default/getDisorder?disorder_id='+code,
                 'success': function(json) {
                     diagnosisDetail[code] = json;
-                    callback(diagnosisDetail[code].id, diagnosisDetail[code].name, sides);
+                    callback(diagnosisDetail[code].id, diagnosisDetail[code].name, side);
                 }
             });
         }
@@ -112,14 +153,14 @@ OpenEyes.OphCiExamination.DiagnosesController = (function (ED) {
     };
 
     /**
-     * Check for the diagnosis in the current diagnosis element. If it's there, update the side.
+     * Check for the diagnosis in the current diagnosis element. If it's there, and is external, update the side.
      * If it's not, add it to the table.
      *
      * @param id
      * @param name
      * @param side
      */
-    DiagnosesController.prototype.setDiagnosis = function(id, name, side)
+    DiagnosesController.prototype.setExternalDiagnosisDisplay = function(id, name, side)
     {
         // code adapted from module.js to verify if diagnosis already in table or not
         var alreadyInList = false;
@@ -129,10 +170,14 @@ OpenEyes.OphCiExamination.DiagnosesController = (function (ED) {
         $('#OphCiExamination_diagnoses').children('tr').each(function() {
             if ($(this).find('input[name=selected_diagnoses\\[\\]]').val() == id) {
                 alreadyInList = true;
-                listSide = $('input[type="radio"]:checked').val();
-                if (listSide != side) {
-                    // the
-                    $(this).find('input[type="radio"][value='+side+']').prop('checked', true);
+                if ($(this).hasClass('external')) {
+                    // only want to alter sides for disorders that have been added from external source
+                    // at this point
+                    listSide = $('input[type="radio"]:checked').val();
+                    if (listSide != side) {
+                        // the
+                        $(this).find('input[type="radio"][value=' + side + ']').prop('checked', true);
+                    }
                 }
                 // stop iterating
                 return false;
@@ -141,7 +186,9 @@ OpenEyes.OphCiExamination.DiagnosesController = (function (ED) {
 
         if (!alreadyInList) {
             // TODO: this should be a method on this controller, but we're leveraging existing code for now.
-            OphCiExamination_AddDiagnosis(id, name, side);
+            // NOTE: the hardcoded settings for diabetic/glaucoma flags are present to allow us to provide
+            // the auto flag for control of removing diagnoses as the eyedraws are updated
+            OphCiExamination_AddDiagnosis(id, name, side, false, false, true);
         }
     };
 
