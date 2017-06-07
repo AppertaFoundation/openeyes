@@ -746,23 +746,24 @@ class User extends BaseActiveRecordVersioned
     /**
      * Returns users who can access the roles in the given param
      *
-     * @param array $roles
+     * @param array $role
      * @param bool $return_models
-     * @return array user ids
+     * @return array user ids or array of User models
      */
-    public function findAllByRoles(array $roles, $return_models = false)
+    public function findAllByRole(array $role, $return_models = false)
     {
-        $users_with_roles = [];
+        $user_ids = array();
 
-        $users = $this->findAll();
-        foreach($users as $id => $user) {
-            foreach($roles as $role){
-                if(Yii::app()->authManager->checkAccess($role, $user->id)) {
-                    $users_with_roles[] = $return_models ? $user : $user->id;
-                }
-            }
+        $users = Yii::app()->db->createCommand('SELECT DISTINCT(userid) FROM `authassignment` WHERE `itemname` LIKE "%' . $role . '%";')->queryAll();
+
+        foreach($users as $index => $user){
+            $user_ids[] = $user['userid'];
         }
-        return $users_with_roles;
 
+        if( !empty($user_ids) && $return_models){
+            return User::model()->findAll('t.id IN (' . (implode(',', $user_ids)) . ')');
+        } else {
+            return $users;
+        }
     }
 }

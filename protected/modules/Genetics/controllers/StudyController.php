@@ -61,7 +61,7 @@ class StudyController extends BaseAdminController
                 'label' => 'Investigator',
                 'options' => CHtml::encodeArray(CHtml::listData(
                     //All users with Genetics Users privileges - means all genetics roles are included from Genetics User to Genetics Admin
-                    User::model()->findAllByRoles(['Genetics User'],true),
+                    User::model()->findAllByRole('Genetics User',true),
                     'id',
                     function ($model) {
                         return $model->fullName;
