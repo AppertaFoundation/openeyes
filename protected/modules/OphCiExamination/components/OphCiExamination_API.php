@@ -635,11 +635,7 @@ class OphCiExamination_API extends \BaseAPI
      * get the va from the given episode for the left side of the episode patient.
      * @param Episode $episode
      * @param bool $include_nr_values
-    <<<<<<< HEAD
-     *
-    =======
      * @param string $before_date
-    >>>>>>> develop
      * @return OphCiExamination_VisualAcuity_Reading
      */
     public function getLetterVisualAcuityForEpisodeLeft($episode, $include_nr_values = false, $before_date = '')
@@ -664,13 +660,8 @@ class OphCiExamination_API extends \BaseAPI
     /**
      * get the va from the given episode for the right side of the episode patient.
      * @param Episode $episode
-    <<<<<<< HEAD
-     * @param bool $include_nr_values
-     *
-    =======
      * @param bool    $include_nr_values
-     * @param string $before_date
-    >>>>>>> develop
+     * @param string  $before_date
      * @return OphCiExamination_VisualAcuity_Reading
      */
     public function getLetterVisualAcuityForEpisodeRight($episode, $include_nr_values = false, $before_date = '')
@@ -1864,5 +1855,63 @@ class OphCiExamination_API extends \BaseAPI
         $methods = models\OphCiExamination_VisualAcuity_Method::model()->findAll('type=?', array($method_type));
         $best_reading = $element->getBestReadingByMethods($side, $methods);
         return $best_reading;
+    }
+
+    /**
+     * @param \Patient $patient
+     * @returns string
+     *
+     * Outcome details from latest Examination
+     * (ode shortcode handler)
+     */
+
+    public function getLatestOutcomeDetails(\Patient $patient)
+    {
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        if($element = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_ClinicOutcome'))
+        {
+            $str = $element->status->name;
+            if($element->status->followup)
+            {
+                $str.=" in {$element->followup_quantity} {$element->followup_period} by {$element->role->name}";
+                if ($element->role_comments != '')
+                {
+                    $str.= " ({$element->role_comments})";
+                }
+            }
+
+            return $str;
+        }
+
+        return "";
+    }
+  
+    public function getCataractSurgicalManagement(\Patient $patient)
+    {
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+
+        if($element = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_CataractSurgicalManagement'))
+        {
+            $str = "Eye: {$element->eye()->name}".PHP_EOL;
+            $str.= "Straight Forward: ".($element->fast_track == 1 ? 'Yes' : 'No').PHP_EOL;
+            $str.= "Post Operative Target: {$element->target_postop_refraction}D".PHP_EOL;
+            $str.= "Suitable for: {$element->suitable_for_surgeon->name}".($element->supervised == 1 ? " (supervised)" : "").PHP_EOL;
+            $str.= ($element->previous_refractive_surgery == 1 ? "Patient has had previous refractive surgery".PHP_EOL : "");
+            $str.= ($element->vitrectomised_eye == 1 ? "Vitrectomised eye".PHP_EOL : "");
+            $reasons = [];
+            foreach($element->reasonForSurgery as $reason)
+            {
+                $reasons[]=$reason->name;
+            }
+
+            if(!empty($reasons))
+            {
+                $str.= "Primary reason for surgery: ".implode(", ", $reasons).PHP_EOL;
+            }
+
+            return $str;
+        }
+
+        return "";
     }
 }
