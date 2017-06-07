@@ -139,7 +139,7 @@ class GeneticsPatient extends BaseActiveRecord
                 self::MANY_MANY,
                 'GeneticsStudy',
                 'genetics_study_subject(subject_id, study_id)',
-                'condition' => 'end_date > NOW() ' .
+                'condition' => '( end_date > NOW() OR UNIX_TIMESTAMP(end_date) IS NULL )' .
                     'AND (current_studies_current_studies.participation_status_id IS NULL ' .
                     'OR current_studies_current_studies.participation_status_id <> ' . $this->statuses['Rejected'] . ')',
             ),
