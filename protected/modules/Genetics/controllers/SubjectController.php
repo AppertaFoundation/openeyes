@@ -238,9 +238,11 @@ class SubjectController extends BaseModuleController
                 $post = Yii::app()->request->getPost('GeneticsPatient', array());
                 if (isset($post['pedigrees_through'])) {
                     foreach ($admin->getModel()->pedigrees as $pedigree) {
+                        // NOTE that patient_id below is actually the genetic subject, the FK should be renamed at some point
+                        // and this comment removed!
                         if (array_key_exists($pedigree->id, $post['pedigrees_through'])) {
                             $pedigreeStatus = GeneticsPatientPedigree::model()->findByAttributes(array(
-                                'patient_id' => $id,
+                                'patient_id' => $admin->getModel()->id,
                                 'pedigree_id' => $pedigree->id,
                             ));
                             if ($pedigreeStatus) {
