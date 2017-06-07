@@ -184,44 +184,38 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getPreOpVABothEyes($patient, $use_context = true)
     {
-        if ($apiNote = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
+        if ($apiNote = $this->yii->moduleAPI->get('OphTrOperationnote')) {
             $opDate = $apiNote->getLastOperationDateUnformatted($patient);
         }
-        $api = Yii::app()->moduleAPI->get('OphCiExamination');
-        $episode = $this->getLatestEvent($patient, $use_context);
+        $exam_api = $this->yii->moduleAPI->get('OphCiExamination');
 
-        $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
+        $events = $exam_api->getEvents($patient, $use_context, $opDate);
         $data = '';
-        $criteria = new CDbCriteria();
-        $criteria->condition = 'episode_id = :e_id AND event_type_id = :et_id';
-        $criteria->addCondition('event_date <= :event_date');
-        $criteria->order = ' event_date DESC, created_date DESC';
-        $criteria->params = array(':e_id' => $episode->episode_id, ':et_id' => $event_type->id, 'event_date' => $opDate);
 
-        if($events = Event::model()->findAll($criteria)){
+        if($events){
             for ($i = 0; $i < count($events); ++$i) {
                 // Get Most Recent VA
-                $vaID = $api->getMostRecentVA($events[$i]->id);
+                $vaID = $exam_api->getMostRecentVA($events[$i]->id);
                 if($vaID && !$data){
-                    $data = $api->getMostRecentVAData($vaID->id);
+                    $data = $exam_api->getMostRecentVAData($vaID->id);
                     $chosenVA = $vaID;
                 }
             }
         }
 
         if($data){
-        for ($i = 0; $i < count($data); ++$i) {
-            if($data[$i]->side == 0){
-                $rightData[] = $data[$i];
+            for ($i = 0; $i < count($data); ++$i) {
+                if($data[$i]->side == 0){
+                    $rightData[] = $data[$i];
+                }
+                if($data[$i]->side == 1){
+                    $leftData[] = $data[$i];
+                }
             }
-            if($data[$i]->side == 1){
-                $leftData[] = $data[$i];
-            }
-        }
             $unitId = $chosenVA->unit_id;
 
-            $rightVA = $api->getVAvalue($rightData[0]->value, $unitId);
-            $leftVA = $api->getVAvalue($leftData[0]->value, $unitId);
+            $rightVA = $exam_api->getVAvalue($rightData[0]->value, $unitId);
+            $leftVA = $exam_api->getVAvalue($leftData[0]->value, $unitId);
 
             return $rightVA . " Right Eye" . " " . $leftVA . " Left Eye";
         }else{
@@ -239,28 +233,20 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getPreOpRefraction($patient, $use_context = true)
     {
-        if ($apiNote = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
+        if ($apiNote = $this->yii->moduleAPI->get('OphTrOperationnote')) {
             $opDate = $apiNote->getLastOperationDateUnformatted($patient);
         }
-        $api = Yii::app()->moduleAPI->get('OphCiExamination');
+        $exam_api = $this->yii->moduleAPI->get('OphCiExamination');
+        $events = $exam_api->getEvents($patient, $use_context, $opDate);
 
-        $event = $this->getLatestEvent($patient, $use_context);
-        $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
-        $eventtypeid = $event_type->id;
-// Refraction here
         $refractfound = false;
-
-        if ($eventid = Event::model()->findAll(array(
-            'condition' => 'event_type_id = ' . $eventtypeid . ' AND episode_id = ' . $event->episode_id . " AND event_date <= '" . $opDate . "'",
-            'order' => 'event_date DESC',
-        ))
-        ) {
+        if($events){
 // Loop through responses, for ones that have RefractionValues
-            for ($i = 0; $i < count($eventid); ++$i) {
-                if ($api->getRefractionValues($eventid[$i]->id)) {
+            for ($i = 0; $i < count($events); ++$i) {
+                if ($exam_api->getRefractionValues($events[$i]->id)) {
                     if (!$refractfound) {
-                        $refractelement = $api->getRefractionValues($eventid[$i]->id);
-                        $refract_event_date = $eventid[$i]->event_date;
+                        $refractelement = $exam_api->getRefractionValues($events[$i]->id);
+                        $refract_event_date = $events[$i]->event_date;
                         $refractfound = true;
                         $rightspherical = number_format($refractelement->{'right_sphere'} + 0.5 * $refractelement->{'right_cylinder'}, 2);
                         $leftspherical = number_format($refractelement->{'left_sphere'} + 0.5 * $refractelement->{'left_cylinder'}, 2);
@@ -283,6 +269,10 @@ class OphCoCorrespondence_API extends BaseAPI
         return $patient->getAllergiesSeparatedString(" - ", "\r\n", true);
     }
 
+    /*
+     * @param $patient_id
+     * @param $macro_id
+     */
     public function getMacroTargets($patient_id, $macro_id)
     {
         if (!$patient = Patient::model()->findByPk($patient_id)) {
@@ -390,6 +380,10 @@ class OphCoCorrespondence_API extends BaseAPI
         return $data;
     }
 
+    /*
+     * @param $patient_id
+     * @param $macro_id
+     */
     private function getMacroData($patient_id, $macro_id)
     {
         if(!$patient_id){
@@ -545,7 +539,12 @@ class OphCoCorrespondence_API extends BaseAPI
         $element_letter = ElementLetter::model()->findByPk($id);
         return $element_letter->letter_targets;
     }
-    
+
+    /*
+     * @param int $patient_id
+     * @param string $contact_string
+     * @param boolean $nickname
+     */
     public function getAddress($patient_id, $contact_string, $nickname = false)
     {
         if (!$patient = Patient::model()->findByPk($patient_id)) {
@@ -624,7 +623,12 @@ class OphCoCorrespondence_API extends BaseAPI
             )),
         );
     }
-    
+
+    /*
+     * @param int $document_target_id
+     * @param $type
+     * @param int $letter_id
+     */
     public function updateDocumentTargetAddressFromContact($document_target_id, $type, $letter_id)
     {
         $document_target = DocumentTarget::model()->findByPk($document_target_id);
