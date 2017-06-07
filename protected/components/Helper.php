@@ -419,4 +419,16 @@ class Helper
 
     }
 
+    /**
+     * Check if the given DateTime string is valid
+     *
+     * @param string $date_time
+     * @param string $pattern
+     * @return bool True if parsing. False if parsing fails.
+     */
+    public static function isValidDateTime($date_time, $pattern = self::NHS_DATE_FORMAT)
+    {
+        return CDateTimeParser::parse($date_time,Helper::NHS_DATE_FORMAT) ? true : false;
+    }
+
 }

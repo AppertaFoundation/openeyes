@@ -362,6 +362,7 @@ class SubjectController extends BaseModuleController
             // only genetics patient can be searched and added as a relative
             $criteria->join .= ' JOIN genetics_patient ON t.id = genetics_patient.patient_id';
             $dataProvider->setCriteria($criteria);
+            $dataProvider->setPagination(false);
 
             foreach ($dataProvider->getData() as $patient) {
                 $result[] = array(
