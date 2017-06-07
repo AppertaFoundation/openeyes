@@ -2,7 +2,7 @@ var OpenEyes = OpenEyes || {};
 
 OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
-OpenEyes.OphCiExamination.DiagnosesController = (function (ED) {
+OpenEyes.OphCiExamination.DiagnosesController = (function () {
 
     /**
      *
@@ -27,7 +27,6 @@ OpenEyes.OphCiExamination.DiagnosesController = (function (ED) {
     {
         // possibly load up current disorders and cache them for later comparison checking.
         this.$element = $(this.options.selector);
-        // will want to send a signal telling anything interested to provide us with external disorders.
     };
 
     var externalDiagnoses = {};
@@ -197,4 +196,6 @@ OpenEyes.OphCiExamination.DiagnosesController = (function (ED) {
 
 $(document).ready(function() {
     $('#OphCiExamination_diagnoses').data('controller', new OpenEyes.OphCiExamination.DiagnosesController());
+    // would be better to do this from within the controller via a signal, but this a quick solution
+    OpenEyes.OphCiExamination.Diagnosis.sync();
 });
