@@ -597,7 +597,7 @@ class DefaultController extends \BaseEventTypeController
                         $answers[] = $answer;
                     }
                 }
-                if (isset($data[$model_name][$side.'_risks'])) {
+                if (isset($data[$model_name][$side.'_risks']) && is_array($data[$model_name][$side.'_risks'])) {
                     foreach ($data[$model_name][$side.'_risks'] as $risk_id) {
                         if ($risk = models\OphCiExamination_InjectionManagementComplex_Risk::model()->findByPk($risk_id)) {
                             $risks[] = $risk;
@@ -1395,5 +1395,5 @@ class DefaultController extends \BaseEventTypeController
             \PatientRiskAssignment::model()->deleteByPk($patient_risk->id);
         }
     }
-
 }
+

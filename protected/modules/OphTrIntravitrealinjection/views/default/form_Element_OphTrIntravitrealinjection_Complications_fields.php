@@ -55,9 +55,11 @@ if (@$_POST[get_class($element)] && $complication_ids = @$_POST[get_class($eleme
     $complications = $element->{$side . '_complications'};
 }
 
-foreach ($complications as $complication) {
-    if ($complication->description_required) {
-        $show_desc = true;
+if( is_array($complications) ){
+    foreach ($complications as $complication) {
+        if ($complication->description_required) {
+            $show_desc = true;
+        }
     }
 }
 ?>
