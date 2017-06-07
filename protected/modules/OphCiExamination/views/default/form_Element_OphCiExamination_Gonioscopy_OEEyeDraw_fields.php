@@ -100,15 +100,22 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
 		</div>
 	</div>
 
-	<div class="field-row">
-		<label for="<?php echo CHtml::modelName($element).'_'.$side.'_description';?>">
-			<?php echo $element->getAttributeLabel($side.'_description'); ?>:
-		</label>
-		<?php echo CHtml::activeTextArea($element, $side.'_description', array('rows' => '2', 'class' => 'autosize clearWithEyedraw')) ?>
-	</div>
+    <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
+    <div class="row">
+        <div class="large-6 column end">
+            <label for="<?= CHtml::modelName($element).'_'.$side.'_ed_report'; ?>">
+                <?= $element->getAttributeLabel($side . '_ed_report') ?>:
+            </label>
+        </div>
+        <div class="large-10 column end" style="line-height: 1; margin-bottom:10px;">
+            <span class="data-value" id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>"></span>
+        </div>
+    </div>
 
 	<div class="field-row">
-		<button class="ed_report secondary small">Report</button>
-		<button class="ed_clear secondary small">Clear</button>
+		<label for="<?= CHtml::modelName($element).'_'.$side.'_description';?>">
+			<?= $element->getAttributeLabel($side.'_description'); ?>:
+		</label>
+		<?= CHtml::activeTextArea($element, $side.'_description', array('rows' => '2', 'class' => 'autosize clearWithEyedraw')) ?>
 	</div>
 </div>
