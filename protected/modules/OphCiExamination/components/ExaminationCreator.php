@@ -85,10 +85,12 @@ class ExaminationCreator
                 $sphereSide = $eyeLabel.'_sphere';
                 $cylinderSide = $eyeLabel.'_cylinder';
                 $axisSide = $eyeLabel.'_axis';
+                $axisEyedrawSide = $eyeLabel.'_axis_eyedraw';
                 $refraction->$typeSide = $refractionType['id'];
                 $refraction->$sphereSide = $refractionReading['sphere'];
                 $refraction->$cylinderSide = $refractionReading['cylinder'];
                 $refraction->$axisSide = $refractionReading['axis'];
+                $refraction->$axisEyedrawSide = '[{"scaleLevel": 1,"version":1.1,"subclass":"TrialLens","rotation":' . (180 - $refractionReading['axis']) . ',"order":0},{"scaleLevel": 1,"version":1.1,"subclass":"TrialFrame","order":1}]';
 
                 foreach ($eye['reading'][0]['visual_acuity'] as $vaData) {
                     $this->addVisualAcuityReading($userId, $visualAcuity, $unit, $vaData, $eyeLabel);
