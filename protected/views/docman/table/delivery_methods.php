@@ -19,14 +19,17 @@
 <?php
     $pre_output_key = 0;
     // check if the it is a GP and if the GP has a Docman or Print
-    $docnam_output = null;
+    $document_output = null;
+    $internalreferral_output = null;
     $print_output = null;
     if( isset($target->document_output)){
         foreach($target->document_output as $output_key => $doc_output){
             if($doc_output->output_type == 'Docman'){
-                $docnam_output = $doc_output;
+                $document_output = $doc_output;
             } else if($doc_output->output_type == 'Print'){
                 $print_output = $doc_output;
+            } else if($doc_output->output_type == 'Internalreferral'){
+                $internalreferral_output = $doc_output;
             }
         }
     }
@@ -34,12 +37,12 @@
     <?php if($contact_type == 'GP'): ?>
         
         <?php if($can_send_electronically): ?>
-            <label>
+            <label class="electronic-label docman">
                 <?php 
-                    $is_checked = $is_draft == 1 ? 'checked disabled' : ''; 
+                    $is_checked = $is_draft == 1 ? 'checked disabled' : '';
 
                     //now, docman cannot be unchecked when the recipient is GP
-                    // if we want to allow users to tick/untick DocMan chcbox remove the following line
+                    // if we want to allow users to tick/untick DocMan checkbox remove the following line
                     $is_checked = 'checked disabled';
                 ?>
                 <input type="checkbox" value="Docman" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_<?php echo $pre_output_key; ?>_output_type"
@@ -47,19 +50,39 @@
                 <input type="hidden" value="Docman" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" >
             </label>
 
-            <?php if($docnam_output):?>
-                <?php echo CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $docnam_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
+            <?php if($document_output):?>
+                <?php echo CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $document_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
             <?php endif; ?>
             <?php $pre_output_key++; ?>
         <?php endif; ?>
-    <?php endif; ?>    
+
+    <?php endif; ?>
+
+    <?php if($contact_type == 'INTERNALREFERRAL'): ?>
+        <?php $label = ElementLetter::model()->getInternalReferralSettings('internal_referral_method_label', 'Electronic'); ?>
+        <label class="electronic-label internal-referral">
+            <?php
+
+            //now, WinDip cannot be unchecked
+            // if we want to allow users to tick/untick the checkbox remove the following line
+            $is_checked = 'checked disabled';
+            ?>
+            <input type="checkbox" value="Internalreferral" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_<?php echo $pre_output_key; ?>_output_type"
+                <?php echo $is_checked; ?>> <?php echo $label; ?>
+            <input type="hidden" value="Internalreferral" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" >
+        </label>
+        <?php if($internalreferral_output):?>
+            <?php echo CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $internalreferral_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
+        <?php endif; ?>
+        <?php $pre_output_key++; ?>
+    <?php endif; ?>
 
     <label>
         <?php 
             $is_checked = 'checked';
             
             $is_post_checked = isset($_POST['DocumentTarget'][$row_index]['DocumentOutput'][$pre_output_key]['output_type']);
-            if( $contact_type == 'GP' ){
+            if( $contact_type == 'GP' || $contact_type == 'INTERNALREFERRAL'){
                 $is_checked = $is_post_checked ? 'checked' : '';
             } else {
                 $is_checked = (Yii::app()->request->isPostRequest && !$is_post_checked) ? '' : 'checked';

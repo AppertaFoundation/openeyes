@@ -220,10 +220,10 @@ function applyFilter() {
     var show = true;
     var drug_id = $(this).val();
     if (drug_id) {
-      if (filter_type_id && common_drug_metadata[drug_id].type_id != filter_type_id) {
+      if (filter_type_id && common_drug_metadata[drug_id].type_id.indexOf(filter_type_id) == -1) {
         show = false;
       }
-      if (filter_preservative_free && common_drug_metadata[drug_id].preservative_free == '0') {
+      if (filter_preservative_free && common_drug_metadata[drug_id].preservative_free == 0) {
         show = false;
       }
       if (show) {

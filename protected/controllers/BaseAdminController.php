@@ -33,6 +33,7 @@ class BaseAdminController extends BaseController
         Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
         Yii::app()->assetManager->registerCssFile('components/jt.timepicker/jquery.timepicker.css', null, 10);
         Yii::app()->assetManager->registerScriptFile('js/admin.js', null, 10);
+        Yii::app()->assetManager->registerScriptFile('js/handleButtons.js', null, 10);
         $this->jsVars['items_per_page'] = $this->items_per_page;
 
         return parent::beforeAction($action);
@@ -201,9 +202,18 @@ class BaseAdminController extends BaseController
                         $this->addFilterCriteria($criteria, $options['filter_fields']);
 
                         $to_delete = $model::model()->findAll($criteria);
-                        foreach ($to_delete as $item) {
+                        foreach ($to_delete as $i=>$item) {
                             if (!$item->delete()) {
-                                throw new Exception("Unable to delete {$model}:{$item->primaryKey}");
+                                $tx->rollback();
+                                $error = $item->getErrors();
+                                foreach ($error as $e)
+                                {
+                                    $errors[$i]=$e[0];
+                                }
+
+                                Yii::app()->user->setFlash('error.error', implode('<br/>', $errors));
+                                $this->redirect(Yii::app()->request->url);
+
                             }
                             Audit::add('admin', 'delete', $item->primaryKey, null, array(
                                 'module' => (is_object($this->module)) ? $this->module->id : 'core',

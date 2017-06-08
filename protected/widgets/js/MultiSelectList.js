@@ -18,166 +18,177 @@
 
 $(document).ready(function () {
 
-    $(this).on('init', '.multi-select', function () {
-        $('.multi-select-selections.sortable').sortable();
-    });
-
+  $(this).on('init', '.multi-select', function () {
     $('.multi-select-selections.sortable').sortable();
+  });
 
-    // Prevent the events from being bound multiple times.
-    if ($(this).data('multi-select-events')) {
-        return;
-    }
-    $(this).data('multi-select-events', true);
+  $('.multi-select-selections.sortable').sortable();
 
-    $(this).on('click', '.multi-select .remove-all', function (e) {
-        e.preventDefault();
-        var container = $(this).closest('.multi-select');
-        container.find('.remove-one').trigger('click');
-    });
+  // Prevent the events from being bound multiple times.
+  if ($(this).data('multi-select-events')) {
+    return;
+  }
+  $(this).data('multi-select-events', true);
 
-    $(this).on('change', 'select.MultiSelectList', function () {
+  $(this).on('click', '.multi-select .remove-all', function (e) {
+    e.preventDefault();
+    var container = $(this).closest('.multi-select');
+    container.find('.remove-one').trigger('click');
+  });
 
-        var select = $(this);
-        var selected = select.children('option:selected');
+  $(this).on('change', 'select.MultiSelectList', function () {
 
-        if (selected.val().length > 0) {
+    var select = $(this);
+    var selected = select.children('option:selected');
 
-            var container = select.closest('.multi-select');
-            var selections = container.find('.multi-select-selections');
-            var inputField = container.find('.multi-select-list-name');
-            var fieldName = inputField.attr('name').match(/\[MultiSelectList_(.*?)\]$/)[1];
-            var noSelectionsMsg = container.find('.no-selections-msg');
-            var removeAll = container.find('.remove-all');
-            var options = container.data('options');
+    if (selected.val().length > 0) {
 
-            $('#' + fieldName.replace('[', '_').replace(']', '_') + 'empty_hidden').remove();
+      var container = select.closest('.multi-select');
+      var selections = container.find('.multi-select-selections');
+      var inputField = container.find('.multi-select-list-name');
+      var fieldName = inputField.attr('name').match(/\[MultiSelectList_(.*?)\]$/)[1];
+      var noSelectionsMsg = container.find('.no-selections-msg');
+      var removeAll = container.find('.remove-all');
+      var options = container.data('options');
+      var throughOptions = container.data('statuses');
 
-            var attrs = {};
-            $(selected[0].attributes).each(function () {
-                attrs[this.nodeName] = this.nodeValue;
-            });
-            console.log(attrs);
-            var inp_str = '<input type="hidden" name="' + fieldName + '[]"';
-            for (var key in attrs) {
-                if(attrs.hasOwnProperty(key)) {
-                    inp_str += ' ' + key + '="' + attrs[key] + '"';
-                }
-            }
-            inp_str += ' />';
+      $('#' + fieldName.replace('[', '_').replace(']', '_') + 'empty_hidden').remove();
 
-            var input = $(inp_str);
+      var attrs = {};
+      $(selected[0].attributes).each(function () {
+        attrs[this.nodeName] = this.nodeValue;
+      });
 
-            var remote_data = {
-                'href': '#',
-                'class': 'MultiSelectRemove remove-one ' + selected.val(),
-                'text': 'Remove',
-                'data-name': fieldName + '[]',
-                'data-text': selected.text()
-            };
-
-            if ($(this).hasClass('linked-fields')) {
-                remote_data['class'] += ' linked-fields';
-                remote_data['data-linked-fields'] = $(this).data('linked-fields');
-                remote_data['data-linked-values'] = $(this).data('linked-values');
-            }
-
-            var remove = $('<a />', remote_data);
-
-            var item = $('<li><span class="text">' + selected.text() + '</span></li>');
-            item.append(remove);
-            item.append(input);
-
-            selections
-                .append(item)
-                .removeClass('hide');
-
-            noSelectionsMsg.addClass('hide');
-            removeAll.removeClass('hide');
-
-            if (!select.data('searchable')) {
-                selected.remove();
-                select.val('');
-            } else {
-                var chosenId = '#' + select.attr('id') + '_chosen';
-                $(chosenId).find('.chosen-single').addClass('chosen-default').find('span').text(select.data('placeholder'));
-            }
-
-            if (options.sorted) {
-                selections.append(selections.find('li').sort(function (a, b) {
-                    return $.trim($(a).find('.text').text()) > $.trim($(b).find('.text').text());
-                }));
-            }
+      var inp_str = '<input type="hidden" name="' + fieldName + '[]"';
+      for (var key in attrs) {
+        if (attrs.hasOwnProperty(key)) {
+          inp_str += ' ' + key + '="' + attrs[key] + '"';
         }
+      }
+      inp_str += ' />';
 
-        select.trigger('MultiSelectChanged');
-        return false;
-    });
+      var input = $(inp_str);
 
-    $(this).on('click', 'a.MultiSelectRemove', 'click', function (e) {
-        e.preventDefault();
-        var anchor = $(this);
-        var container = anchor.closest('.multi-select');
-        var selections = container.find('.multi-select-selections');
-        var noSelectionsMsg = container.find('.no-selections-msg');
-        var removeAll = container.find('.remove-all');
-        var input = anchor.closest('li').find('input');
+      var remote_data = {
+        'href': '#',
+        'class': 'MultiSelectRemove remove-one ' + selected.val(),
+        'text': 'Remove',
+        'data-name': fieldName + '[]',
+        'data-text': selected.text()
+      };
 
-        var attrs = {};
-        $(input[0].attributes).each(function () {
-            if (this.nodeName !== 'type' && this.nodeName !== 'name') {
-                attrs[this.nodeName] = this.nodeValue;
-            }
+      if ($(this).hasClass('linked-fields')) {
+        remote_data['class'] += ' linked-fields';
+        remote_data['data-linked-fields'] = $(this).data('linked-fields');
+        remote_data['data-linked-values'] = $(this).data('linked-values');
+      }
+
+      var remove = $('<a />', remote_data);
+
+      var item = $('<li><span class="text">' + selected.text() + '</span></li>');
+      item.append(remove);
+      item.append(input);
+
+      if(throughOptions) {
+        var $throughSelect = $('<select name="' + fieldName.replace(/\[([^\]]+)\]/g, '[$1_through]') +'[' + selected.val() + '][status_id]"></select>');
+        $.each(throughOptions, function (key, value) {
+          $throughSelect
+            .append($('<option>', {value: key})
+              .text(value));
         });
+        item.append($throughSelect);
+      }
 
-        var text = anchor.data('text');
-        var select = container.find('select');
+      selections
+        .append(item)
+        .removeClass('hide');
 
-        var attr_str = '';
-        for (var key in attrs) {
-            if(attrs.hasOwnProperty(key)){
-                attr_str += ' ' + key + '="' + attrs[key] + '"';
-            }
-        }
+      noSelectionsMsg.addClass('hide');
+      removeAll.removeClass('hide');
 
-        if (!$('select.MultiSelectList').data('searchable')) {
-            select.append('<option' + attr_str + '>' + text + '</option>');
-            sort_selectbox(select);
-        }
+      if (!select.data('searchable')) {
+        selected.remove();
+        select.val('');
+      } else {
+        var chosenId = '#' + select.attr('id') + '_chosen';
+        $(chosenId).find('.chosen-single').addClass('chosen-default').find('span').text(select.data('placeholder'));
+      }
 
-        anchor.closest('li').remove();
-        input.remove();
+      if (options.sorted) {
+        selections.append(selections.find('li').sort(function (a, b) {
+          return $.trim($(a).find('.text').text()) > $.trim($(b).find('.text').text());
+        }));
+      }
+    }
 
-        if (!selections.children().length) {
-            selections.add(removeAll).addClass('hide');
-            noSelectionsMsg.removeClass('hide');
-            var container = select.closest('.multi-select');
-            var inputField = container.find('.multi-select-list-name');
-            var fieldName = inputField.attr('name').match(/\[MultiSelectList_(.*?)\]$/)[1];
-            var inp_str = '<input id="' + fieldName.replace('[', '_').replace(']', '_') + 'empty_hidden" type="hidden" name="' + fieldName + '"/>';
-            container.append(inp_str);
-        }
+    select.trigger('MultiSelectChanged');
+    return false;
+  });
 
-        if ($(this).hasClass('linked-fields')) {
-            if (inArray($(this).data('text'), $(this).data('linked-values').split(','))) {
-                var element_name = container.children('input[type="hidden"]').attr('name').replace(/\[.*$/, '');
-                var fields = $(this).data('linked-fields').split(',');
-                var values = $(this).data('linked-values').split(',');
-                for (var i = 0; i < fields.length; i++) {
-                    if (values.length === 1 || i === arrayIndex($(this).data('text'), values)) {
-                        hide_linked_field(element_name, fields[i]);
-                    }
-                }
-            }
-        }
+  $(this).on('click', 'a.MultiSelectRemove', 'click', function (e) {
+    e.preventDefault();
+    var anchor = $(this);
+    var container = anchor.closest('.multi-select');
+    var selections = container.find('.multi-select-selections');
+    var noSelectionsMsg = container.find('.no-selections-msg');
+    var removeAll = container.find('.remove-all');
+    var input = anchor.closest('li').find('input');
 
-        select.trigger('MultiSelectChanged');
-
-        return false;
+    var attrs = {};
+    $(input[0].attributes).each(function () {
+      if (this.nodeName !== 'type' && this.nodeName !== 'name') {
+        attrs[this.nodeName] = this.nodeValue;
+      }
     });
 
-    if ($('select.MultiSelectList').data('searchable')) {
-        $('select.MultiSelectList').chosen();
+    var text = anchor.data('text');
+    var select = container.find('select');
+
+    var attr_str = '';
+    for (var key in attrs) {
+      if (attrs.hasOwnProperty(key)) {
+        attr_str += ' ' + key + '="' + attrs[key] + '"';
+      }
     }
+
+    if (!$('select.MultiSelectList').data('searchable')) {
+      select.append('<option' + attr_str + '>' + text + '</option>');
+      sort_selectbox(select);
+    }
+
+    anchor.closest('li').remove();
+    input.remove();
+
+    if (!selections.children().length) {
+      selections.add(removeAll).addClass('hide');
+      noSelectionsMsg.removeClass('hide');
+      var container = select.closest('.multi-select');
+      var inputField = container.find('.multi-select-list-name');
+      var fieldName = inputField.attr('name').match(/\[MultiSelectList_(.*?)\]$/)[1];
+      var inp_str = '<input id="' + fieldName.replace('[', '_').replace(']', '_') + 'empty_hidden" type="hidden" name="' + fieldName + '"/>';
+      container.append(inp_str);
+    }
+
+    if ($(this).hasClass('linked-fields')) {
+      if (inArray($(this).data('text'), $(this).data('linked-values').split(','))) {
+        var element_name = container.children('input[type="hidden"]').attr('name').replace(/\[.*$/, '');
+        var fields = $(this).data('linked-fields').split(',');
+        var values = $(this).data('linked-values').split(',');
+        for (var i = 0; i < fields.length; i++) {
+          if (values.length === 1 || i === arrayIndex($(this).data('text'), values)) {
+            hide_linked_field(element_name, fields[i]);
+          }
+        }
+      }
+    }
+
+    select.trigger('MultiSelectChanged');
+
+    return false;
+  });
+
+  if ($('select.MultiSelectList').data('searchable')) {
+    $('select.MultiSelectList').chosen();
+  }
 
 });

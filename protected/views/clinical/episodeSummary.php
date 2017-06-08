@@ -78,6 +78,7 @@ if (!empty($episode)) {
 
     <?php
     $summaryItems = array();
+    
     if ($episode->subspecialty) {
         $summaryItems = EpisodeSummaryItem::model()->enabled($episode->subspecialty->id)->findAll();
     }
