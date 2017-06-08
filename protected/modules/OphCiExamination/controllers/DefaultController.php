@@ -178,6 +178,8 @@ class DefaultController extends \BaseEventTypeController
         foreach (models\OphCiExamination_Refraction_Cylinder_Integer::model()->findAll(array('order' => 'display_order asc')) as $si) {
             $this->jsVars['Element_OphCiExamination_Refraction_cylinder'][$si->sign_id][] = $si->value;
         }
+
+        Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/core.js", \CClientScript::POS_HEAD);
     }
 
     /**

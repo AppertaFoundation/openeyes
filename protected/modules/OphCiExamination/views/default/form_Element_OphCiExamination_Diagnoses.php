@@ -85,3 +85,5 @@
 		</tbody>
 	</table>
 </div>
+
+<?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Diagnoses.js", CClientScript::POS_HEAD); ?>
