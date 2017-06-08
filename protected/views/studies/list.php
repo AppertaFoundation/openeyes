@@ -13,9 +13,9 @@ $name = get_class($model);
                     <?php $participation = $study->participationForSubject($model) ?>
                     <li>
                         <input type="hidden" name="<?=$name?>[<?=$list?>][]" value="<?=$study->id?>">
-                        <?php if($study->end_date < date_create('now')->format('Y-m-d')): ?>
+                        <?php if($study->end_date < date_create('now')->format('d M Y')): ?>
                             <?= $study->name ?>
-                            - <i>Ended: <?= Helper::convertMySQL2NHS($study->end_date) ?></i><br>
+                            - <i>End date: <?= Helper::convertMySQL2NHS($study->end_date) ?></i><br>
                         <?php else: ?>
                             <?php if(isset($edit_status_url, $participation) && $edit_status_url && $participation):?>
                             <a href="<?=$edit_status_url . $participation->id?>?return=<?=Yii::app()->request->requestUri?>" title="Edit Participation" class="edit-study-participation">

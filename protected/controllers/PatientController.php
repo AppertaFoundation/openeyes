@@ -1492,7 +1492,15 @@ class PatientController extends BaseController
             $contact->attributes = $_POST['Contact'];
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
-            
+
+            /**
+             * Dates in the m/d/y or d-m-y formats are disambiguated by looking at the separator between the various components:
+             * if the separator is a slash (/), then the American m/d/y is assumed; whereas if the separator is a dash (-) or a dot (.),
+             * then the European d-m-y format is assumed.
+             */
+            $patient->dob = str_replace('/', '-', $patient->dob);
+            $patient->date_of_death = str_replace('/', '-', $patient->date_of_death);
+
             // not to be sync with PAS
             $patient->is_local = 1;
             
@@ -1602,10 +1610,29 @@ class PatientController extends BaseController
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
 
+            /**
+             * Dates in the m/d/y or d-m-y formats are disambiguated by looking at the separator between the various components:
+             * if the separator is a slash (/), then the American m/d/y is assumed; whereas if the separator is a dash (-) or a dot (.),
+             * then the European d-m-y format is assumed.
+             */
+            $patient->dob = str_replace('/', '-', $patient->dob);
+            $patient->date_of_death = str_replace('/', '-', $patient->date_of_death);
+
             // not to be sync with PAS
             $patient->is_local = 1;
 
             list($contact, $patient, $address) = $this->performPatientSave($contact, $patient, $address);
+        }
+
+        //load back the date as the required format
+        if($patient->dob){
+            $dob_datetime = new DateTime($patient->dob);
+            $patient->dob = $dob_datetime->format('d/m/Y');
+        }
+
+        if($patient->date_of_death){
+            $date_of_death_datetime = new DateTime($patient->date_of_death);
+            $patient->date_of_death = $date_of_death_datetime->format('d/m/Y');
         }
         
         $this->render('crud/update',array(

@@ -218,8 +218,11 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
     <div class="large-6 column">
       <div class="row field-row date_of_death <?php echo($patient->is_deceased == 0 ? 'hide' : ''); ?>">
         <div class="large-3 column"><?php echo $form->labelEx($patient, 'date_of_death'); ?></div>
-        <div class="large-4 column end">
-            <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+        <div class="large-4 column">
+
+            <?php echo $form->textField($patient, 'date_of_death'); ?>
+
+            <?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'Patient[date_of_death]',
                 'id' => 'date_to',
                 'options' => array(
@@ -230,9 +233,10 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                 'htmlOptions' => array(
                     'class' => 'small fixed-width',
                 ),
-            )) ?>
+            ))*/ ?>
             <?php echo $form->error($patient, 'date_of_death'); ?>
         </div>
+        <div class="large-4 column end"><label><i>(dd/mm/yyyy)</i></label></div>
       </div>
     </div>
   </div>

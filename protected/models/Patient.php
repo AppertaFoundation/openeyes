@@ -180,7 +180,8 @@ class Patient extends BaseActiveRecordVersioned
     public function dateFormatVaidator($attribute, $params)
     {
 
-        $patient_dob_date = DateTime::createFromFormat('d/m/Y', $this->$attribute);
+
+        $patient_dob_date = DateTime::createFromFormat('d-m-Y', $this->$attribute);
 
         if( !$patient_dob_date ){
             $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
