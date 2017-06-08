@@ -221,18 +221,18 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
 
             $with = array(
                 'firmLetterStrings' => array(
-                    'condition' => 'firm_id is null or firm_id = :firm_id',
+                    'on' => 'firmLetterStrings.firm_id is null or firmLetterStrings.firm_id = :firm_id',
                     'params' => array(
                         ':firm_id' => $firm->id,
                     ),
                     'order' => 'firmLetterStrings.display_order asc',
                 ),
                 'subspecialtyLetterStrings' => array(
-                    'condition' => 'subspecialty_id is null',
+                    'on' => 'subspecialtyLetterStrings.subspecialty_id is null',
                     'order' => 'subspecialtyLetterStrings.display_order asc',
                 ),
                 'siteLetterStrings' => array(
-                    'condition' => 'site_id is null or site_id = :site_id',
+                    'on' => 'siteLetterStrings.site_id is null or siteLetterStrings.site_id = :site_id',
                     'params' => array(
                         ':site_id' => Yii::app()->session['selected_site_id'],
                     ),
@@ -240,10 +240,12 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                 ),
             );
             if ($firm->getSubspecialtyID()) {
-                $with['subspecialtyLetterStrings']['condition'] = 'subspecialty_id is null or subspecialty_id = :subspecialty_id';
+                $with['subspecialtyLetterStrings']['on'] = 'subspecialtyLetterStrings.subspecialty_id is null or subspecialtyLetterStrings.subspecialty_id = :subspecialty_id';
                 $with['subspecialtyLetterStrings']['params'] = array(':subspecialty_id' => $firm->getSubspecialtyID());
             }
+
             foreach (LetterStringGroup::model()->with($with)->findAll(array('order' => 't.display_order')) as $string_group) {
+                echo $string_group->name;
                 $strings = $string_group->getStrings($patient, $event_types);
                 ?>
                 <div class="field-row">
@@ -255,6 +257,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                     )) ?>
                 </div>
             <?php } ?>
+            &nbsp;
         </div>
         <div class="large-<?php echo $layoutColumns['field']; ?> column end">
             <?php echo $form->textArea($element, 'body', array('rows' => 20, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
