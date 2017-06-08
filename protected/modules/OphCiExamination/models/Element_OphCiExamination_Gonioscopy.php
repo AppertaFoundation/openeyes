@@ -59,6 +59,22 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
         return parent::model($className);
     }
 
+    // used for the letter string method in the eyedraw element behavior
+    public $letter_string_prefix = "Gonioscopy:\n";
+
+    /**
+     * @inheritdoc
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'EyedrawElementBehavior' => array(
+                'class' => 'application.behaviors.EyedrawElementBehavior',
+            ),
+        );
+    }
+
     /**
      * @return string the associated database table name
      */
@@ -196,6 +212,9 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
                 ->findAll(array('order' => 'display_order')), 'id', 'name');
     }
 
+    /**
+     * @return array
+     */
     public function sidedDefaults()
     {
         $defaults = array();
