@@ -1485,11 +1485,6 @@ class PatientController extends BaseController
             CValidator::createValidator('dateFormatVaidator', $patient, 'dob')
         );
 
-        $patient->validatorList->add(
-            CValidator::createValidator('dateFormatVaidator', $patient, 'date_of_death')
-        );
-
-
         //@TODO : this datetime needs to handle more professionally
         /**
          * Dates in the m/d/y or d-m-y formats are disambiguated by looking at the separator between the various components:
@@ -1499,8 +1494,14 @@ class PatientController extends BaseController
         if( isset($_POST['Patient']['dob']) ){
             $_POST['Patient']['dob'] = str_replace('/', '-', $_POST['Patient']['dob']);
         }
-        if( isset($_POST['Patient']['date_of_death']) ){
+
+        if( isset($_POST['Patient']['is_deceased']) && $_POST['Patient']['is_deceased'] == 1 && isset($_POST['Patient']['date_of_death']) ){
             $_POST['Patient']['date_of_death'] = str_replace('/', '-', $_POST['Patient']['date_of_death']);
+
+            //if DOD is set we need to vaidate
+            $patient->validatorList->add(
+                CValidator::createValidator('dateFormatVaidator', $patient, 'date_of_death')
+            );
         }
 
         $this->performAjaxValidation(array($patient, $contact, $address));
@@ -1617,15 +1618,18 @@ class PatientController extends BaseController
         if( isset($_POST['Patient']['dob']) ){
             $_POST['Patient']['dob'] = str_replace('/', '-', $_POST['Patient']['dob']);
         }
-        if( isset($_POST['Patient']['date_of_death']) ){
+
+        if( isset($_POST['Patient']['is_deceased']) && $_POST['Patient']['is_deceased'] == 1 && isset($_POST['Patient']['date_of_death']) ){
             $_POST['Patient']['date_of_death'] = str_replace('/', '-', $_POST['Patient']['date_of_death']);
+
+            //if DOD is set we need to validate
+            $patient->validatorList->add(
+                CValidator::createValidator('dateFormatVaidator', $patient, 'date_of_death')
+            );
         }
 
         $patient->validatorList->add(
             CValidator::createValidator('dateFormatVaidator', $patient, 'dob')
-        );
-        $patient->validatorList->add(
-            CValidator::createValidator('dateFormatVaidator', $patient, 'date_of_death')
         );
 
         
