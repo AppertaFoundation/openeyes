@@ -31,8 +31,15 @@ namespace OEModule\OphCiExamination\models;
  * @property string $left_description
  * @property string $right_eyedraw
  * @property string $right_description
+ * @property string $left_ed_report
+ * @property string $right_ed_report
  *
  * The followings are the available model relations:
+ * @property \EventType $eventType
+ * @property \Event $event
+ * @property \Eye $eye
+ * @property \User $user
+ * @property \User $usermodified
  */
 class Element_OphCiExamination_PosteriorPole extends \SplitEventTypeElement
 {
@@ -64,22 +71,27 @@ class Element_OphCiExamination_PosteriorPole extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('eye_id, left_eyedraw, left_description, right_eyedraw, right_description', 'safe'),
-                array('left_eyedraw', 'requiredIfSide', 'side' => 'left'),
-                array('right_eyedraw', 'requiredIfSide', 'side' => 'right'),
-                array('left_description', 'requiredIfSide', 'side' => 'left'),
-                array('right_description', 'requiredIfSide', 'side' => 'right'),
+                array('eye_id, left_eyedraw, left_description, left_ed_report, right_eyedraw, right_description, right_ed_report', 'safe'),
+                array('left_eyedraw, left_ed_report', 'requiredIfSide', 'side' => 'left'),
+                array('right_eyedraw, right_ed_report', 'requiredIfSide', 'side' => 'right'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
-                array('id, event_id, left_eyedraw, right_eyedraw, left_description, right_description, eye_id', 'safe', 'on' => 'search'),
+                array('id, event_id, left_eyedraw, left_description, left_ed_report, right_eyedraw, right_description, right_ed_report, eye_id', 'safe', 'on' => 'search'),
         );
     }
 
+    /**
+     * @return array
+     */
     public function sidedFields()
     {
         return array('description', 'eyedraw', 'description');
     }
 
+    /**
+     * @inheritdoc
+     * @return bool
+     */
     public function canCopy()
     {
         return true;
@@ -107,19 +119,21 @@ class Element_OphCiExamination_PosteriorPole extends \SplitEventTypeElement
     public function attributeLabels()
     {
         return array(
-                'id' => 'ID',
-                'event_id' => 'Event',
-                'left_eyedraw' => 'Eyedraw',
-                'left_description' => 'Description',
-                'right_eyedraw' => 'Eyedraw',
-                'right_description' => 'Description',
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'left_description' => 'Description',
+            'right_description' => 'Description',
+            'left_eyedraw' => 'EyeDraw',
+            'right_eyedraw' => 'EyeDraw',
+            'left_ed_report' => 'Report',
+            'right_ed_report' => 'Report'
         );
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
@@ -135,14 +149,34 @@ class Element_OphCiExamination_PosteriorPole extends \SplitEventTypeElement
         $criteria->compare('left_description', $this->left_description);
         $criteria->compare('right_eyedraw', $this->right_eyedraw);
         $criteria->compare('right_description', $this->right_description);
+        $criteria->compare('left_ed_report', $this->left_ed_report, true);
+        $criteria->compare('right_ed_report', $this->right_ed_report, true);
+
 
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
     }
 
+    /**
+     * @return string
+     */
     public function getLetter_string()
     {
-        return "Posterior segment:\nright: ".$this->right_description."\nleft: ".$this->left_description."\n";
+        $res = "Posterior pole:\n";
+        // legacy entries mean we might not have an ed_report text, but only a description,
+        // but going forward the opposite may be true, so we generate the text in a flexible fashion:
+        foreach (array('right', 'left') as $side) {
+            $items = array();
+            if ($this->{$side . '_ed_report'}) {
+                $items[] = $this->{$side . '_ed_report'};
+            }
+            if ($this->{$side . '_description'}) {
+                $items[] = $this->{$side . '_description'};
+            }
+            $res .= $side . ': ' . implode(' ', $items) . "\n";
+        }
+
+        return $res;
     }
 }

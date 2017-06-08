@@ -107,7 +107,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_Gonioscopy_Descriptio
                 <?= $element->getAttributeLabel($side . '_ed_report') ?>:
             </label>
         </div>
-        <div class="large-10 column end" style="line-height: 1; margin-bottom:10px;">
+        <div class="large-10 column end autoreport-display">
             <span class="data-value" id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>"></span>
         </div>
     </div>
