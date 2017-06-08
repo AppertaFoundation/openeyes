@@ -1484,7 +1484,25 @@ class PatientController extends BaseController
         $patient->validatorList->add(
             CValidator::createValidator('dateFormatVaidator', $patient, 'dob')
         );
-        
+
+        $patient->validatorList->add(
+            CValidator::createValidator('dateFormatVaidator', $patient, 'date_of_death')
+        );
+
+
+        //@TODO : this datetime needs to handle more professionally
+        /**
+         * Dates in the m/d/y or d-m-y formats are disambiguated by looking at the separator between the various components:
+         * if the separator is a slash (/), then the American m/d/y is assumed; whereas if the separator is a dash (-) or a dot (.),
+         * then the European d-m-y format is assumed.
+         */
+        if( isset($_POST['Patient']['dob']) ){
+            $_POST['Patient']['dob'] = str_replace('/', '-', $_POST['Patient']['dob']);
+        }
+        if( isset($_POST['Patient']['date_of_death']) ){
+            $_POST['Patient']['date_of_death'] = str_replace('/', '-', $_POST['Patient']['date_of_death']);
+        }
+
         $this->performAjaxValidation(array($patient, $contact, $address));
         
         if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
@@ -1492,14 +1510,6 @@ class PatientController extends BaseController
             $contact->attributes = $_POST['Contact'];
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
-
-            /**
-             * Dates in the m/d/y or d-m-y formats are disambiguated by looking at the separator between the various components:
-             * if the separator is a slash (/), then the American m/d/y is assumed; whereas if the separator is a dash (-) or a dot (.),
-             * then the European d-m-y format is assumed.
-             */
-            $patient->dob = str_replace('/', '-', $patient->dob);
-            $patient->date_of_death = str_replace('/', '-', $patient->date_of_death);
 
             // not to be sync with PAS
             $patient->is_local = 1;
@@ -1598,9 +1608,26 @@ class PatientController extends BaseController
         $contact = $patient->contact ? $patient->contact : new Contact();
         $address = $patient->contact->address ? $patient->contact->address : new Address();
 
+        //@TODO : this datetime needs to handle more professionally
+        /**
+         * Dates in the m/d/y or d-m-y formats are disambiguated by looking at the separator between the various components:
+         * if the separator is a slash (/), then the American m/d/y is assumed; whereas if the separator is a dash (-) or a dot (.),
+         * then the European d-m-y format is assumed.
+         */
+        if( isset($_POST['Patient']['dob']) ){
+            $_POST['Patient']['dob'] = str_replace('/', '-', $_POST['Patient']['dob']);
+        }
+        if( isset($_POST['Patient']['date_of_death']) ){
+            $_POST['Patient']['date_of_death'] = str_replace('/', '-', $_POST['Patient']['date_of_death']);
+        }
+
         $patient->validatorList->add(
             CValidator::createValidator('dateFormatVaidator', $patient, 'dob')
         );
+        $patient->validatorList->add(
+            CValidator::createValidator('dateFormatVaidator', $patient, 'date_of_death')
+        );
+
         
         $this->performAjaxValidation(array($patient, $contact, $address));
 
@@ -1609,14 +1636,6 @@ class PatientController extends BaseController
             $contact->attributes = $_POST['Contact'];
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
-
-            /**
-             * Dates in the m/d/y or d-m-y formats are disambiguated by looking at the separator between the various components:
-             * if the separator is a slash (/), then the American m/d/y is assumed; whereas if the separator is a dash (-) or a dot (.),
-             * then the European d-m-y format is assumed.
-             */
-            $patient->dob = str_replace('/', '-', $patient->dob);
-            $patient->date_of_death = str_replace('/', '-', $patient->date_of_death);
 
             // not to be sync with PAS
             $patient->is_local = 1;
