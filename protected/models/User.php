@@ -766,4 +766,21 @@ class User extends BaseActiveRecordVersioned
             return $users;
         }
     }
+
+// @TODO:FIX
+    public function findAllByRolesOLD(array $roles, $return_models = false)
+    {
+        $users_with_roles = [];
+
+        $users = $this->findAll();
+        foreach($users as $id => $user) {
+            foreach($roles as $role){
+                if(Yii::app()->authManager->checkAccess($role, $user->id)) {
+                    $users_with_roles[] = $return_models ? $user : $user->id;
+                }
+            }
+        }
+        return $users_with_roles;
+
+    }
 }

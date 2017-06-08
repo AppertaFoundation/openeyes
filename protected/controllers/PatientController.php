@@ -1485,25 +1485,6 @@ class PatientController extends BaseController
             CValidator::createValidator('dateFormatVaidator', $patient, 'dob')
         );
 
-        //@TODO : this datetime needs to handle more professionally
-        /**
-         * Dates in the m/d/y or d-m-y formats are disambiguated by looking at the separator between the various components:
-         * if the separator is a slash (/), then the American m/d/y is assumed; whereas if the separator is a dash (-) or a dot (.),
-         * then the European d-m-y format is assumed.
-         */
-        if( isset($_POST['Patient']['dob']) ){
-            $_POST['Patient']['dob'] = str_replace('/', '-', $_POST['Patient']['dob']);
-        }
-
-        if( isset($_POST['Patient']['is_deceased']) && $_POST['Patient']['is_deceased'] == 1 && isset($_POST['Patient']['date_of_death']) ){
-            $_POST['Patient']['date_of_death'] = str_replace('/', '-', $_POST['Patient']['date_of_death']);
-
-            //if DOD is set we need to vaidate
-            $patient->validatorList->add(
-                CValidator::createValidator('dateFormatVaidator', $patient, 'date_of_death')
-            );
-        }
-
         $this->performAjaxValidation(array($patient, $contact, $address));
         
         if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
@@ -1599,6 +1580,7 @@ class PatientController extends BaseController
 
         $patient = $this->loadModel($id);
         $patient->scenario = 'manual';
+        $patient->setScenario('manual');
         
         //only local patient can be edited
         if($patient->is_local == 0){
@@ -1608,30 +1590,6 @@ class PatientController extends BaseController
         
         $contact = $patient->contact ? $patient->contact : new Contact();
         $address = $patient->contact->address ? $patient->contact->address : new Address();
-
-        //@TODO : this datetime needs to handle more professionally
-        /**
-         * Dates in the m/d/y or d-m-y formats are disambiguated by looking at the separator between the various components:
-         * if the separator is a slash (/), then the American m/d/y is assumed; whereas if the separator is a dash (-) or a dot (.),
-         * then the European d-m-y format is assumed.
-         */
-        if( isset($_POST['Patient']['dob']) ){
-            $_POST['Patient']['dob'] = str_replace('/', '-', $_POST['Patient']['dob']);
-        }
-
-        if( isset($_POST['Patient']['is_deceased']) && $_POST['Patient']['is_deceased'] == 1 && isset($_POST['Patient']['date_of_death']) ){
-            $_POST['Patient']['date_of_death'] = str_replace('/', '-', $_POST['Patient']['date_of_death']);
-
-            //if DOD is set we need to validate
-            $patient->validatorList->add(
-                CValidator::createValidator('dateFormatVaidator', $patient, 'date_of_death')
-            );
-        }
-
-        $patient->validatorList->add(
-            CValidator::createValidator('dateFormatVaidator', $patient, 'dob')
-        );
-
         
         $this->performAjaxValidation(array($patient, $contact, $address));
 
@@ -1647,17 +1605,6 @@ class PatientController extends BaseController
             list($contact, $patient, $address) = $this->performPatientSave($contact, $patient, $address);
         }
 
-        //load back the date as the required format
-        if($patient->dob){
-            $dob_datetime = new DateTime($patient->dob);
-            $patient->dob = $dob_datetime->format('d/m/Y');
-        }
-
-        if($patient->date_of_death){
-            $date_of_death_datetime = new DateTime($patient->date_of_death);
-            $patient->date_of_death = $date_of_death_datetime->format('d/m/Y');
-        }
-        
         $this->render('crud/update',array(
                         'patient' => $patient,
                         'contact' => $contact,
