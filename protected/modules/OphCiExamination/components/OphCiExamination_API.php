@@ -326,10 +326,10 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterAnteriorSegmentLeft($patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($as = $this->getElementForLatestEventInEpisode($episode,
+            if ($element = $this->getElementForLatestEventInEpisode($episode,
                 'models\Element_OphCiExamination_AnteriorSegment')
             ) {
-                return $as->left_description;
+                return $this->getLetterEyedrawElementForSide($element, 'left');
             }
         }
     }
@@ -337,10 +337,10 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterAnteriorSegmentRight($patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($as = $this->getElementForLatestEventInEpisode($episode,
+            if ($element = $this->getElementForLatestEventInEpisode($episode,
                 'models\Element_OphCiExamination_AnteriorSegment')
             ) {
-                return $as->right_description;
+                return $this->getLetterEyedrawElementForSide($element, 'left');
             }
         }
     }
@@ -367,10 +367,10 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterPosteriorPoleLeft($patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($ps = $this->getElementForLatestEventInEpisode($episode,
+            if ($element = $this->getElementForLatestEventInEpisode($episode,
                 'models\Element_OphCiExamination_PosteriorPole')
             ) {
-                return $ps->left_description;
+                return $this->getLetterEyedrawElementForSide($element, 'left');
             }
         }
     }
@@ -378,10 +378,10 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterPosteriorPoleRight($patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($ps = $this->getElementForLatestEventInEpisode($episode,
+            if ($element = $this->getElementForLatestEventInEpisode($episode,
                 'models\Element_OphCiExamination_PosteriorPole')
             ) {
-                return $ps->right_description;
+                return $this->getLetterEyedrawElementForSide($element, 'right');
             }
         }
     }
@@ -1169,7 +1169,8 @@ class OphCiExamination_API extends \BaseAPI
                 $class = $element_type->class_name;
 
                 if ($element = $class::model()->find('event_id=?', array($event->id))) {
-                    if (method_exists($element, 'getLetter_string')) {
+                    // need to check for element behaviour for eyedraw elements
+                    if (method_exists($element, 'getLetter_string') || $element->asa('EyedrawElementBehavior')) {
                         $element_types[] = $element_type;
                     }
                 }
@@ -1649,11 +1650,23 @@ class OphCiExamination_API extends \BaseAPI
             $eyeName = $episode->eye->name;
 
             if ($el = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_OpticDisc')) {
-                if (isset($el->left_description) && ($eyeName == 'Left' || $eyeName == 'Both')) {
-                    $str = $str . 'Left Eye: ' . $el->left_description . '. ';
+                if ($el->hasLeft() && ($eyeName == 'Left' || $eyeName == 'Both')) {
+                    $items = array();
+                    foreach (array('left_ed_report', 'left_description') as $attr) {
+                        if ($el->$attr) {
+                            $items[] = $el->$attr;
+                        }
+                    }
+                    $str .= 'Left Eye: ' . implode(' ', $items) . '. ';
                 }
-                if (isset($el->right_description) && ($eyeName == 'Right' || $eyeName == 'Both')) {
-                    $str = $str . 'Right Eye: ' . $el->right_description . '. ';
+                if ($el->hasRight() && ($eyeName == 'Right' || $eyeName == 'Both')) {
+                    $items = array();
+                    foreach (array('right_ed_report', 'right_description') as $attr) {
+                        if ($el->$attr) {
+                            $items[] = $el->$attr;
+                        }
+                    }
+                    $str .= 'Right Eye: ' . implode(' ', $items) . '. ';
                 }
             }
 
@@ -2037,5 +2050,23 @@ class OphCiExamination_API extends \BaseAPI
             }
         }
         return $str;
+    }
+
+    /**
+     * Abstraction for consistent letter string for eyedraw elements with auto-reporting records
+     *
+     * @param $element
+     * @param $side
+     * @return string
+     */
+    protected function getLetterEyedrawElementForSide($element, $side)
+    {
+        if ($element->{$side . '_ed_report'}) {
+            return $element->{$side . '_ed_report'} .
+                ($element->{$side . '_description'} ?
+                    " " . $element->{$side . '_description'} :
+                    "");
+        }
+        return $element->{$side . '_description'};
     }
 }

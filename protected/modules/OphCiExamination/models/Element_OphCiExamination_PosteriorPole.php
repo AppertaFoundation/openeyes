@@ -55,6 +55,22 @@ class Element_OphCiExamination_PosteriorPole extends \SplitEventTypeElement
         return parent::model($className);
     }
 
+    // used for the letter string method in the eyedraw element behavior
+    public $letter_string_prefix = "Posterior Pole:\n";
+
+    /**
+     * @inheritdoc
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'EyedrawElementBehavior' => array(
+                'class' => 'application.behaviors.EyedrawElementBehavior',
+            ),
+        );
+    }
+
     /**
      * @return string the associated database table name
      */
@@ -156,27 +172,5 @@ class Element_OphCiExamination_PosteriorPole extends \SplitEventTypeElement
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
-    }
-
-    /**
-     * @return string
-     */
-    public function getLetter_string()
-    {
-        $res = "Posterior pole:\n";
-        // legacy entries mean we might not have an ed_report text, but only a description,
-        // but going forward the opposite may be true, so we generate the text in a flexible fashion:
-        foreach (array('right', 'left') as $side) {
-            $items = array();
-            if ($this->{$side . '_ed_report'}) {
-                $items[] = $this->{$side . '_ed_report'};
-            }
-            if ($this->{$side . '_description'}) {
-                $items[] = $this->{$side . '_description'};
-            }
-            $res .= $side . ': ' . implode(' ', $items) . "\n";
-        }
-
-        return $res;
     }
 }
