@@ -156,7 +156,7 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
                 'left_nuclear_id' => 'Nuclear',
                 'left_cortical_id' => 'Cortical',
                 'left_pxe' => 'PXF',
-                'left_phako' => 'Phakodonesis',
+                'left_phako' => 'Phacodonesis',
                 'left_description' => 'Comments',
                 'right_eyedraw' => 'Eyedraw',
                 'right_ed_report' => 'Report',
@@ -164,7 +164,7 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
                 'right_nuclear_id' => 'Nuclear',
                 'right_cortical_id' => 'Cortical',
                 'right_pxe' => 'PXF',
-                'right_phako' => 'Phakodonesis',
+                'right_phako' => 'Phacodonesis',
                 'right_description' => 'Comments',
         );
     }
