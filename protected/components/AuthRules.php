@@ -59,6 +59,11 @@ class AuthRules
                 // Can't create a non-support service event for a support-service firm
                 return false;
             }
+
+            if ($event_type->rbac_operation_suffix) {
+                $oprn = "OprnCreate" . $event_type->rbac_operation_suffix;
+                if (!Yii::app()->user->checkAccess($oprn)) return false;
+            }
         }
 
         if ($firm && $episode) {

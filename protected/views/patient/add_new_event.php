@@ -141,6 +141,7 @@
                     subspecialties: <?= CJSON::encode(NewEventDialogHelper::structureAllSubspecialties()) ?>
                 });
             }
+
             newEventDialog.open();
         });
     });

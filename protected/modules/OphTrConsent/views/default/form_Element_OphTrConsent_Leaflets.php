@@ -18,5 +18,19 @@
  */
  ?>
 <div class="element-fields">
-	<?php echo $form->multiSelectList($element, 'OphTrConsent_Leaflet', 'leaflets', 'leaflet_id', CHtml::listData(OphTrConsent_Leaflet::model()->findAllByCurrentFirm($element->leafletValues), 'id', 'name'), array(), array('empty' => '- Leaflets -', 'label' => 'Leaflets provided'), false, false, null, false, false, array('field' => 4))?>
+	<?php echo $form->multiSelectList(
+	    $element,
+      'OphTrConsent_Leaflet',
+      'leaflets',
+      'leaflet_id',
+      CHtml::listData(OphTrConsent_Leaflet::model()->findAllByCurrentFirm($element->leafletValues), 'id', 'name'),
+      array(),
+      array('empty' => '- Leaflets -', 'label' => 'Leaflets provided'),
+      false,
+      false,
+      null,
+      false,
+      false,
+      array('field' => 4)
+  )?>
 </div>

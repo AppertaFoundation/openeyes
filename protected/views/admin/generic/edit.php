@@ -20,9 +20,9 @@ $assetManager = Yii::app()->getAssetManager();
 ?>
 
 <div class="box admin">
-	<h2><?php echo($admin->getModel()->id ? 'Edit' : 'Add').' '.$admin->getModelDisplayName() ?></h2>
-	<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
-	<?php
+    <h2><?php echo ($admin->getModel()->id ? 'Edit' : 'Add') . ' ' . $admin->getModelDisplayName() ?></h2>
+    <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
+    <?php
     if ($admin->getCustomSaveURL() !== '') {
         $formAction = $admin->getCustomSaveURL();
     } else {
@@ -48,13 +48,33 @@ $assetManager = Yii::app()->getAssetManager();
 	<?php foreach ($admin->getEditFields() as $field => $type) {
     if (is_array($type)) {
         switch ($type['widget']) {
+            case 'TagsInput':
+                $form->TagsInput(
+                    $type['label'],
+                    $admin->getModel(),
+                    $field,
+                    //$admin->getModelName().'['.$field.']',
+                    $type['relation'],
+                    $type['relation_field_id'],
+                    $type['htmlOptions']
+                );
+                break;
+
                 case 'MultiSelectList':
                     ?>
-					<div class="field-row furtherfindings-multi-select">
-						<?php
+                    <div class="field-row furtherfindings-multi-select">
+                        <?php
+                        $through = array();
+                        $link = '';
+                        if(array_key_exists('through', $type) && is_array($type['through'])){
+                            $through = $type['through'];
+                        }
+                        if(array_key_exists('link', $type) && $type['link']){
+                            $link = $type['link'];
+                        }
                         echo $form->multiSelectList(
                             $admin->getModel(),
-                            $admin->getModelName().'['.$field.']',
+                            $admin->getModelName() . '[' . $field . ']',
                             $field,
                             $type['relation_field_id'],
                             $type['options'],
@@ -65,11 +85,17 @@ $assetManager = Yii::app()->getAssetManager();
                                 'searchable' => true,
                             ),
                             false,
-                            true
+                            true,
+                            null,
+                            false,
+                            false,
+                            array(),
+                            $through,
+                            $link
                         );
                         ?>
-					</div>
-					<?php
+                    </div>
+                    <?php
                     break;
                 case 'DropDownList':
                     $form->dropDownList(
@@ -96,13 +122,75 @@ $assetManager = Yii::app()->getAssetManager();
                             'admin' => $subAdmin,
                             'uniqueid' => $type['action'],
                         ));
-                        break;
                     }
+                    break;
+                case 'PatientLookup':
+                    $this->renderPartial('//admin//generic/patientLookup', array(
+                        'model' => $admin->getModel(),
+                        'extras' => array_key_exists('extras', $type) ? $type['extras'] : false,
+                    ));
+                    break;
+                case 'DisorderLookup':
+                    if (!is_array($admin->getModel()->{$type['relation']})) {
+                        $relations = array($admin->getModel()->{$type['relation']});
+                    } else {
+                        $relations = $admin->getModel()->{$type['relation']};
+                    }
+                    ?>
+                    <div class="row field-row">
+                        <div class="large-2 column">
+                            <label>Diagnosis</label>
+                        </div>
+                        <div class="large-5 column end">
+                            <div id="enteredDiagnosisText">
+                                <?php
+                                foreach($relations as $relation) {
+                                    if($relation){
+                                        echo '<span>' . $relation->term .
+                                            '&nbsp;<i class="fa fa-minus-circle clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id="'.$relation->id.'"></i><br>' .
+                                            '</span>';
+                                    }
+                                } ?>
+                            </div>
+                        <?php
+                          $this->renderPartial('//disorder/disorderAutoComplete', array(
+                              'class' => get_class($admin->getModel()),
+                              'name' => $field,
+                              'code' => '',
+                              'value' => $admin->getModel()->$field,
+                              'clear_diagnosis' => '&nbsp;<i class="fa fa-minus-circle clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id=""></i>',
+                              'placeholder' => 'Search for a diagnosis',
+                          ));
+                        ?>
+                        </div>
+                    </div>
+                    <?php
+                    break;
+                case 'LinkTo':
+                    ?>
+                    <div class="row field-row">
+                        <div class="large-2 column">
+                            <label></label>
+                        </div>
+                        <div class="large-5 column end">
+                            <?php
+                                echo CHtml::link($type['label'],array( $type['linkTo']));
+                            ?>
+                        </div>
+                    </div>
+                    <?php
+                    break;
+                case 'text':
+                    echo $form->textField($admin->getModel(), $field, $type['htmlOptions']);
+                    break;
             }
-    } else {
-        switch ($type) {
+        } else {
+            switch ($type) {
                 case 'checkbox':
                     echo $form->checkBox($admin->getModel(), $field, $autoComplete);
+                    break;
+                case 'date':
+                    echo $form->datePicker($admin->getModel(), $field, $autoComplete, array('null' => true));
                     break;
                 case 'label':
                     echo $form->textField($admin->getModel(), $field, array('readonly' => true));
@@ -110,23 +198,26 @@ $assetManager = Yii::app()->getAssetManager();
                 case 'textarea':
                     echo $form->textArea($admin->getModel(), $field);
                     break;
+                case 'referer':
+                    echo CHTML::hiddenField('referer', Yii::app()->request->getUrlReferrer());
+                    break;
                 case 'text':
                 default:
                     echo $form->textField($admin->getModel(), $field, $autoComplete);
                     break;
             }
+        }
     }
-}
     ?>
 
-	<?php
+    <?php
     if ($admin->getCustomCancelURL() != '') {
         echo $form->formActions(array('cancel-uri' => $admin->getCustomCancelURL()));
     } else {
-        echo $form->formActions(array('cancel-uri' => (Yii::app()->request->getParam('returnUri')) ? Yii::app()->request->getParam('returnUri') : '/'.$this->uniqueid.'/list'));
+        echo $form->formActions(array('cancel-uri' => (Yii::app()->request->getParam('returnUri')) ? Yii::app()->request->getParam('returnUri') : '/' . $this->uniqueid . '/list'));
     }
 
     ?>
 
-	<?php $this->endWidget() ?>
+    <?php $this->endWidget() ?>
 </div>

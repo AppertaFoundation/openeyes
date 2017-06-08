@@ -2213,7 +2213,7 @@ function OphCiExamination_AddFinding(finding_id, label) {
 
 }
 
-function OphCiExamination_AddDiagnosis(disorderId, name, eyeId, isDiabetic, isGlaucoma) {
+function OphCiExamination_AddDiagnosis(disorderId, name, eyeId, isDiabetic, isGlaucoma, external) {
     var max_id = -1;
     var count = 0;
     $('#OphCiExamination_diagnoses').children('tr').map(function() {
@@ -2233,7 +2233,7 @@ function OphCiExamination_AddDiagnosis(disorderId, name, eyeId, isDiabetic, isGl
     var checked_left = (eyeId == 1 ? 'checked="checked" ' : '');
     var checked_principal = (count == 0 ? 'checked="checked" ' : '');
 
-    var row = '<tr>'+
+    var row = '<tr' + (external ? ' class="external"' : '') + '>' +
         '<td>'+
         ((isDiabetic) ? '<input type="hidden" name="diabetic_diagnoses[]" value="1" /> ' : '') +
         ((isGlaucoma) ? '<input type="hidden" name="glaucoma_diagnoses[]" value="1" /> ' : '') +

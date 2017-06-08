@@ -64,18 +64,20 @@ class ElementLetter extends BaseEventTypeElement
         return array(
             array(
                 'event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date,' .
-                'print_all, is_signed_off',
+                'print_all, is_signed_off, to_subspecialty_id, to_firm_id, is_urgent, is_same_condition, to_location_id',
                 'safe'
             ),
+            array('to_subspecialty_id', 'internalReferralServiceValidator'),
+            array('is_same_condition', 'internalReferralConditionValidator'),
             array('letter_type_id', 'letterTypeValidator'),
             array('site_id, date, introduction, body, footer', 'requiredIfNotDraft'),
-            array('use_nickname', 'required'),
+            array('use_nickname, to_location_id', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
             //array('is_signed_off', 'isSignedOffValidator'), // they do not want this at the moment - waiting for the demo/feedback
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, site_id, use_nickname, date, introduction, re, body, footer, draft, direct_line, letter_type_id', 'safe', 'on' => 'search'),
+            array('id, event_id, site_id, use_nickname, date, introduction, re, body, footer, draft, direct_line, letter_type_id, to_location_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -96,6 +98,9 @@ class ElementLetter extends BaseEventTypeElement
             'enclosures' => array(self::HAS_MANY, 'LetterEnclosure', 'element_letter_id', 'order' => 'display_order'),
             'document_instance' => array(self::HAS_MANY, 'DocumentInstance', array( 'correspondence_event_id' => 'event_id')),
             'letterType' => array(self::BELONGS_TO, 'LetterType', 'letter_type_id'),
+            'toSubspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'to_subspecialty_id'),
+            'toLocation' => array(self::BELONGS_TO, 'OphCoCorrespondence_InternalReferral_ToLocation', 'to_location_id'),
+
         );
     }
 
@@ -114,9 +119,43 @@ class ElementLetter extends BaseEventTypeElement
             'draft' => 'Draft',
             'direct_line' => 'Direct line',
             'fax' => 'Direct fax',
-            'is_signed_off' => 'Approved by a clinician'
+            'is_signed_off' => 'Approved by a clinician',
+            'to_subspecialty_id' => 'To Service',
+            'to_firm_id' => 'To Consultant',
+            'is_urgent' => 'Urgent',
+            'is_same_condition' => '',
         );
     }
+
+    public function internalReferralServiceValidator($attribute, $params)
+    {
+        $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
+
+        if(!$letter_type){
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ": 'Internal Referral' letter type is not enabled.");
+        } else if( $letter_type->id == $this->letter_type_id ){
+            // internal referral posted
+            if(!$this->to_subspecialty_id && $this->draft == 0){
+                $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Please select a service.");
+            }
+        }
+    }
+    public function internalReferralConditionValidator($attribute, $params)
+    {
+        $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
+        $is_internal_referral_enabled = OphcocorrespondenceInternalReferralSettings::model()->getSetting('is_enabled');
+
+        if($is_internal_referral_enabled == 'off'){
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ": 'Internal Referral' letter type is not enabled.");
+        } else if( $letter_type->id == $this->letter_type_id ){
+            // internal referral posted
+
+            if(!is_numeric($this->is_same_condition) && $this->draft == 0){
+                $this->addError($attribute, "Same Condition" . ": Please select a condition.");
+            }
+        }
+    }
+
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
@@ -140,19 +179,42 @@ class ElementLetter extends BaseEventTypeElement
 
     public function afterValidate()
     {
-        $document_target = Yii::app()->request->getPost('DocumentTarget', null);
+
+        $gp_found = false;
+        $patient_found = false;
+
+        $document_target = Yii::app()->request->getPost('DocumentTarget');
+
         if(!isset($document_target[0]['attributes']['ToCc']) && Yii::app()->getController()->getAction()->id == 'create'){
             $this->addError('toAddress', 'Please add at least one recipient!');
         }
+
         if(isset($document_target)){
             foreach($document_target as $target){
                 if( !isset($target['attributes']['address']) || empty($target['attributes']['address']) ){
                     $this->addError('toAddress', 'Address cannot be empty!');
                 }
+
+                if($target['attributes']['contact_type'] === 'PATIENT'){
+                    $patient_found = true;
+                }
+                if($target['attributes']['contact_type'] === 'GP'){
+                    $gp_found = true;
+                }
             }
+
+            //if the letter_type is Internal referral than the GP and Patient are mandatory to copy into
+            $internalreferral_letter_type = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
+
+            //this throws an error if GP or Patient not found in Internal referral
+            // awaiting for requirements... ...
+            /*if($this->letter_type_id == $internalreferral_letter_type->id ){
+                if( !$gp_found || !$patient_found ){
+                    $this->addError('letter_type_id', 'GP and Patient must copied into when letter type is Internal Referral!');
+                }
+            }*/
+
         }
-        
-        
 
         parent::afterValidate();
     }
@@ -515,7 +577,8 @@ class ElementLetter extends BaseEventTypeElement
     }
 
     public function beforeSave()
-    {        
+    {
+
         if (in_array(Yii::app()->getController()->getAction()->id, array('create', 'update'))) {
             if (isset($_POST['saveprint'])) {
                 $this->print = 1;
@@ -618,24 +681,29 @@ class ElementLetter extends BaseEventTypeElement
 
     public function isEditable()
     {
-        return !$this->isGeneratedForDocMan();
+        // admin can go to edit mode event if the document has been sent / warning set up in the actionUpdate()
+        return (Yii::app()->user->checkAccess('admin') || !$this->isGeneratedFor(['Docman', 'Internalreferral']));
     }
     
-    
+
     /**
      * Determinate if wheter PDF and XML files are generated for the DocMan
      * @return type
      */
-    public function isGeneratedForDocMan()
+    public function isGeneratedFor($types)
     {
+        if(!is_array($types)){
+            $types = array($types);
+        }
+
         $criteria = new CDbCriteria();
         $criteria->join =   "JOIN document_instance ins ON t.id = ins.document_set_id " .
                             "JOIN document_target tar ON ins.id = tar.document_instance_id " .
                             "JOIN document_output output ON tar.id = output.document_target_id";
 
         $criteria->compare('t.event_id', $this->event_id);
-        $criteria->compare('output.output_type', 'Docman');
         $criteria->compare('output.output_status', 'COMPLETE');
+        $criteria->addInCondition('output.output_type', $types);
 
         return DocumentSet::model()->find($criteria) ? true : false;
         
@@ -748,16 +816,19 @@ class ElementLetter extends BaseEventTypeElement
      * @param type $type
      * @return \typeReturns  * @return typeReturns the Outputs by type
      */
-    public function getOutputByType($type = 'Print')
+    public function getOutputByType($types = 'Print')
     {
         $criteria = new CDbCriteria();
         $criteria->join =   "JOIN document_target target ON t.document_target_id = target.id " .
                             "JOIN document_instance instance ON target.document_instance_id = instance.id ";
 
         $criteria->compare('instance.correspondence_event_id', $this->event->id);
-        if($type){
-            $criteria->compare('t.output_type', $type);
+
+        if(!is_array($types)){
+            $types = array($types);
         }
+
+        $criteria->addInCondition('t.output_type', $types);
 
         return DocumentOutput::model()->findAll($criteria);
 
@@ -775,5 +846,39 @@ class ElementLetter extends BaseEventTypeElement
 
         return DocumentTarget::model()->findAll($criteria);
     }
-    
+
+    public function isInternalReferralEnabled(){
+        return LetterType::model()->findByAttributes(array('name' => 'Internal Referral')) ? true : false;
+    }
+
+    /**
+     * If the letter is internal referral or not
+     */
+    public function isInternalReferral()
+    {
+        $internal_referral_letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral'));
+
+        return $this->letter_type_id == $internal_referral_letter_type->id;
+    }
+
+    public function getInternalReferralSettings($key, $default = null)
+    {
+        $value = OphcocorrespondenceInternalReferralSettings::model()->getSetting($key);
+        return is_null($value) ? $default : $value;
+    }
+
+
+    /**
+     * Returns the list of selected sites
+     *
+     * @param bool $list
+     * @return array|CActiveRecord[]
+     */
+    public function getToLocations($list = false)
+    {
+        $locations = OphCoCorrespondence_InternalReferral_ToLocation::model()->with('site')->findAll('t.is_active = 1');
+
+        return $list ? CHtml::listData($locations, 'id', 'site.short_name') : $locations;
+
+    }
 }

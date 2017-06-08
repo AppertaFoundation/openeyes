@@ -62,6 +62,22 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
         return parent::model($className);
     }
 
+    // used for the letter string method in the eyedraw element behavior
+    public $letter_string_prefix = "Anterior Segment:\n";
+
+    /**
+     * @inheritdoc
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'EyedrawElementBehavior' => array(
+                'class' => 'application.behaviors.EyedrawElementBehavior',
+            ),
+        );
+    }
+
     /**
      * @return string the associated database table name
      */
@@ -140,7 +156,7 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
                 'left_nuclear_id' => 'Nuclear',
                 'left_cortical_id' => 'Cortical',
                 'left_pxe' => 'PXF',
-                'left_phako' => 'Phakodonesis',
+                'left_phako' => 'Phacodonesis',
                 'left_description' => 'Comments',
                 'right_eyedraw' => 'Eyedraw',
                 'right_ed_report' => 'Report',
@@ -148,7 +164,7 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
                 'right_nuclear_id' => 'Nuclear',
                 'right_cortical_id' => 'Cortical',
                 'right_pxe' => 'PXF',
-                'right_phako' => 'Phakodonesis',
+                'right_phako' => 'Phacodonesis',
                 'right_description' => 'Comments',
         );
     }
@@ -156,7 +172,7 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
@@ -188,27 +204,4 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
         ));
     }
 
-    /**
-     * @return string
-     */
-    public function getLetter_string()
-    {
-        $result = 'Anterior segment:';
-
-        foreach (array('right', 'left') as $side) {
-            if (!$this->{'has' . ucfirst($side)}()) {
-                continue;
-            }
-            $result .= '\n' . $side;
-
-            if ($this->{$side . '_ed_report'}) {
-                $result .= $this->{$side . '_ed_report'};
-                if ($this->{$side . '_description'}) {
-                    $result .= ' // ';
-                }
-            }
-            $result .= $this->{$side .'_description'};
-        }
-        return $result;
-    }
 }

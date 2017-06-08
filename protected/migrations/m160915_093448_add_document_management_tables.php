@@ -81,7 +81,6 @@ class m160915_093448_add_document_management_tables extends OEMigration
         $this->addForeignKey('fk_document_instance_created_user_id', 'document_instance', 'created_user_id', 'user', 'id');
 
         $this->addForeignKey('fk_document_instance_data_document_instance_id', 'document_instance_data', 'document_instance_id', 'document_instance', 'id');
-        $this->addForeignKey('fk_document_instance_data_macro_id', 'document_instance_data', 'macro_id', 'ophcocorrespondence_letter_macro', 'id');
         $this->addForeignKey('fk_document_instance_data_created_user_id', 'document_instance_data', 'created_user_id', 'user', 'id');
 
         $this->addForeignKey('fk_document_output_document_target_id', 'document_output', 'document_target_id', 'document_target', 'id');

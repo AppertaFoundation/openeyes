@@ -24,7 +24,7 @@
             <?php echo $element->getAttributeLabel($side . '_ed_report') ?>:
         </label>
     </div>
-    <div class="large-10 column end" style="line-height: 1; margin-bottom:10px;">
+    <div class="large-10 column end autoreport-display">
         <span id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>" class="data-value"></span>
     </div>
     <div class="large-2 column">

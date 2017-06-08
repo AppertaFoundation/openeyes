@@ -113,7 +113,7 @@
 
 /* line 18, ../sass/components/elements/_posterior-pole.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_PosteriorPole .eyedraw-fields {
-  padding-top: 140px;
+  padding-top: 185px;
 }
 
 /* line 19, ../sass/components/elements/_visual-acuity.scss */
@@ -171,6 +171,12 @@
 /* line 19, ../sass/components/elements/_pcr.scss */
 .pcr-risk-div label.green {
   background-color: #008000;
+}
+
+/* line 30, ../sass/components/_elements.scss */
+.autoreport-display {
+  line-height: 1;
+  margin-bottom: 10px;
 }
 
 /* line 17, ../sass/components/_gonio-cross.scss */
