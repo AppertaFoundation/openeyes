@@ -118,11 +118,11 @@
                             $end_date = '-';
                             if( Helper::isValidDateTime($previous_study->end_date) ){
                                 $end_date_object = new DateTime($previous_study->end_date);
-                                $end_date = $end_date_object->format('d M Y');
+                                $end_date = $end_date_object->format(Helper::NHS_DATE_FORMAT);
                             }
 
                             $html .= '<li>';
-                            $html .= $previous_study->name . ' - ' . '<i>Ended: ' . $end_date . '</i>';
+                            $html .= $previous_study->name . ' - ' . '<i>End date: ' . $end_date . '</i>';
                             $html .= '</li>';
                         }
                         $html .= '</ul>';
