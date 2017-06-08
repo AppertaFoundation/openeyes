@@ -180,10 +180,12 @@ class Patient extends BaseActiveRecordVersioned
     public function dateFormatVaidator($attribute, $params)
     {
 
+        //because 02/02/198 is valid according to DateTime::createFromFormat('d-m-Y', ...)
+        $format_check = preg_match("/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/", $this->$attribute);
 
         $patient_dob_date = DateTime::createFromFormat('d-m-Y', $this->$attribute);
 
-        if( !$patient_dob_date ){
+        if( !$patient_dob_date || !$format_check){
             $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
         }
 
