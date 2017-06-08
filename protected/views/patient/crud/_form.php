@@ -130,8 +130,11 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 
       <div class="row field-row">
         <div class="large-3 column"><?php echo $form->labelEx($patient, 'dob'); ?></div>
-        <div class="large-4 column end">
-            <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+        <div class="large-4 column">
+
+            <?php echo $form->textField($patient, 'dob'); ?>
+
+            <?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'Patient[dob]',
                 'id' => 'patient_dob',
                 'options' => array(
@@ -142,9 +145,10 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                 'htmlOptions' => array(
                     'class' => 'small fixed-width',
                 ),
-            )) ?>
+            ))*/ ?>
             <?php echo $form->error($patient, 'dob'); ?>
         </div>
+          <div class="large-4 column end"><label><i>(dd/mm/yyyy)</i></label></div>
       </div>
       <div class="row field-row">
         <div class="large-3 column"><?php echo $form->labelEx($patient, 'gender'); ?></div>

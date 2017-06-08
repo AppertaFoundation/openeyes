@@ -171,6 +171,24 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
+     * This validator is added to the Patient object in PatientController create/update action
+     *
+     * Validating the date format
+     * @param $attribute
+     * @param $params
+     */
+    public function dateFormatVaidator($attribute, $params)
+    {
+
+        $patient_dob_date = DateTime::createFromFormat('d/m/Y', $this->$attribute);
+
+        if( !$patient_dob_date ){
+            $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
+        }
+
+    }
+
+    /**
      * @return array customized attribute labels (name=>label)
      */
     public function attributeLabels()

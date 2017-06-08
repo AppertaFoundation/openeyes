@@ -1480,6 +1480,10 @@ class PatientController extends BaseController
         $patient->noPas();
         $contact = new Contact('manualAddPatient');
         $address = new Address();
+
+        $patient->validatorList->add(
+            CValidator::createValidator('dateFormatVaidator', $patient, 'dob')
+        );
         
         $this->performAjaxValidation(array($patient, $contact, $address));
         
@@ -1585,6 +1589,10 @@ class PatientController extends BaseController
         
         $contact = $patient->contact ? $patient->contact : new Contact();
         $address = $patient->contact->address ? $patient->contact->address : new Address();
+
+        $patient->validatorList->add(
+            CValidator::createValidator('dateFormatVaidator', $patient, 'dob')
+        );
         
         $this->performAjaxValidation(array($patient, $contact, $address));
 
