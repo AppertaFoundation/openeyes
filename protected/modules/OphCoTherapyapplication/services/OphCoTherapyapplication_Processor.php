@@ -561,10 +561,8 @@ class OphCoTherapyapplication_Processor
 
     private function getEmailRecipients($service_info, $recipient_type)
     {
-        if (!$recipients = OphCoTherapyapplication_Email_Recipient::model()->with('type')->findAll('site_id = ? and (type.id is null or type.name = ?)', array($service_info->site_id, $recipient_type))) {
-            if (!$recipients = OphCoTherapyapplication_Email_Recipient::model()->with('type')->findAll('site_id is null and (type.id is null or type.name = ?)', array($recipient_type))) {
-                throw new Exception('No email recipient defined for site '.$service_info->site->name.", $recipient_type");
-            }
+        if (!$recipients = OphCoTherapyapplication_Email_Recipient::model()->with('type')->findAll('(site_id = ? or site_id is null) and (type.id is null or type.name = ?)', array($service_info->site_id, $recipient_type))) {
+            throw new Exception('No email recipient defined for site '.$service_info->site->name.", $recipient_type");
         }
 
         return $recipients;

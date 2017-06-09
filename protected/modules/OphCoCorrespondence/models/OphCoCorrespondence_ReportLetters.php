@@ -199,10 +199,10 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
             }
 
             if ($type == 'Correspondence') {
-                $clause .= " AND {$letter_table[1]}.created_user_id = :authorID";
+                $clause .= " AND ( {$letter_table[1]}.created_user_id = :authorID";
                 $where_params[':authorID'] = $this->author_id;
 
-                $clause .= " OR lower({$letter_table[1]}.footer) LIKE :authorName";
+                $clause .= " OR lower({$letter_table[1]}.footer) LIKE :authorName )";
                 $where_params[':authorName'] = '%'.strtolower($author->fullName).'%';
             } else {
                 $clause .= " and lower({$letter_table[1]}.$text_field) like :authorName";

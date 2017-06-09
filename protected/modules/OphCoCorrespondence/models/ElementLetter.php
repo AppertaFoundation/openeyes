@@ -64,14 +64,15 @@ class ElementLetter extends BaseEventTypeElement
         return array(
             array(
                 'event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date,' .
-                'print_all, is_signed_off, to_subspecialty_id, to_firm_id, is_urgent, is_same_condition, to_location_id',
+                'print_all, is_signed_off, to_subspecialty_id, to_firm_id, is_urgent, is_same_condition',
                 'safe'
             ),
+            array('to_location_id', 'internalReferralToLocationIdValidator'),
             array('to_subspecialty_id', 'internalReferralServiceValidator'),
             array('is_same_condition', 'internalReferralConditionValidator'),
             array('letter_type_id', 'letterTypeValidator'),
             array('site_id, date, introduction, body, footer', 'requiredIfNotDraft'),
-            array('use_nickname, to_location_id', 'required'),
+            array('use_nickname', 'required'),
             array('date', 'OEDateValidator'),
             array('clinic_date', 'OEDateValidatorNotFuture'),
             //array('is_signed_off', 'isSignedOffValidator'), // they do not want this at the moment - waiting for the demo/feedback
@@ -131,9 +132,7 @@ class ElementLetter extends BaseEventTypeElement
     {
         $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
 
-        if(!$letter_type){
-            $this->addError($attribute, $this->getAttributeLabel($attribute) . ": 'Internal Referral' letter type is not enabled.");
-        } else if( $letter_type->id == $this->letter_type_id ){
+        if( $letter_type->id == $this->letter_type_id ){
             // internal referral posted
             if(!$this->to_subspecialty_id && $this->draft == 0){
                 $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Please select a service.");
@@ -143,11 +142,8 @@ class ElementLetter extends BaseEventTypeElement
     public function internalReferralConditionValidator($attribute, $params)
     {
         $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
-        $is_internal_referral_enabled = OphcocorrespondenceInternalReferralSettings::model()->getSetting('is_enabled');
 
-        if($is_internal_referral_enabled == 'off'){
-            $this->addError($attribute, $this->getAttributeLabel($attribute) . ": 'Internal Referral' letter type is not enabled.");
-        } else if( $letter_type->id == $this->letter_type_id ){
+        if( $letter_type->id == $this->letter_type_id ){
             // internal referral posted
 
             if(!is_numeric($this->is_same_condition) && $this->draft == 0){
@@ -156,6 +152,17 @@ class ElementLetter extends BaseEventTypeElement
         }
     }
 
+    public function internalReferralToLocationIdValidator($attribute, $params)
+    {
+        $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
+        $is_internal_referral_enabled = OphcocorrespondenceInternalReferralSettings::model()->getSetting('is_enabled');
+
+        if( $is_internal_referral_enabled && ($letter_type->id == $this->letter_type_id) ){
+
+            $validator = CValidator::createValidator('required', $this, $attribute, $params);
+            $validator->validate($this);
+        }
+    }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
