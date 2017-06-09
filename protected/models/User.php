@@ -746,41 +746,36 @@ class User extends BaseActiveRecordVersioned
     /**
      * Returns users who can access the roles in the given param
      *
-     * @param array $role
+     * @param array $roles
      * @param bool $return_models
      * @return array user ids or array of User models
      */
-    public function findAllByRole($role, $return_models = false)
+    public function findAllByRoles(array $roles, $return_models = false)
     {
         $user_ids = array();
+        $users_with_roles = array();
 
-        $users = Yii::app()->db->createCommand('SELECT DISTINCT(userid) FROM `authassignment` WHERE `itemname` LIKE "%' . $role . '%";')->queryAll();
+        $users = Yii::app()->db->createCommand("SELECT DISTINCT(userid) FROM `authassignment` WHERE `itemname` IN ('" . (implode("','", $roles)) . "')")->queryAll();
 
         foreach($users as $index => $user){
             $user_ids[] = $user['userid'];
         }
 
-        if( !empty($user_ids) && $return_models){
-            return User::model()->findAll('t.id IN (' . (implode(',', $user_ids)) . ')');
-        } else {
-            return $users;
-        }
-    }
+        $criteria = new CDbCriteria();
+        $criteria->addInCondition('t.id', $user_ids);
 
-// @TODO:FIX
-    public function findAllByRolesOLD(array $roles, $return_models = false)
-    {
-        $users_with_roles = [];
+        if( !empty($user_ids)){
+            $users = $this->findAll($criteria);
 
-        $users = $this->findAll();
-        foreach($users as $id => $user) {
-            foreach($roles as $role){
-                if(Yii::app()->authManager->checkAccess($role, $user->id)) {
-                    $users_with_roles[] = $return_models ? $user : $user->id;
+            foreach($users as $id => $user) {
+                foreach($roles as $role){
+                    if(Yii::app()->authManager->checkAccess($role, $user->id)) {
+                        $users_with_roles[$user->id] = $return_models ? $user : $user->id;
+                    }
                 }
             }
         }
-        return $users_with_roles;
 
+        return $users_with_roles;
     }
 }
