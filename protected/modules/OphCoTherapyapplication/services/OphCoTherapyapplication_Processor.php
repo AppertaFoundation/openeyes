@@ -76,7 +76,7 @@ class OphCoTherapyapplication_Processor
             foreach ($sides as $side) {
                 if (!$api->getInjectionManagementComplexInEpisodeForDisorder(
                     $this->event->episode->patient,
-                    $this->event->episode,
+                    $use_context = true,
                     $side,
                     $el_diag->{$side.'_diagnosis1_id'},
                     $el_diag->{$side.'_diagnosis2_id'})) {

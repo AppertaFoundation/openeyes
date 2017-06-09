@@ -1111,9 +1111,9 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @return array() - list of associative arrays with disorder_id and eye_id defined
      */
-    public function getOrderedDisorders($patient, $episode)
+    public function getOrderedDisorders($patient, $use_context = true)
     {
-        $events = $this->getEventsInEpisode($patient, $episode);
+        $events = $this->getEvents($patient, $use_context);
         $disorders = array();
 
         if ($events) {
@@ -1193,9 +1193,9 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @return models\Element_OphCiExamination_InjectionManagementComplex
      */
-    public function getInjectionManagementComplexInEpisodeForSide($patient, $episode, $side)
+    public function getInjectionManagementComplexInEpisodeForSide($patient, $side, $use_context = true)
     {
-        $events = $this->getEventsInEpisode($patient, $episode);
+        $events = $this->getEvents($patient , $use_context);
 
         $eye_vals = array(\Eye::BOTH);
         if ($side == 'left') {
@@ -1221,7 +1221,7 @@ class OphCiExamination_API extends \BaseAPI
      * regardless of whether it is part of the most recent examination event, or an earlier one.
      *
      * @param Patient $patient
-     * @param Episode $episode
+     * @param boole $use_context
      * @param string $side
      * @param int $disorder1_id
      * @param int $disorder2_id
@@ -1230,12 +1230,12 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getInjectionManagementComplexInEpisodeForDisorder(
         $patient,
-        $episode,
+        $use_context = true,
         $side,
         $disorder1_id,
         $disorder2_id
     ) {
-        $events = $this->getEventsInEpisode($patient, $episode);
+        $events = $this->getEvents($patient, $use_context);
         $elements = array();
 
         if ($events) {
@@ -1280,9 +1280,9 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @return OphCiExamination_InjectionManagementComplex|null
      */
-    public function getLatestInjectionManagementComplex($episode, $after = null)
+    public function getLatestInjectionManagementComplex($patient, $after = null, $use_context = true)
     {
-        $events = $this->getEventsInEpisode($episode->patient, $episode);
+        $events = $this->getEvents($patient, $use_context);
 
         foreach ($events as $event) {
             $criteria = new \CDbCriteria();
@@ -1310,9 +1310,9 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @return array(maximum_CRT, central_SFT) or null
      */
-    public function getOCTForSide($patient, $episode, $side)
+    public function getOCTForSide($patient, $side , $use_context = true)
     {
-        $events = $this->getEventsInEpisode($patient, $episode);
+        $events = $this->getEvents($patient, $use_context);
         if ($side == 'left') {
             $side_list = array(\Eye::LEFT, \Eye::BOTH);
         } else {
@@ -1342,7 +1342,6 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getOCTSFTHistoryForSide($patient, $side, $before = null, $use_context = true)
     {
-        //if ($events = $this->getEventsInEpisode($episode->patient, $episode)) {
          if($events = $this->getEvents( $patient , $use_context )){
             if ($side == 'left') {
                 $side_list = array(\Eye::LEFT, \Eye::BOTH);
