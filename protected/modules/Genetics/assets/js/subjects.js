@@ -10,11 +10,8 @@ $(document).ready(function () {
 
   $('#GeneticsPatient_pedigrees').on('MultiSelectChanged', function () {
 
-
-
-
     var $container = $(this).parents('.multi-select'),
-      pedigreeText = this.options[this.selectedIndex].text.trim();
+        pedigreeText = $(this.options[this.selectedIndex]).val();
 
     setStatus($container, pedigreeText, 'Unknown');
 
