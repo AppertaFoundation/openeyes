@@ -27,6 +27,8 @@ tags
 /protected/config/local
 /protected/views/patient/custom/info/php
 /protected/yii
+/phpMyAdmin
+
 *zip
 vendor
 .sass-cache

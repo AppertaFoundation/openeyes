@@ -1133,14 +1133,19 @@ class OphCiExamination_API extends \BaseAPI
         return $disorders;
     }
 
-    public function getLetterStringForModel($patient, $episode, $element_type_id)
+    public function getLetterStringForModel($patient, $element_type_id, $use_context = true)
     {
         if (!$element_type = \ElementType::model()->findByPk($element_type_id)) {
             throw new Exception("Unknown element type: $element_type_id");
         }
-        if ($element = $this->getElementForLatestEventInEpisode($episode, $element_type->class_name)) {
+        if ($element = $this->getElementFromLatestEvent(
+            $element_type->class_name,
+            $patient,
+            $use_context)
+        ) {
             return $element->letter_string;
         }
+
     }
 
     /**
@@ -1335,9 +1340,10 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @return array
      */
-    public function getOCTSFTHistoryForSide($episode, $side, $before = null)
+    public function getOCTSFTHistoryForSide($patient, $side, $before = null, $use_context = true)
     {
-        if ($events = $this->getEventsInEpisode($episode->patient, $episode)) {
+        //if ($events = $this->getEventsInEpisode($episode->patient, $episode)) {
+         if($events = $this->getEvents( $patient , $use_context )){
             if ($side == 'left') {
                 $side_list = array(\Eye::LEFT, \Eye::BOTH);
             } else {
@@ -1366,18 +1372,19 @@ class OphCiExamination_API extends \BaseAPI
      * retrieve the Investigation Description for the given patient.
      *
      * @param $patient
-     *
+     * @param $$use_context
      * @return mixed
      */
-    public function getLetterInvestigationDescription($patient)
+    public function getLetterInvestigationDescription($patient , $use_context = true)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($el = $this->getElementForLatestEventInEpisode($episode,
-                'models\Element_OphCiExamination_Investigation')
+
+            if ($el = $this->getElementFromLatestEvent(
+                'models\Element_OphCiExamination_Investigation',
+                $patient,
+                $use_context)
             ) {
                 return $el->description;
             }
-        }
     }
 
     /**
