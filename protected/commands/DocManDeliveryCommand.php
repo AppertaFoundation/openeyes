@@ -300,9 +300,9 @@ class DocManDeliveryCommand extends CConsoleCommand
     private function generateXMLOutput($filename, $document_output)
     {
         $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $this->event->id));
-        $subObj = $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty;
-        $subspeciality = isset($subObj->ref_spec) ? $subObj->ref_spec : 'SS';
-        $subspeciality_name = isset($subObj->name) ? $subObj->name : 'Support Services';
+        $sub_obj = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty : null;
+        $subspeciality = isset($sub_obj->ref_spec) ? $sub_obj->ref_spec : 'SS';
+        $subspeciality_name = isset($sub_obj->name) ? $sub_obj->name : 'Support Services';
         $nat_id = isset($this->event->episode->patient->gp->nat_id) ? $this->event->episode->patient->gp->nat_id : null;
         $gp_name = isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->getFullName() : null;
         $practice_code = isset($this->event->episode->patient->practice->code) ? $this->event->episode->patient->practice->code : '';

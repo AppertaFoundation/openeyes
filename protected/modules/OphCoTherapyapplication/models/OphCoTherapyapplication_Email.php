@@ -34,16 +34,16 @@ class OphCoTherapyapplication_Email extends BaseActiveRecordVersioned
     public function defaultScope()
     {
         return array(
-            'order' => 'created_date desc',
+            'order' => $this->getTableAlias(false, false) . '.created_date desc',
         );
     }
 
     public function scopes()
     {
         return array(
-            'leftEye' => array('condition' => 'eye_id = '.Eye::LEFT),
-            'rightEye' => array('condition' => 'eye_id = '.Eye::RIGHT),
-            'unarchived' => array('condition' => 'archived = 0'),
+            'leftEye' => array('condition' => $this->getTableAlias(false, false) . '.eye_id = '.Eye::LEFT),
+            'rightEye' => array('condition' => $this->getTableAlias(false, false) . '.eye_id = '.Eye::RIGHT),
+            'unarchived' => array('condition' => $this->getTableAlias(false, false) . '.archived = 0'),
         );
     }
 
@@ -52,6 +52,7 @@ class OphCoTherapyapplication_Email extends BaseActiveRecordVersioned
         return array(
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'attachments' => array(self::MANY_MANY, 'ProtectedFile', 'ophcotherapya_email_attachment(email_id, file_id)'),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id')
         );
     }
 
