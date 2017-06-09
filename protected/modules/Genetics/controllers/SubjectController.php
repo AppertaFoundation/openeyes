@@ -137,7 +137,8 @@ class SubjectController extends BaseModuleController
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
-            'is_deceased' => 'checkbox',
+            //nope, just, nope, this must be stored in the patient table @TODO: remove this and from the genetics_patient database table
+            //'is_deceased' => 'checkbox',
             'comments' => 'textarea',
             'family' => array(
                 'widget' => 'CustomView',
