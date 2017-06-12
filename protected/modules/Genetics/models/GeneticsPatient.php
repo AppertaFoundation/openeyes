@@ -329,7 +329,11 @@ class GeneticsPatient extends BaseActiveRecord
 
         $criteria->compare( 'patient.dob', $this->patient_dob, true );
         $criteria->compare( 'patient.dob', $this->patient_yob, true );
-        $criteria->compare( 'patient.hos_num', $this->patient_hos_num, false );
+
+        $patient_search = new PatientSearch();
+        $patient_hos_num = $patient_search->getHospitalNumber($this->patient_hos_num);
+
+        $criteria->compare( 'patient.hos_num', $patient_hos_num, false );
 
         if( $this->patient_pedigree_id ){
             $criteria->with['genetics_patient_pedigree'] = array('select' => 'genetics_patient_pedigree.pedigree_id', 'together' => true);
