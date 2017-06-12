@@ -461,34 +461,7 @@ class OphCiExamination_API extends \BaseAPI
             }
         }
     }
-
-
-
-    public function getBestNearVisualAcuity($patient, $episode, $side)
-    {
-        if ($va = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_NearVisualAcuity')) {
-            switch ($side) {
-                case 'left':
-                    return $va->getBestReading('left');
-                case 'right':
-                    return $va->getBestReading('right');
-            }
-        }
-    }
-
-    public function getVAId($patient, $episode)
-    {
-        if ($va = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_VisualAcuity')) {
-            return $va;
-        }
-    }
-
-    public function getNearVAId($patient, $episode)
-    {
-        if ($va = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_NearVisualAcuity')) {
-            return $va;
-        }
-    }
+    
     public function getVAvalue($vareading, $unitId)
     {
         if ($unit = models\OphCiExamination_VisualAcuityUnitValue::model()->find('base_value = ' . $vareading . ' AND unit_id = ' . $unitId)) {
