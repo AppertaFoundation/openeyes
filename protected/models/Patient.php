@@ -113,7 +113,7 @@ class Patient extends BaseActiveRecordVersioned
             array('pas_key', 'length', 'max' => 10),
             array('hos_num', 'required', 'on' => 'pas'),
             array('hos_num, nhs_num', 'length', 'max' => 40),
-            array('hos_num', 'unique', 'message'=>'A patient already exists with this hospital number', 'on' => 'manual'),
+            array('hos_num', 'hosNumValidator'), // 'on' => 'manual'
             array('gender,is_local', 'length', 'max' => 1),
             array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id', 'safe'),
             array('gender, dob', 'required', 'on' => 'manual'),
@@ -170,6 +170,32 @@ class Patient extends BaseActiveRecordVersioned
             'nhsNumberStatus' => array(self::BELONGS_TO, 'NhsNumberVerificationStatus', 'nhs_num_status_id'),
             'geneticsPatient' => array(self::HAS_ONE, 'GeneticsPatient', 'patient_id'),
         );
+    }
+
+    /**
+     * Validate the hos_num attribute based on the PatientSearch pattern.
+     * this was implemented because of the leading zero check
+     * 0123 and 123 is different hos_num when using the 'unique' built in validator
+     *
+     * @param $attribute
+     * @param $params
+     */
+    public function hosNumValidator($attribute, $params)
+    {
+        if($this->scenario == 'manual'){
+
+            $patient_search = new PatientSearch();
+            if ($patient_search->getHospitalNumber($this->hos_num)) {
+                $dataProvider = $patient_search->search($this->hos_num);
+
+                $item_count = $dataProvider->totalItemCount;
+                if( $item_count && $item_count > 0 ){
+                    $this->addError($attribute, 'A patient already exists with this hospital number');
+                }
+            } elseif( !empty($this->hos_num)){
+                $this->addError($attribute, 'Not a valid Hospital Number');
+            }
+        }
     }
 
     /**
