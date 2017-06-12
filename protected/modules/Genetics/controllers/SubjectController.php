@@ -180,7 +180,9 @@ class SubjectController extends BaseModuleController
             'no_pedigree' => array(
                 'widget' => 'CustomView',
                 'viewName' => 'application.modules.Genetics.views.subject.nopedigree',
-                'viewArguments'=> array()
+                'viewArguments'=> array(
+                    'genetics_patient' => GeneticsPatient::model()->findByPk($id),
+                )
             ),
             'create_new_pedigree' => array(
                 'widget' => 'LinkTo',

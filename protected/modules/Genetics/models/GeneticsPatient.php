@@ -221,9 +221,14 @@ class GeneticsPatient extends BaseActiveRecord
 
             if(isset($_POST['no_pedigree']))
             {
+                $pedigree_inheritance = PedigreeInheritance::model()->findByAttributes(array('name' => 'Unknown/other'));
+
                 $pedigree = new Pedigree();
-                $pedigree->consanguinity = false;
+
+                $pedigree->inheritance_id = $pedigree_inheritance ? $pedigree_inheritance->id : null;
                 $pedigree->comments = '';
+                $pedigree->consanguinity = false;
+
                 $pedigree->save(false);
 
                 $p_id = $pedigree->id;
