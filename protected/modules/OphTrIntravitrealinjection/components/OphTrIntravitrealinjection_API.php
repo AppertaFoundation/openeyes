@@ -124,6 +124,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
         $criteria->alias = 'treatment';
         $criteria->addCondition(array(
             'event.episode_id = :episode_id',
+            'event.deleted = 0',
             'treatment.eye_id in (:eye_id,'.SplitEventTypeElement::BOTH.')',
             'event_date <= :since',
             )
