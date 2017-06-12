@@ -23,7 +23,7 @@ Yii::app()->clientScript->registerScriptFile($assetPath.'/js/relationships.js');
                         </span>
                         <input type="hidden" name="GeneticsPatient[relationships][<?=$relationship->related_to_id?>][related_to_id]" value="<?=$relationship->related_to_id?>">
                         <input type="hidden" name="GeneticsPatient[relationships][<?=$relationship->related_to_id?>][relationship_id]" value="<?=$relationship->relationship_id?>">
-                        <?= $relationship->relation->patient->fullName ?> is a  <?=$relationship->relationship->relationship?> to the patient.
+                        <?= $relationship->relation->patient->fullName ?> is a  <?=$relationship->relationship->relationship?> to the subject.
                     </li>
                 <?php endforeach?>
             <?php endif;?>

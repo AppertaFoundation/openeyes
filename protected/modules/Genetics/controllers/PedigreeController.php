@@ -29,11 +29,6 @@ class PedigreeController extends BaseModuleController
                 'actions' => array('List', 'View'),
                 'roles' => array('OprnSearchPedigree'),
             ),
-            array(
-                'allow',
-                'actions' => array('PedigreeDisorder'),
-                'roles' => array('OprnSearchPedigree', 'OprnEditGeneticPatient'),
-            ),
         );
     }
 
@@ -196,30 +191,6 @@ class PedigreeController extends BaseModuleController
         $admin->getSearch()->setDefaultResults(false);
         $display_buttons = $this->checkAccess('OprnEditPedigree');
         $admin->listModel($display_buttons);
-    }
-
-    /**
-     * @param $id
-     * @throws CHttpException
-     */
-    public function actionPedigreeDisorder($id)
-    {
-        $pedigree = Pedigree::model()->findByPk($id);
-
-        if (!$pedigree) {
-            throw new CHttpException(404);
-        }
-
-        if (!$pedigree->disorder_id) {
-            throw new CHttpException(400);
-        }
-
-        $this->renderJSON(
-            array(
-                'id' => $pedigree->disorder_id,
-                'disorder' => $pedigree->disorder->term,
-            )
-        );
     }
     
     /**
