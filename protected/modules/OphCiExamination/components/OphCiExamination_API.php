@@ -1152,19 +1152,17 @@ class OphCiExamination_API extends \BaseAPI
      * returns all the elements from the most recent examination of the patient in the given episode.
      *
      * @param \Patient $patient
-     * @param \Episode $episode
+     * @param $use_context
      *
      * @return \ElementType[] - array of various different element type objects
      */
-    public function getElementsForLatestEventInEpisode($patient, $episode)
+    public function getElementsForLatestEventInEpisode($patient, $use_context = true)
     {
         $element_types = array();
 
-        $event_type = $this->getEventType();
-
-        if ($event_type && $event = $this->getMostRecentEventInEpisode($episode->id, $event_type->id)) {
+        if($event = $this->getLatestEvent($patient, $use_context)){
             $criteria = new \CDbCriteria();
-            $criteria->compare('event_type_id', $event_type->id);
+            $criteria->compare('event_type_id', $event->event_type_id);
             $criteria->order = 'display_order';
 
             foreach (\ElementType::model()->findAll($criteria) as $element_type) {
@@ -1177,7 +1175,6 @@ class OphCiExamination_API extends \BaseAPI
                 }
             }
         }
-
         return $element_types;
     }
 
