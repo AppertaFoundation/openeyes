@@ -85,10 +85,21 @@ class SubjectController extends BaseModuleController
     public function actionEdit($id = false)
     {
         $admin = new Crud(GeneticsPatient::model(), $this);
+        $genetics_patient = GeneticsPatient::model()->findByPk($id);
 
         // ok, so this awesome solution pre-selects a freshly created pedigree
         if( isset($_GET['pedigree_id']) && $_GET['pedigree_id'] ){
-            $_POST['GeneticsPatient[pedigrees]'] = array($_GET['pedigree_id']);
+
+            //this is when the patient already had a pedigree but the user click in the 'Create new pedigree' to add another one...
+            //the only way to display the old and new ones together is to set them all in the $_POST
+            if($genetics_patient && $genetics_patient->pedigrees){
+                foreach($genetics_patient->pedigrees as $pedigree){
+                    $_POST['GeneticsPatient[pedigrees]'][] = $pedigree->id;
+                }
+            }
+
+            // and adding the newly created one
+            $_POST['GeneticsPatient[pedigrees]'][] = $_GET['pedigree_id'];
         }
 
         if ($id) {
@@ -122,6 +133,15 @@ class SubjectController extends BaseModuleController
 
         $admin->setModelDisplayName('Genetics Subject');
 
+        $linkTo = function() use ($genetics_patient){
+            $link = '/Genetics/pedigree/edit?';
+            $params = (isset($_GET['patient']) ? ('patient=' . $_GET['patient']) : null);
+            $params .= $params ? '&' : '?';
+            $params .= ($genetics_patient ? ('genetics_patient_id=' . $genetics_patient->id) : null);
+
+            return $link . $params;
+        };
+
         $status = PedigreeStatus::model()->findByAttributes(array('name' => 'Unknown'));
         $admin->setEditFields(array(
             'referer' => 'referer',
@@ -137,8 +157,10 @@ class SubjectController extends BaseModuleController
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
+
             //nope, just, nope, this must be stored in the patient table @TODO: remove this and from the genetics_patient database table
             //'is_deceased' => 'checkbox',
+
             'comments' => 'textarea',
             'family' => array(
                 'widget' => 'CustomView',
@@ -187,8 +209,7 @@ class SubjectController extends BaseModuleController
             'create_new_pedigree' => array(
                 'widget' => 'LinkTo',
                 'label'  => 'Create new pedigree',
-                'linkTo' => '/Genetics/pedigree/edit' . (isset($_GET['patient']) ? ('?patient=' . $_GET['patient']) : null)
-
+                'linkTo' => $linkTo(),
             ),
             'previous_studies' => array(
                 'widget' => 'CustomView',

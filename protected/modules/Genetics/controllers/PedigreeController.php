@@ -140,8 +140,17 @@ class PedigreeController extends BaseModuleController
         if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Family Saved");
-                     $url = '/Genetics/pedigree/view/'.$admin->getModel()->id . (isset($_GET['patient']) ? ('?patient=' . $_GET['patient']) : null);
-                $this->redirect($url);
+                $url = '/Genetics/pedigree/view/'.$admin->getModel()->id;
+
+                if(isset($_GET['patient'])) {
+                   $params['patient'] = $_GET['patient'];
+                }
+
+                if(isset($_GET['genetics_patient_id'])) {
+                   $params['genetics_patient_id'] = $_GET['genetics_patient_id'];
+                }
+
+                $this->redirect($url . '?' . http_build_query($params) );
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
             }
