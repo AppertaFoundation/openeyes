@@ -64,6 +64,12 @@ class PedigreeController extends BaseModuleController
         $admin = new Crud(Pedigree::model(), $this);
         if ($id) {
             $admin->setModelId($id);
+        } else {
+
+            //oh, sure, let me just set the defaults this way.
+            //more: Admin.php line ~515
+            $pedigree_inheritance = PedigreeInheritance::model()->findByAttributes(array('name' => 'Unknown/other'));
+            $_GET['default'] = array('inheritance_id' => $pedigree_inheritance ? $pedigree_inheritance->id : null);
         }
 
         $admin->setEditFields(array(
