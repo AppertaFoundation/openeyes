@@ -2,6 +2,14 @@
 /* Module-specific javascript can be placed here */
 
 $(document).ready(function() {
+
+    $('#DiagnosisSelection_principal_diagnosis_0').keydown(function(event){
+        if(event.keyCode == 13) {
+            event.preventDefault();
+            return false;
+        }
+    });
+
 	handleButton($('#et_save'),function() {
 	});
 
