@@ -108,9 +108,7 @@ class GeneticsStudy extends BaseActiveRecordVersioned
      */
     public function beforeSave()
     {
-        //Set the date to null if it's not truthy so empty strings don't convert to 0000-00-00....
-
-        if (!$this->end_date) {
+        if (!$this->end_date || $this->end_date == '0000-00-00 00:00:00') {
             $this->end_date = null;
         }
         return parent::beforeSave();
