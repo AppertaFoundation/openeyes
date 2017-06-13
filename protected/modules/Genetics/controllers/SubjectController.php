@@ -148,6 +148,8 @@ class SubjectController extends BaseModuleController
             'diagnoses' => array(
                 'widget' => 'DisorderLookup',
                 'relation' => 'diagnoses',
+                'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+                'empty_text' => 'Select a commonly used diagnosis'
             ),
             'pedigrees' => array(
                 'widget' => 'MultiSelectList',
