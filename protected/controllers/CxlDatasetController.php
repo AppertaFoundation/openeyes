@@ -820,7 +820,7 @@ EOL;
                        rp.name,
                        REPLACE(REPLACE(sd.name, 'minutes', ''), 'minute', ''),
                        ui.name,
-                       ud.name,
+                       REPLACE(REPLACE(ud.name, 'seconds', ''), 'second', ''),
                        CASE WHEN uid.name = '0 seconds' THEN 'Continuous' ELSE REPLACE(REPLACE(uid.name, ' seconds', ''), ' second', '') END,
                        k.uv_total_energy_value,
                        k.cxl_comments

@@ -16,7 +16,7 @@ class m170605_102024_OE6684_alter_uv_pulse extends OEMigration
         $this->update('ophtroperationnote_cxl_uv_pulse_duration',
             array('nameTemp' => '0.5 seconds'), 'id = 2');
         $this->update('ophtroperationnote_cxl_uv_pulse_duration',
-            array('nameTemp' => '1 seconds'), 'id = 3');
+            array('nameTemp' => '1 second'), 'id = 3');
         $this->update('ophtroperationnote_cxl_uv_pulse_duration',
             array('nameTemp' => '1.5 seconds'), 'id = 4');
         $this->update('ophtroperationnote_cxl_uv_pulse_duration',
