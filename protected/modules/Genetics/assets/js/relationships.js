@@ -7,11 +7,7 @@ $(document).ready(function () {
 
     search.getElement().autocomplete('option', 'select', function (event, uid) {
         $('#relationships_list').append(OpenEyes.Genetics.Relationships.newRelationshipForm(uid.item));
-    });
-
-
-    search.getElement().autocomplete('option', 'select', function (event, uid) {
-        $('#relationships_list').append(OpenEyes.Genetics.Relationships.newRelationshipForm(uid.item));
+        $('#genetics_patient_lookup').blur();
     });
 
     $('input[name="GeneticsPatient\[patient_lookup_gender\]"]').on('change', function () {
@@ -23,5 +19,9 @@ $(document).ready(function () {
 
     $('input[name="GeneticsPatient\[patient_lookup_deceased\]"]').on('change', function () {
         $('#GeneticsPatient_is_deceased').prop('checked', (this.value === '1'));
+    });
+
+    $('#genetics_patient_lookup').on('focus',function(){
+        $('.ui-autocomplete.patient-ajax-list').show();
     });
 });

@@ -350,6 +350,10 @@ class SubjectController extends BaseModuleController
         $term = trim(\Yii::app()->request->getParam('term', ''));
         $result = array();
         $patientSearch = new PatientSearch();
+
+        //no PAS sync required at this stage
+        $patientSearch->noPas();
+
         if ($patientSearch->isValidSearchTerm($term)) {
             $dataProvider = $patientSearch->search($term);
 

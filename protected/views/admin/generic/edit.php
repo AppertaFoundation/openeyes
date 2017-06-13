@@ -128,6 +128,10 @@ $assetManager = Yii::app()->getAssetManager();
                     }
                     ?>
                     <div class="row field-row">
+                        <div class="large-2 column">&nbsp;</div>
+                        <div class="large-5 column end"><hr></div>
+                    </div>
+                    <div class="row field-row">
                         <div class="large-2 column">
                             <label>Diagnosis</label>
                         </div>
