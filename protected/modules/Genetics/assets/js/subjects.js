@@ -4,31 +4,17 @@
 $(document).ready(function () {
 
   function setStatus($container, pedigreeText, status) {
-    $container.find('.MultiSelectRemove[data-text="' + pedigreeText + '"]').siblings('select').find('option').each(function () {
-      if ($(this).text() === status) {
-        $(this).attr('selected', 'selected');
-      }
-    });
+
+      $('select[name="GeneticsPatient[pedigrees_through][' + pedigreeText + '][status_id]"]').find('option:contains(' + status + ')').prop('selected', 'selected');
   }
 
   $('#GeneticsPatient_pedigrees').on('MultiSelectChanged', function () {
-    var $container = $(this).parents('.multi-select'),
-      pedigreeText = this.options[this.selectedIndex].text.trim();
-    $.getJSON('/Genetics/pedigree/pedigreeDisorder/' + $(this).val(), function (disorder) {
-      var found = false;
-      $('.multiDiagnosis').each(function () {
-        if ($(this).val() === disorder.id) {
-          setStatus($container, pedigreeText, 'Affected');
-          found = true;
-          return;
-        }
-      });
 
-      if (!found) {
-        setStatus($container, pedigreeText, 'Unknown');
-      }
-    }).fail(function () {
-      setStatus($container, pedigreeText, 'Unknown');
-    });
+    var $container = $(this).parents('.multi-select'),
+        pedigreeText = $(this.options[this.selectedIndex]).val();
+
+    setStatus($container, pedigreeText, 'Unknown');
+
   });
+
 });

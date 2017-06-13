@@ -748,21 +748,34 @@ class User extends BaseActiveRecordVersioned
      *
      * @param array $roles
      * @param bool $return_models
-     * @return array user ids
+     * @return array user ids or array of User models
      */
     public function findAllByRoles(array $roles, $return_models = false)
     {
-        $users_with_roles = [];
+        $user_ids = array();
+        $users_with_roles = array();
 
-        $users = $this->findAll();
-        foreach($users as $id => $user) {
-            foreach($roles as $role){
-                if(Yii::app()->authManager->checkAccess($role, $user->id)) {
-                    $users_with_roles[] = $return_models ? $user : $user->id;
+        $users = Yii::app()->db->createCommand("SELECT DISTINCT(userid) FROM `authassignment` WHERE `itemname` IN ('" . (implode("','", $roles)) . "')")->queryAll();
+
+        foreach($users as $index => $user){
+            $user_ids[] = $user['userid'];
+        }
+
+        $criteria = new CDbCriteria();
+        $criteria->addInCondition('t.id', $user_ids);
+
+        if( !empty($user_ids)){
+            $users = $this->findAll($criteria);
+
+            foreach($users as $id => $user) {
+                foreach($roles as $role){
+                    if(Yii::app()->authManager->checkAccess($role, $user->id)) {
+                        $users_with_roles[$user->id] = $return_models ? $user : $user->id;
+                    }
                 }
             }
         }
-        return $users_with_roles;
 
+        return $users_with_roles;
     }
 }

@@ -121,6 +121,8 @@ class SubjectController extends BaseModuleController
         }
 
         $admin->setModelDisplayName('Genetics Subject');
+
+        $status = PedigreeStatus::model()->findByAttributes(array('name' => 'Unknown'));
         $admin->setEditFields(array(
             'referer' => 'referer',
             'id' => 'label',
@@ -135,7 +137,8 @@ class SubjectController extends BaseModuleController
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
-            'is_deceased' => 'checkbox',
+            //nope, just, nope, this must be stored in the patient table @TODO: remove this and from the genetics_patient database table
+            //'is_deceased' => 'checkbox',
             'comments' => 'textarea',
             'family' => array(
                 'widget' => 'CustomView',
@@ -170,6 +173,7 @@ class SubjectController extends BaseModuleController
                             'name'
                         )
                     ),
+                    'default_option' => $status ? $status->id : 0,
                 ),
                 'link' => '/Genetics/pedigree/edit/%s'
             ),
@@ -235,9 +239,11 @@ class SubjectController extends BaseModuleController
                 $post = Yii::app()->request->getPost('GeneticsPatient', array());
                 if (isset($post['pedigrees_through'])) {
                     foreach ($admin->getModel()->pedigrees as $pedigree) {
+                        // NOTE that patient_id below is actually the genetic subject, the FK should be renamed at some point
+                        // and this comment removed!
                         if (array_key_exists($pedigree->id, $post['pedigrees_through'])) {
                             $pedigreeStatus = GeneticsPatientPedigree::model()->findByAttributes(array(
-                                'patient_id' => $id,
+                                'patient_id' => $admin->getModel()->id,
                                 'pedigree_id' => $pedigree->id,
                             ));
                             if ($pedigreeStatus) {
@@ -353,6 +359,13 @@ class SubjectController extends BaseModuleController
         $patientSearch = new PatientSearch();
         if ($patientSearch->isValidSearchTerm($term)) {
             $dataProvider = $patientSearch->search($term);
+
+            $criteria = $dataProvider->getCriteria();
+
+            // only genetics patient can be searched and added as a relative
+            $criteria->join .= ' JOIN genetics_patient ON t.id = genetics_patient.patient_id';
+            $dataProvider->setCriteria($criteria);
+            $dataProvider->setPagination(false);
 
             foreach ($dataProvider->getData() as $patient) {
                 $result[] = array(

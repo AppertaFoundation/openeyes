@@ -95,9 +95,9 @@ class GeneticsPatient extends BaseActiveRecord
                         continue;
                     }
                     //New study has been added, make sure that it's possible for the user to propose this.
-                    if(!$study->canBeProposedByUser(Yii::app()->user)){
+              /*      if(!$study->canBeProposedByUser(Yii::app()->user)){
                         $this->addError($attribute, 'You do not have permission to propose subjects for ' . $study->name);
-                    }
+                    }*/
 
                     if(!$study->canBeProposedByUserDateCheck(Yii::app()->user)){
                         $this->addError($attribute, 'You cannot propose subjects for ' . $study->name. ' as it has ended');
@@ -139,7 +139,7 @@ class GeneticsPatient extends BaseActiveRecord
                 self::MANY_MANY,
                 'GeneticsStudy',
                 'genetics_study_subject(subject_id, study_id)',
-                'condition' => 'end_date > NOW() ' .
+                'condition' => '( end_date > NOW() OR UNIX_TIMESTAMP(end_date) IS NULL )' .
                     'AND (current_studies_current_studies.participation_status_id IS NULL ' .
                     'OR current_studies_current_studies.participation_status_id <> ' . $this->statuses['Rejected'] . ')',
             ),
