@@ -772,7 +772,7 @@ EOL;
                     RiboflavinPreparation VARCHAR(128),
                     RiboflavinDuration INTEGER,
                     UVIrradiance INTEGER,
-                    UVDuration INTEGER,
+                    UVDuration DECIMAL(5,1),
                     UVContinuousOrPulsed VARCHAR(128),
                     UVTotalEnergy INTEGER(10),
                     Comments VARCHAR(1024),
