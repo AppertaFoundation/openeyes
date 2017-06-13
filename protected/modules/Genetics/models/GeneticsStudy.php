@@ -108,7 +108,9 @@ class GeneticsStudy extends BaseActiveRecordVersioned
      */
     public function beforeSave()
     {
-        if (!$this->end_date || $this->end_date == '0000-00-00 00:00:00') {
+        $date = DateTime::createFromFormat('Y-m-d', $this->end_date);
+
+        if (!$this->end_date || !$date) {
             $this->end_date = null;
         }
         return parent::beforeSave();
