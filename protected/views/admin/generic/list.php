@@ -171,8 +171,8 @@ if (!isset($uniqueid)) {
                             'hide_links' => (!$admin->getSearch()->isDefaultResults() && !$admin->getSearch()->isSearching())
                         )) ?>
                         <?php
-                            if( count($retrieveResults) < 1 ){
-                                echo "No results found";
+                            if( !empty($_GET) && count($retrieveResults) < 1 ){
+                                echo "No results found. Total of " . $admin->getModel()->count() . " items.";
                             }
                         ?>
                     </td>
