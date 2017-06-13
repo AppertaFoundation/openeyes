@@ -44,7 +44,7 @@
         
         <?php echo $form->datePicker($element, 'extracted_date', array('maxDate' => 'today'), array(), array('label' => 3, 'field' => 2))?>
 		<?php
-            echo $form->dropDownList($element, 'extracted_by_id', CHtml::listData($element->user->findAllByRoles(['Genetics Laboratory Technician'], true), 'id', function($row){return $row->last_name.', '.$row->first_name;}), array('empty' => '- Select -', 'options'=>array(Yii::app()->user->id => array("selected"=>true))), false, array('label' => 3, 'field' => 2 ))
+            echo $form->dropDownList($element, 'extracted_by_id', CHtml::listData($element->user->findAllByRoles(['Genetics Laboratory Technician', 'Genetics Admin'], true), 'id', function($row){return $row->last_name.', '.$row->first_name;}), array('empty' => '- Select -', 'options'=>array(Yii::app()->user->id => array("selected"=>true))), false, array('label' => 3, 'field' => 2 ))
         ?>
 		<?php echo $form->textField($element, 'dna_concentration', array(), array(), array('label' => 3, 'field' => 2))?>
 		<?php echo $form->textField($element, 'volume', array(), array(), array('label' => 3, 'field' => 2));?>

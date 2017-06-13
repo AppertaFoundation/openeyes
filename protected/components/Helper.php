@@ -419,4 +419,18 @@ class Helper
 
     }
 
+    /**
+     * Check if the given DateTime string is valid
+     *
+     * @param string $date_time
+     * @param string $pattern
+     * @return bool True if parsing. False if parsing fails.
+     */
+    public static function isValidDateTime($date_time)
+    {
+        //CDateTimeParser does not handle 1 Jan 2017 format
+        //CDateTimeParser::parse($date_time, self::NHS_DATE_FORMAT) ? true : false;
+        return strtotime($date_time);
+    }
+
 }

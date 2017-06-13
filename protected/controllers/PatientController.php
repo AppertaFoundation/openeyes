@@ -1480,7 +1480,7 @@ class PatientController extends BaseController
         $patient->noPas();
         $contact = new Contact('manualAddPatient');
         $address = new Address();
-        
+
         $this->performAjaxValidation(array($patient, $contact, $address));
         
         if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
@@ -1488,7 +1488,7 @@ class PatientController extends BaseController
             $contact->attributes = $_POST['Contact'];
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
-            
+
             // not to be sync with PAS
             $patient->is_local = 1;
             
@@ -1576,6 +1576,7 @@ class PatientController extends BaseController
 
         $patient = $this->loadModel($id);
         $patient->scenario = 'manual';
+        $patient->setScenario('manual');
         
         //only local patient can be edited
         if($patient->is_local == 0){
@@ -1599,7 +1600,7 @@ class PatientController extends BaseController
 
             list($contact, $patient, $address) = $this->performPatientSave($contact, $patient, $address);
         }
-        
+
         $this->render('crud/update',array(
                         'patient' => $patient,
                         'contact' => $contact,
