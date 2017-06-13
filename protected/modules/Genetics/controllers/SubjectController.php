@@ -352,7 +352,7 @@ class SubjectController extends BaseModuleController
         $patientSearch = new PatientSearch();
 
         //no PAS sync required at this stage
-        $patientSearch->noPas();
+        $patientSearch->use_pas = false;
 
         if ($patientSearch->isValidSearchTerm($term)) {
             $dataProvider = $patientSearch->search($term);

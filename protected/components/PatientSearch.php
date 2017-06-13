@@ -140,7 +140,7 @@ class PatientSearch
         );
 
         if( $this->use_pas == false ){
-            $patient->noPas();
+            $patient->use_pas = false;
         }
 
         $dataProvider = $patient->search($patientCriteria);
