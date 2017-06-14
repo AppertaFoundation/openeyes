@@ -175,10 +175,11 @@ class PatientController extends BaseController
     public function actionSearch()
     {
         $term = \Yii::app()->request->getParam('term', '');
+
         $patientSearch = new PatientSearch();
-	$dataProvider = $patientSearch->search($term);
-	$itemCount = $dataProvider->totalItemCount;
-	$search_terms = $patientSearch->getSearchTerms();
+	    $dataProvider = $patientSearch->search($term);
+	    $itemCount = $dataProvider->totalItemCount;
+	    $search_terms = $patientSearch->getSearchTerms();
 
         if ($itemCount == 0) {
             Audit::add('search', 'search-results', implode(',', $search_terms).' : No results');
@@ -1576,7 +1577,6 @@ class PatientController extends BaseController
 
         $patient = $this->loadModel($id);
         $patient->scenario = 'manual';
-        $patient->setScenario('manual');
         
         //only local patient can be edited
         if($patient->is_local == 0){

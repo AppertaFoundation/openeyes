@@ -50,7 +50,7 @@
             'selectedPageCssClass' => 'current',
             'htmlOptions' => array('class' => 'pagination right'),
         ),
-        'emptyText' => 'Total of ' . $item_count . ' items',
+        'emptyText' => ( !empty($_GET) ? 'No result found - ' : '') . 'Total of ' . $item_count . ' items',
         "emptyTagName" => 'span',
 
         //click on a row - only one row can be selected

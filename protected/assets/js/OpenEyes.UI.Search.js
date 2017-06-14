@@ -22,7 +22,7 @@
  Intit the search by calling the
  OpenEyes.UI.Search.init( $('#patient_merge_search') );
  and pass the input DOM
- Clik on one item in the autocomplete list will redirect to the patien's summery page like:  /patient/view/19942
+ Click on one item in the autocomplete list will redirect to the patien's summery page like:  /patient/view/19942
 
  To override the default functionality
 
@@ -67,6 +67,7 @@
 
     var autocompleteSource = '/patient/ajaxSearch';
     var $searchInput;
+    var loader = '.loader';
 
     /**
      * Render an item
@@ -97,13 +98,13 @@
                 }, response);
             },
             search: function () {
-                $('.loader').show();
+                $(loader).show();
             },
             select: function(event, ui){
                 window.location.href = "/patient/view/" + ui.item.id;
             },
             response: function (event, ui) {
-                $('.loader').hide();
+                $(loader).hide();
                 if (ui.content.length === 0) {
                   $input.siblings('.no-result-patients').slideDown();
                 } else {
@@ -132,6 +133,9 @@
         },
         getElement: function(){
             return $searchInput;
+        },
+        setLoader: function(selector){
+            loader = selector;
         }
     };
 }(this.OpenEyes.UI));

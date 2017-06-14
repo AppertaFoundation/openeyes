@@ -83,7 +83,7 @@ $based_on = implode(', ', $based_on);
                         <td><?php echo $result->title ?></td>
                         <td><?php echo $result->first_name ?></td>
                         <td><?php echo $result->last_name ?></td>
-                        <td><?php echo date('d/m/Y', strtotime($result->dob)); ?></td>
+                        <td><?php echo $result->dob ? ( date('d/m/Y', strtotime($result->dob)) ) : ''; ?></td>
                         <td><?php echo $result->gender ?></td>
                         <td><?php echo $result->nhsnum ?></td>
                     </tr>

@@ -64,6 +64,12 @@ class PedigreeController extends BaseModuleController
         $admin = new Crud(Pedigree::model(), $this);
         if ($id) {
             $admin->setModelId($id);
+        } else {
+
+            //oh, sure, let me just set the defaults this way.
+            //more: Admin.php line ~515
+            $pedigree_inheritance = PedigreeInheritance::model()->findByAttributes(array('name' => 'Unknown/other'));
+            $_GET['default'] = array('inheritance_id' => $pedigree_inheritance ? $pedigree_inheritance->id : null);
         }
 
         $admin->setEditFields(array(
@@ -134,8 +140,8 @@ class PedigreeController extends BaseModuleController
         if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Family Saved");
-                     $url = '/Genetics/pedigree/view/'.$admin->getModel()->id . (isset($_GET['patient']) ? ('?patient=' . $_GET['patient']) : null);
-                $this->redirect($url);
+
+                $this->redirect('/Genetics/pedigree/view/'.$admin->getModel()->id );
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
             }
