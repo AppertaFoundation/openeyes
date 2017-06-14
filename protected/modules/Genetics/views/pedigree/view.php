@@ -22,9 +22,6 @@
         <div class="row">
         <div class="large-8 column"><h2>View Family</h2></div>
         <div class="large-3 column">
-            <?php if( $this->checkAccess('TaskEditGeneticPatient') && isset($_GET['patient']) && $_GET['patient']): ?>
-                <a href="/Genetics/subject/edit?patient=<?php echo $_GET['patient']; ?>&pedigree_id=<?php echo $model->id; ?>" class="button small right secondary">Back to Genetics Patient</a>
-            <?php endif; ?>
         </div><div class="large-1 column right">
             <?php if( $this->checkAccess('TaskEditPedigreeData') ): ?>
                 <a href="/Genetics/pedigree/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/pedigree/view/').$model->id; ?>" class="button small right" id="pedigree_edit">Edit</a>

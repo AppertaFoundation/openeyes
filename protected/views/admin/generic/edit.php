@@ -97,6 +97,8 @@ $assetManager = Yii::app()->getAssetManager();
                     break;
                 case 'CustomView':
                     // arguments: (string) viewName, (array) viewArguments
+                    $type['viewArguments'] = is_array($type['viewArguments']) ? $type['viewArguments'] : array();
+                    $type['viewArguments']['form'] = $form;
                     $this->renderPartial($type['viewName'], $type['viewArguments']);
                     break;
                 case 'RelationList':
@@ -126,11 +128,54 @@ $assetManager = Yii::app()->getAssetManager();
                     }
                     ?>
                     <div class="row field-row">
+                        <div class="large-2 column">&nbsp;</div>
+                        <div class="large-5 column end"><hr></div>
+                    </div>
+                    <div class="row field-row">
                         <div class="large-2 column">
                             <label>Diagnosis</label>
                         </div>
                         <div class="large-5 column end">
-                            <div id="enteredDiagnosisText">
+
+
+                                <?php
+                                    $htmlOptions['empty'] = $type['empty_text'];
+                                    $htmlOptions['id'] = isset($type['id']) ? $type['id'] : 'disorder_dropdown';
+                                    echo CHtml::dropDownList(null,null,$type['options'], $htmlOptions);
+                                ?>
+                                <script>
+                                    $('#<?=$htmlOptions['id']?>').on('change', function(){
+                                        if( $(this).val() ){
+                                            //using the disorderAutoComplete.php's select() function which was written for the autocomplete
+                                            select(
+                                                {target: '#<?=$htmlOptions['id']; ?>'},
+                                                {
+                                                    item:{
+                                                        id: $(this).val(),
+                                                        value: $(this).find('option:selected').text(),
+
+                                                    }
+                                                });
+                                                $(this).val(null);
+                                        }
+                                    });
+
+
+                                </script>
+                            <div style="padding-bottom:5px;"></div>
+                            <?php
+
+                            $this->renderPartial('//disorder/disorderAutoComplete', array(
+                                  'class' => get_class($admin->getModel()),
+                                  'name' => $field,
+                                  'code' => '',
+                                  'value' => $admin->getModel()->$field,
+                                  'clear_diagnosis' => '&nbsp;<i class="fa fa-minus-circle clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id=""></i>',
+                                  'placeholder' => 'Search for a diagnosis',
+                              ));
+                            ?>
+                            <br>
+                            <div id="enteredDiagnosisText" style="font-size:13px;">
                                 <?php
                                 foreach($relations as $relation) {
                                     if($relation){
@@ -140,17 +185,12 @@ $assetManager = Yii::app()->getAssetManager();
                                     }
                                 } ?>
                             </div>
-                        <?php
-                          $this->renderPartial('//disorder/disorderAutoComplete', array(
-                              'class' => get_class($admin->getModel()),
-                              'name' => $field,
-                              'code' => '',
-                              'value' => $admin->getModel()->$field,
-                              'clear_diagnosis' => '&nbsp;<i class="fa fa-minus-circle clear-diagnosis-widget" aria-hidden="true" data-diagnosis-id=""></i>',
-                              'placeholder' => 'Search for a diagnosis',
-                          ));
-                        ?>
                         </div>
+                        <div style="padding-bottom:15px;"></div>
+                    </div>
+                    <div class="row field-row">
+                        <div class="large-2 column">&nbsp;</div>
+                        <div class="large-5 column end"><hr></div>
                     </div>
                     <?php
                     break;
