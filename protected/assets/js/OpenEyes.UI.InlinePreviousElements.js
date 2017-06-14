@@ -6,7 +6,8 @@ OpenEyes.UI = OpenEyes.UI || {};
     'use strict';
 
     /**
-     *
+     * Simple class to replace element content with patient record information
+     * 
      * @param element
      * @param options
      * @constructor
@@ -19,11 +20,16 @@ OpenEyes.UI = OpenEyes.UI || {};
     }
 
     InlinePreviousElement._defaultOptions = {
+        // TODO: consider moving outside the patient controller.
         'requestUrl': '/patient/previousElements',
         'noResultsText': 'no previous records available'
     };
 
+    /**
+     * Check the element is defined correctly to allow the data to be loaded.
+     */
     InlinePreviousElement.prototype.validate = function() {
+        // TODO: verify the template
         if (!this.$element.data('element-type-id')) {
             console.log('element-type-id is a required data property!!');
         }
@@ -32,6 +38,10 @@ OpenEyes.UI = OpenEyes.UI || {};
         }
     };
 
+    /**
+     * Load the data required for the element and replace the contents by passing the
+     * results to the provided template.
+     */
     InlinePreviousElement.prototype.process = function() {
         if (this.$element.data('no-results-text') === undefined) {
             this.$element.data('no-results-text', this.options['noResultsText']);
@@ -69,6 +79,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 }(OpenEyes.UI));
 
 $(document).ready(function() {
+    // simple encapsulation for use on load and after mutations.
     var runLoader = function(element) {
         if ($(element).data('inline-previous-loader') === undefined) {
             $(element).data('inline-previous-loader', new OpenEyes.UI.InlinePreviousElement($(element)));
@@ -78,6 +89,8 @@ $(document).ready(function() {
         runLoader($(this));
     });
 
+    // After a change we simple run through the relevent elements to
+    // apply the loader where necessary
     var observer = new MutationObserver(function(mutations) {
         $('.inline-previous-element').each(function() {
             runLoader($(this));
