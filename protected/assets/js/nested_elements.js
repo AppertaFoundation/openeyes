@@ -27,7 +27,6 @@ function showActiveChildElements() {
 }
 
 function addElement(element, animate, is_child, previous_id, params, callback) {
-
 	if (typeof (animate) === 'undefined')
 		animate = true;
 	if (typeof (is_child) === 'undefined')
@@ -61,7 +60,7 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
 		var container = undefined;
 		if (is_child) {
 			if ($(element).data('container-selector')) {
-				container = $($(element).data('container-selector'));
+				container = $($(element).data('container-selector')).find('.sub-elements.active');
 			} else if ($(element).prop('tagName') == 'LI') {
 				container = $(element).closest('.sub-elements.inactive').parent().find('.sub-elements:first');
 			} else {
@@ -80,6 +79,7 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
 		if (insert_before.length) {
 			insert_before.before(new_element);
 		} else {
+
 			$(container).append(new_element);
 		}
 
@@ -269,8 +269,7 @@ $(document).ready(function() {
 			url: baseUrl + '/' + moduleName + '/default/viewpreviouselements',
 			data: { element_type_id: element.data('element-type-id'), patient_id: OE_patient_id },
 			success: function(data) {
-				element.append(data);
-				$('#previous_elements').dialog({
+				$(data).dialog({
 					width: 1070,
 					minWidth: 1070,
 					maxWidth: 1070,
@@ -278,21 +277,22 @@ $(document).ready(function() {
 					minHeight: 400,
 					title: 'Previous '+element.data('element-type-name')+' Elements',
 					modal: true,
+					open: function(event, ui) {
+						var dialog = $(event.target);
+						dialog.on('click', '.copy_element', function(dialog, element, event) {
+							var element_id = $(event.target).data('element-id');
+                            $(element).addClass('clicked');
+                            $(element).css('opacity', '0.5');
+                            $(element).find('input, select, textarea').prop('disabled', true);
+                            dialog.dialog('close');
+                            addElement(element, false, (elementType == 'sub-element'), element_id);
+                        }.bind(undefined, dialog, element));
+					},
 					close: function(event, ui) {
 						$(this).remove();
 					}
 				});
-				$('#previous_elements .copy_element').click(function() {
-					var element_id = $(this).data('element-id');
-					if (elementType == 'element') {
-						var element = $('.js-active-elements .element.' + $(this).data('element-type-class'));
-					} else {
-						var element = $('.js-active-elements .sub-element.' + $(this).data('element-type-class'));
-					}
-					$(element).addClass('clicked');
-					$('#previous_elements').dialog('close');
-					addElement(element, false, (elementType == 'sub-element'), element_id);
-				});
+
 				$(element).removeClass('clicked');
 			}
 		});
