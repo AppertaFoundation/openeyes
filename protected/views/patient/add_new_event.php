@@ -79,7 +79,7 @@
             <h3 class="no-arrow title">Select event to add:</h3>
             <ul class="event-type-list">
                 <?php foreach ($eventTypes as $eventType) {
-                    $args = $this->getCreateArgsForEventTypeOprn($eventType);
+                    $args = $this->getCreateArgsForEventTypeOprn($eventType, array('episode'));
                     if (call_user_func_array(array($this, 'checkAccess'), $args)) {
                         ?>
                         <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3" data-eventType-id="<?= $eventType->id ?>" data-support-services="<?=$eventType->support_services?>">
