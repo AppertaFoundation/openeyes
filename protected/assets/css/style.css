@@ -4422,7 +4422,7 @@ tfoot.pagination-container .pagination-view-all {
   background-color: #e2e2e2;
   border-color: #e5e5e5;
   color: black;
-  /*border-radius: 5px;*/
+  border-radius: 5px;
 }
 /* line 27, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box .close {
@@ -5766,7 +5766,7 @@ tfoot.pagination-container .pagination-view-all {
 
 /* line 318, ../sass/openeyes/components/panels/_patient.scss */
 .icon-patient-panel-info {
-  background: url('../img/_elements/icons/information.png?1496851155');
+  background: url('../img/_elements/icons/information.png?1496931334');
   margin: 0;
   width: 16px;
   height: 16px;
@@ -5777,6 +5777,13 @@ tfoot.pagination-container .pagination-view-all {
   width: 280px;
   background-color: white;
   z-index: 10000;
+}
+
+/* line 331, ../sass/openeyes/components/panels/_patient.scss */
+.messages.patient.fixed {
+  position: fixed;
+  z-index: 100;
+  background-color: #d2dde8;
 }
 
 /* line 35, ../sass/openeyes/components/panels/_search.scss */
@@ -7955,7 +7962,7 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
-/*
+/* 
     Created on : Dec 9, 2016, 11:56:22 AM
     Author     : sabi
 */
