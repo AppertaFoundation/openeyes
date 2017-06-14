@@ -6970,64 +6970,71 @@ tfoot.pagination-container .pagination-view-all {
   border: 1px solid #dae6f1;
 }
 /* line 268, ../sass/openeyes/components/events/_elements.scss */
+.previous-elements .element-container .metadata {
+  display: inline-block;
+  margin: 2px;
+  padding-top: 0px;
+}
+/* line 273, ../sass/openeyes/components/events/_elements.scss */
 .previous-elements .element-container .actions {
-  text-align: right;
+  display: inline-block;
+  float: right !important;
   padding: 2px;
 }
 
-/* line 275, ../sass/openeyes/components/events/_elements.scss */
+/* line 281, ../sass/openeyes/components/events/_elements.scss */
 .element-no-display {
   border-style: none !important;
   margin-top: -19px;
 }
 
-/* line 280, ../sass/openeyes/components/events/_elements.scss */
+/* line 286, ../sass/openeyes/components/events/_elements.scss */
 .highlighted-error {
   border: 2px solid red;
 }
 
-/* line 284, ../sass/openeyes/components/events/_elements.scss */
+/* line 290, ../sass/openeyes/components/events/_elements.scss */
 .errorlink {
   color: #FFFFFF;
   text-decoration: dotted;
 }
 
-/* line 289, ../sass/openeyes/components/events/_elements.scss */
+/* line 295, ../sass/openeyes/components/events/_elements.scss */
 .errorlink:hover {
   color: #CCCCCC;
   text-decoration: underline;
 }
 
-/* line 294, ../sass/openeyes/components/events/_elements.scss */
+/* line 300, ../sass/openeyes/components/events/_elements.scss */
 .pcr-nk {
   width: 140px;
   height: 10px;
   top: -15px;
 }
 
-/* line 299, ../sass/openeyes/components/events/_elements.scss */
+/* line 305, ../sass/openeyes/components/events/_elements.scss */
 .pcr-span {
   background-color: white;
   width: 100px;
   font-weight: bold;
 }
 
-/* line 304, ../sass/openeyes/components/events/_elements.scss */
+/* line 310, ../sass/openeyes/components/events/_elements.scss */
 .pcr-erisk {
   background-color: white;
 }
 
-/* line 307, ../sass/openeyes/components/events/_elements.scss */
+/* line 313, ../sass/openeyes/components/events/_elements.scss */
 #pcr-risk-div {
   background-color: red;
 }
 
-/* line 310, ../sass/openeyes/components/events/_elements.scss */
+/* line 316, ../sass/openeyes/components/events/_elements.scss */
 .pcr-nkr {
   height: 35px;
 }
 
-/* line 313, ../sass/openeyes/components/events/_elements.scss */
+/* line 319, ../sass/openeyes/components/events/_elements.scss */
 .pcr-opnote-eye {
   border-width: 1px;
   border-style: solid;
@@ -7035,7 +7042,7 @@ tfoot.pagination-container .pagination-view-all {
   display: none;
 }
 
-/* line 319, ../sass/openeyes/components/events/_elements.scss */
+/* line 325, ../sass/openeyes/components/events/_elements.scss */
 .pcr-exam-link {
   position: relative;
   left: 350px;
@@ -7043,12 +7050,12 @@ tfoot.pagination-container .pagination-view-all {
   font-style: normal;
 }
 
-/* line 326, ../sass/openeyes/components/events/_elements.scss */
+/* line 332, ../sass/openeyes/components/events/_elements.scss */
 .pcr-risk-data-link {
   left: 200px;
 }
 
-/* line 329, ../sass/openeyes/components/events/_elements.scss */
+/* line 335, ../sass/openeyes/components/events/_elements.scss */
 .pcr-risk-data-link label, .pcr-risk-data-link a {
   font-size: 10px;
 }
