@@ -1689,7 +1689,7 @@ class PatientController extends BaseController
      *
      * @throws CHttpException
      */
-    public function actionPreviousElements($element_type_id, $patient_id)
+    public function actionPreviousElements($element_type_id, $patient_id, $limit = null)
     {
         $element_type = ElementType::model()->findByPk($element_type_id);
         if (!$element_type) {
@@ -1702,7 +1702,7 @@ class PatientController extends BaseController
 
         $api = $element_type->eventType->getApi();
         $result = array();
-        foreach ($api->getElements($element_type->class_name, $this->patient) as $element) {
+        foreach ($api->getElements($element_type->class_name, $this->patient, false, null, $limit) as $element) {
             // Note when there are more complex elements required for this,
             // would recommend pushing this into a base method that can then
             // be overridden as appropriate

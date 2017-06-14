@@ -36,9 +36,16 @@ OpenEyes.UI = OpenEyes.UI || {};
         if (this.$element.data('no-results-text') === undefined) {
             this.$element.data('no-results-text', this.options['noResultsText']);
         }
+        var args = {
+            element_type_id: this.$element.data('element-type-id'),
+            patient_id: OE_patient_id
+        };
+        if (this.$element.data('limit') !== undefined) {
+            args['limit'] = this.$element.data('limit')
+        }
         $.ajax({
             url: this.options.requestUrl,
-            data: {element_type_id: this.$element.data('element-type-id'), patient_id: OE_patient_id},
+            data: args,
             dataType: 'JSON',
             success: function (data) {
                 if (data.length) {

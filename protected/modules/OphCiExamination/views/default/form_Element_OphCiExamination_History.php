@@ -33,6 +33,7 @@
                 <div class="inline-previous-element"
                      data-element-type-id="<?= ElementType::model()->findByAttributes(array('class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Management'))->id ?>"
                      data-no-results-text="No previous management recorded"
+                     data-limit="1"
                      data-template-id="previous-management-template">Loading previous management information ...</div>
             </div>
         </div>
