@@ -162,7 +162,6 @@ class Patient extends BaseActiveRecordVersioned
             'commissioningbodies' => array(self::MANY_MANY, 'CommissioningBody', 'commissioning_body_patient_assignment(patient_id, commissioning_body_id)'),
             'referrals' => array(self::HAS_MANY, 'Referral', 'patient_id'),
             'lastReferral' => array(self::HAS_ONE, 'Referral', 'patient_id', 'order' => 'received_date desc'),
-            'socialhistory' => array(self::HAS_ONE, 'SocialHistory', 'patient_id'),
             'adherence' => array(self::HAS_ONE, 'MedicationAdherence', 'patient_id'),
             'nhsNumberStatus' => array(self::BELONGS_TO, 'NhsNumberVerificationStatus', 'nhs_num_status_id'),
             'geneticsPatient' => array(self::HAS_ONE, 'GeneticsPatient', 'patient_id'),
@@ -2073,6 +2072,14 @@ class Patient extends BaseActiveRecordVersioned
         else {
             return $this->getOPHInfo()->cvi_status->name;
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function get_socialhistory()
+    {
+        return OEModule\OphCiExamination\widgets\SocialHistory::latestForPatient($this);
     }
 
     /**

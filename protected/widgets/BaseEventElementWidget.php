@@ -30,6 +30,15 @@ class BaseEventElementWidget extends CWidget
     public $form;
     public $popupListSeparator = '<br />';
 
+    public static function latestForPatient(Patient $patient)
+    {
+        $widget = new static();
+        $widget->patient = $patient;
+        $widget->mode = static::$PATIENT_SUMMARY_MODE;
+        $widget->init();
+        return $widget->element;
+    }
+
     /**
      * @var CApplication
      */
