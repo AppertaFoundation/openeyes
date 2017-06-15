@@ -239,7 +239,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
             ->join('eye', 'eye.id = pl.eye_id')
             ->leftJoin('et_ophtroperationnote_cataract cat', 'cat.event_id = e.id')
             ->where('e.deleted = 0 and ep.deleted = 0 and e.event_date >= :from_date and e.event_date < :to_date + interval 1 day')
-            ->order('p.id, e.event_date asc');
+            ->order('p.id, e.event_date asc, e.created_date asc');
         $params = array(':from_date' => $from_date, ':to_date' => $to_date);
 
         if ($surgeon_id) {
@@ -559,7 +559,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
         $criteria->addCondition('event.episode_id = :episode_id');
         $criteria->params[':episode_id'] = $event->episode_id;
         $criteria->params[':op_date'] = $event->event_date;
-        $criteria->order = 'event.event_date desc';
+        $criteria->order = 'event.event_date desc, event.created_date desc';
         $criteria->limit = 1;
 
         return $criteria;
