@@ -135,11 +135,11 @@
 
 #add-new-event-dialog {
 	li {
-		.add_event_disabled {
+		&.add_event_disabled {
 			color: #999;
-		}
-		.add_event_disabled:hover {
-			background: #f6f6f6;
+			&:hover {
+				background: #f6f6f6;
+			}
 		}
 	}
 }
