@@ -1,14 +1,14 @@
 <?php
 $display_queue = $ticket->getDisplayQueueAssignment();
 ?>
-<div class="panel">
+<div class="panel ticketsummary-panel">
     <div class="row data-row">
-        <div class="large-4 column left">
+        <div class="large-2 column left">
             <div class="data-label"><?= $ticket->getDisplayQueue()->name.' ('.Helper::convertDate2NHS($ticket->getDisplayQueueAssignment()->assignment_date).')' ?></div>
         </div>
-        <div class="large-6 column left">
+        <div class="large-10 column left">
             <div class="data-value">
-                <textarea readonly rows="3" style="width: 100%"><?php echo $display_queue->notes; ?></textarea>
+                <textarea class="noresize" readonly rows="5"><?php echo $display_queue->notes; ?></textarea>
             </div>
         </div>
     </div>

@@ -19,3 +19,13 @@
     margin-bottom: 0;
   }
 }
+
+.ticketsummary-panel{
+  max-height: 220px;
+  overflow-y: scroll;
+}
+
+.ticketsummary-panel textarea.noresize{
+  width: 100%;
+  resize: none;
+}
