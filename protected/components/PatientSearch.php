@@ -30,6 +30,22 @@ class PatientSearch
 
     private $searchTerms = array();
 
+    public $use_pas = true;
+
+    /**
+     * Suppress PAS integration.
+     *
+     * @return Patient
+     */
+    public function noPas()
+    {
+        // Clone to avoid singleton problems with use_pas flag
+        $model = clone $this;
+        $model->use_pas = false;
+
+        return $model;
+    }
+
     /**
      * Checking the search term if it is a NHS number, Hospital number or Patient name.
      *
@@ -74,10 +90,10 @@ class PatientSearch
     {
         $search_terms = $this->parseTerm($term);
 
-        $model = new Patient();
+        $patient = new Patient();
 
-        $model->hos_num = $search_terms['hos_num'];
-        $model->nhs_num = $search_terms['nhs_num'];
+        $patient->hos_num = $search_terms['hos_num'];
+        $patient->nhs_num = $search_terms['nhs_num'];
 
         // Get the valuse from URL
         $currentPage = Yii::app()->request->getParam('Patient_page');
@@ -123,7 +139,11 @@ class PatientSearch
             'last_name' => CHtml::decode($search_terms['last_name']),
         );
 
-        $dataProvider = $model->search($patientCriteria);
+        if( $this->use_pas == false ){
+            $patient->use_pas = false;
+        }
+
+        $dataProvider = $patient->search($patientCriteria);
 
         return $dataProvider;
     }
