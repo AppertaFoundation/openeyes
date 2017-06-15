@@ -18,6 +18,9 @@
  */
 class OphInDnasample_API extends BaseAPI
 {
+    public $createOprn = 'OprnEditDnaSample';
+    public $createOprnArgs = array('user_id', 'firm', 'episode');
+
     public function getEventsByPatient($patient)
     {
         $events = array();
