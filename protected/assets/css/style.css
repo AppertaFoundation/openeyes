@@ -7336,11 +7336,11 @@ tfoot.pagination-container .pagination-view-all {
 }
 
 /* line 138, ../sass/openeyes/components/_dialog.scss */
-#add-new-event-dialog .add_event_disabled a {
+#add-new-event-dialog li .add_event_disabled {
   color: #999;
 }
-/* line 143, ../sass/openeyes/components/_dialog.scss */
-#add-new-event-dialog .add_event_disabled:hover a {
+/* line 141, ../sass/openeyes/components/_dialog.scss */
+#add-new-event-dialog li .add_event_disabled:hover {
   background: #f6f6f6;
 }
 
