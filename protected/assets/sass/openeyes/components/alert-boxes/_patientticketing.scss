@@ -21,8 +21,10 @@
 }
 
 .ticketsummary-panel{
-  max-height: 220px;
+  max-height: 201px;
   overflow-y: scroll;
+  overflow-x: hidden;
+  margin-bottom: 0;
 
   textarea.noresize{
     width: 100%;
