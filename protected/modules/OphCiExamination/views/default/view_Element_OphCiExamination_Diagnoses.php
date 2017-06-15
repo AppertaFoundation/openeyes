@@ -18,6 +18,7 @@
  */
 ?>
 <?php
+// construct arrays of other subspecialty principal diagnoses
 $right_principals = array();
 $left_principals = array();
 foreach ($this->patient->episodes as $episode) {
@@ -26,35 +27,33 @@ foreach ($this->patient->episodes as $episode) {
             $right_principals[] = array($episode->diagnosis, $episode->getSubspecialtyText());
         }
         if (in_array($episode->eye_id, array(Eye::LEFT, Eye::BOTH))) {
-            $left_principals[] = $episode->diagnosis;
+            $left_principals[] = array($episode->diagnosis, $episode->getSubspecialtyText());;
         }
     }
 } ?>
 <div class="element-data element-eyes row">
     <div class="element-eye right-eye column">
-        <?php foreach($right_principals as $disorder) { ?>
+        <?php
+        $principal = OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()->find('element_diagnoses_id=? and principal=1 and eye_id in (2,3)', array($element->id));
+        if ($principal) {
+        ?>
+        <div class="data-row">
+            <div class="data-value">
+                <strong>
+                    <?php echo $principal->disorder->term ?>
+                </strong>
+            </div>
+        </div>
+        <?php
+        } foreach($right_principals as $disorder) { ?>
             <div class="data-row">
                 <div class="data-value">
-                    <strong>
                         <?= $disorder[0]->term ?> <span class="has-tooltip fa fa-info-circle" data-tooltip-content="Principal diagnosis for <?= $disorder[1] ?>"></span>
-                    </strong>
                 </div>
             </div>
         <?php
         }
-        $principal = OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()->find('element_diagnoses_id=? and principal=1 and eye_id in (2,3)', array($element->id));
-        if ($principal) {
-            ?>
-            <div class="data-row">
-                <div class="data-value">
-                    <strong>
-                        <?php echo $principal->disorder->term ?>
-                    </strong>
-                </div>
-            </div>
-            <?php
-        } ?>
-        <?php
+
         $diagnoses = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
             ->findAll('element_diagnoses_id=? and principal=0 and eye_id in (2,3)', array($element->id));
         foreach ($diagnoses as $diagnosis) {
@@ -68,16 +67,7 @@ foreach ($this->patient->episodes as $episode) {
         } ?>
     </div>
     <div class="element-eye left-eye column">
-        <?php foreach($left_principals as $disorder) { ?>
-            <div class="data-row">
-                <div class="data-value">
-                    <strong>
-                        <?= $disorder[0]->term ?> (<?= $disorder[1] ?>)
-                    </strong>
-                </div>
-            </div>
-            <?php
-        }
+        <?php
         $principal = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
             ->find('element_diagnoses_id=? and principal=1 and eye_id in (1,3)', array($element->id));
         if ($principal) {
@@ -90,8 +80,15 @@ foreach ($this->patient->episodes as $episode) {
                 </div>
             </div>
             <?php
-        } ?>
-        <?php
+        }
+        foreach($left_principals as $disorder) { ?>
+            <div class="data-row">
+                <div class="data-value">
+                    <?= $disorder[0]->term ?> <span class="has-tooltip fa fa-info-circle" data-tooltip-content="Principal diagnosis for <?= $disorder[1] ?>"></span>
+                </div>
+            </div>
+            <?php
+        }
         $diagnoses = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
             ->findAll('element_diagnoses_id=? and principal=0 and eye_id in (1,3)', array($element->id));
         foreach ($diagnoses as $diagnosis) {
