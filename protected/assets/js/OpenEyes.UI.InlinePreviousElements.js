@@ -89,7 +89,7 @@ $(document).ready(function() {
         runLoader($(this));
     });
 
-    // After a change we simple run through the relevent elements to
+    // After a change we simple run through the relevant elements to
     // apply the loader where necessary
     var observer = new MutationObserver(function(mutations) {
         $('.inline-previous-element').each(function() {
@@ -97,5 +97,5 @@ $(document).ready(function() {
         });
     });
 
-    observer.observe(document.documentElement, {childList: true, subtree: true, attributes: true});
+    observer.observe(document.documentElement, {'childList': true, 'subtree': true});
 });
