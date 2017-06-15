@@ -22,20 +22,19 @@
 <?php
 if ($closing_flsh = Yii::app()->user->getFlash('patient-ticketing-closing')) {
     ?>
-	<div class="alert-box with-icon success">
-		<?= $closing_flsh; ?>
-	</div>
+    <div class="alert-box with-icon success">
+        <?= $closing_flsh; ?>
+    </div>
 <?php }
-
 if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) {
     $qs_svc = Yii::app()->service->getService('PatientTicketing_QueueSet');
     if ($this->assetFolder) {?>
-		<script type="text/javascript" src="<?php echo $this->assetFolder?>/<?php echo $this->shortName ?>.js"></script>
-	<?php }?>
+        <script type="text/javascript" src="<?php echo $this->assetFolder?>/<?php echo $this->shortName ?>.js"></script>
+    <?php }?>
 
-	<div class="row" id="patient-alert-patientticketing" data-patient-id="<?= $this->patient->id ?>">
-		<div class="large-12 column">
-			<?php
+    <div class="row" id="patient-alert-patientticketing" data-patient-id="<?= $this->patient->id ?>">
+        <div class="large-12 column">
+            <?php
             if (isset(Yii::app()->session['patientticket_ticket_in_review'])) {
                 $patient_ticket_in_review = Yii::app()->session['patientticket_ticket_in_review'];
                 if ($patient_ticket_in_review['patient_id'] !=  $this->patient->id) {
@@ -50,29 +49,37 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) {
                         $expand = true;
                     }
                     ?>
-					<div class="alert-box js-toggle-container" data-ticket-id="<?= $ticket->id ?>">
-						<header><strong class="box-title"><?= $cat->name ?>: Patient is in <?= $ticket->current_queue->queueset->name ?>, <?= $ticket->current_queue->name ?></strong></header>
-						<a href="#" class="toggle-trigger toggle-<?= $expand ? 'hide' : 'show' ?> js-toggle">
+                    <div class="alert-box js-toggle-container patientticketing" data-ticket-id="<?= $ticket->id ?>">
+                        <header><strong class="box-title"><?= $cat->name ?>: Patient is in <?= $ticket->current_queue->queueset->name ?>, <?= $ticket->current_queue->name ?></strong></header>
+                        <a href="#" class="toggle-trigger toggle-<?= $expand ? 'hide' : 'show' ?> js-toggle">
 								<span class="icon-showhide">
 									Show/hide this section
 								</span>
-						</a>
-						<div class="js-toggle-body" <?php if (!$expand) {?>style="display: none;"<?php }?>>
-							<?php
-                            $this->widget($summary_widget, array('ticket' => $ticket));
-                            $qs_r = $qs_svc->getQueueSetForTicket($ticket->id);
-                            if ($qs_svc->isQueueSetPermissionedForUser($qs_r, Yii::app()->user->id)) {
-                                $this->widget('OEModule\PatientTicketing\widgets\TicketMove', array(
-                                        'ticket' => $ticket,
-                                    )
-                                );
-                            }
-                            ?>
-						</div>
-					</div>
-				<?php }
+                        </a>
+                        <div class="js-toggle-body" <?php if (!$expand) {?>style="display: none;"<?php }?>>
+                            <div class="row">
+                                <div class="large-6 column">
+                                    <?php $this->widget($summary_widget, array('ticket' => $ticket)); ?>
+                                </div>
+                                <div class="large-6 column">
+                                    <?php
+                                    $qs_r = $qs_svc->getQueueSetForTicket($ticket->id);
+                                    if ($qs_svc->isQueueSetPermissionedForUser($qs_r, Yii::app()->user->id)) {
+                                        $this->widget('OEModule\PatientTicketing\widgets\TicketMove', array(
+                                                'ticket' => $ticket,
+                                            )
+                                        );
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                <?php }
             }
             ?>
-		</div>
-	</div>
+        </div>
+    </div>
 <?php } ?>
