@@ -18,18 +18,29 @@ class OphCiExamination_Episode_IOP1 extends \EpisodeSummaryWidget
 {
     public function run()
     {
+        
+        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+        if ($iop = $exam_api->getElementFromLatestEvent(
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure',
+            $this->episode->patient,
+            $use_context = true)
+        ){
+            $this->render('OphCiExamination_Episode_IOP', array('iop' => $iop));
+        }
+        
+        /*
         $criteria = new CDbCriteria();
         $criteria->compare('episode_id', $this->episode->id);
         $criteria->compare('event_type_id', $this->event_type->id);
         $criteria->order = 'event_date';
-
+        
         $iop = null;
         foreach (Event::model()->findAll($criteria) as $event) {
             if (($iop = models\Element_OphCiExamination_IntraocularPressure::model()->find('event_id=?', array($event->id)))) {
                 break;
             }
         }
-
         $this->render('OphCiExamination_Episode_IOP', array('iop' => $iop));
+        */
     }
 }
