@@ -177,12 +177,6 @@ $this->renderPartial('//patient/add_new_event',array(
                 subspecialties: <?= CJSON::encode(NewEventDialogHelper::structureAllSubspecialties()) ?>
             });
         });
-
-        if (window.location.search.replace("?", "") == "show-new-event=1") {
-            // quick fix to trigger the new event window after the user is asked to select
-            // a new firm.
-            $('button.add-event').trigger('click');
-        }
     });
 </script>
 </div>

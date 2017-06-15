@@ -216,10 +216,6 @@ $(document).ready(function(){
 
 			e.preventDefault();
 			var returnUrl = window.location.href;
-			if ($(e.target).data('window-title')) {
-				options.title = $(e.target).data('window-title');
-				returnUrl += '?show-new-event=1';
-			}
 
 			new OpenEyes.UI.Dialog($.extend({}, options, {
 				url: baseUrl + '/site/changesiteandfirm',
