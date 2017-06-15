@@ -7,7 +7,9 @@ $display_queue = $ticket->getDisplayQueueAssignment();
             <div class="data-label"><?= $ticket->getDisplayQueue()->name.' ('.Helper::convertDate2NHS($ticket->getDisplayQueueAssignment()->assignment_date).')' ?></div>
         </div>
         <div class="large-6 column left">
-            <div class="data-value"><?= nl2br($display_queue->notes)?></div>
+            <div class="data-value">
+                <textarea readonly rows="3" style="width: 100%"><?php echo $display_queue->notes; ?></textarea>
+            </div>
         </div>
     </div>
     <?php if ($display_queue->report) {?>
