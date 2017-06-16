@@ -164,6 +164,10 @@
             self.newSubspecialty();
         });
 
+        self.content.on('change', selectors.serviceList, function(e) {
+            self.newSubspecialtyService();
+        });
+
         // add new subspecialty
         self.content.on('click', selectors.addNewSubspecialty, function(e) {
             self.addNewSubspecialty();
@@ -192,24 +196,32 @@
     NewEventDialog.prototype.setDefaultSelections = function()
     {
         var self = this;
+
+        // ensure that the new subspecialty box is setup correctly on first view.
+        self.content.find(selectors.newSubspecialtyList).trigger('change');
+
         // auto selection of subspecialty based on current view
+        var selected = false;
         // Either subspecialty already active for the patient ...
         self.content.find(selectors.subspecialtyItem).each(function() {
             if (String($(this).data('subspecialty-id')) === String(self.defaultSubspecialtyId)) {
                 $(this).trigger('click');
+                selected = true;
                 return false;
             }
         });
 
-        // ... or we short cut selection of default subspecialty for new container
-        self.content.find(selectors.newSubspecialtyList + ' option').each(function() {
-            if ($(this).val() === String(self.options.userSubspecialtyId)) {
-                $(this).prop('selected', true);
-                self.content.find(selectors.newSubspecialtyList).trigger('change');
-                // end iteration through options
-                return false;
-            }
-        });
+        if (!selected) {
+            // ... or we short cut selection of default subspecialty for new container
+            self.content.find(selectors.newSubspecialtyList + ' option').each(function () {
+                if ($(this).val() === String(self.options.userSubspecialtyId)) {
+                    $(this).prop('selected', true);
+                    self.content.find(selectors.newSubspecialtyList).trigger('change');
+                    // end iteration through options
+                    return false;
+                }
+            });
+        }
     };
 
     /**
@@ -220,13 +232,18 @@
         var self = this;
         var id = self.content.find(selectors.newSubspecialtyList).val();
         if (id) {
+            // deselect the current subspecialty card to provide clear visual clue to
+            // user that they are now on a different path
+            self.content.find(selectors.subspecialtyItem).removeClass('selected');
+            self.updateContextList();
             var services = self.servicesBySubspecialtyId[id];
             if (services.length === 1) {
-                self.setService(services[0]);
+                self.setFixedService(services[0]);
             } else {
                 self.setServiceOptions(services);
             }
         } else {
+            self.content.find(selectors.addNewSubspecialty).addClass('disabled');
             self.content.find(selectors.noSubspecialty).show();
             self.content.find(selectors.fixedService).hide();
             self.content.find(selectors.serviceList).hide();
@@ -234,17 +251,33 @@
     };
 
     /**
+     * Handle change of selection of the service for the new subspecialty
+     */
+    NewEventDialog.prototype.newSubspecialtyService = function()
+    {
+        var self = this;
+        var id = self.content.find(selectors.serviceList).val();
+        if (id) {
+            self.content.find(selectors.addNewSubspecialty).removeClass('disabled');
+        } else {
+            self.content.find(selectors.addNewSubspecialty).addClass('disabled');
+        }
+
+    }
+
+    /**
      * Set the service to a fixed value when creating a new subspecialty for the event.
      *
      * @param service
      */
-    NewEventDialog.prototype.setService = function(service)
+    NewEventDialog.prototype.setFixedService = function(service)
     {
         var self = this;
         self.content.find(selectors.fixedService).html(service.name);
         self.content.find(selectors.fixedService).show();
         self.content.find(selectors.noSubspecialty).hide();
         self.content.find(selectors.serviceList).hide();
+        self.content.find(selectors.addNewSubspecialty).removeClass('disabled');
     };
 
     /**
@@ -257,7 +290,7 @@
         var self = this;
         var select = self.content.find(selectors.serviceList);
         select.html('');
-        var options = '<option>- Please Select -</option>';
+        var options = '<option value="">- Please Select -</option>';
         for (var i in services) {
             options += '<option value="'+services[i].id+'"';
             // default to current runtime firm
@@ -270,6 +303,7 @@
         select.show();
         self.content.find(selectors.fixedService).hide();
         self.content.find(selectors.noSubspecialty).hide();
+        self.content.find(selectors.addNewSubspecialty).addClass('disabled');
     };
 
     /**
@@ -321,6 +355,16 @@
         var self = this;
         self.content.find(selectors.newSubspecialtyItem).remove();
         self.content.find(selectors.newSubspecialtyContainer).show();
+        self.resetNewSubspecialtyContainer();
+    };
+
+    /**
+     * Ensures the new subspecialty component is reset to no selections
+     */
+    NewEventDialog.prototype.resetNewSubspecialtyContainer = function()
+    {
+        var self = this;
+        self.content.find(selectors.newSubspecialtyList).val('').trigger('change');
     };
 
     /**
