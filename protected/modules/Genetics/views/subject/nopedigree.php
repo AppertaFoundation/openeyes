@@ -1,3 +1,4 @@
+<?php if(!$genetics_patient || !$genetics_patient->pedigrees): ?>
 <div class="row field-row">
     <div class="large-2 column">&nbsp;</div>
     <div class="large-5 column end">
@@ -52,3 +53,4 @@
         });
     });
 </script>
+<?php endif; ?>

@@ -85,11 +85,7 @@ class SubjectController extends BaseModuleController
     public function actionEdit($id = false)
     {
         $admin = new Crud(GeneticsPatient::model(), $this);
-
-        // ok, so this awesome solution pre-selects a freshly created pedigree
-        if( isset($_GET['pedigree_id']) && $_GET['pedigree_id'] ){
-            $_POST['GeneticsPatient[pedigrees]'] = array($_GET['pedigree_id']);
-        }
+        $genetics_patient = GeneticsPatient::model()->findByPk($id);
 
         if ($id) {
             $admin->setModelId($id);
@@ -137,8 +133,10 @@ class SubjectController extends BaseModuleController
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
+
             //nope, just, nope, this must be stored in the patient table @TODO: remove this and from the genetics_patient database table
             //'is_deceased' => 'checkbox',
+
             'comments' => 'textarea',
             'family' => array(
                 'widget' => 'CustomView',
@@ -150,6 +148,8 @@ class SubjectController extends BaseModuleController
             'diagnoses' => array(
                 'widget' => 'DisorderLookup',
                 'relation' => 'diagnoses',
+                'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+                'empty_text' => 'Select a commonly used diagnosis'
             ),
             'pedigrees' => array(
                 'widget' => 'MultiSelectList',
@@ -180,13 +180,9 @@ class SubjectController extends BaseModuleController
             'no_pedigree' => array(
                 'widget' => 'CustomView',
                 'viewName' => 'application.modules.Genetics.views.subject.nopedigree',
-                'viewArguments'=> array()
-            ),
-            'create_new_pedigree' => array(
-                'widget' => 'LinkTo',
-                'label'  => 'Create new pedigree',
-                'linkTo' => '/Genetics/pedigree/edit' . (isset($_GET['patient']) ? ('?patient=' . $_GET['patient']) : null)
-
+                'viewArguments'=> array(
+                    'genetics_patient' => GeneticsPatient::model()->findByPk($id),
+                )
             ),
             'previous_studies' => array(
                 'widget' => 'CustomView',
@@ -255,9 +251,6 @@ class SubjectController extends BaseModuleController
                 }
 
                 Yii::app()->user->setFlash('success', "Patient Saved");
-                //$this->redirect(Yii::app()->request->getPost('referer'));
-                //$url = str_replace('/edit','/view',(Yii::app()->request->requestUri)).'/'.$admin->getModel()->id;
-                //$url = str_replace('/edit','/view/'.$admin->getModel()->id,(Yii::app()->request->requestUri));
                 $url = '/Genetics/subject/view/'.$admin->getModel()->id;
                 $this->redirect($url);
             } else {
@@ -357,6 +350,10 @@ class SubjectController extends BaseModuleController
         $term = trim(\Yii::app()->request->getParam('term', ''));
         $result = array();
         $patientSearch = new PatientSearch();
+
+        //no PAS sync required at this stage
+        $patientSearch->use_pas = false;
+
         if ($patientSearch->isValidSearchTerm($term)) {
             $dataProvider = $patientSearch->search($term);
 

@@ -317,7 +317,7 @@ var docman = (function() {
 
                 $('#DocumentTarget_' + rowindex + '_attributes_contact_type').val('OTHER');
                 $('#yDocumentTarget_' + rowindex + '_attributes_contact_type').val('OTHER');
-
+                $('#DocumentTarget_' + rowindex + '_attributes_contact_type').trigger('change');
                 //set readonly
                 //$('#DocumentTarget_' + rowindex + '_attributes_contact_name').attr('readonly', false);
                 $('#Document_Target_Address_' + rowindex).attr('readonly', false);

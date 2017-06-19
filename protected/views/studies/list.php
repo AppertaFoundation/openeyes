@@ -13,9 +13,10 @@ $name = get_class($model);
                     <?php $participation = $study->participationForSubject($model) ?>
                     <li>
                         <input type="hidden" name="<?=$name?>[<?=$list?>][]" value="<?=$study->id?>">
-                        <?php if($study->end_date < date_create('now')->format('d M Y')): ?>
-                            <?= $study->name ?>
-                            - <i>End date: <?= Helper::convertMySQL2NHS($study->end_date) ?></i><br>
+
+                        <?php if(date_create($study->end_date) < date_create('now')): ?>
+                            <?= $study->name; ?>
+                            - <i>End date: <?= $study->end_date ?></i><br>
                         <?php else: ?>
                             <?php if(isset($edit_status_url, $participation) && $edit_status_url && $participation):?>
 
