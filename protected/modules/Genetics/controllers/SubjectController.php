@@ -151,32 +151,16 @@ class SubjectController extends BaseModuleController
                 'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
                 'empty_text' => 'Select a commonly used diagnosis'
             ),
-            'pedigrees' => array(
-                'widget' => 'MultiSelectList',
-                'relation_field_id' => 'id',
-                'label' => 'Pedigree',
-                'options' => CHtml::encodeArray(
-                    CHtml::listData(
-                        Pedigree::model()->getAllIdAndText(),
-                        'id',
-                        'text'
-                    )
-                ),
-                'through' => array(
-                    'current' => GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $id)),
-                    'related_by' => 'pedigree_id',
-                    'field' => 'status_id',
-                    'options' => CHtml::encodeArray(
-                        CHtml::listData(
-                            PedigreeStatus::model()->findAll(),
-                            'id',
-                            'name'
-                        )
-                    ),
-                    'default_option' => $status ? $status->id : 0,
-                ),
-                'link' => '/Genetics/pedigree/edit/%s'
+
+
+            'pedigree' => array(
+                'widget' => 'CustomView',
+                'viewName' => 'application.modules.Genetics.views.subject._edit_pedigree',
+                'viewArguments'=> array(
+                    'genetics_patient' => GeneticsPatient::model()->findByPk($id),
+                )
             ),
+
             'no_pedigree' => array(
                 'widget' => 'CustomView',
                 'viewName' => 'application.modules.Genetics.views.subject.nopedigree',

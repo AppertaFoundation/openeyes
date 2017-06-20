@@ -26,7 +26,7 @@ class PedigreeController extends BaseModuleController
             ),
             array(
                 'allow',
-                'actions' => array('List', 'View'),
+                'actions' => array('List', 'View', 'Search'),
                 'roles' => array('OprnSearchPedigree'),
             ),
         );
@@ -213,6 +213,44 @@ class PedigreeController extends BaseModuleController
         }
 
         return $model;
+    }
+
+    /**
+     * Search for pedigree
+     * returns JSON for autocomplete
+     */
+    public function actionSearch()
+    {
+
+        $pedigree_id = Yii::app()->request->getQuery('term', null);
+
+        if( strlen($pedigree_id) > 2){
+            $match = addcslashes($pedigree_id, '%_'); // escape LIKE's special characters
+            $q = new CDbCriteria( array(
+                'condition' => "id LIKE :match",
+                'params'    => array(':match' => "%$match%")
+            ) );
+
+            $pedigrees = Pedigree::model()->findAll($q);
+        } else {
+
+            //if pedigree_id is 2 digit or less we return the exact match because of performance reasons
+
+            $pedigrees = Pedigree::model()->findByPk($pedigree_id);
+            $pedigrees = array($pedigrees);
+        }
+
+        $output = array();
+        foreach($pedigrees as $pedigree){
+            $output[] = array(
+                'label' => $pedigree->id . ($pedigree->gene ? (" (" . $pedigree->gene->name . ")") : ''),
+                'value' => $pedigree->id,
+            );
+        }
+
+        echo CJSON::encode($output);
+
+        Yii::app()->end();
     }
 
 }
