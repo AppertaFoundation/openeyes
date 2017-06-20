@@ -83,7 +83,14 @@ class PedigreeController extends BaseModuleController
                 'layoutColumns' => null,
             ),
             'comments' => 'textarea',
-            'disorder' => 'label',
+
+            'disorder' => array(
+                'widget' => 'DisorderLookup',
+                'relation' => 'disorder',
+                'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+                'empty_text' => 'Select a commonly used diagnosis'
+            ),
+
             'consanguinity' => 'checkbox',
             'gene_id' => array(
                 'widget' => 'DropDownList',
