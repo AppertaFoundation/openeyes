@@ -86,9 +86,9 @@ class SubjectController extends BaseModuleController
     {
         $admin = new Crud(GeneticsPatient::model(), $this);
         $genetics_patient = GeneticsPatient::model()->findByPk($id);
-	if (!$genetics_patient){
-		$genetics_patient = new GeneticsPatient();
-	}
+        if (!$genetics_patient){
+            $genetics_patient = new GeneticsPatient();
+        }
         if ($id) {
             $admin->setModelId($id);
             $this->renderPatientPanel = true;
@@ -159,7 +159,7 @@ class SubjectController extends BaseModuleController
                 'widget' => 'CustomView',
                 'viewName' => 'application.modules.Genetics.views.subject._edit_pedigree',
                 'viewArguments'=> array(
-                    'genetics_patient' => $genetics_patient,//GeneticsPatient::model()->findByPk($id),
+                    'genetics_patient' => $genetics_patient,
 
                 )
             ),
@@ -168,7 +168,7 @@ class SubjectController extends BaseModuleController
                 'widget' => 'CustomView',
                 'viewName' => 'application.modules.Genetics.views.subject.nopedigree',
                 'viewArguments'=> array(
-                    'genetics_patient' =>  $genetics_patient,//GeneticsPatient::model()->findByPk($id),
+                    'genetics_patient' =>  $genetics_patient,
                 )
             ),
             'previous_studies' => array(
