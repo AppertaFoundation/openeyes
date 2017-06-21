@@ -16,6 +16,7 @@
 * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
+
 if (file_exists('/etc/openeyes/db.conf')) {
     $db = parse_ini_file('/etc/openeyes/db.conf');
 } else {
@@ -111,6 +112,11 @@ $config = array(
         'OphCoMessaging' => array('class' => '\OEModule\OphCoMessaging\OphCoMessagingModule'),
         'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
         'OphInLabResults',
+        'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
+		'Genetics',
+		'OphInDnasample',
+		'OphInDnaextraction',
+		'OphInGeneticsresults',
     ),
 
     'params' => array(
@@ -127,6 +133,7 @@ $config = array(
         'google_analytics_account' => '',
         'local_users' => array('admin', 'username'),
         //'log_events' => true,
+        'institution_code' => 'RP6',
         'specialty_codes' => array(130),
         //'default_site_code' => '',
         'specialty_sort' => array(130, 'SUP'),
@@ -135,7 +142,44 @@ $config = array(
         // 'dashboard_sortable' => true
         'event_print_method' => 'pdf',
         'wkhtmltopdf_nice_level' => 19,
-        'allow_clinical_summary' => false,
+        'city_road_satellite_view' => 1,
+        'enable_concise_med_history' => false,
+        // default start time used for automatic worklist definitions
+        //'worklist_default_start_time' => 'H:i',
+        // default end time used for automatic worklist definitions
+        //'worklist_default_end_time' => 'H:i',
+        // number of patients to show on each worklist dashboard render
+        //'worklist_default_pagination_size' => int,
+        // number of days in the future to retrieve worklists for the automatic dashboard render
+        //'worklist_dashboard_future_days' => int,
+        // days of the week to be ignored when determining which worklists to render - Mon, Tue etc
+        //'worklist_dashboard_skip_days' => array()
+        //how far in advance worklists should be generated for matching
+        //'worklist_default_generation_limit' => interval string (e.g. 3 months)
+        // override edit checks on definitions so they can always be edited (use at own peril)
+        //'worklist_always_allow_definition_edit' => bool
+        // whether we should render empty worklists in the dashboard or not
+        //'worklist_show_empty' => bool
+        // allow duplicate entries on an automatic worklist for a patient
+        //'worklist_allow_duplicate_patients' => bool
+        // any appointments sent in before this date will not trigger errors when sent in
+        //'worklist_ignore_date => 'Y-m-d',
+        'portal' => array(
+            'uri' => 'http://api.localhost:8000',
+            'endpoints' => array(
+                'auth' => '/oauth/access',
+                'examinations' => '/examinations/searches',
+                'signatures' => '/signatures/searches'
+            ),
+            'credentials' => array(
+                'username' => 'user@example.com',
+                'password' => 'apipass',
+                'grant_type' => 'password',
+                'client_id' => 'f3d259ddd3ed8ff3843839b',
+                'client_secret' => '4c7f6f8fa93d59c45502c0ae8c4a95b',
+            ),
+        ),
+        'signature_app_url' => 'http://tiny.cc/oe-sign',
         'docman_export_dir' => '/tmp/docman',
         'docman_login_url' => 'http://localhost/site/login',
         'docman_user' => 'admin',
@@ -148,7 +192,12 @@ $config = array(
         // format3 => <hosnum>_edtdep-OEY_yyyyMMdd_hhmmss_<eventId>.pdf
         'docman_filename_format' => 'format1',
         // set this to none if you want to suppress XML output
-        'docman_xml_format' => 'none'
+        'docman_xml_format' => 'none',
+        'contact_labels' => array(
+                        'Staff',
+                        'Consultant Ophthalmologist',
+                        'Other specialist',
+                ),
     ),
 );
 
