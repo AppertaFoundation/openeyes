@@ -337,7 +337,7 @@ return array(
                 'patient' => array(
                     'title' => 'Add Patient',
                     'uri' => 'patient/create',
-                    'position' => 9,
+                    'position' => 46,
                     'restricted' => array('TaskAddPatient'),
                 ),
 // temporarily disabled
