@@ -113,6 +113,10 @@ $config = array(
         'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
         'OphInLabResults',
         'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
+		'Genetics',
+		'OphInDnasample',
+		'OphInDnaextraction',
+		'OphInGeneticsresults',
     ),
 
     'params' => array(
@@ -129,6 +133,7 @@ $config = array(
         'google_analytics_account' => '',
         'local_users' => array('admin', 'username'),
         //'log_events' => true,
+        'institution_code' => 'RP6',
         'specialty_codes' => array(130),
         //'default_site_code' => '',
         'specialty_sort' => array(130, 'SUP'),
@@ -138,7 +143,7 @@ $config = array(
         'event_print_method' => 'pdf',
         'wkhtmltopdf_nice_level' => 19,
         'city_road_satellite_view' => 1,
-        'enable_concise_med_history' => true,
+        'enable_concise_med_history' => false,
         // default start time used for automatic worklist definitions
         //'worklist_default_start_time' => 'H:i',
         // default end time used for automatic worklist definitions
@@ -187,7 +192,12 @@ $config = array(
         // format3 => <hosnum>_edtdep-OEY_yyyyMMdd_hhmmss_<eventId>.pdf
         'docman_filename_format' => 'format1',
         // set this to none if you want to suppress XML output
-        'docman_xml_format' => 'none'
+        'docman_xml_format' => 'none',
+        'contact_labels' => array(
+                        'Staff',
+                        'Consultant Ophthalmologist',
+                        'Other specialist',
+                ),
     ),
 );
 
