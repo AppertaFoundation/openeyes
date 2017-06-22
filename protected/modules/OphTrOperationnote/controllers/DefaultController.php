@@ -653,7 +653,7 @@ class DefaultController extends BaseEventTypeController
         $devices = array();
         if (isset($data['OphTrOperationnote_CataractOperativeDevices']) && is_array($data['OphTrOperationnote_CataractOperativeDevices'])) {
             foreach ($data['OphTrOperationnote_CataractOperativeDevices'] as $oa_id) {
-                $devices[] = OphTrOperationnote_CataractComplications::model()->findByPk($oa_id);
+                $devices[] = OphTrOperationnote_CataractOperativeDevice::model()->findByPk($oa_id);
             }
         }
         $element->operative_devices = $devices;
