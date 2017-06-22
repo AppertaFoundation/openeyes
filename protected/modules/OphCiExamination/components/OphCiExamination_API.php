@@ -564,7 +564,7 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * Get the latest VA form examination event, if the VA is not recorded, take the value from the latest available event within a period of 3 weeks.
+     * Get the latest VA for the Left eye form examination event, if the VA is not recorded, take the value from the latest available event within a period of 3 weeks.
      *
      * @param $patient
      * @return string
@@ -594,7 +594,7 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * Get the latest VA form examination event, if the VA is not recorded, take the value from the latest available event within a period of 3 weeks.
+     * Get the latest VA for the Right eye form examination event, if the VA is not recorded, take the value from the latest available event within a period of 3 weeks.
      *
      * @param $patient
      * @return string - 6/24 (recorded at 7 Jun 2017)
@@ -625,11 +625,60 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
+    /**
+     * Get the latest VA for both eyes form examination event, if the VA is not recorded, take the value from the latest available event within a period of 3 weeks.
+     *
+     * @param $patient
+     * @return string - 6/24 (at 7 Jun 2017)
+     */
+    public function getLetterVisualAcuityBothLast3weeks($patient)
+    {
+        $left = null;
+        $right = null;
+
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if($va = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_VisualAcuity', '-3 weeks') ){
+                $right = $va->getBestReading('right');
+                $left = $va->getBestReading('left');
+            }
+
+
+            $text = ($right ? $right->convertTo($right->value, $this->getSnellenUnitId()) : 'not recorded') . ' on the right and ' .
+                    ($left ? $left->convertTo($left->value, $this->getSnellenUnitId()) : 'not recorded') . ' on the left';
+
+            if($va){
+                $recorder = $left ? 'recorded ' : '';
+                $dateTime = new \DateTime($va->event->event_date);
+                $text .= " ({$recorder}at {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
+            }
+
+            return $text;
+
+        }
+    }
+
     public function getLetterVisualAcuityPrincipal($patient)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             if ($episode->eye) {
                 $method = 'getLetterVisualAcuity' . $episode->eye->name;
+
+                return $this->{$method}($patient);
+            }
+        }
+    }
+
+    /**
+     * Get the latest VA for Principal eye form examination event, if the VA is not recorded, take the value from the latest available event within a period of 3 weeks.
+     *
+     * @param $patient
+     * @return string - 6/24 (at 7 Jun 2017)
+     */
+    public function getLetterVisualAcuityPrincipalLast3weeks($patient)
+    {
+        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+            if ($episode->eye) {
+                $method = 'getLetterVisualAcuity' . $episode->eye->name . 'Last3weeks';
 
                 return $this->{$method}($patient);
             }
