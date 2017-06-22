@@ -149,15 +149,15 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
         }
         if ($from && $to) {
             if ($from > $to) {
-                $criteria->addBetweenCondition('t.created_date', $to, $from);
+                $criteria->addBetweenCondition('DATE(t.created_date)', $to, $from);
             } else {
-                $criteria->addBetweenCondition('t.created_date', $from, $to);
+                $criteria->addBetweenCondition('DATE(t.created_date)', $from, $to);
             }
         } elseif ($from) {
-            $criteria->addCondition('t.created_date >= :from');
+            $criteria->addCondition('DATE(t.created_date) >= :from');
             $criteria->params[':from'] = $from;
         } elseif ($to) {
-            $criteria->addCondition('t.created_date <= :to');
+            $criteria->addCondition('DATE(t.created_date) <= :to');
             $criteria->params[':to'] = $to;
         }
     }
