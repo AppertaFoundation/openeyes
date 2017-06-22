@@ -2806,7 +2806,7 @@ html, body {
 /* line 18, ../sass/openeyes/components/containers/_main.scss */
 .container.main {
   border-radius: 5px;
-  background: #dae6f1 url('../img/_structure/gradient_bg.png?1496926890') 0 0 repeat-x;
+  background: #dae6f1 url('../img/_structure/gradient_bg.png?1498125867') 0 0 repeat-x;
   border: 2px solid #b3b0ae;
   margin-bottom: 40px;
   width: 1234px;
@@ -3266,7 +3266,7 @@ table.grid tfoot tr {
 }
 /* line 24, ../sass/openeyes/components/_header.scss */
 .header .logo {
-  background: url('../img/_structure/openeyes.png?1496926890') no-repeat;
+  background: url('../img/_structure/openeyes.png?1498125867') no-repeat;
   background-size: 100%;
   display: block;
   height: 70px;
@@ -3276,7 +3276,7 @@ table.grid tfoot tr {
   /* line 24, ../sass/openeyes/components/_header.scss */
   .header .logo {
     -webkit-print-color-adjust: exact;
-    background: url('../img/_structure/openeyes.png?1496926890') no-repeat !important;
+    background: url('../img/_structure/openeyes.png?1498125867') no-repeat !important;
     background-size: 100% !important;
   }
 }
@@ -3306,7 +3306,7 @@ table.grid tfoot tr {
 
 /* line 19, ../sass/openeyes/components/_footer.scss */
 .footer {
-  background: #b3b0ae url('../img/_structure/openeyes_footer.png?1496926890') no-repeat right top;
+  background: #b3b0ae url('../img/_structure/openeyes_footer.png?1498125867') no-repeat right top;
 }
 /* line 22, ../sass/openeyes/components/_footer.scss */
 .footer .info {

@@ -66,7 +66,7 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
                  amino_acid_change, assay, effect_id, method_id homo, result, result_date, withdrawal_source_id, 
                  genomic_coordinate, genome_version, gene_transcript',
                 'safe'),
-            array('gene_id, homo, method_id, effect_id, result', 'required'),
+            array('gene_id, homo, method_id, effect_id', 'required'),
             //array('withdrawal_source_id', 'required'),
             array('exon', 'validateForMethod', 'method' => 'Sanger'),
             // The following rule is used by search().

@@ -54,7 +54,7 @@
     $form->activeWidget('TextField', $element, 'volume');
     $form->activeWidget('TextField', $element, 'destination');
 
-    $users = User::model()->findAllByRoles(['Genetics User'],true);
+    $users = User::model()->findAllByRoles(['Genetics User', 'Genetics Clinical', 'Genetics Laboratory Technician', 'Genetics Admin'],true);
 
     $form->dropDownList(
         $element,

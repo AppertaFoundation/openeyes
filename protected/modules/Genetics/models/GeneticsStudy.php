@@ -100,7 +100,7 @@ class GeneticsStudy extends BaseActiveRecordVersioned
      */
     public function afterFind()
     {
-        $this->end_date = Helper::convertMySQL2NHS($this->end_date);
+        $this->end_date = Helper::convertMySQL2NHS($this->end_date, null);
     }
 
     /**
@@ -108,9 +108,9 @@ class GeneticsStudy extends BaseActiveRecordVersioned
      */
     public function beforeSave()
     {
-        //Set the date to null if it's not truthy so empty strings don't convert to 0000-00-00....
+        $date = DateTime::createFromFormat('Y-m-d', $this->end_date);
 
-        if (!$this->end_date) {
+        if (!$this->end_date || !$date) {
             $this->end_date = null;
         }
         return parent::beforeSave();

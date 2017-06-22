@@ -1,8 +1,9 @@
+<?php if(!$genetics_patient || !$genetics_patient->pedigrees): ?>
 <div class="row field-row">
     <div class="large-2 column">&nbsp;</div>
     <div class="large-5 column end">
         <input type="checkbox" id="no_pedigree" name="no_pedigree" />
-        <label for="no_pedigree" style="display: inline">No pedigree</label>
+        <label for="no_pedigree" style="display: inline">Automatically generate pedigree</label>
     </div>
 </div>
 <script type="text/javascript">
@@ -52,3 +53,4 @@
         });
     });
 </script>
+<?php endif; ?>

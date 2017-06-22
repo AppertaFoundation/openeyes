@@ -175,10 +175,11 @@ class PatientController extends BaseController
     public function actionSearch()
     {
         $term = \Yii::app()->request->getParam('term', '');
+
         $patientSearch = new PatientSearch();
-	$dataProvider = $patientSearch->search($term);
-	$itemCount = $dataProvider->totalItemCount;
-	$search_terms = $patientSearch->getSearchTerms();
+	    $dataProvider = $patientSearch->search($term);
+	    $itemCount = $dataProvider->totalItemCount;
+	    $search_terms = $patientSearch->getSearchTerms();
 
         if ($itemCount == 0) {
             Audit::add('search', 'search-results', implode(',', $search_terms).' : No results');
@@ -1485,7 +1486,7 @@ class PatientController extends BaseController
         $patient->noPas();
         $contact = new Contact('manualAddPatient');
         $address = new Address();
-        
+
         $this->performAjaxValidation(array($patient, $contact, $address));
         
         if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
@@ -1493,7 +1494,7 @@ class PatientController extends BaseController
             $contact->attributes = $_POST['Contact'];
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
-            
+
             // not to be sync with PAS
             $patient->is_local = 1;
             
@@ -1604,7 +1605,7 @@ class PatientController extends BaseController
 
             list($contact, $patient, $address) = $this->performPatientSave($contact, $patient, $address);
         }
-        
+
         $this->render('crud/update',array(
                         'patient' => $patient,
                         'contact' => $contact,

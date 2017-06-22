@@ -29,11 +29,6 @@ class PedigreeController extends BaseModuleController
                 'actions' => array('List', 'View'),
                 'roles' => array('OprnSearchPedigree'),
             ),
-            array(
-                'allow',
-                'actions' => array('PedigreeDisorder'),
-                'roles' => array('OprnSearchPedigree', 'OprnEditGeneticPatient'),
-            ),
         );
     }
 
@@ -69,6 +64,12 @@ class PedigreeController extends BaseModuleController
         $admin = new Crud(Pedigree::model(), $this);
         if ($id) {
             $admin->setModelId($id);
+        } else {
+
+            //oh, sure, let me just set the defaults this way.
+            //more: Admin.php line ~515
+            $pedigree_inheritance = PedigreeInheritance::model()->findByAttributes(array('name' => 'Unknown/other'));
+            $_GET['default'] = array('inheritance_id' => $pedigree_inheritance ? $pedigree_inheritance->id : null);
         }
 
         $admin->setEditFields(array(
@@ -139,8 +140,8 @@ class PedigreeController extends BaseModuleController
         if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Family Saved");
-                     $url = '/Genetics/pedigree/view/'.$admin->getModel()->id . (isset($_GET['patient']) ? ('?patient=' . $_GET['patient']) : null);
-                $this->redirect($url);
+
+                $this->redirect('/Genetics/pedigree/view/'.$admin->getModel()->id );
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
             }
@@ -196,30 +197,6 @@ class PedigreeController extends BaseModuleController
         $admin->getSearch()->setDefaultResults(false);
         $display_buttons = $this->checkAccess('OprnEditPedigree');
         $admin->listModel($display_buttons);
-    }
-
-    /**
-     * @param $id
-     * @throws CHttpException
-     */
-    public function actionPedigreeDisorder($id)
-    {
-        $pedigree = Pedigree::model()->findByPk($id);
-
-        if (!$pedigree) {
-            throw new CHttpException(404);
-        }
-
-        if (!$pedigree->disorder_id) {
-            throw new CHttpException(400);
-        }
-
-        $this->renderJSON(
-            array(
-                'id' => $pedigree->disorder_id,
-                'disorder' => $pedigree->disorder->term,
-            )
-        );
     }
     
     /**

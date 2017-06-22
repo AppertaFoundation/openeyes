@@ -60,8 +60,8 @@ class StudyController extends BaseAdminController
                 'relation_field_id' => 'id',
                 'label' => 'Investigator',
                 'options' => CHtml::encodeArray(CHtml::listData(
-                    //All users with Genetics Users privileges - means all genetics roles are included from Genetics User to Genetics Admin
-                    User::model()->findAllByRoles(['Genetics User'],true),
+                    // because of performance issues we need to list all the required roles even if they are in parent-child
+                    User::model()->findAllByRoles(['Genetics User', 'Genetics Clinical', 'Genetics Laboratory Technician', 'Genetics Admin'],true),
                     'id',
                     function ($model) {
                         return $model->fullName;
