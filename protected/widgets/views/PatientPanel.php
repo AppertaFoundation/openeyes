@@ -33,10 +33,7 @@ Yii::app()->assetManager->registerScriptFile('js/patientGeneralInformations.js')
             <?php } else {
                 echo $this->patient->getAge(); }
             ?>)
-            <?php if($this->patient->isEditable() ):?>
-                <a style="color:#0b59da" href="<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>"> edit</a>
-            <?php endif; ?>
-		</span>
+            </span>
         <span class="icon-patient-panel-info has-tooltip"></span>
         <div id='patient_general_informations' class='hidden'>
             <div class="row data-row">
@@ -101,6 +98,11 @@ Yii::app()->assetManager->registerScriptFile('js/patientGeneralInformations.js')
     </div>
     <!-- Widgets (extra icons, links etc) -->
     <ul class="patient-widgets">
+        <?php if($this->patient->isEditable() ):?>
+            <li>
+                <a class="patient-edit-link" href="<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>"> <span class="fa fa-pencil-square" aria-hidden="true" aria-title="Edit patient"></span></a>
+            </li>
+        <?php endif; ?>
         <?php foreach ($this->widgets as $widget) {
             echo "<li>{$widget}</li>";
         }?>
