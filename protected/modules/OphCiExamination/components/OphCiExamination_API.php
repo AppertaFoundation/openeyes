@@ -577,7 +577,7 @@ class OphCiExamination_API extends \BaseAPI
                 if( $best = $va->getBestReading('left') ){
 
                     $dateTime = new \DateTime($va->event->event_date);
-                    return $best->convertTo($best->value,$this->getSnellenUnitId()) . " (recorded at {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
+                    return $best->convertTo($best->value,$this->getSnellenUnitId()) . " (recorded on {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
                 }
             }
         }
@@ -606,7 +606,7 @@ class OphCiExamination_API extends \BaseAPI
                 if( $best = $va->getBestReading('right') ){
 
                     $dateTime = new \DateTime($va->event->event_date);
-                    return $best->convertTo($best->value,$this->getSnellenUnitId()) . " (recorded at {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
+                    return $best->convertTo($best->value,$this->getSnellenUnitId()) . " (recorded on {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
                 }
             }
         }
@@ -649,7 +649,7 @@ class OphCiExamination_API extends \BaseAPI
             if($va){
                 $recorder = $left ? 'recorded ' : '';
                 $dateTime = new \DateTime($va->event->event_date);
-                $text .= " ({$recorder}at {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
+                $text .= " ({$recorder}on {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
             }
 
             return $text;
