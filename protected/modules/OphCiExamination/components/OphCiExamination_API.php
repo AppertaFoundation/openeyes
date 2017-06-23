@@ -723,14 +723,10 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * get the va from the given episode for the left side of the episode patient.
+     * Get the va from the given episode for the left side of the episode patient.
      * @param Episode $episode
      * @param bool $include_nr_values
-    <<<<<<< HEAD
-     *
-    =======
      * @param string $before_date
-    >>>>>>> develop
      * @return OphCiExamination_VisualAcuity_Reading
      */
     public function getLetterVisualAcuityForEpisodeLeft($episode, $include_nr_values = false, $before_date = '')
@@ -753,15 +749,10 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * get the va from the given episode for the right side of the episode patient.
+     * Get the va from the given episode for the right side of the episode patient.
      * @param Episode $episode
-    <<<<<<< HEAD
-     * @param bool $include_nr_values
-     *
-    =======
      * @param bool    $include_nr_values
      * @param string $before_date
-    >>>>>>> develop
      * @return OphCiExamination_VisualAcuity_Reading
      */
     public function getLetterVisualAcuityForEpisodeRight($episode, $include_nr_values = false, $before_date = '')
