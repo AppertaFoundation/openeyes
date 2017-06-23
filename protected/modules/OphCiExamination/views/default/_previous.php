@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div id="previous_elements" class="event previous-elements">
+<div class="event previous-elements">
 	<?php foreach ($elements as $element) {
     ?>
 		<div class="element-container">

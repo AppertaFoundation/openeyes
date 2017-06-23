@@ -250,6 +250,11 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     left: -2px;
     font-size: 11px;
     font-size: 0.6875rem; }
+  .open-eyes .panel.patient .patient-gender {
+    font-size: 11px;
+    font-size: 0.6875rem; }
+    .open-eyes .panel.patient .patient-gender em {
+      color: #bbb; }
   .open-eyes .panel.patient .patient-summary-anchor .oe-correspondence-stack {
     margin-left: 28px; }
   .open-eyes .panel.patient .patient-widgets .patient-warnings {
@@ -264,23 +269,94 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   height: auto;
   padding: 8px;
   position: absolute;
-  top: 90px;
+  top: 70px;
   left: -418px;
   z-index: 9999;
-  opacity: 0;
+  display: none;
   background: #747782;
   border: none; }
   .open-eyes .panel.patient-popup.show {
-    opacity: 1;
-    top: 75px; }
+    display: block;
+    animation: fadeInPopUp 0.2s ease-out; }
   .open-eyes .panel.patient-popup:after {
-    border-bottom-color: #7a9dc9; }
-  .open-eyes .panel.patient-popup .row {
-    background: #d2dde8; }
-    .open-eyes .panel.patient-popup .row .label {
-      color: #747782; }
+    content: none; }
   .open-eyes .panel.patient-popup .help-hint {
     display: none; }
+  .open-eyes .panel.patient-popup > .alert-box {
+    margin-bottom: 8px; }
+  .open-eyes .panel.patient-popup .zone2 {
+    padding-bottom: 10px; }
+    .open-eyes .panel.patient-popup .zone2 .row {
+      background: none;
+      margin: 0;
+      padding: 0;
+      color: #fff;
+      border-bottom: 1px dotted #9ea0a8; }
+      .open-eyes .panel.patient-popup .zone2 .row:first-child {
+        border-top: 1px dotted #9ea0a8; }
+      .open-eyes .panel.patient-popup .zone2 .row .label {
+        font-style: italic;
+        color: #bbb; }
+      .open-eyes .panel.patient-popup .zone2 .row b {
+        font-weight: 500; }
+  .open-eyes .panel.patient-popup .summary-data .row {
+    background: #d2dde8; }
+    .open-eyes .panel.patient-popup .summary-data .row .label {
+      color: #747782; }
+  .open-eyes .panel.patient-popup .problems-plans .subtitle {
+    display: block;
+    margin: 10px 0 5px 5px;
+    font-size: 12px;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: #fff; }
+  .open-eyes .panel.patient-popup .problems-plans ul {
+    padding: 0;
+    margin: 0; }
+    .open-eyes .panel.patient-popup .problems-plans ul li {
+      display: block;
+      width: 100%;
+      padding: 3px 5px 3px 5px;
+      margin: 0 0 1px 0;
+      background: #5d5f68;
+      height: auto;
+      font-size: 11px;
+      font-size: 0.6875rem; }
+      .open-eyes .panel.patient-popup .problems-plans ul li .drag-handle {
+        color: #aaa;
+        padding: 0 3px;
+        margin: 0 5px 0 0;
+        cursor: pointer; }
+        .open-eyes .panel.patient-popup .problems-plans ul li .drag-handle:hover {
+          color: #fff; }
+      .open-eyes .panel.patient-popup .problems-plans ul li .remove {
+        font-size: 11px;
+        font-size: 0.6875rem;
+        float: right;
+        padding: 0 0 0 5px;
+        cursor: pointer;
+        color: #aaa; }
+        .open-eyes .panel.patient-popup .problems-plans ul li .remove:hover {
+          color: #fff; }
+  .open-eyes .panel.patient-popup .problems-plans .create-new-problem-plan {
+    position: relative;
+    background: #5d5f68;
+    padding: 5px;
+    margin: 5px 0 0 0;
+    height: auto; }
+    .open-eyes .panel.patient-popup .problems-plans .create-new-problem-plan .add-problem-plan-btn {
+      display: block;
+      position: absolute;
+      top: 50%;
+      right: 5px;
+      transform: translate(0, -50%);
+      margin: 0; }
+    .open-eyes .panel.patient-popup .problems-plans .create-new-problem-plan input {
+      font-size: 11px;
+      font-size: 0.6875rem;
+      background: #eee;
+      border: 0;
+      width: 85%; }
 .open-eyes .panel.user {
   width: 593px;
   background: none; }
@@ -298,7 +374,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
       .open-eyes .panel.user ul.oe-user-panel > li:last-child {
         margin-right: 0; }
     .open-eyes .panel.user ul.oe-user-panel li.oe-user-info {
-      width: 446px; }
+      width: 354px; }
     .open-eyes .panel.user ul.oe-user-panel ul.oe-user-profile-firm {
       list-style: none;
       margin: 0;
@@ -309,7 +385,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
         font-weight: 500; }
       .open-eyes .panel.user ul.oe-user-panel ul.oe-user-profile-firm em {
         display: inline-block;
-        width: 40px;
+        width: 35px;
         font-size: 9px;
         font-size: 0.5625rem;
         color: #999;
@@ -320,6 +396,19 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
         font-size: 0.5625rem;
         margin-left: 10px; }
 
+@keyframes fadeInPopUp {
+  0% {
+    display: none;
+    opacity: 0;
+    top: 90px; }
+  0.1% {
+    display: block;
+    opacity: 0;
+    top: 90px; }
+  100% {
+    display: block;
+    opacity: 1;
+    top: 70px; } }
 .open-eyes .header .oe-user-big-icon {
   display: inline-block;
   background: none;
@@ -591,7 +680,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 .oe-panel.specialty {
   background: #d2dde8;
   border: 0;
-  margin: 2px 0 0 0;
+  margin: 0 0 0 0;
   padding: 3px 2px 10px 2px; }
 
 .oe-panel.specialty ol.subspecialties {
@@ -835,9 +924,11 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 
 /* line 35, ../sass/openeyes/components/_tooltips.scss */
 /* line 140, ../sass/openeyes/components/panels/_subspecialty.scss */
+/*
 .oe-panel.specialty ol.events li.selected .event-type.alert {
-  background-image: url("../img/_elements/icons/event/status/alert-hover.png?1475230338"); }
-
+   background-image: url('../img/_elements/icons/event/status/alert-hover.png?1475230338');
+}
+*/
 .oe-panel.specialty .specialty-title {
   border-radius: 0;
   background: #eaddaf;
@@ -853,7 +944,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     display: block;
     height: 40px;
     border-bottom: 2px solid #7d818c;
-    padding: 0 1px 0 10px;
+    padding: 0 1px 0 4px;
     position: fixed;
     top: 82px;
     width: 1051px;
@@ -1086,102 +1177,107 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     margin: 0;
     padding: 0; }
     .oe-create-event-popup table.oe-create-event-step-through ul.subspecialties-list {
-      max-height: 180px;
+      max-height: 190px;
       overflow-y: auto; }
     .oe-create-event-popup table.oe-create-event-step-through ul.context-list {
-      max-height: 270px;
+      max-height: 300px;
       overflow-y: auto; }
-.oe-create-event-popup table.oe-create-event-step-through .tag {
-  float: right;
-  width: 19px;
-  height: 19px;
-  line-height: 19px;
-  background: #9ea1a9;
-  color: #d9def3;
-  text-align: center;
-  font-size: 10px;
-  font-size: 0.625rem;
-  font-weight: 400; }
-.oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service {
-  position: relative;
-  height: 45px;
-  line-height: normal;
-  padding: 8px;
-  font-size: 13px;
-  font-size: 0.8125rem;
-  margin-top: 10px;
-  color: #30823e;
-  background: #eee; }
-.oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service .tag {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background-color: #3ca24d; }
-.oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service .service {
-  display: block;
-  font-size: 11px;
-  font-size: 0.6875rem; }
-.oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service .change-new-specialty {
-  position: absolute;
-  bottom: 3px;
-  right: 2px;
-  height: 17px;
-  width: 17px;
-  background: transparent url("../img/_elements/btns/oe-cross-icon.png") center center no-repeat; }
-.oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service:hover {
-  background-color: #3665ff;
-  color: #fff;
-  cursor: pointer; }
-.oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service.selected {
-  color: #fff;
-  background: #2a7236; }
-.oe-create-event-popup table.oe-create-event-step-through li {
-  display: block;
-  margin: 0 0 2px 0;
-  padding-left: 10px;
-  height: 19px;
-  width: auto;
-  line-height: 19px;
-  background: #eeeeee url("../img/_elements/icons/add-event-arrow.png") right top no-repeat;
-  color: #0b59da;
-  cursor: pointer; }
-.oe-create-event-popup table.oe-create-event-step-through li:hover, .oe-create-event-popup table.oe-create-event-step-through li:focus, .oe-create-event-popup table.oe-create-event-step-through li:active, .oe-create-event-popup table.oe-create-event-step-through li.selected {
-  background-color: #3665ff;
-  color: #fff; }
-.oe-create-event-popup table.oe-create-event-step-through li:hover .tag, .oe-create-event-popup table.oe-create-event-step-through li:focus .tag, .oe-create-event-popup table.oe-create-event-step-through li:active .tag, .oe-create-event-popup table.oe-create-event-step-through li.selected .tag {
-  background: #2b51cc;
-  color: #fff; }
-.oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service {
-  position: relative;
-  height: 45px;
-  line-height: normal;
-  padding: 8px;
-  font-size: 13px;
-  font-size: 0.8125rem; }
-.oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service .tag {
-  position: absolute;
-  top: 0;
-  right: 0; }
-.oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service .service {
-  display: block;
-  font-size: 11px;
-  font-size: 0.6875rem; }
-.oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service.new {
-  margin-top: 10px;
-  color: #30823e;
-  background: #eee; }
-.oe-create-event-popup table.oe-create-event-step-through .change-new-specialty {
-  position: absolute;
-  bottom: 3px;
-  right: 2px;
-  height: 17px;
-  width: 17px;
-  background: transparent url("../img/_elements/btns/oe-cross-icon.png") center center no-repeat; }
-.oe-create-event-popup table.oe-create-event-step-through li.oe-event-type {
-  background-image: none;
-  padding-left: 0; }
-.oe-create-event-popup table.oe-create-event-step-through li.oe-event-type img {
-  margin-right: 10px; }
+  .oe-create-event-popup table.oe-create-event-step-through .tag {
+    float: right;
+    width: 19px;
+    height: 19px;
+    line-height: 19px;
+    background: #9ea1a9;
+    color: #d9def3;
+    text-align: center;
+    font-size: 10px;
+    font-size: 0.625rem;
+    font-weight: 400; }
+  .oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service {
+    position: relative;
+    height: 45px;
+    line-height: normal;
+    padding: 8px;
+    font-size: 13px;
+    font-size: 0.8125rem;
+    margin-top: 10px;
+    color: #30823e;
+    background: #eee; }
+    .oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service .tag {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background-color: #3ca24d; }
+    .oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service .service {
+      display: block;
+      font-size: 11px;
+      font-size: 0.6875rem; }
+    .oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service .change-new-specialty {
+      position: absolute;
+      bottom: 3px;
+      right: 2px;
+      height: 17px;
+      width: 17px;
+      background: transparent url("../img/_elements/btns/oe-cross-icon.png") center center no-repeat; }
+    .oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service:hover {
+      background-color: #3665ff;
+      color: #fff;
+      cursor: pointer; }
+    .oe-create-event-popup table.oe-create-event-step-through .new-added-subspecialty-service.selected {
+      color: #fff;
+      background: #2a7236; }
+  .oe-create-event-popup table.oe-create-event-step-through li {
+    display: block;
+    margin: 0 0 2px 0;
+    padding-left: 10px;
+    height: 19px;
+    width: auto;
+    line-height: 19px;
+    background: #eeeeee url("../img/_elements/icons/add-event-arrow.png") right top no-repeat;
+    color: #0b59da;
+    cursor: pointer; }
+    .oe-create-event-popup table.oe-create-event-step-through li:hover, .oe-create-event-popup table.oe-create-event-step-through li:focus, .oe-create-event-popup table.oe-create-event-step-through li:active, .oe-create-event-popup table.oe-create-event-step-through li.selected {
+      background-color: #3665ff;
+      color: #fff; }
+      .oe-create-event-popup table.oe-create-event-step-through li:hover .tag, .oe-create-event-popup table.oe-create-event-step-through li:focus .tag, .oe-create-event-popup table.oe-create-event-step-through li:active .tag, .oe-create-event-popup table.oe-create-event-step-through li.selected .tag {
+        background: #2b51cc;
+        color: #fff; }
+    .oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service {
+      position: relative;
+      height: 45px;
+      line-height: normal;
+      padding: 8px;
+      font-size: 13px;
+      font-size: 0.8125rem; }
+      .oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service .tag {
+        position: absolute;
+        top: 0;
+        right: 0; }
+      .oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service .service {
+        display: block;
+        font-size: 11px;
+        font-size: 0.6875rem; }
+      .oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service.new {
+        margin-top: 10px;
+        color: #30823e;
+        background: #eee; }
+        .oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service.new.selected {
+          color: #fff;
+          background: #2a7236; }
+        .oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service.new .tag {
+          background-color: #3ca24d; }
+        .oe-create-event-popup table.oe-create-event-step-through li.oe-specialty-service.new .change-new-specialty {
+          position: absolute;
+          bottom: 3px;
+          right: 2px;
+          height: 17px;
+          width: 17px;
+          background: transparent url("../img/_elements/btns/oe-cross-icon.png") center center no-repeat; }
+    .oe-create-event-popup table.oe-create-event-step-through li.oe-event-type {
+      background-image: none;
+      padding-left: 0; }
+      .oe-create-event-popup table.oe-create-event-step-through li.oe-event-type img {
+        margin-right: 10px; }
 
 .oe-create-event-popup .change-subspecialty,
 .oe-create-event-popup .back-date-event {
@@ -1233,8 +1329,11 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     font-size: 0.6875rem;
     color: #444;
     font-weight: 400; }
-.messages.patient.fixed {
-  position: fixed;
-  z-index: 100;
-  background-color: #d2dde8;
-}
+
+/*
+@import 'new/specialty_summary';
+@import 'new/clinic_list';
+@import 'new/database-query';
+@import 'new/correspondence';
+@import 'new/bluesky';
+*/

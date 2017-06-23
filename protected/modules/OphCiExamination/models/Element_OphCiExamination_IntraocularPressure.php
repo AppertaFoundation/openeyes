@@ -84,7 +84,7 @@ class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElemen
         );
     }
 
-    public function setDefaultOptions()
+    public function setDefaultOptions(\Patient $patient = null)
     {
         if ($rows = $this->getSetting('default_rows')) {
             $left_values = array();

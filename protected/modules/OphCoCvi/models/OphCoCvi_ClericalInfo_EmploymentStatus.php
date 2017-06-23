@@ -85,7 +85,7 @@ class OphCoCvi_ClericalInfo_EmploymentStatus extends \BaseActiveRecordVersioned
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'social_history_occupation' => array(self::BELONGS_TO, 'SocialHistoryOccupation', 'social_history_occupation_id')
+            'social_history_occupation' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\SocialHistoryOccupation', 'social_history_occupation_id')
         );
     }
 
@@ -151,13 +151,13 @@ class OphCoCvi_ClericalInfo_EmploymentStatus extends \BaseActiveRecordVersioned
     }
 
     /**
-     * @param \SocialHistory $history
+     * @param $social_history
      * @return int|null
      */
-    public static function defaultForSocialHistoryId(\SocialHistory $history)
+    public static function defaultForSocialHistoryId($social_history)
     {
-        if ($history->occupation_id !== null) {
-            if ($default = self::model()->active()->findByAttributes(array('social_history_occupation_id' => $history->occupation_id))) {
+        if ($social_history->occupation_id !== null) {
+            if ($default = self::model()->active()->findByAttributes(array('social_history_occupation_id' => $social_history->occupation_id))) {
                 return $default->id;
             }
         }

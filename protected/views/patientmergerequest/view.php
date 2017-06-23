@@ -19,7 +19,7 @@
 ?>
 
     <div id="patientMergeWrapper" class="container content">
-        
+        <?php $this->renderPartial('//base/_messages')?>
         <div class="row">
             <div class="large-4 column large-centered text-right large-offset-8">
                 <section class="box dashboard">

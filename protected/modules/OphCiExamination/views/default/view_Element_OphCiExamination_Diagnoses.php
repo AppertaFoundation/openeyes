@@ -17,29 +17,50 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php
+// construct arrays of other subspecialty principal diagnoses
+$right_principals = array();
+$left_principals = array();
+foreach ($this->patient->episodes as $episode) {
+    if ($episode->id != $this->episode->id && $episode->diagnosis) {
+        if (in_array($episode->eye_id, array(Eye::RIGHT, Eye::BOTH))) {
+            $right_principals[] = array($episode->diagnosis, $episode->getSubspecialtyText());
+        }
+        if (in_array($episode->eye_id, array(Eye::LEFT, Eye::BOTH))) {
+            $left_principals[] = array($episode->diagnosis, $episode->getSubspecialtyText());;
+        }
+    }
+} ?>
 <div class="element-data element-eyes row">
     <div class="element-eye right-eye column">
         <?php
         $principal = OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()->find('element_diagnoses_id=? and principal=1 and eye_id in (2,3)', array($element->id));
         if ($principal) {
-            ?>
+        ?>
+        <div class="data-row">
+            <div class="data-value">
+                <strong>
+                    <?php echo $principal->disorder->term ?>
+                </strong>
+            </div>
+        </div>
+        <?php
+        } foreach($right_principals as $disorder) { ?>
             <div class="data-row">
                 <div class="data-value">
-                    <strong>
-                        <?php echo $principal ?>
-                    </strong>
+                        <?= $disorder[0]->term ?> <span class="has-tooltip fa fa-info-circle" data-tooltip-content="Principal diagnosis for <?= $disorder[1] ?>"></span>
                 </div>
             </div>
-            <?php
-        } ?>
         <?php
+        }
+
         $diagnoses = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
             ->findAll('element_diagnoses_id=? and principal=0 and eye_id in (2,3)', array($element->id));
         foreach ($diagnoses as $diagnosis) {
             ?>
             <div class="data-row">
                 <div class="data-value">
-                    <?php echo $diagnosis ?>
+                    <?php echo $diagnosis->disorder->term ?>
                 </div>
             </div>
             <?php
@@ -54,20 +75,27 @@
             <div class="data-row">
                 <div class="data-value">
                     <strong>
-                        <?php echo $principal ?>
+                        <?php echo $principal->disorder->term ?>
                     </strong>
                 </div>
             </div>
             <?php
-        } ?>
-        <?php
+        }
+        foreach($left_principals as $disorder) { ?>
+            <div class="data-row">
+                <div class="data-value">
+                    <?= $disorder[0]->term ?> <span class="has-tooltip fa fa-info-circle" data-tooltip-content="Principal diagnosis for <?= $disorder[1] ?>"></span>
+                </div>
+            </div>
+            <?php
+        }
         $diagnoses = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
             ->findAll('element_diagnoses_id=? and principal=0 and eye_id in (1,3)', array($element->id));
         foreach ($diagnoses as $diagnosis) {
             ?>
             <div class="data-row">
                 <div class="data-value">
-                    <?php echo $diagnosis ?>
+                    <?php echo $diagnosis->disorder->term ?>
                 </div>
             </div>
             <?php

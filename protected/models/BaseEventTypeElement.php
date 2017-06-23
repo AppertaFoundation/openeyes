@@ -29,10 +29,22 @@ class BaseEventTypeElement extends BaseElement
     public $userId;
     public $patientId;
     public $useContainerView = true;
+    public $widgetClass = null;
+    // allow us to store a widget on the element so that it doesn't have to widgetised twice
+    public $widget = null;
+    /**
+     * set to true for the element to load from previous
+     * @see BaseElement::loadFromExisting
+    */
+    protected $default_from_previous = false;
+
+    // array of audit messages
+    protected $audit = array();
 
     protected $_element_type;
     protected $_children;
     protected $frontEndErrors = array();
+    // TODO: these should be defined in their relevant classes
     protected $errorExceptions = array(
         'Element_OphTrOperationbooking_Operation_procedures' => 'select_procedure_id_procs',
         'Element_OphDrPrescription_Details_items' => 'prescription_items',
@@ -59,6 +71,15 @@ class BaseEventTypeElement extends BaseElement
         }
 
         return $this->_element_type;
+    }
+
+    /**
+     * @return BaseAPI
+     */
+    protected function getModuleApi()
+    {
+        $event_type = $this->getElementType()->event_type;
+        return $this->getApp()->moduleAPI->get($event_type->class_name);
     }
 
     /**
@@ -171,52 +192,6 @@ class BaseEventTypeElement extends BaseElement
         return $this->_children;
     }
 
-    /**
-     * Fields which are copied by the loadFromExisting() method
-     * By default these are taken from the "safe" scenario of the model rules, but
-     * should be overridden for more complex requirements.
-     *
-     * @return array:
-     */
-    protected function copiedFields()
-    {
-        $rules = $this->rules();
-        $fields = null;
-        foreach ($rules as $rule) {
-            if ($rule[1] == 'safe') {
-                $fields = $rule[0];
-                break;
-            }
-        }
-        $fields = explode(',', $fields);
-        $no_copy = array('event_id', 'id');
-        foreach ($fields as $index => $field) {
-            if (in_array($field, $no_copy)) {
-                unset($fields[$index]);
-            } else {
-                $fields[$index] = trim($field);
-            }
-        }
-
-        return $fields;
-    }
-
-    /**
-     * Load an existing element's data into this one
-     * The base implementation simply uses copiedFields(), but it may be
-     * overridden to allow for more complex relationships.
-     *
-     * @param BaseEventTypeElement $element
-     */
-    public function loadFromExisting($element)
-    {
-        foreach ($this->copiedFields() as $attribute) {
-            if (isset($element->$attribute)) {
-                $this->$attribute = $element->$attribute;
-            }
-        }
-    }
-
     public function render($action)
     {
         $this->Controller->renderPartial();
@@ -233,11 +208,30 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
+     * Get the most recent instance of this element type for the given patient. If there isn't one,
+     * then returns $this
+     *
+     * @param Patient $patient
+     * @param bool $use_context
+     * @return BaseEventTypeElement
+     */
+    public function getMostRecentForPatient(\Patient $patient, $use_context = false)
+    {
+        return $this->getModuleApi()->getLatestElement(static::class, $patient, $use_context) ?: $this;
+    }
+
+    /**
      * Stubbed method to set default options
      * Used by child objects to set defaults for forms on create.
+     * @param \Patient $patient
      */
-    public function setDefaultOptions()
+    public function setDefaultOptions(\Patient $patient = null)
     {
+        if ($this->default_from_previous && $patient) {
+            if ($previous = $this->getMostRecentForPatient($patient)) {
+                $this->loadFromExisting($previous);
+            }
+        }
     }
 
     /**
@@ -414,5 +408,62 @@ class BaseEventTypeElement extends BaseElement
         !empty($_ids) && $criteria->addNotInCondition('id', $_ids);
 
         $model::model()->deleteAll($criteria);
+    }
+
+    /**
+     * Store 1 or more audit messages if not already set for auditing
+     *
+     * @param $audit string or array of strings
+     */
+    public function addAudit($audit)
+    {
+        if ($audit && !is_array($audit)) {
+            $audit = array($audit);
+        }
+        foreach ($audit as $a) {
+            if (!in_array($a, $this->audit)) {
+                $this->audit[] = $a;
+            }
+        }
+    }
+
+    /**
+     * Stub method for audit checking before an element is saved.
+     */
+    protected function checkForAudits()
+    {}
+
+    /**
+     * @inheritdoc
+     * @return bool
+     */
+    protected function beforeSave()
+    {
+        $this->checkForAudits();
+        return parent::beforeSave();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function afterSave()
+    {
+        parent::afterSave();
+        $this->doAudit();
+    }
+
+    /**
+     * Audit the stored audit items
+     */
+    protected function doAudit()
+    {
+        if (count($this->audit)) {
+            $user = $this->getChangeUser();
+            $patient = $this->event->getPatient();
+            foreach ($this->audit as $a) {
+                $user->audit('patient', $a, null, false, array('patient_id' => $patient->id));
+            }
+            $this->audit = array();
+        }
     }
 }

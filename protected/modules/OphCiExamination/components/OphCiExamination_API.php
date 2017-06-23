@@ -42,6 +42,18 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getLatestElement($element, Patient $patient, $use_context = false, $before = null)
+    {
+        // Ensure namespace prepended appropriately if necessary
+        if (strpos($element, 'models') == 0) {
+            $element = 'OEModule\OphCiExamination\\' . $element;
+        }
+        return parent::getLatestElement($element, $patient, $use_context, $before);
+    }
+
+    /**
      * Extends parent method to prepend model namespace.
      *
      * @param \Episode $episode
@@ -1896,10 +1908,23 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * @param Patient $patient
+     * @param bool $use_context
+     * @return mixed|null
+     */
+    public function getNoAllergiesDate(\Patient $patient, $use_context = false)
+    {
+        if ($element = $this->getLatestElement('models\Allergies', $patient, $use_context)) {
+            return $element->no_allergies_date;
+        }
+        return null;
+    }
+
+    /**
      * Return list of allergies belonging to a patient.
      *
      * @param \Patient $patient
-     *
+     * @todo: update to reflect change to allergies
      * @return string
      */
     public function getAllergies(\Patient $patient)
@@ -1970,7 +1995,6 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-<<<<<<< HEAD
      * Get clinic outcome comments from the most recent Examination.
      * Limited to current data context by default.
      * Returns nothing if the latest Examination does not contain the clinic outcome element (or the comments are empty)
@@ -1990,7 +2014,7 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * Get clinic out details from the most recent Examination.
+     * Get clinic outcome details from the most recent Examination.
      * Limited to the current data context by default.
      * Returns nothing if the latest Examination does not contain the clinic outcome element.
      *

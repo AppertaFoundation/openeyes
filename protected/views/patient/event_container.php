@@ -9,8 +9,9 @@
 		</div>
 	<?php }?>
 
-	<?php $this->renderPartial('//patient/episodes_sidebar');?>
-	<?php $this->renderPartial('//patient/event_content', array(
+
+    <?php $this->renderSidebar('//patient/episodes_sidebar') ?>
+    <?php $this->renderPartial('//patient/event_content', array(
         'content' => $content,
     )); ?>
 </div>

@@ -26,6 +26,10 @@ class AuthRules
      */
     public function canEditEpisode(Firm $firm, Episode $episode)
     {
+        if ($episode->change_tracker) {
+            // firm/subspecialty  is irrelevant for change tracking episodes.
+            return true;
+        }
         if ($episode->legacy) {
             return false;
         }
@@ -54,6 +58,11 @@ class AuthRules
             if (!$event_type->support_services && !$firm->getSubspecialtyID()) {
                 // Can't create a non-support service event for a support-service firm
                 return false;
+            }
+
+            if ($event_type->rbac_operation_suffix) {
+                $oprn = "OprnCreate" . $event_type->rbac_operation_suffix;
+                if (!Yii::app()->user->checkAccess($oprn)) return false;
             }
         }
 

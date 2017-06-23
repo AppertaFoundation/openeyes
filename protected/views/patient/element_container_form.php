@@ -92,14 +92,7 @@ if ($this->isHiddenInUI($element)) {
 		<div class="sub-elements active">
 			<?php $this->renderChildOpenElements($element, $this->action->id, $form, $data)?>
 		</div>
-		<?php if (!Yii::app()->params['element_sidebar']) { ?>
-			<div class="sub-elements inactive">
-				<ul class="sub-elements-list">
-					<?php $this->renderChildOptionalElements($element, $this->action->id, $form, $data)?>
-				</ul>
-			</div>
-		<?php }
-	} ?>
+	<?php } ?>
 </section>
 <?php } else { ?>
 	<section
@@ -116,14 +109,7 @@ if ($this->isHiddenInUI($element)) {
 			<div class="sub-elements active">
 				<?php $this->renderChildOpenElements($element, $this->action->id, $form, $data) ?>
 			</div>
-			<?php if (!Yii::app()->params['element_sidebar']) { ?>
-			<div class="sub-elements inactive">
-				<ul class="sub-elements-list">
-					<?php $this->renderChildOptionalElements($element, $this->action->id, $form, $data) ?>
-				</ul>
-			</div>
-		<?php }
-		} ?>
+		<?php } ?>
 
 	</section>
 <?php } ?>

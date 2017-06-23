@@ -56,7 +56,6 @@
                 </div>
             </div>
         </div>
-
         <?php $this->endWidget(); ?>
     </div>
     <div class="large-8 column">

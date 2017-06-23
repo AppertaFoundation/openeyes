@@ -118,7 +118,11 @@ class DefaultController extends \BaseEventTypeController
             $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
         }
 
-        $remove[] = 'OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion';
+        // Deprecated elements that we keep in place for backward compatibility with rendering
+        $remove = array_merge($remove, array(
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy',
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion'
+        ));
 
         if ($this->set) {
             foreach ($this->set->HiddenElementTypes as $element) {
@@ -613,7 +617,7 @@ class DefaultController extends \BaseEventTypeController
                         $answers[] = $answer;
                     }
                 }
-                if (isset($data[$model_name][$side.'_risks'])) {
+                if (isset($data[$model_name][$side.'_risks']) && is_array($data[$model_name][$side.'_risks'])) {
                     foreach ($data[$model_name][$side.'_risks'] as $risk_id) {
                         if ($risk = models\OphCiExamination_InjectionManagementComplex_Risk::model()->findByPk($risk_id)) {
                             $risks[] = $risk;
@@ -1411,5 +1415,5 @@ class DefaultController extends \BaseEventTypeController
             \PatientRiskAssignment::model()->deleteByPk($patient_risk->id);
         }
     }
-
 }
+

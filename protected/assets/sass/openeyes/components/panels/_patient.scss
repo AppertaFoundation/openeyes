@@ -183,6 +183,12 @@
 				}
 			}
 		}
+		.patient-edit-link {
+			font-size: 1.2em;
+			position: relative;
+			left: -10px;
+			top: -5px;
+		}
 	}
 }
 
@@ -328,3 +334,8 @@
     z-index: 10000;
 }
 
+.messages.patient.fixed {
+	position: fixed;
+	z-index: 100;
+	background-color: #d2dde8;
+}

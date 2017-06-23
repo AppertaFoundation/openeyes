@@ -30,6 +30,7 @@
  * The followings are the available model relations:
  * @property ElementType $parent_element_type
  * @property ElementType[] $child_element_types
+ * @property EventType $event_type
  */
 class ElementType extends BaseActiveRecordVersioned
 {
@@ -75,10 +76,12 @@ class ElementType extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
+            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'parent_element_type' => array(self::BELONGS_TO, 'ElementType', 'parent_element_type_id'),
             'child_element_types' => array(self::HAS_MANY, 'ElementType', 'parent_element_type_id',
                 'alias' => 'child',
                 'order' => 'child.display_order ASC'),
+            'event_type' => array(self::BELONGS_TO, 'EventType', 'event_type_id')
         );
     }
 

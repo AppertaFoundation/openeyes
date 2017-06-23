@@ -19,42 +19,61 @@
 ?>
 
 <?php
-    $html_options = array(
-        'options' => array(),
-        'empty' => '- Please select -',
-        'div_id' => get_class($element).'_'.$side.'_complications',
-        'label' => 'Complications', );
-    $complications = OphTrIntravitrealinjection_Complication::model()->activeOrPk($element->complicationValues)->findAll();
-    foreach ($complications as $complication) {
-        $html_options['options'][(string) $complication->id] = array('data-order' => $complication->display_order, 'data-description_required' => $complication->description_required);
-    }
-    echo $form->multiSelectList($element, get_class($element).'['.$side.'_complications]', $side.'_complications', 'id', CHtml::listData($complications, 'id', 'name'), $element->ophtrintravitinjection_complication_defaults, $html_options, false, false, null, false, false, array('field' => 6))
+$html_options = array(
+    'options' => array(),
+    'empty' => '- Please select -',
+    'div_id' => get_class($element) . '_' . $side . '_complications',
+    'label' => 'Complications',
+);
+$complications = OphTrIntravitrealinjection_Complication::model()->activeOrPk($element->complicationValues)->findAll();
+foreach ($complications as $complication) {
+    $html_options['options'][(string)$complication->id] = array('data-order' => $complication->display_order, 'data-description_required' => $complication->description_required);
+}
+echo $form->multiSelectList(
+    $element,
+    get_class($element) . '[' . $side . '_complications]',
+    $side . '_complications',
+    'id',
+    CHtml::listData($complications, 'id', 'name'),
+    $element->ophtrintravitinjection_complication_defaults,
+    $html_options,
+    false,
+    false,
+    null,
+    false,
+    false,
+    array('field' => 6)
+)
 ?>
 <?php
 $show_desc = false;
-if (@$_POST[get_class($element)] && $complication_ids = @$_POST[get_class($element)][$side.'_complications']) {
+if (@$_POST[get_class($element)] && $complication_ids = @$_POST[get_class($element)][$side . '_complications']) {
     $criteria = new CDbCriteria();
     $criteria->addInCondition('id', $complication_ids);
     $complications = OphTrIntravitrealinjection_Complication::model()->findAll($criteria);
 } else {
-    $complications = $element->{$side.'_complications'};
+    $complications = $element->{$side . '_complications'};
 }
 
-foreach ($complications as $complication) {
-    if ($complication->description_required) {
-        $show_desc = true;
+if( is_array($complications) ){
+    foreach ($complications as $complication) {
+        if ($complication->description_required) {
+            $show_desc = true;
+        }
     }
 }
 ?>
 
-<div id="div_Element_OphTrIntravitrealinjection_Complications_<?php echo $side; ?>_oth_descrip" class="row field-row<?php if (!$show_desc) { echo ' hide'; } ?>">
-	<div class="<?php echo $form->columns('label');?>">
-		<label for="<?php echo get_class($element)?>_<?php echo $side.'_oth_descrip'?>">
-			<?php echo $element->getAttributeLabel($side.'_oth_descrip'); ?>:
-		</label>
-	</div>
-	<div class="<?php echo $form->columns('field');?>">
-		<?php echo $form->textArea($element, $side.'_oth_descrip', array('rows' => 4, 'cols' => 30, 'nowrapper' => true));?>
-	</div>
+<div id="div_Element_OphTrIntravitrealinjection_Complications_<?php echo $side; ?>_oth_descrip" class="row field-row<?php if (!$show_desc) {
+    echo ' hide';
+} ?>">
+  <div class="<?php echo $form->columns('label'); ?>">
+    <label for="<?php echo get_class($element) ?>_<?php echo $side . '_oth_descrip' ?>">
+        <?php echo $element->getAttributeLabel($side . '_oth_descrip'); ?>:
+    </label>
+  </div>
+  <div class="<?php echo $form->columns('field'); ?>">
+      <?php echo $form->textArea($element, $side . '_oth_descrip', array('rows' => 4, 'cols' => 30, 'nowrapper' => true)); ?>
+  </div>
 </div>
 
