@@ -1,3 +1,12 @@
+<aside class="column sidebar episodes-and-events">
+    <div class="oe-scroll-wrapper" style="height:300px">
+        <div class="all-panels"></div>
+    </div>
+    <div class="show-scroll-tip">scroll down</div>
+    <div class="scroll-blue-top" style="display:none;"></div>
+</aside>
+
+
 <script type="text/javascript">
 
     $(document).ready(function() {

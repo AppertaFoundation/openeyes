@@ -83,6 +83,16 @@ class BaseController extends Controller
     }
 
     /**
+     * Override-able render function for sidebar
+     *
+     * @param $default_view
+     */
+    public function renderSidebar($default_view)
+    {
+        $this->renderPartial($default_view);
+    }
+
+    /**
      * @param string $action
      *
      * @return bool

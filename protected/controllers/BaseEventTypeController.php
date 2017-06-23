@@ -1406,6 +1406,17 @@ class BaseEventTypeController extends BaseModuleController
         return '';
     }
 
+    public function renderSidebar($default_view)
+    {
+        if (in_array($this->action->id,array('create','edit'))) {
+            $this->renderPartial('//patient/_patient_element_sidebar');
+        } else {
+            parent::renderSidebar($default_view);
+        }
+
+    }
+
+
     /**
      * Extend the parent method to support inheritance of modules (and rendering the element views from the parent module).
      *
