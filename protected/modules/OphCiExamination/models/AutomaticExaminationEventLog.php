@@ -183,8 +183,9 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
     private function patientNumberSearch(\CDbCriteria $criteria, $filter )
     {
         if (array_key_exists('patient_number', $filter) && $filter['patient_number'] !== '') {
+            $patient_search = new PatientSearch();
             $criteria->addCondition('hos_num = :hos_num');
-            $criteria->params[':hos_num'] = $filter['patient_number'];
+            $criteria->params[':hos_num'] = $patient_search->getHospitalNumber($filter['patient_number']);
         }
     }
 
