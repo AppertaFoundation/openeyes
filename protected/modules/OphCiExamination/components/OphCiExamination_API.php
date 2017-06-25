@@ -68,7 +68,9 @@ class OphCiExamination_API extends \BaseAPI
             $kls = 'OEModule\OphCiExamination\\' . $kls;
         }
 
-        return parent::getElementForLatestEventInEpisode($episode, $kls);
+        $patient = $episode->patient;
+
+        return parent::getElementFromLatestEvent($kls, $patient);
     }
 
     /**
