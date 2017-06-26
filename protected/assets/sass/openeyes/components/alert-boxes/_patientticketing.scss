@@ -21,13 +21,23 @@
 }
 
 .ticketsummary-panel{
-  max-height: 201px;
+  max-height: 217px;
   overflow-y: scroll;
   overflow-x: hidden;
-  margin-bottom: 0;
 
   textarea.noresize{
     width: 100%;
     resize: none;
   }
+
+  &.panel{
+    margin-bottom: 0;
+  }
+}
+
+.PatientTicketing-moveTicket{
+  max-height: 217px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  margin-bottom: 0;
 }
