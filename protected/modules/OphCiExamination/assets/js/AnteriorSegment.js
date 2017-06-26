@@ -27,7 +27,9 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
             Lens:'LensCrossSection',
             PCIOL:'PCIOLCrossSection',
             ACIOL: 'ACIOLCrossSection',
-            CornealOpacity: 'CornealOpacityCrossSection'
+            CornealOpacity: 'CornealOpacityCrossSection',
+            Hypopyon: 'HypopyonCrossSection',
+            Hyphaema: 'HyphaemaCrossSection'
         }
     };
 
