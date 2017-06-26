@@ -77,11 +77,13 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'listenerArray' => array('anteriorSegmentListener', 'autoReportListener'),
     'syncArray' => array(
         $side .'_'.$element->elementType->id . '_side' => array(
-            'AntSeg' => array('AntSegCrossSection' => array('parameters' => array('apexY') ) ),
+            'AntSeg' => array('AntSegCrossSection' => array('parameters' => array('apexY', 'colour') ) ),
             'Lens' => array('LensCrossSection' => array('parameters' => array('originY', 'nuclearGrade', 'corticalGrade', 'posteriorSubcapsularGrade') ) ),
             'ACIOL' => array('ACIOLCrossSection' => array('parameters' => array('originY') ) ),
             'PCIOL' => array('PCIOLCrossSection' => array('parameters' => array('originY', 'fx') ) ),
-            'CornealOpacity' => array('CornealOpacityCrossSection' => array('parameters' => array('yMidPoint','d','h','w','iW','originY','minY','maxY') ) )
+            'CornealOpacity' => array('CornealOpacityCrossSection' => array('parameters' => array('yMidPoint','d','h','w','iW','originY','minY','maxY') ) ),
+            'Hypopyon' => array('HypopyonCrossSection' => array('parameters' => array('apexY'))),
+            'Hyphaema' => array('HyphaemaCrossSection' => array('parameters' => array('apexY')))
         )
     ),
     'idSuffix' => $side.'_'.$element->elementType->id,
