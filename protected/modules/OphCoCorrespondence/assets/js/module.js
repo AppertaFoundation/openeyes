@@ -80,9 +80,13 @@ function resetInternalReferralFields(){
 
     $('.internal-referral-section').find(':input').not(':button, :submit, :reset, :hidden').removeAttr('checked').removeAttr('selected').not(':checkbox, :radio, select').val('');
 
-    $.each( $('.internal-referral-section select').find(':input'), function(i, input){
+    $.each( $('.internal-referral-section select'), function(i, input){
         $(input).val('');
     });
+
+    // set back the defaults
+    $('#ElementLetter_is_same_condition_0').prop('checked', true);
+    $('#ElementLetter_to_location_id').val(OE_to_location_id);
 }
 
 function setRecipientToInternalReferral(){
