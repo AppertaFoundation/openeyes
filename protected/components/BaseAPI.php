@@ -217,7 +217,7 @@ class BaseAPI
      */
     public function getElementForLatestEventInEpisode($episode, $element)
     {
-        trigger_error('getElementForLatestEventInEpisode is deprecated as of version 2.0, please use getElementFromLatestEvent instead', E_DEPRECATED);
+        //trigger_error('getElementForLatestEventInEpisode is deprecated as of version 2.0, please use getElementFromLatestEvent instead', E_USER_NOTICE);
         $event_type = $this->getEventType();
 
         if ($event = $episode->getMostRecentEventByType($event_type->id)) {
