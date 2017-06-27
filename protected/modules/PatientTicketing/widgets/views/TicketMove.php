@@ -80,7 +80,7 @@
                         'patient_id' => $this->ticket->patient_id,
                         'current_queue_id' => $this->ticket->current_queue->id,
                         'ticket' => $this->ticket,
-                        'buttons' => $buttons
+                        'extra_view_data' => array('buttons'=>$buttons)
                     ));
 
                 $buttons_drawn = true;

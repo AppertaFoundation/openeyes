@@ -76,7 +76,7 @@ if ($queue) {?>
                     <?php } ?>
                 </ul>
             </div>
-            <?php echo $buttons; ?>
+            <?php echo @$extra_view_data['buttons']; ?>
 		<?php }    ?>
 	</div>
 	</div>
