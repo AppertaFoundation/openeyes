@@ -79,7 +79,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '20170626',
+            'time' => '20170627',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',

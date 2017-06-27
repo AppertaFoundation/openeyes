@@ -7702,6 +7702,10 @@ tfoot.pagination-container .pagination-view-all {
   z-index: 1004 !important;
 }
 /* line 37, ../sass/openeyes/components/_jquery-ui.scss */
+.open-eyes .ui-datepicker {
+  z-index: 200 !important;
+}
+/* line 39, ../sass/openeyes/components/_jquery-ui.scss */
 .open-eyes .autocomplete-match {
   font-weight: bold;
 }
