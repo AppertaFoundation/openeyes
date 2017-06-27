@@ -66,20 +66,28 @@
 	</div>
 	<div id="PatientTicketing-queue-assignment" data-queue="<?=$this->ticket->current_queue->id?>">
 		<?php
+
+            $buttons = '<div class="buttons">
+                            <button class="secondary small ok" type="button" data-queue="'.$this->ticket->current_queue->id.'">OK</button>
+                            <button class="warning small cancel" type="button" data-queue="'.$this->ticket->current_queue->id.'" data-category="'.$this->ticket->current_queue->queueset->category_id.'">Cancel</button>
+                        </div>';
+
+            $buttons_drawn = false;
+
             if ($this->outcome_queue_id) {
                 $this->widget('OEModule\PatientTicketing\widgets\QueueAssign', array(
                         'queue_id' => $this->outcome_queue_id,
                         'patient_id' => $this->ticket->patient_id,
                         'current_queue_id' => $this->ticket->current_queue->id,
                         'ticket' => $this->ticket,
+                        'buttons' => $buttons
                     ));
+
+                $buttons_drawn = true;
             }
         ?>
 
 	</div>
 	<div class="alert-box alert hidden"></div>
-	<div class="buttons">
-		<button class="secondary small ok" type="button" data-queue="<?=$this->ticket->current_queue->id?>">OK</button>
-		<button class="warning small cancel" type="button" data-queue="<?=$this->ticket->current_queue->id?>" data-category="<?=$this->ticket->current_queue->queueset->category_id?>">Cancel</button>
-	</div>
+    <?php if(!$buttons_drawn) echo $buttons; ?>
 </form>
