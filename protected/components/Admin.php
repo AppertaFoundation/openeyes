@@ -622,7 +622,7 @@ class Admin
      */
     public function attributeValue($row, $attribute)
     {
-        if (isset($row->$attribute)) {
+        if ($row->hasAttribute($attribute)) {
             return $row->$attribute;
         }
 
