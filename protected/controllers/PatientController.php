@@ -178,7 +178,7 @@ class PatientController extends BaseController
 
         $patientSearch = new PatientSearch();
 	    $dataProvider = $patientSearch->search($term);
-	    $itemCount = $dataProvider->totalItemCount;
+	    $itemCount = $dataProvider->getItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
 	    $search_terms = $patientSearch->getSearchTerms();
 
         if ($itemCount == 0) {
