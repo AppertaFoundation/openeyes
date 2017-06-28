@@ -37,7 +37,11 @@
 
 .PatientTicketing-moveTicket{
   max-height: 217px;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   margin-bottom: 0;
+
+  .buttons{
+    margin-top: 10px;
+  }
 }
