@@ -102,13 +102,7 @@ class Element_OphCiExamination_History extends \BaseEventTypeElement
      */
     public function setDefaultOptions(\Patient $patient = null)
     {
-        if ($api = Yii::app()->moduleAPI->get('OphCoCataractReferral')) {
-            if ($episode = Yii::app()->getController()->patient->getEpisodeForCurrentSubspecialty()) {
-                if ($history = $api->getHistoryForLatestCataractReferralInEpisode($episode->id)) {
-                    $this->description = $history;
-                }
-            }
-        }
+        
     }
 
     /**
