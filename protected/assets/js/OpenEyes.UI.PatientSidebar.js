@@ -177,7 +177,12 @@
     PatientSidebar.prototype.loadElement = function(item, data, callback) {
         var self = this;
         var $parentLi = $(item).parents('li:first');
+        if (data === undefined)
+            data = {};
 
+        if (self.options['event_id'] !== undefined) {
+            data['event_id'] = self.options['event_id'];
+        }
         addElement($parentLi.clone(true), true, $parentLi.hasClass('child'), undefined, data, callback);
     };
 

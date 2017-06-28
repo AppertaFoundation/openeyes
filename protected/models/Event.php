@@ -31,6 +31,9 @@
  * @property string $delete_reason
  * @property boolean $is_automated
  * @property array $automated_source - json structure
+ * @property string $event_date
+ * @property string $created_date
+ * @property string $last_modified_date
  *
  * The followings are the available model relations:
  * @property Episode   $episode
@@ -434,6 +437,18 @@ class Event extends BaseActiveRecordVersioned
         $latest = $this->getLatestOfTypeInEpisode();
 
         return ($latest->id == $this->id) ? true : false;
+    }
+
+    /**
+     * @param Event $event
+     * @return bool
+     */
+    public function isAfterEvent(Event $event)
+    {
+        if ($this->event_date === $event->event_date) {
+            return $this->created_date > $event->created_date;
+        }
+        return $this->event_date > $event->event_date;
     }
 
     /**
