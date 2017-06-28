@@ -53,7 +53,7 @@ $model_name = CHtml::modelName($element);
         </div>
     </div>
 
-
+  <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <table id="<?= $model_name ?>_operation_table">
         <thead>
         <tr>
