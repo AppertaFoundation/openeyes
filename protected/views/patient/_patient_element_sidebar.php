@@ -8,7 +8,10 @@
 
 
 <script type="text/javascript">
-
+    new OpenEyes.UI.Sidebar(
+      $('.sidebar .oe-scroll-wrapper')
+    );
+    
     $(document).ready(function() {
         new OpenEyes.UI.PatientSidebar($('aside.episodes-and-events'), {
             patient_sidebar_json: '<?php echo $this->getElementTree() ?>',
