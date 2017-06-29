@@ -139,10 +139,27 @@ class Site extends BaseActiveRecordVersioned
         ));
     }
 
-    public function getListForCurrentInstitution($field = 'short_name')
+    public function getListForCurrentInstitution($field = 'short_name', $having_theatres_only = false)
     {
         $result = array();
+        $sites_with_theatres = array();
+
+        if($having_theatres_only)
+        {
+            foreach (OphTrOperationbooking_Operation_Theatre::model()->findAll() as $theatre)
+            {
+                if(!in_array($theatre->site_id, $sites_with_theatres))
+                {
+                    $sites_with_theatres[] = $theatre->site_id;
+                }
+            }
+        }
+
         foreach (Institution::model()->getCurrent()->sites as $site) {
+            if($having_theatres_only && !in_array($site->id, $sites_with_theatres))
+            {
+                continue;
+            }
             $result[$site->id] = $site->$field;
         }
 
