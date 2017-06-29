@@ -18,7 +18,7 @@ class OphCiExamination_Episode_GlaucomaManagementPlan extends \EpisodeSummaryWid
     {
         if ($plan = $this->event_type->api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan',
             $this->episode->patient,
-            $use_context = true)
+            false)
         ){
             $this->render(__CLASS__, array('plan' => $plan));
         }

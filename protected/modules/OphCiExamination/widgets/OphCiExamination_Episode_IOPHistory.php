@@ -56,7 +56,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                 ),
             ));
 
-        $events = $this->event_type->api->getEvents($this->episode->patient, $use_context = true);
+        $events = $this->event_type->api->getEvents($this->episode->patient, false);
 
         foreach ($events as $event) {
             if (($iop = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure'))) {
@@ -69,7 +69,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
         $plan = $this->event_type->api->getLatestElement(
             'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan',
             $this->episode->patient,
-            $use_context = true
+            false
         );
        
         if ($plan) {
