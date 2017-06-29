@@ -23,7 +23,7 @@ if (!isset($values)) {
         'id' => $op->id,
         'operation' => $op->operation,
         'side_id' => $op->side_id,
-        'side_display' => $op->side ? $op->side->adjective : '',
+        'side_display' => $op->side ? $op->side->adjective : 'None',
         'date' => $op->date,
         'date_display' => $op->getDisplayDate()
     );
