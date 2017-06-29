@@ -1557,23 +1557,23 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getPrincipalCCT($patient, $use_context = true)
     {
-        $event = $this->getLatestEvent($patient, $use_context);
         $str = '';
-
-        if (!isset($event->episode->eye->name)) {
-            return;
-        }
-        $eyeName = $event->episode->eye->name;
         if ($el = $this->getElementFromLatestEvent(
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT',
+            'models\Element_OphCiExamination_AnteriorSegment_CCT',
             $patient,
             $use_context)
         ) {
-            if (isset($el->left_value) && ($eyeName == 'Left' || $eyeName == 'Both')) {
-                $str = $str . 'Left Eye: ' . $el->left_value . ' µm using ' . $el->left_method->name . '. ';
-            }
-            if (isset($el->right_value) && ($eyeName == 'Right' || $eyeName == 'Both')) {
-                $str = $str . 'Right Eye: ' . $el->right_value . ' µm using ' . $el->right_method->name . '. ';
+            if ($principal_eye_id = $el->event->episode->eye->id) {
+                if (in_array($principal_eye_id, array(\Eye::LEFT, \Eye::BOTH), false)) {
+                    if ($el->hasLeft()) {
+                        $str .= 'Left Eye: ' . $el->left_value . ' µm using ' . $el->left_method->name . '. ';
+                    }
+                }
+                if (in_array($principal_eye_id, array(\Eye::RIGHT, \Eye::BOTH), false)) {
+                    if ($el->hasRight()) {
+                        $str .= 'Right Eye: ' . $el->right_value . ' µm using ' . $el->right_method->name . '. ';
+                    }
+                }
             }
         }
 
