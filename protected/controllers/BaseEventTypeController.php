@@ -1733,6 +1733,7 @@ class BaseEventTypeController extends BaseModuleController
             throw new CHttpException(403, 'Invalid event id.');
         }
         $this->patient = $this->event->episode->patient;
+        $this->episode = $this->event->episode;
         $this->site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
         $this->setOpenElementsFromCurrentEvent('print');
     }
