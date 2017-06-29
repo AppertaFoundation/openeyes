@@ -43,6 +43,13 @@ class Allergies extends \BaseEventTypeElement
         return 'et_ophciexamination_allergies';
     }
 
+    public function behaviors()
+    {
+        return array(
+            'PatientLevelElementBehaviour' => 'PatientLevelElementBehaviour',
+        );
+    }
+
     /**
      * @return array validation rules for model attributes.
      */
@@ -126,31 +133,7 @@ class Allergies extends \BaseEventTypeElement
     }
 
     /**
-     * @param \Patient|null $patient
-     * @return \BaseEventTypeElement|null
-     */
-    public function getTipElement(\Patient $patient = null)
-    {
-        if (!$patient) {
-            $patient = $this->event->getPatient();
-        }
-        return $this->getModuleApi()->getLatestElement(static::class, $patient);
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isAtTip()
-    {
-        if ($this->getIsNewRecord()) {
-            return true;
-        }
-        $tip = $this->getTipElement();
-        return $tip && $tip->id === $this->id;
-    }
-
-    /**
-     *
+     * Get list of available allergies for this element
      */
     public function getAllergyOptions()
     {

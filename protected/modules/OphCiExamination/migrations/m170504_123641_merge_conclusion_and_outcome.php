@@ -23,28 +23,29 @@ class m170504_123641_merge_conclusion_and_outcome extends OEMigration
         $this->addColumn('et_ophciexamination_clinicoutcome_version', 'description', 'text');
 
         // move attributes from conclusion to outcome
-        $outcome_element_type_id = $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome');
-        $conclusion_element_type_id = $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion');
-
-        $this->update(
-            'ophciexamination_attribute_element',
-            array('element_type_id' => $outcome_element_type_id),
-            'element_type_id = :eid',
-            array(':eid' => $conclusion_element_type_id)
-        );
+        // Commented out as per OE-6661 which reveals that moving these shortcuts to outcome doesn't make sense at the current time
+//        $outcome_element_type_id = $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome');
+//        $conclusion_element_type_id = $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion');
+//
+//        $this->update(
+//            'ophciexamination_attribute_element',
+//            array('element_type_id' => $outcome_element_type_id),
+//            'element_type_id = :eid',
+//            array(':eid' => $conclusion_element_type_id)
+//        );
 	}
 
 	public function down()
 	{
-        $outcome_element_type_id = $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome');
-        $conclusion_element_type_id = $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion');
-
-        $this->update(
-            'ophciexamination_attribute_element',
-            array('element_type_id' => $conclusion_element_type_id),
-            'element_type_id = :eid',
-            array(':eid' => $outcome_element_type_id)
-        );
+//        $outcome_element_type_id = $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome');
+//        $conclusion_element_type_id = $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion');
+//
+//        $this->update(
+//            'ophciexamination_attribute_element',
+//            array('element_type_id' => $conclusion_element_type_id),
+//            'element_type_id = :eid',
+//            array(':eid' => $outcome_element_type_id)
+//        );
 
 		$this->dropColumn('et_ophciexamination_clinicoutcome_version', 'description');
         $this->dropColumn('et_ophciexamination_clinicoutcome', 'description');

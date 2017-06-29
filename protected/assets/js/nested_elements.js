@@ -254,6 +254,7 @@ $(document).ready(function() {
 	 * View previous elements
 	 */
 	$('.js-active-elements').delegate('.viewPrevious', 'click', function(e) {
+    e.preventDefault();
 		if ($(this).hasClass('subElement')) {
 			var elementType = 'sub-element';
 		} else {
@@ -262,41 +263,22 @@ $(document).ready(function() {
 
 		var element = $(this).closest('.' + elementType);
 
-		if (!$(element).hasClass('clicked')) {
-			$(element).addClass('clicked');
-		}
-		$.ajax({
+		var dialog = new OpenEyes.UI.Dialog({
 			url: baseUrl + '/' + moduleName + '/default/viewpreviouselements',
-			data: { element_type_id: element.data('element-type-id'), patient_id: OE_patient_id },
-			success: function(data) {
-				$(data).dialog({
-					width: 1070,
-					minWidth: 1070,
-					maxWidth: 1070,
-					height: 400,
-					minHeight: 400,
-					title: 'Previous '+element.data('element-type-name')+' Elements',
-					modal: true,
-					open: function(event, ui) {
-						var dialog = $(event.target);
-						dialog.on('click', '.copy_element', function(dialog, element, event) {
-							var element_id = $(event.target).data('element-id');
-                            $(element).addClass('clicked');
-                            $(element).css('opacity', '0.5');
-                            $(element).find('input, select, textarea').prop('disabled', true);
-                            dialog.dialog('close');
-                            addElement(element, false, (elementType == 'sub-element'), element_id);
-                        }.bind(undefined, dialog, element));
-					},
-					close: function(event, ui) {
-						$(this).remove();
-					}
-				});
-
-				$(element).removeClass('clicked');
-			}
+      data: { element_type_id: element.data('element-type-id'), patient_id: OE_patient_id },
+			width: 1070,
+      title: 'Previous '+element.data('element-type-name')+' Elements',
+			autoOpen: true
 		});
-		e.preventDefault();
+
+    $(dialog.content).on('click', '.copy_element', function(dialog, element, event) {
+				var element_id = $(event.target).data('element-id');
+			 	$(element).addClass('clicked');
+				$(element).css('opacity', '0.5');
+				$(element).find('input, select, textarea').prop('disabled', true);
+				dialog.close();
+				addElement(element, false, (elementType == 'sub-element'), element_id);
+		}.bind(undefined, dialog, element));
 	});
 
 	/**

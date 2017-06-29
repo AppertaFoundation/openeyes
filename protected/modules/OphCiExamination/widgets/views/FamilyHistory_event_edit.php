@@ -17,48 +17,45 @@
 
 ?>
 
-<?php
-Yii::app()->clientScript->registerScriptFile($this->getJsPublishedPath('FamilyHistory.js'), CClientScript::POS_HEAD);
-$model_name = CHtml::modelName($element);
-$this->render(
-    'FamilyHistory_form',
-    array(
-        'element' => $element,
-        'model_name' => $model_name,
-    )
-);
-?>
-<input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-
-
-
-        <table id="<?= $model_name ?>_entry_table">
-            <thead>
-            <tr>
-                <th>Relative</th>
-                <th>Side</th>
-                <th>Condition</th>
-                <th>Comments</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php
-            foreach ($element->entries as $entry) {
-                $this->render(
-                    'FamilyHistory_Entry_event_edit',
-                    array(
-                        'entry' => $entry,
-                        'form' => $form,
-                        'model_name' => $model_name,
-                        'editable' => true
-                    )
-                );
-            }
-            ?>
-            </tbody>
-        </table>
-    </div>
+<div class="element-fields">
+  <?php
+  Yii::app()->clientScript->registerScriptFile($this->getJsPublishedPath('FamilyHistory.js'), CClientScript::POS_HEAD);
+  $model_name = CHtml::modelName($element);
+  $this->render(
+      'FamilyHistory_form',
+      array(
+          'element' => $element,
+          'model_name' => $model_name,
+      )
+  );
+  ?>
+  <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
+  <table id="<?= $model_name ?>_entry_table">
+      <thead>
+      <tr>
+          <th>Relative</th>
+          <th>Side</th>
+          <th>Condition</th>
+          <th>Comments</th>
+          <th>Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <?php
+      foreach ($element->entries as $entry) {
+          $this->render(
+              'FamilyHistory_Entry_event_edit',
+              array(
+                  'entry' => $entry,
+                  'form' => $form,
+                  'model_name' => $model_name,
+                  'editable' => true
+              )
+          );
+      }
+      ?>
+      </tbody>
+  </table>
 </div>
 
 <script type="text/template" id="<?= CHtml::modelName($element).'_entry_template' ?>" class="hidden">

@@ -40,6 +40,6 @@
     </div>
 </div>
 <script type="text/html" id="previous-management-template">
-    {{event_date}}: {{comments}}
+    {{subspecialty}} {{event_date}}: {{comments}}
 </script>
 <?php Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js", null, -10); ?>

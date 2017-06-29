@@ -14,37 +14,11 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
-
 <?php
-if (!isset($values)) {
-    $values = array(
-        'id' => $op->id,
-        'operation' => $op->operation,
-        'side_id' => $op->side_id,
-        'side_display' => $op->side ? $op->side->adjective : 'None',
-        'date' => $op->date,
-        'date_display' => $op->getDisplayDate()
-    );
-}
-
+$element_name = $element->getElementTypeName();
 ?>
-<tr>
-    <td>
-        <input type="hidden" name="<?= $model_name ?>[id][]" value="<?=$values['id'] ?>" />
-        <input type="hidden" name="<?= $model_name ?>[operation][]" value="<?=$values['operation'] ?>" />
-        <?= $values['operation'] ?>
-    </td>
-    <td>
-        <input type="hidden" name="<?= $model_name ?>[side_id][]" value="<?=$values['side_id'] ?>" />
-        <?= $values['side_display'] ?>
-    </td>
-    <td>
-        <input type="hidden" name="<?= $model_name ?>[date][]" value="<?=$values['date'] ?>" />
-        <?= $values['date_display'] ?>
-    </td>
-    <td>
-        <button class="button small warning remove">remove</button>
-    </td>
-</tr>
+<p class="alert-box warning" style="margin-bottom: 0px;">This is not the latest known state for <?= $element_name ?>.
+  <span class="has-tooltip fa fa-info-circle"
+        data-tooltip-content="Please use the patient summary page or pop up (above) to review the latest <?= $element_name ?> status."></span></p>
+

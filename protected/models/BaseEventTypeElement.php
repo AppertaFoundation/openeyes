@@ -76,7 +76,7 @@ class BaseEventTypeElement extends BaseElement
     /**
      * @return BaseAPI
      */
-    protected function getModuleApi()
+    public function getModuleApi()
     {
         $event_type = $this->getElementType()->event_type;
         return $this->getApp()->moduleAPI->get($event_type->class_name);

@@ -58,6 +58,16 @@ class PastSurgery extends \BaseEventTypeElement
     }
 
     /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return array(
+            'PatientLevelElementBehaviour' => 'PatientLevelElementBehaviour',
+        );
+    }
+
+    /**
      * @return array validation rules for model attributes.
      */
     public function rules()

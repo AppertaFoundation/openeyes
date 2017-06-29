@@ -1,4 +1,3 @@
-<div class="element-fields">
     <div class="field-row row<?= count($element->entries) ? ' hidden' : ''?>" id="<?=$model_name?>_no_family_history_wrapper">
         <div class="large-3 column">
             <label for="<?=$model_name?>_no_family_history">Confirm patient has no family history:</label>

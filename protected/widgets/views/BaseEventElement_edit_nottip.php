@@ -14,37 +14,10 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
-
 <?php
-if (!isset($values)) {
-    $values = array(
-        'id' => $op->id,
-        'operation' => $op->operation,
-        'side_id' => $op->side_id,
-        'side_display' => $op->side ? $op->side->adjective : 'None',
-        'date' => $op->date,
-        'date_display' => $op->getDisplayDate()
-    );
-}
-
+$element_name = $element->getElementTypeName();
 ?>
-<tr>
-    <td>
-        <input type="hidden" name="<?= $model_name ?>[id][]" value="<?=$values['id'] ?>" />
-        <input type="hidden" name="<?= $model_name ?>[operation][]" value="<?=$values['operation'] ?>" />
-        <?= $values['operation'] ?>
-    </td>
-    <td>
-        <input type="hidden" name="<?= $model_name ?>[side_id][]" value="<?=$values['side_id'] ?>" />
-        <?= $values['side_display'] ?>
-    </td>
-    <td>
-        <input type="hidden" name="<?= $model_name ?>[date][]" value="<?=$values['date'] ?>" />
-        <?= $values['date_display'] ?>
-    </td>
-    <td>
-        <button class="button small warning remove">remove</button>
-    </td>
-</tr>
+<p class="alert-box warning" style="margin-bottom: 0px;">Changes will not affect latest <?= $element_name ?> state for patient
+  <span class="has-tooltip fa fa-info-circle"
+        data-tooltip-content="A newer examination exists for this patient - <?= $element_name ?> can only be changed from the latest Examination Event. To make changes to <?= $element_name ?>, please go to the latest Examination, or create a new Examination"></span></p>

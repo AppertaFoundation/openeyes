@@ -1708,7 +1708,8 @@ class PatientController extends BaseController
             // would recommend pushing this into a base method that can then
             // be overridden as appropriate
             $result[] = array_merge(
-                array('event_date' => $element->event->NHSDate('event_date')),
+                array('subspecialty' => $element->event->episode->getSubspecialtyText(),
+                    'event_date' => $element->event->NHSDate('event_date')),
                 $element->getAttributes()
             );
         }
