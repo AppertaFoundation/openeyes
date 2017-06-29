@@ -90,25 +90,45 @@ class PasApiObserver
             // now that we're at the right depth, hop to the next <patient/> until the end of the tree
             while ($xml_handler->name === 'Patient')
             {
-                //$resource - \OEModule\PASAPI\resources\Patient
-                $resource = $resource_model::fromXml('V1', $xml_handler->readOuterXML() );
+                $node = new SimpleXMLElement($xml_handler->readOuterXML());
 
-                $patient = new \Patient();
-                $contact = new \Contact();
-                $patient->contact = $contact;
+                //$resource is an instance of \OEModule\PASAPI\resources\Patient
+                $resource = $resource_model::fromXml('V1', $xml_handler->readOuterXML(), array(
+                 //   'update_only' => true,
+                ));
 
-                $resource->assignProperty($patient, 'nhs_num', 'NHSNumber');
-                $resource->assignProperty($patient, 'hos_num', 'HospitalNumber');
-                $resource->assignProperty($patient, 'dob', 'DateOfBirth');
-                $resource->assignProperty($patient, 'date_of_death', 'DateOfDeath');
-                $resource->assignProperty($patient, 'is_deceased', 'IsDeceased');
+                $resource->id = $node->HospitalNumber;
 
-                $resource->assignProperty($contact, 'title', 'Title');
-                $resource->assignProperty($contact, 'first_name', 'FirstName');
-                $resource->assignProperty($contact, 'last_name', 'Surname');
-                $resource->assignProperty($contact, 'primary_phone', 'TelephoneNumber');
+                $_assignment = $resource->getAssignment();
+                $_patient = $_assignment ? $_assignment->getInternal() : null;
 
-                $results[] = $patient;
+                if( !isset($_patient)){
+
+                    // we do not seve this Patient just display on the patient/view page's list
+
+                    $patient = new \Patient();
+                    $contact = new \Contact();
+                    $patient->contact = $contact;
+
+                    $resource->assignProperty($patient, 'nhs_num', 'NHSNumber');
+                    $resource->assignProperty($patient, 'hos_num', 'HospitalNumber');
+                    $resource->assignProperty($patient, 'dob', 'DateOfBirth');
+                    $resource->assignProperty($patient, 'date_of_death', 'DateOfDeath');
+                    $resource->assignProperty($patient, 'is_deceased', 'IsDeceased');
+
+                    $resource->assignProperty($contact, 'title', 'Title');
+                    $resource->assignProperty($contact, 'first_name', 'FirstName');
+                    $resource->assignProperty($contact, 'last_name', 'Surname');
+                    $resource->assignProperty($contact, 'primary_phone', 'TelephoneNumber');
+
+                    $results[] = $patient;
+                } else {
+
+                    // we can save here as this patient already in our DB
+
+                    $resource->save();
+                    echo "<pre>" . print_r($resource->errors, true) . "</pre>";
+                }
 
                 $xml_handler->next('Patient');
             }
