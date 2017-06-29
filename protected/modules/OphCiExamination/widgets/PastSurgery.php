@@ -79,7 +79,8 @@ class PastSurgery extends \BaseEventElementWidget
         if (array_key_exists('side', $operation)) {
             $res[] = $operation['side'];
         }
-        $res[] = $operation['operation'];
+        $res[] = $operation['operation'] .
+            ($operation['link'] ? ' <a href="' . $operation['link'] . '"><span class="has-tooltip fa fa-eye" data-tooltip-content="View operation note"></span></a>' : '');
         return implode(' ', $res);
     }
 
