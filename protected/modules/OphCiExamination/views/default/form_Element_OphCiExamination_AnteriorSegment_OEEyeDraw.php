@@ -78,7 +78,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'syncArray' => array(
         $side .'_'.$element->elementType->id . '_side' => array(
             'AntSeg' => array('AntSegCrossSection' => array('parameters' => array('apexY', 'colour') ) ),
-            'Lens' => array('LensCrossSection' => array('parameters' => array('originY', 'nuclearGrade', 'corticalGrade', 'posteriorSubcapsularGrade') ) ),
+            'Lens' => array('LensCrossSection' => array('parameters' => array('originY', 'nuclearGrade', 'corticalGrade', 'posteriorSubcapsularGrade', 'phakodonesis') ) ),
             'ACIOL' => array('ACIOLCrossSection' => array('parameters' => array('originY') ) ),
             'PCIOL' => array('PCIOLCrossSection' => array('parameters' => array('originY', 'fx') ) ),
             'CornealOpacity' => array('CornealOpacityCrossSection' => array('parameters' => array('yMidPoint','d','h','w','iW','originY','minY','maxY') ) ),
