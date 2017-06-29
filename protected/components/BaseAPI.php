@@ -167,7 +167,7 @@ class BaseAPI
             $criteria->compare('event.event_date', '<='.$before);
         }
         if ($limit !== null) {
-            $criteria->limit = 1;
+            $criteria->limit = $limit;
         }
 
         if ($use_context) {
