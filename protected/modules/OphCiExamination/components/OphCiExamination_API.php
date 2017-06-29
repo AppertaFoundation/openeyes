@@ -382,11 +382,12 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * return the posterior pole description for the given eye. This is from the most recent
+     * Return the posterior pole description for the given eye. This is from the most recent
      * examination that has a posterior pole element.
      *
      * @param Patient $patient
      * @param $use_context
+     * @return string
      */
     public function getLetterPosteriorPoleLeft($patient, $use_context = true)
     {
@@ -396,11 +397,16 @@ class OphCiExamination_API extends \BaseAPI
             $patient,
             $use_context)
         ){
-            return $ps->left_description;
+            return $ps->left_ed_report  . ' ' . $ps->left_description;
         }
 
     }
 
+    /**
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
     public function getLetterPosteriorPoleRight($patient, $use_context = true)
     {
         if ($ps = $this->getElementFromLatestEvent(
@@ -408,10 +414,23 @@ class OphCiExamination_API extends \BaseAPI
             $patient,
             $use_context)
         ){
-            return $ps->right_description;
+            return $ps->right_ed_report  . ' ' . $ps->right_description;
         }
     }
 
+    public function getLetterPosteriorPoleBoth($patient, $use_context = true)
+    {
+        return "Right Eye:\n" .
+            $this->getLetterPosteriorPoleRight($patient, $use_context) .
+            "\n\nLeft Eye:\n" .
+            $this->getLetterPosteriorPoleLeft($patient, $use_context);
+    }
+
+    /**
+     * @param $patient
+     * @param bool $use_context
+     * @return mixed
+     */
     public function getLetterPosteriorPolePrincipal($patient, $use_context = true)
     {
         $event = $this->getLatestEvent($patient, $use_context);
