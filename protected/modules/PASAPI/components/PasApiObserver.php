@@ -19,48 +19,57 @@
 
 class PasApiObserver
 {
-    private $_data = array();
-
     /**
      * Objet to parsing XML
      * @var null
      */
-    private $_xml_parser = null;
+    private $_xml_helper = null;
 
     /**
      * Object to making http requests
      * @var null
      */
-    private $_request = null;
+    private $_curl = null;
 
-    public function __construct($request = null, $xml_parser = null)
+    public function __construct()
     {
-        $this->_request = $request ? $request : new Curl();
-        $this->_xml_parser = $xml_parser ? $xml_parser : new PatientXmlParser();
+        $this->_curl = new Curl();
+        $this->_xml_helper = new XmlHelper();
     }
 
     public function search($data)
     {
-        $results = array();
+        $resource_model = "\\OEModule\\PASAPI\\resources\\Patient";
 
-        $xml = $this->_request->get('http://localhost:4200/patient/search?hos_num=123456');
+        //will be accessed at the Patient model search function
+        $results = &$data['results'];
 
-        //at this points we built the Patient(and contact) objects BUT DID NOT SAVE THEM
-        $patients = $this->_xml_parser->parse($xml);
+        $xml = $this->_curl->get('http://192.168.90.100/getXML.php');
 
-        // save the exact match
-        if( count($patients) == 1 ){
-            $patient = array_shift($patients);
+        //loading the xml
+        $this->_xml_helper->xml($xml);
+
+        // count the Patient nodes
+        $patient_count = $this->_xml_helper->countNodes('Patient');
+
+        //save the exact match
+        if( $patient_count == 1){
 
             $transaction = Yii::app()->db->beginTransaction();
             try {
 
-                if(!$patient->contact->save()){
-                    throw new Exception('Unable to save contact: '.print_r($patient->contact->getErrors(), true));
-                }
+                preg_match('/<HospitalNumber>(.*)<\/HospitalNumber>/', $xml, $matches);
 
-                if(!$patient->save()){
-                    throw new Exception('Unable to save patient: '.print_r($patient->getErrors(), true));
+                //@TODO: error handling
+                $external_id = $matches[1]; //this is the hospital_number
+
+                //$resource - \OEModule\PASAPI\resources\Patient
+                $resource = $resource_model::fromXml('V1', $xml);
+
+                $resource->id = $external_id; //hos_num
+
+                if(!$resource->save()){
+                    throw new Exception('Unable to save patient resource: '.print_r($resource->errors, true));
                 }
 
                 $transaction->commit();
@@ -68,12 +77,44 @@ class PasApiObserver
             } catch (Exception $e) {
                 $transaction->rollback();
                 OELog::log("PASAIP : " . $e->getMessage());
+
             }
 
         } else {
-            foreach($patients as $patient){
+
+            $xml_handler = $this->_xml_helper->getHandler();
+
+            // move to the first <patient /> node
+            while ($xml_handler->read() && $xml_handler->name !== 'Patient');
+
+            // now that we're at the right depth, hop to the next <patient/> until the end of the tree
+            while ($xml_handler->name === 'Patient')
+            {
+                //$resource - \OEModule\PASAPI\resources\Patient
+                $resource = $resource_model::fromXml('V1', $xml_handler->readOuterXML() );
+
+                $patient = new \Patient();
+                $contact = new \Contact();
+                $patient->contact = $contact;
+
+                $resource->assignProperty($patient, 'nhs_num', 'NHSNumber');
+                $resource->assignProperty($patient, 'hos_num', 'HospitalNumber');
+                $resource->assignProperty($patient, 'dob', 'DateOfBirth');
+                $resource->assignProperty($patient, 'date_of_death', 'DateOfDeath');
+                $resource->assignProperty($patient, 'is_deceased', 'IsDeceased');
+
+                $resource->assignProperty($contact, 'title', 'Title');
+                $resource->assignProperty($contact, 'first_name', 'FirstName');
+                $resource->assignProperty($contact, 'last_name', 'Surname');
+                $resource->assignProperty($contact, 'primary_phone', 'TelephoneNumber');
+
                 $results[] = $patient;
+
+                $xml_handler->next('Patient');
             }
         }
+
+        //we do not return anything here
+        //either a Patient was saved or the data will be available in the referenced $results array
     }
 }

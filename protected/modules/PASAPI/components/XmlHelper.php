@@ -17,9 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class PatientXmlParser
+class XmlHelper
 {
-    private $_patients = null;
+    private $_xml;
 
     private $_xml_reader = null;
 
@@ -28,47 +28,50 @@ class PatientXmlParser
         $this->_xml_reader = new XMLReader();
 
         if($xml){
-            $this->load($xml);
+            $this->_xml_reader->xml($xml);
         }
     }
 
-    public function load($xml)
+    /**
+     * Load XML string
+     * @param $xml
+     */
+    public function xml($xml)
     {
-        $this->_xml_reader->open($xml);
+        $this->_xml = $xml;
+        $this->_xml_reader->xml($xml);
     }
 
-    public function parse()
+    /**
+     * Returns XMLReader object
+     * @return null|XMLReader
+     */
+    public function getHandler()
     {
+        return $this->_xml_reader;
+    }
+
+    /**
+     * Returns the count of the given node name
+     * @param string $node_name
+     * @return int count of nodes specified in param
+     */
+    public function countNodes($node_name)
+    {
+        $count = 0;
+
+        $reader = new XMLReader();
+        $reader->xml( $this->_xml );
+
         // move to the first <patient /> node
-        while ($this->_xml_reader->read() && $this->_xml_reader->name !== 'patient');
+        while ($reader->read() && $reader->name !== $node_name);
 
-        // now that we're at the right depth, hop to the next <patient/> until the end of the tree
-        while ($this->_xml_reader === 'patient')
-        {
-            $node = new SimpleXMLElement($this->_xml_reader->readOuterXML());
+        while ($reader->name === $node_name){
+            $count++;
 
-            // now you can use $node without going insane about parsing
-
-            $patient = new Patient();
-            $contact = new Contact();
-
-            $contact->first_name = 'Test';
-            $contact->last_name = 'Test';
-            $patient->dob = '1981-02-24';
-            $patient->hos_num = '1234567';
-            $patient->gender = 'M';
-
-            $patient->contact = $contact;
-
-            //note, we do not save the objects here
-            //PasApiObserver does if it is required
-
-            $this->_patients[] = $patient;
-
-            // go to next <patient />
-            $this->_xml_reader->next('patient');
+            $reader->next($node_name);
         }
 
-        return $this->_patients;
+        return $count;
     }
 }

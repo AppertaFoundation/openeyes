@@ -64,6 +64,12 @@ class Patient extends BaseActiveRecordVersioned
     private $_orderedepisodes;
 
     /**
+     * Holds errors PAS related errors
+     * @var array
+     */
+    private $_pas_errors = array();
+
+    /**
      * Returns the static model of the specified AR class.
      *
      * @return Patient the static model class
@@ -252,6 +258,25 @@ class Patient extends BaseActiveRecordVersioned
             'practice_id' => 'Practice',
             'is_local' => 'Is local patient ?'
         );
+    }
+
+    /**
+     * Adds a new error to the PAS error array.
+     * @param $error
+     */
+    public function addPasError($error)
+    {
+        $this->_pas_errors[] = $error;
+    }
+
+    /**
+     * Returns the errors of the PAS error array.
+     * @param $attribute
+     * @return mixed|null
+     */
+    public function getPasErrors()
+    {
+        return $this->_pas_errors;
     }
 
     public function search_nr($params)
