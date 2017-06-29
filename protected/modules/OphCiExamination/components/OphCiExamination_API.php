@@ -328,26 +328,43 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * return the anterior segment description for the given eye. This is from the most recent
+     * Return the anterior segment description for the given eye. This is from the most recent
      * examination that has an anterior segment element.
      *
      * @param Patient $patient
      * @param $use_context
-     * @param Episode $episode
-     * @param string $side
+     * @return string
      */
     public function getLetterAnteriorSegmentLeft($patient, $use_context = true)
     {
         if ($as = $this->getElementFromLatestEvent('models\Element_OphCiExamination_AnteriorSegment', $patient, $use_context)){
-            return $as->left_description;
+            return $as->left_ed_report . ' ' . $as->left_description;
         }
     }
 
+    /**
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
     public function getLetterAnteriorSegmentRight($patient, $use_context = true)
     {
         if ($as = $this->getElementFromLatestEvent('models\Element_OphCiExamination_AnteriorSegment', $patient, $use_context)){
-            return $as->right_description;
+            return $as->right_ed_report . ' ' . $as->right_description;
         }
+    }
+
+    /**
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLetterAnteriorSegmentBoth($patient, $use_context = true)
+    {
+        return "Right Eye:\n" .
+            $this->getLetterAnteriorSegmentRight($patient, $use_context) .
+            "\n\nLeft Eye:\n" .
+            $this->getLetterAnteriorSegmentLeft($patient, $use_context);
     }
 
     /*
