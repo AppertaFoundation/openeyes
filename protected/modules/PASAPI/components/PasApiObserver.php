@@ -44,7 +44,12 @@ class PasApiObserver
         //will be accessed at the Patient model search function
         $results = &$data['results'];
 
-        $xml = $this->_curl->get('http://192.168.90.100/getXML.php');
+        $xml = $this->getResultsFromPas($data);
+
+        //wasn't a valid search
+        if(!$xml){
+            return false; //for now
+        }
 
         //loading the xml
         $this->_xml_helper->xml($xml);
@@ -125,9 +130,9 @@ class PasApiObserver
                 } else {
 
                     // we can save here as this patient already in our DB
-
-                    $resource->save();
-                    echo "<pre>" . print_r($resource->errors, true) . "</pre>";
+                    if(!$resource->save() && ($data['patient'] instanceof \Patient) ){
+                        $data['patient']->addPasError('Patient not updated from PAS, some data may be out of date or incomplete');
+                    }
                 }
 
                 $xml_handler->next('Patient');
@@ -137,4 +142,37 @@ class PasApiObserver
         //we do not return anything here
         //either a Patient was saved or the data will be available in the referenced $results array
     }
+
+    /**
+     * Building the query string and making a GET call to the API
+     * @param $data
+     * @return bool|mixed
+     */
+    private function getResultsFromPas($data)
+    {
+        $_patient = $data['patient'];
+        $params = $data['params'];
+        $xml = false;
+
+        $query = array();
+
+        if($_patient->hos_num){
+            $query['hosnum'] = $_patient->hos_num;
+        } elseif($_patient->nhs_num){
+            $query['nhsnum'] = $_patient->nhs_num;
+        } elseif($params['last_name']){
+            $query['familyname'] = $params['last_name'];
+
+            if($params['first_name']){
+                $query['givenname'] = $params['first_name'];
+            }
+        }
+
+        if( !empty($query) ){
+            $xml = $this->_curl->get('http://192.168.90.100/getXML.php?' . http_build_query($query));
+        }
+
+        return $xml;
+    }
+
 }
