@@ -549,7 +549,7 @@ class Event extends BaseActiveRecordVersioned
 
     public function getImagePath($name)
     {
-        return $this->imageDirectory . "/$name.png";
+        return $this->getImageDirectory() . DIRECTORY_SEPARATOR . "$name.png";
     }
 
     public function getPDF($pdf_print_suffix = null)
