@@ -61,3 +61,4 @@
     </div>
 </div>
 
+<?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/AutoReport.js", CClientScript::POS_HEAD); ?>
