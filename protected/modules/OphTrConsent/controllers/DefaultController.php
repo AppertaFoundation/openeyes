@@ -125,6 +125,17 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
+     * @param $default_view
+     */
+    public function renderSidebar($default_view)
+    {
+        if (!$this->booking_event && !$this->unbooked) {
+            $this->show_element_sidebar = false;
+        }
+        parent::renderSidebar($default_view);
+    }
+
+    /**
      * Manage picking an extant booking for setting consent form defaults.
      *
      * (non-phpdoc)

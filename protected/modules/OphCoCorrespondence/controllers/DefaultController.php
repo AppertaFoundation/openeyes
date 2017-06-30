@@ -33,6 +33,8 @@ class DefaultController extends BaseEventTypeController
         'doPrintAndView' => self::ACTION_TYPE_PRINT,
     );
 
+    protected $show_element_sidebar = false;
+
     /**
      * Adds direct line phone numbers to jsvars to be used in dropdown select.
      */
