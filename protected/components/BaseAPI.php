@@ -326,4 +326,32 @@ class BaseAPI
 
         return false;
     }
+
+    /**
+     * Get the principal eye for the patient
+     *
+     * @param $patient
+     * @param bool $use_context
+     * @return Eye|null
+     * @throws CException
+     */
+    public function getPrincipalEye($patient, $use_context=true)
+    {
+        if (!$use_context) {
+            throw new CException('principal eye not supported for context-less requests');
+        }
+        return $this->current_context->getPrincipalEye($patient);
+    }
+
+    /**
+     * @param string $prefix
+     * @param Eye $eye
+     * @return string
+     */
+    public function getEyeMethod($prefix, Eye $eye)
+    {
+        if ($postfix = Eye::methodPostFix($eye->id)) {
+            return $prefix . $postfix;
+        }
+    }
 }

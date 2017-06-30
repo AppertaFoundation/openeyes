@@ -91,6 +91,25 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * Simple abstraction to support generic calls to functions where the eye involved is dynamic
+     *
+     * @param $prefix
+     * @param $patient
+     * @param bool $use_context
+     * @return mixed
+     * @throws \CException
+     */
+    protected function getMethodForEye($prefix, $patient, $use_context = true)
+    {
+        if ($method = $this->getEyeMethod(
+            $prefix,
+            $this->getPrincipalEye($patient, $use_context))
+        ) {
+            return $this->{$method}($patient);
+        }
+    }
+
+    /**
      * Get the patient history description field from the latest Examination event.
      * Limited to current data context by default.
      * Returns nothing if the latest Examination does not contain History.
@@ -311,20 +330,18 @@ class OphCiExamination_API extends \BaseAPI
 
     /**
      * Get the Intraocular Pressure reading for the principal eye from the most recent Examination event.
-     * Limited to current data context.
+     * Limited to current data context by default.
      * Will return the average for multiple readings.
      * Returns nothing if the latest Examination does not contain IOP.
      *
      * @param \Patient $patient
      * @param boolean $use_context - defaults to true
      * @return mixed
+     * @throws \CException
      */
     public function getLetterIOPReadingPrincipal(\Patient $patient, $use_context = true)
     {
-        if ($eye = $this->current_context->getPrincipalEye($patient)) {
-            $method = 'getLetterIOPReading' . $eye->name;
-            return $this->{$method}($patient, $use_context);
-        }
+        return $this->getMethodForEye('getLetterIOPReading', $patient, $use_context);
     }
 
     /**
@@ -367,18 +384,17 @@ class OphCiExamination_API extends \BaseAPI
             $this->getLetterAnteriorSegmentLeft($patient, $use_context);
     }
 
-    /*
+    /**
      * Anterior segment findings in the principal eye
-     * @param Patient $patient
-     * @param $use_context
+     *
+     * @param \Patient $patient
+     * @param bool $use_context
+     * @return mixed
+     * @throws \CException
      */
     public function getLetterAnteriorSegmentPrincipal($patient, $use_context = true)
     {
-        $event = $this->getLatestEvent($patient, $use_context);
-        if($event->episode->eye){
-            $method = 'getLetterAnteriorSegment' . $event->episode->eye->name;
-            return $this->{$method}($patient);
-        }
+        return $this->getMethodForEye('getLetterAnteriorSegment', $patient, $use_context);
     }
 
     /**
@@ -418,6 +434,11 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
+    /**
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
     public function getLetterPosteriorPoleBoth($patient, $use_context = true)
     {
         return "Right Eye:\n" .
@@ -430,22 +451,21 @@ class OphCiExamination_API extends \BaseAPI
      * @param $patient
      * @param bool $use_context
      * @return mixed
+     * @throws \CException
      */
     public function getLetterPosteriorPolePrincipal($patient, $use_context = true)
     {
-        $event = $this->getLatestEvent($patient, $use_context);
-        if($event->episode->eye){
-            $method = 'getLetterPosteriorPole' . $event->episode->eye->name;
-            return $this->{$method}($patient);
-        }
+        return $this->getMethodForEye('getLetterPosteriorPole', $patient, $use_context);
     }
 
+    /**
+     * @param $eventid
+     */
     public function getRefractionValues($eventid)
     {
         if ($unit = models\Element_OphCiExamination_Refraction::model()->find('event_id = ' . $eventid)) {
             return $unit;
         }
-        return;
     }
 
     public function getMostRecentVA($eventid)
@@ -681,14 +701,14 @@ class OphCiExamination_API extends \BaseAPI
             $this->getSnellenUnitId()) : 'not recorded') . ' on the left';
     }
 
+    /**
+     * @param $patient
+     * @param bool $use_context
+     * @return mixed
+     */
     public function getLetterVisualAcuityPrincipal($patient, $use_context = true)
     {
-        $event = $this->getLatestEvent($patient, $use_context);
-        if($event->episode->eye){
-            $method = 'getLetterVisualAcuity' . $event->episode->eye->name;
-
-            return $this->{$method}($patient);
-        }
+        return $this->getMethodForEye('getLetterVisualAcuity', $patient, $use_context);
     }
 
     /**
@@ -1585,7 +1605,29 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * get principal eye CCT values for current episode, examination event.
+     * Determines if the given eye cares about left properties
+     *
+     * @param \Eye $eye
+     * @return bool
+     */
+    protected function needsLeft(\Eye $eye)
+    {
+        return in_array($eye->id, array(\Eye::LEFT, \Eye::BOTH), false);
+    }
+
+    /**
+     * Determines if the given eye cares about left properties
+     *
+     * @param \Eye $eye
+     * @return bool
+     */
+    protected function needsRight(\Eye $eye)
+    {
+        return in_array($eye->id, array(\Eye::RIGHT, \Eye::BOTH), false);
+    }
+
+    /**
+     * Get principal eye CCT values for current episode, examination event.
      *
      * @param $patient
      * @param $use_context
@@ -1594,25 +1636,20 @@ class OphCiExamination_API extends \BaseAPI
     public function getPrincipalCCT($patient, $use_context = true)
     {
         $str = '';
-        if ($el = $this->getElementFromLatestEvent(
-            'models\Element_OphCiExamination_AnteriorSegment_CCT',
-            $patient,
-            $use_context)
-        ) {
-            if ($principal_eye_id = $el->event->episode->eye->id) {
-                if (in_array($principal_eye_id, array(\Eye::LEFT, \Eye::BOTH), false)) {
-                    if ($el->hasLeft()) {
-                        $str .= 'Left Eye: ' . $el->left_value . ' µm using ' . $el->left_method->name . '. ';
-                    }
+        if ($principal_eye = $this->getPrincipalEye($patient, $use_context)) {
+            if ($el = $this->getElementFromLatestEvent(
+                'models\Element_OphCiExamination_AnteriorSegment_CCT'.
+                $patient,
+                $use_context
+            )) {
+                if ($this->needsLeft($principal_eye) && $el->hasLeft()) {
+                    $str .= 'Left Eye: ' . $el->left_value . ' µm using ' . $el->left_method->name . '. ';
                 }
-                if (in_array($principal_eye_id, array(\Eye::RIGHT, \Eye::BOTH), false)) {
-                    if ($el->hasRight()) {
-                        $str .= 'Right Eye: ' . $el->right_value . ' µm using ' . $el->right_method->name . '. ';
-                    }
+                if ($this->needsRight($principal_eye) && $el->hasRight()) {
+                    $str .= 'Right Eye: ' . $el->right_value . ' µm using ' . $el->right_method->name . '. ';
                 }
             }
         }
-
         return $str;
     }
 
