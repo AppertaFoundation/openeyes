@@ -72,15 +72,18 @@
                                     'address' => $target->address,
                                     'is_editable_contact_targets' => $target->contact_type != 'INTERNALREFERRAL',
                                     'is_editable_contact_name' => ($target->contact_type != 'INTERNALREFERRAL'),
-                                    'is_editable_address' => ($target->contact_type != 'GP') && ($target->contact_type != 'INTERNALREFERRAL'),
+                                    'is_editable_address' => ($target->contact_type != 'GP') && ($target->contact_type != 'INTERNALREFERRAL') && ($target->contact_type != 'Practice'),
                                 ));
                         ?>
                     </td>
                     <td>
                         <?php if($element->draft): ?>
                             <?php
+                                    $contact_type = strtoupper($target->contact_type);
+                                    $contact_type = $contact_type == 'PRACTICE' ? 'GP' : $contact_type;
+
                                     $this->renderPartial('//docman/table/contact_type', array(
-                                        'contact_type' => strtoupper($target->contact_type),
+                                        'contact_type' => $contact_type,
                                         // Internal referral will always be the first row - indexed 0
                                         'contact_types' => Document::getContactTypes() + (($element->isInternalReferral() && $row_index == 0) ? Document::getInternalReferralContactType() : []),
 
@@ -97,7 +100,7 @@
                     <td class="docman_delivery_method">
                         <?php $this->renderPartial('//docman/table/delivery_methods', array(
                                         'is_draft' => $element->draft,
-                                        'contact_type' => $target->contact_type,
+                                        'contact_type' => $contact_type,
                                         'target' => $target,
                                         'can_send_electronically' => $can_send_electronically,
                                         'row_index' => $row_index));
