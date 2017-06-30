@@ -192,15 +192,15 @@ $(document).ready(function() {
         $('#ElementLetter_to_subspecialty_id').val(subspecialty_id);
 
         jQuery.ajax({
-            url: baseUrl + "/" + moduleName + "/Default/getSiteInfo",
-            data: { to_location_id: $('#ElementLetter_to_location_id').val() },
+            url: baseUrl + "/" + moduleName + "/Default/getSalutationByFirm",
+            data: { firm_id: $('#ElementLetter_to_firm_id').val(), },
             dataType: "json",
             beforeSend: function(){
                 $('button#et_saveprint').prop('disabled', true);
                 $('button#et_savedraft').prop('disabled', true);
             },
             success: function(data){
-                $('#Document_Target_Address_0').val(data.correspondence_name);
+                updateSalutation(data);
             },
             complete: function(){
                 $('button#et_saveprint').prop('disabled', false);
