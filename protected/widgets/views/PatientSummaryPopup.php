@@ -70,61 +70,63 @@
                 </span>
             </div>
         <?php } ?>
-        <?php if ($this->ophthalmicDiagnoses) { ?>
+        <div class="summary-data">
+          <?php if ($this->ophthalmicDiagnoses) { ?>
             <div class="row">
-                <div class="large-3 column label">
-                    Ophthalmic Diagnoses
-                </div>
-                <div class="large-9 column data">
-                    <?php echo $this->ophthalmicDiagnoses; ?>
-                </div>
+              <div class="large-3 column label">
+                Ophthalmic Diagnoses
+              </div>
+              <div class="large-9 column data">
+                  <?php echo $this->ophthalmicDiagnoses; ?>
+              </div>
             </div>
-        <?php } ?>
-        <?php if ($this->systemicDiagnoses) { ?>
-            <div class="row">
+            <?php } ?>
+            <?php if ($this->systemicDiagnoses) { ?>
+              <div class="row">
                 <div class="large-3 column label">
-                    Systemic Diagnoses
+                  Systemic Diagnoses
                 </div>
                 <div class="large-9 column data">
                     <?php echo $this->systemicDiagnoses; ?>
                 </div>
-            </div>
-        <?php } ?>
-        <div class="row">
+              </div>
+            <?php } ?>
+          <div class="row">
             <div class="large-3 column label">
-                CVI Status
+              CVI Status
             </div>
             <div class="large-9 column data">
                 <?php echo $this->cviStatus; ?>
             </div>
-        </div>
-        <?php if ($this->operations) { ?>
-            <div class="row">
+          </div>
+            <?php if ($this->operations) { ?>
+              <div class="row">
                 <div class="large-3 column label">
-                    Operations
+                  Operations
                 </div>
                 <div class="large-9 column data">
                     <?php echo $this->operations; ?>
                 </div>
-            </div>
-        <?php } ?>
-        <?php if ($this->medications) { ?>
-            <div class="row">
+              </div>
+            <?php } ?>
+            <?php if ($this->medications) { ?>
+              <div class="row">
                 <div class="large-3 column label">
-                    Medication
+                  Medication
                 </div>
                 <div class="large-9 column data">
                     <?php echo $this->medications; ?>
                 </div>
-            </div>
-        <?php } ?>
-        <div class="row">
+              </div>
+            <?php } ?>
+          <div class="row">
             <div class="large-3 column label">
-                Allergies
+              Allergies
             </div>
             <div class="large-9 column data">
                 <?php echo $this->allergies; ?>
             </div>
+          </div>
         </div>
     </div>
 </div>
