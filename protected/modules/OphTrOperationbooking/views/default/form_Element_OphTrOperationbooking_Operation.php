@@ -49,7 +49,12 @@
 	<?php $form->radioBoolean($element, 'stop_medication') ?>
 	<?php $form->textArea($element, 'stop_medication_details', array('rows' => 4), true, array(), array_merge($form->layoutColumns, array('field' => 4))) ?>
 	<?php echo $form->radioBoolean($element, 'overnight_stay')?>
-	<?php echo $form->dropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution('short_name', true), array('empty' => '--- Please select ---'), false, array('field' => 2))?>
+    <?php
+        $options = array(
+            $this->selectedSiteId=>array('selected'=>true)
+        );
+    ?>
+	<?php echo $form->dropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution('short_name', true), array('empty' => '- Please select -', 'options' => $options), false, array('field' => 2))?>
 	<?php echo $form->radioButtons($element, 'priority_id', CHtml::listData(OphTrOperationbooking_Operation_Priority::model()->notDeletedOrPk($element->priority_id)->findAll(array('order' => 'display_order asc')), 'id', 'name'))?>
 	<?php
         if (Yii::app()->params['ophtroperationbooking_referral_link']) {
