@@ -155,7 +155,7 @@ class BaseAPI
      * @param bool $use_context
      * @param string $before - date formatted string
      * @param integer $limit
-     * @return BaseEventTypeElement|null
+     * @return BaseEventTypeElement[]
      */
     public function getElements($element, Patient $patient, $use_context = false, $before = null, $limit = null)
     {
