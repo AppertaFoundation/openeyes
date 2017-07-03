@@ -92,16 +92,48 @@ class OphTrOperationbooking_API extends BaseAPI
     }
 
     /**
+     * @param string $episode_id
+     * @return mixed
+     *
+     * This method is here for backwards compatibility
+     * @see OphTrOperationbooking_API::getOpenBookings()
+     */
+
+    public function getOpenBookingsForEpisode($episode_id)
+    {
+        $patient_id = Episode::model()->findByPk($episode_id)->patient_id;
+        return $this->getOpenBookings($patient_id, $episode_id);
+    }
+
+    /**
      * Gets 'open' bookings for the specified episode
      * A booking is deemed open if it has no operation note linked to it.
-     * @param $episode_id
+     * @param string $patient_id
+     * @param string|null $episode_id   (null indicates patient's all episodes)
      * @return mixed
-    */
-    public function getOpenBookingsForEpisode($episode_id)
+     */
+
+    public function getOpenBookings($patient_id, $episode_id = null)
     {
         $criteria = new CDbCriteria();
         $criteria->order = 'event.created_date asc';
-        $criteria->compare('episode_id', $episode_id);
+
+        if (!is_null($episode_id))
+        {
+            $criteria->compare('episode_id', $episode_id);
+            $episode_condition = "episode_id = $episode_id and ";
+        }
+        else
+        {
+            $episodes = [];
+            foreach (Patient::model()->findByPk($patient_id)->episodes as $episode)
+            {
+                $episodes[] = $episode->id;
+            }
+            $criteria->compare('episode_id', $episodes);
+            $episode_condition = "episode_id IN (".implode(",", $episodes).") AND ";
+        }
+
         $criteria->addCondition('`t`.booking_cancellation_date is null');
 
         $status_scheduled = OphTrOperationbooking_Operation_Status::model()->find('name=?', array('Scheduled'));
@@ -111,7 +143,7 @@ class OphTrOperationbooking_API extends BaseAPI
             ->with('session')
             ->with(array(
                 'operation' => array(
-                    'condition' => "episode_id = $episode_id and status_id in ($status_scheduled->id,$status_rescheduled->id)",
+                    'condition' => "$episode_condition status_id in ($status_scheduled->id,$status_rescheduled->id)",
                     'with' => 'event',
                 ),
             ))

@@ -259,6 +259,7 @@ class DefaultController extends BaseEventTypeController
 
             if($theatre_diary_disabled)
             {
+                // TODO: move this logic to the API and drop episode_id condition
                 $bookings = Element_OphTrOperationbooking_Operation::model()
                     ->with('event')
                     ->findAll('status_id IN (1, 2, 3)
@@ -269,7 +270,7 @@ class DefaultController extends BaseEventTypeController
             else
             {
                 if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-                    $bookings = $api->getOpenBookingsForEpisode($this->episode->id);
+                    $bookings = $api->getOpenBookings($this->patient->id);
                 }
             }
 
