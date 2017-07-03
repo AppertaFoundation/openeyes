@@ -217,6 +217,9 @@ $(document).ready(function() {
             data: { to_location_id: $('#ElementLetter_to_location_id').val() },
             dataType: "json",
             beforeSend: function(){
+
+                // empty the value of the address textarea because if the ajax slow the user may save a wrong address
+                $('#Document_Target_Address_0').val('');
                 $('button#et_saveprint').prop('disabled', true);
                 $('button#et_savedraft').prop('disabled', true);
             },
