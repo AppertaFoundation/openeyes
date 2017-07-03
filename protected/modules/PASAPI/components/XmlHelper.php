@@ -23,23 +23,69 @@ class XmlHelper
 
     private $_xml_reader = null;
 
+    public $errors = array();
+
     public function __construct($xml = null)
     {
+        libxml_use_internal_errors(true);
+
         $this->_xml_reader = new XMLReader();
 
         if($xml){
-            $this->_xml_reader->xml($xml);
+            $this->xml($xml);
         }
+    }
+
+    public function addError($error)
+    {
+        $this->errors[] = $error;
+    }
+
+    public function getErrors()
+    {
+        return $this->errors;
     }
 
     /**
      * Load XML string
      * @param $xml
+     * @return bool
      */
     public function xml($xml)
     {
         $this->_xml = $xml;
-        $this->_xml_reader->xml($xml);
+        if( $this->_xml_reader->xml($xml) === false){
+
+
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public function isValid()
+    {
+        // $this->_xml_reader->isValid() is only check the current node not the whole doc
+        return $this->isXMLContentValid($this->_xml);
+    }
+
+    public function isXMLContentValid($xml_content, $version = '1.0', $encoding = 'utf-8')
+    {
+        if (trim($xml_content) == '') {
+            return false;
+        }
+
+        $doc = new DOMDocument($version, $encoding);
+        $doc->loadXML($xml_content);
+
+        foreach (libxml_get_errors() as $error) {
+            $this->addError($error);
+        }
+
+        libxml_clear_errors();
+
+        return empty($this->getErrors());
     }
 
     /**

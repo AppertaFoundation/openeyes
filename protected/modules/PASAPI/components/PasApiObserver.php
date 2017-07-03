@@ -44,48 +44,34 @@ class PasApiObserver
         //will be accessed at the Patient model search function
         $results = &$data['results'];
 
-        $xml = $this->getResultsFromPas($data);
+        $xml = $this->pasRequest($data);
 
-        //wasn't a valid search
-        if(!$xml){
-            return false; //for now
-        }
+        $this->_xml_helper->xml($xml);
 
         //loading the xml
-        $this->_xml_helper->xml($xml);
+        if (!$this->_xml_helper->isValid()) {
+            OELog::log('PASAPI invalid XML from API request. ' . print_r(array_merge($this->_xml_helper->getErrors(), array(
+                    'hos_num' => isset($data['patient']->hos_num) ? $data['patient']->hos_num : '',
+                    'nhs_num' => isset($data['patient']->nhs_num) ? $data['patient']->nhs_num : '',
+                    'first_name' => isset($data['params']['last_name']) ? $data['params']['last_name'] : $data['params']['last_name'],
+                    'last_name' => isset($data['params']['last_name']) ? $data['params']['last_name'] : '',
+                )), true) );
+
+            $data['patient']->addPasError('Error occurred during the PAS synchronization, some data may be out of date or incomplete');
+
+            //XML captured in DB : audit.data
+        }
 
         // count the Patient nodes
         $patient_count = $this->_xml_helper->countNodes('Patient');
 
-        //save the exact match
-        if( $patient_count == 1){
+        if(!$patient_count){
+            // empty <PatientList>, nothing to do here
+            return true;
+        }
 
-            $transaction = Yii::app()->db->beginTransaction();
-            try {
-
-                preg_match('/<HospitalNumber>(.*)<\/HospitalNumber>/', $xml, $matches);
-
-                //@TODO: error handling
-                $external_id = $matches[1]; //this is the hospital_number
-
-                //$resource - \OEModule\PASAPI\resources\Patient
-                $resource = $resource_model::fromXml('V1', $xml);
-
-                $resource->id = $external_id; //hos_num
-
-                if(!$resource->save()){
-                    throw new Exception('Unable to save patient resource: '.print_r($resource->errors, true));
-                }
-
-                $transaction->commit();
-
-            } catch (Exception $e) {
-                $transaction->rollback();
-                OELog::log("PASAIP : " . $e->getMessage());
-
-            }
-
-        } else {
+        $transaction = Yii::app()->db->beginTransaction();
+        try {
 
             $xml_handler = $this->_xml_helper->getHandler();
 
@@ -99,7 +85,7 @@ class PasApiObserver
 
                 //$resource is an instance of \OEModule\PASAPI\resources\Patient
                 $resource = $resource_model::fromXml('V1', $xml_handler->readOuterXML(), array(
-                 //   'update_only' => true,
+                    //   'update_only' => true,
                 ));
 
                 $resource->id = $node->HospitalNumber;
@@ -109,7 +95,7 @@ class PasApiObserver
 
                 if( !isset($_patient)){
 
-                    // we do not seve this Patient just display on the patient/view page's list
+                    // we do not save this Patient just display on the patient/view page's list
 
                     $patient = new \Patient();
                     $contact = new \Contact();
@@ -129,14 +115,24 @@ class PasApiObserver
                     $results[] = $patient;
                 } else {
 
+                    // we could check the $_assignment->isStale() but the request already done, we have the new data, why would we throw away
+
                     // we can save here as this patient already in our DB
                     if(!$resource->save() && ($data['patient'] instanceof \Patient) ){
                         $data['patient']->addPasError('Patient not updated from PAS, some data may be out of date or incomplete');
+                        OELog::log('PASAPI Patient resource model could not be saved. Hos num: ' . $node->HospitalNumber . ' ' . print_r($resource->errors, true));
                     }
                 }
 
                 $xml_handler->next('Patient');
             }
+
+            $transaction->commit();
+
+        } catch (Exception $e) {
+            $transaction->rollback();
+            OELog::log("PASAIP : " . $e->getMessage());
+
         }
 
         //we do not return anything here
@@ -148,7 +144,7 @@ class PasApiObserver
      * @param $data
      * @return bool|mixed
      */
-    private function getResultsFromPas($data)
+    private function pasRequest($data)
     {
         $_patient = $data['patient'];
         $params = $data['params'];
@@ -168,9 +164,18 @@ class PasApiObserver
             }
         }
 
+        $error = '';
         if( !empty($query) ){
             $xml = $this->_curl->get('http://192.168.90.100/getXML.php?' . http_build_query($query));
+            $ch = $this->_curl->curl;
+
+            if(curl_errno($ch)){
+                $error = 'PASAIP cURL error occurred on API request. Request error: ' . curl_error($ch) . " ";
+                OELog::log($error);
+            }
         }
+
+        Audit::add('PASAPI', 'GET request', $error . (string)$xml);
 
         return $xml;
     }

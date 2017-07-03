@@ -50,5 +50,7 @@ return array(
         'admin_menu' => array(
             'Value Remaps' => '/PASAPI/admin/viewXpathRemaps',
         ),
+
+        'pasapi_cache_time' => 300,
     ),
 );
