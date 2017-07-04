@@ -134,4 +134,25 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
     {
         return $this->getDisplayDate() . ' ' . $this->getDisplayDisorder();
     }
+
+    protected static $sd_attribute_ignore = array('element_id');
+    protected static $sd_attribute_map = array('side_id' => 'eye_id');
+
+    /**
+     * @param \Patient $patient
+     * @return \SecondaryDiagnosis
+     */
+    public function createSecondaryDiagnosis(\Patient $patient)
+    {
+        $sd = new \SecondaryDiagnosis();
+        foreach ($this->getAttributes() as $attr => $val) {
+            if (in_array($attr, static::$sd_attribute_ignore)) {
+                continue;
+            }
+            $key = array_key_exists($attr, static::$sd_attribute_map) ? static::$sd_attribute_map[$attr] : $attr;
+            $sd->$key = $val;
+        }
+        $sd->patient_id = $patient->id;
+        return $sd;
+    }
 }

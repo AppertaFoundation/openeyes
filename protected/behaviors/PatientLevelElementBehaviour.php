@@ -30,9 +30,12 @@ class PatientLevelElementBehaviour extends CActiveRecordBehavior
     }
 
     /**
+     * Base check method. Note this method should not be called directly - use isAtTip. This allows
+     * isAtTip to be overridden in class utilising this behavior.
+     *
      * @return bool
      */
-    public function isAtTip()
+    public function tipCheck()
     {
         if ($this->owner->getIsNewRecord()) {
             if (!$this->owner->event || $this->owner->event->getIsNewRecord()) {
@@ -45,5 +48,13 @@ class PatientLevelElementBehaviour extends CActiveRecordBehavior
         }
         $tip = $this->owner->getTipElement();
         return $tip && $tip->id === $this->owner->id;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAtTip()
+    {
+        return $this->tipCheck();
     }
 }

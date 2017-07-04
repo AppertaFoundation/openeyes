@@ -38,6 +38,11 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     protected $default_from_previous = true;
 
     /**
+     * @var bool flag to indicate whether we should update the patient level data
+     */
+    protected $update_patient_level = false;
+
+    /**
      * Returns the static model of the specified AR class.
      *
      * @return static
@@ -124,4 +129,58 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         return implode(' // ', $this->orderedDiagnoses);
     }
 
+    /**
+     * @return bool
+     */
+    public function isAtTip()
+    {
+        if ($this->tipCheck()) {
+            if ($this->isNewRecord) {
+                return true;
+            }
+
+            // the element is the latest element, but systemic diagnoses might have been entered from
+            // elsewhere, so we check against that.
+            $latest = null;
+            $count = 0;
+            foreach ($this->event->getPatient()->getSystemicDiagnoses() as $sd) {
+                if (null === $latest || $sd->last_modified_date > $latest) {
+                    $latest = $sd->last_modified_date;
+                }
+                $count++;
+            }
+
+            // if length is different, then indicates a removal (date would indicate an addition)
+            return $count === count($this->diagnoses) && $latest <= $this->created_date;
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function beforeSave()
+    {
+        $this->update_patient_level = $this->isAtTip();
+        return parent::beforeSave();
+    }
+
+    public function afterSave()
+    {
+        parent::afterSave();
+        if ($this->update_patient_level) {
+            $patient = $this->event->getPatient();
+            // delete the current patient systemic diagnosis
+            foreach ($patient->getSystemicDiagnoses() as $sd) {
+                $sd->delete();
+            }
+            // sync the diagnoses from this element to the patient.
+            foreach ($this->diagnoses as $diagnosis) {
+                $sd = $diagnosis->createSecondaryDiagnosis($patient);
+                $sd->created_date = $this->created_date;
+                $sd->last_modified_date = $this->last_modified_date;
+                $sd->save(false, null, true);
+            }
+        }
+    }
 }

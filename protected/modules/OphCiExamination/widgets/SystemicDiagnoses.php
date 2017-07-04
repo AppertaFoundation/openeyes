@@ -23,32 +23,6 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
 class SystemicDiagnoses extends \BaseEventElementWidget
 {
     /**
-     * @return mixed
-     */
-    protected function isAtTip()
-    {
-        if ($this->element->isAtTip()) {
-            $element_date = $this->element->last_modified_date ? : $this->element->event->last_modified_date;
-            if (!$element_date) {
-                // new event so we're at the tip
-                return true;
-            }
-
-            // the element is the latest element, but systemic diagnoses might have been entered from
-            // elsewhere, so we check against that.
-            $latest = null;
-            foreach ($this->patient->getSystemicDiagnoses() as $sd) {
-                if (null === $latest || $sd->last_modified_date > $latest) {
-                    $latest = $sd->last_modified_date;
-                }
-            }
-
-            return $latest <= $this->element->last_modified_date;
-        }
-        return false;
-    }
-
-    /**
      * @return SystemicDiagnosesElement
      */
     protected function getNewElement()
