@@ -30,7 +30,6 @@ class SystemicDiagnoses extends \BaseEventElementWidget
         return new SystemicDiagnosesElement();
     }
 
-
     /**
      * @param SystemicDiagnosesElement $element
      * @param $data

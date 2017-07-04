@@ -104,7 +104,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     }
 
     /**
-     * Will duplicate values from the current socialhistory property of the given patient.
+     * Will duplicate values from the given SystemicDiagnoses element.
      *
      * @param static $element
      */
@@ -119,6 +119,21 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             $diagnoses[] = $diagnosis;
         }
         $this->diagnoses = $diagnoses;
+    }
+
+    /**
+     * @param \Patient $patient
+     */
+    public function setDefaultOptions(\Patient $patient = null)
+    {
+
+        if ($patient) {
+            $diagnoses = array();
+            foreach ($patient->getSystemicDiagnoses() as $sd) {
+                $diagnoses[] = SystemicDiagnoses_Diagnosis::fromSecondaryDiagnosis($sd);
+            }
+            $this->diagnoses = $diagnoses;
+        }
     }
 
     /**
