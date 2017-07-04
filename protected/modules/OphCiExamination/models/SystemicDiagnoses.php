@@ -145,6 +145,22 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     }
 
     /**
+     * This gets the most recent delete date of a systemic diagnosis
+     *
+     * @param $patient
+     * @return string date
+     */
+    protected function getLatestVersionedSystemicDiagnosisDate($patient)
+    {
+        $schema = \SecondaryDiagnosis::model()->getVersionTableSchema();
+        return $this->app->db->createCommand()
+            ->select('MAX(version_date)')
+            ->from($schema->name)
+            ->where('patient_id = :pid', array(':pid' =>$patient->id))
+            ->queryScalar();
+    }
+
+    /**
      * @return bool
      */
     public function isAtTip()
@@ -156,17 +172,18 @@ class SystemicDiagnoses extends \BaseEventTypeElement
 
             // the element is the latest element, but systemic diagnoses might have been entered from
             // elsewhere, so we check against that.
+            $patient = $this->event->getPatient();
             $latest = null;
-            $count = 0;
-            foreach ($this->event->getPatient()->getSystemicDiagnoses() as $sd) {
+            foreach ($patient->getSystemicDiagnoses() as $sd) {
                 if (null === $latest || $sd->last_modified_date > $latest) {
                     $latest = $sd->last_modified_date;
                 }
-                $count++;
             }
 
-            // if length is different, then indicates a removal (date would indicate an addition)
-            return $count === count($this->diagnoses) && $latest <= $this->created_date;
+            if ($latest <= $this->created_date) {
+                $last_versioned = $this->getLatestVersionedSystemicDiagnosisDate($patient);
+                return (!$last_versioned || $last_versioned <= $this->created_date);
+            }
         }
         return false;
     }
