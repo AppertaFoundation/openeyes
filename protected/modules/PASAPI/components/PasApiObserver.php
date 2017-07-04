@@ -40,6 +40,13 @@ class PasApiObserver
         $this->isAvailable();
 
         $this->_curl = new \Curl();
+
+        // would be nice to have some kind of NO_PROXY here (or somewhere) to exclude localhost
+        $default_proxy = isset(\Yii::app()->params['curl_proxy']) ? \Yii::app()->params['curl_proxy'] : false;
+        $proxy = isset(\Yii::app()->params['pasaip']['proxy']) ? \Yii::app()->params['pasaip']['proxy'] : $default_proxy;
+
+        curl_setopt($this->_curl->curl, CURLOPT_PROXY, $proxy);
+
         $this->_xml_helper = new XmlHelper();
     }
 
@@ -61,7 +68,7 @@ class PasApiObserver
         //loading the xml
         $this->_xml_helper->xml($xml);
 
-        // validationg the XML
+        // validating the XML
         if (!$this->_xml_helper->isValid()) {
             \OELog::log('PASAPI invalid XML from API request. ' . print_r(array_merge($this->_xml_helper->getErrors(), array(
                     'hos_num' => isset($data['patient']->hos_num) ? $data['patient']->hos_num : '',

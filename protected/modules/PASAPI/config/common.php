@@ -53,8 +53,11 @@ return array(
 
         'pasapi' => array(
             'enabled' => false,
-            //'cache_time' => 300, //not implemented
             'url' => 'http://localhost:4200',
+
+            // comment this out to use the params['curl_proxy']
+            // use 'false' to bypass any proxies
+            'proxy' => false
         ),
     ),
 );
