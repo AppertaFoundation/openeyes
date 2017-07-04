@@ -1,8 +1,9 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $('#enteredDiagnosisText').on('click', '.clear-diagnosis-widget', function (e) {
+      e.preventDefault();
       $('.multiDiagnosis[value="' + $(this).data('diagnosisId') +'"').remove();
-      $(this).parent().remove();
+      $(this).parent().hide();
     });
   });
   var source = function(request, response) {
@@ -21,6 +22,7 @@
 if(is_array($value)):
 ?>
   var select = function(event, ui) {
+    <?= $callback ? $callback . '(event, ui);' : ''?>
     var $clear = $('<?=$clear_diagnosis?>'),
       $new= $('<span></span>');
 
@@ -31,18 +33,19 @@ if(is_array($value)):
     $('#enteredDiagnosisText').show();
     $(event.target).parent().append('<input type="hidden" name="<?=$class ?>[<?=$name ?>][]" class="multiDiagnosis" value="' + ui.item.id + '">');
     $('#<?=$class?>_<?=$name?>').focus();
-
+    $('#<?php echo $class?>_<?php echo $name?> option:first').attr('selected', 'selected');
     return false;
   };
 <?php else: ?>
   var select = function(event, ui) {
+    <?= $callback ? $callback . '(event, ui);' : ''?>
     $('#<?=$class . '_' . str_replace('.', '', $name)?>_0').val('');
     $('#enteredDiagnosisText').html(ui.item.value + ' <?=$clear_diagnosis?> ');
     $('#enteredDiagnosisText').show();
     $('input[id=savedDiagnosisText]').val(ui.item.value);
     $('input[id=savedDiagnosis]').val(ui.item.id);
     $('#<?=$class . '_' . str_replace('.', '', $name)?>_0').focus();
-
+    $('#<?php echo $class?>_<?php echo $name?> option:first').attr('selected', 'selected');
     return false;
   };
 <?php endif;?>
