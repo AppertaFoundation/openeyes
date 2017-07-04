@@ -18,6 +18,8 @@
 */
 class DefaultController extends BaseEventTypeController
 {
+    protected $show_element_sidebar = false;
+
     protected static $action_types = array(
         'drugList' => self::ACTION_TYPE_FORM,
         'repeatForm' => self::ACTION_TYPE_FORM,

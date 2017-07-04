@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenEyes.
+ * OpenEyes
  *
  * (C) OpenEyes Foundation, 2017
  * This file is part of OpenEyes.
@@ -8,29 +8,31 @@
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
-<table class="plain patient-data">
-    <thead>
-    <tr>
-        <th>Date</th>
-        <th>Operation</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php foreach ($operations as $operation) {?>
-        <tr>
-            <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date']); ?></td>
-            <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayOperation() : $operation['operation']; ?>
-                <?php if (array_key_exists('link', $operation)) { ?><a href="<?= $operation['link'] ?>"><span class="has-tooltip fa fa-eye" data-tooltip-content="View operation note"></span></a><?php } ?>
-            </td>
-        </tr>
-    <?php }?>
-    </tbody>
-</table>
+<div class="eyedraw-fields">
+    <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
+    <div class="field-row">
+        <label>
+            <?php echo $element->getAttributeLabel($side . '_ed_report') ?>:
+        </label>
+        <div class="row collapse">
+            <div class="large-11 column autoreport-display">
+                <span id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>"> </span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="field-row">
+        <label for="<?= get_class($element).'_'.$side.'_comments';?>">
+            <?= $element->getAttributeLabel($side.'_comments'); ?>:
+        </label>
+        <?= CHtml::activeTextArea($element, $side.'_comments', array('rows' => '2', 'cols' => '20', 'class' => 'autosize clearWithEyedraw')) ?>
+    </div>
+</div>

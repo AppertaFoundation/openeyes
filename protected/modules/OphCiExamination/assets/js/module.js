@@ -290,27 +290,6 @@ function anteriorListener(_drawing) {
 }
 
 $(document).ready(function() {
-    var toolTip = new OpenEyes.UI.Tooltip({
-        className: 'quicklook',
-        offset: {
-            x: 10,
-            y: 10
-        },
-        viewPortOffset: {
-            x: 0,
-            y: 32 // height of sticky footer
-        }
-    });
-    $(this).on('mouseover', '.has-tooltip', function() {
-        if ($(this).data('tooltip-content').length) {
-            toolTip.setContent($(this).data('tooltip-content'));
-            var offsets = $(this).offset();
-            toolTip.show(offsets.left, offsets.top);
-        }
-    }).mouseout(function (e) {
-        toolTip.hide();
-    });
-
     if(!$('#OphCiExamination_allergy').find('tr').length) {
       $('.allergies_confirm_no').show();
     }

@@ -26,6 +26,8 @@ class DefaultController extends BaseEventTypeController
         'getTheatreOptions' => self::ACTION_TYPE_FORM,
     );
 
+    protected $show_element_sidebar = false;
+
     /* @var Element_OphTrOperationbooking_Operation operation that this note is for when creating */
     protected $booking_operation;
     /* @var boolean - indicates if this note is for an unbooked procedure or not when creating */
