@@ -150,6 +150,30 @@ class OphTrOperationbooking_API extends BaseAPI
             ->findAll($criteria);
     }
 
+    /**
+     * Get open operations for a patient
+     * optionally filtered for statuses
+     *
+     * @param $patient_id
+     * @param array $statuses   empty array indicates all statuses
+     */
+
+    public function getOpenOperationsForPatient($patient_id, $statuses = array())
+    {
+        $episodes = [];
+        foreach (Patient::model()->findByPk($patient_id)->episodes as $episode)
+        {
+            $episodes[] = $episode->id;
+        }
+        $episodes = implode(",", $episodes);
+        $statuses_filter = !empty($statuses) ? "status_id IN (".implode(",", $statuses).") AND" : "";
+
+        return Element_OphTrOperationbooking_Operation::model()
+            ->with('event')
+            ->findAll("$statuses_filter event.episode_id IN ($episodes)
+                            AND operation_cancellation_date IS NULL");
+    }
+
     public function getOperationProcedures($operation_id)
     {
         return OphTrOperationbooking_Operation_Procedures::model()->findAll('element_id=?', array($operation_id));

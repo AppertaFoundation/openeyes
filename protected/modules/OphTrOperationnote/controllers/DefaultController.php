@@ -257,22 +257,23 @@ class DefaultController extends BaseEventTypeController
             $element_enabled = \SettingInstallation::model()->find('`key` = :setting_key', array(':setting_key'=>'disable_theatre_diary'));
             $theatre_diary_disabled = isset($element_enabled->value) && $element_enabled->value == 'on';
 
-            if($theatre_diary_disabled)
+            /** @var OphTrOperationbooking_API $api */
+            if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking'))
             {
-                // TODO: move this logic to the API and drop episode_id condition
-                $bookings = Element_OphTrOperationbooking_Operation::model()
-                    ->with('event')
-                    ->findAll('status_id IN (1, 2, 3)
-                            AND event.episode_id = :episode_id
-                            AND operation_cancellation_date IS NULL',
-                    array(':episode_id'=>$this->episode->id));
-            }
-            else
-            {
-                if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
+                if ($theatre_diary_disabled)
+                {
+                    $bookings = $api->getOpenOperationsForPatient($this->patient->id, array(
+                        OphTrOperationbooking_Operation_Status::STATUS_REQUIRES_SCHEDULING,
+                        OphTrOperationbooking_Operation_Status::STATUS_SCHEDULED,
+                        OphTrOperationbooking_Operation_Status::STATUS_REQUIRES_RESCHEDULING
+                    ));
+                }
+                else
+                {
                     $bookings = $api->getOpenBookings($this->patient->id);
                 }
             }
+
 
 
             $this->title = 'Please select booking';
