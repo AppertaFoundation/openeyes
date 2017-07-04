@@ -43,7 +43,8 @@ class PatientLevelElementBehaviour extends CActiveRecordBehavior
             }
             else {
                 $tip = $this->getTipElement();
-                return $this->owner->event->isAfterEvent($tip->event);
+                // if there is no tip, then we must be at the tip
+                return $tip ? $this->owner->event->isAfterEvent($tip->event) : true;
             }
         }
         $tip = $this->owner->getTipElement();
