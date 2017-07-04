@@ -95,7 +95,6 @@ $model_name = CHtml::modelName($element);
             'model_name' => CHtml::modelName($element),
             'values' => array(
                 'id' => '',
-                'diagnosis_id' => '',
                 'disorder_id' => '{{disorder_id}}',
                 'disorder_display' => '{{disorder_display}}',
                 'side_id' => '{{side_id}}',

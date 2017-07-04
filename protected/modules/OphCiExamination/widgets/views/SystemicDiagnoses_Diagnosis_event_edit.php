@@ -22,7 +22,7 @@ if (!isset($values)) {
     $values = array(
         'id' => $diagnosis->id,
         'disorder_id' => $diagnosis->disorder_id,
-        'disorder_display' => $diagnosis->disorder->term,
+        'disorder_display' => $diagnosis->disorder ? $diagnosis->disorder->term : '',
         'side_id' => $diagnosis->side_id,
         'side_display' => $diagnosis->side ? $diagnosis->side->adjective : 'None',
         'date' => $diagnosis->date,

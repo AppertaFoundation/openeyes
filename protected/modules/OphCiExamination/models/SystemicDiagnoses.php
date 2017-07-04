@@ -108,7 +108,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         $diagnoses = array();
         foreach ($element->orderedDiagnoses as $prev) {
             $diagnosis = new SystemicDiagnoses_Diagnosis();
-            $diagnosis->disorder = $prev->disorder;
+            $diagnosis->disorder_id = $prev->disorder_id;
             $diagnosis->side_id = $prev->side_id;
             $diagnosis->date = $prev->date;
             $diagnoses[] = $diagnosis;
