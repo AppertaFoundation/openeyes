@@ -37,7 +37,7 @@ return array(
             'observers' => array(
                 'patient_search_criteria' => array(
                     'search_pas' => array(
-                        'class' => 'PasApiObserver',
+                        'class' => 'OEModule\PASAPI\components\PasApiObserver',
                         'method' => 'search',
                     ),
                 ),
@@ -51,6 +51,10 @@ return array(
             'Value Remaps' => '/PASAPI/admin/viewXpathRemaps',
         ),
 
-        'pasapi_cache_time' => 300,
+        'pasapi' => array(
+            'enabled' => false,
+            //'cache_time' => 300, //not implemented
+            'url' => 'http://localhost:4200',
+        ),
     ),
 );

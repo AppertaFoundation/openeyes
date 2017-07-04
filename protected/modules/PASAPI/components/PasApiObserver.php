@@ -1,4 +1,6 @@
 <?php
+namespace OEModule\PASAPI\components;
+
 /**
  * OpenEyes
  *
@@ -31,26 +33,37 @@ class PasApiObserver
      */
     private $_curl = null;
 
+    private $available = false;
+
     public function __construct()
     {
-        $this->_curl = new Curl();
+        $this->isAvailable();
+
+        $this->_curl = new \Curl();
         $this->_xml_helper = new XmlHelper();
     }
 
     public function search($data)
     {
+
+        if( !$this->isAvailable() ){
+            // log ?
+            return false;
+        }
+
         $resource_model = "\\OEModule\\PASAPI\\resources\\Patient";
 
-        //will be accessed at the Patient model search function
+        //will be accessed at the Patient model's search function
         $results = &$data['results'];
 
         $xml = $this->pasRequest($data);
 
+        //loading the xml
         $this->_xml_helper->xml($xml);
 
-        //loading the xml
+        // validationg the XML
         if (!$this->_xml_helper->isValid()) {
-            OELog::log('PASAPI invalid XML from API request. ' . print_r(array_merge($this->_xml_helper->getErrors(), array(
+            \OELog::log('PASAPI invalid XML from API request. ' . print_r(array_merge($this->_xml_helper->getErrors(), array(
                     'hos_num' => isset($data['patient']->hos_num) ? $data['patient']->hos_num : '',
                     'nhs_num' => isset($data['patient']->nhs_num) ? $data['patient']->nhs_num : '',
                     'first_name' => isset($data['params']['last_name']) ? $data['params']['last_name'] : $data['params']['last_name'],
@@ -59,7 +72,7 @@ class PasApiObserver
 
             $data['patient']->addPasError('Error occurred during the PAS synchronization, some data may be out of date or incomplete');
 
-            //XML captured in DB : audit.data
+            // XML captured in DB : audit.data
         }
 
         // count the Patient nodes
@@ -70,7 +83,7 @@ class PasApiObserver
             return true;
         }
 
-        $transaction = Yii::app()->db->beginTransaction();
+        $transaction = \Yii::app()->db->beginTransaction();
         try {
 
             $xml_handler = $this->_xml_helper->getHandler();
@@ -79,9 +92,8 @@ class PasApiObserver
             while ($xml_handler->read() && $xml_handler->name !== 'Patient');
 
             // now that we're at the right depth, hop to the next <patient/> until the end of the tree
-            while ($xml_handler->name === 'Patient')
-            {
-                $node = new SimpleXMLElement($xml_handler->readOuterXML());
+            while ($xml_handler->name === 'Patient') {
+                $node = new \SimpleXMLElement($xml_handler->readOuterXML());
 
                 //$resource is an instance of \OEModule\PASAPI\resources\Patient
                 $resource = $resource_model::fromXml('V1', $xml_handler->readOuterXML(), array(
@@ -93,34 +105,22 @@ class PasApiObserver
                 $_assignment = $resource->getAssignment();
                 $_patient = $_assignment ? $_assignment->getInternal() : null;
 
-                if( !isset($_patient)){
+                //XML contains a list of patients so we are building \Patient objects for those who are not in our DB
+                if (!isset($_patient) && $patient_count > 1) {
 
-                    // we do not save this Patient just display on the patient/view page's list
-
-                    $patient = new \Patient();
-                    $contact = new \Contact();
-                    $patient->contact = $contact;
-
-                    $resource->assignProperty($patient, 'nhs_num', 'NHSNumber');
-                    $resource->assignProperty($patient, 'hos_num', 'HospitalNumber');
-                    $resource->assignProperty($patient, 'dob', 'DateOfBirth');
-                    $resource->assignProperty($patient, 'date_of_death', 'DateOfDeath');
-                    $resource->assignProperty($patient, 'is_deceased', 'IsDeceased');
-
-                    $resource->assignProperty($contact, 'title', 'Title');
-                    $resource->assignProperty($contact, 'first_name', 'FirstName');
-                    $resource->assignProperty($contact, 'last_name', 'Surname');
-                    $resource->assignProperty($contact, 'primary_phone', 'TelephoneNumber');
-
+                    // we do not save this Patient, just display on the patient/view page's list
+                    $patient = $this->buildPatientObject($resource);
                     $results[] = $patient;
-                } else {
+                }
+
+                // If the patient is in our DB or only 1 patient returned we save it
+                if ( ($_patient instanceof \Patient) || $patient_count == 1) {
 
                     // we could check the $_assignment->isStale() but the request already done, we have the new data, why would we throw away
 
-                    // we can save here as this patient already in our DB
-                    if(!$resource->save() && ($data['patient'] instanceof \Patient) ){
+                    if (!$resource->save() && ($data['patient'] instanceof \Patient)) {
                         $data['patient']->addPasError('Patient not updated from PAS, some data may be out of date or incomplete');
-                        OELog::log('PASAPI Patient resource model could not be saved. Hos num: ' . $node->HospitalNumber . ' ' . print_r($resource->errors, true));
+                        \OELog::log('PASAPI Patient resource model could not be saved. Hos num: ' . $node->HospitalNumber . ' ' . print_r($resource->errors, true));
                     }
                 }
 
@@ -131,12 +131,36 @@ class PasApiObserver
 
         } catch (Exception $e) {
             $transaction->rollback();
-            OELog::log("PASAIP : " . $e->getMessage());
-
+            \OELog::log("PASAIP : " . $e->getMessage());
         }
 
         //we do not return anything here
         //either a Patient was saved or the data will be available in the referenced $results array
+    }
+
+    /**
+     * Build Patient Object from XML without saving
+     * @param \OEModule\PASAPI\resources\Patient $resource
+     * @return \Patient
+     */
+    private function buildPatientObject(\OEModule\PASAPI\resources\Patient $resource)
+    {
+        $patient = new \Patient();
+        $contact = new \Contact();
+        $patient->contact = $contact;
+
+        $resource->assignProperty($patient, 'nhs_num', 'NHSNumber');
+        $resource->assignProperty($patient, 'hos_num', 'HospitalNumber');
+        $resource->assignProperty($patient, 'dob', 'DateOfBirth');
+        $resource->assignProperty($patient, 'date_of_death', 'DateOfDeath');
+        $resource->assignProperty($patient, 'is_deceased', 'IsDeceased');
+
+        $resource->assignProperty($contact, 'title', 'Title');
+        $resource->assignProperty($contact, 'first_name', 'FirstName');
+        $resource->assignProperty($contact, 'last_name', 'Surname');
+        $resource->assignProperty($contact, 'primary_phone', 'TelephoneNumber');
+
+        return $patient;
     }
 
     /**
@@ -149,6 +173,8 @@ class PasApiObserver
         $_patient = $data['patient'];
         $params = $data['params'];
         $xml = false;
+
+        $url = \Yii::app()->params['pasapi']['url'];
 
         $query = array();
 
@@ -166,18 +192,29 @@ class PasApiObserver
 
         $error = '';
         if( !empty($query) ){
-            $xml = $this->_curl->get('http://192.168.90.100/getXML.php?' . http_build_query($query));
+            $xml = $this->_curl->get($url . '?' . http_build_query($query));
             $ch = $this->_curl->curl;
 
             if(curl_errno($ch)){
                 $error = 'PASAIP cURL error occurred on API request. Request error: ' . curl_error($ch) . " ";
-                OELog::log($error);
+                \OELog::log($error);
             }
         }
 
-        Audit::add('PASAPI', 'GET request', $error . (string)$xml);
+        \Audit::add('PASAPI', 'GET request', $error . (string)$xml);
 
         return $xml;
+    }
+
+    /**
+     * Is PAS enabled and up?
+     */
+    public function isAvailable()
+    {
+        $enabled = (isset(\Yii::app()->params['pasapi']['enabled']) && \Yii::app()->params['pasapi']['enabled'] === true);
+        $available = $enabled && (isset(\Yii::app()->params['pasapi']['url']) && !empty( \Yii::app()->params['pasapi']['url']));
+
+        return $this->available = $available;
     }
 
 }
