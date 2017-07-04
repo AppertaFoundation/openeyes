@@ -3,7 +3,9 @@
     $('#enteredDiagnosisText').on('click', '.clear-diagnosis-widget', function (e) {
       e.preventDefault();
       $('.multiDiagnosis[value="' + $(this).data('diagnosisId') +'"').remove();
+      $('input[id=savedDiagnosis]').val('');
       $(this).parent().hide();
+      <?= $callback ? $callback . '();' : '' ?>
     });
   });
   var source = function(request, response) {
