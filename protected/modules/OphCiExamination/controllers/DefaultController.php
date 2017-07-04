@@ -1357,15 +1357,17 @@ class DefaultController extends \BaseEventTypeController
 
         if ($thisRisk) {
             if (is_null($recentAnticoag) || $recentAnticoag->anticoagulant === '0' || $recentAnticoag->event->id === $thisRisk->event->id) {
-                $previous = $historyRisk->previousCheckedAnticoag($this->patient->id, $thisRisk->event->event_date);
-                if ($previous->anticoagulant !== $thisRisk->anticoagulant) {
-                    $this->updateSummaryRisk($previous->anticoagulant, $previous->anticoagulant_name, 'Anticoagulants');
+                if ($previous = $historyRisk->previousCheckedAnticoag($this->patient->id, $thisRisk->event->event_date)){
+                    if ($previous->anticoagulant !== $thisRisk->anticoagulant) {
+                        $this->updateSummaryRisk($previous->anticoagulant, $previous->anticoagulant_name, 'Anticoagulants');
+                    }
                 }
             }
             if (is_null($recentAlpha) || $recentAlpha->alphablocker === '0' || $recentAnticoag->event->id === $thisRisk->event->id) {
-                $previous = $historyRisk->previousCheckedAlpha($this->patient->id, $thisRisk->event->event_date);
-                if ($previous->alphablocker !== $thisRisk->alphablocker) {
-                    $this->updateSummaryRisk($previous->alphablocker, $previous->alpha_blocker_name, 'Alpha blockers');
+                if ($previous = $historyRisk->previousCheckedAlpha($this->patient->id, $thisRisk->event->event_date)){
+                    if ($previous->alphablocker !== $thisRisk->alphablocker) {
+                        $this->updateSummaryRisk($previous->alphablocker, $previous->alpha_blocker_name, 'Alpha blockers');
+                    }
                 }
             }
         }

@@ -622,13 +622,12 @@ class Admin
      */
     public function attributeValue($row, $attribute)
     {
-        if (method_exists($row, $attribute))
-        {
-            return $row->$attribute();
+        if ($row->hasAttribute($attribute)) {
+            return $row->$attribute;
         }
 
-        if (isset($row->$attribute)) {
-            return $row->$attribute;
+        if (method_exists($row, $attribute)){
+            return $row->$attribute();
         }
 
         if (strpos($attribute, '.')) {
