@@ -772,7 +772,7 @@ EOL;
                     RiboflavinPreparation VARCHAR(128),
                     RiboflavinDuration INTEGER,
                     UVIrradiance INTEGER,
-                    UVDuration INTEGER,
+                    UVDuration DECIMAL(5,1),
                     UVContinuousOrPulsed VARCHAR(128),
                     UVTotalEnergy INTEGER(10),
                     Comments VARCHAR(1024),
@@ -820,7 +820,7 @@ EOL;
                        rp.name,
                        REPLACE(REPLACE(sd.name, 'minutes', ''), 'minute', ''),
                        ui.name,
-                       ud.name,
+                       REPLACE(REPLACE(ud.name, 'seconds', ''), 'second', ''),
                        CASE WHEN uid.name = '0 seconds' THEN 'Continuous' ELSE REPLACE(REPLACE(uid.name, ' seconds', ''), ' second', '') END,
                        k.uv_total_energy_value,
                        k.cxl_comments

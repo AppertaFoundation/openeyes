@@ -29,13 +29,13 @@
  * @property string $aliases
  * @property string $dose_unit
  * @property string $default_dose
- * @property int $preservative_free
  * @property Allergy[] $allergies
- * @property DrugType $type
+ * @property DrugType[] $type
  * @property DrugForm $form
  * @property DrugRoute $default_route
  * @property DrugFrequency $default_frequency
  * @property DrugDuration $default_duration
+ * @property Tag[] $tags
  */
 class Drug extends BaseActiveRecordVersioned
 {
@@ -70,7 +70,7 @@ class Drug extends BaseActiveRecordVersioned
         return array(
             array('name, tallman', 'required'),
             array('name', 'unsafe', 'on' => 'update'),
-            array('tallman, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe'),
+            array('tallman, dose_unit, default_dose, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe'),
         );
     }
 
@@ -81,12 +81,13 @@ class Drug extends BaseActiveRecordVersioned
     {
         return array(
             'allergies' => array(self::MANY_MANY, 'Allergy', 'drug_allergy_assignment(drug_id, allergy_id)'),
-            'type' => array(self::BELONGS_TO, 'DrugType', 'type_id'),
+            'type' => array(self::MANY_MANY, 'DrugType', 'drug_drug_type(drug_id, drug_type_id)'),
             'form' => array(self::BELONGS_TO, 'DrugForm', 'form_id'),
             'default_duration' => array(self::BELONGS_TO, 'DrugDuration', 'default_duration_id'),
             'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'default_frequency_id'),
             'default_route' => array(self::BELONGS_TO, 'DrugRoute', 'default_route_id'),
             'subspecialtyAssignments' => array(self::HAS_MANY, 'SiteSubspecialtyDrug', 'drug_id'),
+            'tags' => array(self::MANY_MANY, 'Tag', 'drug_tag(tag_id, drug_id)'),
         );
     }
 
@@ -112,7 +113,7 @@ class Drug extends BaseActiveRecordVersioned
 
     public function getLabel()
     {
-        if ($this->preservative_free) {
+        if ($this->isPreservativeFree()) {
             return $this->name.' (No Preservative)';
         } else {
             return $this->name;
@@ -121,7 +122,7 @@ class Drug extends BaseActiveRecordVersioned
 
     public function getTallmanLabel()
     {
-        if ($this->preservative_free) {
+        if ($this->isPreservativeFree()) {
             return $this->tallman.' (No Preservative)';
         } else {
             return $this->tallman;
@@ -181,5 +182,17 @@ class Drug extends BaseActiveRecordVersioned
             'route_id' => $this->default_route_id,
             'frequency_id' => $this->default_frequency_id,
         );
+    }
+
+    /**
+     * @return bool
+     *
+     * Returns true if the tag 'Preservative free' is
+     * added to this drug
+     */
+
+    public function isPreservativeFree()
+    {
+        return in_array(1, array_map(function($e){ return $e->id; }, $this->tags));
     }
 }

@@ -193,6 +193,10 @@ class DocManDeliveryCommand extends CConsoleCommand
             $ch = curl_init();
 
             curl_setopt($ch, CURLOPT_URL, $login_page);
+            // disable SSL certificate check for locally issued certificates
+            if(Yii::app()->params['disable_ssl_certificate_check']) {
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            }
             curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
             curl_setopt($ch, CURLOPT_COOKIESESSION, true);
             curl_setopt($ch, CURLOPT_COOKIEJAR, '/tmp/cookie.txt');
@@ -224,12 +228,24 @@ class DocManDeliveryCommand extends CConsoleCommand
             curl_close($ch);
             
             if(substr($content, 0, 4) !== "%PDF"){
-                echo 'File is not a PDF for event id: '.$event->id."\n";
+                echo 'File is not a PDF for event id: '.$this->event->id."\n";
                 $this->updateFailedDelivery($output_id);
                 return false;
             }
-
-            $filename = $this->getFileName();
+            
+            if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] === 'format1') {
+                $filename = "OPENEYES_" . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . $this->event->id . "_" . rand();
+            } else {
+                if (Yii::app()->params['docman_filename_format'] === 'format2') {
+                    $filename = (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . date('YmdHi',
+                            strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
+                } else {
+                    if (Yii::app()->params['docman_filename_format'] === 'format3') {
+                        $filename = (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_edtdep-OEY_' .
+                            date('Ymd_His', strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
+                    }
+                }
+            }
             
             $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
 
@@ -288,9 +304,9 @@ class DocManDeliveryCommand extends CConsoleCommand
     private function generateXMLOutput($filename, $document_output)
     {
         $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $this->event->id));
-        $subObj = $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty;
-        $subspeciality = isset($subObj->ref_spec) ? $subObj->ref_spec : 'SS';
-        $subspeciality_name = isset($subObj->name) ? $subObj->name : 'Support Services';
+        $sub_obj = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty : null;
+        $subspeciality = isset($sub_obj->ref_spec) ? $sub_obj->ref_spec : 'SS';
+        $subspeciality_name = isset($sub_obj->name) ? $sub_obj->name : 'Support Services';
         $nat_id = isset($this->event->episode->patient->gp->nat_id) ? $this->event->episode->patient->gp->nat_id : null;
         $gp_name = isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->getFullName() : null;
         $practice_code = isset($this->event->episode->patient->practice->code) ? $this->event->episode->patient->practice->code : '';

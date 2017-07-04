@@ -125,6 +125,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
             'event.episode_id = :episode_id',
             'treatment.eye_id in (:eye_id,'.SplitEventTypeElement::BOTH.')',
             'event_date <= :since',
+            'event.deleted = 0',
             )
         );
         $criteria->join = 'JOIN event ON treatment.event_id = event.id';

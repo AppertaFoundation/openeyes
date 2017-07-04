@@ -224,6 +224,14 @@ class BookingController extends OphTrOperationbookingEventController
     public function actionRescheduleLater()
     {
         $operation = $this->operation;
+
+        if($this->module->isTheatreDiaryDisabled())
+        {
+            $operation->status_id = 3;
+            $operation->save();
+            return $this->redirect(array('default/view/'.$this->event->id));
+        }
+
         if (in_array($operation->status->name, array('Requires scheduling', 'Requires rescheduling', 'Cancelled'))) {
             return $this->redirect(array('default/view/'.$this->event->id));
         }

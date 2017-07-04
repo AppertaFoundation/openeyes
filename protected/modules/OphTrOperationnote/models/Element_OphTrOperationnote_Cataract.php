@@ -295,31 +295,36 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
     {
         $curr_by_id = array();
 
-        foreach ($this->operative_device_assignments as $oda) {
-            $curr_by_id[$oda->operative_device_id] = $oda;
-        }
-
-        foreach ($operative_device_ids as $od_id) {
-            if (!isset($curr_by_id[$od_id])) {
-                $oda = new OphTrOperationnote_CataractOperativeDevice();
-                $oda->cataract_id = $this->id;
-                $oda->operative_device_id = $od_id;
-
-                if (!$oda->save()) {
-                    throw new Exception('Unable to save complication assignment: '.print_r($oda->getErrors(), true));
-                }
-            } else {
-                unset($curr_by_id[$od_id]);
+        if(is_array($this->operative_device_assignments)){
+            foreach ($this->operative_device_assignments as $oda) {
+                $curr_by_id[$oda->operative_device_id] = $oda;
             }
         }
 
+        if (is_array($operative_device_ids)) {
+            foreach ($operative_device_ids as $od_id) {
+                if (!isset($curr_by_id[$od_id])) {
+                    $oda = new OphTrOperationnote_CataractOperativeDevice();
+                    $oda->cataract_id = $this->id;
+                    $oda->operative_device_id = $od_id;
+
+                    if (!$oda->save()) {
+                        throw new Exception('Unable to save operative device assignment: '.print_r($oda->getErrors(), true));
+                    }
+                } else {
+                    unset($curr_by_id[$od_id]);
+                }
+            }
+        }
+
+        if (is_array($curr_by_id)){
         foreach ($curr_by_id as $oda) {
             if (!$oda->delete()) {
-                throw new Exception('Unable to delete complication assignment: '.print_r($oda->getErrors(), true));
+                throw new Exception('Unable to delete operative device assignment: '.print_r($oda->getErrors(), true));
             }
         }
     }
-
+    }
     /**
      * The eye of the procedure is stored in the parent procedure list element.
      *

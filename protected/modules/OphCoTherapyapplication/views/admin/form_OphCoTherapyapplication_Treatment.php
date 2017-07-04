@@ -30,7 +30,7 @@
 <hr />
 
 <?php echo $form->textField($model, 'intervention_name', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-<?php echo $form->textField($model, 'dose_and_frequency', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+<?php echo $form->textArea($model, 'dose_and_frequency', array(), false, array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 <?php echo $form->textField($model, 'administration_route', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
 
 <div class="row field-row">

@@ -61,7 +61,7 @@ class DrugType extends BaseActiveRecordVersioned
             array('name', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name', 'safe', 'on' => 'search'),
+            array('id, name, tag_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -73,6 +73,8 @@ class DrugType extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
+            'drug' => array(self::MANY_MANY, 'FormularyDrugs', 'drug_drug_type(drug_type_id, drug_id)'),
+            'tag' => array(self::BELONGS_TO, 'Tag', 'tag_id')
         );
     }
 
@@ -82,6 +84,8 @@ class DrugType extends BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
+            'name' => 'Name',
+            'tag_id' => 'Lookup tag'
         );
     }
 

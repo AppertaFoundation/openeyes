@@ -88,6 +88,25 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Check data in child elements
+     *
+     * @param BaseEventTypeElements[] $elements
+     *
+     * @return boolean
+     */
+    protected function checkChildElementsForData($elements)
+    {
+        foreach($elements as $element)
+        {
+            if($element->id > 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Filters elements based on coded dependencies.
      *
      * @TODO: need to ensure that we don't filter out elements that do exist when configuration changes
@@ -112,11 +131,14 @@ class DefaultController extends \BaseEventTypeController
 
         $final = array();
         foreach ($elements as $el) {
-            if (!in_array(get_class($el), $remove)) {
+            if (in_array(get_class($el), $remove)) {
+                if($el->id > null || $this->checkChildElementsForData($this->getChildElements($el->getElementType()))) {
+                    $final[] = $el;
+                }
+            }else{
                 $final[] = $el;
             }
         }
-
         return $final;
     }
 
@@ -575,7 +597,7 @@ class DefaultController extends \BaseEventTypeController
                         $answers[] = $answer;
                     }
                 }
-                if (isset($data[$model_name][$side.'_risks'])) {
+                if (isset($data[$model_name][$side.'_risks']) && is_array($data[$model_name][$side.'_risks'])) {
                     foreach ($data[$model_name][$side.'_risks'] as $risk_id) {
                         if ($risk = models\OphCiExamination_InjectionManagementComplex_Risk::model()->findByPk($risk_id)) {
                             $risks[] = $risk;
@@ -1335,15 +1357,17 @@ class DefaultController extends \BaseEventTypeController
 
         if ($thisRisk) {
             if (is_null($recentAnticoag) || $recentAnticoag->anticoagulant === '0' || $recentAnticoag->event->id === $thisRisk->event->id) {
-                $previous = $historyRisk->previousCheckedAnticoag($this->patient->id, $thisRisk->event->event_date);
-                if ($previous->anticoagulant !== $thisRisk->anticoagulant) {
-                    $this->updateSummaryRisk($previous->anticoagulant, $previous->anticoagulant_name, 'Anticoagulants');
+                if ($previous = $historyRisk->previousCheckedAnticoag($this->patient->id, $thisRisk->event->event_date)){
+                    if ($previous->anticoagulant !== $thisRisk->anticoagulant) {
+                        $this->updateSummaryRisk($previous->anticoagulant, $previous->anticoagulant_name, 'Anticoagulants');
+                    }
                 }
             }
             if (is_null($recentAlpha) || $recentAlpha->alphablocker === '0' || $recentAnticoag->event->id === $thisRisk->event->id) {
-                $previous = $historyRisk->previousCheckedAlpha($this->patient->id, $thisRisk->event->event_date);
-                if ($previous->alphablocker !== $thisRisk->alphablocker) {
-                    $this->updateSummaryRisk($previous->alphablocker, $previous->alpha_blocker_name, 'Alpha blockers');
+                if ($previous = $historyRisk->previousCheckedAlpha($this->patient->id, $thisRisk->event->event_date)){
+                    if ($previous->alphablocker !== $thisRisk->alphablocker) {
+                        $this->updateSummaryRisk($previous->alphablocker, $previous->alpha_blocker_name, 'Alpha blockers');
+                    }
                 }
             }
         }
@@ -1374,3 +1398,4 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 }
+

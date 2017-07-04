@@ -1,7 +1,6 @@
 $(document).ready(function () {
 
-    //pathetic trying to restrict the form being sent on Enter
-    $('#GeneticsPatient_id').closest('form').keydown(function(event){
+    $('#search_patient_disorder_id_0, #search_disorder_id_0, #genetics_patient_lookup').keydown(function(event){
         if(event.keyCode == 13) {
             event.preventDefault();
             return false;
