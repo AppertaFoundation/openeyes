@@ -16,26 +16,23 @@
  */
 
 ?>
-<?php echo '<?xml version="1.0" encoding="utf-8" ?>'; ?>
+<?php echo '<?xmlversion="1.0"encoding="utf-8"?>'; ?>
 <linkparameters>
     <security>
-        <authentication><?=$authentication_hash?></authentication>
-        <timestamp><?=$timestamp?></timestamp>
-        <xmlid><?=$message_id?></xmlid>
-    </security><revision number="4.2" />
+        <authentication><?=$authentication_hash; ?></authentication>
+        <timestamp><?=$timestamp; ?></timestamp>
+        <xmlid><?=$message_id; ?></xmlid>
+    </security>
+    <revisionnumber="4.2"/>
     <applicationid><?=$application_id?></applicationid>
-
     <user>
         <id><?=$username?></id>
         <name><?=$user_displayname?></name>
     </user>
     <primarylink>
         <process>0</process>
-
-        <uniquereference type="I"><?=$unique_reference?></uniquereference>
-
-        <eventdate><?=$event_time?></eventdate>
-        <eventtime><?=$event_time?></eventtime>
+        <uniquereferencetype="I"><?=$hos_num; ?></uniquereference>
+        <OUID></OUID>
     </primarylink>
     <event>
         <status>0</status>

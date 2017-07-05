@@ -248,7 +248,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
         $data['message_id'] = $this->getMessageId(new \Event());
         $data['application_id'] = $this->application_id;
         $data['event_id'] = '';
-        $data['unique_reference'] = $patient->hos_num;
+        $data['hos_num'] = $patient->hos_num;
         $data['event_date'] = $when->format('Y-m-d');
         $data['event_time'] = $when->format('H:i:s');
         $data['is_new_event'] = false;
