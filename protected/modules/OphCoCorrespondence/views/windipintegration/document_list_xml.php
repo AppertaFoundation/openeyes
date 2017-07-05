@@ -16,14 +16,14 @@
  */
 
 ?>
-<?php echo '<?xmlversion="1.0"encoding="utf-8"?>'; ?>
+<?php echo '<?xml version="1.0" encoding="utf-8"?>'; ?>
 <linkparameters>
     <security>
         <authentication><?=$authentication_hash; ?></authentication>
         <timestamp><?=$timestamp; ?></timestamp>
         <xmlid><?=$message_id; ?></xmlid>
     </security>
-    <revisionnumber="4.2"/>
+    <revision number="4.2"/>
     <applicationid><?=$application_id?></applicationid>
     <user>
         <id><?=$username?></id>
@@ -31,7 +31,7 @@
     </user>
     <primarylink>
         <process>0</process>
-        <uniquereferencetype="I"><?=$hos_num; ?></uniquereference>
+        <uniquereference type="I"><?=$hos_num; ?></uniquereference>
         <OUID></OUID>
     </primarylink>
     <event>
