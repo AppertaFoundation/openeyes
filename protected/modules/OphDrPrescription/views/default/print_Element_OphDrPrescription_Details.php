@@ -123,7 +123,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 <table class="borders pharmacy_checkboxes">
 	<tr>
 		<th>Used medication before?</th>
-		<td>Yes <span class="checkbox">❑</span> / No <span class="checkbox">❑</span></td>
+		<td>Yes <span class="checkbox">&#10065;</span> / No <span class="checkbox">❑</span></td>
 		<th>Allergies / reactions</th>
 		<td>Yes <span class="checkbox">❑</span> / No <span class="checkbox">❑</span></td>
 	</tr>

@@ -169,7 +169,9 @@ class BaseController extends Controller
     protected function afterRender($view, &$output)
     {
         // Register all assets that we pre-registered.
-        Yii::app()->getAssetManager()->registerFiles($this->isPrintAction($this->action->id));
+        if(isset($this->action)){
+            Yii::app()->getAssetManager()->registerFiles($this->isPrintAction($this->action->id));
+        }
     }
 
     protected function setSessionPatient($patient)

@@ -1435,7 +1435,7 @@ class BaseEventTypeController extends BaseModuleController
      * @return string
      */
     public function renderPartial($view, $data = null, $return = false, $processOutput = false)
-    {
+    {   
         if ($this->getViewFile($view) === false) {
             foreach ($this->getModule()->getModuleInheritanceList() as $mod) {
                 // assuming that any inheritance maintains the controller name here.
@@ -1466,10 +1466,14 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function renderElement($element, $action, $form, $data, $view_data = array(), $return = false, $processOutput = false)
     {
+       
         if (strcasecmp($action, 'PDFPrint') == 0 || strcasecmp($action, 'saveCanvasImages') == 0) {
             $action = 'print';
         }
-
+        if($action == 'printCopy'){
+            $action = 'print';
+        }
+       
         // Get the view names from the model.
         $view = isset($element->{$action.'_view'})
             ? $element->{$action.'_view'}
@@ -1653,6 +1657,12 @@ class BaseEventTypeController extends BaseModuleController
         $this->printInit($id);
         $this->printHTML($id, $this->open_elements);
     }
+    
+    public function actionPrintCopy($id)
+    {
+        $this->printInit($id);
+        $this->printHTMLCopy($id, $this->open_elements);
+    }
 
     public function actionPDFPrint($id)
     {
@@ -1759,6 +1769,17 @@ class BaseEventTypeController extends BaseModuleController
             'elements' => $elements,
             'eventId' => $id,
         ));
+    }
+    
+    protected function printHTMLCopy($id, $elements, $template = 'print')
+    {
+        $this->layout = '//layouts/printCopy';
+        $result = $this->render($template, array(
+            'elements' => $elements,
+            'eventId' => $id,
+        ), true);
+        
+        echo $result;
     }
 
     /**
