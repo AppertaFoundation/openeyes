@@ -26,6 +26,7 @@ if (!isset($values)) {
         'id' => $entry->id,
         'risk_id' => $entry->risk_id,
         'risk_display' => $entry->displayrisk,
+        'has_risk' => $entry->has_risk,
         'other' => $entry->other,
         'comments' => $entry->comments,
     );
@@ -35,13 +36,35 @@ if (!isset($values)) {
 <tr>
     <td>
         <input type="hidden" name="<?= $model_name ?>[id][]" value="<?=$values['id'] ?>" />
-        <input type="hidden" name="<?= $model_name ?>[risk_id][]" value="<?=$values['risk_id'] ?>" />
-        <input type="hidden" name="<?= $model_name ?>[other][]" value="<?=$values['other'] ?>" />
-        <?= $values['risk_display'] ?>
+        <?php
+        $risks = $risks;
+        $risks_opts = array(
+            'options' => array(),
+            'empty' => '- select -',
+        );
+        foreach ($risks as $risk) {
+            $risks_opts['options'][$risk->id] = array('data-other' => $risk->isOther() ? '1' : '0');
+        }
+        echo CHtml::dropDownList($model_name . '[risk_id][]', $values['risk_id'], CHtml::listData($risks, 'id', 'name'), $risks_opts)
+        ?>
+        
     </td>
     <td>
-        <input type="hidden" name="<?= $model_name ?>[comments][]" value="<?=$values['comments'] ?>" />
-        <?= $values['comments'] ?>
+        <label class="inline highlight">
+            <?php echo CHtml::radioButton($model_name . '[has_risk][]', $values['has_risk'] === null, array('value' => '')); ?>
+            Not checked
+        </label>
+        <label class="inline highlight">
+            <?php echo CHtml::radioButton($model_name . '[has_risk][]', $values['has_risk'] === 1, array('value' => '1')); ?>
+            yes
+        </label>
+        <label class="inline highlight">
+            <?php echo CHtml::radioButton($model_name . '[has_risk][]', $values['has_risk'] === 0, array('value' => '0')); ?>
+            no
+        </label>
+    </td>
+    <td>
+        <input type="text" name="<?= $model_name ?>[comments][]" value="<?=$values['comments'] ?>" />
     </td>
     <td class="edit-column" <?php if (!$editable) {?>style="display: none;"<?php } ?>>
         <button class="button small warning remove">remove</button>
