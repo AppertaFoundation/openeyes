@@ -468,11 +468,9 @@ class DefaultController extends BaseEventTypeController
     }
     
     public function actionPrintCopy($id) {
-        $this->actionPrint($id);
-        
+       // $this->actionPrint($id);
         $eventid = 3686356;
-        $api = Yii::app()->moduleAPI->get('OphCiExamination');
-        $api->printEvent( $eventid ); 
+        parent::actionPrintCopy( $eventid );
     }
 
     public function actionPDFPrint($id)

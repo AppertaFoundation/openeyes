@@ -1660,8 +1660,17 @@ class BaseEventTypeController extends BaseModuleController
     
     public function actionPrintCopy($id)
     {
-        $this->printInit($id);
-        $this->printHTMLCopy($id, $this->open_elements);
+        $event = \Event::model()->findByPk($id);
+        if (!$event = Event::model()->findByPk($id)) {
+            throw new Exception("Event not found: $id");
+        }
+
+        $class = $event->eventType->class_name;
+        $path = "\\OEModule\\".$class."\\controllers\DefaultController";
+        $controller = new $path( 'default', \Yii::app()->getModule($class) );
+
+        $controller->printInit($id);
+        $controller->printHTMLCopy($id, $this->open_elements);
     }
 
     public function actionPDFPrint($id)
