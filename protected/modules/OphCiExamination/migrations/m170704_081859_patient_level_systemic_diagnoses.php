@@ -39,16 +39,19 @@ class m170704_081859_patient_level_systemic_diagnoses extends OEMigration
             'side_id' => 'int(10) unsigned',
             'disorder_id' => 'int(10) unsigned NOT NULL',
             'date' => 'varchar(10)',
+            'secondary_diagnosis_id' => 'int(10) unsigned'
         ), true);
 
         $this->addForeignKey('ophciexamination_sysdiag_dia_el_fk',
             'ophciexamination_systemic_diagnoses_diagnosis', 'element_id', 'et_ophciexamination_systemic_diagnoses', 'id');
-
         $this->addForeignKey('ophciexamination_sysdiag_dia_side_fk',
             'ophciexamination_systemic_diagnoses_diagnosis', 'side_id', 'eye', 'id');
-
         $this->addForeignKey('ophciexamination_sysdiag_dia_dis_fk',
             'ophciexamination_systemic_diagnoses_diagnosis', 'disorder_id', 'disorder', 'id');
+        // set null on delete of SD - simple means of resolving whether still in sync or not.
+        $this->addForeignKey('ophciexamination_sysdiag_dia_sd_fk',
+            'ophciexamination_systemic_diagnoses_diagnosis', 'secondary_diagnosis_id', 'secondary_diagnosis', 'id', 'SET NULL');
+
     }
 
     public function down()

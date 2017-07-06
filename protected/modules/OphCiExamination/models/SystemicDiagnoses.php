@@ -145,22 +145,6 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     }
 
     /**
-     * This gets the most recent delete date of a systemic diagnosis
-     *
-     * @param $patient
-     * @return string date
-     */
-    protected function getLatestVersionedSystemicDiagnosisDate($patient)
-    {
-        $schema = \SecondaryDiagnosis::model()->getVersionTableSchema();
-        return $this->app->db->createCommand()
-            ->select('MAX(version_date)')
-            ->from($schema->name)
-            ->where('patient_id = :pid', array(':pid' =>$patient->id))
-            ->queryScalar();
-    }
-
-    /**
      * @return bool
      */
     public function isAtTip()
@@ -170,48 +154,68 @@ class SystemicDiagnoses extends \BaseEventTypeElement
                 return true;
             }
 
-            // the element is the latest element, but systemic diagnoses might have been entered from
-            // elsewhere, so we check against that.
-            $patient = $this->event->getPatient();
-            $latest = null;
-            foreach ($patient->getSystemicDiagnoses() as $sd) {
-                if (null === $latest || $sd->last_modified_date > $latest) {
-                    $latest = $sd->last_modified_date;
+            // the element is the latest element, need to see if all the
+            // diagnoses in the element are still at the tip
+            foreach ($this->diagnoses as $diagnosis) {
+                if (!$diagnosis->isAtTip()) {
+                    return false;
                 }
             }
 
-            if ($latest <= $this->created_date) {
-                $last_versioned = $this->getLatestVersionedSystemicDiagnosisDate($patient);
-                return (!$last_versioned || $last_versioned <= $this->created_date);
-            }
+            // and finally whether there is a discrepancy between the patients secondary
+            // diagnoses and the number of diagnoses on the element (i.e. one has been
+            // added from elsewhere)
+            $patient = $this->event->getPatient();
+            return count($this->diagnoses) === count($patient->getSystemicDiagnoses());
         }
         return false;
     }
 
     /**
-     * @return bool
+     * Call this method before updating any attributes on the instance.
      */
-    public function beforeSave()
+    public function storePatientUpdateStatus()
     {
         $this->update_patient_level = $this->isAtTip();
-        return parent::beforeSave();
     }
 
+    /**
+     * Validate the diagnoses
+     */
+    protected function afterValidate()
+    {
+        foreach ($this->diagnoses as $i => $diagnosis) {
+            if (!$diagnosis->validate()) {
+                foreach ($diagnosis->getErrors() as $fld => $err) {
+                    $this->addError('diagnoses', 'Diagnosis ('.($i + 1).'): '.implode(', ', $err));
+                }
+            }
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function afterSave()
     {
         parent::afterSave();
         if ($this->update_patient_level) {
-            $patient = $this->event->getPatient();
-            // delete the current patient systemic diagnosis
-            foreach ($patient->getSystemicDiagnoses() as $sd) {
-                $sd->delete();
-            }
-            // sync the diagnoses from this element to the patient.
+            // extract event from the event id of the element - in afterSave the relation doesn't
+            // work when the instance has only just been saved
+            $event = \Event::model()->findByPk($this->event_id);
+            $patient = $event->getPatient();
+            $sd_ids_to_keep = array();
+            // update or create the secondary diagnoses for the diagnoses on this element
             foreach ($this->diagnoses as $diagnosis) {
-                $sd = $diagnosis->createSecondaryDiagnosis($patient);
-                $sd->created_date = $this->created_date;
-                $sd->last_modified_date = $this->last_modified_date;
-                $sd->save(false, null, true);
+                $sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
+                $sd_ids_to_keep[] = $sd->id;
+            }
+
+            // then delete any other secondary diagnoses still on the patient.
+            foreach ($patient->getSystemicDiagnoses() as $sd) {
+                if (!in_array($sd->id, $sd_ids_to_keep)) {
+                    $sd->delete();
+                }
             }
         }
     }

@@ -23,11 +23,28 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
 class SystemicDiagnoses extends \BaseEventElementWidget
 {
     /**
+     * @var SystemicDiagnosesElement
+     */
+    public $element;
+
+    /**
      * @return SystemicDiagnosesElement
      */
     protected function getNewElement()
     {
         return new SystemicDiagnosesElement();
+    }
+
+    /**
+     * Pre-process to determine whether the element should be updating the patient level
+     * information or not.
+     *
+     * @inheritdoc
+     */
+    protected function setElementFromDefaults()
+    {
+        $this->element->storePatientUpdateStatus();
+        parent::setElementFromDefaults();
     }
 
     /**
@@ -40,6 +57,10 @@ class SystemicDiagnoses extends \BaseEventElementWidget
         if  (!is_a($element, 'OEModule\OphCiExamination\models\SystemicDiagnoses')) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
+
+        // Ensure we track whether to update the secondary diagnoses for the patient
+        // or not when we save this element.
+        $element->storePatientUpdateStatus();
 
         // pre-cache current entries so any entries that remain in place will use the same db row
         $diagnoses_by_id = array();

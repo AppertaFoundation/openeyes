@@ -25,10 +25,12 @@ namespace OEModule\OphCiExamination\models;
  * @property int $side_id
  * @property int $disorder_id
  * @property string $date
+ * @property int $secondary_diagnosis_id
  *
  * @property \Eye $side
  * @property SystemicDiagnoses $element
  * @property \Disorder $disorder
+ * @property \SecondaryDiagnosis $secondary_diagnosis
  */
 class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
 {
@@ -76,6 +78,7 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
             'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\SystemicDiagnoses', 'element_id'),
             'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
             'side' => array(self::BELONGS_TO, 'Eye', 'side_id'),
+            'secondary_diagnosis' => array(self::BELONGS_TO, 'SecondaryDiagnosis', 'secondary_diagnosis_id')
         );
     }
 
@@ -112,6 +115,15 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
     }
 
     /**
+     * @return bool
+     */
+    public function isAtTip()
+    {
+        return ($this->secondary_diagnosis !== null
+            && $this->secondary_diagnosis->last_modified_date <= $this->last_modified_date);
+    }
+
+    /**
      * @return mixed
      */
     public function getDisplayDate()
@@ -136,6 +148,8 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
     }
 
     /**
+     * Create a new instance from the given secondary diagnosis
+     *
      * @param \SecondaryDiagnosis $sd
      * @return static
      */
@@ -152,16 +166,20 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
         return $diagnosis;
     }
 
-    protected static $sd_attribute_ignore = array('id', 'element_id');
+    protected static $sd_attribute_ignore = array('id', 'element_id', 'secondary_diagnosis_id');
     protected static $sd_attribute_map = array('side_id' => 'eye_id');
 
     /**
      * @param \Patient $patient
      * @return \SecondaryDiagnosis
      */
-    public function createSecondaryDiagnosis(\Patient $patient)
+    public function updateAndGetSecondaryDiagnosis(\Patient $patient)
     {
-        $sd = new \SecondaryDiagnosis();
+        if (!$sd = $this->secondary_diagnosis) {
+            $sd = new \SecondaryDiagnosis();
+            $sd->patient_id = $patient->id;
+        }
+
         foreach ($this->getAttributes() as $attr => $val) {
             if (in_array($attr, static::$sd_attribute_ignore)) {
                 continue;
@@ -169,7 +187,12 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
             $key = array_key_exists($attr, static::$sd_attribute_map) ? static::$sd_attribute_map[$attr] : $attr;
             $sd->$key = $val;
         }
-        $sd->patient_id = $patient->id;
+        $sd->save();
+        $this->secondary_diagnosis_id = $sd->id;
+        $this->save();
         return $sd;
+
     }
+
+
 }
