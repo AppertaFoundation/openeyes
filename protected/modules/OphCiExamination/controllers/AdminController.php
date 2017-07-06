@@ -853,4 +853,14 @@ class AdminController extends \ModuleAdminController
     {
 
     }
+
+    /**
+     * Lists and allows editing of Allergy records.
+     *
+     * @throws Exception
+     */
+    public function actionAllergies()
+    {
+        $this->genericAdmin('Edit Allergies', 'OEModule\OphCiExamination\models\OphCiExaminationAllergy');
+    }
 }

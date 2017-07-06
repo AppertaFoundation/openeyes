@@ -26,58 +26,6 @@ $(document).ready(function(){
 		}
 	});
 
-	(function addNewEvent() {
-
-		var template = $('#add-new-event-template');
-		var html = template.html();
-		var data = template.data('specialty');
-
-		var dialog = new OpenEyes.UI.Dialog({
-			destroyOnClose: false,
-			title: 'Add a new ' + (data && data.name ? data.name : 'Support services') + ' event',
-			content: html,
-			dialogClass: 'dialog event add-event',
-			width: 580,
-			id: 'add-new-event-dialog'
-		});
-
-		$('button.addEvent.enabled').click(function() {
-			dialog.open();
-		});
-	}());
-
-	if (window.location.href.match(/#addEvent$/)) {
-		$('button.addEvent[data-attr-subspecialty-id="'+OE_subspecialty_id+'"]').click();
-	}
-
-	$('button.add-episode').click(function(e) {
-		$.ajax({
-			'type': 'POST',
-			'data': "YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-			'url': baseUrl+'/patient/verifyAddNewEpisode?patient_id='+OE_patient_id,
-			'success': function(response) {
-                            
-				if (response != '1') {
-					new OpenEyes.UI.Dialog.Alert({
-						content: "There is already an open episode for your firm's subspecialty.\n\nIf you wish to create a new episode in a different subspecialty please switch to a firm that has the subspecialty you want."
-					}).open();
-				} else {
-          $('#add-new-episode-dialog').remove();
-					$.ajax({
-						'type': 'POST',
-						'url': baseUrl+'/patient/addNewEpisode',
-						'data': 'patient_id='+OE_patient_id+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-						'success': function(html) {
-							$(document.body).append(html);
-						}
-					});
-				}
-			}
-		});
-
-		e.preventDefault();
-	});
-
 	$('label').die('click').live('click',function() {
 		if ($(this).prev().is('input:radio')) {
 			$(this).prev().click();

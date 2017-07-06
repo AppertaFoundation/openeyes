@@ -25,7 +25,7 @@ $this->moduleNameCssClass .= ' highlight-fields';
 <?php
     // Event actions
     if ($this->checkPrintAccess()) {
-        $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'small button'));
+        $this->event_actions[] = EventAction::printButton();
     }
 ?>
 

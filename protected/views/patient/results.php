@@ -30,8 +30,6 @@ if ($search_terms['hos_num']) {
 }
 $based_on = implode(', ', $based_on);
 ?>
-<h1 class="badge">Search Results</h1>
-
 <div class="row">
     <div class="large-9 column">
 

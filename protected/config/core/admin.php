@@ -31,7 +31,6 @@ return array(
                 'Contacts' => '/admin/contacts',
                 'Contact labels' => '/admin/contactlabels',
                 'Data sources' => '/admin/datasources',
-                'Allergies' => '/admin/allergies',
                 'Institutions' => '/admin/institutions',
                 'Sites' => '/admin/sites',
                 'Commissioning bodies' => '/admin/commissioning_bodies',
@@ -50,6 +49,7 @@ return array(
                 'Risks' => '/oeadmin/risk/list',
                 'Unique Codes' => '/oeadmin/uniqueCodes/list',
                 'Examination Event Logs' => '/oeadmin/eventLog/list',
+                'Patient Shortcodes' => '/admin/patientshortcodes'
             ),
             'Worklists' => array(
                 'Automatic Worklists Definitions' => '/worklistAdmin/definitions',

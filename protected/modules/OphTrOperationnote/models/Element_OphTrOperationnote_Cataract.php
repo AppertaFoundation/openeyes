@@ -216,8 +216,9 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
 
     /**
      * Set default values for forms on create.
+     * @param Patient $patient
      */
-    public function setDefaultOptions()
+    public function setDefaultOptions(Patient $patient = null)
     {
         if (Yii::app()->controller->selectedEyeForEyedraw->id == 1) {
             $this->meridian = 0;

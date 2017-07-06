@@ -24,4 +24,22 @@
 	<div class="field-row">
 		<?php echo $form->textArea($element, 'description', array('rows' => '1', 'cols' => '80', 'class' => 'autosize', 'nowrapper' => true), false, array('placeholder' => 'Enter comments here'))?>
 	</div>
+    <div class="field-row row">
+        <div class="large-2 column">
+            <div class="data-label">Previous Management</div>
+        </div>
+        <div class="large-10 column end">
+            <div class="data-value">
+                <div class="inline-previous-element"
+                     data-element-type-id="<?= ElementType::model()->findByAttributes(array('class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Management'))->id ?>"
+                     data-no-results-text="No previous management recorded"
+                     data-limit="1"
+                     data-template-id="previous-management-template">Loading previous management information ...</div>
+            </div>
+        </div>
+    </div>
 </div>
+<script type="text/html" id="previous-management-template">
+    {{subspecialty}} {{event_date}}: {{comments}}
+</script>
+<?php Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js", null, -10); ?>

@@ -336,4 +336,28 @@ class OphTrOperationnote_API extends BaseAPI
         return '';
     }
 
+    /**
+     * @param Patient $patient
+     * @return array
+     */
+    public function getOperationsSummaryData(Patient $patient, $use_context=false)
+    {
+        $operations = array();
+        foreach ($this->getElements('Element_OphTrOperationnote_ProcedureList', $patient, $use_context) as $element) {
+            $operations[] = array(
+                'date' => $element->event->event_date,
+                'side' => $element->eye->adjective,
+                'operation' => implode(', ',
+                    array_map(
+                        function($proc) {
+                            return $proc->term;
+                        },
+                        $element->procedures
+                    )
+                ),
+                'link' => '/OphTrOperationnote/Default/view/' . $element->event_id
+            );
+        }
+        return $operations;
+    }
 }

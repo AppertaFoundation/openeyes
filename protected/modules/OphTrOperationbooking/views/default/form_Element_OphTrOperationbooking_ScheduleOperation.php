@@ -58,7 +58,6 @@
 	</fieldset>
 <?php
     $template_unavailable = new OphTrOperationbooking_ScheduleOperation_PatientUnavailable();
-    $template_unavailable->setDefaultOptions();
 ?>
 <script id="intraocularpressure_reading_template" type="text/html">
 	<?php

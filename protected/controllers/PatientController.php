@@ -44,7 +44,7 @@ class PatientController extends BaseController
                 'users' => array('@'),
             ),
             array('allow',
-                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode'),
+                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -1380,6 +1380,11 @@ class PatientController extends BaseController
         echo '1';
     }
 
+    /**
+     * @return mixed|string
+     * @throws Exception
+     * @deprecated - since version 2.0
+     */
     public function actionAddNewEpisode()
     {
         if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
@@ -1676,5 +1681,39 @@ class PatientController extends BaseController
         
         Yii::app()->end();
     }
-    
+
+    /**
+     * Ajax method for viewing previous elements.
+     *
+     * @param int $element_type_id
+     * @param int $patient_id
+     *
+     * @throws CHttpException
+     */
+    public function actionPreviousElements($element_type_id, $patient_id, $limit = null)
+    {
+        $element_type = ElementType::model()->findByPk($element_type_id);
+        if (!$element_type) {
+            throw new CHttpException(404, 'Unknown ElementType');
+        }
+        $this->patient = Patient::model()->findByPk($patient_id);
+        if (!$this->patient) {
+            throw new CHttpException(404, 'Unknown Patient');
+        }
+
+        $api = $element_type->eventType->getApi();
+        $result = array();
+        foreach ($api->getElements($element_type->class_name, $this->patient, false, null, $limit) as $element) {
+            // Note when there are more complex elements required for this,
+            // would recommend pushing this into a base method that can then
+            // be overridden as appropriate
+            $result[] = array_merge(
+                array('subspecialty' => $element->event->episode->getSubspecialtyText(),
+                    'event_date' => $element->event->NHSDate('event_date')),
+                $element->getAttributes()
+            );
+        }
+
+        echo CJSON::encode($result);
+    }
 }

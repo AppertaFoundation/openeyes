@@ -19,18 +19,26 @@
  */
 class ModuleAPI extends CApplicationComponent
 {
+    protected function getCurrentDataContext()
+    {
+        return new DataContext();
+    }
 
     /**
      * @param $moduleName
      * @return BaseAPI|bool
      */
-    public function get($moduleName)
+    public function get($moduleName, DataContext $data_context = null)
     {
+        if ($data_context === null) {
+            $data_context = $this->getCurrentDataContext();
+        }
+
         if ($module = Yii::app()->getModule($moduleName)) {
             if ($et = EventType::model()->find('class_name = ?', array($moduleName))) {
                 // if the module has been inherited from, and has its own API, should return that instead
                 if ($child = EventType::model()->find('parent_event_type_id = ?', array($et->id))) {
-                    if ($child_api = self::get($child->class_name)) {
+                    if ($child_api = self::get($child->class_name, $data_context)) {
                         return $child_api;
                     }
                 }
@@ -47,7 +55,7 @@ class ModuleAPI extends CApplicationComponent
 
                 $APIClass = $APIClass_prefix . $moduleName . '_API';
                 if (class_exists($APIClass)) {
-                    return new $APIClass();
+                    return new $APIClass(Yii::app(), $data_context);
                 }
             }
         }

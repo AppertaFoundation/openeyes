@@ -128,8 +128,9 @@ class Element_OphTrOperationnote_Surgeon extends Element_OpNote
 
     /**
      * Set default values for forms on create.
+     * @param Patient $patient
      */
-    public function setDefaultOptions()
+    public function setDefaultOptions(Patient $patient = null)
     {
         $user = Yii::app()->session['user'];
 

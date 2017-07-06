@@ -26,6 +26,10 @@ class AuthRules
      */
     public function canEditEpisode(Firm $firm, Episode $episode)
     {
+        if ($episode->change_tracker) {
+            // firm/subspecialty  is irrelevant for change tracking episodes.
+            return true;
+        }
         if ($episode->legacy) {
             return false;
         }

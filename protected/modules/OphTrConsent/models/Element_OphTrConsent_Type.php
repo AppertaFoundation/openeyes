@@ -125,9 +125,10 @@ class Element_OphTrConsent_Type extends BaseEventTypeElement
     /**
      * Set default values for forms on create.
      */
-    public function setDefaultOptions()
+    public function setDefaultOptions(Patient $patient = null)
     {
         if (Yii::app()->getController()->getAction()->id == 'create') {
+            // TODO: should not need this with the change to method signature
             if (!$patient = Patient::model()->findByPk($_GET['patient_id'])) {
                 throw new Exception("Can't find patient: ".$_GET['patient_id']);
             }

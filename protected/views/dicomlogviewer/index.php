@@ -18,8 +18,6 @@
  */
 ?>
 
-<h1 class="badge">Dicom Log Viewer</h1>
-
 <div class="box content">
 	<form method="post" action="/audit/search" id="auditList-filter" class="clearfix">
 		<input type="hidden" id="previous_site_id" value="<?php echo @$_POST['site_id']?>" />

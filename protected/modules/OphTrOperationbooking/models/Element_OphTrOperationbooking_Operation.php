@@ -226,8 +226,9 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
     /**
      * Set default values for forms on create.
+     * @param Patient $patient
      */
-    public function setDefaultOptions()
+    public function setDefaultOptions(Patient $patient = null)
     {
         $patient_id = (int) $_REQUEST['patient_id'];
         $firm = Yii::app()->getController()->firm;
@@ -238,7 +239,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         $this->site_id = Yii::app()->session['selected_site_id'];
 
         $this->senior_fellow_to_do = false;
-
+        // TODO: determine if this is necessary anymore with Patient being passed in
         if ($patient = Patient::model()->findByPk($patient_id)) {
             $key = $patient->isChild() ? 'ophtroperationbooking_default_anaesthetic_child' : 'ophtroperationbooking_default_anaesthetic';
 

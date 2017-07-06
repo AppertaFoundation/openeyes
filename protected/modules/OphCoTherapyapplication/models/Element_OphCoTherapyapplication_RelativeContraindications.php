@@ -126,21 +126,6 @@ class Element_OphCoTherapyapplication_RelativeContraindications extends BaseEven
         ));
     }
 
-    protected function beforeSave()
-    {
-        return parent::beforeSave();
-    }
-
-    protected function afterSave()
-    {
-        return parent::afterSave();
-    }
-
-    protected function beforeValidate()
-    {
-        return parent::beforeValidate();
-    }
-
     public function eventPatientSuitability()
     {
         if ($this->event_id) {

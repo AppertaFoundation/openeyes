@@ -82,10 +82,6 @@ class OphTrOperationbooking_ScheduleOperation_PatientUnavailable extends BaseAct
         );
     }
 
-    public function setDefaultOptions()
-    {
-    }
-
     /**
      * Retrieves all valid OphTrOperationBooking_ScheduleOperation_PatientUnavailableReason that can be used for this
      * instance (i.e. includes the current value even if its no longer active).

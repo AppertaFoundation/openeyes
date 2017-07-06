@@ -44,7 +44,7 @@ class OphCoCorrespondence_API extends BaseAPI
         return !$letter->isGeneratedFor(['Docman', 'Internalreferral']);
     }
 
-    public function getLatestEvent($episode)
+    public function getLatestEventInEpisode($episode)
     {
         $event_type = $this->getEventType();
 

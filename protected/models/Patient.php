@@ -137,7 +137,7 @@ class Patient extends BaseActiveRecordVersioned
                 'condition' => 'support_services=1',
             ),
             'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
-                'condition' => '(patient_episode.legacy=0 or patient_episode.legacy is null)',
+                'condition' => '(patient_episode.legacy=0 or patient_episode.legacy is null) and (patient_episode.change_tracker=0 or patient_episode.change_tracker is null)',
                 'alias' => 'patient_episode',
             ),
             'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
@@ -159,13 +159,11 @@ class Patient extends BaseActiveRecordVersioned
             'secondarydiagnoses' => array(self::HAS_MANY, 'SecondaryDiagnosis', 'patient_id'),
             'ethnic_group' => array(self::BELONGS_TO, 'EthnicGroup', 'ethnic_group_id'),
             'previousOperations' => array(self::HAS_MANY, 'PreviousOperation', 'patient_id', 'order' => 'CASE WHEN Date IS NULL THEN 1 ELSE 0 END, Date'),
-            'familyHistory' => array(self::HAS_MANY, 'FamilyHistory', 'patient_id', 'order' => 'created_date'),
             //'medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date', 'condition' => 'end_date is null'),
             //'previous_medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date', 'condition' => 'end_date is not null'),
             'commissioningbodies' => array(self::MANY_MANY, 'CommissioningBody', 'commissioning_body_patient_assignment(patient_id, commissioning_body_id)'),
             'referrals' => array(self::HAS_MANY, 'Referral', 'patient_id'),
             'lastReferral' => array(self::HAS_ONE, 'Referral', 'patient_id', 'order' => 'received_date desc'),
-            'socialhistory' => array(self::HAS_ONE, 'SocialHistory', 'patient_id'),
             'adherence' => array(self::HAS_ONE, 'MedicationAdherence', 'patient_id'),
             'nhsNumberStatus' => array(self::BELONGS_TO, 'NhsNumberVerificationStatus', 'nhs_num_status_id'),
             'geneticsPatient' => array(self::HAS_ONE, 'GeneticsPatient', 'patient_id'),
@@ -589,6 +587,19 @@ class Patient extends BaseActiveRecordVersioned
         }
 
         return false;
+    }
+
+    /**
+     * Wrapper function that relies on magic method behaviour to intercept calls for the no_allergies_date property
+
+     * @return null|datetime
+     */
+    public function get_no_allergies_date()
+    {
+        if ($api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
+            return $api->getNoAllergiesDate($this);
+        }
+        return null;
     }
 
     /**
@@ -1217,9 +1228,13 @@ class Patient extends BaseActiveRecordVersioned
      * marks the patient as having no family history.
      *
      * @throws Exception
+     * @deprecated - since 2.0
+     * @deprecated family history now contained within examination module
      */
     public function setNoFamilyHistory()
     {
+        trigger_error("Family History is now part of the Examination Module.", E_USER_DEPRECRATED);
+        
         if (!empty($this->familyHistory)) {
             throw new Exception('Unable to set no family history date as patient still has family history assigned');
         }
@@ -1601,9 +1616,13 @@ class Patient extends BaseActiveRecordVersioned
      * @param $comments
      *
      * @throws Exception
+     * @deprecated since 2.0.0
+     * @deprecated family history is part of examination module now
      */
     public function addFamilyHistory($relative_id, $other_relative, $side_id, $condition_id, $other_condition, $comments)
     {
+        trigger_error("Family History is now part of the Examination Module.", E_USER_DEPRECRATED);
+
         $check_sql = 'patient_id=? and relative_id=? and side_id=? and condition_id=?';
         $params = array($this->id, $relative_id, $side_id, $condition_id);
         if ($other_relative) {
@@ -2045,4 +2064,119 @@ class Patient extends BaseActiveRecordVersioned
 
         return $patient->episodes[0]->id;
     }
+
+    /**
+     * Returns an array of summarised patient Systemic diagnoses
+     * @return array
+     */
+    public function getSystemicDiagnosesSummary()
+    {
+        return array_map(function($diagnosis) {
+            return $diagnosis->systemicDescription;
+        }, $this->systemicDiagnoses);
+    }
+
+    /**
+     * Returns an array of summarised patient Ophthalmic diagnoses including the principal diagnoses from Episodes.
+     *
+     * @return array
+     */
+    public function getOphthalmicDiagnosesSummary()
+    {
+        $principals = array();
+        foreach ($this->episodes as $ep) {
+            $d = $ep->diagnosis;
+            if ($d && $d->specialty && $d->specialty->code == 130) {
+                $principals[] = ($ep->eye ? $ep->eye->adjective . ' ' : '') . $d->term;
+            }
+        }
+
+        return array_merge(
+            $principals,
+            array_map(function($diagnosis) {
+                return $diagnosis->ophthalmicDescription;
+            }, $this->ophthalmicDiagnoses)
+        );
+    }
+
+    /**
+     * Returns a summarised array of patient medications
+     * @return array
+     */
+    public function getMedicationsSummary()
+    {
+        return array_map(function($medication) {
+            $label = $medication->drug ? $medication->drug->label : $medication->medication_drug->name;
+            $option = $medication->option ? " ({$medication->option->name})" : '';
+            $frequency = $medication->frequency->name;
+            return $label.$option.' '.$frequency;
+        }, $this->medications);
+    }
+
+    /**
+     * Returns a summarised array of patient allergy status
+     * @return array An array containing a summarised allergy status or assigned allergy names
+     */
+    public function getAllergiesSummary()
+    {
+        if (!$this->hasAllergyStatus()) {
+            return array('Patient allergy status is unknown');
+        }
+        if ($this->no_allergies_date) {
+            return array('Patient has no known allergies');
+        }
+        return array_map(function($allergy) {
+            return $allergy->name;
+        }, $this->allergies);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCviSummary()
+    {
+        if ($cvi_api = Yii::app()->moduleAPI->get('OphCoCvi')) {
+            return $cvi_api->getSummaryText($this);
+        }
+        else {
+            return $this->getOPHInfo()->cvi_status->name;
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function get_socialhistory()
+    {
+        return OEModule\OphCiExamination\widgets\SocialHistory::latestForPatient($this);
+    }
+
+    /**
+     * Builds a sorted list of operations carried out on the patient either historically or across relevant events.
+     *
+     * @return array
+     */
+//    public function getOperationsSummary()
+//    {
+//        $summary = array();
+//        if ($op_api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
+//            $summary = array_merge($summary, $op_api->getOperationsSummaryData($this));
+//        }
+//
+//        foreach ($this->previousOperations as $prev) {
+//            $summary[] = array(
+//                'date' => $prev->date,
+//                'description' => $prev->getSummaryDescription()
+//            );
+//        }
+//
+//        // date descending sort
+//        uasort($summary, function($a , $b) {
+//            return $a['date'] >= $b['date'] ? -1 : 1;
+//        });
+//
+//        return array_map(
+//            function($item) { return $item['description'];},
+//            $summary);
+//    }
 }
