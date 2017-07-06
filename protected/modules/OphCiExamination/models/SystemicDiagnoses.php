@@ -144,10 +144,9 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         return implode(' // ', $this->orderedDiagnoses);
     }
 
-    /**
-     * @return bool
-     */
-    public function isAtTip()
+    public $cached_tip_status = null;
+
+    protected function calculateTipStatus()
     {
         if ($this->tipCheck()) {
             if ($this->isNewRecord) {
@@ -169,6 +168,18 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             return count($this->diagnoses) === count($patient->getSystemicDiagnoses());
         }
         return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAtTip()
+    {
+        // TODO: consolidate the cached status and the patient update flag
+        if ($this->cached_tip_status === null) {
+            $this->cached_tip_status = $this->calculateTipStatus();
+        }
+        return $this->cached_tip_status;
     }
 
     /**
