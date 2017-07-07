@@ -136,7 +136,8 @@ class PatientController extends BaseController
         // NOTE that this is not being used in the render
         $supportserviceepisodes = $this->patient->supportserviceepisodes;
 
-        Audit::add('patient summary', 'view', $id);
+        $properties['patient_id'] = $this->patient->id;
+        Audit::add('patient summary', 'view', $id, '', $properties);
 
         $this->logActivity('viewed patient');
 
