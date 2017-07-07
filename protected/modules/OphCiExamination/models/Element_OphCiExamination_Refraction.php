@@ -115,7 +115,8 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
 
     public function setDefaultOptions(\Patient $patient = null)
     {
-        
+        $this->left_axis = 0;
+        $this->right_axis = 0;
     }
 
     /**
