@@ -38,7 +38,7 @@
                     'id' => 'patient_name',
                     'class' => 'CLinkColumn',
                     'header' => 'Name',
-                    'urlExpression' => 'Yii::app()->createURL("/patient/view/", array("id" => $data->patient_id))',
+                    'urlExpression' => '$data->generateEpisodeLink($data)',
                     'labelExpression' => '$data->patient->getHSCICName()',
                 ),
                 array(

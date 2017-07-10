@@ -153,4 +153,14 @@ class WorklistPatient extends BaseActiveRecordVersioned
 
         return $res;
     }
+
+    public function generateEpisodeLink( $data )
+    {
+        $episode = $data->patient->getEpisodeForCurrentSubspecialty();
+        if( $episode !== null){
+            return Yii::app()->createURL("/patient/episode/", array("id" => $episode->id));
+        } else {
+            return Yii::app()->createURL("/patient/episodes/", array("id" => $data->patient_id));
+        }
+    }
 }
