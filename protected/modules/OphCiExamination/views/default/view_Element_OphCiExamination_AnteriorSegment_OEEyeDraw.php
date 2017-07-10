@@ -89,7 +89,7 @@
 } ?>
     <?php if ($element->{$side . '_nuclear'}) {
         ?>
-        <div class="row data-row">
+        <div class="row data-row hidden">
             <div class="large-4 column">
                 <div class="data-label"><?php echo $element->getAttributeLabel($side . '_nuclear_id') ?>:</div>
             </div>
@@ -101,7 +101,7 @@
     }
     if ($element->{$side . '_cortical'}) {
         ?>
-    <div class="row data-row">
+    <div class="row data-row hidden">
         <div class="large-4 column">
             <div class="data-label"><?php echo $element->getAttributeLabel($side.'_cortical_id')?>:</div>
         </div>
