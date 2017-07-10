@@ -196,12 +196,12 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
       padding: 0;
       margin: 0; }
     .open-eyes .header > .large-4 {
-      width: 457px;
+      width: 533px;
       height: 75px;
       padding: 0;
       margin: 0; }
     .open-eyes .header > .large-6 {
-      width: 594px;
+      width: 518px;
       height: 75px;
       padding: 0;
       margin: 0; }
@@ -218,7 +218,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   font-family: "Roboto", "Helvetica", "Arial", sans-serif; }
 
 .open-eyes .panel.patient {
-  width: 450px;
+  width: 526px;
   color: #fff;
   background: #747782 url("../img/_elements/icons/patient/patient-panel-icon.png") no-repeat right top;
   padding: 3px 0 6px 17px; }
@@ -256,7 +256,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     .open-eyes .panel.patient .patient-gender em {
       color: #bbb; }
   .open-eyes .panel.patient .patient-summary-anchor .oe-correspondence-stack {
-    margin-left: 28px; }
+    margin-left: 25px; }
   .open-eyes .panel.patient .patient-widgets .patient-warnings {
     top: 22px;
     right: -15px;
@@ -265,12 +265,12 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     top: -48px;
     right: 15px; }
 .open-eyes .panel.patient-popup {
-  width: 450px;
+  width: 526px;
   height: auto;
   padding: 8px;
   position: absolute;
   top: 70px;
-  left: -418px;
+  left: -494px;
   z-index: 9999;
   display: none;
   background: #747782;
@@ -303,62 +303,120 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     background: #d2dde8; }
     .open-eyes .panel.patient-popup .summary-data .row .label {
       color: #747782; }
-  .open-eyes .panel.patient-popup .problems-plans .subtitle {
+
+.open-eyes .panel.patient .right-side-column {
+  position: absolute;
+  width: 521px;
+  top: 7px;
+  left: 526px;
+  background: #747782;
+  border-left: 3px solid #5d5f68;
+  padding: 0 8px 8px 8px;
+  margin: 0; }
+  .open-eyes .panel.patient .right-side-column .subtitle {
+    position: relative;
     display: block;
-    margin: 10px 0 5px 5px;
+    margin: 5px 0 5px 0;
+    padding: 5px 0 0 5px;
     font-size: 12px;
     font-size: 0.75rem;
     font-weight: 400;
-    color: #fff; }
-  .open-eyes .panel.patient-popup .problems-plans ul {
+    color: #ddd; }
+    .open-eyes .panel.patient .right-side-column .subtitle.divider {
+      border-top: 3px solid #5d5f68;
+      padding-top: 8px; }
+    .open-eyes .panel.patient .right-side-column .subtitle .icon-quicklook-white {
+      display: block;
+      width: 17px;
+      height: 17px;
+      position: absolute;
+      top: 5px;
+      right: 0;
+      background: transparent url("../img/sprites/quicklook-white.png") top left no-repeat;
+      overflow: hidden;
+      opacity: 0.7;
+      cursor: pointer; }
+      .open-eyes .panel.patient .right-side-column .subtitle .icon-quicklook-white.icon-cross {
+        background-position-y: bottom; }
+      .open-eyes .panel.patient .right-side-column .subtitle .icon-quicklook-white:hover {
+        opacity: 1; }
+  .open-eyes .panel.patient .right-side-column .popup-management-summaries ul {
     padding: 0;
     margin: 0; }
-    .open-eyes .panel.patient-popup .problems-plans ul li {
+    .open-eyes .panel.patient .right-side-column .popup-management-summaries ul li {
       display: block;
       width: 100%;
-      padding: 3px 5px 3px 5px;
-      margin: 0 0 1px 0;
-      background: #5d5f68;
+      padding: 3px 5px 2px 5px;
+      margin: 0 0 3px 0;
       height: auto;
-      font-size: 11px;
-      font-size: 0.6875rem; }
-      .open-eyes .panel.patient-popup .problems-plans ul li .drag-handle {
-        color: #aaa;
-        padding: 0 3px;
-        margin: 0 5px 0 0;
-        cursor: pointer; }
-        .open-eyes .panel.patient-popup .problems-plans ul li .drag-handle:hover {
-          color: #fff; }
-      .open-eyes .panel.patient-popup .problems-plans ul li .remove {
+      border-top: 1px dotted #9ea0a8; }
+      .open-eyes .panel.patient .right-side-column .popup-management-summaries ul li p {
         font-size: 11px;
         font-size: 0.6875rem;
-        float: right;
-        padding: 0 0 0 5px;
-        cursor: pointer;
-        color: #aaa; }
-        .open-eyes .panel.patient-popup .problems-plans ul li .remove:hover {
-          color: #fff; }
-  .open-eyes .panel.patient-popup .problems-plans .create-new-problem-plan {
-    position: relative;
-    background: #5d5f68;
-    padding: 5px;
-    margin: 5px 0 0 0;
-    height: auto; }
-    .open-eyes .panel.patient-popup .problems-plans .create-new-problem-plan .add-problem-plan-btn {
-      display: block;
-      position: absolute;
-      top: 50%;
-      right: 5px;
-      transform: translate(0, -50%);
+        line-height: 1.3;
+        margin: 0 0 0 180px;
+        padding: 5px 0px 3px 0px; }
+      .open-eyes .panel.patient .right-side-column .popup-management-summaries ul li h6 {
+        margin: 0;
+        padding: 5px 0 0 0;
+        font-size: 12px;
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: #fff;
+        float: left; }
+  .open-eyes .panel.patient .right-side-column .problems-plans {
+    padding: 0;
+    margin: 0; }
+    .open-eyes .panel.patient .right-side-column .problems-plans ul {
+      padding: 0;
       margin: 0; }
-    .open-eyes .panel.patient-popup .problems-plans .create-new-problem-plan input {
-      font-size: 11px;
-      font-size: 0.6875rem;
-      background: #eee;
-      border: 0;
-      width: 85%; }
+      .open-eyes .panel.patient .right-side-column .problems-plans ul li {
+        display: block;
+        width: 100%;
+        padding: 3px 5px 3px 5px;
+        margin: 0 0 1px 0;
+        background: #5d5f68;
+        height: auto;
+        font-size: 11px;
+        font-size: 0.6875rem; }
+        .open-eyes .panel.patient .right-side-column .problems-plans ul li .drag-handle {
+          color: #aaa;
+          padding: 0 3px;
+          margin: 0 5px 0 0;
+          cursor: pointer; }
+          .open-eyes .panel.patient .right-side-column .problems-plans ul li .drag-handle:hover {
+            color: #fff; }
+        .open-eyes .panel.patient .right-side-column .problems-plans ul li .remove {
+          font-size: 11px;
+          font-size: 0.6875rem;
+          float: right;
+          padding: 0 0 0 5px;
+          cursor: pointer;
+          color: #aaa; }
+          .open-eyes .panel.patient .right-side-column .problems-plans ul li .remove:hover {
+            color: #fff; }
+    .open-eyes .panel.patient .right-side-column .problems-plans .create-new-problem-plan {
+      position: relative;
+      background: #5d5f68;
+      padding: 5px;
+      margin: 5px 0 0 0;
+      height: auto; }
+      .open-eyes .panel.patient .right-side-column .problems-plans .create-new-problem-plan .add-problem-plan-btn {
+        display: block;
+        position: absolute;
+        top: 50%;
+        right: 5px;
+        transform: translate(0, -50%);
+        margin: 0; }
+      .open-eyes .panel.patient .right-side-column .problems-plans .create-new-problem-plan input {
+        font-size: 11px;
+        font-size: 0.6875rem;
+        background: #eee;
+        border: 0;
+        width: 85%; }
+
 .open-eyes .panel.user {
-  width: 593px;
+  width: 519px;
   background: none; }
   .open-eyes .panel.user ul.oe-user-panel {
     list-style: none;
@@ -374,18 +432,23 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
       .open-eyes .panel.user ul.oe-user-panel > li:last-child {
         margin-right: 0; }
     .open-eyes .panel.user ul.oe-user-panel li.oe-user-info {
-      width: 354px; }
+      width: 278px;
+      position: relative; }
     .open-eyes .panel.user ul.oe-user-panel ul.oe-user-profile-firm {
       list-style: none;
       margin: 0;
-      padding: 10px 0 0 20px; }
+      padding: 0 0 0 20px;
+      position: absolute;
+      top: 50%;
+      transform: translate(0, -50%); }
       .open-eyes .panel.user ul.oe-user-panel ul.oe-user-profile-firm li {
         font-size: 11px;
         font-size: 0.6875rem;
-        font-weight: 500; }
+        font-weight: 500;
+        line-height: 1.4; }
       .open-eyes .panel.user ul.oe-user-panel ul.oe-user-profile-firm em {
         display: inline-block;
-        width: 35px;
+        width: 38px;
         font-size: 9px;
         font-size: 0.5625rem;
         color: #999;
