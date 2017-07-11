@@ -38,7 +38,7 @@
                     'id' => 'patient_name',
                     'class' => 'CLinkColumn',
                     'header' => 'Name',
-                    'urlExpression' => '$data->generateEpisodeLink($data)',
+                    'urlExpression' => '$data->generateEpisodeLink($data->patient)',
                     'labelExpression' => '$data->patient->getHSCICName()',
                 ),
                 array(

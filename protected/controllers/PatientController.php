@@ -209,8 +209,10 @@ class PatientController extends BaseController
 
             $this->redirect(Yii::app()->homeUrl);
         } elseif ($itemCount == 1) {
+
             foreach ($dataProvider->getData() as $item) {
-                $this->redirect(array('patient/view/'.$item->id));
+                $link = WorklistPatient::generateEpisodeLink($item);
+                $this->redirect(array($link));
             }
         } else {
             $this->renderPatientPanel = false;
