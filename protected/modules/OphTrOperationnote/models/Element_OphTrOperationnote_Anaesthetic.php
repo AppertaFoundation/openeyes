@@ -98,12 +98,21 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'anaesthetic_type' => array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id'),
+
+            'anaesthetic_type_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_OperationAnaestheticType', 'et_ophtroperationnote_anaesthetic_id'),
+            'anaesthetic_type' => array(self::HAS_MANY, 'AnaestheticType', 'et_ophtroperationnote_anaesthetic_id',
+                'through' => 'anaesthetic_type_assignments', ),
+
+            'anaesthetic_delivery_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_OperationAnaestheticDelivery', 'et_ophtroperationnote_anaesthetic_id'),
+            'anaesthetic_delivery' => array(self::HAS_MANY, 'AnaestheticDelivery', 'et_ophtroperationnote_anaesthetic_id',
+                'through' => 'anaesthetic_delivery_assignments', ),
+
             'anaesthetist' => array(self::BELONGS_TO, 'Anaesthetist', 'anaesthetist_id'),
-            'anaesthetic_delivery' => array(self::BELONGS_TO, 'AnaestheticDelivery', 'anaesthetic_delivery_id'),
+
             'anaesthetic_agent_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_OperationAnaestheticAgent', 'et_ophtroperationnote_anaesthetic_id'),
             'anaesthetic_agents' => array(self::HAS_MANY, 'AnaestheticAgent', 'anaesthetic_agent_id',
                 'through' => 'anaesthetic_agent_assignments', ),
+
             'anaesthetic_complication_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_AnaestheticComplication', 'et_ophtroperationnote_anaesthetic_id'),
             'anaesthetic_complications' => array(self::HAS_MANY, 'OphTrOperationnote_AnaestheticComplications', 'anaesthetic_complication_id',
                 'through' => 'anaesthetic_complication_assignments', ),
