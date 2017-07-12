@@ -2151,6 +2151,21 @@ class Patient extends BaseActiveRecordVersioned
         return OEModule\OphCiExamination\widgets\SocialHistory::latestForPatient($this);
     }
 
+
+    /*
+     * Generate episode link to searchbox and homescreen
+     * @return string
+     */
+    public function generateEpisodeLink()
+    {
+        $episode = $this->getEpisodeForCurrentSubspecialty();
+        if( $episode !== null){
+            return $this->getApp()->createURL("/patient/episode/", array("id" => $episode->id));
+        } else {
+            return $this->getApp()->createURL("/patient/episodes/", array("id" => $this->id));
+        }
+    }
+
     /**
      * Builds a sorted list of operations carried out on the patient either historically or across relevant events.
      *

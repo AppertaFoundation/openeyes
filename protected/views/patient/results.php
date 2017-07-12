@@ -76,14 +76,7 @@ $based_on = implode(', ', $based_on);
                 </thead>
                 <tbody>
                 <?php foreach ($dataProvided as $i => $result) { ?>
-                    <?php
-                    if($current_episode = $result->getEpisodeForCurrentSubspecialty() ){
-                        $episode_id = $current_episode->id;
-                    } else {
-                        $episode_id = 0;
-                    }
-                    ?>
-                    <tr id="r<?php echo $result->id ?>" class="clickable" data-episode="e<?php echo $episode_id; ?>">
+                    <tr id="r<?php echo $result->id ?>" class="clickable" data-link="<?php echo $result->generateEpisodeLink(); ?>">
                         <td><?php echo $result->hos_num ?></td>
                         <td><?php echo $result->title ?></td>
                         <td><?php echo $result->first_name ?></td>
@@ -126,16 +119,7 @@ $based_on = implode(', ', $based_on);
 </div><!-- /.row -->
 
 <script type="text/javascript">
-
     $('#patient-grid tr.clickable').click(function () {
-        //window.location.href = '<?php //echo Yii::app()->createUrl('patient/view')?>/' + $(this).attr('id').match(/[0-9]+/);
-        episode_id = $(this).attr('data-episode').match(/[0-9]+/);
-        if(episode_id == 0){
-            window.location.href = '<?php echo Yii::app()->createUrl('patient/episodes')?>/' + $(this).attr('id').match(/[0-9]+/);
-        } else {
-            window.location.href = '<?php echo Yii::app()->createUrl('patient/episode')?>/' + episode_id;
-        }
-
-        return false;
+        window.location.href = $(this).attr('data-link');
     });
 </script>
