@@ -39,6 +39,7 @@ class PastSurgery extends \BaseEventTypeElement
     protected $auto_update_relations = true;
     public $widgetClass = 'OEModule\OphCiExamination\widgets\PastSurgery';
     protected $default_from_previous = true;
+
     /**
      * Returns the static model of the specified AR class.
      *

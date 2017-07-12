@@ -221,8 +221,6 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
-     * Stubbed method to set default options
-     * Used by child objects to set defaults for forms on create.
      * @param \Patient $patient
      */
     public function setDefaultOptions(\Patient $patient = null)

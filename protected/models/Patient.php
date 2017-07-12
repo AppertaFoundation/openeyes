@@ -1338,7 +1338,7 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
-     * @return array|mixed|null
+     * @return SecondaryDiagnosis[]
      */
     public function getSystemicDiagnoses()
     {
