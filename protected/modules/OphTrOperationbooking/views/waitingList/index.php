@@ -120,7 +120,7 @@
 							<?php echo CHtml::dropDownList('status', @$_POST['status'], Element_OphTrOperationbooking_Operation::getLetterOptions())?>
 						</td>
 						<td>
-							<?php echo CHtml::dropDownList('site_id', @$_POST['site_id'], Site::model()->getListForCurrentInstitution(), array('empty' => 'All sites'))?>
+							<?php echo CHtml::dropDownList('site_id', @$_POST['site_id'], CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList(), 'id', 'short_name'), array('empty' => 'All sites')); ?>
 						</td>
 						<td>
 							<?php echo CHtml::textField('hos_num', @$_POST['hos_num'], array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 12))?>
