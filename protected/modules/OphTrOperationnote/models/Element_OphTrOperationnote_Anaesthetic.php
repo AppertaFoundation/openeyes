@@ -98,21 +98,16 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-
             'anaesthetic_type_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_OperationAnaestheticType', 'et_ophtroperationnote_anaesthetic_id'),
-            'anaesthetic_type' => array(self::HAS_MANY, 'AnaestheticType', 'et_ophtroperationnote_anaesthetic_id',
+            'anaesthetic_type' => array(self::HAS_MANY, 'AnaestheticType', 'anaesthetic_type_id',
                 'through' => 'anaesthetic_type_assignments', ),
-
             'anaesthetic_delivery_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_OperationAnaestheticDelivery', 'et_ophtroperationnote_anaesthetic_id'),
-            'anaesthetic_delivery' => array(self::HAS_MANY, 'AnaestheticDelivery', 'et_ophtroperationnote_anaesthetic_id',
+            'anaesthetic_delivery' => array(self::HAS_MANY, 'AnaestheticDelivery', 'anaesthetic_delivery_id',
                 'through' => 'anaesthetic_delivery_assignments', ),
-
             'anaesthetist' => array(self::BELONGS_TO, 'Anaesthetist', 'anaesthetist_id'),
-
             'anaesthetic_agent_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_OperationAnaestheticAgent', 'et_ophtroperationnote_anaesthetic_id'),
             'anaesthetic_agents' => array(self::HAS_MANY, 'AnaestheticAgent', 'anaesthetic_agent_id',
                 'through' => 'anaesthetic_agent_assignments', ),
-
             'anaesthetic_complication_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_AnaestheticComplication', 'et_ophtroperationnote_anaesthetic_id'),
             'anaesthetic_complications' => array(self::HAS_MANY, 'OphTrOperationnote_AnaestheticComplications', 'anaesthetic_complication_id',
                 'through' => 'anaesthetic_complication_assignments', ),
@@ -230,6 +225,80 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
     }
 
     /**
+     * Update the Anaesthetic Type associated with the element.
+     *
+     * @param $type_ids
+     * @throws Exception
+     */
+    public function updateAnaestheticType($type_ids)
+    {
+        $curr_by_id = array();
+        foreach ($this->anaesthetic_type_assignments as $assignment) {
+            $curr_by_id[$assignment->anaesthetic_type_id] = $assignment;
+        }
+
+        if (!empty($type_ids)) {
+            foreach ($type_ids as $type_id) {
+                if (!isset($curr_by_id[$type_id])) {
+                    $type = new OphTrOperationnote_OperationAnaestheticType();
+                    $type->et_ophtroperationnote_anaesthetic_id = $this->id;
+                    $type->anaesthetic_type_id = $type_id;
+
+                    if (!$type->save()) {
+                        throw new Exception('Unable to save anaesthetic agent assignment: '.print_r($type->getErrors(), true));
+                    }
+                } else {
+                    unset($curr_by_id[$type_id]);
+                }
+            }
+        }
+        foreach ($curr_by_id as $type) {
+            if (!$type->delete()) {
+                throw new Exception('Unable to delete anaesthetic agent assignment: '.print_r($type->getErrors(), true));
+            }
+        }
+    }
+
+    /**
+     * Update the Anaesthetic Delivery associated with the element.
+     *
+     * @param $delivery_ids
+     * @throws Exception
+     */
+    public function updateAnaestheticDelivery($delivery_ids)
+    {
+        $curr_by_id = array();
+        foreach ($this->anaesthetic_delivery_assignments as $assignment) {
+            $curr_by_id[$assignment->anaesthetic_delivery_id] = $assignment;
+        }
+
+        if (!empty($delivery_ids)) {
+            foreach ($delivery_ids as $delivery_id) {
+                if (!isset($curr_by_id[$delivery_id])) {
+                    $delivery = new OphTrOperationnote_OperationAnaestheticDelivery();
+                    $delivery->et_ophtroperationnote_anaesthetic_id = $this->id;
+                    $delivery->anaesthetic_delivery_id = $delivery_id;
+
+                    if (!$delivery->save()) {
+                        throw new Exception('Unable to save anaesthetic agent assignment: '.print_r($delivery->getErrors(), true));
+                    }
+                } else {
+                    unset($curr_by_id[$delivery_id]);
+                }
+            }
+        }
+        foreach ($curr_by_id as $delivery) {
+            if (!$delivery->delete()) {
+                throw new Exception('Unable to delete anaesthetic agent assignment: '.print_r($delivery->getErrors(), true));
+            }
+        }
+    }
+
+
+
+
+
+    /**
      * Update the complications assigned to this element.
      *
      * @param int[] $complication_ids
@@ -316,6 +385,13 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
 
     public function validateAnaesthetic($attribute, $params)
     {
+        Yii::app()->user->setFlash('warning.prescription_allergy',"validateAnaesthetic must be implemented");
+
+   //     $this->addError('anaesthetist_id', 'validateAnaesthetic must be implemented');
+
+
+        return true;
+
         $anaesthetics = Yii::app()->request->getPost('Element_OphTrOperationnote_Anaesthetic');
         if ($anaesthetics['anaesthetic_type_id'] != 5) {
             $complications = Yii::app()->request->getPost('OphTrOperationnote_AnaestheticComplications');
@@ -335,5 +411,22 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
             $this->anaesthetist_id = 5;
             $this->anaesthetic_delivery_id = 7;
         }
+    }
+
+    public function isAnaestheticType($type_name)
+    {
+        $type = AnaestheticType::model()->findByAttributes(array('name' => $type_name));
+
+        if(!$type){
+            return null;
+        }
+
+        foreach($this->anaesthetic_type as $anaesthetic_type){
+            if($anaesthetic_type->id == $type->id){
+                return true;
+            }
+        }
+
+        return false;
     }
 }

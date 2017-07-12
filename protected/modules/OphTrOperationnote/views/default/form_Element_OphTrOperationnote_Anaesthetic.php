@@ -20,15 +20,16 @@
 <div class="element-fields">
 
     <?php
-        echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type');
-        echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery');
+        echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', 'Type');
+        echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', 'LA Delivery Methods');
+        echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist');
     ?>
 
     <?php if ($element->getSetting('fife')) { ?>
         <?php echo $form->dropDownList($element, 'anaesthetic_witness_id', CHtml::listData($element->surgeons, 'id', 'FullName'), array('empty' => '- Please select -'),
             $element->witness_hidden, array('field' => 3)); ?>
     <?php } ?>
-    <?php echo $form->radioButtons($element, 'anaesthetic_delivery_id', 'AnaestheticDelivery') ?>
+
     <?php echo $form->multiSelectList(
         $element,
         'AnaestheticAgent',

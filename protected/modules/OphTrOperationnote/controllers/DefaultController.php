@@ -633,6 +633,9 @@ class DefaultController extends BaseEventTypeController
     {
         $element->updateAnaestheticAgents(isset($data['AnaestheticAgent']) ? $data['AnaestheticAgent'] : array());
         $element->updateComplications(isset($data['OphTrOperationnote_AnaestheticComplications']) ? $data['OphTrOperationnote_AnaestheticComplications'] : array());
+
+        $element->updateAnaestheticType(isset($data['AnaestheticType']) ? $data['AnaestheticType'] : array());
+        $element->updateAnaestheticDelivery(isset($data['AnaestheticDelivery']) ? $data['AnaestheticDelivery'] : array());
     }
 
     /**

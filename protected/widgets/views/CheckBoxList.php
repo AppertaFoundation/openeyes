@@ -48,8 +48,8 @@
         // not triggereing server side validation.
         ?>
         <legend class="large-<?php echo $layoutColumns['label'];?> column">
-            <?php if ($field_value) {?><?php echo CHtml::encode($element->getAttributeLabel($field_value)); ?>
-            <?php }elseif (!$label_above) {?><?php echo CHtml::encode($element->getAttributeLabel($field)); ?>:<?php }?>
+            <?php if ($field_value) {?><?php echo CHtml::encode($label); ?>
+            <?php }elseif (!$label_above) {?><?php echo CHtml::encode($label); ?>:<?php }?>
         </legend>
         <?php if (!$no_element) {?>
             <input type="hidden" value="" name="<?php echo CHtml::modelName($element)?>[<?php echo $field?>]">
@@ -58,7 +58,7 @@
             <?php $i = 0; ?>
             <?php if ($label_above) {?>
                 <label for="">
-                    <?php echo CHtml::encode($element->getAttributeLabel($field))?>
+                    <?php echo CHtml::encode($label)?>
                 </label>
             <?php }?>
             <?php foreach ($data as $id => $data_value) {?>
