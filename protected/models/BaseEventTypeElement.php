@@ -318,7 +318,7 @@ class BaseEventTypeElement extends BaseElement
 
     public function addError($attribute, $message)
     {
-        $this->frontEndErrors[] = $this->errorAttributeException(str_replace('\\', '_', get_class($this)).'_'.$attribute);
+        $this->frontEndErrors[] = $this->errorAttributeException(str_replace('\\', '_', get_class($this)).'_'.$attribute, $message);
         $message = '<a class="errorlink" onClick="scrollToElement($(\'.'.str_replace('\\', '_',
                 get_class($this)).'\'))">'.$message.'</a>';
         parent::addError($attribute, $message);
@@ -328,10 +328,10 @@ class BaseEventTypeElement extends BaseElement
      * Allows for exceptions where the element displayed is not the one required. eg for ajax control elements.
      *
      * @param $attribute
-     *
+     * @param $message not used in the base implementation
      * @return mixed
      */
-    protected function errorAttributeException($attribute)
+    protected function errorAttributeException($attribute, $message)
     {
         if (array_key_exists($attribute, $this->errorExceptions)) {
             return $this->errorExceptions[$attribute];
