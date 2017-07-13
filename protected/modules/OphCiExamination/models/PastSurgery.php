@@ -102,6 +102,22 @@ class PastSurgery extends \BaseEventTypeElement
     }
 
     /**
+     * individual operation validation
+     */
+    public function afterValidate()
+    {
+        foreach ($this->operations as $i => $operation) {
+            if (!$operation->validate()) {
+                foreach ($operation->getErrors() as $fld => $err) {
+                    $this->addError('operations', 'Operation ('.($i + 1).'): '.implode(', ', $err));
+                }
+            }
+        }
+        parent::afterValidate();
+    }
+
+
+    /**
      * Will duplicate values from the current socialhistory property of the given patient.
      *
      * @param static $element
