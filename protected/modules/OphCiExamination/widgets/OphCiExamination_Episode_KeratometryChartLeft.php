@@ -28,6 +28,7 @@ class OphCiExamination_Episode_KeratometryChartLeft extends \EpisodeSummaryWidge
 
     public function run()
     {
+        // TODO: should be using API methods here and need to fix that it's restricted to the episode
         $criteria = new CDbCriteria();
         $criteria->compare('episode_id', $this->episode->id);
         $criteria->compare('event_type_id', $this->event_type->id);

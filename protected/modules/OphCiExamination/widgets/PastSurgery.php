@@ -31,7 +31,7 @@ class PastSurgery extends \BaseEventElementWidget
     }
 
     /**
-     * @param AllergiesElement $element
+     * @param PastSurgeryElement $element
      * @param $data
      * @throws \CException
      */

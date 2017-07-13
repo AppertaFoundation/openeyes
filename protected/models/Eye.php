@@ -33,6 +33,21 @@ class Eye extends BaseActiveRecord
     const BOTH = 3;
 
     /**
+     * Simple helper method to ensure that any change to Eye names doesn't affect the method names derived from
+     * decisions based on the Eye.
+     *
+     * @param $id
+     * @return mixed
+     */
+    public static function methodPostFix($id)
+    {
+        return array(
+            static::LEFT => 'Left',
+            static::RIGHT => 'Right',
+            static::BOTH => 'Both'
+        )[$id];
+    }
+    /**
      * Returns the static model of the specified AR class.
      *
      * @return Eye the static model class
