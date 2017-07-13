@@ -1711,7 +1711,7 @@ class PatientController extends BaseController
             $result[] = array_merge(
                 array('subspecialty' => $element->event->episode->getSubspecialtyText(),
                     'event_date' => $element->event->NHSDate('event_date')),
-                $element->getAttributes()
+                $element->getDisplayAttributes()
             );
         }
 

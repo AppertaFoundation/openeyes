@@ -123,6 +123,11 @@ class BaseEventTypeElement extends BaseElement
         return $this->elementType->required;
     }
 
+    public function getDisplayAttributes()
+    {
+        return $this->getAttributes();
+    }
+
     /**
      * Is this element required in the UI? (Prevents the user from being able
      * to remove the element.).
