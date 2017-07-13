@@ -35,7 +35,7 @@ if (!isset($values)) {
 ?>
 <tr>
     <td>
-        <input type="hidden" name="<?= $model_name ?>[id][]" value="<?=$values['id'] ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
         <?php
         $risks = $risks;
         $risks_opts = array(
@@ -45,26 +45,26 @@ if (!isset($values)) {
         foreach ($risks as $risk) {
             $risks_opts['options'][$risk->id] = array('data-other' => $risk->isOther() ? '1' : '0');
         }
-        echo CHtml::dropDownList($model_name . '[risk_id][]', $values['risk_id'], CHtml::listData($risks, 'id', 'name'), $risks_opts)
+        echo CHtml::dropDownList($field_prefix . '[risk_id]', $values['risk_id'], CHtml::listData($risks, 'id', 'name'), $risks_opts)
         ?>
-        
+        <input type="hidden" name="<?= $field_prefix ?>[other]" />
     </td>
     <td>
         <label class="inline highlight">
-            <?php echo CHtml::radioButton($model_name . '[has_risk][]', $values['has_risk'] === null, array('value' => '')); ?>
+            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === null, array('value' => '')); ?>
             Not checked
         </label>
         <label class="inline highlight">
-            <?php echo CHtml::radioButton($model_name . '[has_risk][]', $values['has_risk'] === 1, array('value' => '1')); ?>
+            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === '1', array('value' => '1')); ?>
             yes
         </label>
         <label class="inline highlight">
-            <?php echo CHtml::radioButton($model_name . '[has_risk][]', $values['has_risk'] === 0, array('value' => '0')); ?>
+            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === '0', array('value' => '0')); ?>
             no
         </label>
     </td>
     <td>
-        <input type="text" name="<?= $model_name ?>[comments][]" value="<?=$values['comments'] ?>" />
+        <input type="text" name="<?= $field_prefix ?>[comments]" value="<?=$values['comments'] ?>" />
     </td>
     <td class="edit-column" <?php if (!$editable) {?>style="display: none;"<?php } ?>>
         <button class="button small warning remove">remove</button>

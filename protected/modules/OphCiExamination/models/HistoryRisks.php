@@ -18,10 +18,15 @@
 
 namespace OEModule\OphCiExamination\models;
 
-
+/**
+ * Class HistoryRisks
+ * @package OEModule\OphCiExamination\models
+ */
 class HistoryRisks extends \BaseEventTypeElement
 {
     protected $auto_update_relations = true;
+    protected $auto_validate_relations = true;
+
     public $widgetClass = 'OEModule\OphCiExamination\widgets\HistoryRisks';
     protected $default_from_previous = true;
 
@@ -95,4 +100,26 @@ class HistoryRisks extends \BaseEventTypeElement
         return OphCiExaminationRisk::model()->activeOrPk($force)->findAll();
     }
 
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return implode(' // ', $this->entries);
+    }
+
+    /**
+     * @param $attribute
+     * @inheritdoc
+     */
+    protected function errorAttributeException($attribute, $message)
+    {
+        if ($attribute === \CHtml::modelName($this) . '_entries') {
+            // handle highlighting the "other" text field once that validation is in place.
+            if (preg_match('/^(\d+)/', $message, $match) === 1) {
+                $attribute .= '_' . ($match[1]-1) . '_risk_id';
+            }
+        }
+        return $attribute;
+    }
 }

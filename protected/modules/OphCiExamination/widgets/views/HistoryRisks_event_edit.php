@@ -22,13 +22,6 @@
     Yii::app()->clientScript->registerScriptFile($this->getJsPublishedPath('HistoryRisks.js'), CClientScript::POS_HEAD);
     $model_name = CHtml::modelName($element);
     $risks_options = $element->getRiskOptions();
-    $this->render(
-        'HistoryRisks_form',
-        array(
-            'element' => $element,
-            'model_name' => $model_name,
-        )
-    );
     ?>
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
@@ -36,47 +29,33 @@
         <thead>
         <tr>
             <th>Risk</th>
+            <th>Checked Status</th>
             <th>Comments</th>
-            <th>Action</th>
+            <th>Action(s)</th>
         </tr>
         </thead>
         <tbody>
         <?php
-        foreach ($element->entries as $entry) {
+        foreach ($element->entries as $i => $entry) {
             $this->render(
                 'HistoryRisksEntry_event_edit',
                 array(
                     'entry' => $entry,
                     'form' => $form,
-                    'model_name' => $model_name,
+                    'field_prefix' => $model_name . '[entries][' . $i . ']',
                     'editable' => true,
                     'risks' => $risks_options
                 )
             );
         }
         ?>
-        <?php
-        $empty_entry = new \OEModule\OphCiExamination\models\HistoryRisksEntry();
-        $this->render(
-            'HistoryRisksEntry_event_edit',
-            array(
-                'entry' => $empty_entry,
-                'form' => $form,
-                'model_name' => $model_name,
-                'editable' => true,
-                'risks' => $risks_options,
-                'values' => array(
-                    'id' => '',
-                    'risk_id' => '{{risk_id}}',
-                    'risk_display' => '{{risk_display}}',
-                    'other' => '{{other}}',
-                    'comments' => '{{comments}}',
-                    'has_risk' => null
-                )
-            )
-        );
-        ?>
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3"></td>
+                <td><button class="button small primary" id="<?= $model_name ?>_add_entry">Add</button></td>
+            </tr>
+        </tfoot>
     </table>
 </div>
 
@@ -88,7 +67,7 @@
         array(
             'entry' => $empty_entry,
             'form' => $form,
-            'model_name' => $model_name,
+            'field_prefix' => $model_name . '[entries][{{row_count}}]',
             'editable' => true,
             'risks' => $risks_options,
             'values' => array(
