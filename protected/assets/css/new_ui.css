@@ -422,7 +422,8 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   background: none; }
   .open-eyes .panel.user ul.oe-user-panel {
     list-style: none;
-    margin: 0;
+    float: right;
+    margin: 0 7px 0 0;
     padding: 0; }
     .open-eyes .panel.user ul.oe-user-panel > li {
       list-style: none;
