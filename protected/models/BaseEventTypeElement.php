@@ -123,6 +123,11 @@ class BaseEventTypeElement extends BaseElement
         return $this->elementType->required;
     }
 
+    public function getDisplayAttributes()
+    {
+        return $this->getAttributes();
+    }
+
     /**
      * Is this element required in the UI? (Prevents the user from being able
      * to remove the element.).
@@ -221,8 +226,6 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
-     * Stubbed method to set default options
-     * Used by child objects to set defaults for forms on create.
      * @param \Patient $patient
      */
     public function setDefaultOptions(\Patient $patient = null)

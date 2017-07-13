@@ -414,12 +414,9 @@ class Patient extends BaseActiveRecordVersioned
                 }
 
                 // sort the remainder
-                function cmp($a, $b)
-                {
+                uasort($by_specialty, function($a, $b){
                     return strcasecmp($a['specialty'], $b['specialty']);
-                }
-
-                uasort($by_specialty, 'cmp');
+                });
             }
             // either flattens, or gets the remainder
             foreach ($by_specialty as $row) {
@@ -1341,7 +1338,7 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
-     * @return array|mixed|null
+     * @return SecondaryDiagnosis[]
      */
     public function getSystemicDiagnoses()
     {
@@ -2149,6 +2146,21 @@ class Patient extends BaseActiveRecordVersioned
     public function get_socialhistory()
     {
         return OEModule\OphCiExamination\widgets\SocialHistory::latestForPatient($this);
+    }
+
+
+    /*
+     * Generate episode link to searchbox and homescreen
+     * @return string
+     */
+    public function generateEpisodeLink()
+    {
+        $episode = $this->getEpisodeForCurrentSubspecialty();
+        if( $episode !== null){
+            return $this->getApp()->createURL("/patient/episode/", array("id" => $episode->id));
+        } else {
+            return $this->getApp()->createURL("/patient/episodes/", array("id" => $this->id));
+        }
     }
 
     /**

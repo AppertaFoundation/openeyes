@@ -133,4 +133,18 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
 
         return $res;
     }
+
+    /**
+     * Extends parent class to append a modified user display name to the attributes
+     *
+     * @param bool $names
+     * @return array
+     * @inheritdoc
+     */
+    public function getDisplayAttributes()
+    {
+        $attributes = parent::getDisplayAttributes();
+        $attributes['last_modified_user_display'] = $this->usermodified->getFullName();
+        return $attributes;
+    }
 }

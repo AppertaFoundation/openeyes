@@ -412,7 +412,7 @@ class BaseActiveRecord extends CActiveRecord
                 }
 
                 if (!$new->save()) {
-                    throw new Exception('Unable to save {$name} item {$i}');
+                    throw new Exception("Unable to save {$name} item {$i}" . print_r($new->getErrors(), true));
                 }
                 $saved_ids[] = $new->getPrimaryKey();
             }
@@ -421,7 +421,7 @@ class BaseActiveRecord extends CActiveRecord
             foreach ($orig_objs as $orig) {
                 if (!in_array($orig->getPrimaryKey(), $saved_ids)) {
                     if (!$orig->delete()) {
-                        throw new Exception('Unable to delete removed {$name} with pk {$orig->primaryKey}');
+                        throw new Exception("Unable to delete removed {$name} with pk {$orig->primaryKey}");
                     }
                 }
             }

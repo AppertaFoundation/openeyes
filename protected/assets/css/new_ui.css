@@ -31,7 +31,9 @@ html, body {
     margin-bottom: 5px;
     padding: 0;
     width: 1230px;
-    max-width: 1230px; }
+    max-width: 1230px;
+    overflow:hidden;
+  }
   .open-eyes .container.content {
     background: none;
     min-height: 600px; }
@@ -420,7 +422,8 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   background: none; }
   .open-eyes .panel.user ul.oe-user-panel {
     list-style: none;
-    margin: 0;
+    float: right;
+    margin: 0 7px 0 0;
     padding: 0; }
     .open-eyes .panel.user ul.oe-user-panel > li {
       list-style: none;

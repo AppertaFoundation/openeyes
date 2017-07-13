@@ -100,7 +100,6 @@ $config = array(
         'OphCiPhasing',
         'OphCoTherapyapplication',
         'OphDrPrescription',
-        'OphOuAnaestheticsatisfactionaudit',
         'OphTrConsent',
         'OphTrOperationnote',
         'OphTrOperationbooking',
