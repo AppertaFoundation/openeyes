@@ -114,4 +114,12 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
     {
         return $this->name === 'Other';
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->name;
+    }
 }

@@ -30,7 +30,9 @@ class HistoryRisks extends \BaseEventTypeElement
     public $widgetClass = 'OEModule\OphCiExamination\widgets\HistoryRisks';
     protected $default_from_previous = true;
     protected $errorExceptions = array(
-        'OEModule_OphCiExamination_models_HistoryRisks_no_risks_date' => 'OEModule_OphCiExamination_models_HistoryRisks_no_risks'
+        'OEModule_OphCiExamination_models_HistoryRisks_no_risks_date' => 'OEModule_OphCiExamination_models_HistoryRisks_no_risks',
+        'OEModule_OphCiExamination_models_HistoryRisks_entries' => 'OEModule_OphCiExamination_models_HistoryRisks_entry_table'
+
     );
 
     public function tableName()
@@ -110,6 +112,14 @@ class HistoryRisks extends \BaseEventTypeElement
     }
 
     /**
+     * @return OphCiExaminationRisk[]
+     */
+    public function getRequiredRisks()
+    {
+        return OphCiExaminationRisk::model()->findAllByAttributes(array('required' => true));
+    }
+
+    /**
      * check no risks date or there are entries
      *
      * @inheritdoc
@@ -119,7 +129,16 @@ class HistoryRisks extends \BaseEventTypeElement
         if (!$this->no_risks_date && !$this->entries) {
             $this->addError('no_risks_date', 'Please confirm the patient has no risks.');
         }
-        return parent::afterValidate();
+        $risk_ids = array_map(function($e) { return $e->risk_id; }, $this->entries);
+        $missing_required = array();
+        foreach ($this->getRequiredRisks() as $required) {
+            if (!in_array($required->id, $risk_ids)) {
+                $missing_required[] = $required;
+            }
+        }
+        if (count($missing_required)) {
+            $this->addError('entries', 'Missing required risks: ' . implode(', ', $missing_required));
+        }
 
         parent::afterValidate();
     }
@@ -170,12 +189,9 @@ class HistoryRisks extends \BaseEventTypeElement
         if ($attribute === \CHtml::modelName($this) . '_entries') {
             // handle highlighting the "other" text field once that validation is in place.
             if (preg_match('/^(\d+)/', $message, $match) === 1) {
-                $attribute .= '_' . ($match[1]-1) . '_risk_id';
+                return $attribute .'_' . ($match[1]-1) . '_risk_id';
             }
-        } else {
-            $attribute = parent::errorAttributeException($attribute, $message);
         }
-
-        return $attribute;
+        return parent::errorAttributeException($attribute, $message);
     }
 }
