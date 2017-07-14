@@ -37,15 +37,19 @@ if (!isset($values)) {
     <td>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
         <?php
-        $risks = $risks;
-        $risks_opts = array(
-            'options' => array(),
-            'empty' => '- select -',
-        );
-        foreach ($risks as $risk) {
-            $risks_opts['options'][$risk->id] = array('data-other' => $risk->isOther() ? '1' : '0');
+        if ($removable) {
+            $risks_opts = array(
+                'options' => array(),
+                'empty' => '- select -',
+            );
+            foreach ($risks as $risk) {
+                $risks_opts['options'][$risk->id] = array('data-other' => $risk->isOther() ? '1' : '0');
+            }
+            echo CHtml::dropDownList($field_prefix . '[risk_id]', $values['risk_id'], CHtml::listData($risks, 'id', 'name'), $risks_opts);
+        } else {
+            echo CHtml::hiddenField($field_prefix . '[risk_id]', $values['risk_id']);
+            echo $values['risk_display'];
         }
-        echo CHtml::dropDownList($field_prefix . '[risk_id]', $values['risk_id'], CHtml::listData($risks, 'id', 'name'), $risks_opts)
         ?>
         <input type="hidden" name="<?= $field_prefix ?>[other]" />
     </td>
@@ -66,8 +70,8 @@ if (!isset($values)) {
     <td>
         <input type="text" name="<?= $field_prefix ?>[comments]" value="<?=$values['comments'] ?>" />
     </td>
-    <td class="edit-column" <?php if (!$editable) {?>style="display: none;"<?php } ?>>
-        <button class="button small warning remove">remove</button>
+    <td class="edit-column">
+        <button class="button small warning remove" <?php if (!$removable) {?>style="display: none;"<?php } ?>>remove</button>
     </td>
 </tr>
 

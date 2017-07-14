@@ -22,9 +22,10 @@
     Yii::app()->clientScript->registerScriptFile($this->getJsPublishedPath('HistoryRisks.js'), CClientScript::POS_HEAD);
     $model_name = CHtml::modelName($element);
     $risks_options = $element->getRiskOptions();
+    $missing_req_risks = $element->getMissingRequiredRisks();
     ?>
 
-    <div class="field-row row<?= count($element->entries) ? ' hidden' : ''?>" id="<?=$model_name?>_no_risks_wrapper">
+    <div class="field-row row<?= (count($element->entries)+count($missing_req_risks)) ? ' hidden' : ''?>" id="<?=$model_name?>_no_risks_wrapper">
         <div class="large-3 column">
             <label for="<?=$model_name?>_no_risks">Confirm patient has no risks:</label>
         </div>
@@ -46,14 +47,29 @@
         </thead>
         <tbody>
         <?php
+        $row_count = 0;
+        foreach ($missing_req_risks as $i => $entry) {
+            $this->render(
+                'HistoryRisksEntry_event_edit',
+                array(
+                    'entry' => $entry,
+                    'form' => $form,
+                    'model_name' => $model_name,
+                    'field_prefix' => $model_name . '[entries][' . $i . ']',
+                    'removable' => false
+                )
+            );
+            $row_count++;
+        } ?>
+        <?php
         foreach ($element->entries as $i => $entry) {
             $this->render(
                 'HistoryRisksEntry_event_edit',
                 array(
                     'entry' => $entry,
                     'form' => $form,
-                    'field_prefix' => $model_name . '[entries][' . $i . ']',
-                    'editable' => true,
+                    'field_prefix' => $model_name . '[entries][' . ($i+$row_count) . ']',
+                    'removable' => !in_array($entry->risk_id, $element->getRequiredRisks()),
                     'risks' => $risks_options
                 )
             );
@@ -78,7 +94,7 @@
             'entry' => $empty_entry,
             'form' => $form,
             'field_prefix' => $model_name . '[entries][{{row_count}}]',
-            'editable' => true,
+            'removable' => true,
             'risks' => $risks_options,
             'values' => array(
                 'id' => '',

@@ -111,12 +111,33 @@ class HistoryRisks extends \BaseEventTypeElement
         $this->originalAttributes = $this->getAttributes();
     }
 
+    private $required_risks = null;
     /**
      * @return OphCiExaminationRisk[]
      */
     public function getRequiredRisks()
     {
-        return OphCiExaminationRisk::model()->findAllByAttributes(array('required' => true));
+        if ($this->required_risks === null) {
+            $this->required_risks = OphCiExaminationRisk::model()->findAllByAttributes(array('required' => true));
+        }
+        return $this->required_risks;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMissingRequiredRisks()
+    {
+        $current_ids = array_map(function ($e) { return $e->risk_id; }, $this->entries);
+        $missing = array();
+        foreach ($this->getRequiredRisks() as $required) {
+            if (!in_array($required->id, $current_ids)) {
+                $entry = new HistoryRisksEntry();
+                $entry->risk_id = $required->id;
+                $missing[] = $entry;
+            }
+        }
+        return $missing;
     }
 
     /**
@@ -144,7 +165,7 @@ class HistoryRisks extends \BaseEventTypeElement
     }
 
     /**
-     * Get list of available allergies for this element
+     * Get list of available risks for this element (ignoring required risks)
      */
     public function getRiskOptions()
     {
@@ -152,7 +173,7 @@ class HistoryRisks extends \BaseEventTypeElement
         foreach ($this->entries as $entry) {
             $force[] = $entry->risk_id;
         }
-        return OphCiExaminationRisk::model()->activeOrPk($force)->findAll();
+        return OphCiExaminationRisk::model()->activeOrPk($force)->findAllByAttributes(array('required' => false));
     }
 
     /**
@@ -187,7 +208,7 @@ class HistoryRisks extends \BaseEventTypeElement
     protected function errorAttributeException($attribute, $message)
     {
         if ($attribute === \CHtml::modelName($this) . '_entries') {
-            // handle highlighting the "other" text field once that validation is in place.
+            // TODO: handle highlighting the "other" text field once that validation is in place.
             if (preg_match('/^(\d+)/', $message, $match) === 1) {
                 return $attribute .'_' . ($match[1]-1) . '_risk_id';
             }
