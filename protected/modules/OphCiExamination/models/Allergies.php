@@ -35,6 +35,8 @@ namespace OEModule\OphCiExamination\models;
 class Allergies extends \BaseEventTypeElement
 {
     protected $auto_update_relations = true;
+    protected $auto_validate_relations = true;
+
     public $widgetClass = 'OEModule\OphCiExamination\widgets\Allergies';
     protected $default_from_previous = true;
 
