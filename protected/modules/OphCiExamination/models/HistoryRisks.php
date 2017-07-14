@@ -141,7 +141,7 @@ class HistoryRisks extends \BaseEventTypeElement
     }
 
     /**
-     * check no risks date or there are entries
+     * Various checks against the entries assigned to the model
      *
      * @inheritdoc
      */
@@ -150,7 +150,18 @@ class HistoryRisks extends \BaseEventTypeElement
         if (!$this->no_risks_date && !$this->entries) {
             $this->addError('no_risks_date', 'Please confirm the patient has no risks.');
         }
-        $risk_ids = array_map(function($e) { return $e->risk_id; }, $this->entries);
+        $risk_ids = array();
+
+        // prevent duplicate entries
+        foreach ($this->entries as $entry) {
+            if (!$entry->risk->isOther() && in_array($entry->risk_id, $risk_ids)) {
+                $this->addError('entries', 'Cannot have duplicate entry for ' . $entry->risk);
+            } else {
+                $risk_ids[] = $entry->risk_id;
+            }
+        }
+
+        // ensure required risks have been provided.
         $missing_required = array();
         foreach ($this->getRequiredRisks() as $required) {
             if (!in_array($required->id, $risk_ids)) {
