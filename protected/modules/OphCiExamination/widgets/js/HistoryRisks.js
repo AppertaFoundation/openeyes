@@ -55,7 +55,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         console.log('yo!', $('#' + this.options.modelName + '_add_entry'));
 
         $('#' + this.options.modelName + '_add_entry').on('click', function(e) {
-            console.log('here');
             e.preventDefault();
             controller.addEntry();
         });
@@ -64,59 +63,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             e.preventDefault();
             $(e.target).parents('tr').remove();
         });
-    };
-
-    /**
-     * Generates a json object of the form data to use in rendering table rows for family history
-     *
-     * @returns {{}}
-     */
-    HistoryRisksController.prototype.generateDataFromForm = function()
-    {
-        var data = {};
-        var $riskSelected = this.$riskSelect.find('option:selected');
-        if ($riskSelected.val()) {
-            data.risk_id = $riskSelected.val();
-            data.other_risk = this.$other.val();
-            if ($riskSelected.data('other')) {
-                data.risk_display = this.$other.val();
-            } else {
-                data.risk_display = $riskSelected.text();
-            }
-        }
-
-        data.comments = this.$commentFld.val();
-
-        return data;
-    };
-
-    /**
-     * Reset the entry form to default values
-     */
-    HistoryRisksController.prototype.resetForm = function()
-    {
-        this.$riskSelect.find('option:selected').prop('selected', false);
-        this.$riskSelect.trigger('change');
-        this.$commentFld.val('');
-    }
-
-    /**
-     * @returns {boolean}
-     */
-    HistoryRisksController.prototype.validateData = function(data)
-    {
-        var errs = [];
-        if (!data.risk_display) {
-            errs.push('Please choose/enter a risk.');
-        }
-
-        if (errs.length) {
-            new OpenEyes.UI.Dialog.Alert({
-                content: errs.join('<br />')
-            }).open();
-            return false;
-        }
-        return true;
     };
 
     /**
