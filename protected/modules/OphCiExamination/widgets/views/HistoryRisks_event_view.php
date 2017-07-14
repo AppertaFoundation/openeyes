@@ -22,11 +22,17 @@
     <?php if ($element->no_risks_date) { ?>
         <div class="data-value">Patient has no known risks.</div>
     <?php } else { ?>
-        <div class="data-label"><strong><?= $element->getAttributeLabel('present') ?>:</strong></div>
-        <div class="data-value"><?= $element->getEntriesDisplay('present') ?></div>
-        <div class="data-label"><strong><?= $element->getAttributeLabel('not_checked') ?>:</strong></div>
-        <div class="data-value"><?= $element->getEntriesDisplay('not_checked') ?></div>
-        <div class="data-label"><strong><?= $element->getAttributeLabel('not_present') ?>:</strong></div>
-        <div class="data-value"><?= $element->getEntriesDisplay('not_present') ?></div>
+        <?php if ($element->present) { ?>
+            <div class="data-label"><strong><?= $element->getAttributeLabel('present') ?>:</strong></div>
+            <div class="data-value"><?= $element->getEntriesDisplay('present') ?></div>
+        <?php } ?>
+        <?php if ($element->not_checked) { ?>
+            <div class="data-label"><strong><?= $element->getAttributeLabel('not_checked') ?>:</strong></div>
+            <div class="data-value"><?= $element->getEntriesDisplay('not_checked') ?></div>
+        <?php } ?>
+        <?php if ($element->not_present) { ?>
+            <div class="data-label"><strong><?= $element->getAttributeLabel('not_present') ?>:</strong></div>
+            <div class="data-value"><?= $element->getEntriesDisplay('not_present') ?></div>
+        <?php } ?>
     <?php } ?>
 </div>
