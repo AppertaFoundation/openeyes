@@ -22,7 +22,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     function HistoryRisksController(options) {
         this.options = $.extend(true, {}, HistoryRisksController._defaultOptions, options);
 
-        this.$entryFormWrapper = $('#' + this.options.modelName + '_form_wrapper');
+        this.$noRisksWrapper = $('#' + this.options.modelName + '_no_risks_wrapper');
+        this.$noRisksFld = $('#' + this.options.modelName + '_no_risks');
 
         this.$riskSelect = $('#' + this.options.modelName + '_risk_id');
         this.$other = $('#' + this.options.modelName + '_other_risk');
@@ -52,17 +53,46 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 controller.$other.val('');
             }
         });
-        console.log('yo!', $('#' + this.options.modelName + '_add_entry'));
 
         $('#' + this.options.modelName + '_add_entry').on('click', function(e) {
             e.preventDefault();
             controller.addEntry();
+            controller.showNoRisks();
         });
 
-        this.$table.on('click', '.button .remove', function(e) {
+        this.$table.on('click', '.button.remove', function(e) {
             e.preventDefault();
             $(e.target).parents('tr').remove();
+            controller.showNoRisks();
         });
+
+        this.$noRisksFld.on('click', function() {
+            if (controller.$noRisksFld.prop('checked')) {
+                controller.$table.hide();
+            }
+            else {
+                controller.$table.show();
+            }
+        })
+    };
+
+    HistoryRisksController.prototype.showNoRisks = function()
+    {
+        if (this.$table.find('tbody tr').length === 0) {
+            this.$noRisksWrapper.show();
+        } else {
+            this.hideNoRisks();
+        }
+    };
+
+    /**
+     * hide the no allergies section of the form.
+     */
+    HistoryRisksController.prototype.hideNoRisks = function()
+    {
+        this.$noRisksWrapper.hide();
+        this.$noRisksFld.prop('checked', false);
+        this.$table.show();
     };
 
     /**

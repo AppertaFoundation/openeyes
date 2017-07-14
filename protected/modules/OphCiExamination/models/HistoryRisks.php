@@ -29,6 +29,9 @@ class HistoryRisks extends \BaseEventTypeElement
 
     public $widgetClass = 'OEModule\OphCiExamination\widgets\HistoryRisks';
     protected $default_from_previous = true;
+    protected $errorExceptions = array(
+        'OEModule_OphCiExamination_models_HistoryRisks_no_risks_date' => 'OEModule_OphCiExamination_models_HistoryRisks_no_risks'
+    );
 
     public function tableName()
     {
@@ -107,6 +110,21 @@ class HistoryRisks extends \BaseEventTypeElement
     }
 
     /**
+     * check no risks date or there are entries
+     *
+     * @inheritdoc
+     */
+    public function afterValidate()
+    {
+        if (!$this->no_risks_date && !$this->entries) {
+            $this->addError('no_risks_date', 'Please confirm the patient has no risks.');
+        }
+        return parent::afterValidate();
+
+        parent::afterValidate();
+    }
+
+    /**
      * Get list of available allergies for this element
      */
     public function getRiskOptions()
@@ -154,7 +172,10 @@ class HistoryRisks extends \BaseEventTypeElement
             if (preg_match('/^(\d+)/', $message, $match) === 1) {
                 $attribute .= '_' . ($match[1]-1) . '_risk_id';
             }
+        } else {
+            $attribute = parent::errorAttributeException($attribute, $message);
         }
+
         return $attribute;
     }
 }

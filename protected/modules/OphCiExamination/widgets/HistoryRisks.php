@@ -46,6 +46,14 @@ class HistoryRisks extends \BaseEventElementWidget
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
+        if (array_key_exists('no_risks', $data)  && $data['no_risks'] == 1) {
+            if (!$element->no_risks_date) {
+                $element->no_risks_date = date('Y-m-d H:i:s');
+            }
+        } elseif ($element->no_risks_date) {
+            $element->no_risks_date = null;
+        }
+
         // pre-cache current entries so any entries that remain in place will use the same db row
         $entries_by_id = array();
         foreach ($element->entries as $entry) {

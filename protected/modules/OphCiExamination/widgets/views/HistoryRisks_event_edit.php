@@ -23,6 +23,16 @@
     $model_name = CHtml::modelName($element);
     $risks_options = $element->getRiskOptions();
     ?>
+
+    <div class="field-row row<?= count($element->entries) ? ' hidden' : ''?>" id="<?=$model_name?>_no_risks_wrapper">
+        <div class="large-3 column">
+            <label for="<?=$model_name?>_no_risks">Confirm patient has no risks:</label>
+        </div>
+        <div class="large-1 column end">
+            <?php echo CHtml::checkBox($model_name .'[no_risks]', $element->no_risks_date ? true : false); ?>
+        </div>
+    </div>
+
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
     <table id="<?= $model_name ?>_entry_table">
