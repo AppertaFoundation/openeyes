@@ -23,6 +23,7 @@
     $model_name = CHtml::modelName($element);
     $risks_options = $element->getRiskOptions();
     $missing_req_risks = $element->getMissingRequiredRisks();
+    $required_risk_ids = array_map(function($r) { return $r->id; }, $element->getRequiredRisks());
     ?>
 
     <div class="field-row row<?= (count($element->entries)+count($missing_req_risks)) ? ' hidden' : ''?>" id="<?=$model_name?>_no_risks_wrapper">
@@ -69,7 +70,7 @@
                     'entry' => $entry,
                     'form' => $form,
                     'field_prefix' => $model_name . '[entries][' . ($i+$row_count) . ']',
-                    'removable' => !in_array($entry->risk_id, $element->getRequiredRisks()),
+                    'removable' => !in_array($entry->risk_id, $required_risk_ids),
                     'risks' => $risks_options
                 )
             );

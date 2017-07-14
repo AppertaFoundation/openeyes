@@ -21,6 +21,7 @@
 ?>
 
 <?php
+
 if (!isset($values)) {
     $values = array(
         'id' => $entry->id,
@@ -55,7 +56,7 @@ if (!isset($values)) {
     </td>
     <td>
         <label class="inline highlight">
-            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === null, array('value' => '')); ?>
+            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === null || $values['has_risk'] === '', array('value' => '')); ?>
             Not checked
         </label>
         <label class="inline highlight">
