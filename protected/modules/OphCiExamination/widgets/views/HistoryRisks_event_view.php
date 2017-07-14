@@ -18,6 +18,11 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="element-data">
-    <div class="data-value"><?= $element ?></div>
+<div class="element-data element-data-inline">
+    <div class="data-label"><strong><?= $element->getAttributeLabel('present') ?>:</strong></div>
+    <div class="data-value"><?= $element->getEntriesDisplay('present') ?></div>
+    <div class="data-label"><strong><?= $element->getAttributeLabel('not_checked') ?>:</strong></div>
+    <div class="data-value"><?= $element->getEntriesDisplay('not_checked') ?></div>
+    <div class="data-label"><strong><?= $element->getAttributeLabel('not_present') ?>:</strong></div>
+    <div class="data-value"><?= $element->getEntriesDisplay('not_present') ?></div>
 </div>

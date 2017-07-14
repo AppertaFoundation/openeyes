@@ -84,6 +84,7 @@ ra.created_user_id,
 ra.created_date from ophciexamination_history_risks_entry as ra 
 	join et_ophciexamination_history_risks element on ra.element_id = element.id
 	join latest_history_risk_examination_events latest on element.event_id = latest.event_id
+where ra.has_risk = true
 EOSQL
         );
         $this->createView('risk', 'select * from ophciexamination_risk');

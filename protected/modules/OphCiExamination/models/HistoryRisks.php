@@ -70,6 +70,24 @@ class HistoryRisks extends \BaseEventTypeElement
                 'OEModule\OphCiExamination\models\HistoryRisksEntry',
                 'element_id',
             ),
+            'not_checked' => array(
+                self::HAS_MANY,
+                'OEModule\OphCiExamination\models\HistoryRisksEntry',
+                'element_id',
+                'condition' => 'has_risk is null'
+            ),
+            'present' => array(
+                self::HAS_MANY,
+                'OEModule\OphCiExamination\models\HistoryRisksEntry',
+                'element_id',
+                'condition' => 'has_risk = true'
+            ),
+            'not_present' => array(
+                self::HAS_MANY,
+                'OEModule\OphCiExamination\models\HistoryRisksEntry',
+                'element_id',
+                'condition' => 'has_risk = 0'
+            )
         );
     }
 
@@ -105,8 +123,25 @@ class HistoryRisks extends \BaseEventTypeElement
      */
     public function __toString()
     {
-        return implode(' // ', $this->entries);
+        $result = array();
+        foreach (array('present', 'not_checked', 'not_present') as $cat) {
+            $result[] = $this->getAttributeLabel($cat) . ': ' . implode(', ', $this->$cat);
+        }
+        return implode(' // ', $result);
     }
+
+    /**
+     * @param string $category
+     * @return string
+     */
+    public function getEntriesDisplay($category = 'entries')
+    {
+        if (!in_array($category, array('present', 'not_checked', 'not_present'))) {
+            $category  = 'entries';
+        }
+        return implode(', ', $this->$category);
+    }
+
 
     /**
      * @param $attribute

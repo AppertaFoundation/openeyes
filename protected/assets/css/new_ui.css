@@ -1396,6 +1396,10 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     color: #444;
     font-weight: 400; }
 
+  .element-data-inline .data-label, .element-data-inline .data-value {
+    display: inline-block;
+  }
+
 /*
 @import 'new/specialty_summary';
 @import 'new/clinic_list';
