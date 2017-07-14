@@ -77,7 +77,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         return array(
             array('event_id, anaesthetist_id, anaesthetic_type_id, anaesthetic_delivery_id, anaesthetic_comment, anaesthetic_witness_id', 'safe'),
             array('anaesthetic_type_id', 'required'),
-            array('anaesthetist_id, anaesthetic_delivery_id, anaesthetic_complications', 'validateAnaesthetic'),
+            array('anaesthetist_id', 'required'),
 
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -233,8 +233,11 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
     public function updateAnaestheticType($type_ids)
     {
         $curr_by_id = array();
-        foreach ($this->anaesthetic_type_assignments as $assignment) {
-            $curr_by_id[$assignment->anaesthetic_type_id] = $assignment;
+        foreach ($this->anaesthetic_type as $type) {
+            $curr_by_id[$type->id] = OphTrOperationnote_OperationAnaestheticType::model()->findByAttributes(array(
+                                        'et_ophtroperationnote_anaesthetic_id' => $this->id,
+                                        'anaesthetic_type_id' => $type->id
+                                    ));
         }
 
         if (!empty($type_ids)) {
@@ -267,13 +270,18 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
      */
     public function updateAnaestheticDelivery($delivery_ids)
     {
+
         $curr_by_id = array();
-        foreach ($this->anaesthetic_delivery_assignments as $assignment) {
-            $curr_by_id[$assignment->anaesthetic_delivery_id] = $assignment;
+        foreach ($this->anaesthetic_delivery as $delivery) {
+            $curr_by_id[$delivery->id] = OphTrOperationnote_OperationAnaestheticDelivery::model()->findByAttributes(array(
+                                                'et_ophtroperationnote_anaesthetic_id' => $this->id,
+                                                'anaesthetic_delivery_id' => $delivery->id
+                                            ));
         }
 
         if (!empty($delivery_ids)) {
             foreach ($delivery_ids as $delivery_id) {
+
                 if (!isset($curr_by_id[$delivery_id])) {
                     $delivery = new OphTrOperationnote_OperationAnaestheticDelivery();
                     $delivery->et_ophtroperationnote_anaesthetic_id = $this->id;
@@ -287,16 +295,13 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
                 }
             }
         }
+
         foreach ($curr_by_id as $delivery) {
             if (!$delivery->delete()) {
                 throw new Exception('Unable to delete anaesthetic agent assignment: '.print_r($delivery->getErrors(), true));
             }
         }
     }
-
-
-
-
 
     /**
      * Update the complications assigned to this element.
@@ -383,36 +388,6 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         return $complication_values = array();
     }
 
-    public function validateAnaesthetic($attribute, $params)
-    {
-        Yii::app()->user->setFlash('warning.prescription_allergy',"validateAnaesthetic must be implemented");
-
-   //     $this->addError('anaesthetist_id', 'validateAnaesthetic must be implemented');
-
-
-        return true;
-
-        $anaesthetics = Yii::app()->request->getPost('Element_OphTrOperationnote_Anaesthetic');
-        if ($anaesthetics['anaesthetic_type_id'] != 5) {
-            $complications = Yii::app()->request->getPost('OphTrOperationnote_AnaestheticComplications');
-
-            if ($attribute == 'anaesthetist_id' && empty($anaesthetics['anaesthetist_id'])) {
-                $this->addError('anaesthetist_id', 'Anaesthetic Given by cannot be blank');
-            }
-
-            if ($attribute == 'anaesthetic_delivery_id' && empty($anaesthetics['anaesthetic_delivery_id'])) {
-                $this->addError('anaesthetic_delivery_id', 'Anaesthetic Delivery cannot be blank');
-            }
-
-            if ($attribute == 'anaesthetic_complications' && (!$complications || !count($complications))) {
-                $this->addError('anaesthetic_complications', 'Anaesthetic Complications cannot be blank.');
-            }
-        } else {
-            $this->anaesthetist_id = 5;
-            $this->anaesthetic_delivery_id = 7;
-        }
-    }
-
     public function isAnaestheticType($type_name)
     {
         $type = AnaestheticType::model()->findByAttributes(array('name' => $type_name));
@@ -428,5 +403,38 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         }
 
         return false;
+    }
+
+    public function afterValidate()
+    {
+        if( !count($this->anaesthetic_type)){
+            $this->addError('anaesthetic_delivery', 'Type cannot be empty.');
+        }
+
+        $type_ga =  AnaestheticType::model()->findByAttributes(array('name' => 'GA'));
+
+        foreach($this->anaesthetic_type_assignments as $anaesthetic_type_assignment){
+
+            // GA is selected,
+            // delivery method should be other (all other delivery options un-checked)
+            // given by should be Anaesthetist
+            if($anaesthetic_type_assignment->anaesthetic_type_id == $type_ga->id){
+
+                $anaesthetist_delivery_other = AnaestheticDelivery::model()->findByAttributes(array('name' => 'Other'));
+                $delivery_method_count = count($this->anaesthetic_delivery_assignments);
+
+                if($delivery_method_count != 1 || $this->anaesthetic_delivery_assignments[0]->anaesthetic_delivery_id != $anaesthetist_delivery_other->id){
+                    $this->addError('anaesthetic_delivery', 'If anaesthetic Type is "GA" than LA Delivery Methods must only be "Other"');
+                }
+
+                $anaesthetist_type_anaesthetist = Anaesthetist::model()->findByAttributes(array('name' => 'Anaesthetist'));
+
+                if($this->anaesthetist_id != $anaesthetist_type_anaesthetist->id){
+                    $this->addError('anaesthetist_id', 'If anaesthetic Type is "GA" than Given by must be "Anaesthetist"');
+                }
+            }
+        }
+
+        parent::afterValidate(); // TODO: Change the autogenerated stub
     }
 }

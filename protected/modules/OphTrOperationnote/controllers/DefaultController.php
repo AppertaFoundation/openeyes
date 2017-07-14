@@ -938,6 +938,63 @@ class DefaultController extends BaseEventTypeController
         $element->complications = $complications;
     }
 
+    protected function setComplexAttributes_Element_OphTrOperationnote_Anaesthetic($element, $data, $index)
+    {
+        //AnaestheticType
+        $type_assessments = array();
+        if(isset($data['AnaestheticType']) && is_array($data['AnaestheticType'])){
+
+            $type_assessments_by_id = array();
+            foreach ($element->anaesthetic_type_assignments as $type_assignments) {
+                $type_assessments_by_id[$type_assignments->anaesthetic_type_id] = $type_assignments;
+            }
+
+            $anaesthetic_types = array();
+            foreach($data['AnaestheticType'] as $anaesthetic_type_id){
+
+                if( !array_key_exists($anaesthetic_type_id, $type_assessments_by_id) ){
+                    $anaesthetic_type_assesment = new OphTrOperationnote_OperationAnaestheticType();
+                } else {
+                    $anaesthetic_type_assesment = $type_assessments_by_id[$anaesthetic_type_id];
+                }
+
+                $anaesthetic_type_assesment->et_ophtroperationnote_anaesthetic_id = $element->id;
+                $anaesthetic_type_assesment->anaesthetic_type_id = $anaesthetic_type_id;
+
+                $type_assessments[] = $anaesthetic_type_assesment;
+            }
+        }
+
+        $element->anaesthetic_type_assignments = $type_assessments;
+
+        //AnaestheticDelivery
+        $delivery_assessments = array();
+        if(isset($data['AnaestheticDelivery']) && is_array($data['AnaestheticDelivery'])){
+
+            $delivery_assessments_by_id = array();
+            foreach ($element->anaesthetic_delivery_assignments as $delivery_assignments) {
+                $delivery_assessments_by_id[$delivery_assignments->anaesthetic_delivery_id] = $delivery_assignments;
+            }
+
+            $anaesthetic_delivery_id = array();
+            foreach($data['AnaestheticDelivery'] as $anaesthetic_delivery_id){
+
+                if( !array_key_exists($anaesthetic_delivery_id, $delivery_assessments_by_id) ){
+                    $anaesthetic_delivery_assesment = new OphTrOperationnote_OperationAnaestheticDelivery();
+                } else {
+                    $anaesthetic_delivery_assesment = $delivery_assessments_by_id[$anaesthetic_delivery_id];
+                }
+
+                $anaesthetic_delivery_assesment->et_ophtroperationnote_anaesthetic_id = $element->id;
+                $anaesthetic_delivery_assesment->anaesthetic_delivery_id = $anaesthetic_delivery_id;
+
+                $delivery_assessments[] = $anaesthetic_delivery_assesment;
+            }
+        }
+
+        $element->anaesthetic_delivery_assignments = $delivery_assessments;
+    }
+
     protected function saveComplexAttributes_Element_OphTrOperationnote_Trabeculectomy($element, $data, $index)
     {
         $element->updateMultiSelectData('OphTrOperationnote_Trabeculectomy_Difficulties', empty($data['MultiSelect_Difficulties']) ? array() : $data['MultiSelect_Difficulties'], 'difficulty_id');

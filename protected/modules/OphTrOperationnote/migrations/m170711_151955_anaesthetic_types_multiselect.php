@@ -11,18 +11,11 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
             'anaesthetic_type_id' => 'int(10) unsigned NOT NULL',
         ), true);
 
-        $this->addForeignKey('ophtroperationnote_anaesthetic_type_to_anaest_type',
-            'ophtroperationnote_anaesthetic_anaesthetic_type',
-            'anaesthetic_type_id',
-            'anaesthetic_type',
-            'id');
+        $this->addForeignKey('ophtroperationnote_anaesthetic_type_to_anaest_type', 'ophtroperationnote_anaesthetic_anaesthetic_type','anaesthetic_type_id',
+            'anaesthetic_type','id');
 
-        $this->addForeignKey('ophtroperationnote_anaesthetic_type_to_el',
-            'ophtroperationnote_anaesthetic_anaesthetic_type',
-            'et_ophtroperationnote_anaesthetic_id',
-            'et_ophtroperationnote_anaesthetic',
-            'id');
-
+        $this->addForeignKey('ophtroperationnote_anaesthetic_type_to_el', 'ophtroperationnote_anaesthetic_anaesthetic_type', 'et_ophtroperationnote_anaesthetic_id',
+            'et_ophtroperationnote_anaesthetic', 'id');
 
         $this->createOETable('ophtroperationnote_anaesthetic_anaesthetic_delivery',array(
             'id' => 'pk',
@@ -30,18 +23,11 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
             'anaesthetic_delivery_id' => 'int(10) unsigned NOT NULL',
         ), true);
 
+        $this->addForeignKey('ophtroperationnote_anaesthetic_delivery_to_anae_delivery', 'ophtroperationnote_anaesthetic_anaesthetic_delivery',
+            'anaesthetic_delivery_id', 'anaesthetic_delivery', 'id');
 
-        $this->addForeignKey('ophtroperationnote_anaesthetic_delivery_to_anae_delivery',
-            'ophtroperationnote_anaesthetic_anaesthetic_delivery',
-            'anaesthetic_delivery_id',
-            'anaesthetic_delivery',
-            'id');
-
-        $this->addForeignKey('ophtroperationnote_anaesthetic_delivery_to_el',
-            'ophtroperationnote_anaesthetic_anaesthetic_delivery',
-            'et_ophtroperationnote_anaesthetic_id',
-            'et_ophtroperationnote_anaesthetic',
-            'id');
+        $this->addForeignKey('ophtroperationnote_anaesthetic_delivery_to_el', 'ophtroperationnote_anaesthetic_anaesthetic_delivery',
+            'et_ophtroperationnote_anaesthetic_id', 'et_ophtroperationnote_anaesthetic', 'id');
 
 
         // moving the data
@@ -223,7 +209,10 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 //$this->dropForeignKey('et_ophtroperationnote_ana_anaesthetic_type_id_fk', 'et_ophtroperationnote_anaesthetic');
 //
 //$this->dropColumn('et_ophtroperationnote_anaesthetic', 'anaesthetic_type_id');
+//$this->dropColumn('et_ophtroperationnote_anaesthetic_version', 'anaesthetic_type_id');
+
 //$this->dropColumn('et_ophtroperationnote_anaesthetic', 'anaesthetic_delivery_id');
+//$this->dropColumn('et_ophtroperationnote_anaesthetic_version', 'anaesthetic_delivery_id');
 //
 //$this->delete("anaesthetic_type", "name = 'Topical'");
         }

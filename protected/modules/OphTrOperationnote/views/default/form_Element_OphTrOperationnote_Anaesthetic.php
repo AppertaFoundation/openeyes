@@ -20,8 +20,11 @@
 <div class="element-fields">
 
     <?php
+    $class = array('class' => ['highlighted-error']);
         echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', 'Type');
-        echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', 'LA Delivery Methods');
+        echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', 'LA Delivery Methods',
+        false, false, false, false, $class);
+
         echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist');
     ?>
 
