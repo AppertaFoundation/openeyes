@@ -139,7 +139,7 @@ class HistoryRisks extends \BaseEventTypeElement
         if (!in_array($category, array('present', 'not_checked', 'not_present'))) {
             $category  = 'entries';
         }
-        return implode(', ', $this->$category);
+        return implode(', ', array_map(function($e) { return $e->getDisplay(); }, $this->$category));
     }
 
 

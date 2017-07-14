@@ -135,12 +135,38 @@ class HistoryRisksEntry extends \BaseElement
     /**
      * @return string
      */
-    public function __toString()
+    public function getDisplayHasRisk()
+    {
+        if ($this->has_risk) {
+            return 'Present';
+        } elseif ($this->has_risk === '0') {
+            return 'Not present';
+        }
+        return 'Not checked';
+    }
+
+    /**
+     * @param bool $show_status
+     * @return string
+     */
+    public function getDisplay($show_status = false)
     {
         $res = $this->getDisplayRisk();
+        if ($show_status) {
+            $res .= ' - ' . $this->getDisplayHasRisk();
+        }
         if ($this->comments) {
             $res .= ' (' . $this->comments . ')';
         }
         return $res;
+
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getDisplay(true);
     }
 }

@@ -27,7 +27,8 @@ class m170706_132937_patient_level_risks extends OEMigration
         ));
         $this->createOETable('et_ophciexamination_history_risks', array(
             'id' => 'pk',
-            'event_id' => 'int(10) unsigned NOT NULL'
+            'event_id' => 'int(10) unsigned NOT NULL',
+            'no_risks_date' => 'datetime'
         ), true);
         $this->addForeignKey('et_ophciexamination_hrisks_ev_fk',
             'et_ophciexamination_history_risks', 'event_id', 'event', 'id');
