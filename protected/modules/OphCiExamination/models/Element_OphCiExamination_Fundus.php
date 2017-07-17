@@ -10,6 +10,15 @@ namespace OEModule\OphCiExamination\models;
 
 class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
 {
+    public $auto_update_relations = true;
+    public $relation_defaults = array(
+        'left_vitreous' => array(
+            'side_id' => \Eye::LEFT,
+        ),
+        'right_vitreous' => array(
+            'side_id' => \Eye::RIGHT
+        ));
+
     public $service;
 
     /**
@@ -38,11 +47,9 @@ class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('eye_id, left_eyedraw, left_description, right_eyedraw, right_description', 'safe'),
-            array('left_eyedraw', 'requiredIfSide', 'side' => 'left'),
-            array('right_eyedraw', 'requiredIfSide', 'side' => 'right'),
-            array('left_description', 'requiredIfSide', 'side' => 'left'),
-            array('right_description', 'requiredIfSide', 'side' => 'right'),
+            array('eye_id, left_eyedraw, left_ed_report, left_description, right_eyedraw, right_ed_report, right_description, left_vitreous, right_vitreous', 'safe'),
+            array('left_eyedraw, left_ed_report', 'requiredIfSide', 'side' => 'left'),
+            array('right_eyedraw, right_ed_report', 'requiredIfSide', 'side' => 'right'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, left_eyedraw, right_eyedraw, left_description, right_description, eye_id', 'safe', 'on' => 'search'),
@@ -72,6 +79,14 @@ class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'left_vitreous' => array(self::MANY_MANY, 'OEModule\OphCiExamination\models\Vitreous',
+                                'ophciexamination_fundus_vitreous(element_id, vitreous_id)',
+                                'on' => 'side_id = ' . \Eye::LEFT,
+                                'order' => 'left_vitreous.display_order asc'),
+            'right_vitreous' => array(self::MANY_MANY, 'OEModule\OphCiExamination\models\Vitreous',
+                                'ophciexamination_fundus_vitreous(element_id, vitreous_id)',
+                                'on' => 'side_id = ' . \Eye::RIGHT,
+                                'order' => 'right_vitreous.display_order asc')
         );
     }
 
@@ -84,9 +99,11 @@ class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
             'id' => 'ID',
             'event_id' => 'Event',
             'left_eyedraw' => 'Eyedraw',
-            'left_description' => 'Description',
+            'left_ed_report' => 'Report',
+            'left_description' => 'Comments',
             'right_eyedraw' => 'Eyedraw',
-            'right_description' => 'Description',
+            'right_ed_report' => 'Report',
+            'right_description' => 'Comments',
         );
     }
 

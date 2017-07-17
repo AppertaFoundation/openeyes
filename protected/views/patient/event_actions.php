@@ -18,11 +18,6 @@
  */
 ?>
 <div class="button-bar right">
-	<?php //this needs adding to SASS and doing properly when we decide on a solution OEM-295
-    if (isset($this->event->eventType->name) && ($this->event->eventType->name === 'Examination')) {
-        ?>
-	<span style="font-size:21px; color:#152250;">LEFT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-	<?php } ?>
 	<img class="loader" style="display: none;" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />
 	<?php foreach ($this->event_actions as $action) { ?>
 		<?php echo $action->toHtml();?>

@@ -354,4 +354,50 @@ class EventType extends BaseActiveRecordVersioned
 
         return ElementType::model()->findAll($criteria);
     }
+
+    /**
+     * Get the root event type elements with associated children.
+     *
+     * @return BaseEventTypeElement[]
+     */
+    public function getRootElementTypes()
+    {
+        $criteria = new CDbCriteria();
+        $ids = array($this->id);
+        foreach ($this->getParentEventTypes() as $parent) {
+            $ids[] = $parent->id;
+        }
+        $criteria->addInCondition('t.event_type_id', $ids);
+        $criteria->addCondition('t.parent_element_type_id IS NULL');
+        $criteria->order = 't.display_order asc';
+
+        return ElementType::model()->with('child_element_types')->findAll($criteria);
+    }
+
+    /**
+     * @param string $type
+     * @param Event $event
+     * @return string
+     */
+    public function getEventIcon($type='small', Event $event = null)
+    {
+        $asset_manager = Yii::app()->getAssetManager();
+        $module_path = Yii::getPathOfAlias('application.modules.' . $this->class_name . '.assets.img');
+
+        $possible_images = array();
+        if ($event && $event->is_automated) {
+            $possible_images[] = $type . '-auto.png';
+        }
+        $possible_images[] = $type . '.png';
+
+        // module specific
+        foreach ($possible_images as $possible) {
+            $file = $module_path . '/' . $possible;
+            if (file_exists($file)) {
+                return $asset_manager->publish($file);
+            }
+        }
+
+        return '';
+    }
 }

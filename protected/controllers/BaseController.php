@@ -83,6 +83,16 @@ class BaseController extends Controller
     }
 
     /**
+     * Override-able render function for sidebar
+     *
+     * @param $default_view
+     */
+    public function renderSidebar($default_view)
+    {
+        $this->renderPartial($default_view);
+    }
+
+    /**
      * @param string $action
      *
      * @return bool
@@ -109,6 +119,7 @@ class BaseController extends Controller
 
         // Register the main stylesheet without pre-registering to ensure it's always output first.
         $assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
+        $assetManager->registerCssFile('css/new_ui.css', null, null, AssetManager::OUTPUT_SCREEN, false);
 
         // Prevent certain assets from being outputted in certain conditions.
         $assetManager->adjustScriptMapping();

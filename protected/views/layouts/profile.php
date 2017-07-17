@@ -35,8 +35,6 @@
 
 		<div class="container content">
 
-			<h1 class="badge admin">Profile</h1>
-
 			<div class="box content admin-content">
 				<div class="row">
 					<aside class="large-3 column sidebar admin">

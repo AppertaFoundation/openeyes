@@ -81,7 +81,8 @@ if (!isset($uniqueid)) {
                 </thead>
                 <tbody <?php if (in_array('display_order', $admin->getListFields())): echo 'class="sortable"'; endif; ?>>
                 <?php
-                foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
+                $retrieveResults = $admin->getSearch()->retrieveResults();
+                foreach ($retrieveResults as $i => $row) { ?>
                     <tr class="clickable" data-id="<?php echo $row->id ?>"
                         data-uri="<?php echo $uniqueid ?>/<?php echo $admin->getListFieldsAction() ?>/<?php echo $row->id ?>?returnUri=<?= $returnUri ?>">
                         <td>
@@ -169,6 +170,11 @@ if (!isset($uniqueid)) {
                             'pagination' => $admin->getPagination(),
                             'hide_links' => (!$admin->getSearch()->isDefaultResults() && !$admin->getSearch()->isSearching())
                         )) ?>
+                        <?php
+                            if( !empty($_GET) && count($retrieveResults) < 1 ){
+                                echo "No results found. Total of " . $admin->getModel()->count() . " items.";
+                            }
+                        ?>
                     </td>
                 </tr>
                 </tfoot>

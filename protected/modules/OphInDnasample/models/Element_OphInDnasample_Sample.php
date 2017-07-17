@@ -39,7 +39,6 @@
  * @property User                       $usermodified
  * @property OphInDnasample_Sample_Type $type
  * @property mixed                      destination
- * @property mixed                      is_local
  * @property mixed                      consented_by
  */
 class Element_OphInDnasample_Sample extends BaseEventTypeElement
@@ -75,11 +74,11 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('event_id, old_dna_no,subject_id, blood_date, comments, type_id, volume', 'safe'),
-            array('type_id, consented_by, is_local, studies', 'required'),
+            array('type_id, consented_by, studies', 'required'),
             array('other_sample_type', 'other_type_validator'),
             array('volume', 'volume_validator'),
-            array('destination', 'destination_validator'),
-            array('consented_by, is_local, destination', 'safe'),
+            //array('destination', 'destination_validator'),
+            array('consented_by, destination', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, old_dna_no, subject_id, blood_date, comments', 'safe', 'on' => 'search'),
@@ -150,9 +149,8 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
             'type_id' => 'Type',
             'other_sample_type' => '(if other, please specify)',
             'consented_by' => 'Consented By',
-            'is_local' => 'Local',
             'studies' => 'Study(s)',
-            'destination' => 'Destination',
+            'destination' => 'Destination if not IOO',
             'volume' => 'Volume (Millilitres)',
         );
     }
@@ -177,7 +175,7 @@ class Element_OphInDnasample_Sample extends BaseEventTypeElement
         $criteria->compare('comments', $this->comments);
         $criteria->compare('type_id', $this->type_id);
         $criteria->compare('consented_by', $this->consented_by);
-        $criteria->compare('is_local', $this->is_local);
+        //$criteria->compare('is_local', $this->is_local);
         $criteria->compare('destination', $this->destination);
 
         return new CActiveDataProvider(get_class($this), array(

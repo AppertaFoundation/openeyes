@@ -60,7 +60,7 @@ class ExaminationCreator
 
             $this->createComments($userId, $examination, $examinationEvent);
 
-            $this->createMessage($episodeId, $userId, $examination, $examinationEvent);
+            $this->createMessage($episodeId, $userId, $examination, $examinationEvent, $opNoteEventId);
 
             if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity']) || count($examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'])) {
                 $this->createVisualFunction($userId, $examinationEvent);
@@ -85,10 +85,12 @@ class ExaminationCreator
                 $sphereSide = $eyeLabel.'_sphere';
                 $cylinderSide = $eyeLabel.'_cylinder';
                 $axisSide = $eyeLabel.'_axis';
+                $axisEyedrawSide = $eyeLabel.'_axis_eyedraw';
                 $refraction->$typeSide = $refractionType['id'];
                 $refraction->$sphereSide = $refractionReading['sphere'];
                 $refraction->$cylinderSide = $refractionReading['cylinder'];
                 $refraction->$axisSide = $refractionReading['axis'];
+                $refraction->$axisEyedrawSide = '[{"scaleLevel": 1,"version":1.1,"subclass":"TrialLens","rotation":' . (180 - $refractionReading['axis']) . ',"order":0},{"scaleLevel": 1,"version":1.1,"subclass":"TrialFrame","order":1}]';
 
                 foreach ($eye['reading'][0]['visual_acuity'] as $vaData) {
                     $this->addVisualAcuityReading($userId, $visualAcuity, $unit, $vaData, $eyeLabel);
@@ -275,11 +277,17 @@ class ExaminationCreator
      * @param $examinationEvent
      * @throws \CDbException
      */
-    protected function createMessage($episodeId, $userId, $examination, $examinationEvent)
+    protected function createMessage($episodeId, $userId, $examination, $examinationEvent, $opNoteEventId = NULL)
     {
         if (isset(\Yii::app()->modules['OphCoMessaging'])) {
             $episode = \Episode::model()->findByPk($episodeId);
-            $recipient = \User::model()->findByPk($episode->firm->consultant_id);
+            //$recipient = \User::model()->findByPk($episode->firm->consultant_id);
+            $recipient = NULL;
+            if($opNoteEventId !== NULL){
+                $surgeon = \Element_OphTrOperationnote_Surgeon::model()->findByAttributes(array('event_id' => $opNoteEventId ));
+                $recipient = $surgeon->surgeon;
+            }
+
             if ($recipient) {
                 $sender = \User::model()->findByPk($userId);
                 $type = OphCoMessaging_Message_MessageType::model()->findByAttributes(array('name' => 'General'));
@@ -295,6 +303,7 @@ class ExaminationCreator
                 $messageCreator->setMessageTemplate('application.modules.OphCoMessaging.views.templates.optom');
                 $messageCreator->setMessageData(array(
                     'optom' => $examination['op_tom']['name'] . ' (' . $examination['op_tom']['goc_number'] . ')',
+                    'optom_address' => $examination['op_tom']['address'],
                     'ready' => $ready,
                     'comments' => ($examination['patient']['comments']) ? $examination['patient']['comments'] : 'No Comments',
                     'patient' => $episode->patient,

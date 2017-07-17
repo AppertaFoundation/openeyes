@@ -17,11 +17,15 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+
 <div class="box admin">
 	<h2>Sample Search</h2>
 
 	<div class="large-12 column">
 		<?php
+
+        // DEV warning: form submit click overridden in module.js
+
         $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'searchform',
             'enableAjaxValidation' => false,
@@ -29,6 +33,7 @@
             'action' => Yii::app()->createUrl('/OphInDnasample/search/DnaSample'),
             'method' => 'GET',
         ))?>
+
 		<div class="large-12 column">
 			<div class="panel">
 				<div class="row">
@@ -36,6 +41,8 @@
 						<table class="grid">
 							<thead>
                                 <tr>
+                                    <th>Sample Id</th>
+                                    <th>Subject Id</th>
                                     <th>Hospital Num:</th>
                                     <th>First Name:</th>
                                     <th>Last Name:</th>
@@ -44,8 +51,15 @@
 							<tbody>
                                 <tr>
                                     <td>
+                                        <?php echo CHtml::textField('sample_id', @$_GET['sample_id'], array('placeholder' => 'Sample Id'))?>
+                                    </td>
+                                    <td>
+                                        <?php echo CHtml::textField('genetics_patient_id', @$_GET['genetics_patient_id'], array('placeholder' => 'Subject Id'))?>
+                                    </td>
+                                    <td>
                                         <?php echo CHtml::textField('hos_num', @$_GET['hos_num'], array('placeholder' => 'Hospital Number'))?>
-                                    </td><td>
+                                    </td>
+                                    <td>
                                         <?php echo CHtml::textField('first_name', @$_GET['first_name'], array('placeholder' => 'First Name'))?>
                                     </td>
                                     <td>
@@ -62,6 +76,7 @@
                                     <th>Date Taken To:</th>
                                     <th>Sample Type:</th>
                                     <th>Comments:</th>
+                                    <th>Family Id:</th>
                                 </tr>
 							</thead>
 							<tbody>
@@ -94,6 +109,10 @@
                                     <td>
                                         <?php echo CHtml::textField('comment', @$_GET['comment'])?>
                                     </td>
+                                    <td>
+                                        <?php echo CHtml::textField('genetics_pedigree_id', @$_GET['genetics_pedigree_id'])?>
+                                    </td>
+
                                     <td>
 
                                     </td>
@@ -155,7 +174,7 @@
 
 	<h2>DNA samples</h2>
 
-	<form id="admin_sequences">
+	<form id="sample_result">
 		<input type="hidden" id="select_all" value="0" />
 
 		<?php if (count($results) <1) {?>
@@ -174,20 +193,28 @@
 			<table class="grid">
 				<thead>
 					<tr>
-						<th><?php echo CHtml::link('Hospital no', $this->getUri(array('sortby' => 'hos_num')))?></th>
-						<th><?php echo CHtml::link('Patient name', $this->getUri(array('sortby' => 'patient_name')))?></th>
+                        <th><?php echo CHtml::link('Sample Id', $this->getUri(array('sortby' => 'sample_id')))?></th>
+                        <th><?php echo CHtml::link('Subject Id', $this->getUri(array('sortby' => 'genetics_patient_id')))?></th>
+                        <th><?php echo CHtml::link('Family Id', $this->getUri(array('sortby' => 'genetics_pedigree_id')))?></th>
+						<th><?php echo CHtml::link('Hospital No', $this->getUri(array('sortby' => 'hos_num')))?></th>
+						<th><?php echo CHtml::link('Patient Name', $this->getUri(array('sortby' => 'patient_name')))?></th>
 						<th><?php echo CHtml::link('Date Taken', $this->getUri(array('sortby' => 'date_taken')))?></th>
 						<th><?php echo CHtml::link('Sample Type', $this->getUri(array('sortby' => 'sample_type')))?></th>
 						<th><?php echo CHtml::link('Volume', $this->getUri(array('sortby' => 'volume')))?></th>
 						<th><?php echo CHtml::link('Comment', $this->getUri(array('sortby' => 'comment')))?></th>
+						<th><?php echo CHtml::link('Diagnosis', $this->getUri(array('sortby' => 'diagnosis')))?></th>
 
 					</tr>
 				</thead>
 				<tbody>
 					<?php
+
 					foreach ($results as $result) {?>
 						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInDnasample/default/view/'.$result['id'])?>">
-							<td><?php echo $result['hos_num']?></td>
+                            <td><?php echo $result['sample_id']?></td>
+                            <td><?php echo CHtml::link($result['genetics_patient_id'], '/Genetics/subject/view/id/' . $result['genetics_patient_id']); ?></td>
+                            <td><?php echo CHtml::link($result['genetics_pedigree_id'], '/Genetics/pedigree/view/' . $result['genetics_pedigree_id'] ); ?></td>
+                            <td><?php echo $result['hos_num']?></td>
 							<td><?php echo strtoupper($result['last_name'])?>, <?php echo $result['first_name']?></td>
 							<td>
                                 <?php
@@ -198,6 +225,7 @@
 							<td><?php echo $result['name']?></td>
 							<td><?php echo $result['volume']?></td>
 							<td><?php echo $result['comments']?></td>
+							<td><?php echo $result['diagnosis']?></td>
 						</tr>
 					<?php }?>
 				</tbody>
@@ -207,7 +235,7 @@
                         <?php $to = ($pagination->getItemCount() < $pagination->limit) ? $pagination->getItemCount() : ($pagination->limit * ($pagination->getCurrentPage()+1)); ?>
                         Showing <?php echo $pagination->offset + 1; ?> to <?php echo $to; ?> of <?php echo $pagination->getItemCount(); ?>
                     </td>
-                    <td colspan="3">
+                    <td colspan="6">
                         <?php
                         $this->widget('CLinkPager', array(
                             'currentPage' => $pagination->getCurrentPage(),

@@ -52,24 +52,9 @@
         ));
 
     $form->activeWidget('TextField', $element, 'volume');
-    $form->radioBoolean($element, 'is_local', array(), array('label' => 3, 'field' => 9));
     $form->activeWidget('TextField', $element, 'destination');
 
-    $users = array_filter(
-        User::model()->findAll(array('order' => 'last_name asc')),
-        function($e){
-            $roles = Yii::app()->authManager->getRoles($e->id);
-            $is_genetics_user = false;
-            foreach ($roles as $r)
-            {
-                if($r->name === "Genetics User")
-                {
-                    $is_genetics_user = true;
-                    break;
-                }
-            }
-            return $is_genetics_user;
-    });
+    $users = User::model()->findAllByRoles(['Genetics User', 'Genetics Clinical', 'Genetics Laboratory Technician', 'Genetics Admin'],true);
 
     $form->dropDownList(
         $element,

@@ -565,6 +565,18 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Override to prevent the event_info element appearing in the sidebar when editing
+     *
+     * @param array $remove_list
+     * @return string
+     */
+    public function getElementTree($remove_list = array())
+    {
+        $remove_list = array_merge($remove_list, array('OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo'));
+        return parent::getElementTree($remove_list);
+    }
+    
+    /**
      * @return models\Element_OphCoCvi_EventInfo[]
      */
     private function getElementsForEventInfo()

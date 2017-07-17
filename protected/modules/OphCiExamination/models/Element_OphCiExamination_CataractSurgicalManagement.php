@@ -167,7 +167,7 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \BaseEventType
         return true;
     }
 
-    public function setDefaultOptions()
+    public function setDefaultOptions(\Patient $patient = null)
     {
         if (in_array(Yii::app()->getController()->getAction()->id, array('created', 'ElementForm'))) {
             if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {

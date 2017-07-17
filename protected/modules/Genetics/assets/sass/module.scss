@@ -22,3 +22,12 @@
     cursor: pointer;
   }
 }
+
+#generic-admin-form{
+  .error-invalid{
+    background: #FF9494;
+  }
+  .error-failed{
+    background: #FFC98B;
+  }
+}

@@ -17,26 +17,26 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<h1 class="badge">Theatre Diaries</h1>
 <div class="row">
     <div class="large-8 large-centered column">
         <?php $this->renderPartial('//base/_messages'); ?>
     </div>
 </div>
 <div class="box content">
-
-	<div class="panel panel actions row">
-            
+	<div class="oe-header-panel row">
 		<div class="large-12 column">
-			<div class="label">
-				Use the filters below to view Theatre schedules:
-			</div>
-			<?php if ($this->checkAccess('OprnPrint')) {?>
-				<div class="button-bar">
-					<button id="btn_print_diary" class="small">Print</button>
-					<button id="btn_print_diary_list" class="small">Print list</button>
+			<h1>Theatre Diaries</h1>
+			<div class="panel actions">
+				<div class="label">
+					Use the filters below to view Theatre schedules:
 				</div>
-			<?php }?>
+				<?php if ($this->checkAccess('OprnPrint')) {?>
+					<div class="button-bar">
+						<button id="btn_print_diary" class="small">Print</button>
+						<button id="btn_print_diary_list" class="small">Print list</button>
+					</div>
+				<?php }?>
+			</div>
 		</div>
 	</div>
 

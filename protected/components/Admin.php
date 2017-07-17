@@ -495,6 +495,11 @@ class Admin
                     return false;
                 }
             } else {
+
+                // Model's id property must be null to be populated after save
+                if( empty($this->model->id) ){
+                    $this->model->id = null;
+                }
                 if (!$this->model->save()) {
                     throw new CHttpException(500, 'Unable to save '.$this->modelName.': '.print_r($this->model->getErrors(), true));
                 }
@@ -514,6 +519,7 @@ class Admin
                 }
             }
         }
+        
         if($partial === false){
             $this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
         } else {
@@ -616,13 +622,12 @@ class Admin
      */
     public function attributeValue($row, $attribute)
     {
-        if (method_exists($row, $attribute))
-        {
-            return $row->$attribute();
+        if ($row->hasAttribute($attribute)) {
+            return $row->$attribute;
         }
 
-        if (isset($row->$attribute)) {
-            return $row->$attribute;
+        if (method_exists($row, $attribute)){
+            return $row->$attribute();
         }
 
         if (strpos($attribute, '.')) {

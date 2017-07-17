@@ -44,7 +44,7 @@ class PatientController extends BaseController
                 'users' => array('@'),
             ),
             array('allow',
-                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode'),
+                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -136,7 +136,8 @@ class PatientController extends BaseController
         // NOTE that this is not being used in the render
         $supportserviceepisodes = $this->patient->supportserviceepisodes;
 
-        Audit::add('patient summary', 'view', $id);
+        $properties['patient_id'] = $this->patient->id;
+        Audit::add('patient summary', 'view', $id, '', $properties);
 
         $this->logActivity('viewed patient');
 
@@ -175,10 +176,11 @@ class PatientController extends BaseController
     public function actionSearch()
     {
         $term = \Yii::app()->request->getParam('term', '');
+
         $patientSearch = new PatientSearch();
-        $dataProvider = $patientSearch->search($term);
-        $itemCount = $dataProvider->totalItemCount;
-        $search_terms = $patientSearch->getSearchTerms();
+	    $dataProvider = $patientSearch->search($term);
+	    $itemCount = $dataProvider->totalItemCount;
+	    $search_terms = $patientSearch->getSearchTerms();
 
         if ($itemCount == 0) {
             Audit::add('search', 'search-results', implode(',', $search_terms).' : No results');
@@ -208,9 +210,9 @@ class PatientController extends BaseController
 
             $this->redirect(Yii::app()->homeUrl);
         } elseif ($itemCount == 1) {
-            foreach ($dataProvider->getData() as $item) {
-                $this->redirect(array('patient/view/'.$item->id));
-            }
+            $item = $dataProvider->getData()[0];
+            $this->redirect(array($item->generateEpisodeLink()));
+
         } else {
             $this->renderPatientPanel = false;
 
@@ -1379,6 +1381,11 @@ class PatientController extends BaseController
         echo '1';
     }
 
+    /**
+     * @return mixed|string
+     * @throws Exception
+     * @deprecated - since version 2.0
+     */
     public function actionAddNewEpisode()
     {
         if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
@@ -1478,9 +1485,9 @@ class PatientController extends BaseController
        
         $patient = new Patient('manual');
         $patient->noPas();
-        $contact = new Contact();
+        $contact = new Contact('manualAddPatient');
         $address = new Address();
-        
+
         $this->performAjaxValidation(array($patient, $contact, $address));
         
         if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
@@ -1488,7 +1495,7 @@ class PatientController extends BaseController
             $contact->attributes = $_POST['Contact'];
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
-            
+
             // not to be sync with PAS
             $patient->is_local = 1;
             
@@ -1508,26 +1515,38 @@ class PatientController extends BaseController
     * @param Contact $contact
     * @param Patient $patient
     * @param Address $address
-    * @return on validation error returns the 3 objects otherwise redirects to the patient view page
+    * @return array on validation error returns the 3 objects otherwise redirects to the patient view page
     */
    private function performPatientSave(Contact $contact, Patient $patient, Address $address)
    {
         $transaction = Yii::app()->db->beginTransaction();
-
         try{
             if( $contact->save() ){
-
                 $patient->contact_id = $contact->id;
                 $address->contact_id = $contact->id;
                 $action = $patient->isNewRecord ? 'add' : 'edit';
+                $isNewPatient = $patient->isNewRecord ? true : false;
+
+                $issetGeneticsModule = isset(Yii::app()->modules["Genetics"]);
+                $issetGeneticsClinical = Yii::app()->user->checkAccess('Genetics Clinical');
+
                 if($patient->save() && $address->save()){
                     $transaction->commit();
 
-                    Audit::add('Patient', $action . '-patient', "Patient manually [id: $patient->id] {$action}ed.");
-                    $this->redirect(array('view', 'id' => $patient->id));
+                    if(($issetGeneticsModule !== FALSE ) && ($issetGeneticsClinical !== FALSE) && ($isNewPatient)){
+                        $this->redirect(array('Genetics/subject/edit?patient='.$patient->id));
+                    } else {
+                        Audit::add('Patient', $action . '-patient', "Patient manually [id: $patient->id] {$action}ed.");
+                        $this->redirect(array('view', 'id' => $patient->id));
+                    }
+
                 } else {
                     // patient or address failed to save
                     $transaction->rollback();
+
+                    // to show validation error messages to the user
+                    $patient->validate();
+                    $address->validate();
                 }
             } else {
                 // to show validation error messages to the user
@@ -1561,8 +1580,9 @@ class PatientController extends BaseController
         
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
-        
+
         $patient = $this->loadModel($id);
+        $patient->scenario = 'manual';
         
         //only local patient can be edited
         if($patient->is_local == 0){
@@ -1586,7 +1606,7 @@ class PatientController extends BaseController
 
             list($contact, $patient, $address) = $this->performPatientSave($contact, $patient, $address);
         }
-        
+
         $this->render('crud/update',array(
                         'patient' => $patient,
                         'contact' => $contact,
@@ -1662,5 +1682,39 @@ class PatientController extends BaseController
         
         Yii::app()->end();
     }
-    
+
+    /**
+     * Ajax method for viewing previous elements.
+     *
+     * @param int $element_type_id
+     * @param int $patient_id
+     *
+     * @throws CHttpException
+     */
+    public function actionPreviousElements($element_type_id, $patient_id, $limit = null)
+    {
+        $element_type = ElementType::model()->findByPk($element_type_id);
+        if (!$element_type) {
+            throw new CHttpException(404, 'Unknown ElementType');
+        }
+        $this->patient = Patient::model()->findByPk($patient_id);
+        if (!$this->patient) {
+            throw new CHttpException(404, 'Unknown Patient');
+        }
+
+        $api = $element_type->eventType->getApi();
+        $result = array();
+        foreach ($api->getElements($element_type->class_name, $this->patient, false, null, $limit) as $element) {
+            // Note when there are more complex elements required for this,
+            // would recommend pushing this into a base method that can then
+            // be overridden as appropriate
+            $result[] = array_merge(
+                array('subspecialty' => $element->event->episode->getSubspecialtyText(),
+                    'event_date' => $element->event->NHSDate('event_date')),
+                $element->getDisplayAttributes()
+            );
+        }
+
+        echo CJSON::encode($result);
+    }
 }

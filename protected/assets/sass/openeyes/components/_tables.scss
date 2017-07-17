@@ -124,6 +124,10 @@ table {
 		}
 	}
 }
+.table-summary{
+	font-size: $oe-table-footer-cell-font-size;
+	font-weight: bold;
+}
 
 // Plain table
 //
@@ -360,6 +364,12 @@ table {
 		th:last-child,
 		td:last-child {
 			border-right: none;
+
+            span.empty{
+              font-size: $oe-table-footer-cell-font-size;
+              font-weight: bold;
+              font-style: normal;
+            }
 		}
 		tfoot {
 			border-top: 1px solid $table-border-color;

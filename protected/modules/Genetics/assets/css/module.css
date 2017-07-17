@@ -18,33 +18,42 @@
  */
 /* line 3, ../../../../assets/sass/openeyes/components/admin/_sidebar.scss */
 .sidebar.admin h2 {
-  border-bottom: 1px dotted #ccc;
-  margin-bottom: 6px;
-  padding-bottom: 6px;
+    border-bottom: 1px dotted #ccc;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
 }
 @media print {
-  /* line 2, ../../../../assets/sass/openeyes/components/admin/_sidebar.scss */
-  .sidebar.admin {
-    display: none;
-  }
+    /* line 2, ../../../../assets/sass/openeyes/components/admin/_sidebar.scss */
+    .sidebar.admin {
+        display: none;
+    }
 }
 
 /* line 6, ../sass/module.scss */
 #relationships_list {
-  list-style: none;
-  margin: 0;
-  padding-top: 15px;
+    list-style: none;
+    margin: 0;
+    padding-top: 15px;
 }
 /* line 11, ../sass/module.scss */
 #relationships_list li .fa {
-  cursor: pointer;
+    cursor: pointer;
 }
 /* line 14, ../sass/module.scss */
 #relationships_list li select {
-  width: auto;
+    width: auto;
 }
 
 /* line 21, ../sass/module.scss */
 #enteredDiagnosisText .clear-diagnosis-widget {
-  cursor: pointer;
+    cursor: pointer;
+}
+
+/* line 26, ../sass/module.scss */
+#generic-admin-form .error-invalid{
+    background: #FF9494;
+}
+/* line 26, ../sass/module.scss */
+#generic-admin-form .error-failed{
+    background: #FFC98B;
 }

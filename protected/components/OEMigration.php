@@ -378,6 +378,9 @@ class OEMigration extends CDbMigration
         if (isset($params['parent_name'])) {
             $parent_class = "Element_{$event_type}_{$params['parent_name']}";
             $row['parent_element_type_id'] = $this->getIdOfElementTypeByClassName($parent_class);
+        } elseif (isset($params['parent_class'])) {
+            // introduced for supporting elements that are a little more flexible on class name vs name
+            $row['parent_element_type_id'] = $this->getIdOfElementTypeByClassName($params['parent_class']);
         }
 
         $this->insert('element_type', $row);
@@ -661,6 +664,62 @@ class OEMigration extends CDbMigration
     public function setVerbose($verbose = true)
     {
         $this->verbose = $verbose;
+    }
+
+    /**
+     * @param $event_type_id
+     * @param $code
+     * @param $method
+     * @param $description
+     * @throws Exceptio
+     */
+    public function registerShortcode($event_type_id, $code, $method, $description)
+    {
+        if (!preg_match('/^[a-zA-Z]{3}$/', $code)) {
+            throw new Exception("Invalid shortcode: $code");
+        }
+
+        $default_code = $code;
+
+        if ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where('code = :code', array(':code' => strtolower($code)))->queryRow()) {
+            $n = '00';
+            while ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where('code = :code', array(':code' => 'z'.$n))->queryRow()) {
+                $n = str_pad((int) $n + 1, 2, '0', STR_PAD_LEFT);
+            }
+            $code = "z$n";
+
+            echo "Warning: attempt to register duplicate shortcode '$default_code', replaced with 'z$n'\n";
+        }
+
+        $this->insert('patient_shortcode', array(
+            'event_type_id' => $event_type_id,
+            'code' => $code,
+            'default_code' => $default_code,
+            'method' => $method,
+            'description' => $description,
+        ));
+    }
+
+    /**
+     * Create $dest table and duplicate data from $source into it
+     *
+     * @param $source
+     * @param $dest
+     * @param $cols
+     */
+    public function duplicateTable($source, $dest, $cols)
+    {
+        $this->createOETable($dest, array_merge(
+            array('id' => 'pk', 'active' => 'boolean default true'),
+            $cols
+        ), true);
+        $source_rows = $this->dbConnection->createCommand()
+            ->select(array_keys($cols))
+            ->from($source)
+            ->queryAll();
+        foreach ($source_rows as $row) {
+            $this->insert($dest, $row);
+        }
     }
 
     public function setEventTypeRBACSuffix($class_name, $rbac_operation_suffix)

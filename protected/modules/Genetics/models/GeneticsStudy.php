@@ -33,7 +33,9 @@ class GeneticsStudy extends BaseActiveRecordVersioned
     protected $auto_update_relations = true;
 
     protected $pivot = 'genetics_study_subject';
-
+    
+    public $formatted_end_date = null;
+    
     protected $pivot_model = 'GeneticsStudySubject';
 
     /**
@@ -83,23 +85,22 @@ class GeneticsStudy extends BaseActiveRecordVersioned
         );
     }
 
-    /**
-     * @return array customized attribute labels (name=>label)
-     */
     public function attributeLabels()
     {
         return array(
-            'formattedEndDate' => 'End Date'
+            'getProposerNames' => 'Investigators',
+            'proposers.first_name' => 'Investigator first name',
+            'proposers.last_name' => 'Investigator last name',
         );
     }
 
     /**
-     * This is here because of the Crud class cannot accept parameters, to format date, or any other solution, really....
+     * format date after search
      * @return string
      */
-    public function getFormattedEndDate()
+    public function afterFind()
     {
-        return Helper::convertMySQL2NHS($this->end_date);
+        $this->end_date = Helper::convertMySQL2NHS($this->end_date, null);
     }
 
     /**
@@ -107,11 +108,11 @@ class GeneticsStudy extends BaseActiveRecordVersioned
      */
     public function beforeSave()
     {
-        //Set the date to null if it's not truthy so empty strings don't convert to 0000-00-00....
-        if (!$this->end_date) {
+        $date = DateTime::createFromFormat('Y-m-d', $this->end_date);
+
+        if (!$this->end_date || !$date) {
             $this->end_date = null;
         }
-
         return parent::beforeSave();
     }
 
@@ -132,4 +133,20 @@ class GeneticsStudy extends BaseActiveRecordVersioned
 
         return $is_proposer;
     }
+
+    /**
+     * @return string
+     */
+
+    public function getProposerNames()
+    {
+        $p = [];
+        foreach($this->proposers as $proposer)
+        {
+            $p[] = $proposer->getFullName();
+        }
+
+        return implode(', ', $p);
+    }
+
 }

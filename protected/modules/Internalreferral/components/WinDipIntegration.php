@@ -32,12 +32,12 @@ namespace OEModule\Internalreferral\components;
 class WinDipIntegration extends \CApplicationComponent implements ExternalIntegration
 {
     protected $yii;
-    protected static $required_params = array(
+    /*protected static $required_params = array(
         'launch_uri',
         'application_id',
         'hashing_function',
         'form_id'
-    );
+    );*/
 
     public $launch_uri;
     public $application_id;

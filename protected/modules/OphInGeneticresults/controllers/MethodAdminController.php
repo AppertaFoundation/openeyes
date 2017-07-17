@@ -10,7 +10,7 @@ class MethodAdminController extends BaseAdminController
     /**
      * @var string
      */
-    public $layout = '//../modules/genetics/views/layouts/genetics';
+    public $layout = 'application.modules.Genetics.views.layouts.genetics';
 
     protected $itemsPerPage = 100;
 
@@ -34,6 +34,7 @@ class MethodAdminController extends BaseAdminController
         ));
         $admin->searchAll();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+        $admin->getSearch()->setDefaultResults(false);
         $admin->listModel();
     }
 
@@ -52,9 +53,22 @@ class MethodAdminController extends BaseAdminController
         }
         $admin->setModelDisplayName('Genetic Results Method');
         $admin->setEditFields(array(
+            'referer' => 'referer',
             'name' => 'text',
         ));
-        $admin->editModel();
+        
+        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());    
+
+        $valid = $admin->editModel(false);
+
+        if (Yii::app()->request->isPostRequest) {        
+            if ($valid) {
+                Yii::app()->user->setFlash('success', "Genetic Results Method Saved");
+                $this->redirect('/OphInGeneticresults/methodAdmin/list');
+            } else {
+                $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
+            }
+        }
     }
 
     /**
