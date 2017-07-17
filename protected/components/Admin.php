@@ -51,6 +51,11 @@ class Admin
      * @var array
      */
     protected $listFields = array();
+    
+    /**
+     * @var type 
+     */
+    protected $listFieldsAction = 'edit';
 
     /**
      * @var array
@@ -232,6 +237,22 @@ class Admin
     {
         $this->listFields = $listFields;
     }
+    
+    /**
+     * @return string
+     */
+    public function getListFieldsAction()
+    {
+        return $this->listFieldsAction;
+    }
+
+    /**
+     * @param string $listFieldsAction
+     */
+    public function setListFieldsAction($listFieldsAction)
+    {
+        $this->listFieldsAction = $listFieldsAction;
+    }
 
     /**
      * @return mixed
@@ -396,9 +417,9 @@ class Admin
 
     /**
      * @param BaseActiveRecord    $model
-     * @param BaseAdminController $controller
+     * @param BaseController $controller
      */
-    public function __construct(BaseActiveRecord $model, BaseAdminController $controller)
+    public function __construct(BaseActiveRecord $model, BaseController $controller)
     {
         $this->setModel($model);
         $this->controller = $controller;
@@ -425,10 +446,14 @@ class Admin
             $this->displayOrder = 1;
         }
 
-        $this->assetManager->registerScriptFile('js/oeadmin/list.js');
+        $this->assetManager->registerScriptFile('/js/oeadmin/list.js');
         $this->audit('list');
         $this->pagination = $this->getSearch()->initPagination();
-        $this->render($this->listTemplate, array('admin' => $this, 'displayOrder' => $this->displayOrder, 'buttons' => $buttons));
+        if($this->request->isAjaxRequest){
+            $this->ajaxResponse();
+        } else {
+            $this->render($this->listTemplate, array('admin' => $this, 'displayOrder' => $this->displayOrder, 'buttons' => $buttons));
+        }
     }
 
     /**
@@ -437,15 +462,15 @@ class Admin
      * @throws CHttpException
      * @throws Exception
      */
-    public function editModel()
+    public function editModel($redirect = true, $partial = false)
     {
-        $this->assetManager->registerScriptFile('js/oeadmin/edit.js');
+        $this->assetManager->registerScriptFile('/js/oeadmin/edit.js');
         $errors = array();
         if (Yii::app()->request->isPostRequest) {
             $post = Yii::app()->request->getPost($this->modelName);
             if (empty($post)) {
                 $this->modelName = str_replace('\\', '_', $this->modelName);
-                $post = $_POST[$this->modelName];
+                $post = Yii::app()->request->getPost($this->modelName);
             }
             if (array_key_exists('id', $post) && $post['id']) {
                 $this->model->attributes = $post;
@@ -454,20 +479,32 @@ class Admin
                 $this->model->attributes = $post;
             }
 
+            foreach($this->editFields as $editField => $type){
+                //widgets et al can be dealt with in the widget
+                if(is_array($type)){
+                    continue;
+                }
+                if(method_exists($this, $type.'Format')){
+                    $this->model->$editField = $this->{$type.'Format'}($this->model->attributes[$editField]);
+                }
+            }
+
             if (!$this->model->validate()) {
                 $errors = $this->model->getErrors();
+                if(!$redirect){
+                    return false;
+                }
             } else {
                 if (!$this->model->save()) {
-                    throw new CHttpException(500,
-                        'Unable to save '.$this->modelName.': '.print_r($this->model->getErrors(), true));
+                    throw new CHttpException(500, 'Unable to save '.$this->modelName.': '.print_r($this->model->getErrors(), true));
                 }
-
                 $this->audit('edit', $this->model->id);
-                $return = '/'.$this->controller->uniqueid.'/list';
-                if (Yii::app()->request->getPost('returnUriEdit')) {
-                    $return = urldecode(Yii::app()->request->getPost('returnUriEdit'));
+                if($redirect){
+                    $this->redirect();
+                } else {
+                    $this->model = $this->model->findByPk($this->model->id);
+                    return true;
                 }
-                $this->controller->redirect($return);
             }
         } else {
             $defaults = Yii::app()->request->getParam('default', array());
@@ -477,7 +514,12 @@ class Admin
                 }
             }
         }
-        $this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
+        if($partial === false){
+            $this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
+        } else {
+            $this->controller->renderPartial($this->editTemplate, array('admin' => $this, 'errors' => $errors));
+        }
+        
     }
 
     /**
@@ -574,6 +616,11 @@ class Admin
      */
     public function attributeValue($row, $attribute)
     {
+        if (method_exists($row, $attribute))
+        {
+            return $row->$attribute();
+        }
+
         if (isset($row->$attribute)) {
             return $row->$attribute;
         }
@@ -647,6 +694,11 @@ class Admin
         return http_build_query($queryArray);
     }
 
+    /**
+     * @param       $relation
+     * @param array $listFields
+     * @return Admin
+     */
     public function generateAdminForRelationList($relation, array $listFields)
     {
         $relatedModel = $this->relationClassFromRelation($relation);
@@ -692,7 +744,7 @@ class Admin
      * @param $template
      * @param array $data
      */
-    protected function render($template, $data = array())
+    public function render($template, $data = array())
     {
         $this->controller->render($template, $data);
     }
@@ -721,9 +773,7 @@ class Admin
             throw new CException('Relation does not exist');
         }
 
-        $relationDefinition = $relations[$relation];
-
-        return $relationDefinition;
+        return $relations[$relation];
     }
 
     /**
@@ -738,8 +788,54 @@ class Admin
             unset($queryArray['returnUri']);
             $split[1] = urlencode(http_build_query($queryArray));
         }
-        $returnUri = implode('?', $split);
 
-        return $returnUri;
+        return implode('?', $split);
+    }
+
+    /**
+     * Respond with JSON for ajax requests
+     */
+    protected function ajaxResponse()
+    {
+        $results = $this->search->retrieveResults();
+        $jsonArray = array();
+        foreach ($results as $result) {
+            $resultJson = array();
+            foreach ($this->getListFields() as $listItem) {
+                $resultJson[$listItem] = $this->attributeValue($result, $listItem);
+            }
+            $jsonArray[] = $resultJson;
+        }
+
+        header('Content-type: application/json');
+        echo CJSON::encode($jsonArray);
+
+        foreach (Yii::app()->log->routes as $route) {
+            if ($route instanceof CWebLogRoute) {
+                $route->enabled = false; // disable any weblogroutes
+            }
+        }
+        Yii::app()->end();
+    }
+
+    /**
+     * Redirect to somewhere
+     */
+    public function redirect()
+    {
+        $return = '/' . $this->controller->uniqueid . '/list';
+        if (Yii::app()->request->getPost('returnUriEdit')) {
+            $return = urldecode(Yii::app()->request->getPost('returnUriEdit'));
+        }
+        $this->controller->redirect($return);
+    }
+
+    /**
+     * @param $date
+     * @return string
+     */
+    protected function dateFormat($date)
+    {
+        return Helper::convertNHS2MySQL($date);
     }
 }

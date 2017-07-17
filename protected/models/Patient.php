@@ -111,12 +111,13 @@ class Patient extends BaseActiveRecordVersioned
     {
         return array(
             array('pas_key', 'length', 'max' => 10),
-            array('hos_num', 'required'),
+            array('hos_num', 'required', 'on' => 'pas'),
             array('hos_num, nhs_num', 'length', 'max' => 40),
-            array('gender', 'length', 'max' => 1),
-            array('dob, date_of_death, ethnic_group_id', 'safe'),
+            array('gender,is_local', 'length', 'max' => 1),
+            array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id', 'safe'),
+            array('gender, dob', 'required'),
             array('deleted', 'safe'),
-            array('dob, hos_num, nhs_num, date_of_death, deleted', 'safe', 'on' => 'search'),
+            array('dob, hos_num, nhs_num, date_of_death, deleted,is_local', 'safe', 'on' => 'search'),
         );
     }
 
@@ -182,6 +183,10 @@ class Patient extends BaseActiveRecordVersioned
             'hos_num' => 'Hospital Number',
             'nhs_num' => 'NHS Number',
             'deleted' => 'Is Deleted',
+            'nhs_num_status_id' => 'NHS Number Status',
+            'gp_id' => 'General Practitioner',
+            'practice_id' => 'Practice',
+            'is_local' => 'Is local patient ?'
         );
     }
 
@@ -251,6 +256,16 @@ class Patient extends BaseActiveRecordVersioned
             }
         }
 
+        //FIXME : this shoud be done with application.behaviors.OeDateFormat
+        foreach (array('dob', 'date_of_death') as $date_column) {
+            $date = $this->{$date_column};
+            if (strtotime($date)) {
+                $this->{$date_column} = date('Y-m-d', strtotime($date));
+            } else {
+                $this->{$date_column} = null;
+            }
+        }
+        
         return parent::beforeSave();
     }
 
@@ -277,6 +292,11 @@ class Patient extends BaseActiveRecordVersioned
         }
 
         return true;
+    }
+    
+    public function isEditable()
+    {
+        return $this->is_local && ( Yii::app()->user->checkAccess('TaskAddPatient'));
     }
 
     /*
@@ -664,7 +684,7 @@ class Patient extends BaseActiveRecordVersioned
      */
     protected function instantiate($attributes)
     {
-        $model = parent::instantiate($attributes);
+        $model = parent::instantiate($attributes);    
         $model->use_pas = $this->use_pas;
 
         return $model;
@@ -678,6 +698,7 @@ class Patient extends BaseActiveRecordVersioned
     protected function afterFind()
     {
         parent::afterFind();
+        $this->use_pas = $this->is_local ? false : true;
         Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));
     }
 
@@ -729,7 +750,7 @@ class Patient extends BaseActiveRecordVersioned
 
         return $info;
     }
-    
+
     public function getGenderString()
     {
         switch ($this->gender) {
@@ -1086,7 +1107,7 @@ class Patient extends BaseActiveRecordVersioned
 
     /**
      * Check if the patient has a given risk.
-     * 
+     *
      * @param $riskCompare
      *
      * @return bool
@@ -1230,6 +1251,9 @@ class Patient extends BaseActiveRecordVersioned
         return $res;
     }
 
+    /**
+     * @return array|mixed|null
+     */
     public function getSystemicDiagnoses()
     {
         $criteria = new CDbCriteria();
@@ -1240,6 +1264,9 @@ class Patient extends BaseActiveRecordVersioned
         return SecondaryDiagnosis::model()->findAll($criteria);
     }
 
+    /**
+     * @return array|mixed|null
+     */
     public function getOphthalmicDiagnoses()
     {
         $criteria = new CDbCriteria();
@@ -1299,6 +1326,8 @@ class Patient extends BaseActiveRecordVersioned
                 throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(), true));
             }
 
+            Yii::app()->event->dispatch('patient_add_diagnosis', array('diagnosis' => $sd));
+
             $this->audit('patient', $action);
         }
     }
@@ -1313,6 +1342,8 @@ class Patient extends BaseActiveRecordVersioned
             throw new Exception('Unable to find disorder: '.$sd->disorder_id);
         }
 
+        $patient = $sd->patient;
+
         if ($disorder->specialty_id) {
             $type = strtolower(Specialty::model()->findByPk($disorder->specialty_id)->code);
         } else {
@@ -1322,6 +1353,8 @@ class Patient extends BaseActiveRecordVersioned
         if (!$sd->delete()) {
             throw new Exception('Unable to delete diagnosis: '.print_r($sd->getErrors(), true));
         }
+
+        Yii::app()->event->dispatch('patient_remove_diagnosis', array('patient'=>$patient, 'diagnosis' => $sd));
 
         $this->audit('patient', "remove-$type-diagnosis");
     }

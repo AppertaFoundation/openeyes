@@ -162,6 +162,11 @@ class Gp extends BaseActiveRecordVersioned
         Yii::app()->event->dispatch('gp_after_find', array('gp' => $this));
     }
 
+    /**
+     * @param array $params
+     * @return mixed
+     * @throws Exception
+     */
     public function getLetterAddress($params = array())
     {
         if (!isset($params['patient'])) {
@@ -184,13 +189,33 @@ class Gp extends BaseActiveRecordVersioned
         return $this->formatLetterAddress($contact, $address, $params);
     }
 
+    /**
+     * @return string
+     */
     public function getPrefix()
     {
         return 'GP';
     }
 
+    /**
+     * @return mixed|string
+     */
     public function getCorrespondenceName()
     {
         return $this->contact->fullName;
+    }
+
+    /**
+     * @return array|CDbDataReader
+     */
+    public function gpCorrespondences()
+    {
+        $sql = 'SELECT gp.id, CONCAT_WS(" ", title, first_name, last_name) as correspondenceName
+                FROM gp 
+                JOIN contact on gp.contact_id = contact.id';
+
+        $query = $this->getDbConnection()->createCommand($sql);
+
+        return $query->queryAll();
     }
 }

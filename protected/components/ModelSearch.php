@@ -65,6 +65,16 @@ class ModelSearch
     protected $searchTerms = array();
 
     /**
+     * @var bool
+     */
+    protected $defaultResults = true;
+
+    /**
+     * @var bool
+     */
+    protected $searching = false;
+
+    /**
      * @return BaseActiveRecord
      */
     public function getModel()
@@ -151,6 +161,40 @@ class ModelSearch
     }
 
     /**
+     * @return bool
+     */
+    public function isDefaultResults()
+    {
+        return $this->defaultResults;
+    }
+
+    /**
+     * @param bool $defaultResults
+     */
+    public function setDefaultResults($defaultResults)
+    {
+        $this->defaultResults = $defaultResults;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSearching()
+    {
+        return $this->searching;
+    }
+
+    /**
+     * @param bool $searching
+     */
+    public function setSearching($searching)
+    {
+        $this->searching = $searching;
+    }
+
+
+
+    /**
      * @param BaseActiveRecord $model
      */
     public function __construct(BaseActiveRecord $model)
@@ -178,10 +222,23 @@ class ModelSearch
         }
 
         if (is_array($search)) {
+            $this->searching = true;
+            
             foreach ($search as $key => $value) {
+                
                 if ($key === 'exact') {
                     continue;
                 }
+                
+                if($key === 'precision' ){
+                    if(is_array($value)){
+                        foreach($value as $_key => $_value){
+                            $this->addCompare($this->criteria, $_key, $_value, $sensitive, 'AND', true);
+                        }
+                    }
+                    continue;
+                }
+                
                 $exactMatch = (isset($search['exact'][$key]) && $search['exact'][$key]);
                 if (!is_array($value)) {
                     $this->addCompare($this->criteria, $key, $value, $sensitive, 'AND', $exactMatch);
@@ -245,6 +302,12 @@ class ModelSearch
             return;
         }
 
+        if(method_exists($this->model, $attribute) ){
+            $compareArguments = $this->model->{$attribute}();
+            $criteria->compare($compareArguments['field'], $value, $compareArguments['exactmatch'], $compareArguments['operator']);
+            return;
+        }
+
         $search = $attribute;
         $search = $this->relationalAttribute($criteria, $attribute, $search);
 
@@ -282,9 +345,16 @@ class ModelSearch
      */
     public function retrieveResults()
     {
+        if(!$this->defaultResults && !$this->searching){
+            return array();
+        }
+
         return $this->model->findAll($this->criteria);
     }
 
+    /**
+     * Add a filter for active
+     */
     public function addActiveFilter()
     {
         $this->addSearchItem('active', array('type' => 'boolean'));
@@ -301,7 +371,7 @@ class ModelSearch
         $this->searchItems[$key] = $search;
         if (is_array($search) && array_key_exists('default', $search) && !array_key_exists($key, $this->searchTerms)) {
             $criteria = $this->getCriteria();
-            $criteria->addCondition($key.' = '.$search['default']);
+            $criteria->addCondition($key . ' = ' . $search['default']);
         }
     }
 

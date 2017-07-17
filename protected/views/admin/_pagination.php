@@ -18,19 +18,23 @@
  */
 // display pagination
 if (isset($pagination)) {
-    $this->widget('LinkPager', array(
-        'pages' => $pagination,
-        'maxButtonCount' => 13,
-        'cssFile' => false,
-        'selectedPageCssClass' => 'current',
-        'hiddenPageCssClass' => 'unavailable',
-        'footer' => @$footer,
-        'htmlOptions' => array(
-            'class' => 'pagination',
-        ),
-    ));
-    if (($pagination->getItemCount()) && $pagination->getItemCount() < $pagination->getPageSize()) {
-        ?><span>Showing 1 to <?= $pagination->getItemCount() ?> of <?= $pagination->getItemCount() ?> </span><?php
+  if(isset($hide_links) && $hide_links){ ?>
+    <span>Total of <?= $pagination->getItemCount() ?> items </span>
+  <?php } else {
+      $this->widget('LinkPager', array(
+          'pages' => $pagination,
+          'maxButtonCount' => 13,
+          'cssFile' => false,
+          'selectedPageCssClass' => 'current',
+          'hiddenPageCssClass' => 'unavailable',
+          'footer' => @$footer,
+          'htmlOptions' => array(
+              'class' => 'pagination',
+          ),
+      ));
+      if (($pagination->getItemCount()) && $pagination->getItemCount() < $pagination->getPageSize()) {
+          ?><span>Showing 1 to <?= $pagination->getItemCount() ?> of <?= $pagination->getItemCount() ?> </span><?php
 
-    }
+      }
+  }
 }
