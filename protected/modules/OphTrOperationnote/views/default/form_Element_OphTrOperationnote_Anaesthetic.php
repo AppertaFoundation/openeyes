@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="element-fields">
+<div class="element-fields" id="OphTrOperationnote_Anaesthetic">
 
     <?php
         echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', 'Type');

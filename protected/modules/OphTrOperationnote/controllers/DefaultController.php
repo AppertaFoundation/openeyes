@@ -55,6 +55,7 @@ class DefaultController extends BaseEventTypeController
     protected function beforeAction($action)
     {
         Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/eyedraw.js');
+        Yii::app()->clientScript->registerScriptFile($this->assetPath . '/js/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
 
         return parent::beforeAction($action);
     }
