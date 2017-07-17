@@ -79,4 +79,4 @@
 			<?php }?>
 		</div>
 	</fieldset>
-<?php }?>
+<?php } ?>

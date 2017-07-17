@@ -408,7 +408,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
     public function afterValidate()
     {
         if( !count($this->anaesthetic_type)){
-            $this->addError('anaesthetic_delivery', 'Type cannot be empty.');
+            $this->addError('anaesthetic_type', 'Type cannot be empty.');
         }
 
         $type_ga =  AnaestheticType::model()->findByAttributes(array('name' => 'GA'));
@@ -424,7 +424,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
                 $delivery_method_count = count($this->anaesthetic_delivery_assignments);
 
                 if($delivery_method_count != 1 || $this->anaesthetic_delivery_assignments[0]->anaesthetic_delivery_id != $anaesthetist_delivery_other->id){
-                    $this->addError('anaesthetic_delivery', 'If anaesthetic Type is "GA" than LA Delivery Methods must only be "Other"');
+                    $this->addError('AnaestheticDelivery', 'If anaesthetic Type is "GA" than LA Delivery Methods must only be "Other"');
                 }
 
                 $anaesthetist_type_anaesthetist = Anaesthetist::model()->findByAttributes(array('name' => 'Anaesthetist'));

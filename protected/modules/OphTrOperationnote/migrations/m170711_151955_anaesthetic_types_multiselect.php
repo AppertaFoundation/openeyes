@@ -4,7 +4,6 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 {
 	public function up()
 	{
-
         $this->createOETable('ophtroperationnote_anaesthetic_anaesthetic_type',array(
             'id' => 'pk',
             'et_ophtroperationnote_anaesthetic_id' => 'int(10) unsigned NOT NULL',
@@ -52,12 +51,15 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
             $anaesthetic_LAC_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAC'))->queryScalar();
             $anaesthetic_LAS_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAS'))->queryScalar();
             $anaesthetic_sedation_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAS'))->queryScalar();
+            $anaesthetic_GA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'GA'))->queryScalar();
 
             $delivery_topical_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_delivery')->where('name=:name', array(':name' => 'Topical'))->queryScalar();
+            $delivery_other_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_delivery')->where('name=:name', array(':name' => 'Other'))->queryScalar();
 
             $dataProvider = new CActiveDataProvider('Element_OphTrOperationnote_Anaesthetic');
             $iterator = new CDataProviderIterator($dataProvider);
 
+            var_dump("Migrating Anaesthetic options...");
             foreach ($iterator as $element) {
 
                 //update any existing records with anaesthetic type "Topical" to type "LA" + delivery type of "Topical"
@@ -65,15 +67,42 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 
                     // adding LA
                     $this->createOrUpdate('OphTrOperationnote_OperationAnaestheticType', array(
-                        'et_ophtroperationnote_anaesthetic_id' => $element->id, 'anaesthetic_type_id' => $anaesthetic_LA_id));
+                        'et_ophtroperationnote_anaesthetic_id' => $element->id,
+                        'anaesthetic_type_id' => $anaesthetic_LA_id
+                    ));
 
                     // adding the existing delivery type
                     $this->createOrUpdate('OphTrOperationnote_OperationAnaestheticDelivery', array(
-                        'et_ophtroperationnote_anaesthetic_id' => $element->id, 'anaesthetic_delivery_id' => $element->anaesthetic_delivery_id));
+                        'et_ophtroperationnote_anaesthetic_id' => $element->id,
+                        'anaesthetic_delivery_id' => $element->anaesthetic_delivery_id
+                    ));
 
                     // adding the extra (Delivery) Topical type - as the Type was Topical and it will be removed from there
                     $this->createOrUpdate('OphTrOperationnote_OperationAnaestheticDelivery', array(
-                        'et_ophtroperationnote_anaesthetic_id' => $element->id, 'anaesthetic_delivery_id' => $delivery_topical_id));
+                        'et_ophtroperationnote_anaesthetic_id' => $element->id,
+                        'anaesthetic_delivery_id' => $delivery_topical_id
+                    ));
+
+                       //When option GA is selected, set delivery method to (only) Other, set given by to Anaesthetist
+                } else if ($element->anaesthetic_type_id == $anaesthetic_GA_id) {
+
+
+                    $this->createOrUpdate('OphTrOperationnote_OperationAnaestheticType', array(
+                        'et_ophtroperationnote_anaesthetic_id' => $element->id,
+                        'anaesthetic_type_id' => $anaesthetic_GA_id
+                    ));
+
+                    $this->createOrUpdate('OphTrOperationnote_OperationAnaestheticDelivery', array(
+                        'et_ophtroperationnote_anaesthetic_id' => $element->id,
+                        'anaesthetic_delivery_id' => $delivery_other_id
+                    ));
+
+                    $anaesthetist_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetist')->where('name=:name', array(':name' => 'Anaesthetist'))->queryScalar();
+                    $element->anaesthetist_id = $anaesthetist_id;
+
+                    if( !$element->save(false) ){
+                        throw new Exception('Unable to save anaesthetic agent assignment: '.print_r($element->getErrors(), true));
+                    }
 
                 } else {
 
@@ -113,109 +142,34 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
             throw $e;
         }
 
-        //Good, let's check the result
+        /**
+         * Not sure if we should update these  ??
+         */
 
-        $dataProvider = new CActiveDataProvider('Element_OphTrOperationnote_Anaesthetic');
-        $iterator = new CDataProviderIterator($dataProvider);
+        //$this->update('et_ophtrconsent_procedure', array('anaesthetic_type_id' => $anaesthetic_LA_id), 'anaesthetic_type_id = ' . $anaesthetic_topical_id);
+        //$this->update('et_ophtrintravitinjection_anaesthetic', array('left_anaesthetictype_id' => $anaesthetic_LA_id), 'left_anaesthetictype_id = ' . $anaesthetic_topical_id);
+        //$this->update('et_ophtrintravitinjection_anaesthetic', array('right_anaesthetictype_id' => $anaesthetic_LA_id), 'right_anaesthetictype_id = ' . $anaesthetic_topical_id);
 
-        var_dump("Checking Element_OphTrOperationnote_Anaesthetic elements...");
-        foreach ($iterator as $element) {
+        /**
+         * OE-6557
+         * to resolve the the question of the et_ophtroperationbooking_operation FK
+         */
 
-            $fine = false;
+          // after that we can drop the FKs and delete anaesthetic_type_id, anaesthetic_delivery_id
 
-            $element->refresh();
-            $element->refreshMetaData();
-
-            foreach($element->anaesthetic_type as $anaesthetic_type){
-
-                //anaesthetic_type_id must be in $element->anaesthetic_type - except for Type Topical because it became LA
-                if($element->anaesthetic_type_id == $anaesthetic_type->id){
-                    $fine = true;
-                } else if( $element->anaesthetic_type_id == $anaesthetic_topical_id ){
-
-                    // remember, type Topical became Type LA
-                    if($anaesthetic_type->id == $anaesthetic_LA_id){
-
-                        // but we need Delivery Topical as well
-                        $delivery_topical_exist = Yii::app()->db->createCommand()
-                            ->select('id')
-                            ->from('ophtroperationnote_anaesthetic_anaesthetic_delivery')
-                            ->where('et_ophtroperationnote_anaesthetic_id=:element_id AND anaesthetic_delivery_id=:delivery_id', array(
-                                ':element_id' => $element->id,
-                                ':delivery_id' => $delivery_topical_id))
-                            ->queryScalar();
-
-                        if($delivery_topical_exist){
-                            $fine = true;
-                        }
-                    }
-                } else if($element->anaesthetic_type_id == $anaesthetic_LAC_id){
-
-                    if($anaesthetic_type->id == $anaesthetic_LA_id){
-                        $fine = true;
-                    }
-                } else if($element->anaesthetic_type_id == $anaesthetic_LAS_id){
-
-                    $type_LA_exist = Yii::app()->db->createCommand()
-                        ->select('id')
-                        ->from('ophtroperationnote_anaesthetic_anaesthetic_type')
-                        ->where('et_ophtroperationnote_anaesthetic_id=:element_id AND anaesthetic_type_id=:type_id', array(
-                            ':element_id' => $element->id,':type_id' => $anaesthetic_LA_id))->queryScalar();
-
-                    $type_sedation_exist = Yii::app()->db->createCommand()
-                        ->select('id')
-                        ->from('ophtroperationnote_anaesthetic_anaesthetic_type')
-                        ->where('et_ophtroperationnote_anaesthetic_id=:element_id AND anaesthetic_type_id=:type_id', array(
-                            ':element_id' => $element->id,':type_id' => $anaesthetic_sedation_id))->queryScalar();
-
-                    if($type_LA_exist && $type_sedation_exist){
-                        $fine = true;
-                    }
-                }
-            }
-
-            if($fine){
-
-                $fine = false;
-                foreach($element->anaesthetic_delivery as $anaesthetic_delivery){
-                    if($element->anaesthetic_delivery_id == $anaesthetic_delivery->id){
-                        $fine = true;
-                    }
-                }
-            }
-
-            $type_name = Yii::app()->db->createCommand()->select('name')->from('anaesthetic_type')->where('id=:id', array(':id' => $element->anaesthetic_type_id))->queryScalar();
-            $delivery_name = Yii::app()->db->createCommand()->select('name')->from('anaesthetic_delivery')->where('id=:id', array(':id' => $element->anaesthetic_type_id))->queryScalar();
-
-            $types = array();
-            foreach($element->anaesthetic_type as $a_type){
-                $types['anaesthetic_types'][] = Yii::app()->db->createCommand()->select('name')->from('anaesthetic_type')->where('id=:id', array(
-                    ':id' => $a_type->id))->queryScalar();
-            }
-
-            foreach($element->anaesthetic_delivery as $a_delivery){
-                $types['anaesthetic_delivery'][] = Yii::app()->db->createCommand()->select('name')->from('anaesthetic_delivery')->where('id=:id', array(
-                    ':id' => $a_delivery->id))->queryScalar();
-            }
-
-            OELog::log("Element_OphTrOperationnote_Anaesthetic " . $element->id . " had anaesthetic Type: " . $type_name . ", anaesthetic Delivery: " . $delivery_name .
-                ", new values are :" . print_r($types,true));
-
-            var_dump($element->id . " is " . ($fine ? 'FINE' : 'NOT FINE'));
-
-//huh, time to delete the $element->anaesthetic_type_id and $element->anaesthetic_delivery_id ?
-
-//$this->dropForeignKey('et_ophtroperationnote_ana_anaesthetic_delivery_id_fk', 'et_ophtroperationnote_anaesthetic');
-//$this->dropForeignKey('et_ophtroperationnote_ana_anaesthetic_type_id_fk', 'et_ophtroperationnote_anaesthetic');
+//        $this->dropForeignKey('et_ophtroperationnote_ana_anaesthetic_delivery_id_fk', 'et_ophtroperationnote_anaesthetic');
+//        $this->dropForeignKey('et_ophtroperationnote_ana_anaesthetic_type_id_fk', 'et_ophtroperationnote_anaesthetic');
 //
-//$this->dropColumn('et_ophtroperationnote_anaesthetic', 'anaesthetic_type_id');
-//$this->dropColumn('et_ophtroperationnote_anaesthetic_version', 'anaesthetic_type_id');
-
-//$this->dropColumn('et_ophtroperationnote_anaesthetic', 'anaesthetic_delivery_id');
-//$this->dropColumn('et_ophtroperationnote_anaesthetic_version', 'anaesthetic_delivery_id');
+//        $this->dropColumn('et_ophtroperationnote_anaesthetic', 'anaesthetic_type_id');
+//        $this->dropColumn('et_ophtroperationnote_anaesthetic_version', 'anaesthetic_type_id');
 //
-//$this->delete("anaesthetic_type", "name = 'Topical'");
-        }
+//        $this->dropColumn('et_ophtroperationnote_anaesthetic', 'anaesthetic_delivery_id');
+//        $this->dropColumn('et_ophtroperationnote_anaesthetic_version', 'anaesthetic_delivery_id');
+//
+//        $this->delete("anaesthetic_type", "name = 'Topical'");
+//        $this->delete("anaesthetic_type", "name = 'LAC'");
+//        $this->delete("anaesthetic_type", "name = 'LAS'");
+
 	}
 
 
@@ -238,15 +192,15 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 	public function down()
 	{
 
-
 	      /** We will NOT support the migration down() here  */
 
 
+        echo "m170711_151955_anaesthetic_types_multiselect does not support migration down.\n";
+        return false;
 
-//        echo "m170711_151955_anaesthetic_types_multiselect does not support migration down.\n";
-//        return false;
+        //@TODO : remove the lines below when development finish until that we may want to revert sometines
 
-		$this->dropForeignKey('ophtroperationnote_anaesthetic_type_to_anaest_type', 'ophtroperationnote_anaesthetic_anaesthetic_type');
+		/*$this->dropForeignKey('ophtroperationnote_anaesthetic_type_to_anaest_type', 'ophtroperationnote_anaesthetic_anaesthetic_type');
 		$this->dropForeignKey('ophtroperationnote_anaesthetic_type_to_el', 'ophtroperationnote_anaesthetic_anaesthetic_type');
 
 		$this->dropOETable('ophtroperationnote_anaesthetic_anaesthetic_type', true);
@@ -257,6 +211,6 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 		$this->dropOETable('ophtroperationnote_anaesthetic_anaesthetic_delivery', true);
 
         $this->delete("anaesthetic_type", "name = 'Sedation'");
-        $this->delete("anaesthetic_type", "name = 'No Anaesthetic'");
+        $this->delete("anaesthetic_type", "name = 'No Anaesthetic'");*/
 	}
 }
