@@ -30,7 +30,8 @@ trait Study {
      */
     public function canBeProposedByUserDateCheck(CWebUser $user)
     {
-        if (new DateTime($this->end_date) < new DateTime('midnight')) {
+
+        if ( (Helper::isValidDateTime($this->end_date)) && (new DateTime($this->end_date) < new DateTime('midnight')) ) {
             return false;
         }
         return true;

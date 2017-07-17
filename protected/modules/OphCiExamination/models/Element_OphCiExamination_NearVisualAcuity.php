@@ -100,7 +100,7 @@ class Element_OphCiExamination_NearVisualAcuity extends Element_OphCiExamination
         return $text."\n";
     }
 
-    public function setDefaultOptions()
+    public function setDefaultOptions(\Patient $patient = null)
     {
         $this->unit_id = $this->getSetting('unit_id');
         if ($rows = $this->getSetting('default_rows')) {

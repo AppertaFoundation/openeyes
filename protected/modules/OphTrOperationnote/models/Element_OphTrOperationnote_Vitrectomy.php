@@ -119,13 +119,6 @@ class Element_OphTrOperationnote_Vitrectomy extends Element_OnDemand
             ));
     }
 
-    /**
-     * Set default values for forms on create.
-     */
-    public function setDefaultOptions()
-    {
-    }
-
     public function getEye()
     {
         if ($this->event_id && $pl = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($this->event_id))) {

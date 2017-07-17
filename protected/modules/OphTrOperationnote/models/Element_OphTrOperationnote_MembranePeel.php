@@ -118,11 +118,4 @@ class Element_OphTrOperationnote_MembranePeel extends Element_OnDemand
                 'criteria' => $criteria,
             ));
     }
-
-    /**
-     * Set default values for forms on create.
-     */
-    public function setDefaultOptions()
-    {
-    }
 }

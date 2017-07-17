@@ -141,30 +141,6 @@ class Element_OphTrLaser_Treatment extends SplitEventTypeElement
             ));
     }
 
-    /**
-     * Set default values for forms on create.
-     */
-    public function setDefaultOptions()
-    {
-        if (Yii::app()->getController()->getAction()->id == 'create') {
-        }
-    }
-
-    protected function beforeSave()
-    {
-        return parent::beforeSave();
-    }
-
-    protected function afterSave()
-    {
-        return parent::afterSave();
-    }
-
-    protected function beforeValidate()
-    {
-        return parent::beforeValidate();
-    }
-
     /*
      * update procedure assignments to given procedure ids on the given side
      *

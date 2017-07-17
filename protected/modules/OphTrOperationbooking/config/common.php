@@ -39,6 +39,7 @@ return array(
                 'title' => 'Theatre Diaries',
                 'uri' => 'OphTrOperationbooking/theatreDiary/index',
                 'position' => 10,
+                'requires_setting' => array('setting_key'=>'disable_theatre_diary', 'required_value'=>'off')
             ),
             'partial_bookings' => array(
                 'title' => 'Partial bookings waiting list',
@@ -48,8 +49,8 @@ return array(
         ),
         'future_scheduling_limit' => '3 months',
         'admin_menu' => array(
-            'Sequences' => '/OphTrOperationbooking/admin/viewSequences',
-            'Sessions' => '/OphTrOperationbooking/admin/viewSessions',
+            'Sequences' => array('uri'=>'/OphTrOperationbooking/admin/viewSequences', 'requires_setting' => array('setting_key'=>'disable_theatre_diary', 'required_value'=>'off')),
+            'Sessions' => array('uri'=>'/OphTrOperationbooking/admin/viewSessions', 'requires_setting' => array('setting_key'=>'disable_theatre_diary', 'required_value'=>'off')),
             'Wards' => '/OphTrOperationbooking/admin/viewWards',
             'Theatres' => '/OphTrOperationbooking/admin/viewTheatres',
             'Operation priorities' => '/OphTrOperationbooking/admin/operationPriorities',
@@ -60,7 +61,7 @@ return array(
             'Operation name rules' => '/OphTrOperationbooking/admin/viewOperationNameRules',
             'Waiting list contact rules' => '/OphTrOperationbooking/admin/viewWaitingListContactRules',
             'Patient unavailable reasons' => '/OphTrOperationbooking/admin/viewPatientUnavailableReasons',
-            'Session unavailable reasons' => '/OphTrOperationbooking/admin/viewSessionUnavailableReasons',
+            'Session unavailable reasons' => array('uri'=>'/OphTrOperationbooking/admin/viewSessionUnavailableReasons', 'requires_setting' => array('setting_key'=>'disable_theatre_diary', 'required_value'=>'off')),
         ),
         // Default anaesthetic settings
         //'ophtroperationbooking_default_anaesthetic_child' => 'GA',

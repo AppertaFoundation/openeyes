@@ -424,7 +424,7 @@ var iol_position;
  */
 function showHideIOLFields(_drawing, resetPosition) {
     var iolPresent = false;
-
+    
     for (var i in _drawing.doodleArray) {
         if ($.inArray(_drawing.doodleArray[i].className, eyedraw_iol_classes) > -1) {
             iolPresent = true;
@@ -438,7 +438,12 @@ function showHideIOLFields(_drawing, resetPosition) {
         if (resetPosition && $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option:selected').text() == 'None') {
             $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option').map(function () {
                 if ($(this).text() == '- Please select -') {
-                    $(this).attr('selected', 'selected');
+                    $(this).attr('selected', true);
+                } else {
+                    $(this).attr('selected', false);
+                    if ($(this).text() == 'None') {
+                        $(this).attr('disabled','disabled');
+                    }
                 }
             });
         }
@@ -447,13 +452,17 @@ function showHideIOLFields(_drawing, resetPosition) {
         $('#div_Element_OphTrOperationnote_Cataract_iol_type_id').hide();
         $('#div_Element_OphTrOperationnote_Cataract_iol_power').hide();
         $('#div_Element_OphTrOperationnote_Cataract_iol_position_id').hide();
-        if (resetPosition) {
+        
             $('#Element_OphTrOperationnote_Cataract_iol_position_id').children('option').map(function () {
                 if ($(this).text() == 'None') {
-                    $(this).attr('selected', 'selected');
+                    $(this).removeAttr('disabled');
+                    $(this).attr('selected', true);
+                } else {
+                    $(this).attr('selected', false);
                 }
             });
-        }
+        
+    
     }
 
 }

@@ -18,6 +18,8 @@
 */
 class DefaultController extends BaseEventTypeController
 {
+    protected $show_element_sidebar = false;
+
     protected static $action_types = array(
         'drugList' => self::ACTION_TYPE_FORM,
         'repeatForm' => self::ACTION_TYPE_FORM,
@@ -27,6 +29,25 @@ class DefaultController extends BaseEventTypeController
         'markPrinted' => self::ACTION_TYPE_PRINT,
     );
 
+    private function userIsAdmin()
+    {
+        $user = Yii::app()->session['user'];
+
+        if ($user->role == 'admin role') {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function actionView($id)
+    {
+        $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
+
+        $this->editable = $this->userIsAdmin() || $model->draft || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
+        return parent::actionView($id);
+    }
+
     /**
      * Defines JS data structure for common drug lookup in prescription.
      */
@@ -35,8 +56,8 @@ class DefaultController extends BaseEventTypeController
         $this->jsVars['common_drug_metadata'] = array();
         foreach (Element_OphDrPrescription_Details::model()->commonDrugs() as $drug) {
             $this->jsVars['common_drug_metadata'][$drug->id] = array(
-                    'type_id' => $drug->type_id,
-                    'preservative_free' => $drug->preservative_free,
+                    'type_id' => array_map(function($e){ return $e->id; }, $drug->type),
+                    'preservative_free' => (int)$drug->isPreservativeFree(),
             );
         }
     }
@@ -182,7 +203,7 @@ class DefaultController extends BaseEventTypeController
                     $item_model->tapers = $item->tapers;
                     
                     if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
-                        if ($apieye = $api->getLastEye($this->patient)) {
+                        if ($apieye = $api->getLastEye($this->patient, false)) {
                             $item_model->route_option_id = $apieye;
                         }
                     }
@@ -218,15 +239,17 @@ class DefaultController extends BaseEventTypeController
                 $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
             }
             if (isset($_GET['type_id']) && $type_id = $_GET['type_id']) {
-                $criteria->addCondition('type_id = :type_id');
+
+                $criteria->addCondition('id IN (SELECT drug_id FROM drug_drug_type WHERE drug_type_id = :type_id)');
                 $params[':type_id'] = $type_id;
             }
             if (isset($_GET['preservative_free']) && $preservative_free = $_GET['preservative_free']) {
-                $criteria->addCondition('preservative_free = 1');
+                $tag_id = Yii::app()->params['preservative_free_tag_id'];
+                $criteria->addCondition("id IN (SELECT drug_id FROM drug_tag WHERE tag_id = $tag_id)");
             }
             $criteria->order = 'name';
             // we don't need 'select *' here
-            $criteria->select = 'id, tallman, preservative_free';
+            $criteria->select = 'id, tallman';
             $criteria->params = $params;
 
             $drugs = Drug::model()->active()->findAll($criteria);
@@ -549,4 +572,34 @@ class DefaultController extends BaseEventTypeController
             return $output;
         }
     }
+
+    public function actionUpdate($id, $reason = null)
+    {
+        global $reason_id;
+        global $reason_other_text;
+
+        $model = Element_OphDrPrescription_Details::model()->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
+
+        if(is_null($reason) && !$model->draft)
+        {
+            $this->render('ask_reason', array('id'=>$id));
+        }
+        else
+        {
+            if(isset($_POST['do_not_save']) && $_POST['do_not_save']=='1')
+            {
+                $reason_id = isset($_POST['reason']) ? $_POST['reason'] : 0;
+                $reason_other_text = isset($_POST['reason_other']) ? $_POST['reason_other'] : '';
+                $_POST=null;
+            }
+            else
+            {
+                $reason_id = $model->edit_reason_id;
+                $reason_other_text = $model->edit_reason_other;
+            }
+
+            parent::actionUpdate($id);
+        }
+    }
+
 }

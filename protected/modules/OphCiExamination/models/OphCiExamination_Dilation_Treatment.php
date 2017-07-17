@@ -74,7 +74,7 @@ class OphCiExamination_Dilation_Treatment extends \BaseActiveRecordVersioned
         );
     }
 
-    public function setDefaultOptions()
+    public function setDefaultOptions(\Patient $patient = null)
     {
         $this->treatment_time = date('H:i');
     }

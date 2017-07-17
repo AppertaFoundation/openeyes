@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 if ($this->checkPrintAccess()) {
-    $this->event_actions[] = EventAction::button('Print', 'print', array(), array('class' => 'button small'));
+    $this->event_actions[] = EventAction::printButton();
     $this->event_actions[] = EventAction::button('Print for visually impaired', 'print_va', array(), array('class' => 'button small'));
 }
 ?>

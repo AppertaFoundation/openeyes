@@ -169,7 +169,6 @@ class OphTrOperationnote_ReportOperations extends BaseReport
         Yii::app()->event->dispatch('start_batch_mode');
 
         $this->operations = $this->getOperations(
-            $surgeon,
             $filter_procedures,
             $filter_complications,
             $date_from,
@@ -221,14 +220,14 @@ class OphTrOperationnote_ReportOperations extends BaseReport
      *
      * @return array
      */
-    protected function getOperations($surgeon = null, $filter_procedures = array(), $filter_complications = array(), $from_date, $to_date, $patient_oph_diagnoses, $booking_diagnosis, $theatre, $bookingcomments, $surgerydate, $comorbidities, $target_refraction, $cataract_surgical_management, $first_eye, $va_values, $refraction_values, $anaesthetic_type, $anaesthetic_delivery, $anaesthetic_comments, $anaesthetic_complications, $cataract_report, $incision_site, $cataract_complication_notes, $cataract_predicted_refraction, $cataract_iol_type, $cataract_iol_power, $tamponade_used, $surgeon, $surgeon_role, $assistant, $assistant_role, $supervising_surgeon, $supervising_surgeon_role, $opnote_comments, $surgeon_id)
+    protected function getOperations($filter_procedures = array(), $filter_complications = array(), $from_date, $to_date, $patient_oph_diagnoses, $booking_diagnosis, $theatre, $bookingcomments, $surgerydate, $comorbidities, $target_refraction, $cataract_surgical_management, $first_eye, $va_values, $refraction_values, $anaesthetic_type, $anaesthetic_delivery, $anaesthetic_comments, $anaesthetic_complications, $cataract_report, $incision_site, $cataract_complication_notes, $cataract_predicted_refraction, $cataract_iol_type, $cataract_iol_power, $tamponade_used, $surgeon, $surgeon_role, $assistant, $assistant_role, $supervising_surgeon, $supervising_surgeon_role, $opnote_comments, $surgeon_id)
     {
         $filter_procedures_method = 'OR';
         $filter_complications_method = 'OR';
 
         $command = Yii::app()->db->createCommand()
             ->select(
-                'e.id, c.first_name, c.last_name, e.created_date, su.surgeon_id, su.assistant_id, su.supervising_surgeon_id, p.hos_num,p.gender, p.dob, pl.id as plid, cat.id as cat_id, eye.name AS eye'
+                'e.id, c.first_name, c.last_name, e.event_date, su.surgeon_id, su.assistant_id, su.supervising_surgeon_id, p.hos_num,p.gender, p.dob, pl.id as plid, cat.id as cat_id, eye.name AS eye'
             )
             ->from('event e')
             ->join('episode ep', 'e.episode_id = ep.id')
@@ -238,8 +237,8 @@ class OphTrOperationnote_ReportOperations extends BaseReport
             ->join('contact c', 'p.contact_id = c.id')
             ->join('eye', 'eye.id = pl.eye_id')
             ->leftJoin('et_ophtroperationnote_cataract cat', 'cat.event_id = e.id')
-            ->where('e.deleted = 0 and ep.deleted = 0 and e.created_date >= :from_date and e.created_date < :to_date + interval 1 day')
-            ->order('p.id, e.created_date asc');
+            ->where('e.deleted = 0 and ep.deleted = 0 and e.event_date >= :from_date and e.event_date < :to_date + interval 1 day')
+            ->order('p.id, e.event_date asc, e.created_date asc');
         $params = array(':from_date' => $from_date, ':to_date' => $to_date);
 
         if ($surgeon_id) {
@@ -301,7 +300,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
             }
 
             $record = array(
-                'operation_date' => date('j M Y', strtotime($row['created_date'])),
+                'operation_date' => date('j M Y', strtotime($row['event_date'])),
                 'patient_hosnum' => $row['hos_num'],
                 'patient_firstname' => $row['first_name'],
                 'patient_surname' => $row['last_name'],
@@ -312,17 +311,17 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                 'complications' => implode(', ', $complications),
             );
 
-            $this->operation_date = strtotime($row['created_date']);
+            $this->operation_date = strtotime($row['event_date']);
 
-            if ($surgeon) {
+            if ($surgeon_id) {
                 if ($row['surgeon_id'] == $surgeon_id) {
-                    $record['surgeon_role'] = 'Surgeon';
+                    $record['role'] = 'Surgeon';
                 } else {
                     if ($row['assistant_id'] == $surgeon_id) {
-                        $record['surgeon_role'] = 'Assistant surgeon';
+                        $record['role'] = 'Assistant surgeon';
                     } else {
                         if ($row['supervising_surgeon_id'] == $surgeon_id) {
-                            $record['surgeon_role'] = 'Supervising surgeon';
+                            $record['role'] = 'Supervising surgeon';
                         }
                     }
                 }
@@ -503,7 +502,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                 $record['Pre-op VA Unaided'] = 'Unknown';
                 $record['Pre-op VA Pinhole'] = 'Unknown';
                 foreach ($split_preop_values as $split_preop_value) {
-                    if ($split_preop_value['va_reading'] != '') {
+                    if ($split_preop_value['va_reading'] != '' && in_array($split_preop_value['method'], array('Glasses', 'Unaided', 'Pinhole'))) {
                         $index = 'Pre-op VA '.$split_preop_value['method'];
                         $record[$index] = $split_preop_value['va_reading'];
                     }
@@ -516,7 +515,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                 $record['2-6 Week value Pinhole'] = 'Unknown';
 
                 foreach ($best_post_ops as $best_post_op) {
-                    if ($best_post_op) {
+                    if ($best_post_op && in_array($best_post_op['method'], array('Glasses', 'Unaided', 'Pinhole'))) {
                         $record['Post-op VA (2-6 weeks) date'] = $best_post_op['date'];
                         $record['2-6 Week value '.$best_post_op['method']] = $best_post_op['reading'];
                     }
@@ -528,7 +527,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                 $record['Most recent post-op Unaided'] = 'Unknown';
                 $record['Most recent post-op Pinhole'] = 'Unknown';
                 foreach ($split_postop_values as $split_postop_value) {
-                    if ($split_postop_value['va_reading'] != '') {
+                    if ($split_postop_value['va_reading'] != '' && in_array($split_postop_value['method'], array('Glasses', 'Unaided', 'Pinhole'))) {
                         $index = 'Most recent post-op '.$split_postop_value['method'];
                         $record[$index] = $split_postop_value['va_reading'];
                     }
@@ -551,14 +550,15 @@ class OphTrOperationnote_ReportOperations extends BaseReport
     {
         $criteria = new CDbCriteria();
         if ($searchBackwards) {
-            $criteria->addCondition('event.created_date < :op_date');
+            $criteria->addCondition('event.event_date < :op_date');
         } else {
-            $criteria->addCondition('event.created_date > :op_date');
+            $criteria->addCondition('event.event_date > :op_date');
         }
+        $criteria->addCondition('event.deleted = 0');
         $criteria->addCondition('event.episode_id = :episode_id');
         $criteria->params[':episode_id'] = $event->episode_id;
-        $criteria->params[':op_date'] = $event->created_date;
-        $criteria->order = 'event.created_date desc';
+        $criteria->params[':op_date'] = $event->event_date;
+        $criteria->order = 'event.event_date desc, event.created_date desc';
         $criteria->limit = 1;
 
         return $criteria;
@@ -677,7 +677,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                 $reading = $va->getBestReading($side);
 
                 if ($reading) {
-                    $date = date('j M Y', strtotime($reading->created_date));
+                    $date = date('j M Y', strtotime($reading->element->event->event_date));
                 }
             }
         }
@@ -696,21 +696,20 @@ class OphTrOperationnote_ReportOperations extends BaseReport
 
         $res = array();
         if ($this->operation_date) {
-            $two_weeks = date('j M Y', strtotime('+2 weeks', $this->operation_date));
-            $six_weeks = date('j M Y', strtotime('+6 weeks', $this->operation_date));
-
+            $two_weeks = strtotime('+2 weeks', $this->operation_date);
+            $six_weeks = strtotime('+6 weeks', $this->operation_date);
             $benchmark_date = $two_weeks;
             if ($va) {
                 foreach ($sides as $side) {
                     $readings = $va->getAllReadings($side);
                     $method = '';
                     foreach ($readings as $reading) {
-                        if ($reading->created_date >= $two_weeks && $reading->created_date <= $six_weeks) {
-                            if ($reading->created_date >= $benchmark_date && $method != $reading->method->name) {
-                                $benchmark_date = $reading->created_date;
+                        if (strtotime($reading->element->event->event_date) >= $two_weeks && strtotime($reading->element->event->event_date) <= $six_weeks) {
+                            if (strtotime($reading->element->event->event_date) >= $benchmark_date && $method != $reading->method->name) {
+                                $benchmark_date = strtotime($reading->element->event->event_date);
                                 $method = $reading->method->name;
                                 $res[$reading->method->name.'_'.$side]['side'] = $side;
-                                $res[$reading->method->name.'_'.$side]['date'] = date('j M Y', strtotime($reading->created_date));
+                                $res[$reading->method->name.'_'.$side]['date'] = date('j M Y', strtotime($reading->element->event->event_date));
                                 $res[$reading->method->name.'_'.$side]['method'] = $reading->method->name;
                                 $res[$reading->method->name.'_'.$side]['reading'] = $reading->convertTo($reading->value, $va->unit_id);
                             }
@@ -784,15 +783,15 @@ class OphTrOperationnote_ReportOperations extends BaseReport
 
         if ($refraction) {
             if ($this->operation_date) {
-                $two_weeks = date('j M Y', strtotime('+2 weeks', $this->operation_date));
-                $six_weeks = date('j M Y', strtotime('+6 weeks', $this->operation_date));
+                $two_weeks = strtotime('+2 weeks', $this->operation_date);
+                $six_weeks = strtotime('+6 weeks', $this->operation_date);
 
                 $benchmark_date = $two_weeks;
 
-                if ($refraction->created_date >= $two_weeks && $refraction->created_date <= $six_weeks) {
-                    if ($refraction->created_date >= $benchmark_date) {
+                if (strtotime($refraction->event->event_date) >= $two_weeks && strtotime($refraction->event->event_date) <= $six_weeks) {
+                    if (strtotime($refraction->event->event_date) >= $benchmark_date) {
                         $refraction_values = $refraction->getSplit(strtolower($record['eye']));
-                        $refraction_values['date'] = date('j M Y', strtotime($refraction->created_date));
+                        $refraction_values['date'] = date('j M Y', strtotime($refraction->event->event_date));
                     }
                 }
             }

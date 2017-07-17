@@ -20,10 +20,11 @@
 <?php $this->renderPartial('//base/_messages')?>
     <div class="admin box">
         <div class="row">
-        <div class="large-10 column"><h2>View Family</h2></div>
-        <div class="large-2 column right">
+        <div class="large-8 column"><h2>View Family</h2></div>
+        <div class="large-3 column">
+        </div><div class="large-1 column right">
             <?php if( $this->checkAccess('TaskEditPedigreeData') ): ?>
-                <a href="/Genetics/pedigree/edit/<?php echo $model->id; ?>" class="button small right" id="pedigree_edit">Edit</a>
+                <a href="/Genetics/pedigree/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/pedigree/view/').$model->id; ?>" class="button small right" id="pedigree_edit">Edit</a>
             <?php endif; ?>
         </div>
     </div>
@@ -49,13 +50,21 @@
                     }
                 }
             ),
-            //'base_change_type',
+            array(
+                'label' => $model->getAttributeLabel('base_change_type'),
+                'value' => $model->base_change_type ? $model->base_change_type->change : null,
+                'type'=>'raw',
+            ), 
             array(
                 'label' => $model->getAttributeLabel('base_change'),
                 'value' => $model->base_change ? $model->base_change : null,
                 'type'=>'raw',
             ),
-            'amino_acid_change_id',
+            array(
+                'label' => $model->getAttributeLabel('amino_acid_change_type'),
+                'value' => $model->amino_acid_change_type ? $model->amino_acid_change_type->change : null,
+                'type'=>'raw',
+            ),
             array(
                 'label' => $model->getAttributeLabel('amino_acid_change'),
                 'value' => $model->amino_acid_change ? $model->amino_acid_change : null,

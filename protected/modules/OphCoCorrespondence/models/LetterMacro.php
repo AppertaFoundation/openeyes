@@ -93,6 +93,7 @@ class LetterMacro extends BaseActiveRecordVersioned
             'firm_id' => 'Firm',
             'episode_status_id' => 'Episode status',
             'recipient_id' => 'Default recipient',
+            'letter_type_id' => 'Letter Type'
         );
     }
 

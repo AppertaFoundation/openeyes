@@ -88,36 +88,76 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Filters elements based on coded dependencies.
+     * Check data in child elements
      *
-     * @TODO: need to ensure that we don't filter out elements that do exist when configuration changes
-     *
-     * @param BaseEventTypeElement[] $elements
-     *
-     * @return BaseEventTypeElement[]
+     * @param \BaseEventTypeElement[] $elements
+     * @return boolean
      */
-    protected function filterElements($elements)
+    protected function checkChildElementsForData($elements)
     {
-        if (Yii::app()->hasModule('OphCoTherapyapplication')) {
+        foreach($elements as $element)
+        {
+            if($element->id > 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * List of elements that should be filtered out from the event.
+     *
+     * @return array
+     */
+    protected function getElementFilterList()
+    {
+        if ($this->getApp()->hasModule('OphCoTherapyapplication')) {
             $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagement');
         } else {
             $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
         }
+
+        // Deprecated elements that we keep in place for backward compatibility with rendering
+        $remove = array_merge($remove, array(
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy',
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion'
+        ));
 
         if ($this->set) {
             foreach ($this->set->HiddenElementTypes as $element) {
                 $remove[] = $element->class_name;
             }
         }
+        return $remove;
+    }
+
+    /**
+     * Filters elements based on coded dependencies.
+     *
+     * @param \BaseEventTypeElement[] $elements
+     * @return \BaseEventTypeElement[]
+     */
+    protected function filterElements($elements)
+    {
+        $remove = $this->getElementFilterList();
 
         $final = array();
         foreach ($elements as $el) {
-            if (!in_array(get_class($el), $remove)) {
+            if (in_array(get_class($el), $remove)) {
+                if($el->id > null || $this->checkChildElementsForData($this->getChildElements($el->getElementType()))) {
+                    $final[] = $el;
+                }
+            }else{
                 $final[] = $el;
             }
         }
-
         return $final;
+    }
+
+    public function getElementTree($remove_list = array())
+    {
+        return parent::getElementTree($this->getElementFilterList());
     }
 
     /**
@@ -142,6 +182,8 @@ class DefaultController extends \BaseEventTypeController
         foreach (models\OphCiExamination_Refraction_Cylinder_Integer::model()->findAll(array('order' => 'display_order asc')) as $si) {
             $this->jsVars['Element_OphCiExamination_Refraction_cylinder'][$si->sign_id][] = $si->value;
         }
+
+        Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/core.js", \CClientScript::POS_HEAD);
     }
 
     /**
@@ -575,7 +617,7 @@ class DefaultController extends \BaseEventTypeController
                         $answers[] = $answer;
                     }
                 }
-                if (isset($data[$model_name][$side.'_risks'])) {
+                if (isset($data[$model_name][$side.'_risks']) && is_array($data[$model_name][$side.'_risks'])) {
                     foreach ($data[$model_name][$side.'_risks'] as $risk_id) {
                         if ($risk = models\OphCiExamination_InjectionManagementComplex_Risk::model()->findByPk($risk_id)) {
                             $risks[] = $risk;
@@ -1335,15 +1377,17 @@ class DefaultController extends \BaseEventTypeController
 
         if ($thisRisk) {
             if (is_null($recentAnticoag) || $recentAnticoag->anticoagulant === '0' || $recentAnticoag->event->id === $thisRisk->event->id) {
-                $previous = $historyRisk->previousCheckedAnticoag($this->patient->id, $thisRisk->event->event_date);
-                if ($previous->anticoagulant !== $thisRisk->anticoagulant) {
-                    $this->updateSummaryRisk($previous->anticoagulant, $previous->anticoagulant_name, 'Anticoagulants');
+                if ($previous = $historyRisk->previousCheckedAnticoag($this->patient->id, $thisRisk->event->event_date)){
+                    if ($previous->anticoagulant !== $thisRisk->anticoagulant) {
+                        $this->updateSummaryRisk($previous->anticoagulant, $previous->anticoagulant_name, 'Anticoagulants');
+                    }
                 }
             }
             if (is_null($recentAlpha) || $recentAlpha->alphablocker === '0' || $recentAnticoag->event->id === $thisRisk->event->id) {
-                $previous = $historyRisk->previousCheckedAlpha($this->patient->id, $thisRisk->event->event_date);
-                if ($previous->alphablocker !== $thisRisk->alphablocker) {
-                    $this->updateSummaryRisk($previous->alphablocker, $previous->alpha_blocker_name, 'Alpha blockers');
+                if ($previous = $historyRisk->previousCheckedAlpha($this->patient->id, $thisRisk->event->event_date)){
+                    if ($previous->alphablocker !== $thisRisk->alphablocker) {
+                        $this->updateSummaryRisk($previous->alphablocker, $previous->alpha_blocker_name, 'Alpha blockers');
+                    }
                 }
             }
         }
@@ -1374,3 +1418,4 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 }
+

@@ -152,12 +152,42 @@ class PatientMerge
         $conflict = array();
         
         if($secondary->is_local == 0 && $primary->is_local == 1){
-            $conflict = array(
+            $conflict[] = array(
                     'column' => 'is_local',
-                    'primary' => $primary->$column,
-                    'secondary' => $secondary->$column,
-                    'message' => 'Non local patient cannot be merged into local patient.'
+                    'primary' => $primary->id,
+                    'secondary' => $secondary->id,
+                    'message' => 'Non local patient(hos_num:' . $secondary->hos_num  . ') cannot be merged into local patient(hos_num: ' . $primary->hos_num . ').',
+                    'attribute' => 'secondary_id',
                 );
+        }
+
+        if($secondary->is_deceased !== $primary->is_deceased){
+            $conflict[] = array(
+                    'column' => 'is_deceased',
+                    'primary' => $primary->id,
+                    'secondary' => $secondary->id,
+                    'message' => "Patients' is_deceased flag must be the same.",
+                    'attribute' => 'is_deceased',
+                );
+        }
+
+        if (Yii::app()->hasModule('Genetics')){
+
+            $primary_genetics_patient = GeneticsPatient::model()->findByAttributes(['patient_id' => $primary->id]);
+            $secondary_genetics_patient = GeneticsPatient::model()->findByAttributes(['patient_id' => $secondary->id]);
+
+            if($primary_genetics_patient && $secondary_genetics_patient){
+                //Abort if karyotypic sex or deceased flag are not the same
+                if( $primary_genetics_patient->gender_id !== $secondary_genetics_patient->gender_id){
+                    $conflict[] = array(
+                        'column' => 'gender_id',
+                        'primary' => $primary->id,
+                        'secondary' => $secondary->id,
+                        'message' => "Genetics Patients' karyotypic sex must be the same.",
+                        'attribute' => 'secondary_id',
+                    );
+                }
+            }
         }
         
         return $conflict;
@@ -173,8 +203,9 @@ class PatientMerge
         $is_merged = false;
         
         $is_mergable = $this->isMergable($this->primary_patient, $this->secondary_patient);
+
         if( !empty($is_mergable) ){
-            $msg = isset($is_mergable['message']) ? $is_mergable['message'] : ('Patients cannot be merged ' . print_r($is_mergable, true) );
+            $msg = isset($is_mergable[0]['message']) ? $is_mergable[0]['message'] : ('Patients cannot be merged ' . print_r($is_mergable[0], true) );
             throw new Exception($msg);
         }
         
@@ -202,6 +233,12 @@ class PatientMerge
 
             // Update Systemic Diagnoses
             $is_merged = $is_merged && $this->updateSystemicDiagnoses($this->primary_patient, $this->secondary_patient->systemicDiagnoses);
+
+            // Update Genetics
+            if (Yii::app()->hasModule('Genetics')){
+                $is_merged = $is_merged && $this->updateGenetics($this->primary_patient, $this->secondary_patient);
+            }
+
 
             if ($is_merged) {
                 $secondary_patient = $this->secondary_patient;
@@ -466,7 +503,7 @@ class PatientMerge
                         $this->addLog($msg);
                         Audit::add('Patient Merge', 'AllergyAssignment moved from patient', $msg);
                     } else {
-                        throw new Exception('Failed to update AllergyAssigment: '.$allergy_assignment->id.' '.print_r($allergy_assignment->errors, true));
+                        throw new Exception('Failed to update AllergyAssigment: '.$secondary_assignment->id.' '.print_r($secondary_assignment->errors, true));
                     }
                 }
             }
@@ -572,7 +609,109 @@ class PatientMerge
         
         return true;
     }
-    
+
+    /**
+     * Merging Genetics patients
+     *
+     * @param Patient $primary_patient
+     * @param Patient $secondary_patient
+     * @return bool
+     */
+    public function updateGenetics(Patient $primary_patient, Patient $secondary_patient)
+    {
+        $primary_genetics_patient = GeneticsPatient::model()->findByAttributes(['patient_id' => $primary_patient->id]);
+        $secondary_genetics_patient = GeneticsPatient::model()->findByAttributes(['patient_id' => $secondary_patient->id]);
+
+        //if primary is genetics patient but secondary is not
+        if($primary_genetics_patient && !$secondary_genetics_patient){
+            //nothing to do here, as we would need to move genetics data from secondary to primary but the secondary is not a genetics patient
+
+        } elseif(!$primary_genetics_patient && $secondary_genetics_patient) {
+            //else if secondary is genetics patient but primary is not
+
+            //now here we have to move all the genetics data from secondary to primary
+            //as the primary is not a genetics user we can just update the Geneticspatient->patient_id attribute
+
+            $secondary_genetics_patient->patient_id = $primary_patient->id;
+
+            if($secondary_genetics_patient->save()){
+                $this->addLog("Secondary Genetics Patient's (hos_num:{$secondary_patient->hos_num}) data moved to Primary Patient(hos_num:{$primary_patient->hos_num})");
+            }
+
+            $secondary_genetics_patient->deleted = 1;
+            $secondary_genetics_patient->save();
+            Audit::add('Patient Merge', 'delete', "Genetics Patient id" . $secondary_genetics_patient->id . " hos_num:" . $secondary_genetics_patient->patient->hos_num);
+            $this->addLog("Genetics Patient(subject) flagged as deleted (id): " . $secondary_genetics_patient->id );
+
+        } else if($primary_genetics_patient && $secondary_genetics_patient) {
+            //else both are genetics patients
+
+            //here we cannot just re-wire the GeneticsPatient table's patient_id, actually we are not even update the GeneticsPatient table but
+            //all the other tables that are referencing to the GeneticsPatient table.
+            //We change the patient_id (which will be the genetics_patient.id in the related tables ) e.g.: genetics_patient_diagnosis.patient_id <- again, this is the genetics_patient.id
+
+            if($genetics_patient_diagnosis = GeneticsPatientDiagnosis::model()->findByAttributes(['patient_id' => $secondary_genetics_patient->id])){
+                $genetics_patient_diagnosis->patient_id = $primary_genetics_patient->id;
+                if( $genetics_patient_diagnosis->save() ){
+                    $this->addLog("Genetics Patient Diagnoses {$genetics_patient_diagnosis->id} moved from Patient(hos_num:) {$secondary_patient->hos_num} to {$primary_patient->hos_num}");
+                } else {
+                    $this->addLog("Genetics Patient Diagnoses failed to save");
+                    return false;
+                }
+            }
+
+            if($genetics_patient_pedigrees = GeneticsPatientPedigree::model()->findAllByAttributes(['patient_id' => $secondary_genetics_patient->id])){
+
+                foreach($genetics_patient_pedigrees as $genetics_patient_pedigree) {
+                    $genetics_patient_pedigree->patient_id = $primary_genetics_patient->id;
+                    if ($genetics_patient_pedigree->save()) {
+
+                        $this->addLog("Genetics Patient Pedigree {$genetics_patient_pedigree->id} moved from Patient(hos_num:) {$secondary_patient->hos_num} to {$primary_patient->hos_num}");
+                    } else {
+                        $this->addLog("Genetics Patient Pedigree failed to save");
+                        return false;
+                    }
+                }
+            }
+
+            if($genetics_study_subject = GeneticsStudySubject::model()->findByAttributes(['subject_id' => $secondary_genetics_patient->id])){
+                $genetics_study_subject->subject_id = $primary_genetics_patient->id;
+                if( $genetics_study_subject->save() ){
+                    $this->addLog("Genetics Study Subject {$genetics_study_subject->id} moved from Patient(hos_num:) {$secondary_patient->hos_num} to {$primary_patient->hos_num}");
+                } else {
+                    $this->addLog("Genetics Study Subject failed to save");
+                    return false;
+                }
+            }
+
+            if($genetics_patient_relationship = GeneticsPatientRelationship::model()->findByAttributes(['patient_id' => $secondary_genetics_patient->id])){
+                $genetics_patient_relationship->patient_id = $primary_genetics_patient->id;
+                if( $genetics_patient_relationship->save() ){
+                    $this->addLog("Genetics Patient Relationship {$genetics_patient_relationship->id} moved from Patient(hos_num:) {$secondary_patient->hos_num} to {$primary_patient->hos_num}");
+                } else {
+                    $this->addLog("Genetics Patient Relationship failed to save");
+                    return false;
+                }
+            }
+
+            $primary_genetics_patient->comments .= ", " . $secondary_genetics_patient->comments;
+
+            if( $primary_genetics_patient->save() ){
+                $this->addLog("Genetics Patient comment saved");
+            }
+
+            $secondary_genetics_patient->deleted = 1;
+            if( $secondary_genetics_patient->save() ){
+                Audit::add('Patient Merge', 'delete', "Genetics Patient id" . $secondary_genetics_patient->id . " hos_num:" . $secondary_genetics_patient->patient->hos_num);
+                $this->addLog("Genetics Patient(subject) flagged as deleted (id): " . $secondary_genetics_patient->id );
+            }
+
+            return true;
+        }
+
+        //none of them genetics patients
+        return true;
+    }
     
 
     /**
@@ -593,7 +732,7 @@ class PatientMerge
                 $this->addLog($msg);
                 Audit::add('Patient Merge', 'Episode moved patient', $msg);
             } else {
-                throw new Exception('Failed to save Episode: '.print_r($secondary_patient->errors, true));
+                throw new Exception('Failed to save Episode: '.print_r($episode->errors, true));
             }
         }
 

@@ -5,7 +5,7 @@
  *
  * Contains the actions pertaining to genes
  */
-class StudyController extends BaseModuleController
+class StudyController extends BaseAdminController
 {
     public $layout = 'genetics';
 
@@ -24,7 +24,7 @@ class StudyController extends BaseModuleController
                 'roles' => array('TaskViewGeneticStudy'),
             ),
             array('allow',
-                'actions' => array('Edit'),
+                'actions' => array('Edit', 'Delete'),
                 'roles' => array('TaskEditGeneticStudy'),
             ),
         );
@@ -51,6 +51,7 @@ class StudyController extends BaseModuleController
         }
         $admin->setModelDisplayName('Genetics Study');
         $admin->setEditFields(array(
+            'referer' => 'referer',
             'name' => 'text',
             'criteria' => 'textarea',
             'end_date' => 'date',
@@ -59,7 +60,8 @@ class StudyController extends BaseModuleController
                 'relation_field_id' => 'id',
                 'label' => 'Investigator',
                 'options' => CHtml::encodeArray(CHtml::listData(
-                    User::model()->findAll(),
+                    // because of performance issues we need to list all the required roles even if they are in parent-child
+                    User::model()->findAllByRoles(['Genetics User', 'Genetics Clinical', 'Genetics Laboratory Technician', 'Genetics Admin'],true),
                     'id',
                     function ($model) {
                         return $model->fullName;
@@ -67,7 +69,20 @@ class StudyController extends BaseModuleController
                 )),
             ),
         ));
-        $admin->editModel();
+        
+        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());
+
+        $valid = $admin->editModel(false);
+
+        if (Yii::app()->request->isPostRequest) {        
+            if ($valid) {
+                Yii::app()->user->setFlash('success', "Study Saved");
+                $url = str_replace('/edit','/view',(Yii::app()->request->requestUri)).'/'.$admin->getModel()->id;
+                $this->redirect($url);
+            } else {
+                $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
+            }
+        }
     }
 
     /**
@@ -81,11 +96,20 @@ class StudyController extends BaseModuleController
         $admin->setListFields(array(
             'id',
             'name',
-            'formattedEndDate',
+            'end_date',
+            'criteria',
+            'getProposerNames'
         ));
-        $admin->searchAll();
+
+        $searchArray = array(
+            'type' => 'compare',
+            'compare_to' => array('name', 'end_date', 'criteria', 'proposers.first_name', 'proposers.last_name'));
+        $admin->getSearch()->addSearchItem('id', $searchArray);
+
+        $admin->setUnsortableColumns(array('getProposerNames'));
+
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-        
+        $admin->getSearch()->setDefaultResults(false);
         $display_buttons = $this->checkAccess('TaskEditGeneticStudy');
         $admin->listModel($display_buttons);
     }

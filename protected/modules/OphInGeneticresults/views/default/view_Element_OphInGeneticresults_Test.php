@@ -19,52 +19,22 @@
 ?>
 
 <section class="element">
+    <!--
   <div class="element-data">
     <div class="row data-row">
       <div class="large-2 column">
         <div class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('withdrawal_source_id')) ?>
+            <?php// echo CHtml::encode($element->getAttributeLabel('withdrawal_source_id')) ?>
         </div>
       </div>
       <div class="large-10 column end">
         <div class="data-value">
-            <?php echo CHtml::encode(
-                $element->withdrawal_source ? $element->withdrawal_source->getElementType()->name . ' ' . Helper::convertMySQL2NHS($element->event->event_date) : 'None'
-            ) ?>
+            <?php //echo CHtml::encode( $element->withdrawal_source ? $element->withdrawal_source->getElementType()->name . ' ' . Helper::convertMySQL2NHS($element->event->event_date) : 'None') ?>
         </div>
       </div>
     </div>
   </div>
-  <div class="element-data">
-    <div class="row data-row">
-      <div class="large-2 column">
-        <div class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('external_source_id')) ?>
-        </div>
-      </div>
-      <div class="large-10 column end">
-        <div class="data-value">
-            <?php echo CHtml::encode(
-                $element->external_source ? $element->external_source->name : ''
-            ) ?>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="element-data">
-    <div class="row data-row">
-      <div class="large-2 column">
-        <div class="data-label">
-            <?php echo CHtml::encode($element->getAttributeLabel('external_source_identifier')) ?>
-        </div>
-      </div>
-      <div class="large-10 column end">
-        <div class="data-value">
-            <?php echo CHtml::encode($element->external_source_identifier ? $element->external_source_identifier : 'None') ?>
-        </div>
-      </div>
-    </div>
-  </div>
+    -->
   <div class="element-data">
     <div class="row data-row">
       <div class="large-2 column">
@@ -242,7 +212,7 @@
       </div>
       <div class="large-10 column end">
         <div class="data-value">
-            <?php echo CHtml::encode($element->homo) ?>
+            <?php echo $element->homo === '1' ? 'Yes' : 'No'; ?>
         </div>
       </div>
     </div>

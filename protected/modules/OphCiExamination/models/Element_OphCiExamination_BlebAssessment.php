@@ -22,10 +22,6 @@ namespace OEModule\OphCiExamination\models;
 /**
  * This is the model class for table "et_ophciexamination_bleb_assessment".
  *
- * NOTE that this element provides the facility to set a patient secondary diagnosis for the diabetic type. To enable
- * support for deleting it, we record the id of the SecondaryDiagnosis it creates, as well as the type. A foreign key
- * constraint is not enforced to allow the SecondaryDiagnosis to be deleted as normal through the Patient view.
- *
  * The followings are the available columns in table:
  *
  * @property string $id
@@ -43,7 +39,6 @@ namespace OEModule\OphCiExamination\models;
 class Element_OphCiExamination_BlebAssessment extends \SplitEventTypeElement
 {
     public $service;
-    public $secondarydiagnosis_disorder_required = false;
 
     /**
      * Returns the static model of the specified AR class.

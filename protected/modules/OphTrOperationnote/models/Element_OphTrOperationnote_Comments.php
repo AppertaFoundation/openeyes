@@ -59,12 +59,32 @@ class Element_OphTrOperationnote_Comments extends Element_OpNote
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
+        
         return array(
             array('event_id, comments, postop_instructions', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
+            array('postop_instructions', 'checkMinimalLengthIfNeeded', 'min' => 1),
             array('id, event_id, comments, postop_instructions', 'safe', 'on' => 'search'),
         );
+    }
+
+    /**
+     * Check minimal length if needed
+     *
+     * @param $attribute
+     * @param $params
+     */
+    public function checkMinimalLengthIfNeeded($attribute, $params)
+    {
+        $mandatory_post_op_instructions = SettingMetadata::model()->findByAttributes(array('key' => 'mandatory_post_op_instructions'));        
+        if( $mandatory_post_op_instructions->getSettingName() == 'On' ) {
+            if(strlen($this->$attribute) < $params['min']){
+                $message = $this->getAttributeLabel($attribute).' is too short (need minimum is '.$params['min'].' characters).';
+                $this->addError($attribute, $message, $params);    
+            }
+            
+        }
     }
 
     /**

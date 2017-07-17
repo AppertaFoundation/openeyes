@@ -28,6 +28,25 @@ class Document //extends BaseActiveRecord
         $this->docsetid = $docsetid;
     }
 
+    /**
+     * returns the default contact types, Internal referral excluded as it is optional
+     */
+    public static function getContactTypes()
+    {
+        return [
+                'GP' => 'GP',
+                'PATIENT' => 'Patient',
+                'DRSS' => 'DRSS',
+                'OTHER' => 'Other',
+            ];
+    }
+
+    public static function getInternalReferralContactType()
+    {
+        return [
+                'INTERNALREFERRAL' => 'Booking'
+            ];
+    }
 
     /**
      * Pull the record values from this AR data
@@ -215,7 +234,7 @@ class Document //extends BaseActiveRecord
     {
 
         $post_document_targets = Yii::app()->request->getPost('DocumentTarget', null);
-        
+
         if( !$post_document_targets ){
             return;
         }
@@ -292,9 +311,9 @@ class Document //extends BaseActiveRecord
                                 $data['id'] = $document_output['id'];
                             }
 
-                            if( $this->is_draft && $data['output_type'] == 'Docman' ){
+                            if( $this->is_draft && ($data['output_type'] == 'Docman' || $data['output_type'] == 'Internalreferral') ){
                                 $data['output_status'] = "DRAFT";
-                            } else if($this->is_draft == 0 && $data['output_type'] == 'Docman'){
+                            } else if($this->is_draft == 0 && ( $data['output_type'] == 'Docman' || $data['output_type'] == 'Internalreferral') ){
                                 $data['output_status'] = "PENDING";
                             }
 
@@ -397,8 +416,6 @@ class Document //extends BaseActiveRecord
     
     protected function removeOutputs($document_target_id, $new_document_outputs)
     {
-        $document_target = DocumentTarget::model()->findByPk($document_target_id);
-
         $document_output_ids = array();
         foreach($new_document_outputs as $document_output){
             if( isset($document_output['id']) && isset($document_output['output_type']) ){

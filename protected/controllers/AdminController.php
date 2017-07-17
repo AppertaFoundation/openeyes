@@ -1931,16 +1931,6 @@ class AdminController extends BaseAdminController
     }
 
     /**
-     * Lists and allows editing of Allergy records.
-     *
-     * @throws Exception
-     */
-    public function actionAllergies()
-    {
-        $this->genericAdmin('Edit Allergies', 'Allergy');
-    }
-
-    /**
      * Lists and allows editing of AnaestheticAgent records.
      *
      * @throws Exception
@@ -2032,6 +2022,52 @@ class AdminController extends BaseAdminController
         Audit::add('admin', 'view', $id, null, array('model' => 'AnaestheticAgent'));
         $this->render('/admin/deleteanaestheticagent', array(
             'agent' => $agent,
+        ));
+    }
+
+    public function actionPatientShortcodes()
+    {
+        $this->genericAdmin('Edit Shortcodes', 'PatientShortcode', array(
+            'description' => 'You may alter the shortcode for this installation below. Otherwise this screen is purely for information',
+            'cannot_add' => true,
+            'cannot_delete' => true,
+            'label_field' => 'code',
+            'extra_fields' => array(
+                array(
+                    'field' => 'default_code',
+                    'type' => 'text',
+                    'htmlOptions' => array(
+                        'disabled' => true,
+                        'size' => 4
+                    )
+                ),
+                array(
+                    'field' => 'description',
+                    'type' => 'textarea'
+                ),
+                array(
+                    'field' => 'event_type_id',
+                    'type' => 'lookup',
+                    'model' => 'EventType',
+                    'htmlOptions' => array(
+                        'disabled' => true
+                    )
+                ),
+                array(
+                    'field' => 'method',
+                    'type' => 'text',
+                    'htmlOptions' => array(
+                        'disabled' => true,
+                    )
+                ),
+                array(
+                    'field' => 'codedoc',
+                    'type' => 'textdisplay',
+                    'htmlOptions' => array(
+                        'disabled' => true,
+                    )
+                )
+            )
         ));
     }
 }

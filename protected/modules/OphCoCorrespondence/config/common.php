@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-return array(
+$config = array(
     'params' => array(
         'reports' => array(
             'Letters' => '/OphCoCorrespondence/report/letters',
@@ -26,6 +26,15 @@ return array(
         'admin_menu' => array(
             'Letter macros' => '/OphCoCorrespondence/admin/letterMacros',
             'Letter Snippets' => '/OphCoCorrespondence/oeadmin/snippetGroup/list',
+            //'Letter Types' => '/OphCoCorrespondence/oeadmin/letterType/list', //available but have to find out how could work with Internal Referral (re letter type enable, rename)
+            'Internal Referral' => '/OphCoCorrespondence/oeadmin/internalReferralSettings/settings',
         ),
     ),
 );
+
+$integration_config_file = __DIR__ . '/integration.php';
+if (file_exists($integration_config_file)) {
+    $config['components'] = include $integration_config_file;
+}
+
+return $config;

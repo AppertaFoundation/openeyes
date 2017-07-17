@@ -129,26 +129,11 @@ class Element_OphOuAnaestheticsatisfactionaudit_Satisfaction extends BaseEventTy
     /**
      * Set default values for forms on create.
      */
-    public function setDefaultOptions()
+    public function setDefaultOptions(Patient $patient = null)
     {
         if (Yii::app()->getController()->getAction()->id == 'create') {
             $this->pain = 0;
             $this->nausea = 0;
         }
-    }
-
-    protected function beforeSave()
-    {
-        return parent::beforeSave();
-    }
-
-    protected function afterSave()
-    {
-        return parent::afterSave();
-    }
-
-    protected function beforeValidate()
-    {
-        return parent::beforeValidate();
     }
 }

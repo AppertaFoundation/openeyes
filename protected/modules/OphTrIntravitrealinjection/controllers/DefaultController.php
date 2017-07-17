@@ -57,7 +57,7 @@ class DefaultController extends BaseEventTypeController
         $since = new DateTime();
         $since->setTime(0, 0, 0);
 
-        if ($this->episode && $exam_api && $imc = $exam_api->getLatestInjectionManagementComplex($this->episode, $since)) {
+        if ($this->episode && $exam_api && $imc = $exam_api->getLatestInjectionManagementComplex($this->patient, $since)) {
             if ($side = $imc->getInjectionSide()) {
                 $this->side_to_inject = $side;
             } else {
@@ -104,7 +104,7 @@ class DefaultController extends BaseEventTypeController
         $since = new DateTime();
         $since->setTime(0, 0, 0);
 
-        if ($this->episode && $exam_api && $imc = $exam_api->getLatestInjectionManagementComplex($this->episode, $since)) {
+        if ($this->episode && $exam_api && $imc = $exam_api->getLatestInjectionManagementComplex($this->patient, $since)) {
             if ($side = $imc->getInjectionSide()) {
                 $default_eye = $side;
                 $default_left_drug = $imc->left_treatment;
@@ -191,7 +191,7 @@ class DefaultController extends BaseEventTypeController
     {
         foreach (array('left', 'right') as $side) {
             if (get_class($element) == 'Element_OphTrIntravitrealinjection_Complications') {
-                if (isset($data['Element_OphTrIntravitrealinjection_Complications'][$side.'_complications'])) {
+                if (isset($data['Element_OphTrIntravitrealinjection_Complications'][$side.'_complications']) && is_array($data['Element_OphTrIntravitrealinjection_Complications'][$side.'_complications'])) {
                     $complications = array();
 
                     foreach ($data['Element_OphTrIntravitrealinjection_Complications'][$side.'_complications'] as $comp_id) {
@@ -203,7 +203,7 @@ class DefaultController extends BaseEventTypeController
                 }
             } elseif (get_class($element) == 'Element_OphTrIntravitrealinjection_Treatment') {
                 foreach (array('pre', 'post') as $stage) {
-                    if (isset($data['Element_OphTrIntravitrealinjection_Treatment'][$side.'_'.$stage.'_ioploweringdrugs'])) {
+                    if (isset($data['Element_OphTrIntravitrealinjection_Treatment'][$side.'_'.$stage.'_ioploweringdrugs']) && is_array($data['Element_OphTrIntravitrealinjection_Treatment'][$side.'_'.$stage.'_ioploweringdrugs']) ) {
                         $ioplowerings = array();
 
                         foreach ($data['Element_OphTrIntravitrealinjection_Treatment'][$side.'_'.$stage.'_ioploweringdrugs'] as $ioplowering_id) {

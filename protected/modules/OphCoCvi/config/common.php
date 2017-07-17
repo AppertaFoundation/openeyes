@@ -29,22 +29,17 @@ return array(
             'Local Authorities' => '/OphCoCvi/localAuthoritiesAdmin/list',
         ),
         'menu_bar_items' => array(
-            'admin' => array(
+            'cvi' => array(
+                'title' => 'CVI',
+                'position' => 7,
                 'restricted' => array(array('OprnCreateCvi', 'user_id')),
-                'sub' => array(
-                    'cvi' => array(
-                        'title' => 'CVI',
-                        'position' => 7,
-                        'restricted' => array(array('OprnCreateCvi', 'user_id')),
-                        'uri' => '/OphCoCvi/Default/list',
-                    ),
-                    'la' => array(
-                        'title' => 'LA Admin',
-                        'uri' => '/OphCoCvi/LocalAuthoritiesAdmin/list',
-                        'position' => 8,
-                        'restricted' => array(array('OprnCreateCvi', 'user_id')),
-                    ),
-                )
+                'uri' => '/OphCoCvi/Default/list',
+            ),
+            'la' => array(
+                'title' => 'LA Admin',
+                'uri' => '/OphCoCvi/LocalAuthoritiesAdmin/list',
+                'position' => 8,
+                'restricted' => array(array('OprnCreateCvi', 'user_id')),
             ),
         ),
         'patient_summary_render' => array(

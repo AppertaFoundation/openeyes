@@ -13,14 +13,18 @@ $name = get_class($model);
                     <?php $participation = $study->participationForSubject($model) ?>
                     <li>
                         <input type="hidden" name="<?=$name?>[<?=$list?>][]" value="<?=$study->id?>">
-                        <?php if($study->end_date < date_create('now')->format('Y-m-d')): ?>
-                            <?= $study->name ?>
-                            - <i>Ended: <?= Helper::convertMySQL2NHS($study->end_date) ?></i><br>
+
+                        <?php if(date_create($study->end_date) < date_create('now')): ?>
+                            <?= $study->name; ?>
+                            - <i>End date: <?= $study->end_date ?></i><br>
                         <?php else: ?>
                             <?php if(isset($edit_status_url, $participation) && $edit_status_url && $participation):?>
-                            <a href="<?=$edit_status_url . $participation->id?>?return=<?=Yii::app()->request->requestUri?>" title="Edit Participation" class="edit-study-participation">
+
+                            <!-- this link is hidden for now -->
+                            <a href="<?=$edit_status_url . $participation->id?>?return=<?=Yii::app()->request->requestUri?>" title="Edit Participation" class="hidden edit-study-participation">
                               <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                             </a>
+
                             <?php endif;?>
                             <?= $study->name ?>
                             <?php if($participation && $participation->is_consent_given): ?>

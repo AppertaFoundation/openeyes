@@ -37,6 +37,32 @@ $patient = Patient::model()->findByPk($patient_id);
 $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id : $macro_letter_type_id );
 ?>
 <div class="element-fields">
+
+    <?php
+    $correspondeceApp = \SettingInstallation::model()->find('`key` = "ask_correspondence_approval"');
+    if($correspondeceApp->value === "on") {
+        ?>
+        <div class="row field-row">
+            <div class="large-<?php echo $layoutColumns['label']; ?> column">
+                <label for="<?php echo get_class($element) . '_is_signed_off'; ?>">
+                    <?php echo $element->getAttributeLabel('is_signed_off') ?>:
+                </label>
+            </div>
+            <div class="large-8 column end">
+                <?php echo $form->radioButtons($element, 'is_signed_off', array(
+                    1 => 'Yes',
+                    0 => 'No',
+                ),
+                    $element->is_signed_off,
+                    false, false, false, false,
+                    array('nowrapper' => true)
+                ); ?>
+            </div>
+        </div>
+        <?php
+    }
+    ?>
+
     <div class="row field-row">
         <div class="large-<?php echo $layoutColumns['label']; ?> column">
             <label>Site:</label>
@@ -71,10 +97,22 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
         </div>
         <div class="large-2 column end">
             
-            <?php echo $form->dropDownList($element, 'letter_type_id', CHtml::listData(LetterType::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+            <?php echo $form->dropDownList($element, 'letter_type_id', CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
                 array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
         </div>
     </div>
+
+    <?php if($element->getInternalReferralSettings('is_enabled')): ?>
+
+        <div class="row field-row internal-referrer-wrapper <?php echo $element->isInternalreferral() ? '' : 'hidden'; ?>">
+            <div class="large-2 column"></div>
+
+            <div class="large-10 column">
+                <?php $this->renderPartial('_internal_referral', array('element' => $element)); ?>
+            </div>
+        </div>
+
+    <?php endif; ?>
 
     <div class="row field-row">
         <div id="docman_block" class="large-12 column">
@@ -98,12 +136,25 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                             'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
                         );
                     } else {
-                        if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'Cc') {                      
+
+                        $is_mandatory = true;
+
+                        if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'Cc') {
+
+                            //if the contact_type is (GP or Patient) and the letter type is Internal referral than the fielsd is mandatory (no remove link)
+                            if($document_target['attributes']['contact_type'] == 'GP' || $document_target['attributes']['contact_type'] == 'PATIENT'){
+
+                                if( $element->letterType && ($element->letterType->name == 'Internal Referral') ){
+                                    $is_mandatory = true;
+                                }
+                            }
+
                             $macro_data['cc'][] = array(
                                 'contact_type' => $document_target['attributes']['contact_type'],
                                 'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
                                 'contact_name' => isset($document_target['attributes']['contact_name']) ? $document_target['attributes']['contact_name'] : null,
                                 'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
+                                'is_mandatory' => $is_mandatory,
                             );
                         }
                     }
@@ -143,7 +194,9 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
             $contact_id = isset($address_data['contact_id']) ? $address_data['contact_id'] : null;
             $contact_name = isset($address_data['contact_name']) ? $address_data['contact_name'] : null;
             $address = isset($address_data['address']) ? $address_data['address'] : null;
-            
+
+            $internal_referral = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
+
             $this->renderPartial('//docman/_create', array(
                 'row_index' => (isset($row_index) ? $row_index : 0),
                 'macro_data' => $macro_data,
@@ -159,7 +212,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                     ),
                     'Cc' => array(
                         'contact_id' => isset($patient->contact->id) ? $patient->contact->id : null,
-                        'contact_name' => isset($patient->contact->id) ? $patient->contact->getFullName() : null,
+                        'contact_name' => isset($patient->contact->id) ? $patient->getCorrespondenceName() : null,
                         'contact_type' => 'PATIENT',
                         'address' => $patient_address
                     ),
@@ -221,18 +274,18 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
 
             $with = array(
                 'firmLetterStrings' => array(
-                    'condition' => 'firm_id is null or firm_id = :firm_id',
+                    'on' => 'firmLetterStrings.firm_id is null or firmLetterStrings.firm_id = :firm_id',
                     'params' => array(
                         ':firm_id' => $firm->id,
                     ),
                     'order' => 'firmLetterStrings.display_order asc',
                 ),
                 'subspecialtyLetterStrings' => array(
-                    'condition' => 'subspecialty_id is null',
+                    'on' => 'subspecialtyLetterStrings.subspecialty_id is null',
                     'order' => 'subspecialtyLetterStrings.display_order asc',
                 ),
                 'siteLetterStrings' => array(
-                    'condition' => 'site_id is null or site_id = :site_id',
+                    'on' => 'siteLetterStrings.site_id is null or siteLetterStrings.site_id = :site_id',
                     'params' => array(
                         ':site_id' => Yii::app()->session['selected_site_id'],
                     ),
@@ -240,11 +293,14 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                 ),
             );
             if ($firm->getSubspecialtyID()) {
-                $with['subspecialtyLetterStrings']['condition'] = 'subspecialty_id is null or subspecialty_id = :subspecialty_id';
+                $with['subspecialtyLetterStrings']['on'] = 'subspecialtyLetterStrings.subspecialty_id is null or subspecialtyLetterStrings.subspecialty_id = :subspecialty_id';
                 $with['subspecialtyLetterStrings']['params'] = array(':subspecialty_id' => $firm->getSubspecialtyID());
             }
+
             foreach (LetterStringGroup::model()->with($with)->findAll(array('order' => 't.display_order')) as $string_group) {
+                echo $string_group->name;
                 $strings = $string_group->getStrings($patient, $event_types);
+
                 ?>
                 <div class="field-row">
                     <?php echo $form->dropDownListNoPost(strtolower($string_group->name), $strings, '', array(
@@ -255,6 +311,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                     )) ?>
                 </div>
             <?php } ?>
+            &nbsp;
         </div>
         <div class="large-<?php echo $layoutColumns['field']; ?> column end">
             <?php echo $form->textArea($element, 'body', array('rows' => 20, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
@@ -346,14 +403,19 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
             </div>
         </div>
     </div>
-    <div class="row field-row">
-        <div class="large-<?php echo $layoutColumns['label']; ?> column">
-            <label for="<?php echo get_class($element) . '_is_signed_off'; ?>">
-                <?php echo $element->getAttributeLabel('is_signed_off') ?>:
-            </label>
-        </div>
-        <div class="large-8 column end">
-            <?php echo $form->radioButtons($element, 'is_signed_off', array(
+
+    <?php
+    $correspondeceApp = \SettingInstallation::model()->find('`key` = "ask_correspondence_approval"');
+    if($correspondeceApp->value === "on") {
+    ?>
+        <div class="row field-row">
+            <div class="large-<?php echo $layoutColumns['label']; ?> column">
+                <label for="<?php echo get_class($element) . '_is_signed_off'; ?>">
+                    <?php echo $element->getAttributeLabel('is_signed_off') ?>:
+                </label>
+            </div>
+            <div class="large-8 column end">
+                <?php echo $form->radioButtons($element, 'is_signed_off', array(
                     1 => 'Yes',
                     0 => 'No',
                 ),
@@ -361,8 +423,11 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                     false, false, false, false,
                     array('nowrapper' => true)
                 ); ?>
+            </div>
         </div>
-    </div>
+    <?php
+    }
+    ?>
 </div>
 <script type="text/javascript">
     setDropDownWidth('macro_id');

@@ -16,6 +16,86 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 
+/**
+ * Close the dialog window
+ */
+function hide_dialog() {
+    $('#blackout-box').hide();
+    $('#dialog-msg').hide();
+}
+
+/**
+ * Cancel booking, and redirect to cancel url
+ */
+function cancelBookingEvent() {
+    window.location.href = cancel_url;
+}
+
+/**
+ * Cancel booking, and redirect to examination event
+ */
+function goToExaminationEvent() {
+    window.location.href = create_examination_url;
+}
+
+/**
+ * Open alert dialog, if examination event is missing
+ */
+function AlertDialogIfExaminationEventIsMissing(){
+    if(typeof examination_events_count == 'undefined' || typeof require_exam_before_booking == 'undefined'){
+        return true;
+    }
+    
+	if(examination_events_count < 1 && require_exam_before_booking) {
+        var warning_message = "You didn't create examination yet.";
+        
+        var p = $('#event-content');
+        var position = p.position();
+        // alert ('L->'+position.left+ ' T '+position.top);
+        var topdist = position.left + 400;
+        var leftdist = position.top + 500;
+        
+        
+
+        var dialog_msg = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all dialog" id="dialog-msg" tabindex="-1" role="dialog" aria-labelledby="ui-id-1" style="outline: 0px; z-index: 10002; height: auto; width: 600px;  position: fixed; top: 50%; left: 50%; margin-top: -110px; margin-left: -200px;">' +
+          '<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">' +
+          '<span id="ui-id-1" class="ui-dialog-title">Confirm booking</span>' +
+          '</div><div id="site-and-firm-dialog" class="ui-dialog-content ui-widget-content" scrolltop="0" scrollleft="0" style="display: block; width: auto; min-height: 0px; height: auto;">' +
+          '<div class="alert-box alert with-icon"> <strong>WARNING: ' + warning_message + ' </strong></div>' +
+          '<p>For the purposes of providing data to the RCOphth National Ophthalmology Dataset (NOD), an Examination event with pre-surgery details must be created before a patient can be listed for surgery.</p>' +
+          //'<p>Do you want to continue without examination?</p>' +
+          '<div style = "margin-top:20px; float:right">' +
+          //'<input class="secondary small" id="operationbooking-yes" type="submit" name="yt0" style = "margin-right:10px" value="Yes" onclick="hide_dialog();;">' +
+          '<input class=" cancel event-action button small" id="operationbooking-cancel" type="button" name="yt1" style = "margin-right:10px" value="Cancel" onclick="cancelBookingEvent();">' +
+          '<input class="event-action small" id="operationbooking-create-_examination" type="submit" name="yt2" value="Create Examination Event" onclick="goToExaminationEvent()">' +
+          '</div>';
+
+        var blackout_box = '<div id="blackout-box" style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:black;opacity:0.6;z-index:10000">';
+
+
+        $(dialog_msg).prependTo("body");
+        $(blackout_box).prependTo("body");
+        $('div#blackout_box').css.opacity = 0.6;
+
+        $(document).keyup(function (e) {
+            var keyCode = (event.keyCode ? event.keyCode : event.which);   
+            if(keyCode == 13){
+                e.preventDefault();
+                $("input#operationbooking-create-_examination").trigger('click');
+            }
+        });
+        
+        $(document).keyup(function (e) {
+            var keyCode = (event.keyCode ? event.keyCode : event.which);   
+            if(keyCode == 27){
+                e.preventDefault();
+                $("input#operationbooking-cancel").trigger('click');
+            }
+        });
+    }    
+}
+
+
 $(document).ready(function() {
 	handleButton($('#et_schedulelater'),function() {
 		$('#schedule_now').val(0);
@@ -176,6 +256,9 @@ $(document).ready(function() {
 			start.val($(this).val());
 		}
 	});
+	
+	AlertDialogIfExaminationEventIsMissing();
+	
 });
 
 function OphTrOperationbooking_PatientUnavailable_getNextKey() {

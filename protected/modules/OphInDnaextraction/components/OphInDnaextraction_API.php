@@ -18,6 +18,9 @@
  */
 class OphInDnaextraction_API extends BaseAPI
 {
+    public $createOprn = 'OprnEditDNAExtraction';
+    public $createOprnArgs = array('user_id', 'firm', 'episode');
+
     public function getEventsByPatient($patient)
     {
         $events = array();

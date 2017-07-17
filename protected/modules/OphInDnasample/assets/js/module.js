@@ -2,6 +2,14 @@
 /* Module-specific javascript can be placed here */
 
 $(document).ready(function() {
+
+    $('#DiagnosisSelection_principal_diagnosis_0').keydown(function(event){
+        if(event.keyCode == 13) {
+            event.preventDefault();
+            return false;
+        }
+    });
+
 	handleButton($('#et_save'),function() {
 	});
 
@@ -19,10 +27,9 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-	$('tr.clickable').click(function(e) {
-		e.preventDefault();
-		window.location.href = $(this).data('uri');
-	});
+	$('#sample_result').on('click','tr.clickable', function(){
+        window.location.href = $(this).data('uri');
+    });
 	
 	handleButton($('#et_deleteevent'));
 
@@ -36,8 +43,10 @@ $(document).ready(function() {
 	});
 
 	$('#search_dna_sample').click(function(e) {
+
 		e.preventDefault();
-		window.location.href = baseUrl+'/OphInDnasample/search/dnaSample?date-from='+$('#date-from').val()+'&date-to='+$('#date-to').val()+'&sample-type='+$('#sample-type').val()+'&comment='+$('#comment').val()+'&disorder-id='+$('#savedDiagnosis').val() + '&first_name=' + $('#first_name').val() + '&last_name=' + $('#last_name').val() + '&hos_num=' + $('#hos_num').val() + '&search=search';
+        var query = $.param( $('#searchform').serializeArray() );
+		window.location.href = baseUrl+'/OphInDnasample/search/dnaSample?date-from='+$('#date-from').val()+'&genetics_patient_id=' + $('#genetics_patient_id').val() + '&genetics_pedigree_id=' + $('#genetics_pedigree_id').val()  + '&date-to='+$('#date-to').val()+'&sample-type='+$('#sample-type').val()+'&comment='+$('#comment').val()+'&disorder-id='+$('#savedDiagnosis').val() + '&first_name=' + $('#first_name').val() + '&last_name=' + $('#last_name').val() + '&hos_num=' + $('#hos_num').val() + '&search=search&sample_id=' + $("#sample_id").val();
 	});
 
 	$('select.populate_textarea').unbind('change').change(function() {
@@ -82,6 +91,15 @@ $(document).ready(function() {
 			$('#Element_OphInDnasample_Sample_other_sample_type').val('');
 		}
 	});
+
+    //invode datepicker on ajax inputs
+    $('.transactions').on('click', '.dna-hasDatepicker', function(){
+        $(this).datepicker({
+            maxDate: 'today',
+            dateFormat: 'd M yy'
+        });
+        $(this).datepicker("show");
+    });
 
 });
 

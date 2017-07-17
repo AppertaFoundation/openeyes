@@ -24,26 +24,35 @@ class OphTrOperationbooking_API extends BaseAPI
      * @param $patient
      * @return mixed
      */
-    public function getLatestCompletedOperationBookingDiagnosis($patient)
+    public function getLatestCompletedOperationBookingDiagnosis($patient, $use_context = true)
     {
-        $completed = OphTrOperationbooking_Operation_Status::model()->find('name=?', array('Completed'));
 
-        $criteria = new CDbCriteria();
-        $criteria->addCondition('episode.patient_id = :patient_id');
-        $criteria->params[':patient_id'] = $patient->id;
-        $criteria->order = 'event.created_date desc';
-        $criteria->addCondition('t.status_id = :status_id');
-        $criteria->params[':status_id'] = $completed->id;
+        if ($operations = $this->getElements(
+            'Element_OphTrOperationbooking_Operation',
+            $patient,
+            $use_context)
+        ){
+            $completed = OphTrOperationbooking_Operation_Status::model()->find('name=?', array('Completed'));
+            $completedDate = NULL;
 
-        if ($operation = Element_OphTrOperationbooking_Operation::model()->with(array(
-            'event' => array(
-                'with' => 'episode',
-            ),
-        ))
-            ->find($criteria)
-        ) {
-            return Element_OphTrOperationbooking_Diagnosis::model()->find('event_id=?',
-                array($operation->event_id))->disorder->term;
+            foreach ($operations as $operation){
+                if($operation->status_id == $completed->id){
+                    $completedDate = $operation->event->event_date;
+                    break;
+                }
+            }
+            if($completedDate === NULL){
+                return $patient->epd;
+            }
+            if ($diagnosis = $this->getElementFromLatestEvent(
+                'Element_OphTrOperationbooking_Diagnosis',
+                $patient,
+                $use_context,
+                $completedDate)
+            ){
+                return $diagnosis->disorder->term;
+            }
+
         }
 
         return $patient->epd;
@@ -67,21 +76,19 @@ class OphTrOperationbooking_API extends BaseAPI
             ->findAll($criteria);
     }
 
-    public function getOperationsForEpisode($episode_id)
-    {
-        $criteria = new CDbCriteria();
-        $criteria->order = 't.created_date asc';
-        $criteria->condition = 't.status_id != 5';
-        $criteria->compare('episode_id', $episode_id);
 
-        return Element_OphTrOperationbooking_Operation::model()
-            ->with(array(
-                'booking' => array(
-                    'with' => 'session',
-                ),
-                'event',
-            ))
-            ->findAll($criteria);
+    public function getOperationsForEpisode($patient , $use_context = true)
+    {
+        if ($operations = $this->getElements(
+            'Element_OphTrOperationbooking_Operation',
+            $patient,
+            $use_context)
+        ){
+            foreach($operations as $key => $operation){
+                $operations[$key]['booking'] = $operation->booking;
+            }
+            return $operations;
+        }
     }
 
     /**
@@ -89,7 +96,7 @@ class OphTrOperationbooking_API extends BaseAPI
      * A booking is deemed open if it has no operation note linked to it.
      * @param $episode_id
      * @return mixed
-     */
+    */
     public function getOpenBookingsForEpisode($episode_id)
     {
         $criteria = new CDbCriteria();
@@ -194,33 +201,66 @@ class OphTrOperationbooking_API extends BaseAPI
      * get the procedures for this patient and episode as a string for use in correspondence.
      *
      * @param Patient $patient
-     *
+     * @param $use_context
      * @return string
      */
-    public function getLetterProcedures($patient)
+    public function getLetterProcedures($patient, $use_context = true)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            $return = '';
+        $return = '';
+        if ($operation = $this->getElementFromLatestEvent(
+            'Element_OphTrOperationbooking_Operation',
+            $patient,
+            $use_context)
+        ){
+            foreach ($operation->procedures as $i => $procedure) {
+                if ($i) {
+                    $return .= ', ';
+                }
+                $return .= $operation->eye->adjective . ' ' . $procedure->term;
+            }
+        }
 
-            if ($operation = $this->getElementForLatestEventInEpisode($episode,
-                'Element_OphTrOperationbooking_Operation')
-            ) {
-                foreach ($operation->procedures as $i => $procedure) {
-                    if ($i) {
-                        $return .= ', ';
+        return strtolower($return);
+    }
+
+    /**
+     * get the procedures for this patient and episode for same date/episode
+     *
+     * @param Patient $patient
+     * @param $use_context
+     * @return string
+     */
+    public function getLetterProceduresSameDay( $patient, $use_context = true )
+    {
+        if ($operations = $this->getElements(
+            'Element_OphTrOperationbooking_Operation',
+            $patient,
+            $use_context)
+        ){
+            $result = '';
+            $latest = $this->getElementFromLatestEvent('Element_OphTrOperationbooking_Operation', $patient, $use_context);
+            foreach ($operations as $i => $detail) {
+                $detailDate = substr($detail->event->event_date, 0, 10);
+                $latestDate = substr($latest->event->event_date, 0, 10);
+                if (strtotime($detailDate) === strtotime($latestDate)) {
+                    foreach ($detail->procedures as $procedure) {
+                        $result .= ($result === '' ? '' : ', ') . $detail->eye->adjective . ' ' . $procedure->term;
                     }
-                    $return .= $operation->eye->adjective . ' ' . $procedure->term;
+
                 }
             }
-
-            return strtolower($return);
+            return strtolower($result);
         }
     }
 
-    public function getAdmissionDate($patient)
+    /**
+     * @param Patient $patient
+     * @param $use_context
+     */
+    public function getAdmissionDate($patient, $use_context = true)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($booking = $this->getMostRecentBookingForEpisode($episode)) {
+        if ($booking = $this->getMostRecentBookingForEpisode($patient, $use_context)) {
+            if(isset($booking->session)){
                 return $booking->session->NHSDate('date');
             }
         }

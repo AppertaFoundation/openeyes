@@ -43,8 +43,48 @@ class MedicationController extends BaseAdminController
             'external_code',
             'external_source',
             'aliases',
+            'tagnames'
         ));
-        $admin->searchAll();
+
+        $admin->getSearch()->addSearchItem('name, aliases');
+        $admin->getSearch()->addSearchItem('external_code');
+        $admin->getSearch()->addSearchItem('external_source');
+        $admin->getSearch()->addSearchItem('tags.name');
+
+        $criteria = new CDbCriteria();
+
+        foreach (array('name, aliases', 'external_code', 'external_source') as $field)
+        {
+            if(isset($_GET['search'][$field]) && $_GET['search'][$field] != '')
+            {
+                if(strpos($field, ', ') === false)
+                {
+                    // Single column fields
+                    $criteria->compare($field, $_GET['search'][$field], ($field != 'active'));
+                }
+                else
+                {
+                    // Combined fields
+                    $crit2 = new CDbCriteria();
+                    foreach (explode(', ', $field) as $column)
+                    {
+                        $crit2->compare($column, $_GET['search'][$field], true, 'OR');
+                    }
+
+                    $criteria->mergeWith($crit2, 'AND');
+                }
+            }
+        }
+
+        if(isset($_GET['search']['tags.name']) && $_GET['search']['tags.name'] != '')
+        {
+            $command = Yii::app()->db->createCommand("SELECT medication_drug_id FROM medication_drug_tag WHERE tag_id IN (SELECT id FROM tag WHERE name LIKE CONCAT('%', :tagname ,'%'))");
+            $matching_ids = $command->queryColumn(array(':tagname' => $_GET['search']['tags.name']));
+            $criteria->addInCondition('id', $matching_ids, 'AND');
+        }
+
+        $admin->getSearch()->setCriteria($criteria);
+
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->listModel();
     }
@@ -74,6 +114,15 @@ class MedicationController extends BaseAdminController
                 'layoutColumns' => null,
             ),
             'external_code' => 'text',
+            'tags' => array(
+                'widget' => 'TagsInput',
+                'relation' => 'tags',
+                'relation_field_id' => 'id',
+                'label' => 'Tags',
+                'htmlOptions' => array(
+                    'autocomplete_url' => $this->createAbsoluteUrl('/oeadmin/formularyDrugs/tagsAutocomplete')
+                )
+            ),
         ));
         $admin->editModel();
     }

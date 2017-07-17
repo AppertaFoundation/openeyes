@@ -68,8 +68,24 @@ class SearchController extends BaseController
 
     public function actionGeneticResults()
     {
+        if (empty($_GET)) {
+            if (($data = YiiSession::get('genetics_results_searchoptions'))) {
+                $_GET = $data;
+            }
+            Audit::add('Genetics result list', 'view');
+        } else {
+            Audit::add('Genetics result list', 'search');
+
+            YiiSession::set('genetics_results_searchoptions', $_GET);
+        }
+
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'));
         Yii::app()->clientScript->registerScriptFile($assetPath . '/js/module.js');
+
+        $path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets'));
+        Yii::app()->clientScript->registerScriptFile($path . '/js/DiagnosisSelection.js');
+
+        Yii::app()->assetManager->registerCssFile('/components/font-awesome/css/font-awesome.css', null, 10);
         Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
 
         $tests = array();
@@ -116,12 +132,30 @@ class SearchController extends BaseController
                 $whereParams[':query'] = '%' . $_GET['query'] . '%';
             }
 
+            if (@$_GET['genetics-patient-id']) {
+                $where .= ' and ( genetics_patient.id = :genetics_patient_id)';
+                $whereParams[':genetics_patient_id'] = $_GET['genetics-patient-id'];
+            }
+
+            if (@$_GET['genetics-pedigree-id']) {
+                $where .= ' and ( genetics_patient_pedigree.pedigree_id = :genetics_pedigree_id)';
+                $whereParams[':genetics_pedigree_id'] = $_GET['genetics-pedigree-id'];
+            }
+
+            if (@$_GET['genetics-patient-disorder-id']) {
+                $where .= ' and ( genetics_patient_diagnosis.disorder_id = :genetics_patient_disorder_id)';
+                $whereParams[':genetics_patient_disorder_id'] = $_GET['genetics-patient-disorder-id'];
+            }
+
             $total_items = Yii::app()->db->createCommand()
                 ->select('count(gt.id) as count')
                 ->from('et_ophingeneticresults_test gt')
                 ->join('event e', 'gt.event_id = e.id')
                 ->join('episode ep', 'e.episode_id = ep.id')
                 ->join('patient p', 'ep.patient_id = p.id')
+                ->join('genetics_patient', 'p.id = genetics_patient.patient_id')
+                ->leftJoin('genetics_patient_pedigree', 'genetics_patient.id = genetics_patient_pedigree.patient_id')
+                ->leftJoin('genetics_patient_diagnosis', 'genetics_patient.id = genetics_patient_diagnosis.patient_id')
                 ->where($where, $whereParams)
                 ->queryScalar();
 
@@ -159,6 +193,16 @@ class SearchController extends BaseController
                 case 'result':
                     $order = "result $dir";
                     break;
+                case 'genetics-patient-id':
+                    $order = "genetics_patient.id $dir";
+                    break;
+                case 'genetics-pedigree-id':
+                    $order = "genetics_patient_pedigree.id $dir";
+                    break;
+                case 'genetics-patient-disorder-id':
+                    $order = "genetics_patient_diagnosis.disored_id $dir";
+                    break;
+
                 case 'patient_name':
                 default:
                     $order = "last_name $dir, first_name $dir";
@@ -173,7 +217,12 @@ class SearchController extends BaseController
                          ->join('event e', 'gt.event_id = e.id')
                          ->join('episode ep', 'e.episode_id = ep.id')
                          ->join('patient p', 'ep.patient_id = p.id')
+                         ->join('genetics_patient', 'genetics_patient.patient_id = p.id')
                          ->join('contact c', 'p.contact_id = c.id')
+
+                         ->leftJoin('genetics_patient_pedigree', 'genetics_patient.id = genetics_patient_pedigree.patient_id')
+                         ->leftJoin('genetics_patient_diagnosis', 'genetics_patient.id = genetics_patient_diagnosis.patient_id')
+
                          ->leftJoin('ophingeneticresults_test_method m', 'gt.method_id = m.id')
                          ->join('pedigree_gene g', 'gt.gene_id = g.id')
                          ->leftJoin('ophingeneticresults_test_effect ef', 'gt.effect_id = ef.id')
@@ -197,7 +246,12 @@ class SearchController extends BaseController
                                      'episode' => array(
                                          'with' => array(
                                              'patient' => array(
-                                                 'with' => array('contact'),
+                                                 'with' => array(
+                                                     'contact',
+                                                     'geneticsPatient' => array(
+                                                         'with' => ['genetics_patient_pedigree', 'diagnoses']
+                                                     ),
+                                                 ),
                                              ),
                                          ),
                                      ),

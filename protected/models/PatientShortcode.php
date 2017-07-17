@@ -83,6 +83,8 @@ class PatientShortcode extends BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
+            'event_type_id' => 'Event Type',
+            'codedoc' => 'Code Documentation'
         );
     }
 
@@ -128,5 +130,33 @@ class PatientShortcode extends BaseActiveRecordVersioned
         }
 
         return $text;
+    }
+
+    /**
+     * @param $value
+     */
+    public static function formatDocComment($value)
+    {
+        // simple parser to format a docblock to only render the description
+        if (preg_match('/\/\*\*([^\/@]*).*/s', $value, $output)) {
+            return trim(preg_replace('/\s*\*\s*/s', ' ', $output[1]));
+        }
+
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getcodedoc()
+    {
+        if ($this->eventType) {
+            if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
+                $r = new ReflectionClass($api);
+                if ($m = $r->getMethod($this->method)) {
+                    return static::formatDocComment($m->getDocComment());
+                }
+            }
+        }
     }
 }

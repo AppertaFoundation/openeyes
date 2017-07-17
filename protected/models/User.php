@@ -640,9 +640,9 @@ class User extends BaseActiveRecordVersioned
     /**
      * @return array
      */
-    public function getAllConsultants()
+    public function getAllConsultants($subspecialty = null)
     {
-        $consultant_names = User::model()->findAll(array('order' => 'first_name asc'), 'id', 'first_name');
+        $consultant_names = User::model()->findAll(array('condition' => 'is_consultant = 1', 'order' => 'first_name asc'), 'id', 'first_name');
         $consultant_name = array();
         $i = 0;
         foreach ($consultant_names as $consultant) {
@@ -650,7 +650,6 @@ class User extends BaseActiveRecordVersioned
             $consultant_name[$i]['name'] = $consultant->getFullName();
             $i++;
         }
-
         return $consultant_name;
     }
 
@@ -745,14 +744,38 @@ class User extends BaseActiveRecordVersioned
     }
 
     /**
-     * @return array|mixed|null
+     * Returns users who can access the roles in the given param
+     *
+     * @param array $roles
+     * @param bool $return_models
+     * @return array user ids or array of User models
      */
-    public function geneticLabTechs()
+    public function findAllByRoles(array $roles, $return_models = false)
     {
-        $criteria = new CDbCriteria();
-        $criteria->join = 'join authassignment on authassignment.userid = t.id';
-        $criteria->addCondition('itemname = "Genetics Laboratory Technician"');
+        $user_ids = array();
+        $users_with_roles = array();
 
-        return User::model()->findAll($criteria);
+        $users = Yii::app()->db->createCommand("SELECT DISTINCT(userid) FROM `authassignment` WHERE `itemname` IN ('" . (implode("','", $roles)) . "')")->queryAll();
+
+        foreach($users as $index => $user){
+            $user_ids[] = $user['userid'];
+        }
+
+        $criteria = new CDbCriteria();
+        $criteria->addInCondition('t.id', $user_ids);
+
+        if( !empty($user_ids)){
+            $users = $this->findAll($criteria);
+
+            foreach($users as $id => $user) {
+                foreach($roles as $role){
+                    if(Yii::app()->authManager->checkAccess($role, $user->id)) {
+                        $users_with_roles[$user->id] = $return_models ? $user : $user->id;
+                    }
+                }
+            }
+        }
+
+        return $users_with_roles;
     }
 }

@@ -22,17 +22,12 @@ class PedigreeController extends BaseModuleController
             array(
                 'allow',
                 'actions' => array('Edit', 'EditStudyStatus'),
-                'roles' => array('TaskEditPedigreeData','OprnEditPedigree'),
+                'roles' => array('TaskEditPedigreeData'),
             ),
             array(
                 'allow',
                 'actions' => array('List', 'View'),
                 'roles' => array('OprnSearchPedigree'),
-            ),
-            array(
-                'allow',
-                'actions' => array('PedigreeDisorder'),
-                'roles' => array('OprnSearchPedigree', 'OprnEditGeneticPatient'),
             ),
         );
     }
@@ -44,6 +39,10 @@ class PedigreeController extends BaseModuleController
     public function beforeAction($action)
     {
         Yii::app()->assetManager->registerCssFile('/components/font-awesome/css/font-awesome.css', null, 10);
+
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.Genetics.assets.js'));
+        Yii::app()->clientScript->registerScriptFile($assetPath.'/gene_validation.js');
+
 
         return parent::beforeAction($action);
     }
@@ -65,9 +64,16 @@ class PedigreeController extends BaseModuleController
         $admin = new Crud(Pedigree::model(), $this);
         if ($id) {
             $admin->setModelId($id);
+        } else {
+
+            //oh, sure, let me just set the defaults this way.
+            //more: Admin.php line ~515
+            $pedigree_inheritance = PedigreeInheritance::model()->findByAttributes(array('name' => 'Unknown/other'));
+            $_GET['default'] = array('inheritance_id' => $pedigree_inheritance ? $pedigree_inheritance->id : null);
         }
 
         $admin->setEditFields(array(
+            'referer' => 'referer',
             'id' => 'label',
             'inheritance_id' => array(
                 'widget' => 'DropDownList',
@@ -93,7 +99,10 @@ class PedigreeController extends BaseModuleController
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
-            'base_change' => 'text',
+            'base_change' => array(
+                'widget' => 'text',
+                'htmlOptions' => array('class' => 'gene-validation'),
+            ),
             'amino_acid_change_id' => array(
                 'widget' => 'DropDownList',
                 'options' => CHtml::listData(PedigreeAminoAcidChangeType::model()->findAll(), 'id', 'change'),
@@ -101,7 +110,10 @@ class PedigreeController extends BaseModuleController
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
-            'amino_acid_change' => 'text',
+            'amino_acid_change' => array(
+                'widget' => 'text',
+                'htmlOptions' => array('class' => 'gene-validation'),
+            ),
             'genomic_coordinate' => 'text',
             'genome_version' => array(
                 'widget' => 'DropDownList',
@@ -121,7 +133,19 @@ class PedigreeController extends BaseModuleController
             ),
         ));
 
-        $admin->editModel();
+        $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());
+
+        $valid = $admin->editModel(false);
+
+        if (Yii::app()->request->isPostRequest) {
+            if ($valid) {
+                Yii::app()->user->setFlash('success', "Family Saved");
+
+                $this->redirect('/Genetics/pedigree/view/'.$admin->getModel()->id );
+            } else {
+                $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
+            }
+        }
     }
 
     /**
@@ -129,6 +153,18 @@ class PedigreeController extends BaseModuleController
      */
     public function actionList()
     {
+        if (empty($_GET)) {
+            if (($data = YiiSession::get('genetics_pedigree_searchoptions'))) {
+                $_GET = $data;
+            }
+            Audit::add('Genetics pedigree list', 'view');
+        } else {
+            Audit::add('Genetics pedigree list', 'search');
+
+            YiiSession::set('genetics_pedigree_searchoptions', $_GET);
+        }
+
+
         $admin = new Crud(Pedigree::model(), $this);
         $admin->setListFieldsAction('view');
         $admin->setModelDisplayName('Families');
@@ -137,8 +173,13 @@ class PedigreeController extends BaseModuleController
             'inheritance.name',
             'gene.name',
             'getSubjectsCount',
-            'getAffectedSubjectsCount'
+            'getAffectedSubjectsCount',
+            'disorder.term',
+            'getConsanguinityAsBoolean'
         ));
+
+        $admin->setUnsortableColumns(['inheritance.name', 'gene.name', 'getSubjectsCount', 'getAffectedSubjectsCount', 'disorder.term', 'getConsanguinityAsBoolean']);
+
         $admin->getSearch()->addSearchItem('id', array( 'type' => 'id' ));
         $admin->getSearch()->addSearchItem('inheritance_id', array(
             'type' => 'dropdown',
@@ -153,32 +194,9 @@ class PedigreeController extends BaseModuleController
         $admin->getSearch()->addSearchItem('consanguinity', array('type' => 'boolean'));
         $admin->getSearch()->addSearchItem('disorder_id', array('type' => 'disorder'));
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+        $admin->getSearch()->setDefaultResults(false);
         $display_buttons = $this->checkAccess('OprnEditPedigree');
         $admin->listModel($display_buttons);
-    }
-
-    /**
-     * @param $id
-     * @throws CHttpException
-     */
-    public function actionPedigreeDisorder($id)
-    {
-        $pedigree = Pedigree::model()->findByPk($id);
-
-        if (!$pedigree) {
-            throw new CHttpException(404);
-        }
-
-        if (!$pedigree->disorder_id) {
-            throw new CHttpException(400);
-        }
-
-        $this->renderJSON(
-            array(
-                'id' => $pedigree->disorder_id,
-                'disorder' => $pedigree->disorder->term,
-            )
-        );
     }
     
     /**
@@ -196,4 +214,5 @@ class PedigreeController extends BaseModuleController
 
         return $model;
     }
+
 }

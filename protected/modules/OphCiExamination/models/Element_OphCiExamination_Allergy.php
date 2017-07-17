@@ -19,6 +19,13 @@
 
 namespace OEModule\OphCiExamination\models;
 
+/**
+ *
+ * Class Element_OphCiExamination_Allergy
+ * @package OEModule\OphCiExamination\models
+ * @deprecated This class is no longer in use and has been replaced
+ * @see Allergies
+ */
 class Element_OphCiExamination_Allergy extends \BaseEventTypeElement
 {
     // Custom attribute to determine the allergy validation

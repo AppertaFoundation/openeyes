@@ -30,7 +30,6 @@
 	<div class="container main" role="main">
 		<?php $this->renderPartial('//base/_header'); ?>
 		<div class="container content">
-			<h1 class="badge admin">Reports</h1>
 			<div class="box content admin-content">
 				<div class="row">
 					<aside class="large-3 column sidebar admin">

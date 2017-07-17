@@ -28,7 +28,6 @@
                 'field' => 5,
             ),
         ));
-
         $this->renderPartial('form_'.Helper::getNSShortname($model), array(
                 'model' => $model,
                 'form' => $form,

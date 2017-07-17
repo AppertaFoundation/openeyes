@@ -288,27 +288,8 @@ function anteriorListener(_drawing) {
         }
     }
 }
-function pupilListener(_drawing) {
-    this.drawing = _drawing;
-    
-    this.drawing.registerForNotifications(this, 'trigger', ['parameterChanged']);
-    
-    this.trigger = function(_messageArray) {
-        var param = _messageArray.object.parameter;
-
-        if(param === 'pupilSize'){
-            $("select[id*='_pupilSize_control']").trigger('change');
-        }
-     
-        if(param === 'grade'){
-            $("select[id*='_nuclear_id']").trigger('change');
-            $("select[id*='_cortical_id']").trigger('change');
-        }
-    } 
-}
 
 $(document).ready(function() {
-
     if(!$('#OphCiExamination_allergy').find('tr').length) {
       $('.allergies_confirm_no').show();
     }
@@ -841,7 +822,8 @@ $(document).ready(function() {
 
     $('#event-content').delegate('.element .segmented select', 'change', function() {
         var field = $(this).nextAll('input');
-        OphCiExamination_Refraction_updateSegmentedField(field);
+        var containerEL = $(this).parent();
+        OphCiExamination_Refraction_updateSegmentedField(field , containerEL);
     });
 
     function visualAcuityChange(target, near) {
@@ -851,8 +833,20 @@ $(document).ready(function() {
         }
         removeElement($(target).closest('.sub-element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]'), true);
         var el = $('.event-content').find('ul.sub-elements-list li[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]');
-        el.addClass('clicked');
-        addElement(el, true, true, false, {unit_id: $(target).val()});
+        if (el.length) {
+            el.addClass('clicked');
+            addElement(el, true, true, false, {unit_id: $(target).val()});
+        } else {
+            // use a different selector
+            var sidebar = $('aside.episodes-and-events').data('patient-sidebar');
+            if (sidebar) {
+                sidebar.addElementByTypeClass(OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix, {unit_id: $(target).val()});
+            } else {
+                console.log('Cannot find sidebar to manipulate elements for VA change');
+            }
+
+        }
+
     }
 
     $(this).delegate('#nearvisualacuity_unit_change', 'change', function(e) {
@@ -1202,7 +1196,7 @@ $(document).ready(function() {
             $(this).next('select').append('<option value="' + list[i] + '">' + list[i] + '</option>');
         }
 
-        $(this).next('select').val(value);
+        $(this).next('select').val(value).change();
     });
         
         /** Post Operative Complication  Event Bindings **/
@@ -1537,10 +1531,29 @@ rootItem = element.children('li:first').text();
 element.append(element.children('li').sort(selectSort));
 }
 
-function OphCiExamination_Refraction_updateSegmentedField(field) {
+function OphCiExamination_Refraction_updateSegmentedField(field , containerEL) {
     var parts = $(field).parent().children('select');
-    var value = $(parts[0]).val() * (parseFloat($(parts[1]).val()) + parseFloat($(parts[2]).val()));
-    $(field).val(value.toFixed(2));
+
+    /*
+    If error box exists, the parent-children structure breaks
+     */
+    if (typeof parts[0] === "undefined"){
+        var parts = containerEL.children('select');
+        var value = $(parts[0]).val() * (parseFloat($(parts[1]).val()) + parseFloat($(parts[2]).val()));
+
+        if(isNaN(value)){
+            $(field).val('');
+        } else {
+            containerEL.find('input').val(value.toFixed(2));
+        }
+    } else {
+        var value = $(parts[0]).val() * (parseFloat($(parts[1]).val()) + parseFloat($(parts[2]).val()));
+        if(isNaN(value)){
+            $(field).val('');
+        } else {
+            $(field).val(value.toFixed(2));
+        }
+    }
 }
 
 /**
@@ -2183,15 +2196,26 @@ function OphCiExamination_AddFinding(finding_id, label) {
     if($('.OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings').length > 0) {
         updateFindings();
     } else {
-        addElement($("[data-element-type-class='OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings']").first(), false, true, 0, {}, updateFindings);
+        var el = $("[data-element-type-class='OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings']");
+        if (el.length) {
+            addElement(el.first(), false, true, 0, {}, updateFindings);
+        } else {
+            var sidebar = $('aside.episodes-and-events').data('patient-sidebar');
+            if (sidebar) {
+                sidebar.addElementByTypeClass('OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings', {}, updateFindings);
+            } else {
+                console.log('Cannot find sidebar to manipulate elements for VA change');
+            }
+        }
+
     }
 
 }
 
-function OphCiExamination_AddDiagnosis(disorderId, name, eyeId, isDiabetic, isGlaucoma) {
+function OphCiExamination_AddDiagnosis(disorderId, name, eyeId, isDiabetic, isGlaucoma, external) {
     var max_id = -1;
     var count = 0;
-    $('#OphCiExamination_diagnoses').children('tr').map(function() {
+    $('#OphCiExamination_diagnoses').children('tr').not('.read-only').map(function() {
         var id = parseInt($(this).children('td:nth-child(2)').children('label:nth-child(1)').children('input').attr('name').match(/[0-9]+/));
         if (id >= max_id) {
             max_id = id;
@@ -2208,7 +2232,7 @@ function OphCiExamination_AddDiagnosis(disorderId, name, eyeId, isDiabetic, isGl
     var checked_left = (eyeId == 1 ? 'checked="checked" ' : '');
     var checked_principal = (count == 0 ? 'checked="checked" ' : '');
 
-    var row = '<tr>'+
+    var row = '<tr' + (external ? ' class="external"' : '') + '>' +
         '<td>'+
         ((isDiabetic) ? '<input type="hidden" name="diabetic_diagnoses[]" value="1" /> ' : '') +
         ((isGlaucoma) ? '<input type="hidden" name="glaucoma_diagnoses[]" value="1" /> ' : '') +
@@ -2402,21 +2426,5 @@ function removeAllergyFromSelect( allergy_id, allergy_name ){
         $('#allergy_id').find("option[value='" + allergy_id + "']").remove();
     }
 }
-
-$('#Element_OphCiExamination_AnteriorSegment_right_pupil_id').live('change',function() {
-    var eyedraw = ED.getInstance('ed_drawing_edit_right_' + $(this).closest('.element').attr('data-element-type-id'));
-    var doodle = eyedraw.firstDoodleOfClass('AntSeg');
-    doodle.setParameter('grade',$('#Element_OphCiExamination_AnteriorSegment_right_pupil_id').children('option:selected').text());
-    eyedraw.repaint();
-    return false;
-});
-
-$('#Element_OphCiExamination_AnteriorSegment_left_pupil_id').live('change',function() {
-    var eyedraw = ED.getInstance('ed_drawing_edit_left_' + $(this).closest('.element').attr('data-element-type-id'));;
-    var doodle = eyedraw.firstDoodleOfClass('AntSeg');
-    doodle.setParameter('grade',$('#Element_OphCiExamination_AnteriorSegment_left_pupil_id').children('option:selected').text());
-    eyedraw.repaint();
-    return false;
-});
 
 var eyedraw_added_diagnoses = [];

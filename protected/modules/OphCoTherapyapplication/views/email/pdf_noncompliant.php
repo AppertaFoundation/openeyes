@@ -239,7 +239,7 @@ $logoHelper = new LogoHelper();
 						<span class="form-text">&nbsp;OCT Thickness:</span>
 						<?php
                             $oct_str = 'Not measured';
-                            if ($exam_api && $oct = $exam_api->getOCTForSide($patient, $event->episode, $side)) {
+                            if ($exam_api && $oct = $exam_api->getOCTForSide($patient, $side)) {
                                 $oct_str = 'Maximum CRT: '.$oct[0].'&micro;m, Central SFT: '.$oct[1].'&micro;m';
                             }
                             echo $oct_str;
@@ -301,7 +301,7 @@ $logoHelper = new LogoHelper();
 
 			<tr nobr="true">
 				<td class="row-title">Is requested intervention licensed in the UK for use in the requested indication?</td>
-				<td class="row-data">NO<br /><br /><span class="form-text">If No, is it licensed for use in another indication:</span> YES.</td>
+				<td class="row-data">No<br /><br /><span class="form-text">If No, is it licensed for use in another indication:</span> YES.</td>
 			</tr>
 
 			<tr nobr="true">
@@ -432,7 +432,7 @@ $logoHelper = new LogoHelper();
 					<?php
 
                     } else {
-                        echo 'None';
+                        echo '';
                     }
                     ?>
 				</td>
@@ -481,7 +481,7 @@ $logoHelper = new LogoHelper();
 					<?php
 
                     } else {
-                        echo 'None';
+                        echo '';
                     }
                     ?>
 				</td>

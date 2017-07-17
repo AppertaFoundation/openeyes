@@ -17,54 +17,58 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<h1 class="badge">Partial bookings waiting list</h1>
+
 
 <div class="box content">
-	<div class="panel panel actions row">
+	<div class="oe-header-panel row">
 		<div class="large-12 column">
-			<div class="label">
-				Use the filters below to find patients:
-			</div>
-			<div class="button-bar">
+			<h1>Partial bookings waiting list</h1>
+			<div class="panel actions">
 
-				<?php if ($this->checkAccess('OprnPrint')) {?>
-					<button id="btn_print_all" class="small">Print all</button>
-					<button id="btn_print" class="small">Print selected</button>
-				<?php }?>
-				<?php if (Yii::app()->user->checkAccess('admin')) {?>
-					<div class="panel admin">
-						<label for="adminconfirmdate">Set latest letter sent to be:</label>
-						<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-                                'name' => 'adminconfirmdate',
-                                'id' => 'adminconfirmdate',
-                                // additional javascript options for the date picker plugin
-                                'options' => array(
-                                    'showAnim' => 'fold',
-                                    'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                                    'maxDate' => 'today',
-                                ),
-                                'value' => date('j M Y'),
-                                'htmlOptions' => array(
-                                    'class' => 'small fixed-width',
-                                ),
-                            ))?>
-					</div>
-					<div class="panel admin">
-						<select name="adminconfirmto" id="adminconfirmto">
-							<option value="OFF">Off</option>
-							<option value="noletters">No letters sent</option>
-							<option value="0">Invitation letter</option>
-							<option value="1">1st reminder letter</option>
-							<option value="2">2nd reminder letter</option>
-							<option value="3">GP letter</option>
-						</select>
-					</div>
-				<?php }?>
-				<?php if ($this->checkAccess('OprnConfirmBookingLetterPrinted')) { ?>
-					<button type="submit" class="small secondary" id="btn_confirm_selected">
-						Confirm selected
-					</button>
-				<?php }?>
+				<div class="label">
+					Use the filters below to find patients:
+				</div>
+				<div class="button-bar">
+
+					<?php if ($this->checkAccess('OprnPrint')) {?>
+						<button id="btn_print_all" class="small">Print all</button>
+						<button id="btn_print" class="small">Print selected</button>
+					<?php }?>
+					<?php if (Yii::app()->user->checkAccess('admin')) {?>
+						<div class="panel admin">
+							<label for="adminconfirmdate">Set latest letter sent to be:</label>
+							<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+									'name' => 'adminconfirmdate',
+									'id' => 'adminconfirmdate',
+									// additional javascript options for the date picker plugin
+									'options' => array(
+										'showAnim' => 'fold',
+										'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
+										'maxDate' => 'today',
+									),
+									'value' => date('j M Y'),
+									'htmlOptions' => array(
+										'class' => 'small fixed-width',
+									),
+								))?>
+						</div>
+						<div class="panel admin">
+							<select name="adminconfirmto" id="adminconfirmto">
+								<option value="OFF">Off</option>
+								<option value="noletters">No letters sent</option>
+								<option value="0">Invitation letter</option>
+								<option value="1">1st reminder letter</option>
+								<option value="2">2nd reminder letter</option>
+								<option value="3">GP letter</option>
+							</select>
+						</div>
+					<?php }?>
+					<?php if ($this->checkAccess('OprnConfirmBookingLetterPrinted')) { ?>
+						<button type="submit" class="small secondary" id="btn_confirm_selected">
+							Confirm selected
+						</button>
+					<?php }?>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -116,7 +120,7 @@
 							<?php echo CHtml::dropDownList('status', @$_POST['status'], Element_OphTrOperationbooking_Operation::getLetterOptions())?>
 						</td>
 						<td>
-							<?php echo CHtml::dropDownList('site_id', @$_POST['site_id'], Site::model()->getListForCurrentInstitution(), array('empty' => 'All sites'))?>
+							<?php echo CHtml::dropDownList('site_id', @$_POST['site_id'], CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList(), 'id', 'short_name'), array('empty' => 'All sites')); ?>
 						</td>
 						<td>
 							<?php echo CHtml::textField('hos_num', @$_POST['hos_num'], array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 12))?>

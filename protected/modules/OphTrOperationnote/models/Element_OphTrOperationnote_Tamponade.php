@@ -123,13 +123,6 @@ class Element_OphTrOperationnote_Tamponade extends Element_OnDemand
             ));
     }
 
-    /**
-     * Set default values for forms on create.
-     */
-    public function setDefaultOptions()
-    {
-    }
-
     public function beforeSave()
     {
         if (!$this->gas_volume_id) {

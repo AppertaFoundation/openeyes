@@ -70,7 +70,7 @@ class QueueAssign extends \CWidget
             if (@$fld['widget_name'] == 'TicketAssignAppointment') {
                 if ($api = \Yii::app()->moduleAPI->get('OphCoCorrespondence')) {
                     if ($episode = $this->ticket->patient->getEpisodeForCurrentSubspecialty()) {
-                        if ($event = $api->getLatestEvent($episode)) {
+                        if ($event = $api->getLatestEventInEpisode($episode)) {
                             if ($event->created_date > $this->ticket->created_date) {
                                 $print_letter_event = $event;
                             }

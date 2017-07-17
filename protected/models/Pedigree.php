@@ -75,7 +75,7 @@ class Pedigree extends BaseActiveRecord
                 'base_change_id, amino_acid_change_id, genomic_coordinate, genome_version, gene_transcript',
                 'safe'
             ),
-            array('consanguinity', 'required'),
+            array('consanguinity', 'required')
         );
     }
 
@@ -95,7 +95,7 @@ class Pedigree extends BaseActiveRecord
             ),
             'members' => array(self::HAS_MANY, 'GeneticsPatientPedigree', 'pedigree_id', 'with' => array('patient')),
             'base_change_type' => array(self::BELONGS_TO, 'PedigreeBaseChangeType', 'base_change_id'),
-            'aminod_acid_change_type' => array(self::BELONGS_TO, 'PedigreeAminoAcidChangeType', 'amino_acid_change_id'),
+            'amino_acid_change_type' => array(self::BELONGS_TO, 'PedigreeAminoAcidChangeType', 'amino_acid_change_id'),
         );
     }
 
@@ -107,15 +107,23 @@ class Pedigree extends BaseActiveRecord
         return array(
             'id' => 'Family ID',
             'inheritance_id' => 'Inheritance',
-            'base_change' => 'Base change',
+            'base_change' => 'Base Change',
             'gene_id' => 'Gene',
-            'amino_acid_change' => 'Amino acid chain',
+            'amino_acid_change' => 'Amino Acid Change',
             'disorder_id' => 'Disorder',
-            'base_change_id' => 'Base change type',
-            'amino_acid_change_id' => 'Amino acid chain type',
+            'disorder.fully_specified_name' => 'Disorder',
+            'base_change_id' => 'Base Change Type',
+            'amino_acid_change_id' => 'Amino Acid Change Type',
             'getSubjectsCount' => 'Subjects count',
-            'getAffectedSubjectsCount' => 'Affected subjects count'
+            'getAffectedSubjectsCount' => 'Affected subjects count',
+            'getConsanguinityAsBoolean' => 'Consanguinity',
+            'disorder.term' => 'Disorder'
         );
+    }
+
+    public function getConsanguinityAsBoolean()
+    {
+        return $this->consanguinity == 1;
     }
 
     /**
@@ -163,9 +171,9 @@ class Pedigree extends BaseActiveRecord
      */
     public function getAllIdAndText()
     {
-        $sql = "SELECT pedigree.id, CONCAT_WS(' ', pedigree.id, '(Gene: ', pedigree_gene.name, ')') as text 
+        $sql = "SELECT pedigree.id, IF(pedigree_gene.name IS NULL, pedigree.id, CONCAT_WS(' ', pedigree.id, '(Gene: ', pedigree_gene.name, ')') )  AS text
                 FROM pedigree
-                JOIN pedigree_gene on pedigree_gene.id = pedigree.gene_id";
+                LEFT JOIN pedigree_gene on pedigree_gene.id = pedigree.gene_id";
 
         return $this->getDbConnection()->createCommand($sql)->queryAll();
     }

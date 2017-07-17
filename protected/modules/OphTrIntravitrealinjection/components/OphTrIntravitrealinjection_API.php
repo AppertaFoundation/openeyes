@@ -63,6 +63,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      */
     public function previousInjections($patient, $episode, $side, $drug = null, $since = 'now')
     {
+
         $res = array();
         // NOTE: we assume that all legacy injections would be from before any injections in
         // this module. Should this prove not to be the case, we would need to sort the result
@@ -88,7 +89,6 @@ class OphTrIntravitrealinjection_API extends BaseAPI
                 'event_id' => $injection->event_id,
             );
         }
-
         return $res;
     }
 
@@ -105,6 +105,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      */
     protected function injectionsSinceByEpisodeSideAndDrug(Episode $episode, $side, OphTrIntravitrealinjection_Treatment_Drug $drug, $since = 'now')
     {
+
         switch ($side) {
             case 'left':
                 $eye_id = SplitEventTypeElement::LEFT;
@@ -123,8 +124,10 @@ class OphTrIntravitrealinjection_API extends BaseAPI
         $criteria->alias = 'treatment';
         $criteria->addCondition(array(
             'event.episode_id = :episode_id',
+            'event.deleted = 0',
             'treatment.eye_id in (:eye_id,'.SplitEventTypeElement::BOTH.')',
             'event_date <= :since',
+            'event.deleted = 0',
             )
         );
         $criteria->join = 'JOIN event ON treatment.event_id = event.id';
@@ -147,15 +150,15 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * get the most recent treatment element that has data for the given eye side.
      *
      * @param $patient
-     * @param $episode
      * @param $side
+     * @param $use_context
      *
      * @return Element_OphTrIntravitrealinjection_Treatment
      */
-    protected function getPreviousTreatmentForSide($patient, $episode, $side)
+    protected function getPreviousTreatmentForSide($patient, $side, $use_context = true)
     {
         $checker = ($side === 'left') ? 'hasLeft' : 'hasRight';
-        $treatment = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrIntravitrealinjection_Treatment');
+        $treatment = $this->getElementFromLatestEvent('Element_OphTrIntravitrealinjection_Treatment', $patient, $use_context);
         if ($treatment && $treatment->$checker()) {
             return $treatment;
         }
@@ -165,14 +168,13 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * get the drug name for the patient, episode and side from the most recent injection event, if it exists.
      *
      * @param $patient
-     * @param $episode
      * @param $side
-     *
+     * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentDrugForSide($patient, $episode, $side)
+    public function getLetterTreatmentDrugForSide($patient, $side, $use_content = true)
     {
-        if ($injection = $this->getPreviousTreatmentForSide($patient, $episode, $side)) {
+        if ($injection = $this->getPreviousTreatmentForSide($patient, $side, $use_content)) {
             return $injection->{$side . '_drug'}->name;
         }
     }
@@ -181,68 +183,63 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * get the most recent drug for the left side in the current subspecialty episode for the patient.
      *
      * @param $patient
-     *
+     * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentDrugLeft($patient)
+    public function getLetterTreatmentDrugLeft($patient, $use_content = true)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            return $this->getLetterTreatmentDrugForSide($patient, $episode, 'left');
-        }
+        return $this->getLetterTreatmentDrugForSide($patient, 'left', $use_content);
     }
 
     /**
      * get the most recent drug for the right side in the current subspecialty episode for the patient.
      *
      * @param $patient
-     *
+     * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentDrugRight($patient)
+    public function getLetterTreatmentDrugRight($patient, $use_content = true)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            return $this->getLetterTreatmentDrugForSide($patient, $episode, 'right');
-        }
+        return $this->getLetterTreatmentDrugForSide($patient, 'right', $use_content);
     }
 
     /**
      * get the most recent drug for both sides in the current subspecialty episode for the patient.
      *
      * @param $patient
-     *
+     * @param $use_content
      * @return string
      */
-    public function getLetterTreatmentDrugBoth($patient)
+    public function getLetterTreatmentDrugBoth($patient, $use_content = true)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            $res = '';
-            $right = $this->getLetterTreatmentDrugForSide($patient, $episode, 'right');
-            $left = $this->getLetterTreatmentDrugForSide($patient, $episode, 'left');
-            if ($right) {
-                $res = $right . ' injection to the right eye';
-                if ($left) {
-                    $res .= ', and ' . $left . ' injection to the left eye';
-                }
-            } elseif ($left) {
-                $res = $left . ' injection on the left eye';
-            }
 
-            return $res;
+        $res = '';
+        $right = $this->getLetterTreatmentDrugForSide($patient, 'right', $use_content);
+        $left = $this->getLetterTreatmentDrugForSide($patient, 'left', $use_content);
+        if ($right) {
+            $res = $right . ' injection to the right eye';
+            if ($left) {
+                $res .= ', and ' . $left . ' injection to the left eye';
+            }
+        } elseif ($left) {
+            $res = $left . ' injection on the left eye';
         }
+
+        return $res;
+
     }
 
     /**
      * get the most recent treatment number for the patient, episode and side.
      *
      * @param $patient
-     * @param $episode
      * @param $side
-     *
+     * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentNumberForSide($patient, $episode, $side)
+    public function getLetterTreatmentNumberForSide($patient, $side, $use_content = true)
     {
-        if ($injection = $this->getPreviousTreatmentForSide($patient, $episode, $side)) {
+        if ($injection = $this->getPreviousTreatmentForSide($patient, $side, $use_content)) {
             return $injection->{$side . '_number'};
         }
     }
@@ -251,39 +248,36 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * get the most recent treatment number for the left side in the current subspecialty episode for the patient.
      *
      * @param $patient
-     *
+     * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentNumberLeft($patient)
+    public function getLetterTreatmentNumberLeft($patient, $use_content = true)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            return $this->getLetterTreatmentNumberForSide($patient, $episode, 'left');
-        }
+        return $this->getLetterTreatmentNumberForSide($patient, 'left', $use_content);
     }
 
     /**
      * get the most recent treatment number for the right side in the current subspecialty episode for the patient.
      *
      * @param $patient
-     *
+     * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentNumberRight($patient)
+    public function getLetterTreatmentNumberRight($patient, $use_content = true)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            return $this->getLetterTreatmentNumberForSide($patient, $episode, 'right');
-        }
+        return $this->getLetterTreatmentNumberForSide($patient, 'right', $use_content);
     }
 
     /**
      * get the most recent treatment number for both eyes in the current subspecialty episode for the patient.
      *
      * @param Patient $patient
+     * @param $use_content
      */
-    public function getLetterTreatmentNumberBoth($patient)
+    public function getLetterTreatmentNumberBoth($patient, $use_content = true)
     {
-        $right = $this->getLetterTreatmentNumberRight($patient);
-        $left = $this->getLetterTreatmentNumberLeft($patient);
+        $right = $this->getLetterTreatmentNumberRight($patient, $use_content);
+        $left = $this->getLetterTreatmentNumberLeft($patient, $use_content);
         $res = '';
         if ($right) {
             $res = $right . ' on the right eye';
@@ -301,23 +295,25 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * get the text string describing the post injection drops needed for the last injection event in the episode.
      *
      * @param $patient
-     *
+     * @param $use_context
      * @return string
      */
-    public function getLetterPostInjectionDrops($patient)
+    public function getLetterPostInjectionDrops($patient, $use_context = true)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($el = $this->getElementForLatestEventInEpisode($episode, 'Element_OphTrIntravitrealinjection_PostInjectionExamination')) {
-                $drops = array();
-                if ($el->hasRight()) {
-                    $drops[] = $el->right_drops->name . ' to the right eye';
-                }
-                if ($el->hasLeft()) {
-                    $drops[] = $el->left_drops->name . ' to the left eye';
-                }
-
-                return implode(', and ', $drops);
+        if ($el = $this->getElementFromLatestEvent(
+            'Element_OphTrIntravitrealinjection_PostInjectionExamination',
+            $patient,
+            $use_context)
+        ){
+            $drops = array();
+            if ($el->hasRight()) {
+                $drops[] = $el->right_drops->name . ' to the right eye';
             }
+            if ($el->hasLeft()) {
+                $drops[] = $el->left_drops->name . ' to the left eye';
+            }
+
+            return implode(', and ', $drops);
         }
     }
 }

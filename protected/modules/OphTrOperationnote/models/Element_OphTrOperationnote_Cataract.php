@@ -81,25 +81,70 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
         // will receive user inputs.
         return array(
             array('event_id, incision_site_id, length, meridian, incision_type_id, iol_position_id, iol_type_id, iol_power, eyedraw, report, complication_notes, eyedraw2, report2, predicted_refraction, pcr_risk', 'safe'),
-            array('incision_site_id, length, meridian, incision_type_id, predicted_refraction, iol_position_id, eyedraw, report, eyedraw2', 'required'),
+            array('incision_site_id, length, meridian, incision_type_id, iol_position_id, eyedraw, report, eyedraw2', 'required'),
             array('length', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9](\.[0-9])?$/', 'message' => 'Length must be 0 - 9.9 in increments of 0.1'),
             array('meridian', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9]{1,3}(\.[0-9])?$/', 'min' => 000, 'max' => 360, 'message' => 'Meridian must be 000.5 - 360.0 degrees'),
-            array('predicted_refraction', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', 'min' => -30, 'max' => 30, 'message' => 'Predicted refraction must be between -30.00 and 30.00'),
+
+            array('iol_type_id', 'validateIolType'),
+            array('predicted_refraction', 'validatePredictedRefraction'),
             array('iol_power', 'validateIolpower'),
+            
             array('complications', 'validateComplications'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             //array('id, event_id, incision_site_id, length, meridian, incision_type_id, eyedraw, report, wound_burn, iris_trauma, zonular_dialysis, pc_rupture, decentered_iol, iol_exchange, dropped_nucleus, op_cancelled, corneal_odema, iris_prolapse, zonular_rupture, vitreous_loss, iol_into_vitreous, other_iol_problem, choroidal_haem', 'on' => 'search'),
         );
     }
+    
+    public function validateIolType()
+    {
+        if(isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
+            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != '8'){
+                if (!$this->iol_type_id) {
+                    $this->addError('iol_type_id', 'IOL type cannot be blank');
+                }
 
+                if (!isset($this->iol_power)) {
+                    $this->addError('iol_power', 'IOL power cannot be blank');
+                }
+            }
+        }
+    }
+        
+    /**
+     * Validate Predicted Refraction if IOL is part of the element.
+     *
+     * @return bool
+     */
+    public function validatePredictedRefraction()
+    {
+        if(isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
+            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != '8'){
+                $value = $this->predicted_refraction;
+                if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
+                    $message = $this->addError('predicted_refraction', 'Predicted refraction must be between -30.00 and 30.00');
+                } elseif ($value < -10 || $value > 40) {
+                    $message = $this->addError('predicted_refraction', 'Predicted refraction must be between -30.00 and 30.00');
+                }
+            }
+        }
+    }
+    /**
+     * Validate Iol Power if IOL is part of the element.
+     *
+     * @return bool
+     */
     public function validateIolPower()
     {
-        $value = $this->iol_power;
-        if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
-            $message = $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -10.00 and 40.00');
-        } elseif ($value < -10 || $value > 40) {
-            $message = $this->addError('iol_power', 'IOL Power must be between -10 to 40');
+        if(isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
+            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != '8'){
+                $value = $this->iol_power;
+                if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
+                    $message = $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -10.00 and 40.00');
+                } elseif ($value < -10 || $value > 40) {
+                    $message = $this->addError('iol_power', 'IOL Power must be between -10 to 40');
+                }
+            }
         }
     }
 
@@ -171,12 +216,24 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
 
     /**
      * Set default values for forms on create.
+     * @param Patient $patient
      */
-    public function setDefaultOptions()
+    public function setDefaultOptions(Patient $patient = null)
     {
         if (Yii::app()->controller->selectedEyeForEyedraw->id == 1) {
             $this->meridian = 0;
         }
+    }
+
+    protected function beforeSave()
+    {
+        if(!isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
+            $this->iol_power = null;
+            $this->iol_type_id = null;
+            $this->predicted_refraction = null;
+            $this->iol_position_id = 8;
+        }    
+        return parent::beforeSave();
     }
 
     /**
@@ -239,31 +296,36 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
     {
         $curr_by_id = array();
 
-        foreach ($this->operative_device_assignments as $oda) {
-            $curr_by_id[$oda->operative_device_id] = $oda;
-        }
-
-        foreach ($operative_device_ids as $od_id) {
-            if (!isset($curr_by_id[$od_id])) {
-                $oda = new OphTrOperationnote_CataractOperativeDevice();
-                $oda->cataract_id = $this->id;
-                $oda->operative_device_id = $od_id;
-
-                if (!$oda->save()) {
-                    throw new Exception('Unable to save complication assignment: '.print_r($oda->getErrors(), true));
-                }
-            } else {
-                unset($curr_by_id[$od_id]);
+        if(is_array($this->operative_device_assignments)){
+            foreach ($this->operative_device_assignments as $oda) {
+                $curr_by_id[$oda->operative_device_id] = $oda;
             }
         }
 
+        if (is_array($operative_device_ids)) {
+            foreach ($operative_device_ids as $od_id) {
+                if (!isset($curr_by_id[$od_id])) {
+                    $oda = new OphTrOperationnote_CataractOperativeDevice();
+                    $oda->cataract_id = $this->id;
+                    $oda->operative_device_id = $od_id;
+
+                    if (!$oda->save()) {
+                        throw new Exception('Unable to save operative device assignment: '.print_r($oda->getErrors(), true));
+                    }
+                } else {
+                    unset($curr_by_id[$od_id]);
+                }
+            }
+        }
+
+        if (is_array($curr_by_id)){
         foreach ($curr_by_id as $oda) {
             if (!$oda->delete()) {
-                throw new Exception('Unable to delete complication assignment: '.print_r($oda->getErrors(), true));
+                throw new Exception('Unable to delete operative device assignment: '.print_r($oda->getErrors(), true));
             }
         }
     }
-
+    }
     /**
      * The eye of the procedure is stored in the parent procedure list element.
      *
@@ -281,6 +343,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
      */
     public function beforeValidate()
     {
+        /*
         $iol_position = OphTrOperationnote_IOLPosition::model()->findByPk($this->iol_position_id);
 
         if (!$iol_position || $iol_position->name != 'None') {
@@ -299,8 +362,8 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
             } elseif ((-999.99 > $this->iol_power) || ($this->iol_power > 999.99)) {
                 $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -999.99 and 999.99');
               } */
-        }
-
+        /*}
+        */
         return parent::beforeValidate();
     }
 
@@ -373,6 +436,30 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
                     $this->addError('Complications', 'Cataract Complications cannot be none and any other complication.');
                 }
             }
+        }
+    }
+
+
+    /**
+     * Returns comma separated list of complications on this procedure note.
+     *
+     * @param $default
+     *
+     * @return string
+     */
+    public function getComplicationsString($default = 'None')
+    {
+        $res = array();
+        foreach ($this->complications as $comp) {
+            $res[] = $comp->name;
+        }
+        if ($this->complication_notes) {
+            $res[] = $this->complication_notes;
+        }
+        if ($res) {
+            return implode(', ', $res);
+        } else {
+            return $default;
         }
     }
 }

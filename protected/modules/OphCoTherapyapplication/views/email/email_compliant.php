@@ -42,7 +42,7 @@ Diagnosis: <?php echo $diagnosis->getDiagnosisStringForSide($side)."\n" ?>
 <?php
 if ($exam_info = $exam_api->getInjectionManagementComplexInEpisodeForDisorder(
         $patient,
-        $event->episode,
+        $use_context = true,
         $side,
         $diagnosis->{$side.'_diagnosis1_id'},
         $diagnosis->{$side.'_diagnosis2_id'})) {

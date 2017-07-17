@@ -34,7 +34,9 @@
 				<th><a href="firms?c=nm&d=<?php echo $displayOrder; ?>">Name</a></th>
 				<th><a href="firms?c=subsp&d=<?php echo $displayOrder; ?>">Subspecialty</a></th>
 				<th><a href="firms?c=con&d=<?php echo $displayOrder; ?>">Consultant</a></th>
-				<th>Active</th>
+				<th><?= ucfirst(Yii::app()->params['service_firm_label']) ?> Enabled</th>
+                <th><?= ucfirst(Yii::app()->params['context_firm_label']) ?> Enabled</th>
+                <th>Active</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -48,7 +50,9 @@
 					<td><?php echo $firm->name ?></td>
 					<td><?php echo ($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty->name : 'None' ?></td>
 					<td><?php echo ($firm->consultant) ? $firm->consultant->fullName : 'None' ?></td>
-					<td><?php echo ($firm->active) ? 'Active' : 'Inactive' ?></td>
+                    <td><?php echo ($firm->can_own_an_episode) ? 'Y' : 'N' ?></td>
+                    <td><?php echo ($firm->runtime_selectable) ? 'Y' : 'N' ?></td>
+                    <td><?php echo ($firm->active) ? 'Active' : 'Inactive' ?></td>
 				</tr>
 			<?php } ?>
 			</tbody>

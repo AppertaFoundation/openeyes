@@ -2,6 +2,7 @@
 
 class DefaultController extends BaseEventTypeController
 {
+ 
     public function volumeRemaining($event_id)
     {
         $volume_remaining = 0;
@@ -12,32 +13,47 @@ class DefaultController extends BaseEventTypeController
         return $volume_remaining;
     }
 
-    public function accessRules()
+    public function checkCreateAccess()
     {
-        return array(
-            array('allow',
-                'actions' => array('Create', 'Update', 'View', 'Print'),
-                'roles' => array('OprnEditDnaSample'),
-            ),
-            array('allow',
-                'actions' => array('View', 'Print'),
-                'roles' => array('OprnViewDnaSample'),
-            ),
-        );
+        return $this->checkAccess('OprnEditDnaSample');
+    }
+
+    public function checkUpdateAccess()
+    {
+        return $this->checkAccess('OprnEditDnaSample');
+    }
+
+    public function checkViewAccess()
+    {
+        return $this->checkAccess('OprnEditDnaSample') || $this->checkAccess('OprnViewDnaSample');
+    }
+
+    public function checkPrintAccess()
+    {
+        return $this->checkAccess('OprnEditDnaSample') || $this->checkAccess('OprnViewDnaSample');
+    }   
+
+    private function _registerDnaTestFormJs()
+    {
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphInDnaextraction.assets'));
+        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dna_tests_view.js');
     }
 
     public function actionCreate()
     {
+        $this->_registerDnaTestFormJs();
         parent::actionCreate();
     }
 
     public function actionUpdate($id)
     {
+        $this->_registerDnaTestFormJs();
         parent::actionUpdate($id);
     }
 
     public function actionView($id)
     {
+        $this->_registerDnaTestFormJs();
         parent::actionView($id);
     }
 
