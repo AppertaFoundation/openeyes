@@ -26,12 +26,8 @@ Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awes
 <div class="panel patient<?php if ($warnings): echo ' warning'; endif; ?>" id="patientID">
     <div class="patient-details">
         <?php echo CHtml::link($this->patient->getDisplayName(), array('/patient/view/'.$this->patient->id)) ?>
-        <span class="patient-age">
-			(<?php if ($this->patient->isDeceased()) { ?>
-                Deceased
-            <?php } else {
-                echo $this->patient->getAge(); }
-            ?>)
+        <span class="patient-title">
+			(<?= $this->patient->title ?>)
             </span>
     </div>
     <div class="hospital-number">
@@ -54,7 +50,7 @@ Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awes
             </div>
 
             <!-- Gender -->
-            <span class="icon icon-alert <?php echo strtolower($this->patient->getGenderString()) ?>-white-trans">
+            <span class="patient-gender">
 				<?php echo $this->patient->getGenderString() ?>
 			</span>
 

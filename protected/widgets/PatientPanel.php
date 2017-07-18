@@ -24,7 +24,6 @@ class PatientPanel extends BaseCWidget
 
     public function init()
     {
-        $this->age = $this->patient->isDeceased() ? 'Deceased' : $this->patient->getAge();
         $this->allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
         parent::init();
     }
