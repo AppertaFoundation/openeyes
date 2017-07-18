@@ -27,17 +27,26 @@
 <?php echo $form->dropDownList($element, 'incision_type_id', 'OphTrOperationnote_IncisionType',
     array('empty' => '- Please select -', 'textAttribute' => 'data-value'), false, array('field' => 4)) ?>
 <?php echo $form->textArea($element, 'report', array(), false, array('rows' => 6)) ?>
-<?php echo $form->dropDownList($element, 'iol_type_id', array(
-    CHtml::listData(OphTrOperationnote_IOLType::model()->activeOrPk($element->iol_type_id)->findAll(array(
-        'condition' => 'private=0',
-        'order' => 'display_order asc',
-    )), 'id', 'name'),
-    CHtml::listData(OphTrOperationnote_IOLType::model()->activeOrPk($element->iol_type_id)->findAll(array(
-        'condition' => 'private=1',
-        'order' => 'display_order',
-    )), 'id', 'name'),
-),
-    array('empty' => '- Please select -', 'divided' => true), $element->iol_hidden, array('field' => 4)) ?>
+<?php
+    if(isset(Yii::app()->modules["OphTrOperationnote"])){
+        echo $form->dropDownList($element, 'iol_type_id', array(CHtml::listData(OphInBiometry_LensType_Lens::model()->findAll(array(
+            'condition' => 'active=1',
+            'order' => 'name',
+        )), 'id', 'name')),
+            array('empty' => '- Please select -'), $element->iol_hidden, array('field' => 4));
+    }else {
+        echo $form->dropDownList($element, 'iol_type_id', array(
+            CHtml::listData(OphTrOperationnote_IOLType::model()->activeOrPk($element->iol_type_id)->findAll(array(
+                'condition' => 'private=0',
+                'order' => 'display_order asc',
+            )), 'id', 'name'),
+            CHtml::listData(OphTrOperationnote_IOLType::model()->activeOrPk($element->iol_type_id)->findAll(array(
+                'condition' => 'private=1',
+                'order' => 'display_order',
+            )), 'id', 'name'),
+        ),
+            array('empty' => '- Please select -', 'divided' => true), $element->iol_hidden, array('field' => 4));
+    }?>
     <div id="div_Element_OphTrOperationnote_Cataract_iol_power" class="row field-row">
         <div class="large-3 column">
             <label for="Element_OphTrOperationnote_Cataract_iol_power">IOL power:</label>

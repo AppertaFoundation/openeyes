@@ -21,6 +21,7 @@ class MergeLensDataController extends BaseAdminController
         // we need to run only if operation note module is installed
         if(isset(Yii::app()->modules["OphTrOperationnote"]))
         {
+            // get all iol_type_ids from existing cataract elements
             $existing_cataract = Yii::app()->db->createCommand('SELECT distinct iol_type_id FROM et_ophtroperationnote_cataract WHERE iol_type_id IS NOT NULL')->queryAll();
             // we need to drop the old foreign key
             Yii::app()->db->createCommand("ALTER TABLE et_ophtroperationnote_cataract DROP FOREIGN KEY et_ophtroperationnote_cataract_iol_type_id_fk")->query();
@@ -33,7 +34,7 @@ class MergeLensDataController extends BaseAdminController
                 $new_IOL->display_name = $IOL_data->name;
                 $new_IOL->display_order = $IOL_data->display_order;
                 $new_IOL->active = $IOL_data->active;
-                $new_IOL->description = 'Merged from operation note cataract element IOL type data';
+                $new_IOL->description = 'Merged from operation note cataract element IOL type values';
                 $new_IOL->save();
                 // update the existing data
                 $current_operations = Element_OphTrOperationnote_Cataract::model()->findAllByAttributes(array('iol_type_id'=>$existing['iol_type_id']));
@@ -47,18 +48,17 @@ class MergeLensDataController extends BaseAdminController
                         $operation->updateComplications(array($complications_none->id));
                         $operation->refresh();
                     }
-                    echo "NEW ID: ".$new_IOL->id;
+
                     $operation->iol_type_id = $new_IOL->id;
-                    echo "OP ID: ".$operation->iol_type_id;
                     if(!$operation->save())
                     {
-                        var_dump($operation->errors);
+                        throw new Exception('Error saving cataract element data!');
                     }
                 }
                 //var_dump($operations);
             }
             Yii::app()->db->createCommand("ALTER TABLE et_ophtroperationnote_cataract ADD CONSTRAINT et_ophtroperationnote_cataract_iol_type_id_fk FOREIGN KEY (iol_type_id) REFERENCES ophinbiometry_lenstype_lens(id)")->query();
         }
-        echo "Mergeljunk";
+        $this->redirect(array('/OphInBiometry/lensTypeAdmin/list'));
     }
 }
