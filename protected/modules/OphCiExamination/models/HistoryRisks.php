@@ -163,15 +163,17 @@ class HistoryRisks extends \BaseEventTypeElement
             }
         }
 
-        // ensure required risks have been provided.
-        $missing_required = array();
-        foreach ($this->getRequiredRisks() as $required) {
-            if (!in_array($required->id, $risk_ids)) {
-                $missing_required[] = $required;
+        if ($this->getScenario() != 'migration') {
+            // ensure required risks have been provided.
+            $missing_required = array();
+            foreach ($this->getRequiredRisks() as $required) {
+                if (!in_array($required->id, $risk_ids)) {
+                    $missing_required[] = $required;
+                }
             }
-        }
-        if (count($missing_required)) {
-            $this->addError('entries', 'Missing required risks: ' . implode(', ', $missing_required));
+            if (count($missing_required)) {
+                $this->addError('entries', 'Missing required risks: ' . implode(', ', $missing_required));
+            }
         }
 
         parent::afterValidate();

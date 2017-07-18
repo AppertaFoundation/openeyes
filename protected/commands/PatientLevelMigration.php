@@ -160,6 +160,14 @@ class PatientLevelMigration extends CConsoleCommand
     }
 
     /**
+     * @return mixed
+     */
+    protected function getNewElement()
+    {
+        return new static::$element_class();
+    }
+
+    /**
      * Process an individual set of records for a patient.
      *
      * @param $patient_id
@@ -186,12 +194,15 @@ class PatientLevelMigration extends CConsoleCommand
         try {
             $event = $this->getChangeEvent($patient);
 
-            $element = new static::$element_class();
+            $element = $this->getNewElement();
             $element->event_id = $event->id;
             if ($no_entries_date) {
                 $element->{static::$no_values_col} = $no_entries_date;
             } else {
                 $element->{static::$element_entry_attribute} = $entries;
+            }
+            if (!$element->validate()) {
+                throw new Exception(print_r($element->getErrors(), true));
             }
             $element->save();
 
