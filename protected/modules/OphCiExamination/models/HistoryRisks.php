@@ -154,10 +154,12 @@ class HistoryRisks extends \BaseEventTypeElement
 
         // prevent duplicate entries
         foreach ($this->entries as $entry) {
-            if (!$entry->risk->isOther() && in_array($entry->risk_id, $risk_ids)) {
-                $this->addError('entries', 'Cannot have duplicate entry for ' . $entry->risk);
-            } else {
-                $risk_ids[] = $entry->risk_id;
+            if ($entry->risk) {
+                if (!$entry->risk->isOther() && in_array($entry->risk_id, $risk_ids)) {
+                    $this->addError('entries', 'Cannot have duplicate entry for ' . $entry->risk);
+                } else {
+                    $risk_ids[] = $entry->risk_id;
+                }
             }
         }
 
