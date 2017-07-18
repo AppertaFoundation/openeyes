@@ -59,6 +59,23 @@
             }'>
             Click to lock
         </span>
+
+        <div class="zone2">
+            <div class="row">
+                <div class="large-3 column label">Born</div>
+                <div class="large-9 column">
+                    <b><?= ($this->patient->dob) ? $this->patient->NHSDate('dob') : 'Unknown' ?></b>
+                    <?= $this->patient->dob ? '(' . $this->patient->getAge() . 'y' .
+                            ($this->patient->isDeceased() ? ' - Deceased' : '') . ')'
+                        : '' ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="large-3 column label">Address</div>
+                <div class="large-9 column data"><?= $this->patient->getSummaryAddress(', ') ?></div>
+            </div>
+        </div>
+
         <!-- Warnings -->
         <?php if ($this->warnings) { ?>
             <div class="alert-box patient with-icon">
