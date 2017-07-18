@@ -22,7 +22,7 @@ class AllergyMigrateCommand extends PatientLevelMigration
 {
     protected $event_type_cls = 'OphCiExamination';
     // Original table is renamed to this during the module database migration
-        protected static $archived_entry_table = 'archive_patient_allergy_assignment';
+    protected static $archived_entry_table = 'archive_patient_allergy_assignment';
     // column on patient record indicating no entries have been explicitly recorded
     protected static $archived_no_values_col = 'archive_no_allergies_date';
     protected static $no_values_col = 'no_allergies_date';
