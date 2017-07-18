@@ -24,6 +24,7 @@ $model_name = CHtml::modelName($element);
 
 <div class="element-fields">
 
+    <?php /*
     <div class="field-row row">
         <div class="large-2 column"><label for="<?= $model_name ?>_common_previous_operation">Common Operation:</label></div>
         <div class="large-3 column end">
@@ -54,6 +55,7 @@ $model_name = CHtml::modelName($element);
             <button class="button small primary" id="<?= $model_name ?>_add_previous_operation">Add</button>
         </div>
     </div>
+ */ ?>
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <table id="<?= $model_name ?>_operation_table" class="<?= $model_name ?>_Operation">
@@ -89,6 +91,12 @@ $model_name = CHtml::modelName($element);
         }
         ?>
         </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="3"></td>
+            <td class="text-right"><button class="button small primary" id="<?= $model_name ?>_add_entry">Add New</button></td>
+        </tr>
+        </tfoot>
     </table>
 </div>
 
@@ -96,11 +104,12 @@ $model_name = CHtml::modelName($element);
     <?php
     $empty_operation = new \OEModule\OphCiExamination\models\PastSurgery_Operation();
     $this->render(
-        'PastSurgery_Operation_event_edit',
+        'PastSurgery_OperationEntry_event_edit',
         array(
             'op' => $empty_operation,
             'form' => $form,
             'model_name' => CHtml::modelName($element),
+            'removable' => true,
             'values' => array(
                 'id' => '',
                 'previous_operation_id' => '',

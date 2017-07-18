@@ -23,38 +23,92 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
     function PreviousSurgeryController(options) {
 
         this.options = $.extend(true, {}, PreviousSurgeryController._defaultOptions, options);
+
         //TODO: these should be driven by  options
-        this.$commonOpFld = $('#OEModule_OphCiExamination_models_PastSurgery_common_previous_operation');
-        this.$opFld = $('#OEModule_OphCiExamination_models_PastSurgery_previous_operation');
-        this.$sideFld = $('.OEModule_OphCiExamination_models_PastSurgery_previous_operation_side');
-        this.$dateFieldSet = $('.OEModule_OphCiExamination_models_PastSurgery_previousOperation');
-        this.$table = $('#OEModule_OphCiExamination_models_PastSurgery_operation_table');
+        this.$section = $('section.' + this.options.modelName);
+        this.$commonOpFld = $('#' + this.options.modelName + '_common_previous_operation');
+        this.$opFld = $('#' + this.options.modelName + '_previous_operation');
+        this.$sideFld = $('.' + this.options.modelName + '_previous_operation_side');
+        this.$dateFieldSet = $('.' + this.options.modelName + '_previousOperation');
+        this.$table = $('#' + this.options.modelName + '_operation_table');
+        this.$fuzy_date = $('#' + this.options.modelName + '_fuzzy_date');
 
         this.templateText = $("#OEModule_OphCiExamination_models_PastSurgery_operation_template").text();
 
         var controller = this;
 
-        $('#OEModule_OphCiExamination_models_PastSurgery_add_previous_operation').on('click', function(e) {
-            e.preventDefault();
-            if (controller.validateForm()) {
-                controller.addOperation();
-            }
-        });
+        // $('#' + this.options.modelName + '_add_previous_operation').on('click', function(e) {
+        //     e.preventDefault();
+        //     if (controller.validateForm()) {
+        //         controller.addOperation();
+        //     }
+        // });
 
-        this.$table.on('click', '.button', function(e) {
-            e.preventDefault();
-            $(e.target).parents('tr').remove();
-        });
+        // this.$table.on('click', '.button', function(e) {
+        //     e.preventDefault();
+        //     $(e.target).parents('tr').remove();
+        // });
+
+        this.initialiseTriggers();
     }
 
     PreviousSurgeryController._defaultOptions = {
+        modelName: 'OEModule_OphCiExamination_models_PastSurgery',
         monthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    };
+
+    PreviousSurgeryController.prototype.initialiseTriggers = function(){
+
+        var controller = this;
+        $('#' + controller.options.modelName + '_add_entry').on('click', function(e) {
+            e.preventDefault();
+            controller.addEntry();
+        });
+
+        controller.$table.on('click', 'button.remove', function(e) {
+            e.preventDefault();
+            $(e.target).parents('tr').remove();
+        });
+
+        controller.$section.on('input', ('#' + this.options.modelName + '_fuzzy_date'), function(e) {
+
+            var $fuzzy_fieldset = $(this).closest('fieldset');
+            var date = controller.dateFromFuzzyFieldSet($fuzzy_fieldset);
+            $fuzzy_fieldset.closest('td').find('input[type="hidden"]').val(date);
+        });
+
+    };
+
+    /**
+     *
+     * @param data
+     * @returns {*}
+     */
+    PreviousSurgeryController.prototype.createRow = function(data)
+    {
+        if (data === undefined)
+            data = {};
+        data['row_count'] = this.$table.find('tbody tr').length;
+
+        return Mustache.render(
+            template = this.templateText,
+            data
+        );
+    };
+
+    /**
+     * Add a family history section if its valid.
+     */
+    PreviousSurgeryController.prototype.addEntry = function()
+    {
+        var row = this.createRow();
+        this.$table.find('tbody').append(row);
     };
 
     /**
      * @returns {boolean}
      */
-    PreviousSurgeryController.prototype.validateForm = function()
+    /*PreviousSurgeryController.prototype.validateForm = function()
     {
         if (!this.$commonOpFld.val() && !this.$opFld.val()) {
             new OpenEyes.UI.Dialog.Alert({
@@ -69,19 +123,19 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
             return false;
         }
         return true;
-    };
+    };*/
 
     /**
      * @TODO: should set the year back to current year
      */
-    PreviousSurgeryController.prototype.resetForm = function()
+    /*PreviousSurgeryController.prototype.resetForm = function()
     {
         this.$commonOpFld.find('option:selected').prop('selected', false);
         this.$opFld.val('');
         this.$sideFld.prop('checked', false);
         this.$dateFieldSet.find('select[name="fuzzy_day"] option:selected').prop('selected', false);
         this.$dateFieldSet.find('select[name="fuzzy_month"] option:selected').prop('selected', false);
-    };
+    };*/
 
     /**
      * Simple wrapper to generate table row content from the template.
@@ -89,7 +143,7 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
      * @param data
      * @returns {*}
      */
-    PreviousSurgeryController.prototype.createRow = function(data)
+   /* PreviousSurgeryController.prototype.createRow = function(data)
     {
         indices = this.$table.find('tr').map(function () { return $(this).data('index'); });
 
@@ -99,7 +153,7 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
             template = this.templateText,
             data
         );
-    };
+    };*/
 
     /**
      * Simple validation of selected values for a fuzzy date fieldset.
@@ -124,10 +178,10 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
      */
     PreviousSurgeryController.prototype.dateFromFuzzyFieldSet = function(fieldset)
     {
-        res = fieldset.find('select[name="fuzzy_year"]').val();
-        var month = parseInt(fieldset.find('select[name="fuzzy_month"] option:selected').val());
+        res = fieldset.find('select.fuzzy_year').val();
+        var month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
         res += '-' + ((month < 10) ? '0' + month.toString() : month.toString());
-        var day = parseInt(fieldset.find('select[name="fuzzy_day"] option:selected').val());
+        var day = parseInt(fieldset.find('select.fuzzy_day option:selected').val());
         res += '-' + ((day < 10) ? '0' + day.toString() : day.toString());
 
         return res;
