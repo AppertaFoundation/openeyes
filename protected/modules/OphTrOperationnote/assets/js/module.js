@@ -755,6 +755,7 @@ function loadBiometryElementData(){
     $higlightedEye = $('.highlighted-eye');
     predictedRefraction = $higlightedEye.find('.predictedRefraction').text();
     iolPower = $higlightedEye.find('.iolDisplay').text();
+    selectedLens = $higlightedEye.find('.selected_lens').val();
 
     if(predictedRefraction &&  ($('#Element_OphTrOperationnote_Cataract_predicted_refraction').val() == "" ||  $('#Element_OphTrOperationnote_Cataract_predicted_refraction').val() == 0)){
         if(predictedRefraction == "None"){
@@ -769,6 +770,10 @@ function loadBiometryElementData(){
         {
             $('#Element_OphTrOperationnote_Cataract_iol_power').val(iolPower);
         }
+    }
+
+    if(selectedLens){
+        $('#Element_OphTrOperationnote_Cataract_iol_type_id').val(selectedLens);
     }
 }
 
