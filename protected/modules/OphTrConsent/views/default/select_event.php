@@ -47,9 +47,9 @@
 							<div class="field-info">
 								<?php if (count($bookings) > 0) {?>
 									Please indicate whether this Consent Form is for an existing booking or for unbooked procedures:
-								<?php } else {?>
-									There are no open bookings in the current episode so you can only create a consent form for unbooked procedures.
-								<?php }?>
+								<?php } else {
+									$this->redirect(Yii::app()->createUrl('/OphTrConsent/Default/create?patient_id='.$this->patient->id.'&unbooked=1'));
+								}?>
 							</div>
 						</div>
 
