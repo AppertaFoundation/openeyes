@@ -102,14 +102,46 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
             ->bindValue(':mnm', $definition->mnemonic)
             ->queryScalar();
         if ($current) {
-            $cmd = $this->getDb()->createCommand('UPDATE ' . static::DOODLE_TBL . ' SET init_doodle_json = :init');
+            $cmd = $this->getDb()->createCommand('UPDATE ' . static::DOODLE_TBL . ' SET init_doodle_json = :init '
+                . 'WHERE eyedraw_class_mnemonic = :mnm');
         } else {
             $cmd = $this->getDb()->createCommand('INSERT INTO '
                 . static::DOODLE_TBL .
-                '(eyedraw_class_mnemonic, init_doodle_json) VALUES (:mnm, :init)')
-                ->bindValue(':mnm', $definition->mnemonic);
+                '(eyedraw_class_mnemonic, init_doodle_json) VALUES (:mnm, :init)');
         }
-        $cmd->bindValue(':init', json_encode($definition->initial))
+        $cmd->bindValue(':mnm', $definition->mnemonic)
+            ->bindValue(':init', json_encode($definition->initial))
+            ->query();
+    }
+
+    private function insertOrUpdateCanvasDoodle($definition, $canvas)
+    {
+        $mnemonic = $definition->mnemonic;
+        $canvas_mnemonic = $canvas->mnemonic;
+        $current = $this->getDb()
+            ->createCommand('SELECT count(*) FROM ' . static::CANVAS_DOODLE_TBL
+                . ' WHERE eyedraw_class_mnemonic = :edmn AND canvas_mnemonic = :cvmn')
+            ->bindValue(':edmn', $mnemonic)
+            ->bindValue(':cvmn', $canvas_mnemonic);
+        if ($current) {
+            $cmd = $this->getDb()->createCommand('UPDATE ' . static::CANVAS_DOODLE_TBL . ' SET  '
+                . 'eyedraw_on_canvas_toolbar_location = :tlbloc, '
+                . 'eyedraw_on_canvas_toolbar_order = :tlbor, '
+                . 'eyedraw_no_tuple_init_canvas_flag = :infl, '
+                . 'eyedraw_carry_forward_canvas_flag = :fwdfl '
+                . ' WHERE eyedraw_class_mnemonic = :edmn AND canvas_mnemonic = :cvmn');
+        } else {
+            $cmd = $this->getDb()->createCommand('INSERT INTO ' . static::CANVAS_DOODLE_TBL
+                . '(eyedraw_class_mnemonic, canvas_mnemonic, eyedraw_on_canvas_toolbar_location, eyedraw_on_canvas_toolbar_order, '
+                . 'eyedraw_no_tuple_init_canvas_flag, eyedraw_carry_forward_canvas_flag)'
+                . 'VALUES (:edmn, :cvmn, :tlbloc, :tlbor, :infl, :fwdfl)');
+        }
+        $cmd->bindValue(':edmn', $mnemonic)
+            ->bindValue(':cvmn', $canvas_mnemonic)
+            ->bindValue(':tlbloc', $canvas->toolbar_location)
+            ->bindValue(':tlbor', $canvas->toolbar_order)
+            ->bindValue(':infl', $canvas->init_canvas)
+            ->bindValue(':fwdfl', $canvas->carry_forward)
             ->query();
     }
 
@@ -120,6 +152,9 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
 
         // iterate through doodle canvas definitions. Use the canvas mnemonic to confirm
         // whether or not it should be setup in the db.
+        foreach ($doodle->canvases as $canvas) {
+            $this->insertOrUpdateCanvasDoodle($doodle->definition, $canvas);
+        }
     }
 
 }
