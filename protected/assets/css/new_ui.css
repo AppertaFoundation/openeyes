@@ -36,11 +36,17 @@ html, body {
   }
   .open-eyes .container.content {
     background: none;
-    min-height: 600px; }
+    min-height: 600px;
+  }
   .open-eyes .footer {
     border-radius: 0 0 5px 5px;
     height: 42px;
-    background: #a39c9c url("../img/_structure/openeyes_footer.png") no-repeat right top; }
+    background: #a39c9c url("../img/_structure/openeyes_footer.png") no-repeat right top;
+    position: relative;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
     .open-eyes .footer .help .panel {
       height: 38px;
       border-style: none;
@@ -624,8 +630,9 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   padding: 0 0 5px 0;
   width: 14.6%;
-  position: fixed;
-  top: 82px; }
+  position: relative;
+  top: 0px;
+}
   .open-eyes .sidebar.episodes-and-events .oe-scroll-wrapper {
     position: relative;
     overflow-y: auto;
