@@ -54,7 +54,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
     </td>
     <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
 
-        <input type="hidden" name="<?=$field_prefix?>[side_id]" value="<?=$values['side_id']; ?> " />
+        <input type="hidden" name="<?=$field_prefix?>[side_id]" value="<?=$values['side_id']; ?>" />
 
         <label class="inline">
             <input type="radio"
@@ -124,3 +124,6 @@ if (isset($values['date']) && strtotime($values['date'])) {
     <?php endif; ?>
 
 </tr>
+<!--<tr>-->
+<!--    <td colspan="3"> --><?php //var_dump($values); ?><!--</td>-->
+<!--</tr>-->
