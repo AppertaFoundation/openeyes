@@ -744,20 +744,20 @@ class OphCiExamination_API extends \BaseAPI
         return;
     }
 
-    public function getLetterVisualAcuityLeft($patient)
+    public function getLetterVisualAcuityLeft($patient, $use_context = true)
     {
-        return ($best = $this->getBestVisualAcuity($patient, 'left')) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
+        return ($best = $this->getBestVisualAcuity($patient, 'left', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
     }
 
-    public function getLetterVisualAcuityRight($patient)
+    public function getLetterVisualAcuityRight($patient, $use_context = true)
     {
-        return ($best = $this->getBestVisualAcuity($patient,'right')) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
+        return ($best = $this->getBestVisualAcuity($patient,'right', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
     }
 
-    public function getLetterVisualAcuityBoth($patient)
+    public function getLetterVisualAcuityBoth($patient, $use_context = true)
     {
-        $left = $this->getBestVisualAcuity($patient,'left');
-        $right = $this->getBestVisualAcuity($patient, 'right');
+        $left = $this->getBestVisualAcuity($patient,'left', $use_context);
+        $right = $this->getBestVisualAcuity($patient, 'right', $use_context);
 
         return ($right ? $right->convertTo($right->value,
             $this->getSnellenUnitId()) : 'not recorded') . ' on the right and ' . ($left ? $left->convertTo($left->value,
@@ -1004,14 +1004,14 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
-    public function getLetterDRRetinopathyLeft($patient)
+    public function getLetterDRRetinopathyLeft($patient, $use_context =true)
     {
-        return $this->getLetterDRRetinopathy($patient,'left');
+        return $this->getLetterDRRetinopathy($patient,'left', $use_context);
     }
 
-    public function getLetterDRRetinopathyRight($patient)
+    public function getLetterDRRetinopathyRight($patient, $use_context = true)
     {
-        return $this->getLetterDRRetinopathy($patient,'right');
+        return $this->getLetterDRRetinopathy($patient,'right', $use_context);
     }
 
     /**
@@ -1041,14 +1041,14 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
-    public function getLetterDRMaculopathyLeft($patient)
+    public function getLetterDRMaculopathyLeft($patient, $use_context = true)
     {
-        return $this->getDRMaculopathy($patient, 'left');
+        return $this->getDRMaculopathy($patient, 'left', $use_context);
     }
 
-    public function getLetterDRMaculopathyRight($patient)
+    public function getLetterDRMaculopathyRight($patient, $use_context = true)
     {
-        return $this->getDRMaculopathy($patient, 'right');
+        return $this->getDRMaculopathy($patient, 'right', $use_context);
     }
 
     /**
@@ -1073,14 +1073,14 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
-    public function getLetterDRClinicalRetLeft($patient)
+    public function getLetterDRClinicalRetLeft($patient, $use_context = true)
     {
-        return $this->getDRClinicalRet($patient,'left');
+        return $this->getDRClinicalRet($patient,'left', $use_context);
     }
 
-    public function getLetterDRClinicalRetRight($patient)
+    public function getLetterDRClinicalRetRight($patient, $use_context = true)
     {
-        return $this->getDRClinicalRet($patient,'right');
+        return $this->getDRClinicalRet($patient,'right', $use_context);
     }
 
     /**
