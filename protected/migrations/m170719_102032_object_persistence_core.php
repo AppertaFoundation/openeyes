@@ -60,15 +60,4 @@ class m170719_102032_object_persistence_core extends OEMigration
 	    $this->dropTable('eyedraw_canvas');
 		$this->dropTable('eyedraw_doodle');
 	}
-
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
-
-	public function safeDown()
-	{
-	}
-	*/
 }
