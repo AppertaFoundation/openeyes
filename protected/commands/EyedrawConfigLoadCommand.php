@@ -122,7 +122,8 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
             ->createCommand('SELECT count(*) FROM ' . static::CANVAS_DOODLE_TBL
                 . ' WHERE eyedraw_class_mnemonic = :edmn AND canvas_mnemonic = :cvmn')
             ->bindValue(':edmn', $mnemonic)
-            ->bindValue(':cvmn', $canvas_mnemonic);
+            ->bindValue(':cvmn', $canvas_mnemonic)
+            ->queryScalar();
         if ($current) {
             $cmd = $this->getDb()->createCommand('UPDATE ' . static::CANVAS_DOODLE_TBL . ' SET  '
                 . 'eyedraw_on_canvas_toolbar_location = :tlbloc, '
