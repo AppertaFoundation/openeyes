@@ -69,23 +69,31 @@ $model_name = CHtml::modelName($element);
         </thead>
         <tbody>
         <?php
+        $row_count = 0;
         foreach ($operations as $op) {
             if (!array_key_exists('object', $op)) { ?>
-                <tr>
+                <tr class="read-only row-<?=$row_count;?>" data-row_number="<?=$row_count?>">
                     <td><?= $op['operation'] ?></td>
                     <td><?= $op['side'] ?></td>
                     <td><?= Helper::formatFuzzyDate($op['date']) ?></td>
-                    <td>read only <span class="has-tooltip fa fa-info-circle" data-tooltip-content="This operation is recorded as an Operation Note event in OpenEyes and cannot be edited here"></span></td>
+                    <td>read only <span class="has-tooltip fa fa-info-circle"
+                                        data-tooltip-content="This operation is recorded as an Operation Note event in OpenEyes and cannot be edited here"></span></td>
                 </tr>
-            <?php }
+            <?php
+                $row_count++;
+            }
         }
-        foreach ($element->operations as $op) {
+
+        foreach ($element->operations as $i => $op) {
             $this->render(
-                'PastSurgery_Operation_event_edit',
+                'PastSurgery_OperationEntry_event_edit',
                 array(
                     'op' => $op,
                     'form' => $form,
+                    'row_count' => ($i+$row_count),
+                    'field_prefix' => $model_name . '[operation][' . ($i+$row_count) . ']',
                     'model_name' => CHtml::modelName($element),
+                    'removable' => true,
                 )
             );
         }
@@ -94,7 +102,7 @@ $model_name = CHtml::modelName($element);
         <tfoot>
         <tr>
             <td colspan="3"></td>
-            <td class="text-right"><button class="button small primary" id="<?= $model_name ?>_add_entry">Add New</button></td>
+            <td class="text-right"><button class="button small primary" id="<?= $model_name ?>_add_entry">Add</button></td>
         </tr>
         </tfoot>
     </table>
@@ -109,6 +117,8 @@ $model_name = CHtml::modelName($element);
             'op' => $empty_operation,
             'form' => $form,
             'model_name' => CHtml::modelName($element),
+            'row_count' => '{{row_count}}',
+            'field_prefix' => $model_name . '[operation][{{row_count}}]',
             'removable' => true,
             'values' => array(
                 'id' => '',

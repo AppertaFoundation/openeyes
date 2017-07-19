@@ -103,7 +103,7 @@
                 'risk_display' => '{{risk_display}}',
                 'other' => '{{other}}',
                 'comments' => '{{comments}}',
-                'has_risk' => '1' // default to true for additional risks
+                'has_risk' => null
             )
         )
     );
