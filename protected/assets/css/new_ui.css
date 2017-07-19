@@ -224,6 +224,11 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   color: #fff;
   background: #747782 url("../img/_elements/icons/patient/patient-panel-icon.png") no-repeat right top;
   padding: 3px 0 6px 17px; }
+  .open-eyes .panel.patient.patient-deceased {
+    width: 526px;
+    color: #fff;
+    background: #a33a44 url("../img/_elements/icons/patient/patient-panel-icon.png") no-repeat right top;
+    padding: 3px 0 6px 17px; }
   .open-eyes .panel.patient h1, .open-eyes .panel.patient h2, .open-eyes .panel.patient h3, .open-eyes .panel.patient h4, .open-eyes .panel.patient h5, .open-eyes .panel.patient h6, .open-eyes .panel.patient p, .open-eyes .panel.patient li, .open-eyes .panel.patient dl {
     color: #fff; }
   .open-eyes .panel.patient a {

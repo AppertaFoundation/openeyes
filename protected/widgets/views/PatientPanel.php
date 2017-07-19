@@ -23,7 +23,7 @@ $warnings = $this->patient->getWarnings($allow_clinical);
 Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
 ?>
 
-<div class="panel patient<?php if ($warnings): echo ' warning'; endif; ?>" id="patientID">
+<div class="panel patient<?php if ($warnings): echo ' warning'; endif; ?><?= $this->patient->isDeceased() ? ' patient-deceased' : ''?>" id="patientID">
     <div class="patient-details">
         <?php echo CHtml::link($this->patient->getDisplayName(), array('/patient/view/'.$this->patient->id)) ?>
         <span class="patient-title">
