@@ -17,11 +17,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="element-fields element-eyes row">
+
+<div class="element-fields element-eyes row" style="overflow: inherit;">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 	<div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {
     ?> inactive<?php 
-}?>" data-side="right">
+}?>" data-side="right" style="border-right: 1px solid white;">
 		<div class="active-form">
 			<a href="#" class="icon-remove-side remove-side">Remove side</a>
 			<div class="eyedraw-row anterior-segment">
@@ -31,6 +32,12 @@
                     'element' => $element,
                 ))?>
 			</div>
+			<?php $this->renderPartial($element->form_view.'_OEEyeDraw_fields', array(
+				'form' => $form,
+				'side' => 'right',
+				'element' => $element,
+			));
+			?>
 		</div>
 		<div class="inactive-form">
 			<div class="add-side">
@@ -52,6 +59,12 @@
                     'element' => $element,
                 ))?>
 			</div>
+			<?php $this->renderPartial($element->form_view.'_OEEyeDraw_fields', array(
+				'form' => $form,
+				'side' => 'left',
+				'element' => $element,
+			));
+			?>
 		</div>
 		<div class="inactive-form">
 			<div class="add-side">
@@ -62,3 +75,7 @@
 		</div>
 	</div>
 </div>
+<?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/AnteriorSegment.js", CClientScript::POS_HEAD); ?>
+<?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/AutoReport.js", CClientScript::POS_HEAD); ?>
+
+

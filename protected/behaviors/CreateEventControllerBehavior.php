@@ -28,7 +28,7 @@ class CreateEventControllerBehavior extends CBehavior
     public function getOwnerCurrentEpisode()
     {
         if (!$this->current_episode) {
-            $this->current_episode = Episode::getCurrentEpisodeByFirm($this->owner->patient->id, $this->owner->firm);
+            $this->current_episode = $this->owner->current_episode ? : Episode::getCurrentEpisodeByFirm($this->owner->patient->id, $this->owner->firm);
         }
 
         return $this->current_episode;
@@ -41,11 +41,17 @@ class CreateEventControllerBehavior extends CBehavior
      * It's not necessary to replicate this for editing at the moment, as all editing routes are reached
      * through the relevant module controllers for any given event type.
      *
+     * The $skip_args array allows us to manipulate the args that are generated so that wider conditions
+     * can be checked. This was introduced so that creating events permission could be checked without the
+     * episode context, as this is not really relevant in the SEM model. As the reach of the SEM changes
+     * expands to the lower levels of behaviour this should no longer be necessary.
+     *
      * @param $event_type
+     * @param array $skip_args
      * @return array
      * @throws Exception
      */
-    public function getCreateArgsForEventTypeOprn($event_type)
+    public function getCreateArgsForEventTypeOprn($event_type, $skip_args = array())
     {
         $create_oprn = 'OprnCreateEvent';
         $args = array('firm', 'episode');
@@ -61,6 +67,9 @@ class CreateEventControllerBehavior extends CBehavior
 
         $create_args = array($create_oprn);
         foreach ($args as $arg) {
+            if (in_array($arg, $skip_args)) {
+                continue;
+            }
             switch ($arg) {
                 case 'user_id':
                     $create_args[] = $this->owner->getApp()->user->id;

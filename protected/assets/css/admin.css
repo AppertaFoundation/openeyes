@@ -1538,7 +1538,7 @@
   list-style-type: none;
   margin: 0;
 }
-/* line 6, ../sass/openeyes/components/admin/_navigation.scss */
+/* line 143, ../sass/openeyes/_mixins.scss */
 .navigation.admin a {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -1548,17 +1548,17 @@
   margin-bottom: 4px;
   padding: 4px 8px;
 }
-/* line 12, ../sass/openeyes/components/admin/_navigation.scss */
+/* line 149, ../sass/openeyes/_mixins.scss */
 .navigation.admin a:hover {
   background: #3665ff;
   color: #fff;
 }
-/* line 16, ../sass/openeyes/components/admin/_navigation.scss */
+/* line 153, ../sass/openeyes/_mixins.scss */
 .navigation.admin a.selected {
   background: #ccc;
   color: #333;
 }
-/* line 22, ../sass/openeyes/components/admin/_navigation.scss */
+/* line 159, ../sass/openeyes/_mixins.scss */
 .navigation.admin li:last-child a {
   margin: 0;
 }
@@ -1607,23 +1607,23 @@ table.generic-admin tr {
 .box.admin h1.subheader, .box.admin h2.subheader, .box.admin h3.subheader, .box.admin h4.subheader, .box.admin h5.subheader, .box.admin h6.subheader {
   line-height: 1.4;
 }
-/* line 24, ../sass/openeyes/components/admin/_boxes.scss */
+/* line 168, ../sass/openeyes/_mixins.scss */
 .box.admin h2 {
   margin-bottom: 12px;
 }
-/* line 28, ../sass/openeyes/components/admin/_boxes.scss */
+/* line 172, ../sass/openeyes/_mixins.scss */
 .box.admin .table-actions select {
   width: auto;
 }
-/* line 32, ../sass/openeyes/components/admin/_boxes.scss */
+/* line 176, ../sass/openeyes/_mixins.scss */
 .box.admin .box-header {
   margin: 0;
 }
-/* line 34, ../sass/openeyes/components/admin/_boxes.scss */
+/* line 178, ../sass/openeyes/_mixins.scss */
 .box.admin .box-header .box-title {
   float: left;
 }
-/* line 38, ../sass/openeyes/components/admin/_boxes.scss */
+/* line 182, ../sass/openeyes/_mixins.scss */
 .box.admin .box-actions {
   float: right;
 }
@@ -1635,19 +1635,19 @@ table.generic-admin tr {
   }
 }
 
-/* line 48, ../sass/openeyes/components/admin/_boxes.scss */
+/* line 26, ../sass/openeyes/components/admin/_boxes.scss */
 .box_admin_header:hover {
   background: #e1eef9;
   cursor: pointer;
 }
 
-/* line 53, ../sass/openeyes/components/admin/_boxes.scss */
+/* line 31, ../sass/openeyes/components/admin/_boxes.scss */
 .box_admin_header h2 {
   background: url("../img/_elements/icons/showhide/show.png") no-repeat right center;
   padding-left: 1px;
 }
 
-/* line 58, ../sass/openeyes/components/admin/_boxes.scss */
+/* line 36, ../sass/openeyes/components/admin/_boxes.scss */
 .box_admin_elements {
   display: none;
   overflow: hidden;

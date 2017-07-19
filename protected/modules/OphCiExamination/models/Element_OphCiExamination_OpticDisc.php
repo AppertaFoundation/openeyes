@@ -67,13 +67,14 @@ class Element_OphCiExamination_OpticDisc extends \SplitEventTypeElement
     public function rules()
     {
         return array(
-                array('eye_id, left_description, right_description, left_eyedraw, right_eyedraw, left_cd_ratio_id, right_cd_ratio_id', 'safe'),
+                array('eye_id, left_description, right_description, left_eyedraw, right_eyedraw, left_ed_report, ' .
+                      'right_ed_report, left_cd_ratio_id, right_cd_ratio_id', 'safe'),
                 array('left_diameter, right_diameter', 'type', 'type' => 'float'),
                 array('left_diameter, right_diameter', 'numerical', 'max' => 9.9, 'min' => 0.1),
                 array('left_lens_id, right_lens_id', 'checkDiameter'),
                 array('eye_id, event_id, left_description, right_description, left_eyedraw, right_eyedraw, left_diameter, right_diameter, left_cd_ratio_id, right_cd_ratio_id, left_lens_id, right_lens_id', 'safe', 'on' => 'search'),
-                array('left_description', 'requiredIfSide', 'side' => 'left'),
-                array('right_description', 'requiredIfSide', 'side' => 'right'),
+                array('left_ed_report', 'requiredIfSide', 'side' => 'left'),
+                array('right_ed_report', 'requiredIfSide', 'side' => 'right'),
         );
     }
 
@@ -93,7 +94,7 @@ class Element_OphCiExamination_OpticDisc extends \SplitEventTypeElement
 
     public function sidedFields()
     {
-        return array('diameter', 'description', 'eyedraw', 'cd_ratio_id', 'lens_id');
+        return array('diameter', 'description', 'eyedraw', 'ed_report',  'cd_ratio_id', 'lens_id');
     }
 
     public function canCopy()
@@ -131,14 +132,16 @@ class Element_OphCiExamination_OpticDisc extends \SplitEventTypeElement
                 'event_id' => 'Event',
                 'left_diameter' => 'Vertical Diameter',
                 'right_diameter' => 'Vertical Diameter',
-                'left_description' => 'Description',
-                'right_description' => 'Description',
+                'left_description' => 'Comments',
+                'right_description' => 'Comments',
                 'left_eyedraw' => 'EyeDraw',
                 'right_eyedraw' => 'EyeDraw',
                 'left_cd_ratio_id' => 'C/D Ratio',
                 'right_cd_ratio_id' => 'C/D Ratio',
                 'left_lens_id' => 'Lens',
                 'right_lens_id' => 'Lens',
+                'left_ed_report' => 'Report',
+                'right_ed_report' => 'Report'
         );
     }
 

@@ -116,6 +116,13 @@ class BaseEventTypeController extends BaseModuleController
     public $pdf_print_documents = 1;
     public $pdf_print_html = null;
 
+    /**
+     * Set to false if the event list should remain on the sidebar when creating/editing the event
+     *
+     * @var bool
+     */
+    protected $show_element_sidebar = true;
+
     public function behaviors()
     {
         return array(
@@ -258,12 +265,45 @@ class BaseEventTypeController extends BaseModuleController
         return $elements;
     }
 
+    public function getElementTree($remove_list = array())
+    {
+        $element_types_tree = array();
+        foreach ($this->event_type->getRootElementTypes() as $et) {
+            if (count($remove_list) && in_array($et->class_name, $remove_list)) {
+                continue;
+            }
+            $struct = array(
+                'name'          => $et->name,
+                'class_name'    => CHtml::modelName($et->class_name),
+                'id'            => $et->id,
+                'display_order' => $et->display_order,
+                'children'      => array(),
+            );
+
+            foreach ($et->child_element_types as $child) {
+                if (count($remove_list) && in_array($child->class_name, $remove_list)) {
+                    continue;
+                }
+                $struct['children'][] = array(
+                    'name'          => $child->name,
+                    'id'            => $child->id,
+                    'display_order' => $child->display_order,
+                    'class_name'    => CHtml::modelName($child->class_name),
+                );
+            }
+
+            $element_types_tree[] = $struct;
+        }
+
+        return json_encode($element_types_tree);
+    }
+
     /**
      * Get the open child elements for the given ElementType.
      *
      * @param ElementType $parent_type
      *
-     * @return BaseEventTypeElement[] $open_elements
+     * @return \BaseEventTypeElement[] $open_elements
      */
     public function getChildElements($parent_type)
     {
@@ -402,7 +442,7 @@ class BaseEventTypeController extends BaseModuleController
     protected function setElementDefaultOptions($element, $action)
     {
         if ($action == 'create') {
-            $element->setDefaultOptions();
+            $element->setDefaultOptions($this->patient);
         } elseif ($action == 'update') {
             $element->setUpdateOptions();
         }
@@ -757,7 +797,11 @@ class BaseEventTypeController extends BaseModuleController
 
                         $transaction->commit();
 
-                        $this->redirect(array($this->successUri.$this->event->id));
+                        if ($this->event->parent_id) {
+                            $this->redirect(Yii::app()->createUrl('/'.$this->event->parent->eventType->class_name.'/default/view/'.$this->event->parent_id));
+                        } else {
+                            $this->redirect(array($this->successUri.$this->event->id));
+                        }
                     } else {
                         throw new Exception('could not save event');
                     }
@@ -892,7 +936,11 @@ class BaseEventTypeController extends BaseModuleController
 
                         OELog::log("Updated event {$this->event->id}");
                         $transaction->commit();
-                        $this->redirect(array('default/view/'.$this->event->id));
+                        if ($this->event->parent_id) {
+                            $this->redirect(Yii::app()->createUrl('/'.$this->event->parent->eventType->class_name.'/default/view/'.$this->event->parent_id));
+                        } else {
+                            $this->redirect(array('default/view/'.$this->event->id));
+                        }
                     } else {
                         throw new Exception('Unable to save edits to event');
                     }
@@ -1045,6 +1093,33 @@ class BaseEventTypeController extends BaseModuleController
     }
 
     /**
+     * Determines if this is a widget based element or not, and then sets the attributes from the data accordingly
+     *
+     * @param $element
+     * @param $data
+     * @param null $index
+     */
+    protected function setElementAttributesFromData($element, $data, $index = null)
+    {
+        $model_name = \CHtml::modelName($element);
+        $el_data = is_null($index) ? $data[$model_name] : $data[$model_name][$index];
+
+        if ($element->widgetClass) {
+            $widget = $this->createWidget($element->widgetClass, array(
+                'patient' => $this->patient,
+                'element' => $element,
+                'data' => $el_data,
+                'mode' => \BaseEventElementWidget::$EVENT_EDIT_MODE
+            ));
+            $element->widget = $widget;
+        } else {
+            $element->attributes = Helper::convertNHS2MySQL($el_data);
+            $this->setElementComplexAttributesFromData($element, $data, $index);
+            $element->event = $this->event;
+        }
+    }
+
+    /**
      * Looks for custom methods to set many to many data defined on elements. This is called prior to validation so should set values without actually
      * touching the database.
      *
@@ -1096,9 +1171,7 @@ class BaseEventTypeController extends BaseModuleController
                     } else {
                         $element = $element_type->getInstance();
                     }
-                    $element->attributes = Helper::convertNHS2MySQL($attrs);
-                    $this->setElementComplexAttributesFromData($element, $data, $i);
-                    $element->event = $this->event;
+                    $this->setElementAttributesFromData($element, $data, $i);
                     $elements[] = $element;
                 }
             } else {
@@ -1106,15 +1179,13 @@ class BaseEventTypeController extends BaseModuleController
                     || !$element = $el_cls_name::model()->find('event_id=?', array($this->event->id))) {
                     $element = $element_type->getInstance();
                 }
-                $element->attributes = Helper::convertNHS2MySQL($data[$f_key]);
-                $this->setElementComplexAttributesFromData($element, $data);
-                $element->event = $this->event;
+                $this->setElementAttributesFromData($element, $data);
                 $elements[] = $element;
             }
         }
         return $elements;
     }
-    
+
     /**
      * Set the attributes of the given $elements from the given structured array.
      * Returns any validation errors that arise.
@@ -1160,10 +1231,13 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
 
-        //event date
+        //event date and parent validation
         if (isset($data['Event']['event_date'])) {
             $event = $this->event;
             $event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
+            if(isset($data['Event']['parent_id'])){
+                $event->parent_id = $data['Event']['parent_id'];
+            }
             if (!$event->validate()) {
                 foreach ($event->getErrors() as $errormsgs) {
                     foreach ($errormsgs as $error) {
@@ -1339,6 +1413,17 @@ class BaseEventTypeController extends BaseModuleController
         return '';
     }
 
+    public function renderSidebar($default_view)
+    {
+        if ($this->show_element_sidebar && in_array($this->action->id,array('create','update'))) {
+            $this->renderPartial('//patient/_patient_element_sidebar');
+        } else {
+            parent::renderSidebar($default_view);
+        }
+
+    }
+
+
     /**
      * Extend the parent method to support inheritance of modules (and rendering the element views from the parent module).
      *
@@ -1405,7 +1490,21 @@ class BaseEventTypeController extends BaseModuleController
 
         // Render the view.
         ($use_container_view) && $this->beginContent($container_view, $view_data);
-        $this->renderPartial($this->getElementViewPathAlias($element).$view, $view_data, $return, $processOutput);
+        if ($element->widgetClass) {
+            // only wrap the element in a widget if it's not already in one
+            $widget = $element->widget ? :
+                $this->createWidget($element->widgetClass,
+                    array(
+                        'patient' => $this->patient,
+                        'element' => $view_data['element'],
+                        'data' => $view_data['data'],
+                        'mode' => in_array($action, array('create', 'update')) ? BaseEventElementWidget::$EVENT_EDIT_MODE : BaseEventElementWidget::$EVENT_VIEW_MODE
+                    ));
+            $widget->form = $view_data['form'];
+            $this->renderPartial('//elements/widget_element', array('widget' => $widget),$return, $processOutput);
+        } else {
+            $this->renderPartial($this->getElementViewPathAlias($element).$view, $view_data, $return, $processOutput);
+        }
         ($use_container_view) && $this->endContent();
     }
 
@@ -1641,6 +1740,7 @@ class BaseEventTypeController extends BaseModuleController
             throw new CHttpException(403, 'Invalid event id.');
         }
         $this->patient = $this->event->episode->patient;
+        $this->episode = $this->event->episode;
         $this->site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
         $this->setOpenElementsFromCurrentEvent('print');
     }
@@ -1655,7 +1755,6 @@ class BaseEventTypeController extends BaseModuleController
     protected function printHTML($id, $elements, $template = 'print')
     {
         $this->layout = '//layouts/print';
-
         $this->render($template, array(
             'elements' => $elements,
             'eventId' => $id,

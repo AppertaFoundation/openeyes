@@ -21,21 +21,21 @@ namespace OEModule\Internalreferral\components;
 
 interface ExternalIntegration
 {
-	/**
-	 * Render content to be included in the event view page for the given Event object.
-	 * Responsible for generating links to the external integration, automatic popups etc.
-	 *
-	 * @param \Event $event
-	 * @return string
-	 */
-	public function renderEventView(\Event $event);
+    /**
+     * Render content to be included in the event view page for the given Event object.
+     * Responsible for generating links to the external integration, automatic popups etc.
+     *
+     * @param \Event $event
+     * @return string
+     */
+    public function renderEventView(\Event $event);
 
-	/**
-	 * Will be passed the GET or POST array (depending on the nature of the request received
-	 * by the controller, and should return a status code and a body response.
-	 *
-	 * @param array $data
-	 * @return array(status_code, $response)
-	 */
-	public function processExternalResponse($data = array());
+    /**
+     * Will be passed the GET or POST array (depending on the nature of the request received
+     * by the controller, and should return a status code and a body response.
+     *
+     * @param array $data
+     * @return array(status_code, $response)
+     */
+    public function processExternalResponse($data = array());
 }

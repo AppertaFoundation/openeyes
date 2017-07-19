@@ -28,6 +28,8 @@ namespace OEModule\OphCiExamination\models;
  * @property int $event_id
  * @property int $eye_id
  * @property string $left_eyedraw
+ * @property string $left_eyedraw2
+ * @property string $left_ed_report
  * @property int $left_pupil_id
  * @property int $left_nuclear_id
  * @property int $left_cortical_id
@@ -35,6 +37,8 @@ namespace OEModule\OphCiExamination\models;
  * @property bool $left_phako
  * @property string $left_description
  * @property string $right_eyedraw
+ * @property string $right_eyedraw2
+ * @property string $right_ed_report
  * @property int $right_pupil_id
  * @property int $right_nuclear_id
  * @property int $right_cortical_id
@@ -58,6 +62,22 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
         return parent::model($className);
     }
 
+    // used for the letter string method in the eyedraw element behavior
+    public $letter_string_prefix = "Anterior Segment:\n";
+
+    /**
+     * @inheritdoc
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'EyedrawElementBehavior' => array(
+                'class' => 'application.behaviors.EyedrawElementBehavior',
+            ),
+        );
+    }
+
     /**
      * @return string the associated database table name
      */
@@ -74,10 +94,10 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('eye_id, left_eyedraw, left_pupil_id, left_nuclear_id, left_cortical_id, left_pxe, left_phako, left_description,
-						right_eyedraw, right_pupil_id, right_nuclear_id, right_cortical_id, right_pxe, right_phako, right_description', 'safe'),
-                array('left_eyedraw, left_description', 'requiredIfSide', 'side' => 'left'),
-                array('right_eyedraw, right_description', 'requiredIfSide', 'side' => 'right'),
+                array('eye_id, left_eyedraw, left_eyedraw2, left_ed_report, left_pupil_id, left_nuclear_id, left_cortical_id, left_pxe, left_phako, left_description,
+						right_eyedraw, right_eyedraw2, right_ed_report, right_pupil_id, right_nuclear_id, right_cortical_id, right_pxe, right_phako, right_description', 'safe'),
+                array('left_eyedraw, left_eyedraw2, left_ed_report', 'requiredIfSide', 'side' => 'left'),
+                array('right_eyedraw, right_eyedraw2, right_ed_report', 'requiredIfSide', 'side' => 'right'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
                 array('id, event_id, left_eyedraw, left_pupil_id, left_nuclear_id, left_cortical_id, left_pxe, left_phako, left_description,
@@ -87,7 +107,7 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
 
     public function sidedFields()
     {
-        return array('pupil_id', 'cortical_id', 'pxe', 'eyedraw', 'phako', 'description', 'nuclear_id');
+        return array('pupil_id', 'cortical_id', 'pxe', 'eyedraw', 'eyedraw2', 'ed_report', 'phako', 'description', 'nuclear_id');
     }
 
     public function sidedDefaults()
@@ -131,26 +151,28 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
                 'id' => 'ID',
                 'event_id' => 'Event',
                 'left_eyedraw' => 'Eyedraw',
+                'left_ed_report' => 'Report',
                 'left_pupil_id' => 'Pupil Size',
                 'left_nuclear_id' => 'Nuclear',
                 'left_cortical_id' => 'Cortical',
                 'left_pxe' => 'PXF',
-                'left_phako' => 'Phakodonesis',
-                'left_description' => 'Description',
+                'left_phako' => 'Phacodonesis',
+                'left_description' => 'Comments',
                 'right_eyedraw' => 'Eyedraw',
+                'right_ed_report' => 'Report',
                 'right_pupil_id' => 'Pupil Size',
                 'right_nuclear_id' => 'Nuclear',
                 'right_cortical_id' => 'Cortical',
                 'right_pxe' => 'PXF',
-                'right_phako' => 'Phakodonesis',
-                'right_description' => 'Description',
+                'right_phako' => 'Phacodonesis',
+                'right_description' => 'Comments',
         );
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
@@ -182,8 +204,4 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
         ));
     }
 
-    public function getLetter_string()
-    {
-        return "Anterior segment:\nright: $this->right_description\nleft: $this->left_description\n";
-    }
 }

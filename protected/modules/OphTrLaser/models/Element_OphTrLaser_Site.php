@@ -138,7 +138,7 @@ class Element_OphTrLaser_Site extends BaseEventTypeElement
     /**
      * Set default values for forms on create.
      */
-    public function setDefaultOptions()
+    public function setDefaultOptions(Patient $patient = null)
     {
         if (Yii::app()->getController()->getAction()->id == 'create') {
             $user = Yii::app()->session['user'];

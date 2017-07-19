@@ -43,7 +43,7 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
     {
         parent::addData($chart);
 
-        foreach ($this->event_type->api->getEventsInEpisode($this->episode->patient, $this->episode) as $event) {
+        foreach ($this->event_type->api->getEvents($this->episode->patient, false) as $event) {
             if (($oct = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_OCT'))) {
                 if ($oct->hasRight()) {
                     $this->addSftReading($chart, $oct, 'right');

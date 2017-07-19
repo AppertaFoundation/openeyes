@@ -45,7 +45,7 @@ if (@$latest) {
     $msg .= ': <strong>'.$latest->eventType->name."</strong> <span class='small'>(".$latest->NHSDate('event_date').')</span>';
     echo '<div class="box patient-info episode-links">'.CHtml::link($msg, Yii::app()->createUrl('/'.$latest->eventType->class_name.'/default/view/'.$latest->id)).'</div>';
 } elseif ($this->checkAccess('OprnCreateEpisode')) {
-    $msg = 'Create episode / add event';
+    $msg = 'Create ' . strtolower(Episode::getEpisodeLabel()) . ' / add event';
     echo '<div class="box patient-info episode-links">'.CHtml::link($msg, Yii::app()->createUrl('patient/episodes/'.$this->patient->id)).'</div>';
 }
 

@@ -26,10 +26,18 @@
  * @property string $episode_id
  * @property string $user_id
  * @property string $event_type_id
+ * @property string $info
+ * @property boolean $deleted
+ * @property string $delete_reason
+ * @property boolean $is_automated
+ * @property array $automated_source - json structure
+ * @property string $event_date
+ * @property string $created_date
+ * @property string $last_modified_date
  *
  * The followings are the available model relations:
- * @property Episode $episode
- * @property User $user
+ * @property Episode   $episode
+ * @property User      $user
  * @property EventType $eventType
  */
 class Event extends BaseActiveRecordVersioned
@@ -90,10 +98,11 @@ class Event extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('event_type_id, event_date', 'required'),
+            array('parent_id', 'safe'),
             array('episode_id, event_type_id', 'length', 'max' => 10),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, episode_id, event_type_id, created_date, event_date', 'safe', 'on' => 'search'),
+            array('id, episode_id, event_type_id, created_date, event_date, parent_id', 'safe', 'on' => 'search'),
             array('event_date', 'OEDateValidatorNotFuture'),
         );
     }
@@ -111,6 +120,8 @@ class Event extends BaseActiveRecordVersioned
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'issues' => array(self::HAS_MANY, 'EventIssue', 'event_id'),
+            'parent' => array(self::BELONGS_TO, 'Event', 'parent_id'),
+            'children' => array(self::HAS_MANY, 'Event', 'parent_id'),
         );
     }
 
@@ -141,9 +152,19 @@ class Event extends BaseActiveRecordVersioned
         return parent::beforeSave();
     }
 
+    /**
+     * @return BaseAPI|null
+     */
+    public function getApi()
+    {
+        if ($this->eventType) {
+            return Yii::app()->moduleAPI->get($this->eventType->class_name);
+        }
+    }
+
     public function moduleAllowsEditing()
     {
-        if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
+        if ($api = $this->getApi()) {
             if (method_exists($api, 'canUpdate')) {
                 return $api->canUpdate($this->id);
             }
@@ -190,11 +211,20 @@ class Event extends BaseActiveRecordVersioned
     /**
      * Does this event have some kind of issue that the user should know about.
      *
+     * @param string $type
      * @return bool
      */
-    public function hasIssue()
+    public function hasIssue($type = null)
     {
-        return (boolean)$this->issues;
+        if ($type === null) {
+            return (boolean)$this->issues;
+        }
+        foreach ($this->issues as $event_issue) {
+            if (strtolower($event_issue->issue->name) === strtolower($type)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -302,7 +332,7 @@ class Event extends BaseActiveRecordVersioned
 
     public function showDeleteIcon()
     {
-        if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
+        if ($api = $this->getApi()) {
             if (method_exists($api, 'showDeleteIcon')) {
                 return $api->showDeleteIcon($this->id);
             }
@@ -410,12 +440,24 @@ class Event extends BaseActiveRecordVersioned
     }
 
     /**
+     * @param Event $event
+     * @return bool
+     */
+    public function isAfterEvent(Event $event)
+    {
+        if ($this->event_date === $event->event_date) {
+            return $this->created_date > $event->created_date;
+        }
+        return $this->event_date > $event->event_date;
+    }
+
+    /**
      * Sets various default properties for audit calls on this event.
      *
-     * @param $target
-     * @param $action
-     * @param null $data
-     * @param bool $log
+     * @param       $target
+     * @param       $action
+     * @param null  $data
+     * @param bool  $log
      * @param array $properties
      */
     public function audit($target, $action, $data = null, $log = false, $properties = array())
@@ -507,7 +549,7 @@ class Event extends BaseActiveRecordVersioned
 
     public function getImagePath($name)
     {
-        return $this->imageDirectory . "/$name.png";
+        return $this->getImageDirectory() . DIRECTORY_SEPARATOR . "$name.png";
     }
 
     public function getPDF($pdf_print_suffix = null)
@@ -556,10 +598,16 @@ class Event extends BaseActiveRecordVersioned
             32)) . '/{{PAGE}}';
     }
 
+    /**
+     * Returns the automated source text
+     *
+     * @return string
+     */
     public function automatedText()
     {
         $result = '';
-        if ($this->is_automated) {
+        if ($this->is_automated && $this->automated_source) {
+            // TODO: this really should be in the module API with some kind of default text here
             if (property_exists($this->automated_source, 'goc_number')) {
                 $result .= ' - Community optometric examination by ' . $this->automated_source->name . ' (' . $this->automated_source->goc_number . ')'. "<br>";
 
@@ -574,7 +622,7 @@ class Event extends BaseActiveRecordVersioned
 
     /**
      * @param EventType $event_type
-     * @param Patient $patient
+     * @param Patient   $patient
      *
      * @return Event[]
      */
@@ -584,6 +632,52 @@ class Event extends BaseActiveRecordVersioned
         $criteria->compare('patient_id', $patient->id);
         $criteria->compare('event_type_id', $event_type->id);
         $criteria->order = 'event_date asc';
+
         return Event::model()->with('episode')->findAll($criteria);
+    }
+
+    /**
+     * @param string $type
+     * @return string
+     */
+    public function getEventIcon($type = 'small')
+    {
+        if ($api = $this->getApi()) {
+            if (method_exists($api, 'getEventIcon')) {
+                return $api->getEventIcon($type, $this);
+            }
+        }
+
+        if ($this->eventType) {
+            return $this->eventType->getEventIcon($type, $this);
+        }
+
+        // TODO: add default images that can be returned
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getEventName()
+    {
+        if ($api = $this->getApi()) {
+            if (method_exists($api, 'getEventName')) {
+                return $api->getEventName($this);
+            }
+        }
+        return $this->eventType ? $this->eventType->name : 'Event';
+    }
+
+    /**
+     * Convenience function to retrieve the patient for event.
+     *
+     * @return Patient
+     */
+    public function getPatient()
+    {
+        if ($this->episode) {
+            return $this->episode->patient;
+        }
     }
 }

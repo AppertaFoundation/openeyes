@@ -20,7 +20,6 @@
 
 <?php
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
-$current_episode = $this->patient->getEpisodeForCurrentSubspecialty();
 $event_date = null;
 if ($event = $element->event) {
     $event_date = $event->created_date;
@@ -52,7 +51,7 @@ if (@$_POST[CHtml::modelName($element)]) {
 	</div>
 	<div class="large-4 column end collapse">
 		<span class="field-info">&micro;m&nbsp;&nbsp;</span>
-		<?php if ($past_sft = $exam_api->getOCTSFTHistoryForSide($current_episode, $side, $event_date)) {
+		<?php if ($past_sft = $exam_api->getOCTSFTHistoryForSide($this->patient, $side, $event_date)) {
     ?>
 			<span id="<?php echo $side;
     ?>_sft_history_icon" class="sft-history-icon">

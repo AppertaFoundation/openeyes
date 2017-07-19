@@ -24,7 +24,7 @@ class WaitingListController extends BaseModuleController
     {
         return array(
             array('allow',
-                'actions' => array('index', 'search', 'filterFirms', 'filterSetFirm', 'filterSetStatus', 'filterSetSiteId', 'filterSetHosNum'),
+                'actions' => array('index', 'search', 'filterFirms', 'filterSetFirm', 'filterSetStatus', 'filterSetSiteId', 'filterSetHosNum', 'setBooked'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -516,5 +516,31 @@ class WaitingListController extends BaseModuleController
                 }
             }
         }
+    }
+
+    /**
+     * @param $event_id
+     *
+     * Marks an Operation Booking "booked"
+     */
+
+    public function actionSetBooked($event_id)
+    {
+        if(!$element = Element_OphTrOperationbooking_Operation::model()->find("event_id = :event_id", array(":event_id" => $event_id)))
+        {
+            header('Content-type: application/json');
+            echo CJSON::encode(array('success'=>false, 'This event could not be found.'));
+            exit;
+        }
+
+        $element->status_id = 2;
+        $element->save();
+
+        $event = Event::model()->find("id = :event_id", array(":event_id"=>$event_id));
+        $event->deleteIssue("Operation requires scheduling");
+
+        header('Content-type: application/json');
+        echo CJSON::encode(array('success'=>true));
+        exit;
     }
 }

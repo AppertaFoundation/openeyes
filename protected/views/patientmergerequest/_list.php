@@ -54,9 +54,27 @@
                     <td class="checkbox">
                         <input type="checkbox" name="patient_merge_request_ids[]" value="<?php echo $request->id?>" <?php echo $request->status == PatientMergeRequest::STATUS_NOT_PROCESSED ? '' : 'disabled'?>>
                     </td>
-                    <td class="secondary"><?php echo $request->secondary_hos_num?></td>
+                    <td class="secondary">
+                        <?php if($request->secondary_hos_num):?>
+                            <?php echo $request->secondary_hos_num;?>
+                        <?php else: ?>
+                            <?php
+                                $patient = Patient::model()->findByPk($request->secondary_id);
+                                echo $patient->fullName;
+                            ?>
+                        <?php endif ?>
+                    </td>
                     <td class="into">INTO</td>
-                    <td class="primary"><?php echo $request->primary_hos_num?></td>
+                    <td class="primary">
+                        <?php if($request->primary_hos_num):?>
+                            <?php echo $request->primary_hos_num;?>
+                        <?php else: ?>
+                            <?php
+                            $patient = Patient::model()->findByPk($request->primary_id);
+                            echo $patient->fullName;
+                            ?>
+                        <?php endif ?>
+                    </td>
                     <td class="status">
                         <div class="circle <?php echo strtolower(str_replace(' ', '-', $request->getStatusText())); ?>" ></div>
                         <?php echo $request->getStatusText(); ?> 

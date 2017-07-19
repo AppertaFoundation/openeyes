@@ -4,8 +4,6 @@
 
 ?>
 
-<h1 class="badge">View PatientMergeRequest #<?php echo $model->id; ?></h1>
-
 <div id="patientMergeWrapper" class="container content">
     
     <div class="row">

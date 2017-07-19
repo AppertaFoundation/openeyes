@@ -23,6 +23,7 @@ if (!@$options['get_row']) {
     $this->renderPartial('//base/_messages') ?>
 	<div class="box admin">
 		<h2><?php echo $title?></h2>
+        <?php if ($options['description']) { echo "<p>{$options['description']}</p>"; } ?>
 <?php }
 $this->widget('GenericAdmin', array_merge(array('model' => $model, 'items' => $items, 'errors' => $errors), $options)); ?>
 <?php	if (!@$options['get_row']) { ?>

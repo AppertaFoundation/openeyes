@@ -49,7 +49,18 @@ class BaseActiveRecord extends CActiveRecord
     // (whilst developing this feature, will allow other elements to continue to work)
     protected $auto_update_relations = false;
 
+    // partner attribute to update_relations - set to true for automatic validation
+    // (note this has limited functionality at this juncture)
+    protected $auto_validate_relations = false;
+
     protected $originalAttributes = array();
+
+    /**
+     * Caching property to store the user responsible for change. Automatically derived.
+     * @see self::getChangeUser
+     * @var User
+     */
+    private $change_user;
 
     /**
      * Flag to indicate that model should only save to the db if actual changes have taken place on the model.
@@ -109,6 +120,31 @@ class BaseActiveRecord extends CActiveRecord
     public function tableName()
     {
         return strtolower(get_class($this));
+    }
+
+    /**
+     * @var CApplication
+     */
+    protected $app;
+
+    /**
+     * @param CApplication $app
+     */
+    public function setApp(CApplication $app)
+    {
+        $this->app = $app;
+    }
+
+    /**
+     * @return CApplication
+     */
+    public function getApp()
+    {
+        if (!$this->app) {
+            $this->app = Yii::app();
+        }
+
+        return $this->app;
     }
 
     /**
@@ -216,6 +252,26 @@ class BaseActiveRecord extends CActiveRecord
         return parent::beforeSave();
     }
 
+    protected function getChangeUser()
+    {
+        if (!$this->change_user) {
+            $this->change_user = \User::model()->findByPk($this->getChangeUserId());
+        }
+        return $this->change_user;
+    }
+
+    protected function getChangeUserId()
+    {
+        try {
+            if (isset($this->getApp()->user)) {
+                return $this->getApp()->user->id;
+            }
+        } catch (Exception $e) {
+            return 1;
+        }
+
+    }
+
     /**
      * @param bool  $runValidation
      * @param array $attributes
@@ -230,24 +286,11 @@ class BaseActiveRecord extends CActiveRecord
             return false;
         }
 
-        $user_id = null;
-
-        try {
-            if (isset(Yii::app()->user)) {
-                $user_id = Yii::app()->user->id;
-            }
-        } catch (Exception $e) {
-        }
+        $user_id = $this->getChangeUserId();
 
         if ($this->getIsNewRecord() || !isset($this->id)) {
             if (!$allow_overriding) {
-                // Set creation properties
-                if ($user_id === null) {
-                    // Revert to the admin user
-                    $this->created_user_id = 1;
-                } else {
-                    $this->created_user_id = $user_id;
-                }
+                $this->created_user_id = $user_id;
             }
             if (!$allow_overriding || $this->created_date == '1900-01-01 00:00:00') {
                 $this->created_date = date('Y-m-d H:i:s');
@@ -257,13 +300,7 @@ class BaseActiveRecord extends CActiveRecord
         try {
             if (!$allow_overriding) {
                 // Set the last_modified_user_id and last_modified_date fields
-                if ($user_id === null) {
-                    // Revert to the admin user
-                    // need this try/catch block here to make older migrations pass with this hook in place
-                    $this->last_modified_user_id = 1;
-                } else {
-                    $this->last_modified_user_id = $user_id;
-                }
+                $this->last_modified_user_id = $user_id;
             }
             if (!$allow_overriding || $this->last_modified_date == '1900-01-01 00:00:00') {
                 $this->last_modified_date = date('Y-m-d H:i:s');
@@ -271,7 +308,12 @@ class BaseActiveRecord extends CActiveRecord
         } catch (Exception $e) {
         }
 
-        return parent::save($runValidation, $attributes);
+        $res = parent::save($runValidation, $attributes);
+
+        if ($res) {
+            $this->originalAttributes = $this->getAttributes();
+        }
+        return $res;
     }
 
     /**
@@ -331,6 +373,22 @@ class BaseActiveRecord extends CActiveRecord
     }
 
     /**
+     * @param $obj
+     * @param $rel
+     * @return mixed
+     */
+    private function getReverseRelation($obj, $rel)
+    {
+        foreach ($obj->getMetaData()->relations as $possible_reverse) {
+            if (get_class($possible_reverse) === self::BELONGS_TO) {
+                if ($possible_reverse->foreignKey === $rel->foreignKey) {
+                    return $possible_reverse;
+                }
+            }
+        }
+    }
+
+    /**
      * Save objects to the given relation.
      *
      * @param $name
@@ -344,15 +402,21 @@ class BaseActiveRecord extends CActiveRecord
     {
         $saved_ids = array();
         if ($new_objs) {
+            $reverse_relation = $this->getReverseRelation($new_objs[0],$rel);
+
             foreach ($new_objs as $i => $new) {
                 $new->{$rel->foreignKey} = $this->getPrimaryKey();
+                // set the relation so that it does not need to be retrieved from the db.
+                if ($reverse_relation) {
+                    $new->{$reverse_relation->name} = $this;
+                }
 
                 if ($new->hasAttribute('display_order')) {
                     $new->display_order = $i + 1;
                 }
 
                 if (!$new->save()) {
-                    throw new Exception('Unable to save {$name} item {$i}');
+                    throw new Exception("Unable to save {$name} item {$i}" . print_r($new->getErrors(), true));
                 }
                 $saved_ids[] = $new->getPrimaryKey();
             }
@@ -361,7 +425,7 @@ class BaseActiveRecord extends CActiveRecord
             foreach ($orig_objs as $orig) {
                 if (!in_array($orig->getPrimaryKey(), $saved_ids)) {
                     if (!$orig->delete()) {
-                        throw new Exception('Unable to delete removed {$name} with pk {$orig->primaryKey}');
+                        throw new Exception("Unable to delete removed {$name} with pk {$orig->primaryKey}");
                     }
                 }
             }
@@ -393,7 +457,7 @@ class BaseActiveRecord extends CActiveRecord
         }
         // array of ids that should be saved
         if ($new_objs) {
-            $_table = Yii::app()->db->schema->getTable($tbl_name);
+            $_table = $this->getApp()->db->schema->getTable($tbl_name);
 
             foreach ($new_objs as $i => $new) {
                 $pk = $new->getPrimaryKey();
@@ -403,11 +467,12 @@ class BaseActiveRecord extends CActiveRecord
                     // insert statement
                     $builder = $this->getCommandBuilder();
                     $criteria = new CDbCriteria();
-                    $data = array($tbl_keys[0] => $this->getPrimaryKey(), $tbl_keys[1] => $new->getPrimaryKey());
+                    $data = array_merge($this->getRelationsDefaults($name), array($tbl_keys[0] => $this->getPrimaryKey(), $tbl_keys[1] => $new->getPrimaryKey()));
 
                     if (isset($_table->columns['display_order'])) {
                         $data['display_order'] = $i + 1;
                     }
+
 
                     $cmd = $builder->createInsertCommand($tbl_name, $data);
 
@@ -461,8 +526,6 @@ class BaseActiveRecord extends CActiveRecord
                 $orig_objs = $this->getRelated($name, true);
 
                 if (get_class($rel) == self::MANY_MANY) {
-                    foreach ($orig_objs as $obj) {
-                    }
                     $this->afterSaveManyMany($name, $rel, $new_objs, $orig_objs);
                 } else {
                     if ($thru_name = $rel->through) {
@@ -478,9 +541,11 @@ class BaseActiveRecord extends CActiveRecord
                         $this->afterSaveHasMany($name, $rel, $new_objs, $orig_objs);
                     }
                 }
+                // retrieving the original objects above resets the relation to what was in the db before this save
+                // process. We restore it the 'new objects' here, thereby maintaining consistency with the db.
+                $this->$name = $new_objs;
             }
         }
-        $this->originalAttributes = $this->getAttributes();
         parent::afterSave();
     }
 
@@ -694,5 +759,38 @@ class BaseActiveRecord extends CActiveRecord
         }
 
         return date('H:i:s', strtotime($startTime.'- 1 hour'));
+    }
+
+    /**
+     * @param $rel_name
+     */
+    private function validateRelation($rel_name)
+    {
+        OELog::log($rel_name);
+        foreach ($this->$rel_name as $i => $rel_obj) {
+            if (!$rel_obj->validate()) {
+                foreach ($rel_obj->getErrors() as $fld => $err) {
+                    $this->addError($rel_name, ($i + 1) . ' - '.implode(', ', $err));
+                }
+            }
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function afterValidate()
+    {
+        if ($this->auto_validate_relations) {
+            // automatically run validation on relations - only supporting has many for now
+            $record_relations = $this->getMetaData()->relations;
+            foreach ($record_relations as $rel_name => $rel) {
+                $rel_type = get_class($rel);
+                if ($rel_type == self::HAS_MANY) {
+                    $this->validateRelation($rel_name);
+                }
+            }
+        }
+        parent::afterValidate();
     }
 }

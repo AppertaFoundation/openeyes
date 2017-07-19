@@ -49,15 +49,50 @@ class FormularyDrugsController extends BaseAdminController
         $admin = new Admin(FormularyDrugs::model(), $this);
         $admin->setListFields(array(
             'name',
-            //'type_id',
-            'drug_type.name',
+            'tagnames',
             'aliases',
             'active',
         ));
-        $admin->searchAll();
+        $admin->getSearch()->addSearchItem('name, aliases');
+        $admin->getSearch()->addSearchItem('tags.name');
         $admin->setModelDisplayName('Formulary Drugs');
         $admin->getSearch()->addActiveFilter();
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+
+        $criteria = new CDbCriteria();
+
+        foreach (array('name', 'name, aliases', 'active') as $field)
+        {
+            if(isset($_GET['search'][$field]) && $_GET['search'][$field] != '')
+            {
+                if(strpos($field, ', ') === false)
+                {
+                    // Single column fields
+                    $criteria->compare($field, $_GET['search'][$field], ($field != 'active'));
+                }
+                else
+                {
+                    // Combined fields
+                    $crit2 = new CDbCriteria();
+                    foreach (explode(', ', $field) as $column)
+                    {
+                        $crit2->compare($column, $_GET['search'][$field], true, 'OR');
+                    }
+
+                    $criteria->mergeWith($crit2, 'AND');
+                }
+            }
+        }
+
+        if(isset($_GET['search']['tags.name']) && $_GET['search']['tags.name'] != '')
+        {
+            $command = Yii::app()->db->createCommand("SELECT drug_id FROM drug_tag WHERE tag_id IN (SELECT id FROM tag WHERE name LIKE CONCAT('%', :tagname ,'%'))");
+            $matching_ids = $command->queryColumn(array(':tagname' => $_GET['search']['tags.name']));
+            $criteria->addInCondition('id', $matching_ids, 'AND');
+        }
+
+        $admin->getSearch()->setCriteria($criteria);
+
         $admin->listModel();
     }
 
@@ -79,13 +114,6 @@ class FormularyDrugsController extends BaseAdminController
         $admin->setEditFields(array(
             'id' => 'label',
             'name' => 'text',
-            'type_id' => array(
-                'widget' => 'DropDownList',
-                'options' => CHtml::listData(DrugType::model()->findAll(), 'id', 'name'),
-                'htmlOptions' => null,
-                'hidden' => false,
-                'layoutColumns' => null,
-            ),
             'aliases' => 'text',
             'tallman' => 'text',
             'form_id' => array(
@@ -118,7 +146,6 @@ class FormularyDrugsController extends BaseAdminController
                 'hidden' => false,
                 'layoutColumns' => null,
             ),
-            'preservative_free' => 'checkbox',
             'active' => 'checkbox',
             'allergy_warnings' => array(
                 'widget' => 'MultiSelectList',
@@ -129,6 +156,20 @@ class FormularyDrugsController extends BaseAdminController
                     'id',
                     'name'
                 )),
+            ),
+            'tags' => array(
+                'widget' => 'TagsInput',
+                'relation' => 'tags',
+                'relation_field_id' => 'id',
+                'label' => 'Tags',
+                /*'options' => CHtml::encodeArray(CHtml::listData(
+                    Tag::model()->findAll(),
+                    'id',
+                    'name'
+                )),*/
+                'htmlOptions' => array(
+                    'autocomplete_url' => $this->createAbsoluteUrl('/oeadmin/formularyDrugs/tagsAutocomplete')
+                )
             ),
             'national_code' => 'text',
         ));
@@ -142,5 +183,18 @@ class FormularyDrugsController extends BaseAdminController
     {
         $admin = new Admin(FormularyDrugs::model(), $this);
         $admin->deleteModel();
+    }
+
+    public function actionTagsAutocomplete($term)
+    {
+        $tags = Tag::model()->findAllBySql("SELECT * FROM tag WHERE name LIKE CONCAT('%', :term, '%')", array(':term'=>$term));
+        $tnames = array();
+        foreach ($tags as $tag)
+        {
+            $tnames[] = $tag->name;
+        }
+
+        header('content-type: application/json');
+        echo CJSON::encode($tnames);
     }
 }

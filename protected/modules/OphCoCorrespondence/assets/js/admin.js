@@ -111,6 +111,55 @@ $(document).ready(function() {
 	if ($('#LetterMacro_body').length >0) {
 		macro_cursor_position = $('#LetterMacro_body').val().length;
 	}
+
+    $('#internal_referral_settings tr.clickable').click(function (e) {
+        e.preventDefault();
+        window.location.href = baseUrl + '/OphCoCorrespondence/oeadmin/internalReferralSettings/editSetting?key=' + $(this).data('key');
+    });
+
+	/** Internal Referral Settings **/
+	function saveSiteList(){
+		data = $('#to_location_sites_grid input').serializeArray();
+
+		data.push({name: 'YII_CSRF_TOKEN', value: YII_CSRF_TOKEN});
+
+        $.ajax({
+            'type': 'POST',
+            'url': '/OphCoCorrespondence/oeadmin/internalReferralSettings/updateToLocationList',
+            'data': data,
+			'beforeSend':function (){
+            	$('#internal_referral_to_location .loader').show();
+                $('#internal_referral_to_location span.error').fadeOut(500);
+			},
+            'success': function (data) {
+			    data = JSON.parse(data);
+
+                if(data.success === true){
+                    $('#internal_referral_to_location span.saved').show();
+                    $('#internal_referral_to_location span.saved').fadeOut(3000);
+                } else {
+                    $('#internal_referral_to_location span.error').show();
+                    if(data.message){
+                        $('#internal_referral_to_location span.error').text(data.message);
+                    }
+                }
+            },
+			'error': function(){
+                $('#internal_referral_to_location span.error').show();
+			},
+            'complete': function(){
+                $('#internal_referral_to_location .loader').hide();
+			}
+        });
+
+	}
+
+    $('#save_to_location_table').on('click', function(){
+        saveSiteList();
+    });
+
+	/** End of Internal Referral Settings **/
+
 });
 
 var macro_cursor_position = 0;

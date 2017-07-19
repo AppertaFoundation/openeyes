@@ -16,31 +16,9 @@
 
 // Admin box
 .box {
-	&.reports {
-		@include panel;
-		@include radius;
-		background: #fafafa;
-		margin: 0 0 $oe-box-gutter 0;
-		h2 {
-			margin-bottom: 12px;
-		}
-		.table-actions {
-			select {
-				width: auto;
-			}
-		}
-		.box-header {
-			margin: 0;
-			.box-title {
-				float: left;
-			}
-		}
-		.box-actions {
-			float: right;
-		}
-		@media print {
-			border: 0;
-			padding: 0;
-		}
-	}
+  &.reports {
+    @include panel;
+    @include radius;
+    @include sidebar-box;
+  }
 }

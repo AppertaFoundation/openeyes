@@ -40,11 +40,11 @@ class PatientController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('search', 'ajaxSearch', 'view'),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'practiceList' ),
                 'users' => array('@'),
             ),
             array('allow',
-                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode'),
+                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -84,6 +84,10 @@ class PatientController extends BaseController
                 'actions' => array('editSocialHistory', 'editSocialHistory'),
                 'roles' => array('OprnEditSocialHistory'),
             ),
+            array('allow',
+                'actions' => array('create', 'update'),
+                'roles' => array('TaskAddPatient'),
+            )
         );
     }
 
@@ -120,7 +124,7 @@ class PatientController extends BaseController
         Yii::app()->assetManager->registerScriptFile('js/patientSummary.js');
 
         $this->patient = $this->loadModel($id);
-
+        
         $tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
         $eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
 
@@ -132,7 +136,8 @@ class PatientController extends BaseController
         // NOTE that this is not being used in the render
         $supportserviceepisodes = $this->patient->supportserviceepisodes;
 
-        Audit::add('patient summary', 'view', $id);
+        $properties['patient_id'] = $this->patient->id;
+        Audit::add('patient summary', 'view', $id, '', $properties);
 
         $this->logActivity('viewed patient');
 
@@ -171,10 +176,11 @@ class PatientController extends BaseController
     public function actionSearch()
     {
         $term = \Yii::app()->request->getParam('term', '');
+
         $patientSearch = new PatientSearch();
-        $dataProvider = $patientSearch->search($term);
-        $itemCount = $dataProvider->totalItemCount;
-        $search_terms = $patientSearch->getSearchTerms();
+	    $dataProvider = $patientSearch->search($term);
+	    $itemCount = $dataProvider->totalItemCount;
+	    $search_terms = $patientSearch->getSearchTerms();
 
         if ($itemCount == 0) {
             Audit::add('search', 'search-results', implode(',', $search_terms).' : No results');
@@ -204,9 +210,9 @@ class PatientController extends BaseController
 
             $this->redirect(Yii::app()->homeUrl);
         } elseif ($itemCount == 1) {
-            foreach ($dataProvider->getData() as $item) {
-                $this->redirect(array('patient/view/'.$item->id));
-            }
+            $item = $dataProvider->getData()[0];
+            $this->redirect(array($item->generateEpisodeLink()));
+
         } else {
             $this->renderPatientPanel = false;
 
@@ -222,35 +228,49 @@ class PatientController extends BaseController
         }
     }
 
-       /**
-        * Ajax search.
-        */
-       public function actionAjaxSearch()
-       {
-           $term = trim(\Yii::app()->request->getParam('term', ''));
-           $result = array();
-           $patientSearch = new PatientSearch();
-           if ($patientSearch->isValidSearchTerm($term)) {
-               $dataProvider = $patientSearch->search($term);
-               foreach ($dataProvider->getData() as $patient) {
-                   $result[] = array(
-                       'id' => $patient->id,
-                       'first_name' => $patient->first_name,
-                       'last_name' => $patient->last_name,
-                       'age' => ($patient->isDeceased() ? 'Deceased' : $patient->getAge()),
-                       'gender' => $patient->getGenderString(),
-                       'genderletter' => $patient->gender,
-                       'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
-                       'hos_num' => $patient->hos_num,
-                       'nhsnum' => $patient->nhsnum,
-                       // in script.js we override the behaviour for showing search results and its require the label key to be present
-                       'label' => $patient->first_name.' '.$patient->last_name.' ('.$patient->hos_num.')',
-                   );
-               }
+   /**
+    * Ajax search.
+    */
+   public function actionAjaxSearch()
+   {
+       $term = trim(\Yii::app()->request->getParam('term', ''));
+       $result = array();
+       $patientSearch = new PatientSearch();
+       if ($patientSearch->isValidSearchTerm($term)) {
+           $dataProvider = $patientSearch->search($term);
+           foreach ($dataProvider->getData() as $patient) {
+               $result[] = array(
+                   'id' => $patient->id,
+                   'first_name' => $patient->first_name,
+                   'last_name' => $patient->last_name,
+                   'age' => ($patient->isDeceased() ? 'Deceased' : $patient->getAge()),
+                   'gender' => $patient->getGenderString(),
+                   'genderletter' => $patient->gender,
+                   'dob' => ($patient->dob) ? $patient->NHSDate('dob') : 'Unknown',
+                   'hos_num' => $patient->hos_num,
+                   'nhsnum' => $patient->nhsnum,
+                   // in script.js we override the behaviour for showing search results and its require the label key to be present
+                   'label' => $patient->first_name.' '.$patient->last_name.' ('.$patient->hos_num.')',
+                   'is_deceased' => $patient->is_deceased,
+               );
            }
-           echo CJavaScript::jsonEncode($result);
-           Yii::app()->end();
        }
+       echo CJavaScript::jsonEncode($result);
+       Yii::app()->end();
+   }
+
+    public function actionParentEvent($id)
+    {
+        if (!$event = Event::model()->findByPk($id)) {
+            throw new Exception("Event not found: $id");
+        }
+
+        if (!$event->parent) {
+            throw new Exception("Event has no parent: $id");
+        }
+
+        $this->redirect(Yii::app()->createUrl('/'.$event->parent->eventType->class_name.'/default/view/'.$event->parent_id));
+    }
 
     public function actionEpisodes()
     {
@@ -1361,6 +1381,11 @@ class PatientController extends BaseController
         echo '1';
     }
 
+    /**
+     * @return mixed|string
+     * @throws Exception
+     * @deprecated - since version 2.0
+     */
     public function actionAddNewEpisode()
     {
         if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
@@ -1425,5 +1450,271 @@ class PatientController extends BaseController
                     'A new biometry report is available for this patient - please create a biometry event to view it ');
             }
         }
+    }
+
+    /**
+     * @param $area
+     */
+    public function renderModulePartials($area)
+    {
+        if (isset(Yii::app()->params['module_partials'][$area])) {
+            foreach (Yii::app()->params['module_partials'][$area] as $module => $partials) {
+                if ($api = Yii::app()->moduleAPI->get($module)) {
+                    foreach ($partials as $partial) {
+                        if ($viewFile = $api->findViewFile('patientSummary', $partial)) {
+                            $this->renderFile($viewFile, array(
+                                'patient' => $this->patient,
+                                'api' => $api,
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Creates a new model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     */
+    public function actionCreate()
+    {
+        Yii::app()->assetManager->registerScriptFile('js/patient.js');
+        //Don't render patient summary box on top as we have no selected patient
+        $this->renderPatientPanel = false;
+       
+        $patient = new Patient('manual');
+        $patient->noPas();
+        $contact = new Contact('manualAddPatient');
+        $address = new Address();
+
+        $this->performAjaxValidation(array($patient, $contact, $address));
+        
+        if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
+        {   
+            $contact->attributes = $_POST['Contact'];
+            $patient->attributes = $_POST['Patient'];
+            $address->attributes = $_POST['Address'];
+
+            // not to be sync with PAS
+            $patient->is_local = 1;
+            
+            list($contact, $patient, $address) = $this->performPatientSave($contact, $patient, $address);
+        }
+        
+        $this->render('crud/create',array(
+                        'patient' => $patient,
+                        'contact' => $contact,
+                        'address' => $address,
+        ));
+   }
+   
+   /**
+    * Saving the Contact, Patient and Address object
+    * 
+    * @param Contact $contact
+    * @param Patient $patient
+    * @param Address $address
+    * @return array on validation error returns the 3 objects otherwise redirects to the patient view page
+    */
+   private function performPatientSave(Contact $contact, Patient $patient, Address $address)
+   {
+        $transaction = Yii::app()->db->beginTransaction();
+        try{
+            if( $contact->save() ){
+                $patient->contact_id = $contact->id;
+                $address->contact_id = $contact->id;
+                $action = $patient->isNewRecord ? 'add' : 'edit';
+                $isNewPatient = $patient->isNewRecord ? true : false;
+
+                $issetGeneticsModule = isset(Yii::app()->modules["Genetics"]);
+                $issetGeneticsClinical = Yii::app()->user->checkAccess('Genetics Clinical');
+
+                if($patient->save() && $address->save()){
+                    $transaction->commit();
+
+                    if(($issetGeneticsModule !== FALSE ) && ($issetGeneticsClinical !== FALSE) && ($isNewPatient)){
+                        $this->redirect(array('Genetics/subject/edit?patient='.$patient->id));
+                    } else {
+                        Audit::add('Patient', $action . '-patient', "Patient manually [id: $patient->id] {$action}ed.");
+                        $this->redirect(array('view', 'id' => $patient->id));
+                    }
+
+                } else {
+                    // patient or address failed to save
+                    $transaction->rollback();
+
+                    // to show validation error messages to the user
+                    $patient->validate();
+                    $address->validate();
+                }
+            } else {
+                // to show validation error messages to the user
+                $patient->validate();
+                $address->validate();
+
+                // remove contact_id validation error
+                $patient->clearErrors('contact_id');
+                $address->clearErrors('contact_id');
+
+                // contact failed to save
+                $transaction->rollback();
+            }
+
+        } catch (Exception $ex) {
+            OELog::logException($ex);
+            $transaction->rollback();
+        }
+        
+        return array($contact, $patient, $address);
+   }
+   
+    /**
+     * Updates a particular model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id the ID of the model to be updated
+     */
+    public function actionUpdate($id)
+    {
+        Yii::app()->assetManager->registerScriptFile('js/patient.js');
+        
+        //Don't render patient summary box on top as we have no selected patient
+        $this->renderPatientPanel = false;
+
+        $patient = $this->loadModel($id);
+        $patient->scenario = 'manual';
+        
+        //only local patient can be edited
+        if($patient->is_local == 0){
+            Yii::app()->user->setFlash('warning.update-patient', 'Only local patients can be edited.');
+            $this->redirect(array('view', 'id' => $patient->id));
+        }
+        
+        $contact = $patient->contact ? $patient->contact : new Contact();
+        $address = $patient->contact->address ? $patient->contact->address : new Address();
+        
+        $this->performAjaxValidation(array($patient, $contact, $address));
+
+        if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
+        {
+            $contact->attributes = $_POST['Contact'];
+            $patient->attributes = $_POST['Patient'];
+            $address->attributes = $_POST['Address'];
+
+            // not to be sync with PAS
+            $patient->is_local = 1;
+
+            list($contact, $patient, $address) = $this->performPatientSave($contact, $patient, $address);
+        }
+
+        $this->render('crud/update',array(
+                        'patient' => $patient,
+                        'contact' => $contact,
+                        'address' => $address,
+        ));
+    }
+    
+    /**
+     * Deletes a particular model.
+     * If deletion is successful, the browser will be redirected to the 'admin' page.
+     * @param integer $id the ID of the model to be deleted
+     */
+    public function actionDelete($id)
+    {
+        $patient = $this->loadModel($id);
+        $patient->deleted = 1;
+        $patient->save();
+        
+        // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+        if(!isset($_GET['ajax'])){
+            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('site'));
+        }
+    }
+    
+    public function actionGpList($term)
+    {
+        $criteria = new CDbCriteria;
+        $criteria->addSearchCondition('first_name', '', true, 'OR');
+        $criteria->addSearchCondition('LOWER(first_name)', '', true, 'OR');
+        $criteria->addSearchCondition('last_name', '', true, 'OR');
+        $criteria->addSearchCondition('LOWER(last_name)', '', true, 'OR');
+        
+        $criteria->addSearchCondition('concat(first_name, " ", last_name)', $term, true, 'OR');
+        $criteria->addSearchCondition('LOWER(concat(first_name, " ", last_name))', $term, true, 'OR');
+        
+        $gps = Gp::model()->with('contact')->findAll($criteria);
+        
+        $output = array();
+        foreach($gps as $gp){
+            $output[] = array(
+                'label' => $gp->correspondenceName,
+                'value' => $gp->id
+            );
+        }
+        
+        echo CJSON::encode($output);
+        
+        Yii::app()->end();
+    }
+    
+    public function actionPracticeList($term)
+    {
+        $term = strtolower($term);
+        
+        $criteria = new CDbCriteria;
+        $criteria->join = 'JOIN contact on t.contact_id = contact.id';
+        $criteria->join .= '  JOIN address on contact.id = address.contact_id';
+        $criteria->addCondition('( (date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW()))');
+        
+        $criteria->addSearchCondition('LOWER(CONCAT_WS(", ", address1, address2, city, county, postcode))', $term);
+        
+        $practices = Practice::model()->findAll($criteria);
+        
+        $output = array();
+        foreach($practices as $practice){
+            $output[] = array(
+                'label' => $practice->getAddressLines(),
+                'value' => $practice->id
+            );
+        }
+        
+        echo CJSON::encode($output);
+        
+        Yii::app()->end();
+    }
+
+    /**
+     * Ajax method for viewing previous elements.
+     *
+     * @param int $element_type_id
+     * @param int $patient_id
+     *
+     * @throws CHttpException
+     */
+    public function actionPreviousElements($element_type_id, $patient_id, $limit = null)
+    {
+        $element_type = ElementType::model()->findByPk($element_type_id);
+        if (!$element_type) {
+            throw new CHttpException(404, 'Unknown ElementType');
+        }
+        $this->patient = Patient::model()->findByPk($patient_id);
+        if (!$this->patient) {
+            throw new CHttpException(404, 'Unknown Patient');
+        }
+
+        $api = $element_type->eventType->getApi();
+        $result = array();
+        foreach ($api->getElements($element_type->class_name, $this->patient, false, null, $limit) as $element) {
+            // Note when there are more complex elements required for this,
+            // would recommend pushing this into a base method that can then
+            // be overridden as appropriate
+            $result[] = array_merge(
+                array('subspecialty' => $element->event->episode->getSubspecialtyText(),
+                    'event_date' => $element->event->NHSDate('event_date')),
+                $element->getDisplayAttributes()
+            );
+        }
+
+        echo CJSON::encode($result);
     }
 }

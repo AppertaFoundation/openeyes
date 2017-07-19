@@ -136,3 +136,54 @@ $oe-selector-form-select-fields: "select";
 		background-image: $icon;
 	}
 }
+
+@mixin navigation() {
+	list-style-type: none;
+	margin: 0;
+	a {
+		@include border-radius(3px);
+		background: #fff;
+		display: block;
+		margin-bottom: 4px;
+		padding: 4px 8px;
+		&:hover {
+			background: #3665ff;
+			color: #fff;
+		}
+		&.selected {
+			background: #ccc;
+			color: #333;
+		}
+	}
+	li:last-child {
+		a {
+			margin: 0;
+		}
+	}
+}
+
+@mixin sidebar-box() {
+	background: #fafafa;
+	margin: 0 0 $oe-box-gutter 0;
+	h2 {
+		margin-bottom: 12px;
+	}
+	.table-actions {
+		select {
+			width: auto;
+		}
+	}
+	.box-header {
+		margin: 0;
+		.box-title {
+			float: left;
+		}
+	}
+	.box-actions {
+		float: right;
+	}
+	@media print {
+		border: 0;
+		padding: 0;
+	}
+}

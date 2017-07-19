@@ -99,7 +99,7 @@ class OphCiExamination_InjectionManagementComplex_RiskAssignment extends \BaseAc
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
@@ -112,10 +112,4 @@ class OphCiExamination_InjectionManagementComplex_RiskAssignment extends \BaseAc
             ));
     }
 
-    /**
-     * Set default values for forms on create.
-     */
-    public function setDefaultOptions()
-    {
-    }
 }

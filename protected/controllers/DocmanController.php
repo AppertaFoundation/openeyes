@@ -139,6 +139,7 @@ class DocmanController extends BaseController
         $patient = Patient::model()->findByPk($patient_id);
         $last_row_index = Yii::app()->request->getQuery('last_row_index');
         $selected_contact_type = Yii::app()->request->getQuery('selected_contact_type');
+        $is_mandatory = Yii::app()->request->getQuery('is_mandatory');
 
         $contact_id = null;
         $address = null;
@@ -182,6 +183,8 @@ class DocmanController extends BaseController
                 'selected_contact_type' => $selected_contact_type, 
                 'contact_name' => $contact_name,
                 'can_send_electronically' => isset($patient->gp) || isset($patient->practice),
+                'is_internal_referral' => true,
+                'is_mandatory' => $is_mandatory == 'true' ? true : false
             )
         );
         $this->getApp()->end();
@@ -234,12 +237,13 @@ class DocmanController extends BaseController
             }
         }
 
+        $element = new ElementLetter();
         echo $this->renderPartial('/docman/_create', array(
                 'row_index' => (isset($row_index) ? $row_index : 0),
                 'macro_data' => $macro_data,
                 'macro_id' => $macro_id,
-                'element' => (new ElementLetter()),
-                'can_send_electronically' => true
+                'element' => $element,
+                'can_send_electronically' => true,
             )
         );
     }
