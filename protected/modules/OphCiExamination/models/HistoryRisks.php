@@ -154,22 +154,26 @@ class HistoryRisks extends \BaseEventTypeElement
 
         // prevent duplicate entries
         foreach ($this->entries as $entry) {
-            if (!$entry->risk->isOther() && in_array($entry->risk_id, $risk_ids)) {
-                $this->addError('entries', 'Cannot have duplicate entry for ' . $entry->risk);
-            } else {
-                $risk_ids[] = $entry->risk_id;
+            if ($entry->risk) {
+                if (!$entry->risk->isOther() && in_array($entry->risk_id, $risk_ids)) {
+                    $this->addError('entries', 'Cannot have duplicate entry for ' . $entry->risk);
+                } else {
+                    $risk_ids[] = $entry->risk_id;
+                }
             }
         }
 
-        // ensure required risks have been provided.
-        $missing_required = array();
-        foreach ($this->getRequiredRisks() as $required) {
-            if (!in_array($required->id, $risk_ids)) {
-                $missing_required[] = $required;
+        if ($this->getScenario() != 'migration') {
+            // ensure required risks have been provided.
+            $missing_required = array();
+            foreach ($this->getRequiredRisks() as $required) {
+                if (!in_array($required->id, $risk_ids)) {
+                    $missing_required[] = $required;
+                }
             }
-        }
-        if (count($missing_required)) {
-            $this->addError('entries', 'Missing required risks: ' . implode(', ', $missing_required));
+            if (count($missing_required)) {
+                $this->addError('entries', 'Missing required risks: ' . implode(', ', $missing_required));
+            }
         }
 
         parent::afterValidate();

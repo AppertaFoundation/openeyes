@@ -348,9 +348,9 @@ class BaseAPI
      * @param Eye $eye
      * @return string
      */
-    public function getEyeMethod($prefix, Eye $eye)
+    public function getEyeMethod($prefix, Eye $eye = null)
     {
-        if ($postfix = Eye::methodPostFix($eye->id)) {
+        if ($eye && $postfix = Eye::methodPostFix($eye->id)) {
             return $prefix . $postfix;
         }
     }

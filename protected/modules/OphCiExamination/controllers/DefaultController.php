@@ -121,7 +121,8 @@ class DefaultController extends \BaseEventTypeController
         // Deprecated elements that we keep in place for backward compatibility with rendering
         $remove = array_merge($remove, array(
             'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy',
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion'
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion',
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk'
         ));
 
         if ($this->set) {
