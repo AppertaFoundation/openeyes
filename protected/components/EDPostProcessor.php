@@ -22,6 +22,10 @@ class EDPostProcessor
      */
     protected $app;
 
+    /**
+     * EDPostProcessor constructor.
+     * @param CApplication|null $app
+     */
     public function __construct(CApplication $app = null)
     {
         if ($app === null)
@@ -32,60 +36,84 @@ class EDPostProcessor
     }
 
     /**
-     * @param Event $event
+     * @param int $event_id
      */
-    protected function clearEvent(Event $event)
+    protected function clearEvent($event_id)
     {
-        $this->app->db()
+        $this->app->db
             ->createCommand('DELETE FROM mview_datapoint_node where event_id = :eid')
-            ->bindParam(':eid', $event->id)
+            ->bindParam(':eid', $event_id)
             ->query();
     }
 
-    protected function
-    protected function storeDoodle(Event $event, $mnemonic, $side, $doodle)
+    /**
+     * @param $event_id
+     * @param $mnemonic
+     * @param $side
+     * @param $doodle
+     */
+    protected function storeDoodle($event_id, $mnemonic, $side, $doodle)
     {
+        OELog::log(print_r($doodle, true));
         $param_map = array(
-            'event_id' => $event->id,
-            'eyedraw_class_mnemonic' => $doodle->subClass,
+            'event_id' => $event_id,
+            'eyedraw_class_mnemonic' => $doodle->subclass,
             'canvas_mnemonic' => $mnemonic,
             'placement_order' => $doodle->order,
-            'laterality' => $side,
+            'laterality' => ($side === Eye::LEFT) ? 'L' : 'R',
             'content_json' => json_encode($doodle)
         );
 
-        $this->app->db()
+        $placeholders = array();
+        $i = 0;
+        foreach ($param_map as $k => $v) {
+            $placeholders[':p' . $i] = $v;
+            $i++;
+        }
+        $cmd  = $this->app->db
             ->createCommand('INSERT INTO mview_datapoint_node (' . implode(',', array_keys($param_map)) . ')'
-                . ' VALUES (' . implode(',', array_map( ')');
+                . ' VALUES (' . implode(',', array_keys($placeholders)) . ')');
+
+        foreach ($placeholders as $k => $v) {
+            $cmd->bindValue($k, $v);
+        }
+        $cmd->query();
     }
 
-    public function getCanvasMnemonicForElementType(ElementType $element_type)
+    /**
+     * @param $element_type_id
+     * @return string
+     */
+    public function getCanvasMnemonicForElementType($element_type_id)
     {
-        return $this->app->db()
+        return $this->app->db
             ->createCommand('SELECT canvas_mnemonic from eyedraw_canvas WHERE container_element_type_id = :etid')
-            ->bindParam(':etid', $element_type->id)
+            ->bindParam(':etid', $element_type_id)
             ->queryScalar();
     }
 
     /**
      * @param $element
-     * @param array $attributes
+     * @param array $attributes array(attr_name => side ...)
      * @throws Exception
      */
     public function shredElementEyedraws($element, $attributes=array())
     {
-        $this->clearEvent($element->event);
-        $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element->getElementType());
+        $this->clearEvent($element->event_id);
+        $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element->getElementType()->id);
 
-        foreach ($attributes as $attr) {
+        foreach ($attributes as $attr => $side) {
+            if (!strlen($element->$attr)) {
+                continue;
+            }
+
             if (!($ed_json = json_decode($element->$attr))) {
-                throw new Exception("Could not parse {$attr} as json");
+                throw new Exception("Could not parse {$attr} as json" . $element->$attr);
             }
 
             foreach ($ed_json as $ed_doodle) {
-                $this->storeDoodle($element->event, $canvas_mnemonic, $ed_doodle);
+                $this->storeDoodle($element->event_id, $canvas_mnemonic, $side, $ed_doodle);
             }
         }
-
     }
 }
