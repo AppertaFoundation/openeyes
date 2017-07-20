@@ -44,6 +44,11 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
         return Yii::app()->db;
     }
 
+    /**
+     * Default action to process the given configuration file.
+     *
+     * @param $filename
+     */
     public function actionLoad($filename)
     {
         if (!$filename) {
@@ -65,6 +70,10 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
         }
     }
 
+    /**
+     * @param $canvas
+     * @param $element_type
+     */
     private function insertOrUpdateCanvas($canvas, $element_type)
     {
         $current = $this->getDb()
@@ -87,14 +96,11 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
             ->query();
     }
 
-    protected function processCanvasDefinition($canvas)
-    {
-        // verify that the element type exists for this definition
-        if ($element_type = ElementType::model()->findByAttributes(array('class_name' => $canvas->oe_class))) {
-            $this->insertOrUpdateCanvas($canvas, $element_type);
-        }
-    }
-
+    /**
+     * Create or update a doodle definition
+     *
+     * @param $definition
+     */
     private function insertOrUpdateDoodle($definition)
     {
         $current = $this->getDb()
@@ -114,8 +120,29 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
             ->query();
     }
 
+    /**
+     * @param $mnemonic
+     * @return bool
+     */
+    protected function isCanvasDefined($mnemonic)
+    {
+        return $this->getDb()
+            ->createCommand('SELECT count(*) FROM ' . static::CANVS_TBL
+                . ' WHERE canvas_mnemonic = :cvmn')
+            ->bindValue(':cvmn', $mnemonic)
+            ->queryScalar() > 0;
+    }
+
+    /**
+     * @param $definition
+     * @param $canvas
+     */
     private function insertOrUpdateCanvasDoodle($definition, $canvas)
     {
+        if (!$this->isCanvasDefined($canvas->mnemonic)) {
+            return;
+        }
+
         $mnemonic = $definition->mnemonic;
         $canvas_mnemonic = $canvas->mnemonic;
         $current = $this->getDb()
@@ -146,6 +173,21 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
             ->query();
     }
 
+    /**
+     *
+     * @param $canvas
+     */
+    protected function processCanvasDefinition($canvas)
+    {
+        // verify that the element type exists for this definition
+        if ($element_type = ElementType::model()->findByAttributes(array('class_name' => $canvas->oe_class))) {
+            $this->insertOrUpdateCanvas($canvas, $element_type);
+        }
+    }
+
+    /**
+     * @param $doodle
+     */
     protected function processDoodleDefinition($doodle)
     {
         // update or create doodle entry
