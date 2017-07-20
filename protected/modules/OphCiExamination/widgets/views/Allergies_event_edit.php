@@ -16,19 +16,21 @@
  */
 
 ?>
+<?php
+    Yii::app()->clientScript->registerScriptFile($this->getJsPublishedPath('Allergies.js'), CClientScript::POS_HEAD);
+    $model_name = CHtml::modelName($element);
+?>
 
 <div class="element-fields">
-  <?php
-  Yii::app()->clientScript->registerScriptFile($this->getJsPublishedPath('Allergies.js'), CClientScript::POS_HEAD);
-  $model_name = CHtml::modelName($element);
-  $this->render(
-      'Allergies_form',
-      array(
-          'element' => $element,
-          'model_name' => $model_name,
-      )
-  );
-  ?>
+    <div class="field-row row<?=count($element->entries) ? ' hidden' : ''?>" id="<?=$model_name?>_no_allergies_wrapper">
+        <div class="large-3 column">
+            <label for="<?=$model_name?>_no_allergies">Confirm patient has no allergies:</label>
+        </div>
+        <div class="large-2 column end">
+            <?php echo CHtml::checkBox($model_name .'[no_allergies]', $element->no_allergies_date ? true : false); ?>
+        </div>
+    </div>
+
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
   <table id="<?= $model_name ?>_entry_table">
@@ -41,19 +43,32 @@
       </thead>
       <tbody>
       <?php
-      foreach ($element->entries as $entry) {
+      $row_count = 0;
+      foreach ($element->entries as $i => $entry) {
           $this->render(
               'AllergyEntry_event_edit',
               array(
                   'entry' => $entry,
                   'form' => $form,
                   'model_name' => $model_name,
-                  'editable' => true
+                  'removable' => $element->isAtTip(),
+                  'allergies' => $element->getAllergyOptions(),
+                  'field_prefix' => $model_name . '[entries][' . ($i+$row_count) . ']',
+                  'row_count' => $row_count
               )
           );
+          $row_count++;
       }
       ?>
       </tbody>
+      <?php if($element->isAtTip()): ?>
+      <tfoot>
+      <tr>
+          <td colspan="2"></td>
+          <td class="text-right"><button class="button small primary" id="<?= $model_name ?>_add_entry">Add</button></td>
+      </tr>
+      </tfoot>
+      <?php endif; ?>
   </table>
 </div>
 
@@ -66,7 +81,10 @@
             'entry' => $empty_entry,
             'form' => $form,
             'model_name' => $model_name,
-            'editable' => true,
+            'removable' => true,
+            'allergies' => $element->getAllergyOptions(),
+            'field_prefix' => $model_name . '[entries][{{row_count}}]',
+            'row_count' => '{{row_count}}',
             'values' => array(
                 'id' => '',
                 'allergy_id' => '{{allergy_id}}',

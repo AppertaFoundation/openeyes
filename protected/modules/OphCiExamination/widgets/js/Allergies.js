@@ -22,6 +22,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     function AllergiesController(options) {
         this.options = $.extend(true, {}, AllergiesController._defaultOptions, options);
 
+        // Allergy section loadad dynamically so cannot pace an event handler on it
+        this.eventContentSelector = '#event-content',
+        this.$eventContent = $(this.eventContentSelector);
+
         this.$noAllergiesWrapper = $('#' + this.options.modelName + '_no_allergies_wrapper');
         this.$noAllergiesFld = $('#' + this.options.modelName + '_no_allergies');
         this.$entryFormWrapper = $('#' + this.options.modelName + '_form_wrapper');
@@ -30,8 +34,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$other = $('#' + this.options.modelName + '_other');
         this.$otherWrapper = $('#' + this.options.modelName + '_other_wrapper');
         this.$commentFld = $('#' + this.options.modelName + '_comments');
-        this.$table = $('#' + this.options.modelName + '_entry_table');
+
+        this.tableSelector = '#' + this.options.modelName + '_entry_table';
+        this.$table = $(this.tableSelector);
         this.templateText = $('#' + this.options.modelName + '_entry_template').text();
+
 
         this.initialiseTriggers();
 
@@ -55,14 +62,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             }
         });
 
-        $('#' + this.options.modelName + '_add_entry').on('click', function(e) {
+
+        this.$eventContent.on('click', '#' + controller.options.modelName + '_add_entry', function(e) {
             e.preventDefault();
             controller.addEntry();
         });
 
-        this.$table.on('click', '.button', function(e) {
+        this.$table.on('click', 'button.remove', function(e) {
             e.preventDefault();
-            $(e.target).parents('tr').remove();
+            $(this).closest('tr').remove();
             controller.showNoAllergies();
         });
 
@@ -79,65 +87,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     /**
-     * Generates a json object of the form data to use in rendering table rows for family history
-     *
-     * @returns {{}}
-     */
-    AllergiesController.prototype.generateDataFromForm = function()
-    {
-        var data = {};
-        var $allergySelected = this.$allergySelect.find('option:selected');
-        if ($allergySelected.val()) {
-            data.allergy_id = $allergySelected.val();
-            data.other_allergy = this.$other.val();
-            if ($allergySelected.data('other')) {
-                data.allergy_display = this.$other.val();
-            } else {
-                data.allergy_display = $allergySelected.text();
-            }
-        }
-
-        data.comments = this.$commentFld.val();
-
-        return data;
-    };
-
-    /**
-     * Reset the entry form to default values
-     */
-    AllergiesController.prototype.resetForm = function()
-    {
-        this.$allergySelect.find('option:selected').prop('selected', false);
-        this.$allergySelect.trigger('change');
-        this.$commentFld.val('');
-    }
-
-    /**
-     * @returns {boolean}
-     */
-    AllergiesController.prototype.validateData = function(data)
-    {
-        var errs = [];
-        if (!data.allergy_display) {
-            errs.push('Please choose/enter an allergy.');
-        }
-
-        if (errs.length) {
-            new OpenEyes.UI.Dialog.Alert({
-                content: errs.join('<br />')
-            }).open();
-            return false;
-        }
-        return true;
-    };
-
-    /**
      *
      * @param data
      * @returns {*}
      */
     AllergiesController.prototype.createRow = function(data)
     {
+        if (data === undefined)
+            data = {};
+
+        data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
+
         return Mustache.render(
             template = this.templateText,
             data
@@ -171,13 +131,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     AllergiesController.prototype.addEntry = function()
     {
-        var data = this.generateDataFromForm();
-        if (this.validateData(data)) {
-            this.hideNoAllergies();
-
-            this.$table.append(this.createRow(data));
-            this.resetForm();
-        }
+        this.hideNoAllergies();
+        this.$table.find('tbody').append(this.createRow());
     };
 
     exports.AllergiesController = AllergiesController;
