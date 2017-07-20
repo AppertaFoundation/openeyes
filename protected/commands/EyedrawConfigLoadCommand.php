@@ -15,6 +15,14 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+/**
+ * Class EyedrawConfigLoadCommand
+ *
+ * Loader command for handling the eyedraw doodle configuration for object persistence.
+ * Initial implementation is using a basic json config file that is expected to be superceded
+ * by an XML document to define this information.
+ */
 class EyedrawConfigLoadCommand extends CConsoleCommand
 {
     public $defaultAction = 'load';
@@ -134,23 +142,26 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
     }
 
     /**
-     * @param $definition
-     * @param $canvas
+     * @param $doodle
+     * @param $canvas_spec
      */
-    private function insertOrUpdateCanvasDoodle($definition, $canvas)
+    private function insertOrUpdateCanvasDoodle($doodle, $canvas_spec)
     {
-        if (!$this->isCanvasDefined($canvas->mnemonic)) {
+        if (!$this->isCanvasDefined($canvas_spec->mnemonic)) {
+            // if the element is not part of the configuration (module not included)
+            // then we don't load the canvas, and therefore don't load the canvas doodle
             return;
         }
 
-        $mnemonic = $definition->mnemonic;
-        $canvas_mnemonic = $canvas->mnemonic;
+        $mnemonic = $doodle->mnemonic;
+        $canvas_mnemonic = $canvas_spec->mnemonic;
         $current = $this->getDb()
             ->createCommand('SELECT count(*) FROM ' . static::CANVAS_DOODLE_TBL
                 . ' WHERE eyedraw_class_mnemonic = :edmn AND canvas_mnemonic = :cvmn')
             ->bindValue(':edmn', $mnemonic)
             ->bindValue(':cvmn', $canvas_mnemonic)
             ->queryScalar();
+
         if ($current) {
             $cmd = $this->getDb()->createCommand('UPDATE ' . static::CANVAS_DOODLE_TBL . ' SET  '
                 . 'eyedraw_on_canvas_toolbar_location = :tlbloc, '
@@ -164,12 +175,13 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
                 . 'eyedraw_no_tuple_init_canvas_flag, eyedraw_carry_forward_canvas_flag)'
                 . 'VALUES (:edmn, :cvmn, :tlbloc, :tlbor, :infl, :fwdfl)');
         }
+
         $cmd->bindValue(':edmn', $mnemonic)
             ->bindValue(':cvmn', $canvas_mnemonic)
-            ->bindValue(':tlbloc', $canvas->toolbar_location)
-            ->bindValue(':tlbor', $canvas->toolbar_order)
-            ->bindValue(':infl', $canvas->init_canvas)
-            ->bindValue(':fwdfl', $canvas->carry_forward)
+            ->bindValue(':tlbloc', $canvas_spec->toolbar_location)
+            ->bindValue(':tlbor', $canvas_spec->toolbar_order)
+            ->bindValue(':infl', $canvas_spec->init_canvas)
+            ->bindValue(':fwdfl', $canvas_spec->carry_forward)
             ->query();
     }
 
