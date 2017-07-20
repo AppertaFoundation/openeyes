@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class EDPostProcessor
+class EDProcessor
 {
     /**
      * @var CApplication
@@ -93,6 +93,9 @@ class EDPostProcessor
     }
 
     /**
+     * Takes the given element, and iterates through the given attributes to
+     * store all the doodles for object persistence
+     *
      * @param $element
      * @param array $attributes array(attr_name => side ...)
      * @throws Exception
@@ -115,5 +118,16 @@ class EDPostProcessor
                 $this->storeDoodle($element->event_id, $canvas_mnemonic, $side, $ed_doodle);
             }
         }
+    }
+
+    /**
+     * Load all the element attributes up with the appropriate set of doodles.
+     *
+     * @param $element
+     * @param array $attributes
+     */
+    public function loadElementEyedrawDoodles($element, $attributes=array())
+    {
+        // TODO: implement this function
     }
 }
