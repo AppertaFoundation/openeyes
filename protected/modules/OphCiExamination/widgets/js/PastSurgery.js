@@ -26,6 +26,7 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
 
         //TODO: these should be driven by  options
         this.$section = $('section.' + this.options.modelName);
+        this.tableSelector = '#' + this.options.modelName + '_operation_table';
         this.$table = $('#' + this.options.modelName + '_operation_table');
         this.fuzyDateWrapperSelector = this.options.modelName + '_fuzzy_date';
 
@@ -67,8 +68,6 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         controller.$section.on('change', ('.'+controller.options.modelName + '_sides input[type="radio"]'), function(e) {
             $(this).closest('td').find('input[type="hidden"]').val($(this).val());
         });
-
-
     };
 
     /**
@@ -81,8 +80,7 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         if (data === undefined)
             data = {};
 
-        var row = this.$table.find('tbody tr:last-child').data('row_number');
-        data['row_count'] = typeof row !== 'undefined' ? (row+1) : 0;
+        data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
 
         return Mustache.render(
             template = this.templateText,
@@ -152,39 +150,6 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
 
         return res.join(' ');
     };
-
-    /**
-     * Builds the data structure for the table row.
-     *
-     * @returns {{}}
-     */
-   /* PreviousSurgeryController.prototype.generateDataFromForm = function()
-    {
-        var data = {};
-        if (this.$commonOpFld.find('option:selected').val()) {
-            data.operation = this.$commonOpFld.find('option:selected').text();
-        }
-        else {
-            data.operation = this.$opFld.val();
-        }
-        data.side_id = this.$sideFld.filter(':checked').val();
-        data.side_display = this.$sideFld.filter(':checked').closest('label').text();
-        data.date = this.dateFromFuzzyFieldSet(this.$dateFieldSet);
-        data.date_display = this.getFuzzyDateDisplay(data.date);
-        return data;
-    };*/
-
-    /**
-     * Action method to parse from and create entry.
-     */
-    /*PreviousSurgeryController.prototype.addOperation = function()
-    {
-        // create table row
-        var tableRow = this.createRow(this.generateDataFromForm());
-        this.$table.append(tableRow);
-        // then reset
-        this.resetForm();
-    };*/
 
     return PreviousSurgeryController;
 })();
