@@ -24,7 +24,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         this.$noAllergiesWrapper = $('#' + this.options.modelName + '_no_allergies_wrapper');
         this.$noAllergiesFld = $('#' + this.options.modelName + '_no_allergies');
-        this.$entryFormWrapper = $('#' + this.options.modelName + '_form_wrapper');
 
         this.$allergySelect = $('#' + this.options.modelName + '_allergy_id');
         this.$other = $('#' + this.options.modelName + '_other');
@@ -72,11 +71,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         this.$noAllergiesFld.on('click', function() {
             if (controller.$noAllergiesFld.prop('checked')) {
-                controller.$entryFormWrapper.hide();
                 controller.$table.hide();
             }
             else {
-                controller.$entryFormWrapper.show();
                 controller.$table.show();
             }
         });

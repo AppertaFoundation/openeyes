@@ -76,10 +76,10 @@ $model_name = CHtml::modelName($element);
         ?>
         </tbody>
         <tfoot>
-        <tr>
-            <td colspan="3"></td>
-            <td class="text-right"><button class="button small primary" id="<?= $model_name ?>_add_entry">Add</button></td>
-        </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td class="text-right"><button class="button small primary" id="<?= $model_name ?>_add_entry">Add</button></td>
+            </tr>
         </tfoot>
     </table>
 </div>

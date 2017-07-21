@@ -1,11 +1,4 @@
-    <div class="field-row row<?= count($element->entries) ? ' hidden' : ''?>" id="<?=$model_name?>_no_family_history_wrapper">
-        <div class="large-3 column">
-            <label for="<?=$model_name?>_no_family_history">Confirm patient has no family history:</label>
-        </div>
-        <div class="large-2 column end">
-            <?php echo CHtml::checkBox($model_name .'[no_family_history]', $element->no_family_history_date ? true : false); ?>
-        </div>
-    </div>
+
 
     <div class="<?= $element->no_family_history_date ? 'hidden' :''?>" id="<?=$model_name?>_form_wrapper">
         <div class="field-row row">

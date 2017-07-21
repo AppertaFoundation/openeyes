@@ -33,25 +33,67 @@ if (!isset($values)) {
 }
 
 ?>
-<tr>
+<tr class="row-<?=$row_count;?><?php if($editable){ echo " read-only"; } ?>" data-key="<?=$row_count;?>">
     <td>
-        <input type="hidden" name="<?= $model_name ?>[id][]" value="<?=$values['id'] ?>" />
-        <input type="hidden" name="<?= $model_name ?>[relative_id][]" value="<?=$values['relative_id'] ?>" />
-        <input type="hidden" name="<?= $model_name ?>[other_relative][]" value="<?=$values['other_relative'] ?>" />
-        <?= $values['relative_display'] ?>
+        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
+
+        <?php if(!$editable): ?>
+            <?= $values['relative_display'] ?>
+        <?php else: ?>
+            <?php
+                $relatives_opts = array(
+                    'options' => array(),
+                    'empty' => '- select -',
+                    'class' => 'relatives'
+                );
+                foreach ($relative_options as $rel) {
+                    $relatives_opts['options'][$rel->id] = array('data-other' => $rel->is_other ? '1' : '0');
+                }
+                echo CHtml::dropDownList($field_prefix . '[relative_id]', '', CHtml::listData($relative_options, 'id', 'name'), $relatives_opts)
+            ?>
+            <div class="hidden other_relative_wrapper">
+                <br>
+                <?php echo CHtml::textField($field_prefix . '[other_relative]', $values['other_relative'], array('class' => 'other_relative_text', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
+            </div>
+        <?php endif;?>
+
     </td>
     <td>
-        <input type="hidden" name="<?= $model_name ?>[side_id][]" value="<?=$values['side_id'] ?>" />
-        <?= $values['side_display'] ?>
+        <?php if(!$editable): ?>
+            <?= $values['side_display'] ?>
+        <?php else: ?>
+            <?php echo CHtml::dropDownList($field_prefix . '[side_id]', '', CHtml::listData($side_options, 'id', 'name'))?>
+        <?php endif;?>
+
     </td>
     <td>
-        <input type="hidden" name="<?= $model_name ?>[condition_id][]" value="<?=$values['condition_id'] ?>" />
-        <input type="hidden" name="<?= $model_name ?>[other_condition][]" value="<?=$values['other_condition'] ?>" />
-        <?= $values['condition_display'] ?>
+        <?php if(!$editable): ?>
+            <?= $values['condition_display'] ?>
+        <?php else: ?>
+            <?php
+            $conditions_opts = array(
+                'options' => array(),
+                'empty' => '- select -',
+                'class' => 'conditions',
+            );
+            foreach ($condition_options as $con) {
+                $conditions_opts['options'][$con->id] = array('data-other' => $con->is_other ? '1' : '0');
+            }
+            echo CHtml::dropDownList($field_prefix . '[condition_id]', '', CHtml::listData($condition_options, 'id', 'name'), $conditions_opts);
+            ?>
+
+            <div class="hidden other_condition_wrapper">
+                <br>
+                <?php echo CHtml::textField($field_prefix . '[other_condition]', '', array('class'=>'other_condition_text', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
+            </div>
+        <?php endif;?>
     </td>
     <td>
-        <input type="hidden" name="<?= $model_name ?>[comments][]" value="<?=$values['comments'] ?>" />
-        <?= $values['comments'] ?>
+        <?php if(!$editable): ?>
+            <?= $values['comments'] ?>
+        <?php else: ?>
+            <?php echo CHtml::textField($field_prefix . '[comments]', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+        <?php endif;?>
     </td>
     <td class="edit-column" <?php if (!$editable) {?>style="display: none;"<?php } ?>>
         <button class="button small warning remove">remove</button>
