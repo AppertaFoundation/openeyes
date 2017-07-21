@@ -51,8 +51,8 @@ $model_name = CHtml::modelName($element);
 
                         ),
                         'removable' => false,
-                        'row_count' => ($i+$row_count),
-                        'field_prefix' => $model_name . '[operation][' . ($i+$row_count) . ']',
+                        'row_count' => ($row_count),
+                        'field_prefix' => $model_name . '[operation][' . ($row_count) . ']',
                         'model_name' => CHtml::modelName($element),
                     )
                 );
@@ -65,12 +65,13 @@ $model_name = CHtml::modelName($element);
                 array(
                     'op' => $op,
                     'form' => $form,
-                    'row_count' => ($i+$row_count),
-                    'field_prefix' => $model_name . '[operation][' . ($i+$row_count) . ']',
+                    'row_count' => ($row_count),
+                    'field_prefix' => $model_name . '[operation][' . ($row_count) . ']',
                     'model_name' => CHtml::modelName($element),
                     'removable' => true,
                 )
             );
+            $row_count++;
         }
         ?>
         </tbody>

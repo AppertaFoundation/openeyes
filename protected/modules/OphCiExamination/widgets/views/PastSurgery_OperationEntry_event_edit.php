@@ -37,7 +37,9 @@ if (isset($values['date']) && strtotime($values['date'])) {
 }
 
 ?>
-<tr class="row-<?=$row_count;?><?php if($removable){ echo " read-only"; } ?>" data-key="<?=$row_count;?>">
+<tr class="row-<?=$row_count;?><?php if($removable){ echo " read-only"; } ?>"
+    <?php if($removable){ echo "data-key='{$row_count}'"; } ?>
+>
     <td>
 
         <?php if(!$removable) :?>
