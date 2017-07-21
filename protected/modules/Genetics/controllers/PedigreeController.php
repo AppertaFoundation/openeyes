@@ -232,13 +232,11 @@ class PedigreeController extends BaseModuleController
         $pedigree_id = Yii::app()->request->getQuery('term', null);
 
         if( strlen($pedigree_id) > 2){
-            $match = addcslashes($pedigree_id, '%_'); // escape LIKE's special characters
-            $q = new CDbCriteria( array(
-                'condition' => "id LIKE :match",
-                'params'    => array(':match' => "%$match%")
-            ) );
 
-            $pedigrees = Pedigree::model()->findAll($q);
+            $criteria = new CDbCriteria();
+            $criteria->addSearchCondition('id', $pedigree_id, true);
+
+            $pedigrees = Pedigree::model()->findAll($criteria);
         } else {
 
             //if pedigree_id is 2 digit or less we return the exact match because of performance reasons
