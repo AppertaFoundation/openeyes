@@ -416,12 +416,9 @@ class Patient extends BaseActiveRecordVersioned
                 }
 
                 // sort the remainder
-                function cmp($a, $b)
-                {
+                uasort($by_specialty, function($a, $b){
                     return strcasecmp($a['specialty'], $b['specialty']);
-                }
-
-                uasort($by_specialty, 'cmp');
+                });
             }
             // either flattens, or gets the remainder
             foreach ($by_specialty as $row) {
