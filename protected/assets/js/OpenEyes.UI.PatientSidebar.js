@@ -197,6 +197,7 @@
 
         if ($menuLi) {
             $menuLi.find('a').removeClass('selected').removeClass('error');
+            self.checkContentHeight();
         }
     };
 
@@ -343,6 +344,18 @@
         }
         return item;
     };
+
+    PatientSidebar.prototype.checkContentHeight = function(){
+        var self = this;
+        var scrollBar = $(self.options.scroll_selector);
+        cc = $('.container.content');
+        cch = cc.outerHeight();
+        sbh = scrollBar.height() + 50;
+
+        if(cch < sbh){
+            cc.css({'min-height':sbh+'px'});
+        }
+    }
 
     /**
      *  Convert the JSON into an array
