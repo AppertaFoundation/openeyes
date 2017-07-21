@@ -22,10 +22,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     function AllergiesController(options) {
         this.options = $.extend(true, {}, AllergiesController._defaultOptions, options);
 
-        // Allergy section loadad dynamically so cannot pace an event handler on it
-        this.eventContentSelector = '#event-content',
-        this.$eventContent = $(this.eventContentSelector);
-
         this.$noAllergiesWrapper = $('#' + this.options.modelName + '_no_allergies_wrapper');
         this.$noAllergiesFld = $('#' + this.options.modelName + '_no_allergies');
         this.$entryFormWrapper = $('#' + this.options.modelName + '_form_wrapper');
@@ -63,7 +59,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
 
 
-        this.$eventContent.on('click', '#' + controller.options.modelName + '_add_entry', function(e) {
+        $('#' + controller.options.modelName + '_add_entry').on('click', function(e) {
             e.preventDefault();
             controller.addEntry();
         });
