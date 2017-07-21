@@ -227,6 +227,21 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    /*
+     * Set flash message reason for edit
+     * @param $reason_id
+     * @param $reason_text
+     */
+    protected function showReasonForEdit( $reason_id, $reason_text )
+    {
+        $edit_reason = OphDrPrescriptionEditReasons::model()->findByPk($reason_id);
+        if($reason_id > 1){
+            Yii::app()->user->setFlash('info.edit_reason', 'Reason: '.$edit_reason->caption);
+        } else {
+            Yii::app()->user->setFlash('info.edit_reason', 'Reason: '.$reason_text);
+        }
+    }
+
     /**
      * Ajax action to search for drugs.
      */
@@ -601,6 +616,8 @@ class DefaultController extends BaseEventTypeController
                 $reason_id = $model->edit_reason_id;
                 $reason_other_text = $model->edit_reason_other;
             }
+
+            $this->showReasonForEdit($reason_id,$reason_other_text);
 
             parent::actionUpdate($id);
         }
