@@ -234,15 +234,15 @@ class PedigreeController extends BaseModuleController
         if( strlen($pedigree_id) > 2){
 
             $criteria = new CDbCriteria();
-            $criteria->addSearchCondition('id', $pedigree_id, true);
+            $criteria->addSearchCondition('t.id', $pedigree_id, true);
 
-            $pedigrees = Pedigree::model()->findAll($criteria);
+            $pedigrees = Pedigree::model()->with('gene')->findAll($criteria);
         } else {
 
             //if pedigree_id is 2 digit or less we return the exact match because of performance reasons
 
-            $pedigrees = Pedigree::model()->findByPk($pedigree_id);
-            $pedigrees = array($pedigrees);
+            $pedigrees = Pedigree::model()->with('gene')->findByPk($pedigree_id);
+            $pedigrees = $pedigrees ? array($pedigrees) : array();
         }
 
         $output = array();
