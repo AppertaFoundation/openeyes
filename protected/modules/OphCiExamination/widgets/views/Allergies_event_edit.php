@@ -33,7 +33,7 @@
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
-  <table id="<?= $model_name ?>_entry_table">
+  <table id="<?= $model_name ?>_entry_table" class="<?=count($element->entries) ? '' : 'hidden'?>">
       <thead>
       <tr>
           <th>Allergy</th>
@@ -51,9 +51,9 @@
                   'entry' => $entry,
                   'form' => $form,
                   'model_name' => $model_name,
-                  'removable' => $element->isAtTip(),
+                  'removable' => true,
                   'allergies' => $element->getAllergyOptions(),
-                  'field_prefix' => $model_name . '[entries][' . ($i+$row_count) . ']',
+                  'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
                   'row_count' => $row_count
               )
           );
@@ -61,14 +61,12 @@
       }
       ?>
       </tbody>
-      <?php if($element->isAtTip()): ?>
       <tfoot>
       <tr>
           <td colspan="2"></td>
           <td class="text-right"><button class="button small primary" id="<?= $model_name ?>_add_entry">Add</button></td>
       </tr>
       </tfoot>
-      <?php endif; ?>
   </table>
 </div>
 

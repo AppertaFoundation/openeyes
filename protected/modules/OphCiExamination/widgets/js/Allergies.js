@@ -119,7 +119,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     AllergiesController.prototype.showNoAllergies = function()
     {
-        if (this.$table.find('tr').length === 1) {
+        if (this.$table.find('tbody tr').length === 0) {
             this.$noAllergiesWrapper.show();
         } else {
             this.hideNoAllergies();

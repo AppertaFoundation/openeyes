@@ -27,7 +27,6 @@ if (!isset($values)) {
         'comments' => $entry->comments,
     );
 }
-
 ?>
 
 <tr class="row-<?=$row_count;?><?php if($removable){ echo " read-only"; } ?>" data-key="<?=$row_count;?>">
@@ -57,7 +56,7 @@ if (!isset($values)) {
     </td>
     <td>
         <?php if ($removable): ?>
-            <?php echo CHtml::textField($field_prefix . '[comments]', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+            <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
         <?php else: ?>
             <input type="hidden" name="<?= $field_prefix ?>[comments]" value="<?=$values['comments'] ?>" />
             <?= $values['comments'] ?>
