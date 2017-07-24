@@ -653,7 +653,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     color: white; }
   .open-eyes .sidebar.episodes-and-events .scroll-blue-top {
     position: absolute;
-    top: 38px;
+    top: 2px;
     width: 180px;
     height: 8px;
     background: transparent url("../img/_elements/gradients/bg_scroll_blue_top.png") top left repeat-x;
