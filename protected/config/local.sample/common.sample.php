@@ -116,6 +116,7 @@ $config = array(
 		'OphInDnasample',
 		'OphInDnaextraction',
 		'OphInGeneticsresults',
+        'OphCoDocument',
     ),
 
     'params' => array(

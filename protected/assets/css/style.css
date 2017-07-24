@@ -5510,7 +5510,7 @@ tfoot.pagination-container .pagination-view-all {
   text-transform: uppercase;
 }
 /* line 105, ../sass/openeyes/components/panels/_patient.scss */
-.panel.patient .patient-name, .panel.patient .patient-age {
+.panel.patient .patient-name, .panel.patient .patient-title {
   font-size: 0.8125rem;
 }
 /* line 108, ../sass/openeyes/components/panels/_patient.scss */

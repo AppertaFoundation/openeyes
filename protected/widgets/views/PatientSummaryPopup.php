@@ -136,14 +136,6 @@
                 </div>
               </div>
             <?php } ?>
-          <div class="row">
-            <div class="large-3 column label">
-              Allergies
-            </div>
-            <div class="large-9 column data">
-                <?php echo $this->allergies; ?>
-            </div>
-          </div>
         </div>
     </div>
 </div>
