@@ -168,6 +168,11 @@ class DefaultController extends BaseEventTypeController
                 $bookings = $api->getOperationsForEpisode($this->patient);
             }
 
+            if($bookings == null){
+                Yii::app()->user->setFlash('alert.unbooked_procedures', 'You are creating a consent form for unbooked procedures!');
+                return  $this->redirect(Yii::app()->createUrl('/OphTrConsent/Default/create?patient_id='.$this->patient->id.'&unbooked=1'));
+            }
+
             $this->title = 'Please select booking';
             $this->event_tabs = array(
                     array(
