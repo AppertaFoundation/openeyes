@@ -50,26 +50,26 @@
       </tr>
       </thead>
       <tbody>
-      <?php
-      $row_count = 0;
-      foreach ($element->entries as $entry) {
-          $this->render(
-              'FamilyHistory_Entry_event_edit',
-              array(
-                  'entry' => $entry,
-                  'form' => $form,
-                  'model_name' => $model_name,
-                  'editable' => true,
-                  'relative_options' => $element->getRelativeOptions(),
-                  'side_options' => $element->getSideOptions(),
-                  'conditions' => $element->getConditionOptions(),
-                  'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
-                  'row_count' => $row_count,
-              )
-          );
-          $row_count++;
-      }
-      ?>
+          <?php
+          $row_count = 0;
+          foreach ($element->entries as $entry) {
+              $this->render(
+                  'FamilyHistory_Entry_event_edit',
+                  array(
+                      'entry' => $entry,
+                      'form' => $form,
+                      'model_name' => $model_name,
+                      'editable' => true,
+                      'relative_options' => $element->getRelativeOptions(),
+                      'side_options' => $element->getSideOptions(),
+                      'condition_options' => $element->getConditionOptions(),
+                      'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
+                      'row_count' => $row_count,
+                  )
+              );
+              $row_count++;
+          }
+          ?>
       </tbody>
       <tfoot>
           <tr>

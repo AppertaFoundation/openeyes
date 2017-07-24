@@ -60,20 +60,20 @@ class FamilyHistory extends \BaseEventElementWidget
             }
         }
 
-        if (array_key_exists('relative_id', $data)) {
+        if (array_key_exists('entries', $data)) {
             $entries = array();
-            foreach ($data['relative_id'] as $i => $relative_id) {
+            foreach ($data['entries'] as $i => $history_entry) {
                 $entry = new FamilyHistory_Entry();
-                $id = $data['id'][$i];
+                $id = $history_entry['id'];
                 if ($id && array_key_exists($id, $entries_by_id)) {
                     $entry = $entries_by_id[$id];
                 }
-                $entry->relative_id = $relative_id;
-                $entry->other_relative = $data['other_relative'][$i];
-                $entry->side_id = $data['side_id'][$i];
-                $entry->condition_id = $data['condition_id'][$i];
-                $entry->other_condition = $data['other_condition'][$i];
-                $entry->comments = $data['comments'][$i];
+                $entry->relative_id = $history_entry['relative_id'];
+                $entry->other_relative = $history_entry['other_relative'];
+                $entry->side_id = $history_entry['side_id'];
+                $entry->condition_id = $history_entry['condition_id'];
+                $entry->other_condition = $history_entry['other_condition'];
+                $entry->comments = $history_entry['comments'];
                 $entries[] = $entry;
             }
             $element->entries = $entries;
