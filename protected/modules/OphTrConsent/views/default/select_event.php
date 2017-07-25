@@ -57,7 +57,8 @@
 						<fieldset class="row field-row">
 							<legend class="large-2 column">Select:</legend>
 							<div class="large-6 column end">
-								<?php foreach ($bookings as $operation) {?>
+                                <?php if($bookings){
+								    foreach ($bookings as $operation) {?>
 									<label class="highlight booking">
 										<span class="row">
 											<span class="large-1 column">
@@ -87,7 +88,10 @@
 											Warning: this booking already has a consent form
 										</div>
 									<?php }?>
-								<?php }?>
+								<?php }
+                                }
+								?>
+
 								<label class="highlight booking">
 									<span class="row">
 										<span class="large-1 column">
