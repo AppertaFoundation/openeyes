@@ -81,16 +81,14 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
             $this->processCanvasDoodleDefinition($canvas_doodle);
         }
 
-        $this.getDb()->createCommand('
-        UPDATE openeyes.eyedraw_doodle ed
-        SET ed.processed_canvas_intersection_tuple = (
-        SELECT GROUP_CONCAT(DISTINCT ecd.canvas_mnenonic ORDER BY ecd.canvas_mnenonic)
-        FROM openeyes.eyedraw_canvas_doodle ecd
-        WHERE ecd.eyedraw_class_mnemonic = ed.eyedraw_class_mnemonic
-        GROUP BY ecd.eyedraw_class_mnemonic
-        )
-        WHERE ed.eyedraw_class_mnemonic != "*"'
-        )->query();
+        $this.getDb()->createCommand('UPDATE openeyes.eyedraw_doodle ed
+SET ed.processed_canvas_intersection_tuple = (
+  SELECT GROUP_CONCAT(DISTINCT ecd.canvas_mnenonic ORDER BY ecd.canvas_mnenonic)
+  FROM openeyes.eyedraw_canvas_doodle ecd
+  WHERE ecd.eyedraw_class_mnemonic = ed.eyedraw_class_mnemonic
+  GROUP BY ecd.eyedraw_class_mnemonic
+)
+WHERE ed.eyedraw_class_mnemonic != "*"')->query();
     }
     /**
      * @param $canvas
