@@ -80,9 +80,25 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
         foreach ($data->DOODLE_USAGE_LIST->DOODLE_USAGE as $canvas_doodle){
             $this->processCanvasDoodleDefinition($canvas_doodle);
         }
-
-        Yii::app()->db->createCommand('UPDATE openeyes.eyedraw_doodle ed SET ed.processed_canvas_intersection_tuple = (SELECT GROUP_CONCAT(DISTINCT ecd.canvas_mnemonic ORDER BY ecd.canvas_mnemonic) FROM openeyes.eyedraw_canvas_doodle ecd WHERE ecd.eyedraw_class_mnemonic = ed.eyedraw_class_mnemonic GROUP BY ecd.eyedraw_class_mnemonic) WHERE ed.eyedraw_class_mnemonic != "*"')->query();
+        $this->refreshTuples();
     }
+
+    /**
+     * Method to run after any changes to Eyedraw configuration to ensure the intersection tuples are defined
+     * correctly for each doodle.
+     */
+    private function refreshTuples()
+    {
+        Yii::app()->db->createCommand(
+            'UPDATE openeyes.eyedraw_doodle ed SET ed.processed_canvas_intersection_tuple = ' .
+            '(SELECT GROUP_CONCAT(DISTINCT ecd.canvas_mnemonic ORDER BY ecd.canvas_mnemonic) ' .
+            'FROM openeyes.eyedraw_canvas_doodle ecd WHERE ecd.eyedraw_class_mnemonic = ed.eyedraw_class_mnemonic ' .
+            'GROUP BY ecd.eyedraw_class_mnemonic)' .
+            // This clause added to resolve safe mode issues for updating all rows
+            'WHERE ed.eyedraw_class_mnemonic != "*"'
+        )->query();
+    }
+
     /**
      * @param $canvas
      * @param $element_type
