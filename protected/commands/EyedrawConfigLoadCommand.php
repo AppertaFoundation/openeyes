@@ -120,10 +120,11 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
                 '(canvas_mnemonic, canvas_name, container_element_type_id) VALUES (:cvmn, :cvname, :eid)');
         }
         $cmd->bindValue(':cvmn', $canvas->CANVAS_MNEMONIC)
-        ->bindValue(':cvname', $canvas->CANVAS_NAME)
-        ->bindValue(':eid', $element_type->id)
-        ->query();
+            ->bindValue(':cvname', $canvas->CANVAS_NAME)
+            ->bindValue(':eid', $element_type->id)
+            ->query();
     }
+
     /**
      * Create or update a doodle definition
      *
@@ -132,9 +133,9 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
     private function insertOrUpdateDoodle($doodle)
     {
         $current = $this->getDb()
-        ->createCommand('SELECT count(*) FROM ' . static::DOODLE_TBL . ' WHERE eyedraw_class_mnemonic = :mnm')
-        ->bindValue(':mnm', $doodle->EYEDRAW_CLASS_MNEMONIC)
-        ->queryScalar();
+            ->createCommand('SELECT count(*) FROM ' . static::DOODLE_TBL . ' WHERE eyedraw_class_mnemonic = :mnm')
+            ->bindValue(':mnm', $doodle->EYEDRAW_CLASS_MNEMONIC)
+            ->queryScalar();
         if ($current) {
             $cmd = $this->getDb()->createCommand('UPDATE ' . static::DOODLE_TBL . ' SET init_doodle_json = :init '
                 . 'WHERE eyedraw_class_mnemonic = :mnm');
@@ -144,9 +145,10 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
                 '(eyedraw_class_mnemonic, init_doodle_json) VALUES (:mnm, :init)');
         }
         $cmd->bindValue(':mnm', $doodle->EYEDRAW_CLASS_MNEMONIC)
-        ->bindValue(':init', json_encode($doodle->INIT_DOODLE_JSON)) //check this
-        ->query();
+            ->bindValue(':init', json_encode($doodle->INIT_DOODLE_JSON)) //check this
+            ->query();
     }
+
     /**
      * @param $mnemonic
      * @return bool
@@ -154,10 +156,10 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
     protected function isCanvasDefined($mnemonic)
     {
         return $this->getDb()
-        ->createCommand('SELECT count(*) FROM ' . static::CANVS_TBL
-            . ' WHERE canvas_mnemonic = :cvmn')
-        ->bindValue(':cvmn', $mnemonic)
-        ->queryScalar() > 0;
+            ->createCommand('SELECT count(*) FROM ' . static::CANVS_TBL
+                . ' WHERE canvas_mnemonic = :cvmn')
+            ->bindValue(':cvmn', $mnemonic)
+            ->queryScalar() > 0;
     }
     /**
      * @param $canvas_doodle
@@ -171,48 +173,43 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
             return;
         }
 
-        $cmd1 = $this->getDb()
-        ->createCommand('INSERT INTO openeyes.eyedraw_canvas_doodle ('
-            .'eyedraw_class_mnemonic, '
-            .'canvas_mnemonic, '
-            .'eyedraw_on_canvas_toolbar_location, '
-            .'eyedraw_on_canvas_toolbar_order, '
-            .'eyedraw_no_tuple_init_canvas_flag, '
-            .'eyedraw_carry_forward_canvas_flag) '
-            .'SELECT '
-            .':ecm, :cm, :eoctl, :eocto, :enticf, :ecfcf FROM (SELECT 1) v '
-            .'WHERE NOT EXISTS ('
-            .'SELECT 1 FROM openeyes.eyedraw_canvas_doodle s '
-            .'WHERE s.eyedraw_class_mnemonic = :ecmm '
-            .'AND s.canvas_mnemonic = :cmm)')
-        ->bindValue(':ecm', $canvas_doodle->EYEDRAW_CLASS_MNEMONIC)
-        ->bindValue(':cm', $canvas_doodle->CANVAS_MNEMONIC)
-        ->bindValue(':eoctl', $canvas_doodle->ON_TOOLBAR_LOCATION)
-        ->bindValue(':eocto', NULL) //NULL for now
-        ->bindValue(':enticf', NULL) //NULL for now
-        ->bindValue(':ecfcf', NULL)
-        ->bindValue(':ecmm', $canvas_doodle->EYEDRAW_CLASS_MNEMONIC)
-        ->bindValue(':cmm', $canvas_doodle->CANVAS_MNEMONIC)
-        //->bindValue(':ecfcf', $canvas_doodle->EYEDRAW_ON_CANVAS_TOOLBAR_ORDER == '' ? "NULL" : EYEDRAW_ON_CANVAS_TOOLBAR_ORDER)
-        ->query();
+        $current = $this->getDb()
+            ->createCommand('SELECT count(*) FROM ' . static::CANVAS_DOODLE_TBL
+                . ' WHERE eyedraw_class_mnemonic = :ecmm'
+                . ' AND canvas_mnemonic = :cmm')
+            ->bindValue(':ecmm', $canvas_doodle->EYEDRAW_CLASS_MNEMONIC)
+            ->bindValue(':cmm', $canvas_doodle->CANVAS_MNEMONIC)
+            ->queryScalar();
+        if ($current) {
+            $cmd = $this->getDb()
+                ->createCommand('UPDATE ' . static::CANVAS_DOODLE_TBL
+                    . ' SET eyedraw_on_canvas_toolbar_location = :eoctl, '
+                    . 'eyedraw_on_canvas_toolbar_order = :eocto, '
+                    . 'eyedraw_no_tuple_init_canvas_flag = :enticf, '
+                    . 'eyedraw_carry_forward_canvas_flag = :ecfcf '
+                    . 'WHERE eyedraw_class_mnemonic = :ecm '
+                    . 'AND canvas_mnemonic = :cm');
+        } else {
+            $cmd = $this->getDb()
+                ->createCommand('INSERT INTO ' . static::CANVAS_DOODLE_TBL . ' ('
+                    . 'eyedraw_class_mnemonic, '
+                    . 'canvas_mnemonic, '
+                    . 'eyedraw_on_canvas_toolbar_location, '
+                    . 'eyedraw_on_canvas_toolbar_order, '
+                    . 'eyedraw_no_tuple_init_canvas_flag, '
+                    . 'eyedraw_carry_forward_canvas_flag) '
+                    . 'VALUES (:ecm, :cm, :eoctl, :eocto, :enticf, :ecfcf)');
+        }
 
-        $cmd2 = $this->getDb()
-        ->createCommand('UPDATE openeyes.eyedraw_canvas_doodle u '
-            .'SET u.eyedraw_on_canvas_toolbar_location = :eoctl, '
-            .'u.eyedraw_on_canvas_toolbar_order = :eocto, '
-            .'u.eyedraw_no_tuple_init_canvas_flag = :enticf, '
-            .'u.eyedraw_carry_forward_canvas_flag = :ecfcf '
-            .'WHERE u.eyedraw_class_mnemonic = :ecm '
-            .'AND u.canvas_mnemonic = :cm')
-        ->bindValue(':eoctl', $canvas_doodle->ON_TOOLBAR_LOCATION)
-        ->bindValue(':eocto', NULL) //NULL for now
-        ->bindValue(':enticf', NULL) //NULL for now
-        ->bindValue(':ecfcf', NULL)
-        //->bindValue(':ecfcf', $canvas_doodle->EYEDRAW_ON_CANVAS_TOOLBAR_ORDER == '' ? "NULL" : EYEDRAW_ON_CANVAS_TOOLBAR_ORDER)
-        ->bindValue(':ecm', $canvas_doodle->EYEDRAW_CLASS_MNEMONIC)
-        ->bindValue(':cm', $canvas_doodle->CANVAS_MNEMONIC)
-        ->query();
+        $cmd->bindValue(':ecm', $canvas_doodle->EYEDRAW_CLASS_MNEMONIC)
+            ->bindValue(':cm', $canvas_doodle->CANVAS_MNEMONIC)
+            ->bindValue(':eoctl', $canvas_doodle->ON_TOOLBAR_LOCATION)
+            ->bindValue(':eocto', NULL) //NULL for now
+            ->bindValue(':enticf', false) //false for now
+            ->bindValue(':ecfcf', false) //false for now
+            ->query();
     }
+
     /**
      *
      * @param $canvas
@@ -224,6 +221,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
             $this->insertOrUpdateCanvas($canvas, $element_type);
         }
     }
+
     /**
      * @param $doodle
      */
@@ -231,6 +229,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
     {
         $this->insertOrUpdateDoodle($doodle);
     }
+
     /**
      * @param $canvas_doodle
      */
