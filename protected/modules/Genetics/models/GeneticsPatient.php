@@ -123,7 +123,8 @@ class GeneticsPatient extends BaseActiveRecord
         }
 
         return array(
-            'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
+            'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id',
+                'condition' => 'patient.deleted=0'),
             'gender' => array(self::BELONGS_TO, 'Gender', 'gender_id'),
             'relationships' => array(self::HAS_MANY, 'GeneticsPatientRelationship', 'patient_id'),
             'studies' => array(self::MANY_MANY, 'GeneticsStudy', 'genetics_study_subject(subject_id, study_id)'),
@@ -213,53 +214,52 @@ class GeneticsPatient extends BaseActiveRecord
 
         if($this->getIsNewRecord()) {
             $this->updateDiagnoses();
-        }
 
-        /*
-         * Auto-generate a new pedigree and
-         * assign it to the genetic subject
-         */
+            /*
+             * Auto-generate a new pedigree and
+             * assign it to the genetic subject
+             */
 
-        if(isset($_POST['no_pedigree']))
-        {
-            $pedigree_inheritance = PedigreeInheritance::model()->findByAttributes(array('name' => 'Unknown/other'));
+            if (isset($_POST['no_pedigree'])) {
+                $pedigree_inheritance = PedigreeInheritance::model()->findByAttributes(array('name' => 'Unknown/other'));
 
-            $pedigree = new Pedigree();
+                $pedigree = new Pedigree();
 
-            $pedigree->inheritance_id = $pedigree_inheritance ? $pedigree_inheritance->id : null;
-            $pedigree->comments = '';
-            $pedigree->consanguinity = false;
+                $pedigree->inheritance_id = $pedigree_inheritance ? $pedigree_inheritance->id : null;
+                $pedigree->comments = '';
+                $pedigree->consanguinity = false;
 
-            $pedigree->save(false);
+                $pedigree->save(false);
 
-            $p_id = $pedigree->id;
+                $p_id = $pedigree->id;
 
-            $link = new GeneticsPatientPedigree();
-            $link->pedigree_id = $p_id;
-            $link->patient_id = $this->id;
+                $link = new GeneticsPatientPedigree();
+                $link->pedigree_id = $p_id;
+                $link->patient_id = $this->id;
 
-            $link->save(false);
-        }
+                $link->save(false);
+            }
 
 
+            $pedigrees = GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $this->id), array('select' => 'pedigree_id'));
+            $pedigreeIds = array();
+            foreach ($pedigrees as $pedigree) {
+                if ($pedigree->pedigree_id) {
+                    $pedigreeIds[] = $pedigree->pedigree_id;
+                }
+            }
 
-        $pedigrees = GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $this->id), array('select' =>  'pedigree_id'));
-        $pedigreeIds = array();
-        foreach($pedigrees as $pedigree) {
-            if($pedigree->pedigree_id){
-                $pedigreeIds[] = $pedigree->pedigree_id;
+            $added = array_diff($this->preExistingPedigreesIds, $pedigreeIds);
+            $deleted = array_diff($pedigreeIds, $this->preExistingPedigreesIds);
+
+            $difference = Pedigree::model()->findAllByPk(array_merge($added, $deleted));
+
+            foreach ($difference as $pedigree) {
+                $pedigree->updateDiagnosis();
             }
         }
-
-        $added = array_diff($this->preExistingPedigreesIds, $pedigreeIds);
-        $deleted = array_diff($pedigreeIds, $this->preExistingPedigreesIds);
-
-        $difference = Pedigree::model()->findAllByPk(array_merge($added, $deleted));
-
-        foreach ($difference as $pedigree) {
-            $pedigree->updateDiagnosis();
-        }
     }
+
 
     /**
      * Should only be called for a new genetic patient record as it doesn't check for duplication or anything along
