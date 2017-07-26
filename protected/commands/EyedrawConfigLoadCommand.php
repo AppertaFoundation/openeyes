@@ -66,7 +66,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
             $this->usageError($filename . ' is not in a valid format');
         }
 
-        
+
         // iterate through the data structure, performing update/insert statements as appropriate
 
         foreach ($data->CANVAS_LIST->CANVAS as $canvas){
@@ -80,6 +80,17 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
         foreach ($data->DOODLE_USAGE_LIST->DOODLE_USAGE as $canvas_doodle){
             $this->processCanvasDoodleDefinition($canvas_doodle);
         }
+
+        $this.getDb()->createCommand('
+        UPDATE openeyes.eyedraw_doodle ed
+        SET ed.processed_canvas_intersection_tuple = (
+        SELECT GROUP_CONCAT(DISTINCT ecd.canvas_mnenonic ORDER BY ecd.canvas_mnenonic)
+        FROM openeyes.eyedraw_canvas_doodle ecd
+        WHERE ecd.eyedraw_class_mnemonic = ed.eyedraw_class_mnemonic
+        GROUP BY ecd.eyedraw_class_mnemonic
+        )
+        WHERE ed.eyedraw_class_mnemonic != "*"'
+        )->query();
     }
     /**
      * @param $canvas
