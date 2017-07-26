@@ -310,7 +310,7 @@ class PatientMerge
 
                     if ($secondary_subspecialty == $primary_subspecialty) {
 
-                        /* We have to keep the episode with the highest status */             
+                        /* We have to keep the episode with the highest status */
 
                         if ($primary_episode->status->order > $secondary_episode->status->order) {                            
                             // the primary episode has greater status than the secondary so we move the events from the Secondary into the Primary
@@ -318,6 +318,8 @@ class PatientMerge
 
                             //set earliest start date and latest end date of the two episodes
                             list($primary_episode->start_date, $primary_episode->end_date) = $this->getTwoEpisodesStartEndDate($primary_episode, $secondary_episode);
+
+                            $primary_episode->firm_id = $secondary_episode->firm_id;
 
                             $primary_episode->save();
 
@@ -332,10 +334,12 @@ class PatientMerge
                             }
                         } else {
 
-                            // the secondary episode has greated status than the primary so we move the events from the Primary into the Secondary
+                            // the secondary episode has greater status than the primary so we move the events from the Primary into the Secondary
                             $this->updateEventsEpisodeId($secondary_episode->id, $primary_episode->events);
 
                             list($secondary_episode->start_date, $secondary_episode->end_date) = $this->getTwoEpisodesStartEndDate($primary_episode, $secondary_episode);
+
+                            $secondary_episode->firm_id = $primary_episode->firm_id;
 
                             /* BUT do not forget we have to delete the primary episode AND move the secondary episode to the primary patient **/
                             $primary_episode->deleted = 1;
