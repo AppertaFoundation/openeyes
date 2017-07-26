@@ -640,7 +640,7 @@ class PatientMerge
             $secondary_genetics_patient->patient_id = $primary_patient->id;
 
             if($secondary_genetics_patient->save()){
-                $this->addLog("Secondary Genetics Patient's (subject id:{$secondary_genetics_patient->id}) data moved to Primary Patient(subject id:{$primary_genetics_patient->id})");
+                $this->addLog("Secondary Genetics Patient's (subject id:{$secondary_genetics_patient->id}) data moved to Primary Patient(hos_num:{$primary_patient->hos_num})");
             }
 
         } else if($primary_genetics_patient && $secondary_genetics_patient) {
