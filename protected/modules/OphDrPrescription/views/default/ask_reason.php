@@ -20,7 +20,15 @@
 
 <h1><i class="fa fa-exclamation-triangle" style="color: #eb5911;"></i> Reason required</h1>
 <p>
-    This prescription has been printed. Changes to printed prescriptions must
+    <?php
+        $text = '';
+        if(($draft == 0) && ($printed == 0)){
+            $text = 'finalised';
+        } else {
+            $text = 'printed';
+        }
+    ?>
+    This prescription has been <?php echo $text; ?>. Changes to <?php echo $text; ?> prescriptions must
     only be made under specific circumstances. Please select a reason from the list below:
 </p>
 

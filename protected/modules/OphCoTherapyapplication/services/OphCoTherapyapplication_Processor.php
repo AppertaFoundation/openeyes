@@ -77,7 +77,7 @@ class OphCoTherapyapplication_Processor
             foreach ($sides as $side) {
                 if (!$api->getInjectionManagementComplexInEpisodeForDisorder(
                     $this->event->episode->patient,
-                    $use_context = true,
+                    true,
                     $side,
                     $el_diag->{$side.'_diagnosis1_id'},
                     $el_diag->{$side.'_diagnosis2_id'})) {
@@ -91,12 +91,12 @@ class OphCoTherapyapplication_Processor
 
             // if the application doesn't have a given side, the VA value can be NR (e.g. eye missing etc)
             // but if it does, then we need an actual VA value.
-            
-            if (!$api->getLetterVisualAcuityForEpisodeLeft($this->event->episode->patient, !$el_diag->hasLeft(), $this->event->event_date)) {
+
+            if (!$api->getLetterVisualAcuityForEpisodeLeft($this->event->episode->patient, !$el_diag->hasLeft(), $this->event->event_date, false)) {
                 $warnings[] = 'Visual acuity not found for left eye.';
             }
 
-            if (!$api->getLetterVisualAcuityForEpisodeRight($this->event->episode->patient, !$el_diag->hasRight(), $this->event->event_date)) {
+            if (!$api->getLetterVisualAcuityForEpisodeRight($this->event->episode->patient, !$el_diag->hasRight(), $this->event->event_date, false)) {
                 $warnings[] = 'Visual acuity not found for right eye.';
             }
         }
