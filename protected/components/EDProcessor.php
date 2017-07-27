@@ -202,10 +202,11 @@ ORDER BY
 , in_ev.created_date DESC
 ;
 EOSQL;
+        $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element->getElementType()->id);
         $cmd = $this->app->db
             ->createCommand($query_string)
             ->bindParam(':patient_id', $event->episode->patient_id)
-            ->bindParam(':cvmnm', $this->getCanvasMnemonicForElementType($element->getElementType()->id));
+            ->bindParam(':cvmnm', $canvas_mnemonic);
 
     }
 }
