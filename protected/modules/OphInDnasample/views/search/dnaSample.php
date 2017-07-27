@@ -210,10 +210,26 @@
 					<?php
 
 					foreach ($results as $result) {?>
+
+                        <?php
+                            $genetics_pateint = GeneticsPatient::model()->findByPk($result['genetics_patient_id']);
+                        ?>
 						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInDnasample/default/view/'.$result['id'])?>">
                             <td><?php echo $result['sample_id']?></td>
                             <td><?php echo CHtml::link($result['genetics_patient_id'], '/Genetics/subject/view/id/' . $result['genetics_patient_id']); ?></td>
-                            <td><?php echo CHtml::link($result['genetics_pedigree_id'], '/Genetics/pedigree/view/' . $result['genetics_pedigree_id'] ); ?></td>
+
+                            <td>
+                                <?php
+                                    $pedigree_html = '';
+                                    foreach($genetics_pateint->pedigrees as $pedigree) {
+                                        $pedigree_html .= empty($pedigree_html) ? '' : ', ';
+                                        $pedigree_html .= CHtml::link($pedigree->id, '/Genetics/pedigree/view/' . $pedigree->id);
+                                    }
+
+                                    echo $pedigree_html;
+                                ?>
+                            </td>
+
                             <td><?php echo $result['hos_num']?></td>
 							<td><?php echo strtoupper($result['last_name'])?>, <?php echo $result['first_name']?></td>
 							<td>

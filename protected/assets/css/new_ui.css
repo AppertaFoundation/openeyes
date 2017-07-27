@@ -1407,3 +1407,46 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 @import 'new/correspondence';
 @import 'new/bluesky';
 */
+
+.sub-element {
+  margin-bottom: 2px;
+}
+
+.field-row {
+  padding-bottom: 2px;
+}
+
+.edit .element-fields {
+  padding: 2px 10px 0px 10px;
+}
+
+.element-eye,
+.edit .sub-element-fields {
+  padding: 2px 10px 0px 10px;
+}
+
+table {
+  margin-bottom: 2px;
+}
+
+table tr td {
+  padding: 2px 10px 2px 10px;
+}
+
+label.highlight {
+  padding: 2px 5px 2px 5px;
+}
+
+.edit .element-actions, .edit .optional-elements-actions, .edit .sub-element-actions {
+  padding: 2px 4px;
+}
+
+.element-title, .sub-element-title {
+  padding: 6px 8px;
+}
+
+
+.edit .element,
+.edit .optional-elements {
+  border-top: none;
+}

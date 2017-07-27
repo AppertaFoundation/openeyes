@@ -54,11 +54,7 @@
                 'label' => $model->getAttributeLabel('gender_id'),
                 'value' => isset($model->gender->name) ? $model->gender->name : 'Not set',
             ),
-
-            array(
-                'label' => $model->getAttributeLabel('is_deceased'),
-                'value' => ($model->is_deceased ? 'yes' : 'no'),
-            ),
+            
             'comments',
 
             array(
