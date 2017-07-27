@@ -61,7 +61,7 @@ class SearchController extends BaseController
         if (@$_GET['search']) {
             $page = 1;
 
-            $count_command = $this->buildSearchCommand('count(et_ophindnasample_sample.id) as count');
+            $count_command = $this->buildSearchCommand('count(DISTINCT(et_ophindnasample_sample.id)) as count');
             $total_items = $count_command->queryScalar();
             $pages = ceil($total_items / $this->items_per_page);
 
@@ -69,7 +69,7 @@ class SearchController extends BaseController
                 $page = $_GET['page'];
             }
 
-            $search_command = $this->buildSearchCommand('patient.id,patient.hos_num,event.id,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments,et_ophindnasample_sample.id AS sample_id, genetics_patient.id AS genetics_patient_id, genetics_patient_pedigree.pedigree_id as genetics_pedigree_id', $page);
+            $search_command = $this->buildSearchCommand('DISTINCT(et_ophindnasample_sample.id) AS sample_id,patient.id,patient.hos_num,event.id,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments,genetics_patient.id AS genetics_patient_id', $page);
 
             $dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
