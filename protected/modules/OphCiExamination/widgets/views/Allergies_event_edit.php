@@ -33,7 +33,7 @@
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
-  <table id="<?= $model_name ?>_entry_table" class="<?=count($element->entries) ? '' : 'hidden'?>">
+  <table id="<?= $model_name ?>_entry_table" class="<?=$element->no_allergies_date ? 'hidden' : ''?>">
       <thead>
       <tr>
           <th>Allergy</th>

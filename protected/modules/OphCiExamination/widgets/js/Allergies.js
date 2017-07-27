@@ -104,7 +104,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         this.$noAllergiesWrapper.hide();
         this.$noAllergiesFld.prop('checked', false);
-        this.$entryFormWrapper.show();
+        this.$noAllergiesWrapper.show();
     };
 
     /**

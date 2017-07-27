@@ -40,16 +40,15 @@ class FamilyHistory extends \BaseEventElementWidget
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
-        if (array_key_exists('no_family_history', $data)) {
+        if (array_key_exists('no_family_history', $data) && $data['no_family_history'] == 1) {
             // TODO: Think about the importance of this date information, and therefore whether it should
             // TODO: be preserved across change events for the family history
-            if ($data['no_family_history'] == 1) {
+
                 if (!$element->no_family_history_date) {
                     $element->no_family_history_date = date('Y-m-d H:i:s');
                 }
-            } else {
-                $element->no_family_history_date = null;
-            }
+        } elseif ($element->no_family_history_date) {
+            $element->no_family_history_date = null;
         }
 
         // pre-cache current entries so any entries that remain in place will use the same db row
@@ -77,6 +76,8 @@ class FamilyHistory extends \BaseEventElementWidget
                 $entries[] = $entry;
             }
             $element->entries = $entries;
+        }else {
+            $element->entries = array();
         }
     }
 }
