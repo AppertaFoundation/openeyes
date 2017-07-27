@@ -29,8 +29,15 @@
 <?php echo $form->textArea($element, 'report', array(), false, array('rows' => 6)) ?>
 <?php
     if(isset(Yii::app()->modules["OphTrOperationnote"])){
+        if($element->iol_type_id > 0)
+        {
+            $ioltypeid = "or id=".$element->iol_type_id;
+        }else
+        {
+            $ioltypeid  = "";
+        }
         echo $form->dropDownList($element, 'iol_type_id', array(CHtml::listData(OphInBiometry_LensType_Lens::model()->findAll(array(
-            'condition' => 'active=1',
+            'condition' => 'active=1 '.$ioltypeid,
             'order' => 'name',
         )), 'id', 'name')),
             array('empty' => '- Please select -'), $element->iol_hidden, array('field' => 4));
