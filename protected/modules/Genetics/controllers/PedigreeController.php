@@ -269,16 +269,21 @@ class PedigreeController extends BaseModuleController
             $post = Yii::app()->request->getPost('Pedigree');
             if (array_key_exists('id', $post) && is_array($post['id'])) {
                 foreach ($post['id'] as $id) {
+
                     $model = $model->findByPk($id);
-                    if (isset($model->active)) {
-                        $model->active = 0;
-                        if ($model && !$model->save()) {
-                            $response = 0;
+                    if (!count($model->subjects)) {
+                        if (isset($model->active)) {
+                            $model->active = 0;
+                            if ($model && !$model->save()) {
+                                $response = 0;
+                            }
+                        } else {
+                            if ($model && !$model->delete()) {
+                                $response = 0;
+                            }
                         }
                     } else {
-                        if ($model && !$model->delete()) {
-                            $response = 0;
-                        }
+                        $response = 0;
                     }
                 }
             }
