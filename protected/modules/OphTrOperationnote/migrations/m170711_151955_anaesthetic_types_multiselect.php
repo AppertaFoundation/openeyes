@@ -4,6 +4,7 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 {
 	public function up()
 	{
+
         $this->createOETable('ophtroperationnote_anaesthetic_anaesthetic_type',array(
             'id' => 'pk',
             'et_ophtroperationnote_anaesthetic_id' => 'int(10) unsigned NOT NULL',
@@ -50,7 +51,7 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
             $anaesthetic_LA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LA'))->queryScalar();
             $anaesthetic_LAC_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAC'))->queryScalar();
             $anaesthetic_LAS_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAS'))->queryScalar();
-            $anaesthetic_sedation_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAS'))->queryScalar();
+            $anaesthetic_sedation_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'Sedation'))->queryScalar();
             $anaesthetic_GA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'GA'))->queryScalar();
 
             $delivery_topical_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_delivery')->where('name=:name', array(':name' => 'Topical'))->queryScalar();
@@ -119,6 +120,7 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
                         case $anaesthetic_LAS_id:
                             $this->createOrUpdate('OphTrOperationnote_OperationAnaestheticType', array(
                                 'et_ophtroperationnote_anaesthetic_id' => $element->id, 'anaesthetic_type_id' => $anaesthetic_LA_id));
+
                             $this->createOrUpdate('OphTrOperationnote_OperationAnaestheticType', array(
                                 'et_ophtroperationnote_anaesthetic_id' => $element->id, 'anaesthetic_type_id' => $anaesthetic_sedation_id));
                             break;
@@ -142,13 +144,23 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
             throw $e;
         }
 
-        /**
-         * Not sure if we should update these  ??
-         */
+        $this->update('et_ophtrconsent_procedure', array('anaesthetic_type_id' => $anaesthetic_LA_id), 'anaesthetic_type_id = ' . $anaesthetic_topical_id);
+        $this->update('et_ophtrconsent_procedure', array('anaesthetic_type_id' => $anaesthetic_LA_id), 'anaesthetic_type_id = ' . $anaesthetic_LAS_id);
+        $this->update('et_ophtrconsent_procedure', array('anaesthetic_type_id' => $anaesthetic_LA_id), 'anaesthetic_type_id = ' . $anaesthetic_LAC_id);
 
-        //$this->update('et_ophtrconsent_procedure', array('anaesthetic_type_id' => $anaesthetic_LA_id), 'anaesthetic_type_id = ' . $anaesthetic_topical_id);
-        //$this->update('et_ophtrintravitinjection_anaesthetic', array('left_anaesthetictype_id' => $anaesthetic_LA_id), 'left_anaesthetictype_id = ' . $anaesthetic_topical_id);
-        //$this->update('et_ophtrintravitinjection_anaesthetic', array('right_anaesthetictype_id' => $anaesthetic_LA_id), 'right_anaesthetictype_id = ' . $anaesthetic_topical_id);
+        $this->update('et_ophtrintravitinjection_anaesthetic', array('left_anaesthetictype_id' => $anaesthetic_LA_id), 'left_anaesthetictype_id = ' . $anaesthetic_topical_id);
+        $this->update('et_ophtrintravitinjection_anaesthetic', array('right_anaesthetictype_id' => $anaesthetic_LA_id), 'right_anaesthetictype_id = ' . $anaesthetic_topical_id);
+
+        $this->update('et_ophtrintravitinjection_anaesthetic', array('left_anaesthetictype_id' => $anaesthetic_LA_id), 'left_anaesthetictype_id = ' . $anaesthetic_LAS_id);
+        $this->update('et_ophtrintravitinjection_anaesthetic', array('right_anaesthetictype_id' => $anaesthetic_LA_id), 'right_anaesthetictype_id = ' . $anaesthetic_LAS_id);
+        $this->update('et_ophtrintravitinjection_anaesthetic', array('left_anaesthetictype_id' => $anaesthetic_LA_id), 'left_anaesthetictype_id = ' . $anaesthetic_LAC_id);
+        $this->update('et_ophtrintravitinjection_anaesthetic', array('right_anaesthetictype_id' => $anaesthetic_LA_id), 'right_anaesthetictype_id = ' . $anaesthetic_LAC_id);
+
+        $this->update('ophtrintravitinjection_anaesthetictype', array('anaesthetic_type_id' => $anaesthetic_LA_id), 'anaesthetic_type_id = ' . $anaesthetic_topical_id);
+
+        $this->update('et_ophtroperationbooking_operation', array('anaesthetic_type_id' => $anaesthetic_LA_id), 'anaesthetic_type_id = ' . $anaesthetic_topical_id);
+        $this->update('et_ophtroperationbooking_operation', array('anaesthetic_type_id' => $anaesthetic_LA_id), 'anaesthetic_type_id = ' . $anaesthetic_LAS_id);
+        $this->update('et_ophtroperationbooking_operation', array('anaesthetic_type_id' => $anaesthetic_LA_id), 'anaesthetic_type_id = ' . $anaesthetic_LAC_id);
 
         /**
          * OE-6557
@@ -157,18 +169,18 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 
           // after that we can drop the FKs and delete anaesthetic_type_id, anaesthetic_delivery_id
 
-//        $this->dropForeignKey('et_ophtroperationnote_ana_anaesthetic_delivery_id_fk', 'et_ophtroperationnote_anaesthetic');
-//        $this->dropForeignKey('et_ophtroperationnote_ana_anaesthetic_type_id_fk', 'et_ophtroperationnote_anaesthetic');
-//
-//        $this->dropColumn('et_ophtroperationnote_anaesthetic', 'anaesthetic_type_id');
-//        $this->dropColumn('et_ophtroperationnote_anaesthetic_version', 'anaesthetic_type_id');
-//
-//        $this->dropColumn('et_ophtroperationnote_anaesthetic', 'anaesthetic_delivery_id');
-//        $this->dropColumn('et_ophtroperationnote_anaesthetic_version', 'anaesthetic_delivery_id');
-//
-//        $this->delete("anaesthetic_type", "name = 'Topical'");
-//        $this->delete("anaesthetic_type", "name = 'LAC'");
-//        $this->delete("anaesthetic_type", "name = 'LAS'");
+        $this->dropForeignKey('et_ophtroperationnote_ana_anaesthetic_delivery_id_fk', 'et_ophtroperationnote_anaesthetic');
+        $this->dropForeignKey('et_ophtroperationnote_ana_anaesthetic_type_id_fk', 'et_ophtroperationnote_anaesthetic');
+
+        $this->dropColumn('et_ophtroperationnote_anaesthetic', 'anaesthetic_type_id');
+        $this->dropColumn('et_ophtroperationnote_anaesthetic_version', 'anaesthetic_type_id');
+
+        $this->dropColumn('et_ophtroperationnote_anaesthetic', 'anaesthetic_delivery_id');
+        $this->dropColumn('et_ophtroperationnote_anaesthetic_version', 'anaesthetic_delivery_id');
+
+        $this->delete("anaesthetic_type", "name = 'Topical'");
+        $this->delete("anaesthetic_type", "name = 'LAC'");
+        $this->delete("anaesthetic_type", "name = 'LAS'");
 
 	}
 
@@ -200,7 +212,7 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 
         //@TODO : remove the lines below when development finish until that we may want to revert sometines
 
-		/*$this->dropForeignKey('ophtroperationnote_anaesthetic_type_to_anaest_type', 'ophtroperationnote_anaesthetic_anaesthetic_type');
+		$this->dropForeignKey('ophtroperationnote_anaesthetic_type_to_anaest_type', 'ophtroperationnote_anaesthetic_anaesthetic_type');
 		$this->dropForeignKey('ophtroperationnote_anaesthetic_type_to_el', 'ophtroperationnote_anaesthetic_anaesthetic_type');
 
 		$this->dropOETable('ophtroperationnote_anaesthetic_anaesthetic_type', true);
@@ -211,6 +223,6 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 		$this->dropOETable('ophtroperationnote_anaesthetic_anaesthetic_delivery', true);
 
         $this->delete("anaesthetic_type", "name = 'Sedation'");
-        $this->delete("anaesthetic_type", "name = 'No Anaesthetic'");*/
+        $this->delete("anaesthetic_type", "name = 'No Anaesthetic'");
 	}
 }
