@@ -25,9 +25,6 @@ if ($element->isNewRecord || $element->{$side . '_eyedraw2'}) {
     // legacy records will not have the the eyedraw2 property
     $cross_section_ed = $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'onReadyCommandArray' => array(
-            array('addDoodle', array('CorneaCrossSection')),
-            array('addDoodle', array('AntSegCrossSection')),
-            array('addDoodle', array('LensCrossSection')),
             array('deselectDoodles', array()),
         ),
         'listenerArray' => array('anteriorSegmentListener'),
@@ -72,6 +69,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'onReadyCommandArray' => array(
         array('addDoodle', array('AntSeg')),
         array('addDoodle', array('Lens')),
+        array('addDoodle', array('Cornea')),
         array('deselectDoodles', array()),
     ),
     'listenerArray' => array('anteriorSegmentListener', 'autoReportListener'),

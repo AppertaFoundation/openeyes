@@ -25,11 +25,33 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         // pairing of doodles from primary to secondary (cross section) eyedraw canvas
         pairArray: {
             Lens:'LensCrossSection',
+            AntSeg: 'AntSegCrossSection',
+            Cornea: 'CorneaCrossSection',
             PCIOL:'PCIOLCrossSection',
             ACIOL: 'ACIOLCrossSection',
             CornealOpacity: 'CornealOpacityCrossSection',
             Hypopyon: 'HypopyonCrossSection',
             Hyphaema: 'HyphaemaCrossSection'
+        },
+        secondarySyncParams: {
+            AntSegCrossSection: {
+                primaryDoodleClass: 'AntSeg',
+                parameters: {apexX: 'csApexX'}
+            },
+            LensCrossSection: {
+                primaryDoodleClass: 'Lens',
+                parameters: {originX: 'csOriginX'}
+            },
+            CorneaCrossSection: {
+                primaryDoodleClass: 'Cornea',
+                parameters: {
+                    shape: 'shape',
+                    pachymetry: 'pachymetry',
+                    originX: 'csOriginX',
+                    apexX: 'csApexX',
+                    apexY: 'csApexY'
+                }
+            }
         }
     };
 
@@ -42,7 +64,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     {
         if (!this.primaryDrawing) {
             this.primaryDrawing = drawing;
-            this.primaryDrawing.registerForNotifications(this, 'primaryDrawingNotification', ['doodlesLoaded', 'doodleSelected', 'doodleAdded', 'doodleDeleted', 'parameterChanged']);
+            this.primaryDrawing.registerForNotifications(this, 'primaryDrawingNotification', ['ready', 'doodlesLoaded', 'doodleSelected', 'doodleAdded', 'doodleDeleted', 'parameterChanged']);
         }
     };
 
@@ -54,7 +76,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     AnteriorSegmentController.prototype.setSecondary = function(drawing)
     {
         this.secondaryDrawing = drawing;
-        this.secondaryDrawing.registerForNotifications(this, 'secondaryDrawingNotification', ['doodlesLoaded', 'doodleSelected']);
+        this.secondaryDrawing.registerForNotifications(this, 'secondaryDrawingNotification', ['ready', 'parameterChanged', 'doodlesLoaded', 'doodleSelected']);
     };
 
     /**
@@ -67,7 +89,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         this.$edReportDisplay = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'+this.options.side+'_ed_report_display');
         this.$nuclearCataract = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'+this.options.side+'_nuclear_id');
         this.$corticalCataract = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'+this.options.side+'_cortical_id');
-
+        this.secondaryDoodlesLoaded = false;
     };
 
     /**
@@ -117,6 +139,61 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     };
 
     /**
+     * Drives the loading of the cross section doodles from the doodles in the primary (enface) view
+     */
+    AnteriorSegmentController.prototype.loadSecondaryDoodles = function()
+    {
+        if (!this.secondaryDoodlesLoaded) {
+            for (var i = 0; i < this.primaryDrawing.doodleArray.length; i++) {
+                var doodle = this.primaryDrawing.doodleArray[i];
+                // check it's a doodle that we want to pair into the cross section
+                if (this.options.pairArray.hasOwnProperty(doodle.className)) {
+                    var csClass = this.options.pairArray[doodle.className];
+                    parameters = {};
+                    // look for parameters we want to set from primary.
+                    if (this.options.secondarySyncParams.hasOwnProperty(csClass)) {
+                        // retrieve the cs based parameters that we need to set up
+                        var conf = this.options.secondarySyncParams[csClass];
+                        for (var param in conf.parameters) {
+                            if (conf.hasOwnProperty(param)) {
+                                parameters[param] = doodle[conf[param]];
+                            }
+                        }
+                    }
+                    // should probably check this earlier, and may want to iterate over parameters instead?
+                    if (!this.secondaryDrawing.hasDoodleOfClass(csClass))
+                        this.secondaryDrawing.addDoodle(csClass, parameters);
+                }
+
+            }
+            this.secondaryDoodlesLoaded = true;
+            this.secondaryDrawing.deselectDoodles();
+        }
+    };
+
+    /**
+     * Syncing parameters back to the enface doodles that are not "naturally" synced
+     *
+     * @param edClass - the class of doodle on the primary drawing
+     * @param parameterName - the parameter name on the primary doodle that should be updated
+     * @param changedParameter - the changedParameter object from Eyedraw
+     */
+    AnteriorSegmentController.prototype.updatePrimaryParameter = function(edClass, parameterName, changedParameter)
+    {
+        var primaryDoodle = this.primaryDrawing.firstDoodleOfClass(edClass);
+        if (typeof(changedParameter.value) === "string") {
+            primaryDoodle.setParameterFromString(parameterName, changedParameter.value, true);
+        } else {
+            var increment = changedParameter.value - changedParameter.oldValue;
+            var newValue = primaryDoodle[parameterName] + increment;
+
+            // Sync slave parameter to value of master
+            primaryDoodle.setSimpleParameter(parameterName, newValue);
+            primaryDoodle.updateDependentParameters(parameterName);
+        }
+    };
+
+    /**
      * Handler of notifications from the primary Eyedraw canvas
      * All changes require the report to be updated, but additional behaviours also arise
      * depending on the notification type.
@@ -127,11 +204,16 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     {
         switch (msgArray['eventName'])
         {
+        case 'ready':
+            if (this.secondaryDrawingReady()) {
+                this.loadSecondaryDoodles();
+            }
+            break;
+
         case 'doodleSelected':
             // Ensure that selecting a doodle in one drawing de-deselects the others
             if (this.secondaryDrawingReady()) {
                 this.secondaryDrawing.deselectDoodles();
-
             }
             break;
 
@@ -213,11 +295,33 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     AnteriorSegmentController.prototype.secondaryDrawingNotification = function(msgArray)
     {
         switch (msgArray['eventName']) {
+            case 'ready':
+                if (this.primaryDrawingReady())
+                    this.loadSecondaryDoodles();
+                break;
             case 'doodlesLoaded':
                 break;
             case 'doodleSelected':
                 if (this.primaryDrawingReady())
                     this.primaryDrawing.deselectDoodles();
+                break;
+            case 'parameterChanged':
+                var change = msgArray['object'];
+                console.log(change.doodle.className, change.parameter);
+                for (var className in this.options.secondarySyncParams) {
+                    console.log(className);
+                    if (this.options.secondarySyncParams.hasOwnProperty(className) &&
+                        change.doodle.className == className
+                    ) {
+                        var conf = this.options.secondarySyncParams[className];
+                        var parameters = conf['parameters'];
+                        for (var param in parameters) {
+                            if (parameters.hasOwnProperty(param) && change.parameter === param) {
+                                this.updatePrimaryParameter(conf['primaryDoodleClass'], parameters[param], change);
+                            }
+                        }
+                    }
+                }
                 break;
         }
     };
