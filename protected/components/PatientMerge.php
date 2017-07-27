@@ -319,8 +319,6 @@ class PatientMerge
                             //set earliest start date and latest end date of the two episodes
                             list($primary_episode->start_date, $primary_episode->end_date) = $this->getTwoEpisodesStartEndDate($primary_episode, $secondary_episode);
 
-                            $primary_episode->firm_id = $secondary_episode->firm_id;
-
                             $primary_episode->save();
 
                             // after all events are moved we flag the secondary episode as deleted
@@ -341,7 +339,7 @@ class PatientMerge
 
                             $secondary_episode->firm_id = $primary_episode->firm_id;
 
-                            /* BUT do not forget we have to delete the primary episode AND move the secondary episode to the primary patient **/
+                            /* BUT do not forget we have to delete the primary episode - at this point we already moved the secondary episode to the primary patient **/
                             $primary_episode->deleted = 1;
 
                             if ($primary_episode->save()) {
