@@ -128,6 +128,84 @@ class EDProcessor
      */
     public function loadElementEyedrawDoodles($element, $attributes=array())
     {
-        // TODO: implement this function
+        $query_string = <<<EOSQL
+-- Query NEWEST eyedraw doodle data for set-interection-tuple groups for target patient and runtime canvas
+SELECT
+  in_ep.patient_id
+, in_ev.event_date
+, in_ev.created_date
+, in_mdp.event_id
+, in_mdp.laterality
+, in_mdp.eyedraw_class_mnemonic
+, in_mdp.placement_order
+, in_mdp.content_json
+, in_mdp.canvas_mnemonic AS irrelevant_origin_canvas_mnemonic
+, in_ed.processed_canvas_intersection_tuple
+, in_ecd.eyedraw_class_mnemonic
+, in_ecd.canvas_mnenonic
+, in_ecd.eyedraw_on_canvas_toolbar_location
+, in_ecd.eyedraw_on_canvas_toolbar_order
+, in_ecd.eyedraw_no_tuple_init_canvas_flag
+, in_ecd.eyedraw_carry_forward_canvas_flag
+-- All episodes for subject patient (see restriction)
+FROM openeyes.episode in_ep
+-- All events for subject patient
+JOIN openeyes.event in_ev
+  ON in_ev.episode_id = in_ep.id 
+-- All EyeDraw data point for subject patient events
+JOIN openeyes.mview_datapoint_node in_mdp
+  ON in_mdp.event_id = in_ev.id
+-- Look up eyedraw doodle/canvas rules
+JOIN openeyes.eyedraw_canvas_doodle in_ecd
+  ON in_ecd.eyedraw_class_mnemonic = in_mdp.eyedraw_class_mnemonic
+-- Restrict-join: The doodle/canvas rule lookup required the runtime target canvas mnenonic 
+-- Restrict-join: "AND NOT" the source canvas that was used to shred the doodle data)  
+ AND in_ecd.canvas_mnenonic = :cvmnm
+-- Look up eyedraw doodle rules
+JOIN openeyes.eyedraw_doodle in_ed
+  ON in_ed.eyedraw_class_mnemonic = in_ecd.eyedraw_class_mnemonic
+-- Restrict by patient subject
+WHERE in_ep.patient_id = :patient_id -- <<<<<<<<<<<<<<<<<<<<<<<<<<< BIND APP DATA HERE
+-- Restrict to only doodles that are required to cpy forward to runtime canvas
+-- (see above eyedraw_canvas_doodle restrict-join for runtime canvas selection)
+AND in_ecd.eyedraw_carry_forward_canvas_flag = 1 
+-- Restrict: Magic sub-query to eliminate OLDER event data in outer query
+-- By identifying NEWER events data within same set-intersection-tuple/laterality in sub-query)
+AND NOT EXISTS (
+    SELECT 1
+    -- All episodes for subject patient (see restriction)
+    FROM openeyes.episode in2_ep
+    -- All events for subject patient
+    JOIN openeyes.event in2_ev 
+      ON in2_ev.episode_id = in2_ep.id 
+    -- All EyeDraw data point for subject patient events
+    JOIN openeyes.mview_datapoint_node in2_mdp
+      ON in2_mdp.event_id = in2_ev.id
+    -- Look up eyedraw doodle (uses short circuit hop join - is safe J.Brown 27/07/2017) to determine set-intersection-tuples 
+    JOIN openeyes.eyedraw_doodle in2_ed
+      ON in2_ed.eyedraw_class_mnemonic = in2_mdp.eyedraw_class_mnemonic
+    -- Restrict by patient subject (same as outer query)
+    WHERE in2_ep.patient_id = in_ep.patient_id
+  -- Restrict for same laterality as outer query record
+  AND in2_mdp.laterality = in_mdp.laterality
+  -- Restrict for same set-intersection-tuple as outer query record
+  AND in2_ed.processed_canvas_intersection_tuple = in_ed.processed_canvas_intersection_tuple
+  -- Restrict to only those events that are NEWER that outer query event (within set-intersection-tuples)
+  -- Thus outer query records excluded as by defininion older it is an OLDER record
+  AND (in2_ev.event_date, in2_ev.created_date) > (in_ev.event_date, in_ev.created_date)
+)
+ORDER BY
+  'a'
+, in_mdp.laterality
+, in_ed.processed_canvas_intersection_tuple
+, in_ev.event_date DESC
+, in_ev.created_date DESC
+;
+EOSQL;
+        $cmd = $this->app->db
+            ->createCommand($query_string)
+            ->bindParam(':patient_id', $event->episode->patient_id)
+            ->bindParam(':cvmnm', $this->getCanvasMnemonicForElementType($element->getElementType()->id));
+
     }
 }

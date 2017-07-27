@@ -54,9 +54,9 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
 {
     protected static $ed_persistence_attributes = array(
         'left_eyedraw' => \Eye::LEFT,
-        'left_eyedraw2' => \Eye::LEFT,
+        //'left_eyedraw2' => \Eye::LEFT,
         'right_eyedraw' => \Eye::RIGHT,
-        'right_eyedraw2' => \Eye::RIGHT
+        //'right_eyedraw2' => \Eye::RIGHT
     );
 
     public $service;
