@@ -611,7 +611,7 @@ class DefaultController extends BaseEventTypeController
             {
                 $reason_id = isset($_GET['reason']) ? $_GET['reason'] : 0;
                 $reason_other_text = isset($_GET['reason_other']) ? $_GET['reason_other'] : '';
-                $_POST=null;
+               // $_POST=null;
             }
             else
             {
