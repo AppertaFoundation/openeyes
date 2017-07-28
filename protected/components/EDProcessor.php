@@ -120,15 +120,19 @@ class EDProcessor
         }
     }
 
-    /**
-     * Load all the element attributes up with the appropriate set of doodles.
-     *
-     * @param $element
-     * @param array $attributes
-     */
-    public function loadElementEyedrawDoodles($element, $attributes=array())
+    private $patient_doodles = array();
+
+
+
+    private function retrieveDoodlesForSide($patient_id, $canvas_mnemonic, $side)
     {
-        $query_string = <<<EOSQL
+        if (!array_key_exists($patient_id, $this->patient_doodles)) {
+            $this->patient_doodles[$patient_id] = array();
+        }
+
+        if (!array_key_exists($canvas_mnemonic, $this->patient_doodles[$patient_id])) {
+            $this->patient_doodles[$patient_id][$canvas_mnemonic] = array('R' => array(), 'L' => array());
+            $query_string = <<<EOSQL
 -- Query NEWEST eyedraw doodle data for set-interection-tuple groups for target patient and runtime canvas
 SELECT
   in_ep.patient_id
@@ -142,7 +146,7 @@ SELECT
 , in_mdp.canvas_mnemonic AS irrelevant_origin_canvas_mnemonic
 , in_ed.processed_canvas_intersection_tuple
 , in_ecd.eyedraw_class_mnemonic
-, in_ecd.canvas_mnenonic
+, in_ecd.canvas_mnemonic
 , in_ecd.eyedraw_on_canvas_toolbar_location
 , in_ecd.eyedraw_on_canvas_toolbar_order
 , in_ecd.eyedraw_no_tuple_init_canvas_flag
@@ -160,7 +164,7 @@ JOIN openeyes.eyedraw_canvas_doodle in_ecd
   ON in_ecd.eyedraw_class_mnemonic = in_mdp.eyedraw_class_mnemonic
 -- Restrict-join: The doodle/canvas rule lookup required the runtime target canvas mnenonic 
 -- Restrict-join: "AND NOT" the source canvas that was used to shred the doodle data)  
- AND in_ecd.canvas_mnenonic = :cvmnm
+ AND in_ecd.canvas_mnemonic = :cvmnm
 -- Look up eyedraw doodle rules
 JOIN openeyes.eyedraw_doodle in_ed
   ON in_ed.eyedraw_class_mnemonic = in_ecd.eyedraw_class_mnemonic
@@ -202,11 +206,30 @@ ORDER BY
 , in_ev.created_date DESC
 ;
 EOSQL;
-        $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element->getElementType()->id);
-        $cmd = $this->app->db
-            ->createCommand($query_string)
-            ->bindParam(':patient_id', $event->episode->patient_id)
-            ->bindParam(':cvmnm', $canvas_mnemonic);
+            foreach ($this->app->db
+                ->createCommand($query_string)
+                ->bindParam(':patient_id', $patient_id)
+                ->bindParam(':cvmnm', $canvas_mnemonic)->queryAll() as $result
+            ) {
+                $this->patient_doodles[$patient_id][$canvas_mnemonic][$result['laterality']][] = $result['content_json'];
+            };
 
+        }
+        return $this->patient_doodles[$patient_id][$canvas_mnemonic][($side === Eye::LEFT) ? 'L' : 'R'];
+    }
+
+    /**
+     * Load all the element attributes up with the appropriate set of doodles.
+     *
+     * @param \Patient $patient
+     * @param $element
+     * @param $side
+     * @param $attribute
+     */
+    public function loadElementEyedrawDoodles(Patient $patient, &$element, $side, $attribute)
+    {
+        if ($doodle_data = $this->retrieveDoodlesForSide($patient->id, $this->getCanvasMnemonicForElementType($element->getElementType()->id), $side)) {
+            $element->$attribute = '[' . implode(',', $doodle_data) . ']';
+        }
     }
 }
