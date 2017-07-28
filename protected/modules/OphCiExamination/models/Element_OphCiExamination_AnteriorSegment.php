@@ -217,7 +217,8 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
     {
         parent::setDefaultOptions($patient);
         $processor = new \EDProcessor();
-        $processor->loadElementEyedrawDoodles($this, static::$ed_persistence_attributes);
+        $processor->loadElementEyedrawDoodles($patient, $this,\Eye::LEFT, 'left_eyedraw');
+        $processor->loadElementEyedrawDoodles($patient, $this,\Eye::RIGHT, 'right_eyedraw');
     }
 
     public function afterSave()

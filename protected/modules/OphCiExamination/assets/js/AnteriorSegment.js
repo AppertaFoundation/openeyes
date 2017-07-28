@@ -33,6 +33,9 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
             Hypopyon: 'HypopyonCrossSection',
             Hyphaema: 'HyphaemaCrossSection'
         },
+        // Ideally this knowledge would be baked into the enface doodle classes
+        // but with only one instance of this behaviour and time constraints, this
+        // is the simpler implementation.
         secondarySyncParams: {
             AntSegCrossSection: {
                 primaryDoodleClass: 'AntSeg',
@@ -51,6 +54,14 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                     apexX: 'csApexX',
                     apexY: 'csApexY'
                 }
+            },
+            PCIOLCrossSection: {
+                primaryDoodleClass: 'PCIOL',
+                parameters: {originX: 'csOriginX', originY: 'originY'}
+            },
+            ACIOLCrossSection: {
+                primaryDoodleClass: 'ACIOL',
+                parameters: {originX: 'csOriginX'}
             }
         }
     };
@@ -155,14 +166,15 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                         // retrieve the cs based parameters that we need to set up
                         var conf = this.options.secondarySyncParams[csClass];
                         for (var param in conf.parameters) {
-                            if (conf.hasOwnProperty(param)) {
-                                parameters[param] = doodle[conf[param]];
+                            if (conf.parameters.hasOwnProperty(param)) {
+                                parameters[param] = doodle[conf.parameters[param]];
                             }
                         }
                     }
                     // should probably check this earlier, and may want to iterate over parameters instead?
-                    if (!this.secondaryDrawing.hasDoodleOfClass(csClass))
+                    if (!this.secondaryDrawing.hasDoodleOfClass(csClass)) {
                         this.secondaryDrawing.addDoodle(csClass, parameters);
+                    }
                 }
 
             }
@@ -181,6 +193,10 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     AnteriorSegmentController.prototype.updatePrimaryParameter = function(edClass, parameterName, changedParameter)
     {
         var primaryDoodle = this.primaryDrawing.firstDoodleOfClass(edClass);
+        // avoid infinite loop of continually updating the parameter through notifications
+        if (primaryDoodle[parameterName] == changedParameter.value)
+            return;
+
         if (typeof(changedParameter.value) === "string") {
             primaryDoodle.setParameterFromString(parameterName, changedParameter.value, true);
         } else {
@@ -231,7 +247,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
             }
 
             // Check pair array for doodle to add to secondary
-            if (this.secondaryDrawingReady()) {
+            if (this.secondaryDrawingReady() && this.secondaryDoodlesLoaded) {
                 for (var primaryClass in this.options.pairArray) {
                     if (newDoodle.className == primaryClass) {
                         var secondaryClass = this.options.pairArray[primaryClass];
@@ -306,18 +322,18 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                     this.primaryDrawing.deselectDoodles();
                 break;
             case 'parameterChanged':
-                var change = msgArray['object'];
-                console.log(change.doodle.className, change.parameter);
-                for (var className in this.options.secondarySyncParams) {
-                    console.log(className);
-                    if (this.options.secondarySyncParams.hasOwnProperty(className) &&
-                        change.doodle.className == className
-                    ) {
-                        var conf = this.options.secondarySyncParams[className];
-                        var parameters = conf['parameters'];
-                        for (var param in parameters) {
-                            if (parameters.hasOwnProperty(param) && change.parameter === param) {
-                                this.updatePrimaryParameter(conf['primaryDoodleClass'], parameters[param], change);
+                if (this.secondaryDoodlesLoaded) {
+                    var change = msgArray['object'];
+                    for (var className in this.options.secondarySyncParams) {
+                        if (this.options.secondarySyncParams.hasOwnProperty(className) &&
+                            change.doodle.className == className
+                        ) {
+                            var conf = this.options.secondarySyncParams[className];
+                            var parameters = conf['parameters'];
+                            for (var param in parameters) {
+                                if (parameters.hasOwnProperty(param) && change.parameter === param) {
+                                    this.updatePrimaryParameter(conf['primaryDoodleClass'], parameters[param], change);
+                                }
                             }
                         }
                     }
