@@ -28,14 +28,12 @@ if ($element->isNewRecord || $element->{$side . '_eyedraw2'}) {
             array('deselectDoodles', array()),
         ),
         'listenerArray' => array('anteriorSegmentListener'),
-        'syncArray' => array(
-            $side.'_'.$element->elementType->id => array(
-                'ACIOLCrossSection' => array('ACIOL' => array('parameters' => array('originY') ) ),
-                'PCIOLCrossSection' => array('PCIOL' => array('parameters' => array('originY', 'fx') ) ),
-                // no controls for corneal opacity in cross section so don't need to sync back to primary
-                //'CornealOpacityCrossSection' => array('CornealOpacity' => array('parameters' => array('yMidPoint', 'd', 'h', 'w', 'iW') ) )
-            ),
-        ),
+//        'syncArray' => array(
+//            $side.'_'.$element->elementType->id => array(
+//                'ACIOLCrossSection' => array('ACIOL' => array('parameters' => array('originY') ) ),
+//                'PCIOLCrossSection' => array('PCIOL' => array('parameters' => array('originY', 'fx') ) ),
+//            ),
+//        ),
         'idSuffix' => $side.'_'.$element->elementType->id . '_side',
         'side' => ($side == 'right') ? 'R' : 'L',
         'mode' => 'edit',
@@ -75,11 +73,11 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         $side .'_'.$element->elementType->id . '_side' => array(
 //            'AntSeg' => array('AntSegCrossSection' => array('parameters' => array('apexY', 'colour') ) ),
 //            'Lens' => array('LensCrossSection' => array('parameters' => array('originY', 'nuclearGrade', 'corticalGrade', 'posteriorSubcapsularGrade', 'phakodonesis') ) ),
-            'ACIOL' => array('ACIOLCrossSection' => array('parameters' => array('originY') ) ),
-            'PCIOL' => array('PCIOLCrossSection' => array('parameters' => array('originY', 'fx') ) ),
-            'CornealOpacity' => array('CornealOpacityCrossSection' => array('parameters' => array('yMidPoint','d','h','w','iW','originY','minY','maxY') ) ),
-            'Hypopyon' => array('HypopyonCrossSection' => array('parameters' => array('apexY'))),
-            'Hyphaema' => array('HyphaemaCrossSection' => array('parameters' => array('apexY')))
+//            'ACIOL' => array('ACIOLCrossSection' => array('parameters' => array('originY') ) ),
+//            'PCIOL' => array('PCIOLCrossSection' => array('parameters' => array('originY', 'fx') ) ),
+//            'CornealOpacity' => array('CornealOpacityCrossSection' => array('parameters' => array('yMidPoint','d','h','w','iW','originY','minY','maxY') ) ),
+//            'Hypopyon' => array('HypopyonCrossSection' => array('parameters' => array('apexY'))),
+//            'Hyphaema' => array('HyphaemaCrossSection' => array('parameters' => array('apexY')))
         )
     ),
     'idSuffix' => $side.'_'.$element->elementType->id,

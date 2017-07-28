@@ -32,29 +32,6 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
             CornealOpacity: 'CornealOpacityCrossSection',
             Hypopyon: 'HypopyonCrossSection',
             Hyphaema: 'HyphaemaCrossSection'
-        },
-        // Ideally this knowledge would be baked into the enface doodle classes
-        // but with only one instance of this behaviour and time constraints, this
-        // is the simpler implementation.
-        secondarySyncParams: {
-            CorneaCrossSection: {
-                primaryDoodleClass: 'Cornea',
-                parameters: {
-                    shape: 'shape',
-                    pachymetry: 'pachymetry',
-                    originX: 'csOriginX',
-                    apexX: 'csApexX',
-                    apexY: 'csApexY'
-                }
-            },
-            PCIOLCrossSection: {
-                primaryDoodleClass: 'PCIOL',
-                parameters: {originX: 'csOriginX', originY: 'originY'}
-            },
-            ACIOLCrossSection: {
-                primaryDoodleClass: 'ACIOL',
-                parameters: {originX: 'csOriginX', originY: 'originY'}
-            }
         }
     };
 
@@ -93,6 +70,13 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         this.$nuclearCataract = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'+this.options.side+'_nuclear_id');
         this.$corticalCataract = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'+this.options.side+'_cortical_id');
         this.secondaryDoodlesLoaded = false;
+        // reverse lookup for syncing secondary doodles back to the primary canvas
+        this.options.reversePairArray = {};
+        for (var primaryClassName in this.options.pairArray) {
+            if (this.options.pairArray.hasOwnProperty(primaryClassName)) {
+                this.options.reversePairArray[this.options.pairArray[primaryClassName]] = primaryClassName;
+            }
+        }
     };
 
     /**
@@ -141,7 +125,16 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         $el.trigger('change');
     };
 
-    AnteriorSegmentController.prototype.setDoodleParameter = function(source, sourceParameter, destination, destinationParameter)
+    /**
+     * Abstraction of setting a parameter value from one doodle to another.
+     *
+     * @param source
+     * @param sourceParameter
+     * @param destination
+     * @param destinationParameter
+     * @param repaint
+     */
+    AnteriorSegmentController.prototype.setDoodleParameter = function(source, sourceParameter, destination, destinationParameter, repaint)
     {
       // no need to trigger parameter changes if they are already matched.
       if (source[sourceParameter] == destination[destinationParameter])
@@ -152,6 +145,9 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
       } else {
         destination.setSimpleParameter(destinationParameter, source[sourceParameter]);
       }
+      destination.updateDependentParameters(destinationParameter);
+      if (repaint)
+          destination.drawing.repaint();
     };
 
     /**
@@ -160,10 +156,8 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     AnteriorSegmentController.prototype.loadSecondaryDoodles = function()
     {
         if (!this.secondaryDoodlesLoaded) {
-            console.log(this.primaryDrawing.doodleArray);
             for (var i = 0; i < this.primaryDrawing.doodleArray.length; i++) {
                 var doodle = this.primaryDrawing.doodleArray[i];
-                console.log(doodle.className);
                 if (this.options.pairArray.hasOwnProperty(doodle.className)) {
                     // it's a doodle that we want to pair into the secondary Drawing
                     var secondaryClass = this.options.pairArray[doodle.className];
@@ -174,12 +168,10 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                     if (typeof(syncParameters) !== "undefined") {
                         for (var j in syncParameters['source']) {
                           var parameter = syncParameters['source'][j];
-                          console.log(parameter);
                           this.setDoodleParameter(doodle, parameter, secondaryDoodle, parameter);
                         }
                         for (var j in syncParameters['store']) {
                             var pMap = syncParameters['store'][j];
-                            console.log(pMap);
                             this.setDoodleParameter(doodle, pMap[1], secondaryDoodle, pMap[0]);
                         }
                     }
@@ -298,6 +290,25 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
             break;
         case 'parameterChanged':
             var change = msgArray['object'];
+            if (this.secondaryDoodlesLoaded) {
+                if (this.options.pairArray[change.doodle.className] !== undefined) {
+                    // get the corresponding secondary doodle and it's sync parameter definitions
+                    var secondaryDoodle = this.secondaryDrawing.firstDoodleOfClass(this.options.pairArray[change.doodle.className]);
+                    var syncParameters = secondaryDoodle.getLinkedParameters(change.doodle.className);
+                    if (typeof(syncParameters) !== "undefined") {
+                        // loop through source synced params and update if matches this primary parameter
+                        for (var j in syncParameters['source']) {
+                            if (syncParameters['source'][j] === change.parameter) {
+                                this.setDoodleParameter(change.doodle, change.parameter, secondaryDoodle, change.parameter, true);
+                                break;
+                            }
+                        }
+                        // we know that that we don't have to sync 'store' params to the secondary so we're done here
+                    }
+                }
+            }
+
+
             if (change.doodle.className === 'Lens') {
                 if (change.parameter === 'nuclearGrade') {
                     this.storeToHiddenField(this.$nuclearCataract, change.value);
@@ -330,16 +341,27 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                 break;
             case 'parameterChanged':
                 if (this.secondaryDoodlesLoaded) {
+                    // work out what parameter and on what doodle should an update be carried out on
+                    // the primary canvas.
                     var change = msgArray['object'];
-                    for (var className in this.options.secondarySyncParams) {
-                        if (this.options.secondarySyncParams.hasOwnProperty(className) &&
-                            change.doodle.className == className
-                        ) {
-                            var conf = this.options.secondarySyncParams[className];
-                            var parameters = conf['parameters'];
-                            for (var param in parameters) {
-                                if (parameters.hasOwnProperty(param) && change.parameter === param) {
-                                    this.updatePrimaryParameter(conf['primaryDoodleClass'], parameters[param], change);
+                    if (this.options.reversePairArray[change.doodle.className] !== undefined) {
+                        var primaryDoodle = this.primaryDrawing.firstDoodleOfClass(this.options.reversePairArray[change.doodle.className]);
+                        var syncParameters = change.doodle.getLinkedParameters(this.options.reversePairArray[change.doodle.className]);
+                        if (typeof(syncParameters) !== "undefined") {
+                            var synced = false;
+                            for (var j in syncParameters['source']) {
+                                if (syncParameters['source'][j] === change.parameter) {
+                                    this.setDoodleParameter(change.doodle, change.parameter, primaryDoodle, change.parameter, true);
+                                    synced = true;
+                                    break;
+                                }
+                            }
+                            if (!synced) {
+                                for (var j in syncParameters['store']) {
+                                    if (syncParameters['store'][j][0] === change.parameter) {
+                                        this.setDoodleParameter(change.doodle, change.parameter, primaryDoodle, syncParameters['store'][j][1], true);
+                                        break;
+                                    }
                                 }
                             }
                         }
