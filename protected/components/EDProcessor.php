@@ -54,7 +54,6 @@ class EDProcessor
      */
     protected function storeDoodle($event_id, $mnemonic, $side, $doodle)
     {
-        OELog::log(print_r($doodle, true));
         $param_map = array(
             'event_id' => $event_id,
             'eyedraw_class_mnemonic' => $doodle->subclass,
