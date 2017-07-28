@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2011 rel. 3 (x64) (http://www.altova.com) by Jason Brown (Department of Health and Ageing) -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-	attributeFormDefault="unqualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="OE_ED_CONFIG">
 		<xs:annotation>
 			<xs:documentation>Comment describing your root element</xs:documentation>
@@ -35,8 +34,7 @@
 									<xs:sequence>
 										<xs:element name="EYEDRAW_CLASS_MNEMONIC" type="xs:string"/>
 										<xs:element name="TITLE" type="xs:string"/>
-										<xs:element name="INIT_DOODLE_JSON" type="xs:string"
-											nillable="true"/>
+										<xs:element name="INIT_DOODLE_JSON" type="xs:string" nillable="true"/>
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
@@ -67,6 +65,11 @@
 										<xs:element name="CONDITIONAL_REMOVE_FLAG" type="xs:boolean">
 											<xs:annotation>
 												<xs:documentation>These doodles are removed conditionally based on other clinical information, e.g. the operation procedure(s) selected.</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="COMMENT" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Optional comment on doodle usage configuration.</xs:documentation>
 											</xs:annotation>
 										</xs:element>
 									</xs:sequence>
