@@ -89,13 +89,9 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
      */
     private function refreshTuples()
     {
+        $query_string = $this->getRefreshTuplesQuery();
         Yii::app()->db->createCommand(
-            'UPDATE openeyes.eyedraw_doodle ed SET ed.processed_canvas_intersection_tuple = ' .
-            '(SELECT GROUP_CONCAT(DISTINCT ecd.canvas_mnemonic ORDER BY ecd.canvas_mnemonic) ' .
-            'FROM openeyes.eyedraw_canvas_doodle ecd WHERE ecd.eyedraw_class_mnemonic = ed.eyedraw_class_mnemonic ' .
-            'GROUP BY ecd.eyedraw_class_mnemonic)' .
-            // This clause added to resolve safe mode issues for updating all rows
-            'WHERE ed.eyedraw_class_mnemonic != "*"'
+            $query_string
         )->query();
     }
 
@@ -237,5 +233,33 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
     {
         //Use the canvas mnemonic to confirm whether or not it should be setup in the db.
         $this->insertOrUpdateCanvasDoodle($canvas_doodle);
+    }
+
+    /**
+     * @return string
+     */
+    private function getRefreshTuplesQuery()
+    {
+        $doodle_tbl = static::DOODLE_TBL;
+        $doodle_canvas_tbl = static::CANVAS_DOODLE_TBL;
+
+        return <<<EOSQL
+-- Update the Doodle Tuples
+UPDATE $doodle_tbl ed
+SET ed.processed_canvas_intersection_tuple = (
+    SELECT GROUP_CONCAT(DISTINCT ecd.canvas_mnemonic ORDER BY ecd.canvas_mnemonic) -- canvas_mnenonic 
+  FROM $doodle_canvas_tbl ecd
+  WHERE ecd.eyedraw_class_mnemonic = ed.eyedraw_class_mnemonic
+    AND EXISTS (
+        SELECT 1
+    FROM $doodle_canvas_tbl in_ecd
+    WHERE in_ecd.canvas_mnemonic = ecd.canvas_mnemonic
+    AND in_ecd.eyedraw_carry_forward_canvas_flag = 1 
+  )
+  GROUP BY ecd.eyedraw_class_mnemonic
+  HAVING SUM(ecd.eyedraw_carry_forward_canvas_flag) != 0
+)
+WHERE ed.eyedraw_class_mnemonic != "*" -- Unsafe mode workaround
+EOSQL;
     }
 }
