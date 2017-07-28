@@ -32,8 +32,7 @@ html, body {
     padding: 0;
     width: 1230px;
     max-width: 1230px;
-    overflow:hidden;
-  }
+    overflow: hidden; }
   .open-eyes .container.content {
     background: none;
     min-height: 600px; }
@@ -127,6 +126,9 @@ button.cancel.event-action, .button.cancel.event-action, button.delete, button.d
 button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-action:hover, button.delete:hover, button.delete.disabled:hover, button.delete.inactive:hover, button.delete[disabled]:hover, .button.delete:hover, input[type="submit"].delete:hover, input[type="submit"].cancel.event-action:hover, .button.warning:hover, input[type="submit"].warning:hover {
   background: linear-gradient(#e01a1a, #d11313);
   text-shadow: none; }
+
+.element-data-inline .data-label, .element-data-inline .data-value {
+  display: inline-block; }
 
 .oe-find-patient {
   padding: 20px;
@@ -306,6 +308,9 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     .open-eyes .panel.patient-popup .summary-data .row .label {
       color: #747782; }
 
+.open-eyes .panel.patient.patient-deceased {
+  color: #fff;
+  background-color: #992121; }
 .open-eyes .panel.patient .right-side-column {
   position: absolute;
   width: 521px;
@@ -422,8 +427,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   background: none; }
   .open-eyes .panel.user ul.oe-user-panel {
     list-style: none;
-    float: right;
-    margin: 0 7px 0 0;
+    margin: 0;
     padding: 0; }
     .open-eyes .panel.user ul.oe-user-panel > li {
       list-style: none;
@@ -435,7 +439,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
       .open-eyes .panel.user ul.oe-user-panel > li:last-child {
         margin-right: 0; }
     .open-eyes .panel.user ul.oe-user-panel li.oe-user-info {
-      width: 278px;
+      width: 368px;
       position: relative; }
     .open-eyes .panel.user ul.oe-user-panel ul.oe-user-profile-firm {
       list-style: none;
@@ -693,12 +697,12 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     min-height: 19px;
     line-height: 19px;
     margin-bottom: 1px;
-    padding: 0 25px 0 8px;
+    padding: 0 25px 0 25px;
     overflow: hidden;
-    font-size: 11px;
-    font-size: 0.6875rem;
+    font-size: 12px;
+    font-size: 0.75rem;
     font-weight: 400;
-    color: #ddd;
+    color: #fff;
     background: #85898c url("../img/_elements/icons/sidebar/element-edit-sprites.png") top right no-repeat; }
     .oe-element-list a.selected {
       background-image: url("../img/_elements/icons/sidebar/element-edit-arrow.png"); }
@@ -726,6 +730,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
       .oe-element-list a .icon.collapse {
         background-position: -6px -76px; }
       .oe-element-list a .icon.child {
+
         background-position: -6px -57px; }
 
 .oe-sidebar-event-creation {
@@ -1403,3 +1408,46 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 @import 'new/correspondence';
 @import 'new/bluesky';
 */
+
+.sub-element {
+  margin-bottom: 2px;
+}
+
+.field-row {
+  padding-bottom: 2px;
+}
+
+.edit .element-fields {
+  padding: 2px 10px 0px 10px;
+}
+
+.element-eye,
+.edit .sub-element-fields {
+  padding: 2px 10px 0px 10px;
+}
+
+table {
+  margin-bottom: 2px;
+}
+
+table tr td {
+  padding: 2px 10px 2px 10px;
+}
+
+label.highlight {
+  padding: 2px 5px 2px 5px;
+}
+
+.edit .element-actions, .edit .optional-elements-actions, .edit .sub-element-actions {
+  padding: 2px 4px;
+}
+
+.element-title, .sub-element-title {
+  padding: 6px 8px;
+}
+
+
+.edit .element,
+.edit .optional-elements {
+  border-top: none;
+}

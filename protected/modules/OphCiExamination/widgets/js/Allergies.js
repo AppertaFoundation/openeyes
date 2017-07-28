@@ -75,7 +75,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 controller.$entryFormWrapper.show();
                 controller.$table.show();
             }
-        })
+        });
     };
 
     /**
@@ -145,7 +145,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     /**
-     * hide the no family history section of the form.
+     * hide the no allergies section of the form.
      */
     AllergiesController.prototype.hideNoAllergies = function()
     {

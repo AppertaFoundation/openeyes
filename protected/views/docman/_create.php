@@ -55,15 +55,20 @@
 
                                     'is_editable_contact_targets' => $contact_type != 'INTERNALREFERRAL',
                                     'is_editable_contact_name' => ($contact_type != 'INTERNALREFERRAL'),
-                                    'is_editable_address' => (ucfirst(strtolower($contact_type)) != 'Gp') && ($contact_type != 'INTERNALREFERRAL'),
+                                    'is_editable_address' => (ucfirst(strtolower($contact_type)) != 'Gp') && ($contact_type != 'INTERNALREFERRAL') && ($contact_type != 'Practice'),
                                 ));
                     ?>
 
 
                 </td>
                 <td>
-                    <?php $this->renderPartial('//docman/table/contact_type', array(
-                        'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
+                    <?php
+
+                    $contact_type = strtoupper($macro_data["to"]["contact_type"]);
+                    $contact_type = $contact_type == 'PRACTICE' ? 'GP' : $contact_type;
+
+                    $this->renderPartial('//docman/table/contact_type', array(
+                        'contact_type' => $contact_type,
                         'row_index' => $row_index,
                         // Internal referral will always be the first row - indexed 0
                         'contact_types' => Document::getContactTypes() + ((strtoupper($macro_data["to"]["contact_type"]) == 'INTERNALREFERRAL' && $row_index == 0) ? Document::getInternalReferralContactType() : []),
@@ -76,7 +81,7 @@
                 <td class="docman_delivery_method">
                     <?php $this->renderPartial('//docman/table/delivery_methods', array(
                         'is_draft' => $element->draft,
-                        'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
+                        'contact_type' => $contact_type,
                         'row_index' => $row_index,
                         'can_send_electronically' => $can_send_electronically
                     ));
@@ -84,7 +89,6 @@
                 </td>
                 <td></td>
             </tr>
-            <?php $row_index++; ?>
         <?php else: ?>
             <?php
                 // if no To was set in the macro we just display an empty row
@@ -101,6 +105,7 @@
                     );
                 ?>
         <?php endif; ?>
+        <?php $row_index++; ?>
 
         <?php if( isset($macro_data['cc']) ): ?>
             <?php foreach ($macro_data['cc'] as $cc_index => $macro): ?>
