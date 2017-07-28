@@ -24,6 +24,11 @@
  *
  * @property int $id
  * @property string $name
+ *
+ * @deprecated 2.0.0
+ * @deprecated This model remains to support backward compatibility, and is defined by a view
+ * @deprecated it is not editable in its current form and should not be referenced going forward
+ *
  */
 class Risk extends BaseActiveRecordVersioned
 {
@@ -43,6 +48,15 @@ class Risk extends BaseActiveRecordVersioned
     public function tableName()
     {
         return 'risk';
+    }
+
+    /**
+     * Set for view as no PK defined in view
+     * @return string
+     */
+    public function primaryKey()
+    {
+        return 'id';
     }
 
     public function defaultScope()
