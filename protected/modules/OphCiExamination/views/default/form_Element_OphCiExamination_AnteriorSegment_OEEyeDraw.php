@@ -30,8 +30,6 @@ if ($element->isNewRecord || $element->{$side . '_eyedraw2'}) {
         'listenerArray' => array('anteriorSegmentListener'),
         'syncArray' => array(
             $side.'_'.$element->elementType->id => array(
-                'AntSegCrossSection' => array('AntSeg' => array('parameters' => array('apexY') ) ),
-                'LensCrossSection' => array('Lens' => array('parameters' => array('originY') ) ),
                 'ACIOLCrossSection' => array('ACIOL' => array('parameters' => array('originY') ) ),
                 'PCIOLCrossSection' => array('PCIOL' => array('parameters' => array('originY', 'fx') ) ),
                 // no controls for corneal opacity in cross section so don't need to sync back to primary
@@ -75,8 +73,8 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'listenerArray' => array('anteriorSegmentListener', 'autoReportListener'),
     'syncArray' => array(
         $side .'_'.$element->elementType->id . '_side' => array(
-            'AntSeg' => array('AntSegCrossSection' => array('parameters' => array('apexY', 'colour') ) ),
-            'Lens' => array('LensCrossSection' => array('parameters' => array('originY', 'nuclearGrade', 'corticalGrade', 'posteriorSubcapsularGrade', 'phakodonesis') ) ),
+//            'AntSeg' => array('AntSegCrossSection' => array('parameters' => array('apexY', 'colour') ) ),
+//            'Lens' => array('LensCrossSection' => array('parameters' => array('originY', 'nuclearGrade', 'corticalGrade', 'posteriorSubcapsularGrade', 'phakodonesis') ) ),
             'ACIOL' => array('ACIOLCrossSection' => array('parameters' => array('originY') ) ),
             'PCIOL' => array('PCIOLCrossSection' => array('parameters' => array('originY', 'fx') ) ),
             'CornealOpacity' => array('CornealOpacityCrossSection' => array('parameters' => array('yMidPoint','d','h','w','iW','originY','minY','maxY') ) ),

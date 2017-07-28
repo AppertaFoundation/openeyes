@@ -24,7 +24,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     AnteriorSegmentController._defaultOptions = {
         // pairing of doodles from primary to secondary (cross section) eyedraw canvas
         pairArray: {
-            Lens:'LensCrossSection',
+            Lens: 'LensCrossSection',
             AntSeg: 'AntSegCrossSection',
             Cornea: 'CorneaCrossSection',
             PCIOL:'PCIOLCrossSection',
@@ -37,14 +37,6 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         // but with only one instance of this behaviour and time constraints, this
         // is the simpler implementation.
         secondarySyncParams: {
-            AntSegCrossSection: {
-                primaryDoodleClass: 'AntSeg',
-                parameters: {apexX: 'csApexX'}
-            },
-            LensCrossSection: {
-                primaryDoodleClass: 'Lens',
-                parameters: {originX: 'csOriginX'}
-            },
             CorneaCrossSection: {
                 primaryDoodleClass: 'Cornea',
                 parameters: {
@@ -61,7 +53,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
             },
             ACIOLCrossSection: {
                 primaryDoodleClass: 'ACIOL',
-                parameters: {originX: 'csOriginX'}
+                parameters: {originX: 'csOriginX', originY: 'originY'}
             }
         }
     };
@@ -149,34 +141,49 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
         $el.trigger('change');
     };
 
+    AnteriorSegmentController.prototype.setDoodleParameter = function(source, sourceParameter, destination, destinationParameter)
+    {
+      // no need to trigger parameter changes if they are already matched.
+      if (source[sourceParameter] == destination[destinationParameter])
+        return;
+
+      if (typeof(source[sourceParameter]) === "string") {
+        destination.setParameterFromString(destinationParameter, source[sourceParameter], true);
+      } else {
+        destination.setSimpleParameter(destinationParameter, source[sourceParameter]);
+      }
+    };
+
     /**
      * Drives the loading of the cross section doodles from the doodles in the primary (enface) view
      */
     AnteriorSegmentController.prototype.loadSecondaryDoodles = function()
     {
         if (!this.secondaryDoodlesLoaded) {
+            console.log(this.primaryDrawing.doodleArray);
             for (var i = 0; i < this.primaryDrawing.doodleArray.length; i++) {
                 var doodle = this.primaryDrawing.doodleArray[i];
-                // check it's a doodle that we want to pair into the cross section
+                console.log(doodle.className);
                 if (this.options.pairArray.hasOwnProperty(doodle.className)) {
-                    var csClass = this.options.pairArray[doodle.className];
-                    parameters = {};
-                    // look for parameters we want to set from primary.
-                    if (this.options.secondarySyncParams.hasOwnProperty(csClass)) {
-                        // retrieve the cs based parameters that we need to set up
-                        var conf = this.options.secondarySyncParams[csClass];
-                        for (var param in conf.parameters) {
-                            if (conf.parameters.hasOwnProperty(param)) {
-                                parameters[param] = doodle[conf.parameters[param]];
-                            }
+                    // it's a doodle that we want to pair into the secondary Drawing
+                    var secondaryClass = this.options.pairArray[doodle.className];
+                    // create the doodle
+                    var secondaryDoodle = this.secondaryDrawing.addDoodle(secondaryClass);
+                    // then ensure we've got all the parameters set correctly.
+                    var syncParameters = secondaryDoodle.getLinkedParameters(doodle.className);
+                    if (typeof(syncParameters) !== "undefined") {
+                        for (var j in syncParameters['source']) {
+                          var parameter = syncParameters['source'][j];
+                          console.log(parameter);
+                          this.setDoodleParameter(doodle, parameter, secondaryDoodle, parameter);
+                        }
+                        for (var j in syncParameters['store']) {
+                            var pMap = syncParameters['store'][j];
+                            console.log(pMap);
+                            this.setDoodleParameter(doodle, pMap[1], secondaryDoodle, pMap[0]);
                         }
                     }
-                    // should probably check this earlier, and may want to iterate over parameters instead?
-                    if (!this.secondaryDrawing.hasDoodleOfClass(csClass)) {
-                        this.secondaryDrawing.addDoodle(csClass, parameters);
-                    }
                 }
-
             }
             this.secondaryDoodlesLoaded = true;
             this.secondaryDrawing.deselectDoodles();
