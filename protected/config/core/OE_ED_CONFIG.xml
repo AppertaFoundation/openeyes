@@ -1665,4 +1665,572 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 			<CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
 		</DOODLE_USAGE>
 	</DOODLE_USAGE_LIST>
+	    <INDEX_LIST>
+        <INDEX>
+            <TERM_LIST>
+                <TERM>Examination Anterior Segment</TERM>
+            </TERM_LIST>
+            <INDEX_LIST>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Anterior chamber IOL</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/ACIOL.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Adenoviral keratitis</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/AdenoviralKeratitis.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Angle Grade East</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/AngleGradeEast.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Angle Grade North</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/AngleGradeNorth.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Angle Grade South</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/AngleGradeSouth.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Angle Grade West</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/AngleGradeWest.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Angle new vessels</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/AngleNV.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Angle recession</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/AngleRecession.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Anterior segment</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/AntSeg.png</IMG_URL>
+                    <INDEX_LIST>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Pupil size</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>PXE</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Coloboma</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Colour</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Ectropion uveae</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Corneal size</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Cells</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Flare</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                    </INDEX_LIST>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Anterior synechiae</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/AntSynech.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Trabeculectomy bleb</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/Bleb.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Conjunctival suture</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/ConjunctivalSuture.png</IMG_URL>
+                    <INDEX_LIST>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Orientated</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Type</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Material</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Size</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                    </INDEX_LIST>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Conjunctivitis</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/Conjunctivitis.png</IMG_URL>
+                    <INDEX_LIST>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Type</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Mucopurulent</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Hyperaemia</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                    </INDEX_LIST>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Cornea</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/Cornea.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Corneal epithelial defect</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/CornealEpithelialDefect.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Corneal laceration</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/CornealLaceration.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Corneal oedema</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/CornealOedema.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Corneal opacity</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/CornealOpacity.png</IMG_URL>
+                    <INDEX_LIST>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Height</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Width</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Depth (%)</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Infiltrate width</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                    </INDEX_LIST>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Corneal pigmentation</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/CornealPigmentation.png</IMG_URL>
+                    <INDEX_LIST>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Level</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Type</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                    </INDEX_LIST>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Corneal scar</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/CornealScar.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Corneal suture</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/CornealSuture.png</IMG_URL>
+                    <INDEX_LIST>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Removed</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                    </INDEX_LIST>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Dendritic ulcer</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/DendriticUlcer.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Episcleritis</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/Episcleritis.png</IMG_URL>
+                    <INDEX_LIST>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Severity</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                    </INDEX_LIST>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Guttata</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/Fuchs.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Hyphaema</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/Hyphaema.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Hypopyon</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/Hypopyon.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Keratic precipitates</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/KeraticPrecipitates.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>LASIK flap</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/LasikFlap.png</IMG_URL>
+                    <INDEX_LIST>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Hinge</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Femto laser</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Diameter</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Depth</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Sidecut angle</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Spot separation</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Line separation</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Energy level</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>OBL
+        grade</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                    </INDEX_LIST>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Lens</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/Lens.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Marginal keratitis</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/MarginalKeratitis.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Metallic foreign body</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/MetallicForeignBody.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Tube patch</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/Patch.png</IMG_URL>
+                    <INDEX_LIST>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Material</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                    </INDEX_LIST>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Posterior chamber IOL</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/PCIOL.png</IMG_URL>
+                    <INDEX_LIST>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Fixation</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                    </INDEX_LIST>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Peripheral iridectomy</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/PI.png</IMG_URL>
+                    <INDEX_LIST>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Type</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Patent</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                    </INDEX_LIST>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Pingueculum</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/Pingueculum.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Posterior capsule</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/PosteriorCapsule.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Posterior synechia</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/PosteriorSynechia.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Pterygium</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/Pterygium.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Radial keratotomy</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/RK.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Rubeosis iridis</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/Rubeosis.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Sector iridectomy</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/SectorIridectomy.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Side port</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/SidePort.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>SPEE</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/SPEE.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Supramid suture</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/Supramid.png</IMG_URL>
+                    <INDEX_LIST>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Percentage of tube</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                    </INDEX_LIST>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Toric posterior chamber IOL</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/ToricPCIOL.png</IMG_URL>
+                    <INDEX_LIST>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Model</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                    </INDEX_LIST>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Trabeculectomy flap</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/TrabyFlap.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Trabeculectomy suture</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/TrabySuture.png</IMG_URL>
+                    <INDEX_LIST>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Shape</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Material</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Size</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Removed</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                    </INDEX_LIST>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Transillumination defect</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/TransilluminationDefect.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Drainage tube</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/Tube.png</IMG_URL>
+                    <INDEX_LIST>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Type</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                    </INDEX_LIST>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Tube extender</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/TubeExtender.png</IMG_URL>
+                </INDEX>
+                <INDEX>
+                    <TERM_LIST>
+                        <TERM>Ligation suture</TERM>
+                    </TERM_LIST>
+                    <IMG_URL>/assets/tom/TubeLigation.png</IMG_URL>
+                    <INDEX_LIST>
+                        <INDEX>
+                            <TERM_LIST>
+                                <TERM>Material</TERM>
+                            </TERM_LIST>
+                        </INDEX>
+                    </INDEX_LIST>
+                </INDEX>
+            </INDEX_LIST>
+        </INDEX>
+    </INDEX_LIST>
 </OE_ED_CONFIG>
