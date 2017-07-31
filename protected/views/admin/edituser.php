@@ -37,16 +37,16 @@
         array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
     <?php echo $form->textField($user, 'last_name', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
     <?php echo $form->textField($user, 'email', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-    <?php echo $form->textField($user, 'role', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+
     <?php echo $form->textField($user, 'qualifications',
         array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-  <?php echo $form->radioBoolean($user, 'is_doctor') ?>
+  <?php echo $form->textField($user, 'role', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
   <?php echo $form->dropDownList($user, 'doctor_grade_id',
       CHtml::listData(DoctorGrade::model()->findAll(array('order' => 'display_order')), 'id', 'grade'),
       array('empty' => '- Select Doctor Grade -')); ?>
   <?php echo $form->textField($user, 'registration_code',
       array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-
+  <?php echo $form->radioBoolean($user, 'is_doctor') ?>
     <?php echo $form->radioBoolean($user, 'active') ?>
     <?php echo $form->radioBoolean($user, 'global_firm_rights') ?>
     <?php
