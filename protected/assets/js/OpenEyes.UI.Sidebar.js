@@ -70,10 +70,10 @@
         var wh = window.innerHeight;
         var h;
 
-        // allow for top panel height : 122px
-        if((ch + 122) > wh){
+        // allow for top panel height : 224px
+        if((ch + 224) > wh){
             // content is higher than window, use wh:
-            h = wh - 185; // 195 is arbitrary, a visually tweaked offset
+            h = wh - 195; // 195 is arbitrary, a visually tweaked offset
         } else {
             // else:
             h = ch - 50; // 50 is arbitrary, a visually tweaked offset
