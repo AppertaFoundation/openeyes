@@ -338,7 +338,7 @@ return array(
                 'patient' => array(
                     'title' => 'Add Patient',
                     'uri' => 'patient/create',
-                    'position' => 46,
+                    'position' => 9,
                     'restricted' => array('TaskAddPatient'),
                 ),
 // temporarily disabled
@@ -381,6 +381,7 @@ return array(
         'wkhtmltopdf_left_margin' => '20mm',
         'wkhtmltopdf_right_margin' => '20mm',
         'wkhtmltopdf_nice_level' => false,
+        'OphCoTherapyapplication_sender_email' => array('openeyes.servicedesk@moorfields.nhs.uk' => 'OpenEyes Therapy Application'),
         'curl_proxy' => null,
         'hscic' => array(
             'data' => array(
@@ -449,6 +450,7 @@ return array(
         "auto_schedule_operation" => false,
         'clinical_management_pcr' => true,
         'docman_generate_csv' => false,
+        'element_sidebar' => true,
         // flag to enable editing of clinical data at the patient summary level - editing is not fully implemented
         // in v2.0.0, so this should only be turned on if you really know what you are doing.
         'allow_patient_summary_clinic_changes' => false,
