@@ -130,8 +130,19 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
 
       <div class="row field-row">
         <div class="large-3 column"><?php echo $form->labelEx($patient, 'dob'); ?></div>
-        <div class="large-4 column end">
-            <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+        <div class="large-4 column">
+
+            <?php
+                if( (bool)strtotime($patient->dob) ){
+                    $dob = new DateTime($patient->dob);
+                    $patient->dob = $dob->format('d/m/Y');
+                } else {
+                    $patient->dob = str_replace('-', '/', $patient->dob);
+                }
+            ?>
+            <?php echo $form->textField($patient, 'dob'); ?>
+
+            <?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'Patient[dob]',
                 'id' => 'patient_dob',
                 'options' => array(
@@ -142,9 +153,10 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                 'htmlOptions' => array(
                     'class' => 'small fixed-width',
                 ),
-            )) ?>
+            ))*/ ?>
             <?php echo $form->error($patient, 'dob'); ?>
         </div>
+          <div class="large-4 column end"><label><i>(dd/mm/yyyy)</i></label></div>
       </div>
       <div class="row field-row">
         <div class="large-3 column"><?php echo $form->labelEx($patient, 'gender'); ?></div>
@@ -214,8 +226,20 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
     <div class="large-6 column">
       <div class="row field-row date_of_death <?php echo($patient->is_deceased == 0 ? 'hide' : ''); ?>">
         <div class="large-3 column"><?php echo $form->labelEx($patient, 'date_of_death'); ?></div>
-        <div class="large-4 column end">
-            <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+        <div class="large-4 column">
+
+            <?php
+            if( (bool)strtotime($patient->date_of_death) ){
+                $date_of_death = new DateTime($patient->date_of_death);
+                $patient->date_of_death = $date_of_death->format('d/m/Y');
+            } else {
+                $patient->date_of_death = str_replace('-', '/', $patient->date_of_death);
+            }
+            ?>
+
+            <?php echo $form->textField($patient, 'date_of_death'); ?>
+
+            <?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'Patient[date_of_death]',
                 'id' => 'date_to',
                 'options' => array(
@@ -226,9 +250,10 @@ $ethnic_groups = CHtml::listData(EthnicGroup::model()->findAll(), 'id', 'name');
                 'htmlOptions' => array(
                     'class' => 'small fixed-width',
                 ),
-            )) ?>
+            ))*/ ?>
             <?php echo $form->error($patient, 'date_of_death'); ?>
         </div>
+        <div class="large-4 column end"><label><i>(dd/mm/yyyy)</i></label></div>
       </div>
     </div>
   </div>

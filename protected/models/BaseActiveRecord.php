@@ -49,6 +49,10 @@ class BaseActiveRecord extends CActiveRecord
     // (whilst developing this feature, will allow other elements to continue to work)
     protected $auto_update_relations = false;
 
+    // partner attribute to update_relations - set to true for automatic validation
+    // (note this has limited functionality at this juncture)
+    protected $auto_validate_relations = false;
+
     protected $originalAttributes = array();
 
     /**
@@ -412,7 +416,7 @@ class BaseActiveRecord extends CActiveRecord
                 }
 
                 if (!$new->save()) {
-                    throw new Exception('Unable to save {$name} item {$i}');
+                    throw new Exception("Unable to save {$name} item {$i}" . print_r($new->getErrors(), true));
                 }
                 $saved_ids[] = $new->getPrimaryKey();
             }
@@ -421,7 +425,7 @@ class BaseActiveRecord extends CActiveRecord
             foreach ($orig_objs as $orig) {
                 if (!in_array($orig->getPrimaryKey(), $saved_ids)) {
                     if (!$orig->delete()) {
-                        throw new Exception('Unable to delete removed {$name} with pk {$orig->primaryKey}');
+                        throw new Exception("Unable to delete removed {$name} with pk {$orig->primaryKey}");
                     }
                 }
             }
@@ -755,5 +759,38 @@ class BaseActiveRecord extends CActiveRecord
         }
 
         return date('H:i:s', strtotime($startTime.'- 1 hour'));
+    }
+
+    /**
+     * @param $rel_name
+     */
+    private function validateRelation($rel_name)
+    {
+        OELog::log($rel_name);
+        foreach ($this->$rel_name as $i => $rel_obj) {
+            if (!$rel_obj->validate()) {
+                foreach ($rel_obj->getErrors() as $fld => $err) {
+                    $this->addError($rel_name, ($i + 1) . ' - '.implode(', ', $err));
+                }
+            }
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function afterValidate()
+    {
+        if ($this->auto_validate_relations) {
+            // automatically run validation on relations - only supporting has many for now
+            $record_relations = $this->getMetaData()->relations;
+            foreach ($record_relations as $rel_name => $rel) {
+                $rel_type = get_class($rel);
+                if ($rel_type == self::HAS_MANY) {
+                    $this->validateRelation($rel_name);
+                }
+            }
+        }
+        parent::afterValidate();
     }
 }

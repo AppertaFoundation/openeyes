@@ -113,11 +113,13 @@ class Patient extends BaseActiveRecordVersioned
             array('pas_key', 'length', 'max' => 10),
             array('hos_num', 'required', 'on' => 'pas'),
             array('hos_num, nhs_num', 'length', 'max' => 40),
-            array('hos_num', 'unique', 'message'=>'A patient already exists with this hospital number', 'on' => 'manual'),
+            array('hos_num', 'hosNumValidator'), // 'on' => 'manual'
             array('gender,is_local', 'length', 'max' => 1),
             array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local,nhs_num_status_id', 'safe'),
             array('gender, dob', 'required', 'on' => 'manual'),
             array('deleted', 'safe'),
+            array('dob', 'dateFormatValidator', 'on' => 'manual'),
+            array('date_of_death', 'deathDateFormatValidator', 'on' => 'manual'),
             array('dob, hos_num, nhs_num, date_of_death, deleted,is_local', 'safe', 'on' => 'search'),
         );
     }
@@ -167,6 +169,66 @@ class Patient extends BaseActiveRecordVersioned
             'geneticsPatient' => array(self::HAS_ONE, 'GeneticsPatient', 'patient_id'),
         );
     }
+
+    /**
+     * Validate the hos_num attribute based on the PatientSearch pattern.
+     * this was implemented because of the leading zero check
+     * 0123 and 123 is different hos_num when using the 'unique' built in validator
+     *
+     * @param $attribute
+     * @param $params
+     */
+    public function hosNumValidator($attribute, $params)
+    {
+        if($this->scenario == 'manual'){
+
+            $patient_search = new PatientSearch();
+            if ($patient_search->getHospitalNumber($this->hos_num)) {
+                $dataProvider = $patient_search->search($this->hos_num);
+
+                $item_count = $dataProvider->totalItemCount;
+                if( $item_count && $item_count > 0 ){
+                    $this->addError($attribute, 'A patient already exists with this hospital number');
+                }
+            } elseif( !empty($this->hos_num)){
+                $this->addError($attribute, 'Not a valid Hospital Number');
+            }
+        }
+    }
+
+    /**
+     * This validator is added to the Patient object in PatientController create/update action
+     *
+     * Validating the date format
+     * @param $attribute
+     * @param $params
+     */
+    public function dateFormatValidator($attribute, $params)
+    {
+
+        //because 02/02/198 is valid according to DateTime::createFromFormat('d-m-Y', ...)
+        $format_check = preg_match("/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/", $this->$attribute);
+
+        $patient_dob_date = DateTime::createFromFormat('d-m-Y', $this->$attribute);
+
+        if( !$patient_dob_date || !$format_check){
+            $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
+        }
+    }
+    public function deathDateFormatValidator($attribute, $params)
+    {
+        if( $this->is_deceased && $this->is_deceased == 1){
+            //because 02/02/198 is valid according to DateTime::createFromFormat('d-m-Y', ...)
+            $format_check = preg_match("/^(0[1-9]|[1-2][0-9]|3[0-1])-(0[1-9]|1[0-2])-[0-9]{4}$/", $this->$attribute);
+
+            $patient_dob_date = DateTime::createFromFormat('d-m-Y', $this->$attribute);
+
+            if( !$patient_dob_date || !$format_check){
+                $this->addError($attribute, 'Wrong date format. Use dd/mm/yyyy');
+            }
+        }
+    }
+
 
     /**
      * @return array customized attribute labels (name=>label)
@@ -238,7 +300,9 @@ class Patient extends BaseActiveRecordVersioned
 
         $criteria->order = $params['sortBy'].' '.$params['sortDir'];
 
-        Yii::app()->event->dispatch('patient_search_criteria', array('patient' => $this, 'criteria' => $criteria, 'params' => $params));
+        if($this->use_pas == true){
+            Yii::app()->event->dispatch('patient_search_criteria', array('patient' => $this, 'criteria' => $criteria, 'params' => $params));
+        }
 
         $dataProvider = new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
@@ -256,7 +320,7 @@ class Patient extends BaseActiveRecordVersioned
             }
         }
 
-        //FIXME : this shoud be done with application.behaviors.OeDateFormat
+        //FIXME : this should be done with application.behaviors.OeDateFormat
         foreach (array('dob', 'date_of_death') as $date_column) {
             $date = $this->{$date_column};
             if (strtotime($date)) {
@@ -281,6 +345,11 @@ class Patient extends BaseActiveRecordVersioned
         // If someone is marked as dead by date, set the boolean flag.
         if ($this->isAttributeDirty('date_of_death') && $this->date_of_death) {
             $this->is_deceased = 1;
+        }
+
+        if( $this->scenario == 'manual'){
+            $this->dob = str_replace('/', '-', $this->dob);
+            $this->date_of_death = str_replace('/', '-', $this->date_of_death);
         }
 
         return true;
@@ -345,12 +414,9 @@ class Patient extends BaseActiveRecordVersioned
                 }
 
                 // sort the remainder
-                function cmp($a, $b)
-                {
+                uasort($by_specialty, function($a, $b){
                     return strcasecmp($a['specialty'], $b['specialty']);
-                }
-
-                uasort($by_specialty, 'cmp');
+                });
             }
             // either flattens, or gets the remainder
             foreach ($by_specialty as $row) {
@@ -713,7 +779,7 @@ class Patient extends BaseActiveRecordVersioned
      */
     protected function afterFind()
     {
-        parent::afterFind();
+
         $this->use_pas = $this->is_local ? false : true;
         Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));
     }
@@ -1272,7 +1338,7 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
-     * @return array|mixed|null
+     * @return SecondaryDiagnosis[]
      */
     public function getSystemicDiagnoses()
     {
@@ -2080,6 +2146,21 @@ class Patient extends BaseActiveRecordVersioned
     public function get_socialhistory()
     {
         return OEModule\OphCiExamination\widgets\SocialHistory::latestForPatient($this);
+    }
+
+
+    /*
+     * Generate episode link to searchbox and homescreen
+     * @return string
+     */
+    public function generateEpisodeLink()
+    {
+        $episode = $this->getEpisodeForCurrentSubspecialty();
+        if( $episode !== null){
+            return $this->getApp()->createURL("/patient/episode/", array("id" => $episode->id));
+        } else {
+            return $this->getApp()->createURL("/patient/episodes/", array("id" => $this->id));
+        }
     }
 
     /**

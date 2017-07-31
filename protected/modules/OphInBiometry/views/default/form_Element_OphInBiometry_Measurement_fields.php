@@ -243,7 +243,7 @@
 				<div class="large-4 column">
 					<span class="field-info">Status:</span>
 				</div>
-				<div class="large-7 column">
+				<div class="large-7 column column-end">
 					<?php
                     if ($this->is_auto) {
                         echo '<div class="readonly-box">'.Eye_Status::model()->findByPk($element->{"eye_status_$side"})->name.'</div>';
@@ -259,8 +259,6 @@
                     }
                     ?>
 				</div>
-				<div class="large-1 column"></div>
-
 			</div>
 		</div>
 	</div>

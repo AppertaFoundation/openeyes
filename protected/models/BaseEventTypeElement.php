@@ -76,7 +76,7 @@ class BaseEventTypeElement extends BaseElement
     /**
      * @return BaseAPI
      */
-    protected function getModuleApi()
+    public function getModuleApi()
     {
         $event_type = $this->getElementType()->event_type;
         return $this->getApp()->moduleAPI->get($event_type->class_name);
@@ -121,6 +121,11 @@ class BaseEventTypeElement extends BaseElement
     public function isRequired()
     {
         return $this->elementType->required;
+    }
+
+    public function getDisplayAttributes()
+    {
+        return $this->getAttributes();
     }
 
     /**
@@ -221,8 +226,6 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
-     * Stubbed method to set default options
-     * Used by child objects to set defaults for forms on create.
      * @param \Patient $patient
      */
     public function setDefaultOptions(\Patient $patient = null)
@@ -315,7 +318,7 @@ class BaseEventTypeElement extends BaseElement
 
     public function addError($attribute, $message)
     {
-        $this->frontEndErrors[] = $this->errorAttributeException(str_replace('\\', '_', get_class($this)).'_'.$attribute);
+        $this->frontEndErrors[] = $this->errorAttributeException(str_replace('\\', '_', get_class($this)).'_'.$attribute, $message);
         $message = '<a class="errorlink" onClick="scrollToElement($(\'.'.str_replace('\\', '_',
                 get_class($this)).'\'))">'.$message.'</a>';
         parent::addError($attribute, $message);
@@ -325,10 +328,10 @@ class BaseEventTypeElement extends BaseElement
      * Allows for exceptions where the element displayed is not the one required. eg for ajax control elements.
      *
      * @param $attribute
-     *
+     * @param $message not used in the base implementation
      * @return mixed
      */
-    protected function errorAttributeException($attribute)
+    protected function errorAttributeException($attribute, $message)
     {
         if (array_key_exists($attribute, $this->errorExceptions)) {
             return $this->errorExceptions[$attribute];

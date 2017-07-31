@@ -26,13 +26,8 @@ class PedigreeController extends BaseModuleController
             ),
             array(
                 'allow',
-                'actions' => array('List', 'View'),
+                'actions' => array('List', 'View', 'Search'),
                 'roles' => array('OprnSearchPedigree'),
-            ),
-            array(
-                'allow',
-                'actions' => array('PedigreeDisorder'),
-                'roles' => array('OprnSearchPedigree', 'OprnEditGeneticPatient'),
             ),
         );
     }
@@ -69,6 +64,12 @@ class PedigreeController extends BaseModuleController
         $admin = new Crud(Pedigree::model(), $this);
         if ($id) {
             $admin->setModelId($id);
+        } else {
+
+            //oh, sure, let me just set the defaults this way.
+            //more: Admin.php line ~515
+            $pedigree_inheritance = PedigreeInheritance::model()->findByAttributes(array('name' => 'Unknown/other'));
+            $_GET['default'] = array('inheritance_id' => $pedigree_inheritance ? $pedigree_inheritance->id : null);
         }
 
         $admin->setEditFields(array(
@@ -82,7 +83,14 @@ class PedigreeController extends BaseModuleController
                 'layoutColumns' => null,
             ),
             'comments' => 'textarea',
-            'disorder' => 'label',
+
+            'disorder' => array(
+                'widget' => 'DisorderLookup',
+                'relation' => 'disorder',
+                'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+                'empty_text' => 'Select a commonly used diagnosis'
+            ),
+
             'consanguinity' => 'checkbox',
             'gene_id' => array(
                 'widget' => 'DropDownList',
@@ -139,8 +147,8 @@ class PedigreeController extends BaseModuleController
         if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Family Saved");
-                     $url = '/Genetics/pedigree/view/'.$admin->getModel()->id . (isset($_GET['patient']) ? ('?patient=' . $_GET['patient']) : null);
-                $this->redirect($url);
+
+                $this->redirect('/Genetics/pedigree/view/'.$admin->getModel()->id );
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
             }
@@ -197,30 +205,6 @@ class PedigreeController extends BaseModuleController
         $display_buttons = $this->checkAccess('OprnEditPedigree');
         $admin->listModel($display_buttons);
     }
-
-    /**
-     * @param $id
-     * @throws CHttpException
-     */
-    public function actionPedigreeDisorder($id)
-    {
-        $pedigree = Pedigree::model()->findByPk($id);
-
-        if (!$pedigree) {
-            throw new CHttpException(404);
-        }
-
-        if (!$pedigree->disorder_id) {
-            throw new CHttpException(400);
-        }
-
-        $this->renderJSON(
-            array(
-                'id' => $pedigree->disorder_id,
-                'disorder' => $pedigree->disorder->term,
-            )
-        );
-    }
     
     /**
      * Returns the data model based on the primary key given in the GET variable.
@@ -236,6 +220,42 @@ class PedigreeController extends BaseModuleController
         }
 
         return $model;
+    }
+
+    /**
+     * Search for pedigree
+     * returns JSON for autocomplete
+     */
+    public function actionSearch()
+    {
+
+        $pedigree_id = Yii::app()->request->getQuery('term', null);
+
+        if( strlen($pedigree_id) > 2){
+
+            $criteria = new CDbCriteria();
+            $criteria->addSearchCondition('t.id', $pedigree_id, true);
+
+            $pedigrees = Pedigree::model()->with('gene')->findAll($criteria);
+        } else {
+
+            //if pedigree_id is 2 digit or less we return the exact match because of performance reasons
+
+            $pedigrees = Pedigree::model()->with('gene')->findByPk($pedigree_id);
+            $pedigrees = $pedigrees ? array($pedigrees) : array();
+        }
+
+        $output = array();
+        foreach($pedigrees as $pedigree){
+            $output[] = array(
+                'label' => $pedigree->id . ($pedigree->gene ? (" (" . $pedigree->gene->name . ")") : ''),
+                'value' => $pedigree->id,
+            );
+        }
+
+        echo CJSON::encode($output);
+
+        Yii::app()->end();
     }
 
 }

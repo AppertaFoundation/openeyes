@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="column event episode highlight-fields view <?php echo isset($cssClass) ? $cssClass : '';?>">
+<div class="column event episode highlight-fields view <?php echo isset($cssClass) ? $cssClass : '';?>" style="margin-left: 14.6%">
 
 	<header class="event-header no-face">
 		<?php $this->renderPartial('//patient/event_tabs')?>

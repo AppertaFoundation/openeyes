@@ -39,6 +39,7 @@ class PastSurgery extends \BaseEventTypeElement
     protected $auto_update_relations = true;
     public $widgetClass = 'OEModule\OphCiExamination\widgets\PastSurgery';
     protected $default_from_previous = true;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -55,6 +56,16 @@ class PastSurgery extends \BaseEventTypeElement
     public function tableName()
     {
         return 'et_ophciexamination_pastsurgery';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return array(
+            'PatientLevelElementBehaviour' => 'PatientLevelElementBehaviour',
+        );
     }
 
     /**
@@ -89,6 +100,22 @@ class PastSurgery extends \BaseEventTypeElement
                 'order' => 'orderedOperations.date desc, orderedOperations.last_modified_date'),
         );
     }
+
+    /**
+     * individual operation validation
+     */
+    public function afterValidate()
+    {
+        foreach ($this->operations as $i => $operation) {
+            if (!$operation->validate()) {
+                foreach ($operation->getErrors() as $fld => $err) {
+                    $this->addError('operations', 'Operation ('.($i + 1).'): '.implode(', ', $err));
+                }
+            }
+        }
+        parent::afterValidate();
+    }
+
 
     /**
      * Will duplicate values from the current socialhistory property of the given patient.

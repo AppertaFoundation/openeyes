@@ -290,7 +290,6 @@ function anteriorListener(_drawing) {
 }
 
 $(document).ready(function() {
-
     if(!$('#OphCiExamination_allergy').find('tr').length) {
       $('.allergies_confirm_no').show();
     }
@@ -2216,7 +2215,7 @@ function OphCiExamination_AddFinding(finding_id, label) {
 function OphCiExamination_AddDiagnosis(disorderId, name, eyeId, isDiabetic, isGlaucoma, external) {
     var max_id = -1;
     var count = 0;
-    $('#OphCiExamination_diagnoses').children('tr').map(function() {
+    $('#OphCiExamination_diagnoses').children('tr').not('.read-only').map(function() {
         var id = parseInt($(this).children('td:nth-child(2)').children('label:nth-child(1)').children('input').attr('name').match(/[0-9]+/));
         if (id >= max_id) {
             max_id = id;

@@ -136,7 +136,8 @@ class PatientController extends BaseController
         // NOTE that this is not being used in the render
         $supportserviceepisodes = $this->patient->supportserviceepisodes;
 
-        Audit::add('patient summary', 'view', $id);
+        $properties['patient_id'] = $this->patient->id;
+        Audit::add('patient summary', 'view', $id, '', $properties);
 
         $this->logActivity('viewed patient');
 
@@ -175,10 +176,11 @@ class PatientController extends BaseController
     public function actionSearch()
     {
         $term = \Yii::app()->request->getParam('term', '');
+
         $patientSearch = new PatientSearch();
-	$dataProvider = $patientSearch->search($term);
-	$itemCount = $dataProvider->totalItemCount;
-	$search_terms = $patientSearch->getSearchTerms();
+	    $dataProvider = $patientSearch->search($term);
+	    $itemCount = $dataProvider->totalItemCount;
+	    $search_terms = $patientSearch->getSearchTerms();
 
         if ($itemCount == 0) {
             Audit::add('search', 'search-results', implode(',', $search_terms).' : No results');
@@ -208,9 +210,9 @@ class PatientController extends BaseController
 
             $this->redirect(Yii::app()->homeUrl);
         } elseif ($itemCount == 1) {
-            foreach ($dataProvider->getData() as $item) {
-                $this->redirect(array('patient/view/'.$item->id));
-            }
+            $item = $dataProvider->getData()[0];
+            $this->redirect(array($item->generateEpisodeLink()));
+
         } else {
             $this->renderPatientPanel = false;
 
@@ -1485,7 +1487,7 @@ class PatientController extends BaseController
         $patient->noPas();
         $contact = new Contact('manualAddPatient');
         $address = new Address();
-        
+
         $this->performAjaxValidation(array($patient, $contact, $address));
         
         if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
@@ -1493,7 +1495,7 @@ class PatientController extends BaseController
             $contact->attributes = $_POST['Contact'];
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
-            
+
             // not to be sync with PAS
             $patient->is_local = 1;
             
@@ -1604,7 +1606,7 @@ class PatientController extends BaseController
 
             list($contact, $patient, $address) = $this->performPatientSave($contact, $patient, $address);
         }
-        
+
         $this->render('crud/update',array(
                         'patient' => $patient,
                         'contact' => $contact,
@@ -1707,8 +1709,9 @@ class PatientController extends BaseController
             // would recommend pushing this into a base method that can then
             // be overridden as appropriate
             $result[] = array_merge(
-                array('event_date' => $element->event->NHSDate('event_date')),
-                $element->getAttributes()
+                array('subspecialty' => $element->event->episode->getSubspecialtyText(),
+                    'event_date' => $element->event->NHSDate('event_date')),
+                $element->getDisplayAttributes()
             );
         }
 

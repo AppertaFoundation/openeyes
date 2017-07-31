@@ -74,11 +74,6 @@ class PatientSummaryPopup extends BaseCWidget
         ));
         $this->operations = $widget->run();
 
-//        $this->operations = implode(
-//            self::$LIST_SEPARATOR,
-//            $this->patient->operationsSummary
-//        );
-
         parent::init();
     }
 }

@@ -30,6 +30,9 @@ class BaseEventElementWidget extends CWidget
     public $form;
     public $popupListSeparator = '<br />';
 
+    public $notattip_edit_warning = 'application.widgets.views.BaseEventElement_edit_nottip';
+    public $notattip_view_warning = 'application.widgets.views.BaseEventElement_view_nottip';
+
     public static function latestForPatient(Patient $patient)
     {
         $widget = new static();
@@ -65,7 +68,21 @@ class BaseEventElementWidget extends CWidget
     {
         return in_array($mode,
             array(static::$PATIENT_SUMMARY_MODE, static::$PATIENT_POPUP_MODE,
-                static::$EVENT_VIEW_MODE, static::$EVENT_EDIT_MODE));
+                static::$EVENT_VIEW_MODE, static::$EVENT_EDIT_MODE), true);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function inEditMode() {
+        return $this->mode === static::$EVENT_EDIT_MODE;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function inViewMode() {
+        return in_array($this->mode, array(static::$PATIENT_SUMMARY_MODE, static::$EVENT_VIEW_MODE), true);
     }
 
     /**
@@ -114,13 +131,18 @@ class BaseEventElementWidget extends CWidget
             // when new we want to always set to default so we can track changes
             // but if this element already exists then we don't want to override
             // it with the tip data
-            $this->element->setDefaultOptions($this->patient);
+            $this->setElementFromDefaults();
         }
 
         if ($this->data) {
             // we set the element to the provided data
             $this->updateElementFromData($this->element, $this->data);
         }
+    }
+
+    protected function isAtTip()
+    {
+        return $this->element->isAtTip();
     }
 
     /**
@@ -131,6 +153,16 @@ class BaseEventElementWidget extends CWidget
     protected function getNewElement()
     {
         return new BaseEventTypeElement();
+    }
+
+    /**
+     * Basic setting of element attributes with default behaviour (typically
+     * loading from the tip). Should be overridden for any pre/post processing
+     * requirements.
+     */
+    protected function setElementFromDefaults()
+    {
+        $this->element->setDefaultOptions($this->patient);
     }
 
     /**
@@ -244,6 +276,20 @@ class BaseEventElementWidget extends CWidget
         if ($this->mode === static::$PATIENT_POPUP_MODE) {
             return $this->popupList();
         }
-        return $this->render($this->getView(), $this->getViewData());
+
+        return $this->renderWarnings() . $this->render($this->getView(), $this->getViewData());
+    }
+
+    /**
+     * @return string
+     */
+    public function renderWarnings()
+    {
+        if ($this->inEditMode() && !$this->isAtTip()) {
+            return $this->render($this->notattip_edit_warning, array('element' => $this->element));
+        }
+        if ($this->inViewMode() && !$this->isAtTip()) {
+            return $this->render($this->notattip_view_warning, array('element' => $this->element));
+        }
     }
 }

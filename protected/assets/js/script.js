@@ -17,6 +17,26 @@
  */
 
 $(document).ready(function(){
+    var toolTip = new OpenEyes.UI.Tooltip({
+        className: 'quicklook',
+        offset: {
+            x: 10,
+            y: 10
+        },
+        viewPortOffset: {
+            x: 0,
+            y: 32 // height of sticky footer
+        }
+    });
+    $(this).on('mouseover', '.has-tooltip', function() {
+        if ($(this).data('tooltip-content') && $(this).data('tooltip-content').length) {
+            toolTip.setContent($(this).data('tooltip-content'));
+            var offsets = $(this).offset();
+            toolTip.show(offsets.left, offsets.top);
+        }
+    }).mouseout(function (e) {
+        toolTip.hide();
+    });
 
 	// override the behaviour for showing search results
 	$.ui.autocomplete.prototype._renderItem = function( ul, item ) {
@@ -216,10 +236,6 @@ $(document).ready(function(){
 
 			e.preventDefault();
 			var returnUrl = window.location.href;
-			if ($(e.target).data('window-title')) {
-				options.title = $(e.target).data('window-title');
-				returnUrl += '?show-new-event=1';
-			}
 
 			new OpenEyes.UI.Dialog($.extend({}, options, {
 				url: baseUrl + '/site/changesiteandfirm',

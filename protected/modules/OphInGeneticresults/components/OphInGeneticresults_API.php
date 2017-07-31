@@ -19,6 +19,9 @@
  */
 class OphInGeneticresults_API extends BaseAPI
 {
+    public $createOprn = 'OprnEditGeneticResults';
+    public $createOprnArgs = array('user_id', 'firm', 'episode');
+
     public function getGeneticResultsForPatient($patient)
     {
         return Element_OphInGeneticresults_Test::model()->with(array(

@@ -116,6 +116,13 @@ class BaseEventTypeController extends BaseModuleController
     public $pdf_print_documents = 1;
     public $pdf_print_html = null;
 
+    /**
+     * Set to false if the event list should remain on the sidebar when creating/editing the event
+     *
+     * @var bool
+     */
+    protected $show_element_sidebar = true;
+
     public function behaviors()
     {
         return array(
@@ -1406,6 +1413,17 @@ class BaseEventTypeController extends BaseModuleController
         return '';
     }
 
+    public function renderSidebar($default_view)
+    {
+        if ($this->show_element_sidebar && in_array($this->action->id,array('create','update'))) {
+            $this->renderPartial('//patient/_patient_element_sidebar');
+        } else {
+            parent::renderSidebar($default_view);
+        }
+
+    }
+
+
     /**
      * Extend the parent method to support inheritance of modules (and rendering the element views from the parent module).
      *
@@ -1722,6 +1740,7 @@ class BaseEventTypeController extends BaseModuleController
             throw new CHttpException(403, 'Invalid event id.');
         }
         $this->patient = $this->event->episode->patient;
+        $this->episode = $this->event->episode;
         $this->site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
         $this->setOpenElementsFromCurrentEvent('print');
     }

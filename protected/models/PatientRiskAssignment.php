@@ -22,6 +22,8 @@
  *
  * The followings are the available columns in table 'patient_risk_assignment':
  *
+ * Note as of v2.0 this is a model on a view, and is not for direct editing
+ *
  * @property int $id
  * @property int $patient_id
  * @property int $risk_id
@@ -45,6 +47,15 @@ class PatientRiskAssignment extends BaseActiveRecordVersioned
     public function tableName()
     {
         return 'patient_risk_assignment';
+    }
+
+    /**
+     * Set for view as no PK defined in view
+     * @return string
+     */
+    public function primaryKey()
+    {
+        return 'id';
     }
 
     /**

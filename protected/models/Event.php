@@ -31,6 +31,9 @@
  * @property string $delete_reason
  * @property boolean $is_automated
  * @property array $automated_source - json structure
+ * @property string $event_date
+ * @property string $created_date
+ * @property string $last_modified_date
  *
  * The followings are the available model relations:
  * @property Episode   $episode
@@ -437,6 +440,18 @@ class Event extends BaseActiveRecordVersioned
     }
 
     /**
+     * @param Event $event
+     * @return bool
+     */
+    public function isAfterEvent(Event $event)
+    {
+        if ($this->event_date === $event->event_date) {
+            return $this->created_date > $event->created_date;
+        }
+        return $this->event_date > $event->event_date;
+    }
+
+    /**
      * Sets various default properties for audit calls on this event.
      *
      * @param       $target
@@ -534,7 +549,7 @@ class Event extends BaseActiveRecordVersioned
 
     public function getImagePath($name)
     {
-        return $this->imageDirectory . "/$name.png";
+        return $this->getImageDirectory() . DIRECTORY_SEPARATOR . "$name.png";
     }
 
     public function getPDF($pdf_print_suffix = null)

@@ -155,7 +155,7 @@ class BaseAPI
      * @param bool $use_context
      * @param string $before - date formatted string
      * @param integer $limit
-     * @return BaseEventTypeElement|null
+     * @return BaseEventTypeElement[]
      */
     public function getElements($element, Patient $patient, $use_context = false, $before = null, $limit = null)
     {
@@ -167,7 +167,7 @@ class BaseAPI
             $criteria->compare('event.event_date', '<='.$before);
         }
         if ($limit !== null) {
-            $criteria->limit = 1;
+            $criteria->limit = $limit;
         }
 
         if ($use_context) {
@@ -325,5 +325,33 @@ class BaseAPI
         }
 
         return false;
+    }
+
+    /**
+     * Get the principal eye for the patient
+     *
+     * @param $patient
+     * @param bool $use_context
+     * @return Eye|null
+     * @throws CException
+     */
+    public function getPrincipalEye($patient, $use_context=true)
+    {
+        if (!$use_context) {
+            throw new CException('principal eye not supported for context-less requests');
+        }
+        return $this->current_context->getPrincipalEye($patient);
+    }
+
+    /**
+     * @param string $prefix
+     * @param Eye $eye
+     * @return string
+     */
+    public function getEyeMethod($prefix, Eye $eye = null)
+    {
+        if ($eye && $postfix = Eye::methodPostFix($eye->id)) {
+            return $prefix . $postfix;
+        }
     }
 }

@@ -35,12 +35,21 @@ namespace OEModule\OphCiExamination\models;
 class Allergies extends \BaseEventTypeElement
 {
     protected $auto_update_relations = true;
+    protected $auto_validate_relations = true;
+
     public $widgetClass = 'OEModule\OphCiExamination\widgets\Allergies';
     protected $default_from_previous = true;
 
     public function tableName()
     {
         return 'et_ophciexamination_allergies';
+    }
+
+    public function behaviors()
+    {
+        return array(
+            'PatientLevelElementBehaviour' => 'PatientLevelElementBehaviour',
+        );
     }
 
     /**
@@ -126,31 +135,7 @@ class Allergies extends \BaseEventTypeElement
     }
 
     /**
-     * @param \Patient|null $patient
-     * @return \BaseEventTypeElement|null
-     */
-    public function getTipElement(\Patient $patient = null)
-    {
-        if (!$patient) {
-            $patient = $this->event->getPatient();
-        }
-        return $this->getModuleApi()->getLatestElement(static::class, $patient);
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isAtTip()
-    {
-        if ($this->getIsNewRecord()) {
-            return true;
-        }
-        $tip = $this->getTipElement();
-        return $tip && $tip->id === $this->id;
-    }
-
-    /**
-     *
+     * Get list of available allergies for this element
      */
     public function getAllergyOptions()
     {

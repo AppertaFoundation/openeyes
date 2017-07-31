@@ -33,6 +33,8 @@ class DefaultController extends BaseEventTypeController
         'doPrintAndView' => self::ACTION_TYPE_PRINT,
     );
 
+    protected $show_element_sidebar = false;
+
     /**
      * Adds direct line phone numbers to jsvars to be used in dropdown select.
      */
@@ -84,6 +86,14 @@ class DefaultController extends BaseEventTypeController
         if (in_array($action, array('create', 'update'))) {
             $this->jsVars['OE_gp_id'] = $this->patient->gp_id;
             $this->jsVars['OE_practice_id'] = $this->patient->practice_id;
+            $this->jsVars['OE_site_id'] = Yii::app()->session['selected_site_id'];
+
+            $to_location = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByAttributes(
+                array('site_id' => Yii::app()->session['selected_site_id'],
+                      'is_active' => 1)
+            );
+
+            $this->jsVars['OE_to_location_id'] = $to_location ? $to_location->id : null;
 
             $this->getApp()->assetManager->registerScriptFile('js/docman.js');
             
@@ -559,11 +569,7 @@ class DefaultController extends BaseEventTypeController
                 throw new Exception("Unknown element type: $element_type_id");
             }
 
-            if (!$episode = $patient->getEpisodeForCurrentSubspecialty()) {
-                throw new Exception('No Episode available for patient: '.$patient_id);
-            }
-
-            return $api->getLetterStringForModel($patient, $episode, $element_type_id);
+            return $api->getLetterStringForModel($patient, $element_type_id);
         }
     }
 

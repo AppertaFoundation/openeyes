@@ -16,10 +16,11 @@ class OphCiExamination_Episode_GlaucomaManagementPlan extends \EpisodeSummaryWid
 {
     public function run()
     {
-        $plan = $this->event_type->api->getMostRecentElementInEpisode(
-            $this->episode->id, $this->event_type->id, 'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan'
-        );
-
-        $this->render(__CLASS__, array('plan' => $plan));
+        if ($plan = $this->event_type->api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan',
+            $this->episode->patient,
+            false)
+        ){
+            $this->render(__CLASS__, array('plan' => $plan));
+        }
     }
 }

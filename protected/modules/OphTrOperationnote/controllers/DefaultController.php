@@ -26,6 +26,8 @@ class DefaultController extends BaseEventTypeController
         'getTheatreOptions' => self::ACTION_TYPE_FORM,
     );
 
+    protected $show_element_sidebar = false;
+
     /* @var Element_OphTrOperationbooking_Operation operation that this note is for when creating */
     protected $booking_operation;
     /* @var boolean - indicates if this note is for an unbooked procedure or not when creating */
@@ -653,7 +655,7 @@ class DefaultController extends BaseEventTypeController
         $devices = array();
         if (isset($data['OphTrOperationnote_CataractOperativeDevices']) && is_array($data['OphTrOperationnote_CataractOperativeDevices'])) {
             foreach ($data['OphTrOperationnote_CataractOperativeDevices'] as $oa_id) {
-                $devices[] = OphTrOperationnote_CataractComplications::model()->findByPk($oa_id);
+                $devices[] = OphTrOperationnote_CataractOperativeDevice::model()->findByPk($oa_id);
             }
         }
         $element->operative_devices = $devices;

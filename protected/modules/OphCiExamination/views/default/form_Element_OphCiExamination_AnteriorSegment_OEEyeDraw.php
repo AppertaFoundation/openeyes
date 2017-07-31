@@ -63,7 +63,8 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
         array('Lens', 'PCIOL', 'Bleb', 'PI', 'Fuchs', 'CornealOedema', 'PosteriorCapsule', 'CornealPigmentation',
             'TransilluminationDefect', 'Hypopyon', 'Hyphaema', 'CornealScar', 'Rubeosis', 'SectorIridectomy', 'ACIOL',
-            'LasikFlap', 'CornealSuture', 'ConjunctivalSuture', 'TrabySuture', 'DendriticUlcer'),
+            'LasikFlap', 'CornealSuture', 'ConjunctivalSuture', 'TrabySuture', 'DendriticUlcer','AdenoviralKeratitis',
+            'CornealLaceration', 'MarginalKeratitis', 'MetallicForeignBody', 'Pingueculum', 'Pterygium'),
         array('SPEE', 'CornealEpithelialDefect', 'CornealOpacity', 'Conjunctivitis', 'PosteriorSynechia',
             'KeraticPrecipitates', 'Episcleritis', 'TrabyFlap', 'Tube', 'TubeExtender', 'Supramid', 'TubeLigation',
             'Patch', 'SidePort', 'RK',)
@@ -76,11 +77,13 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'listenerArray' => array('anteriorSegmentListener', 'autoReportListener'),
     'syncArray' => array(
         $side .'_'.$element->elementType->id . '_side' => array(
-            'AntSeg' => array('AntSegCrossSection' => array('parameters' => array('apexY') ) ),
-            'Lens' => array('LensCrossSection' => array('parameters' => array('originY', 'nuclearGrade', 'corticalGrade', 'posteriorSubcapsularGrade') ) ),
+            'AntSeg' => array('AntSegCrossSection' => array('parameters' => array('apexY', 'colour') ) ),
+            'Lens' => array('LensCrossSection' => array('parameters' => array('originY', 'nuclearGrade', 'corticalGrade', 'posteriorSubcapsularGrade', 'phakodonesis') ) ),
             'ACIOL' => array('ACIOLCrossSection' => array('parameters' => array('originY') ) ),
             'PCIOL' => array('PCIOLCrossSection' => array('parameters' => array('originY', 'fx') ) ),
-            'CornealOpacity' => array('CornealOpacityCrossSection' => array('parameters' => array('yMidPoint','d','h','w','iW','originY','minY','maxY') ) )
+            'CornealOpacity' => array('CornealOpacityCrossSection' => array('parameters' => array('yMidPoint','d','h','w','iW','originY','minY','maxY') ) ),
+            'Hypopyon' => array('HypopyonCrossSection' => array('parameters' => array('apexY'))),
+            'Hyphaema' => array('HyphaemaCrossSection' => array('parameters' => array('apexY')))
         )
     ),
     'idSuffix' => $side.'_'.$element->elementType->id,

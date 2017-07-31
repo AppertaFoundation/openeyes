@@ -95,9 +95,9 @@ class GeneticsPatient extends BaseActiveRecord
                         continue;
                     }
                     //New study has been added, make sure that it's possible for the user to propose this.
-                    if(!$study->canBeProposedByUser(Yii::app()->user)){
+              /*      if(!$study->canBeProposedByUser(Yii::app()->user)){
                         $this->addError($attribute, 'You do not have permission to propose subjects for ' . $study->name);
-                    }
+                    }*/
 
                     if(!$study->canBeProposedByUserDateCheck(Yii::app()->user)){
                         $this->addError($attribute, 'You cannot propose subjects for ' . $study->name. ' as it has ended');
@@ -139,7 +139,7 @@ class GeneticsPatient extends BaseActiveRecord
                 self::MANY_MANY,
                 'GeneticsStudy',
                 'genetics_study_subject(subject_id, study_id)',
-                'condition' => 'end_date > NOW() ' .
+                'condition' => '( end_date > NOW() OR UNIX_TIMESTAMP(end_date) IS NULL )' .
                     'AND (current_studies_current_studies.participation_status_id IS NULL ' .
                     'OR current_studies_current_studies.participation_status_id <> ' . $this->statuses['Rejected'] . ')',
             ),
@@ -213,29 +213,35 @@ class GeneticsPatient extends BaseActiveRecord
 
         if($this->getIsNewRecord()) {
             $this->updateDiagnoses();
-
-            /*
-             * Auto-generate a new pedigree and
-             * assign it to the genetic subject
-             */
-
-            if(isset($_POST['no_pedigree']))
-            {
-                $pedigree = new Pedigree();
-                $pedigree->consanguinity = false;
-                $pedigree->comments = '';
-                $pedigree->save(false);
-
-                $p_id = $pedigree->id;
-
-                $link = new GeneticsPatientPedigree();
-                $link->pedigree_id = $p_id;
-                $link->patient_id = $this->id;
-
-                $link->save(false);
-            }
-
         }
+
+        /*
+         * Auto-generate a new pedigree and
+         * assign it to the genetic subject
+         */
+
+        if(isset($_POST['no_pedigree']))
+        {
+            $pedigree_inheritance = PedigreeInheritance::model()->findByAttributes(array('name' => 'Unknown/other'));
+
+            $pedigree = new Pedigree();
+
+            $pedigree->inheritance_id = $pedigree_inheritance ? $pedigree_inheritance->id : null;
+            $pedigree->comments = '';
+            $pedigree->consanguinity = false;
+
+            $pedigree->save(false);
+
+            $p_id = $pedigree->id;
+
+            $link = new GeneticsPatientPedigree();
+            $link->pedigree_id = $p_id;
+            $link->patient_id = $this->id;
+
+            $link->save(false);
+        }
+
+
 
         $pedigrees = GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $this->id), array('select' =>  'pedigree_id'));
         $pedigreeIds = array();
@@ -243,7 +249,6 @@ class GeneticsPatient extends BaseActiveRecord
             if($pedigree->pedigree_id){
                 $pedigreeIds[] = $pedigree->pedigree_id;
             }
-
         }
 
         $added = array_diff($this->preExistingPedigreesIds, $pedigreeIds);
@@ -324,7 +329,11 @@ class GeneticsPatient extends BaseActiveRecord
 
         $criteria->compare( 'patient.dob', $this->patient_dob, true );
         $criteria->compare( 'patient.dob', $this->patient_yob, true );
-        $criteria->compare( 'patient.hos_num', $this->patient_hos_num, false );
+
+        $patient_search = new PatientSearch();
+        $patient_hos_num = $patient_search->getHospitalNumber($this->patient_hos_num);
+
+        $criteria->compare( 'patient.hos_num', $patient_hos_num, false );
 
         if( $this->patient_pedigree_id ){
             $criteria->with['genetics_patient_pedigree'] = array('select' => 'genetics_patient_pedigree.pedigree_id', 'together' => true);

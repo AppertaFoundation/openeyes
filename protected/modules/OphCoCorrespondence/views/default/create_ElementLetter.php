@@ -137,24 +137,14 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                         );
                     } else {
 
-                        $is_mandatory = true;
-
                         if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'Cc') {
-
-                            //if the contact_type is (GP or Patient) and the letter type is Internal referral than the fielsd is mandatory (no remove link)
-                            if($document_target['attributes']['contact_type'] == 'GP' || $document_target['attributes']['contact_type'] == 'PATIENT'){
-
-                                if( $element->letterType && ($element->letterType->name == 'Internal Referral') ){
-                                    $is_mandatory = true;
-                                }
-                            }
 
                             $macro_data['cc'][] = array(
                                 'contact_type' => $document_target['attributes']['contact_type'],
                                 'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
                                 'contact_name' => isset($document_target['attributes']['contact_name']) ? $document_target['attributes']['contact_name'] : null,
                                 'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
-                                'is_mandatory' => $is_mandatory,
+                                'is_mandatory' => false,
                             );
                         }
                     }
@@ -300,6 +290,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
             foreach (LetterStringGroup::model()->with($with)->findAll(array('order' => 't.display_order')) as $string_group) {
                 echo $string_group->name;
                 $strings = $string_group->getStrings($patient, $event_types);
+
                 ?>
                 <div class="field-row">
                     <?php echo $form->dropDownListNoPost(strtolower($string_group->name), $strings, '', array(

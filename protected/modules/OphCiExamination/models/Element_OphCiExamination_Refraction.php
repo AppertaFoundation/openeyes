@@ -117,17 +117,6 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
     {
         $this->left_axis = 0;
         $this->right_axis = 0;
-        if ($api = Yii::app()->moduleAPI->get('OphCoCataractReferral')) {
-            if ($episode = Yii::app()->getController()->patient->getEpisodeForCurrentSubspecialty()) {
-                if ($refraction = $api->getRefractionForLatestCataractReferralInEpisode($episode->id)) {
-                    foreach ($refraction as $key => $value) {
-                        if (preg_match('/^left_(?!graph)/', $key) || preg_match('/^right_(?!graph)/', $key)) {
-                            $this->{$key} = $value;
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /**

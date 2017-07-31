@@ -27,15 +27,15 @@ namespace OEModule\OphCiExamination\models;
  * @property string $operation
  * @property string $date
  *
- * @property Eye $side
- * @property OphCiExamination_PastSurgery $element
+ * @property \Eye $side
+ * @property PastSurgery $element
  */
 class PastSurgery_Operation extends \BaseEventTypeElement
 {
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return PreviousOperation the static model class
+     * @return static
      */
     public static function model($className = __CLASS__)
     {
@@ -73,7 +73,7 @@ class PastSurgery_Operation extends \BaseEventTypeElement
     public function relations()
     {
         return array(
-            'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_PastSurgery', 'element_id'),
+            'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\PastSurgery', 'element_id'),
             'side' => array(self::BELONGS_TO, 'Eye', 'side_id'),
         );
     }
@@ -92,20 +92,20 @@ class PastSurgery_Operation extends \BaseEventTypeElement
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new CDbCriteria();
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('operation', $this->operation, true);
         $criteria->compare('date', $this->date);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
     }
@@ -118,6 +118,9 @@ class PastSurgery_Operation extends \BaseEventTypeElement
         return \Helper::formatFuzzyDate($this->date);
     }
 
+    /**
+     * @return string
+     */
     public function getDisplayOperation()
     {
         return ($this->side ? $this->side->adjective  . ' ' : '') . $this->operation;
