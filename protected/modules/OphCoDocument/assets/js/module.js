@@ -157,6 +157,7 @@ function deleteOPHCOImage( iID , index ){
             success:function(){
                 
                 $('#ophco-image-container-'+iID+'').remove();
+                $('#Element_OphCoDocument_Document_'+index).remove();
                 createUploadButton( index );
                 clearUploadStatus();
             },

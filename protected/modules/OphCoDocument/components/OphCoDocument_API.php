@@ -41,5 +41,11 @@ class OphCoDocument_API extends BaseAPI
         return $asset_manager->publish($module_path."/".$type.".png");
     }
 
+    public function getEventName($event)
+    {
+        $element = Element_OphCoDocument_Document::model()->findByAttributes(array('event_id' => $event->id));
+        return $element->sub_type->name;
+    }
+
 }
 
