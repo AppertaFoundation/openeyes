@@ -81,6 +81,22 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
             $this->processCanvasDoodleDefinition($canvas_doodle);
         }
         $this->refreshTuples();
+		
+			/**
+        * Generates HTML file from the OE_ED_CONFIG.xml (INDEX_LIST).
+        * XML may need to change when creating multiple HTML files
+        * as only 1 INDEX_LIST is permitted and there is no way to
+        * tell which HTML file to write to.
+        */
+        $html_string = "";
+        foreach ($data->INDEX_LIST->INDEX as $key => $index) {
+          $html_string .= $this->generateHTML($data->INDEX_LIST->INDEX[0]);
+        }
+        // TODO: find appropriate HTML file location - currently in protected
+        $file = 'exam2.html';
+        $file_handle = fopen($file, 'w') or die('Cannot open file:  '.$file);
+        fwrite($file_handle, "<ul class='results_list'>".$html_string."</ul>");
+
     }
 
     /**
@@ -261,5 +277,38 @@ SET ed.processed_canvas_intersection_tuple = (
 )
 WHERE ed.eyedraw_class_mnemonic != "*" -- Unsafe mode workaround
 EOSQL;
+    }
+	
+	/**
+    * This method generates a string that represents the HTML of
+    * an INDEX.
+    * Due to the recursive definition of INDEX a recursive approach has been taken
+    * as the method returns the string HTML of INDEXES nested inside of it.
+    */
+    /**
+    * @param $index
+    * @param $lvl
+    * @return string
+    */
+    private function generateHTML($index, $lvl=1){
+      $allias = $index->TERM_LIST->TERM[0];
+      $img = $index->IMG_URL;
+      $result =
+      "<li style'>"
+      ."<div class='result_item, result_item_with_icon' "
+      ."style='background-image: url(".$img.")'>"
+      ."<span data-allias='".$allias."'"
+      ."data-action-id='EASTB' class='lvl".$lvl."'>"
+      .$allias."</span>"
+      ."</div>";
+      if (isset($index->INDEX_LIST)) {
+        $result .= "<ul class='results_list'>";
+        foreach ($index->INDEX_LIST->INDEX as $nested_index) {
+          $result .= $this->generateHTML($nested_index,$lvl+1);
+        }
+        $result .= "</ul>";
+      }
+      $result .= "</li>";
+      return $result;
     }
 }
