@@ -222,7 +222,22 @@ EOSQL;
             };
 
         }
-        return $this->patient_doodles[$patient_id][$canvas_mnemonic][($side === Eye::LEFT) ? 'L' : 'R'];
+        return $this->patient_doodles[$patient_id][$canvas_mnemonic][((int)$side === Eye::LEFT) ? 'L' : 'R'];
+    }
+
+    /**
+     * @param $doodles
+     * @return array
+     */
+    protected function getInitDoodles($doodles)
+    {
+        $query = $this->app->db
+            ->createCommand()
+            ->select('init_doodle_json')
+            ->from('eyedraw_doodle')
+            ->where(array('in', 'eyedraw_class_mnemonic', $doodles));
+
+        return array_map(function($r) { return $r['init_doodle_json'];}, $query->queryAll());
     }
 
     /**
@@ -232,7 +247,7 @@ EOSQL;
     private function getInitDoodlesForCanvas($canvas_mnemonic)
     {
         $query_string = <<<EOSQL
-SELECT init_doodle_json 
+SELECT ed.init_doodle_json 
 FROM eyedraw_doodle ed 
 LEFT JOIN eyedraw_canvas_doodle ecd
 ON ecd.eyedraw_class_mnemonic = ed.eyedraw_class_mnemonic
@@ -269,5 +284,27 @@ EOSQL;
         } else {
             $element->$attribute = '[' . implode(',', $this->getInitDoodlesForCanvas($canvas_mnemonic)) . ']';
         }
+    }
+
+    /**
+     * @param $element
+     * @param $attribute
+     * @param array $doodles
+     * @throws CException
+     */
+    public function addElementEyedrawDoodles(&$element, $attribute, $doodles = array())
+    {
+        $current = json_decode($element->$attribute);
+        if (!is_array($current)) {
+            $current = array();
+        }
+
+        foreach ($this->getInitDoodles($doodles) as $i => $d) {
+            if (!strlen($d)) {
+                throw new CException("Attempt to add eyedraw doodle {$i} from " . print_r($doodles, true) . " when no init json defined. Have you loaded the latest config?");
+            }
+            $current[] = json_decode($d);
+        }
+        $element->$attribute = json_encode($current);
     }
 }
