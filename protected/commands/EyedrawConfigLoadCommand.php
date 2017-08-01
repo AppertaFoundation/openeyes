@@ -157,7 +157,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
                 '(eyedraw_class_mnemonic, init_doodle_json) VALUES (:mnm, :init)');
         }
         $cmd->bindValue(':mnm', $doodle->EYEDRAW_CLASS_MNEMONIC)
-            ->bindValue(':init', json_encode($doodle->INIT_DOODLE_JSON)) //check this
+            ->bindValue(':init', $doodle->INIT_DOODLE_JSON)
             ->query();
     }
 
