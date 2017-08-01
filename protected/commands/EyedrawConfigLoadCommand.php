@@ -81,7 +81,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
             $this->processCanvasDoodleDefinition($canvas_doodle);
         }
         $this->refreshTuples();
-		
+
 			/**
         * Generates HTML file from the OE_ED_CONFIG.xml (INDEX_LIST).
         * XML may need to change when creating multiple HTML files
@@ -90,7 +90,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
         */
         $html_string = "";
         foreach ($data->INDEX_LIST->INDEX as $key => $index) {
-          $html_string .= $this->generateHTML($data->INDEX_LIST->INDEX[0]);
+          $html_string .= $this->generateIndexHTML($data->INDEX_LIST->INDEX[0]);
         }
         // TODO: find appropriate HTML file location - currently in protected
         $file = 'exam2.html';
@@ -263,14 +263,14 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
 -- Update the Doodle Tuples
 UPDATE $doodle_tbl ed
 SET ed.processed_canvas_intersection_tuple = (
-    SELECT GROUP_CONCAT(DISTINCT ecd.canvas_mnemonic ORDER BY ecd.canvas_mnemonic) -- canvas_mnenonic 
+    SELECT GROUP_CONCAT(DISTINCT ecd.canvas_mnemonic ORDER BY ecd.canvas_mnemonic) -- canvas_mnenonic
   FROM $doodle_canvas_tbl ecd
   WHERE ecd.eyedraw_class_mnemonic = ed.eyedraw_class_mnemonic
     AND EXISTS (
         SELECT 1
     FROM $doodle_canvas_tbl in_ecd
     WHERE in_ecd.canvas_mnemonic = ecd.canvas_mnemonic
-    AND in_ecd.eyedraw_carry_forward_canvas_flag = 1 
+    AND in_ecd.eyedraw_carry_forward_canvas_flag = 1
   )
   GROUP BY ecd.eyedraw_class_mnemonic
   HAVING SUM(ecd.eyedraw_carry_forward_canvas_flag) != 0
@@ -278,7 +278,7 @@ SET ed.processed_canvas_intersection_tuple = (
 WHERE ed.eyedraw_class_mnemonic != "*" -- Unsafe mode workaround
 EOSQL;
     }
-	
+
 	/**
     * This method generates a string that represents the HTML of
     * an INDEX.
@@ -290,25 +290,27 @@ EOSQL;
     * @param $lvl
     * @return string
     */
-    private function generateHTML($index, $lvl=1){
-      $allias = $index->TERM_LIST->TERM[0];
-      $img = $index->IMG_URL;
-      $result =
-      "<li style'>"
-      ."<div class='result_item, result_item_with_icon' "
-      ."style='background-image: url(".$img.")'>"
-      ."<span data-allias='".$allias."'"
-      ."data-action-id='EASTB' class='lvl".$lvl."'>"
-      .$allias."</span>"
-      ."</div>";
-      if (isset($index->INDEX_LIST)) {
-        $result .= "<ul class='results_list'>";
-        foreach ($index->INDEX_LIST->INDEX as $nested_index) {
-          $result .= $this->generateHTML($nested_index,$lvl+1);
-        }
-        $result .= "</ul>";
-      }
-      $result .= "</li>";
-      return $result;
+    private function generateIndexHTML($index, $lvl=1){
+      $allias = implode(",",(array)$index->TERM_LIST->TERM);
+           $img = $index->IMG_URL;
+           $children = $index->INDEX_LIST;
+           $result =
+           "<li style>"
+           ."<div class=\"result_item"
+           .($img ? (", result_item_with_icon\" style=\"background-image: url(".$img.")") : (""))
+           ."\">"
+           ."<span data-allias='".$allias."' "
+           ."data-action-id='EASTB' class='lvl".$lvl."'>"
+           .$allias."</span>"
+           ."</div>";
+           if ($children) {
+             $result .= "<ul class='results_list'>";
+             foreach ($children->INDEX as $child) {
+               $result .= $this->generateIndexHTML($child,$lvl+1);
+             }
+             $result .= "</ul>";
+           }
+           $result .= "</li>";
+           return $result;
     }
 }
