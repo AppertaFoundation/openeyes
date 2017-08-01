@@ -38,6 +38,7 @@ class GeneticsPatient extends BaseActiveRecord
     public $patient_dob;
     public $patient_firstname;
     public $patient_lastname;
+    public $patient_maidenname;
     public $patient_yob;
     public $patient_disorder_id;
     public $patient_hos_num;
@@ -75,7 +76,7 @@ class GeneticsPatient extends BaseActiveRecord
             array('id, patient_id, comments, gender_id, is_deceased, relationships, studies, pedigrees, diagnoses', 'safe'),
 
             //for searching on the subject/list page
-            array('patient_dob, patient_firstname, patient_lastname, patient_hos_num, patient_pedigree_id, patient_yob, patient_disorder_id', 'safe')
+            array('patient_dob, patient_firstname, patient_lastname,patient_maidenname, patient_hos_num, patient_pedigree_id, patient_yob, patient_disorder_id', 'safe')
         );
     }
 
@@ -342,6 +343,7 @@ class GeneticsPatient extends BaseActiveRecord
 
         $criteria->compare( 'contact.first_name', $this->patient_firstname, true );
         $criteria->compare( 'contact.last_name', $this->patient_lastname, true );
+        $criteria->compare( 'contact.maiden_name', $this->patient_maidenname, true );
 
         //because of the 'together' => true , yii returns wrong row counts when 'patient_disorder_id' is not present
         if($this->patient_disorder_id > 0){

@@ -1,3 +1,5 @@
+<?php $form_id = isset($form) ? $form->getId() : null; ?>
+
 <script type="text/javascript">
   $(document).ready(function() {
     $('#enteredDiagnosisText').on('click', '.clear-diagnosis-widget', function (e) {
@@ -29,7 +31,9 @@ if(is_array($value)):
     $new.text(ui.item.value).append($clear);
     $('#enteredDiagnosisText').append($new.append('<br>'));
     $('#enteredDiagnosisText').show();
-    $(event.target).parent().append('<input type="hidden" name="<?=$class ?>[<?=$name ?>][]" class="multiDiagnosis" value="' + ui.item.id + '">');
+    $(event.target).parent().append('<input type="hidden" name="<?=$class ?>[<?=$name ?>][]" class="multiDiagnosis" value="' + ui.item.id + '"' +
+        <?php echo ($form_id ? " form='{$form_id}'" : '');?>
+        + '>');
     $('#<?=$class?>_<?=$name?>').focus();
 
     return false;
@@ -64,10 +68,10 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 if(is_array($value)):
   foreach($value as $disorder):
 ?>
-  <input type="hidden" name="<?=$class ?>[<?=$name ?>][]" class="multiDiagnosis" value="<?=$disorder->id?>">
+  <input type="hidden" name="<?=$class ?>[<?=$name ?>][]" class="multiDiagnosis" value="<?=$disorder->id?>" <?php echo ($form_id ? "form='{$form_id}'" : '');?>>
 <?php
   endforeach;
 else:
 ?>
-  <input type="hidden" name="<?=$class ?>[<?=$name ?>]" id="savedDiagnosis" value="<?=$value?>">
+  <input type="hidden" name="<?=$class ?>[<?=$name ?>]" id="savedDiagnosis" value="<?=$value?>" <?php echo ($form_id ? "form='{$form_id}'" : '');?>>
 <?php endif; ?>
