@@ -89,8 +89,8 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
         * tell which HTML file to write to.
         */
         $html_string = "";
-        foreach ($data->INDEX_LIST->INDEX as $key => $index) {
-          $html_string .= $this->generateIndexHTML($data->INDEX_LIST->INDEX[0]);
+        foreach ($data->INDEX_LIST->INDEX as $index) {
+          $html_string .= $this->generateIndexHTML($index);
         }
         // TODO: find appropriate HTML file location - currently in protected
         $file = 'exam2.html';
