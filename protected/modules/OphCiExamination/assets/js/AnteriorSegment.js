@@ -137,8 +137,13 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
     AnteriorSegmentController.prototype.setDoodleParameter = function(source, sourceParameter, destination, destinationParameter, repaint)
     {
       // no need to trigger parameter changes if they are already matched.
-      if (source[sourceParameter] == destination[destinationParameter])
+      if (source[sourceParameter] == destination[destinationParameter]) {
+        // seems to be a mismatch with this update and how bound parameters are being updated. so have put this
+        // call in place for now.
+        destination.updateDependentParameters(destinationParameter);
         return;
+      }
+
 
       if (typeof(source[sourceParameter]) === "string") {
         destination.setParameterFromString(destinationParameter, source[sourceParameter], true);
@@ -147,7 +152,7 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
       }
       destination.updateDependentParameters(destinationParameter);
       if (repaint)
-          destination.drawing.repaint();
+        destination.drawing.repaint();
     };
 
     /**
