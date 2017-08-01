@@ -50,9 +50,8 @@
  */
 class Element_OphTrOperationnote_Cataract extends Element_OnDemand
 {
-    public $service;
-
     public $predicted_refraction = null;
+    public $requires_eye = true;
 
     /**
      * Returns the static model of the specified AR class.
@@ -214,17 +213,6 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
         ));
     }
 
-    /**
-     * Set default values for forms on create.
-     * @param Patient $patient
-     */
-    public function setDefaultOptions(Patient $patient = null)
-    {
-        if (Yii::app()->controller->selectedEyeForEyedraw->id == 1) {
-            $this->meridian = 0;
-        }
-    }
-
     protected function beforeSave()
     {
         if(!isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
@@ -318,22 +306,32 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
             }
         }
 
-        if (is_array($curr_by_id)){
-        foreach ($curr_by_id as $oda) {
-            if (!$oda->delete()) {
-                throw new Exception('Unable to delete operative device assignment: '.print_r($oda->getErrors(), true));
+        if (is_array($curr_by_id)) {
+            foreach ($curr_by_id as $oda) {
+                if (!$oda->delete()) {
+                    throw new Exception('Unable to delete operative device assignment: '.print_r($oda->getErrors(), true));
+                }
             }
         }
     }
-    }
+
+    /**
+     * @var Eye
+     */
+    public $eye;
+
     /**
      * The eye of the procedure is stored in the parent procedure list element.
+     * However, it may be set direcly on the element object, to enable encapsulation of the current eye when creating the element
      *
      * @return Eye
      */
     public function getEye()
     {
-        return Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($this->event_id))->eye;
+        if (!$this->eye) {
+            $this->eye = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($this->event_id))->eye;
+        }
+        return $this->eye;
     }
 
     /**
@@ -374,6 +372,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
      */
     public function getIol_hidden()
     {
+        OELog::log($this->eyedraw);
         if ($eyedraw = @json_decode($this->eyedraw)) {
             if (is_array($eyedraw)) {
                 foreach ($eyedraw as $object) {
@@ -461,5 +460,38 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
         } else {
             return $default;
         }
+    }
+
+    /**
+     * Load in the correction values for the eyedraw fields
+     *
+     * @param Patient|null $patient
+     * @throws \CException
+     */
+    public function setDefaultOptions(Patient $patient = null)
+    {
+        if ($patient === null) {
+            throw new \CException('patient object required for setting ' . get_class($this) . ' default options');
+        }
+        if ((int)$this->getEye()->id === 1) {
+            $this->meridian = 0;
+        }
+        parent::setDefaultOptions($patient);
+
+        $processor = new \EDProcessor();
+        $processor->loadElementEyedrawDoodles($patient, $this, $this->getEye()->id, 'eyedraw');
+        $processor->addElementEyedrawDoodles($this, 'eyedraw', array('PhakoIncision', 'PCIOL'));
+    }
+
+    /**
+     * Performs the shredding of Eyedraw data for the patient record
+     *
+     * @inheritdoc
+     */
+    public function afterSave()
+    {
+        $processor = new \EDProcessor();
+        $processor->shredElementEyedraws($this, static::$ed_persistence_attributes);
+        parent::afterSave();
     }
 }

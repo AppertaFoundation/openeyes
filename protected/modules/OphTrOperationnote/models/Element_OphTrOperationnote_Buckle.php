@@ -33,7 +33,7 @@
  */
 class Element_OphTrOperationnote_Buckle extends Element_OnDemand
 {
-    public $service;
+    public $requires_eye = true;
 
     /**
      * Returns the static model of the specified AR class.
