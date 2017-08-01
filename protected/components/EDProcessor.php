@@ -119,10 +119,18 @@ class EDProcessor
         }
     }
 
+    /**
+     * @var array internal caching for patient doodles.
+     */
     private $patient_doodles = array();
 
 
-
+    /**
+     * @param $patient_id
+     * @param $canvas_mnemonic
+     * @param $side
+     * @return mixed
+     */
     private function retrieveDoodlesForSide($patient_id, $canvas_mnemonic, $side)
     {
         if (!array_key_exists($patient_id, $this->patient_doodles)) {
@@ -218,6 +226,33 @@ EOSQL;
     }
 
     /**
+     * @param $canvas_mnemonic
+     * @return array
+     */
+    private function getInitDoodlesForCanvas($canvas_mnemonic)
+    {
+        $query_string = <<<EOSQL
+SELECT init_doodle_json 
+FROM eyedraw_doodle ed 
+LEFT JOIN eyedraw_canvas_doodle ecd
+ON ecd.eyedraw_class_mnemonic = ed.eyedraw_class_mnemonic
+WHERE ecd.canvas_mnemonic = :ecdcm
+AND ecd.eyedraw_no_tuple_init_canvas_flag = true
+EOSQL;
+
+        $results = array();
+        foreach ($this->app->db
+            ->createCommand($query_string)
+            ->bindParam(':ecdcm', $canvas_mnemonic)->queryAll() as $result
+        ) {
+            $results[] = $result['init_doodle_json'];
+        }
+
+        return $results;
+    }
+
+
+    /**
      * Load all the element attributes up with the appropriate set of doodles.
      *
      * @param \Patient $patient
@@ -227,8 +262,12 @@ EOSQL;
      */
     public function loadElementEyedrawDoodles(Patient $patient, &$element, $side, $attribute)
     {
-        if ($doodle_data = $this->retrieveDoodlesForSide($patient->id, $this->getCanvasMnemonicForElementType($element->getElementType()->id), $side)) {
+        $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element->getElementType()->id);
+
+        if ($doodle_data = $this->retrieveDoodlesForSide($patient->id, $canvas_mnemonic, $side)) {
             $element->$attribute = '[' . implode(',', $doodle_data) . ']';
+        } else {
+            $element->$attribute = '[' . implode(',', $this->getInitDoodlesForCanvas($canvas_mnemonic)) . ']';
         }
     }
 }
