@@ -252,6 +252,9 @@ class BaseActiveRecord extends CActiveRecord
         return parent::beforeSave();
     }
 
+    /**
+     * @return User
+     */
     protected function getChangeUser()
     {
         if (!$this->change_user) {
@@ -260,11 +263,17 @@ class BaseActiveRecord extends CActiveRecord
         return $this->change_user;
     }
 
+    /**
+     * Retrieves the user id from the current application scope, defaulting to the admin user id 1 if
+     * no ID is currently available.
+     *
+     * @return int
+     */
     protected function getChangeUserId()
     {
         try {
             if (isset($this->getApp()->user)) {
-                return $this->getApp()->user->id;
+                return $this->getApp()->user->id === null ? 1 : $this->getApp()->user->id;
             }
         } catch (Exception $e) {
             return 1;
