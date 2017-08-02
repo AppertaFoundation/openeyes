@@ -84,7 +84,7 @@ class SearchController extends BaseController
                     $order = "last_name $dir, first_name $dir";
                     break;
                 case 'maiden_name':
-                    $order = "last_name $dir, first_name $dir";
+                    $order = "maiden_name $dir";
                     break;
 
                 case 'date_taken':
