@@ -266,7 +266,7 @@ class PedigreeController extends BaseModuleController
         $response = 1;
         $model = Pedigree::model();
         if (Yii::app()->request->isPostRequest) {
-            $post = Yii::app()->request->getPost('Pedigree');
+            $post = Yii::app()->request->getPost('Pedigree', array());
             if (array_key_exists('id', $post) && is_array($post['id'])) {
                 foreach ($post['id'] as $id) {
 
