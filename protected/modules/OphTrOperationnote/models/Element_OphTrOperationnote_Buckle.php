@@ -31,7 +31,7 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-class Element_OphTrOperationnote_Buckle extends Element_OnDemand
+class Element_OphTrOperationnote_Buckle extends Element_OnDemandEye
 {
     public $requires_eye = true;
 
@@ -119,10 +119,5 @@ class Element_OphTrOperationnote_Buckle extends Element_OnDemand
         return new CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
             ));
-    }
-
-    public function getEye()
-    {
-        return Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($this->event_id))->eye;
     }
 }

@@ -48,7 +48,7 @@
  * @property OperativeDevice[] $operative_devices
  * @property OphTrOperationnote_IOLType $iol_type
  */
-class Element_OphTrOperationnote_Cataract extends Element_OnDemand
+class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
 {
     public $predicted_refraction = null;
     public $requires_eye = true;
@@ -316,33 +316,6 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
     }
 
     /**
-     * @var Eye
-     */
-    protected $eye;
-
-    /**
-     * The eye of the procedure is stored in the parent procedure list element.
-     * However, it may be set direcly on the element object, to enable encapsulation of the current eye when creating the element
-     *
-     * @return Eye
-     */
-    public function getEye()
-    {
-        if (!$this->eye) {
-            $this->eye = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($this->event_id))->eye;
-        }
-        return $this->eye;
-    }
-
-    /**
-     * @param Eye $eye
-     */
-    public function setEye(Eye $eye)
-    {
-        $this->eye = $eye;
-    }
-
-    /**
      * Validate IOL data if IOL is part of the element.
      *
      * @return bool
@@ -488,6 +461,9 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
 
         $processor = new \EDProcessor();
         $processor->loadElementEyedrawDoodles($patient, $this, $this->getEye()->id, 'eyedraw');
+        // current way of handling the default doodles to add to the eyedraw for the procedure
+        // this will hopefully be replaced when we have the ability to store preferences for users
+        // as to their default doodle set for the cataract procedure.
         $processor->addElementEyedrawDoodles($this, 'eyedraw', array('PhakoIncision', 'PCIOL'));
     }
 
