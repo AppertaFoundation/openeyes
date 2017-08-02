@@ -299,16 +299,19 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
                 if (this.options.pairArray[change.doodle.className] !== undefined) {
                     // get the corresponding secondary doodle and it's sync parameter definitions
                     var secondaryDoodle = this.secondaryDrawing.firstDoodleOfClass(this.options.pairArray[change.doodle.className]);
-                    var syncParameters = secondaryDoodle.getLinkedParameters(change.doodle.className);
-                    if (typeof(syncParameters) !== "undefined") {
+                    if (secondaryDoodle) {
+                      // if we're resetting or anything along those lines, the secondaryDoodle might not be present.
+                      var syncParameters = secondaryDoodle.getLinkedParameters(change.doodle.className);
+                      if (typeof(syncParameters) !== "undefined") {
                         // loop through source synced params and update if matches this primary parameter
                         for (var j in syncParameters['source']) {
-                            if (syncParameters['source'][j] === change.parameter) {
-                                this.setDoodleParameter(change.doodle, change.parameter, secondaryDoodle, change.parameter, true);
-                                break;
-                            }
+                          if (syncParameters['source'][j] === change.parameter) {
+                            this.setDoodleParameter(change.doodle, change.parameter, secondaryDoodle, change.parameter, true);
+                            break;
+                          }
                         }
                         // we know that that we don't have to sync 'store' params to the secondary so we're done here
+                      }
                     }
                 }
             }
