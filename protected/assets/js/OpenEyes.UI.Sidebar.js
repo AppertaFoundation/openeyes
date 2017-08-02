@@ -90,6 +90,7 @@
         if(h < self.options.minimumHeight)
             h = self.options.minimumHeight;
         self.$el.height(h+'px');
+        $('.container.content').css({'min-height':h+50+'px'})
     };
 
     exports.Sidebar = Sidebar;

@@ -35,11 +35,13 @@ html, body {
     overflow: hidden; }
   .open-eyes .container.content {
     background: none;
-    min-height: 600px; }
+    min-height: 600px;
+  }
   .open-eyes .footer {
     border-radius: 0 0 5px 5px;
     height: 42px;
-    background: #a39c9c url("../img/_structure/openeyes_footer.png") no-repeat right top; }
+    background: #a39c9c url("../img/_structure/openeyes_footer.png") no-repeat right top;
+  }
     .open-eyes .footer .help .panel {
       height: 38px;
       border-style: none;
@@ -624,7 +626,8 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   padding: 0 0 5px 0;
   width: 14.6%;
   position: fixed;
-  top: 82px; }
+  top: 82px;
+}
   .open-eyes .sidebar.episodes-and-events .oe-scroll-wrapper {
     position: relative;
     overflow-y: auto;
@@ -649,7 +652,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     color: white; }
   .open-eyes .sidebar.episodes-and-events .scroll-blue-top {
     position: absolute;
-    top: 38px;
+    top: 2px;
     width: 180px;
     height: 8px;
     background: transparent url("../img/_elements/gradients/bg_scroll_blue_top.png") top left repeat-x;
