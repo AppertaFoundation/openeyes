@@ -69,7 +69,7 @@ class SearchController extends BaseController
                 $page = $_GET['page'];
             }
 
-            $search_command = $this->buildSearchCommand('DISTINCT(et_ophindnasample_sample.id) AS sample_id,patient.id,patient.hos_num,event.id,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments,genetics_patient.id AS genetics_patient_id', $page);
+            $search_command = $this->buildSearchCommand('DISTINCT(et_ophindnasample_sample.id) AS sample_id,patient.id,patient.hos_num,event.id,contact.first_name,contact.maiden_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments,genetics_patient.id AS genetics_patient_id', $page);
 
             $dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
@@ -83,6 +83,10 @@ class SearchController extends BaseController
                 case 'patient_name':
                     $order = "last_name $dir, first_name $dir";
                     break;
+                case 'maiden_name':
+                    $order = "last_name $dir, first_name $dir";
+                    break;
+
                 case 'date_taken':
                     $order = "event_date $dir";
                     break;
@@ -146,6 +150,7 @@ class SearchController extends BaseController
         $comment = @$_GET['comment'];
         $first_name = @$_GET['first_name'];
         $last_name = @$_GET['last_name'];
+        $maiden_name = @$_GET['maiden_name'];
         $hos_num = @$_GET['hos_num'];
         $genetics_patient_id = @$_GET['genetics_patient_id'];
         $maiden_name = @$_GET['maiden_name'];
@@ -195,6 +200,10 @@ class SearchController extends BaseController
 
         if($last_name){
             $command->andWhere((array('like', 'LOWER(last_name)', '%'. strtolower($last_name) .'%')));
+        }
+
+        if($maiden_name){
+            $command->andWhere((array('like', 'LOWER(maiden_name)', '%'. strtolower($maiden_name) .'%')));
         }
 
         if($maiden_name){

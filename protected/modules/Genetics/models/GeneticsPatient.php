@@ -370,6 +370,11 @@ class GeneticsPatient extends BaseActiveRecord
                         'asc' => "contact.last_name",
                         'desc' => "contact.last_name DESC"
                     ),
+                    'patient.contact.maiden_name' => array(
+                        'asc' => "contact.maiden_name",
+                        'desc' => "contact.maiden_name DESC"
+                    ),
+
 
                     'comments'
                 )

@@ -149,6 +149,7 @@
                         <th><?php echo CHtml::link('Family Id', $this->getUri(array('sortby' => 'genetics_pedigree_id')))?></th>
 						<th><?php echo CHtml::link('Hospital No', $this->getUri(array('sortby' => 'hos_num')))?></th>
 						<th><?php echo CHtml::link('Patient Name', $this->getUri(array('sortby' => 'patient_name')))?></th>
+						<th><?php echo CHtml::link('Maiden Name', $this->getUri(array('sortby' => 'maiden_name')))?></th>
 						<th><?php echo CHtml::link('Date Taken', $this->getUri(array('sortby' => 'date_taken')))?></th>
 						<th><?php echo CHtml::link('Sample Type', $this->getUri(array('sortby' => 'sample_type')))?></th>
 						<th><?php echo CHtml::link('Volume', $this->getUri(array('sortby' => 'volume')))?></th>
@@ -183,6 +184,7 @@
 
                             <td><?php echo $result['hos_num']?></td>
 							<td><?php echo strtoupper($result['last_name'])?>, <?php echo $result['first_name']?></td>
+							<td><?php echo strtoupper($result['maiden_name'])?></td>
 							<td>
                                 <?php
                                     $date = new DateTime($result['event_date']);
