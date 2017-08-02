@@ -130,7 +130,7 @@ class BaseActiveRecord extends CActiveRecord
     /**
      * @param CApplication $app
      */
-    public function setApp(CApplication $app)
+    public function setApp(CApplication $app = null)
     {
         $this->app = $app;
     }
@@ -145,6 +145,18 @@ class BaseActiveRecord extends CActiveRecord
         }
 
         return $this->app;
+    }
+
+    /**
+     * Don't serialize the app
+     *
+     * @return array
+     * @inheritdoc
+     */
+    public function __sleep()
+    {
+        unset($this->app);
+        return parent::__sleep();
     }
 
     /**
