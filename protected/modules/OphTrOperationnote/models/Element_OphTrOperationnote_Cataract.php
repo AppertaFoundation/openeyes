@@ -318,7 +318,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
     /**
      * @var Eye
      */
-    public $eye;
+    protected $eye;
 
     /**
      * The eye of the procedure is stored in the parent procedure list element.
@@ -332,6 +332,14 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
             $this->eye = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($this->event_id))->eye;
         }
         return $this->eye;
+    }
+
+    /**
+     * @param Eye $eye
+     */
+    public function setEye(Eye $eye)
+    {
+        $this->eye = $eye;
     }
 
     /**
@@ -491,7 +499,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
     public function afterSave()
     {
         $processor = new \EDProcessor();
-        $processor->shredElementEyedraws($this, static::$ed_persistence_attributes);
+        $processor->shredElementEyedraws($this, array('eyedraw' => (int)$this->getEye()->id));
         parent::afterSave();
     }
 }
