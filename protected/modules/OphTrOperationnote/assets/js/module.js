@@ -664,6 +664,7 @@ function changeEye() {
     }
 
     if (typeof(drawingEdit2) != 'undefined') {
+        alert('The eye state loaded for the cataract operation may no longer be correct. Please remove and re-add the procedure.');
         if (drawingEdit2.eye == ED.eye.Right) drawingEdit2.eye = ED.eye.Left;
         else drawingEdit2.eye = ED.eye.Right;
     }
