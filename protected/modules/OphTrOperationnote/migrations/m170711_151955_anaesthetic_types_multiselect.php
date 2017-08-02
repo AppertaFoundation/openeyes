@@ -63,6 +63,19 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
             var_dump("Migrating Anaesthetic options...");
             foreach ($iterator as $element) {
 
+                // if event was deleted
+                if(!$event = $element->event) {
+                    $event = Event::model()->disableDefaultScope()->findByPk($element->event_id);
+                } else {
+                    $event = $element->event;
+                }
+
+                if(!$episode = $event->episode) {
+                    $episode = Episode::model()->disableDefaultScope()->findByPk($event->episode_id);
+                } else {
+                    $episode = $event->episode;
+                }
+
                 //update any existing records with anaesthetic type "Topical" to type "LA" + delivery type of "Topical"
                 if ($element->anaesthetic_type_id == $anaesthetic_topical_id) {
 
@@ -116,7 +129,8 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 
                     Audit::add('admin', 'update', serialize($data),
                         'Remove redundant Anaesthetic options',
-                        array('module' => 'OphTrOperationnote', 'model' => 'Element_OphTrOperationnote_Anaesthetic', 'event_id' => $element->event_id));
+                        array('module' => 'OphTrOperationnote', 'model' => 'Element_OphTrOperationnote_Anaesthetic', 'event_id' => $element->event_id,
+                            'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id));
 
                        //When option GA is selected, set delivery method to (only) Other, set given by to Anaesthetist
                 } else if ($element->anaesthetic_type_id == $anaesthetic_GA_id) {
@@ -162,9 +176,11 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
                             ( $element->anaesthetic_delivery_id != $delivery_other_id ? ', added extra Delivery type Other' : '' ) .
                             ", Anaesthetist became 'Anaesthetist' from {$original_anaesthetist_name}",
                     );
+
                     Audit::add('admin', 'update', serialize($data),
                         'Remove redundant Anaesthetic options',
-                        array('module' => 'OphTrOperationnote', 'model' => 'Element_OphTrOperationnote_Anaesthetic', 'event_id' => $element->event_id)
+                        array('module' => 'OphTrOperationnote', 'model' => 'Element_OphTrOperationnote_Anaesthetic', 'event_id' => $element->event_id,
+                            'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id)
                     );
 
                 } else {
@@ -222,13 +238,27 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 
                     Audit::add('admin', 'update', serialize($data),
                         'Remove redundant Anaesthetic options',
-                        array('module' => 'OphTrOperationnote', 'model' => 'Element_OphTrOperationnote_Anaesthetic', 'event_id' => $element->event_id));
+                        array('module' => 'OphTrOperationnote', 'model' => 'Element_OphTrOperationnote_Anaesthetic', 'event_id' => $element->event_id,
+                            'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id));
                 }
             }
 
             $dataProvider = new CActiveDataProvider('Element_OphTrIntravitrealinjection_Anaesthetic');
             $iterator = new CDataProviderIterator($dataProvider);
             foreach ($iterator as $element) {
+
+                // if event was deleted
+                if(!$event = $element->event) {
+                    $event = Event::model()->disableDefaultScope()->findByPk($element->event_id);
+                } else {
+                    $event = $element->event;
+                }
+
+                if(!$episode = $event->episode) {
+                    $episode = Episode::model()->disableDefaultScope()->findByPk($event->episode_id);
+                } else {
+                    $episode = $event->episode;
+                }
 
                 $data = array(
                     'original_attributes' => array(
@@ -254,7 +284,8 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 
                 Audit::add('admin', 'update', serialize($data),
                     'Remove redundant Anaesthetic options',
-                    array('module' => 'OphTrIntravitrealinjection', 'model' => 'Element_OphTrIntravitrealinjection_Anaesthetic', 'event_id' => $element->event_id)
+                    array('module' => 'OphTrIntravitrealinjection', 'model' => 'Element_OphTrIntravitrealinjection_Anaesthetic', 'event_id' => $element->event_id,
+                        'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id)
                 );
             }
 
@@ -317,7 +348,6 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 
 	public function down()
 	{
-
 	      /** We will NOT support the migration down() here  */
 
         echo "m170711_151955_anaesthetic_types_multiselect does not support migration down.\n";
