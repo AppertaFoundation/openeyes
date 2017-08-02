@@ -260,7 +260,8 @@ EOSQL;
             ->createCommand($query_string)
             ->bindParam(':ecdcm', $canvas_mnemonic)->queryAll() as $result
         ) {
-            $results[] = $result['init_doodle_json'];
+            if ($result['init_doodle_json'])
+                $results[] = $result['init_doodle_json'];
         }
 
         return $results;
