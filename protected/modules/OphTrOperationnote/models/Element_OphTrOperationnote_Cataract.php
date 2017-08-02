@@ -53,6 +53,11 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
     public $predicted_refraction = null;
     public $requires_eye = true;
 
+    protected static $procedure_doodles = array(
+        array('doodle_class' => 'PhakoIncision'),
+        array('doodle_class' => 'PCIOL',
+            'unless' => array('PCIOL', 'ACIOL', 'ToricPCIOL'))
+    );
     /**
      * Returns the static model of the specified AR class.
      *
@@ -464,7 +469,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
         // current way of handling the default doodles to add to the eyedraw for the procedure
         // this will hopefully be replaced when we have the ability to store preferences for users
         // as to their default doodle set for the cataract procedure.
-        $processor->addElementEyedrawDoodles($this, 'eyedraw', array('PhakoIncision', 'PCIOL'));
+        $processor->addElementEyedrawDoodles($this, 'eyedraw', static::$procedure_doodles);
     }
 
     /**

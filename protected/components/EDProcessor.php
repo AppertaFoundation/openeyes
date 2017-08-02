@@ -287,24 +287,33 @@ EOSQL;
     }
 
     /**
+     * Add doodles to the given element attribute, unless certain doodles are already defined in that attribute
+     *
      * @param $element
      * @param $attribute
-     * @param array $doodles
+     * @param array $doodles - format is [['doodle_class' => className, 'unless' => [ list of ed classes that block addition of this class]]]
      * @throws CException
      */
     public function addElementEyedrawDoodles(&$element, $attribute, $doodles = array())
     {
-        $current = json_decode($element->$attribute);
+        $current = json_decode($element->$attribute, true);
         if (!is_array($current)) {
             $current = array();
         }
 
-        foreach ($this->getInitDoodles($doodles) as $i => $d) {
-            if (!strlen($d)) {
-                throw new CException("Attempt to add eyedraw doodle {$i} from " . print_r($doodles, true) . " when no init json defined. Have you loaded the latest config?");
+        $append = array();
+        foreach ($doodles as $doodle_spec) {
+            $doodle_class = $doodle_spec['doodle_class'];
+            $unless = array_key_exists('unless', $doodle_spec) ? $doodle_spec['unless'] : array();
+            if (!array_intersect($unless, array_map(function($c) { return $c['subclass']; }, $current))) {
+                $d = $this->getInitDoodles(array($doodle_class));
+                if ($d[0] === '') {
+                    throw new CException("Attempt to add eyedraw doodle $doodle_class when no init json defined. Have you loaded the latest config?");
+                }
+                $append[] = json_decode($d[0]);
             }
-            $current[] = json_decode($d);
         }
-        $element->$attribute = json_encode($current);
+
+        $element->$attribute = json_encode(array_merge($current, $append));
     }
 }
