@@ -87,7 +87,7 @@ class DefaultController extends OphTrOperationbookingEventController
 
             if (isset(Yii::app()->params[$key])) {
                 if ($at = AnaestheticType::model()->find('code=?', array(Yii::app()->params[$key]))) {
-                    $element->anaesthetic_type_id = $at->id;
+                    $element->anaesthetic_type = array($at);
                 }
             }
 
@@ -252,6 +252,7 @@ class DefaultController extends OphTrOperationbookingEventController
     {
         // using the ProcedureSelection widget, so not a direct field on the operation element
         $element->updateProcedures(isset($data['Procedures_procs']) ? $data['Procedures_procs'] : array());
+        $element->updateAnaestheticType(isset($data['AnaestheticType']) ? $data['AnaestheticType'] : array());
     }
 
     /**

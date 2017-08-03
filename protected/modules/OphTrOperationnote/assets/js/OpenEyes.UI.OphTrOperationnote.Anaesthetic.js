@@ -31,29 +31,54 @@ OpenEyes.OphTrOperationnote.AnaestheticController = (function () {
         // set delivery method to other (all other delivery options un-checked),
         // set given by to Anaesthetist
 
-        $(this.options['sectionSelector']).on('change', 'input', function(){
-            if( $.trim($(this).parent().text()) === 'GA' && $(this).is(':checked')){
-                $(options['deliverySelector']).hide();
-                $(options['anaestheticSelector']).hide();
+        $(this.options['typeSelector']).on('change', 'input', function(){
 
-                $.each( $(options['deliverySelector']).find('input') , function( key, input ) {
-                    if( $.trim($(input).parent().text()) === 'Other'){
-                        $(input).prop('checked', true);
-                    } else {
-                        $(input).prop('checked', false);
-                    }
-                });
+            var $fieldset = $(options['typeSelector']);
 
-                $.each( $(options['anaestheticSelector']).find('input') , function( key, input ) {
-                    if( $.trim($(input).parent().text()) === 'Anaesthetist'){
-                        $(input).prop('checked', true);
-                    } else {
-                        $(input).prop('checked', false);
-                    }
-                });
-            } else if( $.trim($(this).parent().text()) === 'GA' && !$(this).is(':checked')){
-                $(options['deliverySelector']).show();
-                $(options['anaestheticSelector']).show();
+            var $LA = $fieldset.find('.LA'),
+                $sedation = $fieldset.find('.Sedation'),
+                $GA = $fieldset.find('.GA'),
+                $no_anaesthetic = $fieldset.find('.NoAnaesthetic');
+
+            // No Anaesthetic selected
+            if( $(this).hasClass('NoAnaesthetic')){
+                //uncheck all other Type options
+                $(this).closest('div').find('input:not(".NoAnaesthetic")').prop('checked', false);
+
+                //this cannot be unchecked by clicking at
+                $(this).prop('checked', true);
+            } else {
+                $(this).closest('div').find(".NoAnaesthetic").prop('checked', false);
+            }
+
+            if( $(this).closest('div').find('input:checked').length === 0 ){
+                $no_anaesthetic.prop('checked', true);
+            }
+
+            if( ($GA.is(':checked') || $no_anaesthetic.is(':checked') ) && $(this).closest('div').find('input:checked').length === 1 ){
+                $(options['deliverySelector']).slideUp();
+                $(options['anaestheticSelector']).slideUp();
+
+                if( $GA.is(':checked') ){
+                    $(options['deliverySelector']).find('input').prop('checked', false);
+                    $(options['deliverySelector']).find('input.Other').prop('checked', true);
+                }
+
+                if($no_anaesthetic.is(':checked')){
+                    $(options['deliverySelector']).find('input').prop('checked', false);
+
+                    $.each( $(options['anaestheticSelector']).find('input') , function( key, input ) {
+                        if( $.trim($(input).parent().text()) === 'Other'){
+                            $(input).prop('checked', true);
+                        } else {
+                            $(input).prop('checked', false);
+                        }
+                    });
+                }
+
+            } else {
+                $(options['deliverySelector']).slideDown();
+                $(options['anaestheticSelector']).slideDown();
             };
         });
     }

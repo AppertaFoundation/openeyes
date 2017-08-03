@@ -27,7 +27,6 @@
  * @property int $eye_id
  * @property int $consultant_required
  * @property int $any_grade_of_doctor
- * @property int $anaesthetic_type_id
  * @property int $overnight_stay
  * @property int $site_id
  * @property int $priority_id
@@ -96,7 +95,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     public function rules()
     {
         return array(
-            array('eye_id, consultant_required, senior_fellow_to_do, named_consultant_id, any_grade_of_doctor, anaesthetic_type_id, overnight_stay, site_id, priority_id, decision_date, fast_track, fast_track_discussed_with_patient, comments,comments_rtt, anaesthetist_required, anaesthetist_preop_assessment, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, status_id, operation_cancellation_date, cancellation_reason_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment, special_equipment_details, organising_admission_user_id', 'safe'),
+            array('eye_id, consultant_required, senior_fellow_to_do, named_consultant_id, any_grade_of_doctor, overnight_stay, site_id, priority_id, decision_date, fast_track, fast_track_discussed_with_patient, comments,comments_rtt, anaesthetist_required, anaesthetist_preop_assessment, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, status_id, operation_cancellation_date, cancellation_reason_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment, special_equipment_details, organising_admission_user_id', 'safe'),
             array('named_consultant_id', 'RequiredIfFieldValidator', 'field' => 'consultant_required', 'value' => true, 'on' => 'insert'),
             array('cancellation_comment', 'length', 'max' => 200),
             array('procedures', 'required', 'message' => 'At least one procedure must be entered'),
@@ -105,7 +104,6 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             array('decision_date', 'OEDateValidatorNotFuture'),
             array('eye_id, consultant_required', 'required'),
             array('any_grade_of_doctor, senior_fellow_to_do', 'required', 'on' => 'insert'),
-            array('anaesthetic_type_id', 'required'),
             array('anaesthetist_preop_assessment, anaesthetic_choice_id, stop_medication', 'required', 'on' => 'insert'),
             array('stop_medication_details', 'RequiredIfFieldValidator', 'field' => 'stop_medication', 'value' => true),
             array('overnight_stay, site_id, priority_id, decision_date', 'required'),
@@ -116,7 +114,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             array('organising_admission_user_id', 'required', 'on' => 'insert'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, eye_id, consultant_required, anaesthetic_type_id, overnight_stay, site_id, priority_id, decision_date, comments, comments_rtt', 'safe', 'on' => 'search'),
+            array('id, event_id, eye_id, consultant_required, overnight_stay, site_id, priority_id, decision_date, comments, comments_rtt', 'safe', 'on' => 'search'),
         );
     }
 
@@ -136,7 +134,9 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
             'procedureItems' => array(self::HAS_MANY, 'OphTrOperationbooking_Operation_Procedures', 'element_id'),
             'procedures' => array(self::MANY_MANY, 'Procedure', 'ophtroperationbooking_operation_procedures_procedures(element_id, proc_id)'),
-            'anaesthetic_type' => array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id'),
+            'anaesthetic_type_assignments' => array(self::HAS_MANY, 'OphTrOperationbooking_AnaestheticAnaestheticType', 'et_ophtroperationbooking_operation_id'),
+            'anaesthetic_type' => array(self::HAS_MANY, 'AnaestheticType', 'anaesthetic_type_id',
+                'through' => 'anaesthetic_type_assignments', ),
             'anaesthetic_choice' => array(self::BELONGS_TO, 'OphTrOperationbooking_Anaesthetic_Choice', 'anaesthetic_choice_id'),
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             'priority' => array(self::BELONGS_TO, 'OphTrOperationbooking_Operation_Priority', 'priority_id'),
@@ -290,7 +290,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         $anaesthetistRequired = array(
             'LAC', 'LAS', 'GA',
         );
-        $this->anaesthetist_required = in_array($this->anaesthetic_type->name, $anaesthetistRequired);
+       // $this->anaesthetist_required = in_array($this->anaesthetic_type->name, $anaesthetistRequired);
+        $this->anaesthetist_required = count($this->anaesthetic_type) == 1 && $this->anaesthetic_type[0]->code == 'NoA';
 
         if (!$this->status_id) {
             $this->status_id = 1;
@@ -340,6 +341,44 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         OphTrOperationbooking_Operation_Procedures::model()->deleteByPk(array_values($existing_ids));
     }
 
+    /**
+     * Update the Anaesthetic Type associated with the element.
+     *
+     * @param $type_ids
+     * @throws Exception
+     */
+    public function updateAnaestheticType($type_ids)
+    {
+        $curr_by_id = array();
+        foreach ($this->anaesthetic_type as $type) {
+            $curr_by_id[$type->id] = OphTrOperationbooking_AnaestheticAnaestheticType::model()->findByAttributes(array(
+                'et_ophtroperationbooking_operation_id' => $this->id,
+                'anaesthetic_type_id' => $type->id
+            ));
+        }
+
+        if (!empty($type_ids)) {
+            foreach ($type_ids as $type_id) {
+                if (!isset($curr_by_id[$type_id])) {
+                    $type = new OphTrOperationbooking_AnaestheticAnaestheticType();
+                    $type->et_ophtroperationbooking_operation_id = $this->id;
+                    $type->anaesthetic_type_id = $type_id;
+
+                    if (!$type->save()) {
+                        throw new Exception('Unable to save anaesthetic agent assignment: '.print_r($type->getErrors(), true));
+                    }
+                } else {
+                    unset($curr_by_id[$type_id]);
+                }
+            }
+        }
+        foreach ($curr_by_id as $type) {
+            if (!$type->delete()) {
+                throw new Exception('Unable to delete anaesthetic agent assignment: '.print_r($type->getErrors(), true));
+            }
+        }
+    }
+
     protected function afterValidate()
     {
         if ($this->booking) {
@@ -354,6 +393,10 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                     $this->addError('ga', 'General anaesthetic is not available for the booked session, you must change the session or cancel the booking before making this change');
                 }
             }
+        }
+
+        if( !count($this->anaesthetic_type_assignments)){
+            $this->addError('anaesthetic_type', 'Type cannot be empty.');
         }
 
         return parent::afterValidate();

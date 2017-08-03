@@ -71,6 +71,8 @@
                             $options[$k] = $v;
                         }
                     }
+                    $class = isset($options['class']) ? ($options['class'] . " ") : '';
+                    $options['class'] = $class . str_replace(' ', '', $data_value);
 
                     $is_checked = in_array($id, $selected_items);
                     echo CHtml::checkBox("{$name}[]", $is_checked, $options);

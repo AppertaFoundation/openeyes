@@ -18,7 +18,7 @@
  */
 
 
-class OphTrOperationnote_OperationAnaestheticType extends BaseActiveRecordVersioned
+class OphTrOperationbooking_AnaestheticAnaestheticType extends BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
@@ -35,7 +35,7 @@ class OphTrOperationnote_OperationAnaestheticType extends BaseActiveRecordVersio
      */
     public function tableName()
     {
-        return 'ophtroperationnote_anaesthetic_anaesthetic_type';
+        return 'ophtroperationbooking_anaesthetic_anaesthetic_type';
     }
 
     /**
@@ -57,7 +57,7 @@ class OphTrOperationnote_OperationAnaestheticType extends BaseActiveRecordVersio
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element' => array(self::BELONGS_TO, 'Element_OphTrOperationnote_Anaesthetic', 'et_ophtroperationnote_anaesthetic_id'),
+            'element' => array(self::BELONGS_TO, 'Element_OphTrOperationbooking_Operation', 'et_ophtroperationbooking_operation_id'),
         );
     }
 

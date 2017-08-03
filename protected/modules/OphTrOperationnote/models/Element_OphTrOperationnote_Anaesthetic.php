@@ -24,9 +24,7 @@
  *
  * @property int $id
  * @property int $event_id
- * @property int $anaesthetic_type_id
  * @property int $anaesthetist_id
- * @property int $anaesthetic_delivery_id
  * @property string $anaesthetic_comment
  * @property int $display_order
  * @property int $anaesthetic_witness_id
@@ -75,13 +73,12 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, anaesthetist_id, anaesthetic_type_id, anaesthetic_delivery_id, anaesthetic_comment, anaesthetic_witness_id', 'safe'),
-            array('anaesthetic_type_id', 'required'),
+            array('event_id, anaesthetist_id, anaesthetic_comment, anaesthetic_witness_id', 'safe'),
             array('anaesthetist_id', 'required'),
 
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, anaesthetist_id, anaesthetic_type_id, anaesthetic_delivery_id, anaesthetic_comment, anaesthetic_witness_id', 'safe', 'on' => 'search'),
+            array('id, event_id, anaesthetist_id, anaesthetic_comment, anaesthetic_witness_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -124,10 +121,8 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
             'id' => 'ID',
             'event_id' => 'Event',
             'agents' => 'Agents',
-            'anaesthetic_type_id' => 'Type',
             'anaesthetic_witness_id' => 'Witness',
             'anaesthetist_id' => 'Given by',
-            'anaesthetic_delivery_id' => 'Delivery',
             'anaesthetic_comment' => 'Comments',
         );
     }
@@ -146,9 +141,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
-        $criteria->compare('anaesthetic_type_id', $this->anaesthetic_type_id);
         $criteria->compare('anaesthetist_id', $this->anaesthetist_id);
-        $criteria->compare('anaesthetic_type_id', $this->anaesthetic_type_id);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
@@ -162,7 +155,14 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
      */
     public function getHidden()
     {
-        return $this->anaesthetic_type_id == 5;
+        $ga = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('code=:code', array(':code' => 'GA'))->queryScalar();
+        $no_anaesthetic = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('code=:code', array(':code' => 'NoA'))->queryScalar();
+
+        if( count($this->anaesthetic_type) == 1 && ( $this->anaesthetic_type[0]->id == $ga->id || $this->anaesthetic_type[0]->id == $no_anaesthetic->id ) ) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -407,18 +407,18 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
 
     public function afterValidate()
     {
-        if( !count($this->anaesthetic_type)){
+        if( !count($this->anaesthetic_type_assignments)){
             $this->addError('anaesthetic_type', 'Type cannot be empty.');
         }
 
-        $type_ga =  AnaestheticType::model()->findByAttributes(array('name' => 'GA'));
+        $type_ga =  AnaestheticType::model()->findByAttributes(array('code' => 'GA'));
 
         foreach($this->anaesthetic_type_assignments as $anaesthetic_type_assignment){
 
             // GA is selected,
             // delivery method should be other (all other delivery options un-checked)
             // given by should be Anaesthetist
-            if($anaesthetic_type_assignment->anaesthetic_type_id == $type_ga->id){
+            if( (count($this->anaesthetic_type_assignments) == 1) && ($anaesthetic_type_assignment->anaesthetic_type_id == $type_ga->id) ){
 
                 $anaesthetist_delivery_other = AnaestheticDelivery::model()->findByAttributes(array('name' => 'Other'));
                 $delivery_method_count = count($this->anaesthetic_delivery_assignments);

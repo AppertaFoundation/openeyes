@@ -47,6 +47,11 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
             $this->update('anaesthetic_delivery', array('display_order' => 6), 'name = "Topical and Intracameral"');
             $this->update('anaesthetic_delivery', array('display_order' => 7), 'name = "Other"');
 
+            $this->update('anaesthetic_type', array('display_order' => 1), 'name = "LA"');
+            $this->update('anaesthetic_type', array('display_order' => 2), 'name = "Sedation"');
+            $this->update('anaesthetic_type', array('display_order' => 3), 'name = "GA"');
+            $this->update('anaesthetic_type', array('display_order' => 4), 'name = "No Anaesthetic"');
+
             $anaesthetic_topical_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'Topical'))->queryScalar();
             $anaesthetic_LA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LA'))->queryScalar();
             $anaesthetic_LAC_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAC'))->queryScalar();

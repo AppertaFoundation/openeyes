@@ -142,13 +142,13 @@ class DefaultController extends BaseEventTypeController
         }
         if ($action == 'create') {
             if ($this->booking_operation) {
-                $element->anaesthetic_type_id = $this->booking_operation->anaesthetic_type_id;
+                $element->anaesthetic_type = $this->booking_operation->anaesthetic_type;
             } else {
                 $key = $this->patient->isChild() ? 'ophtroperationnote_default_anaesthetic_child' : 'ophtroperationnote_default_anaesthetic';
 
                 if (isset(Yii::app()->params[$key])) {
                     if ($at = AnaestheticType::model()->find('code=?', array(Yii::app()->params[$key]))) {
-                        $element->anaesthetic_type_id = $at->id;
+                        $element->anaesthetic_type = array($at);
                     }
                 }
             }
@@ -950,7 +950,6 @@ class DefaultController extends BaseEventTypeController
                 $type_assessments_by_id[$type_assignments->anaesthetic_type_id] = $type_assignments;
             }
 
-            $anaesthetic_types = array();
             foreach($data['AnaestheticType'] as $anaesthetic_type_id){
 
                 if( !array_key_exists($anaesthetic_type_id, $type_assessments_by_id) ){
@@ -977,7 +976,6 @@ class DefaultController extends BaseEventTypeController
                 $delivery_assessments_by_id[$delivery_assignments->anaesthetic_delivery_id] = $delivery_assignments;
             }
 
-            $anaesthetic_delivery_id = array();
             foreach($data['AnaestheticDelivery'] as $anaesthetic_delivery_id){
 
                 if( !array_key_exists($anaesthetic_delivery_id, $delivery_assessments_by_id) ){
