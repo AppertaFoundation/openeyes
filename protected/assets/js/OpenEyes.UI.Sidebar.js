@@ -64,7 +64,7 @@
     {
         var self = this;
 
-        var nh = self.$el.find('.all-panels').height() + 48; // need to add this to make sure last event is shown!
+        var nh = self.$el.find('.all-panels').height() + 140; // need to add this to make sure last event is shown!
         //var wh = $('footer').position().top + $('footer').height();
         var ch = $('.container.content').outerHeight();
         var wh = window.innerHeight;
@@ -90,7 +90,18 @@
         if(h < self.options.minimumHeight)
             h = self.options.minimumHeight;
         self.$el.height(h+'px');
-        $('.container.content').css({'min-height':h+50+'px'})
+        $('.container.content').css({'min-height':h+50+'px'});
+
+        // Fix scroll wrapper height
+
+        var swtop = self.$el.offset().top - $(window).scrollTop();
+        var swh = self.$el.outerHeight();
+
+        if(swtop+swh > wh)
+        {
+            self.$el.css("height", wh-swtop);
+        }
+
     };
 
     exports.Sidebar = Sidebar;
