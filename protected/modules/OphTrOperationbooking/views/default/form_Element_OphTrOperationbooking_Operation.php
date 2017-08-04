@@ -43,7 +43,14 @@
 	<?php echo $form->dropDownList($element, 'named_consultant_id', CHtml::listData(User::model()->findAll(array('condition' => 'is_consultant = 1 and is_surgeon=1', 'order' => 'last_name, first_name')), 'id', 'reversedFullName'), array('empty' => '- Please select -'), false, array('field' => 3));?>
 	<?php echo $form->radioBoolean($element, 'senior_fellow_to_do')?>
 	<?php echo $form->radioBoolean($element, 'any_grade_of_doctor')?>
-    <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', 'Type'); ?>
+
+    <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', 'Anaesthetic Type',
+        false, false, false, false,
+        array(
+                'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error' : ''
+        )
+    ); ?>
+
 	<?php $form->radioBoolean($element, 'anaesthetist_preop_assessment') ?>
 	<?php $form->radioButtons($element, 'anaesthetic_choice_id', 'OphTrOperationbooking_Anaesthetic_Choice') ?>
 	<?php $form->radioBoolean($element, 'stop_medication') ?>

@@ -308,10 +308,6 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 
         $this->update('ophtrintravitinjection_anaesthetictype', array('anaesthetic_type_id' => $anaesthetic_LA_id), 'anaesthetic_type_id = ' . $anaesthetic_topical_id);
 
-        $this->update('et_ophtroperationbooking_operation', array('anaesthetic_type_id' => $anaesthetic_LA_id), 'anaesthetic_type_id = ' . $anaesthetic_topical_id);
-        $this->update('et_ophtroperationbooking_operation', array('anaesthetic_type_id' => $anaesthetic_LA_id), 'anaesthetic_type_id = ' . $anaesthetic_LAS_id);
-        $this->update('et_ophtroperationbooking_operation', array('anaesthetic_type_id' => $anaesthetic_LA_id), 'anaesthetic_type_id = ' . $anaesthetic_LAC_id);
-
         /**
          * OE-6557
          * to resolve the the question of the et_ophtroperationbooking_operation FK
@@ -328,13 +324,15 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
         $this->dropColumn('et_ophtroperationnote_anaesthetic', 'anaesthetic_delivery_id');
         $this->dropColumn('et_ophtroperationnote_anaesthetic_version', 'anaesthetic_delivery_id');
 
-        $this->delete("anaesthetic_type", "name = 'Topical'");
-        $this->delete("anaesthetic_type", "name = 'LAC'");
-        $this->delete("anaesthetic_type", "name = 'LAS'");
+        // ok, so I leave these here for references,
+        // I do not remove these values here as we need to migrate the Op Booking as well
+        // and here we need these values
+
+//        $this->delete("anaesthetic_type", "name = 'Topical'");
+//        $this->delete("anaesthetic_type", "name = 'LAC'");
+//        $this->delete("anaesthetic_type", "name = 'LAS'");
 
 	}
-
-
 
 	private function createOrUpdate($model_name, $attributes)
     {
@@ -357,20 +355,5 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
 
         echo "m170711_151955_anaesthetic_types_multiselect does not support migration down.\n";
         return false;
-
-        //@TODO : remove the lines below when development finish until that we may want to revert sometines
-
-		$this->dropForeignKey('ophtroperationnote_anaesthetic_type_to_anaest_type', 'ophtroperationnote_anaesthetic_anaesthetic_type');
-		$this->dropForeignKey('ophtroperationnote_anaesthetic_type_to_el', 'ophtroperationnote_anaesthetic_anaesthetic_type');
-
-		$this->dropOETable('ophtroperationnote_anaesthetic_anaesthetic_type', true);
-
-        $this->dropForeignKey('ophtroperationnote_anaesthetic_delivery_to_anae_delivery', 'ophtroperationnote_anaesthetic_anaesthetic_delivery');
-        $this->dropForeignKey('ophtroperationnote_anaesthetic_delivery_to_el', 'ophtroperationnote_anaesthetic_anaesthetic_delivery');
-
-		$this->dropOETable('ophtroperationnote_anaesthetic_anaesthetic_delivery', true);
-
-        $this->delete("anaesthetic_type", "name = 'Sedation'");
-        $this->delete("anaesthetic_type", "name = 'No Anaesthetic'");
 	}
 }
