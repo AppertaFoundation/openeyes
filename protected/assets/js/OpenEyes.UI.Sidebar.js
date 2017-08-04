@@ -33,21 +33,11 @@
     {
         var self = this;
 
-        self.$tip = self.$el.parent().find('.show-scroll-tip');
-        self.$blueFade = self.$el.parent().find('.scroll-blue-top');
-
         self.showHelp = true;
 
         self.$el.scroll(function() {
-            if ($(this).scrollTop() == 0) {
-                self.$blueFade.fadeOut(200);
-            }
-            else {
-                self.$blueFade.fadeIn(200);
-            }
             if (self.showHelp && self.options.showHelpOnce) {
                 self.showHelp = false;
-                self.$tip.text('');
                 self.showHelp = false;
             }
         });
@@ -82,9 +72,7 @@
         if(h > nh) {
             // showing all!
             h = nh;
-            self.$tip.fadeOut();
         } else {
-            self.$tip.fadeIn();
         }
 
         if(h < self.options.minimumHeight)
