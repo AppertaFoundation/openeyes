@@ -182,6 +182,8 @@ WHERE in_ep.patient_id = :patient_id -- <<<<<<<<<<<<<<<<<<<<<<<<<<< BIND APP DAT
 AND in_ecd.eyedraw_carry_forward_canvas_flag = 1 
 -- Restrict: Magic sub-query to eliminate OLDER event data in outer query
 -- By identifying NEWER events data within same set-intersection-tuple/laterality in sub-query)
+AND in_ev.deleted = 0
+AND in_ep.deleted = 0
 AND NOT EXISTS (
     SELECT 1
     -- All episodes for subject patient (see restriction)
@@ -204,6 +206,8 @@ AND NOT EXISTS (
   -- Restrict to only those events that are NEWER that outer query event (within set-intersection-tuples)
   -- Thus outer query records excluded as by defininion older it is an OLDER record
   AND (in2_ev.event_date, in2_ev.created_date) > (in_ev.event_date, in_ev.created_date)
+  AND in2_ev.deleted = 0
+  AND in2_ep.deleted = 0
 )
 ORDER BY
   'a'
