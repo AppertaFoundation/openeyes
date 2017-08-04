@@ -54,9 +54,12 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
     public $requires_eye = true;
 
     protected static $procedure_doodles = array(
-        array('doodle_class' => 'PhakoIncision'),
+        array('doodle_class' => 'PhakoIncision',
+            'unless' => array('PhakoIncision')
+        ),
         array('doodle_class' => 'PCIOL',
-            'unless' => array('PCIOL', 'ACIOL', 'ToricPCIOL'))
+            'unless' => array('PCIOL', 'ACIOL', 'ToricPCIOL')
+        )
     );
     /**
      * Returns the static model of the specified AR class.
