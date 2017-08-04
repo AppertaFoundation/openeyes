@@ -25,6 +25,7 @@
 
 <style>
     .oe-event-sidebar-edit a.error {
-        color: #c90000;
+        background-color: #bf4040;
+        color: #fff;
     }
 </style>
