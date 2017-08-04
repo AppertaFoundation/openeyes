@@ -45,7 +45,7 @@
 				</div>
 			</div>
 			<div class="field-row">
-				<?php echo $form->textArea($element, 'right_comments', array('rows' => 1, 'nowrapper' => true)) ?>
+				<?php echo $form->textArea($element, 'right_comments', array('rows' => 1, 'nowrapper' => true), false, array('placeholder' => $element->getAttributeLabel('right_comments'))) ?>
 			</div>
 		</div>
 		<div class="inactive-form">
@@ -81,7 +81,7 @@
 				</div>
 			</div>
 			<div class="field-row">
-				<?php echo $form->textArea($element, 'left_comments', array('rows' => 1, 'nowrapper' => true)) ?>
+				<?php echo $form->textArea($element, 'left_comments', array('rows' => 1, 'nowrapper' => true), false, array('placeholder' => $element->getAttributeLabel('left_comments')) ); ?>
 			</div>
 		</div>
 		<div class="inactive-form">

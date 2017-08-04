@@ -18,21 +18,15 @@
 <div class="eyedraw-fields">
     <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
     <div class="field-row">
-        <label>
-            <?php echo $element->getAttributeLabel($side . '_ed_report') ?>:
-        </label>
         <div class="row collapse">
-            <div class="large-11 column autoreport-display">
-                <span id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>"> </span>
+            <div class="large-12 column end autoreport-display">
+                <span id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>" class="data-value"> </span>
             </div>
         </div>
 
     </div>
 
     <div class="field-row">
-        <label for="<?= get_class($element).'_'.$side.'_comments';?>">
-            <?= $element->getAttributeLabel($side.'_comments'); ?>:
-        </label>
-        <?= CHtml::activeTextArea($element, $side.'_comments', array('rows' => '2', 'cols' => '20', 'class' => 'autosize clearWithEyedraw')) ?>
+        <?= CHtml::activeTextArea($element, $side.'_comments', array('rows' => '1', 'cols' => '20', 'class' => 'clearWithEyedraw', 'placeholder' => $element->getAttributeLabel($side.'_comments'))) ?>
     </div>
 </div>
