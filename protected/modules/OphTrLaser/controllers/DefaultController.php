@@ -102,20 +102,14 @@ class DefaultController extends BaseEventTypeController
      */
     protected function importElementEyeDraw($element)
     {
-        if ($this->episode) {
-            $el_class = get_class($element);
-            if (array_key_exists($el_class, self::$IMPORT_ELEMENTS)) {
-                $import_model = self::$IMPORT_ELEMENTS[$el_class];
-                $previous = $this->episode->getElementsOfType($import_model::model()->getElementType());
-                $import = false;
-                if (count($previous)) {
-                    $import = $previous[0];
-                }
-                if ($import) {
-                    $element->left_eyedraw = $import->left_eyedraw;
-                    $element->right_eyedraw = $import->right_eyedraw;
-                    $element->eye_id = $import->eye_id;
-                }
+        $el_class = get_class($element);
+        if (array_key_exists($el_class, self::$IMPORT_ELEMENTS)) {
+            $import_model = self::$IMPORT_ELEMENTS[$el_class];
+            $api = $this->getApp()->moduleAPI->get('OphCiExamination');
+            if ($import = $api->getLatestElement($import_model, $this->patient)) {
+                $element->left_eyedraw = $import->left_eyedraw;
+                $element->right_eyedraw = $import->right_eyedraw;
+                $element->eye_id = $import->eye_id;
             }
         }
     }
