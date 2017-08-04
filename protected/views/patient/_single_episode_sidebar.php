@@ -180,5 +180,3 @@ $this->renderPartial('//patient/add_new_event',array(
     });
 </script>
 </div>
-<div class="show-scroll-tip">scroll down</div>
-<div class="scroll-blue-top" style="display:none;"></div>

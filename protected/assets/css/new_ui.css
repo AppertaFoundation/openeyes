@@ -626,7 +626,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   padding: 0 0 5px 0;
   width: 14.6%;
   position: fixed;
-  top: 82px;
+  top: 80px;
 }
   .open-eyes .sidebar.episodes-and-events .oe-scroll-wrapper {
     position: relative;
@@ -636,27 +636,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     width: 180px;
     padding: 0;
     margin: 0;
-    transition: all .5s ease-in-out; }
-  .open-eyes .sidebar.episodes-and-events .show-scroll-tip {
-    position: absolute;
-    bottom: 0;
-    width: 180px;
-    height: 20px;
-    line-height: 40px;
-    background: transparent url("../img/_elements/gradients/bg_scroll_tip.png") bottom left repeat-x;
-    font-size: 10px;
-    font-size: 0.625rem;
-    letter-spacing: 1px;
-    text-align: center;
-    font-weight: 400;
-    color: white; }
-  .open-eyes .sidebar.episodes-and-events .scroll-blue-top {
-    position: absolute;
-    top: 2px;
-    width: 180px;
-    height: 8px;
-    background: transparent url("../img/_elements/gradients/bg_scroll_blue_top.png") top left repeat-x;
-    background-size: contain; }
+}
 .open-eyes .oe-sidebar-top-buttons {
   width: 180px;
   white-space: nowrap;

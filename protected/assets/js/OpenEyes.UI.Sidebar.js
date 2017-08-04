@@ -33,21 +33,11 @@
     {
         var self = this;
 
-        self.$tip = self.$el.parent().find('.show-scroll-tip');
-        self.$blueFade = self.$el.parent().find('.scroll-blue-top');
-
         self.showHelp = true;
 
         self.$el.scroll(function() {
-            if ($(this).scrollTop() == 0) {
-                self.$blueFade.fadeOut(200);
-            }
-            else {
-                self.$blueFade.fadeIn(200);
-            }
             if (self.showHelp && self.options.showHelpOnce) {
                 self.showHelp = false;
-                self.$tip.text('');
                 self.showHelp = false;
             }
         });
@@ -73,18 +63,15 @@
         // allow for top panel height : 122px
         if((ch + 122) > wh){
             // content is higher than window, use wh:
-            h = wh - 185; // 195 is arbitrary, a visually tweaked offset
+            h = wh - 185; // arbitrary, a visually tweaked offset
         } else {
             // else:
-            h = ch - 50; // 50 is arbitrary, a visually tweaked offset
+            h = ch - 50; // arbitrary, a visually tweaked offset
         }
 
         if(h > nh) {
             // showing all!
             h = nh;
-            self.$tip.fadeOut();
-        } else {
-            self.$tip.fadeIn();
         }
 
         if(h < self.options.minimumHeight)

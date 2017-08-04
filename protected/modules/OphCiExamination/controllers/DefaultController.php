@@ -404,8 +404,6 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Get the first workflow step using rules.
      *
-     * @TODO: examine what this is being used for as opposed to getting elements by workflow ...
-     *
      * @return OphCiExamination_ElementSet
      */
     protected function getFirstStep()
