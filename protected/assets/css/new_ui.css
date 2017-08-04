@@ -626,7 +626,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   padding: 0 0 5px 0;
   width: 14.6%;
   position: fixed;
-  top: 82px;
+  top: 80px;
 }
   .open-eyes .sidebar.episodes-and-events .oe-scroll-wrapper {
     position: relative;
@@ -636,7 +636,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     width: 180px;
     padding: 0;
     margin: 0;
-    transition: all .5s ease-in-out; }
+}
 .open-eyes .oe-sidebar-top-buttons {
   width: 180px;
   white-space: nowrap;
