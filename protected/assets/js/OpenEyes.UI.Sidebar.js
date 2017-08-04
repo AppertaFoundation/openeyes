@@ -97,11 +97,7 @@
         var swtop = self.$el.offset().top - $(window).scrollTop();
         var swh = self.$el.outerHeight();
 
-        if(swtop+swh > wh)
-        {
-            self.$el.css("height", wh-swtop);
-        }
-
+        self.$el.css("height", wh-swtop);
     };
 
     exports.Sidebar = Sidebar;
