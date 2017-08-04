@@ -1082,7 +1082,7 @@ class DefaultController extends \BaseEventTypeController
 
         $side = ucfirst(@$_GET['side']);
 
-        $api = new components\OphCiExamination_API();
+        $api = $this->getApp()->moduleAPI->get('OphCiExamination');
         $result = $api->{"getLastIOPReading{$side}"}($patient);
 
         echo $result;
