@@ -632,7 +632,6 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;
-    top: 2px;
     width: 180px;
     padding: 0;
     margin: 0;
