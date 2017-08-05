@@ -822,8 +822,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 
 .oe-panel.specialty ol.events {
   margin: 5px 0 0 0;
-  position: relative;
-  padding-bottom: 35px; }
+  position: relative; }
   .oe-panel.specialty ol.events li {
     display: block;
     white-space: nowrap;
