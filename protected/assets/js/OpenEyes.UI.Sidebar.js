@@ -53,7 +53,7 @@
     Sidebar.prototype.checkSideNavHeight = function()
     {
         var self = this;
-        furniture = $('header').outerHeight() + $('footer').outerHeight() + 4; /*extra 4px for luck!*/
+        furniture = $('header').outerHeight() + $('footer').outerHeight() + $('#patient-alert-patientticketing').outerHeight() + 4; /*extra 4px for luck!*/
         h = window.innerHeight - furniture - $('.oe-sidebar-top-buttons').outerHeight();
         if(h < self.options.minimumHeight)
             h = h+48;
