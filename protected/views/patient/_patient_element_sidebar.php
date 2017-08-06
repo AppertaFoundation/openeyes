@@ -1,5 +1,5 @@
 <aside class="column sidebar episodes-and-events">
-    <div class="oe-scroll-wrapper" style="height:300px">
+    <div class="oe-scroll-wrapper" style="height:2000px">
         <div class="all-panels"></div>
     </div>
 
