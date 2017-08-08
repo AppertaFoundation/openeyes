@@ -26,6 +26,8 @@ class DefaultController extends BaseEventTypeController
         'getTheatreOptions' => self::ACTION_TYPE_FORM,
     );
 
+    protected $show_element_sidebar = false;
+
     /* @var Element_OphTrOperationbooking_Operation operation that this note is for when creating */
     protected $booking_operation;
     /* @var boolean - indicates if this note is for an unbooked procedure or not when creating */
@@ -209,18 +211,6 @@ class DefaultController extends BaseEventTypeController
         } elseif (isset($_GET['unbooked'])) {
             $this->unbooked = true;
         }
-        
-        $is_auto_schedule_operation = Yii::app()->params['auto_schedule_operation'];
-
-        if ($api && $is_auto_schedule_operation) {
-            $schedule_result = $api->autoScheduleOperationBookings($this->current_episode);
-            if( $schedule_result !== true ){
-                foreach($schedule_result as $error){
-                    Yii::app()->user->setFlash('error.alert', $error);
-                }
-
-            }
-        }
 
         $this->initEdit();
     }
@@ -265,9 +255,26 @@ class DefaultController extends BaseEventTypeController
             // set up form for selecting a booking for the Op note
             $bookings = array();
 
-            if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-                $bookings = $api->getOpenBookingsForEpisode($this->episode->id);
+
+            $element_enabled = \SettingInstallation::model()->find('`key` = :setting_key', array(':setting_key'=>'disable_theatre_diary'));
+            $theatre_diary_disabled = isset($element_enabled->value) && $element_enabled->value == 'on';
+
+            if($theatre_diary_disabled)
+            {
+                $bookings = Element_OphTrOperationbooking_Operation::model()
+                    ->with('event')
+                    ->findAll('status_id IN (1, 2, 3)
+                            AND event.episode_id = :episode_id
+                            AND operation_cancellation_date IS NULL',
+                    array(':episode_id'=>$this->episode->id));
             }
+            else
+            {
+                if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
+                    $bookings = $api->getOpenBookingsForEpisode($this->episode->id);
+                }
+            }
+
 
             $this->title = 'Please select booking';
             $this->event_tabs = array(
@@ -287,7 +294,7 @@ class DefaultController extends BaseEventTypeController
             $this->render('select_event', array(
                 'errors' => $errors,
                 'bookings' => $bookings,
-                'is_auto_schedule_operation' => Yii::app()->params['auto_schedule_operation']
+                'theatre_diary_disabled' => $theatre_diary_disabled
             ));
         }
     }
@@ -334,12 +341,18 @@ class DefaultController extends BaseEventTypeController
      * Ajax action to load the required elements for a procedure.
      *
      * @throws SystemException
+     * @throws CHttpException
      */
     public function actionLoadElementByProcedure()
     {
         if (!$proc = Procedure::model()->findByPk((integer) @$_GET['procedure_id'])) {
             throw new SystemException('Procedure not found: '.@$_GET['procedure_id']);
         }
+
+        if (!$patient_id = $this->getApp()->request->getParam('patientId')) {
+            throw new SystemException('patientId required for procedure element loading.');
+        }
+        $this->setPatient($patient_id);
 
         $form = new BaseEventTypeCActiveForm();
 
@@ -349,24 +362,18 @@ class DefaultController extends BaseEventTypeController
             $class_name = $element->element_type->class_name;
 
             $element = new $class_name();
-            $patientId = Yii::app()->request->getParam('patientId');
-            if ($patientId > 0) {
-                $element->patientId = $patientId;
+            $element->patientId = $this->patient->id;
+
+            if ($element->requires_eye) {
+                $eye_id = $this->getApp()->request->getParam('eye');
+                if (!in_array($eye_id, array(Eye::LEFT, Eye::RIGHT))) {
+                    echo 'must-select-eye';
+                    return;
+                }
+                $element->eye = Eye::model()->findByPk($eye_id);
             }
 
-            // FIXME: define a property on the element to indicate that specific eye is required
-            $requiresEye = array(
-                'Element_OphTrOperationnote_Cataract',
-                'Element_OphTrOperationnote_Vitrectomy',
-                'Element_OphTrOperationnote_Buckle',
-            );
-            if (in_array($class_name, $requiresEye) && array_key_exists('eye', $_GET) && !in_array($_GET['eye'], array(Eye::LEFT, Eye::RIGHT))) {
-                echo 'must-select-eye';
-
-                return;
-            }
-
-            $element->setDefaultOptions();
+            $element->setDefaultOptions($this->patient);
 
             $postProcess = ($i == count($procedureSpecificElements) - 1);
             $this->renderElement($element, 'create', $form, array(), array('ondemand' => true), false, $postProcess);
@@ -556,6 +563,7 @@ class DefaultController extends BaseEventTypeController
      * @return Eye
      *
      * @throws SystemException
+     * @throws CHttpException
      */
     public function getSelectedEyeForEyedraw()
     {
@@ -568,13 +576,12 @@ class DefaultController extends BaseEventTypeController
         } elseif (!empty($_GET['eye'])) {
             $eye = Eye::model()->findByPk($_GET['eye']);
         } elseif ($this->action->id == 'create') {
-            // Get the procedure list and eye from the most recent booking for the episode of the current user's subspecialty
-            if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
-                throw new SystemException('Patient not found: '.@$_GET['patient_id']);
+            if (!$this->patient) {
+                $this->setPatient($this->getApp()->request->getParam('patient_id'));
             }
 
-            if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-                if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
+            if ($episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
+                if ($api = $this->getApp()->moduleAPI->get('OphTrOperationbooking')) {
                     if ($booking = $api->getMostRecentBookingForEpisode($episode)) {
                         $eye = $booking->operation->eye;
                     }
@@ -648,7 +655,7 @@ class DefaultController extends BaseEventTypeController
         $devices = array();
         if (isset($data['OphTrOperationnote_CataractOperativeDevices']) && is_array($data['OphTrOperationnote_CataractOperativeDevices'])) {
             foreach ($data['OphTrOperationnote_CataractOperativeDevices'] as $oa_id) {
-                $devices[] = OphTrOperationnote_CataractComplications::model()->findByPk($oa_id);
+                $devices[] = OphTrOperationnote_CataractOperativeDevice::model()->findByPk($oa_id);
             }
         }
         $element->operative_devices = $devices;
@@ -958,14 +965,21 @@ class DefaultController extends BaseEventTypeController
                 'condition' => 'active=1 and site_id='.$siteId,
                 'order' => 'name',
             ));
-            //var_dump($optionValues);
-            echo CHtml::dropDownList(
-                'theatre_id',
-                false,
-                CHtml::listData($optionValues, 'id', 'name'),
-                array(
-                    'empty' => '-- Please select --', )
+
+            if(count($optionValues) == 1){
+                echo CHtml::dropDownList(
+                    'theatre_id',
+                    false,
+                    CHtml::listData($optionValues, 'id', 'name')
                 );
+            } else {
+                echo CHtml::dropDownList(
+                    'theatre_id',
+                    false,
+                    CHtml::listData($optionValues, 'id', 'name'),
+                    array('empty' => '-- Please select --', )
+                );
+            }
         }
     }
 
@@ -1005,5 +1019,67 @@ class DefaultController extends BaseEventTypeController
         }
 
         return $formatted;
+    }
+
+    /**
+     * @inheritdoc
+     */
+
+    protected function setAndValidateElementsFromData($data)
+    {
+        $errors = array();
+        $elements = array();
+
+        // only process data for elements that are part of the element type set for the controller event type
+        foreach ($this->event_type->getAllElementTypes() as $element_type) {
+            $from_data = $this->getElementsForElementType($element_type, $data);
+            if (count($from_data) > 0) {
+                $elements = array_merge($elements, $from_data);
+            } elseif ($element_type->required && (!method_exists($element_type->getInstance(), "isEnabled") || $element_type->getInstance()->isEnabled())) {
+                $errors[$this->event_type->name][] = $element_type->name.' is required';
+                $elements[] = $element_type->getInstance();
+            }
+        }
+
+        // Filter disabled elements from validation
+
+        $elements = array_filter($elements, function($e){
+           return !method_exists($e, "isEnabled") || $e->isEnabled();
+        });
+
+        if (!count($elements)) {
+            $errors[$this->event_type->name][] = 'Cannot create an event without at least one element';
+        }
+
+        // assign
+        $this->open_elements = $elements;
+
+        // validate
+        foreach ($this->open_elements as $element) {
+            $this->setValidationScenarioForElement($element);
+            if (!$element->validate()) {
+                $name = $element->getElementTypeName();
+                foreach ($element->getErrors() as $errormsgs) {
+                    foreach ($errormsgs as $error) {
+                        $errors[$name][] = $error;
+                    }
+                }
+            }
+        }
+
+        //event date
+        if (isset($data['Event']['event_date'])) {
+            $event = $this->event;
+            $event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
+            if (!$event->validate()) {
+                foreach ($event->getErrors() as $errormsgs) {
+                    foreach ($errormsgs as $error) {
+                        $errors[$this->event_type->name][] = $error;
+                    }
+                }
+            }
+        }
+
+        return $errors;
     }
 }

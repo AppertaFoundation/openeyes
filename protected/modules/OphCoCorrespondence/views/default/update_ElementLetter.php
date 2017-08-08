@@ -211,18 +211,18 @@ $patient = Patient::model()->findByPk($patient_id);
 
             $with = array(
                 'firmLetterStrings' => array(
-                    'condition' => 'firm_id is null or firm_id = :firm_id',
+                    'on' => 'firm_id is null or firm_id = :firm_id',
                     'params' => array(
                         ':firm_id' => $firm->id,
                     ),
                     'order' => 'firmLetterStrings.display_order asc',
                 ),
                 'subspecialtyLetterStrings' => array(
-                    'condition' => 'subspecialty_id is null',
+                    'on' => 'subspecialty_id is null',
                     'order' => 'subspecialtyLetterStrings.display_order asc',
                 ),
                 'siteLetterStrings' => array(
-                    'condition' => 'site_id is null or site_id = :site_id',
+                    'on' => 'site_id is null or site_id = :site_id',
                     'params' => array(
                         ':site_id' => Yii::app()->session['selected_site_id'],
                     ),
@@ -230,7 +230,7 @@ $patient = Patient::model()->findByPk($patient_id);
                 ),
             );
             if ($firm->getSubspecialtyID()) {
-                $with['subspecialtyLetterStrings']['condition'] = 'subspecialty_id is null or subspecialty_id = :subspecialty_id';
+                $with['subspecialtyLetterStrings']['on'] = 'subspecialty_id is null or subspecialty_id = :subspecialty_id';
                 $with['subspecialtyLetterStrings']['params'] = array(':subspecialty_id' => $firm->getSubspecialtyID());
             }
             foreach (LetterStringGroup::model()->with($with)->findAll(array('order' => 't.display_order')) as $string_group) {
@@ -371,4 +371,28 @@ $patient = Patient::model()->findByPk($patient_id);
         </div>
     </div>
 
+    <?php
+    $correspondeceApp = \SettingInstallation::model()->find('`key` = "ask_correspondence_approval"');
+    if($correspondeceApp->value === "on") {
+        ?>
+        <div class="row field-row">
+            <div class="large-<?php echo $layoutColumns['label']; ?> column">
+                <label for="<?php echo get_class($element) . '_is_signed_off'; ?>">
+                    <?php echo $element->getAttributeLabel('is_signed_off') ?>:
+                </label>
+            </div>
+            <div class="large-8 column end">
+                <?php echo $form->radioButtons($element, 'is_signed_off', array(
+                    1 => 'Yes',
+                    0 => 'No',
+                ),
+                    $element->is_signed_off,
+                    false, false, false, false,
+                    array('nowrapper' => true)
+                ); ?>
+            </div>
+        </div>
+        <?php
+    }
+    ?>
 </div>

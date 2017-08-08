@@ -245,7 +245,7 @@ class Element_OphTrIntravitrealinjection_Treatment extends SplitEventTypeElement
      *
      * @see SplitEventTypeElement::setDefaultOptions()
      */
-    public function setDefaultOptions()
+    public function setDefaultOptions(Patient $patient = null)
     {
         foreach (array('left', 'right') as $side) {
             $this->{$side.'_injection_time'} = date('H:i:s');

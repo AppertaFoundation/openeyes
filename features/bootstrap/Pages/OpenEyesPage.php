@@ -1,6 +1,7 @@
 <?php
 use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 use Behat\Mink\Exception\ElementTextException;
+use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Session;
 use SensioLabs\Behat\PageObjectExtension\Context\PageFactoryInterface;
 
@@ -25,8 +26,8 @@ abstract class OpenEyesPage extends Page {
 	 * @throws Behat\Mink\Exception\ElementTextException
 	 */
     public function checkOpenEyesTitle($expectedTitle) {
-        if (!$titleElement = $this->find ( 'css', 'h1.badge' )) {
-            throw new ExpectationException("Could not find title element");
+        if (!$titleElement = $this->find ( 'css', 'title' )) {
+            throw new ExpectationException("Could not find title element", $this->getDriver());
         }
 
         $title = trim ( $titleElement->getHtml () );

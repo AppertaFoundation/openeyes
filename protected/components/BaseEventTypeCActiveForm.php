@@ -565,4 +565,16 @@ class BaseEventTypeCActiveForm extends FormLayout
 
         return parent::errorSummary($models, $header, $footer, $htmlOptions);
     }
+
+    public function TagsInput($label, $element, $field, $relation, $relation_id_field, $htmlOptions)
+    {
+        $this->widget('application.widgets.TagsInput', array(
+            'label'=>$label,
+            'element'=>$element,
+            'field'=>$field,
+            'relation'=>$relation,
+            'relation_id_field' =>$relation_id_field,
+            'htmlOptions'=>$htmlOptions
+        ));
+    }
 }

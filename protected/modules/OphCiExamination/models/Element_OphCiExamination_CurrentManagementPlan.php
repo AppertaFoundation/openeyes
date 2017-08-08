@@ -182,7 +182,7 @@ class Element_OphCiExamination_CurrentManagementPlan  extends  \SplitEventTypeEl
     {
         $result = array();
 
-        $api = $api ? $api : new OphCiExamination_API();
+        $api = $api ? $api : $this->getApp()->moduleAPI->get('OphCiExamination');
         $result['leftIOP'] = $api->getIOPReadingLeft($patient);
         $result['rightIOP'] = $api->getIOPReadingRight($patient);
         if ($result['leftIOP'] || $result['rightIOP']) {

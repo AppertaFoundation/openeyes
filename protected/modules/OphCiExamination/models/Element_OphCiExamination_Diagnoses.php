@@ -28,8 +28,9 @@ namespace OEModule\OphCiExamination\models;
  *
  * @property string $id
  * @property int $event_id
- * @property Disorder $disorder
- * @property Eye $eye
+ *
+ * @property Event $event
+ * @property OphCiExamination_Diagnosis[] $diagnoses
  *
  * The followings are the available model relations:
  */
@@ -104,7 +105,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
@@ -134,7 +135,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      *
      * @param $update_disorders
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function updateDiagnoses($update_disorders)
     {
@@ -195,32 +196,17 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     }
 
     /**
-     * Returns the disorder ids for the element diagnoses.
-     *
-     * @return int[]
-     */
-    public function getSelectedDisorderIDs()
-    {
-        $disorder_ids = array();
-
-        foreach ($this->diagnoses as $diagnosis) {
-            $disorder_ids[] = $diagnosis->disorder_id;
-        }
-
-        return $disorder_ids;
-    }
-
-    /**
      * Gets the common ophthalmic disorders for the given firm.
      *
      * @param int $firm_id
      *
      * @return array
+     * @throws \CException
      */
     public function getCommonOphthalmicDisorders($firm_id)
     {
         if (empty($firm_id)) {
-            throw new CException('Firm is required');
+            throw new \CException('Firm is required');
         }
         $firm = \Firm::model()->findByPk($firm_id);
         if ($firm) {
@@ -242,6 +228,9 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         return parent::beforeDelete();
     }
 
+    /**
+     * @return string
+     */
     public function getLetter_string()
     {
         $text = '';

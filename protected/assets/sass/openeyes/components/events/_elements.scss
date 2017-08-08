@@ -265,8 +265,14 @@ $oe-element-edit-title-font-style: italic;
 		border: 1px solid #dae6f1;
 	}
 	.element-container {
+		.metadata {
+			display: inline-block;
+			margin: 2px;
+			padding-top: 0px;
+		}
 		.actions {
-			text-align: right;
+			display: inline-block;
+			float: right !important;
 			padding: 2px;
 		}
 	}

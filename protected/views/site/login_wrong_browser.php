@@ -19,7 +19,6 @@
 $this->pageTitle = Yii::app()->name.' - Login';
 ?>
 <div class="container content">
-	<h1 class="badge">Please login</h1>
 	<div class="row">
 		<div class="large-11 large-centered column">
 			<div class="panel login">

@@ -50,7 +50,7 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) {
                         $expand = true;
                     }
                     ?>
-					<div class="alert-box issue js-toggle-container" data-ticket-id="<?= $ticket->id ?>">
+					<div class="alert-box js-toggle-container" data-ticket-id="<?= $ticket->id ?>">
 						<header><strong class="box-title"><?= $cat->name ?>: Patient is in <?= $ticket->current_queue->queueset->name ?>, <?= $ticket->current_queue->name ?></strong></header>
 						<a href="#" class="toggle-trigger toggle-<?= $expand ? 'hide' : 'show' ?> js-toggle">
 								<span class="icon-showhide">

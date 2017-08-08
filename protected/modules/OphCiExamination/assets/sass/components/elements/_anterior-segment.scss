@@ -15,7 +15,18 @@
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
 .#{$OE_MODEL_PREFIX}Element_OphCiExamination_AnteriorSegment {
-	.eyedraw-fields {
-		padding-top: 36px;
+	.left {
+		.eyedraw-row {
+			margin-left: -13px;
+		}
 	}
+	.ed-fields-container {
+		padding-top: 111px;
+		left: -15px;
+	}
+}
+
+// for side by side goodness
+.anterior-segment .ed-widget.display {
+	display: inline-block;
 }

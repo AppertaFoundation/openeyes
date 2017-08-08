@@ -37,7 +37,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => $doodleToolBarArray,
     'onReadyCommandArray' => $onReadyCommandArray,
     'bindingArray' => $bindingArray,
-    'listenerArray' => array('OphCiExamination_Gonioscopy_Eyedraw_Controller'),
+    'listenerArray' => array('OphCiExamination_Gonioscopy_Eyedraw_Controller', 'autoReportListener'),
     'idSuffix' => $side.'_'.$element->elementType->id,
     'side' => ($side == 'right') ? 'R' : 'L',
     'mode' => 'edit',
@@ -45,6 +45,8 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'attribute' => $side.'_eyedraw',
     'template' => 'OEEyeDrawWidget_InlineToolbar',
     'maxToolbarButtons' => 7,
+    'autoReport' => CHtml::modelName($element) . '_'.$side.'_ed_report',
+    'autoReportEditable' => false,
     'fields' => $this->renderPartial($element->form_view.'_OEEyeDraw_fields', array(
         'form' => $form,
         'side' => $side,

@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /** OphCoMessaging module styles */
 /**
  * OpenEyes
@@ -20,11 +19,11 @@
 /* line 18, ../sass/components/_event.scss */
 .event .event-content {
   border-color: #86cdff;
-  background-image: url('../img/watermark.png?1450171523');
+  background-image: url('../img/watermark.png?1478520104');
 }
 /* line 22, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1450177641');
+  background-image: url('../img/medium.png?1478520104');
 }
 
 /* line 27, ../sass/components/_event.scss */
@@ -61,6 +60,12 @@
 /* line 17, ../sass/components/_inbox.scss */
 #inbox-table .summary {
   font-size: 0.8em;
+}
+
+/* line 21, ../sass/components/_inbox.scss */
+#sent-table {
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 /* line 2, ../sass/components/_search.scss */

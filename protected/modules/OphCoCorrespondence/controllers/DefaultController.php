@@ -33,6 +33,8 @@ class DefaultController extends BaseEventTypeController
         'doPrintAndView' => self::ACTION_TYPE_PRINT,
     );
 
+    protected $show_element_sidebar = false;
+
     /**
      * Adds direct line phone numbers to jsvars to be used in dropdown select.
      */
@@ -497,22 +499,6 @@ class DefaultController extends BaseEventTypeController
         return parent::actionPDFPrint($id);
     }
     
-    public function markRedyToSend($id)
-    {
-        $letter = ElementLetter::model()->find('event_id=?', array($id));
-        
-        $outputs = $letter->getOutputByType("Docman");
-        
-        if( $outputs ){
-            foreach($outputs as $output){
-                if( $output->output_status != "COMPLETE" ){
-                    $output->output_status = "PENDING";
-                    $output->save();
-                }
-            }
-        }
-    }
-
     /**
      * Ajax action to get user data list.
      */
@@ -583,11 +569,7 @@ class DefaultController extends BaseEventTypeController
                 throw new Exception("Unknown element type: $element_type_id");
             }
 
-            if (!$episode = $patient->getEpisodeForCurrentSubspecialty()) {
-                throw new Exception('No Episode available for patient: '.$patient_id);
-            }
-
-            return $api->getLetterStringForModel($patient, $episode, $element_type_id);
+            return $api->getLetterStringForModel($patient, $element_type_id);
         }
     }
 

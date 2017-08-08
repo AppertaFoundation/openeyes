@@ -18,33 +18,46 @@
  */
 ?>
 <?php
+$cross_section_ed = null;
+
+if ($element->isNewRecord || $element->{$side . '_eyedraw2'}) {
+    // only display the cross section eyedraw for elements created after it was introduced
+    // legacy records will not have the the eyedraw2 property
+    // Having checked it though, we set the value to null, so that it's contents are driven
+    // by the stored data in the core eyedraw attribute.
+    $element->{$side . '_eyedraw2'} = null;
+
+    $cross_section_ed = $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+        'listenerArray' => array('anteriorSegmentListener'),
+        'idSuffix' => $side.'_'.$element->elementType->id . '_side',
+        'side' => ($side == 'right') ? 'R' : 'L',
+        'mode' => 'edit',
+        'width' => 198,
+        'height' => 300,
+        'model' => $element,
+        'attribute' => $side . '_eyedraw2',
+        'offsetX' => 10,
+        'offsetY' => 10,
+        'toolbar' => false,
+        'showDrawingControls' => false,
+        'showDoodlePopup' => true,
+        'showDoodlePopupForDoodles' => array('CorneaCrossSection'),
+        'popupDisplaySide' => 'left',
+        'template' => 'OEEyeDrawWidget_InlineToolbar',
+    ), true);
+}
+
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
-        array('NuclearCataract', 'CorticalCataract', 'PostSubcapCataract', 'PCIOL', 'ACIOL', 'Bleb', 'PI',
-            'Fuchs', 'RK', 'LasikFlap', 'CornealScar', 'SectorIridectomy', 'PosteriorSynechia', 'Rubeosis',
-            'TransilluminationDefect', 'KrukenbergSpindle', 'KeraticPrecipitates', 'PosteriorCapsule', 'Hypopyon',
-            'CornealOedema', 'Episcleritis', 'Hyphaema', ),
-        array('TrabySuture', 'Supramid', 'TubeLigation', 'CornealSuture', 'TrabyFlap', 'SidePort', 'Patch',
-            'ConjunctivalSuture', 'ACMaintainer', 'Tube', 'TubeExtender', ),
+        array('Lens', 'PCIOL', 'Bleb', 'PI', 'Fuchs', 'CornealOedema', 'PosteriorCapsule', 'CornealPigmentation',
+            'TransilluminationDefect', 'Hypopyon', 'Hyphaema', 'CornealScar', 'Rubeosis', 'SectorIridectomy', 'ACIOL',
+            'LasikFlap', 'CornealSuture', 'ConjunctivalSuture', 'TrabySuture', 'DendriticUlcer','AdenoviralKeratitis',
+            'CornealLaceration', 'MarginalKeratitis', 'MetallicForeignBody', 'Pingueculum', 'Pterygium'),
+        array('SPEE', 'CornealEpithelialDefect', 'CornealOpacity', 'Conjunctivitis', 'PosteriorSynechia',
+            'KeraticPrecipitates', 'Episcleritis', 'TrabyFlap', 'Tube', 'TubeExtender', 'Supramid', 'TubeLigation',
+            'Patch', 'SidePort', 'RK',)
     ),
-    'onReadyCommandArray' => array(
-        array('addDoodle', array('AntSeg')),
-        array('deselectDoodles', array()),
-    ),
-    'bindingArray' => array(
-        'NuclearCataract' => array(
-            'grade' => array('id' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_nuclear_id', 'attribute' => 'data-value'),
-        ),
-        'CorticalCataract' => array(
-            'grade' => array('id' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_cortical_id', 'attribute' => 'data-value'),
-        ),
-    ),
-    'deleteValueArray' => array(
-        'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_nuclear_id' => '',
-        'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_cortical_id' => '',
-    ),
-    'listenerArray' => array('anteriorListener', 'pupilListener'),
-
+    'listenerArray' => array('anteriorSegmentListener', 'autoReportListener'),
     'idSuffix' => $side.'_'.$element->elementType->id,
     'side' => ($side == 'right') ? 'R' : 'L',
     'mode' => 'edit',
@@ -55,10 +68,10 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'maxToolbarButtons' => 7,
     'template' => 'OEEyeDrawWidget_InlineToolbar',
     'toggleScale' => 0.72,
-    'fields' => $this->renderPartial($element->form_view.'_OEEyeDraw_fields', array(
-        'form' => $form,
-        'side' => $side,
-        'element' => $element,
-    ), true),
+    'popupDisplaySide' => 'left',
+    'autoReport' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_ed_report',
+    'autoReportEditable' => false,
+    'fields' => $cross_section_ed
 ));
+
 ?>

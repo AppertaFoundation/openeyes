@@ -22,13 +22,13 @@ namespace OEModule\OphCiExamination\models;
 use services\DateTime;
 
 /**
- * This is the model class for table "et_ophciexamination_glaucomarisk".
+ * This is the model class for table "et_ophciexamination_historyrisk".
  *
  * The followings are the available columns in table:
  *
  * @property int                                $id
  * @property int                                $event_id
- * @property OphCiExamination_GlaucomaRisk_Risk $risk
+ * @deprecated since v2.0.0 (see HistoryRisks as the replacement Element)
  *
  * The followings are the available model relations:
  */

@@ -23,7 +23,6 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
     protected $va_unit_input = 'va_history_unit_id';
 
     protected $va_axis;
-
     private $va_unit;
 
     public function run()
@@ -66,14 +65,12 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
      */
     public function addData(\FlotChart $chart)
     {
-        foreach ($this->event_type->api->getEventsInEpisode($this->episode->patient, $this->episode) as $event) {
-            if (($va = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity'))) {
-                if (($reading = $va->getBestReading('right'))) {
-                    $this->addVaReading($event, $chart, $reading, 'right');
-                }
-                if (($reading = $va->getBestReading('left'))) {
-                    $this->addVaReading($event, $chart, $reading, 'left');
-                }
+        foreach ($this->event_type->api->getElements('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity', $this->episode->patient, false) as $va) {
+            if (($reading = $va->getBestReading('right'))) {
+                $this->addVaReading($va->event, $chart, $reading, 'right');
+            }
+            if (($reading = $va->getBestReading('left'))) {
+                $this->addVaReading($va->event, $chart, $reading, 'left');
             }
         }
     }

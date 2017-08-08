@@ -30,15 +30,18 @@
         ))?>
 	</div>
 	<div class="column fluid">
-		<?php if ($element->{$side.'_description'}) {
-    ?>
+        <div class="data-row">
+            <div class="data-value">
+                <?= Yii::app()->format->Ntext($element->{$side . '_ed_report'}) ?>
+            </div>
+        </div>
+		<?php if ($element->{$side.'_description'}): ?>
 			<div class="data-row">
 				<div class="data-value">
-					<?= Yii::app()->format->Ntext($element->{"{$side}_description"}) ?>
+					<?= Yii::app()->format->Ntext($element->{$side.'_description'}) ?>
 				</div>
 			</div>
-		<?php 
-}?>
+		<?php endif; ?>
 		<div class="row data-row">
 			<div class="large-5 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel($side.'_cd_ratio_id')?>:</div>

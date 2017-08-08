@@ -20,13 +20,13 @@
 
 <section class="box patient-info episodes">
 	<header class="box-header">
-		<h3 class="box-title">All Episodes</h3>
+		<h3 class="box-title">All <?= Episode::getEpisodeLabelPlural() ?></h3>
 		<div class="box-info">
 			<strong>open <?php echo $episodes_open?> &nbsp;|&nbsp;closed <?php echo $episodes_closed?></strong>
 		</div>
 	</header>
 	<?php if (empty($episodes)) {?>
-		<div class="summary">No episodes</div>
+		<div class="summary">No events</div>
 	<?php } else {?>
 	<table class="patient-episodes grid">
 		<thead>
