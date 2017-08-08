@@ -8334,4 +8334,9 @@ input:checked + .slider:before {
   padding-right: 25px;
   display: inline-block;
 }
+.search_highlight {
+  font-style: inherit;
+  background-color: yellow;
+  color : black;
+}
 /* end of IndexSearch css*/

@@ -440,7 +440,6 @@ $( document ).ready(function() {
       $("#results").hide();
       $(".switch").hide();
       $("#description_toggle_label,#children_toggle_label,#search_options").hide();
-
     }
 
 });

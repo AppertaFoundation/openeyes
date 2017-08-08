@@ -88,14 +88,35 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
         * as only 1 INDEX_LIST is permitted and there is no way to
         * tell which HTML file to write to.
         */
-        $html_string = "";
-        foreach ($data->INDEX_LIST->INDEX as $index) {
-          $html_string .= $this->generateIndexHTML($index);
-        }
-        // TODO: find appropriate HTML file location - currently in protected
-        $file = 'ExaminationSearch.php';
-        $file_handle = fopen($file, 'w') or die('Cannot open file:  '.$file);
-        fwrite($file_handle, "<ul class='results_list'>".$html_string."</ul>");
+
+        $this->updateIndexSearchHtml($data);
+    }
+
+    /**
+    * Method uses INDEX_LIST section of xml to update
+    * the IndexSearch_{{event_type}} view files
+    * for the IndexSearch widget used in some events,
+    * for examaple Examination events).
+     */
+     /**
+      * @param $data
+      */
+    private function updateIndexSearchHtml($data)
+    {
+      $html_string =
+      "<?php \$this->render('IndexSearch_header'); ?>"
+      ."<div id=\"results\">"
+      ."<a href=\"#\" id=\"big_cross\"></a>"
+      ."<ul class='results_list'>";
+
+      foreach ($data->INDEX_LIST->INDEX as $index) {
+        //appends HTML for the index and all of its descendant
+        $html_string .= $this->generateIndexHTML($index);
+      }
+
+      $file = 'widgets/views/IndexSearch_examination.php';
+      $file_handle = fopen($file, 'w') or die('Cannot open file:  '.$file);
+      fwrite($file_handle, $html_string."</ul></div>");
     }
 
     /**
@@ -280,7 +301,7 @@ EOSQL;
 
 	/**
     * This method generates a string that represents the HTML of
-    * an INDEX.
+    * an INDEX and all of its descendant.
     * Due to the recursive definition of INDEX a recursive approach has been taken
     * as the method returns the string HTML of INDEXES nested inside of it.
     */
@@ -290,7 +311,6 @@ EOSQL;
     * @return string
     */
     private function generateIndexHTML($index, $lvl=1){
-
       $description = $index->DESCRIPTION;
       $warning = $index->WARNING_NOTE;
       $info = $index->GENERAL_NOTE;
