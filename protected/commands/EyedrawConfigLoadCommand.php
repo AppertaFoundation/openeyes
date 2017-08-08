@@ -93,10 +93,9 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
           $html_string .= $this->generateIndexHTML($index);
         }
         // TODO: find appropriate HTML file location - currently in protected
-        $file = 'exam2.html';
+        $file = 'ExaminationSearch.php';
         $file_handle = fopen($file, 'w') or die('Cannot open file:  '.$file);
         fwrite($file_handle, "<ul class='results_list'>".$html_string."</ul>");
-
     }
 
     /**
@@ -291,26 +290,62 @@ EOSQL;
     * @return string
     */
     private function generateIndexHTML($index, $lvl=1){
-      $allias = implode(",",(array)$index->TERM_LIST->TERM);
-           $img = $index->IMG_URL;
-           $children = $index->INDEX_LIST;
-           $result =
-           "<li style>"
-           ."<div class=\"result_item"
-           .($img ? (", result_item_with_icon\" style=\"background-image: url(".$img.")") : (""))
-           ."\">"
-           ."<span data-allias='".$allias."' "
-           ."data-action-id='EASTB' class='lvl".$lvl."'>"
-           .$allias."</span>"
-           ."</div>";
-           if ($children) {
-             $result .= "<ul class='results_list'>";
-             foreach ($children->INDEX as $child) {
-               $result .= $this->generateIndexHTML($child,$lvl+1);
-             }
-             $result .= "</ul>";
-           }
-           $result .= "</li>";
-           return $result;
+
+      $description = $index->DESCRIPTION;
+      $warning = $index->WARNING_NOTE;
+      $info = $index->GENERAL_NOTE;
+      $fake_array = (array)$index->TERM_LIST->TERM;
+      $allias = implode(",",$fake_array);
+      $name = array_shift($fake_array);
+      $allias_minus_name = implode(",",$fake_array);
+      $img = $index->IMG_URL;
+      $children = $index->INDEX_LIST;
+      $result =
+      "<li style>"
+      ."<div class=\"result_item"
+      .($img ? (", result_item_with_icon\" style=\"background-image: url(".$img.")") : (""))
+      ."\">"
+      ."<span data-allias='".$allias."' "
+      ."data-action-id='EASTB' class='lvl".$lvl."'>"
+      .$name."</span>"
+      ."</div>"
+      .($allias_minus_name ? (
+        "<div class=\"index_row\">"
+        ."<div class=\"index_col_left\">"
+        ."<span class=\"allias\">"
+        .$allias_minus_name
+        ."</span>"
+        ."</div>"
+        ."<div class=\"index_col_right\">"
+        .($description ? (
+          "<span class=\"description_icon\">Description:</span>"
+          ."<span class=\"description_note\">"
+          .$description
+          ."<br></span>"
+          ) : (""))
+        .($warning ? (
+          "<span class=\"warning_icon\"></span>"
+          ."<span class=\"warning_note\">"
+          .$warning
+          ."</span>"
+          ) : (""))
+        .($info ? (
+          "<span class=\"info_icon\"></span>"
+          ."<span class=\"info_note\">"
+          .$info
+          ."</span>"
+          ) : (""))
+        ."</div>"
+        ."</div>"
+        ) : (""));
+      if ($children) {
+        $result .= "<ul class='results_list'>";
+        foreach ($children->INDEX as $child) {
+          $result .= $this->generateIndexHTML($child,$lvl+1);
+        }
+        $result .= "</ul>";
+      }
+      $result .= "</li>";
+      return $result;
     }
 }

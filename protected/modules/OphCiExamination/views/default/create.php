@@ -45,9 +45,9 @@
          </script>
 
 		<?php $this->displayErrors($errors)?>
-
 		<?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
 		<?php $this->displayErrors($errors, true)?>
 
 	<?php $this->endWidget()?>
+	<?php $this->widget('application.widgets.IndexSearch',['event_type' => 'examination']); ?>
 <?php $this->endContent();?>
