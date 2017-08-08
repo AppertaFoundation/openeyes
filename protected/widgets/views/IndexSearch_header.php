@@ -3,7 +3,7 @@
   <input type="text" id="search_bar_right" placeholder="Find Canvases, Doodles and More..."/>
   <div id="search_button_right"></div>
 
-  <div id="search_options2">
+  <div id="search_options_container">
     <div id="description_toogle_container">
       <span id="description_toggle_label">Show descriptions</span>
       <label class="switch" id="description_switch">

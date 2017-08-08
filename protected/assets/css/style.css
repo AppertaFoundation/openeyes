@@ -1,26 +1,26 @@
 /**
- * OpenEyes
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
- * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
- *
- * @package OpenEyes
- * @link http://www.openeyes.org.uk
- * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
- */
+* OpenEyes
+*
+* (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+* (C) OpenEyes Foundation, 2011-2013
+* This file is part of OpenEyes.
+* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+*
+* @package OpenEyes
+* @link http://www.openeyes.org.uk
+* @author OpenEyes <info@openeyes.org.uk>
+* @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+* @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+* @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+*/
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 /**
- * 1. Set default font family to sans-serif.
- * 2. Prevent iOS text size adjust after orientation change, without disabling
- *    user zoom.
- */
+* 1. Set default font family to sans-serif.
+* 2. Prevent iOS text size adjust after orientation change, without disabling
+*    user zoom.
+*/
 /* line 9, ../components/foundation/scss/normalize.scss */
 html {
   font-family: sans-serif;
@@ -32,21 +32,21 @@ html {
 }
 
 /**
- * Remove default margin.
- */
+* Remove default margin.
+*/
 /* line 19, ../components/foundation/scss/normalize.scss */
 body {
   margin: 0;
 }
 
 /* HTML5 display definitions
-   ========================================================================== */
+========================================================================== */
 /**
- * Correct `block` display not defined for any HTML5 element in IE 8/9.
- * Correct `block` display not defined for `details` or `summary` in IE 10/11
- * and Firefox.
- * Correct `block` display not defined for `main` in IE 11.
- */
+* Correct `block` display not defined for any HTML5 element in IE 8/9.
+* Correct `block` display not defined for `details` or `summary` in IE 10/11
+* and Firefox.
+* Correct `block` display not defined for `main` in IE 11.
+*/
 /* line 33, ../components/foundation/scss/normalize.scss */
 article,
 aside,
@@ -65,9 +65,9 @@ summary {
 }
 
 /**
- * 1. Correct `inline-block` display not defined in IE 8/9.
- * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
- */
+* 1. Correct `inline-block` display not defined in IE 8/9.
+* 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
+*/
 /* line 54, ../components/foundation/scss/normalize.scss */
 audio,
 canvas,
@@ -80,9 +80,9 @@ video {
 }
 
 /**
- * Prevent modern browsers from displaying `audio` without controls.
- * Remove excess height in iOS 5 devices.
- */
+* Prevent modern browsers from displaying `audio` without controls.
+* Remove excess height in iOS 5 devices.
+*/
 /* line 67, ../components/foundation/scss/normalize.scss */
 audio:not([controls]) {
   display: none;
@@ -90,9 +90,9 @@ audio:not([controls]) {
 }
 
 /**
- * Address `[hidden]` styling not present in IE 8/9/10.
- * Hide the `template` element in IE 8/9/11, Safari, and Firefox < 22.
- */
+* Address `[hidden]` styling not present in IE 8/9/10.
+* Hide the `template` element in IE 8/9/11, Safari, and Firefox < 22.
+*/
 /* line 77, ../components/foundation/scss/normalize.scss */
 [hidden],
 template {
@@ -100,18 +100,18 @@ template {
 }
 
 /* Links
-   ========================================================================== */
+========================================================================== */
 /**
- * Remove the gray background color from active links in IE 10.
- */
+* Remove the gray background color from active links in IE 10.
+*/
 /* line 89, ../components/foundation/scss/normalize.scss */
 a {
   background-color: transparent;
 }
 
 /**
- * Improve readability when focused and also mouse hovered in all browsers.
- */
+* Improve readability when focused and also mouse hovered in all browsers.
+*/
 /* line 97, ../components/foundation/scss/normalize.scss */
 a:active,
 a:hover {
@@ -119,18 +119,18 @@ a:hover {
 }
 
 /* Text-level semantics
-   ========================================================================== */
+========================================================================== */
 /**
- * Address styling not present in IE 8/9/10/11, Safari, and Chrome.
- */
+* Address styling not present in IE 8/9/10/11, Safari, and Chrome.
+*/
 /* line 109, ../components/foundation/scss/normalize.scss */
 abbr[title] {
   border-bottom: 1px dotted;
 }
 
 /**
- * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
- */
+* Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
+*/
 /* line 117, ../components/foundation/scss/normalize.scss */
 b,
 strong {
@@ -138,17 +138,17 @@ strong {
 }
 
 /**
- * Address styling not present in Safari and Chrome.
- */
+* Address styling not present in Safari and Chrome.
+*/
 /* line 126, ../components/foundation/scss/normalize.scss */
 dfn {
   font-style: italic;
 }
 
 /**
- * Address variable `h1` font-size and margin within `section` and `article`
- * contexts in Firefox 4+, Safari, and Chrome.
- */
+* Address variable `h1` font-size and margin within `section` and `article`
+* contexts in Firefox 4+, Safari, and Chrome.
+*/
 /* line 135, ../components/foundation/scss/normalize.scss */
 h1 {
   font-size: 2em;
@@ -156,8 +156,8 @@ h1 {
 }
 
 /**
- * Address styling not present in IE 8/9.
- */
+* Address styling not present in IE 8/9.
+*/
 /* line 144, ../components/foundation/scss/normalize.scss */
 mark {
   background: #ff0;
@@ -165,16 +165,16 @@ mark {
 }
 
 /**
- * Address inconsistent and variable font size in all browsers.
- */
+* Address inconsistent and variable font size in all browsers.
+*/
 /* line 153, ../components/foundation/scss/normalize.scss */
 small {
   font-size: 80%;
 }
 
 /**
- * Prevent `sub` and `sup` affecting `line-height` in all browsers.
- */
+* Prevent `sub` and `sup` affecting `line-height` in all browsers.
+*/
 /* line 161, ../components/foundation/scss/normalize.scss */
 sub,
 sup {
@@ -195,36 +195,36 @@ sub {
 }
 
 /* Embedded content
-   ========================================================================== */
+========================================================================== */
 /**
- * Remove border when inside `a` element in IE 8/9/10.
- */
+* Remove border when inside `a` element in IE 8/9/10.
+*/
 /* line 184, ../components/foundation/scss/normalize.scss */
 img {
   border: 0;
 }
 
 /**
- * Correct overflow not hidden in IE 9/10/11.
- */
+* Correct overflow not hidden in IE 9/10/11.
+*/
 /* line 192, ../components/foundation/scss/normalize.scss */
 svg:not(:root) {
   overflow: hidden;
 }
 
 /* Grouping content
-   ========================================================================== */
+========================================================================== */
 /**
- * Address margin not present in IE 8/9 and Safari.
- */
+* Address margin not present in IE 8/9 and Safari.
+*/
 /* line 203, ../components/foundation/scss/normalize.scss */
 figure {
   margin: 1em 40px;
 }
 
 /**
- * Address differences between Firefox and other browsers.
- */
+* Address differences between Firefox and other browsers.
+*/
 /* line 211, ../components/foundation/scss/normalize.scss */
 hr {
   -moz-box-sizing: content-box;
@@ -233,16 +233,16 @@ hr {
 }
 
 /**
- * Contain overflow in all browsers.
- */
+* Contain overflow in all browsers.
+*/
 /* line 221, ../components/foundation/scss/normalize.scss */
 pre {
   overflow: auto;
 }
 
 /**
- * Address odd `em`-unit font size rendering in all browsers.
- */
+* Address odd `em`-unit font size rendering in all browsers.
+*/
 /* line 229, ../components/foundation/scss/normalize.scss */
 code,
 kbd,
@@ -253,17 +253,17 @@ samp {
 }
 
 /* Forms
-   ========================================================================== */
+========================================================================== */
 /**
- * Known limitation: by default, Chrome and Safari on OS X allow very limited
- * styling of `select`, unless a `border` property is set.
- */
+* Known limitation: by default, Chrome and Safari on OS X allow very limited
+* styling of `select`, unless a `border` property is set.
+*/
 /**
- * 1. Correct color not being inherited.
- *    Known issue: affects color of disabled elements.
- * 2. Correct font properties not being inherited.
- * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
- */
+* 1. Correct color not being inherited.
+*    Known issue: affects color of disabled elements.
+* 2. Correct font properties not being inherited.
+* 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
+*/
 /* line 252, ../components/foundation/scss/normalize.scss */
 button,
 input,
@@ -280,19 +280,19 @@ textarea,
 }
 
 /**
- * Address `overflow` set to `hidden` in IE 8/9/10/11.
- */
+* Address `overflow` set to `hidden` in IE 8/9/10/11.
+*/
 /* line 266, ../components/foundation/scss/normalize.scss */
 button {
   overflow: visible;
 }
 
 /**
- * Address inconsistent `text-transform` inheritance for `button` and `select`.
- * All other form control elements do not inherit `text-transform` values.
- * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.
- * Correct `select` style inheritance in Firefox.
- */
+* Address inconsistent `text-transform` inheritance for `button` and `select`.
+* All other form control elements do not inherit `text-transform` values.
+* Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.
+* Correct `select` style inheritance in Firefox.
+*/
 /* line 277, ../components/foundation/scss/normalize.scss */
 button,
 select {
@@ -300,12 +300,12 @@ select {
 }
 
 /**
- * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
- *    and `video` controls.
- * 2. Correct inability to style clickable `input` types in iOS.
- * 3. Improve usability and consistency of cursor style between image-type
- *    `input` and others.
- */
+* 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+*    and `video` controls.
+* 2. Correct inability to style clickable `input` types in iOS.
+* 3. Improve usability and consistency of cursor style between image-type
+*    `input` and others.
+*/
 /* line 290, ../components/foundation/scss/normalize.scss */
 button,
 html input[type="button"],
@@ -318,8 +318,8 @@ input[type="submit"] {
 }
 
 /**
- * Re-set default cursor for disabled elements.
- */
+* Re-set default cursor for disabled elements.
+*/
 /* line 302, ../components/foundation/scss/normalize.scss */
 button[disabled],
 html input[disabled] {
@@ -327,8 +327,8 @@ html input[disabled] {
 }
 
 /**
- * Remove inner padding and border in Firefox 4+.
- */
+* Remove inner padding and border in Firefox 4+.
+*/
 /* line 311, ../components/foundation/scss/normalize.scss */
 button::-moz-focus-inner,
 input::-moz-focus-inner {
@@ -337,21 +337,21 @@ input::-moz-focus-inner {
 }
 
 /**
- * Address Firefox 4+ setting `line-height` on `input` using `!important` in
- * the UA stylesheet.
- */
+* Address Firefox 4+ setting `line-height` on `input` using `!important` in
+* the UA stylesheet.
+*/
 /* line 322, ../components/foundation/scss/normalize.scss */
 input {
   line-height: normal;
 }
 
 /**
- * It's recommended that you don't attempt to style these elements.
- * Firefox's implementation doesn't respect box-sizing, padding, or width.
- *
- * 1. Address box sizing set to `content-box` in IE 8/9/10.
- * 2. Remove excess padding in IE 8/9/10.
- */
+* It's recommended that you don't attempt to style these elements.
+* Firefox's implementation doesn't respect box-sizing, padding, or width.
+*
+* 1. Address box sizing set to `content-box` in IE 8/9/10.
+* 2. Remove excess padding in IE 8/9/10.
+*/
 /* line 334, ../components/foundation/scss/normalize.scss */
 input[type="checkbox"],
 input[type="radio"] {
@@ -362,10 +362,10 @@ input[type="radio"] {
 }
 
 /**
- * Fix the cursor style for Chrome's increment/decrement buttons. For certain
- * `font-size` values of the `input`, it causes the cursor style of the
- * decrement button to change from `default` to `text`.
- */
+* Fix the cursor style for Chrome's increment/decrement buttons. For certain
+* `font-size` values of the `input`, it causes the cursor style of the
+* decrement button to change from `default` to `text`.
+*/
 /* line 346, ../components/foundation/scss/normalize.scss */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
@@ -373,10 +373,10 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 /**
- * 1. Address `appearance` set to `searchfield` in Safari and Chrome.
- * 2. Address `box-sizing` set to `border-box` in Safari and Chrome
- *    (include `-moz` to future-proof).
- */
+* 1. Address `appearance` set to `searchfield` in Safari and Chrome.
+* 2. Address `box-sizing` set to `border-box` in Safari and Chrome
+*    (include `-moz` to future-proof).
+*/
 /* line 357, ../components/foundation/scss/normalize.scss */
 input[type="search"] {
   -webkit-appearance: textfield;
@@ -388,10 +388,10 @@ input[type="search"] {
 }
 
 /**
- * Remove inner padding and search cancel button in Safari and Chrome on OS X.
- * Safari (but not Chrome) clips the cancel button when the search input has
- * padding (and `textfield` appearance).
- */
+* Remove inner padding and search cancel button in Safari and Chrome on OS X.
+* Safari (but not Chrome) clips the cancel button when the search input has
+* padding (and `textfield` appearance).
+*/
 /* line 370, ../components/foundation/scss/normalize.scss */
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-decoration {
@@ -399,8 +399,8 @@ input[type="search"]::-webkit-search-decoration {
 }
 
 /**
- * Define consistent border, margin, and padding.
- */
+* Define consistent border, margin, and padding.
+*/
 /* line 379, ../components/foundation/scss/normalize.scss */
 fieldset {
   border: 1px solid #c0c0c0;
@@ -409,9 +409,9 @@ fieldset {
 }
 
 /**
- * 1. Correct `color` not being inherited in IE 8/9/10/11.
- * 2. Remove padding so people aren't caught out if they zero out fieldsets.
- */
+* 1. Correct `color` not being inherited in IE 8/9/10/11.
+* 2. Remove padding so people aren't caught out if they zero out fieldsets.
+*/
 /* line 390, ../components/foundation/scss/normalize.scss */
 legend {
   border: 0;
@@ -421,27 +421,27 @@ legend {
 }
 
 /**
- * Remove default vertical scrollbar in IE 8/9/10/11.
- */
+* Remove default vertical scrollbar in IE 8/9/10/11.
+*/
 /* line 399, ../components/foundation/scss/normalize.scss */
 textarea, .oe-tagsinput-wrapper .tagsinput {
   overflow: auto;
 }
 
 /**
- * Don't inherit the `font-weight` (applied by a rule above).
- * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
- */
+* Don't inherit the `font-weight` (applied by a rule above).
+* NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
+*/
 /* line 408, ../components/foundation/scss/normalize.scss */
 optgroup {
   font-weight: bold;
 }
 
 /* Tables
-   ========================================================================== */
+========================================================================== */
 /**
- * Remove most spacing between table cells.
- */
+* Remove most spacing between table cells.
+*/
 /* line 419, ../components/foundation/scss/normalize.scss */
 table {
   border-collapse: collapse;
@@ -6455,18 +6455,18 @@ tfoot.pagination-container .pagination-view-all {
 }
 
 /**
- * (C) OpenEyes Foundation, 2014
- * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
- *
- * @package OpenEyes
- * @link http://www.openeyes.org.uk
- * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2014, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
- */
+* (C) OpenEyes Foundation, 2014
+* This file is part of OpenEyes.
+* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+*
+* @package OpenEyes
+* @link http://www.openeyes.org.uk
+* @author OpenEyes <info@openeyes.org.uk>
+* @copyright Copyright (C) 2014, OpenEyes Foundation
+* @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+*/
 /* line 16, ../sass/openeyes/components/tabs/_search.scss */
 .tabs.search li {
   -moz-border-radius: 5px;
@@ -6529,7 +6529,7 @@ tfoot.pagination-container .pagination-view-all {
   border-style: solid;
   border-width: 5px;
   /* This exists to support legacy event styles where border color
-     was set on .event */
+  was set on .event */
   border-color: inherit;
   padding: 5px 5px 10px 5px;
 }
@@ -7963,8 +7963,8 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
 /*
-    Created on : Dec 9, 2016, 11:56:22 AM
-    Author     : sabi
+Created on : Dec 9, 2016, 11:56:22 AM
+Author     : sabi
 */
 /* line 13, ../sass/openeyes/components/_docman.scss */
 div#docman_block select.macro {
@@ -8025,20 +8025,20 @@ table.detailview tr th {
 }
 
 /**
- * OpenEyes
- *
- * (C) OpenEyes Foundation, 2017
- * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
- *
- * @package OpenEyes
- * @link http://www.openeyes.org.uk
- * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2017, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
- */
+* OpenEyes
+*
+* (C) OpenEyes Foundation, 2017
+* This file is part of OpenEyes.
+* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+*
+* @package OpenEyes
+* @link http://www.openeyes.org.uk
+* @author OpenEyes <info@openeyes.org.uk>
+* @copyright Copyright (c) 2017, OpenEyes Foundation
+* @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+*/
 /* line 25, ../sass/openeyes/components/_tagsinput.scss */
 .oe-tagsinput-wrapper .tagsinput .tag {
   border-radius: 5px;
@@ -8082,8 +8082,6 @@ table.detailview tr th {
   border-radius: 10px 0 0 10px;
   z-index: 1003;
 }
-#search_bar_left {
-}
 #search_button_right, #search_button_left {
   display: inline-block;
   font-family:Helvetica;
@@ -8101,9 +8099,6 @@ table.detailview tr th {
   right: 5px;
   height: 30px;
 }
-#search_button_left {
-}
-
 #results {
   outline: 0px;
   z-index: 1005;
@@ -8134,7 +8129,6 @@ table.detailview tr th {
   background-repeat: repeat-y;
   background-position: 33.33%;
 }
-
 .results_list {
   margin: 0;
   list-style: none;
@@ -8144,13 +8138,6 @@ table.detailview tr th {
   padding: 0px;
   padding-left: 45px;
 }
-.icon {
-  height: 25px;
-  width: 25px;
-  position: absolute;
-  bottom: 5px;
-}
-
 .result_item,.result_item_with_icon {
   width: 222px;
   display: block;
@@ -8176,68 +8163,47 @@ table.detailview tr th {
 .result_item_with_icon{
   padding-left: 25px;
 }
-
 .result_item:hover,.result_item_with_icon:hover {
   background-color: #3665ff;
   color: #fff;
   cursor: pointer;
-
 }
-.arrow {
-  position: relative;
-
-}
-
-.lvl1,.lvl2,.lvl3 {
-}
-
-.search_highlight {
-  font-style: inherit;
-  background-color: yellow;
-  color : black;
-}
-
 #big_cross {
   position: fixed;
   background: #fff url(/assets/tom/bigCross.png) center no-repeat;
   display: block;
   cursor: pointer;
-  left: 1202px;
-  top: 133px;
   width: 32px;
+  width: 32px;
+  height: 37px;
+  right: 28px;
 }
-
 li ul li ul li .result_item {
   background-color: transparent;
 }
-
 #results > ul >  li > div {
   position: sticky;
   top: 0;
   z-index: 1000;
 }
-
 #results > ul >  li > div:hover {
   background-color: #3665ff;
   color: #fff;
   cursor: pointer;
 }
-
 .allias {
   font-size: 0.7em;
   font-style: italic;
   color: grey;
   position: relative;
 }
-
 .index_row {
   display: flex; /* equal height of the children */
   width: 930px;
   margin-bottom: -10px;
 }
-
 .index_col_left {
-  flex: 0.85; /* additionally, equal width */
+  flex: 0.85;
   position: relative;
   top: -7px;
   margin-left: 21px;
@@ -8246,14 +8212,11 @@ li li li .index_col_left {
   top: -11px;
 }
 .index_col_right {
-  flex: 2; /* additionally, equal width */
+  flex: 2;
   position: relative;
   top: -25px;
   margin-left: 10px;
 }
-
-
-
 .warning_icon,.info_icon {
   background-size: 16px 16px;
   background-repeat: no-repeat;
@@ -8264,113 +8227,89 @@ li li li .index_col_left {
   position: relative;
   top: 3px;
 }
-
 .warning_icon {
   top: 4px;
   background-image: url("/assets/tom/warning.png");	}
 
-  .info_icon {
-    background-image: url("/assets/tom/info.png");
-  }
-  .description_icon {
-    font-size: 0.8em;
-    font-weight: bold;
-    font-style: italic;
-  }
+.info_icon {
+  background-image: url("/assets/tom/info.png");
+}
+.description_icon {
+  font-size: 0.8em;
+  font-weight: bold;
+  font-style: italic;
+}
 
-  .warning_note,.info_note,.description_note{
-    font-size: 0.8em;
-    padding-left: 6px;
-    padding-right: 20px;
-  }
-
-
-  /* The switch - the box around the slider */
-    .switch {
-      display: none;
-      position: relative;
-      width: 30px;
-      height: 17px;
-      top: 7px;
-    }
-
-    #description_switch {
-      display: inline-block;
-    }
-
-    #children_switch {
-      display: inline-block;
-    }
-
-    /* Hide default HTML checkbox */
-    .switch input {display:none;}
-
-    /* The slider */
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #ccc;
-      -webkit-transition: .4s;
-      transition: .4s;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 13px;
-      width: 13px;
-      left: 2px;
-      bottom: 2px;
-      background-color: white;
-      -webkit-transition: .4s;
-      transition: .4s;
-    }
-
-    input:checked + .slider {
-      background-color: #2196F3;
-    }
-
-    input:focus + .slider {
-      box-shadow: 0 0 1px #2196F3;
-    }
-
-    input:checked + .slider:before {
-      -webkit-transform: translateX(13px);
-      -ms-transform: translateX(13px);
-      transform: translateX(13px);
-    }
-
-    /* Rounded sliders */
-    .slider.round {
-      border-radius: 17px;
-    }
-
-    .slider.round:before {
-      border-radius: 50%;
-    }
-
-  #description_toggle_label {
-    display: inline-block;
-    font-size: 0.65em;
-  }
-
-  #children_toggle_label {
-    display: inline-block;
-    font-size: 0.65em;
-  }
-
-  #search_options {
-    display: none;
-    background-color: #b1b6bb;
-    height: 38px;
-    width: 300px;
-  }
-
-
+.warning_note,.info_note,.description_note{
+  font-size: 0.8em;
+  padding-left: 6px;
+  padding-right: 20px;
+}
+/* The switch - the box around the slider */
+.switch {
+  display: none;
+  position: relative;
+  width: 30px;
+  height: 17px;
+  top: 7px;
+}
+#description_switch {
+  display: inline-block;
+}
+#children_switch {
+  display: inline-block;
+}
+/* Hide default HTML checkbox */
+.switch input {display:none;}
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 13px;
+  width: 13px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+input:checked + .slider {
+  background-color: #2196F3;
+}
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+input:checked + .slider:before {
+  -webkit-transform: translateX(13px);
+  -ms-transform: translateX(13px);
+  transform: translateX(13px);
+}
+/* Rounded sliders */
+.slider.round {
+  border-radius: 17px;
+}
+.slider.round:before {
+  border-radius: 50%;
+}
+#description_toggle_label {
+  display: inline-block;
+  font-size: 0.65em;
+}
+#children_toggle_label {
+  display: inline-block;
+  font-size: 0.65em;
+}
 #search_bars_and_options {
   padding-top: 5px;
   width: 864px;
@@ -8381,19 +8320,16 @@ li li li .index_col_left {
   left: 257px;
   text-align: center;
 }
-
-#search_options2 {
+#search_options_container {
   display: inline-block;
   width: 338px;
   vertical-align: top;
   text-align: center;
 }
-
 #children_toggle_container {
   padding-right: 25px;
   display:inline-block;
 }
-
 #description_toogle_container {
   padding-right: 25px;
   display: inline-block;
