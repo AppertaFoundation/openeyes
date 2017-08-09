@@ -51,12 +51,12 @@
      * Returns the next index of the data entries
      *
      * @param selector
-     * @param data_key
+     * @param dataKey
      * @returns {*}
      */
-	Util.getNextDataKey = function(selector, data_key){
+	Util.getNextDataKey = function(selector, dataKey){
         var keys = $(selector).map(function(i, el){
-            return $(el).data(data_key);
+            return $(el).data(dataKey);
         }).get();
 
         if(keys.length) {
