@@ -93,36 +93,18 @@ $( document ).ready(function() {
     show_results();
   });
 
-
-  $('.result_item, .result_item_with_icon').click(function(){
-    let $this = $(this);
-    let $span = $this.find("span:first");
-    let lvl = $span.attr("class");
-    switch (lvl) {
-      case "lvl1":
-      click_lvl_1($this);
-      break;
-      case "lvl2":
-      click_lvl_2($this);
-      break;
-      case "lvl3":
-      click_lvl_3($this);
-      break;
-      default:
-    }
-    hide_results();
-  });
   /* New event handler for multiple goto in one button*/
   $('.result_item, .result_item_with_icon').click(function(){
     let $this = $(this);
-    if ($this.data('elementId')) {
-      click_lvl_1($this);
+    if ($this.data('property')) {
+      click_lvl_3($this);
     }
     else if ($this.data('doodleClassName')) {
+      console.log("lvl2");
       click_lvl_2($this);
     }
-    else if ($this.data('property')) {
-      click_lvl_3($this);
+    else if ($this.data('elementId')) {
+      click_lvl_1($this);
     }
     else {
       alert('No action in configuration');
@@ -130,45 +112,68 @@ $( document ).ready(function() {
     hide_results();
   });
 
-
-
   function get_element_name($this){
     return $this.find("span:first").text();
   }
-  function click_lvl_1($this, callback) {
-    let btn_name = name_on_btn[name];
-    let $item = $(".oe-event-sidebar-edit li a:contains("+btn_name+")");
+  function click_lvl_1($this, callback, descElementName) {
+    let elementName = getGoto("elementName",$this,descElementName);
+    let $item = $(".oe-event-sidebar-edit li a:contains("+elementName+")");
     event_sidebar.loadClickedItem($item,{},callback);
   }
-  function click_lvl_2($this, callback){
-    let name = get_element_name($this);
-    let $parent = $this.parent().parent().parent();
-    let parent_name = get_element_name($parent);
+
+  function getGoto(dataField, $this, descendant){
+    //get youngest dataField
+    if (descendant) {
+      //gived by descendant
+      return descendant;
+    }
+    else if ($this.data(dataField)) {
+      //get from self
+      return $this.data(dataField);
+    } else {
+      //get from ancestor
+      // TODO: add code here recursive!
+      return getGoto(dataField, get_element_parent($this), descendant);
+    }
+  }
+
+  function get_element_parent($this){
+    return $this.parent().parent().parent().find("div:first");
+  }
+
+  function click_lvl_2($this, callback, descDoodleClassName, descElementId, descElementName){
+    //use object so order does not matter for parameters and labels make eaiser
+    // TODO: Remember to pass click_lvl_1 descendants from this ones descendants or self
+    let elementName =  descElementName ? descElementName : $this.data('elementName'); //think carefully how to do it
+    let doodleClassName = getGoto("doodleClassName",$this,descDoodleClassName);
+    let elementId = getGoto("elementId",$this,descElementId);
+    let $parent = get_element_parent($this);
     click_lvl_1($parent,function(){
       setTimeout (function(){
-        let $lvl_2_item = get_doodle_button(parent_name,name,last_search_pos);
-        let $selected_doodle = $("#eyedrawwidget_"+last_search_pos+"_315").find("#ed_example_selected_doodle").children().find("option:contains('"+name+"')");
+        let dropdown_box_selector = "#eyedrawwidget_"+last_search_pos+"_"+elementId;
+        let $lvl_2_item = get_doodle_button(elementId,doodleClassName,last_search_pos);
+        let doodle_name = $lvl_2_item.find(".label:first").text();
+        let $selected_doodle = $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option:contains("+doodle_name+")");
         if ($selected_doodle.length == 0) {
           $lvl_2_item.trigger("click");
           if (typeof(callback) == "function") {
             callback();
           }
         } else {
-          $("#eyedrawwidget_"+last_search_pos+"_315").find("#ed_example_selected_doodle").children().find("option").removeAttr('selected');
+          $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option").removeAttr('selected');
           $selected_doodle.attr('selected','selected');
-          $("#eyedrawwidget_"+last_search_pos+"_315").find("#ed_example_selected_doodle").trigger('change');
+          $(dropdown_box_selector).find("#ed_example_selected_doodle").trigger('change');
           if (typeof(callback) == "function") {
             callback();
           }
-        } //move callback to after if else
+        }
       },1000);
-    });
+    }, elementName);
+
   }
-  function get_doodle_button(parent_name, name, position) {
-    let canvas_id = lvl_1_to_section_id[parent_name];
-    let doodle_id = lvl_2_to_doodle_id[name];
-    let canvas_doodle_id = "#"+doodle_id+position+"_"+canvas_id;
-    let $item = $(canvas_doodle_id).children();
+  function get_doodle_button(elementId, doodleClassName, position) {
+    let doodle_id = "#"+doodleClassName+position+"_"+elementId;
+    let $item = $(doodle_id).children();
     return $item;
   }
   function click_lvl_3($this, callback){

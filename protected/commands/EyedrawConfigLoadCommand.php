@@ -300,7 +300,13 @@ EOSQL;
     }
 
 private function get_element_id($open_element_class_name){
-  return "413";
+  //query
+  return "315";
+}
+
+private function get_element_name($open_element_class_name){
+  //query
+  return "Anterior Segment";
 }
 
   /**
@@ -332,7 +338,9 @@ private function get_element_id($open_element_class_name){
       ."<div class=\"result_item"
       .($img ? (", result_item_with_icon\" style=\"background-image: url(".$img.")") : (""))
       ."\" "
+      .($open_element_class_name ? ("data-element-class-name=\"".$open_element_class_name."\" ") : (""))
       .($open_element_class_name ? ("data-element-id=\"".$this->get_element_id($open_element_class_name)."\" ") : (""))
+      .($open_element_class_name ? ("data-element-name=\"".$this->get_element_name($open_element_class_name)."\" ") : (""))
       .($goto_doodle_class_name ? ("data-doodle-class-name=\"".$goto_doodle_class_name."\" ") : (""))
       .($goto_property ? ("data-property=\"".$goto_property."\"") : (""))
       .">"
