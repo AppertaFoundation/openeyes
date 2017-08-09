@@ -342,7 +342,7 @@ return array(
                 'patient' => array(
                     'title' => 'Add Patient',
                     'uri' => 'patient/create',
-                    'position' => 9,
+                    'position' => 46,
                     'restricted' => array('TaskAddPatient'),
                 ),
 // temporarily disabled
@@ -385,7 +385,6 @@ return array(
         'wkhtmltopdf_left_margin' => '20mm',
         'wkhtmltopdf_right_margin' => '20mm',
         'wkhtmltopdf_nice_level' => false,
-        'OphCoTherapyapplication_sender_email' => array('openeyes.servicedesk@moorfields.nhs.uk' => 'OpenEyes Therapy Application'),
         'curl_proxy' => null,
         'hscic' => array(
             'data' => array(
