@@ -8102,10 +8102,13 @@ table.detailview tr th {
 #results {
   outline: 0px;
   z-index: 1005;
-  height: 539px;
-  width: 1024px;
-  top: 131px;
-  left: 199px;
+  /*height: 539px;*/
+  /* width: 1024px;*/
+  top: 130px;
+  bottom: 50px;
+  right: 20px;
+  left: 195px;
+  /*left: 199px;*/
   display: none;
   overflow:scroll;
   background-color: #fff;
@@ -8317,7 +8320,7 @@ input:checked + .slider:before {
   position: fixed;
   top: 82px;
   z-index: 1000;
-  left: 257px;
+  left: 274px;
   text-align: center;
 }
 #search_options_container {
