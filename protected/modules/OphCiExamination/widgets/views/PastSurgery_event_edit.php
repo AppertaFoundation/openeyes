@@ -16,9 +16,8 @@
  */
 
 ?>
-
+<script type="text/javascript" src="<?= $this->getJsPublishedPath('PastSurgery.js') ?>"></script>
 <?php
-Yii::app()->clientScript->registerScriptFile($this->getJsPublishedPath('PastSurgery.js'), CClientScript::POS_HEAD);
 $model_name = CHtml::modelName($element);
 ?>
 

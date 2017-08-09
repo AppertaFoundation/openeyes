@@ -52,9 +52,9 @@ if (isset($values['date']) && strtotime($values['date'])) {
                 CHtml::listData(CommonPreviousOperation::model()->findAll(
                     array('order' => 'display_order asc')), 'id', 'name'),
                 array('empty' => '- Select -', 'class' => $model_name . '_operations'))?>
-            <br><br>
+            <br />
             <?php echo CHtml::textField($field_prefix . '[operation]', $values['operation'], array(
-                'placeholder' => 'Common Operation',
+                'placeholder' => 'Select from above or type',
                 'autocomplete' => Yii::app()->params['html_autocomplete'],
                 'class' => 'common-operation',
                 )); ?>

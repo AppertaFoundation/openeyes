@@ -16,8 +16,8 @@
  */
 
 ?>
+<script type="text/javascript" src="<?=$this->getJsPublishedPath('Allergies.js')?>"></script>
 <?php
-    Yii::app()->clientScript->registerScriptFile($this->getJsPublishedPath('Allergies.js'), CClientScript::POS_HEAD);
     $model_name = CHtml::modelName($element);
 ?>
 

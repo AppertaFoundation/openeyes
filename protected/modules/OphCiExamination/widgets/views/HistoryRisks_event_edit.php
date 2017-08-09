@@ -17,9 +17,9 @@
 
 ?>
 
+<script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 <div class="element-fields">
     <?php
-    Yii::app()->clientScript->registerScriptFile($this->getJsPublishedPath('HistoryRisks.js'), CClientScript::POS_HEAD);
     $model_name = CHtml::modelName($element);
     $risks_options = $element->getRiskOptions();
     $missing_req_risks = $element->getMissingRequiredRisks();
