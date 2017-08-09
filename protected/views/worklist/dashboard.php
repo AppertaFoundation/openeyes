@@ -81,6 +81,7 @@
                 'dataProvider' => $worklist_patients,
                 'htmlOptions' => array('id' => "worklist-table-{$worklist->id}", 'style' => 'padding: 0px;'),
                 'summaryText' => '<h3><small> {start}-{end} of {count} </small></h3>',
+                'template' => '{pager}{items}{summary}',
                 'columns' => $cols,
             ));
         } ?>

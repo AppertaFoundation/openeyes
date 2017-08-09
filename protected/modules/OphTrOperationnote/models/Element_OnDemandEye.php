@@ -14,19 +14,40 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<div class="eyedraw-fields">
-    <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
-    <div class="field-row">
-        <div class="row collapse">
-            <div class="large-12 column end autoreport-display">
-                <span id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>" class="data-value"> </span>
-            </div>
-        </div>
 
-    </div>
 
-    <div class="field-row">
-        <?= CHtml::activeTextArea($element, $side.'_comments', array('rows' => '1', 'cols' => '20', 'class' => 'clearWithEyedraw', 'placeholder' => $element->getAttributeLabel($side.'_comments'))) ?>
-    </div>
-</div>
+/**
+ * Class Element_OnDemandEye
+ *
+ * Base on demand element that needs to know which eye is being operated on (in op note this is derived from the procedure
+ * list element). Provides for explicit setting to support the inline loading process.
+ */
+class Element_OnDemandEye extends Element_OnDemand
+{
+    /**
+     * @var Eye
+     */
+    protected $eye;
+
+    /**
+     * The eye of the procedure is stored in the parent procedure list element.
+     * However, it may be set direcly on the element object, to enable encapsulation of the current eye when creating the element
+     *
+     * @return Eye
+     */
+    public function getEye()
+    {
+        if (!$this->eye) {
+            $this->eye = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($this->event_id))->eye;
+        }
+        return $this->eye;
+    }
+
+    /**
+     * @param Eye $eye
+     */
+    public function setEye(Eye $eye)
+    {
+        $this->eye = $eye;
+    }
+}

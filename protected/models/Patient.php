@@ -2105,7 +2105,7 @@ class Patient extends BaseActiveRecordVersioned
         return array_map(function($medication) {
             $label = $medication->drug ? $medication->drug->label : $medication->medication_drug->name;
             $option = $medication->option ? " ({$medication->option->name})" : '';
-            $frequency = $medication->frequency->name;
+            $frequency = $medication->frequency ? $medication->frequency->name : '';
             return $label.$option.' '.$frequency;
         }, $this->medications);
     }
