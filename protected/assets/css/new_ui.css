@@ -1429,6 +1429,10 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   margin-bottom: 2px;
 }
 
+.edit .sub-element {
+    border: 2px solid #96999c;
+}
+
 .field-row {
   padding-bottom: 2px;
 }
@@ -1459,11 +1463,37 @@ label.highlight {
 }
 
 .element-title, .sub-element-title {
-  padding: 6px 8px;
+  padding: 6px 11px;
 }
 
 
 .edit .element,
 .edit .optional-elements {
   border-top: none;
+}
+
+.edit .element-header, .edit .element-title {
+    background-color: #777b7e;
+    color: white;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.edit .sub-element-header, .edit h4.sub-element-title {
+    background: #96999c;
+    color: white;
+}
+
+.edit .sub-element-header .inline {
+    color: #000;
+}
+
+.edit .element-title-additional {
+    line-height: 1.6em;
+}
+
+.edit .sub-elements {
+    padding: 5px 4px 0 4px;
+    margin: 0;
+    background: #dae6f1;
 }
