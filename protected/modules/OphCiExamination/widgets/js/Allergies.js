@@ -66,7 +66,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$table.on('click', 'button.remove', function(e) {
             e.preventDefault();
             $(this).closest('tr').remove();
-            controller.showNoAllergies();
+            controller.updateNoAllergiesState();
         });
 
         this.$noAllergiesFld.on('click', function() {
@@ -97,35 +97,23 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         );
     };
 
-    /**
-     * hide the no allergies section of the form.
-     */
-    AllergiesController.prototype.hideNoAllergies = function()
-    {
-        this.$noAllergiesWrapper.hide();
-        this.$noAllergiesFld.prop('checked', false);
-        this.$noAllergiesWrapper.show();
-    };
-
-    /**
-     * Only show no family history form section if there no entries in the history table.
-     */
-    AllergiesController.prototype.showNoAllergies = function()
+    AllergiesController.prototype.updateNoAllergiesState = function()
     {
         if (this.$table.find('tbody tr').length === 0) {
             this.$noAllergiesWrapper.show();
         } else {
-            this.hideNoAllergies();
+            this.$noAllergiesWrapper.hide();
+            this.$noAllergiesFld.prop('checked', false);
         }
-    };
+    }
 
     /**
      * Add a family history section if its valid.
      */
     AllergiesController.prototype.addEntry = function()
     {
-        this.hideNoAllergies();
         this.$table.find('tbody').append(this.createRow());
+        this.updateNoAllergiesState();
     };
 
     exports.AllergiesController = AllergiesController;
