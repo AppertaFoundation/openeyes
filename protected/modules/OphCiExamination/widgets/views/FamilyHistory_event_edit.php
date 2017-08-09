@@ -17,12 +17,9 @@
 
 ?>
 
+<script type="text/javascript" src="<?= $this->getJsPublishedPath('FamilyHistory.js') ?>"></script>
 <div class="element-fields">
-  <?php
-  Yii::app()->clientScript->registerScriptFile($this->getJsPublishedPath('FamilyHistory.js'), CClientScript::POS_HEAD);
-  $model_name = CHtml::modelName($element);
-
-  ?>
+  <?php $model_name = CHtml::modelName($element); ?>
     <div class="field-row row<?= count($element->entries) ? ' hidden' : ''?>" id="<?=$model_name?>_no_family_history_wrapper">
         <div class="large-3 column">
             <label for="<?=$model_name?>_no_family_history">Confirm patient has no family history:</label>
