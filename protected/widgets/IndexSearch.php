@@ -15,8 +15,6 @@ class IndexSearch extends BaseCWidget
 
     public function run()
     {
-      //or just render
-      //can use $this->event_type
-      return $this->render('IndexSearch_examination');
+      return $this->render('IndexSearch_'.$this->event_type);
     }
 }

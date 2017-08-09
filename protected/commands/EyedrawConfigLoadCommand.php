@@ -299,7 +299,11 @@ WHERE ed.eyedraw_class_mnemonic != "*" -- Unsafe mode workaround
 EOSQL;
     }
 
-	/**
+private function get_element_id($open_element_class_name){
+  return "413";
+}
+
+  /**
     * This method generates a string that represents the HTML of
     * an INDEX and all of its descendant.
     * Due to the recursive definition of INDEX a recursive approach has been taken
@@ -320,13 +324,20 @@ EOSQL;
       $allias_minus_name = implode(",",$fake_array);
       $img = $index->IMG_URL;
       $children = $index->INDEX_LIST;
+      $open_element_class_name = $index->OPEN_ELEMENT_CLASS_NAME;
+      $goto_doodle_class_name = $index->GOTO_DOODLE_CLASS_NAME;
+      $goto_property = $index->GOTO_PROPERTY;
       $result =
       "<li style>"
       ."<div class=\"result_item"
       .($img ? (", result_item_with_icon\" style=\"background-image: url(".$img.")") : (""))
-      ."\">"
+      ."\" "
+      .($open_element_class_name ? ("data-element-id=\"".$this->get_element_id($open_element_class_name)."\" ") : (""))
+      .($goto_doodle_class_name ? ("data-doodle-class-name=\"".$goto_doodle_class_name."\" ") : (""))
+      .($goto_property ? ("data-property=\"".$goto_property."\"") : (""))
+      .">"
       ."<span data-allias='".$allias."' "
-      ."data-action-id='EASTB' class='lvl".$lvl."'>"
+      ."class='lvl".$lvl."'>"
       .$name."</span>"
       ."</div>"
       .($allias_minus_name ? (

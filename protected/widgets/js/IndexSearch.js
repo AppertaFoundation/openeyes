@@ -112,12 +112,30 @@ $( document ).ready(function() {
     }
     hide_results();
   });
+  /* New event handler for multiple goto in one button*/
+  $('.result_item, .result_item_with_icon').click(function(){
+    let $this = $(this);
+    if ($this.data('elementId')) {
+      click_lvl_1($this);
+    }
+    else if ($this.data('doodleClassName')) {
+      click_lvl_2($this);
+    }
+    else if ($this.data('property')) {
+      click_lvl_3($this);
+    }
+    else {
+      alert('No action in configuration');
+    }
+    hide_results();
+  });
+
+
 
   function get_element_name($this){
     return $this.find("span:first").text();
   }
   function click_lvl_1($this, callback) {
-    let name = get_element_name($this);
     let btn_name = name_on_btn[name];
     let $item = $(".oe-event-sidebar-edit li a:contains("+btn_name+")");
     event_sidebar.loadClickedItem($item,{},callback);
@@ -441,5 +459,4 @@ $( document ).ready(function() {
       $(".switch").hide();
       $("#description_toggle_label,#children_toggle_label,#search_options").hide();
     }
-
 });
