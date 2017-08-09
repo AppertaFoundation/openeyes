@@ -57,13 +57,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $('#' + this.options.modelName + '_add_entry').on('click', function(e) {
             e.preventDefault();
             controller.addEntry();
-            controller.showNoRisks();
         });
 
         this.$table.on('click', '.button.remove', function(e) {
             e.preventDefault();
             $(e.target).parents('tr').remove();
-            controller.showNoRisks();
+            controller.updateNoRisksState();
         });
 
         this.$noRisksFld.on('click', function() {
@@ -76,24 +75,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         })
     };
 
-    HistoryRisksController.prototype.showNoRisks = function()
+    HistoryRisksController.prototype.updateNoRisksState = function()
     {
         if (this.$table.find('tbody tr').length === 0) {
             this.$noRisksWrapper.show();
         } else {
-            this.hideNoRisks();
+            this.$noRisksWrapper.hide();
+            this.$noRisksFld.prop('checked', false);
         }
-    };
+    }
 
-    /**
-     * hide the no allergies section of the form.
-     */
-    HistoryRisksController.prototype.hideNoRisks = function()
-    {
-        this.$noRisksWrapper.hide();
-        this.$noRisksFld.prop('checked', false);
-        this.$table.show();
-    };
 
     /**
      *
@@ -118,6 +109,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         var row = this.createRow();
         this.$table.find('tbody').append(row);
+        this.updateNoRisksState();
     };
 
     exports.HistoryRisksController = HistoryRisksController;
