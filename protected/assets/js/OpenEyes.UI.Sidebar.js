@@ -33,21 +33,11 @@
     {
         var self = this;
 
-        self.$tip = self.$el.parent().find('.show-scroll-tip');
-        self.$blueFade = self.$el.parent().find('.scroll-blue-top');
-
         self.showHelp = true;
 
         self.$el.scroll(function() {
-            if ($(this).scrollTop() == 0) {
-                self.$blueFade.fadeOut(200);
-            }
-            else {
-                self.$blueFade.fadeIn(200);
-            }
             if (self.showHelp && self.options.showHelpOnce) {
                 self.showHelp = false;
-                self.$tip.text('');
                 self.showHelp = false;
             }
         });
@@ -63,41 +53,12 @@
     Sidebar.prototype.checkSideNavHeight = function()
     {
         var self = this;
-
-        var nh = self.$el.find('.all-panels').height() + 140; // need to add this to make sure last event is shown!
-        //var wh = $('footer').position().top + $('footer').height();
-        var ch = $('.container.content').outerHeight();
-        var wh = window.innerHeight;
-        var h;
-
-        // allow for top panel height : 224px
-        if((ch + 224) > wh){
-            // content is higher than window, use wh:
-            h = wh - 195; // 195 is arbitrary, a visually tweaked offset
-        } else {
-            // else:
-            h = ch - 50; // 50 is arbitrary, a visually tweaked offset
-        }
-
-        if(h > nh) {
-            // showing all!
-            h = nh;
-            self.$tip.fadeOut();
-        } else {
-            self.$tip.fadeIn();
-        }
-
+        furniture = $('header').outerHeight() + $('footer').outerHeight() + $('#patient-alert-patientticketing').outerHeight();
+        h = window.innerHeight - furniture - $('.oe-sidebar-top-buttons').outerHeight();
         if(h < self.options.minimumHeight)
-            h = self.options.minimumHeight;
+            h = h+48;
         self.$el.height(h+'px');
-        $('.container.content').css({'min-height':h+50+'px'});
-
-        // Fix scroll wrapper height
-
-        var swtop = self.$el.offset().top - $(window).scrollTop();
-        var swh = self.$el.outerHeight();
-
-        self.$el.css("height", wh-swtop);
+        $('.container.content').css({'min-height':h+50+'px'})
     };
 
     exports.Sidebar = Sidebar;

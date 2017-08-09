@@ -38,23 +38,27 @@ html, body {
     min-height: 600px;
   }
   .open-eyes .footer {
-    border-radius: 0 0 5px 5px;
-    height: 42px;
-    background: #a39c9c url("../img/_structure/openeyes_footer.png") no-repeat right top;
+
+    height: 25px;
+    background: #a39c9c;
+    position:fixed;
+    bottom:0;
+    z-index: 9999;
   }
     .open-eyes .footer .help .panel {
-      height: 38px;
+      height: 25px;
       border-style: none;
       border-width: 0;
-      padding-top: 14px;
       background: #bfbaba;
-      margin: 0 0 0 0; }
+      margin: 0 0 0 0;
+      border-radius: 0; }
       .open-eyes .footer .help .panel strong {
         color: #555252; }
     .open-eyes .footer .info {
       font-size: 9px;
       font-size: 0.5625rem;
-      padding-top: 7px; }
+      padding-top: 3px;
+      line-height:1.2em; }
 
 .open-eyes .panel {
   border-radius: 5px;
@@ -94,7 +98,8 @@ html, body {
     background-position: left bottom; }
 
 .event .event-content {
-  background-image: none !important; }
+  background-image: none !important;
+  margin-bottom:8px; }
 
 .alert-box {
   border: none; }
@@ -626,13 +631,12 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   padding: 0 0 5px 0;
   width: 14.6%;
   position: fixed;
-  top: 82px;
+  top: 80px;
 }
   .open-eyes .sidebar.episodes-and-events .oe-scroll-wrapper {
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;
-    top: 2px;
     width: 180px;
     padding: 0;
     margin: 0;
@@ -843,8 +847,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 
 .oe-panel.specialty ol.events {
   margin: 5px 0 0 0;
-  position: relative;
-  padding-bottom: 35px; }
+  position: relative; }
   .oe-panel.specialty ol.events li {
     display: block;
     white-space: nowrap;

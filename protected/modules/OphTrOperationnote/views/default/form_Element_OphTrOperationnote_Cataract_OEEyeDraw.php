@@ -23,12 +23,6 @@
             array('PhakoIncision', 'SidePort', 'IrisHook', 'Malyugin', 'PCIOL', 'ACIOL', 'PI', 'MattressSuture',
                 'CapsularTensionRing', 'CornealSuture', 'ToricPCIOL', 'LimbalRelaxingIncision', ),
         ),
-        'onReadyCommandArray' => array(
-            array('addDoodle', array('AntSeg')),
-            array('addDoodle', array('PhakoIncision')),
-            array('addDoodle', array('PCIOL')),
-            array('deselectDoodles', array()),
-        ),
         'bindingArray' => array(
             'PhakoIncision' => array(
                 'incisionSite' => array('id' => 'Element_OphTrOperationnote_Cataract_incision_site_id', 'attribute' => 'data-value'),

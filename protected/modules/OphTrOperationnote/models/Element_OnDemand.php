@@ -18,6 +18,8 @@
  */
 class Element_OnDemand extends Element_OpNote
 {
+    public $requires_eye = false;
+
     public function getContainer_form_view()
     {
         return 'element_ondemand_container_form';

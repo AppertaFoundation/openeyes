@@ -268,6 +268,10 @@ return array(
         'ldap_password' => '',
         'ldap_dn' => '',
         'ldap_method' => 'native', // use 'zend' for the Zend_Ldap vendor module
+        // set to integer value of 2 or 3 to force specific ldap protocol
+        'ldap_protocol_version' => null,
+        // alters the prefix used when binding to a user in native ldap connections
+        'ldap_username_prefix' => 'cn',
         'ldap_native_timeout' => 3,
         'ldap_info_retries' => 3,
         'ldap_info_retry_delay' => 1,

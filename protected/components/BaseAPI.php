@@ -211,11 +211,12 @@ class BaseAPI
      *
      * @param Episode $episode - the episode
      * @param string  $element - the element class
+     * @param string  $later_than - any English textual datetime description, this text will passed to strtotime, supported formats: http://php.net/manual/en/datetime.formats.php
      *
      * @return BaseEventTypeElement|null - Will actually be an instance of the class requested
      * @deprecated since 2.0
      */
-    public function getElementForLatestEventInEpisode($episode, $element)
+    public function getElementForLatestEventInEpisode($episode, $element, $later_than = null)
     {
         trigger_error('getElementForLatestEventInEpisode is deprecated as of version 2.0, please use getElementFromLatestEvent instead', E_USER_NOTICE);
         $event_type = $this->getEventType();
@@ -225,6 +226,13 @@ class BaseAPI
             $criteria->compare('episode_id', $episode->id);
             $criteria->compare('event_id', $event->id);
             $criteria->order = 'event.created_date desc';
+
+            if($later_than && strtotime($later_than)){
+
+                $later_than_date = date('Y-m-d H:i:s', strtotime("-3 weeks"));
+                $criteria->addCondition('event.event_date >= :later_than');
+                $criteria->params[':later_than'] = $later_than_date;
+            }
 
             return $element::model()
                 ->with('event')

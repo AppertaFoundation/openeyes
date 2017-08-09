@@ -119,7 +119,7 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
 
 
             array('right_ba_index_value, left_ba_index_value', 'numerical',
-                'integerOnly'=>false,'min'=>1, 'max'=>100),
+                'integerOnly'=>false,'min'=>0, 'max'=>999),
 
             array('right_kmax_value', 'kValueCompare', 'compare' => 'right_anterior_k2_value', 'side' => 'Right'),
             array('left_kmax_value', 'kValueCompare', 'compare' => 'left_anterior_k2_value', 'side' => 'Left'),
@@ -221,7 +221,7 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
 
         // When an eye is closed we do not want to validate that eye's info.
             $side_checks = array('_anterior_k1_value', '_axis_anterior_k1_value', '_anterior_k2_value',
-                '_axis_anterior_k2_value', '_kmax_value', '_thinnest_point_pachymetry_value', '_ba_index_value');
+                '_axis_anterior_k2_value', '_kmax_value', '_thinnest_point_pachymetry_value');
             foreach (array('left', 'right') as $side) {
                 $check = 'has' . ucfirst($side);
                 if ($this->$check()) {
