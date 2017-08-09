@@ -19,6 +19,7 @@
 
 namespace OEModule\OphCiExamination\controllers;
 
+use OEModule\OphCiExamination\components\ExaminationHelper;
 use Yii;
 use Audit;
 use CDbCriteria;
@@ -379,14 +380,20 @@ class AdminController extends \ModuleAdminController
         $et_exam = \EventType::model()->find('class_name=?', array('OphCiExamination'));
 
         $criteria = new CDbCriteria();
-        $criteria->addCondition('event_type_id = :event_type_id');
-        $criteria->addNotInCondition('id', $element_type_ids);
+        $criteria->addCondition('t.event_type_id = :event_type_id');
+        $criteria->addNotInCondition('t.id', $element_type_ids);
         $criteria->params[':event_type_id'] = $et_exam->id;
-        $criteria->order = 'name asc';
+        $criteria->addNotInCondition('t.class_name', ExaminationHelper::elementFilterList()) ;
+        $criteria->order = 'parent_element_type.name asc, t.name asc';
+
+        $element_types = \ElementType::model()->with('parent_element_type')->findAll($criteria);
+        uasort($element_types, function($a, $b) {
+            return $a->nameWithParent > $b->nameWithParent;
+        });
 
         $this->renderPartial('_update_Workflow_ElementSetItem', array(
             'step' => $step,
-            'element_types' => \ElementType::model()->findAll($criteria),
+            'element_types' => $element_types,
         ));
     }
 

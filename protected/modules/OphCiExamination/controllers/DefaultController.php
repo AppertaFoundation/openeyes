@@ -122,18 +122,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function getElementFilterList()
     {
-        if ($this->getApp()->hasModule('OphCoTherapyapplication')) {
-            $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagement');
-        } else {
-            $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
-        }
-
-        // Deprecated elements that we keep in place for backward compatibility with rendering
-        $remove = array_merge($remove, array(
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy',
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion',
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk'
-        ));
+        $remove = components\ExaminationHelper::elementFilterList();
 
         if ($this->set) {
             foreach ($this->set->HiddenElementTypes as $element) {
