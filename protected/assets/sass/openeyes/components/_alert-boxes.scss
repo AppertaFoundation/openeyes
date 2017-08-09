@@ -23,7 +23,6 @@
 // Base alert-box styling.
 .alert-box {
 	@include alert(#e2e2e2);
-	@include radius(5px);
 	.close {
 		@include alert-close;
 		top: 1em;
