@@ -112,6 +112,24 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
+     * @param BaseEventTypeElement $element
+     * @param string $action
+     * @inheritdoc
+     */
+    protected function setElementDefaultOptions($element, $action)
+    {
+        if ($action == 'create' && $this->getBookingProcedures()) {
+            // we are loading procedure elements directly, so if they need the
+            // eye setting, we must take care of this first.
+            if (is_a($element, 'Element_OnDemandEye')) {
+                $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+                $element->setEye($api->getEyeForOperation($this->booking_operation->event_id));
+            }
+        }
+        parent::setElementDefaultOptions($element, $action);
+    }
+
+    /**
      * For new notes for a specific operation, initialise procedure list with relevant procedures.
      *
      * @param Element_OphTrOperationnote_ProcedureList $element
