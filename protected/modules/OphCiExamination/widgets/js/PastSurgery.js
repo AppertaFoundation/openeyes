@@ -52,7 +52,6 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
     };
 
     /**
-     * @TODO validate date selection (must have month for a day selection)
      * @returns {boolean}
      */
     PreviousSurgeryController.prototype.validateForm = function()

@@ -16,21 +16,13 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+use OEModule\OphCiExamination\components\ExaminationHelper;
+
 ?>
 <?php
 // construct arrays of other subspecialty principal diagnoses
-$right_principals = array();
-$left_principals = array();
-foreach ($this->patient->episodes as $episode) {
-    if ($episode->id != $this->episode->id && $episode->diagnosis) {
-        if (in_array($episode->eye_id, array(Eye::RIGHT, Eye::BOTH))) {
-            $right_principals[] = array($episode->diagnosis, $episode->getSubspecialtyText());
-        }
-        if (in_array($episode->eye_id, array(Eye::LEFT, Eye::BOTH))) {
-            $left_principals[] = array($episode->diagnosis, $episode->getSubspecialtyText());;
-        }
-    }
-} ?>
+list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipalDiagnoses($this->episode);
+ ?>
 <div class="element-data element-eyes row">
     <div class="element-eye right-eye column">
         <?php

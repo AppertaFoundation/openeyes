@@ -26,6 +26,8 @@ class DefaultController extends BaseEventTypeController
         'getTheatreOptions' => self::ACTION_TYPE_FORM,
     );
 
+    protected $show_element_sidebar = false;
+
     /* @var Element_OphTrOperationbooking_Operation operation that this note is for when creating */
     protected $booking_operation;
     /* @var boolean - indicates if this note is for an unbooked procedure or not when creating */
@@ -107,6 +109,24 @@ class DefaultController extends BaseEventTypeController
 
             return $elements;
         }
+    }
+
+    /**
+     * @param BaseEventTypeElement $element
+     * @param string $action
+     * @inheritdoc
+     */
+    protected function setElementDefaultOptions($element, $action)
+    {
+        if ($action == 'create' && $this->getBookingProcedures()) {
+            // we are loading procedure elements directly, so if they need the
+            // eye setting, we must take care of this first.
+            if (is_a($element, 'Element_OnDemandEye')) {
+                $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+                $element->setEye($api->getEyeForOperation($this->booking_operation->event_id));
+            }
+        }
+        parent::setElementDefaultOptions($element, $action);
     }
 
     /**
@@ -341,12 +361,18 @@ class DefaultController extends BaseEventTypeController
      * Ajax action to load the required elements for a procedure.
      *
      * @throws SystemException
+     * @throws CHttpException
      */
     public function actionLoadElementByProcedure()
     {
         if (!$proc = Procedure::model()->findByPk((integer) @$_GET['procedure_id'])) {
             throw new SystemException('Procedure not found: '.@$_GET['procedure_id']);
         }
+
+        if (!$patient_id = $this->getApp()->request->getParam('patientId')) {
+            throw new SystemException('patientId required for procedure element loading.');
+        }
+        $this->setPatient($patient_id);
 
         $form = new BaseEventTypeCActiveForm();
 
@@ -356,24 +382,18 @@ class DefaultController extends BaseEventTypeController
             $class_name = $element->element_type->class_name;
 
             $element = new $class_name();
-            $patientId = Yii::app()->request->getParam('patientId');
-            if ($patientId > 0) {
-                $element->patientId = $patientId;
+            $element->patientId = $this->patient->id;
+
+            if ($element->requires_eye) {
+                $eye_id = $this->getApp()->request->getParam('eye');
+                if (!in_array($eye_id, array(Eye::LEFT, Eye::RIGHT))) {
+                    echo 'must-select-eye';
+                    return;
+                }
+                $element->eye = Eye::model()->findByPk($eye_id);
             }
 
-            // FIXME: define a property on the element to indicate that specific eye is required
-            $requiresEye = array(
-                'Element_OphTrOperationnote_Cataract',
-                'Element_OphTrOperationnote_Vitrectomy',
-                'Element_OphTrOperationnote_Buckle',
-            );
-            if (in_array($class_name, $requiresEye) && array_key_exists('eye', $_GET) && !in_array($_GET['eye'], array(Eye::LEFT, Eye::RIGHT))) {
-                echo 'must-select-eye';
-
-                return;
-            }
-
-            $element->setDefaultOptions();
+            $element->setDefaultOptions($this->patient);
 
             $postProcess = ($i == count($procedureSpecificElements) - 1);
             $this->renderElement($element, 'create', $form, array(), array('ondemand' => true), false, $postProcess);
@@ -563,6 +583,7 @@ class DefaultController extends BaseEventTypeController
      * @return Eye
      *
      * @throws SystemException
+     * @throws CHttpException
      */
     public function getSelectedEyeForEyedraw()
     {
@@ -575,13 +596,12 @@ class DefaultController extends BaseEventTypeController
         } elseif (!empty($_GET['eye'])) {
             $eye = Eye::model()->findByPk($_GET['eye']);
         } elseif ($this->action->id == 'create') {
-            // Get the procedure list and eye from the most recent booking for the episode of the current user's subspecialty
-            if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
-                throw new SystemException('Patient not found: '.@$_GET['patient_id']);
+            if (!$this->patient) {
+                $this->setPatient($this->getApp()->request->getParam('patient_id'));
             }
 
-            if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-                if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
+            if ($episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
+                if ($api = $this->getApp()->moduleAPI->get('OphTrOperationbooking')) {
                     if ($booking = $api->getMostRecentBookingForEpisode($episode)) {
                         $eye = $booking->operation->eye;
                     }

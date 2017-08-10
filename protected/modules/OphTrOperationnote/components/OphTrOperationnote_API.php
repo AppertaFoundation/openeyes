@@ -340,6 +340,7 @@ class OphTrOperationnote_API extends BaseAPI
                         $element->procedures
                     )
                 ),
+                'link' => '/OphTrOperationnote/Default/view/' . $element->event_id
             );
         }
         return $operations;

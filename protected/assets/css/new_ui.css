@@ -31,27 +31,34 @@ html, body {
     margin-bottom: 5px;
     padding: 0;
     width: 1230px;
-    max-width: 1230px; }
+    max-width: 1230px;
+    overflow: hidden; }
   .open-eyes .container.content {
     background: none;
-    min-height: 600px; }
+    min-height: 600px;
+  }
   .open-eyes .footer {
-    border-radius: 0 0 5px 5px;
-    height: 42px;
-    background: #a39c9c url("../img/_structure/openeyes_footer.png") no-repeat right top; }
+
+    height: 25px;
+    background: #a39c9c;
+    position:fixed;
+    bottom:0;
+    z-index: 9999;
+  }
     .open-eyes .footer .help .panel {
-      height: 38px;
+      height: 25px;
       border-style: none;
       border-width: 0;
-      padding-top: 14px;
       background: #bfbaba;
-      margin: 0 0 0 0; }
+      margin: 0 0 0 0;
+      border-radius: 0; }
       .open-eyes .footer .help .panel strong {
         color: #555252; }
     .open-eyes .footer .info {
       font-size: 9px;
       font-size: 0.5625rem;
-      padding-top: 7px; }
+      padding-top: 3px;
+      line-height:1.2em; }
 
 .open-eyes .panel {
   border-radius: 5px;
@@ -91,7 +98,8 @@ html, body {
     background-position: left bottom; }
 
 .event .event-content {
-  background-image: none !important; }
+  background-image: none !important;
+  margin-bottom:8px; }
 
 .alert-box {
   border: none; }
@@ -125,6 +133,9 @@ button.cancel.event-action, .button.cancel.event-action, button.delete, button.d
 button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-action:hover, button.delete:hover, button.delete.disabled:hover, button.delete.inactive:hover, button.delete[disabled]:hover, .button.delete:hover, input[type="submit"].delete:hover, input[type="submit"].cancel.event-action:hover, .button.warning:hover, input[type="submit"].warning:hover {
   background: linear-gradient(#e01a1a, #d11313);
   text-shadow: none; }
+
+.element-data-inline .data-label, .element-data-inline .data-value {
+  display: inline-block; }
 
 .oe-find-patient {
   padding: 20px;
@@ -196,12 +207,12 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
       padding: 0;
       margin: 0; }
     .open-eyes .header > .large-4 {
-      width: 457px;
+      width: 533px;
       height: 75px;
       padding: 0;
       margin: 0; }
     .open-eyes .header > .large-6 {
-      width: 594px;
+      width: 518px;
       height: 75px;
       padding: 0;
       margin: 0; }
@@ -218,7 +229,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   font-family: "Roboto", "Helvetica", "Arial", sans-serif; }
 
 .open-eyes .panel.patient {
-  width: 450px;
+  width: 526px;
   color: #fff;
   background: #747782 url("../img/_elements/icons/patient/patient-panel-icon.png") no-repeat right top;
   padding: 3px 0 6px 17px; }
@@ -256,7 +267,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     .open-eyes .panel.patient .patient-gender em {
       color: #bbb; }
   .open-eyes .panel.patient .patient-summary-anchor .oe-correspondence-stack {
-    margin-left: 28px; }
+    margin-left: 25px; }
   .open-eyes .panel.patient .patient-widgets .patient-warnings {
     top: 22px;
     right: -15px;
@@ -265,12 +276,12 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     top: -48px;
     right: 15px; }
 .open-eyes .panel.patient-popup {
-  width: 450px;
+  width: 526px;
   height: auto;
   padding: 8px;
   position: absolute;
   top: 70px;
-  left: -418px;
+  left: -494px;
   z-index: 9999;
   display: none;
   background: #747782;
@@ -303,62 +314,123 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     background: #d2dde8; }
     .open-eyes .panel.patient-popup .summary-data .row .label {
       color: #747782; }
-  .open-eyes .panel.patient-popup .problems-plans .subtitle {
+
+.open-eyes .panel.patient.patient-deceased {
+  color: #fff;
+  background-color: #992121; }
+.open-eyes .panel.patient .right-side-column {
+  position: absolute;
+  width: 521px;
+  top: 7px;
+  left: 526px;
+  background: #747782;
+  border-left: 3px solid #5d5f68;
+  padding: 0 8px 8px 8px;
+  margin: 0; }
+  .open-eyes .panel.patient .right-side-column .subtitle {
+    position: relative;
     display: block;
-    margin: 10px 0 5px 5px;
+    margin: 5px 0 5px 0;
+    padding: 5px 0 0 5px;
     font-size: 12px;
     font-size: 0.75rem;
     font-weight: 400;
-    color: #fff; }
-  .open-eyes .panel.patient-popup .problems-plans ul {
+    color: #ddd; }
+    .open-eyes .panel.patient .right-side-column .subtitle.divider {
+      border-top: 3px solid #5d5f68;
+      padding-top: 8px; }
+    .open-eyes .panel.patient .right-side-column .subtitle .icon-quicklook-white {
+      display: block;
+      width: 17px;
+      height: 17px;
+      position: absolute;
+      top: 5px;
+      right: 0;
+      background: transparent url("../img/sprites/quicklook-white.png") top left no-repeat;
+      overflow: hidden;
+      opacity: 0.7;
+      cursor: pointer; }
+      .open-eyes .panel.patient .right-side-column .subtitle .icon-quicklook-white.icon-cross {
+        background-position-y: bottom; }
+      .open-eyes .panel.patient .right-side-column .subtitle .icon-quicklook-white:hover {
+        opacity: 1; }
+  .open-eyes .panel.patient .right-side-column .popup-management-summaries ul {
     padding: 0;
     margin: 0; }
-    .open-eyes .panel.patient-popup .problems-plans ul li {
+    .open-eyes .panel.patient .right-side-column .popup-management-summaries ul li {
       display: block;
       width: 100%;
-      padding: 3px 5px 3px 5px;
-      margin: 0 0 1px 0;
-      background: #5d5f68;
+      padding: 3px 5px 2px 5px;
+      margin: 0 0 3px 0;
       height: auto;
-      font-size: 11px;
-      font-size: 0.6875rem; }
-      .open-eyes .panel.patient-popup .problems-plans ul li .drag-handle {
-        color: #aaa;
-        padding: 0 3px;
-        margin: 0 5px 0 0;
-        cursor: pointer; }
-        .open-eyes .panel.patient-popup .problems-plans ul li .drag-handle:hover {
-          color: #fff; }
-      .open-eyes .panel.patient-popup .problems-plans ul li .remove {
+      border-top: 1px dotted #9ea0a8; }
+      .open-eyes .panel.patient .right-side-column .popup-management-summaries ul li p {
         font-size: 11px;
         font-size: 0.6875rem;
-        float: right;
-        padding: 0 0 0 5px;
-        cursor: pointer;
-        color: #aaa; }
-        .open-eyes .panel.patient-popup .problems-plans ul li .remove:hover {
-          color: #fff; }
-  .open-eyes .panel.patient-popup .problems-plans .create-new-problem-plan {
-    position: relative;
-    background: #5d5f68;
-    padding: 5px;
-    margin: 5px 0 0 0;
-    height: auto; }
-    .open-eyes .panel.patient-popup .problems-plans .create-new-problem-plan .add-problem-plan-btn {
-      display: block;
-      position: absolute;
-      top: 50%;
-      right: 5px;
-      transform: translate(0, -50%);
+        line-height: 1.3;
+        margin: 0 0 0 180px;
+        padding: 5px 0px 3px 0px; }
+      .open-eyes .panel.patient .right-side-column .popup-management-summaries ul li h6 {
+        margin: 0;
+        padding: 5px 0 0 0;
+        font-size: 12px;
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: #fff;
+        float: left; }
+  .open-eyes .panel.patient .right-side-column .problems-plans {
+    padding: 0;
+    margin: 0; }
+    .open-eyes .panel.patient .right-side-column .problems-plans ul {
+      padding: 0;
       margin: 0; }
-    .open-eyes .panel.patient-popup .problems-plans .create-new-problem-plan input {
-      font-size: 11px;
-      font-size: 0.6875rem;
-      background: #eee;
-      border: 0;
-      width: 85%; }
+      .open-eyes .panel.patient .right-side-column .problems-plans ul li {
+        display: block;
+        width: 100%;
+        padding: 3px 5px 3px 5px;
+        margin: 0 0 1px 0;
+        background: #5d5f68;
+        height: auto;
+        font-size: 11px;
+        font-size: 0.6875rem; }
+        .open-eyes .panel.patient .right-side-column .problems-plans ul li .drag-handle {
+          color: #aaa;
+          padding: 0 3px;
+          margin: 0 5px 0 0;
+          cursor: pointer; }
+          .open-eyes .panel.patient .right-side-column .problems-plans ul li .drag-handle:hover {
+            color: #fff; }
+        .open-eyes .panel.patient .right-side-column .problems-plans ul li .remove {
+          font-size: 11px;
+          font-size: 0.6875rem;
+          float: right;
+          padding: 0 0 0 5px;
+          cursor: pointer;
+          color: #aaa; }
+          .open-eyes .panel.patient .right-side-column .problems-plans ul li .remove:hover {
+            color: #fff; }
+    .open-eyes .panel.patient .right-side-column .problems-plans .create-new-problem-plan {
+      position: relative;
+      background: #5d5f68;
+      padding: 5px;
+      margin: 5px 0 0 0;
+      height: auto; }
+      .open-eyes .panel.patient .right-side-column .problems-plans .create-new-problem-plan .add-problem-plan-btn {
+        display: block;
+        position: absolute;
+        top: 50%;
+        right: 5px;
+        transform: translate(0, -50%);
+        margin: 0; }
+      .open-eyes .panel.patient .right-side-column .problems-plans .create-new-problem-plan input {
+        font-size: 11px;
+        font-size: 0.6875rem;
+        background: #eee;
+        border: 0;
+        width: 85%; }
+
 .open-eyes .panel.user {
-  width: 593px;
+  width: 519px;
   background: none; }
   .open-eyes .panel.user ul.oe-user-panel {
     list-style: none;
@@ -374,18 +446,23 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
       .open-eyes .panel.user ul.oe-user-panel > li:last-child {
         margin-right: 0; }
     .open-eyes .panel.user ul.oe-user-panel li.oe-user-info {
-      width: 354px; }
+      width: 368px;
+      position: relative; }
     .open-eyes .panel.user ul.oe-user-panel ul.oe-user-profile-firm {
       list-style: none;
       margin: 0;
-      padding: 10px 0 0 20px; }
+      padding: 0 0 0 20px;
+      position: absolute;
+      top: 50%;
+      transform: translate(0, -50%); }
       .open-eyes .panel.user ul.oe-user-panel ul.oe-user-profile-firm li {
         font-size: 11px;
         font-size: 0.6875rem;
-        font-weight: 500; }
+        font-weight: 500;
+        line-height: 1.4; }
       .open-eyes .panel.user ul.oe-user-panel ul.oe-user-profile-firm em {
         display: inline-block;
-        width: 35px;
+        width: 38px;
         font-size: 9px;
         font-size: 0.5625rem;
         color: #999;
@@ -554,12 +631,12 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   padding: 0 0 5px 0;
   width: 14.6%;
   position: fixed;
-  top: 82px; }
+  top: 80px;
+}
   .open-eyes .sidebar.episodes-and-events .oe-scroll-wrapper {
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;
-    top: 2px;
     width: 180px;
     padding: 0;
     margin: 0;
@@ -579,7 +656,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     color: white; }
   .open-eyes .sidebar.episodes-and-events .scroll-blue-top {
     position: absolute;
-    top: 38px;
+    top: 2px;
     width: 180px;
     height: 8px;
     background: transparent url("../img/_elements/gradients/bg_scroll_blue_top.png") top left repeat-x;
@@ -618,7 +695,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     margin: 0;
     padding: 0; }
   .oe-element-list .has-children.expanded {
-    margin: 3px 0; }
+    margin: 4px 0; }
   .oe-element-list .has-children.collapsed {
     margin: 0 0; }
   .oe-element-list a {
@@ -627,25 +704,25 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     min-height: 19px;
     line-height: 19px;
     margin-bottom: 1px;
-    padding: 0 25px 0 8px;
+    padding: 0 25px 0 18px;
     overflow: hidden;
-    font-size: 11px;
-    font-size: 0.6875rem;
+    font-size: 12px;
+    font-size: 0.75rem;
     font-weight: 400;
-    color: #ddd;
+    color: #fff;
     background: #85898c url("../img/_elements/icons/sidebar/element-edit-sprites.png") top right no-repeat; }
     .oe-element-list a.selected {
       background-image: url("../img/_elements/icons/sidebar/element-edit-arrow.png"); }
     .oe-element-list a.selected, .oe-element-list a:hover, .oe-element-list a:active {
-      color: #4b4d55;
+      color: #1d1e21;
       background-color: #e9e9e9;
       background-position: 100% -114px; }
       .oe-element-list a.selected .icon.expand, .oe-element-list a:hover .icon.expand, .oe-element-list a:active .icon.expand {
         background-position: -6px -190px; }
       .oe-element-list a.selected .icon.collapse, .oe-element-list a:hover .icon.collapse, .oe-element-list a:active .icon.collapse {
         background-position: -6px -171px; }
-    .oe-element-list a.has-icon {
-      padding-left: 25px; }
+    /*.oe-element-list a.has-icon {
+      padding-left: 18px; }*/
     .oe-element-list a .icon {
       position: absolute;
       top: 0;
@@ -655,13 +732,24 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
       height: 19px;
       overflow: hidden;
       background: transparent url("../img/_elements/icons/sidebar/element-edit-sprites.png") -6px 0 no-repeat; }
-      .oe-element-list a .icon.expand {
-        background-position: -6px -95px; }
-      .oe-element-list a .icon.collapse {
-        background-position: -6px -76px; }
-      .oe-element-list a .icon.child {
-        background-position: -6px -57px; }
-
+    .oe-element-list a .icon.expand {
+      background-position: -6px -95px; }
+    .oe-element-list a .icon.collapse {
+      background-position: -6px -76px; }
+    .oe-element-list a .icon.child {
+      background-position: 0px -57px;}
+    .oe-element-list .has-children a {
+      background-color: #777b7e;
+      font-weight: 500; }
+    .oe-element-list .has-children a.selected, .oe-element-list .has-children a.selected:hover, .oe-element-list .has-children a:hover {
+      background-color: #fcfcfc; }
+    .oe-element-list .child a {
+      background-color: #96999c;
+      font-style: italic;
+      font-weight: 400;
+      padding-left: 28px;  }
+    .oe-element-list .child a.selected {
+      background-color: #f5f5f5; }
 .oe-sidebar-event-creation {
   height: 38px;
   line-height: 38px;
@@ -769,8 +857,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 
 .oe-panel.specialty ol.events {
   margin: 5px 0 0 0;
-  position: relative;
-  padding-bottom: 35px; }
+  position: relative; }
   .oe-panel.specialty ol.events li {
     display: block;
     white-space: nowrap;
@@ -1337,3 +1424,84 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 @import 'new/correspondence';
 @import 'new/bluesky';
 */
+
+.sub-element {
+  margin-bottom: 2px;
+}
+
+.edit .sub-element {
+    border: 2px solid #96999c;
+    overflow: hidden;
+}
+
+.field-row {
+  padding-bottom: 2px;
+}
+
+.edit .element-fields {
+  padding: 2px 10px 0px 10px;
+}
+
+.element-eye,
+.edit .sub-element-fields {
+  padding: 2px 10px 0px 10px;
+}
+
+table {
+  margin-bottom: 2px;
+}
+
+table tr td {
+  padding: 2px 10px 2px 10px;
+}
+
+label.highlight {
+  padding: 2px 5px 2px 5px;
+}
+
+.edit .element-actions, .edit .optional-elements-actions, .edit .sub-element-actions {
+  padding: 2px 4px;
+}
+
+.element-title, .sub-element-title {
+  padding: 6px 11px;
+}
+
+
+.edit .element,
+.edit .optional-elements {
+  border-top: none;
+}
+
+.edit .element-header, .edit .element-title {
+    background-color: #777b7e;
+    color: white;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.edit .sub-element-header, .edit h4.sub-element-title {
+    background: #96999c;
+    color: white;
+}
+
+.edit .sub-element-header .inline {
+    color: #000;
+}
+
+.edit .element-title-additional {
+    line-height: 1.6em;
+}
+
+.edit .sub-elements {
+    padding: 5px 4px 0 4px;
+    margin: 0;
+    background: #dae6f1;
+}
+
+.centre, .center {
+    text-align: center;
+    align-content: center;
+    align-items: center;
+    align-self: center;
+}

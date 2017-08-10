@@ -18,6 +18,7 @@
 */
 class DefaultController extends BaseEventTypeController
 {
+    protected $show_element_sidebar = false;
     /**
      * Parse the data for the phasing readings.
      *

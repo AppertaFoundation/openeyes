@@ -84,7 +84,7 @@ class MenuHelper
      * @param array $menuOptions
      * @return array
      */
-    protected function formatMenuOptions(array $menuOptions)
+    protected function formatMenuOptions(array $menuOptions, $position = 0)
     {
         $menu = array();
 
@@ -137,17 +137,25 @@ class MenuHelper
             if (isset($menu_item['api'])) {
                 $api = Yii::app()->moduleAPI->get($menu_item['api']);
                 foreach ($api->getMenuItems($menu_item['position']) as $item) {
-                    $menu[$item['position']] = $item;
+                    $menu[$position] = $item;
                 }
             } else {
-                $menu[$menu_item['position']] = $menu_item;
+                $menu[$position] = $menu_item;
             }
 
             if (isset($menu_item['sub'])) {
-                $menu[$menu_item['position']]['sub'] = $this->formatMenuOptions($menu_item['sub'], $this->user);
+                $menu[$position]['sub'] = $this->formatMenuOptions($menu_item['sub'], $position);
             }
+
+            $position++;
         }
-        ksort($menu);
+
+        usort($menu, function ($a, $b) {
+            if($a['position'] == $b['position']){
+                return strcasecmp($a['title'], $b['title']);
+            }
+            return $a['position'] - $b['position'];
+        });
 
         return $menu;
     }

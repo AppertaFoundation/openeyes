@@ -71,11 +71,10 @@ class OptomFeedbackController extends \BaseEventTypeController
                 ));
 
             } else{
-                $model->created_user_id = Yii::app()->user->id;
                 $model->invoice_status_id = $this->request->getPost('invoice_status_id');
                 $model->comment = $this->request->getPost('comment');
 
-                $model->update();
+                $model->save();
 
                 $result = json_encode(array(
                     's'     => 1,
@@ -131,15 +130,10 @@ class OptomFeedbackController extends \BaseEventTypeController
     {
         if ($this->request->isPostRequest) {
 
-            $model = \AutomaticExaminationEventLog::model();
-            $model->id = $id;
+            $model = \AutomaticExaminationEventLog::model()->findByPk($id);
             $previousVersions = $model->getPreviousVersions();
-            if(!empty($previousVersions)){
-                $result = $this->renderPartial('/optom/audit_list', array( 'data' => $previousVersions));
-
-            } else {
-                $result = 'No results found.';
-            }
+            array_unshift($previousVersions, $model);
+            $result = $this->renderPartial('/optom/audit_list', array( 'data' => $previousVersions));
         }
         echo $result;
     }

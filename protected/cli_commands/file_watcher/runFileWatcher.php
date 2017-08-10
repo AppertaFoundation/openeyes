@@ -81,7 +81,7 @@ function processDir($dirResource, $root, $logger)
     global $mysqli;
     global $newfile;
     //echo "Processing: ".$root."\n";
-    while (false !== ($entry = readdir($dirResource))) {
+    while ($dirResource && false !== ($entry = readdir($dirResource))) {
         if ($entry != '.' && $entry != '..') {
             if (is_dir($root.'/'.$entry)) {
                 $dirToProcess = opendir($root.'/'.$entry);

@@ -22,7 +22,7 @@
     }?>" data-side="right">
         <div class="active-form">
             <a href="#" class="icon-remove-side remove-side">Remove side</a>
-            <div class="eyedraw-row fundus">
+            <div class="eyedraw-row">
                 <?php $this->renderPartial($element->form_view.'_OEEyeDraw', array(
                     'form' => $form,
                     'side' => 'right',
@@ -43,7 +43,7 @@
     }?>" data-side="left">
         <div class="active-form">
             <a href="#" class="icon-remove-side remove-side">Remove side</a>
-            <div class="eyedraw-row fundus">
+            <div class="eyedraw-row">
                 <?php $this->renderPartial($element->form_view.'_OEEyeDraw', array(
                     'form' => $form,
                     'side' => 'left',

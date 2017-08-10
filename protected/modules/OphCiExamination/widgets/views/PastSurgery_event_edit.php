@@ -40,7 +40,7 @@ $model_name = CHtml::modelName($element);
     <div class="field-row row">
         <div class="large-2 column"><label for="<?= $model_name ?>_previous_operation_side">Side:</label></div>
         <div class="large-3 column end">
-            <label class="inline"><input type="radio" name="<?= $model_name ?>_previous_operation_side" class="<?= $model_name ?>_previous_operation_side" value="" /> None </label>
+            <label class="inline"><input type="radio" name="<?= $model_name ?>_previous_operation_side" class="<?= $model_name ?>_previous_operation_side" value="" checked="checked" /> None </label>
             <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) {?>
                 <label class="inline"><input type="radio" name="<?= $model_name ?>_previous_operation_side" class="<?= $model_name ?>_previous_operation_side" value="<?php echo $eye->id?>" /> <?php echo $eye->name?>	</label>
             <?php }?>
@@ -56,7 +56,7 @@ $model_name = CHtml::modelName($element);
     </div>
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-    <table id="<?= $model_name ?>_operation_table">
+    <table id="<?= $model_name ?>_operation_table" class="<?= $model_name ?>_Operation">
         <thead>
         <tr>
             <th>Operation</th>

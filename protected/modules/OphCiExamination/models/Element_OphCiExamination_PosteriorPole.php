@@ -137,8 +137,8 @@ class Element_OphCiExamination_PosteriorPole extends \SplitEventTypeElement
         return array(
             'id' => 'ID',
             'event_id' => 'Event',
-            'left_description' => 'Description',
-            'right_description' => 'Description',
+            'left_description' => 'Comments',
+            'right_description' => 'Comments',
             'left_eyedraw' => 'EyeDraw',
             'right_eyedraw' => 'EyeDraw',
             'left_ed_report' => 'Report',

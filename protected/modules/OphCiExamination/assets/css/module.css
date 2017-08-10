@@ -100,13 +100,17 @@
   padding-top: 35px;
 }
 
-/* line 18, ../sass/components/elements/_anterior-segment.scss */
+/* line 19, ../sass/components/elements/_anterior-segment.scss */
+.OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment .left .eyedraw-row {
+  margin-left: -13px;
+}
+/* line 23, ../sass/components/elements/_anterior-segment.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment .ed-fields-container {
   padding-top: 111px;
   left: -15px;
 }
 
-/* line 25, ../sass/components/elements/_anterior-segment.scss */
+/* line 30, ../sass/components/elements/_anterior-segment.scss */
 .anterior-segment .ed-widget.display {
   display: inline-block;
 }
@@ -173,10 +177,15 @@
   background-color: #008000;
 }
 
-/* line 30, ../sass/components/_elements.scss */
+/* line 2, ../sass/components/elements/_surgical-lids.scss */
+.OEModule_OphCiExamination_models_SurgicalLids .eyedraw-fields {
+  padding-top: 40px;
+}
+
+/* line 31, ../sass/components/_elements.scss */
 .autoreport-display {
   line-height: 1;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
 }
 
 /* line 17, ../sass/components/_gonio-cross.scss */

@@ -27,7 +27,9 @@
     <?php foreach ($operations as $operation) {?>
         <tr>
             <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date']); ?></td>
-            <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayOperation() : $operation['operation']; ?></td>
+            <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayOperation() : $operation['operation']; ?>
+                <?php if (array_key_exists('link', $operation)) { ?><a href="<?= $operation['link'] ?>"><span class="has-tooltip fa fa-eye" data-tooltip-content="View operation note"></span></a><?php } ?>
+            </td>
         </tr>
     <?php }?>
     </tbody>

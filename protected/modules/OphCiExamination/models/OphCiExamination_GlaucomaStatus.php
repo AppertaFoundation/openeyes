@@ -94,4 +94,9 @@ class OphCiExamination_GlaucomaStatus extends \BaseActiveRecordVersioned
             'LookupTable' => 'LookupTable',
         );
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }

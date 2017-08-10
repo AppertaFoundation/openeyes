@@ -393,6 +393,7 @@ class Element_OphCiExamination_InjectionManagementComplex extends \SplitEventTyp
         // create assignment and store for saving
         // if there is, remove from the current risk array
         // anything left in $current_risks at the end is ripe for deleting
+        if(is_array($risk_ids)){
         foreach ($risk_ids as $risk_id) {
             if (!array_key_exists($risk_id, $current_risks)) {
                 $s = new OphCiExamination_InjectionManagementComplex_RiskAssignment();
@@ -410,6 +411,7 @@ class Element_OphCiExamination_InjectionManagementComplex extends \SplitEventTyp
         // delete the rest
         foreach ($current_risks as $curr) {
             $curr->delete();
+        }
         }
     }
 
@@ -880,5 +882,27 @@ class Element_OphCiExamination_InjectionManagementComplex extends \SplitEventTyp
     public function canCopy()
     {
         return true;
+    }
+
+    protected function getSummaryStringForSide($side)
+    {
+        if ($this->{$side . '_no_treatment_reason'}) {
+            return $this->{$side . '_no_treatment_reason'}->other ?
+                $this->{$side . '_no_treatment_reason_other'} :
+                $this->{$side . '_no_treatment_reason'}->name;
+        } else {
+            return $this->{$side . '_treatment'};
+        }
+    }
+
+    public function __toString() {
+        $res = array();
+        if ($this->hasRight()) {
+            $res[] = 'R: ' . $this->getSummaryStringForSide('right');
+        }
+        if ($this->hasLeft()) {
+            $res[] = 'L: ' . $this->getSummaryStringForSide('left');
+        }
+        return implode(', ', $res);
     }
 }

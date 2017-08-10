@@ -31,9 +31,9 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-class Element_OphTrOperationnote_Vitrectomy extends Element_OnDemand
+class Element_OphTrOperationnote_Vitrectomy extends Element_OnDemandEye
 {
-    public $service;
+    public $requires_eye = true;
 
     /**
      * Returns the static model of the specified AR class.
@@ -117,12 +117,5 @@ class Element_OphTrOperationnote_Vitrectomy extends Element_OnDemand
         return new CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
             ));
-    }
-
-    public function getEye()
-    {
-        if ($this->event_id && $pl = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($this->event_id))) {
-            return $pl->eye;
-        }
     }
 }

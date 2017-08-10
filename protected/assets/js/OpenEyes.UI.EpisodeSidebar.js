@@ -52,6 +52,9 @@
 
     var sidebarCookiePrefix = 'oe-sidebar-state-';
 
+    /**
+    * Load the previous state of the sidebar from cookie storage
+    */
     EpisodeSidebar.prototype.loadState = function() {
         var self = this;
         if (typeof(Storage) !== "undefined") {
@@ -66,6 +69,9 @@
         }
     };
 
+    /**
+    * Save the current sidebar state to cookie storage
+    */
     EpisodeSidebar.prototype.saveState = function() {
         var self = this;
         if (typeof(Storage) !== "undefined") {

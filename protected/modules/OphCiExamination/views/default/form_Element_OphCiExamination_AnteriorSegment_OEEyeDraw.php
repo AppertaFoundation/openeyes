@@ -23,24 +23,12 @@ $cross_section_ed = null;
 if ($element->isNewRecord || $element->{$side . '_eyedraw2'}) {
     // only display the cross section eyedraw for elements created after it was introduced
     // legacy records will not have the the eyedraw2 property
+    // Having checked it though, we set the value to null, so that it's contents are driven
+    // by the stored data in the core eyedraw attribute.
+    $element->{$side . '_eyedraw2'} = null;
+
     $cross_section_ed = $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-        'onReadyCommandArray' => array(
-            array('addDoodle', array('CorneaCrossSection')),
-            array('addDoodle', array('AntSegCrossSection')),
-            array('addDoodle', array('LensCrossSection')),
-            array('deselectDoodles', array()),
-        ),
         'listenerArray' => array('anteriorSegmentListener'),
-        'syncArray' => array(
-            $side.'_'.$element->elementType->id => array(
-                'AntSegCrossSection' => array('AntSeg' => array('parameters' => array('apexY') ) ),
-                'LensCrossSection' => array('Lens' => array('parameters' => array('originY') ) ),
-                'ACIOLCrossSection' => array('ACIOL' => array('parameters' => array('originY') ) ),
-                'PCIOLCrossSection' => array('PCIOL' => array('parameters' => array('originY', 'fx') ) ),
-                // no controls for corneal opacity in cross section so don't need to sync back to primary
-                //'CornealOpacityCrossSection' => array('CornealOpacity' => array('parameters' => array('yMidPoint', 'd', 'h', 'w', 'iW') ) )
-            ),
-        ),
         'idSuffix' => $side.'_'.$element->elementType->id . '_side',
         'side' => ($side == 'right') ? 'R' : 'L',
         'mode' => 'edit',
@@ -69,23 +57,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'KeraticPrecipitates', 'Episcleritis', 'TrabyFlap', 'Tube', 'TubeExtender', 'Supramid', 'TubeLigation',
             'Patch', 'SidePort', 'RK',)
     ),
-    'onReadyCommandArray' => array(
-        array('addDoodle', array('AntSeg')),
-        array('addDoodle', array('Lens')),
-        array('deselectDoodles', array()),
-    ),
     'listenerArray' => array('anteriorSegmentListener', 'autoReportListener'),
-    'syncArray' => array(
-        $side .'_'.$element->elementType->id . '_side' => array(
-            'AntSeg' => array('AntSegCrossSection' => array('parameters' => array('apexY', 'colour') ) ),
-            'Lens' => array('LensCrossSection' => array('parameters' => array('originY', 'nuclearGrade', 'corticalGrade', 'posteriorSubcapsularGrade') ) ),
-            'ACIOL' => array('ACIOLCrossSection' => array('parameters' => array('originY') ) ),
-            'PCIOL' => array('PCIOLCrossSection' => array('parameters' => array('originY', 'fx') ) ),
-            'CornealOpacity' => array('CornealOpacityCrossSection' => array('parameters' => array('yMidPoint','d','h','w','iW','originY','minY','maxY') ) ),
-            'Hypopyon' => array('HypopyonCrossSection' => array('parameters' => array('apexY'))),
-            'Hyphaema' => array('HyphaemaCrossSection' => array('parameters' => array('apexY')))
-        )
-    ),
     'idSuffix' => $side.'_'.$element->elementType->id,
     'side' => ($side == 'right') ? 'R' : 'L',
     'mode' => 'edit',

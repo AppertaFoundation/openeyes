@@ -51,6 +51,16 @@ class DefaultController extends \BaseEventTypeController
 
     protected $deletedAllergies = array();
 
+    public function getTitle()
+    {
+        $title = parent::getTitle();
+        $current = $this->step ? : $this->getCurrentStep();
+        if (count($current->workflow->steps) > 1) {
+            $title .= ' (' . $current->name . ')';
+        }
+        return $title;
+    }
+
     /**
      * Need split event files.
      *
@@ -112,17 +122,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function getElementFilterList()
     {
-        if ($this->getApp()->hasModule('OphCoTherapyapplication')) {
-            $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagement');
-        } else {
-            $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
-        }
-
-        // Deprecated elements that we keep in place for backward compatibility with rendering
-        $remove = array_merge($remove, array(
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy',
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion'
-        ));
+        $remove = components\ExaminationHelper::elementFilterList();
 
         if ($this->set) {
             foreach ($this->set->HiddenElementTypes as $element) {
@@ -291,7 +291,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionStep($id)
     {
-        $this->step = true;
+        $this->step = $this->getCurrentStep()->getNextStep();
         // This is the same as update, but with a few extras, so we call the update code and then pick up on the action later
         $this->actionUpdate($id);
     }
@@ -393,17 +393,31 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Get the first workflow step using rules.
      *
-     * @TODO: examine what this is being used for as opposed to getting elements by workflow ...
-     *
      * @return OphCiExamination_ElementSet
      */
     protected function getFirstStep()
     {
         $firm_id = $this->firm->id;
-        $status_id = $this->episode->episode_status_id;
+        $status_id = ($this->episode) ? $this->episode->episode_status_id : 1;
         $workflow = new models\OphCiExamination_Workflow_Rule();
 
         return $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
+    }
+
+    /**
+     * @param null $event
+     * @return null|OphCiExamination_ElementSet
+     */
+    protected function getCurrentStep($event = null)
+    {
+        if (!$event) {
+            $event = $this->event;
+        }
+        if ($event && !$event->isNewRecord && $assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
+            return $assignment->step;
+        }
+
+        return $this->getFirstStep();
     }
 
     /**
@@ -415,14 +429,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function getNextStep($event = null)
     {
-        if (!$event) {
-            $event = $this->event;
-        }
-        if ($assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
-            $step = $assignment->step;
-        } else {
-            $step = $this->getFirstStep();
-        }
+        $step = $this->getCurrentStep();
 
         return $step->getNextStep();
     }
@@ -1064,7 +1071,7 @@ class DefaultController extends \BaseEventTypeController
 
         $side = ucfirst(@$_GET['side']);
 
-        $api = new components\OphCiExamination_API();
+        $api = $this->getApp()->moduleAPI->get('OphCiExamination');
         $result = $api->{"getLastIOPReading{$side}"}($patient);
 
         echo $result;
@@ -1258,10 +1265,7 @@ class DefaultController extends \BaseEventTypeController
     protected function setCurrentSet()
     {
         if (!$this->set) {
-            $firm_id = $this->firm->id;
-            $status_id = ($this->episode) ? $this->episode->episode_status_id : 1;
-            $workflow = new models\OphCiExamination_Workflow_Rule();
-            $this->set = $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
+            $this->set = $this->getFirstStep();
             $this->mandatoryElements = $this->set->MandatoryElementTypes;
         }
     }
@@ -1377,15 +1381,17 @@ class DefaultController extends \BaseEventTypeController
 
         if ($thisRisk) {
             if (is_null($recentAnticoag) || $recentAnticoag->anticoagulant === '0' || $recentAnticoag->event->id === $thisRisk->event->id) {
-                $previous = $historyRisk->previousCheckedAnticoag($this->patient->id, $thisRisk->event->event_date);
-                if ($previous->anticoagulant !== $thisRisk->anticoagulant) {
-                    $this->updateSummaryRisk($previous->anticoagulant, $previous->anticoagulant_name, 'Anticoagulants');
+                if ($previous = $historyRisk->previousCheckedAnticoag($this->patient->id, $thisRisk->event->event_date)){
+                    if ($previous->anticoagulant !== $thisRisk->anticoagulant) {
+                        $this->updateSummaryRisk($previous->anticoagulant, $previous->anticoagulant_name, 'Anticoagulants');
+                    }
                 }
             }
             if (is_null($recentAlpha) || $recentAlpha->alphablocker === '0' || $recentAnticoag->event->id === $thisRisk->event->id) {
-                $previous = $historyRisk->previousCheckedAlpha($this->patient->id, $thisRisk->event->event_date);
-                if ($previous->alphablocker !== $thisRisk->alphablocker) {
-                    $this->updateSummaryRisk($previous->alphablocker, $previous->alpha_blocker_name, 'Alpha blockers');
+                if ($previous = $historyRisk->previousCheckedAlpha($this->patient->id, $thisRisk->event->event_date)){
+                    if ($previous->alphablocker !== $thisRisk->alphablocker) {
+                        $this->updateSummaryRisk($previous->alphablocker, $previous->alpha_blocker_name, 'Alpha blockers');
+                    }
                 }
             }
         }
