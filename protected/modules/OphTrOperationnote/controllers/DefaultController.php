@@ -282,15 +282,11 @@ class DefaultController extends BaseEventTypeController
             {
                 if ($theatre_diary_disabled)
                 {
-                    $bookings = $api->getOpenOperationsForPatient($this->patient->id, array(
-                        OphTrOperationbooking_Operation_Status::STATUS_REQUIRES_SCHEDULING,
-                        OphTrOperationbooking_Operation_Status::STATUS_SCHEDULED,
-                        OphTrOperationbooking_Operation_Status::STATUS_REQUIRES_RESCHEDULING
-                    ));
+                    $operations = $api->getOpenOperations($this->patient->id);
                 }
                 else
                 {
-                    $bookings = $api->getOpenBookings($this->patient->id);
+                    $operations = $api->getScheduledOpenOperations($this->patient);
                 }
             }
 
@@ -313,7 +309,7 @@ class DefaultController extends BaseEventTypeController
 
             $this->render('select_event', array(
                 'errors' => $errors,
-                'bookings' => $bookings,
+                'operations' => $operations,
                 'theatre_diary_disabled' => $theatre_diary_disabled
             ));
         }

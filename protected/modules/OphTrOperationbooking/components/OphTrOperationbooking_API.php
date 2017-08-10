@@ -92,86 +92,51 @@ class OphTrOperationbooking_API extends BaseAPI
     }
 
     /**
-     * @param string $episode_id
-     * @return mixed
+     * Gets scheduled 'open' bookings
+     * Scheduled open means that the booking scheduled, but not completed
      *
-     * This method is here for backwards compatibility
-     * @see OphTrOperationbooking_API::getOpenBookings()
-     */
-
-    public function getOpenBookingsForEpisode($episode_id)
-    {
-        $patient_id = Episode::model()->findByPk($episode_id)->patient_id;
-        return $this->getOpenBookings($patient_id, $episode_id);
-    }
-
-    /**
-     * Gets 'open' bookings for the specified episode
-     * A booking is deemed open if it has no operation note linked to it.
-     * @param string $patient_id
-     * @param string|null $episode_id   (null indicates patient's all episodes)
+     * @param Patient $patient
+     * @param boolean $use_context
      * @return mixed
      */
-
-    public function getOpenBookings($patient_id, $episode_id = null)
+    public function getScheduledOpenOperations($patient, $use_context = false)
     {
         $criteria = new CDbCriteria();
-        $criteria->order = 'event.created_date asc';
+        $criteria->addInCondition('status_id', array(
+            OphTrOperationbooking_Operation_Status::STATUS_SCHEDULED,
+            OphTrOperationbooking_Operation_Status::STATUS_RESCHEDULED
+        ));
 
-        if (!is_null($episode_id))
-        {
-            $criteria->compare('episode_id', $episode_id);
-            $episode_condition = "episode_id = $episode_id and ";
-        }
-        else
-        {
-            $episodes = [];
-            foreach (Patient::model()->findByPk($patient_id)->episodes as $episode)
-            {
-                $episodes[] = $episode->id;
-            }
-            $criteria->compare('episode_id', $episodes);
-            $episode_condition = "episode_id IN (".implode(",", $episodes).") AND ";
-        }
-
-        $criteria->addCondition('`t`.booking_cancellation_date is null');
-
-        $status_scheduled = OphTrOperationbooking_Operation_Status::model()->find('name=?', array('Scheduled'));
-        $status_rescheduled = OphTrOperationbooking_Operation_Status::model()->find('name=?', array('Rescheduled'));
-
-        return OphTrOperationbooking_Operation_Booking::model()
-            ->with('session')
-            ->with(array(
-                'operation' => array(
-                    'condition' => "$episode_condition status_id in ($status_scheduled->id,$status_rescheduled->id)",
-                    'with' => 'event',
-                ),
-            ))
-            ->findAll($criteria);
+        return $this->getElements(
+            'Element_OphTrOperationbooking_Operation',
+            $patient,
+            $use_context,
+            null,
+            $criteria);
     }
 
     /**
      * Get open operations for a patient
-     * optionally filtered for statuses
+     * An open operation in one which has not been cancelled or completed
      *
-     * @param $patient_id
-     * @param array $statuses   empty array indicates all statuses
+     * @param Patient $patient
+     * @param $use_context
+     * @return Element_OphTrOperationbooking_Operation[]
      */
-
-    public function getOpenOperationsForPatient($patient_id, $statuses = array())
+    public function getOpenOperations(Patient $patient, $use_context=false)
     {
-        $episodes = [];
-        foreach (Patient::model()->findByPk($patient_id)->episodes as $episode)
-        {
-            $episodes[] = $episode->id;
-        }
-        $episodes = implode(",", $episodes);
-        $statuses_filter = !empty($statuses) ? "status_id IN (".implode(",", $statuses).") AND" : "";
+        $criteria = new CDbCriteria();
+        $criteria->addNotInCondition('status_id', array(
+            OphTrOperationbooking_Operation_Status::STATUS_CANCELLED,
+            OphTrOperationbooking_Operation_Status::STATUS_COMPLETED
+        ));
 
-        return Element_OphTrOperationbooking_Operation::model()
-            ->with('event')
-            ->findAll("$statuses_filter event.episode_id IN ($episodes)
-                            AND operation_cancellation_date IS NULL");
+        return $this->getElements(
+            'Element_OphTrOperationbooking_Operation',
+            $patient,
+            $use_context,
+            null,
+            $criteria);
     }
 
     public function getOperationProcedures($operation_id)
