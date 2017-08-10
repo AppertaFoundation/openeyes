@@ -27,20 +27,48 @@ if (!isset($values)) {
         'comments' => $entry->comments,
     );
 }
-
 ?>
-<tr>
+
+<tr class="row-<?=$row_count;?><?php if($removable){ echo " read-only"; } ?>" data-key="<?=$row_count;?>">
     <td>
-        <input type="hidden" name="<?= $model_name ?>[id][]" value="<?=$values['id'] ?>" />
-        <input type="hidden" name="<?= $model_name ?>[allergy_id][]" value="<?=$values['allergy_id'] ?>" />
-        <input type="hidden" name="<?= $model_name ?>[other][]" value="<?=$values['other'] ?>" />
-        <?= $values['allergy_display'] ?>
+        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[other]" value="<?=$values['other'] ?>" />
+
+        <?php if ($removable): ?>
+        <?php
+            $allergies_opts = array(
+                'options' => array(),
+                'empty' => '- select -',
+            );
+
+            foreach ($allergies as $allergy) {
+                $allergies_opts['options'][$allergy->id] = array(
+                        'data-other' => $allergy->isOther() ? '1' : '0',
+                );
+            }
+
+            echo CHtml::dropDownList($field_prefix . "[allergy_id]", $values['allergy_id'], CHtml::listData($allergies, 'id', 'name'), $allergies_opts);
+        ?>
+        <?php else: ?>
+            <?=$values['allergy_display']; ?>
+            <input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?=$values['allergy_id'] ?>" />
+        <?php endif; ?>
     </td>
     <td>
-        <input type="hidden" name="<?= $model_name ?>[comments][]" value="<?=$values['comments'] ?>" />
-        <?= $values['comments'] ?>
+        <?php if ($removable): ?>
+            <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+        <?php else: ?>
+            <input type="hidden" name="<?= $field_prefix ?>[comments]" value="<?=$values['comments'] ?>" />
+            <?= $values['comments'] ?>
+        <?php endif; ?>
+
     </td>
-    <td class="edit-column" <?php if (!$editable) {?>style="display: none;"<?php } ?>>
-        <button class="button small warning remove">remove</button>
+
+    <td class="edit-column">
+        <?php if($removable) : ?>
+            <button class="button small warning remove">remove</button>
+            <?php else: ?>
+            read only
+        <?php endif; ?>
     </td>
 </tr>

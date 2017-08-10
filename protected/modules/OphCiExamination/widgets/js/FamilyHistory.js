@@ -22,19 +22,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     function FamilyHistoryController(options) {
         this.options = $.extend(true, {}, FamilyHistoryController._defaultOptions, options);
 
-        this.$noAllergiesWrapper = $('#' + this.options.modelName + '_no_family_history_wrapper');
+        this.$noHistoryWrapper = $('#' + this.options.modelName + '_no_family_history_wrapper');
         this.$noHistoryFld = $('#' + this.options.modelName + '_no_family_history');
         this.$entryFormWrapper = $('#' + this.options.modelName + '_form_wrapper');
-
         this.$relativeSelect = $('#' + this.options.modelName + '_relative_id');
-        this.$otherRelative = $('#' + this.options.modelName + '_other_relative');
-        this.$otherRelativeWrapper = $('#' + this.options.modelName + '_other_relative_wrapper');
         this.$sideSelect = $('#' + this.options.modelName + '_side_id');
         this.$conditionSelect = $('#' + this.options.modelName + '_condition_id');
         this.$otherCondition = $('#' + this.options.modelName + '_other_condition');
         this.$otherConditionWrapper = $('#' + this.options.modelName + '_other_condition_wrapper');
         this.$commentFld = $('#' + this.options.modelName + '_comments');
-        this.$table = $('#' + this.options.modelName + '_entry_table');
+        this.tableSelector = '#' + this.options.modelName + '_entry_table';
+        this.$table = $(this.tableSelector);
         this.templateText = $('#' + this.options.modelName + '_entry_template').text();
 
         this.initialiseTriggers();
@@ -48,130 +46,49 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     FamilyHistoryController.prototype.initialiseTriggers = function()
     {
         var controller = this;
-        controller.$relativeSelect.on('change', function(e) {
-            var $selected = controller.$relativeSelect.find('option:selected');
+        controller.$table.on('change', '.relatives', function(e) {
+            var $other_input = $(this).closest('td').find('.other_relative_text');
+            var $selected = $(this).find('option:selected');
             if ($selected.data('other')) {
-                controller.$otherRelativeWrapper.show();
+                $(this).closest('td').find('.other_relative_wrapper').show();
             }
             else {
-                controller.$otherRelativeWrapper.hide();
-                controller.$otherRelative.val('');
+                $(this).closest('td').find('.other_relative_wrapper').hide();
+                $other_input.val('');
             }
         });
 
-        controller.$conditionSelect.on('change', function(e) {
-            var $selected = controller.$conditionSelect.find('option:selected');
+        controller.$table.on('change', '.conditions', function(e) {
+            var $other_input = $(this).closest('td').find('.other_condition_text');
+            var $selected = $(this).find('option:selected');
             if ($selected.data('other')) {
-                controller.$otherConditionWrapper.show();
+                $(this).closest('td').find('.other_condition_wrapper').show();
             }
             else {
-                controller.$otherConditionWrapper.hide();
-                controller.$otherCondition.val('');
+                $(this).closest('td').find('.other_condition_wrapper').hide();
+                $other_input.val('');
             }
         });
-        
-        $('#' + this.options.modelName + '_add_entry').on('click', function(e) {
+
+        this.$table.on('click', '#' + this.options.modelName + '_add_entry', function(e) {
             e.preventDefault();
             controller.addEntry();
         });
 
-        this.$table.on('click', '.button', function(e) {
+        this.$table.on('click', 'button.remove', function(e) {
             e.preventDefault();
-            $(e.target).parents('tr').remove();
+            $(this).closest('tr').remove();
             controller.showNoHistory();
         });
 
         this.$noHistoryFld.on('click', function() {
             if (controller.$noHistoryFld.prop('checked')) {
-                controller.$entryFormWrapper.hide();
                 controller.$table.hide();
             }
             else {
-                controller.$entryFormWrapper.show();
                 controller.$table.show();
             }
-        })
-    };
-
-  /**
-   * Generates a hash of the form data to use in rendering table rows for family history
-   *
-   * @returns {{}}
-   */
-  FamilyHistoryController.prototype.generateDataFromForm = function()
-    {
-        var data = {};
-        var $relativeSelected = this.$relativeSelect.find('option:selected');
-        if ($relativeSelected.val()) {
-            data.relative_id = $relativeSelected.val();
-            data.other_relative = this.$otherRelative.val();
-            if ($relativeSelected.data('other')) {
-                data.relative_display = this.$otherRelative.val();
-            } else {
-                data.relative_display = $relativeSelected.text();
-            }
-        }
-        
-        var $sideSelected = this.$sideSelect.find('option:selected');
-            if ($sideSelected.val()) {
-            data.side_id = $sideSelected.val();
-            data.side_display = $sideSelected.text();
-        }
-
-        var $conditionSelected = this.$conditionSelect.find('option:selected');
-        if ($conditionSelected.val()) {
-            data.condition_id = $conditionSelected.val();
-            data.other_condition = this.$otherCondition.val();
-            if ($conditionSelected.data('other')) {
-                data.condition_display = this.$otherCondition.val();
-            } else {
-                data.condition_display = $conditionSelected.text();
-            }
-        }
-
-        data.comments = this.$commentFld.val();
-
-        return data;
-    };
-
-    /**
-     * Reset the entry form to default values
-     */
-    FamilyHistoryController.prototype.resetForm = function()
-    {
-        this.$relativeSelect.find('option:selected').prop('selected', false);
-        this.$relativeSelect.trigger('change');
-        this.$conditionSelect.find('option:selected').prop('selected', false);
-        this.$conditionSelect.trigger('change');
-        this.$sideSelect.find('option:selected').prop('selected', false);
-        this.$commentFld.val('');
-    }
-
-    /**
-     * @returns {boolean}
-     */
-    FamilyHistoryController.prototype.validateData = function(data)
-    {
-        var errs = [];
-        if (!data.relative_display) {
-            errs.push('Please choose/enter a relative.');
-        }
-
-        if (!data.condition_display) {
-            errs.push('Please choose/enter a condition.');
-        }
-
-        if (!data.side_display) {
-            errs.push('Please choose a family side.');
-        }
-
-        if (errs.length) {
-            new OpenEyes.UI.Dialog.Alert({
-                content: errs.join('<br />')
-            }).open();
-            return false;
-        }
-        return true;
+        });
     };
 
     /**
@@ -181,6 +98,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     FamilyHistoryController.prototype.createRow = function(data)
     {
+        if (data === undefined)
+            data = {};
+
+        data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
         return Mustache.render(
           template = this.templateText,
           data
@@ -190,9 +111,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     /**
      * hide the no family history section of the form.
      */
-    FamilyHistoryController.prototype.hideNoAllergies = function()
+    FamilyHistoryController.prototype.hideNoHistory = function()
     {
-        this.$noAllergiesWrapper.hide();
+        this.$noHistoryWrapper.hide();
         this.$noHistoryFld.prop('checked', false);
         this.$entryFormWrapper.show();
     };
@@ -202,10 +123,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     FamilyHistoryController.prototype.showNoHistory = function()
     {
-        if (this.$table.find('tr').length === 1) {
-            this.$noAllergiesWrapper.show();
+        if (this.$table.find('tbody tr').length === 0) {
+            this.$noHistoryWrapper.show();
         } else {
-            this.hideNoAllergies();
+            this.hideNoHistory();
         }
     };
 
@@ -214,13 +135,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     */
     FamilyHistoryController.prototype.addEntry = function()
     {
-        var data = this.generateDataFromForm();
-        if (this.validateData(data)) {
-            this.hideNoAllergies();
-
-            this.$table.append(this.createRow(data));
-            this.resetForm();
-        }
+        this.hideNoHistory();
+        this.$table.find('tbody').append(this.createRow());
     };
 
     exports.FamilyHistoryController = FamilyHistoryController;
