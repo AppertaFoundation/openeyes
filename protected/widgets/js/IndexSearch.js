@@ -235,8 +235,8 @@ function show_results(){
       setTimeout(function(){
         let dropdown_box_selector = "#eyedrawwidget_"+last_search_pos+"_"+parameters.element_id;
         let $doodle = get_doodle_button(parameters.element_id,parameters.doodle_name,last_search_pos);
-        let doodle_name = $doodle.find(".label:first").text(); // wont work if not on toolbar
-        if (!doodle_name) {
+        let doodle_name = $doodle.find(".label:first").text();
+        if (!doodle_name) { //temporary fix for doodles not on toolbar
           doodle_name = "Anterior segment";
         }
         let $selected_doodle = $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option:contains("+doodle_name+")");
