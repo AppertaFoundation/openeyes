@@ -300,13 +300,15 @@ EOSQL;
     }
 
 private function get_element_id($open_element_class_name){
-  //query
-  return "315";
+  $element_type = ElementType::model()->findByAttributes(array('class_name' => $open_element_class_name));
+  $element_id = $element_type->id;
+  return $element_id;
 }
 
 private function get_element_name($open_element_class_name){
-  //query
-  return "Anterior Segment";
+  $element_type = ElementType::model()->findByAttributes(array('class_name' => $open_element_class_name));
+  $element_name = $element_type->name;
+  return $element_name;
 }
 
   /**
@@ -327,6 +329,12 @@ private function get_element_name($open_element_class_name){
       $fake_array = (array)$index->TERM_LIST->TERM;
       $allias = implode(",",$fake_array);
       $name = array_shift($fake_array);
+
+      $primary_term = $index->PRIMARY_TERM;
+      $secondary_term_list_array = (array)$index->SECONDARY_TERM_LIST->TERM;
+      $secondary_term_list = implode(",",$secondary_term_list_array);
+      $complete_term_list = $secondary_term_list_array ? $primary_term.",".$secondary_term_list : $primary_term;
+
       $allias_minus_name = implode(",",$fake_array);
       $img = $index->IMG_URL;
       $children = $index->INDEX_LIST;
@@ -344,15 +352,15 @@ private function get_element_name($open_element_class_name){
       .($goto_doodle_class_name ? ("data-doodle-class-name=\"".$goto_doodle_class_name."\" ") : (""))
       .($goto_property ? ("data-property=\"".$goto_property."\"") : (""))
       .">"
-      ."<span data-allias='".$allias."' "
+      ."<span data-allias='".$complete_term_list."' "
       ."class='lvl".$lvl."'>"
-      .$name."</span>"
+      .$primary_term."</span>"
       ."</div>"
-      .($allias_minus_name ? (
+      .($secondary_term_list ? (
         "<div class=\"index_row\">"
         ."<div class=\"index_col_left\">"
         ."<span class=\"allias\">"
-        .$allias_minus_name
+        .$secondary_term_list
         ."</span>"
         ."</div>"
         ."<div class=\"index_col_right\">"

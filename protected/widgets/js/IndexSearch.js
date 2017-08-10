@@ -206,6 +206,41 @@ function click_lvl_3($this, callback, descElementName, descDoodleClassName, desc
   },elementName,doodleClassName,elementId);
 }
 
+function click_element($element_name,callback){
+  let $item = $(".oe-event-sidebar-edit li a:contains("+elementName+")");
+  event_sidebar.loadClickedItem($item,{},callback);
+}
+
+function index_clicked($this){   // TODO: Make generic by making functions variables and maybe nested functions
+  let parameters = {};
+  parameters["element_name"] = $this.data('elementName');
+  parameters["element_id"] = $this.data('elementId');
+  parameters["doodle_name"] = $this.data('doodleName');
+  parameters["property_name"] = $this.data('property');
+  click_element(parameters).then(result => click_doodle(result)).then(result => click_property(result));
+}
+
+
+function click_doodle(){
+  let dropdown_box_selector = "#eyedrawwidget_"+last_search_pos+"_"+elementId;
+  let $doodle = get_doodle_button(elementId,doodleClassName,last_search_pos);
+  let doodle_name = $doodle.find(".label:first").text();
+  doodle_name = doodle_name; //won't work for non toolbar for now
+  let $selected_doodle = $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option:contains("+doodle_name+")");
+  if ($selected_doodle.length == 0) {
+    $doodle.trigger("click");
+  } else {
+    $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option").removeAttr('selected');
+    $selected_doodle.attr('selected','selected');
+    $(dropdown_box_selector).find("#ed_example_selected_doodle").trigger('change');
+  }
+}
+
+function click_property(){
+  let control_id = get_controls_id(elementId,last_search_pos);
+  $(control_id).find("div:contains("+property+")").effect("highlight", {}, 6000);
+}
+
 function get_element_name($this){
   return $this.find("span:first").text();
 }
@@ -262,3 +297,62 @@ function show_results(){
     $("#description_toggle_label,#children_toggle_label,#search_options").hide();
   }
   /*End of Auxilary Functions*/
+
+
+  /* New Promise code*/
+  function click_element(parameters){
+			//get side bar item here
+      let $item = $(".oe-event-sidebar-edit li a:contains("+parameters.element_name+")");
+			return click_sidebar_element($item).then(function (){
+				return new Promise(function(resolve, reject) {
+					//see if parameters are set for doodle
+					if (parameters.doodle_name) {
+						resolve(parameters);
+					} else {
+						reject("no");
+					}
+				});
+			});
+		}
+		function click_doodle(parameters){
+			return new Promise(function(resolve, reject) {
+        let dropdown_box_selector = "#eyedrawwidget_"+last_search_pos+"_"+parameters.element_id;
+        let $doodle = get_doodle_button(parameters.element_id,parameters.doodle_name,last_search_pos);
+        let doodle_name = $doodle.find(".label:first").text(); // wont work if not on toolbar
+        let $selected_doodle = $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option:contains("+doodle_name+")");
+        if ($selected_doodle.length == 0) {
+          $doodle.trigger("click");
+        } else {
+          $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option").removeAttr('selected');
+          $selected_doodle.attr('selected','selected');
+          $(dropdown_box_selector).find("#ed_example_selected_doodle").trigger('change');
+        }
+				//see if parameters are set for property
+				if (parameters.property_name) {
+					resolve(parameters);
+				} else {
+					reject("no");
+				}
+			});
+		}
+		function click_property(parameters){
+			return new Promise(function(resolve, reject) {
+        let control_id = get_controls_id(parameters.element_id,last_search_pos);
+        $(control_id).find("div:contains("+parameters.property_name+")").effect("highlight", {}, 6000);
+				//see if parameters are set for next level
+				if (1 == 2) {
+					resolve(parameters);
+				} else {
+					reject("no");
+				}
+			});
+		}
+
+    /* To allow each level to be asyncrounous for example make ajax requests promises are used, wrap old-style callback to new promise,
+    consider adding reject callback in future*/
+    function click_sidebar_element($item) {
+        return new Promise(function(resolve, reject) {
+          event_sidebar.loadClickedItem($item,{},resolve);
+        });
+    }
+  /* End of Promise code*/
