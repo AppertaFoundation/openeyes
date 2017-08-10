@@ -1431,6 +1431,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 
 .edit .sub-element {
     border: 2px solid #96999c;
+    overflow: hidden;
 }
 
 .field-row {
