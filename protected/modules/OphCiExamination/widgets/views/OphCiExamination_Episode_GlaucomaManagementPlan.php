@@ -19,8 +19,8 @@
 			<table class="grid plain">
 				<tbody>
 					<tr>
-						<th scope="col">Clinic internal</th>
-						<td><?= $plan->clinic_internal->name ?></td>
+						<th scope="col">Clinic interval</th>
+						<td><?= $plan->clinic_interval ? : 'None' ?></td>
 					</tr>
 					<tr>
 						<th scope="col">Photo</th>

@@ -37,23 +37,24 @@ if (!empty($episode)) {
 
     <div class="row">
         <div class="large-9 column">
+            <?php if (Yii::app()->hasModule('OphCiExamination')) { ?>
+                <section class="element element-data">
+                    <h3 class="data-title">Previous Management</h3>
+                    <div class="data-value">
+                        <div class="inline-previous-element"
+                             data-element-type-id="<?= ElementType::model()->findByAttributes(array('class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Management'))->id ?>"
+                             data-no-results-text="No previous management recorded"
+                             data-limit="1"
+                             data-template-id="previous-management-template">Loading previous management information ...</div>
+                    </div>
+                </section>
 
-            <section class="element element-data">
-                <h3 class="data-title">Overview</h3>
-                <div class="data-value highlight">
-                    <?= $episode->patient->genderString ?>,
-                    <?= $episode->patient->age ?>,
-                    CVI status: <?= $episode->patient->ophInfo->cvi_status->name ?>,
-                    <?php
-                    $this->widget('OEModule\OphCiExamination\widgets\SocialHistory', array(
-                        'patient' => $this->patient,
-                        'mode' => OEModule\OphCiExamination\widgets\SocialHistory::$EPISODE_SUMMARY_MODE
-                    ));
-                    ?>
+                <script type="text/html" id="previous-management-template">
+                    <strong>{{subspecialty}} {{event_date}} ({{last_modified_user_display}} <span class="has-tooltip fa fa-info-circle" data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> {{comments_or_children}}
+                </script>
+                <?php Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js", null, -10); ?>
 
-                </div>
-            </section>
-
+            <?php } ?>
             <section class="element element-data">
                 <h3 class="data-title">Principal diagnosis:</h3>
                 <div class="data-value highlight">
