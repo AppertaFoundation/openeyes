@@ -383,6 +383,7 @@ class AdminController extends \ModuleAdminController
         $criteria->addCondition('t.event_type_id = :event_type_id');
         $criteria->addNotInCondition('t.id', $element_type_ids);
         $criteria->params[':event_type_id'] = $et_exam->id;
+        // deprecated or invalid element types for this installation
         $criteria->addNotInCondition('t.class_name', ExaminationHelper::elementFilterList()) ;
         $criteria->order = 'parent_element_type.name asc, t.name asc';
 

@@ -161,7 +161,7 @@ class ElementType extends BaseActiveRecordVersioned
     /**
      * Returns a fully qualified name for the element type by prefixing with the
      * parent element type name if it has one.
-     * 
+     *
      * @return string
      */
     public function getNameWithParent()
