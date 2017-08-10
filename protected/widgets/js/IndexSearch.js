@@ -101,7 +101,8 @@ $(document).ready(function(){
 
   $('.result_item, .result_item_with_icon').click(function(){
     let $this = $(this);
-    if ($this.data('property')) {
+    index_clicked($this);
+    /*if ($this.data('property')) {
       click_lvl_3($this);
     }
     else if ($this.data('doodleClassName')) {
@@ -113,7 +114,7 @@ $(document).ready(function(){
     else {
       //should never run unless xml is not valid against the xsd
       alert('No action in configuration');
-    }
+    } */
     hide_results();
   });
   $('body').append('<div id="dim_rest" class="ui-widget-overlay" style="display : none; width: 1280px; height: 835px; z-index: 100;"></div>');
@@ -206,41 +207,6 @@ function click_lvl_3($this, callback, descElementName, descDoodleClassName, desc
   },elementName,doodleClassName,elementId);
 }
 
-function click_element($element_name,callback){
-  let $item = $(".oe-event-sidebar-edit li a:contains("+elementName+")");
-  event_sidebar.loadClickedItem($item,{},callback);
-}
-
-function index_clicked($this){   // TODO: Make generic by making functions variables and maybe nested functions
-  let parameters = {};
-  parameters["element_name"] = $this.data('elementName');
-  parameters["element_id"] = $this.data('elementId');
-  parameters["doodle_name"] = $this.data('doodleName');
-  parameters["property_name"] = $this.data('property');
-  click_element(parameters).then(result => click_doodle(result)).then(result => click_property(result));
-}
-
-
-function click_doodle(){
-  let dropdown_box_selector = "#eyedrawwidget_"+last_search_pos+"_"+elementId;
-  let $doodle = get_doodle_button(elementId,doodleClassName,last_search_pos);
-  let doodle_name = $doodle.find(".label:first").text();
-  doodle_name = doodle_name; //won't work for non toolbar for now
-  let $selected_doodle = $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option:contains("+doodle_name+")");
-  if ($selected_doodle.length == 0) {
-    $doodle.trigger("click");
-  } else {
-    $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option").removeAttr('selected');
-    $selected_doodle.attr('selected','selected');
-    $(dropdown_box_selector).find("#ed_example_selected_doodle").trigger('change');
-  }
-}
-
-function click_property(){
-  let control_id = get_controls_id(elementId,last_search_pos);
-  $(control_id).find("div:contains("+property+")").effect("highlight", {}, 6000);
-}
-
 function get_element_name($this){
   return $this.find("span:first").text();
 }
@@ -309,30 +275,34 @@ function show_results(){
 					if (parameters.doodle_name) {
 						resolve(parameters);
 					} else {
-						reject("no");
+						reject();
 					}
 				});
 			});
 		}
 		function click_doodle(parameters){
+      // TODO: Stop using timeout and instead use Promise on event handlers (canvas ready)
 			return new Promise(function(resolve, reject) {
-        let dropdown_box_selector = "#eyedrawwidget_"+last_search_pos+"_"+parameters.element_id;
-        let $doodle = get_doodle_button(parameters.element_id,parameters.doodle_name,last_search_pos);
-        let doodle_name = $doodle.find(".label:first").text(); // wont work if not on toolbar
-        let $selected_doodle = $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option:contains("+doodle_name+")");
-        if ($selected_doodle.length == 0) {
-          $doodle.trigger("click");
-        } else {
-          $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option").removeAttr('selected');
-          $selected_doodle.attr('selected','selected');
-          $(dropdown_box_selector).find("#ed_example_selected_doodle").trigger('change');
-        }
-				//see if parameters are set for property
-				if (parameters.property_name) {
-					resolve(parameters);
-				} else {
-					reject("no");
-				}
+        setTimeout(function(){
+          let dropdown_box_selector = "#eyedrawwidget_"+last_search_pos+"_"+parameters.element_id;
+          let $doodle = get_doodle_button(parameters.element_id,parameters.doodle_name,last_search_pos);
+          let doodle_name = $doodle.find(".label:first").text(); // wont work if not on toolbar
+          let $selected_doodle = $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option:contains("+doodle_name+")");
+          if ($selected_doodle.length == 0) {
+            $doodle.trigger("click");
+          } else {
+            $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option").removeAttr('selected');
+            $selected_doodle.attr('selected','selected');
+            $(dropdown_box_selector).find("#ed_example_selected_doodle").trigger('change');
+          }
+          //see if parameters are set for property
+          if (parameters.property_name) {
+            resolve(parameters);
+          } else {
+            //doodle is as deep as it goes
+            reject();
+          }
+        },800);
 			});
 		}
 		function click_property(parameters){
@@ -343,9 +313,10 @@ function show_results(){
 				if (1 == 2) {
 					resolve(parameters);
 				} else {
-					reject("no");
+					reject();
 				}
 			});
+
 		}
 
     /* To allow each level to be asyncrounous for example make ajax requests promises are used, wrap old-style callback to new promise,
@@ -355,4 +326,18 @@ function show_results(){
           event_sidebar.loadClickedItem($item,{},resolve);
         });
     }
+
+    function index_clicked($this){   // TODO: Make generic by making functions variables and maybe nested functions
+      let parameters = {};
+      parameters["element_name"] = $this.data('elementName');
+      parameters["element_id"] = $this.data('elementId');
+      parameters["doodle_name"] = $this.data('doodleClassName');
+      parameters["property_name"] = $this.data('property');
+      //chains can be made conditional based on content of parameters
+      //promise chain
+      click_element(parameters).then(result => click_doodle(result)).then(result => click_property(result)).catch(() => {
+        return;
+      });
+    }
+
   /* End of Promise code*/
