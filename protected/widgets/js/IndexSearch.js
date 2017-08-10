@@ -1,3 +1,5 @@
+// TODO: Remove getGoto
+
 /* Global Variables */
 var show_children = true;
 var last_search_pos;

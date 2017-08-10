@@ -4,7 +4,8 @@
 	attributeFormDefault="unqualified">
 	<xs:complexType name="INDEX_TYPE">
 		<xs:sequence>
-			<xs:element name="TERM_LIST">
+			<xs:element name="PRIMARY_TERM" type="xs:string"/>
+			<xs:element name="SECONDARY_TERM_LIST" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="TERM" type="xs:string" maxOccurs="unbounded"/>
@@ -15,13 +16,17 @@
 			<xs:element minOccurs="0" name="DESCRIPTION" type="xs:string"/>
 			<xs:element minOccurs="0" name="GENERAL_NOTE" type="xs:string"/>
 			<xs:element minOccurs="0" name="WARNING_NOTE" type="xs:string"/>
-			<xs:element minOccurs="0" name="OPEN_ELEMENT_CLASS_NAME" type="xs:string"/>
-			<xs:element minOccurs="0" name="GOTO_DOODLE_CLASS_NAME" type="xs:string"/>
-			<xs:element minOccurs="0" name="GOTO_PROPERTY" type="xs:string"/>
-			<xs:element name="INDEX_LIST" minOccurs="0">
+			<xs:sequence minOccurs="0">
+				<xs:element name="OPEN_ELEMENT_CLASS_NAME" type="xs:string"/>
+				<xs:sequence minOccurs="0">
+					<xs:element name="GOTO_DOODLE_CLASS_NAME" type="xs:string"/>
+					<xs:element minOccurs="0" name="GOTO_PROPERTY" type="xs:string"/>
+				</xs:sequence>
+			</xs:sequence>
+			<xs:element minOccurs="0" name="INDEX_LIST">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="INDEX" type="INDEX_TYPE" maxOccurs="unbounded"/>
+						<xs:element maxOccurs="unbounded" name="INDEX" type="INDEX_TYPE"/>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
