@@ -1497,3 +1497,10 @@ label.highlight {
     margin: 0;
     background: #dae6f1;
 }
+
+.centre, .center {
+    text-align: center;
+    align-content: center;
+    align-items: center;
+    align-self: center;
+}
