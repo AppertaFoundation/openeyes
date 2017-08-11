@@ -92,7 +92,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
 
         return Mustache.render(
-            template = this.templateText,
+            this.templateText,
             data
         );
     };

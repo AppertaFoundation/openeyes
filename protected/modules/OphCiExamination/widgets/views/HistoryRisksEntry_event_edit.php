@@ -34,7 +34,7 @@ if (!isset($values)) {
 }
 
 ?>
-<tr>
+<tr data-key="<?=$row_count?>">
     <td>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
         <?php
