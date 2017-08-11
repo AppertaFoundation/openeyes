@@ -217,6 +217,7 @@ class DefaultController extends BaseEventTypeController
     {
         parent::initActionCreate();
 
+        /** @var OphTrOperationbooking_API $api */
         $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
         
         if (isset($_GET['booking_event_id'])) {

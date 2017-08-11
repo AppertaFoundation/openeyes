@@ -60,7 +60,7 @@
 									<label class="highlight booking">
 										<span class="row">
 											<span class="large-1 column">
-												<input type="radio" value="booking<?php $operation->event_id ?>" name="SelectBooking" />
+												<input type="radio" value="booking<?= $operation->event_id ?>" name="SelectBooking" />
 											</span>
 											<span class="large-1 column">
 												<img src="<?php echo Yii::app()->assetManager->createUrl('img/small.png', $assetAliasPath)?>" alt="op" style="height:15px" />
