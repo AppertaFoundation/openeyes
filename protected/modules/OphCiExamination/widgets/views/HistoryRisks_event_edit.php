@@ -49,32 +49,35 @@ $required_risk_ids = array_map(function($r) { return $r->id; }, $element->getReq
         <tbody>
         <?php
         $row_count = 0;
-        foreach ($missing_req_risks as $i => $entry) {
+        foreach ($missing_req_risks as $entry) {
             $this->render(
                 'HistoryRisksEntry_event_edit',
                 array(
                     'entry' => $entry,
                     'form' => $form,
                     'model_name' => $model_name,
-                    'field_prefix' => $model_name . '[entries][' . $i . ']',
+                    'field_prefix' => $model_name . '[entries][' . $row_count . ']',
+                    'row_count' => $row_count,
                     'removable' => false
                 )
             );
             $row_count++;
         } ?>
         <?php
-        foreach ($element->entries as $i => $entry) {
+        foreach ($element->entries as $entry) {
             $this->render(
                 'HistoryRisksEntry_event_edit',
                 array(
                     'entry' => $entry,
                     'form' => $form,
                     'model_name' => $model_name,
-                    'field_prefix' => $model_name . '[entries][' . ($i+$row_count) . ']',
+                    'field_prefix' => $model_name . '[entries][' . $row_count . ']',
+                    'row_count' => $row_count,
                     'removable' => !in_array($entry->risk_id, $required_risk_ids),
                     'risks' => $risks_options
                 )
             );
+            $row_count++;
         }
         ?>
         </tbody>
@@ -95,6 +98,7 @@ $required_risk_ids = array_map(function($r) { return $r->id; }, $element->getReq
                 'form' => $form,
                 'model_name' => $model_name,
                 'field_prefix' => $model_name . '[entries][{{row_count}}]',
+                'row_count' => '{{row_count}}',
                 'removable' => true,
                 'risks' => $risks_options,
                 'values' => array(

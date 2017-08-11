@@ -28,8 +28,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         this.$noRisksWrapper = this.$element.find('.' + this.options.modelName + '_no_risks_wrapper');
         this.$noRisksFld = this.$element.find('.' + this.options.modelName + '_no_risks');
-
-        this.$table = this.$element.find('.' + this.options.modelName + '_entry_table');
+        this.tableSelector = '.' + this.options.modelName + '_entry_table';
+        this.$table = this.$element.find(this.tableSelector);
         this.templateText = this.$element.find('.' + this.options.modelName + '_entry_template').text();
         console.log(this.templateText);
         this.initialiseTriggers();
@@ -97,9 +97,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         if (data === undefined)
             data = {};
-        data['row_count'] = this.$table.find('tbody tr').length;
+
+        data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
         return Mustache.render(
-            template = this.templateText,
+            this.templateText,
             data
         );
     };
@@ -110,7 +111,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     HistoryRisksController.prototype.addEntry = function()
     {
         var row = this.createRow();
-        console.log(row);
         this.$table.find('tbody').append(row);
         this.updateNoRisksState();
     };
