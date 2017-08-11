@@ -31,7 +31,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.tableSelector = '.' + this.options.modelName + '_entry_table';
         this.$table = this.$element.find(this.tableSelector);
         this.templateText = this.$element.find('.' + this.options.modelName + '_entry_template').text();
-        console.log(this.templateText);
         this.initialiseTriggers();
 
     }
