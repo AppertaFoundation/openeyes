@@ -232,13 +232,15 @@ function show_results(){
     // TODO: Stop using timeout and instead use Promise on event handlers (canvas ready)
     // is await the solution (canvas ready)?
     return new Promise(function(resolve, reject) {
-      setTimeout(function(){
+      let ed_canvas = ED.Checker.getInstanceByIdSuffix(last_search_pos+"_"+parameters.element_id);
+      ED.Checker.register(ed_canvas);
+      ED.Checker.onAllReady(function(){
         let dropdown_box_selector = "#eyedrawwidget_"+last_search_pos+"_"+parameters.element_id;
         let $doodle = get_doodle_button(parameters.element_id,parameters.doodle_name,last_search_pos);
         let doodle_name = ED.titles[parameters.doodle_name];
         let $selected_doodle = $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option:contains("+doodle_name+")");
         if ($selected_doodle.length == 0) {
-          $doodle.trigger("click");
+          ed_canvas.addDoodle(parameters.doodle_name);
         } else {
           $(dropdown_box_selector).find("#ed_example_selected_doodle").children().find("option").removeAttr('selected');
           $selected_doodle.attr('selected','selected');
@@ -250,9 +252,10 @@ function show_results(){
         } else {
           reject();
         }
-      },800);
-    });
-  }
+      });
+      //wrap onAllReady in Promise
+  });
+}
 
   function click_property(parameters){
     return new Promise(function(resolve, reject) {
