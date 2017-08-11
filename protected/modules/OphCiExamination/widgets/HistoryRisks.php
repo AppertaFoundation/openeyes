@@ -63,6 +63,7 @@ class HistoryRisks extends \BaseEventElementWidget
         if (array_key_exists('entries', $data)) {
             $entries = array();
             foreach ($data['entries'] as $entry_data) {
+                \OELog::log(print_r($entry_data, true));
                 $id = $entry_data['id'];
                 $entry = ($id && array_key_exists($id, $entries_by_id)) ?
                     $entries_by_id[$id] :
