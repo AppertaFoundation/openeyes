@@ -106,11 +106,15 @@ $(document).ready(function(){
     show_results();
   });
 
-  $('.result_item, .result_item_with_icon').click(function(){
+  $('.result_item, .result_item_with_icon').click(function(event){
     //Index has been clicked
-    let $this = $(this);
-    index_clicked($this);
-    hide_results();
+    /*let $this = $(this);
+    index_clicked($this);*/
+    event.stopPropagation();
+    var i = ED.Checker.getInstanceByIdSuffix("right_315");
+    i.addDoodle("SPEE");
+    //all events
+    //hide_results();
   });
   $('body').append('<div id="dim_rest" class="ui-widget-overlay" style="display : none; width: 1280px; height: 835px; z-index: 100;"></div>');
   $('#description_toggle').change(function(){
@@ -206,6 +210,7 @@ function show_results(){
     parameters["element_id"] = $this.data('elementId');
     parameters["doodle_name"] = $this.data('doodleClassName');
     parameters["property_name"] = $this.data('property');
+    //can revese order have differentlenght chains etc
     //Chains can be made conditional based on content of parameters
     //Guarantees funcion execution order (even for asyncrounous functions)
     click_element(parameters).then(result => click_doodle(result)).then(result => click_property(result)).catch(() => {
@@ -232,9 +237,10 @@ function show_results(){
     // TODO: Stop using timeout and instead use Promise on event handlers (canvas ready)
     // is await the solution (canvas ready)?
     return new Promise(function(resolve, reject) {
-      let ed_canvas = ED.Checker.getInstanceByIdSuffix(last_search_pos+"_"+parameters.element_id);
-      ED.Checker.register(ed_canvas);
+      ED.Checker.storeCanvasId("ed_canvas_edit_"+last_search_pos+"_"+parameters.element_id);
+    //ED.Checker.register(ed_canvas);
       ED.Checker.onAllReady(function(){
+        let ed_canvas = ED.Checker.getInstanceByIdSuffix(last_search_pos+"_"+parameters.element_id);
         let dropdown_box_selector = "#eyedrawwidget_"+last_search_pos+"_"+parameters.element_id;
         let $doodle = get_doodle_button(parameters.element_id,parameters.doodle_name,last_search_pos);
         let doodle_name = ED.titles[parameters.doodle_name];
