@@ -8162,6 +8162,7 @@ table.detailview tr th {
   font-family: inherit;
   padding-left: 12px;
   border-radius: 3px;
+  z-index: 10001;
 }
 .result_item_with_icon{
   padding-left: 25px;
@@ -8187,7 +8188,7 @@ li ul li ul li .result_item {
 #results > ul >  li > div {
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 10000;
 }
 #results > ul >  li > div:hover {
   background-color: #3665ff;
