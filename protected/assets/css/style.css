@@ -8327,11 +8327,11 @@ input:checked + .slider:before {
 }
 #children_toggle_container {
   padding-right: 25px;
-  display:inline-block;
+  display: none;
 }
 #description_toogle_container {
   padding-right: 25px;
-  display: inline-block;
+  display: none;
 }
 .search_highlight {
   font-style: inherit;
