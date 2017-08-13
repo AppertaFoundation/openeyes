@@ -8316,13 +8316,8 @@ input:checked + .slider:before {
 }
 #search_bars_and_options {
   padding-top: 5px;
-  width: 864px;
-  height: 39px;
-  position: fixed;
-  top: 82px;
-  z-index: 1000;
-  left: 274px;
-  text-align: center;
+  margin-left: 4px;
+  display: inline-block;
 }
 #search_options_container {
   display: inline-block;
