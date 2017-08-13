@@ -8130,7 +8130,8 @@ table.detailview tr th {
   background-image: url(/assets/tom/line.png);
   background-size: 4px;
   background-repeat: repeat-y;
-  background-position: 33.33%;
+  background-position: 325px;
+  background-attachment: local;
 }
 .results_list {
   margin: 0;
