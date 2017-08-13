@@ -157,4 +157,18 @@ class ElementType extends BaseActiveRecordVersioned
     {
         return new $this->class_name();
     }
+
+    /**
+     * Returns a fully qualified name for the element type by prefixing with the
+     * parent element type name if it has one.
+     *
+     * @return string
+     */
+    public function getNameWithParent()
+    {
+        if (!$this->isChild()) {
+            return $this->name;
+        }
+        return $this->parent_element_type->name . ' - ' . $this->name;
+    }
 }

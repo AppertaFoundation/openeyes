@@ -90,6 +90,12 @@
   width: 4em;
 }
 
+/* line 5, ../sass/components/elements/_family-history.scss */
+section.OEModule_OphCiExamination_models_FamilyHistory table#OEModule_OphCiExamination_models_FamilyHistory_entry_table tr td {
+  vertical-align: top;
+  width: 20%;
+}
+
 /* line 18, ../sass/components/elements/_gonioscopy.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy .eyedraw-fields {
   padding-top: 36px;
@@ -182,7 +188,7 @@
   padding-top: 40px;
 }
 
-/* line 31, ../sass/components/_elements.scss */
+/* line 32, ../sass/components/_elements.scss */
 .autoreport-display {
   line-height: 1;
   margin-bottom: 2px;

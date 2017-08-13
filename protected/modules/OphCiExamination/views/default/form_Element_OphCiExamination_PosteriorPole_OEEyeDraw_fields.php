@@ -31,9 +31,6 @@
     </div>
 
 	<div class="field-row">
-		<label for="<?php echo get_class($element).'_'.$side.'_description';?>">
-			<?php echo $element->getAttributeLabel($side.'_description'); ?>:
-		</label>
-		<?php echo CHtml::activeTextArea($element, $side.'_description', array('rows' => '2', 'cols' => '20', 'class' => 'autosize clearWithEyedraw')) ?>
+		<?php echo CHtml::activeTextArea($element, $side.'_description', array('rows' => '1', 'placeholder' => $element->getAttributeLabel($side.'_description'))) ?>
 	</div>
 </div>

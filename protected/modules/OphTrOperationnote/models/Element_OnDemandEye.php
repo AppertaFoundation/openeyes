@@ -34,10 +34,14 @@ class Element_OnDemandEye extends Element_OnDemand
      * However, it may be set direcly on the element object, to enable encapsulation of the current eye when creating the element
      *
      * @return Eye
+     * @throws SystemException
      */
     public function getEye()
     {
         if (!$this->eye) {
+            if (!$this->event_id) {
+                throw new SystemException('Cannot automatically determine eye with no event attached, eye must be set externally.');
+            }
             $this->eye = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($this->event_id))->eye;
         }
         return $this->eye;

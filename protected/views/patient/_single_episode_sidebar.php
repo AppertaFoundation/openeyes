@@ -5,7 +5,7 @@
             type="button"
             id="add-event">Event</button></div>
 <?php }?>
-<div class="oe-scroll-wrapper" style="height:300px">
+<div class="oe-scroll-wrapper" style="height:2000px">
 <?php
 // Note, we are ignoring the possibility of additional specialties here and only supporting the first,
 // which is expected to be opthalmology.

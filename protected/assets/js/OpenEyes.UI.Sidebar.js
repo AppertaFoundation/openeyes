@@ -53,29 +53,10 @@
     Sidebar.prototype.checkSideNavHeight = function()
     {
         var self = this;
-
-        var nh = self.$el.find('.all-panels').height() + 48; // need to add this to make sure last event is shown!
-        //var wh = $('footer').position().top + $('footer').height();
-        var ch = $('.container.content').outerHeight();
-        var wh = window.innerHeight;
-        var h;
-
-        // allow for top panel height : 122px
-        if((ch + 122) > wh){
-            // content is higher than window, use wh:
-            h = wh - 185; // arbitrary, a visually tweaked offset
-        } else {
-            // else:
-            h = ch - 50; // arbitrary, a visually tweaked offset
-        }
-
-        if(h > nh) {
-            // showing all!
-            h = nh;
-        }
-
+        furniture = $('header').outerHeight() + $('footer').outerHeight() + $('#patient-alert-patientticketing').outerHeight();
+        h = window.innerHeight - furniture - $('.oe-sidebar-top-buttons').outerHeight();
         if(h < self.options.minimumHeight)
-            h = self.options.minimumHeight;
+            h = h+48;
         self.$el.height(h+'px');
         $('.container.content').css({'min-height':h+50+'px'})
     };

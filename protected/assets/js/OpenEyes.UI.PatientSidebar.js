@@ -120,6 +120,10 @@
         self.$element.on('click', 'a', function(e) {
             e.preventDefault();
             self.loadClickedItem($(e.target));
+            var li = $(e.target).parent();
+            if (li.hasClass('has-children') && li.hasClass('collapsed')) {
+                $(e.target).find('.icon').trigger('click');
+            }
         }.bind(self));
     };
 
