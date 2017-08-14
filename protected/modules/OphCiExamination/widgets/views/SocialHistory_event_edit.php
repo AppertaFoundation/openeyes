@@ -16,10 +16,7 @@
  */
 ?>
 
-<?php
-Yii::app()->clientScript->registerScriptFile($this->getJsPublishedPath("SocialHistory.js"), CClientScript::POS_HEAD);
-?>
-
+<script type="text/javascript" src="<?=$this->getJsPublishedPath("SocialHistory.js")?>"></script>
 <div class="element-fields">
     <?php
     echo $form->dropDownList($element, 'occupation_id',

@@ -34,7 +34,7 @@ if (!isset($values)) {
 }
 
 ?>
-<tr>
+<tr data-key="<?=$row_count?>">
     <td>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
         <?php
@@ -42,17 +42,26 @@ if (!isset($values)) {
             $risks_opts = array(
                 'options' => array(),
                 'empty' => '- select -',
+                'class' => $model_name . '_risk_id'
             );
             foreach ($risks as $risk) {
                 $risks_opts['options'][$risk->id] = array('data-other' => $risk->isOther() ? '1' : '0');
             }
             echo CHtml::dropDownList($field_prefix . '[risk_id]', $values['risk_id'], CHtml::listData($risks, 'id', 'name'), $risks_opts);
+            $show_other = $values['risk_id'] && array_key_exists($values['risk_id'], $risks_opts['options']) && ($risks_opts['options'][$values['risk_id']]['data-other'] === '1');
+        ?>
+
+          <span class="<?=  $show_other ? : 'hidden'?> <?= $model_name ?>_other_wrapper">
+            <?php echo CHtml::textField($field_prefix . '[other]', $values['other'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+          </span>
+        <?php
         } else {
             echo CHtml::hiddenField($field_prefix . '[risk_id]', $values['risk_id']);
+            echo CHtml::hiddenField($field_prefix . '[other]', $values['other']);
             echo $values['risk_display'];
         }
         ?>
-        <input type="hidden" name="<?= $field_prefix ?>[other]" />
+
     </td>
     <td>
         <label class="inline highlight">

@@ -93,6 +93,14 @@ class HistoryRisksEntry extends \BaseElement
         );
     }
 
+    public function afterValidate()
+    {
+        if ($this->risk && $this->risk->isOther() && !$this->other) {
+            $this->addError('other', 'Other description is required');
+        }
+        parent::afterValidate();
+    }
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *

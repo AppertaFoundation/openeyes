@@ -122,18 +122,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function getElementFilterList()
     {
-        if ($this->getApp()->hasModule('OphCoTherapyapplication')) {
-            $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagement');
-        } else {
-            $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
-        }
-
-        // Deprecated elements that we keep in place for backward compatibility with rendering
-        $remove = array_merge($remove, array(
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy',
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion',
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk'
-        ));
+        $remove = components\ExaminationHelper::elementFilterList();
 
         if ($this->set) {
             foreach ($this->set->HiddenElementTypes as $element) {
@@ -403,8 +392,6 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Get the first workflow step using rules.
-     *
-     * @TODO: examine what this is being used for as opposed to getting elements by workflow ...
      *
      * @return OphCiExamination_ElementSet
      */
@@ -1084,7 +1071,7 @@ class DefaultController extends \BaseEventTypeController
 
         $side = ucfirst(@$_GET['side']);
 
-        $api = new components\OphCiExamination_API();
+        $api = $this->getApp()->moduleAPI->get('OphCiExamination');
         $result = $api->{"getLastIOPReading{$side}"}($patient);
 
         echo $result;

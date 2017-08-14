@@ -159,13 +159,8 @@ $model_name = CHtml::modelName($element);
 	</div>
 
 	<div class="row field-row comments">
-		<div class="large-4 column">
-			<label for="<?php echo $model_name.'_'.$side.'_comments';?>">
-				<?php echo $element->getAttributeLabel($side.'_comments'); ?>:
-			</label>
-		</div>
-		<div class="large-8 column">
-			<?php echo $form->textArea($element, $side.'_comments', array('rows' => 4, 'nowrapper' => true))?>
+		<div class="large-10 column">
+			<?php echo $form->textArea($element, $side.'_comments', array('rows' => 1, 'nowrapper' => true), false, array('placeholder' => $element->getAttributeLabel($side.'_comments')))?>
 		</div>
 	</div>
 </div>

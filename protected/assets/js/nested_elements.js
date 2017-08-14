@@ -132,6 +132,8 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
 
 		var inserted = (insert_before.length) ? insert_before.prevAll('section:first') : container.find('.sub-element:last, .element:last').last();
 
+		$(inserted).find('textarea').autosize();
+
 		if (animate) {
 			// note this flag is a bit of a misnomer now, as we've removed the animation in favour of moving straight to the
 			// relevant element. This is an intentional change intended to reduce eyestrain for heavy OE users.
