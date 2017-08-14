@@ -18,6 +18,8 @@
  */
 ?>
 
+
+
 	<footer class="footer row">
 		<div class="large-3 medium-3 columns">
 			<div class="info">
@@ -44,6 +46,7 @@
 			</div>
 		</div>
 		<script>
+		
 // Include the UserVoice JavaScript SDK (only needed once on a page)
 UserVoice=window.UserVoice||[];(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='http://widget.uservoice.com/xiXrGR5j7JSb6wqDtOQJw.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})();
 
@@ -62,20 +65,21 @@ UserVoice.push(['set', {
 
 // Identify the user and pass traits
 // To enable, replace sample data with actual user traits and uncomment the line
+
 UserVoice.push(['identify', {
-  //email:      'john.doe@example.com', // User’s email address
-  //name:       'John Doe', // User’s real name
+  email: user_email, // User’s email address
+  name: user_full_name, // User’s real name
   //created_at: 1364406966, // Unix timestamp for the date the user signed up
-  //id:         123, // Optional: Unique id of the user (if set, this should not change)
+  id: user_id, // Optional: Unique id of the user (if set, this should not change) user id
   //type:       'Owner', // Optional: segment your users by type
-  //account: { // Account traits are only available on some plans
-  //  id:           123, // Optional: associate multiple users with a single account
-  //  name:         'Acme, Co.', // Account name
+  account: { // Account traits are only available on some plans
+    id: institution_code, // Optional: associate multiple users with a single account instituion id remote id
+    name: institution_name, // Account name
   //  created_at:   1364406966, // Unix timestamp for the date the account was created
   //  monthly_rate: 9.99, // Decimal; monthly rate of the account
   //  ltv:          1495.00, // Decimal; lifetime value of the account
   //  plan:         'Enhanced' // Plan name for the account
-  //}
+  }
 }]);
 
 // Add default trigger to the bottom-right corner of the window:

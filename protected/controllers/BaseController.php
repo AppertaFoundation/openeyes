@@ -205,6 +205,13 @@ class BaseController extends Controller
 
     public function processJsVars()
     {
+        $user = User::model()->findByAttributes(array('id' => Yii::app()->session['user']->id));
+        $institution = Institution::model()->findByAttributes(array('remote_id' => Yii::app()->params['institution_code']));
+        $this->jsVars['user_id'] = $user->id;
+        $this->jsVars['user_full_name'] = $user->first_name." ".$user->last_name;
+        $this->jsVars['user_email'] = $user->email;
+        $this->jsVars['institution_code'] = $institution->remote_id;
+        $this->jsVars['institution_name'] = $institution->name;
         $this->jsVars['YII_CSRF_TOKEN'] = Yii::app()->request->csrfToken;
         $this->jsVars['OE_core_asset_path'] = Yii::app()->assetManager->getPublishedPathOfAlias('application.assets');
         $this->jsVars['OE_module_name'] = $this->module ? $this->module->id : false;
