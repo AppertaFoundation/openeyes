@@ -9,7 +9,7 @@ class m170814_140450_user_voice extends CDbMigration
 			'display_order' => 21,
 			'field_type_id' => 3,
 			'key' => 'uservoice_use_logged_in_user',
-			'name' => 'UserVoice User Logged In User',
+			'name' => 'UserVoice Use Logged In User',
 			'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
 			'default_value' => 'off'
 		));
