@@ -150,11 +150,13 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
             'left_axis' => 'Axis',
             'left_type_id' => 'Type',
             'left_type_other' => 'Other Type',
+            'left_notes' => 'Comments',
             'right_sphere' => 'Sphere',
             'right_cylinder' => 'Cylinder',
             'right_axis' => 'Axis',
             'right_type_id' => 'Type',
             'right_type_other' => 'Other Type',
+            'right_notes' => 'Comments'
         );
     }
 

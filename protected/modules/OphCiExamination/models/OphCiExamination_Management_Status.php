@@ -38,6 +38,9 @@ class OphCiExamination_Management_Status extends \BaseActiveRecordVersioned
         return parent::model($className);
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->name;

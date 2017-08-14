@@ -18,6 +18,7 @@
 @import "elements/intraocular-pressure";
 @import "elements/diagnoses";
 @import "elements/dilation";
+@import "elements/_family-history";
 @import "elements/gonioscopy";
 @import "elements/optic-disc";
 @import "elements/anterior-segment";
@@ -30,5 +31,5 @@
 
 .autoreport-display {
   line-height: 1;
-  margin-bottom:10px;
+  margin-bottom: 2px;
 }

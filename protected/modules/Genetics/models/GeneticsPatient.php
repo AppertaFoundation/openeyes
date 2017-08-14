@@ -213,34 +213,35 @@ class GeneticsPatient extends BaseActiveRecord
 
         if($this->getIsNewRecord()) {
             $this->updateDiagnoses();
-
-            /*
-             * Auto-generate a new pedigree and
-             * assign it to the genetic subject
-             */
-
-            if(isset($_POST['no_pedigree']))
-            {
-                $pedigree_inheritance = PedigreeInheritance::model()->findByAttributes(array('name' => 'Unknown/other'));
-
-                $pedigree = new Pedigree();
-
-                $pedigree->inheritance_id = $pedigree_inheritance ? $pedigree_inheritance->id : null;
-                $pedigree->comments = '';
-                $pedigree->consanguinity = false;
-
-                $pedigree->save(false);
-
-                $p_id = $pedigree->id;
-
-                $link = new GeneticsPatientPedigree();
-                $link->pedigree_id = $p_id;
-                $link->patient_id = $this->id;
-
-                $link->save(false);
-            }
-
         }
+
+        /*
+         * Auto-generate a new pedigree and
+         * assign it to the genetic subject
+         */
+
+        if(isset($_POST['no_pedigree']))
+        {
+            $pedigree_inheritance = PedigreeInheritance::model()->findByAttributes(array('name' => 'Unknown/other'));
+
+            $pedigree = new Pedigree();
+
+            $pedigree->inheritance_id = $pedigree_inheritance ? $pedigree_inheritance->id : null;
+            $pedigree->comments = '';
+            $pedigree->consanguinity = false;
+
+            $pedigree->save(false);
+
+            $p_id = $pedigree->id;
+
+            $link = new GeneticsPatientPedigree();
+            $link->pedigree_id = $p_id;
+            $link->patient_id = $this->id;
+
+            $link->save(false);
+        }
+
+
 
         $pedigrees = GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $this->id), array('select' =>  'pedigree_id'));
         $pedigreeIds = array();
@@ -248,7 +249,6 @@ class GeneticsPatient extends BaseActiveRecord
             if($pedigree->pedigree_id){
                 $pedigreeIds[] = $pedigree->pedigree_id;
             }
-
         }
 
         $added = array_diff($this->preExistingPedigreesIds, $pedigreeIds);

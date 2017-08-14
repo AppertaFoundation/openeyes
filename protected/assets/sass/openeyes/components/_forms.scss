@@ -75,7 +75,8 @@ input[readonly] {
 }
 
 textarea {
-	min-height: 4em;
+	resize: vertical;
+	min-height: 2em;
 	&.address {
 		font-family: courier;
 		color: #000;
@@ -245,7 +246,7 @@ label {
 
 // Field rows
 .field-row {
-	padding-bottom: 10px;
+	padding-bottom: 2px;
 	table:last-child {
 		margin-bottom: 0;
 	}

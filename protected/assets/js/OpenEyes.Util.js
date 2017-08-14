@@ -47,6 +47,25 @@
 		return child;
 	};
 
+    /**
+     * Returns the next index of the data entries
+     *
+     * @param selector
+     * @param dataKey
+     * @returns {*}
+     */
+	Util.getNextDataKey = function(selector, dataKey){
+        var keys = $(selector).map(function(i, el){
+            return $(el).data(dataKey);
+        }).get();
+
+        if(keys.length) {
+            return Math.max.apply(null, keys) + 1;
+        } else {
+            return 0;
+        }
+	}
+
 	exports.Util = Util;
 
 }(this.OpenEyes));

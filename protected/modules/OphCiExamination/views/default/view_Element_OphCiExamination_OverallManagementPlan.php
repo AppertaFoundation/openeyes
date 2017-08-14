@@ -20,7 +20,7 @@
 <div class="element-data">
 	<div class="row data-row">
 		<div class="large-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('clinic_interval_id'))?></div></div>
-		<div class="large-7 column end"><div class="data-value"><?php echo $element->clinic_internal ? $element->clinic_internal->name : 'None'?></div></div>
+		<div class="large-7 column end"><div class="data-value"><?php echo $element->clinic_interval ? : 'None'?></div></div>
 	</div>
 	<div class="row data-row">
 		<div class="large-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('photo_id'))?></div></div>

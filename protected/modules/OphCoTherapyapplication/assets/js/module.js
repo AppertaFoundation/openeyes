@@ -320,6 +320,8 @@ function _getContraindicationsFromSide(side) {
 function OphCoTherapyapplication_ContraIndications_check() {
 	var lt = _getContraindicationsFromSide('left');
 	var rt = _getContraindicationsFromSide('right');
+	// regardless, we don't want to allow the removal of the element manually, so we force the header control to be disabled:
+	$('.Element_OphCoTherapyapplication_RelativeContraindications').find('a.js-remove-element').attr('disabled', 'disabled');
 	if (lt || rt) {
 		$('.Element_OphCoTherapyapplication_RelativeContraindications').show();
 		// enable form elements (in case they were disabled)
