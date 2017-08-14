@@ -1198,14 +1198,30 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
-    public function getLetterDRClinicalMacLeft($patient)
+    /**
+     * wrapper function for getDRClinicalMac
+     *
+     * @param $patient
+     * @param bool $use_context
+     * @return $mixed
+     */
+
+    public function getLetterDRClinicalMacLeft($patient, $use_context = true)
     {
-        return $this->getDRClinicalMac($patient,'left');
+        return $this->getDRClinicalMac($patient,'left', $use_context);
     }
 
-    public function getLetterDRClinicalMacRight($patient)
+    /**
+     * wrapper function for getDRClinicalMac
+     *
+     * @param $patient
+     * @param bool $use_context
+     * @return $mixed
+     */
+
+    public function getLetterDRClinicalMacRight($patient, $use_context = true)
     {
-        return $this->getDRClinicalMac($patient,'right');
+        return $this->getDRClinicalMac($patient,'right', $use_context);
     }
 
     /**
@@ -1584,24 +1600,26 @@ class OphCiExamination_API extends \BaseAPI
      * wrapper function to get the Maximum CRT for the left side of the patient.
      *
      * @param $patient
+     * @param bool $use_context
      *
      * @return mixed
      */
-    public function getLetterMaxCRTLeft($patient)
+    public function getLetterMaxCRTLeft($patient, $use_context = true)
     {
-        return $this->getLetterMaxCRTForSide($patient, 'left');
+        return $this->getLetterMaxCRTForSide($patient, 'left', $use_context);
     }
 
     /**
      * wrapper function to get the Maximum CRT for the right side of the patient.
      *
      * @param $patient
+     * @param bool $use_context
      *
      * @return mixed
      */
-    public function getLetterMaxCRTRight($patient)
+    public function getLetterMaxCRTRight($patient, $use_context = true)
     {
-        return $this->getLetterMaxCRTForSide($patient, 'right');
+        return $this->getLetterMaxCRTForSide($patient, 'right', $use_context);
     }
 
     /**
@@ -1627,24 +1645,26 @@ class OphCiExamination_API extends \BaseAPI
      * wrapper function to get the Central SFT for the left side of the patient.
      *
      * @param $patient
+     * @param bool $use_context
      *
      * @return mixed
      */
-    public function getLetterCentralSFTLeft($patient)
+    public function getLetterCentralSFTLeft($patient, $use_context = true)
     {
-        return $this->getLetterCentralSFTForSide($patient, 'left');
+        return $this->getLetterCentralSFTForSide($patient, 'left', $use_context);
     }
 
     /**
      * wrapper function to get the Central SFT for the right side of the patient.
      *
      * @param $patient
+     * @param bool $use_context
      *
      * @return mixed
      */
     public function getLetterCentralSFTRight($patient)
     {
-        return $this->getLetterCentralSFTForSide($patient, 'right');
+        return $this->getLetterCentralSFTForSide($patient, 'right', $use_context);
     }
 
     /**
@@ -1678,28 +1698,30 @@ class OphCiExamination_API extends \BaseAPI
      * get the diagnosis description for the patient on the left.
      *
      * @param $patient
+     * @param bool $use_context
      *
      * @return string
      *
      * @see getLetterInjectionManagementComplexDiagnosisForSide
      */
-    public function getLetterInjectionManagementComplexDiagnosisLeft($patient)
+    public function getLetterInjectionManagementComplexDiagnosisLeft($patient, $use_context = true)
     {
-        return $this->getLetterInjectionManagementComplexDiagnosisForSide($patient, 'left');
+        return $this->getLetterInjectionManagementComplexDiagnosisForSide($patient, 'left', $use_context);
     }
 
     /**
      * get the diagnosis description for the patient on the right.
      *
      * @param $patient
+     * @param bool $use_context
      *
      * @return string
      *
      * @see getLetterInjectionManagementComplexDiagnosisForSide
      */
-    public function getLetterInjectionManagementComplexDiagnosisRight($patient)
+    public function getLetterInjectionManagementComplexDiagnosisRight($patient, $use_context = true)
     {
-        return $this->getLetterInjectionManagementComplexDiagnosisForSide($patient, 'right');
+        return $this->getLetterInjectionManagementComplexDiagnosisForSide($patient, 'right', $use_context);
     }
 
     /**
@@ -1726,13 +1748,14 @@ class OphCiExamination_API extends \BaseAPI
      * get the combined string for both eyes injection management complex diagnosis.
      *
      * @param $patient
+     * @param bool $use_context
      *
      * @return string
      */
-    public function getLetterInjectionManagementComplexDiagnosisBoth($patient)
+    public function getLetterInjectionManagementComplexDiagnosisBoth($patient, $use_context = true)
     {
-        $right = $this->getLetterInjectionManagementComplexDiagnosisRight($patient);
-        $left = $this->getLetterInjectionManagementComplexDiagnosisLeft($patient);
+        $right = $this->getLetterInjectionManagementComplexDiagnosisRight($patient, $use_context);
+        $left = $this->getLetterInjectionManagementComplexDiagnosisLeft($patient, $use_context);
         if ($right || $left) {
             $res = '';
             if ($right) {
