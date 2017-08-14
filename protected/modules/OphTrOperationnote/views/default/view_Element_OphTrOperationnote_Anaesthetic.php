@@ -40,7 +40,7 @@
 			<?php if (!$element->isAnaestheticType("GA")) {?>
                 <div class="large-2 column">
                     <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetist_id'))?></h4>
-                    <div class="data-value"><?php echo $element->anaesthetist->name?></div>
+                    <div class="data-value <?php if (!$element->anaesthetist) {?> none<?php }?>"><?php echo $element->anaesthetist ? $element->anaesthetist->name : 'None'?></div>
                 </div>
                 <div class="large-2 column">
                     <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('agents'))?></h4>
@@ -57,7 +57,7 @@
                 </div>
                 <div class="large-3 column">
                     <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('complications'))?></h4>
-                    <div class="data-value">
+                    <div class="data-value <?php if (!$element->anaesthetic_complications) {?> none<?php }?>">
                         <?php if (!$element->anaesthetic_complications) {?>
                             None
                         <?php } else {?>
@@ -69,7 +69,7 @@
                 </div>
                 <div class="large-3 column">
                     <h4 class="data-title">Delivery</h4>
-                    <div class="data-value">
+                    <div class="data-value <?php if (!$element->anaesthetic_delivery) {?> none<?php }?>">
                         <?php
                             $text = '';
                             foreach($element->anaesthetic_delivery as $anaesthetic_delivery){
@@ -77,7 +77,7 @@
                                 $text .= $anaesthetic_delivery->name;
                             }
 
-                            echo $text;
+                            echo $text ? $text : 'None';
                         ?>
                     </div>
                 </div>

@@ -29,6 +29,8 @@ class m170711_151955_anaesthetic_types_multiselect extends OEMigration
         $this->addForeignKey('ophtroperationnote_anaesthetic_delivery_to_el', 'ophtroperationnote_anaesthetic_anaesthetic_delivery',
             'et_ophtroperationnote_anaesthetic_id', 'et_ophtroperationnote_anaesthetic', 'id');
 
+        $this->alterColumn('et_ophtroperationnote_anaesthetic', 'anaesthetist_id', 'int(10) unsigned DEFAULT NULL');
+
 
         // moving the data
         $transaction = $this->getDbConnection()->beginTransaction();
