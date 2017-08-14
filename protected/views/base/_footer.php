@@ -46,7 +46,7 @@
 			</div>
 		</div>
 		<script>
-		
+
 // Include the UserVoice JavaScript SDK (only needed once on a page)
 UserVoice=window.UserVoice||[];(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='http://widget.uservoice.com/xiXrGR5j7JSb6wqDtOQJw.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})();
 
@@ -65,16 +65,16 @@ UserVoice.push(['set', {
 
 // Identify the user and pass traits
 // To enable, replace sample data with actual user traits and uncomment the line
-
+var use_logged_in = uservoice_use_logged_in_user == 'on' ? true : false;
 UserVoice.push(['identify', {
-  email: user_email, // User’s email address
-  name: user_full_name, // User’s real name
+  email: use_logged_in ? user_email : "", // User’s email address
+  name: use_logged_in ? user_full_name : "", // User’s real name
   //created_at: 1364406966, // Unix timestamp for the date the user signed up
-  id: user_id, // Optional: Unique id of the user (if set, this should not change) user id
+  id: use_logged_in ? user_id : "", // Optional: Unique id of the user (if set, this should not change) user id
   //type:       'Owner', // Optional: segment your users by type
   account: { // Account traits are only available on some plans
-    id: institution_code, // Optional: associate multiple users with a single account instituion id remote id
-    name: institution_name, // Account name
+    id: use_logged_in ? institution_code : uservoice_override_account_id, // Optional: associate multiple users with a single account instituion id remote id
+    name: use_logged_in ? institution_name : uservoice_override_account_name, // Account name
   //  created_at:   1364406966, // Unix timestamp for the date the account was created
   //  monthly_rate: 9.99, // Decimal; monthly rate of the account
   //  ltv:          1495.00, // Decimal; lifetime value of the account
