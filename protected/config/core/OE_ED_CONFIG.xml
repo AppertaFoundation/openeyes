@@ -1674,167 +1674,202 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 			<INDEX_LIST>
 				<INDEX>
 					<PRIMARY_TERM>Hard drusen</PRIMARY_TERM>
-					<IMG_URL>/protected/modules/eyedraw/assets/img/icons/32x32/draw/new/ACIOL.png</IMG_URL>
+					<IMG_URL>/assets/index_search/HardDrusen.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>HardDrusen</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Geographic</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/Geographic.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Geographic</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Choroidal new vessels</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/CNV.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>CNV</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>RPE detachment</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/RPEDetachment.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>RPEDetachment</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Epiretinal membrane</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/EpiretinalMembrane.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>EpiretinalMembrane</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Macular hole</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/MacularHole.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>MacularHole</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Macular dystrophy</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/MacularDystrophy.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>MacularDystrophy</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Macroaneurysm</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/Macroaneurysm.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Macroaneurysm</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Retinal vein occluson</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/RetinalVeinOcclusionPostPole.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>RetinalVeinOcclusionPostPole</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Retinal artery occlusion</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/RetinalArteryOcclusionPostPole.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>RetinalArteryOcclusionPostPole</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Microaneurysm</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/Microaneurysm.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Microaneurysm</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Blot Haemorrhage</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/BlotHaemorrhage.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>BlotHaemorrhage</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Hard Exudate</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/HardExudate.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>HardExudate</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
-					<PRIMARY_TERM>Intraretinal microvascular abnormalities</PRIMARY_TERM>
+					<PRIMARY_TERM>IMA</PRIMARY_TERM>
+					<SECONDARY_TERM_LIST>
+						<TERM>Intraretinal microvascular abnormalities</TERM>
+					</SECONDARY_TERM_LIST>
+					<IMG_URL>/assets/index_search/IRMA.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>IRMA</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Circinate retinopathy</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/Circinate.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Circinate</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Macular thickening</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/MacularThickening.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>MacularThickening</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Cystoid macular oedema</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/CystoidMacularOedema.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>CystoidMacularOedema</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Pre-retinal haemorrhage</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/PreRetinalHaemorrhage.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>PreRetinalHaemorrhage</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Cotton wool spot</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/CottonWoolSpot.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>CottonWoolSpot</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Diabetic new vessels</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/DiabeticNV.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>DiabeticNV</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Vitreous opacity</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/VitreousOpacity.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>VitreousOpacity</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Fibrous proliferation</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/FibrousProliferation.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>FibrousProliferation</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Traction retinal detachment</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/TractionRetinalDetachment.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>TractionRetinalDetachment</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Swollen disc</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/SwollenDisc.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>SwollenDisc</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Parafoveal telangiectasia</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/Telangiectasis.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Telangiectasis</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Choroidal haemorrhage</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/ChoroidalHaemorrhage.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>ChoroidalHaemorrhage</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Choroidal naevus</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/ChoroidalNaevus.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>ChoroidalNaevus</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Laser spot</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/LaserSpot.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>LaserSpot</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Focal laser</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/FocalLaser.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>FocalLaser</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Macular grid laser</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/MacularGrid.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>MacularGrid</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Sector PRP</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/SectorPRPPostPole.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>SectorPRPPostPole</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Panretinal photocoagulation</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/PRPPostPole.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>PRPPostPole</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Label</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/Label.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -1854,21 +1889,25 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 			<INDEX_LIST>
 				<INDEX>
 					<PRIMARY_TERM>Angle new vessels</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/AngleNV.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>AngleNV</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Anterior synechiae</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/AntSynech.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>AntSynech</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Angle recession</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/AngleRecession.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>AngleRecession</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Label</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/Label.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -1888,36 +1927,43 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 			<INDEX_LIST>
 				<INDEX>
 					<PRIMARY_TERM>Peripapillary atrophy</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/PeripapillaryAtrophy.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>PeripapillaryAtrophy</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Disc pallor</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/DiscPallor.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>DiscPallor</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Disc haemorrhage</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/DiscHaemorrhage.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>DiscHaemorrhage</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Nerve fibre defect</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/NerveFibreDefect.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>NerveFibreDefect</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Optic disc pit</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/OpticDiscPit.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>OpticDiscPit</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Papilloedema</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/Papilloedema.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Papilloedema</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Label</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/Label.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -1937,81 +1983,97 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 			<INDEX_LIST>
 				<INDEX>
 					<PRIMARY_TERM>Rhegmatogenous retinal detachment</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/RRD.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
-					<GOTO_DOODLE_CLASS_NAME>RRDright</GOTO_DOODLE_CLASS_NAME>
+					<GOTO_DOODLE_CLASS_NAME>RRD</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Traction ‘U’ tear</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/UTear.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>UTear</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Round hole</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/RoundHole.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>RoundHole</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Dialysis</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/Dialysis.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Dialysis</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Giant retinal tear</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/GRT.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>GRT</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Macular hole</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/MacularHole.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>MacularHole</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Star fold</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/StarFold.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>StarFold</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Anterior PVR</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/AntPVR.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>AntPVR</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Lattice</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/Lattice.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Lattice</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Cryotherapy scar</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/Cryo.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Cryo</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Circle of laser photocoagulation</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/LaserCircle.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>LaserCircle</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Drainage retinotomy</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/DrainageRetinotomy.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>DrainageRetinotomy</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Retinoschisis</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/Retinoschisis.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Retinoschisis</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Outer leaf break</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/OuterLeafBreak.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>OuterLeafBreak</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Inner leaf break</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/InnerLeafBreak.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>InnerLeafBreak</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Label</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/Label.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2039,7 +2101,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 						<TERM>AC</TERM>
 					</SECONDARY_TERM_LIST>
 
-					<IMG_URL>/assets/tom/ACIOL.png</IMG_URL>
+					<IMG_URL>/assets/index_search/ACIOL.png</IMG_URL>
 					<DESCRIPTION>Anterior chamber lens are fixed with the support of iris. Primarily used as a backup lens when there is damage to the Posterior Chamber. AC IOL is also used in refractive surgery – implanting a lens in phakic eye to correct the refractive power.</DESCRIPTION>
 					<GENERAL_NOTE>This is a general note</GENERAL_NOTE>
 					<WARNING_NOTE>This is a warning note</WARNING_NOTE>
@@ -2050,7 +2112,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Adenoviral keratitis</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/AdenoviralKeratitis.png</IMG_URL>
+					<IMG_URL>/assets/index_search/AdenoviralKeratitis.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>AdenoviralKeratitis</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2064,7 +2126,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Anterior segment</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/AntSeg.png</IMG_URL>
+					<IMG_URL>/assets/index_search/AntSeg.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>AntSeg</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2132,7 +2194,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Trabeculectomy bleb</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/Bleb.png</IMG_URL>
+					<IMG_URL>/assets/index_search/Bleb.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Bleb</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2140,7 +2202,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Conjunctival suture</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/ConjunctivalSuture.png</IMG_URL>
+					<IMG_URL>/assets/index_search/ConjunctivalSuture.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>ConjunctivalSuture</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2177,7 +2239,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Conjunctivitis</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/Conjunctivitis.png</IMG_URL>
+					<IMG_URL>/assets/index_search/Conjunctivitis.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Conjunctivitis</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2208,7 +2270,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Corneal epithelial defect</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/CornealEpithelialDefect.png</IMG_URL>
+					<IMG_URL>/assets/index_search/CornealEpithelialDefect.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>CornealEpithelialDefect</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2231,7 +2293,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Corneal laceration</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/CornealLaceration.png</IMG_URL>
+					<IMG_URL>/assets/index_search/CornealLaceration.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>CornealLaceration</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2254,7 +2316,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Corneal oedema</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/CornealOedema.png</IMG_URL>
+					<IMG_URL>/assets/index_search/CornealOedema.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>CornealOedema</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2291,7 +2353,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Corneal opacity</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/CornealOpacity.png</IMG_URL>
+					<IMG_URL>/assets/index_search/CornealOpacity.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>CornealOpacity</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2328,7 +2390,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Corneal pigmentation</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/CornealPigmentation.png</IMG_URL>
+					<IMG_URL>/assets/index_search/CornealPigmentation.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>CornealPigmentation</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2351,7 +2413,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Corneal scar</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/CornealScar.png</IMG_URL>
+					<IMG_URL>/assets/index_search/CornealScar.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>CornealScar</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2359,7 +2421,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Corneal suture</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/CornealSuture.png</IMG_URL>
+					<IMG_URL>/assets/index_search/CornealSuture.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>CornealSuture</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2375,7 +2437,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Dendritic ulcer</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/DendriticUlcer.png</IMG_URL>
+					<IMG_URL>/assets/index_search/DendriticUlcer.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>DendriticUlcer</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2383,7 +2445,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Episcleritis</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/Episcleritis.png</IMG_URL>
+					<IMG_URL>/assets/index_search/Episcleritis.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Episcleritis</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2401,7 +2463,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 						<TERM>Fuchs</TERM>
 					</SECONDARY_TERM_LIST>
 
-					<IMG_URL>/assets/tom/Fuchs.png</IMG_URL>
+					<IMG_URL>/assets/index_search/Fuchs.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Fuchs</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2409,7 +2471,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Hyphaema</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/Hyphaema.png</IMG_URL>
+					<IMG_URL>/assets/index_search/Hyphaema.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Hyphaema</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2417,7 +2479,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Hypopyon</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/Hypopyon.png</IMG_URL>
+					<IMG_URL>/assets/index_search/Hypopyon.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Hypopyon</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2425,7 +2487,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Keratic precipitates</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/KeraticPrecipitates.png</IMG_URL>
+					<IMG_URL>/assets/index_search/KeraticPrecipitates.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>KeraticPrecipitates</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2435,7 +2497,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 						<TERM>Laser-assisted in situ keratomileusis</TERM>
 					</SECONDARY_TERM_LIST>
 
-					<IMG_URL>/assets/tom/LasikFlap.png</IMG_URL>
+					<IMG_URL>/assets/index_search/LasikFlap.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>LasikFlap</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2493,7 +2555,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Lens</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/Lens.png</IMG_URL>
+					<IMG_URL>/assets/index_search/Lens.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Lens</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2551,7 +2613,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Marginal keratitis</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/MarginalKeratitis.png</IMG_URL>
+					<IMG_URL>/assets/index_search/MarginalKeratitis.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>MarginalKeratitis</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2567,7 +2629,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Metallic foreign body</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/MetallicForeignBody.png</IMG_URL>
+					<IMG_URL>/assets/index_search/MetallicForeignBody.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>MetallicForeignBody</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2597,7 +2659,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Tube patch</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/Patch.png</IMG_URL>
+					<IMG_URL>/assets/index_search/Patch.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Patch</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2615,7 +2677,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 						<TERM>Intraocular lens</TERM>
 					</SECONDARY_TERM_LIST>
 
-					<IMG_URL>/assets/tom/PCIOL.png</IMG_URL>
+					<IMG_URL>/assets/index_search/PCIOL.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>PCIOL</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2631,7 +2693,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Peripheral iridectomy</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/PI.png</IMG_URL>
+					<IMG_URL>/assets/index_search/PI.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>PI</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2654,7 +2716,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Pingueculum</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/Pingueculum.png</IMG_URL>
+					<IMG_URL>/assets/index_search/Pingueculum.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Pingueculum</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2662,7 +2724,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Posterior capsule</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/PosteriorCapsule.png</IMG_URL>
+					<IMG_URL>/assets/index_search/PosteriorCapsule.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>PosteriorCapsule</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2685,7 +2747,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Posterior synechia</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/PosteriorSynechia.png</IMG_URL>
+					<IMG_URL>/assets/index_search/PosteriorSynechia.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>PosteriorSynechia</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2693,7 +2755,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Pterygium</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/Pterygium.png</IMG_URL>
+					<IMG_URL>/assets/index_search/Pterygium.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Pterygium</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2716,7 +2778,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Radial keratotomy</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/RK.png</IMG_URL>
+					<IMG_URL>/assets/index_search/RK.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>RK</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2732,7 +2794,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Rubeosis iridis</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/Rubeosis.png</IMG_URL>
+					<IMG_URL>/assets/index_search/Rubeosis.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Rubeosis</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2740,7 +2802,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Sector iridectomy</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/SectorIridectomy.png</IMG_URL>
+					<IMG_URL>/assets/index_search/SectorIridectomy.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>SectorIridectomy</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2748,7 +2810,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Side port</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/SidePort.png</IMG_URL>
+					<IMG_URL>/assets/index_search/SidePort.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>SidePort</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2758,7 +2820,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 						<TERM>Superficial punctate epithelial erosions</TERM>
 					</SECONDARY_TERM_LIST>
 
-					<IMG_URL>/assets/tom/SPEE.png</IMG_URL>
+					<IMG_URL>/assets/index_search/SPEE.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>SPEE</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2766,7 +2828,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Supramid suture</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/Supramid.png</IMG_URL>
+					<IMG_URL>/assets/index_search/Supramid.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Supramid</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2783,7 +2845,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Trabeculectomy flap</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/TrabyFlap.png</IMG_URL>
+					<IMG_URL>/assets/index_search/TrabyFlap.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>TrabyFlap</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2791,7 +2853,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Trabeculectomy suture</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/TrabySuture.png</IMG_URL>
+					<IMG_URL>/assets/index_search/TrabySuture.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>TrabySuture</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2828,7 +2890,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Transillumination defect</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/TransilluminationDefect.png</IMG_URL>
+					<IMG_URL>/assets/index_search/TransilluminationDefect.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>TransilluminationDefect</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2836,7 +2898,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Drainage tube</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/Tube.png</IMG_URL>
+					<IMG_URL>/assets/index_search/Tube.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Tube</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
@@ -2852,7 +2914,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Tube extender</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/TubeExtender.png</IMG_URL>
+					<IMG_URL>/assets/index_search/TubeExtender.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>TubeExtender</GOTO_DOODLE_CLASS_NAME>
 				</INDEX>
@@ -2860,7 +2922,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<PRIMARY_TERM>Ligation suture</PRIMARY_TERM>
 
 
-					<IMG_URL>/assets/tom/TubeLigation.png</IMG_URL>
+					<IMG_URL>/assets/index_search/TubeLigation.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>TubeLigation</GOTO_DOODLE_CLASS_NAME>
 					<INDEX_LIST>
