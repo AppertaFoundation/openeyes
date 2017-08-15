@@ -37,7 +37,7 @@
                 </div>
 			</div>
             
-			<?php if (!$element->isAnaestheticType("GA")) {?>
+			<?php if ( count($element->anaesthetic_type) > 1 || ( count($element->anaesthetic_type) == 1 && !$element->hasAnaestheticType("GA") && !$element->hasAnaestheticType("NoA")) ) {?>
                 <div class="large-2 column">
                     <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetist_id'))?></h4>
                     <div class="data-value <?php if (!$element->anaesthetist) {?> none<?php }?>"><?php echo $element->anaesthetist ? $element->anaesthetist->name : 'None'?></div>

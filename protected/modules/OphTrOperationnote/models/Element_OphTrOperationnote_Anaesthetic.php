@@ -411,7 +411,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         return $complication_values = array();
     }
 
-    public function isAnaestheticType($type_name)
+    public function hasAnaestheticType($type_name)
     {
         $type = AnaestheticType::model()->findByAttributes(array('name' => $type_name));
 
