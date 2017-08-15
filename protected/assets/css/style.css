@@ -8131,7 +8131,7 @@ table.detailview tr th {
   cursor: auto;
   position: fixed;
   background: #fff;
-  background-image: url(/assets/tom/line.png);
+  background-image: url(/assets/index_search/line.png);
   background-size: 4px;
   background-repeat: repeat-y;
   background-position: 325px;
@@ -8179,7 +8179,7 @@ table.detailview tr th {
 }
 #big_cross {
   position: fixed;
-  background: #fff url(/assets/tom/bigCross.png) center no-repeat;
+  background: #fff url(/assets/index_search/bigCross.png) center no-repeat;
   display: block;
   cursor: pointer;
   width: 32px;
@@ -8238,10 +8238,10 @@ li li li .index_col_left {
 }
 .warning_icon {
   top: 4px;
-  background-image: url("/assets/tom/warning.png");	}
+  background-image: url("/assets/index_search/warning.png");	}
 
 .info_icon {
-  background-image: url("/assets/tom/info.png");
+  background-image: url("/assets/index_search/info.png");
 }
 .description_icon {
   font-size: 0.8em;
