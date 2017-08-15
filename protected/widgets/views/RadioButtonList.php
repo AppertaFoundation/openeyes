@@ -42,7 +42,9 @@
 
 <?php } else {?>
 
-	<fieldset id="<?php echo CHtml::modelName($element).'_'.$field?>" class="row field-row"<?php if ($hidden) {?> style="display: none;"<?php }?>>
+    <?php $fieldset_class = isset($htmlOptions['fieldset-class']) ? $htmlOptions['fieldset-class'] : ''; ?>
+
+	<fieldset id="<?php echo CHtml::modelName($element).'_'.$field?>" class="row field-row <?=$fieldset_class?> <?php echo $hidden ? 'hidden' : ''?>" >
 		<?php	// Added hidden input below to enforce posting of current form element name.
 				// When using radio or checkboxes if no value is selected then nothing is posted
 				// not triggereing server side validation.
@@ -71,6 +73,9 @@
             $options[$k] = $v;
         }
     }
+
+    $class = isset($options['class']) ? ($options['class'] . " ") : '';
+    $options['class'] = $class . str_replace(' ', '', $data_value);
 
     echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options);
     ?>

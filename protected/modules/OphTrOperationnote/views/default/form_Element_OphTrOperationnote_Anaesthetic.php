@@ -20,11 +20,21 @@
 <div class="element-fields" id="OphTrOperationnote_Anaesthetic">
 
     <?php
-        echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', 'Type');
-        echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', 'LA Delivery Methods',
-        false, false, false, false);
 
-        echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist');
+        $is_hidden = function() use ($element){
+          if( count($element->anaesthetic_type) == 1 && ( $element->anaesthetic_type[0]->code == 'GA' || $element->anaesthetic_type[0]->code == 'NoA' ) ){
+              return true;
+          }
+            return false;
+        };
+
+        echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', 'Type');
+
+        echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', 'LA Delivery Methods',
+        false, false, false, false, array('fieldset-class' => ($is_hidden() ? 'hidden' : '')));
+
+        echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist', $element->anaesthetist_id, false, false, false, false,
+            array('fieldset-class' => ($is_hidden() ? 'hidden' : '')) );
     ?>
 
     <?php if ($element->getSetting('fife')) { ?>

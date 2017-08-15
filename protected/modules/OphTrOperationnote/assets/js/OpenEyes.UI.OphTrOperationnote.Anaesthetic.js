@@ -62,10 +62,14 @@ OpenEyes.OphTrOperationnote.AnaestheticController = (function () {
                 if( $GA.is(':checked') ){
                     $(options['deliverySelector']).find('input').prop('checked', false);
                     $(options['deliverySelector']).find('input.Other').prop('checked', true);
+
+                    $(options['anaestheticSelector']).find('input').prop('checked', false);
+                    $(options['anaestheticSelector']).find('input.Anaesthetist').prop('checked', true);
                 }
 
                 if($no_anaesthetic.is(':checked')){
                     $(options['deliverySelector']).find('input').prop('checked', false);
+                    $(options['anaestheticSelector']).find('input').prop('checked', false);
 
                     $.each( $(options['anaestheticSelector']).find('input') , function( key, input ) {
                         if( $.trim($(input).parent().text()) === 'Other'){
