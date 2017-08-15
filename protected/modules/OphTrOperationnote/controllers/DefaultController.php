@@ -60,18 +60,6 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * Set flash message for patient allergies.
-     */
-    protected function showAllergyWarning()
-    {
-        if ($this->patient->no_allergies_date) {
-            Yii::app()->user->setFlash('info.prescription_allergy', $this->patient->getAllergiesString());
-        } else {
-            Yii::app()->user->setFlash('warning.prescription_allergy', $this->patient->getAllergiesString());
-        }
-    }
-
-    /**
      * Creates the procedure elements for the procedures selected in the procedure list element.
      *
      * @return BaseEventTypeElement[]
@@ -203,7 +191,6 @@ class DefaultController extends BaseEventTypeController
      */
     protected function initEdit()
     {
-        $this->showAllergyWarning();
         $this->jsVars['eyedraw_iol_classes'] = Yii::app()->params['eyedraw_iol_classes'];
         $this->moduleStateCssClass = 'edit';
     }

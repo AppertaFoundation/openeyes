@@ -23,6 +23,12 @@
     $this->moduleNameCssClass .= ' edit';
 ?>
 
+<?php
+$clinical = $clinical = $this->checkAccess('OprnViewClinical');
+
+$warnings = $this->patient->getWarnings($clinical);
+?>
+
 	<div class="row">
 		<div class="large-12 column">
 
@@ -36,6 +42,19 @@
                     $this->event_actions[] = EventAction::button('Create Operation Note', 'save', array('level' => 'secondary'), array('form' => 'operation-note-select', 'class' => 'button small'));
                 ?>
 					<?php  $this->displayErrors($errors)?>
+
+    <?php if ($warnings) { ?>
+        <div class="row">
+            <div class="large-12 column">
+                <div class="alert-box patient with-icon">
+                    <?php foreach ($warnings as $warn) {?>
+                        <strong><?php echo $warn['long_msg']; ?></strong>
+                        - <?php echo $warn['details'];
+                    }?>
+                </div>
+            </div>
+        </div>
+    <?php }?>
 
 					<header class="element-header">
 						<h3 class="element-title">Create Operation Note</h3>
