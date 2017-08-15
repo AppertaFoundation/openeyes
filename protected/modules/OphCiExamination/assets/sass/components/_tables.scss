@@ -20,4 +20,10 @@ table {
 			text-align: center;
 		}
 	}
+
+	input{
+		&.other-type-input{
+			margin-top: 3px;
+		}
+	}
 }
