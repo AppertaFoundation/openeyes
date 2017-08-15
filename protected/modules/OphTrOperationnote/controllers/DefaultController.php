@@ -218,7 +218,7 @@ class DefaultController extends BaseEventTypeController
         parent::initActionCreate();
 
         $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-        
+
         if (isset($_GET['booking_event_id'])) {
             if (!$api) {
                 throw new Exception('invalid request for booking event');
@@ -274,8 +274,8 @@ class DefaultController extends BaseEventTypeController
             $bookings = array();
 
 
-            $element_enabled = \SettingInstallation::model()->find('`key` = :setting_key', array(':setting_key'=>'disable_theatre_diary'));
-            $theatre_diary_disabled = isset($element_enabled->value) && $element_enabled->value == 'on';
+            $element_enabled = Yii::app()->params['disable_theatre_diary'];
+            $theatre_diary_disabled = isset($element_enabled) && $element_enabled == 'on';
 
             if($theatre_diary_disabled)
             {
