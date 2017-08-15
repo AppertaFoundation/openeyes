@@ -206,6 +206,7 @@ class BaseController extends Controller
     public function processJsVars()
     {
         // TODO: Check logged in before setting
+        $this->jsVars['uservoice_enabled'] = Yii::app()->params['uservoice_enabled'];
         $this->jsVars['uservoice_use_logged_in_user'] = Yii::app()->params['uservoice_use_logged_in_user'];
         $this->jsVars['uservoice_override_account_id'] = Yii::app()->params['uservoice_override_account_id'];
         $this->jsVars['uservoice_override_account_name'] = Yii::app()->params['uservoice_override_account_name'];
