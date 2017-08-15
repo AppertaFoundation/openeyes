@@ -8092,7 +8092,7 @@ table.detailview tr th {
   cursor: pointer;
   border: none;
   /*download this image*/
-  background: url("http://thesuiteworld.com/wp-admin/maint/search-icon-white-png-540.png") no-repeat center center, #747782;
+  background: url(/assets/index_search/search_icon.png) no-repeat center center, #747782;
   background-size: 15px 15px;
   border-radius: 0 20px 20px 0;
   padding: 10px 25px;
