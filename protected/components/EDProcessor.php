@@ -82,13 +82,18 @@ class EDProcessor
     /**
      * @param $element_type_id
      * @return string
+     * @throws CException
      */
     public function getCanvasMnemonicForElementType($element_type_id)
     {
-        return $this->app->db
+        $result = $this->app->db
             ->createCommand('SELECT canvas_mnemonic from eyedraw_canvas WHERE container_element_type_id = :etid')
             ->bindParam(':etid', $element_type_id)
             ->queryScalar();
+        if (!$result) {
+            throw new CException("Cannot find eyedraw canvas mnemonic for element type id $element_type_id. Have you loaded the latest config?");
+        }
+        return $result;
     }
 
     /**
