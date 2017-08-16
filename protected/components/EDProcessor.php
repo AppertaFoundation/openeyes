@@ -284,9 +284,13 @@ EOSQL;
      * @param $element
      * @param $side
      * @param $attribute
+     * @throws CException
      */
     public function loadElementEyedrawDoodles(Patient $patient, &$element, $side, $attribute)
     {
+        if (!in_array((int)$side, array(Eye::RIGHT, Eye::LEFT))) {
+            throw new CException("Invalid side argument $side for loading element eyedraw doodles");
+        }
         $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element->getElementType()->id);
 
         if ($doodle_data = $this->retrieveDoodlesForSide($patient->id, $canvas_mnemonic, $side)) {
