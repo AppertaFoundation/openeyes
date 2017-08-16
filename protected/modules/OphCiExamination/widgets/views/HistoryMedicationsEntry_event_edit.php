@@ -19,7 +19,10 @@
 <tr data-key="<?=$row_count?>">
     <td>start date</td>
     <td>end date</td>
-    <td>medication</td>
+    <td><span class="medication-display"></span>
+        <input type="hidden" name="<?= $field_prefix ?>[drug_id]" />
+        <input type="hidden" name="<?= $field_prefix ?>[medication_id]" />
+        <input type="text" name="<?= $field_prefix ?>[medication_search]" class="search" placeholder="Type to search" /></td>
     <td>administration</td>
     <td class="edit-column">
         <button class="button small warning remove" <?php if (!$removable) {?>style="display: none;"<?php } ?>>remove</button>

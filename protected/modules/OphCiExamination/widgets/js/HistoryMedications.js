@@ -30,7 +30,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController._defaultOptions = {
     modelName: 'OEModule_OphCiExamination_models_HistoryMedications',
     element: undefined,
-    addButtonSelector: '.add-entry'
+    addButtonSelector: '.add-entry',
+    searchSource: '/medication/finddrug',
+    drugFieldSelector: 'input[name$="[drug_id]"]',
+    medicationFieldSelector: 'input[name$="[medication_id]"]'
   };
 
   HistoryMedicationsController.prototype.initialiseTriggers = function()
@@ -40,13 +43,51 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     controller.$table.on('click', '.button.remove', function(e) {
       e.preventDefault();
       $(e.target).parents('tr').remove();
-      controller.updateNoRisksState();
+    });
+
+    controller.$table.find('.medication-search').each(function() {
+      controller.initialiseSearch($(this));
     });
 
     controller.$element.on('click', controller.options.addButtonSelector, function(e) {
       e.preventDefault();
       controller.addEntry();
     });
+  };
+
+  HistoryMedicationsController.prototype.initialiseSearch = function($el)
+  {
+    var controller = this;
+    if (!$el.data('search')) {
+        $el.autocomplete({
+            minLength: 3,
+            delay: 700,
+            source: function(request, response) {
+                $.getJSON(controller.options.searchSource, {
+                    term: request.term,
+                    ajax: 'ajax'
+                }, response);
+            },
+            select: function (event, ui) {
+                controller.searchSelect($el, event, ui);
+            }
+        });
+    }
+  };
+
+  HistoryMedicationsController.prototype.searchSelect = function($el, event, ui)
+  {
+    event.preventDefault();
+    var $container = $el.parents('td');
+    $container.find('.medication-display').text(ui.item.label);
+    if (ui.item.type == 'd') {
+        $container.find(this.options.drugFieldSelector).val(ui.item.value);
+        $container.find(this.options.medicationFieldSelector).val('');
+    } else {
+        $container.find(this.options.drugFieldSelector).val('');
+        $container.find(this.options.medicationFieldSelector).val(ui.item.value);
+    }
+    $el.val('').blur();
   };
 
   HistoryMedicationsController.prototype.createRow = function(data)
@@ -65,6 +106,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
     var row = this.createRow();
     this.$table.find('tbody').append(row);
+    this.initialiseSearch(this.$table.find('tbody tr:last input.search'));
   };
 
   exports.HistoryMedicationsController = HistoryMedicationsController;
