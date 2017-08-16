@@ -177,4 +177,50 @@ class HistoryRisksEntry extends \BaseElement
     {
         return $this->getDisplay(true);
     }
+
+    /**
+     * @param $patientId
+     *
+     * @return array|mixed|null
+     */
+    public function mostRecentCheckedAlpha($patientId)
+    {
+
+        $risk_id = \Yii::app()->db->createCommand()->select('id')->from('ophciexamination_risk')->where('name=:name', array(':name' => 'Alpha blockers'))->queryScalar();
+        $criteria = $this->risksByTypeForPatient($risk_id, $patientId);
+        return self::model()->find($criteria);
+    }
+
+
+    protected function risksByTypeForPatient($type_id, $patientId)
+    {
+        $criteria = new \CDbCriteria();
+
+        $criteria->join = 'join ophciexamination_risk risk on risk.id = t.risk_id ';
+        $criteria->join .= 'join et_ophciexamination_history_risks h_risk on t.element_id = h_risk.id ';
+        $criteria->join .= 'join event on h_risk.event_id = event.id ';
+        $criteria->join .= 'join episode on event.episode_id = episode.id ';
+
+        $criteria->addCondition('risk.id = :type_id');
+        $criteria->addCondition('event.deleted <> 1');
+        $criteria->addCondition('episode.patient_id = :patient_id');
+        $criteria->addCondition('risk.active = 1');
+        $criteria->params = array('patient_id' => $patientId, ':type_id' => $type_id);
+        $criteria->order = 'event.event_date DESC';
+
+        return $criteria;
+    }
+
+    /**
+     * @param $patientId
+     *
+     * @return array|mixed|null
+     */
+    public function mostRecentCheckedAnticoag($patientId)
+    {
+      $risk_id = \Yii::app()->db->createCommand()->select('id')->from('ophciexamination_risk')->where('name=:name', array(':name' => 'Anticoagulants'))->queryScalar();
+      $criteria = $this->risksByTypeForPatient($risk_id, $patientId);
+      return self::model()->find($criteria);
+    }
+
 }

@@ -205,18 +205,18 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
      */
     protected function alphaBlockerStatusAndDate($patient)
     {
-        $risks = new \OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk();
+        $risks = new \OEModule\OphCiExamination\models\HistoryRisksEntry();
         $blockers = $risks->mostRecentCheckedAlpha($patient->id);
         if ($blockers) {
-            if ($blockers->alphablocker === '2') {
-                return 'No (' . Helper::convertMySQL2NHS($blockers->event->event_date) . ')';
-            } else {
-                return 'Yes - ' . $blockers->alpha_blocker_name . ' (' . Helper::convertMySQL2NHS($blockers->event->event_date) . ')';
-            }
-        } else {
-            return 'Not Checked';
-        }
+          switch ($blockers->has_risk){
+            case '0' :
+              return 'No (' . Helper::convertMySQL2NHS($blockers->element->event->event_date) . ')';
+            case '1' :
+              return 'Yes - ' . $blockers->comments . ' (' . Helper::convertMySQL2NHS($blockers->element->event->event_date) . ')';
+          }
+          return "Not Checked";
     }
+  }
 
     /**
      * @param $patient
@@ -225,16 +225,16 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
      */
     protected function anticoagsStatusAndDate($patient)
     {
-        $risks = new \OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk();
+        $risks = new \OEModule\OphCiExamination\models\HistoryRisksEntry();
         $anticoag = $risks->mostRecentCheckedAnticoag($patient->id);
-        if ($anticoag) {
-            if ($anticoag->anticoagulant === '2') {
-                return 'No (' . Helper::convertMySQL2NHS($anticoag->event->event_date) . ')';
-            } else {
-                return 'Yes - ' . $anticoag->anticoagulant_name . ' (' . Helper::convertMySQL2NHS($anticoag->event->event_date) . ')';
-            }
-        } else {
-            return 'Not Checked';
+          if ($anticoag) {
+              switch ($anticoag->has_risk) {
+                case '0' :
+                  return 'No (' . Helper::convertMySQL2NHS($anticoag->element->event->event_date) . ')';
+                case '1' :
+                  return 'Yes - ' . $anticoag->comments . ' (' . Helper::convertMySQL2NHS($anticoag->element->event->event_date) . ')';
+              }
+          }
+          return "Not Checked";
         }
-    }
 }
