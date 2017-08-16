@@ -44,13 +44,13 @@ class OphCiExamination_API extends \BaseAPI
     /**
      * @inheritdoc
      */
-    public function getLatestElement($element, Patient $patient, $use_context = false, $before = null)
+    public function getLatestElement($element, Patient $patient, $use_context = false, $before = null, $after = null)
     {
         // Ensure namespace prepended appropriately if necessary
         if (strpos($element, 'models') == 0) {
             $element = 'OEModule\OphCiExamination\\' . $element;
         }
-        return parent::getLatestElement($element, $patient, $use_context, $before);
+        return parent::getLatestElement($element, $patient, $use_context, $before, $after);
     }
 
     /**
@@ -754,22 +754,23 @@ class OphCiExamination_API extends \BaseAPI
      * Get the latest VA for the Left eye form examination event, if the VA is not recorded, take the value from the latest available event within a period of 3 weeks.
      *
      * @param $patient
+     * @param bool $use_context
      * @return string
      */
-    public function getLetterVisualAcuityLeftLast3weeks($patient)
+    public function getLetterVisualAcuityLeftLast3weeks($patient, $use_context = true)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+        $after = date('Y-m-d H:i:s', strtotime('-3 weeks'));
 
-            if($va = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_VisualAcuity', '-3 weeks') ){
-                if( $best = $va->getBestReading('left') ){
+        if($va = $this->getLatestElement('models\Element_OphCiExamination_VisualAcuity', $patient, $use_context, null, $after)) {
+            if( $best = $va->getBestReading('left') ){
 
-                    $dateTime = new \DateTime($va->event->event_date);
-                    return $best->convertTo($best->value,$this->getSnellenUnitId()) . " (recorded on {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
-                }
+                $dateTime = new \DateTime($va->event->event_date);
+                return $best->convertTo($best->value,$this->getSnellenUnitId()) . " (recorded on {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
             }
         }
-    }
 
+        return "";
+    }
 
 
     public function getLetterVisualAcuityRight($patient, $use_context = true)
@@ -781,19 +782,22 @@ class OphCiExamination_API extends \BaseAPI
      * Get the latest VA for the Right eye form examination event, if the VA is not recorded, take the value from the latest available event within a period of 3 weeks.
      *
      * @param $patient
+     * @param bool $use_context
      * @return string - 6/24 (recorded at 7 Jun 2017)
      */
-    public function getLetterVisualAcuityRightLast3weeks($patient)
+    public function getLetterVisualAcuityRightLast3weeks($patient, $use_context = true)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if($va = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_VisualAcuity', '-3 weeks') ){
-                if( $best = $va->getBestReading('right') ){
+        $after = date('Y-m-d H:i:s', strtotime('-3 weeks'));
 
-                    $dateTime = new \DateTime($va->event->event_date);
-                    return $best->convertTo($best->value,$this->getSnellenUnitId()) . " (recorded on {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
-                }
+        if($va = $this->getLatestElement('models\Element_OphCiExamination_VisualAcuity', $patient, $use_context, null, $after)) {
+            if( $best = $va->getBestReading('right') ){
+
+                $dateTime = new \DateTime($va->event->event_date);
+                return $best->convertTo($best->value,$this->getSnellenUnitId()) . " (recorded on {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
             }
         }
+
+        return "";
     }
 
 
@@ -812,32 +816,31 @@ class OphCiExamination_API extends \BaseAPI
      * Get the latest VA for both eyes form examination event, if the VA is not recorded, take the value from the latest available event within a period of 3 weeks.
      *
      * @param $patient
+     * @param bool $use_context
      * @return string - 6/24 (at 7 Jun 2017)
      */
-    public function getLetterVisualAcuityBothLast3weeks($patient)
+    public function getLetterVisualAcuityBothLast3weeks($patient, $use_context = true)
     {
         $left = null;
         $right = null;
 
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if($va = $this->getElementForLatestEventInEpisode($episode, 'models\Element_OphCiExamination_VisualAcuity', '-3 weeks') ){
-                $right = $va->getBestReading('right');
-                $left = $va->getBestReading('left');
-            }
+        $after = date('Y-m-d H:i:s', strtotime('-3 weeks'));
 
-
-            $text = ($right ? $right->convertTo($right->value, $this->getSnellenUnitId()) : 'not recorded') . ' on the right and ' .
-                    ($left ? $left->convertTo($left->value, $this->getSnellenUnitId()) : 'not recorded') . ' on the left';
-
-            if($va){
-                $recorder = $left ? 'recorded ' : '';
-                $dateTime = new \DateTime($va->event->event_date);
-                $text .= " ({$recorder}on {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
-            }
-
-            return $text;
-
+        if($va = $this->getLatestElement('models\Element_OphCiExamination_VisualAcuity', $patient, $use_context, null, $after)) {
+            $right = $va->getBestReading('right');
+            $left = $va->getBestReading('left');
         }
+
+        $text = ($right ? $right->convertTo($right->value, $this->getSnellenUnitId()) : 'not recorded') . ' on the right and ' .
+            ($left ? $left->convertTo($left->value, $this->getSnellenUnitId()) : 'not recorded') . ' on the left';
+
+        if($va){
+            $recorder = $left ? 'recorded ' : '';
+            $dateTime = new \DateTime($va->event->event_date);
+            $text .= " ({$recorder}on {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
+        }
+
+        return $text;
     }
 
     /**

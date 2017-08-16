@@ -656,17 +656,17 @@ class OphCoCorrespondence_API extends BaseAPI
     /*
      * Glaucoma Overall Management Plan from latest Examination
      * @param $patient
+     * @param bool $use_context
      * @return string
      */
-    public function getGlaucomaManagement( \Patient $patient )
+    public function getGlaucomaManagement(\Patient $patient, $use_context = true)
     {
         $result = '';
-        $episode = $patient->getEpisodeForCurrentSubspecialty();
-        $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
 
-        if ($el = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan')
-        ) {
+        if($el = $this->getElementFromLatestEvent(
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan',
+            $patient, $use_context))
+        {
 
             $result .= 'Clinic Interval: '.$el->clinic_internal->name."\n";
             $result .= 'Photo: '.$el->photo->name."\n";

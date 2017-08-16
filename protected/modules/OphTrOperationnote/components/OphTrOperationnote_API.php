@@ -204,12 +204,13 @@ class OphTrOperationnote_API extends BaseAPI
     /**
      * Get the last operation Incision Meridian
      * @param Patient $patient
+     * @param bool $use_context
      * @return string
      */
-    public function getLastOperationIncisionMeridian(\Patient $patient)
+    public function getLastOperationIncisionMeridian(\Patient $patient, $use_context = true)
     {
         $meridian = '';
-        $cataract_element = $this->getLatestCataractElementForEpisode($patient);
+        $cataract_element = $this->getLatestCataractElementForEpisode($patient, $use_context);
         if ($cataract_element) {
             $meridian = $cataract_element->meridian . ' degrees';
         }
@@ -220,12 +221,13 @@ class OphTrOperationnote_API extends BaseAPI
     /**
      * Get the last operation Predicted Refraction
      * @param Patient $patient
+     * @param bool $use_context
      * @return string
      */
-    public function getLastOperationPredictedRefraction(\Patient $patient)
+    public function getLastOperationPredictedRefraction(\Patient $patient, $use_context = true)
     {
         $predicted_refraction = '';
-        if ($cataract_element = $this->getLatestCataractElementForEpisode($patient)) {
+        if ($cataract_element = $this->getLatestCataractElementForEpisode($patient, $use_context)) {
             $predicted_refraction = $cataract_element->predicted_refraction ?: '';
         }
 
@@ -235,12 +237,13 @@ class OphTrOperationnote_API extends BaseAPI
     /**
      * Get the last operation Details
      * @param Patient $patient
+     * @param bool $use_context
      * @return string
      */
-    public function getLastOperationDetails(\Patient $patient)
+    public function getLastOperationDetails(\Patient $patient, $use_context = true)
     {
         $details = '';
-        if ($cataract_element = $this->getLatestCataractElementForEpisode($patient)) {
+        if ($cataract_element = $this->getLatestCataractElementForEpisode($patient, $use_context)) {
             $details = $cataract_element->report2 ?: '';
         }
 
