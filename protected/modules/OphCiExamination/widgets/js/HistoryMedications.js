@@ -72,6 +72,19 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 controller.searchSelect($el, event, ui);
             }
         });
+        $el.data('autocomplete')._renderMenu = function(ul, items)
+        {
+            var self = this;
+            $.each(items, function(index, item) {
+                self._renderItemData(ul, item);
+            });
+            var asTyped = {
+                value: $el.val(),
+                label: 'As Typed: ' + $el.val(),
+                type: 't'
+            };
+            self._renderItemData(ul, asTyped);
+        }
     }
   };
 
@@ -80,10 +93,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     event.preventDefault();
     var $container = $el.parents('td');
     $container.find('.medication-display').text(ui.item.label);
+    if (ui.item.type == 't') {
+        $container.find(this.options.asTypedFieldSelector).val(ui.item.value);
+        $container.find(this.options.drugFieldSelector).val('');
+        $container.find(this.options.medicationFieldSelector).val('');
+    }
     if (ui.item.type == 'd') {
+        $container.find(this.options.asTypedFieldSelector).val('');
         $container.find(this.options.drugFieldSelector).val(ui.item.value);
         $container.find(this.options.medicationFieldSelector).val('');
     } else {
+        $container.find(this.options.asTypedFieldSelector).val('');
         $container.find(this.options.drugFieldSelector).val('');
         $container.find(this.options.medicationFieldSelector).val(ui.item.value);
     }
