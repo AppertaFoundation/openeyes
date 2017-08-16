@@ -321,17 +321,15 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
-		$active_check_value = "";
+		$active_check = "";
         if (!empty($class_array)) {
             if(array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
-                $active_check = \SettingInstallation::model()->find('t.key="city_road_satellite_view"');
-                if (!empty($active_check)) {
-                    $active_check_value = $active_check->value;
-                }
+                $active_check = Yii::app()->params['city_road_satellite_view'];
             }
         }
+
         $view_data = array_merge(array(
-            'active_check' => $active_check_value,
+            'active_check' => $active_check,
         ), $view_data);
 
         parent::renderElement($element, $action, $form, $data, $view_data, $return, $processOutput);
@@ -1422,4 +1420,3 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 }
-

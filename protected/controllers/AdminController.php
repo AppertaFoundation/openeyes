@@ -369,6 +369,7 @@ class AdminController extends BaseAdminController
 
         if ($request->getIsPostRequest()) {
             $userAtt = $request->getPost('User');
+
             $user->attributes = $userAtt;
 
             if (!$user->validate()) {
@@ -401,7 +402,7 @@ class AdminController extends BaseAdminController
 
                 Audit::add('admin-User', 'add', $user->id);
 
-                if (!isset($userAtt['roles'])) {
+                if (!isset($userAtt['roles']) || ( empty($userAtt['roles']))) {
                     $userAtt['roles'] = array();
                 }
 
@@ -443,6 +444,7 @@ class AdminController extends BaseAdminController
 
         if ($request->getIsPostRequest()) {
             $userAtt = $request->getPost('User');
+
             if (empty($userAtt['password'])) {
                 unset($userAtt['password']);
             }
@@ -451,9 +453,6 @@ class AdminController extends BaseAdminController
             if (!$user->validate()) {
                 $errors = $user->getErrors();
             } else {
-                if ($user->is_doctor != 1) {
-                    $user->doctor_grade_id = '';
-                }
 
                 if (!$user->save()) {
                     throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
@@ -482,7 +481,7 @@ class AdminController extends BaseAdminController
 
                 Audit::add('admin-User', 'edit', $user->id);
 
-                if (!isset($userAtt['roles'])) {
+                if (!isset($userAtt['roles']) || (empty($userAtt['roles']))) {
                     $userAtt['roles'] = array();
                 }
 
