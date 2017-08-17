@@ -64,6 +64,13 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         <input type="hidden" name="<?= $field_prefix ?>[drug_id]" value="<?= $entry->drug_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_drug_id]" value="<?= $entry->medication_drug_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->medication_name ?>" />
+        <?= $this->getFirm() ?
+        CHtml::dropDownList(
+            $field_prefix . '[drug_select]',
+            '',
+            Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID()),
+            array('empty' => '- Select -')
+        ) : ''; ?>
         <input type="text" name="<?= $field_prefix ?>[medication_search]" class="search" placeholder="Type to search" />
     </td>
     <td>
