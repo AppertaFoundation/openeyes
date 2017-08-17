@@ -86,6 +86,7 @@ class SubjectController extends BaseModuleController
     {
         $admin = new Crud(GeneticsPatient::model(), $this);
         $genetics_patient = GeneticsPatient::model()->findByPk($id);
+
         if (!$genetics_patient){
             $genetics_patient = new GeneticsPatient();
         }
@@ -98,6 +99,7 @@ class SubjectController extends BaseModuleController
 
         if(isset($_GET['patient']) && ((int)$_GET['patient'] > 0) && ($this->patient == NULL)){
             $this->patient = Patient::model()->findByPk((int)$_GET['patient']);
+
             $admin->getModel()->patient = $this->patient;
             $admin->getModel()->patient_id = $this->patient->id;
 
@@ -120,7 +122,6 @@ class SubjectController extends BaseModuleController
 
         $admin->setModelDisplayName('Genetics Subject');
 
-        $status = PedigreeStatus::model()->findByAttributes(array('name' => 'Unknown'));
         $admin->setEditFields(array(
             'referer' => 'referer',
             'id' => 'label',
