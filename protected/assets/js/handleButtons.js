@@ -91,9 +91,11 @@ $(document).ready(function(){
     $form = $('#admin_' + object);
     if($('#generic-admin-list, #generic-admin-form').length){
       $form = $('#generic-admin-list, #generic-admin-form');
+
     }
     serializedForm = $form.serialize();
-    if (serializedForm.length === 0) {
+
+    if ( $form.find('table.grid tbody input[type="checkbox"]:checked').length === 0 ) {
       new OpenEyes.UI.Dialog.Alert({
         content: "Please select one or more items to delete."
       }).open();

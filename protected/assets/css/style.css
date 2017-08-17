@@ -7766,6 +7766,7 @@ tfoot.pagination-container .pagination-view-all {
 /* line 8, ../sass/openeyes/components/_generic-search.scss */
 #generic-search-form > div div.submit-row {
   align-self: flex-end;
+  padding-right:10px;
 }
 /* line 11, ../sass/openeyes/components/_generic-search.scss */
 #generic-search-form > div div.single-search-field {
