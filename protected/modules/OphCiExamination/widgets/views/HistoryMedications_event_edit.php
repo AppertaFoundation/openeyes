@@ -29,8 +29,7 @@ $model_name = CHtml::modelName($element);
     <table class="<?= $model_name ?>_entry_table">
         <thead>
         <tr>
-            <th>Start Date</th>
-            <th>End Date</th>
+            <th>Dates</th>
             <th>Medication</th>
             <th>Adminstration</th>
             <th>Action(s)</th>
@@ -57,7 +56,7 @@ $model_name = CHtml::modelName($element);
         </tbody>
         <tfoot>
         <tr>
-            <td colspan="4"></td>
+            <td colspan="3"></td>
             <td><button class="button small primary add-entry">Add</button></td>
         </tr>
         </tfoot>

@@ -38,7 +38,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     asTypedFieldSelector: 'input[name$="[medication_name]"]',
     medicationSearchSelector: 'input[name$="[medication_search]"]',
     medicationNameSelector: '.medication-name',
-    medicationDisplaySelector: '.medication-display'
+    medicationDisplaySelector: '.medication-display',
+    stopDateFieldSelector: 'input[name$="[stop_date]"]',
+    stopDateButtonSelector: 'button.stop-medication',
+    cancelStopDateButtonSelector: 'button.cancel-stop-medication'
   };
 
   HistoryMedicationsController.prototype.initialiseTriggers = function()
@@ -68,11 +71,20 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           e.preventDefault();
           controller.resetSearchRow($row, true);
       });
+      $row.on('click', controller.options.stopDateButtonSelector, function(e) {
+          e.preventDefault();
+          controller.showStopDate($row);
+      });
+
+      $row.on('click', controller.options.cancelStopDateButtonSelector, function(e) {
+          e.preventDefault();
+          controller.cancelStopDate($row);
+      });
+
       $row.on('change', '.fuzzy-date select', function(e) {
           var $fuzzyFieldset = $(this).closest('fieldset');
           var date = controller.dateFromFuzzyFieldSet($fuzzyFieldset);
-          console.log($fuzzyFieldset.closest('td').find('input[type="hidden"]'));
-          $fuzzyFieldset.closest('td').find('input[type="hidden"]').val(date);
+          $fuzzyFieldset.find('input[type="hidden"]').val(date);
       });
       controller.resetSearchRow($row, true);
   };
@@ -151,6 +163,22 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           $container.find(this.options.medicationDisplaySelector).hide();
           $container.find(this.options.medicationSearchSelector).show();
       }
+  };
+
+  HistoryMedicationsController.prototype.showStopDate = function($row)
+  {
+    $row.find('.stop-date-wrapper').show();
+    var $fuzzyFieldset = $row.find('.stop-date-wrapper fieldset');
+    var date = this.dateFromFuzzyFieldSet($fuzzyFieldset);
+    $fuzzyFieldset.find('input[type="hidden"]').val(date);
+    $row.find(this.options.stopDateButtonSelector).hide();
+  };
+
+  HistoryMedicationsController.prototype.cancelStopDate = function($row)
+  {
+    $row.find('.stop-date-wrapper').hide();
+    $row.find('.stop-date-wrapper').find('input:hidden').val('');
+    $row.find(this.options.stopDateButtonSelector).show();
   };
 
   HistoryMedicationsController.prototype.createRow = function(data)

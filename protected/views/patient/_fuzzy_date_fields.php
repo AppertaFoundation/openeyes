@@ -19,35 +19,33 @@
  */
 ?>
 
-<div class="large-12 column end">
-    <div class="row">
-        <div class="large-3 column">
-            <select class="fuzzy_day">
-                <option value="00">- Day -</option>
-                <?php for ($i = 1;$i <= 31;++$i) {?>
-                    <option value="<?= $i?>"<?= ($i == $sel_day) ? ' selected' : ''?>><?= $i?></option>
-                <?php }?>
-            </select>
-        </div>
-        <div class="large-4 column">
-            <select class="fuzzy_month">
-                <option value="00">- Month- </option>
-                <?php foreach (array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December') as $i => $month) {?>
-                    <option value="<?= $i + 1?>"<?= ($i + 1 == $sel_month) ? ' selected' : ''?>><?= $month?></option>
-                <?php }?>
-            </select>
-        </div>
-        <div class="large-3 column">
-            <select class="fuzzy_year">
-                <option value="0000">- Year -</option>
-                <?php for ($i = date('Y') - 50;$i <= date('Y');++$i) {?>
-                    <option value="<?= $i?>"<?= ($i == $sel_year) ? ' selected' : ''?>><?= $i?></option>
-                <?php }?>
-            </select>
-        </div>
-        <div class="large-1 column end">
-                            <span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"
-                                  data-tooltip-content="Day, Month and Year fields are optional."></span>
-        </div>
+<div class="row">
+    <div class="large-3 column">
+        <select class="fuzzy_day">
+            <option value="00">- Day -</option>
+            <?php for ($i = 1;$i <= 31;++$i) {?>
+                <option value="<?= $i?>"<?= ($i == $sel_day) ? ' selected' : ''?>><?= $i?></option>
+            <?php }?>
+        </select>
+    </div>
+    <div class="large-4 column">
+        <select class="fuzzy_month">
+            <option value="00">- Month- </option>
+            <?php foreach (array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December') as $i => $month) {?>
+                <option value="<?= $i + 1?>"<?= ($i + 1 == $sel_month) ? ' selected' : ''?>><?= $month?></option>
+            <?php }?>
+        </select>
+    </div>
+    <div class="large-3 column">
+        <select class="fuzzy_year">
+            <option value="0000">- Year -</option>
+            <?php for ($i = date('Y') - 50;$i <= date('Y');++$i) {?>
+                <option value="<?= $i?>"<?= ($i == $sel_year) ? ' selected' : ''?>><?= $i?></option>
+            <?php }?>
+        </select>
+    </div>
+    <div class="large-1 column end">
+                        <span class="has-tooltip fa fa-info-circle right" style="margin-top:3px"
+                              data-tooltip-content="Day, Month and Year fields are optional."></span>
     </div>
 </div>

@@ -188,7 +188,17 @@ section.OEModule_OphCiExamination_models_FamilyHistory table#OEModule_OphCiExami
   padding-top: 40px;
 }
 
-/* line 32, ../sass/components/_elements.scss */
+/* line 1, ../sass/components/elements/_history-medications.scss */
+.date-control {
+  float: right;
+}
+
+/* line 7, ../sass/components/elements/_history-medications.scss */
+.OEModule_OphCiExamination_models_HistoryMedications table tr {
+  vertical-align: top;
+}
+
+/* line 33, ../sass/components/_elements.scss */
 .autoreport-display {
   line-height: 1;
   margin-bottom: 2px;
