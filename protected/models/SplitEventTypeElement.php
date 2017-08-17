@@ -74,7 +74,7 @@ class SplitEventTypeElement extends BaseEventTypeElement
     /**
      * Sided fields have the same defaults on left and right.
      */
-    public function setDefaultOptions()
+    public function setDefaultOptions(Patient $patient = null)
     {
         $this->setSideDefaultOptions('left');
         $this->setSideDefaultOptions('right');

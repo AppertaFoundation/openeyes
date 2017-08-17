@@ -52,7 +52,26 @@
                 CHtml::listData(User::model()->findAll(array('order' => 'first_name,last_name')), 'id', 'fullName'), array('empty' => '- None -')) ?>
 		</div>
 	</div>
-	<div id="div_Firm_consultant_id" class="row field-row">
+
+    <div id="div_Firm_active" class="row field-row">
+        <div class="large-2 column">
+            <label for="Firm_can_own_an_episode"><?= ucfirst(Yii::app()->params['service_firm_label']) ?> Enabled:</label>
+        </div>
+        <div class="large-5 column end">
+            <?php echo CHtml::activeCheckBox($firm, 'can_own_an_episode') ?>
+        </div>
+    </div>
+
+    <div id="div_Firm_active" class="row field-row">
+        <div class="large-2 column">
+            <label for="Firm_runtime_selectable"><?= ucfirst(Yii::app()->params['context_firm_label']) ?> Enabled:</label>
+        </div>
+        <div class="large-5 column end">
+            <?php echo CHtml::activeCheckBox($firm, 'runtime_selectable') ?>
+        </div>
+    </div>
+
+    <div id="div_Firm_active" class="row field-row">
 		<div class="large-2 column">
 			<label for="Firm_active">Active:</label>
 		</div>

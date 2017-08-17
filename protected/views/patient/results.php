@@ -30,8 +30,6 @@ if ($search_terms['hos_num']) {
 }
 $based_on = implode(', ', $based_on);
 ?>
-<h1 class="badge">Search Results</h1>
-
 <div class="row">
     <div class="large-9 column">
 
@@ -78,7 +76,7 @@ $based_on = implode(', ', $based_on);
                 </thead>
                 <tbody>
                 <?php foreach ($dataProvided as $i => $result) { ?>
-                    <tr id="r<?php echo $result->id ?>" class="clickable">
+                    <tr id="r<?php echo $result->id ?>" class="clickable" data-link="<?php echo $result->generateEpisodeLink(); ?>">
                         <td><?php echo $result->hos_num ?></td>
                         <td><?php echo $result->title ?></td>
                         <td><?php echo $result->first_name ?></td>
@@ -122,7 +120,6 @@ $based_on = implode(', ', $based_on);
 
 <script type="text/javascript">
     $('#patient-grid tr.clickable').click(function () {
-        window.location.href = '<?php echo Yii::app()->createUrl('patient/view')?>/' + $(this).attr('id').match(/[0-9]+/);
-        return false;
+        window.location.href = $(this).attr('data-link');
     });
 </script>

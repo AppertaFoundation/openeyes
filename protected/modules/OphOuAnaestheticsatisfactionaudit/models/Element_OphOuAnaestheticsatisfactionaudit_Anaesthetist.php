@@ -175,15 +175,6 @@ class Element_OphOuAnaestheticsatisfactionaudit_Anaesthetist extends BaseEventTy
             ));
     }
 
-    /**
-     * Set default values for forms on create.
-     */
-    public function setDefaultOptions()
-    {
-        if (Yii::app()->getController()->getAction()->id == 'create') {
-        }
-    }
-
     protected function beforeSave()
     {
         if ($this->anaesthetist_select == self::NONCONSULTANT) {

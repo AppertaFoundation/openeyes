@@ -19,6 +19,7 @@ class OphCiExamination_Episode_Keratometry extends \EpisodeSummaryWidget
     public function run()
     {
         $kera_events = [];
+        // TODO: should be using API methods for this.
         foreach(Event::model()->getEventsOfTypeForPatient($this->event_type, $this->episode->patient) as $event){
 
             $kera_models = models\Element_OphCiExamination_Keratometry::model()->findAll('event_id = ' . $event->id);

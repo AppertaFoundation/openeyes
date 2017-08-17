@@ -108,7 +108,7 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
     </div>
 </div>
 <section>
-    <header class="sub-element-header">
+    <header class="element-header">
         <h3 class="element-title">Visual Acuity <?php echo $VAdate; ?></h3>
     </header>
     <div class="element-fields element-eyes row">
@@ -237,7 +237,7 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
 ?>
 
 <section>
-    <header class="sub-element-header">
+    <header class="element-header">
         <h3 class="element-title">Near Visual Acuity <?php echo $NearVAdate; ?></h3>
     </header>
     <div class="element-fields element-eyes row">
@@ -333,7 +333,7 @@ for ($i = 0; $i < count($eventid); ++$i) {
 if ($refractfound) {
 ?>
 <section>
-    <header class="sub-element-header">
+    <header class="element-header">
         <h3 class="element-title">Refraction - (exam date <?php echo date("d M Y",
                 strtotime($refract_event_date)); ?>)</h3>
     </header>
@@ -378,7 +378,7 @@ if ($refractfound) {
     <?php
     } else {?>
     <section>
-    <header class="sub-element-header">
+    <header class="element-header">
         <h3 class="element-title">Refraction - (Not Recorded)</h3>
     </header>
     <div class="element-fields element-eyes row">
@@ -413,7 +413,7 @@ if ($refractfound) {
                  class="element-eye right-eye top-pad left side column  <?php if (!$element->hasRight()) {
                      ?> inactive<?php
                  } ?>" onClick="switchSides($(this));" data-side="right">
-                <div class="element-header right-side">
+                <div class="centre">
                     <h4><b>RIGHT</b></h4>
                 </div>
                 <div class="active-form">
@@ -442,7 +442,7 @@ if ($refractfound) {
                  class="element-eye left-eye top-pad right side column <?php if (!$element->hasLeft()) {
                      ?> inactive<?php
                  } ?>" onClick="switchSides($(this));" data-side="left">
-                <div class="element-header left-side">
+                <div class="centre">
                     <h4><b>LEFT</b></h4>
                 </div>
                         <div class="active-form">

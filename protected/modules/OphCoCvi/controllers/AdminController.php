@@ -159,7 +159,7 @@ class AdminController extends \ModuleAdminController
                     ), array(
                         'field' => 'social_history_occupation_id',
                         'type' => 'lookup',
-                        'model' => 'SocialHistoryOccupation',
+                        'model' => 'OEModule\OphCiExamination\models\SocialHistoryOccupation',
                     )
                 )
             )

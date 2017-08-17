@@ -29,18 +29,38 @@ class ModuleAdmin
         $module_classes = array();
 
         foreach (EventType::model()->findAll(array('order' => 'name')) as $event_type) {
+
             foreach (Yii::app()->params['admin_menu'] as $item => $uri) {
-                if (is_array($uri)) {
+
+                if (is_array($uri) && !isset($uri['requires_setting'])) {
                     foreach ($uri as $key => $value) {
                         if ($event_type->class_name == 'OphCiExamination') {
                             $module_admin[$event_type->name][$item] = $value;
                         }
                     }
-                } elseif (preg_match('/^\/'.$event_type->class_name.'\//', $uri)) {
-                    $module_admin[$event_type->name][$item] = $uri;
                 }
+                elseif(is_array($uri) && isset($uri['requires_setting'])) {
+
+                    $setting_key = $uri['requires_setting']['setting_key'];
+                    $required_value = $uri['requires_setting']['required_value'];
+                    $item_enabled = Yii::app()->params[$setting_key];
+                    
+                    if (isset($item_enabled) && $item_enabled == $required_value) {
+                        if(preg_match('/^\/' . $event_type->class_name . '\//', $uri['uri']))
+                        {
+                            $module_admin[$event_type->name][$item] = $uri['uri'];
+                        }
+                    }
+                }
+                else{
+                    if(preg_match('/^\/' . $event_type->class_name . '\//', $uri))
+                    {
+                        $module_admin[$event_type->name][$item] = $uri;
+                    }
+                }
+
+                $module_classes[] = $event_type->class_name;
             }
-            $module_classes[] = $event_type->class_name;
         }
 
         foreach (Yii::app()->modules as $module => $stuff) {

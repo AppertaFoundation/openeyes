@@ -139,6 +139,7 @@ class OphCoCvi_Manager extends \CComponent
 
     /**
      * @param \Patient $patient
+     * @todo reconcile this with the newly introduced API method that achieves the same thing
      * @return \Event[]
      */
     public function getEventsForPatient(\Patient $patient)

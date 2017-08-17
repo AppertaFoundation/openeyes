@@ -21,7 +21,7 @@
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     'id' => 'add-new-episode-dialog',
     'options' => array(
-        'title' => 'Create new episode',
+        'title' => 'Create new ' . strtolower(Episode::getEpisodeLabel()),
         'dialogClass' => 'dialog episode add-episode',
         'autoOpen' => true,
         'modal' => true,
@@ -43,7 +43,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 			<p><span>Subspecialty:</span> <strong><?php echo $firm->getSubspecialtyText()?></strong></p>
 		</div>
 		<div class="buttons">
-			<button class="secondary small confirm" type="button">Create new episode</button>
+			<button class="secondary small confirm" type="button">Create new <?= strtolower(Episode::getEpisodeLabel()) ?></button>
 			<button class="warning small cancel" type="button">Cancel</button>
 		</div>
 	<?php $this->endWidget()?>

@@ -43,12 +43,12 @@
 	margin: 0;
 	padding: 8px 23px 6px 23px;
 	text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa;
-	&:hover {
+	&:not([class*="icon-"]):hover {
 		@include background(linear-gradient(#118afb, #1279e3));
 		border-color: #1974d1;
 		color: white;
 	}
-	&:active {
+	&:not([class*="icon-"]):active {
 		@include background(linear-gradient(#145ea9, #104d8b));
 		border-color: #0f467e;
 		color: $button-font-color;

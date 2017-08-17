@@ -21,7 +21,7 @@ $this->beginContent('//patient/event_container');?>
 <?php
 // Event actions
 if ($this->checkPrintAccess()) {
-    $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'button small'));
+    $this->event_actions[] = EventAction::printButton();
 }
 if ($this->editable && $next_step = $this->getNextStep()) {
     $this->event_actions[] = EventAction::link($next_step->name,

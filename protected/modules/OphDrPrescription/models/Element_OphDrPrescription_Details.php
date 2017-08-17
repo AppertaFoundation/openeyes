@@ -263,12 +263,11 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
 
     protected function afterSave()
     {
-        if($this->draft)
-        {
+        if(($this->draft == 0) && ($this->printed == 0)){
+            $this->event->deleteIssue('Draft');
+        } else if($this->draft == 1) {
             $this->event->addIssue('Draft');
-        }
-        else
-        {
+        } else {
             $this->event->deleteIssue('Draft');
         }
 
@@ -369,7 +368,9 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      */
     public function getInfotext()
     {
-        if (!$this->printed) {
+        if(($this->draft == 0) && ($this->printed == 0)){
+            return 'Saved';
+        } else if (!$this->printed) {
             return 'Draft';
         } else {
             return 'Printed';

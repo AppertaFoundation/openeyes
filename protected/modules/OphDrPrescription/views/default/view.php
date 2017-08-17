@@ -25,7 +25,7 @@ $Element = Element_OphDrPrescription_Details::model()->find('event_id=?', array(
 	<?php
         // Event actions
         if ($this->checkPrintAccess()) {
-            $this->event_actions[] = EventAction::button('Print', 'print', null, array('id' => 'et_print', 'class' => 'button small'));
+            $this->event_actions[] = EventAction::printButton();
         }
     ?>
 

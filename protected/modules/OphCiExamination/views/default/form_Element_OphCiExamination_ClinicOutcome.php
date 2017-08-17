@@ -25,7 +25,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
 ?>
 
 <div class="element-fields">
-	<div id="div_<?php echo CHtml::modelName($element)?>_status">
+    <div id="div_<?php echo CHtml::modelName($element)?>_status">
 		<div class="field-row row">
 			<div class="large-3 column">
 				<label for="<?php echo CHtml::modelName($element).'_status_id';?>">
@@ -156,6 +156,12 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
 			</div>
 		</fieldset>
 	</div>
+    <div class="field-row textMacros">
+        <?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'description', 'form' => $form))?>
+    </div>
+    <div class="field-row">
+        <?php echo $form->textArea($element, 'description', array('rows' => '1', 'class' => 'autosize', 'nowrapper' => true), false, array('placeholder' => $element->getAttributeLabel('description')))?>
+    </div>
 
 	<script type="text/javascript">
 			var Element_OphCiExamination_ClinicOutcome_templates = {

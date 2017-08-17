@@ -17,7 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 $model = $params['model'];
-$htmlOptions = @$disabled ? array('disabled' => 'disabled') : array();
+$htmlOptions = @$params['htmlOptions'] ?: array();
+if (@$disabled) {
+    $htmlOptions['disabled'] = 'disabled';
+}
 if ($params['allow_null']) {
     $htmlOptions['empty'] = '-';
 }

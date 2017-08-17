@@ -36,7 +36,8 @@ if ($this->isHiddenInUI($element)) {
 	data-element-type-name="<?php echo $element->elementType->name?>"
 	data-element-display-order="<?php echo $element->elementType->display_order?>">
 
-	<header class="<?php if (@$child) {?>sub-<?php }?>element-header">
+	<?php if (!property_exists($element, 'hide_form_header') || !$element->hide_form_header) { ?>
+		<header class="<?php if (@$child) {?>sub-<?php }?>element-header">
 
 		<!-- Element title -->
 		<?php if (!@$child) {?>
@@ -83,6 +84,7 @@ if ($this->isHiddenInUI($element)) {
 			<?php }?>
 		</div>
 	</header>
+	<?php } ?>
 	<?php echo $content; ?>
 
 	<!-- Sub elements -->
@@ -90,16 +92,11 @@ if ($this->isHiddenInUI($element)) {
 		<div class="sub-elements active">
 			<?php $this->renderChildOpenElements($element, $this->action->id, $form, $data)?>
 		</div>
-		<div class="sub-elements inactive">
-			<ul class="sub-elements-list">
-				<?php $this->renderChildOptionalElements($element, $this->action->id, $form, $data)?>
-			</ul>
-		</div>
 	<?php } ?>
 </section>
 <?php } else { ?>
 	<section
-		class="<?php echo implode(' ', $section_classes); ?> element-no-display"
+		class="<?php echo implode(' ', $section_classes); ?>"
 		data-element-type-id="<?php echo $element->elementType->id ?>"
 		data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
 		data-element-type-name="<?php echo $element->elementType->name ?>"
@@ -111,11 +108,6 @@ if ($this->isHiddenInUI($element)) {
 		<?php if (!@$child) { ?>
 			<div class="sub-elements active">
 				<?php $this->renderChildOpenElements($element, $this->action->id, $form, $data) ?>
-			</div>
-			<div class="sub-elements inactive">
-				<ul class="sub-elements-list">
-					<?php $this->renderChildOptionalElements($element, $this->action->id, $form, $data) ?>
-				</ul>
 			</div>
 		<?php } ?>
 

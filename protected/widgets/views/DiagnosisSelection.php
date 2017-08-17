@@ -29,7 +29,7 @@
             <?php
             $clear_diagnosis = '';
             if ($allowClear) {
-                $clear_diagnosis = Chtml::link('(Remove)', "#", array("id" => "clear-diagnosis-widget"));
+                $clear_diagnosis = Chtml::link('(Remove)', "#", array("class" => "clear-diagnosis-widget"));
                 echo $clear_diagnosis;
             } ?>
         </div>
@@ -47,6 +47,7 @@
                 'value' => $value,
                 'placeholder' => 'or type the first few characters of a diagnosis',
                 'form' => $form,
+                'callback' => $callback
             ));
             ?>
         </div>
@@ -55,12 +56,7 @@
 
 <script type="text/javascript">
     $('#<?php echo $class?>_<?php echo $field?>').change(function () {
-        $('#enteredDiagnosisText').html($('option:selected', this).text()
-            <?php if ($allowClear) { ?>
-            + ' <?php echo $clear_diagnosis ?>'
-            <?php } ?>
-        );
-        $('#enteredDiagnosisText').show();
-        $('#savedDiagnosis').val($(this).val());
+      var selected = $('option:selected', this);
+      select(undefined, {item: {id: selected.val(), value: selected.text()}});
     });
 </script>

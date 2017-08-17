@@ -63,7 +63,8 @@ if (@$disabled) {
 	<td>
 		<?php if (isset($row->active)) {
     echo CHtml::checkBox('active['.$i.']', $row->active);
-        } else {?>
+        } elseif (!$this->cannot_delete) {?>
+
 			<a href="#" class="deleteRow">delete</a>
 		<?php }?>
 	</td>

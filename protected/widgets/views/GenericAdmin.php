@@ -94,7 +94,7 @@ if (!$get_row && $filters_ready) {
 			<?php }?>
 		</table>
 		<div>
-			<?php echo EventAction::button('Add', 'admin-add', null, array('class' => 'generic-admin-add small secondary', 'data-model' => $model, 'data-new-row-url' => @$this->new_row_url))->toHtml()?>&nbsp;
+            <?php if (!$this->cannot_add) { echo EventAction::button('Add', 'admin-add', null, array('class' => 'generic-admin-add small secondary', 'data-model' => $model, 'data-new-row-url' => @$this->new_row_url))->toHtml(); }?>&nbsp;
 			<?php echo EventAction::button('Save', 'admin-save', null, array('class' => 'generic-admin-save small primary'))->toHtml()?>&nbsp;
 		</div>
 	<?= CHtml::endForm() ?>

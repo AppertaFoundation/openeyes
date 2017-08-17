@@ -19,6 +19,7 @@
 
 namespace OEModule\OphCiExamination\controllers;
 
+use OEModule\OphCiExamination\components\ExaminationHelper;
 use Yii;
 use Audit;
 use CDbCriteria;
@@ -379,14 +380,21 @@ class AdminController extends \ModuleAdminController
         $et_exam = \EventType::model()->find('class_name=?', array('OphCiExamination'));
 
         $criteria = new CDbCriteria();
-        $criteria->addCondition('event_type_id = :event_type_id');
-        $criteria->addNotInCondition('id', $element_type_ids);
+        $criteria->addCondition('t.event_type_id = :event_type_id');
+        $criteria->addNotInCondition('t.id', $element_type_ids);
         $criteria->params[':event_type_id'] = $et_exam->id;
-        $criteria->order = 'name asc';
+        // deprecated or invalid element types for this installation
+        $criteria->addNotInCondition('t.class_name', ExaminationHelper::elementFilterList()) ;
+        $criteria->order = 'parent_element_type.name asc, t.name asc';
+
+        $element_types = \ElementType::model()->with('parent_element_type')->findAll($criteria);
+        uasort($element_types, function($a, $b) {
+            return $a->nameWithParent > $b->nameWithParent;
+        });
 
         $this->renderPartial('_update_Workflow_ElementSetItem', array(
             'step' => $step,
-            'element_types' => \ElementType::model()->findAll($criteria),
+            'element_types' => $element_types,
         ));
     }
 
@@ -777,5 +785,90 @@ class AdminController extends \ModuleAdminController
         $tx->commit();
 
         $this->redirect(array('/OphCiExamination/admin/postOpComplications', 'subspecialty_id' => $subspecialty_id));
+    }
+
+    /*
+     * Invoice status admin list
+     */
+    public function actionInvoiceStatusList()
+    {
+
+        $model = new models\InvoiceStatus();
+
+        $this->render('list_OphCiExamination_Invoice_status', array(
+            'model_class' => $model,
+            'model_list' => $model::model()->findAll(array('order' => 'id asc')),
+            'title' => 'Invoice Statuses',
+        ));
+
+    }
+
+    /*
+     * Add new invoice status in admin screen
+     */
+    public function actionAddInvoiceStatus()
+    {
+        $model = new models\InvoiceStatus();
+
+        if (isset($_POST[\CHtml::modelName($model)])) {
+            $model->attributes = $_POST[\CHtml::modelName($model)];
+
+            if ($model->save()) {
+                // Audit::add('admin', 'create', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Workflow'));
+                Yii::app()->user->setFlash('success', 'Invoice status added');
+
+                $this->redirect(array('InvoiceStatusList'));
+            }
+        }
+
+        $this->render('update', array(
+            'model' => $model,
+            'title' => 'Add invoice status',
+            'cancel_uri' => '/OphCiExamination/admin/InvoiceStatusList'
+        ));
+    }
+
+    /*
+     * Edit exist invoice
+     */
+    public function actionEditInvoiceStatus( $id )
+    {
+        $model = models\InvoiceStatus::model()->findByPk((int) $id);
+
+        if (isset($_POST[\CHtml::modelName($model)])) {
+
+            $model->attributes = $_POST[\CHtml::modelName($model)];
+            if ($model->save()) {
+               // Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_ElementSet'));
+                Yii::app()->user->setFlash('success', 'Invoice status updated');
+
+                $this->redirect(array('InvoiceStatusList'));
+            }
+        }
+
+        $this->render('update', array(
+            'model' => $model,
+            'title' => 'Edit invoice status',
+            'cancel_uri' => '/OphCiExamination/admin/InvoiceStatusList'
+        ));
+    }
+
+
+    /*
+     * Delete invoice
+     */
+    public function deleteInvoiceStatus( $id )
+    {
+
+    }
+
+    /**
+     * Lists and allows editing of Allergy records.
+     *
+     * @throws Exception
+     */
+    public function actionAllergies()
+    {
+        $this->genericAdmin('Edit Allergies', 'OEModule\OphCiExamination\models\OphCiExaminationAllergy');
     }
 }

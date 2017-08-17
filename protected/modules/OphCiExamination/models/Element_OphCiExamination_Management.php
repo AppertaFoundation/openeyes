@@ -133,4 +133,28 @@ class Element_OphCiExamination_Management extends \BaseEventTypeElement
 
         return $res;
     }
+
+    public function getChildrenString($delimiter = ' // ')
+    {
+        return implode($delimiter, array_map(
+            function($el) {
+                return $el->elementType->name . ': ' . $el;
+            }, $this->getChildren())
+        );
+    }
+
+    /**
+     * Extends parent class to append a modified user display name to the attributes
+     *
+     * @param bool $names
+     * @return array
+     * @inheritdoc
+     */
+    public function getDisplayAttributes()
+    {
+        $attributes = parent::getDisplayAttributes();
+        $attributes['last_modified_user_display'] = $this->usermodified->getFullName();
+        $attributes['comments_or_children'] = $this->comments ? : $this->getChildrenString();
+        return $attributes;
+    }
 }

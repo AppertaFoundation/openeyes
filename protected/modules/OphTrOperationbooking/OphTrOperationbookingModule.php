@@ -66,6 +66,18 @@ class OphTrOperationbookingModule extends BaseEventTypeModule
             return false;
         }
     }
+
+    /**
+     * @return bool
+     *
+     * Returns true if Theatre Diary is disabled by system setting
+     */
+
+    public function isTheatreDiaryDisabled()
+    {
+        $element_enabled = Yii::app()->params['disable_theatre_diary'];
+        return isset($element_enabled) && $element_enabled == 'on';
+    }
 }
 
 /**

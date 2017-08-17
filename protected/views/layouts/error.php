@@ -35,7 +35,6 @@
 		</header><!-- /.header -->
 
 		<div class="container content">
-			<h1 class="badge hide-offscreen">Error</h1>
 			<div class="row">
 				<div class="large-11 large-centered column">
 					<div class="panel error">

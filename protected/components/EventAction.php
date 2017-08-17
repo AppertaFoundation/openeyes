@@ -42,6 +42,13 @@ class EventAction
         return $action;
     }
 
+    public static function printButton($label = 'Print', $name = 'print', $options = array(), $htmlOptions = array())
+    {
+        $options = array_merge(array('level' => 'print'), $options);
+        $htmlOptions = array_merge(array('class' => 'button small'), $htmlOptions);
+        return static::button($label, $name, $options, $htmlOptions);
+    }
+
     public static function link($label, $href = '#', $options = null, $htmlOptions = null)
     {
         $action = new self($label, 'link', $options, $htmlOptions);
@@ -82,6 +89,10 @@ class EventAction
         }
         if ($this->options['level'] === 'cancel') {
             $this->htmlOptions['class'] .= ' button small';
+        }
+        if ($this->options['level'] === 'print') {
+            $label = '<span class="oe-btn-icon print">' . $label . '</span>';
+            $this->htmlOptions['class'] .= ' button oe-oescape-switch';
         }
 
         if ($this->options['disabled']) {
