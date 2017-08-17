@@ -16,13 +16,49 @@
  */
 
 ?>
+
+<?php
+if (!isset($values)) {
+    $values = array(
+        'id' => $entry->id,
+        'drug_id' => $entry->drug_id,
+        'medication_drug_id' => $entry->medication_drug_id,
+        'medication_name' => $entry->medication_name,
+        'start_date' => $entry->start_date,
+        'end_date' => $entry->end_date,
+        'medicationDisplay' => $entry->getMedicationDisplay()
+    );
+}
+
+if (isset($values['start_date']) && strtotime($values['start_date'])) {
+    list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $values['start_date']);
+} else {
+    $start_sel_day = $start_sel_month = null;
+    $start_sel_year = date('Y');
+}
+if (isset($values['end_date']) && strtotime($values['end_date'])) {
+    list($end_sel_year, $end_sel_month, $end_sel_day) = explode('-', $values['end_date']);
+} else {
+    $end_sel_day = $end_sel_month = null;
+    $end_sel_year = date('Y');
+}
+?>
+
 <tr data-key="<?=$row_count?>">
-    <td>start date</td>
-    <td>end date</td>
+    <td>
+        <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?=$values['start_date'] ?>" />
+        <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $start_sel_day, 'sel_month' => $start_sel_month, 'sel_year' => $start_sel_year)) ?>
+    </td>
+    <td>
+        <input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?=$values['end_date'] ?>" />
+        <fieldset class="row field-row fuzzy-date" style="padding:0">
+            <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
+        </fieldset>
+    </td>
     <td><span class="medication-display"><span class="medication-name"></span> <a href="#" class="medication-rename"><i class="fa fa-times-circle" aria-hidden="true" title="Change medication"></i></a></span>
-        <input type="hidden" name="<?= $field_prefix ?>[drug_id]" />
-        <input type="hidden" name="<?= $field_prefix ?>[medication_id]" />
-        <input type="hidden" name="<?= $field_prefix ?>[medication_name]" />
+        <input type="hidden" name="<?= $field_prefix ?>[drug_id]" value="<?= $values['drug_id'] ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[medication_drug_id]" value="<?= $values['medication_drug_id'] ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $values['medication_name'] ?>" />
         <input type="text" name="<?= $field_prefix ?>[medication_search]" class="search" placeholder="Type to search" /></td>
     <td>administration</td>
     <td class="edit-column">

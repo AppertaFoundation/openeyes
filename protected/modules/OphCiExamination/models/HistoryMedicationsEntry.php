@@ -99,4 +99,14 @@ class HistoryMedicationsEntry extends \BaseElement
         }
     }
 
+    /**
+     * @return string
+     */
+    public function getMedicationDisplay()
+    {
+        return $this->medication_name ? :
+            ($this->medication_drug ? (string) $this->medication_drug :
+                ($this->drug ? (string) $this->drug : ''));
+    }
+
 }

@@ -34,7 +34,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     searchSource: '/medication/finddrug',
     searchAsTypedPrefix: 'As typed: ',
     drugFieldSelector: 'input[name$="[drug_id]"]',
-    medicationFieldSelector: 'input[name$="[medication_id]"]',
+    medicationFieldSelector: 'input[name$="[medication_drug_id]"]',
     asTypedFieldSelector: 'input[name$="[medication_name]"]',
     medicationSearchSelector: 'input[name$="[medication_search]"]',
     medicationNameSelector: '.medication-name',
@@ -50,8 +50,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       $(e.target).parents('tr').remove();
     });
 
-    controller.$table.find('.medication-search').each(function() {
-      controller.initialiseSearch($(this));
+    controller.$table.find('tbody tr').each(function() {
+      controller.initialiseRow($(this));
     });
 
     controller.$element.on('click', controller.options.addButtonSelector, function(e) {
@@ -67,6 +67,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       $row.on('click', '.medication-rename', function(e) {
           e.preventDefault();
           controller.resetSearchRow($row, true);
+      });
+      $row.on('change', '.fuzzy-date select', function(e) {
+          var $fuzzyFieldset = $(this).closest('fieldset');
+          var date = controller.dateFromFuzzyFieldSet($fuzzyFieldset);
+          console.log($fuzzyFieldset.closest('td').find('input[type="hidden"]'));
+          $fuzzyFieldset.closest('td').find('input[type="hidden"]').val(date);
       });
       controller.resetSearchRow($row, true);
   };
@@ -165,6 +171,23 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.$table.find('tbody').append(row);
     this.initialiseRow(this.$table.find('tbody tr:last'));
   };
+
+    /**
+     * @TODO: should be common function across history elements
+     * @param fieldset
+     * @returns {*}
+     */
+    HistoryMedicationsController.prototype.dateFromFuzzyFieldSet = function(fieldset)
+    {
+        res = fieldset.find('select.fuzzy_year').val();
+        var month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
+        res += '-' + ((month < 10) ? '0' + month.toString() : month.toString());
+        var day = parseInt(fieldset.find('select.fuzzy_day option:selected').val());
+        res += '-' + ((day < 10) ? '0' + day.toString() : day.toString());
+
+        return res;
+    };
+
 
   exports.HistoryMedicationsController = HistoryMedicationsController;
 })(OpenEyes.OphCiExamination);
