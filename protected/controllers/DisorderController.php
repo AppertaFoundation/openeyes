@@ -69,6 +69,20 @@ class DisorderController extends BaseController
         }
     }
 
+    public function actionGetCommonlyUsedDiagnoses($type){
+        $return = array();
+        if($type == 'systemic'){
+            $disorders = CommonSystemicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId));
+            foreach($disorders as $id => $disorder){
+                $return[] = array('value' => $id, 'text' => $disorder);
+            }
+        }
+
+        echo CJSON::encode($return);
+        Yii::app()->end();
+
+    }
+
     public function actionDetails()
     {
         if (!isset($_REQUEST['name'])) {

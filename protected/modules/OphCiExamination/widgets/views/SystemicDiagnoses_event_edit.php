@@ -18,6 +18,8 @@
 ?>
 
 <script type="text/javascript" src="<?=$this->getJsPublishedPath('SystemicDiagnoses.js')?>"></script>
+
+<script type="text/javascript" src="<?=$this->getJsPublishedPath('OpenEyes.UI.DiagnosesSearch.js')?>"></script>
 <?php
 $model_name = CHtml::modelName($element);
 ?>
@@ -48,6 +50,22 @@ $model_name = CHtml::modelName($element);
             <?php }?>
         </div>
     </div>
+    
+    <div class="field-row row">
+        <div class="large-2 column"><label for="<?= $model_name ?>_diagnosis_side">new :</label></div>
+        <div class="large-3 column end">
+            <input type="text" class="diagnoses-search-autocomplete" id="ddd_1">
+        </div>
+    </div>
+    <div class="field-row row">
+        <div class="large-2 column"><label for="<?= $model_name ?>_diagnosis_side">new 2 :</label></div>
+        <div class="large-3 column end">
+            <input type="text" class="diagnoses-search-autocomplete" id="ddd_2">
+        </div>
+    </div>
+
+    
+    
     <div class="row">
         <div class="large-8 column">
             <?php $this->render('application.views.patient._fuzzy_date', array('class' => $model_name . '_diagnosis_fuzzy_date')) ?>
