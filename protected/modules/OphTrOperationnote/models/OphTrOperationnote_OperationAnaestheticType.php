@@ -58,6 +58,7 @@ class OphTrOperationnote_OperationAnaestheticType extends BaseActiveRecordVersio
         // class name for the relations automatically generated below.
         return array(
             'element' => array(self::BELONGS_TO, 'Element_OphTrOperationnote_Anaesthetic', 'et_ophtroperationnote_anaesthetic_id'),
+            'anaesthetic_type' =>  array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id'),
         );
     }
 

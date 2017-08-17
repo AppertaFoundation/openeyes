@@ -22,7 +22,7 @@
     <?php
 
         $is_hidden = function() use ($element){
-          if( count($element->anaesthetic_type) == 1 && ( $element->anaesthetic_type[0]->code == 'GA' || $element->anaesthetic_type[0]->code == 'NoA' ) ){
+          if( count($element->anaesthetic_type_assignments) == 1 && ( $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'GA' || $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'NoA' ) ){
               return true;
           }
             return false;
