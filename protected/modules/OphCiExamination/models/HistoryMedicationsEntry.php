@@ -21,6 +21,13 @@ namespace OEModule\OphCiExamination\models;
  * Class HistoryMedicationsEntry
  * @package OEModule\OphCiExamination\models
  *
+ * attributes:
+ * @property string $medication_name
+ * @property string $dose
+ * @property date $start_date
+ * @property date $end_date
+ *
+ * relations:
  * @property HistoryMedications $element
  * @property \MedicationDrug $medication_drug
  * @property \Drug $drug
@@ -60,7 +67,7 @@ class HistoryMedicationsEntry extends \BaseElement
             $required_fields .= ', frequency_id, route_id';
         }
         return array(
-            array('element_id, medication_drug_id, drug_id, route_id, option_id, dose, frequency_id, start_date, end_date, stop_reason_id, prescription_item_id', 'safe'),
+            array('element_id, medication_drug_id, drug_id, medication_name, route_id, option_id, dose, frequency_id, start_date, end_date, stop_reason_id, prescription_item_id', 'safe'),
             array($required_fields, 'required'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
             array('end_date', 'OEFuzzyDateValidator'),

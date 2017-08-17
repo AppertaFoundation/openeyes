@@ -19,9 +19,10 @@
 <tr data-key="<?=$row_count?>">
     <td>start date</td>
     <td>end date</td>
-    <td><span class="medication-display"></span>
+    <td><span class="medication-display"><span class="medication-name"></span> <a href="#" class="medication-rename"><i class="fa fa-times-circle" aria-hidden="true" title="Change medication"></i></a></span>
         <input type="hidden" name="<?= $field_prefix ?>[drug_id]" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_id]" />
+        <input type="hidden" name="<?= $field_prefix ?>[medication_name]" />
         <input type="text" name="<?= $field_prefix ?>[medication_search]" class="search" placeholder="Type to search" /></td>
     <td>administration</td>
     <td class="edit-column">
