@@ -64,7 +64,34 @@
                 </div>
             </div>
         </div>
-        <div class="row field-row">
+        <div class="field-row">
+            <table class="grid">
+                <thead>
+                    <tr>
+                        <td>Hidden</td>
+                        <td>Print appended</td>
+                        <td>Event</td>
+                        <td>Short Code</td>
+                        <td>Title</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox" name="OphcorrespondenceInitMethod_is_system_hidden" id="OphcorrespondenceInitMethod_is_system_hidden"/></td>
+                        <td><input type="checkbox" name="OphcorrespondenceInitMethod_is_print_appended" id="OphcorrespondenceInitMethod_is_print_appended"/></td>
+                        <td><?php echo $form->dropDownList($init_method, 'description', CHtml::listData(OphcorrespondenceInitMethod::model()->findAll(array('condition' => 'active=1', 'order' => 'id asc')), 'id', 'description'), array('empty' => '- None -'))?></td>
+                        <td><input type="text" name="OphcorrespondenceInitMethod_short_code" id="OphcorrespondenceInitMethod_short_code"/></td>
+                        <td><input type="text" name="OphcorrespondenceInitMethod_title" id="OphcorrespondenceInitMethod_title"/></td>
+                        <td><button class="button small primary event-action" name="save" type="button" id="init_method_save">Save</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+
+    <div class="row field-row">
             <div class="large-10 large-offset-2 column">
                 <button class="button small primary event-action" name="save" type="submit" id="et_save">Save</button>
                 <button class="warning button small primary cancelEditMacro" name="cancel" type="submit">Cancel</button>

@@ -120,6 +120,8 @@ class AdminController extends \ModuleAdminController
     public function actionAddMacro()
     {
         $macro = new LetterMacro();
+        $init_method = new OphcorrespondenceInitMethod();
+        $associated_content = new MacroInitAssociatedContent();
 
         $errors = array();
 
@@ -143,6 +145,8 @@ class AdminController extends \ModuleAdminController
 
         $this->render('_macro', array(
             'macro' => $macro,
+            'init_method' => $init_method,
+            'associated_content' => $associated_content,
             'errors' => $errors,
         ));
     }
@@ -278,5 +282,30 @@ class AdminController extends \ModuleAdminController
             $this->redirect('/OphCoCorrespondence/admin/addSiteSecretary/'.$firmId);
         }
         throw new CHttpException(400, 'Invalid method for delete');
+    }
+
+    /*
+     * Get init method's data by id
+     */
+    public function actionGetInitMethodDataById()
+    {
+
+        if (Yii::app()->request->isAjaxRequest ) {
+            if (!isset($_POST['id'])) {
+                throw new CHttpException(400, 'No ID provided');
+            }
+            if (!$method = OphcorrespondenceInitMethod::model()->findByPk($_POST['id'])) {
+                throw new Exception("Method not found: ".$_POST['id']);
+            }
+
+            $result = array(
+                'success'       => 1,
+                'method'        => $method->method,
+                'short_code'    => $method->short_code
+            );
+
+            $this->renderJSON($result);
+        }
+        throw new CHttpException(400, 'Invalid method');
     }
 }

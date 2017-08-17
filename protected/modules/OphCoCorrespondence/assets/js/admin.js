@@ -112,6 +112,31 @@ $(document).ready(function() {
 		macro_cursor_position = $('#LetterMacro_body').val().length;
 	}
 
+	$('#OphcorrespondenceInitMethod_description').change(function(){
+		description_val = $(this).val();
+
+		if(description_val.length > 0){
+			$.ajax({
+				'type': 'POST',
+				'url': baseUrl + '/OphCoCorrespondence/admin/getInitMethodDataById',
+				'data' :{YII_CSRF_TOKEN: YII_CSRF_TOKEN, id: description_val },
+				'success': function(response) {
+					if(response.success == 1){
+						$('#OphcorrespondenceInitMethod_short_code').val( response.short_code );
+
+						if($("#OphcorrespondenceInitMethod_is_print_appended").is(':checked')){
+							$('#OphcorrespondenceInitMethod_title').val( response.method );
+						}
+					}
+				}
+			});
+		}
+	});
+
+	$('#init_method_save').click(function(){
+		alert('Still not working');
+	});
+
     $('#internal_referral_settings tr.clickable').click(function (e) {
         e.preventDefault();
         window.location.href = baseUrl + '/OphCoCorrespondence/oeadmin/internalReferralSettings/editSetting?key=' + $(this).data('key');
