@@ -392,6 +392,16 @@ section.OEModule_OphCiExamination_models_FamilyHistory table#OEModule_OphCiExami
 table.bleb-assessment th, table.bleb-assessment td {
   text-align: center;
 }
+/* line 24, ../sass/components/_tables.scss */
+table .fuzzy-date .row {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+/* line 28, ../sass/components/_tables.scss */
+table .fuzzy-date .column {
+  padding-left: 0.1rem;
+  padding-right: 0.1rem;
+}
 
 /* line 18, ../sass/components/_admin.scss */
 #admin_workflow_steps .selectable {

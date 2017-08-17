@@ -20,4 +20,14 @@ table {
 			text-align: center;
 		}
 	}
+	.fuzzy-date {
+		.row {
+			margin-left: 0px;
+			margin-right: 0px;
+		}
+		.column {
+			padding-left: 0.1rem;
+			padding-right: 0.1rem;
+		}
+	}
 }
