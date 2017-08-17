@@ -23,7 +23,11 @@ class BaseEventElementWidget extends CWidget
      * @var BaseEventTypeElement
      */
     public $element;
-
+    /**
+     * @var \Firm
+     */
+    public $firm;
+    
     public $mode;
     public $view_file;
     public $data;
@@ -58,6 +62,15 @@ class BaseEventElementWidget extends CWidget
             $this->app = \Yii::app();
         }
         return $this->app;
+    }
+
+    public function getFirm()
+    {
+        if (!isset($this->firm)) {
+            $firm_id = $this->getApp()->session->get('selected_firm_id');
+            $this->firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
+        }
+        return $this->firm;
     }
 
     /**
