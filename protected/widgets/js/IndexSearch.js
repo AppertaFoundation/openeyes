@@ -54,7 +54,7 @@ var last_search_pos;
     return this;
   };
   $.fn.search.defaults = {
-    selectors: [".lvl3", ".lvl2", ".lvl1"],
+    selectors: [".lvl3", ".lvl2", ".lvl1"], //order of selection
     ancestor_to_change: 2,
     matched_string_tag: ["<em class='search_highlight'>", "</em>"]
   };
@@ -215,7 +215,7 @@ function show_results(){
     parameters["element_id"] = $this.data('elementId');
     parameters["doodle_name"] = $this.data('doodleClassName');
     parameters["property_name"] = $this.data('property');
-    //can revese order have differentlenght chains etc
+    //can revese order have different lenghth chains etc
     //Chains can be made conditional based on content of parameters
     //Guarantees funcion execution order (even for asyncrounous functions)
     click_element(parameters).then(result => click_doodle(result)).then(result => click_property(result)).catch(() => {
@@ -239,8 +239,6 @@ function show_results(){
   }
 
   function click_doodle(parameters){
-    // TODO: Stop using timeout and instead use Promise on event handlers (canvas ready)
-    // is await the solution (canvas ready)?
     ED.Checker.storeCanvasId("ed_canvas_edit_"+last_search_pos+"_"+parameters.element_id);
     return onAllCanvasesReady().then(function(){
       return new Promise(function(resolve, reject) {
@@ -280,14 +278,14 @@ function show_results(){
       }
     });
   }
-
+  //wrapper for old-style callback
   function click_sidebar_element($item) {
     return new Promise(function(resolve, reject) {
       event_sidebar.loadClickedItem($item,{},resolve);
     });
   }
 
-
+  //wrapper for old-style callback
     function onAllCanvasesReady() {
       return new Promise(function(resolve, reject) {
       ED.Checker.onAllReady(resolve);
