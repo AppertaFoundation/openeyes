@@ -32,6 +32,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     element: undefined,
     addButtonSelector: '.add-entry',
     searchSource: '/medication/finddrug',
+    routeOptionSource: '/medication/retrieveDrugRouteOptions',
     searchAsTypedPrefix: 'As typed: ',
     drugFieldSelector: 'input[name$="[drug_id]"]',
     medicationFieldSelector: 'input[name$="[medication_drug_id]"]',
@@ -41,7 +42,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     medicationDisplaySelector: '.medication-display',
     stopDateFieldSelector: 'input[name$="[stop_date]"]',
     stopDateButtonSelector: 'button.stop-medication',
-    cancelStopDateButtonSelector: 'button.cancel-stop-medication'
+    cancelStopDateButtonSelector: 'button.cancel-stop-medication',
+    routeFieldSelector: 'select[name$="[route_id]"]',
+    routeOptionWrapperSelector: '.admin-route-options'
   };
 
   HistoryMedicationsController.prototype.initialiseTriggers = function()
@@ -79,6 +82,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       $row.on('click', controller.options.cancelStopDateButtonSelector, function(e) {
           e.preventDefault();
           controller.cancelStopDate($row);
+      });
+
+      $row.on('change', controller.options.routeFieldSelector, function(e) {
+          controller.updateRowRouteOptions($row);
       });
 
       $row.on('change', '.fuzzy-date select', function(e) {
@@ -179,6 +186,31 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     $row.find('.stop-date-wrapper').hide();
     $row.find('.stop-date-wrapper').find('input:hidden').val('');
     $row.find(this.options.stopDateButtonSelector).show();
+  };
+
+
+  HistoryMedicationsController.prototype.updateRowRouteOptions = function($row)
+  {
+      var $routeOptionWrapper = $row.find(this.options.routeOptionWrapperSelector);
+      $routeOptionWrapper.hide();
+      $routeOptionWrapper.find('option').each(function() {
+          if ($(this).val().length) {
+              $(this).remove();
+          }
+      });
+      var value = $row.find(this.options.routeFieldSelector + ' option:selected').val();
+      if (value != "") {
+          $.getJSON(this.options.routeOptionSource, {route_id: value}, function(data) {
+              if (data.length) {
+                  var $select = $routeOptionWrapper.find('select');
+                  $.each(data, function(i, item) {
+                      $select.append('<option value="' + item.id +'">' + item.name + '</option>');
+                  });
+                  $routeOptionWrapper.show();
+              }
+          })
+      }
+
   };
 
   HistoryMedicationsController.prototype.createRow = function(data)

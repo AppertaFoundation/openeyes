@@ -19,6 +19,8 @@
 <?php
 
 $model_name = CHtml::modelName($element);
+$route_options = CHtml::listData($element->getRouteOptions(), 'id', 'name');
+$frequency_options = CHtml::listData($element->getFrequencyOptions(), 'id', 'name');
 ?>
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
@@ -31,7 +33,7 @@ $model_name = CHtml::modelName($element);
         <tr>
             <th>Dates</th>
             <th>Medication</th>
-            <th>Adminstration</th>
+            <th>Administration</th>
             <th>Action(s)</th>
         </tr>
         </thead>
@@ -47,7 +49,8 @@ $model_name = CHtml::modelName($element);
                     'model_name' => $model_name,
                     'field_prefix' => $model_name . '[entries][' . $row_count . ']',
                     'row_count' => $row_count,
-                    'removable' => !in_array($entry->risk_id, $required_risk_ids),
+                    'route_options' => $route_options,
+                    'frequency_options' => $frequency_options
                 )
             );
             $row_count++;
@@ -72,7 +75,9 @@ $model_name = CHtml::modelName($element);
                 'model_name' => $model_name,
                 'field_prefix' => $model_name . '[entries][{{row_count}}]',
                 'row_count' => '{{row_count}}',
-                'removable' => true
+                'removable' => true,
+                'route_options' => $route_options,
+                'frequency_options' => $frequency_options
             )
         );
         ?>

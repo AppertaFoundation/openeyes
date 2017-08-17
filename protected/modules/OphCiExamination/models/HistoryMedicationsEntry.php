@@ -109,4 +109,11 @@ class HistoryMedicationsEntry extends \BaseElement
                 ($this->drug ? (string) $this->drug : ''));
     }
 
+    public function routeOptions()
+    {
+        if ($this->route) {
+            return $this->route->options;
+        }
+    }
+
 }

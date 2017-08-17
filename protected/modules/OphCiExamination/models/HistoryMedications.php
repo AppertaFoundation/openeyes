@@ -91,4 +91,29 @@ class HistoryMedications extends \BaseEventTypeElement
         $this->entries = $entries;
         $this->originalAttributes = $this->getAttributes();
     }
+
+    /**
+     * @return \DrugRoute[]
+     */
+    public function getRouteOptions()
+    {
+        $force = array();
+        foreach ($this->entries as $entry) {
+            $force[] = $entry->route_id;
+        }
+        return \DrugRoute::model()->activeOrPk($force)->findAll();
+    }
+
+    /**
+     * @return \DrugFrequency[]
+     */
+    public function getFrequencyOptions()
+    {
+        $force = array();
+        foreach ($this->entries as $entry) {
+            $force[] = $entry->frequency_id;
+        }
+
+        return \DrugFrequency::model()->activeOrPk($force)->findAll();
+    }
 }
