@@ -96,7 +96,7 @@ if ($this->isHiddenInUI($element)) {
 </section>
 <?php } else { ?>
 	<section
-		class="<?php echo implode(' ', $section_classes); ?> element-no-display"
+		class="<?php echo implode(' ', $section_classes); ?>"
 		data-element-type-id="<?php echo $element->elementType->id ?>"
 		data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
 		data-element-type-name="<?php echo $element->elementType->name ?>"

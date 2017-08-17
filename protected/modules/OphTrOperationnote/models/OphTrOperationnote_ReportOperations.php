@@ -169,7 +169,6 @@ class OphTrOperationnote_ReportOperations extends BaseReport
         Yii::app()->event->dispatch('start_batch_mode');
 
         $this->operations = $this->getOperations(
-            $surgeon,
             $filter_procedures,
             $filter_complications,
             $date_from,
@@ -221,7 +220,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
      *
      * @return array
      */
-    protected function getOperations($surgeon = null, $filter_procedures = array(), $filter_complications = array(), $from_date, $to_date, $patient_oph_diagnoses, $booking_diagnosis, $theatre, $bookingcomments, $surgerydate, $comorbidities, $target_refraction, $cataract_surgical_management, $first_eye, $va_values, $refraction_values, $anaesthetic_type, $anaesthetic_delivery, $anaesthetic_comments, $anaesthetic_complications, $cataract_report, $incision_site, $cataract_complication_notes, $cataract_predicted_refraction, $cataract_iol_type, $cataract_iol_power, $tamponade_used, $surgeon, $surgeon_role, $assistant, $assistant_role, $supervising_surgeon, $supervising_surgeon_role, $opnote_comments, $surgeon_id)
+    protected function getOperations($filter_procedures = array(), $filter_complications = array(), $from_date, $to_date, $patient_oph_diagnoses, $booking_diagnosis, $theatre, $bookingcomments, $surgerydate, $comorbidities, $target_refraction, $cataract_surgical_management, $first_eye, $va_values, $refraction_values, $anaesthetic_type, $anaesthetic_delivery, $anaesthetic_comments, $anaesthetic_complications, $cataract_report, $incision_site, $cataract_complication_notes, $cataract_predicted_refraction, $cataract_iol_type, $cataract_iol_power, $tamponade_used, $surgeon, $surgeon_role, $assistant, $assistant_role, $supervising_surgeon, $supervising_surgeon_role, $opnote_comments, $surgeon_id)
     {
         $filter_procedures_method = 'OR';
         $filter_complications_method = 'OR';
@@ -314,7 +313,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
 
             $this->operation_date = strtotime($row['event_date']);
 
-            if ($surgeon) {
+            if ($surgeon_id) {
                 if ($row['surgeon_id'] == $surgeon_id) {
                     $record['role'] = 'Surgeon';
                 } else {

@@ -24,7 +24,7 @@ $model_name = CHtml::modelName($element);
     <p class="allergy-status-none" <?php if (!$element->no_allergies_date) { echo 'style="display: none;"'; }?>>Patient has no known allergies</p>
 
 
-    <table id="<?= $model_name ?>_entry_table" <?php if (empty($element->entries)) { echo 'style="display: none;"'; }?>>
+    <table class="plain patient-data" id="<?= $model_name ?>_entry_table" <?php if (empty($element->entries)) { echo 'style="display: none;"'; }?>>
         <thead>
         <tr>
             <th>Allergy</th>
@@ -33,18 +33,12 @@ $model_name = CHtml::modelName($element);
         </thead>
         <tbody>
         <?php
-        foreach ($element->entries as $entry) {
-            $this->render(
-                'AllergyEntry_event_edit',
-                array(
-                    'entry' => $entry,
-                    'form' => $form,
-                    'model_name' => $model_name,
-                    'editable' => false
-                )
-            );
-        }
-        ?>
+        foreach ($element->entries as $i => $entry) { ?>
+          <tr>
+            <td><?= $entry->getDisplayAllergy() ?></td>
+            <td><?= $entry->comments ?></td>
+          </tr>
+        <?php } ?>
         </tbody>
     </table>
 <?php } ?>

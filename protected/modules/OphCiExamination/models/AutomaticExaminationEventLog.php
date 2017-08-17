@@ -149,15 +149,15 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
         }
         if ($from && $to) {
             if ($from > $to) {
-                $criteria->addBetweenCondition('t.created_date', $to, $from);
+                $criteria->addBetweenCondition('DATE(t.created_date)', $to, $from);
             } else {
-                $criteria->addBetweenCondition('t.created_date', $from, $to);
+                $criteria->addBetweenCondition('DATE(t.created_date)', $from, $to);
             }
         } elseif ($from) {
-            $criteria->addCondition('t.created_date >= :from');
+            $criteria->addCondition('DATE(t.created_date) >= :from');
             $criteria->params[':from'] = $from;
         } elseif ($to) {
-            $criteria->addCondition('t.created_date <= :to');
+            $criteria->addCondition('DATE(t.created_date) <= :to');
             $criteria->params[':to'] = $to;
         }
     }
@@ -183,8 +183,9 @@ class AutomaticExaminationEventLog extends BaseActiveRecordVersioned
     private function patientNumberSearch(\CDbCriteria $criteria, $filter )
     {
         if (array_key_exists('patient_number', $filter) && $filter['patient_number'] !== '') {
-            $criteria->addCondition('patient_id = :patient_id');
-            $criteria->params[':patient_id'] = $filter['patient_number'];
+            $patient_search = new PatientSearch();
+            $criteria->addCondition('hos_num = :hos_num');
+            $criteria->params[':hos_num'] = $patient_search->getHospitalNumber($filter['patient_number']);
         }
     }
 

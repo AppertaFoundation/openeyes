@@ -31,7 +31,7 @@ class PastSurgery extends \BaseEventElementWidget
     }
 
     /**
-     * @param AllergiesElement $element
+     * @param PastSurgeryElement $element
      * @param $data
      * @throws \CException
      */
@@ -51,13 +51,13 @@ class PastSurgery extends \BaseEventElementWidget
             $operations = array();
             foreach ($data['operation'] as $i => $operation) {
                 $op_entry = new PastSurgery_Operation();
-                $id = $data['id'][$i];
+                $id = $operation['id'];
                 if ($id && array_key_exists($id, $operations_by_id)) {
                     $op_entry = $operations_by_id[$id];
                 }
-                $op_entry->operation = $operation;
-                $op_entry->side_id = $data['side_id'][$i];
-                $op_entry->date = $data['date'][$i];
+                $op_entry->operation = $operation['operation'];
+                $op_entry->side_id = $operation['side_id'];
+                $op_entry->date = $operation['date'];
                 $operations[] = $op_entry;
             }
             $element->operations = $operations;

@@ -22,6 +22,8 @@
  *
  * The followings are the available columns in table 'patient_allergy_assignment':
  *
+ * Note as of v2.0 this is a model on a view, and is not for direct editing
+ *
  * @property int $id
  * @property int $patient_id
  * @property int $allergy_id

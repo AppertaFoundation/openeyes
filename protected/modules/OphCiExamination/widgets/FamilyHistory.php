@@ -40,16 +40,15 @@ class FamilyHistory extends \BaseEventElementWidget
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
-        if (array_key_exists('no_family_history', $data)) {
+        if (array_key_exists('no_family_history', $data) && $data['no_family_history'] == 1) {
             // TODO: Think about the importance of this date information, and therefore whether it should
             // TODO: be preserved across change events for the family history
-            if ($data['no_family_history'] == 1) {
+
                 if (!$element->no_family_history_date) {
                     $element->no_family_history_date = date('Y-m-d H:i:s');
                 }
-            } else {
-                $element->no_family_history_date = null;
-            }
+        } elseif ($element->no_family_history_date) {
+            $element->no_family_history_date = null;
         }
 
         // pre-cache current entries so any entries that remain in place will use the same db row
@@ -60,23 +59,25 @@ class FamilyHistory extends \BaseEventElementWidget
             }
         }
 
-        if (array_key_exists('relative_id', $data)) {
+        if (array_key_exists('entries', $data)) {
             $entries = array();
-            foreach ($data['relative_id'] as $i => $relative_id) {
+            foreach ($data['entries'] as $i => $history_entry) {
                 $entry = new FamilyHistory_Entry();
-                $id = $data['id'][$i];
+                $id = $history_entry['id'];
                 if ($id && array_key_exists($id, $entries_by_id)) {
                     $entry = $entries_by_id[$id];
                 }
-                $entry->relative_id = $relative_id;
-                $entry->other_relative = $data['other_relative'][$i];
-                $entry->side_id = $data['side_id'][$i];
-                $entry->condition_id = $data['condition_id'][$i];
-                $entry->other_condition = $data['other_condition'][$i];
-                $entry->comments = $data['comments'][$i];
+                $entry->relative_id = $history_entry['relative_id'];
+                $entry->other_relative = $history_entry['other_relative'];
+                $entry->side_id = $history_entry['side_id'];
+                $entry->condition_id = $history_entry['condition_id'];
+                $entry->other_condition = $history_entry['other_condition'];
+                $entry->comments = $history_entry['comments'];
                 $entries[] = $entry;
             }
             $element->entries = $entries;
+        }else {
+            $element->entries = array();
         }
     }
 }

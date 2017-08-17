@@ -2428,3 +2428,7 @@ function removeAllergyFromSelect( allergy_id, allergy_name ){
 }
 
 var eyedraw_added_diagnoses = [];
+
+$(document).ready(function() {
+    $('textarea').autosize();
+});

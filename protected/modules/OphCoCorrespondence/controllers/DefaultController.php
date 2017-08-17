@@ -87,6 +87,14 @@ class DefaultController extends BaseEventTypeController
         if (in_array($action, array('create', 'update'))) {
             $this->jsVars['OE_gp_id'] = $this->patient->gp_id;
             $this->jsVars['OE_practice_id'] = $this->patient->practice_id;
+            $this->jsVars['OE_site_id'] = Yii::app()->session['selected_site_id'];
+
+            $to_location = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByAttributes(
+                array('site_id' => Yii::app()->session['selected_site_id'],
+                      'is_active' => 1)
+            );
+
+            $this->jsVars['OE_to_location_id'] = $to_location ? $to_location->id : null;
 
             $this->getApp()->assetManager->registerScriptFile('js/docman.js');
             

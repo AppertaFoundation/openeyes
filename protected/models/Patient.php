@@ -258,6 +258,7 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->join = 'JOIN contact ON contact_id = contact.id';
         $criteria->compare('LOWER(first_name)', strtolower($params['first_name']), false);
         $criteria->compare('LOWER(last_name)', strtolower($params['last_name']), false);
+        $criteria->compare('LOWER(maiden_name)', strtolower($params['maiden_name']), false);
         $criteria->compare('dob', $this->dob, false);
         $criteria->compare('gender', $this->gender, false);
         $criteria->compare('hos_num', $this->hos_num, false);
@@ -291,6 +292,10 @@ class Patient extends BaseActiveRecordVersioned
         if (isset($params['last_name'])) {
             $criteria->compare('contact.last_name', $params['last_name'], false);
         }
+        if (isset($params['maiden_name'])) {
+            $criteria->compare('contact.maiden_name', $params['maiden_name'], false);
+        }
+
         if (strlen($this->nhs_num) == 10) {
             $criteria->compare('nhs_num', $this->nhs_num, false);
         } else {
@@ -414,12 +419,9 @@ class Patient extends BaseActiveRecordVersioned
                 }
 
                 // sort the remainder
-                function cmp($a, $b)
-                {
+                uasort($by_specialty, function($a, $b){
                     return strcasecmp($a['specialty'], $b['specialty']);
-                }
-
-                uasort($by_specialty, 'cmp');
+                });
             }
             // either flattens, or gets the remainder
             foreach ($by_specialty as $row) {
@@ -1341,7 +1343,7 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
-     * @return array|mixed|null
+     * @return SecondaryDiagnosis[]
      */
     public function getSystemicDiagnoses()
     {
@@ -2108,7 +2110,7 @@ class Patient extends BaseActiveRecordVersioned
         return array_map(function($medication) {
             $label = $medication->drug ? $medication->drug->label : $medication->medication_drug->name;
             $option = $medication->option ? " ({$medication->option->name})" : '';
-            $frequency = $medication->frequency->name;
+            $frequency = $medication->frequency ? $medication->frequency->name : '';
             return $label.$option.' '.$frequency;
         }, $this->medications);
     }
@@ -2149,6 +2151,21 @@ class Patient extends BaseActiveRecordVersioned
     public function get_socialhistory()
     {
         return OEModule\OphCiExamination\widgets\SocialHistory::latestForPatient($this);
+    }
+
+
+    /*
+     * Generate episode link to searchbox and homescreen
+     * @return string
+     */
+    public function generateEpisodeLink()
+    {
+        $episode = $this->getEpisodeForCurrentSubspecialty();
+        if( $episode !== null){
+            return $this->getApp()->createURL("/patient/episode/", array("id" => $episode->id));
+        } else {
+            return $this->getApp()->createURL("/patient/episodes/", array("id" => $this->id));
+        }
     }
 
     /**

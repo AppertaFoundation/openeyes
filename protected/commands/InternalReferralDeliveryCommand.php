@@ -174,6 +174,10 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
             $ch = curl_init();
 
             curl_setopt($ch, CURLOPT_URL, $login_page);
+            // disable SSL certificate check for locally issued certificates
+            if(Yii::app()->params['disable_ssl_certificate_check']) {
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            }
             curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
             curl_setopt($ch, CURLOPT_COOKIESESSION, true);
             curl_setopt($ch, CURLOPT_COOKIEJAR, '/tmp/cookie.txt');

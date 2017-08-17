@@ -131,7 +131,7 @@ class BaseEventElementWidget extends CWidget
             // when new we want to always set to default so we can track changes
             // but if this element already exists then we don't want to override
             // it with the tip data
-            $this->element->setDefaultOptions($this->patient);
+            $this->setElementFromDefaults();
         }
 
         if ($this->data) {
@@ -153,6 +153,16 @@ class BaseEventElementWidget extends CWidget
     protected function getNewElement()
     {
         return new BaseEventTypeElement();
+    }
+
+    /**
+     * Basic setting of element attributes with default behaviour (typically
+     * loading from the tip). Should be overridden for any pre/post processing
+     * requirements.
+     */
+    protected function setElementFromDefaults()
+    {
+        $this->element->setDefaultOptions($this->patient);
     }
 
     /**

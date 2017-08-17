@@ -101,7 +101,7 @@ class Element_OphInGeneticresults_Test extends BaseEventTypeElement
     public function attributeLabels()
     {
         return array(
-            'id' => 'ID',
+            'id' => 'Id',
             'event_id' => 'Event',
             'gene_id' => 'Gene',
             'method_id' => 'Method',

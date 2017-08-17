@@ -100,7 +100,6 @@ $config = array(
         'OphCiPhasing',
         'OphCoTherapyapplication',
         'OphDrPrescription',
-        'OphOuAnaestheticsatisfactionaudit',
         'OphTrConsent',
         'OphTrOperationnote',
         'OphTrOperationbooking',
@@ -113,10 +112,11 @@ $config = array(
         'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
         'OphInLabResults',
         'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
-		'Genetics',
-		'OphInDnasample',
-		'OphInDnaextraction',
-		'OphInGeneticsresults',
+        'Genetics',
+        'OphInDnasample',
+        'OphInDnaextraction',
+        'OphInGeneticresults',
+        'OphCoDocument',
     ),
 
     'params' => array(
@@ -142,8 +142,6 @@ $config = array(
         // 'dashboard_sortable' => true
         'event_print_method' => 'pdf',
         'wkhtmltopdf_nice_level' => 19,
-        'city_road_satellite_view' => 1,
-        'enable_concise_med_history' => false,
         // default start time used for automatic worklist definitions
         //'worklist_default_start_time' => 'H:i',
         // default end time used for automatic worklist definitions
