@@ -39,6 +39,14 @@
                 }
             ),
             array(
+                'label' => 'Maiden Name',
+                'type' => 'raw',
+                'value' => function() use ($model){
+                    return $model->patient->contact->maiden_name;
+                }
+            ),
+
+            array(
                 'label' => $model->patient->getAttributeLabel('dob'),
                 'type' => 'raw',
                 'value' => function() use ($model){
@@ -54,7 +62,11 @@
                 'label' => $model->getAttributeLabel('gender_id'),
                 'value' => isset($model->gender->name) ? $model->gender->name : 'Not set',
             ),
-            
+
+            array(
+                'label' => $model->getAttributeLabel('is_deceased'),
+                'value' => ($model->is_deceased ? 'yes' : 'no'),
+            ),
             'comments',
 
             array(

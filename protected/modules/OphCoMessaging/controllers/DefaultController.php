@@ -31,6 +31,8 @@ class DefaultController extends \BaseEventTypeController
         'addcomment' => self::ACTION_TYPE_MYMESSAGE,
     );
 
+    protected $show_element_sidebar = false;
+
     /**
      * @var \OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message
      */

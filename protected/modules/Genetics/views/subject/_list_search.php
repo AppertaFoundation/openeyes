@@ -77,6 +77,10 @@
         </div>
 
         <div>
+            <?php echo $form->textField($model, 'patient_maidenname', ['placeholder' => 'Maiden name']); ?>
+        </div>
+
+        <div>
             <?php // echo $form->label($model, 'comments'); ?>
             <?php echo $form->textField($model, 'comments', ['placeholder' => 'Comments']); ?>
         </div>
@@ -110,8 +114,7 @@
                 ));
             ?>
         </div>
-
-        <div></div>
+        
         <div></div>
 
 

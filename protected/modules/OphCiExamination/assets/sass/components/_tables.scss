@@ -30,4 +30,9 @@ table {
 			padding-right: 0.1rem;
 		}
 	}
+	input{
+		&.other-type-input{
+			margin-top: 3px;
+		}
+	}
 }
