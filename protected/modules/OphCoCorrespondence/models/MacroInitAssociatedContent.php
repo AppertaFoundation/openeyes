@@ -36,13 +36,13 @@ class MacroInitAssociatedContent extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('macro_id, is_system_hidden, is_print_appended, init_method, short_code', 'required'),
-			array('is_system_hidden, is_print_appended, display_order', 'numerical', 'integerOnly'=>true),
+			array('macro_id, is_system_hidden, is_print_appended, init_method,init_method_id, short_code', 'required'),
+			array('is_system_hidden, is_print_appended, display_order', 'numerical,init_method_id', 'integerOnly'=>true),
 			array('macro_id, init_protected_file_id', 'length', 'max'=>10),
 			array('init_method, short_code, display_title', 'length', 'max'=>45),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, macro_id, is_system_hidden, is_print_appended, init_method, init_protected_file_id, short_code, display_order, display_title', 'safe', 'on'=>'search'),
+			array('id, macro_id, is_system_hidden, is_print_appended, init_method,init_method_id, init_protected_file_id, short_code, display_order, display_title', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -56,6 +56,7 @@ class MacroInitAssociatedContent extends BaseActiveRecord
 		return array(
 			'macro' => array(self::BELONGS_TO, 'OphcocorrespondenceLetterMacro', 'macro_id'),
 			'initProtectedFile' => array(self::BELONGS_TO, 'ProtectedFile', 'init_protected_file_id'),
+			'initMethod' => array(self::BELONGS_TO, 'OphcorrespondenceInitMethod', 'init_method_id'),
 		);
 	}
 
@@ -70,6 +71,7 @@ class MacroInitAssociatedContent extends BaseActiveRecord
 			'is_system_hidden' => 'Is System Hidden',
 			'is_print_appended' => 'Is Print Appended',
 			'init_method' => 'Init Method',
+			'init_method_id' => 'Init Method ID',
 			'init_protected_file_id' => 'Init Protected File',
 			'short_code' => 'Short Code',
 			'display_order' => 'Display Order',

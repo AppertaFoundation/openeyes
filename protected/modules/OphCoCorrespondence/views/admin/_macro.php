@@ -16,7 +16,9 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.js", \CClientScript::POS_HEAD);
 ?>
+
 <div class="box admin">
     <h2>Edit macro</h2>
     <?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
@@ -64,8 +66,14 @@
                 </div>
             </div>
         </div>
+    <?php if(isset($init_method) && isset($associated_content)){
+
+        $model_init_method = CHtml::modelName('OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod');
+        $model_associated_content = CHtml::modelName('OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent');
+        ?>
+
         <div class="field-row">
-            <table class="grid">
+            <table class="grid" id="OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod_table">
                 <thead>
                     <tr>
                         <td>Hidden</td>
@@ -73,23 +81,66 @@
                         <td>Event</td>
                         <td>Short Code</td>
                         <td>Title</td>
-                        <td></td>
+                        <td>Action</td>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><input type="checkbox" name="OphcorrespondenceInitMethod_is_system_hidden" id="OphcorrespondenceInitMethod_is_system_hidden"/></td>
-                        <td><input type="checkbox" name="OphcorrespondenceInitMethod_is_print_appended" id="OphcorrespondenceInitMethod_is_print_appended"/></td>
-                        <td><?php echo $form->dropDownList($init_method, 'description', CHtml::listData(OphcorrespondenceInitMethod::model()->findAll(array('condition' => 'active=1', 'order' => 'id asc')), 'id', 'description'), array('empty' => '- None -'))?></td>
-                        <td><input type="text" name="OphcorrespondenceInitMethod_short_code" id="OphcorrespondenceInitMethod_short_code"/></td>
-                        <td><input type="text" name="OphcorrespondenceInitMethod_title" id="OphcorrespondenceInitMethod_title"/></td>
-                        <td><button class="button small primary event-action" name="save" type="button" id="init_method_save">Save</button></td>
-                    </tr>
+                <?php
+                    $row_count = 0;
+                    if(isset($associated_content)){
+                        foreach($associated_content as $content){
+                            $this->renderPartial(
+                                'init_method_row',
+                                array(
+                                    'form' => $form,
+                                    'init_method_model_name' => $model_init_method,
+                                    'associated_model_name' => $model_associated_content,
+                                    'model_init_method' => $init_method,
+                                    'model_associated_content' => $content,
+                                    'prefix_init_method' => $model_init_method.'[' . ($row_count) . ']',
+                                    'prefix_associated' => $model_associated_content.'[' . ($row_count) . ']',
+                                    'row_count' => $row_count
+                                )
+                            );
+                            $row_count++;
+                        }
+                    }
+
+                    ?>
                 </tbody>
+                <tfoot>
+                    <td class="text-right" colspan="6"><button class="button small primary event-action" name="save" type="button" id="OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod_add">Add</button></td>
+                </tfoot>
             </table>
 
+            <script type="text/template" id="OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod_template" class="hidden">
+                <?php
+                $this->renderPartial(
+                    'init_method_row',
+                    array(
+                        'form' => $form,
+                        'init_method_model_name' => $model_init_method,
+                        'associated_model_name' => $model_associated_content,
+                        'model_init_method' => $init_method,
+                        'model_associated_content' => $associated_content,
+                        'model_init_method' => $init_method,
+                        'prefix_init_method' => $model_init_method.'[' . ($row_count) . ']',
+                        'prefix_associated' => $model_associated_content.'[' . ($row_count) . ']',
+                        'row_count' => '{{row_count}}',
+                        'values' => array(
+                            'id' => '',
+                            'is_system_hidden' => '{{is_system_hidden}}',
+                            'is_print_appended' => '{{is_print_appended}}',
+                            'method_id' => '{{method_id}}',
+                            'short_code' => '{{short_code}}',
+                            'title' => '{{title}}',
+                        )
+                    )
+                );
+                ?>
+            </script>
         </div>
-
+    <?php } ?>
 
     <div class="row field-row">
             <div class="large-10 large-offset-2 column">
@@ -99,3 +150,9 @@
         </div>
     <?php $this->endWidget()?>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        new OpenEyes.OphCoCorrespondence.InitMethodController();
+    });
+</script>

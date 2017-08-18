@@ -120,8 +120,6 @@ class AdminController extends \ModuleAdminController
     public function actionAddMacro()
     {
         $macro = new LetterMacro();
-        $init_method = new OphcorrespondenceInitMethod();
-        $associated_content = new MacroInitAssociatedContent();
 
         $errors = array();
 
@@ -145,8 +143,6 @@ class AdminController extends \ModuleAdminController
 
         $this->render('_macro', array(
             'macro' => $macro,
-            'init_method' => $init_method,
-            'associated_content' => $associated_content,
             'errors' => $errors,
         ));
     }
@@ -156,10 +152,16 @@ class AdminController extends \ModuleAdminController
         if (!$macro = LetterMacro::model()->findByPk($id)) {
             throw new Exception("LetterMacro not found: $id");
         }
+        $init_method = new OphcorrespondenceInitMethod();
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('macro_id = '.$id);
+        $associated_content = MacroInitAssociatedContent::model()->findAll($criteria);
 
         $errors = array();
 
         if (!empty($_POST)) {
+
             $macro->attributes = $_POST['LetterMacro'];
 
             if (!$macro->validate()) {
@@ -167,6 +169,28 @@ class AdminController extends \ModuleAdminController
             } else {
                 if (!$macro->save()) {
                     throw new Exception('Unable to save macro: '.print_r($macro->errors, true));
+                } else {
+
+                    $post_associated_content = $_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent'];
+                    $post_init_method = $_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod'];
+
+                    foreach($post_associated_content as $key => $pac){
+
+                        $associated_content = new MacroInitAssociatedContent();
+
+                        $associated_content->macro_id = $id;
+                        $associated_content->is_system_hidden = ($pac["is_system_hidden"] ? 1 : 0);
+                        $associated_content->is_print_appended = ($pac["is_print_appended"] ? 1 : 0);
+                        $associated_content->init_method = $post_init_method[$key]["short_code"];
+                        $associated_content->init_method_id = $post_init_method[$key]["method_id"];
+                        $associated_content->short_code = $post_init_method[$key]["short_code"];
+                        $associated_content->display_order = $key;
+                        $associated_content->display_title = $post_init_method[$key]["title"];
+                        $associated_content->save();
+                    }
+
+
+
                 }
 
                 Audit::add('admin', 'update', $macro->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'LetterMacro'));
@@ -179,6 +203,8 @@ class AdminController extends \ModuleAdminController
 
         $this->render('_macro', array(
             'macro' => $macro,
+            'init_method' => $init_method,
+            'associated_content' => $associated_content,
             'errors' => $errors,
         ));
     }
@@ -300,7 +326,7 @@ class AdminController extends \ModuleAdminController
 
             $result = array(
                 'success'       => 1,
-                'method'        => $method->method,
+                'description'   => $method->description,
                 'short_code'    => $method->short_code
             );
 
