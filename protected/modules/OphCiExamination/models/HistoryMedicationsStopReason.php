@@ -46,4 +46,12 @@ class HistoryMedicationsStopReason extends \BaseActiveRecordVersioned
             'LookupTable' => 'LookupTable',
         );
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->name;
+    }
 }

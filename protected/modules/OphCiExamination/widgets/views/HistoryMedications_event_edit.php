@@ -21,6 +21,7 @@
 $model_name = CHtml::modelName($element);
 $route_options = CHtml::listData($element->getRouteOptions(), 'id', 'name');
 $frequency_options = CHtml::listData($element->getFrequencyOptions(), 'id', 'name');
+$stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', 'name');
 ?>
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
@@ -31,7 +32,7 @@ $frequency_options = CHtml::listData($element->getFrequencyOptions(), 'id', 'nam
     <table id="<?= $model_name ?>_entry_table">
         <thead>
         <tr>
-            <th>Dates</th>
+            <th class="date-col">Dates</th>
             <th>Medication</th>
             <th>Administration</th>
             <th>Action(s)</th>
@@ -51,7 +52,8 @@ $frequency_options = CHtml::listData($element->getFrequencyOptions(), 'id', 'nam
                     'row_count' => $row_count,
                     'removable' => true,
                     'route_options' => $route_options,
-                    'frequency_options' => $frequency_options
+                    'frequency_options' => $frequency_options,
+                    'stop_reason_options' => $stop_reason_options
                 )
             );
             $row_count++;
@@ -78,7 +80,8 @@ $frequency_options = CHtml::listData($element->getFrequencyOptions(), 'id', 'nam
                 'row_count' => '{{row_count}}',
                 'removable' => true,
                 'route_options' => $route_options,
-                'frequency_options' => $frequency_options
+                'frequency_options' => $frequency_options,
+                'stop_reason_options' => $stop_reason_options
             )
         );
         ?>

@@ -59,6 +59,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
             <div class="large-11 column end">
               <span class="stop-date-wrapper" <?php if (!$entry->end_date) {?>style="display: none;"<?php } ?>>
                 <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
+                <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-Stop Reason-')) ?>
             </span>
             </div>
         </fieldset>
@@ -90,7 +91,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
             <div class="row">
               <div class="large-3 column"><label class="has-tooltip" data-tooltip-content="Frequency">Freq.:</label></div>
               <div class="large-9 column end">
-                  <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->route_id, $frequency_options, array('empty' => '-Select-')) ?>
+                  <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Select-')) ?>
               </div>
             </div>
           </div>

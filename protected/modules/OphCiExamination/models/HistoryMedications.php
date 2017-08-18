@@ -110,6 +110,20 @@ class HistoryMedications extends \BaseEventTypeElement
     }
 
     /**
+     * @return HistoryMedicationsStopReason[]
+     */
+    public function getStopReasonOptions()
+    {
+        $force = array();
+        foreach ($this->entries as $entry) {
+            if ($entry->stop_reason_id) {
+                $force[] = $entry->stop_reason_id;
+            }
+        }
+        return HistoryMedicationsStopReason::model()->activeOrPk($force)->findAll();
+    }
+
+    /**
      * @return \DrugRoute[]
      */
     public function getRouteOptions()

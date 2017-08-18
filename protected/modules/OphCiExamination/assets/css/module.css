@@ -211,18 +211,22 @@ section.OEModule_OphCiExamination_models_Allergies table#OEModule_OphCiExaminati
   margin-left: 0px;
   margin-right: 0px;
 }
+/* line 14, ../sass/components/elements/_history-medications.scss */
+.OEModule_OphCiExamination_models_HistoryMedications table th.date-col {
+  min-width: 300px;
+}
 
-/* line 17, ../sass/components/elements/_history-medications.scss */
+/* line 20, ../sass/components/elements/_history-medications.scss */
 .medication-display {
   white-space: nowrap;
 }
 
-/* line 21, ../sass/components/elements/_history-medications.scss */
+/* line 24, ../sass/components/elements/_history-medications.scss */
 a.start-medication {
   color: green;
 }
 
-/* line 25, ../sass/components/elements/_history-medications.scss */
+/* line 28, ../sass/components/elements/_history-medications.scss */
 a.stop-medication {
   color: red;
 }
