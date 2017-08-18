@@ -18,15 +18,17 @@
  */
 
 return array(
-    'genetics_patient_pedigree1' => array(
+    'pedigree1' => array(
         'id' => 1,
-        'patient_id' => 1,
-        'pedigree_id' => 1
+        'inheritance_id' => 6,
+        'genome_version' => 37,
+        'comments' => 'pedigree1'
     ),
 
-    'genetics_patient_pedigree2' => array(
+    'pedigree2' => array(
         'id' => 2,
-        'patient_id' => 2,
-        'pedigree_id' => 2
+        'inheritance_id' => 6,
+        'genome_version' => 37,
+        'comments' => 'pedigree2'
     ),
 );
