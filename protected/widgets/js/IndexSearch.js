@@ -20,24 +20,37 @@ var last_search_pos;
       //temporarily detaches div from DOM to reduce unnecessary rendering
       $results.detach();
       search_term = ($(this).val() + "").toLowerCase();
-      let last_level,$this,$element,highlighted_string,alias,selector;
+      let last_level,$this,$element,highlighted_string,alias,selector,match_pos
+          ,plain_text,no_match_text,match_text,$alias,highlighted_aliases;
       for (selector of opts.selectors) {
         //determines whether the index selecor is for the last level i.e  the index has no children
         last_level = opts.selectors[0] == selector;
         $results.find(selector).each(function() {
           $this = $(this);
           $element = get_element($this);
+          $alias = $element.children(':first').next('.index_row').find('.alias:first');
           alias = $this.data("alias").toLowerCase();
-          if (alias.indexOf(search_term) == -1) { //no matches
+          if ((match_pos = alias.indexOf(search_term)) == -1) { //no matches
             $this.html($this.text()); //removes highlighted text
+            $alias.html($alias.text());
             if (!last_level && $element.children().find("li[style!='display: none;']").length != 0) {
               $element.show(); //has visible children index so should be visible to maintain tree structure
             } else {
               $element.hide(); //has no visible children so hide
             }
           } else { //match found
-            highlighted_string = replace_matched_string($this.text());
+            //clear previous highlights and slice up to the start of match
+            //uses the indexOf used to check presence to slice string
+            //benefitical if the alias list is very long as it means
+            //length of string is likely less
+            plain_text = $this.text();
+            no_match_text = plain_text.slice(0,(match_pos-1) < 0 ? 0 : (match_pos)); //may over slice
+            match_text = plain_text.slice(match_pos);
+            highlighted_string = no_match_text + replace_matched_string(match_text);
             $this.html(highlighted_string);
+            highlighted_aliases = replace_matched_string($alias.text());
+            $alias.html(highlighted_aliases);
+
             $element.show();
             if (!last_level) { //does it have children?
               if (show_children == true) { //is the toggle show children on?
@@ -139,11 +152,11 @@ $(document).ready(function(){
     hide_results();
   });
 
-  $('.switch').click(function(){
-    event.stopPropagation();
+  $('#big_cross').click(function(){
+    hide_results();
   });
 
-  $('#results').click(function(){
+  $('.switch,#results,#search_bar_right,#search_bar_left').click(function(){
     event.stopPropagation();
   });
 
@@ -151,14 +164,6 @@ $(document).ready(function(){
   //as this would cause the doodle popup to hide
   $('#results').mousedown(function(){
     event.stopPropagation();
-  });
-
-  $('#search_bar_right,#search_bar_left').click(function(){
-    event.stopPropagation();
-  });
-
-  $('#big_cross').click(function(){
-    hide_results();
   });
 
 });

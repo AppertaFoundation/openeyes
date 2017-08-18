@@ -345,6 +345,7 @@ private function get_element_name($open_element_class_name){
       $result =
       "<li style>"
       ."<div class=\"result_item"
+      //changed from IMG_URL to class name with image property
       .($img ? (" result_item_with_icon is_".$goto_doodle_class_name."\"") : (""))
       ."\" "
       .($open_element_class_name ? ("data-element-class-name=\"".$open_element_class_name."\" ") : (""))
