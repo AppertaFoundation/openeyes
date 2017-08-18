@@ -283,7 +283,7 @@ class DefaultController extends BaseEventTypeController
             {
                 if ($theatre_diary_disabled)
                 {
-                    $operations = $api->getOpenOperations($this->patient->id);
+                    $operations = $api->getOpenOperations($this->patient);
                 }
                 else
                 {
