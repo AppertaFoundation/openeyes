@@ -25,6 +25,7 @@ namespace OEModule\OphCiExamination\models;
  * @property \User $user
  * @property \User $usermodified
  * @property HistoryMedicationsEntry[] $entries
+ * @property HistoryMedicationsEntry[] $orderedEntries
  */
 class HistoryMedications extends \BaseEventTypeElement
 {
@@ -74,7 +75,21 @@ class HistoryMedications extends \BaseEventTypeElement
                 self::HAS_MANY,
                 'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
                 'element_id',
-            )
+            ),
+            'orderedEntries' => array(self::HAS_MANY,
+                'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
+                'element_id',
+                'order' => 'orderedEntries.start_date desc, orderedEntries.end_date desc, orderedEntries.last_modified_date'),
+            'currentOrderedEntries' => array(self::HAS_MANY,
+                'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
+                'element_id',
+                'on' => 'end_date is NULL AND stop_reason_id is NULL',
+                'order' => 'currentOrderedEntries.start_date desc, currentOrderedEntries.end_date desc, currentOrderedEntries.last_modified_date'),
+            'stoppedOrderedEntries' => array(self::HAS_MANY,
+                'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
+                'element_id',
+                'on' => 'end_date is NOT NULL OR stop_reason_id is NOT NULL',
+                'order' => 'stoppedOrderedEntries.start_date desc, stoppedOrderedEntries.end_date desc, stoppedOrderedEntries.last_modified_date'),
         );
     }
 
@@ -150,6 +165,7 @@ class HistoryMedications extends \BaseEventTypeElement
 
     public function __toString()
     {
-        return implode(' // ', $this->entries);
+        return 'Current: ' . implode(' // ', $this->currentOrderedEntries) .
+            ' Stopped: ' . implode(' // ', $this->stoppedOrderedEntries);
     }
 }

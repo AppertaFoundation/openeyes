@@ -124,7 +124,7 @@ class HistoryMedicationsEntry extends \BaseElement
     public function getAdministrationDisplay()
     {
         $res = array();
-        foreach (array('dose', 'route', 'option', 'frequency') as $k) {
+        foreach (array('dose', 'option', 'route', 'frequency') as $k) {
             if ($this->$k) {
                 $res[] = $this->$k;
             }

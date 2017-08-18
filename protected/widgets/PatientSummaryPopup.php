@@ -57,10 +57,13 @@ class PatientSummaryPopup extends BaseCWidget
             $this->patient->systemicDiagnosesSummary
         );
 
-        $this->medications = implode(
-            self::$LIST_SEPARATOR,
-            $this->patient->medicationsSummary
-        );
+        $widget = $this->createWidget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
+            'patient' => $this->patient,
+            'mode' => BaseEventElementWidget::$PATIENT_POPUP_MODE,
+            'popupListSeparator' => self::$LIST_SEPARATOR
+        ));
+
+        $this->medications = $widget->run();
 
         $this->allergies = implode(
             self::$LIST_SEPARATOR,

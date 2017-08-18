@@ -69,4 +69,47 @@ class HistoryMedications extends \BaseEventElementWidget
             $element->entries = array();
         }
     }
+
+    public function getMergedEntries()
+    {
+        // map the operations that have been recorded as entries in this element
+        $entries = array_map(
+            function($entry) {
+                return array(
+                    'date' => $entry->start_date,
+                    'object' => $entry
+                );
+            }, $this->element->currentOrderedEntries); //TODO: confirm this behaviour of only providing current
+
+        // append prescription medications
+//        if ($api = $this->getApp()->moduleAPI->get('OphTrOperationnote')) {
+//            $operations = array_merge($operations, $api->getOperationsSummaryData($this->patient));
+//        }
+
+        // merge by sorting by date
+        uasort($entries, function($a , $b) {
+            return $a['date'] >= $b['date'] ? -1 : 1;
+        });
+
+        return $entries;
+    }
+
+    public function formatExternalEntry($entry)
+    {
+        return 'Not Yet Implemented';
+    }
+
+    /**
+     * @return string
+     */
+    public function popupList()
+    {
+        $res = array_map(
+            function ($entry) {
+                return array_key_exists('object', $entry) ?
+                    (string) $entry['object'] :
+                    $this->formatExternalEntry($entry);
+            }, $this->getMergedEntries());
+        return implode($this->popupListSeparator, $res);
+    }
 }
