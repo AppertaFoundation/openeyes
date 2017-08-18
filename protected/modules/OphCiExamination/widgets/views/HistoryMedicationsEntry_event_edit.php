@@ -79,28 +79,28 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         <div class="row">
           <div class="large-6 column">
             <div class="row">
-              <div class="large-2 column"><label>Dose:</label></div>
-              <div class="large-10 column end">
+              <div class="large-3 column"><label>Dose:</label></div>
+              <div class="large-9 column end">
                   <input type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" />
               </div>
             </div>
             <div class="row">
-              <div class="large-2 column"><label class="has-tooltip" data-tooltip-content="Frequency">Freq.:</label></div>
-              <div class="large-10 column end">
+              <div class="large-3 column"><label class="has-tooltip" data-tooltip-content="Frequency">Freq.:</label></div>
+              <div class="large-9 column end">
                   <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->route_id, $frequency_options, array('empty' => '-Select-')) ?>
               </div>
             </div>
           </div>
           <div class="large-6 column end">
             <div class="row">
-              <div class="large-2 column"><label>Route:</label></div>
-              <div class="large-10 column end">
+              <div class="large-3 column"><label>Route:</label></div>
+              <div class="large-9 column end">
                   <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Select-')) ?>
               </div>
             </div>
             <div class="row admin-route-options" <?php if (!$entry->routeOptions()) {?>style="display:none;"<?php } ?>>
-              <div class="large-2 column"><label class="has-tooltip" data-tooltip-content="Route Option">Opt.:</label></div>
-              <div class="large-10 column end route-option-wrapper">
+              <div class="large-3 column"><label class="has-tooltip" data-tooltip-content="Route Option">Opt.:</label></div>
+              <div class="large-9 column end route-option-wrapper">
                   <?= CHtml::dropDownList($field_prefix . '[option_id]',
                       $entry->option_id,
                       CHtml::listData($entry->routeOptions() ?: array(), 'id', 'name'),

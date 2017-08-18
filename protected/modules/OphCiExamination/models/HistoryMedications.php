@@ -127,4 +127,9 @@ class HistoryMedications extends \BaseEventTypeElement
 
         return \DrugFrequency::model()->activeOrPk($force)->findAll();
     }
+
+    public function __toString()
+    {
+        return implode('//', $this->entries);
+    }
 }

@@ -87,7 +87,7 @@ class HistoryMedicationsEntry extends \BaseElement
             'route' => array(self::BELONGS_TO, 'DrugRoute', 'route_id'),
             'option' => array(self::BELONGS_TO, 'DrugRouteOption', 'option_id'),
             'frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'frequency_id'),
-            'stop_reason' => array(self::BELONGS_TO, 'MedicationStopReason', 'stop_reason_id'),
+            'stop_reason' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\HistoryMedicationsStopReason', 'stop_reason_id'),
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
         );
     }
@@ -117,6 +117,44 @@ class HistoryMedicationsEntry extends \BaseElement
                 ($this->drug ? (string) $this->drug : ''));
     }
 
+    /**
+     * @return string
+     */
+    public function getAdministrationDisplay()
+    {
+        $res = array();
+        foreach (array('dose', 'route', 'option', 'frequency') as $k) {
+            if ($this->$k) {
+                $res[] = $this->$k;
+            }
+        }
+        return implode(' ', $res);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDatesDisplay()
+    {
+        $res = array();
+        if ($this->start_date) {
+            $res[] = \Helper::formatFuzzyDate($this->start_date);
+        }
+        if ($this->end_date) {
+            if (count($res)) {
+                $res[] = '-';
+            }
+            $res[] = \Helper::formatFuzzyDate($this->end_date);
+        }
+        if ($this->stop_reason) {
+            $res[] = "({$this->stop_reason})";
+        }
+        return implode(' ', $res);
+    }
+
+    /**
+     * @return \DrugRouteOption[]
+     */
     public function routeOptions()
     {
         if ($this->route) {
@@ -124,4 +162,17 @@ class HistoryMedicationsEntry extends \BaseElement
         }
     }
 
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        $res = array();
+        foreach (array('Medication', 'Administration', 'Dates') as $k) {
+            if ($str = $this->{'get' . $k . 'Display'}()) {
+                $res[] = $str;
+            }
+        }
+        return implode(', ', $res);
+    }
 }
