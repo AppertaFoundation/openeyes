@@ -20,15 +20,15 @@ var last_search_pos;
       //temporarily detaches div from DOM to reduce unnecessary rendering
       $results.detach();
       search_term = ($(this).val() + "").toLowerCase();
-      let last_level,$this,$element,highlighted_string;
-      for (let selector of opts.selectors) {
+      let last_level,$this,$element,highlighted_string,alias,selector;
+      for (selector of opts.selectors) {
         //determines whether the index selecor is for the last level i.e  the index has no children
         last_level = opts.selectors[0] == selector;
         $results.find(selector).each(function() {
           $this = $(this);
           $element = get_element($this);
-          allias = $this.data("allias").toLowerCase();
-          if (allias.indexOf(search_term) == -1) { //no matches
+          alias = $this.data("alias").toLowerCase();
+          if (alias.indexOf(search_term) == -1) { //no matches
             $this.html($this.text()); //removes highlighted text
             if (!last_level && $element.children().find("li[style!='display: none;']").length != 0) {
               $element.show(); //has visible children index so should be visible to maintain tree structure
@@ -36,7 +36,7 @@ var last_search_pos;
               $element.hide(); //has no visible children so hide
             }
           } else { //match found
-            highlighted_string = replace_matched_string($this.text(), search_term);
+            highlighted_string = replace_matched_string($this.text());
             $this.html(highlighted_string);
             $element.show();
             if (!last_level) { //does it have children?
@@ -57,7 +57,7 @@ var last_search_pos;
     matched_string_tag: ["<em class='search_highlight'>", "</em>"] //surround matched text with
   };
 
-  function replace_matched_string(old_string, search_term) { //highlights text with matched_string_tag in opts
+  function replace_matched_string(old_string) { //highlights text with matched_string_tag in opts
     if (search_term === undefined || search_term === "" || old_string.toLowerCase().indexOf(search_term.toLowerCase()) == -1) {
       return old_string;
     }
@@ -69,12 +69,13 @@ var last_search_pos;
     const before_match = old_string.slice(0, match_start);
     const match_text = old_string.slice(match_start, match_end + 1);
     const after_match = old_string.slice(match_end + 1);
-    const new_string = before_match + opts.matched_string_tag[0] + match_text + opts.matched_string_tag[1] + replace_matched_string(after_match, search_term);
+    const new_string = before_match + opts.matched_string_tag[0] + match_text + opts.matched_string_tag[1] + replace_matched_string(after_match);
     return new_string;
   }
 
   function get_element($this) { //gets to element from the text
-    for (let i = 0; i < opts.ancestor_to_change; i++) {
+    let i;
+    for (i = 0; i < opts.ancestor_to_change; i++) {
       $this = $this.parent();
     }
 
@@ -293,8 +294,7 @@ function show_results(){
   }
     /* End of Promise code */
 
-
-    /* Shortcut plugin */
+    /* Shortcut plugin not my code*/
     /**
  * http://www.openjs.com/scripts/events/keyboard_shortcuts/
  * Version : 2.01.B

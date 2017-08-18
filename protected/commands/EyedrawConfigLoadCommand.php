@@ -28,6 +28,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
     const CANVS_TBL         = 'eyedraw_canvas';
     const CANVAS_DOODLE_TBL = 'eyedraw_canvas_doodle';
     public function getName()
+
     {
         return 'Load eyedraw configuration';
     }
@@ -327,7 +328,7 @@ private function get_element_name($open_element_class_name){
       $warning = $index->WARNING_NOTE;
       $info = $index->GENERAL_NOTE;
       $fake_array = (array)$index->TERM_LIST->TERM;
-      $allias = implode(",",$fake_array);
+      $alias = implode(",",$fake_array);
       $name = array_shift($fake_array);
 
       $primary_term = $index->PRIMARY_TERM;
@@ -335,7 +336,7 @@ private function get_element_name($open_element_class_name){
       $secondary_term_list = implode(",",$secondary_term_list_array);
       $complete_term_list = $secondary_term_list_array ? $primary_term.",".$secondary_term_list : $primary_term;
 
-      $allias_minus_name = implode(",",$fake_array);
+      $alias_minus_name = implode(",",$fake_array);
       $img = $index->IMG_URL;
       $children = $index->INDEX_LIST;
       $open_element_class_name = $index->OPEN_ELEMENT_CLASS_NAME;
@@ -344,7 +345,7 @@ private function get_element_name($open_element_class_name){
       $result =
       "<li style>"
       ."<div class=\"result_item"
-      .($img ? (", result_item_with_icon\" style=\"background-image: url(".$img.")") : (""))
+      .($img ? (" result_item_with_icon is_".$goto_doodle_class_name."\"") : (""))
       ."\" "
       .($open_element_class_name ? ("data-element-class-name=\"".$open_element_class_name."\" ") : (""))
       .($open_element_class_name ? ("data-element-id=\"".$this->get_element_id($open_element_class_name)."\" ") : (""))
@@ -352,14 +353,14 @@ private function get_element_name($open_element_class_name){
       .($goto_doodle_class_name ? ("data-doodle-class-name=\"".$goto_doodle_class_name."\" ") : (""))
       .($goto_property ? ("data-property=\"".$goto_property."\"") : (""))
       .">"
-      ."<span data-allias='".$complete_term_list."' "
+      ."<span data-alias='".$complete_term_list."' "
       ."class='lvl".$lvl."'>"
       .$primary_term."</span>"
       ."</div>"
       .($secondary_term_list ? (
         "<div class=\"index_row\">"
         ."<div class=\"index_col_left\">"
-        ."<span class=\"allias\">"
+        ."<span class=\"alias\">"
         .$secondary_term_list
         ."</span>"
         ."</div>"
