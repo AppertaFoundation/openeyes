@@ -33,3 +33,19 @@
 .refractionNotes {
 	margin-top: 1em;
 }
+
+ul.comma-list {
+	display: inline;
+	li {
+		margin-left: 5px;
+		margin-right: 0px;
+		display: inline;
+		list-style: none;
+		&:after {
+			content: ", ";
+		}
+		&:last-child:after {
+			content: "";
+		}
+	}
+}

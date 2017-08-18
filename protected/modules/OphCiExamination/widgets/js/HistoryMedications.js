@@ -292,3 +292,34 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   exports.HistoryMedicationsController = HistoryMedicationsController;
 })(OpenEyes.OphCiExamination);
+
+(function(exports) {
+  function HistoryMedicationsViewController(options) {
+    this.options = $.extend(true, {}, HistoryMedicationsViewController._defaultOptions, options);
+    this.$element = this.options.element;
+    console.log('yo!');
+    this.initialiseTriggers();
+  }
+
+  HistoryMedicationsViewController._defaultOptions = {
+    modelName: 'OEModule_OphCiExamination_models_HistoryMedications',
+    element: undefined,
+    detailToggleSelector: '.detail-toggle'
+  };
+
+  HistoryMedicationsViewController.prototype.initialiseTriggers = function()
+  {
+    var controller = this;
+
+    controller.$element.on('click', controller.options.detailToggleSelector, function(e) {
+      e.preventDefault();
+      var $dataDisplay = controller.$element.find('.' + $(this).data('kind'));
+      console.log($dataDisplay);
+      $dataDisplay.find('.detail').toggle();
+      $dataDisplay.find('.simple').toggle();
+      $(this).find('.fa').toggleClass('fa-expand fa-compress');
+    });
+  };
+
+  exports.HistoryMedicationsViewController = HistoryMedicationsViewController;
+})(OpenEyes.OphCiExamination);

@@ -15,6 +15,32 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="element-data">
-    <div class="data-value"><?= $element ?></div>
+<script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
+<?php $el_id =  CHtml::modelName($element) . '_element'; ?>
+
+<div class="element-data" id="<?=$el_id?>">
+  <div class="row">
+    <div class="large-1 column">
+      <label style="white-space: nowrap;">Current: <a href="#" class="detail-toggle" data-kind="current"><i class="fa fa-icon fa-expand" aria-hidden="true"></i></a></label>
+    </div>
+    <div class="large-11 column end">
+        <div class="data-value current">
+            <ul class="comma-list">
+                <?php foreach ($element->currentOrderedEntries as $entry) { ?>
+                  <li><span class="simple"><?= $entry->getMedicationDisplay() ?></span><span class="detail" style="display: none;"><?= $entry ?></span></li>
+                <?php } ?>
+            </ul>
+
+        </div>
+    </div>
+  </div>
 </div>
+<script type="text/javascript">
+  $(document).ready(function() {
+    new OpenEyes.OphCiExamination.HistoryMedicationsViewController({
+      element: $('#<?= $el_id ?>')
+    });
+  });
+</script>
+
+

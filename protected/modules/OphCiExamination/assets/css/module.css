@@ -42,6 +42,26 @@
   margin-top: 1em;
 }
 
+/* line 37, ../sass/components/_event.scss */
+ul.comma-list {
+  display: inline;
+}
+/* line 39, ../sass/components/_event.scss */
+ul.comma-list li {
+  margin-left: 5px;
+  margin-right: 0px;
+  display: inline;
+  list-style: none;
+}
+/* line 44, ../sass/components/_event.scss */
+ul.comma-list li:after {
+  content: ", ";
+}
+/* line 47, ../sass/components/_event.scss */
+ul.comma-list li:last-child:after {
+  content: "";
+}
+
 @media print {
   /* line 18, ../sass/components/elements/_intraocular-pressure.scss */
   .OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure .element-data,
