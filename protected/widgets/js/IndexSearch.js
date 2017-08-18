@@ -122,6 +122,8 @@ $(document).ready(function(){
 
   $('.result_item, .result_item_with_icon').click(function(event){
     $('#is_loading').show();
+    //if ajax call is very slow hide loading gif so user can perform other actions
+    setTimeout(()=>$('#is_loading').hide(),6000);
     //Index has been clicked
     event.stopPropagation();
     hide_results();
