@@ -78,6 +78,16 @@ class HistoryMedications extends \BaseEventTypeElement
         );
     }
 
+    protected function errorAttributeException($attribute, $message)
+    {
+        if ($attribute === \CHtml::modelName($this) . '_entries') {
+            if (preg_match('/^(\d+)/', $message, $match) === 1) {
+                return \CHtml::modelName($this) . '_entry_table tbody tr:eq(' . ($match[1]-1) . ')';
+            }
+        }
+        return parent::errorAttributeException($attribute, $message);
+    }
+
     /**
      * @param HistoryMedications $element
      */

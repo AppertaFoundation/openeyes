@@ -28,7 +28,7 @@ $frequency_options = CHtml::listData($element->getFrequencyOptions(), 'id', 'nam
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
-    <table class="<?= $model_name ?>_entry_table">
+    <table id="<?= $model_name ?>_entry_table">
         <thead>
         <tr>
             <th>Dates</th>
