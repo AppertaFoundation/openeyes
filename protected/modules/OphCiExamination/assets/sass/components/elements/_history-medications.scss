@@ -6,6 +6,22 @@
   table {
     tr {
       vertical-align: top;
+      fieldset.row {
+        margin-left: 0px;
+        margin-right: 0px;
+      }
     }
   }
+}
+
+.medication-display {
+  white-space: nowrap;
+}
+
+a.start-medication {
+  color: green;
+}
+
+a.stop-medication {
+  color: red;
 }

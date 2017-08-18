@@ -39,26 +39,29 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
         <fieldset class="row field-row fuzzy-date">
             <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" />
-            <div class="large-2 column">
-                <label>Start:</label>
+            <div class="large-1 column text-right">
+                <a href="#" class="start-medication enable date-control has-tooltip" data-tooltip-content="record a start date for this medication" <?php if ($entry->start_date) {?>style="display: none;"<?php } ?>><i class="fa fa-icon fa-play-circle"></i></a>
+                <a href="#" class="start-medication cancel date-control has-tooltip" data-tooltip-content="remove the start date for this medication" <?php if (!$entry->start_date) {?>style="display: none;"<?php } ?>><i class="fa fa-icon fa-times-circle"></i></a>
             </div>
-            <div class="large-10 column end">
-                <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $start_sel_day, 'sel_month' => $start_sel_month, 'sel_year' => $start_sel_year)) ?>
+            <div class="large-11 column end">
+                <span class="start-date-wrapper" <?php if (!$entry->start_date) {?>style="display: none;"<?php } ?>">
+                  <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $start_sel_day, 'sel_month' => $start_sel_month, 'sel_year' => $start_sel_year)) ?>
+                </span>
             </div>
         </fieldset>
-        <button class="button small warning stop-medication date-control" <?php if ($entry->end_date) {?>style="display: none;"<?php } ?>>stop</button>
-        <span class="stop-date-wrapper" <?php if (!$entry->end_date) {?>style="display: none;"<?php } ?>>
-            <fieldset class="row field-row fuzzy-date">
-                <input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
-                <div class="large-2 column">
-                    <label>Stop:</label>
-                </div>
-                <div class="large-10 column end">
-                    <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
-                </div>
-            </fieldset>
-            <button class="button small warning cancel-stop-medication date-control">cancel stop</button>
-        </span>
+
+        <fieldset class="row field-row fuzzy-date">
+            <input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
+            <div class="large-1 column text-right">
+                <a href="#" class="stop-medication enable date-control has-tooltip" data-tooltip-content="record a stop date for this medication" <?php if ($entry->end_date) {?>style="display: none;"<?php } ?>><i class="fa fa-icon fa-stop"></i></a>
+                <a href="#" class="stop-medication cancel date-control has-tooltip" data-tooltip-content="remove the stop date for this medication" <?php if (!$entry->end_date) {?>style="display: none;"<?php } ?>><i class="fa fa-icon fa-times-circle"></i></a>
+            </div>
+            <div class="large-11 column end">
+              <span class="stop-date-wrapper" <?php if (!$entry->end_date) {?>style="display: none;"<?php } ?>>
+                <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
+            </span>
+            </div>
+        </fieldset>
     </td>
     <td>
         <span class="medication-display"><span class="medication-name"><?= $entry->getMedicationDisplay() ?></span> <a href="#" class="medication-rename"><i class="fa fa-times-circle" aria-hidden="true" title="Change medication"></i></a></span>

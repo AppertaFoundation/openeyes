@@ -72,6 +72,7 @@ class HistoryMedicationsEntry extends \BaseElement
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
             array('end_date', 'OEFuzzyDateValidator'),
             array('option_id', 'validateOptionId'),
+            array('start_date, end_date', 'default', 'setOnEmpty' => true, 'value' => null)
         );
     }
 

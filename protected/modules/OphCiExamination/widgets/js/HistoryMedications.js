@@ -41,9 +41,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     drugSelectSelector: 'select[name$="[drug_select]"]',
     medicationNameSelector: '.medication-name',
     medicationDisplaySelector: '.medication-display',
+    startDateButtonSelector: '.start-medication.enable',
+    cancelStartDateButtonSelector: '.start-medication.cancel',
     stopDateFieldSelector: 'input[name$="[stop_date]"]',
-    stopDateButtonSelector: 'button.stop-medication',
-    cancelStopDateButtonSelector: 'button.cancel-stop-medication',
+    stopDateButtonSelector: '.stop-medication.enable',
+    cancelStopDateButtonSelector: '.stop-medication.cancel',
     routeFieldSelector: 'select[name$="[route_id]"]',
     routeOptionWrapperSelector: '.admin-route-options'
   };
@@ -85,15 +87,24 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           controller.resetSearchRow($row, true);
       });
 
+      $row.on('click', controller.options.startDateButtonSelector, function(e) {
+        e.preventDefault();
+        controller.showDate($row, 'start');
+      });
+
+    $row.on('click', controller.options.cancelStartDateButtonSelector, function(e) {
+      e.preventDefault();
+      controller.cancelDate($row, 'start');
+    });
 
       $row.on('click', controller.options.stopDateButtonSelector, function(e) {
           e.preventDefault();
-          controller.showStopDate($row);
+          controller.showDate($row, 'stop');
       });
 
       $row.on('click', controller.options.cancelStopDateButtonSelector, function(e) {
           e.preventDefault();
-          controller.cancelStopDate($row);
+          controller.cancelDate($row, 'stop');
       });
 
       $row.on('change', controller.options.routeFieldSelector, function(e) {
@@ -197,22 +208,28 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       }
   };
 
-  HistoryMedicationsController.prototype.showStopDate = function($row)
+  HistoryMedicationsController.prototype.showDate = function($row, $type)
   {
-    $row.find('.stop-date-wrapper').show();
-    var $fuzzyFieldset = $row.find('.stop-date-wrapper fieldset');
+    var $wrapper = $row.find('.' + $type + '-date-wrapper');
+    console.log($wrapper);
+    $wrapper.show();
+    var $fuzzyFieldset = $wrapper.parents('fieldset');
     var date = this.dateFromFuzzyFieldSet($fuzzyFieldset);
     $fuzzyFieldset.find('input[type="hidden"]').val(date);
-    $row.find(this.options.stopDateButtonSelector).hide();
-  };
+    $fuzzyFieldset.find('.enable').hide();
+    $fuzzyFieldset.find('.cancel').show();
+  }
 
-  HistoryMedicationsController.prototype.cancelStopDate = function($row)
+  HistoryMedicationsController.prototype.cancelDate = function($row, $type)
   {
-    $row.find('.stop-date-wrapper').hide();
-    $row.find('.stop-date-wrapper').find('input:hidden').val('');
-    $row.find(this.options.stopDateButtonSelector).show();
+    var $wrapper = $row.find('.' + $type + '-date-wrapper');
+    console.log($wrapper);
+    $wrapper.hide();
+    var $fuzzyFieldset = $wrapper.parents('fieldset');
+    $fuzzyFieldset.find('input[type="hidden"]').val('');
+    $fuzzyFieldset.find('.enable').show();
+    $fuzzyFieldset.find('.cancel').hide();
   };
-
 
   HistoryMedicationsController.prototype.updateRowRouteOptions = function($row)
   {
