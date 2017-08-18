@@ -99,6 +99,14 @@ class HistoryMedicationsEntry extends \BaseElement
         }
     }
 
+    public function afterValidate()
+    {
+        if (!$this->medication_name && !$this->medication_drug_id && !$this->drug_id) {
+            $this->addError('medication_name', 'A drug must be provided.');
+        }
+        parent::afterValidate();
+    }
+
     /**
      * @return string
      */

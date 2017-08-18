@@ -42,13 +42,14 @@ $frequency_options = CHtml::listData($element->getFrequencyOptions(), 'id', 'nam
         $row_count = 0;
         foreach ($element->entries as $entry) {
             $this->render(
-                'HistoryRisksEntry_event_edit',
+                'HistoryMedicationsEntry_event_edit',
                 array(
                     'entry' => $entry,
                     'form' => $form,
                     'model_name' => $model_name,
                     'field_prefix' => $model_name . '[entries][' . $row_count . ']',
                     'row_count' => $row_count,
+                    'removable' => true,
                     'route_options' => $route_options,
                     'frequency_options' => $frequency_options
                 )

@@ -53,15 +53,14 @@ class HistoryMedications extends \BaseEventElementWidget
         if (array_key_exists('entries', $data)) {
             $entries = array();
             foreach ($data['entries'] as $entry_data) {
-                $id = $entry_data['id'];
+                $id = array_key_exists('id', $entry_data) ? $entry_data['id'] : null;
                 $entry = ($id && array_key_exists($id, $entries_by_id)) ?
                     $entries_by_id[$id] :
                     new HistoryMedicationsEntry();
-
-                $entry->risk_id = $entry_data['risk_id'];
-                $entry->has_risk = array_key_exists('has_risk', $entry_data) ? $entry_data['has_risk'] : null;
-                $entry->other = $entry_data['other'];
-                $entry->comments = $entry_data['comments'];
+                foreach (array('start_date', 'end_date', 'drug_id', 'medication_drug_id', 'medication_name', 'dose',
+                             'frequency', 'route_id', 'option_id', 'stop_reason_id') as $k) {
+                    $entry->{$k} = array_key_exists($k, $entry_data) ? $entry_data[$k] : null;
+                }
                 $entries[] = $entry;
             }
             $element->entries = $entries;

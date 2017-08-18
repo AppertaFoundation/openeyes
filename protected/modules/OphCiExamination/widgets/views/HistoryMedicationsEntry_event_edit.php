@@ -36,6 +36,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 
 <tr data-key="<?=$row_count?>">
     <td>
+        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
         <fieldset class="row field-row fuzzy-date">
             <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" />
             <div class="large-2 column">
@@ -64,14 +65,15 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         <input type="hidden" name="<?= $field_prefix ?>[drug_id]" value="<?= $entry->drug_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_drug_id]" value="<?= $entry->medication_drug_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->medication_name ?>" />
+        <?php $hide_search = strlen($entry->getMedicationDisplay()) > 0; ?>
         <?= $this->getFirm() ?
         CHtml::dropDownList(
             $field_prefix . '[drug_select]',
             '',
             Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID()),
-            array('empty' => '- Select -')
+            ($hide_search ? array('empty' => '- Select -', 'style' => 'display: none;') : array('empty' => '- Select -'))
         ) : ''; ?>
-        <input type="text" name="<?= $field_prefix ?>[medication_search]" class="search" placeholder="Type to search" />
+        <input type="text" name="<?= $field_prefix ?>[medication_search]" value="<?= $entry->getMedicationDisplay() ?>" class="search" placeholder="Type to search" <?= $hide_search ? 'style="display: none;"': '' ?>/>
     </td>
     <td>
         <div class="row">

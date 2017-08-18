@@ -55,6 +55,7 @@ class HistoryMedications extends \BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('event_id, entries', 'safe'),
+            array('entries', 'required', 'message' => 'At least one medication must be recorded.')
         );
     }
 

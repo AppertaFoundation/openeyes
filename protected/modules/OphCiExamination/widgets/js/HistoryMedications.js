@@ -105,7 +105,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           var date = controller.dateFromFuzzyFieldSet($fuzzyFieldset);
           $fuzzyFieldset.find('input[type="hidden"]').val(date);
       });
-      controller.resetSearchRow($row, true);
+
+      if (!$row.find(controller.options.medicationNameSelector).text().length) {
+        controller.resetSearchRow($row, true);
+      }
   };
 
   HistoryMedicationsController.prototype.initialiseSearch = function($el)
@@ -142,7 +145,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.getItemDisplayValue = function(item)
   {
       if (item.type == 't') {
-          return ui.item.label.replace(this.options.searchAsTypedPrefix, '');
+          return item.label.replace(this.options.searchAsTypedPrefix, '');
       }
       return item.label;
   };
@@ -155,7 +158,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     this.selectMedication($container, ui.item);
     // set the search text box to the full value chosen
-    $el.val(displayText);
+    $el.val(this.getItemDisplayValue(ui.item));
   };
 
   HistoryMedicationsController.prototype.selectMedication = function($container, item)
