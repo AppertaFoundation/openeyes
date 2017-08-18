@@ -994,7 +994,7 @@ class DefaultController extends BaseEventTypeController
             $element->anaesthetist_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetist')->where('name=:name', array(':name' => 'Anaesthetist'))->queryScalar();
         }
 
-        $anaesthetic_NoA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'NoA'))->queryScalar();
+        $anaesthetic_NoA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('code=:code', array(':code' => 'NoA'))->queryScalar();
         if( count($element->anaesthetic_type_assignments) == 1 && $element->anaesthetic_type_assignments[0]->anaesthetic_type_id == $anaesthetic_NoA_id){
             $data['AnaestheticDelivery'] = array();
             $element->anaesthetist_id = null;

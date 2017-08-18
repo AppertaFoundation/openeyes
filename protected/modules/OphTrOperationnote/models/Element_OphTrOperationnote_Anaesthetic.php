@@ -81,7 +81,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         // will receive user inputs.
         return array(
             array('event_id, anaesthetist_id, anaesthetic_comment, anaesthetic_witness_id', 'safe'),
-            array('anaesthetist_id', 'validateAnaesthetic'),
+            // to not to implement the validation logic 2 times the anaesthetist_id is validated in afterValidate method
 
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -132,22 +132,6 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
             'anaesthetist_id' => 'Given by',
             'anaesthetic_comment' => 'Comments',
         );
-    }
-
-    public function validateAnaesthetic($attribute, $params)
-    {
-
-        $anaesthetics = Yii::app()->request->getPost('Element_OphTrOperationnote_Anaesthetic');
-        $anaesthetic_types = Yii::app()->request->getPost('AnaestheticType', array());
-
-        if( count($anaesthetic_types) > 1 || (count($anaesthetic_types) == 1 &&  !in_array($anaesthetic_types[0], array($this->anaesthetic_types['GA']->id, $this->anaesthetic_types['NoA']->id)))  ){
-            if ($attribute == 'anaesthetist_id' && empty($anaesthetics['anaesthetist_id'])) {
-                $this->addError('anaesthetist_id', 'Anaesthetic Given by cannot be blank');
-            }
-        } else if( count($anaesthetic_types) == 1 && $anaesthetic_types[0] == $this->anaesthetic_types['NoA']->id) {
-
-            $this->anaesthetist_id = null;
-        }
     }
 
     /**
@@ -479,7 +463,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
             }
 
             if($this->anaesthetist_id == null){
-                $this->addError('anaesthetist_id', '"Given by" cannot be empty.');
+                $this->addError('anaesthetist_id', 'Given by cannot be empty.');
             }
         }
 
