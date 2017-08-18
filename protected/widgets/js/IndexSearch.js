@@ -17,49 +17,47 @@ var last_search_pos;
     let $results = $("#results");
     let $parent = $results.parent();
     this.keyup(function() {
+      //temporarily detaches div from DOM to reduce unnecessary rendering
       $results.detach();
       search_term = ($(this).val() + "").toLowerCase();
+      let last_level,$this,$element,highlighted_string;
       for (let selector of opts.selectors) {
-        const last_level = opts.selectors[0] == selector;
+        //determines whether the index selecor is for the last level i.e  the index has no children
+        last_level = opts.selectors[0] == selector;
         $results.find(selector).each(function() {
-          let $this = $(this);
-          let $element = get_element($this);
-          const allias = $this.data("allias").toLowerCase();
-          if (allias.indexOf(search_term) == -1) {
-            $this.html($this.text());
+          $this = $(this);
+          $element = get_element($this);
+          allias = $this.data("allias").toLowerCase();
+          if (allias.indexOf(search_term) == -1) { //no matches
+            $this.html($this.text()); //removes highlighted text
             if (!last_level && $element.children().find("li[style!='display: none;']").length != 0) {
-              $element.show();
+              $element.show(); //has visible children index so should be visible to maintain tree structure
             } else {
-              $element.hide();
+              $element.hide(); //has no visible children so hide
             }
-          } else {
-            const highlighted_string = replace_matched_string($this.text(), search_term);
+          } else { //match found
+            highlighted_string = replace_matched_string($this.text(), search_term);
             $this.html(highlighted_string);
             $element.show();
-            if (!last_level) {
-              if (show_children == true) {
-                $element.children().find("li[style='display: none;']").show();
+            if (!last_level) { //does it have children?
+              if (show_children == true) { //is the toggle show children on?
+                $element.children().find("li[style='display: none;']").show(); //show index descendents
               }
             }
           }
         });
       }
-      $results.find("li[style!='display: none;']").find('.allias').each(function(){
-        let $this = $(this);
-        const highlighted_alliases = replace_matched_string($this.text(), search_term);
-        $this.html(highlighted_alliases);
-      });
-      $parent.append($results);
+      $parent.append($results); //reattaches the result to the DOM to be rendered
     });
     return this;
   };
   $.fn.search.defaults = {
     selectors: [".lvl3", ".lvl2", ".lvl1"], //order of selection
-    ancestor_to_change: 2,
-    matched_string_tag: ["<em class='search_highlight'>", "</em>"]
+    ancestor_to_change: 2, //how many times parent() need to be used to get from text to block
+    matched_string_tag: ["<em class='search_highlight'>", "</em>"] //surround matched text with
   };
 
-  function replace_matched_string(old_string, search_term) {
+  function replace_matched_string(old_string, search_term) { //highlights text with matched_string_tag in opts
     if (search_term === undefined || search_term === "" || old_string.toLowerCase().indexOf(search_term.toLowerCase()) == -1) {
       return old_string;
     }
@@ -75,10 +73,12 @@ var last_search_pos;
     return new_string;
   }
 
-  function get_element($this) {
+  function get_element($this) { //gets to element from the text
     for (let i = 0; i < opts.ancestor_to_change; i++) {
       $this = $this.parent();
     }
+
+    //allows widget to be chainable
     return $this;
   }
 }(jQuery));
