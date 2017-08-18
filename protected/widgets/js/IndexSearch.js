@@ -121,6 +121,7 @@ $(document).ready(function(){
   });
 
   $('.result_item, .result_item_with_icon').click(function(event){
+    $('#is_loading').show();
     //Index has been clicked
     event.stopPropagation();
     hide_results();
@@ -128,6 +129,7 @@ $(document).ready(function(){
   });
 
   $('body').append('<div id="dim_rest" class="ui-widget-overlay" style="display : none; width: 1280px; height: 835px; z-index: 180;"></div>');
+  $('body').append("<div id=\"is_loading\"style=\"display : none; position: fixed; background-color: black; width: 100%; height: 1000px; z-index: 1000; opacity: 0.8; top:0px; \"><img src=\"https://itopia.com/wp-content/themes/itopia/img-cloud/loader.gif\" style=\" position: fixed; z-index: 1000; height: 64px; width: 64px; top: 33%; left: 50%;\"></div>");
   $('#description_toggle').change(function(){
     if (this.checked) {
       $('.description_icon,.description_note').show();
@@ -221,10 +223,11 @@ function show_results(){
     parameters["element_id"] = $this.data('elementId');
     parameters["doodle_name"] = $this.data('doodleClassName');
     parameters["property_name"] = $this.data('property');
-    //can revese order have different lenghth chains etc
+    //can revese order have different length chains etc
     //Chains can be made conditional based on content of parameters
     //Guarantees funcion execution order (even for asyncrounous functions)
     click_element(parameters).then(result => click_doodle(result)).then(result => click_property(result)).catch(() => {
+      $('#is_loading').hide();
       return;
     });
   }

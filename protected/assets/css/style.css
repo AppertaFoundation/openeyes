@@ -8321,12 +8321,12 @@ input:checked + .slider:before {
 }
 #search_bars_and_options {
   padding-top: 5px;
-  margin-left: 4px;
+  margin-left: 17px;
   display: inline-block;
 }
 #search_options_container {
   display: inline-block;
-  width: 338px;
+  width: 306px;
   vertical-align: top;
   text-align: center;
 }
