@@ -36,13 +36,15 @@
 
 ul.comma-list {
 	display: inline;
+	margin-left: 0px;
 	li {
+		white-space: nowrap;
 		margin-left: 5px;
 		margin-right: 0px;
 		display: inline;
 		list-style: none;
 		&:after {
-			content: ", ";
+			content: " //";
 		}
 		&:last-child:after {
 			content: "";

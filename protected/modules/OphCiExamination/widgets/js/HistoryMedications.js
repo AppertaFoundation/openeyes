@@ -179,7 +179,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       if (item.type == 't') {
           $container.find(this.options.asTypedFieldSelector).val(item.value);
       }
-      if (item.type == 'd') {
+      else if (item.type == 'd') {
           $container.find(this.options.drugFieldSelector).val(item.value);
       } else {
           $container.find(this.options.medicationFieldSelector).val(item.value);
@@ -297,14 +297,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   function HistoryMedicationsViewController(options) {
     this.options = $.extend(true, {}, HistoryMedicationsViewController._defaultOptions, options);
     this.$element = this.options.element;
-    console.log('yo!');
     this.initialiseTriggers();
   }
 
   HistoryMedicationsViewController._defaultOptions = {
     modelName: 'OEModule_OphCiExamination_models_HistoryMedications',
     element: undefined,
-    detailToggleSelector: '.detail-toggle'
+    detailToggleSelector: '.detail-toggle',
+    kindToggleSelector: '.kind-toggle'
   };
 
   HistoryMedicationsViewController.prototype.initialiseTriggers = function()
@@ -314,10 +314,22 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     controller.$element.on('click', controller.options.detailToggleSelector, function(e) {
       e.preventDefault();
       var $dataDisplay = controller.$element.find('.' + $(this).data('kind'));
-      console.log($dataDisplay);
       $dataDisplay.find('.detail').toggle();
       $dataDisplay.find('.simple').toggle();
       $(this).find('.fa').toggleClass('fa-expand fa-compress');
+    });
+
+    controller.$element.on('click', controller.options.kindToggleSelector, function(e) {
+        e.preventDefault();
+        var $kindDisplay = controller.$element.find('.' + $(this).data('kind') + '-kind');
+        $kindDisplay.toggle();
+        if ($kindDisplay.is(':visible')) {
+            // hide the show toggle
+            controller.$element.find(controller.options.kindToggleSelector + '.show').hide();
+        } else {
+            controller.$element.find(controller.options.kindToggleSelector + '.show').show();
+        }
+
     });
   };
 

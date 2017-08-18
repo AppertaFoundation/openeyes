@@ -19,21 +19,42 @@
 <?php $el_id =  CHtml::modelName($element) . '_element'; ?>
 
 <div class="element-data" id="<?=$el_id?>">
-  <div class="row">
-    <div class="large-1 column">
-      <label style="white-space: nowrap;">Current: <a href="#" class="detail-toggle" data-kind="current"><i class="fa fa-icon fa-expand" aria-hidden="true"></i></a></label>
+  <div class="row current-kind">
+    <div class="large-2 column">
+      <label style="white-space: nowrap;">Current:
+          <a href="#" class="detail-toggle" data-kind="current"><i class="fa fa-icon fa-expand" aria-hidden="true"></i></a>
+          <a href="#" class="kind-toggle show" data-kind="stopped"><i class="fa fa-icon fa-history" aria-hidden="true"></i></a></label>
     </div>
-    <div class="large-11 column end">
+    <div class="large-10 column end">
         <div class="data-value current">
             <ul class="comma-list">
                 <?php foreach ($element->currentOrderedEntries as $entry) { ?>
-                  <li><span class="simple"><?= $entry->getMedicationDisplay() ?></span><span class="detail" style="display: none;"><?= $entry ?></span></li>
+                  <li><span class="simple"><?= $entry->getMedicationDisplay() ?></span>
+                      <span class="detail" style="display: none;"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
                 <?php } ?>
             </ul>
 
         </div>
     </div>
   </div>
+    <div class="row stopped-kind" style="display: none;">
+        <div class="large-2 column">
+            <label style="white-space: nowrap;">Stopped: <a href="#" class="detail-toggle" data-kind="stopped"><i class="fa fa-icon fa-expand" aria-hidden="true"></i></a>
+                <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a>
+            </label>
+        </div>
+        <div class="large-10 column end">
+            <div class="data-value stopped">
+                <ul class="comma-list">
+                    <?php foreach ($element->stoppedOrderedEntries as $entry) { ?>
+                        <li><span class="simple"><?= $entry->getMedicationDisplay() ?></span>
+                            <span class="detail" style="display: none;"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
+                    <?php } ?>
+                </ul>
+
+            </div>
+        </div>
+    </div>
 </div>
 <script type="text/javascript">
   $(document).ready(function() {
