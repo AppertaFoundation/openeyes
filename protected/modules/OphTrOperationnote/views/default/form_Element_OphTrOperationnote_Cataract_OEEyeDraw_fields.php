@@ -28,11 +28,11 @@
     array('empty' => '- Please select -', 'textAttribute' => 'data-value'), false, array('field' => 4)) ?>
 <?php echo $form->textArea($element, 'report', array(), false, array('rows' => 6)) ?>
 <?php
-    if(isset(Yii::app()->modules["OphTrOperationnote"])){
-        echo $form->dropDownList($element, 'iol_type_id', array(CHtml::listData(OphInBiometry_LensType_Lens::model()->findAll(array(
+    if(isset(Yii::app()->modules["OphInBiometry"])){
+        echo $form->dropDownList($element, 'iol_type_id', CHtml::listData(OphInBiometry_LensType_Lens::model()->findAll(array(
             'condition' => ($element->iol_type_id > 0)?'active=1 or id='.$element->iol_type_id:'active=1',
             'order' => 'name',
-        )), 'id', 'name')),
+        )), 'id', 'name'),
             array('empty' => '- Please select -'), $element->iol_hidden, array('field' => 4));
     }else {
         echo $form->dropDownList($element, 'iol_type_id', array(
