@@ -24,6 +24,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.$element = this.options.element;
     this.$table = this.$element.find('table');
     this.templateText = this.$element.find('.entry-template').text();
+    this.hideStopped();
     this.initialiseTriggers();
   }
 
@@ -54,18 +55,31 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
     var controller = this;
 
+    // removal button for table entries
     controller.$table.on('click', '.button.remove', function(e) {
       e.preventDefault();
       $(e.target).parents('tr').remove();
     });
 
+    // setup current table row behaviours
     controller.$table.find('tbody tr').each(function() {
       controller.initialiseRow($(this));
     });
 
+    // adding entries
     controller.$element.on('click', controller.options.addButtonSelector, function(e) {
       e.preventDefault();
       controller.addEntry();
+    });
+
+    controller.$element.on('click', '.show-stopped', function(e) {
+        e.preventDefault();
+        controller.showStopped();
+    });
+
+    controller.$element.on('click', '.hide-stopped', function(e) {
+        e.preventDefault();
+        controller.hideStopped();
     });
   };
 
@@ -287,6 +301,20 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         res += '-' + ((day < 10) ? '0' + day.toString() : day.toString());
 
         return res;
+    };
+
+    HistoryMedicationsController.prototype.showStopped = function()
+    {
+        this.$table.find('tr.originally-stopped').show();
+        this.$element.find('.show-stopped').hide();
+        this.$element.find('.hide-stopped').show();
+    };
+
+    HistoryMedicationsController.prototype.hideStopped = function()
+    {
+        this.$table.find('tr.originally-stopped').hide();
+        this.$element.find('.show-stopped').show();
+        this.$element.find('.hide-stopped').hide();
     };
 
 

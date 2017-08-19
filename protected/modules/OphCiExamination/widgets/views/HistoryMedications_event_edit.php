@@ -28,7 +28,7 @@ $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', '
 <div class="element-fields" id="<?= $model_name ?>_element">
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-
+    <button class="button small show-stopped">show stopped</button> <button class="button small hide-stopped" style="display:none;">hide stopped</button>
     <table id="<?= $model_name ?>_entry_table">
         <thead>
         <tr>

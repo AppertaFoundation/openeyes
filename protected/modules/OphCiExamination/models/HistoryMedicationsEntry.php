@@ -39,6 +39,11 @@ namespace OEModule\OphCiExamination\models;
 class HistoryMedicationsEntry extends \BaseElement
 {
     /**
+     * @var bool Tracking variable used when creating/editing entries
+     */
+    public $originallyStopped = false;
+
+    /**
      * Returns the static model of the specified AR class.
      *
      * @return static
@@ -91,6 +96,29 @@ class HistoryMedicationsEntry extends \BaseElement
             'stop_reason' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\HistoryMedicationsStopReason', 'stop_reason_id'),
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
         );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function afterFind()
+    {
+        parent::afterFind();
+        if ($this->end_date !== null) {
+            $this->originallyStopped = true;
+        }
+    }
+
+    /**
+     * @param static $element
+     * @inheritdoc
+     */
+    public function loadFromExisting($element)
+    {
+        parent::loadFromExisting($element);
+        if ($this->end_date !== null) {
+            $this->originallyStopped = true;
+        }
     }
 
     public function validateOptionId()

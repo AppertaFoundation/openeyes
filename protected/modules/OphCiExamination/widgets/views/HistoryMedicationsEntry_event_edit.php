@@ -34,9 +34,10 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 }
 ?>
 
-<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row">
+<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?>">
     <td>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?=$entry->originallyStopped ?>" />
         <fieldset class="row field-row fuzzy-date">
             <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" />
             <div class="large-1 column text-right">
