@@ -2104,6 +2104,7 @@ class Patient extends BaseActiveRecordVersioned
     /**
      * Returns a summarised array of patient medications
      * @return array
+     * @deprecated since 2.0
      */
     public function getMedicationsSummary()
     {

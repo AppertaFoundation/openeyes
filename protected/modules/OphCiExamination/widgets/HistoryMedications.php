@@ -104,12 +104,14 @@ class HistoryMedications extends \BaseEventElementWidget
      */
     public function popupList()
     {
-        $res = array_map(
-            function ($entry) {
-                return array_key_exists('object', $entry) ?
-                    (string) $entry['object'] :
-                    $this->formatExternalEntry($entry);
-            }, $this->getMergedEntries());
-        return implode($this->popupListSeparator, $res);
+        return $this->render($this->getView(), $this->getViewData());
+    }
+
+    protected function getView()
+    {
+        if ($this->mode === static::$PATIENT_POPUP_MODE) {
+            return substr(strrchr(get_class($this), '\\'),1) . '_patient_popup';
+        }
+        return parent::getView();
     }
 }

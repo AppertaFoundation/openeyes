@@ -126,16 +126,11 @@
                 </div>
               </div>
             <?php } ?>
-            <?php if ($this->medications) { ?>
-              <div class="row">
-                <div class="large-3 column label">
-                  Medication
-                </div>
-                <div class="large-9 column data">
-                    <?php echo $this->medications; ?>
-                </div>
-              </div>
-            <?php } ?>
+            <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
+                'patient' => $this->patient,
+                'mode' => BaseEventElementWidget::$PATIENT_POPUP_MODE
+            )); ?>
+
         </div>
     </div>
 </div>

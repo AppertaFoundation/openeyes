@@ -14,7 +14,32 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+$model_name = CHtml::modelName($element);
 ?>
 
-
-TBD
+<?php if (!$element) { ?>
+    <p>No medications recorded.</p>
+<?php } else { ?>
+    <table class="plain patient-data" id="<?= $model_name ?>_entry_table">
+        <thead>
+        <tr>
+            <th>Current Medications</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        foreach ($element->currentOrderedEntries as $entry) { ?>
+            <tr><td><?=$entry?></td></tr>
+        <?php }
+        ?>
+        <tr>
+            <th>Stopped Medications</th>
+        </tr>
+        <?php
+        foreach ($element->stoppedOrderedEntries as $entry) { ?>
+            <tr><td><?=$entry?></td></tr>
+        <?php }
+        ?>
+        </tbody>
+    </table>
+<?php } ?>
