@@ -53,7 +53,6 @@ class HistoryMedications extends \BaseEventElementWidget
         if (array_key_exists('entries', $data)) {
             $entries = array();
             foreach ($data['entries'] as $entry_data) {
-                \OELog::log(print_r($entry_data, true));
                 $id = array_key_exists('id', $entry_data) ? $entry_data['id'] : null;
                 $entry = ($id && array_key_exists($id, $entries_by_id)) ?
                     $entries_by_id[$id] :
