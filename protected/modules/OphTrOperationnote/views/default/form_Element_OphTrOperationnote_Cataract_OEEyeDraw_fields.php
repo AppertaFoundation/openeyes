@@ -31,8 +31,8 @@
     if(isset(Yii::app()->modules["OphInBiometry"])){
         echo $form->dropDownList($element, 'iol_type_id', CHtml::listData(OphInBiometry_LensType_Lens::model()->findAll(array(
             'condition' => ($element->iol_type_id > 0)?'active=1 or id='.$element->iol_type_id:'active=1',
-            'order' => 'name',
-        )), 'id', 'name'),
+            'order' => 'display_name',
+        )), 'id', 'display_name'),
             array('empty' => '- Please select -'), $element->iol_hidden, array('field' => 4));
     }else {
         echo $form->dropDownList($element, 'iol_type_id', array(
@@ -71,11 +71,11 @@
 
 <?php echo $form->dropDownList($element, 'iol_position_id', 'OphTrOperationnote_IOLPosition',
     array(
-        'empty' => '- Please select -', 
+        'empty' => '- Please select -',
         'options'=>array(
             8=>array('disabled'=>'disabled'),
         )
-    ), 
+    ),
     $element->iol_hidden, array('field' => 4)
     ) ?>
 <?php echo $form->multiSelectList($element, 'OphTrOperationnote_CataractOperativeDevices', 'operative_devices', 'id',
