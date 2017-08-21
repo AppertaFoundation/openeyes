@@ -42,20 +42,34 @@ $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', '
         <?php
         $row_count = 0;
         foreach ($element->entries as $entry) {
-            $this->render(
-                'HistoryMedicationsEntry_event_edit',
-                array(
-                    'entry' => $entry,
-                    'form' => $form,
-                    'model_name' => $model_name,
-                    'field_prefix' => $model_name . '[entries][' . $row_count . ']',
-                    'row_count' => $row_count,
-                    'removable' => true,
-                    'route_options' => $route_options,
-                    'frequency_options' => $frequency_options,
-                    'stop_reason_options' => $stop_reason_options
-                )
-            );
+            if ($entry->prescription_item) {
+                $this->render(
+                    'HistoryMedicationsEntry_prescription_event_edit',
+                    array(
+                        'entry' => $entry,
+                        'form' => $form,
+                        'model_name' => $model_name,
+                        'field_prefix' => $model_name . '[entries][' . $row_count . ']',
+                        'row_count' => $row_count,
+                        'stop_reason_options' => $stop_reason_options
+                    )
+                );
+            } else {
+                $this->render(
+                    'HistoryMedicationsEntry_event_edit',
+                    array(
+                        'entry' => $entry,
+                        'form' => $form,
+                        'model_name' => $model_name,
+                        'field_prefix' => $model_name . '[entries][' . $row_count . ']',
+                        'row_count' => $row_count,
+                        'removable' => true,
+                        'route_options' => $route_options,
+                        'frequency_options' => $frequency_options,
+                        'stop_reason_options' => $stop_reason_options
+                    )
+                );
+            }
             $row_count++;
         }
         ?>

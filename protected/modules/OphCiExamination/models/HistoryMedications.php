@@ -121,7 +121,7 @@ class HistoryMedications extends \BaseEventTypeElement
     public function getTrackedPrescriptionItems()
     {
         return array_filter($this->entries, function($entry) {
-            return $entry->prescription_item_id === null;
+            return $entry->prescription_item_id !== null;
         });
     }
 

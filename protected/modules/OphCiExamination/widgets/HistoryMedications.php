@@ -50,12 +50,16 @@ class HistoryMedications extends \BaseEventElementWidget
                 function($item) { return $item->id; },
                 $this->element->getTrackedPrescriptionItems()
             );
-            $untracked_prescription_items = $api->getPrescriptionItemsForPatient(
-                $this->patient, $tracked_prescr_item_ids);
-            foreach ($untracked_prescription_items as $item) {
-                $entry = new HistoryMedicationsEntry();
-                $entry->loadFromPrescriptionItem($item);
-                $this->element->entries[] = $entry;
+            if ($untracked_prescription_items = $api->getPrescriptionItemsForPatient(
+                $this->patient, $tracked_prescr_item_ids)
+            ) {
+                $entries = $this->element->entries;
+                foreach ($untracked_prescription_items as $item) {
+                    $entry = new HistoryMedicationsEntry();
+                    $entry->loadFromPrescriptionItem($item);
+                    $entries[] = $entry;
+                }
+                $this->element->entries = $entries;
             }
         }
 

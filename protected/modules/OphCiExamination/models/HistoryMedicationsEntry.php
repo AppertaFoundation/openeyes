@@ -125,8 +125,6 @@ class HistoryMedicationsEntry extends \BaseElement
             throw new \CException('Cannot initialise entry with prescription item when no item set on ' . static::class);
         };
 
-        $end_date = $item->stopDateFromDuration();
-
         $this->drug_id = $item->drug_id;
         $this->drug = $item->drug;
         $this->route_id = $item->route_id;
@@ -137,7 +135,13 @@ class HistoryMedicationsEntry extends \BaseElement
         $this->frequency_id = $item->frequency_id;
         $this->frequency = $item->frequency;
         $this->start_date = $item->prescription->event->event_date;
-        if ($end_date) {
+        $end_date = $item->stopDateFromDuration();
+        $compare_date = new \DateTime();
+
+        if ($this->element && $this->element->event && $this->element->event->event_date) {
+            $compare_date = \DateTime::createFromFormat('Y-m-d', $this->element->event->event_date);
+        }
+        if ($end_date && $end_date < $compare_date) {
             $this->end_date = $end_date->format('Y-m-d');
         }
 
