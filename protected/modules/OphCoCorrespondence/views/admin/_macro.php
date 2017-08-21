@@ -84,7 +84,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
                         <td>Action</td>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="sortable ui-sortable">
                 <?php
                     $row_count = 0;
                     if(isset($associated_content)){
@@ -124,8 +124,8 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
                         'model_init_method' => $init_method,
                         'model_associated_content' => $associated_content,
                         'model_init_method' => $init_method,
-                        'prefix_init_method' => $model_init_method.'[' . ($row_count) . ']',
-                        'prefix_associated' => $model_associated_content.'[' . ($row_count) . ']',
+                        'prefix_init_method' => $model_init_method.'[{{row_count}}]',
+                        'prefix_associated' => $model_associated_content.'[{{row_count}}]',
                         'row_count' => '{{row_count}}',
                         'values' => array(
                             'id' => '',

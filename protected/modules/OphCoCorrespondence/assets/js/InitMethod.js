@@ -41,7 +41,7 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
 
         this.$table.on('click', 'button.remove', function(e) {
             e.preventDefault();
-            $(this).closest('tr').remove();
+            controller.setErasableRow( $(this).closest('tr') );
         });
 
         this.$table.on('change', 'select', function(e) {
@@ -59,6 +59,16 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
     {
         this.$table.find('tbody').append(this.createRow());
     };
+
+    InitMethodController.prototype.setErasableRow = function( row )
+    {
+        var controller = this;
+        var row_id = (OpenEyes.Util.getNextDataKey( row, 'key')) - 1;
+        erase_row = '<input type="hidden" name="delete_associated['+row_id+'][delete]" value="'+ $('#' + controller.options.assocModelName + '_'+ row_id +'_id').val() +'" />';
+        this.$table.find('tbody').append( erase_row  );
+
+        row.remove();
+    }
 
     /**
      *

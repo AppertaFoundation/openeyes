@@ -152,11 +152,12 @@ class AdminController extends \ModuleAdminController
         if (!$macro = LetterMacro::model()->findByPk($id)) {
             throw new Exception("LetterMacro not found: $id");
         }
+
         $init_method = new OphcorrespondenceInitMethod();
 
         $criteria = new \CDbCriteria();
         $criteria->addCondition('macro_id = '.$id);
-        $associated_content = MacroInitAssociatedContent::model()->findAll($criteria);
+        $associated_content_saved = MacroInitAssociatedContent::model()->findAll($criteria);
 
         $errors = array();
 
@@ -171,25 +172,48 @@ class AdminController extends \ModuleAdminController
                     throw new Exception('Unable to save macro: '.print_r($macro->errors, true));
                 } else {
 
-                    $post_associated_content = $_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent'];
-                    $post_init_method = $_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod'];
+                    if(isset($_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent']) && isset($_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod']) ){
 
-                    foreach($post_associated_content as $key => $pac){
+                        $post_associated_content = $_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent'];
+                        $post_init_method = $_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod'];
 
-                        $associated_content = new MacroInitAssociatedContent();
+                        foreach($post_associated_content as $key => $pac){
 
-                        $associated_content->macro_id = $id;
-                        $associated_content->is_system_hidden = ($pac["is_system_hidden"] ? 1 : 0);
-                        $associated_content->is_print_appended = ($pac["is_print_appended"] ? 1 : 0);
-                        $associated_content->init_method = $post_init_method[$key]["short_code"];
-                        $associated_content->init_method_id = $post_init_method[$key]["method_id"];
-                        $associated_content->short_code = $post_init_method[$key]["short_code"];
-                        $associated_content->display_order = $key;
-                        $associated_content->display_title = $post_init_method[$key]["title"];
-                        $associated_content->save();
+                            if(isset($pac['id']) && ($pac['id'] > 0)){
+                                $criteria = new \CDbCriteria();
+                                $criteria->addCondition('id = '.$pac['id']);
+                                $criteria->addCondition('macro_id = '.$id);
+                                $associated_content = MacroInitAssociatedContent::model()->find($criteria);
+                                
+                                $method = 'update';
+                            } else {
+                                $associated_content = new MacroInitAssociatedContent();
+                                $method = 'save';
+                            }
+
+                            $associated_content->macro_id           = $id;
+                            $associated_content->is_system_hidden   = ( isset( $pac["is_system_hidden"] ) ? 1 : 0);
+                            $associated_content->is_print_appended  = ( isset( $pac["is_print_appended"] ) ? 1 : 0);
+                            $associated_content->init_method        = $post_init_method[$key]["short_code"];
+                            $associated_content->init_method_id     = $post_init_method[$key]["method_id"];
+                            $associated_content->short_code         = $post_init_method[$key]["short_code"];
+                            $associated_content->display_order      = $key;
+                            $associated_content->display_title      = $post_init_method[$key]["title"];
+
+                            $associated_content->{$method}();
+                        }
                     }
 
-
+                    if(isset($_POST['delete_associated'])){
+                        foreach($_POST['delete_associated'] as $key => $da){
+                            if($da['delete'] > 0){
+                                $criteria = new \CDbCriteria();
+                                $criteria->addCondition('id = '.$da['delete']);
+                                $criteria->addCondition('macro_id = '.$id);
+                                MacroInitAssociatedContent::model()->deleteAll($criteria);
+                            }
+                        }
+                    }
 
                 }
 
@@ -204,7 +228,7 @@ class AdminController extends \ModuleAdminController
         $this->render('_macro', array(
             'macro' => $macro,
             'init_method' => $init_method,
-            'associated_content' => $associated_content,
+            'associated_content' => $associated_content_saved,
             'errors' => $errors,
         ));
     }
