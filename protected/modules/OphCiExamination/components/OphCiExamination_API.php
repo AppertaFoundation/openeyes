@@ -857,15 +857,16 @@ class OphCiExamination_API extends \BaseAPI
      * Get the latest VA for Principal eye form examination event, if the VA is not recorded, take the value from the latest available event within a period of 3 weeks.
      *
      * @param $patient
+     * @param $use_context
      * @return string - 6/24 (at 7 Jun 2017)
      */
-    public function getLetterVisualAcuityPrincipalLast3weeks($patient)
+    public function getLetterVisualAcuityPrincipalLast3weeks($patient, $use_context = true)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             if ($episode->eye) {
                 $method = 'getLetterVisualAcuity' . $episode->eye->name . 'Last3weeks';
 
-                return $this->{$method}($patient);
+                return $this->{$method}($patient, $use_context);
             }
         }
     }
