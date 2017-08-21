@@ -74,9 +74,10 @@ class FormularyDrugsController extends BaseAdminController
                 {
                     // Combined fields
                     $crit2 = new CDbCriteria();
+
                     foreach (explode(', ', $field) as $column)
                     {
-                        $crit2->compare($column, $_GET['search'][$field], true, 'OR');
+                        $crit2->compare('LOWER('.$column.')', strtolower($_GET['search'][$field]), true, 'OR');
                     }
 
                     $criteria->mergeWith($crit2, 'AND');
