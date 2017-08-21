@@ -497,7 +497,8 @@ class DefaultController extends BaseEventTypeController
                          'dose',
                          'route_option_id',
                          'route_id',
-                         'continue_by_gp',
+                         'dispense_condition_id',
+                         'dispense_location_id'
                      ) as $field) {
                 $item->$field = $source->$field;
             }

@@ -25,7 +25,7 @@
         <th>Route</th>
         <th>Frequency</th>
         <th>Duration</th>
-        <th>Continue by GP</th>
+        <th>Dispense Condition/Location</th>
     </tr>
     </thead>
     <tbody>
@@ -43,7 +43,7 @@
             </td>
             <td><?php echo $item->frequency->name ?></td>
             <td><?php echo $item->duration->name ?></td>
-            <td><?php echo ($item->continue_by_gp) ? 'Yes' : 'No'; ?></td>
+            <td><?php echo $item->dispense_condition->name." / ".$item->dispense_location->name ?></td>
         </tr>
         <?php foreach ($item->tapers as $taper) { ?>
             <tr class="prescription-tapier <?php echo (($key % 2) == 0) ? 'even' : 'odd'; ?>">

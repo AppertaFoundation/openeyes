@@ -17,7 +17,17 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php $copy = $data['copy']; ?>
+<?php
+$copy = $data['copy'];
+function groupItems($items)
+{
+	foreach($items as $item)
+	{
+		$item_group[$item->dispense_condition_id][] = $item;
+	}
+	return $item_group;
+}
+?>
 
 <h1>Prescription Form</h1>
 
@@ -48,59 +58,65 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 </table>
 <div class="spacer"></div>
 
-<table class="borders prescription_items">
-	<thead>
-		<tr>
-			<th class="prescriptionLabel">Prescription details</th>
-			<th>Dose</th>
-			<th>Route</th>
-			<th>Freq.</th>
-			<th>Duration</th>
-			<th>Dispensed</th>
-			<th>Checked</th>
-			<th>Continued by GP</th>
-		</tr>
-	</thead>
-	<tbody>
-		<?php foreach ($element->items as $key => $item) {?>
-		<tr
-			class="prescriptionItem<?php if ($this->patient->hasDrugAllergy($item->drug_id)) {?> allergyWarning<?php }?>">
-			<td class="prescriptionLabel"><?php echo $item->drug->label; ?></td>
-			<td><?php echo $item->dose ?></td>
-			<td><?php echo $item->route->name ?> <?php if ($item->route_option) {
-    echo ' ('.$item->route_option->name.')';
-            }?></td>
-			<td><?php if ($data['copy'] == 'patient') { 
-					echo $item->frequency->long_name; } 
-				else { 
-					echo $item->frequency->name; 
-				}?>
-			</td>
-			<td><?php echo $item->duration->name ?></td>
-			<td></td>
-			<td></td>
-			<td><?php echo ($item->continue_by_gp) ? 'Yes' : '--'; ?></td>
-		</tr>
-		<?php foreach ($item->tapers as $taper) {?>
-		<tr class="prescriptionTaper">
-			<td class="prescriptionLabel">then</td>
-			<td><?php echo $taper->dose ?></td>
-			<td>-</td>
-			<td><?php if ($data['copy'] == 'patient') { 
-					echo $taper->frequency->long_name; 
-				} else { 
-					echo $taper->frequency->name; 
-				}?>
-			</td>
-			<td><?php echo $taper->duration->name ?></td>
-			<td>-</td>
-			<td>-</td>
-		</tr>
-		<?php	
-}
-}?>
-	</tbody>
-</table>
+		<?php
+		$items_data = groupItems($element->items);
+		foreach ($items_data as $group => $items) {?>
+			<b>
+					<?php echo OphDrPrescription_DispenseCondition::model()->findByPk($group)->name; ?>
+			</b>
+			<table class="borders prescription_items">
+			<thead>
+			<tr>
+				<th class="prescriptionLabel">Prescription details</th>
+				<th>Dose</th>
+				<th>Route</th>
+				<th>Freq.</th>
+				<th>Duration</th>
+				<th>Hospital Dispense Location</th>
+				<th>Dispensed</th>
+				<th>Checked</th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php
+			foreach ($items as $item) {
+				?>
+				<tr
+					class="prescriptionItem<?php if ($this->patient->hasDrugAllergy($item->drug_id)) { ?> allergyWarning<?php } ?>">
+					<td class="prescriptionLabel"><?php echo $item->drug->label; ?></td>
+					<td><?php echo $item->dose ?></td>
+					<td><?php echo $item->route->name ?><?php if ($item->route_option) {
+							echo ' (' . $item->route_option->name . ')';
+						} ?></td>
+					<td><?php echo $item->frequency->long_name; ?></td>
+					<td><?php echo $item->duration->name ?></td>
+					<td><?php echo $item->dispense_location->name ?></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<?php foreach ($item->tapers as $taper) { ?>
+					<tr class="prescriptionTaper">
+						<td class="prescriptionLabel">then</td>
+						<td><?php echo $taper->dose ?></td>
+						<td>-</td>
+						<td><?php if ($data['copy'] == 'patient') {
+								echo $taper->frequency->long_name;
+							} else {
+								echo $taper->frequency->name;
+							} ?>
+						</td>
+						<td><?php echo $taper->duration->name ?></td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+				}
+			}
+			?>
+			</tbody>
+		</table>
+		<?php
+		}?>
 <div class="spacer"></div>
 
 <p>Trust policy limits supply to a maximum of 4 weeks</p>
