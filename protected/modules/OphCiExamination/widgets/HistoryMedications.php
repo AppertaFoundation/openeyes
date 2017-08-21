@@ -20,6 +20,11 @@ namespace OEModule\OphCiExamination\widgets;
 use OEModule\OphCiExamination\models\HistoryMedications as HistoryMedicationsElement;
 use OEModule\OphCiExamination\models\HistoryMedicationsEntry;
 
+/**
+ * Class HistoryMedications
+ * @package OEModule\OphCiExamination\widgets
+ * @property HistoryMedicationsElement $element
+ */
 class HistoryMedications extends \BaseEventElementWidget
 {
     public static $moduleName = 'OphCiExamination';
@@ -30,6 +35,30 @@ class HistoryMedications extends \BaseEventElementWidget
     protected function getNewElement()
     {
         return new HistoryMedicationsElement();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function setElementFromDefaults()
+    {
+        parent::setElementFromDefaults();
+
+        if ($api = $this->getApp()->moduleAPI->get('OphDrPrescription')) {
+            // tracking prescription items.
+            $tracked_prescr_item_ids = array_map(
+                function($item) { return $item->id; },
+                $this->element->getTrackedPrescriptionItems()
+            );
+            $untracked_prescription_items = $api->getPrescriptionItemsForPatient(
+                $this->patient, $tracked_prescr_item_ids);
+            foreach ($untracked_prescription_items as $item) {
+                $entry = new HistoryMedicationsEntry();
+                $entry->loadFromPrescriptionItem($item);
+                $this->element->entries[] = $entry;
+            }
+        }
+
     }
 
     /**

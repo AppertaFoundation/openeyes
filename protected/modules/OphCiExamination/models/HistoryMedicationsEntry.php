@@ -26,6 +26,7 @@ namespace OEModule\OphCiExamination\models;
  * @property string $dose
  * @property date $start_date
  * @property date $end_date
+ * @property int $prescription_item_id
  *
  * relations:
  * @property HistoryMedications $element
@@ -35,6 +36,7 @@ namespace OEModule\OphCiExamination\models;
  * @property \DrugRouteOption $option
  * @property \DrugFrequency $frequency
  * @property HistoryMedicationsStopReason $stop_reason
+ * @property \OphDrPrescription_Item $prescription_item
  */
 class HistoryMedicationsEntry extends \BaseElement
 {
@@ -95,6 +97,7 @@ class HistoryMedicationsEntry extends \BaseElement
             'frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'frequency_id'),
             'stop_reason' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\HistoryMedicationsStopReason', 'stop_reason_id'),
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
+            'prescription_item' => array(self::BELONGS_TO, 'OphDrPrescription_Item', 'prescription_item_id')
         );
     }
 
@@ -107,6 +110,37 @@ class HistoryMedicationsEntry extends \BaseElement
         if ($this->end_date !== null) {
             $this->originallyStopped = true;
         }
+        if ($this->prescription_item) {
+            $this->initialiseFromPrescriptionItem();
+        }
+    }
+
+    /**
+     * To ensure that the entry always reflects the latest data from the prescription item,
+     * we set it's properties from the prescription.
+     */
+    protected function initialiseFromPrescriptionItem()
+    {
+        if (!$item = $this->prescription_item) {
+            throw new \CException('Cannot initialise entry with prescription item when no item set on ' . static::class);
+        };
+
+        $end_date = $item->stopDateFromDuration();
+
+        $this->drug_id = $item->drug_id;
+        $this->drug = $item->drug;
+        $this->route_id = $item->route_id;
+        $this->route = $item->route;
+        $this->option_id = $item->route_option_id;
+        $this->route = $item->route;
+        $this->dose = $item->dose;
+        $this->frequency_id = $item->frequency_id;
+        $this->frequency = $item->frequency;
+        $this->start_date = $item->prescription->event->event_date;
+        if ($end_date) {
+            $this->end_date = $end_date->format('Y-m-d');
+        }
+
     }
 
     /**
@@ -119,6 +153,18 @@ class HistoryMedicationsEntry extends \BaseElement
         if ($this->end_date !== null) {
             $this->originallyStopped = true;
         }
+    }
+
+    /**
+     * Expects a compatible prescription item to load data from.
+     *
+     * @param $item
+     */
+    public function loadFromPrescriptionItem($item)
+    {
+        $this->prescription_item_id = $item->id;
+        $this->prescription_item = $item;
+        $this->initialiseFromPrescriptionItem();
     }
 
     public function validateOptionId()
