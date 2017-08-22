@@ -67,6 +67,11 @@ class HistoryMedications extends \BaseEventElementWidget
         return $untracked;
     }
 
+    protected function isAtTip()
+    {
+        return parent::isAtTip() && !$this->getEntriesForUntrackedPrescriptionItems();
+    }
+
     /**
      * @inheritdoc
      */
