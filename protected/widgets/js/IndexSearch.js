@@ -1,6 +1,7 @@
 /* Global Variables */
 var show_children = true;
 var last_search_pos;
+var is_loading_timeout;
 /* End of Global varaibles */
 
 /*
@@ -123,7 +124,7 @@ $(document).ready(function(){
   $('.result_item, .result_item_with_icon').click(function(event){
     $('#is_loading').show();
     //if ajax call is very slow hide loading gif so user can perform other actions
-    setTimeout(()=>$('#is_loading').hide(),6000);
+    is_loading_timeout = setTimeout(()=>$('#is_loading').hide(),6000);
     //Index has been clicked
     event.stopPropagation();
     hide_results();
@@ -230,6 +231,7 @@ function show_results(){
     //Guarantees funcion execution order (even for asyncrounous functions)
     click_element(parameters).then(result => click_doodle(result)).then(result => click_property(result)).catch(() => {
       $('#is_loading').hide();
+      clearTimeout(is_loading_timeout);
       return;
     });
   }
@@ -303,6 +305,8 @@ function show_results(){
     });
   }
     /* End of Promise code */
+
+    /* End of my code */
 
     /* Shortcut plugin not my code*/
     /**
