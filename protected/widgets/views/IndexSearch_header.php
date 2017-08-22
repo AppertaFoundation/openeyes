@@ -5,7 +5,7 @@
 
   <div id="search_options_container">
     <div id="description_toogle_container">
-      <span id="description_toggle_label">Show descriptions</span>
+      <span id="description_toggle_label">Descriptions</span>
       <label class="switch" id="description_switch">
         <input type="checkbox" checked id="description_toggle">
         <span class="slider round"></span>
@@ -14,7 +14,7 @@
 
 
     <div id="children_toggle_container">
-      <span id="children_toggle_label">Show children</span>
+      <span id="children_toggle_label">Children</span>
       <label class="switch" id="children_switch">
         <input type="checkbox" checked id="children_toggle">
         <span class="slider round"></span>

@@ -170,6 +170,9 @@ $(document).ready(function(){
   $('#results').mousedown(function(){
     event.stopPropagation();
   });
+  if ($('.event-actions li:contains(Create)').length > 0) {
+    $('#search_options_container').css('width','290px');
+  }
 
 });
 /* End of Initialisation */

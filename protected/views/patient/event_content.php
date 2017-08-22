@@ -6,11 +6,13 @@
 	<header class="event-header">
 		<?php $this->renderPartial('//patient/event_tabs'); ?>
 		<?php
-		$event_type_id = ($this->event->attributes["event_type_id"]);
-		$event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
-		$event_name = $event_type->name;
-		if ($event_name == "Examination") {
-			$this->widget('application.widgets.IndexSearch',array('event_type' => $event_name));
+		if (strcasecmp("Delete",$this->event_actions[0]->label) != 0) {
+			$event_type_id = ($this->event->attributes["event_type_id"]);
+			$event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
+			$event_name = $event_type->name;
+			if ($event_name == "Examination") {
+				$this->widget('application.widgets.IndexSearch',array('event_type' => $event_name));
+			}
 		}
 		 ?>
 		<?php $this->renderPartial('//patient/event_actions'); ?>
