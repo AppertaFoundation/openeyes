@@ -691,6 +691,29 @@ class OphCoCorrespondence_API extends BaseAPI
 
         }
         return $result;
+    }
+
+    public function LAST_EXAMINATION_IN_SS(){
+
+    }
+
+    public function LAST_OP_NOTE_IN_SS() {
+        
+    }
+
+    public function LAST_EVENT_IN_SS() {
+
+    }
+
+    public function LAST_INJECTION_IN_SS() {
+
+    }
+
+    public function LAST_LASER_IN_SS() {
+
+    }
+
+    public function LAST_PRESCRIPTION_IN_SS() {
 
     }
 }

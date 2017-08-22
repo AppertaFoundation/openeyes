@@ -418,6 +418,16 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
     <?php
     }
     ?>
+
+    <?php
+    $associated_content = MacroInitAssociatedContent::model()->findAllByAttributes(array('macro_id' => $macro_id), array('order' => 'display_order asc'));
+    if($associated_content !== null) {
+        $this->renderPartial('event_associated_content', array(
+            'associated_content' => $associated_content,
+            'api'   => $api
+        ));
+    }
+    ?>
 </div>
 <script type="text/javascript">
     setDropDownWidth('macro_id');
