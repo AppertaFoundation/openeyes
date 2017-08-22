@@ -23,22 +23,45 @@
 
 <?php if ($element) { ?>
     <div class="row" id="<?= $el_id ?>">
-        <div class="large-3 column label">
+        <div class="large-2 column label">
             Medications
         </div>
-        <div class="large-9 column data">
-            <i>Current:</i> <a href="#" class="kind-toggle show" data-kind="stopped"><i class="fa fa-icon fa-history" aria-hidden="true"></i></a>
-            <?php foreach ($current as $entry) { ?>
-                <br /><strong><?= $entry->getMedicationDisplay() ?></strong> <?= $entry->getDatesDisplay() ?>
+        <div class="large-10 column data">
+            <i>Current:</i> <?php if ($stopped) {?><a href="#" class="kind-toggle show" data-kind="stopped"><i class="fa fa-icon fa-history" aria-hidden="true"></i></a><?php } ?>
+            <?php if ($current) {?>
+                <table class="plain valign-top">
+                <?php foreach ($current as $entry) { ?>
+                    <tr>
+                        <td><?= $entry->getDatesDisplay() ?></td>
+                        <td><strong><?= $entry->getMedicationDisplay() ?></strong>
+                            <?php if ($entry->prescription_item) { ?>
+                                <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="has-tooltip fa fa-eye" data-tooltip-content="View prescription"></span></a>
+                            <?php } ?>
+                        </td>
+                    </tr>
+                <?php } ?>
+                </table>
+            <?php } else { ?>
+                No current medications.
+            <?php } ?>
+            <?php if ($stopped) { ?>
+                <div class="row stopped-kind" style="display: none;">
+                    <i>Stopped:</i> <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a>
+                    <table class="plain valign-top">
+                    <?php foreach ($stopped as $entry) { ?>
+                        <tr>
+                            <td><?= $entry->getDatesDisplay() ?></td>
+                            <td><strong><?= $entry->getMedicationDisplay() ?></strong>
+                                <?php if ($entry->prescription_item) { ?>
+                                    <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="has-tooltip fa fa-eye" data-tooltip-content="View prescription"></span></a>
+                                <?php } ?>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    </table>
+                </div>
             <?php } ?>
 
-            <div class="row stopped-kind" style="display: none;">
-                <i>Stopped:</i> <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a>
-                <?php foreach ($stopped as $entry) { ?>
-                    <br /><strong><?= $entry->getMedicationDisplay() ?></strong> <?= $entry->getDatesDisplay() ?>
-                <?php } ?>
-
-            </div>
         </div>
     </div>
     <script type="text/javascript">

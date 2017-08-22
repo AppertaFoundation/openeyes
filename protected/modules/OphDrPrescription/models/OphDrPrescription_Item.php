@@ -192,6 +192,12 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         if (!in_array($this->duration->name, array('Other', 'Until review')) && !$this->continue_by_gp) {
             $startDate = new DateTime($this->prescription->event->event_date);
             $endDate = $startDate->add(DateInterval::createFromDateString($this->duration->name));
+            foreach ($this->tapers as $taper) {
+                if (in_array($taper->duration->name, array('Other', 'Until review'))) {
+                    return null;
+                }
+                $endDate->add(DateInterval::createFromDateString($taper->duration->name));
+            }
         }
 
         return $endDate;
