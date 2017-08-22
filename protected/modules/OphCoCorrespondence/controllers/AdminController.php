@@ -157,6 +157,7 @@ class AdminController extends \ModuleAdminController
 
         $criteria = new \CDbCriteria();
         $criteria->addCondition('macro_id = '.$id);
+        $criteria->order = 'display_order asc';
         $associated_content_saved = MacroInitAssociatedContent::model()->findAll($criteria);
 
         $errors = array();
@@ -177,6 +178,7 @@ class AdminController extends \ModuleAdminController
                         $post_associated_content = $_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent'];
                         $post_init_method = $_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod'];
 
+                        $order = 1;
                         foreach($post_associated_content as $key => $pac){
 
                             if(isset($pac['id']) && ($pac['id'] > 0)){
@@ -184,7 +186,7 @@ class AdminController extends \ModuleAdminController
                                 $criteria->addCondition('id = '.$pac['id']);
                                 $criteria->addCondition('macro_id = '.$id);
                                 $associated_content = MacroInitAssociatedContent::model()->find($criteria);
-                                
+
                                 $method = 'update';
                             } else {
                                 $associated_content = new MacroInitAssociatedContent();
@@ -197,10 +199,11 @@ class AdminController extends \ModuleAdminController
                             $associated_content->init_method        = $post_init_method[$key]["short_code"];
                             $associated_content->init_method_id     = $post_init_method[$key]["method_id"];
                             $associated_content->short_code         = $post_init_method[$key]["short_code"];
-                            $associated_content->display_order      = $key;
+                            $associated_content->display_order      = $order;
                             $associated_content->display_title      = $post_init_method[$key]["title"];
 
                             $associated_content->{$method}();
+                            $order++;
                         }
                     }
 

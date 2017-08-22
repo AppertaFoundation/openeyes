@@ -154,5 +154,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
 <script type="text/javascript">
     $(document).ready(function() {
         new OpenEyes.OphCoCorrespondence.InitMethodController();
+        $( ".sortable" ).sortable();
+        $( ".sortable" ).disableSelection();
     });
 </script>
