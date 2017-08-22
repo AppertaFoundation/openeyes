@@ -5751,8 +5751,13 @@ tfoot.pagination-container .pagination-view-all {
   right: -4px;
   top: 7px;
 }
+/* line 302, ../sass/openeyes/components/panels/_patient.scss */
+.panel.patient-popup table td {
+  font-size: 11px;
+  padding-left: 0px;
+}
 
-/* line 304, ../sass/openeyes/components/panels/_patient.scss */
+/* line 310, ../sass/openeyes/components/panels/_patient.scss */
 .nhs-number {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -5766,17 +5771,17 @@ tfoot.pagination-container .pagination-view-all {
   padding: 2px 3px 1px 33px;
 }
 @media print {
-  /* line 304, ../sass/openeyes/components/panels/_patient.scss */
+  /* line 310, ../sass/openeyes/components/panels/_patient.scss */
   .nhs-number {
     padding-left: 0;
   }
 }
-/* line 319, ../sass/openeyes/components/panels/_patient.scss */
+/* line 325, ../sass/openeyes/components/panels/_patient.scss */
 .nhs-number .messages {
   display: none;
 }
 
-/* line 324, ../sass/openeyes/components/panels/_patient.scss */
+/* line 330, ../sass/openeyes/components/panels/_patient.scss */
 .messages.patient.fixed {
   position: fixed;
   z-index: 100;
