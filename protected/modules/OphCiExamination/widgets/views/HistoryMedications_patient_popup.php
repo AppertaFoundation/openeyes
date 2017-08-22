@@ -28,13 +28,13 @@
         </div>
         <div class="large-9 column data">
             <i>Current:</i> <a href="#" class="kind-toggle show" data-kind="stopped"><i class="fa fa-icon fa-history" aria-hidden="true"></i></a>
-            <?php foreach ($element->currentOrderedEntries as $entry) { ?>
+            <?php foreach ($current as $entry) { ?>
                 <br /><strong><?= $entry->getMedicationDisplay() ?></strong> <?= $entry->getDatesDisplay() ?>
             <?php } ?>
 
             <div class="row stopped-kind" style="display: none;">
                 <i>Stopped:</i> <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a>
-                <?php foreach ($element->stoppedOrderedEntries as $entry) { ?>
+                <?php foreach ($stopped as $entry) { ?>
                     <br /><strong><?= $entry->getMedicationDisplay() ?></strong> <?= $entry->getDatesDisplay() ?>
                 <?php } ?>
 
