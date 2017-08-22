@@ -142,6 +142,7 @@ class HistoryMedicationsEntry extends \BaseElement
             $compare_date = \DateTime::createFromFormat('Y-m-d', $this->element->event->event_date);
         }
         if ($end_date && $end_date < $compare_date) {
+            $this->originallyStopped = true;
             $this->end_date = $end_date->format('Y-m-d');
         }
 
@@ -201,6 +202,10 @@ class HistoryMedicationsEntry extends \BaseElement
      */
     public function getAdministrationDisplay()
     {
+        if ($this->prescription_item) {
+            return $this->prescription_item->getAdministrationDisplay();
+        }
+
         $res = array();
         foreach (array('dose', 'option', 'route', 'frequency') as $k) {
             if ($this->$k) {
