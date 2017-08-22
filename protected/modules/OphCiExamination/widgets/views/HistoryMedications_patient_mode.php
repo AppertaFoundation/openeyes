@@ -20,24 +20,36 @@ $model_name = CHtml::modelName($element);
 <?php if (!$element) { ?>
     <p>No medications recorded.</p>
 <?php } else { ?>
-    <table class="plain patient-data" id="<?= $model_name ?>_entry_table">
+    <table class="plain valign-top patient-data" id="<?= $model_name ?>_entry_table">
         <thead>
         <tr>
-            <th>Current Medications</th>
+            <th colspan="3">Current Medications</th>
         </tr>
         </thead>
         <tbody>
         <?php
-        foreach ($element->currentOrderedEntries as $entry) { ?>
-            <tr><td><?=$entry?></td></tr>
+        foreach ($current as $entry) { ?>
+            <tr>
+                <td><?=$entry->getMedicationDisplay() ?></td>
+                <td><?=$entry->getDatesDisplay() ?></td>
+                <td><?php if ($entry->prescription_item) { ?>
+                        <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="has-tooltip fa fa-eye" data-tooltip-content="View prescription"></span></a>
+                <?php } ?></td>
+            </tr>
         <?php }
         ?>
         <tr>
-            <th>Stopped Medications</th>
+            <th colspan="3">Stopped Medications</th>
         </tr>
         <?php
-        foreach ($element->stoppedOrderedEntries as $entry) { ?>
-            <tr><td><?=$entry?></td></tr>
+        foreach ($stopped as $entry) { ?>
+            <tr>
+                <td><?=$entry->getMedicationDisplay() ?></td>
+                <td><?=$entry->getDatesDisplay() ?></td>
+                <td><?php if ($entry->prescription_item) { ?>
+                        <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="has-tooltip fa fa-eye" data-tooltip-content="View prescription"></span></a>
+                    <?php } ?></td>
+            </tr>
         <?php }
         ?>
         </tbody>

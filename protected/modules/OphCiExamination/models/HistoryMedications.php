@@ -118,7 +118,10 @@ class HistoryMedications extends \BaseEventTypeElement
         $this->originalAttributes = $this->getAttributes();
     }
 
-    public function getTrackedPrescriptionItems()
+    /**
+     * Retrieve the entries that are tracking prescription items
+     */
+    public function getPrescriptionEntries()
     {
         return array_filter($this->entries, function($entry) {
             return $entry->prescription_item_id !== null;

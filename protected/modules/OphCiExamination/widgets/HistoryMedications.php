@@ -38,29 +38,48 @@ class HistoryMedications extends \BaseEventElementWidget
     }
 
     /**
+     * Creates new Entry records for any prescription items that are not in the
+     * current element.
+     *
+     * @return array
+     */
+    private function getEntriesForUntrackedPrescriptionItems()
+    {
+        $untracked = array();
+        if ($api = $this->getApp()->moduleAPI->get('OphDrPrescription')) {
+            $tracked_prescr_item_ids = array_map(
+                function ($item) {
+                    return $item->id;
+                },
+                $this->element->getPrescriptionEntries()
+            );
+
+            if ($untracked_prescription_items = $api->getPrescriptionItemsForPatient(
+                $this->patient, $tracked_prescr_item_ids)
+            ) {
+                foreach ($untracked_prescription_items as $item) {
+                    $entry = new HistoryMedicationsEntry();
+                    $entry->loadFromPrescriptionItem($item);
+                    $untracked[] = $entry;
+                }
+            }
+        }
+        return $untracked;
+    }
+
+    /**
      * @inheritdoc
      */
     protected function setElementFromDefaults()
     {
         parent::setElementFromDefaults();
 
-        if ($api = $this->getApp()->moduleAPI->get('OphDrPrescription')) {
+        if ($untracked = $this->getEntriesForUntrackedPrescriptionItems()) {
             // tracking prescription items.
-            $tracked_prescr_item_ids = array_map(
-                function($item) { return $item->id; },
-                $this->element->getTrackedPrescriptionItems()
-            );
-            if ($untracked_prescription_items = $api->getPrescriptionItemsForPatient(
-                $this->patient, $tracked_prescr_item_ids)
-            ) {
-                $entries = $this->element->entries;
-                foreach ($untracked_prescription_items as $item) {
-                    $entry = new HistoryMedicationsEntry();
-                    $entry->loadFromPrescriptionItem($item);
-                    $entries[] = $entry;
-                }
-                $this->element->entries = $entries;
-            }
+            $entries = $this->element->entries;
+            $this->element->entries = array_merge(
+                $entries,
+                $untracked);
         }
 
     }
@@ -104,31 +123,43 @@ class HistoryMedications extends \BaseEventElementWidget
 
     public function getMergedEntries()
     {
-        // map the operations that have been recorded as entries in this element
-        $entries = array_map(
-            function($entry) {
-                return array(
-                    'date' => $entry->start_date,
-                    'object' => $entry
-                );
-            }, $this->element->currentOrderedEntries); //TODO: confirm this behaviour of only providing current
+        // determine if there are any prescription items that are not tracked by the element
+        if ($untracked = $this->getEntriesForUntrackedPrescriptionItems()) {
+            $current = $this->element->currentOrderedEntries;
+            $stopped = $this->element->stoppedOrderedEntries;
+            foreach ($untracked as $u) {
+                if ($u->end_date) {
+                   $stopped[] = $u;
+                } else {
+                    $current[] = $u;
+                }
+            }
 
-        // append prescription medications
-//        if ($api = $this->getApp()->moduleAPI->get('OphTrOperationnote')) {
-//            $operations = array_merge($operations, $api->getOperationsSummaryData($this->patient));
-//        }
+            uasort($current, function($a , $b) {
+                return $a['start_date'] >= $b['start_date'] ? -1 : 1;
+            });
+            uasort($stopped, function($a , $b) {
+                return $a['start_date'] >= $b['start_date'] ? -1 : 1;
+            });
 
-        // merge by sorting by date
-        uasort($entries, function($a , $b) {
-            return $a['date'] >= $b['date'] ? -1 : 1;
-        });
-
-        return $entries;
+            return array(
+                'current' => $current,
+                'stopped' => $stopped
+            );
+        } else {
+            return array(
+                'current' => $this->element->currentOrderedEntries,
+                'stopped' => $this->element->stoppedOrderedEntries);
+        }
     }
 
-    public function formatExternalEntry($entry)
+    /**
+     * @param $entry
+     * @return string
+     */
+    public function getPrescriptionLink($entry)
     {
-        return 'Not Yet Implemented';
+        return '/OphDrPrescription/Default/view/' . $entry->prescription_item->prescription->event_id;
     }
 
     /**
@@ -145,5 +176,17 @@ class HistoryMedications extends \BaseEventElementWidget
             return substr(strrchr(get_class($this), '\\'),1) . '_patient_popup';
         }
         return parent::getView();
+    }
+
+    /**
+     * @return array
+     */
+    public  function getViewData()
+    {
+        if (in_array($this->mode, array(static::$PATIENT_POPUP_MODE, static::$PATIENT_SUMMARY_MODE)) ) {
+            return array_merge(parent::getViewData(), $this->getMergedEntries());
+        }
+        return parent::getViewData();
+
     }
 }
