@@ -1669,9 +1669,822 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 
 	<INDEX_LIST>
 		<INDEX>
+			<PRIMARY_TERM>Examination History</PRIMARY_TERM>
+			<SECONDARY_TERM_LIST>
+				<TERM>Presenting Compliant</TERM>
+				<TERM>Follow Up Including History</TERM>
+			</SECONDARY_TERM_LIST>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_History</OPEN_ELEMENT_CLASS_NAME>
+			<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_History_description</GOTO_ID>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Examination Risks</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryRisks</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Alpha blockers</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryRisks</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>tr</GOTO_TAG>
+					<GOTO_TEXT>Alpha blockers</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Anticoagulants</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryRisks</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>tr</GOTO_TAG>
+					<GOTO_TEXT>Anticoagulants</GOTO_TEXT>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Examination Systemic Diagnoses</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SystemicDiagnoses</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Diagnosis</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SystemicDiagnoses</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>DiagnosisSelection_disorder_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Side</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SystemicDiagnoses</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>div</GOTO_TAG>
+					<GOTO_TEXT>Side</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Date</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SystemicDiagnoses</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>div</GOTO_TAG>
+					<GOTO_TEXT>Date</GOTO_TEXT>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Examination Comorbidities</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Comorbidities</OPEN_ELEMENT_CLASS_NAME>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Examiantion Allergies</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Allergies</OPEN_ELEMENT_CLASS_NAME>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Examination Previous Ophthalmic Surgery</PRIMARY_TERM>
+			<SECONDARY_TERM_LIST>
+				<TERM>Past Surgery</TERM>
+			</SECONDARY_TERM_LIST>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\PastSurgery</OPEN_ELEMENT_CLASS_NAME>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Family History</PRIMARY_TERM>
+			<SECONDARY_TERM_LIST>
+				<TERM>Relative</TERM>
+			</SECONDARY_TERM_LIST>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\FamilyHistory</OPEN_ELEMENT_CLASS_NAME>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Social History</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Employment</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>div_OEModule_OphCiExamination_models_SocialHistory_occupation_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Driving Status</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>div_OEModule_OphCiExamination_models_SocialHistory_Driving Status</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Smoking Status</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>div_OEModule_OphCiExamination_models_SocialHistory_smoking_status_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Accommodation</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>div_OEModule_OphCiExamination_models_SocialHistory_accommodation_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Carer</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>div_OEModule_OphCiExamination_models_SocialHistory_carer_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Alcohol Intake</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>div_OEModule_OphCiExamination_models_SocialHistory_alcohol_intake</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Substance Misuse</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>div_OEModule_OphCiExamination_models_SocialHistory_substance_misuse_id</GOTO_ID>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Visual Function</PRIMARY_TERM>
+			<SECONDARY_TERM_LIST>
+				<TERM>RAPD</TERM>
+				<TERM>Relative Afferent Pupillary Defect</TERM>
+			</SECONDARY_TERM_LIST>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction</OPEN_ELEMENT_CLASS_NAME>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Visual Acuity</PRIMARY_TERM>
+			<SECONDARY_TERM_LIST>
+				<TERM>VA</TERM>
+			</SECONDARY_TERM_LIST>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity</OPEN_ELEMENT_CLASS_NAME>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Near Visual Acuity</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_NearVisualAcuity</OPEN_ELEMENT_CLASS_NAME>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Colour Vision</PRIMARY_TERM>
+			<SECONDARY_TERM_LIST>
+				<TERM>Ishihara /15</TERM>
+				<TERM>Ishihara /21</TERM>
+				<TERM>Red desaturation</TERM>
+			</SECONDARY_TERM_LIST>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_ColourVision</OPEN_ELEMENT_CLASS_NAME>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Refraction</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Sphere</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>div</GOTO_TAG>
+					<GOTO_TEXT>Sphere</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Cylinder</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>div</GOTO_TAG>
+					<GOTO_TEXT>Cylinder</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Axis</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>div</GOTO_TAG>
+					<GOTO_TEXT>Axis</GOTO_TEXT>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Adnexal</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AdnexalComorbidity</OPEN_ELEMENT_CLASS_NAME>
+			<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_AdnexalComorbidity_right_description</GOTO_ID>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Lids Surgical</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SurgicalLids</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Lids</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SurgicalLids</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_DOODLE_CLASS_NAME>Lids</GOTO_DOODLE_CLASS_NAME>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Comments</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SurgicalLids</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_SurgicalLids_right_comments</GOTO_ID>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Lids Medical</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicalLids</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Palpebral Conjunctivitis</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicalLids</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_DOODLE_CLASS_NAME>PalpebralConjunctivitis</GOTO_DOODLE_CLASS_NAME>
+					<INDEX_LIST>
+						<INDEX>
+							<PRIMARY_TERM>Type</PRIMARY_TERM>
+							<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicalLids</OPEN_ELEMENT_CLASS_NAME>
+							<GOTO_DOODLE_CLASS_NAME>PalpebralConjunctivitis</GOTO_DOODLE_CLASS_NAME>
+							<GOTO_PROPERTY>Type</GOTO_PROPERTY>
+						</INDEX>
+						<INDEX>
+							<PRIMARY_TERM>Hyperaemia</PRIMARY_TERM>
+							<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicalLids</OPEN_ELEMENT_CLASS_NAME>
+							<GOTO_DOODLE_CLASS_NAME>PalpebralConjunctivitis</GOTO_DOODLE_CLASS_NAME>
+							<GOTO_PROPERTY>Hyperaemia</GOTO_PROPERTY>
+						</INDEX>
+					</INDEX_LIST>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>STFB</PRIMARY_TERM>
+					<SECONDARY_TERM_LIST>
+						<TERM>Sub-tarsal foreign body</TERM>
+					</SECONDARY_TERM_LIST>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicalLids</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_DOODLE_CLASS_NAME>STFB</GOTO_DOODLE_CLASS_NAME>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Label</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicalLids</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
+					<GOTO_PROPERTY>Text</GOTO_PROPERTY>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Comments</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicalLids</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_MedicalLids_%position_comments</GOTO_ID>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Pupillary Abnormalities</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PupillaryAbnormalities</OPEN_ELEMENT_CLASS_NAME>
+			<GOTO_ID>div_OEModule_OphCiExamination_models_Element_OphCiExamination_PupillaryAbnormalities_%position_abnormality_id</GOTO_ID>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Bleb Assessment</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_BlebAssessment</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Area (Central)</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_BlebAssessment</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_%position_central_area_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Area (Maximal)</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_BlebAssessment</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_%position_max_area_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Height</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_BlebAssessment</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_%position_height_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Vascularity</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_BlebAssessment</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_%position_vasc_id</GOTO_ID>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>CCT</PRIMARY_TERM>
+			<SECONDARY_TERM_LIST>
+				<TERM>Corneal Thickness</TERM>
+			</SECONDARY_TERM_LIST>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT</OPEN_ELEMENT_CLASS_NAME>
+			<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_CCT_%position_value</GOTO_ID>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Keratoconus Monitoring</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Asthma</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>label</GOTO_TAG>
+					<GOTO_TEXT>Asthma</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Previous CXL</PRIMARY_TERM>
+					<SECONDARY_TERM_LIST>
+						<TERM>Previous Corneal Cross-linking</TERM>
+					</SECONDARY_TERM_LIST>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+					<GOTO_TAG>label</GOTO_TAG>
+					<GOTO_TEXT>Previous CXL</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Previous Refractive Surgery</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+					<GOTO_TAG>label</GOTO_TAG>
+					<GOTO_TEXT>Previous Refractive Surgery</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Intacs/Kera-ring</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+					<GOTO_TAG>label</GOTO_TAG>
+					<GOTO_TEXT>Intacs/Kera-ring</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Previous HSK Keratitis</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+					<GOTO_TAG>label</GOTO_TAG>
+					<GOTO_TEXT>Previous HSK Keratitis</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Eczema</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>label</GOTO_TAG>
+					<GOTO_TEXT>Eczema</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Eye Rubber</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>label</GOTO_TAG>
+					<GOTO_TEXT>Eye Rubber</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Hayfever</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>label</GOTO_TAG>
+					<GOTO_TEXT>Hayfever</GOTO_TEXT>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Corneal Tomography</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Tomographer Device</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_tomographer_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Front K1</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_anterior_k1_value</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Front K2</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_anterior_k2_value</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Quality Score - Front</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_quality_front</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Back K1</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_axis_anterior_k1_value</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Quality Score - Back</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_quality_back</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Kmax</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_kmax_value</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Thinnest Point Pachymetry (µm)</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_thinnest_point_pachymetry_value</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>B-A Index</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_ba_index_value</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Flourescein</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+					<GOTO_TAG>label</GOTO_TAG>
+					<GOTO_TEXT>Flourescein</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>CL Removed?</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_cl_removed</GOTO_ID>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Specular Microscopy</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Specular Microscope</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy_specular_microscope_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Scan Quality</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy_scan_quality_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Endothelial Cell Density (cells/mm2)</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy_%position_endothelial_cell_density_value</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Coefficient of Variation (CV)</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy_%position_coefficient_variation_value</GOTO_ID>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>KC/CXL-Specific Slit Lamp</PRIMARY_TERM>
+			<SECONDARY_TERM_LIST>
+				<TERM>Keratoconus</TERM>
+				<TERM>Corneal cross-linking</TERM>
+			</SECONDARY_TERM_LIST>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Allergic Conjunctivitis</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp_%position_allergic_conjunctivitis_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Blepharitis</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp_%position_blepharitis_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Dry Eye</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp_%position_dry_eye_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Cornea</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp_%position_cornea_id</GOTO_ID>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Intraocular Pressure</PRIMARY_TERM>
+			<SECONDARY_TERM_LIST>
+				<TERM>IOP</TERM>
+			</SECONDARY_TERM_LIST>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure</OPEN_ELEMENT_CLASS_NAME>
+			<GOTO_ID>OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_%position_values_0_reading_id</GOTO_ID>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Dilation</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Dilation</OPEN_ELEMENT_CLASS_NAME>
+			<GOTO_ID>dilation_drug_%position</GOTO_ID>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>DR Grading</PRIMARY_TERM>
+			<SECONDARY_TERM_LIST>
+				<TERM>Diabetic Retinopathy</TERM>
+			</SECONDARY_TERM_LIST>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Diabetes type</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>legend</GOTO_TAG>
+					<GOTO_TEXT>Diabetes type</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Clinical Grading for retinopathy</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_DRGrading_%position_clinicalret_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>NSC retinopathy</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_DRGrading_%position_nscretinopathy_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Retinopathy photocoagulation</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+					<GOTO_TAG>legend</GOTO_TAG>
+					<GOTO_TEXT>Retinopathy photocoagulation</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Clinical Grading for maculopathy</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_DRGrading_%position_clinicalmac_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>NSC maculopathy</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_DRGrading_%position_nscmaculopathy_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Maculopathy photocoagulation</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+					<GOTO_TAG>legend</GOTO_TAG>
+					<GOTO_TEXT>Maculopathy photocoagulation</GOTO_TEXT>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Diagnoses</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses</OPEN_ELEMENT_CLASS_NAME>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Further Findings</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_FurtherFindings</OPEN_ELEMENT_CLASS_NAME>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Investigation</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Investigation</OPEN_ELEMENT_CLASS_NAME>
+			<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation_description</GOTO_ID>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>OCT</PRIMARY_TERM>
+			<SECONDARY_TERM_LIST>
+				<TERM>Optical coherence tomography</TERM>
+			</SECONDARY_TERM_LIST>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Image Type</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_method_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Maximum CRT</PRIMARY_TERM>
+					<SECONDARY_TERM_LIST>
+						<TERM>Corneal Refractive Therapy</TERM>
+					</SECONDARY_TERM_LIST>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_crt</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Central SFT</PRIMARY_TERM>
+					<SECONDARY_TERM_LIST>
+						<TERM>Solitary fibrous tumor</TERM>
+					</SECONDARY_TERM_LIST>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_sft</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Thickness increase of 100µm</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+					<GOTO_TAG>legend</GOTO_TAG>
+					<GOTO_TEXT>Thickness increase of 100µm</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Dry</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+					<GOTO_TAG>legend</GOTO_TAG>
+					<GOTO_TEXT>Dry</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Comments</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_comments</GOTO_ID>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>PCR Risk</PRIMARY_TERM>
+			<SECONDARY_TERM_LIST>
+				<TERM>Posterior capsular opacification grading</TERM>
+			</SECONDARY_TERM_LIST>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Glaucoma</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_glaucoma</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>PXF/Phacodonesis</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_pxf</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Diabetic</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_diabetic</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Pupil Size</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_pupil_size</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Fundus obscured</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_no_fundal_view</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Axial Length (mm)</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_axial_length_group</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Brunescent/White Cataract</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_brunescent_white_cataract</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Alpha receptor blocker</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_alpha_receptor_blocker</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Surgeon Grade</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>pcrrisk_%position_doctor_grade_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Can lie flat</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_can_lie_flat</GOTO_ID>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Clinical Management</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Management</OPEN_ELEMENT_CLASS_NAME>
+			<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Management_comments</GOTO_ID>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Cataract Surgical Management</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Which eye?</PRIMARY_TERM>
+					<SECONDARY_TERM_LIST>
+						<TERM>First eye</TERM>
+						<TERM>Second eye</TERM>
+					</SECONDARY_TERM_LIST>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>div</GOTO_TAG>
+					<GOTO_TEXT>First eye</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Straightforward case?</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>label</GOTO_TAG>
+					<GOTO_TEXT>Straightforward case</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Post operative refractive target in dioptres</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_target_postop_refraction</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>The post operative refractive target has been discussed with the patient</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>div</GOTO_TAG>
+					<GOTO_TEXT>The post operative refractive target has been discussed with the patient</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Suitable for surgeon</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_suitable_for_surgeon_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Previous refractive surgery</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>div</GOTO_TAG>
+					<GOTO_TEXT>Previous refractive surgery</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Vitrectomised eye</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>div</GOTO_TAG>
+					<GOTO_TEXT>Vitrectomised eye</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Primary reason for cataract surgery</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_reasonForSurgery</GOTO_ID>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Glaucoma Overall Management plan</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Clinic interval</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_clinic_interval_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Photo</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_photo_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>OCT</PRIMARY_TERM>
+					<SECONDARY_TERM_LIST>
+						<TERM>Optical coherence tomography</TERM>
+					</SECONDARY_TERM_LIST>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_oct_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Visual Fields</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_hfa_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Gonio</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_gonio_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>HRT</PRIMARY_TERM>
+					<SECONDARY_TERM_LIST>
+						<TERM>Heidelberg Retinal Tomography</TERM>
+					</SECONDARY_TERM_LIST>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_hrt_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Comments</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_comments</GOTO_ID>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Glaucoma Current Management plan</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CurrentManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Glaucoma status</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CurrentManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_%position_glaucoma_status_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Drop-related problems</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CurrentManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_%position_drop-related_prob_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Drops</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CurrentManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_right_drops_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Surgery</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CurrentManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_%position_surgery_id</GOTO_ID>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Laser Management</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_LaserManagement</OPEN_ELEMENT_CLASS_NAME>
+			<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_LaserManagement_%position_laser_status_id</GOTO_ID>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Injection Management</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex</OPEN_ELEMENT_CLASS_NAME>
+			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Treatment</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_SUBCONTAINER_CLASS>$position-eye</GOTO_SUBCONTAINER_CLASS>
+					<GOTO_TAG>legend</GOTO_TAG>
+					<GOTO_TEXT>Treatment</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Diagnosis</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_%position_diagnosis1_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Intended Treatment</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_%position_treatment_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Risks</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_%position_risks</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Comments</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_%position_comments</GOTO_ID>
+				</INDEX>
+			</INDEX_LIST>
+		</INDEX>
+		<INDEX>
+			<PRIMARY_TERM>Clinic Outcome</PRIMARY_TERM>
+			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome</OPEN_ELEMENT_CLASS_NAME>
+			<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome_status_id</GOTO_ID>
+		</INDEX>
+		<INDEX>
 			<PRIMARY_TERM>Examination Posterior Pole</PRIMARY_TERM>
 			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Comments</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PosteriorPole_%position_description</GOTO_ID>
+				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Hard drusen</PRIMARY_TERM>
 					<IMG_URL>/assets/index_search/HardDrusen.png</IMG_URL>
@@ -1888,6 +2701,25 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
 			<INDEX_LIST>
 				<INDEX>
+					<PRIMARY_TERM>Angle Open?</PRIMARY_TERM>
+					<SECONDARY_TERM_LIST>
+						<TERM>Angle Close?</TERM>
+					</SECONDARY_TERM_LIST>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_TAG>div</GOTO_TAG>
+					<GOTO_TEXT>Angle Open?</GOTO_TEXT>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Van Herick</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy_%position_van_herick_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Comments</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy_%postition_description</GOTO_ID>
+				</INDEX>
+				<INDEX>
 					<PRIMARY_TERM>Angle new vessels</PRIMARY_TERM>
 					<IMG_URL>/assets/index_search/AngleNV.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
@@ -1925,6 +2757,29 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 			<PRIMARY_TERM>Examination Optic Disc</PRIMARY_TERM>
 			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
 			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Mode</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>%position_opticdisc_mode</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>C/D Ratio</PRIMARY_TERM>
+					<SECONDARY_TERM_LIST>
+						<TERM>Cut To Disc Ratio</TERM>
+					</SECONDARY_TERM_LIST>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_%position_cd_ratio_id</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Vertical Diameter</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_%position_diameter</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Comments</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_%position_description</GOTO_ID>
+				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Peripapillary atrophy</PRIMARY_TERM>
 					<IMG_URL>/assets/index_search/PeripapillaryAtrophy.png</IMG_URL>
@@ -1978,9 +2833,19 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 			</INDEX_LIST>
 		</INDEX>
 		<INDEX>
-			<PRIMARY_TERM>Examiantion Fundus</PRIMARY_TERM>
+			<PRIMARY_TERM>Examination Fundus</PRIMARY_TERM>
 			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Vitreous</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Fundus_%position_vitreous</GOTO_ID>
+				</INDEX>
+				<INDEX>
+					<PRIMARY_TERM>Comments</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Fundus_%position_description</GOTO_ID>
+				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Rhegmatogenous retinal detachment</PRIMARY_TERM>
 					<IMG_URL>/assets/index_search/RRD.png</IMG_URL>
@@ -2088,9 +2953,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 			</INDEX_LIST>
 		</INDEX>
 		<INDEX>
-			<PRIMARY_TERM>
-				Examination Anterior Segment
-			</PRIMARY_TERM>
+			<PRIMARY_TERM>Examination Anterior Segment</PRIMARY_TERM>
 			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 			<INDEX_LIST>
 				<INDEX>

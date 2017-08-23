@@ -18,10 +18,26 @@
 			<xs:element minOccurs="0" name="WARNING_NOTE" type="xs:string"/>
 			<xs:sequence minOccurs="0">
 				<xs:element name="OPEN_ELEMENT_CLASS_NAME" type="xs:string"/>
-				<xs:sequence minOccurs="0">
-					<xs:element name="GOTO_DOODLE_CLASS_NAME" type="xs:string"/>
-					<xs:element minOccurs="0" name="GOTO_PROPERTY" type="xs:string"/>
-				</xs:sequence>
+				<xs:choice minOccurs="0">
+					<xs:sequence>
+						<xs:element name="GOTO_DOODLE_CLASS_NAME" type="xs:string"/>
+						<xs:sequence minOccurs="0">
+							<xs:element name="GOTO_PROPERTY" type="xs:string"/>
+						</xs:sequence>
+					</xs:sequence>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="GOTO_SUBCONTAINER_CLASS" type="xs:string"/>
+						<xs:choice>
+							<xs:element name="GOTO_ID" type="xs:string"/>
+							<xs:sequence>
+								<xs:element name="GOTO_TAG" type="xs:string"/>
+								<xs:sequence minOccurs="0">
+									<xs:element name="GOTO_TEXT" type="xs:string"/>
+								</xs:sequence>
+							</xs:sequence>
+						</xs:choice>
+					</xs:sequence>
+				</xs:choice>
 			</xs:sequence>
 			<xs:element minOccurs="0" name="INDEX_LIST">
 				<xs:complexType>

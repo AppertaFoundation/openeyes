@@ -8190,12 +8190,12 @@ table.detailview tr th {
 li ul li ul li .result_item {
   background-color: transparent;
 }
-#results > ul >  li > div {
+#results > ul >  li > div:first-child {
   position: sticky;
   top: 0;
   z-index: 10000;
 }
-#results > ul >  li > div:hover {
+#results > ul >  li > div:first-child:hover {
   background-color: #3665ff;
   color: #fff;
   cursor: pointer;
