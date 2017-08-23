@@ -736,7 +736,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
       background-position: -6px -95px; }
     .oe-element-list a .icon.collapse {
       background-position: -6px -76px; }
-    .oe-element-list a .icon.child {
+    .oe-element-list a .icon.child, .oe-element-list a:hover .icon.child {
       background-position: 0px -57px;}
     .oe-element-list .has-children a {
       background-color: #777b7e;
