@@ -26,6 +26,7 @@ var patientMerge = {
         });
         $section.next('section').remove();
         $section.after(this.patients[type]['all-episodes']);
+        $section.after(this.patients[type]['genetics-panel']);
         $section.next('section').removeClass('episodes');
         
     },
@@ -262,7 +263,16 @@ $(document).ready(function(){
             
             return $( "<li></li>" )
                 .data( "item.autocomplete", item )
-                .append( "<a><strong>" + item.first_name + " " + item.last_name + "</strong>" + " (" + item.age + ")" + "<span class='icon icon-alert icon-alert-" + item.gender.toLowerCase() +"_trans'>Male</span>" + "<div class='nhs-number'>" + item.nhsnum +"</div><br>Hospital No.: " + item.hos_num + "<br>Date of birth: " + item.dob + warningHTML + "</a>" )
+                .append( "<a><strong>"
+                    + item.first_name + " "
+                    + item.last_name + "</strong>"
+                    + " (" + item.age + ")"
+                    + "<span class='icon icon-alert icon-alert-" + item.gender.toLowerCase() +"_trans'>Male</span>"
+                    + "<div class='nhs-number'>" + item.nhsnum +"</div>"
+                    + "<br>Hospital No.: " + item.hos_num
+                    + "<br>Date of birth: " + item.dob
+                    + (item.subject_id ? "<br>Subject Id: " + item.subject_id : '' ) +
+                    + warningHTML + "</a>" )
                 .appendTo( ul );
         };
     }

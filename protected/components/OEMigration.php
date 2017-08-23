@@ -714,7 +714,8 @@ class OEMigration extends CDbMigration
             $cols
         ), true);
         $source_rows = $this->dbConnection->createCommand()
-            ->select(array_keys($cols))
+            // force the id to ensure maintaining it
+            ->select(array_merge(array('id'), array_keys($cols)))
             ->from($source)
             ->queryAll();
         foreach ($source_rows as $row) {

@@ -48,12 +48,19 @@
  * @property OperativeDevice[] $operative_devices
  * @property OphTrOperationnote_IOLType $iol_type
  */
-class Element_OphTrOperationnote_Cataract extends Element_OnDemand
+class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
 {
-    public $service;
-
     public $predicted_refraction = null;
+    public $requires_eye = true;
 
+    protected static $procedure_doodles = array(
+        array('doodle_class' => 'PhakoIncision',
+            'unless' => array('PhakoIncision')
+        ),
+        array('doodle_class' => 'PCIOL',
+            'unless' => array('PCIOL', 'ACIOL', 'ToricPCIOL')
+        )
+    );
     /**
      * Returns the static model of the specified AR class.
      *
@@ -88,7 +95,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
             array('iol_type_id', 'validateIolType'),
             array('predicted_refraction', 'validatePredictedRefraction'),
             array('iol_power', 'validateIolpower'),
-            
+
             array('complications', 'validateComplications'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -115,7 +122,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
             }
         }
     }
-        
+
     /**
      * Validate Predicted Refraction if IOL is part of the element.
      *
@@ -223,17 +230,6 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
         ));
     }
 
-    /**
-     * Set default values for forms on create.
-     * @param Patient $patient
-     */
-    public function setDefaultOptions(Patient $patient = null)
-    {
-        if (Yii::app()->controller->selectedEyeForEyedraw->id == 1) {
-            $this->meridian = 0;
-        }
-    }
-
     protected function beforeSave()
     {
         $position_none = $this->getNoneIolPosition();
@@ -330,22 +326,13 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
             }
         }
 
-        if (is_array($curr_by_id)){
-        foreach ($curr_by_id as $oda) {
-            if (!$oda->delete()) {
-                throw new Exception('Unable to delete operative device assignment: '.print_r($oda->getErrors(), true));
+        if (is_array($curr_by_id)) {
+            foreach ($curr_by_id as $oda) {
+                if (!$oda->delete()) {
+                    throw new Exception('Unable to delete operative device assignment: '.print_r($oda->getErrors(), true));
+                }
             }
         }
-    }
-    }
-    /**
-     * The eye of the procedure is stored in the parent procedure list element.
-     *
-     * @return Eye
-     */
-    public function getEye()
-    {
-        return Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($this->event_id))->eye;
     }
 
     /**
@@ -386,6 +373,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
      */
     public function getIol_hidden()
     {
+        OELog::log($this->eyedraw);
         if ($eyedraw = @json_decode($this->eyedraw)) {
             if (is_array($eyedraw)) {
                 foreach ($eyedraw as $object) {
@@ -479,14 +467,51 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
     }
 
     private function getNoneIolPosition()
-    {
-        $position_none = OphTrOperationnote_IOLPosition::model()->findByAttributes(array('name'=>'None'));
-        if($position_none)
         {
-            return $position_none;
-        }else
-        {
-            return false;
+            $position_none = OphTrOperationnote_IOLPosition::model()->findByAttributes(array('name'=>'None'));
+            if($position_none)
+            {
+                return $position_none;
+            }else
+            {
+                return false;
+            }
         }
+
+        /**
+     * Load in the correction values for the eyedraw fields
+     *
+     * @param Patient|null $patient
+     * @throws \CException
+     */
+    public function setDefaultOptions(Patient $patient = null)
+    {
+        if ($patient === null) {
+            throw new \CException('patient object required for setting ' . get_class($this) . ' default options');
+        }
+        if ((int)$this->getEye()->id === 1) {
+            $this->meridian = 0;
+        }
+        parent::setDefaultOptions($patient);
+
+        $processor = new \EDProcessor();
+        $processor->loadElementEyedrawDoodles($patient, $this, $this->getEye()->id, 'eyedraw');
+        // current way of handling the default doodles to add to the eyedraw for the procedure
+        // this will hopefully be replaced when we have the ability to store preferences for users
+        // as to their default doodle set for the cataract procedure.
+        $processor->addElementEyedrawDoodles($this, 'eyedraw', static::$procedure_doodles);
     }
+
+    /**
+     * Performs the shredding of Eyedraw data for the patient record
+     *
+     * @inheritdoc
+     */
+    public function afterSave()
+    {
+        $processor = new \EDProcessor();
+        $processor->shredElementEyedraws($this, array('eyedraw' => (int)$this->getEye()->id));
+        parent::afterSave();
+    }
+
 }

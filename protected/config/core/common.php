@@ -79,6 +79,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
+            'time' => '201708040841',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -267,6 +268,10 @@ return array(
         'ldap_password' => '',
         'ldap_dn' => '',
         'ldap_method' => 'native', // use 'zend' for the Zend_Ldap vendor module
+        // set to integer value of 2 or 3 to force specific ldap protocol
+        'ldap_protocol_version' => null,
+        // alters the prefix used when binding to a user in native ldap connections
+        'ldap_username_prefix' => 'cn',
         'ldap_native_timeout' => 3,
         'ldap_info_retries' => 3,
         'ldap_info_retry_delay' => 1,
@@ -380,7 +385,6 @@ return array(
         'wkhtmltopdf_left_margin' => '20mm',
         'wkhtmltopdf_right_margin' => '20mm',
         'wkhtmltopdf_nice_level' => false,
-        'OphCoTherapyapplication_sender_email' => array('therapyapps@openeyes' => 'OpenEyes Therapy Application'),
         'curl_proxy' => null,
         'hscic' => array(
             'data' => array(
@@ -449,6 +453,7 @@ return array(
         "auto_schedule_operation" => false,
         'clinical_management_pcr' => true,
         'docman_generate_csv' => false,
+        'element_sidebar' => true,
         // flag to enable editing of clinical data at the patient summary level - editing is not fully implemented
         // in v2.0.0, so this should only be turned on if you really know what you are doing.
         'allow_patient_summary_clinic_changes' => false,

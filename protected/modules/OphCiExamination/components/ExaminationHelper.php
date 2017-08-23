@@ -27,6 +27,26 @@ class ExaminationHelper
             }
         }
         return array($right_principals, $left_principals);
+    }
+
+    /**
+     * A list of deprecated or optional elements to filter out from the available elements for Examination
+     * @return array
+     */
+    public static function elementFilterList()
+    {
+        if (\Yii::app()->hasModule('OphCoTherapyapplication')) {
+            $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagement');
+        } else {
+            $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
+        }
+
+        // Deprecated elements that we keep in place for backward compatibility with rendering
+        return array_merge($remove, array(
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy',
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion',
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk'
+        ));
 
     }
 }

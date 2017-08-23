@@ -19,6 +19,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use Patient;
+
 /**
  * This is the model class for table "et_ophciexamination_anteriorsegment".
  *
@@ -50,6 +52,11 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
 {
+    protected static $ed_persistence_attributes = array(
+        'left_eyedraw' => \Eye::LEFT,
+        'right_eyedraw' => \Eye::RIGHT,
+    );
+
     public $service;
 
     /**
@@ -202,6 +209,35 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * Load in the correction values for the eyedraw fields
+     *
+     * @param Patient|null $patient
+     * @throws \CException
+     */
+    public function setDefaultOptions(Patient $patient = null)
+    {
+        parent::setDefaultOptions($patient);
+        if ($patient === null) {
+            throw new \CException('patient object required for setting ' . get_class($this) . ' default options');
+        }
+        $processor = new \EDProcessor();
+        $processor->loadElementEyedrawDoodles($patient, $this,\Eye::LEFT, 'left_eyedraw');
+        $processor->loadElementEyedrawDoodles($patient, $this,\Eye::RIGHT, 'right_eyedraw');
+    }
+
+    /**
+     * Performs the shredding of Eyedraw data for the patient record
+     *
+     * @inheritdoc
+     */
+    public function afterSave()
+    {
+        $processor = new \EDProcessor();
+        $processor->shredElementEyedraws($this, static::$ed_persistence_attributes);
+        parent::afterSave();
     }
 
 }

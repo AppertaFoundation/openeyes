@@ -13,6 +13,14 @@
 </div>
 <?php if(isset($extras) && $extras): ?>
 <div class="row field-row">
+    <div class="large-2 column">
+        <label for="patient-search">Maiden Name</label>
+    </div>
+    <div class="large-5 column end">
+        <input type="text" id="patient-lookup-extra-maidenname" value="<?= ($model->patient->contact->maiden_name) ? $model->patient->contact->maiden_name : '' ?>" readonly>
+    </div>
+</div>
+<div class="row field-row">
   <div class="large-2 column">
     <label for="patient-search">Date of Birth</label>
   </div>

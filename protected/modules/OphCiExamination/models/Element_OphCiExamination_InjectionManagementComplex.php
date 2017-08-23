@@ -883,4 +883,26 @@ class Element_OphCiExamination_InjectionManagementComplex extends \SplitEventTyp
     {
         return true;
     }
+
+    protected function getSummaryStringForSide($side)
+    {
+        if ($this->{$side . '_no_treatment_reason'}) {
+            return $this->{$side . '_no_treatment_reason'}->other ?
+                $this->{$side . '_no_treatment_reason_other'} :
+                $this->{$side . '_no_treatment_reason'}->name;
+        } else {
+            return $this->{$side . '_treatment'};
+        }
+    }
+
+    public function __toString() {
+        $res = array();
+        if ($this->hasRight()) {
+            $res[] = 'R: ' . $this->getSummaryStringForSide('right');
+        }
+        if ($this->hasLeft()) {
+            $res[] = 'L: ' . $this->getSummaryStringForSide('left');
+        }
+        return implode(', ', $res);
+    }
 }

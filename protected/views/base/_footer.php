@@ -18,6 +18,8 @@
  */
 ?>
 
+
+
 	<footer class="footer row">
 		<div class="large-3 medium-3 columns">
 			<div class="info">
@@ -43,6 +45,54 @@
 				</ul>
 			</div>
 		</div>
+		<script>
+
+// Include the UserVoice JavaScript SDK (only needed once on a page)
+UserVoice=window.UserVoice||[];(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='http://widget.uservoice.com/xiXrGR5j7JSb6wqDtOQJw.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})();
+
+//
+// UserVoice Javascript SDK developer documentation:
+// https://www.uservoice.com/o/javascript-sdk
+//
+
+// Set colors
+UserVoice.push(['set', {
+  accent_color: '#448dd6',
+  trigger_color: 'white',
+  trigger_background_color: '#448dd6',
+	forum_id: '601405'
+}]);
+
+// Identify the user and pass traits
+// To enable, replace sample data with actual user traits and uncomment the line
+var use_logged_in = uservoice_use_logged_in_user == 'on' ? true : false;
+UserVoice.push(['identify', {
+  email: use_logged_in ? user_email : "", // User’s email address
+  name: use_logged_in ? user_full_name : "", // User’s real name
+  //created_at: 1364406966, // Unix timestamp for the date the user signed up
+  id: use_logged_in ? user_id : "", // Optional: Unique id of the user (if set, this should not change) user id
+  //type:       'Owner', // Optional: segment your users by type
+  account: { // Account traits are only available on some plans
+    id: use_logged_in ? institution_code : uservoice_override_account_id, // Optional: associate multiple users with a single account instituion id remote id
+    name: use_logged_in ? institution_name : uservoice_override_account_name, // Account name
+  //  created_at:   1364406966, // Unix timestamp for the date the account was created
+  //  monthly_rate: 9.99, // Decimal; monthly rate of the account
+  //  ltv:          1495.00, // Decimal; lifetime value of the account
+  //  plan:         'Enhanced' // Plan name for the account
+  }
+}]);
+
+// Add default trigger to the bottom-right corner of the window:
+if (uservoice_enabled == 'on') {
+	UserVoice.push(['addTrigger', {mode: 'feedback', trigger_position: 'bottom-right' }]);
+}
+
+// Or, use your own custom trigger:
+//UserVoice.push(['addTrigger', '#id', { mode: 'contact' }]);
+
+// Autoprompt for Satisfaction and SmartVote (only displayed under certain conditions)
+UserVoice.push(['autoprompt', {}]);
+</script>
 	</footer>
 
 	<script type="text/javascript">

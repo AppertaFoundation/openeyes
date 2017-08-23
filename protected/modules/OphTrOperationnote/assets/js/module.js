@@ -481,6 +481,12 @@ function sidePortController(_drawing) {
     // Register controller for notifications
     _drawing.registerForNotifications(this, 'notificationHandler', ['ready', 'beforeReset', 'reset', 'resetEdit', 'parameterChanged', 'doodleAdded', 'doodleDeleted', 'doodlesLoaded']);
 
+    this.addSidePorts = function() {
+        sidePort1 = _drawing.addDoodle('SidePort', {rotation: 0});
+        sidePort2 = _drawing.addDoodle('SidePort', {rotation: Math.PI});
+        _drawing.deselectDoodles();
+    };
+
     // Method called for notification
     this.notificationHandler = function (_messageArray) {
         switch (_messageArray['eventName']) {
@@ -490,10 +496,8 @@ function sidePortController(_drawing) {
                 phakoIncision = _drawing.firstDoodleOfClass('PhakoIncision');
 
                 // If this is a newly created drawing, add two sideports
-                if (_drawing.isNew) {
-                    sidePort1 = _drawing.addDoodle('SidePort', {rotation: 0});
-                    sidePort2 = _drawing.addDoodle('SidePort', {rotation: Math.PI});
-                    _drawing.deselectDoodles();
+                if ($(_drawing.canvas).parents('.eyedraw-row.cataract').data('isNew')) {
+                    this.addSidePorts();
                 }
                 // Else cancel sync for an updated drawing
                 else {
@@ -514,11 +518,14 @@ function sidePortController(_drawing) {
                 break;
 
             case 'reset':
-                sidePort1 = _drawing.addDoodle('SidePort', {rotation: 0});
-                sidePort2 = _drawing.addDoodle('SidePort', {rotation: Math.PI});
-                _drawing.deselectDoodles();
+                this.addSidePorts();
                 break;
             case 'resetEdit':
+                if ($(_drawing.canvas).parents('.eyedraw-row.cataract').data('isNew')) {
+                    // new eyedraws are loaded in the same way as editing, so might still be a new
+                    // eyedraw that is being reset.
+                    this.addSidePorts();
+                }
                 $('#Element_OphTrOperationnote_Cataract_iol_position_id').val(iol_position);
                 $('#Element_OphTrOperationnote_Cataract_incision_site_id').val(site_id);
                 $('#Element_OphTrOperationnote_Cataract_incision_type_id').val(type_id);
@@ -664,6 +671,7 @@ function changeEye() {
     }
 
     if (typeof(drawingEdit2) != 'undefined') {
+        alert('The eye state loaded for the cataract operation may no longer be correct. Please remove and re-add the procedure.');
         if (drawingEdit2.eye == ED.eye.Right) drawingEdit2.eye = ED.eye.Left;
         else drawingEdit2.eye = ED.eye.Right;
     }

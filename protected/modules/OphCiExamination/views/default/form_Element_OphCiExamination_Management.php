@@ -22,6 +22,6 @@
 		<?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'comments', 'form' => $form))?>
 	</div>
 	<div class="field-row">
-		<?php echo $form->textArea($element, 'comments', array('class' => 'autosize', 'nowrapper' => true))?>
+		<?php echo $form->textArea($element, 'comments', array('class' => 'autosize', 'nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'Comments'))?>
 	</div>
 </div>
