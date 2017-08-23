@@ -209,6 +209,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       }
       else if (item.type == 'd') {
           $container.find(this.options.drugFieldSelector).val(item.value);
+          this.loadDrugDefaults($container.parents('tr'), item);
       } else {
           $container.find(this.options.medicationFieldSelector).val(item.value);
       }
@@ -217,7 +218,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       $container.find(this.options.medicationDisplaySelector).show();
       $container.find(this.options.medicationSearchSelector).hide();
       $container.find(this.options.drugSelectSelector).hide();
-  }
+  };
+
+  HistoryMedicationsController.prototype.loadDrugDefaults = function($row, item)
+  {
+      $.getJSON('/medication/drugdefaults', { drug_id: item.value }, function (res) {
+          for (var name in res) {
+              $row.find('[name$="[' + name +']"]').val(res[name]).change();
+          }
+      });
+  };
 
   HistoryMedicationsController.prototype.resetSearchRow = function($container, showSearch)
   {
