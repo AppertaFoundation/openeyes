@@ -189,6 +189,19 @@ class HistoryMedicationsEntry extends \BaseElement
         parent::afterValidate();
     }
 
+    public function beforeSave()
+    {
+        if ($this->prescription_item_id) {
+            // null out all prescription attributes as we are always concerned the state of the prescription
+            // item.
+            $this->unsetAttributes(array('drug_id', 'dose', 'route_id', 'option_id', 'frequency_id'));
+            if ($this->end_date && $this->end_date == $this->prescription_item->stopDateFromDuration()) {
+                $this->end_date = null;
+            }
+        }
+        return parent::beforeSave();
+    }
+
     /**
      * @return string
      */
