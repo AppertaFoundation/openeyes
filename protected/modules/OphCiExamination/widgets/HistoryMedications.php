@@ -140,8 +140,11 @@ class HistoryMedications extends \BaseEventElementWidget
     }
 
     /**
-     * Merges any missing prescription items into lists of current and stopped medications for
-     * patient level rendering.
+     * Merges any missing (i.e. created since the element) prescription items into lists of
+     * current and stopped medications for patient level rendering.
+     *
+     * Expected to only be used with the at tip element, but would work with older elements as well
+     * should the need arise.
      *
      * @return array
      */
@@ -194,8 +197,14 @@ class HistoryMedications extends \BaseEventElementWidget
         return $this->render($this->getView(), $this->getViewData());
     }
 
+    /**
+     * @return string
+     * @inheritdoc
+     */
     protected function getView()
     {
+        // custom mode for rendering in the patient popup because the data is more complex
+        // for this history element.
         if ($this->mode === static::$PATIENT_POPUP_MODE) {
             return substr(strrchr(get_class($this), '\\'),1) . '_patient_popup';
         }
