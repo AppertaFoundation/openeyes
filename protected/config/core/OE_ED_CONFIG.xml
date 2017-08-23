@@ -1727,7 +1727,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Allergies</OPEN_ELEMENT_CLASS_NAME>
 		</INDEX>
 		<INDEX>
-			<PRIMARY_TERM>Examination Previous Ophthalmic Surgery</PRIMARY_TERM>
+			<PRIMARY_TERM>Previous Ophthalmic Surgery</PRIMARY_TERM>
 			<SECONDARY_TERM_LIST>
 				<TERM>Past Surgery</TERM>
 			</SECONDARY_TERM_LIST>
@@ -1887,6 +1887,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Label</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/Label.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicalLids</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
 					<GOTO_PROPERTY>Text</GOTO_PROPERTY>
@@ -2326,12 +2327,14 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<GOTO_TEXT>Straightforward case</GOTO_TEXT>
 				</INDEX>
 				<INDEX>
-					<PRIMARY_TERM>Post operative refractive target in dioptres</PRIMARY_TERM>
+					<PRIMARY_TERM>Post operative refractive target</PRIMARY_TERM>
+					<DESCRIPTION>Post operative refractive target in dioptres</DESCRIPTION>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_target_postop_refraction</GOTO_ID>
 				</INDEX>
 				<INDEX>
-					<PRIMARY_TERM>The post operative refractive target has been discussed with the patient</PRIMARY_TERM>
+					<PRIMARY_TERM>Post operative refractive target</PRIMARY_TERM>
+					<DESCRIPTION>The post operative refractive target has been discussed with the patient</DESCRIPTION>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_TAG>div</GOTO_TAG>
 					<GOTO_TEXT>The post operative refractive target has been discussed with the patient</GOTO_TEXT>
@@ -2389,6 +2392,9 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Gonio</PRIMARY_TERM>
+					<SECONDARY_TERM_LIST>
+						<TERM>Gonioscopy</TERM>
+					</SECONDARY_TERM_LIST>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_gonio_id</GOTO_ID>
 				</INDEX>
@@ -2685,14 +2691,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<IMG_URL>/assets/index_search/Label.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
-					<INDEX_LIST>
-						<INDEX>
-							<PRIMARY_TERM>Text</PRIMARY_TERM>
-							<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
-							<GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
-							<GOTO_PROPERTY>Text</GOTO_PROPERTY>
-						</INDEX>
-					</INDEX_LIST>
+					<GOTO_PROPERTY>Text</GOTO_PROPERTY>
 				</INDEX>
 			</INDEX_LIST>
 		</INDEX>
@@ -2742,14 +2741,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<IMG_URL>/assets/index_search/Label.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
-					<INDEX_LIST>
-						<INDEX>
-							<PRIMARY_TERM>Text</PRIMARY_TERM>
-							<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
-							<GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
-							<GOTO_PROPERTY>Text</GOTO_PROPERTY>
-						</INDEX>
-					</INDEX_LIST>
+					<GOTO_PROPERTY>Text</GOTO_PROPERTY>
 				</INDEX>
 			</INDEX_LIST>
 		</INDEX>
@@ -2821,14 +2813,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<IMG_URL>/assets/index_search/Label.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
-					<INDEX_LIST>
-						<INDEX>
-							<PRIMARY_TERM>Text</PRIMARY_TERM>
-							<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
-							<GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
-							<GOTO_PROPERTY>Text</GOTO_PROPERTY>
-						</INDEX>
-					</INDEX_LIST>
+					<GOTO_PROPERTY>Text</GOTO_PROPERTY>
 				</INDEX>
 			</INDEX_LIST>
 		</INDEX>
@@ -2941,14 +2926,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<IMG_URL>/assets/index_search/Label.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
 					<GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
-					<INDEX_LIST>
-						<INDEX>
-							<PRIMARY_TERM>Text</PRIMARY_TERM>
-							<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
-							<GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
-							<GOTO_PROPERTY>Text</GOTO_PROPERTY>
-						</INDEX>
-					</INDEX_LIST>
+					<GOTO_PROPERTY>Text</GOTO_PROPERTY>
 				</INDEX>
 			</INDEX_LIST>
 		</INDEX>
@@ -2956,6 +2934,13 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 			<PRIMARY_TERM>Examination Anterior Segment</PRIMARY_TERM>
 			<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 			<INDEX_LIST>
+				<INDEX>
+					<PRIMARY_TERM>Label</PRIMARY_TERM>
+					<IMG_URL>/assets/index_search/Label.png</IMG_URL>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+					<GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
+					<GOTO_PROPERTY>Text</GOTO_PROPERTY>
+				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Anterior chamber IOL</PRIMARY_TERM>
 					<SECONDARY_TERM_LIST>
