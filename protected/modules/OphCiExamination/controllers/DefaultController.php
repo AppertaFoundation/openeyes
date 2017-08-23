@@ -470,7 +470,7 @@ class DefaultController extends \BaseEventTypeController
         }
 
         foreach ($extra_by_etid as $extra_element) {
-            $extra_element->setDefaultOptions();
+            $extra_element->setDefaultOptions($this->patient);
 
             // Precache Element Type to avoid bug in usort
             $extra_element->getElementType();
