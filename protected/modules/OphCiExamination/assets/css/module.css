@@ -239,16 +239,11 @@ section.OEModule_OphCiExamination_models_Allergies table#OEModule_OphCiExaminati
 }
 
 /* line 20, ../sass/components/elements/_history-medications.scss */
-.medication-display {
-  white-space: nowrap;
-}
-
-/* line 24, ../sass/components/elements/_history-medications.scss */
 a.start-medication {
   color: green;
 }
 
-/* line 28, ../sass/components/elements/_history-medications.scss */
+/* line 24, ../sass/components/elements/_history-medications.scss */
 a.stop-medication {
   color: red;
 }

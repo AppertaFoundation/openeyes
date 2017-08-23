@@ -66,7 +66,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         </fieldset>
     </td>
     <td>
-        <span class="medication-display"><span class="medication-name"><?= $entry->getMedicationDisplay() ?></span> <a href="#" class="medication-rename"><i class="fa fa-times-circle" aria-hidden="true" title="Change medication"></i></a></span>
+        <span class="medication-display"><a href="#" class="medication-rename"><i class="fa fa-times-circle" aria-hidden="true" title="Change medication"></i></a> <span class="medication-name"><?= $entry->getMedicationDisplay() ?></span></span>
         <input type="hidden" name="<?= $field_prefix ?>[drug_id]" value="<?= $entry->drug_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_drug_id]" value="<?= $entry->medication_drug_id ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->medication_name ?>" />
