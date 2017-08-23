@@ -70,14 +70,8 @@ class HistoryMedicationsEntry extends \BaseElement
      */
     public function rules()
     {
-        $required_fields = 'start_date';
-        if (!isset($this->getApp()->params['enable_concise_med_history']) || !$this->getApp()->params['enable_concise_med_history'])
-        {
-            $required_fields .= ', frequency_id, route_id';
-        }
         return array(
             array('element_id, medication_drug_id, drug_id, medication_name, route_id, option_id, dose, frequency_id, start_date, end_date, stop_reason_id, prescription_item_id', 'safe'),
-            array($required_fields, 'required'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
             array('end_date', 'OEFuzzyDateValidator'),
             array('option_id', 'validateOptionId'),
@@ -174,6 +168,9 @@ class HistoryMedicationsEntry extends \BaseElement
         $this->initialiseFromPrescriptionItem();
     }
 
+    /**
+     * require an option selection when a route is chosen that has options
+     */
     public function validateOptionId()
     {
         if (!$this->option_id && $this->route && $this->route->options) {
@@ -181,14 +178,24 @@ class HistoryMedicationsEntry extends \BaseElement
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function afterValidate()
     {
         if (!$this->medication_name && !$this->medication_drug_id && !$this->drug_id) {
             $this->addError('medication_name', 'A drug must be provided.');
         }
+        if ($this->start_date && $this->end_date && $this->start_date > $this->end_date) {
+            $this->addError('end_date', 'Stop date must be on or before start_date');
+        }
         parent::afterValidate();
     }
 
+    /**
+     * @return bool
+     * @inheritdoc
+     */
     public function beforeSave()
     {
         if ($this->prescription_item_id) {
