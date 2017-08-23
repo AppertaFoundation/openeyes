@@ -32,6 +32,7 @@ class HistoryMedications extends \BaseEventElementWidget
     public $is_latest_element = null;
     public $missing_prescription_items = null;
 
+    protected $print_view = 'HistoryMedications_event_print';
     /**
      * @return HistoryMedicationsElement
      */

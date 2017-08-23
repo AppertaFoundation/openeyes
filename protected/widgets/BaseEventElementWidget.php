@@ -8,8 +8,9 @@ class BaseEventElementWidget extends CWidget
     public static $PATIENT_SUMMARY_MODE = 1;
     public static $PATIENT_POPUP_MODE = 2;
     public static $EVENT_VIEW_MODE = 4;
-    public static $EVENT_EDIT_MODE = 8;
-    public static $EPISODE_SUMMARY_MODE = 16;
+    public static $EVENT_PRINT_MODE = 8;
+    public static $EVENT_EDIT_MODE = 16;
+    public static $EPISODE_SUMMARY_MODE = 32;
 
     /**
      * @var string of the module name.
@@ -36,6 +37,7 @@ class BaseEventElementWidget extends CWidget
 
     public $notattip_edit_warning = 'application.widgets.views.BaseEventElement_edit_nottip';
     public $notattip_view_warning = 'application.widgets.views.BaseEventElement_view_nottip';
+    protected $print_view;
 
     public static function latestForPatient(Patient $patient)
     {
@@ -81,7 +83,8 @@ class BaseEventElementWidget extends CWidget
     {
         return in_array($mode,
             array(static::$PATIENT_SUMMARY_MODE, static::$PATIENT_POPUP_MODE,
-                static::$EVENT_VIEW_MODE, static::$EVENT_EDIT_MODE), true);
+                static::$EVENT_VIEW_MODE, static::$EVENT_PRINT_MODE,
+                static::$EVENT_EDIT_MODE), true);
     }
 
     /**
@@ -258,6 +261,10 @@ class BaseEventElementWidget extends CWidget
         switch ($this->mode) {
             case static::$EVENT_VIEW_MODE:
                 return $short_name . '_event_view';
+                break;
+            case static::$EVENT_PRINT_MODE:
+                // defaults to the standard view unless widget defines a print view
+                return $this->print_view ? : $short_name . '_event_view';
                 break;
             case static::$EVENT_EDIT_MODE:
                 return $short_name . '_event_edit';
