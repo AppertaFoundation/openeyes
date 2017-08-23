@@ -21,7 +21,7 @@
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <?php $el_id =  CHtml::modelName($element) . '_popup'; ?>
 
-<?php if ($element) { ?>
+<?php if ($element && ($current || $stopped)) { ?>
     <div class="row" id="<?= $el_id ?>">
         <div class="large-2 column label">
             Medications
@@ -45,8 +45,8 @@
                 No current medications.
             <?php } ?>
             <?php if ($stopped) { ?>
-                <div class="row stopped-kind" style="display: none;">
-                    <i>Stopped:</i> <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a>
+                <div class="row stopped-kind" <?php if ($current) { ?>style="display: none;"<?php } ?>>
+                    <i>Stopped:</i> <?php if ($current) { ?><a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a><?php } ?>
                     <table class="plain valign-top">
                     <?php foreach ($stopped as $entry) { ?>
                         <tr>

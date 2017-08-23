@@ -23,7 +23,7 @@
     <div class="large-2 column">
       <label style="white-space: nowrap;">Current:
           <a href="#" class="detail-toggle" data-kind="current"><i class="fa fa-icon fa-expand" aria-hidden="true"></i></a>
-          <a href="#" class="kind-toggle show" data-kind="stopped"><i class="fa fa-icon fa-history" aria-hidden="true"></i></a></label>
+          <?php if ($element->stoppedOrderedEntries) { ?><a href="#" class="kind-toggle show" data-kind="stopped"><i class="fa fa-icon fa-history" aria-hidden="true"></i></a><?php } ?></label>
     </div>
     <div class="large-10 column end">
         <div class="data-value current">
@@ -37,10 +37,10 @@
         </div>
     </div>
   </div>
-    <div class="row stopped-kind" style="display: none;">
+    <div class="row stopped-kind" <?php if ($element->currentOrderedEntries) { ?>style="display: none;" <?php } ?>>
         <div class="large-2 column">
             <label style="white-space: nowrap;">Stopped: <a href="#" class="detail-toggle" data-kind="stopped"><i class="fa fa-icon fa-expand" aria-hidden="true"></i></a>
-                <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a>
+                <?php if ($element->currentOrderedEntries) { ?><a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i><?php } ?></a>
             </label>
         </div>
         <div class="large-10 column end">

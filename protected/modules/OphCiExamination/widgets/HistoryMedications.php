@@ -28,6 +28,9 @@ use OEModule\OphCiExamination\models\HistoryMedicationsEntry;
 class HistoryMedications extends \BaseEventElementWidget
 {
     public static $moduleName = 'OphCiExamination';
+    public $notattip_edit_warning = 'OEModule.OphCiExamination.widgets.views.HistoryMedications_edit_nottip';
+    public $is_latest_element = null;
+    public $missing_prescription_items = null;
 
     /**
      * @return HistoryMedicationsElement
@@ -48,8 +51,8 @@ class HistoryMedications extends \BaseEventElementWidget
         $untracked = array();
         if ($api = $this->getApp()->moduleAPI->get('OphDrPrescription')) {
             $tracked_prescr_item_ids = array_map(
-                function ($item) {
-                    return $item->id;
+                function ($entry) {
+                    return $entry->prescription_item_id;
                 },
                 $this->element->getPrescriptionEntries()
             );
@@ -67,9 +70,18 @@ class HistoryMedications extends \BaseEventElementWidget
         return $untracked;
     }
 
+    /**
+     * @return bool
+     * @inheritdoc
+     */
     protected function isAtTip()
     {
-        return parent::isAtTip() && !$this->getEntriesForUntrackedPrescriptionItems();
+        $this->is_latest_element = parent::isAtTip();
+        $this->missing_prescription_items = !empty($this->getEntriesForUntrackedPrescriptionItems());
+        // if it's a new record we trust that the missing prescription items will be added
+        // to the element, otherwise we care if there are untracked prescription items
+        // in terms of this being considered a tip record.
+        return $this->is_latest_element && ($this->element->isNewRecord || !$this->missing_prescription_items);
     }
 
     /**
@@ -114,8 +126,9 @@ class HistoryMedications extends \BaseEventElementWidget
                 $entry = ($id && array_key_exists($id, $entries_by_id)) ?
                     $entries_by_id[$id] :
                     new HistoryMedicationsEntry();
-                foreach (array('originallyStopped', 'start_date', 'end_date', 'drug_id', 'medication_drug_id', 'medication_name', 'dose',
-                             'frequency_id', 'route_id', 'option_id', 'stop_reason_id') as $k) {
+                foreach (array('originallyStopped', 'start_date', 'end_date', 'drug_id', 'medication_drug_id',
+                             'medication_name', 'dose', 'frequency_id', 'route_id', 'option_id',
+                             'stop_reason_id', 'prescription_item_id') as $k) {
                     $entry->{$k} = array_key_exists($k, $entry_data) ? $entry_data[$k] : null;
                 }
                 $entries[] = $entry;
@@ -126,6 +139,12 @@ class HistoryMedications extends \BaseEventElementWidget
         }
     }
 
+    /**
+     * Merges any missing prescription items into lists of current and stopped medications for
+     * patient level rendering.
+     *
+     * @return array
+     */
     public function getMergedEntries()
     {
         // determine if there are any prescription items that are not tracked by the element

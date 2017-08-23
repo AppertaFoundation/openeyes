@@ -42,7 +42,7 @@ $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', '
         <?php
         $row_count = 0;
         foreach ($element->entries as $entry) {
-            if ($entry->prescription_item) {
+            if ($entry->prescription_item_id) {
                 $this->render(
                     'HistoryMedicationsEntry_prescription_event_edit',
                     array(

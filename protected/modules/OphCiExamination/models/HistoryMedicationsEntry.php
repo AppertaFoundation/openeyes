@@ -18,7 +18,9 @@
 namespace OEModule\OphCiExamination\models;
 
 /**
- * Class HistoryMedicationsEntry
+ * Class HistoryMedicationsEntry - Supports linking to prescription items as shadow records
+ * to enable a full medication history to be displayed in one place.
+ *
  * @package OEModule\OphCiExamination\models
  *
  * attributes:

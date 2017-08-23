@@ -24,7 +24,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.$element = this.options.element;
     this.$table = this.$element.find('table');
     this.templateText = this.$element.find('.entry-template').text();
-    this.hideStopped();
+    this.initialiseFilters();
     this.initialiseTriggers();
   }
 
@@ -49,6 +49,20 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     cancelStopDateButtonSelector: '.stop-medication.cancel',
     routeFieldSelector: 'select[name$="[route_id]"]',
     routeOptionWrapperSelector: '.admin-route-options'
+  };
+
+  /**
+  * Sets up the filter controls on the table.
+  */
+  HistoryMedicationsController.prototype.initialiseFilters = function()
+  {
+    // if there aren't any stopped medications, then the filter is irrelevant
+    if (!this.$table.find('tr.originally-stopped').length) {
+      this.$element.find('.show-stopped').hide();
+      this.$element.find('.hide-stopped').hide();
+    } else {
+      this.hideStopped();
+    }
   };
 
   HistoryMedicationsController.prototype.initialiseTriggers = function()
