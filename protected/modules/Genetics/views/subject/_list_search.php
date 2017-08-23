@@ -111,6 +111,7 @@
                     'value' => $value,
                     'clear_diagnosis' => '&nbsp;<i class="fa fa-minus-circle" aria-hidden="true" id="clear-diagnosis-widget"></i>',
                     'placeholder' => 'Search for a diagnosis',
+                    'callback' => null
                 ));
             ?>
         </div>
