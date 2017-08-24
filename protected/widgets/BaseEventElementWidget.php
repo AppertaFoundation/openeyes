@@ -97,8 +97,22 @@ class BaseEventElementWidget extends CWidget
     /**
      * @return bool
      */
+    protected function showEditTipWarning() {
+        return $this->inEditMode();
+    }
+
+    /**
+     * @return bool
+     */
     protected function inViewMode() {
         return in_array($this->mode, array(static::$PATIENT_SUMMARY_MODE, static::$EVENT_VIEW_MODE), true);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function showViewTipWarning() {
+        return $this->inViewMode();
     }
 
     /**
@@ -288,11 +302,14 @@ class BaseEventElementWidget extends CWidget
         );
     }
 
+
+
     /**
      * @return string
      */
     public function run()
     {
+        // TODO: refactor this out for consistent rendering
         if ($this->mode === static::$PATIENT_POPUP_MODE) {
             return $this->popupList();
         }
@@ -305,11 +322,14 @@ class BaseEventElementWidget extends CWidget
      */
     public function renderWarnings()
     {
-        if ($this->inEditMode() && !$this->isAtTip()) {
-            return $this->render($this->notattip_edit_warning, array('element' => $this->element));
+        if (!$this->isAtTip()) {
+            if ($this->showEditTipWarning()) {
+                return $this->render($this->notattip_edit_warning, array('element' => $this->element));
+            }
+            if ($this->showViewTipWarning()) {
+                return $this->render($this->notattip_view_warning, array('element' => $this->element));
+            }
         }
-        if ($this->inViewMode() && !$this->isAtTip()) {
-            return $this->render($this->notattip_view_warning, array('element' => $this->element));
-        }
+
     }
 }
