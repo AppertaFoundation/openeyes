@@ -31,7 +31,7 @@
 							<xs:element name="GOTO_ID" type="xs:string"/>
 							<xs:sequence>
 								<xs:element name="GOTO_TAG" type="xs:string"/>
-								<xs:sequence minOccurs="0">
+								<xs:sequence>
 									<xs:element name="GOTO_TEXT" type="xs:string"/>
 								</xs:sequence>
 							</xs:sequence>

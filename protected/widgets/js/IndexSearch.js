@@ -229,23 +229,69 @@ function show_results(){
     parameters["element_id"] = $this.data('elementId');
     parameters["doodle_name"] = $this.data('doodleClassName');
     parameters["property_name"] = $this.data('property');
+    parameters["goto_id"] = $this.data('gotoId');
+    parameters["goto_subcontainer"] = $this.data('gotoSubcontainer');
+    parameters["goto_tag"] = $this.data('gotoTag');
+    parameters["goto_text"] = $this.data('gotoText');
     //can revese order have different length chains etc
     //Chains can be made conditional based on content of parameters
     //Guarantees funcion execution order (even for asyncrounous functions)
-    click_element(parameters).then(result => click_doodle(result)).then(result => click_property(result)).catch(() => {
+
+    done = function() {
       $('#is_loading').hide();
       clearTimeout(is_loading_timeout);
       return;
+    };  //cahnge click element reject resolve bit
+
+    //element -> doodle -> property
+    if (parameters["doodle_name"]){
+      click_element(parameters).then(result => click_doodle(result)).then(result => click_property(result)).catch(() => done());
+    }
+
+    //element -> id
+    if (parameters["goto_id"]) {
+      click_element(parameters).then(result => goto_id(result)).catch(() => done());
+    }
+
+    //element -> tag (subcontainers?) -> text
+    if (parameters['goto_tag']) {
+      click_element(parameters).then(result => goto_tag_and_text(result)).catch(() => done());
+    }
+
+    click_element(parameters).catch(() => done());
+  }
+
+  function goto_id(parameters){
+    return new Promise(function(resolve, reject) {
+      let target_id = parameters['goto_id'].replace('%position',last_search_pos);
+      $(`section[data-element-type-id = ${parameters['element_id']}]`).find(`#${target_id}`).effect("highlight", {}, 6000);
+        reject();
+    });
+  }
+
+  function goto_tag_and_text(parameters){
+    return new Promise(function(resolve, reject) {
+      let container = $(`section[data-element-type-id = ${parameters['element_id']}]`);
+      container = (parameters['goto_subcontainer']) ? container.find(`.${parameters['goto_subcontainer'].replace('position',last_search_pos)}`) : container;
+      let g = container.find(`${parameters['goto_tag']}:contains(${parameters['goto_text']})`).effect("highlight", {}, 6000);
+      reject();
     });
   }
 
   function click_element(parameters){
     //get side bar item
-    let $item = $(".oe-event-sidebar-edit li a:contains("+parameters.element_name+")");
+    //let $item = $(".oe-event-sidebar-edit li a:contains("+parameters.element_name+")");
+    let $item = $(`.oe-event-sidebar-edit a:contains(${parameters['element_name']})`).filter(function(){
+      return $(this).text() == parameters['element_name'];
+    });
+
+    if (parameters['element_name'] == 'Risks'){
+      $item = $(`.oe-event-sidebar-edit a:contains(${parameters['element_name']}):first`); //temp fix while there is two risks on side bar
+    }
     return click_sidebar_element($item).then(function (){
       return new Promise(function(resolve, reject) {
         //see if parameters are set for doodle
-        if (parameters.doodle_name) {
+        if (parameters['doodle_name'] || parameters['goto_id'] || parameters['goto_tag']) {
           resolve(parameters);
         } else {
           reject();
@@ -287,11 +333,7 @@ function show_results(){
       $(control_id).find("div:contains("+parameters.property_name+")").effect("highlight", {}, 6000);
       /* Breaks the Promise chain as nothing should be called after property,
       based on the current code */
-      if (1 == 2) {
-        resolve(parameters);
-      } else {
-        reject();
-      }
+      reject();
     });
   }
   //wrapper for old-style callback

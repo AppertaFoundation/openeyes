@@ -342,12 +342,19 @@ private function get_element_name($open_element_class_name){
       $open_element_class_name = $index->OPEN_ELEMENT_CLASS_NAME;
       $goto_doodle_class_name = $index->GOTO_DOODLE_CLASS_NAME;
       $goto_property = $index->GOTO_PROPERTY;
+      $goto_subcontainer = $index->GOTO_SUBCONTAINER;
+      $goto_id = $index->GOTO_ID;
+      $goto_tag = $index->GOTO_TAG;
+      $goto_text = $index->GOTO_TEXT;
       $result =
       "<li style>"
       ."<div class=\"result_item"
       //changed from IMG_URL to class name with image property
       .($img ? (" result_item_with_icon is_".$goto_doodle_class_name."\"") : (""))
       ."\" "
+      .($goto_id ? ("data-goto-id=\"".$goto_id."\" ") : (""))
+      .($goto_tag ? ("data-goto-tag=\"".$goto_tag."\" ") : (""))
+      .($goto_text ? ("data-goto-text=\"".$goto_text."\" ") : (""))
       .($open_element_class_name ? ("data-element-class-name=\"".$open_element_class_name."\" ") : (""))
       .($open_element_class_name ? ("data-element-id=\"".$this->get_element_id($open_element_class_name)."\" ") : (""))
       .($open_element_class_name ? ("data-element-name=\"".$this->get_element_name($open_element_class_name)."\" ") : (""))
@@ -358,11 +365,11 @@ private function get_element_name($open_element_class_name){
       ."class='lvl".$lvl."'>"
       .$primary_term."</span>"
       ."</div>"
-      .($secondary_term_list ? ( //TODO allow for description only
+      .(($secondary_term_list || $description || $warning || $info) ? ( //TODO allow for description only
         "<div class=\"index_row\">"
         ."<div class=\"index_col_left\">"
         ."<span class=\"alias\">"
-        .$secondary_term_list
+        .($secondary_term_list ? ($secondary_term_list) : (""))
         ."</span>"
         ."</div>"
         ."<div class=\"index_col_right\">"
