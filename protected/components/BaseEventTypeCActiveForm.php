@@ -127,6 +127,46 @@ class BaseEventTypeCActiveForm extends FormLayout
 
     /**
      * @param       $element
+     * @param       $data
+     * @param null  $selected_items
+     * @param bool  $maxwidth
+     * @param bool  $hidden
+     * @param bool  $no_element
+     * @param bool  $label_above
+     * @param array $htmlOptions
+     * @param array $layoutColumns
+     */
+    public function checkBoxes(
+        $element,
+        $data,
+        $selected_items = null,
+        $label = null,
+        $maxwidth = false,
+        $hidden = false,
+        $no_element = false,
+        $label_above = false,
+        $htmlOptions = array(),
+        $layoutColumns = array()
+    ) {
+        $this->widget('application.widgets.CheckBoxList', array(
+            'element' => $element,
+            'name' => "{$data}",
+            'data' => $data,
+            'selected_items' => $selected_items,
+            'label' => $label,
+            'maxwidth' => $maxwidth,
+            'hidden' => $hidden,
+            'no_element' => $no_element,
+            'label_above' => $label_above,
+            'htmlOptions' => $htmlOptions,
+            'layoutColumns' => $layoutColumns,
+        ));
+    }
+
+
+
+    /**
+     * @param       $element
      * @param       $field
      * @param array $htmlOptions
      * @param array $layoutColumns

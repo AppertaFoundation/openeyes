@@ -17,21 +17,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-/**
- * This is the model class for table "anaesthetic_delivery".
- *
- * The followings are the available columns in table 'anaesthetic_delivery':
- *
- * @property int $id
- * @property string $name
- * @property int $display_order
- */
-class AnaestheticDelivery extends BaseActiveRecordVersioned
+
+class OphTrOperationnote_OperationAnaestheticType extends BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return AnaestheticDelivery the static model class
+     * @return ElementOperation the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -43,12 +35,7 @@ class AnaestheticDelivery extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'anaesthetic_delivery';
-    }
-
-    public function defaultScope()
-    {
-        return array('order' => $this->getTableAlias(true, false).'.display_order');
+        return 'ophtroperationnote_anaesthetic_anaesthetic_type';
     }
 
     /**
@@ -67,15 +54,39 @@ class AnaestheticDelivery extends BaseActiveRecordVersioned
      */
     public function relations()
     {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
         return array(
-            'anaesthetic_delivery_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_OperationAnaestheticDelivery', 'anaesthetic_delivery_id'),
+            'element' => array(self::BELONGS_TO, 'Element_OphTrOperationnote_Anaesthetic', 'et_ophtroperationnote_anaesthetic_id'),
+            'anaesthetic_type' =>  array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id'),
         );
     }
 
-    public function behaviors()
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
     {
         return array(
-            'LookupTable' => 'LookupTable',
         );
+    }
+
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // Warning: Please modify the following code to remove attributes that
+        // should not be searched.
+
+        $criteria = new CDbCriteria();
+
+        $criteria->compare('id', $this->id, true);
+
+        return new CActiveDataProvider(get_class($this), array(
+            'criteria' => $criteria,
+        ));
     }
 }
