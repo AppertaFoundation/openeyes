@@ -342,7 +342,7 @@ private function get_element_name($open_element_class_name){
       $open_element_class_name = $index->OPEN_ELEMENT_CLASS_NAME;
       $goto_doodle_class_name = $index->GOTO_DOODLE_CLASS_NAME;
       $goto_property = $index->GOTO_PROPERTY;
-      $goto_subcontainer = $index->GOTO_SUBCONTAINER;
+      $goto_subcontainer = $index->GOTO_SUBCONTAINER_CLASS;
       $goto_id = $index->GOTO_ID;
       $goto_tag = $index->GOTO_TAG;
       $goto_text = $index->GOTO_TEXT;
@@ -353,6 +353,7 @@ private function get_element_name($open_element_class_name){
       .($img ? (" result_item_with_icon is_".$goto_doodle_class_name."\"") : (""))
       ."\" "
       .($goto_id ? ("data-goto-id=\"".$goto_id."\" ") : (""))
+      .($goto_subcontainer ? ("data-goto-subcontainer=\"".$goto_subcontainer."\" ") : (""))
       .($goto_tag ? ("data-goto-tag=\"".$goto_tag."\" ") : (""))
       .($goto_text ? ("data-goto-text=\"".$goto_text."\" ") : (""))
       .($open_element_class_name ? ("data-element-class-name=\"".$open_element_class_name."\" ") : (""))

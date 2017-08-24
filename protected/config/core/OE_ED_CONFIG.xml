@@ -1707,13 +1707,13 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 				<INDEX>
 					<PRIMARY_TERM>Side</PRIMARY_TERM>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SystemicDiagnoses</OPEN_ELEMENT_CLASS_NAME>
-					<GOTO_TAG>div</GOTO_TAG>
+					<GOTO_TAG>label</GOTO_TAG>
 					<GOTO_TEXT>Side</GOTO_TEXT>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Date</PRIMARY_TERM>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SystemicDiagnoses</OPEN_ELEMENT_CLASS_NAME>
-					<GOTO_TAG>div</GOTO_TAG>
+					<GOTO_TAG>legend</GOTO_TAG>
 					<GOTO_TEXT>Date</GOTO_TEXT>
 				</INDEX>
 			</INDEX_LIST>
@@ -1752,7 +1752,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 				<INDEX>
 					<PRIMARY_TERM>Driving Status</PRIMARY_TERM>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
-					<GOTO_ID>div_OEModule_OphCiExamination_models_SocialHistory_Driving Status</GOTO_ID>
+					<GOTO_ID>OEModule_OphCiExamination_models_SocialHistory_driving_statuses</GOTO_ID>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Smoking Status</PRIMARY_TERM>
@@ -1816,20 +1816,21 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 				<INDEX>
 					<PRIMARY_TERM>Sphere</PRIMARY_TERM>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction</OPEN_ELEMENT_CLASS_NAME>
-					<GOTO_TAG>div</GOTO_TAG>
+					<GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+					<GOTO_TAG>legend</GOTO_TAG>
 					<GOTO_TEXT>Sphere</GOTO_TEXT>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Cylinder</PRIMARY_TERM>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction</OPEN_ELEMENT_CLASS_NAME>
-					<GOTO_TAG>div</GOTO_TAG>
+					<GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+					<GOTO_TAG>legend</GOTO_TAG>
 					<GOTO_TEXT>Cylinder</GOTO_TEXT>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Axis</PRIMARY_TERM>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction</OPEN_ELEMENT_CLASS_NAME>
-					<GOTO_TAG>div</GOTO_TAG>
-					<GOTO_TEXT>Axis</GOTO_TEXT>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_%position_axis</GOTO_ID>
 				</INDEX>
 			</INDEX_LIST>
 		</INDEX>
@@ -2705,7 +2706,8 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 						<TERM>Angle Close?</TERM>
 					</SECONDARY_TERM_LIST>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
-					<GOTO_TAG>div</GOTO_TAG>
+					<GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+					<GOTO_TAG>div.field-label</GOTO_TAG>
 					<GOTO_TEXT>Angle Open?</GOTO_TEXT>
 				</INDEX>
 				<INDEX>
@@ -2716,7 +2718,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 				<INDEX>
 					<PRIMARY_TERM>Comments</PRIMARY_TERM>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
-					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy_%postition_description</GOTO_ID>
+					<GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy_%position_description</GOTO_ID>
 				</INDEX>
 				<INDEX>
 					<PRIMARY_TERM>Angle new vessels</PRIMARY_TERM>

@@ -272,15 +272,16 @@ function show_results(){
   function goto_tag_and_text(parameters){
     return new Promise(function(resolve, reject) {
       let container = $(`section[data-element-type-id = ${parameters['element_id']}]`);
-      container = (parameters['goto_subcontainer']) ? container.find(`.${parameters['goto_subcontainer'].replace('position',last_search_pos)}`) : container;
-      let g = container.find(`${parameters['goto_tag']}:contains(${parameters['goto_text']})`).effect("highlight", {}, 6000);
+      if (parameters['goto_subcontainer']) {
+        container = container.find('.'+parameters['goto_subcontainer'].replace('%position',last_search_pos));
+      }
+      container.find(`${parameters['goto_tag']}:contains(${parameters['goto_text']})`).effect("highlight", {}, 6000);
       reject();
     });
   }
 
   function click_element(parameters){
     //get side bar item
-    //let $item = $(".oe-event-sidebar-edit li a:contains("+parameters.element_name+")");
     let $item = $(`.oe-event-sidebar-edit a:contains(${parameters['element_name']})`).filter(function(){
       return $(this).text() == parameters['element_name'];
     });
