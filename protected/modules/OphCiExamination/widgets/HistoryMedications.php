@@ -33,12 +33,21 @@ class HistoryMedications extends \BaseEventElementWidget
     public $missing_prescription_items = null;
 
     protected $print_view = 'HistoryMedications_event_print';
+
     /**
      * @return HistoryMedicationsElement
      */
     protected function getNewElement()
     {
         return new HistoryMedicationsElement();
+    }
+
+    /**
+     * @return bool
+     */
+    protected function showViewTipWarning()
+    {
+        return $this->mode === static::$EVENT_VIEW_MODE;
     }
 
     /**
@@ -78,11 +87,19 @@ class HistoryMedications extends \BaseEventElementWidget
     protected function isAtTip()
     {
         $this->is_latest_element = parent::isAtTip();
-        $this->missing_prescription_items = !empty($this->getEntriesForUntrackedPrescriptionItems());
         // if it's a new record we trust that the missing prescription items will be added
         // to the element, otherwise we care if there are untracked prescription items
         // in terms of this being considered a tip record.
-        return $this->is_latest_element && ($this->element->isNewRecord || !$this->missing_prescription_items);
+        if ($this->is_latest_element && $this->element->isNewRecord) {
+            return true;
+        }
+        $this->missing_prescription_items = !empty($this->getEntriesForUntrackedPrescriptionItems());
+        foreach ($this->element->entries as $entry) {
+            if ($entry->prescription_not_synced || $entry->prescription_event_deleted) {
+                return false;
+            }
+        }
+        return !$this->missing_prescription_items;
     }
 
     /**
@@ -205,7 +222,7 @@ class HistoryMedications extends \BaseEventElementWidget
     protected function getView()
     {
         // custom mode for rendering in the patient popup because the data is more complex
-        // for this history element.
+        // for this history element than others which just provide a list.
         if ($this->mode === static::$PATIENT_POPUP_MODE) {
             return substr(strrchr(get_class($this), '\\'),1) . '_patient_popup';
         }

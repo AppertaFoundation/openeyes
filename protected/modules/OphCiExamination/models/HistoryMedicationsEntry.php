@@ -47,6 +47,9 @@ class HistoryMedicationsEntry extends \BaseElement
      */
     public $originallyStopped = false;
 
+    public $prescription_not_synced = null;
+    public $prescription_event_deleted = null;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -106,21 +109,18 @@ class HistoryMedicationsEntry extends \BaseElement
         if ($this->end_date !== null) {
             $this->originallyStopped = true;
         }
-        if ($this->prescription_item) {
+        if ($this->prescription_item_id) {
             $this->initialiseFromPrescriptionItem();
         }
     }
 
     /**
-     * To ensure that the entry always reflects the latest data from the prescription item,
-     * we set it's properties from the prescription.
+     * Set all the attributes on the entry to those on the prescription item.
+     *
+     * @param $item
      */
-    protected function initialiseFromPrescriptionItem()
+    private function clonefromPrescriptionItem($item)
     {
-        if (!$item = $this->prescription_item) {
-            throw new \CException('Cannot initialise entry with prescription item when no item set on ' . static::class);
-        };
-
         $this->drug_id = $item->drug_id;
         $this->drug = $item->drug;
         $this->route_id = $item->route_id;
@@ -131,17 +131,51 @@ class HistoryMedicationsEntry extends \BaseElement
         $this->frequency_id = $item->frequency_id;
         $this->frequency = $item->frequency;
         $this->start_date = $item->prescription->event->event_date;
-        $end_date = $item->stopDateFromDuration();
-        $compare_date = new \DateTime();
+        if (!$this->end_date) {
+            $end_date = $item->stopDateFromDuration();
+            $compare_date = new \DateTime();
 
-        if ($this->element && $this->element->event && $this->element->event->event_date) {
-            $compare_date = \DateTime::createFromFormat('Y-m-d', $this->element->event->event_date);
+            if ($this->element && $this->element->event && $this->element->event->event_date) {
+                $compare_date = \DateTime::createFromFormat('Y-m-d', $this->element->event->event_date);
+            }
+            if ($end_date && $end_date < $compare_date) {
+                $this->originallyStopped = true;
+                $this->end_date = $end_date->format('Y-m-d');
+            }
         }
-        if ($end_date && $end_date < $compare_date) {
-            $this->originallyStopped = true;
-            $this->end_date = $end_date->format('Y-m-d');
+    }
+
+    /**
+     * When an entry is related to a prescription item, it's attributes should match,
+     * and if not we need to set flags on it so that the user can be alerted as
+     * appropriate.
+     */
+    protected function initialiseFromPrescriptionItem()
+    {
+        if (!$item = $this->prescription_item) {
+            if ($this->prescription_item_id) {
+                throw new \CException('Cannot initialise entry with prescription item when no item set on ' . static::class);
+            }
+            $this->prescription_not_synced = true;
         }
 
+        if ($item->prescription->event->deleted) {
+            $this->prescription_event_deleted = true;
+            return;
+        }
+
+        if ($this->isNewRecord) {
+            // must be creating a new 'shadow' record so we default everything from the prescription item
+            $this->cloneFromPrescriptionItem($item);
+        } else {
+            // need to check if the prescription item still has the same values
+            foreach (array('drug_id', 'route_id', 'option_id', 'frequency_id') as $attr) {
+                if ($this->$attr !== $item->id) {
+                    $this->prescription_not_synced = true;
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -190,23 +224,6 @@ class HistoryMedicationsEntry extends \BaseElement
             $this->addError('end_date', 'Stop date must be on or before start_date');
         }
         parent::afterValidate();
-    }
-
-    /**
-     * @return bool
-     * @inheritdoc
-     */
-    public function beforeSave()
-    {
-        if ($this->prescription_item_id) {
-            // null out all prescription attributes as we are always concerned the state of the prescription
-            // item.
-            $this->unsetAttributes(array('drug_id', 'dose', 'route_id', 'option_id', 'frequency_id'));
-            if ($this->end_date && $this->end_date == $this->prescription_item->stopDateFromDuration()) {
-                $this->end_date = null;
-            }
-        }
-        return parent::beforeSave();
     }
 
     /**
