@@ -38,7 +38,7 @@
       <tr>
           <th>Allergy</th>
           <th>Comments</th>
-          <th>Action</th>
+          <th>Action(s)</th>
       </tr>
       </thead>
       <tbody>

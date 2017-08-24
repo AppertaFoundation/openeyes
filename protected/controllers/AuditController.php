@@ -42,6 +42,8 @@ class AuditController extends BaseController
             return false;
         }
 
+        Yii::app()->assetManager->registerScriptFile('js/audit.js');
+
         return parent::beforeAction($action);
     }
 
@@ -58,6 +60,7 @@ class AuditController extends BaseController
             $data = $this->getData();
         }
         
+
         $this->renderPartial('_list', array('data' => $data), false, true);
         echo '<!-------------------------->';
         $this->renderPartial('_pagination', array('data' => $data), false, true);

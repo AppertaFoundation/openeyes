@@ -82,13 +82,18 @@ class EDProcessor
     /**
      * @param $element_type_id
      * @return string
+     * @throws CException
      */
     public function getCanvasMnemonicForElementType($element_type_id)
     {
-        return $this->app->db
+        $result = $this->app->db
             ->createCommand('SELECT canvas_mnemonic from eyedraw_canvas WHERE container_element_type_id = :etid')
             ->bindParam(':etid', $element_type_id)
             ->queryScalar();
+        if (!$result) {
+            throw new CException("Cannot find eyedraw canvas mnemonic for element type id $element_type_id. Have you loaded the latest config?");
+        }
+        return $result;
     }
 
     /**
@@ -279,9 +284,13 @@ EOSQL;
      * @param $element
      * @param $side
      * @param $attribute
+     * @throws CException
      */
     public function loadElementEyedrawDoodles(Patient $patient, &$element, $side, $attribute)
     {
+        if (!in_array((int)$side, array(Eye::RIGHT, Eye::LEFT))) {
+            throw new CException("Invalid side argument $side for loading element eyedraw doodles");
+        }
         $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element->getElementType()->id);
 
         if ($doodle_data = $this->retrieveDoodlesForSide($patient->id, $canvas_mnemonic, $side)) {

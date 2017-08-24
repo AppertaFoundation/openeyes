@@ -97,6 +97,12 @@
                 'htmlOptions'=>array('width'=>'60px'),
                 'value' => '$data->patient->last_name'
             ),
+            array(
+                'name' => 'patient.contact.maiden_name',
+                'htmlOptions'=>array('width'=>'60px'),
+                'value' => '$data->patient->contact->maiden_name'
+            ),
+
 
             array(
                 'name' => 'patient.dob',

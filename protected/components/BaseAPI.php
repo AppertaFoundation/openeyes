@@ -154,20 +154,19 @@ class BaseAPI
      * @param Patient $patient
      * @param bool $use_context
      * @param string $before - date formatted string
-     * @param integer $limit
+     * @param CDbCriteria $criteria base criteria for the query to be used.
      * @return BaseEventTypeElement[]
      */
-    public function getElements($element, Patient $patient, $use_context = false, $before = null, $limit = null)
+    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null)
     {
-        $criteria = new CDbCriteria();
+        if ($criteria === null) {
+            $criteria = new CDbCriteria();
+        }
         $criteria->compare('episode.patient_id', $patient->id);
         $criteria->order = 'event.event_date desc, event.created_date desc';
 
         if ($before !== null) {
             $criteria->compare('event.event_date', '<='.$before);
-        }
-        if ($limit !== null) {
-            $criteria->limit = $limit;
         }
 
         if ($use_context) {
@@ -202,7 +201,9 @@ class BaseAPI
      */
     public function getLatestElement($element, Patient $patient, $use_context = false, $before = null)
     {
-        $result = $this->getElements($element, $patient, $use_context, $before, 1);
+        $criteria = new CDbCriteria();
+        $criteria->limit = 1;
+        $result = $this->getElements($element, $patient, $use_context, $before, $criteria);
         return count($result) ? $result[0] : null;
     }
 

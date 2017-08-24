@@ -258,6 +258,7 @@ class Patient extends BaseActiveRecordVersioned
         $criteria->join = 'JOIN contact ON contact_id = contact.id';
         $criteria->compare('LOWER(first_name)', strtolower($params['first_name']), false);
         $criteria->compare('LOWER(last_name)', strtolower($params['last_name']), false);
+        $criteria->compare('LOWER(maiden_name)', strtolower($params['maiden_name']), false);
         $criteria->compare('dob', $this->dob, false);
         $criteria->compare('gender', $this->gender, false);
         $criteria->compare('hos_num', $this->hos_num, false);
@@ -291,6 +292,10 @@ class Patient extends BaseActiveRecordVersioned
         if (isset($params['last_name'])) {
             $criteria->compare('contact.last_name', $params['last_name'], false);
         }
+        if (isset($params['maiden_name'])) {
+            $criteria->compare('contact.maiden_name', $params['maiden_name'], false);
+        }
+
         if (strlen($this->nhs_num) == 10) {
             $criteria->compare('nhs_num', $this->nhs_num, false);
         } else {

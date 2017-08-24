@@ -61,18 +61,6 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * Set flash message for patient allergies.
-     */
-    protected function showAllergyWarning()
-    {
-        if ($this->patient->no_allergies_date) {
-            Yii::app()->user->setFlash('info.prescription_allergy', $this->patient->getAllergiesString());
-        } else {
-            Yii::app()->user->setFlash('warning.prescription_allergy', $this->patient->getAllergiesString());
-        }
-    }
-
-    /**
      * Creates the procedure elements for the procedures selected in the procedure list element.
      *
      * @return BaseEventTypeElement[]
@@ -204,7 +192,6 @@ class DefaultController extends BaseEventTypeController
      */
     protected function initEdit()
     {
-        $this->showAllergyWarning();
         $this->jsVars['eyedraw_iol_classes'] = Yii::app()->params['eyedraw_iol_classes'];
         $this->moduleStateCssClass = 'edit';
     }
@@ -218,8 +205,9 @@ class DefaultController extends BaseEventTypeController
     {
         parent::initActionCreate();
 
+        /** @var OphTrOperationbooking_API $api */
         $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-        
+
         if (isset($_GET['booking_event_id'])) {
             if (!$api) {
                 throw new Exception('invalid request for booking event');
@@ -275,24 +263,22 @@ class DefaultController extends BaseEventTypeController
             $bookings = array();
 
 
-            $element_enabled = \SettingInstallation::model()->find('`key` = :setting_key', array(':setting_key'=>'disable_theatre_diary'));
-            $theatre_diary_disabled = isset($element_enabled->value) && $element_enabled->value == 'on';
+            $element_enabled = Yii::app()->params['disable_theatre_diary'];
+            $theatre_diary_disabled = isset($element_enabled) && $element_enabled == 'on';
 
-            if($theatre_diary_disabled)
+            /** @var OphTrOperationbooking_API $api */
+            if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking'))
             {
-                $bookings = Element_OphTrOperationbooking_Operation::model()
-                    ->with('event')
-                    ->findAll('status_id IN (1, 2, 3)
-                            AND event.episode_id = :episode_id
-                            AND operation_cancellation_date IS NULL',
-                    array(':episode_id'=>$this->episode->id));
-            }
-            else
-            {
-                if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-                    $bookings = $api->getOpenBookingsForEpisode($this->episode->id);
+                if ($theatre_diary_disabled)
+                {
+                    $operations = $api->getOpenOperations($this->patient);
+                }
+                else
+                {
+                    $operations = $api->getScheduledOpenOperations($this->patient);
                 }
             }
+
 
 
             $this->title = 'Please select booking';
@@ -312,7 +298,7 @@ class DefaultController extends BaseEventTypeController
 
             $this->render('select_event', array(
                 'errors' => $errors,
-                'bookings' => $bookings,
+                'operations' => $operations,
                 'theatre_diary_disabled' => $theatre_diary_disabled
             ));
         }

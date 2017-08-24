@@ -39,6 +39,7 @@ if (!isset($values)) {
             $allergies_opts = array(
                 'options' => array(),
                 'empty' => '- select -',
+                'class' => 'other'
             );
 
             foreach ($allergies as $allergy) {
@@ -48,7 +49,11 @@ if (!isset($values)) {
             }
 
             echo CHtml::dropDownList($field_prefix . "[allergy_id]", $values['allergy_id'], CHtml::listData($allergies, 'id', 'name'), $allergies_opts);
+            $show_other = $values['allergy_id'] && array_key_exists($values['allergy_id'], $allergies_opts['options']) && ($allergies_opts['options'][$values['allergy_id']]['data-other'] === '1');
         ?>
+        <span class="<?=  $show_other ? : 'hidden'?> <?= $model_name ?>_other_wrapper">
+            <?php echo CHtml::textField($field_prefix . '[other]', $values['other'], array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
+        </span>
         <?php else: ?>
             <?=$values['allergy_display']; ?>
             <input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?=$values['allergy_id'] ?>" />
