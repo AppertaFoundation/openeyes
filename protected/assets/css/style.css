@@ -7153,13 +7153,14 @@ tfoot.pagination-container .pagination-view-all {
 }
 /* line 37, ../sass/openeyes/components/events/_sub-elements.scss */
 .sub-element .sub-element-title {
+  float: left;
   color: #666;
   font-size: 0.8125rem;
   font-style: normal;
   margin: 0;
   padding: 5px 8px;
 }
-/* line 44, ../sass/openeyes/components/events/_sub-elements.scss */
+/* line 45, ../sass/openeyes/components/events/_sub-elements.scss */
 .sub-element .element-eye {
   border-top: 1px solid #fafafa;
 }
@@ -7170,16 +7171,16 @@ tfoot.pagination-container .pagination-view-all {
   }
 }
 
-/* line 52, ../sass/openeyes/components/events/_sub-elements.scss */
+/* line 53, ../sass/openeyes/components/events/_sub-elements.scss */
 .sub-element-header {
   background: #fafafa;
 }
 
-/* line 67, ../sass/openeyes/components/events/_sub-elements.scss */
+/* line 68, ../sass/openeyes/components/events/_sub-elements.scss */
 .edit .sub-element-actions {
   padding: 1px 2px 0 0;
 }
-/* line 76, ../sass/openeyes/components/events/_sub-elements.scss */
+/* line 77, ../sass/openeyes/components/events/_sub-elements.scss */
 .edit .sub-elements-list li {
   margin-bottom: 10px;
 }
