@@ -8092,7 +8092,7 @@ table.detailview tr th {
   cursor: pointer;
   border: none;
   /*download this image*/
-  background: url(/assets/index_search/search_icon.png) no-repeat center center, #747782;
+  background: url("../img/index_search/search_icon.png") no-repeat center center, #747782;
   background-size: 15px 15px;
   border-radius: 0 20px 20px 0;
   padding: 10px 25px;
@@ -8131,7 +8131,7 @@ table.detailview tr th {
   cursor: auto;
   position: fixed;
   background: #fff;
-  background-image: url(/assets/index_search/line.png);
+  background-image: url("../img/index_search/line.png");
   background-size: 4px;
   background-repeat: repeat-y;
   background-position: 325px;
@@ -8179,7 +8179,7 @@ table.detailview tr th {
 }
 #big_cross {
   position: fixed;
-  background: #fff url(/assets/index_search/bigCross.png) center no-repeat;
+  background: #fff url("../img/index_search/bigCross.png") center no-repeat;
   display: block;
   cursor: pointer;
   width: 32px;

@@ -115,7 +115,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
         $html_string .= $this->generateIndexHTML($index);
       }
 
-      $file = 'widgets/views/IndexSearch_Examination.php';
+      $file = '/var/www/openeyes/protected/widgets/views/IndexSearch_Examination.php';
       $file_handle = fopen($file, 'w') or die('Cannot open file:  '.$file);
       fwrite($file_handle, $html_string."</ul></div>");
     }
