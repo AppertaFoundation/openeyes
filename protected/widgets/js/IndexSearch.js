@@ -112,12 +112,20 @@ $(document).ready(function(){
     $('#search_bar_left').val('');
     last_search_pos = "right";
     $('#search_bar_right').trigger("keyup");
+    $('#search_bar_right').css('opacity','1');
+    $('#search_button_right').css('opacity','1');
+    $('#search_bar_left').css('opacity','0.6');
+    $('#search_button_left').css('opacity','0.6');
     show_results();
   });
   $("#search_bar_left").focus(function(){
     $('#search_bar_right').val('');
     last_search_pos = "left";
     $('#search_bar_left').trigger("keyup");
+    $('#search_bar_left').css('opacity','1');
+    $('#search_button_left').css('opacity','1');
+    $('#search_bar_right').css('opacity','0.6');
+    $('#search_button_right').css('opacity','0.6');
     show_results();
   });
 
@@ -206,6 +214,10 @@ function show_results(){
   }
 
   function hide_results(){
+    $('#search_bar_right').css('opacity','1');
+    $('#search_button_right').css('opacity','1');
+    $('#search_bar_left').css('opacity','1');
+    $('#search_button_left').css('opacity','1');
     $('#search_bar_right,#search_bar_left').val('');
     $('#results').scrollTop(0);
     $('#dim_rest').hide();
@@ -237,25 +249,27 @@ function show_results(){
     //Chains can be made conditional based on content of parameters
     //Guarantees funcion execution order (even for asyncrounous functions)
 
-    done = function() {
+    let done = function() {
       $('#is_loading').hide();
       clearTimeout(is_loading_timeout);
-      return;
-    };  //cahnge click element reject resolve bit
+    };  //change click element reject resolve bit
 
     //element -> doodle -> property
     if (parameters["doodle_name"]){
       click_element(parameters).then(result => click_doodle(result)).then(result => click_property(result)).catch(() => done());
+      return;
     }
 
     //element -> id
     if (parameters["goto_id"]) {
       click_element(parameters).then(result => goto_id(result)).catch(() => done());
+      return;
     }
 
     //element -> tag (subcontainers?) -> text
     if (parameters['goto_tag']) {
       click_element(parameters).then(result => goto_tag_and_text(result)).catch(() => done());
+      return;
     }
 
     click_element(parameters).catch(() => done());
@@ -275,7 +289,7 @@ function show_results(){
       if (parameters['goto_subcontainer']) {
         container = container.find('.'+parameters['goto_subcontainer'].replace('%position',last_search_pos));
       }
-      container.find(`${parameters['goto_tag']}:contains(${parameters['goto_text']})`).effect("highlight", {}, 6000);
+      container.find(`${parameters['goto_tag']}:contains(${parameters['goto_text']})`).effect("highlight", {}, 6000); //if want whole row highlight hightlight parent if not div or fieldset
       reject();
     });
   }
@@ -285,7 +299,6 @@ function show_results(){
     let $item = $(`.oe-event-sidebar-edit a:contains(${parameters['element_name']})`).filter(function(){
       return $(this).text() == parameters['element_name'];
     });
-
     if (parameters['element_name'] == 'Risks'){
       $item = $(`.oe-event-sidebar-edit a:contains(${parameters['element_name']}):first`); //temp fix while there is two risks on side bar
     }
@@ -323,7 +336,6 @@ function show_results(){
           } else {
             reject();
           }
-        //wrap onAllReady in Promise
       });
     });
   }
