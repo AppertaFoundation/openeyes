@@ -36,6 +36,7 @@ class AuditController extends BaseController
 
     public function beforeAction($action)
     {
+        Yii::app()->assetManager->registerScriptFile('js/audit.js');
         $userid = Yii::app()->session['user']->id;
         if (($userid != 2103) and ($userid != 122) and ($userid != 613) and ($userid != 1330) and ($userid != 1)) {
             return false;
@@ -58,6 +59,7 @@ class AuditController extends BaseController
         } else {
             $data = $this->getData();
         }
+        
 
         $this->renderPartial('_list', array('data' => $data), false, true);
         echo '<!-------------------------->';

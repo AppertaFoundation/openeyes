@@ -55,6 +55,7 @@ class DefaultController extends BaseEventTypeController
     protected function beforeAction($action)
     {
         Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/eyedraw.js');
+        Yii::app()->clientScript->registerScriptFile($this->assetPath . '/js/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
 
         return parent::beforeAction($action);
     }
@@ -147,13 +148,13 @@ class DefaultController extends BaseEventTypeController
         }
         if ($action == 'create') {
             if ($this->booking_operation) {
-                $element->anaesthetic_type_id = $this->booking_operation->anaesthetic_type_id;
+                $element->anaesthetic_type = $this->booking_operation->anaesthetic_type;
             } else {
                 $key = $this->patient->isChild() ? 'ophtroperationnote_default_anaesthetic_child' : 'ophtroperationnote_default_anaesthetic';
 
                 if (isset(Yii::app()->params[$key])) {
                     if ($at = AnaestheticType::model()->find('code=?', array(Yii::app()->params[$key]))) {
-                        $element->anaesthetic_type_id = $at->id;
+                        $element->anaesthetic_type = array($at);
                     }
                 }
             }
@@ -637,6 +638,9 @@ class DefaultController extends BaseEventTypeController
     {
         $element->updateAnaestheticAgents(isset($data['AnaestheticAgent']) ? $data['AnaestheticAgent'] : array());
         $element->updateComplications(isset($data['OphTrOperationnote_AnaestheticComplications']) ? $data['OphTrOperationnote_AnaestheticComplications'] : array());
+
+        $element->updateAnaestheticType(isset($data['AnaestheticType']) ? $data['AnaestheticType'] : array());
+        $element->updateAnaestheticDelivery(isset($data['AnaestheticDelivery']) ? $data['AnaestheticDelivery'] : array());
     }
 
     /**
@@ -937,6 +941,76 @@ class DefaultController extends BaseEventTypeController
         }
 
         $element->complications = $complications;
+    }
+
+    protected function setComplexAttributes_Element_OphTrOperationnote_Anaesthetic($element, $data, $index)
+    {
+        //AnaestheticType
+        $type_assessments = array();
+        if(isset($data['AnaestheticType']) && is_array($data['AnaestheticType'])){
+
+            $type_assessments_by_id = array();
+            foreach ($element->anaesthetic_type_assignments as $type_assignments) {
+                $type_assessments_by_id[$type_assignments->anaesthetic_type_id] = $type_assignments;
+            }
+
+            foreach($data['AnaestheticType'] as $anaesthetic_type_id){
+
+                if( !array_key_exists($anaesthetic_type_id, $type_assessments_by_id) ){
+                    $anaesthetic_type_assesment = new OphTrOperationnote_OperationAnaestheticType();
+                } else {
+                    $anaesthetic_type_assesment = $type_assessments_by_id[$anaesthetic_type_id];
+                }
+
+                $anaesthetic_type_assesment->et_ophtroperationnote_anaesthetic_id = $element->id;
+                $anaesthetic_type_assesment->anaesthetic_type_id = $anaesthetic_type_id;
+
+                $type_assessments[] = $anaesthetic_type_assesment;
+            }
+        }
+
+        $element->anaesthetic_type_assignments = $type_assessments;
+
+        $anaesthetic_GA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'GA'))->queryScalar();
+        if( count($element->anaesthetic_type_assignments) == 1 && $element->anaesthetic_type_assignments[0]->anaesthetic_type_id == $anaesthetic_GA_id){
+            $data['AnaestheticDelivery'] = array(
+                Yii::app()->db->createCommand()->select('id')->from('anaesthetic_delivery')->where('name=:name', array(':name' => 'Other'))->queryScalar()
+            );
+
+            $element->anaesthetist_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetist')->where('name=:name', array(':name' => 'Anaesthetist'))->queryScalar();
+        }
+
+        $anaesthetic_NoA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('code=:code', array(':code' => 'NoA'))->queryScalar();
+        if( count($element->anaesthetic_type_assignments) == 1 && $element->anaesthetic_type_assignments[0]->anaesthetic_type_id == $anaesthetic_NoA_id){
+            $data['AnaestheticDelivery'] = array();
+            $element->anaesthetist_id = null;
+        }
+
+        //AnaestheticDelivery
+        $delivery_assessments = array();
+        if(isset($data['AnaestheticDelivery']) && is_array($data['AnaestheticDelivery'])){
+
+            $delivery_assessments_by_id = array();
+            foreach ($element->anaesthetic_delivery_assignments as $delivery_assignments) {
+                $delivery_assessments_by_id[$delivery_assignments->anaesthetic_delivery_id] = $delivery_assignments;
+            }
+
+            foreach($data['AnaestheticDelivery'] as $anaesthetic_delivery_id){
+
+                if( !array_key_exists($anaesthetic_delivery_id, $delivery_assessments_by_id) ){
+                    $anaesthetic_delivery_assesment = new OphTrOperationnote_OperationAnaestheticDelivery();
+                } else {
+                    $anaesthetic_delivery_assesment = $delivery_assessments_by_id[$anaesthetic_delivery_id];
+                }
+
+                $anaesthetic_delivery_assesment->et_ophtroperationnote_anaesthetic_id = $element->id;
+                $anaesthetic_delivery_assesment->anaesthetic_delivery_id = $anaesthetic_delivery_id;
+
+                $delivery_assessments[] = $anaesthetic_delivery_assesment;
+            }
+        }
+
+        $element->anaesthetic_delivery_assignments = $delivery_assessments;
     }
 
     protected function saveComplexAttributes_Element_OphTrOperationnote_Trabeculectomy($element, $data, $index)
