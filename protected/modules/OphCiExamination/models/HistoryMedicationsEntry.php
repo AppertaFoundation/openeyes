@@ -169,11 +169,15 @@ class HistoryMedicationsEntry extends \BaseElement
             $this->cloneFromPrescriptionItem($item);
         } else {
             // need to check if the prescription item still has the same values
-            foreach (array('drug_id', 'route_id', 'option_id', 'frequency_id') as $attr) {
-                if ($this->$attr !== $item->id) {
+            foreach (array('drug_id', 'route_id', 'frequency_id') as $attr) {
+                if ($this->$attr != $item->$attr) {
                     $this->prescription_not_synced = true;
                     break;
                 }
+            }
+            // TODO: resolve the disparity in attribute names here
+            if ($this->option_id !== $item->route_option_id) {
+                $this->prescription_not_synced = true;
             }
         }
     }

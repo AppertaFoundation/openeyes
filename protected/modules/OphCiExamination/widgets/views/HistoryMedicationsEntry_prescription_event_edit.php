@@ -69,6 +69,10 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
     </td>
     <td>
         <div class="row">
+            <input type="hidden" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" />
+            <input type="hidden" name="<?= $field_prefix ?>[frequency_id]" value="<?= $entry->frequency_id ?>" />
+            <input type="hidden" name="<?= $field_prefix ?>[route_id]" value="<?= $entry->route_id ?>" />
+            <input type="hidden" name="<?= $field_prefix ?>[option_id]" value="<?= $entry->option_id ?>" />
             <?= $entry->getAdministrationDisplay() ?>
         </div>
     </td>

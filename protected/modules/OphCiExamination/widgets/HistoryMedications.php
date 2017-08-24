@@ -144,10 +144,11 @@ class HistoryMedications extends \BaseEventElementWidget
                 $entry = ($id && array_key_exists($id, $entries_by_id)) ?
                     $entries_by_id[$id] :
                     new HistoryMedicationsEntry();
+
                 foreach (array('originallyStopped', 'start_date', 'end_date', 'drug_id', 'medication_drug_id',
                              'medication_name', 'dose', 'frequency_id', 'route_id', 'option_id',
                              'stop_reason_id', 'prescription_item_id') as $k) {
-                    $entry->{$k} = array_key_exists($k, $entry_data) ? $entry_data[$k] : null;
+                    $entry->$k = array_key_exists($k, $entry_data) ? $entry_data[$k] : null;
                 }
                 $entries[] = $entry;
             }
