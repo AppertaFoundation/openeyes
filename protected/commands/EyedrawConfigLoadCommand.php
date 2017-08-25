@@ -333,7 +333,7 @@ private function get_element_name($open_element_class_name){
 
       $primary_term = $index->PRIMARY_TERM;
       $secondary_term_list_array = (array)$index->SECONDARY_TERM_LIST->TERM;
-      $secondary_term_list = implode(",",$secondary_term_list_array);
+      $secondary_term_list = implode(", ",$secondary_term_list_array);
       $complete_term_list = $secondary_term_list_array ? $primary_term.",".$secondary_term_list : $primary_term;
 
       $alias_minus_name = implode(",",$fake_array);
