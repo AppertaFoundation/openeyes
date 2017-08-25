@@ -39,6 +39,7 @@ var is_loading_timeout;
           if ((match_pos = alias.indexOf(search_term)) == -1) { //no matches
             $this.html($this.text()); //removes highlighted text
             $alias.html($alias.text());
+            $description.html($description.text());
             if (!last_level && $element.children().find("li[style!='display: none;']").length != 0) {
               $element.show(); //has visible children index so should be visible to maintain tree structure
             } else {
