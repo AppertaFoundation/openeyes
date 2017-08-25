@@ -60,7 +60,9 @@ UserVoice.push(['set', {
   accent_color: '#448dd6',
   trigger_color: 'white',
   trigger_background_color: '#448dd6',
-	forum_id: '601405'
+	forum_id: '601405',
+	contact_enabled: false,
+	screenshot_enabled: false
 }]);
 
 // Identify the user and pass traits
