@@ -141,6 +141,13 @@ $(document).ready(function(){
     index_clicked($(this));
   });
 
+  /*
+    TOOLTIP but does not look right. Don't have or have nice one on right (bootstrap?)
+    right https://www.w3schools.com/css/css_tooltip.asp
+  $('.result_item, .result_item_with_icon').mouseenter(function(){
+    $(this).prop('title','Click to add to '+last_search_pos.toUpperCase()+' eye');
+  }); */
+
   $('body').append('<div id="dim_rest" class="ui-widget-overlay" style="position:fixed;display : none; width: 100%; height: 100%; z-index: 180;"></div>');
   $('body').append("<div id=\"is_loading\"style=\"display : none; position: fixed; background-color: black; width: 100%; height: 100%; z-index: 1000; opacity: 0.8; top:0px; \"><img src=\"https://itopia.com/wp-content/themes/itopia/img-cloud/loader.gif\" style=\" position: fixed; z-index: 1000; height: 64px; width: 64px; top: 33%; left: 50%;\"></div>");
   $('#description_toggle').change(function(){

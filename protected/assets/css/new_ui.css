@@ -1515,8 +1515,8 @@ label.highlight {
   vertical-align: top;
   padding: 0 10px;
   font-size: 10px;
-  width: 200px;
-  height: 30px;
+  width: 210px;
+  height: 28px;
   border: 1px solid #b3b3b3;
   border-radius: 10px 0 0 10px;
   z-index: 1003;
@@ -1536,7 +1536,7 @@ label.highlight {
   z-index: 1004;
   position: relative;
   right: 5px;
-  height: 30px;
+  height: 28px;
 }
 #results {
   outline: 0px;

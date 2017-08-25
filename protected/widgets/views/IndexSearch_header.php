@@ -1,6 +1,6 @@
 <div id="search_bars_and_options">
 
-  <input type="text" id="search_bar_right" placeholder="Find Canvases, Doodles and More..."/>
+  <input type="text" id="search_bar_right" placeholder="Search Clinical Concepts for RIGHT Eye"/>
   <div id="search_button_right"></div>
 
   <div id="search_options_container">
@@ -24,7 +24,7 @@
 
 
 
-  <input type="text" id="search_bar_left" placeholder="Find Canvases, Doodles and More..."/>
+  <input type="text" id="search_bar_left" placeholder="Search Clinical Concepts for LEFT Eye"/>
   <div id="search_button_left"></div>
 
 

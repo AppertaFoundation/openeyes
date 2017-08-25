@@ -366,7 +366,7 @@ private function get_element_name($open_element_class_name){
       ."class='lvl".$lvl."'>"
       .$primary_term."</span>"
       ."</div>"
-      .(($secondary_term_list || $description || $warning || $info) ? ( //TODO allow for description only
+      .(($secondary_term_list || $description || $warning || $info) ? (
         "<div class=\"index_row\">"
         ."<div class=\"index_col_left"."_lvl".$lvl."\">"
         ."<span class=\"alias\">"
