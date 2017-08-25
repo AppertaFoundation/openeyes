@@ -8110,8 +8110,7 @@ table.detailview tr th {
   /* width: 1024px;*/
   top: 130px;
   bottom: 50px;
-  right: 20px;
-  left: 195px;
+  width: 1051px;
   /*left: 199px;*/
   display: none;
   overflow:scroll;
@@ -8178,14 +8177,13 @@ table.detailview tr th {
   cursor: pointer;
 }
 #big_cross {
-  position: fixed;
   background: #fff url("../img/index_search/bigCross.png") center no-repeat;
   display: block;
   cursor: pointer;
   width: 32px;
-  width: 32px;
   height: 37px;
-  right: 28px;
+  margin-right: 50px;
+  float: right;
 }
 li ul li ul li .result_item {
   background-color: transparent;

@@ -139,8 +139,8 @@ $(document).ready(function(){
     index_clicked($(this));
   });
 
-  $('body').append('<div id="dim_rest" class="ui-widget-overlay" style="display : none; width: 100%; height: 100%; z-index: 180;"></div>');
-  $('body').append("<div id=\"is_loading\"style=\"display : none; position: fixed; background-color: black; width: 100%; height: 1000px; z-index: 1000; opacity: 0.8; top:0px; \"><img src=\"https://itopia.com/wp-content/themes/itopia/img-cloud/loader.gif\" style=\" position: fixed; z-index: 1000; height: 64px; width: 64px; top: 33%; left: 50%;\"></div>");
+  $('body').append('<div id="dim_rest" class="ui-widget-overlay" style="position:fixed;display : none; width: 100%; height: 100%; z-index: 180;"></div>');
+  $('body').append("<div id=\"is_loading\"style=\"display : none; position: fixed; background-color: black; width: 100%; height: 100%; z-index: 1000; opacity: 0.8; top:0px; \"><img src=\"https://itopia.com/wp-content/themes/itopia/img-cloud/loader.gif\" style=\" position: fixed; z-index: 1000; height: 64px; width: 64px; top: 33%; left: 50%;\"></div>");
   $('#description_toggle').change(function(){
     if (this.checked) {
       $('.description_icon,.description_note').show();
@@ -181,7 +181,16 @@ $(document).ready(function(){
   if ($('.event-actions li:contains(Create)').length > 0) {
     $('#search_options_container').css('width','290px');
   }
-
+  let set_result_box_left = function() {
+    let sidebar_left = $('.column.sidebar.episodes-and-events').offset().left;
+    let sidebar_width = $('.column.sidebar.episodes-and-events').width();
+    let result_box_left = sidebar_left+sidebar_width;
+    $('#results').css('left','result_box_left'+'px');
+  };
+  set_result_box_left();
+  $(window).resize(function() {
+    set_result_box_left();
+  });
 });
 /* End of Initialisation */
 
