@@ -30,7 +30,9 @@ var is_loading_timeout;
           $this = $(this);
           $element = get_element($this);
           $alias = $element.children(':first').next('.index_row').find('.alias:first');
+          let $description = $element.children(':first').next('.index_row').find('.description_note:first');
           alias = $this.data("alias").toLowerCase();
+          alias += $description.text().toLowerCase();
           if ((match_pos = alias.indexOf(search_term)) == -1) { //no matches
             $this.html($this.text()); //removes highlighted text
             $alias.html($alias.text());
@@ -51,6 +53,8 @@ var is_loading_timeout;
             $this.html(highlighted_string);
             highlighted_aliases = replace_matched_string($alias.text());
             $alias.html(highlighted_aliases);
+            highlighted_aliases = replace_matched_string($description.text());
+            $description.html(highlighted_aliases);
 
             $element.show();
             if (!last_level) { //does it have children?
