@@ -160,16 +160,15 @@ $(document).ready(function(){
       $(current_search_bar).trigger('keyup');
     } else {
       $('.description_icon,.description_note').hide();
+      show_and_search_descriptions = false;
       $(current_search_bar).trigger('focus');
       $(current_search_bar).trigger('keyup');
-      show_and_search_descriptions = false;
     }
     event.stopPropagation();
   });
   $('#children_toggle').change(function(){
     let current_search_bar = "#search_bar_"+last_search_pos;
     if (this.checked) {
-      show_children = true;
       $(current_search_bar).trigger('focus');
       $(current_search_bar).trigger('keyup');
     } else {
