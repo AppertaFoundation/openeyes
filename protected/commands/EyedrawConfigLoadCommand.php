@@ -378,7 +378,7 @@ private function get_element_name($open_element_class_name){
           //"<span class=\"description_icon\">Description:</span>"
           "<span class=\"description_note\">"
           .$description
-          ."<br></span>"
+          ."</span>".(($warning || $info) ? ("<br>") : (""))
           ) : (""))
         .($warning ? (
           "<span class=\"warning_icon\"></span>"
