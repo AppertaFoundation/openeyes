@@ -1669,6 +1669,10 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 
 	<INDEX_LIST>
 		<INDEX>
+			<PRIMARY_TERM>Description</PRIMARY_TERM>
+			<DESCRIPTION>This feature allows you to search for canvases, doodles and fields in the above search bars (one for each eye). Clicking on a search result will take you to the relevant item and if it is a doodle it will add it for you.</DESCRIPTION>
+		</INDEX>
+		<INDEX>
 			<PRIMARY_TERM>Examination History</PRIMARY_TERM>
 			<SECONDARY_TERM_LIST>
 				<TERM>Presenting Compliant</TERM>
@@ -3126,6 +3130,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					<INDEX_LIST>
 						<INDEX>
 							<PRIMARY_TERM>Height</PRIMARY_TERM>
+							<DESCRIPTION>DELETE</DESCRIPTION>
 							<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 							<GOTO_DOODLE_CLASS_NAME>CornealEpithelialDefect</GOTO_DOODLE_CLASS_NAME>
 							<GOTO_PROPERTY>Height</GOTO_PROPERTY>

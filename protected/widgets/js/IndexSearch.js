@@ -45,7 +45,7 @@ var is_loading_timeout;
             //benefitical if the alias list is very long as it means
             //length of string is likely less
             plain_text = $this.text();
-            no_match_text = plain_text.slice(0,(match_pos-1) < 0 ? 0 : (match_pos)); //may over slice
+            no_match_text = plain_text.slice(0,(match_pos-1) < 0 ? 0 : (match_pos)); //may over slice if in alias but does not matter
             match_text = plain_text.slice(match_pos);
             highlighted_string = no_match_text + replace_matched_string(match_text);
             $this.html(highlighted_string);
@@ -130,12 +130,7 @@ $(document).ready(function(){
   });
 
   $('.result_item, .result_item_with_icon').click(function(event){
-    $('#is_loading').show();
-    //if ajax call is very slow hide loading gif so user can perform other actions
-    is_loading_timeout = setTimeout(()=>$('#is_loading').hide(),6000);
-    //Index has been clicked
     event.stopPropagation();
-    hide_results();
     index_clicked($(this));
   });
 
@@ -261,27 +256,45 @@ function show_results(){
     let done = function() {
       $('#is_loading').hide();
       clearTimeout(is_loading_timeout);
-    };  //change click element reject resolve bit
+      hide_results();
+    };
+
+    let start = function() {
+      $('#is_loading').show();
+      //if ajax call is very slow hide loading gif so user can perform other actions
+      is_loading_timeout = setTimeout(()=>done(),6000);
+    }
 
     //element -> doodle -> property
     if (parameters["doodle_name"]){
+      start();
       click_element(parameters).then(result => click_doodle(result)).then(result => click_property(result)).catch(() => done());
       return;
     }
 
     //element -> id
     if (parameters["goto_id"]) {
+      start();
       click_element(parameters).then(result => goto_id(result)).catch(() => done());
       return;
     }
 
     //element -> tag (subcontainers?) -> text
     if (parameters['goto_tag']) {
+      start();
       click_element(parameters).then(result => goto_tag_and_text(result)).catch(() => done());
       return;
     }
 
-    click_element(parameters).catch(() => done());
+    //element
+    if (parameters['element_name']) {
+      start();
+      click_element(parameters).catch(() => done());
+      return;
+    }
+
+    //if it gets here then the index item is not clickable as it has no element name
+
   }
 
   function goto_id(parameters){

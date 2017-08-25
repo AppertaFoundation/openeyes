@@ -1548,7 +1548,7 @@ label.highlight {
   width: 1051px;
   /*left: 199px;*/
   display: none;
-  overflow:scroll;
+  overflow-y:scroll;
   background-color: #fff;
   padding: 0px;
   font-size: .8rem;
@@ -1570,6 +1570,7 @@ label.highlight {
   background-repeat: repeat-y;
   background-position: 325px;
   background-attachment: local;
+  overflow-x: hidden;
 }
 .results_list {
   margin: 0;
@@ -1650,6 +1651,26 @@ li ul li ul li .result_item {
   top: -7px;
   margin-left: 21px;
 }
+
+.index_col_left_lvl1,.index_col_left_lvl2,.index_col_left_lvl3 {
+  /*flex: 0.85;*/
+  position: relative;
+  top: -7px;
+  margin-left: 21px;
+}
+
+.index_col_left_lvl1 {
+  flex: 1;
+}
+
+.index_col_left_lvl2 {
+  flex: 0.8;
+}
+
+.index_col_left_lvl3 {
+  flex: 0.6;
+}
+
 li li li .index_col_left {
   top: -11px;
 }
@@ -1686,6 +1707,9 @@ li li li .index_col_left {
   font-size: 0.8em;
   padding-left: 6px;
   padding-right: 20px;
+}
+.description_note {
+  padding-left: 0px;
 }
 /* The switch - the box around the slider */
 .switch {

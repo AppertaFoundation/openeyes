@@ -368,15 +368,15 @@ private function get_element_name($open_element_class_name){
       ."</div>"
       .(($secondary_term_list || $description || $warning || $info) ? ( //TODO allow for description only
         "<div class=\"index_row\">"
-        ."<div class=\"index_col_left\">"
+        ."<div class=\"index_col_left"."_lvl".$lvl."\">"
         ."<span class=\"alias\">"
         .($secondary_term_list ? ($secondary_term_list) : (""))
         ."</span>"
         ."</div>"
         ."<div class=\"index_col_right\">"
         .($description ? (
-          "<span class=\"description_icon\">Description:</span>"
-          ."<span class=\"description_note\">"
+          //"<span class=\"description_icon\">Description:</span>"
+          "<span class=\"description_note\">"
           .$description
           ."<br></span>"
           ) : (""))
