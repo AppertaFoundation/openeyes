@@ -7,7 +7,7 @@
 		<?php $this->renderPartial('//patient/event_tabs'); ?>
 		<?php
 		$url =  $_SERVER['REQUEST_URI'];
-		if (strpos($url,'update') !== false) {
+		if (strpos($url,'update') !== false || strpos($url,'create') !== false) {
 			$event_type_id = ($this->event->attributes["event_type_id"]);
 			$event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
 			$event_name = $event_type->name;
