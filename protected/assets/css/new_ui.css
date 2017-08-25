@@ -1657,6 +1657,7 @@ li ul li ul li .result_item {
   position: relative;
   top: -7px;
   margin-left: 21px;
+  min-height: 10px;
 }
 
 .index_col_left_lvl1 {
