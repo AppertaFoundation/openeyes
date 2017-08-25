@@ -6,7 +6,7 @@
 	<header class="event-header">
 		<?php $this->renderPartial('//patient/event_tabs'); ?>
 		<?php
-		if (strcasecmp("Delete",$this->event_actions[0]->label) != 0) {
+		if ((isset($this->event_actions[0]->label)) &&(strcasecmp("Delete",$this->event_actions[0]->label) != 0)) {
 			$event_type_id = ($this->event->attributes["event_type_id"]);
 			$event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
 			$event_name = $event_type->name;
