@@ -693,27 +693,82 @@ class OphCoCorrespondence_API extends BaseAPI
         return $result;
     }
 
-    public function LAST_EXAMINATION_IN_SS(){
+    public function getLastExaminationInSs( \Patient $patient )
+    {
+        $api = $this->yii->moduleAPI->get('OphCiExamination');
+        $event = $api->getLatestEvent($patient, true);
+
+        if (isset($event)) {
+            return json_encode( array(
+                'id' => $event->id,
+                'event_date' => Helper::convertDate2NHS($event->event_date)
+            ));
+
+        }
+        return '';
+    }
+
+    public function getLastOpNoteInSs( \Patient $patient )
+    {
+        $api = $this->yii->moduleAPI->get('OphTrOperationnote');
+        $event = $api->getLatestEvent($patient, true);
+        if (isset($event)) {
+            return json_encode( array(
+                'id' => $event->id,
+                'event_date' => Helper::convertDate2NHS($event->event_date)
+            ));
+
+        }
+        return '';
+    }
+
+    public function getLastEventInSs( \Patient $patient )
+    {
 
     }
 
-    public function LAST_OP_NOTE_IN_SS() {
-        
+    public function getLastInjectionInSs( \Patient $patient )
+    {
+        $api = $this->yii->moduleAPI->get('OphTrIntravitrealinjection');
+        $event = $api->getLatestEvent($patient, true);
+
+        if (isset($event)) {
+            return json_encode( array(
+                'id' => $event->id,
+                'event_date' => Helper::convertDate2NHS($event->event_date)
+            ));
+
+        }
+        return '';
     }
 
-    public function LAST_EVENT_IN_SS() {
+    public function getLastLaserInSs( \Patient $patient )
+    {
+        $api = $this->yii->moduleAPI->get('OphTrLaser');
+        $event = $api->getLatestEvent($patient, true);
 
+        if (isset($event)) {
+            return json_encode( array(
+                'id' => $event->id,
+                'event_date' => Helper::convertDate2NHS($event->event_date)
+            ));
+
+        }
+        return '';
     }
 
-    public function LAST_INJECTION_IN_SS() {
+    public function getLastPrescriptionInSs( \Patient $patient )
+    {
+        $api = $this->yii->moduleAPI->get('OphDrPrescription');
+        $event = $api->getLatestEvent($patient, true);
 
-    }
+        if (isset($event)) {
+            return json_encode( array(
+                'id' => $event->id,
+                'event_date' => Helper::convertDate2NHS($event->event_date)
+            ));
 
-    public function LAST_LASER_IN_SS() {
-
-    }
-
-    public function LAST_PRESCRIPTION_IN_SS() {
-
+        }
+        return '';
     }
 }

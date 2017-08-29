@@ -775,6 +775,11 @@ $(document).ready(function() {
         docman.setDeliveryMethods(0);
 	})
 
+	$('#correspondence_attachments_table').on('click', 'button.remove', function(e) {
+		e.preventDefault();
+		$(this).closest('tr').remove();
+	});
+
 });
 
 var et_oph_correspondence_body_cursor_position = 0;

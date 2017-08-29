@@ -10,7 +10,6 @@ class m170714_145116_associated_content extends CDbMigration
             'macro_id' => 'int(10) unsigned NOT NULL',
             'is_system_hidden' => 'tinyint(1) NOT NULL',
             'is_print_appended' => 'tinyint(1) NOT NULL',
-            'init_method' => 'varchar(45) NOT NULL',
             'init_protected_file_id' => 'int(10) unsigned NULL',
             'short_code' => 'varchar(45) NOT NULL',
             'display_order' => 'int(3) NULL',

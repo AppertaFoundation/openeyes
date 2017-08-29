@@ -73,6 +73,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
         ?>
 
         <div class="field-row">
+            <p>Attachments</p>
             <table class="grid" id="OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod_table">
                 <thead>
                     <tr>

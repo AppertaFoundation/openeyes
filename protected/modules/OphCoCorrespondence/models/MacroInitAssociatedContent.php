@@ -42,14 +42,14 @@ class MacroInitAssociatedContent extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('macro_id, is_system_hidden, is_print_appended, init_method_id, init_method, short_code', 'required'),
+			array('macro_id, is_system_hidden, is_print_appended, init_method_id, short_code', 'required'),
 			array('is_system_hidden, is_print_appended, display_order', 'numerical', 'integerOnly'=>true),
 			array('macro_id, init_method_id, init_protected_file_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
-			array('init_method, short_code, display_title', 'length', 'max'=>45),
+			array('short_code, display_title', 'length', 'max'=>45),
 			array('last_modified_date, created_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, macro_id, is_system_hidden, is_print_appended, init_method_id, init_method, init_protected_file_id, short_code, display_order, display_title, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+			array('id, macro_id, is_system_hidden, is_print_appended, init_method_id, init_protected_file_id, short_code, display_order, display_title, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -78,7 +78,6 @@ class MacroInitAssociatedContent extends BaseActiveRecord
 			'is_system_hidden' => 'Is System Hidden',
 			'is_print_appended' => 'Is Print Appended',
 			'init_method_id' => 'Init Method',
-			'init_method' => 'Init Method',
 			'init_protected_file_id' => 'Init Protected File',
 			'short_code' => 'Short Code',
 			'display_order' => 'Display Order',
@@ -113,7 +112,6 @@ class MacroInitAssociatedContent extends BaseActiveRecord
 		$criteria->compare('is_system_hidden',$this->is_system_hidden);
 		$criteria->compare('is_print_appended',$this->is_print_appended);
 		$criteria->compare('init_method_id',$this->init_method_id,true);
-		$criteria->compare('init_method',$this->init_method,true);
 		$criteria->compare('init_protected_file_id',$this->init_protected_file_id,true);
 		$criteria->compare('short_code',$this->short_code,true);
 		$criteria->compare('display_order',$this->display_order);

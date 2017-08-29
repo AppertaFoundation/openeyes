@@ -112,6 +112,31 @@ class DefaultController extends BaseEventTypeController
         $this->jsVars['correspondence_markprinted_url'] = Yii::app()->createUrl('OphCoCorrespondence/Default/markPrinted/'.$this->event->id);
         $this->jsVars['correspondence_print_url'] = Yii::app()->createUrl('OphCoCorrespondence/Default/print/'.$this->event->id);
     }
+
+    public function actionCreate()
+    {
+
+        if(Yii::app()->request->isPostRequest){
+
+            $attachments_last_event_id = Yii::app()->request->getPost('attachments_event_id');
+            $attachments_system_hidden = Yii::app()->request->getPost('attachments_system_hidden');
+            $attachments_print_appended = Yii::app()->request->getPost('attachments_print_appended');
+            if( isset( $attachments_last_event_id )  ){
+                foreach($attachments_last_event_id as $key => $last_event){
+                    $eventAssociatedContent = new EventAssociatedContent();
+                    $eventAssociatedContent->parent_event_id = '';
+                    $eventAssociatedContent->is_system_hidden  = $attachments_system_hidden[$key];
+                    $eventAssociatedContent->is_print_appended = $attachments_print_appended[$key];
+                    $eventAssociatedContent->short_code = '';
+                    $eventAssociatedContent->association_storage  = 'EVENT';
+                    $eventAssociatedContent->associated_event_id  = $last_event;
+                    $eventAssociatedContent->display_order   = '';
+                    $eventAssociatedContent->save();
+                }
+            }
+        }
+        parent::actionCreate();
+    }
     
     public function actionView($id)
     {

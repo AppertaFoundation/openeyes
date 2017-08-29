@@ -196,7 +196,6 @@ class AdminController extends \ModuleAdminController
                             $associated_content->macro_id           = $id;
                             $associated_content->is_system_hidden   = ( isset( $pac["is_system_hidden"] ) ? 1 : 0);
                             $associated_content->is_print_appended  = ( isset( $pac["is_print_appended"] ) ? 1 : 0);
-                            $associated_content->init_method        = $post_init_method[$key]["short_code"];
                             $associated_content->init_method_id     = $post_init_method[$key]["method_id"];
                             $associated_content->short_code         = $post_init_method[$key]["short_code"];
                             $associated_content->display_order      = $order;

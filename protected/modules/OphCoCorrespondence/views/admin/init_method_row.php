@@ -21,15 +21,10 @@ $is_print_appended_checked = ($values['is_print_appended'] == 1 ? 'CHECKED' : ''
     <td>
         <input type="checkbox" name="<?= $prefix_associated ?>[is_print_appended]" id="<?= $associated_model_name.'_'.$row_count ?>_is_print_appended" <?= $is_print_appended_checked ?>/>
     </td>
-    <td>
-        <?= $form->dropDownList(
-            $model_init_method,
-            'description',
-            CHtml::listData(OphcorrespondenceInitMethod::model()->findAll(array('condition' => 'active=1', 'order' => 'id asc')), 'id', 'description'),
-            array(
-                'empty' => '- None -',
-                'options' => array($values['method_id']=>array('selected'=>true))
-            )) ?>
+    <td><?=
+           CHtml::dropDownList('description', $values['method_id'], CHtml::listData(OphcorrespondenceInitMethod::model()->findAll(array('condition' => 'active=1', 'order' => 'id asc')), 'id', 'description'), array('empty' => '- Select -')) ;
+        ?>
+
         <input type="hidden" name="<?= $prefix_init_method ?>[method_id]" id="<?= $init_method_model_name.'_'.$row_count ?>_method_id" value="<?=$values['method_id']?>" />
     </td>
     <td>
