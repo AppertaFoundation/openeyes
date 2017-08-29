@@ -48,6 +48,7 @@ class HistoryMedicationsEntry extends \BaseElement
     public $originallyStopped = false;
 
     public $prescription_not_synced = null;
+    public $prescription_item_deleted = null;
     public $prescription_event_deleted = null;
 
     /**
@@ -74,10 +75,12 @@ class HistoryMedicationsEntry extends \BaseElement
     public function rules()
     {
         return array(
-            array('element_id, medication_drug_id, drug_id, medication_name, route_id, option_id, dose, frequency_id, start_date, end_date, stop_reason_id, prescription_item_id', 'safe'),
+            array('element_id, medication_drug_id, drug_id, medication_name, route_id, option_id, dose, frequency_id, '
+                .'start_date, end_date, stop_reason_id, prescription_item_id', 'safe'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
             array('end_date', 'OEFuzzyDateValidator'),
             array('option_id', 'validateOptionId'),
+            array('prescription_item_id', 'validatePrescriptionItem'),
             array('start_date, end_date', 'default', 'setOnEmpty' => true, 'value' => null)
         );
     }
@@ -172,10 +175,9 @@ class HistoryMedicationsEntry extends \BaseElement
     protected function initialiseFromPrescriptionItem()
     {
         if (!$item = $this->prescription_item) {
-            if ($this->prescription_item_id) {
-                throw new \CException('Cannot initialise entry with prescription item when no item set on ' . static::class);
-            }
+            $this->prescription_item_deleted = true;
             $this->prescription_not_synced = true;
+            return;
         }
 
         if (!$item->prescription->event) {
@@ -221,6 +223,26 @@ class HistoryMedicationsEntry extends \BaseElement
     {
         if (!$this->option_id && $this->route && $this->route->options) {
             $this->addError('option_id', "Must specify an option for route '{$this->route->name}'");
+        }
+    }
+
+    /**
+     * Simple check to ensure the prescription item id is valid as there is no FK constraint on this attribute.
+     */
+    public function validatePrescriptionItem()
+    {
+        if ($this->prescription_item_id) {
+            if ($api = $this->getApp()->moduleAPI->get('OphDrPrescription')) {
+                if (!$api->validatePrescriptionItemId($this->prescription_item_id)) {
+                    $this->addError('prescription_item_id', 'Invalid prescription item, please restart the medication element.');
+                }
+            } else {
+                // in the unlikely event that the prescription event has been turned off since the record was created
+                // we don't want to invalidate an update.
+                if ($this->getScenario() === 'insert') {
+                    $this->addError('prescription_item_id', 'Cannot link medication to prescription without prescription module.');
+                }
+            }
         }
     }
 
@@ -312,6 +334,9 @@ class HistoryMedicationsEntry extends \BaseElement
      */
     public function prescriptionNotCurrent()
     {
-        return ($this->prescription_item_id && ($this->prescription_not_synced || $this->prescription_event_deleted));
+        return ($this->prescription_item_id
+            && ($this->prescription_item_deleted
+                || $this->prescription_not_synced
+                || $this->prescription_event_deleted));
     }
 }

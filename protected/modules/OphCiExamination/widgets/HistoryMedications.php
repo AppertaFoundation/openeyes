@@ -95,7 +95,7 @@ class HistoryMedications extends \BaseEventElementWidget
         }
         $this->missing_prescription_items = (bool) $this->getEntriesForUntrackedPrescriptionItems();
         foreach ($this->element->entries as $entry) {
-            if ($entry->prescription_not_synced || $entry->prescription_event_deleted) {
+            if ($entry->prescriptionNotCurrent()) {
                 return false;
             }
         }
@@ -207,7 +207,7 @@ class HistoryMedications extends \BaseEventElementWidget
         // now remove any that are no longer relevant because the prescription item
         // has been deleted
         $filter = function($entry) {
-            return !$entry->prescription_event_deleted;
+            return !($entry->prescription_item_deleted || $entry->prescription_event_deleted);
         };
 
         $result['current'] = array_filter($result['current'], $filter);
