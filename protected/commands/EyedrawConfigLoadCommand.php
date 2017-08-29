@@ -83,25 +83,19 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
         }
         $this->refreshTuples();
 
-			/**
-        * Generates HTML file from the OE_ED_CONFIG.xml (INDEX_LIST).
-        * XML may need to change when creating multiple HTML files
-        * as only 1 INDEX_LIST is permitted and there is no way to
-        * tell which HTML file to write to.
-        */
 
+
+        // Generates view file from the OE_ED_CONFIG.xml (INDEX_LIST)
         $this->updateIndexSearchHtml($data);
     }
 
-    /**
+  /**
     * Method uses INDEX_LIST section of xml to update
     * the IndexSearch_{{event_type}} view files
     * for the IndexSearch widget used in some events,
     * for examaple Examination events).
-     */
-     /**
-      * @param $data
-      */
+    * @param $data
+    */
     private function updateIndexSearchHtml($data)
     {
       $html_string =
@@ -110,6 +104,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
       ."<a href=\"#\" id=\"big_cross\"></a>"
       ."<ul class='results_list'>";
 
+      //Adds the html for the indexes
       foreach ($data->INDEX_LIST->INDEX as $index) {
         //appends HTML for the index and all of its descendant
         $html_string .= $this->generateIndexHTML($index);
@@ -300,25 +295,23 @@ WHERE ed.eyedraw_class_mnemonic != "*" -- Unsafe mode workaround
 EOSQL;
     }
 
-private function get_element_id($open_element_class_name){
+private function getElementId($open_element_class_name){
   $element_type = ElementType::model()->findByAttributes(array('class_name' => $open_element_class_name));
   $element_id = $element_type->id;
   return $element_id;
 }
 
-private function get_element_name($open_element_class_name){
+private function getElementName($open_element_class_name){
   $element_type = ElementType::model()->findByAttributes(array('class_name' => $open_element_class_name));
   $element_name = $element_type->name;
   return $element_name;
 }
 
   /**
-    * This method generates a string that represents the HTML of
+    * This method generates a string that represents the HTML (with hidden data) of
     * an INDEX and all of its descendant.
     * Due to the recursive definition of INDEX a recursive approach has been taken
     * as the method returns the string HTML of INDEXES nested inside of it.
-    */
-    /**
     * @param $index
     * @param $lvl
     * @return string
@@ -349,7 +342,7 @@ private function get_element_name($open_element_class_name){
       $result =
       "<li style>"
       ."<div class=\"result_item"
-      //changed from IMG_URL to class name with image property
+      //IMG_URL is currently not being used and instead is used as a flag for whether img exists
       .($img ? (" result_item_with_icon is_".$goto_doodle_class_name."\"") : (""))
       ."\" "
       .($goto_id ? ("data-goto-id=\"".$goto_id."\" ") : (""))
@@ -357,8 +350,8 @@ private function get_element_name($open_element_class_name){
       .($goto_tag ? ("data-goto-tag=\"".$goto_tag."\" ") : (""))
       .($goto_text ? ("data-goto-text=\"".$goto_text."\" ") : (""))
       .($open_element_class_name ? ("data-element-class-name=\"".$open_element_class_name."\" ") : (""))
-      .($open_element_class_name ? ("data-element-id=\"".$this->get_element_id($open_element_class_name)."\" ") : (""))
-      .($open_element_class_name ? ("data-element-name=\"".$this->get_element_name($open_element_class_name)."\" ") : (""))
+      .($open_element_class_name ? ("data-element-id=\"".$this->getElementId($open_element_class_name)."\" ") : (""))
+      .($open_element_class_name ? ("data-element-name=\"".$this->getElementName($open_element_class_name)."\" ") : (""))
       .($goto_doodle_class_name ? ("data-doodle-class-name=\"".$goto_doodle_class_name."\" ") : (""))
       .($goto_property ? ("data-property=\"".$goto_property."\"") : (""))
       .">"
@@ -375,7 +368,7 @@ private function get_element_name($open_element_class_name){
         ."</div>"
         ."<div class=\"index_col_right\">"
         .($description ? (
-          //"<span class=\"description_icon\">Description:</span>"
+          //"<span class=\"description_icon\">Description:</span>" Label or icon can go here
           "<span class=\"description_note\">"
           .$description
           ."</span>".(($warning || $info) ? ("<br>") : (""))

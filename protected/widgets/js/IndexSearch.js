@@ -53,7 +53,7 @@ var is_loading_timeout;
             plain_text = $this.text();
             no_match_text = plain_text.slice(0,(match_pos-1) < 0 ? 0 : (match_pos)); //may over slice if in alias but does not matter
             match_text = plain_text.slice(match_pos);
-            highlighted_string = no_match_text + replace_matched_string(match_text);
+            highlighted_string = no_match_text + replace_matched_string(match_text); //match_text may be empty
             $this.html(highlighted_string);
             highlighted_aliases = replace_matched_string($alias.text());
             $alias.html(highlighted_aliases);
@@ -69,7 +69,7 @@ var is_loading_timeout;
           }
         });
       }
-      $parent.append($results); //reattaches the result to the DOM to be rendered
+      $parent.append($results); //reattaches the result to the DOM to be rendered so just 1 big render instead of many small renders
     });
     return this;
   };
