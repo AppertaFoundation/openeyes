@@ -77,6 +77,8 @@ class m170811_105835_patient_level_medications extends OEMigration
         $this->dropOETable('et_ophciexamination_history_medications', true);
 
         $id = $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\HistoryMedications');
+        $this->delete('ophciexamination_element_set_item', 'element_type_id = :element_type_id',
+            array(':element_type_id' => $id));
         $this->delete('element_type', 'id = ?', array($id));
 	}
 
