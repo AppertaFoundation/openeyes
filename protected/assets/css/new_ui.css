@@ -2409,7 +2409,10 @@ input:checked + .slider:before {
     background-image: url(../img/index_search/Pterygium.png);
 }
 
-/* End of Images */
+.is_loading {
+  content:url(../img/index_search/loading.gif);
+}
 
+/* End of Images */
 
 /* End of IndexSearch css*/
