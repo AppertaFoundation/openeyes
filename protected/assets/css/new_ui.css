@@ -1505,3 +1505,9 @@ label.highlight {
     align-items: center;
     align-self: center;
 }
+
+
+.oe-event-sidebar-edit a.error, .oe-event-sidebar-edit .child a.error, .oe-event-sidebar-edit .has-children a.error {
+    background-color: #bf4040;
+    color: #fff;
+}
