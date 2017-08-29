@@ -165,7 +165,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             },
             focus: function (event, ui) {
                 event.preventDefault();
-                $el.val(controller.getItemDisplayValue(ui));
+                $el.val(controller.getItemDisplayValue(ui.item));
             },
             select: function (event, ui) {
                 controller.searchSelect($el, event, ui);
