@@ -77,6 +77,6 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         </div>
     </td>
     <td class="text-center">
-        <span class="has-tooltip fa fa-info-circle" data-tooltip-content="This medication was prescribed through OpenEyes."></span>
+        <span class="has-tooltip fa fa-info-circle <?= $entry->prescriptionNotCurrent() ? 'not-synced' : ''; ?>" data-tooltip-content="This medication was prescribed through OpenEyes.<?= $entry->prescriptionNotCurrent() ? ' The prescription has been altered since this entry was recorded.' : ''; ?>"></span>
     </td>
 </tr>

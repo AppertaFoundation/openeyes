@@ -306,4 +306,12 @@ class HistoryMedicationsEntry extends \BaseElement
         }
         return implode(', ', $res);
     }
+
+    /**
+     * @return bool
+     */
+    public function prescriptionNotCurrent()
+    {
+        return ($this->prescription_item_id && ($this->prescription_not_synced || $this->prescription_event_deleted));
+    }
 }
