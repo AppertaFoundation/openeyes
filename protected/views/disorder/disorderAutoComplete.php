@@ -7,7 +7,7 @@
       $('.multiDiagnosis[value="' + $(this).data('diagnosisId') +'"').remove();
       $('input[id=savedDiagnosis]').val('');
       $(this).parent().hide();
-      <?= $callback ? $callback . '();' : '' ?>
+      <?= isset($callback) ? $callback . '();' : '' ?>
     });
   });
   var source = function(request, response) {
@@ -26,7 +26,7 @@
 if(is_array($value)):
 ?>
   var select = function(event, ui) {
-    <?= $callback ? $callback . '(event, ui);' : ''?>
+    <?= isset($callback) ? $callback . '(event, ui);' : ''?>
     var $clear = $('<?=$clear_diagnosis?>'),
       $new= $('<span></span>');
 
@@ -44,7 +44,7 @@ if(is_array($value)):
   };
 <?php else: ?>
   var select = function(event, ui) {
-    <?= $callback ? $callback . '(event, ui);' : ''?>
+    <?= isset($callback) ? $callback . '(event, ui);' : ''?>
     $('#<?=$class . '_' . str_replace('.', '', $name)?>_0').val('');
     $('#enteredDiagnosisText').html(ui.item.value + ' <?=$clear_diagnosis?> ');
     $('#enteredDiagnosisText').show();
