@@ -65,7 +65,7 @@ if (!isset($values)) {
     </td>
     <td>
         <label class="inline highlight">
-            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === null || $values['has_risk'] === '', array('value' => '')); ?>
+            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', false, array('value' => '')); ?>
             Not checked
         </label>
         <label class="inline highlight">
@@ -84,4 +84,3 @@ if (!isset($values)) {
         <button class="button small warning remove" <?php if (!$removable) {?>style="display: none;"<?php } ?>>remove</button>
     </td>
 </tr>
-
