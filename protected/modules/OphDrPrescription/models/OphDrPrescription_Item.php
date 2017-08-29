@@ -188,19 +188,19 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
      */
     public function stopDateFromDuration()
     {
-        $endDate = null;
-        if (!in_array($this->duration->name, array('Other', 'Until review')) && !$this->continue_by_gp) {
-            $startDate = new DateTime($this->prescription->event->event_date);
-            $endDate = $startDate->add(DateInterval::createFromDateString($this->duration->name));
-            foreach ($this->tapers as $taper) {
-                if (in_array($taper->duration->name, array('Other', 'Until review'))) {
-                    return null;
-                }
-                $endDate->add(DateInterval::createFromDateString($taper->duration->name));
-            }
+        if (in_array($this->duration->name, array('Other', 'Until review')) || $this->continue_by_gp) {
+            return null;
         }
 
-        return $endDate;
+        $start_date = new DateTime($this->prescription->event->event_date);
+        $end_date = $start_date->add(DateInterval::createFromDateString($this->duration->name));
+        foreach ($this->tapers as $taper) {
+            if (in_array($taper->duration->name, array('Other', 'Until review'))) {
+                return null;
+            }
+            $end_date->add(DateInterval::createFromDateString($taper->duration->name));
+        }
+        return $end_date;
     }
 
     public function getAdministrationDisplay()

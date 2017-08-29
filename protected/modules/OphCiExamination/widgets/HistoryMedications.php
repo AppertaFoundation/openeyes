@@ -93,7 +93,7 @@ class HistoryMedications extends \BaseEventElementWidget
         if ($this->is_latest_element && $this->element->isNewRecord) {
             return true;
         }
-        $this->missing_prescription_items = !empty($this->getEntriesForUntrackedPrescriptionItems());
+        $this->missing_prescription_items = (bool) $this->getEntriesForUntrackedPrescriptionItems();
         foreach ($this->element->entries as $entry) {
             if ($entry->prescription_not_synced || $entry->prescription_event_deleted) {
                 return false;
@@ -108,15 +108,26 @@ class HistoryMedications extends \BaseEventElementWidget
     protected function setElementFromDefaults()
     {
         parent::setElementFromDefaults();
+        // because the entries cloned into the new element may contain stale data for related
+        // prescription data (or that prescription item might have been deleted)
+        // we need to update appropriately.
+        $entries = array();
+        foreach ($this->element->entries as $entry) {
+            if ($entry->prescription_item_id) {
+                if ($entry->prescription_event_deleted || !$entry->prescription_item) {
+                    continue;
+                }
+                $entry->loadFromPrescriptionItem($entry->prescription_item);
+            }
+            $entries[] = $entry;
+        }
 
         if ($untracked = $this->getEntriesForUntrackedPrescriptionItems()) {
             // tracking prescription items.
-            $entries = $this->element->entries;
             $this->element->entries = array_merge(
                 $entries,
                 $untracked);
         }
-
     }
 
     /**
@@ -169,6 +180,10 @@ class HistoryMedications extends \BaseEventElementWidget
      */
     public function getMergedEntries()
     {
+        $result = array(
+            'current' => $this->element->currentOrderedEntries,
+            'stopped' => $this->element->stoppedOrderedEntries
+        );
         // determine if there are any prescription items that are not tracked by the element
         if ($untracked = $this->getEntriesForUntrackedPrescriptionItems()) {
             $current = $this->element->currentOrderedEntries;
@@ -180,23 +195,25 @@ class HistoryMedications extends \BaseEventElementWidget
                     $current[] = $u;
                 }
             }
-
-            uasort($current, function($a , $b) {
+            $sorter = function($a , $b) {
                 return $a['start_date'] >= $b['start_date'] ? -1 : 1;
-            });
-            uasort($stopped, function($a , $b) {
-                return $a['start_date'] >= $b['start_date'] ? -1 : 1;
-            });
+            };
+            uasort($current, $sorter);
+            uasort($stopped, $sorter);
 
-            return array(
-                'current' => $current,
-                'stopped' => $stopped
-            );
-        } else {
-            return array(
-                'current' => $this->element->currentOrderedEntries,
-                'stopped' => $this->element->stoppedOrderedEntries);
+            $result['current'] = $current;
+            $result['stopped'] = $stopped;
         }
+        // now remove any that are no longer relevant because the prescription item
+        // has been deleted
+        $filter = function($entry) {
+            return !$entry->prescription_event_deleted;
+        };
+
+        $result['current'] = array_filter($result['current'], $filter);
+        $result['stopped'] = array_filter($result['stopped'], $filter);
+
+        return $result;
     }
 
     /**

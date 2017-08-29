@@ -101,11 +101,10 @@ class HistoryMedicationsEntry extends \BaseElement
     }
 
     /**
-     * @inheritdoc
+     * Abstraction to set up the entry state based on its current attributes
      */
-    protected function afterFind()
+    protected function updateStateProperties()
     {
-        parent::afterFind();
         if ($this->end_date !== null) {
             $this->originallyStopped = true;
         }
@@ -115,7 +114,27 @@ class HistoryMedicationsEntry extends \BaseElement
     }
 
     /**
-     * Set all the attributes on the entry to those on the prescription item.
+     * @inheritdoc
+     */
+    protected function afterFind()
+    {
+        parent::afterFind();
+        $this->updateStateProperties();
+    }
+
+    /**
+     * @param static $element
+     * @inheritdoc
+     */
+    public function loadFromExisting($element)
+    {
+        parent::loadFromExisting($element);
+        $this->updateStateProperties();
+    }
+
+    /**
+     * Set all the appropriate attributes on this Entry to those on the given
+     * prescription item.
      *
      * @param $item
      */
@@ -159,7 +178,8 @@ class HistoryMedicationsEntry extends \BaseElement
             $this->prescription_not_synced = true;
         }
 
-        if ($item->prescription->event->deleted) {
+        if (!$item->prescription->event) {
+            // default scope on the event will mean event relation is null if it's been deleted
             $this->prescription_event_deleted = true;
             return;
         }
@@ -169,7 +189,7 @@ class HistoryMedicationsEntry extends \BaseElement
             $this->cloneFromPrescriptionItem($item);
         } else {
             // need to check if the prescription item still has the same values
-            foreach (array('drug_id', 'route_id', 'frequency_id') as $attr) {
+            foreach (array('drug_id', 'dose', 'route_id', 'frequency_id') as $attr) {
                 if ($this->$attr != $item->$attr) {
                     $this->prescription_not_synced = true;
                     break;
@@ -179,18 +199,6 @@ class HistoryMedicationsEntry extends \BaseElement
             if ($this->option_id !== $item->route_option_id) {
                 $this->prescription_not_synced = true;
             }
-        }
-    }
-
-    /**
-     * @param static $element
-     * @inheritdoc
-     */
-    public function loadFromExisting($element)
-    {
-        parent::loadFromExisting($element);
-        if ($this->end_date !== null) {
-            $this->originallyStopped = true;
         }
     }
 
@@ -245,10 +253,6 @@ class HistoryMedicationsEntry extends \BaseElement
      */
     public function getAdministrationDisplay()
     {
-        if ($this->prescription_item) {
-            return $this->prescription_item->getAdministrationDisplay();
-        }
-
         $res = array();
         foreach (array('dose', 'option', 'route', 'frequency') as $k) {
             if ($this->$k) {
