@@ -13,9 +13,12 @@
             </thead>
             <tbody>
                 <?php
+                if(empty($patient)){
+                    $patient = $this->patient;
+                }
                 foreach($associated_content as $key => $ac){
                     $method = $ac->initMethod->method;
-                    $last_event = json_decode( $api->{$method}( $this->patient ));
+                    $last_event = json_decode( $api->{$method}( $patient ));
                 ?>
                 <tr>
                     <td><?= $ac->display_title ?></td>

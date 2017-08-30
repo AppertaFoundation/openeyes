@@ -63,6 +63,7 @@ function updateCorrespondence(macro_id)
                 $('.internal-referrer-wrapper').slideUp();
                 resetInternalReferralFields();
 
+				$('#attachments_content_container').html(data.associated_content);
             }
         });
     }

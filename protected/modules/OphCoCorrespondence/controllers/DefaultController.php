@@ -124,13 +124,14 @@ class DefaultController extends BaseEventTypeController
             if( isset( $attachments_last_event_id )  ){
                 foreach($attachments_last_event_id as $key => $last_event){
                     $eventAssociatedContent = new EventAssociatedContent();
-                    $eventAssociatedContent->parent_event_id = '';
+                    $eventAssociatedContent->parent_event_id = 1;
                     $eventAssociatedContent->is_system_hidden  = $attachments_system_hidden[$key];
                     $eventAssociatedContent->is_print_appended = $attachments_print_appended[$key];
-                    $eventAssociatedContent->short_code = '';
+                    $eventAssociatedContent->short_code = 'test';
                     $eventAssociatedContent->association_storage  = 'EVENT';
                     $eventAssociatedContent->associated_event_id  = $last_event;
-                    $eventAssociatedContent->display_order   = '';
+                    $eventAssociatedContent->display_order   = $key;
+
                     $eventAssociatedContent->save();
                 }
             }
@@ -308,6 +309,18 @@ class DefaultController extends BaseEventTypeController
         $data['textappend_ElementLetter_cc'] = implode("\n", $cc['text']);
         $data['elementappend_cc_targets'] = implode("\n", $cc['targets']);
         $data['sel_letter_type_id'] = $macro->letter_type_id;
+
+        $macroInitAssocContent = MacroInitAssociatedContent::model()->findAllByAttributes(array('macro_id' => $macro->id), array('order' => 'display_order asc'));
+        $data['associated_content'] = '';
+
+        if($macroInitAssocContent != null){
+            $data['associated_content'] = $this->renderPartial('event_associated_content', array(
+                'associated_content' => $macroInitAssocContent,
+                'patient' => $patient,
+                'api'   => Yii::app()->moduleAPI->get('OphCoCorrespondence')
+            ), true);
+        }
+
         echo json_encode($data);
     }
 
