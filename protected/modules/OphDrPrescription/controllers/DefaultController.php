@@ -607,4 +607,32 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+
+    /**
+     * Group the different kind of drug items for the printout
+     *
+     * @param $items
+     * @return mixed
+     */
+    public function groupItems($items)
+    {
+        foreach($items as $item)
+        {
+            $item_group[$item->dispense_condition_id][] = $item;
+        }
+        return $item_group;
+    }
+
+
+    public function getSiteAndTheatreForLatestEvent()
+    {
+        if($api = Yii::app()->moduleAPI->get('OphTrOperationnote')){
+            if($site_theatre = $api->getElementFromLatestEvent('Element_OphTrOperationnote_SiteTheatre', $this->patient, true))
+            {
+                return $site_theatre;
+            }
+        }
+        return false;
+    }
+
 }

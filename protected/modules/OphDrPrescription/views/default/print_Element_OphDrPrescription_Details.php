@@ -19,14 +19,6 @@
 ?>
 <?php
 $copy = $data['copy'];
-function groupItems($items)
-{
-	foreach($items as $item)
-	{
-		$item_group[$item->dispense_condition_id][] = $item;
-	}
-	return $item_group;
-}
 ?>
 
 <h1>Prescription Form</h1>
@@ -59,7 +51,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 <div class="spacer"></div>
 
 		<?php
-		$items_data = groupItems($element->items);
+		$items_data = $this->groupItems($element->items);
 		foreach ($items_data as $group => $items) {?>
 			<b>
 					<?php echo OphDrPrescription_DispenseCondition::model()->findByPk($group)->name; ?>
@@ -155,11 +147,28 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 	</tr>
 </table>
 <div class="spacer"></div>
-
+<table>
+	<tr>
+		<th>Patient's address</th>
+		<td><?php echo $this->patient->getSummaryAddress(", ") ?></td>
+	</tr>
+</table>
+<div class="spacer"></div>
+<?php if (!$data['copy'] && $site_theatre = $this->getSiteAndTheatreForLatestEvent()) {?>
+	<table>
+		<tr>
+			<th>Site</th>
+			<td><?php echo  $site_theatre->site->name?></td>
+			<th>Theatre</th>
+			<td><?php echo  $site_theatre->theatre->name?></td>
+		</tr>
+	</table>
+	<div class="spacer"></div>
+<?php }?>
 <table class="borders done_bys">
 	<tr>
 		<th>Prescribed by</th>
-		<td><?php echo $element->user->fullname ?>
+		<td><?php echo $element->usermodified->fullname ?><?php if($element->usermodified->registration_code) echo ' ('.$element->usermodified->registration_code.')' ?>
 		</td>
 		<th>Date</th>
 		<td><?php echo $element->NHSDate('last_modified_date') ?>
@@ -176,3 +185,4 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 <?php if (!$data['copy']) {?>
 	<p>Doctor's Signature:</p>
 <?php }?>
+
