@@ -133,7 +133,7 @@ $config = array(
         'google_analytics_account' => '',
         'local_users' => array('admin', 'username'),
         //'log_events' => true,
-        'institution_code' => 'RP6',
+        'institution_code' => 'NEW',
         'specialty_codes' => array(130),
         //'default_site_code' => '',
         'specialty_sort' => array(130, 'SUP'),
@@ -142,8 +142,6 @@ $config = array(
         // 'dashboard_sortable' => true
         'event_print_method' => 'pdf',
         'wkhtmltopdf_nice_level' => 19,
-        'city_road_satellite_view' => 1,
-        'enable_concise_med_history' => false,
         // default start time used for automatic worklist definitions
         //'worklist_default_start_time' => 'H:i',
         // default end time used for automatic worklist definitions

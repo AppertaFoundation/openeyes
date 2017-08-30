@@ -122,18 +122,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function getElementFilterList()
     {
-        if ($this->getApp()->hasModule('OphCoTherapyapplication')) {
-            $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagement');
-        } else {
-            $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
-        }
-
-        // Deprecated elements that we keep in place for backward compatibility with rendering
-        $remove = array_merge($remove, array(
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy',
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_Conclusion',
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk'
-        ));
+        $remove = components\ExaminationHelper::elementFilterList();
 
         if ($this->set) {
             foreach ($this->set->HiddenElementTypes as $element) {
@@ -332,17 +321,15 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
-		$active_check_value = "";
+		$active_check = "";
         if (!empty($class_array)) {
             if(array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
-                $active_check = \SettingInstallation::model()->find('t.key="city_road_satellite_view"');
-                if (!empty($active_check)) {
-                    $active_check_value = $active_check->value;
-                }
+                $active_check = Yii::app()->params['city_road_satellite_view'];
             }
         }
+
         $view_data = array_merge(array(
-            'active_check' => $active_check_value,
+            'active_check' => $active_check,
         ), $view_data);
 
         parent::renderElement($element, $action, $form, $data, $view_data, $return, $processOutput);
@@ -403,8 +390,6 @@ class DefaultController extends \BaseEventTypeController
 
     /**
      * Get the first workflow step using rules.
-     *
-     * @TODO: examine what this is being used for as opposed to getting elements by workflow ...
      *
      * @return OphCiExamination_ElementSet
      */
@@ -485,7 +470,7 @@ class DefaultController extends \BaseEventTypeController
         }
 
         foreach ($extra_by_etid as $extra_element) {
-            $extra_element->setDefaultOptions();
+            $extra_element->setDefaultOptions($this->patient);
 
             // Precache Element Type to avoid bug in usort
             $extra_element->getElementType();
@@ -1084,7 +1069,7 @@ class DefaultController extends \BaseEventTypeController
 
         $side = ucfirst(@$_GET['side']);
 
-        $api = new components\OphCiExamination_API();
+        $api = $this->getApp()->moduleAPI->get('OphCiExamination');
         $result = $api->{"getLastIOPReading{$side}"}($patient);
 
         echo $result;
@@ -1435,4 +1420,3 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 }
-

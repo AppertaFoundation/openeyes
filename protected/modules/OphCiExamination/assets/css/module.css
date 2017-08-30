@@ -90,6 +90,21 @@
   width: 4em;
 }
 
+/* line 5, ../sass/components/elements/_family-history.scss */
+section.OEModule_OphCiExamination_models_FamilyHistory table#OEModule_OphCiExamination_models_FamilyHistory_entry_table tr td {
+  vertical-align: top;
+  width: 20%;
+}
+
+/* line 5, ../sass/components/elements/_allergies.scss */
+section.OEModule_OphCiExamination_models_Allergies table#OEModule_OphCiExamination_models_Allergies_entry_table tr td {
+  vertical-align: bottom;
+}
+/* line 8, ../sass/components/elements/_allergies.scss */
+section.OEModule_OphCiExamination_models_Allergies table#OEModule_OphCiExamination_models_Allergies_entry_table tr td:not(.edit-column) {
+  width: 40%;
+}
+
 /* line 18, ../sass/components/elements/_gonioscopy.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy .eyedraw-fields {
   padding-top: 36px;
@@ -100,15 +115,29 @@
   padding-top: 35px;
 }
 
-/* line 18, ../sass/components/elements/_anterior-segment.scss */
+/* line 19, ../sass/components/elements/_anterior-segment.scss */
+.OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment .left .eyedraw-row {
+  margin-left: -13px;
+}
+/* line 23, ../sass/components/elements/_anterior-segment.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment .ed-fields-container {
   padding-top: 111px;
   left: -15px;
 }
 
-/* line 25, ../sass/components/elements/_anterior-segment.scss */
+/* line 30, ../sass/components/elements/_anterior-segment.scss */
 .anterior-segment .ed-widget.display {
   display: inline-block;
+}
+
+/* line 34, ../sass/components/elements/_anterior-segment.scss */
+.OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment {
+  background-color: #e4edf5;
+}
+/* line 37, ../sass/components/elements/_anterior-segment.scss */
+.OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment .sub-elements.active {
+  display: inline-block;
+  width: 100%;
 }
 
 /* line 18, ../sass/components/elements/_posterior-pole.scss */
@@ -178,7 +207,7 @@
   padding-top: 40px;
 }
 
-/* line 31, ../sass/components/_elements.scss */
+/* line 33, ../sass/components/_elements.scss */
 .autoreport-display {
   line-height: 1;
   margin-bottom: 2px;
@@ -381,6 +410,10 @@
 /* line 19, ../sass/components/_tables.scss */
 table.bleb-assessment th, table.bleb-assessment td {
   text-align: center;
+}
+/* line 25, ../sass/components/_tables.scss */
+table input.other-type-input {
+  margin-top: 3px;
 }
 
 /* line 18, ../sass/components/_admin.scss */

@@ -39,8 +39,8 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
 <div class="element-fields">
 
     <?php
-    $correspondeceApp = \SettingInstallation::model()->find('`key` = "ask_correspondence_approval"');
-    if($correspondeceApp->value === "on") {
+    $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
+    if($correspondeceApp === "on") {
         ?>
         <div class="row field-row">
             <div class="large-<?php echo $layoutColumns['label']; ?> column">
@@ -96,7 +96,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
             <label>Letter type:</label>
         </div>
         <div class="large-2 column end">
-            
+
             <?php echo $form->dropDownList($element, 'letter_type_id', CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
                 array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
         </div>
@@ -160,14 +160,14 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
             } else {
                 $gp_address = implode("\n", $gp_address->getLetterArray());
             }
-            
+
             $contact_string = '';
             if($patient->gp){
                 $contact_string = 'Gp' . $patient->gp->id;
             } else if($patient->practice){
                 $contact_string = 'Practice' . $patient->practice->id;
             }
-            
+
             $patient_address = isset($patient->contact->correspondAddress) ? $patient->contact->correspondAddress : (isset($patient->contact->address) ? $patient->contact->address : null);
 
             if (!$patient_address) {
@@ -180,7 +180,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
             if($contact_string){
                 $address_data = $api->getAddress($patient_id, $contact_string);
             }
-            
+
             $contact_id = isset($address_data['contact_id']) ? $address_data['contact_id'] : null;
             $contact_name = isset($address_data['contact_name']) ? $address_data['contact_name'] : null;
             $address = isset($address_data['address']) ? $address_data['address'] : null;
@@ -395,8 +395,8 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
     </div>
 
     <?php
-    $correspondeceApp = \SettingInstallation::model()->find('`key` = "ask_correspondence_approval"');
-    if($correspondeceApp->value === "on") {
+    $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
+    if($correspondeceApp === "on") {
     ?>
         <div class="row field-row">
             <div class="large-<?php echo $layoutColumns['label']; ?> column">

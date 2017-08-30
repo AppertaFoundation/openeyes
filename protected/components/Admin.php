@@ -539,6 +539,7 @@ class Admin
             if (array_key_exists('id', $post) && is_array($post['id'])) {
                 foreach ($post['id'] as $id) {
                     $model = $this->model->findByPk($id);
+                    $attributes = $model->getAttributes();
                     if (isset($model->active)) {
                         $model->active = 0;
                         if ($model && !$model->save()) {
@@ -548,6 +549,10 @@ class Admin
                         if ($model && !$model->delete()) {
                             $response = 0;
                         }
+                    }
+
+                    if($response == 1){
+                        Audit::add(get_class($model),'delete', serialize($attributes), get_class($model). ' deleted');
                     }
                 }
             }

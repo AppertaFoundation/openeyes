@@ -29,6 +29,13 @@
  */
 class OphTrOperationbooking_Operation_Status extends BaseActiveRecordVersioned
 {
+    const STATUS_REQUIRES_SCHEDULING = 1;
+    const STATUS_SCHEDULED = 2;
+    const STATUS_REQUIRES_RESCHEDULING = 3;
+    const STATUS_RESCHEDULED = 4;
+    const STATUS_CANCELLED = 5;
+    const STATUS_COMPLETED = 6;
+
     /**
      * Returns the static model of the specified AR class.
      *
