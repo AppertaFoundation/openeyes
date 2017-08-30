@@ -1676,6 +1676,11 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 				<TERM>manual</TERM>
 			</SECONDARY_TERM_LIST>
 			<DESCRIPTION>This feature allows you to search for canvases, doodles and fields in the above search bars (one for each eye). Clicking on a search result will take you to the relevant item and if it is a doodle it will add it for you.</DESCRIPTION>
+			<GENERAL_NOTE><![CDATA[
+         <strong>Shortcuts:</strong><br />
+         Ctrl+Shift+R = Start search in right eye<br />
+         Ctrl+Shift+L = Start search in left eye<br />
+        ]]></GENERAL_NOTE>		
 		</INDEX>
 		<INDEX>
 			<PRIMARY_TERM>Examination History</PRIMARY_TERM>

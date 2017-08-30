@@ -328,16 +328,12 @@ private function getElementName($open_element_class_name){
       $description = $index->DESCRIPTION;
       $warning = $index->WARNING_NOTE;
       $info = $index->GENERAL_NOTE;
-      $fake_array = (array)$index->TERM_LIST->TERM;
-      $alias = implode(",",$fake_array);
-      $name = array_shift($fake_array);
 
       $primary_term = $index->PRIMARY_TERM;
       $secondary_term_list_array = (array)$index->SECONDARY_TERM_LIST->TERM;
       $secondary_term_list = implode(", ",$secondary_term_list_array);
       $complete_term_list = $secondary_term_list_array ? $primary_term.",".$secondary_term_list : $primary_term;
 
-      $alias_minus_name = implode(",",$fake_array);
       $img = $index->IMG_URL;
       $children = $index->INDEX_LIST;
       $open_element_class_name = $index->OPEN_ELEMENT_CLASS_NAME;
@@ -396,6 +392,7 @@ private function getElementName($open_element_class_name){
         ."</div>"
         ."</div>"
         ) : (""));
+
       if ($children) {
         $result .= "<ul class='results_list'>";
         foreach ($children->INDEX as $child) {
@@ -403,6 +400,7 @@ private function getElementName($open_element_class_name){
         }
         $result .= "</ul>";
       }
+
       $result .= "</li>";
       return $result;
     }
