@@ -75,8 +75,8 @@ class HistoryMedicationsEntry extends \BaseElement
     public function rules()
     {
         return array(
-            array('element_id, medication_drug_id, drug_id, medication_name, route_id, option_id, dose, frequency_id, '
-                .'start_date, end_date, stop_reason_id, prescription_item_id', 'safe'),
+            array('element_id, medication_drug_id, drug_id, medication_name, route_id, option_id, dose, units, '
+                .'frequency_id, start_date, end_date, stop_reason_id, prescription_item_id', 'safe'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
             array('end_date', 'OEFuzzyDateValidator'),
             array('option_id', 'validateOptionId'),
@@ -276,7 +276,7 @@ class HistoryMedicationsEntry extends \BaseElement
     public function getAdministrationDisplay()
     {
         $res = array();
-        foreach (array('dose', 'option', 'route', 'frequency') as $k) {
+        foreach (array('dose', 'units', 'option', 'route', 'frequency') as $k) {
             if ($this->$k) {
                 $res[] = $this->$k;
             }

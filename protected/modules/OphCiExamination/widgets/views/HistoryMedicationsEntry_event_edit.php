@@ -86,7 +86,8 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
             <div class="row">
               <div class="large-3 column"><label>Dose:</label></div>
               <div class="large-9 column end">
-                  <input type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" />
+                  <input type="hidden" name="<?= $field_prefix ?>[units]" value="<?= $entry->units ?>" />
+                  <input type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="<?= $entry->units ?>" />
               </div>
             </div>
             <div class="row">

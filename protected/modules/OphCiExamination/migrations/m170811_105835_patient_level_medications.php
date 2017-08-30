@@ -38,6 +38,7 @@ class m170811_105835_patient_level_medications extends OEMigration
             'medication_drug_id' => 'int(11)',
             'medication_name' => 'varchar(511)',
             'dose' => 'varchar(255)',
+            'units' => 'varchar(31)',
             'route_id' => 'int(10) unsigned',
             'option_id' => 'int(10) unsigned',
             'frequency_id' => 'int(10) unsigned',

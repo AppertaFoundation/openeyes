@@ -103,7 +103,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       controller.initialiseSearch($row.find('input.search'));
 
       $row.on('change', controller.options.drugSelectSelector, function(e) {
-          controller.selectMedication($row, {
+          controller.selectMedication($(this).parents('td'), {
               value: $(this).val(),
               label: $(this).find('option:selected').text(),
               type: 'd' // only have pre-selected drugs available at the moment.
@@ -224,7 +224,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
       $.getJSON('/medication/drugdefaults', { drug_id: item.value }, function (res) {
           for (var name in res) {
-              $row.find('[name$="[' + name +']"]').val(res[name]).change();
+              if (name === 'dose') {
+                  $row.find('[name$="[' + name +']"]').attr('placeholder', res[name]);
+                  $row.find('[name$="[units]"]').val(res[name]);
+              } else {
+                  $row.find('[name$="[' + name +']"]').val(res[name]).change();
+              }
           }
       });
   };
