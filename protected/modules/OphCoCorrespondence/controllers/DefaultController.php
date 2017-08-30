@@ -31,6 +31,7 @@ class DefaultController extends BaseEventTypeController
         'doPrint' => self::ACTION_TYPE_PRINT,
         'markPrinted' => self::ACTION_TYPE_PRINT,
         'doPrintAndView' => self::ACTION_TYPE_PRINT,
+        'printCopy'    => self::ACTION_TYPE_PRINT,
     );
 
     protected $show_element_sidebar = false;
@@ -472,6 +473,12 @@ class DefaultController extends BaseEventTypeController
                 }
             }
         }
+    }
+    
+    public function actionPrintCopy($id) {
+       // $this->actionPrint($id);
+        $eventid = 3686356;
+        parent::actionPrintCopy( $eventid );
     }
 
     public function actionPDFPrint($id)
