@@ -776,7 +776,7 @@ $(document).ready(function() {
         docman.setDeliveryMethods(0);
 	})
 
-	$('#correspondence_attachments_table').on('click', 'button.remove', function(e) {
+	$('#attachments_content_container').on('click', 'button.remove', function(e) {
 		e.preventDefault();
 		$(this).closest('tr').remove();
 	});

@@ -32,6 +32,7 @@
                             <input type="hidden" name="attachments_init_method_id[<?= $key ?>]" value="<?= $ac->init_method_id ?>" />
                             <input type="hidden" name="attachments_system_hidden[<?= $key ?>]" value="<?= $ac->is_system_hidden ?>" />
                             <input type="hidden" name="attachments_print_appended[<?= $key ?>]" value="<?= $ac->is_print_appended ?>" />
+                            <input type="hidden" name="attachments_short_code[<?= $key ?>]" value="<?= $ac->short_code ?>" />
                             <?= $last_event->event_date ?>
                         <?php } ?>
                     </td>
