@@ -4,7 +4,8 @@ class m170811_105835_patient_level_medications extends OEMigration
 {
     protected static $archive_tables = array(
         'medication_stop_reason',
-        'medication'
+        'medication',
+        'medication_adherence' // NB this is being archived, but this data is will not be migrated.
     );
     protected static $archive_prefix = 'archive_';
 
