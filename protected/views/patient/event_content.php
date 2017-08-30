@@ -5,17 +5,7 @@
 
 	<header class="event-header">
 		<?php $this->renderPartial('//patient/event_tabs'); ?>
-		<?php
-		$url =  $_SERVER['REQUEST_URI'];
-		if (strpos($url,'update') !== false || strpos($url,'create') !== false) {
-			$event_type_id = ($this->event->attributes["event_type_id"]);
-			$event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
-			$event_name = $event_type->name;
-			if ($event_name == "Examination") {
-				$this->widget('application.widgets.IndexSearch',array('event_type' => $event_name));
-			}
-		}
-		 ?>
+		<?php $this->renderIndexSearch(); ?>
 		<?php $this->renderPartial('//patient/event_actions'); ?>
 	</header>
     <div class="event-content <?=($this->event->is_automated) ? 'auto' : ''?>" id="event-content">
