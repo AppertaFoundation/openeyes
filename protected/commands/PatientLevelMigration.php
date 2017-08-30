@@ -50,6 +50,11 @@ class PatientLevelMigration extends CConsoleCommand
     protected static $entry_attributes = array();
 
     /**
+     * @var if set, limits processing to just this specific patient id
+     */
+    protected $patient_id = null;
+
+    /**
      * @return OEModule\OphCiExamination\components\OphCiExamination_API
      */
     protected function getApi()
@@ -105,15 +110,19 @@ class PatientLevelMigration extends CConsoleCommand
      */
     public function actionIndex($patient_id = null)
     {
+        if ($patient_id !== null) {
+            $this->patient_id = $patient_id;
+        }
+
         $db = Yii::app()->db;
         $query = $db->createCommand()
             ->select('patient_id, ' . implode(',', static::$entry_attributes))
             ->from(static::$archived_entry_table)
             ->order('patient_id asc, created_date asc, id asc');
 
-        if ($patient_id !== null) {
+        if ($this->patient_id !== null) {
             $query->where('patient_id = :patient_id', array(
-                ':patient_id' => $patient_id));
+                ':patient_id' => $this->patient_id));
         }
 
         $current_patient_id = null;
@@ -126,7 +135,7 @@ class PatientLevelMigration extends CConsoleCommand
                     if ($this->processPatient($current_patient_id, null, $patient_rows)) {
                         $processed_count++;
                     } else {
-                        echo $patient_id . " did not process entries\n";
+                        echo $current_patient_id . " already processed or has a tip element\n";
                     }
                     $patient_count++;
                     echo ".";
@@ -137,12 +146,14 @@ class PatientLevelMigration extends CConsoleCommand
             $patient_rows[] = $row;
         }
         // repeat to process the final patient that has been matched on, but not completed
-        if ($this->processPatient($current_patient_id, null, $patient_rows)) {
-            $processed_count++;
-        } else {
-            echo $current_patient_id . " did not process as last patient\n";
+        if ($current_patient_id && $patient_rows) {
+            if ($this->processPatient($current_patient_id, null, $patient_rows)) {
+                $processed_count++;
+            } else {
+                echo $current_patient_id . " already processed or has a tip element\n";
+            }
+            $patient_count++;
         }
-        $patient_count++;
 
         if (static::$archived_no_values_col) {
             $query = $db->createCommand()
@@ -150,9 +161,9 @@ class PatientLevelMigration extends CConsoleCommand
                 ->from('patient')
                 ->where(static::$archived_no_values_col . ' is not null and ' . static::$archived_no_values_col . ' != ""');
 
-            if ($patient_id !== null) {
+            if ($this->patient_id !== null) {
                 $query->andWhere('patient_id = :patient_id', array(
-                    ':patient_id' => $patient_id));
+                    ':patient_id' => $this->patient_id));
             }
 
             foreach ($query->queryAll() as $row) {
@@ -165,9 +176,20 @@ class PatientLevelMigration extends CConsoleCommand
             }
         }
 
+        $this->generateAdditionalRecords($processed_count, $patient_count);
 
         echo "\nProcessed " . $processed_count . "/" . $patient_count . " patients.\n";
     }
+
+    /**
+     * Stub method to allow inheriting classes to generate additional records based
+     * on non-standard criteria
+     *
+     * @param $processed_count
+     * @param $patient_count
+     */
+    protected function generateAdditionalRecords(&$processed_count, &$patient_count)
+    {}
 
     /**
      * @return mixed
@@ -195,30 +217,7 @@ class PatientLevelMigration extends CConsoleCommand
         }
         $entries = $this->processPatientRows($patient, $rows);
 
-        $transaction = Yii::app()->db->beginTransaction();
-        try {
-            $event = $this->getChangeEvent($patient);
-
-            $element = $this->getNewElement();
-            $element->event_id = $event->id;
-            if ($no_entries_date) {
-                $element->{static::$no_values_col} = $no_entries_date;
-            } else {
-                $element->{static::$element_entry_attribute} = $entries;
-            }
-            if (!$element->validate()) {
-                throw new Exception(print_r($element->getErrors(), true));
-            }
-            $element->save();
-
-            $transaction->commit();
-        }
-        catch (Exception $e) {
-            $transaction->rollback();
-            throw $e;
-        }
-
-        return true;
+        return $this->saveRecords($patient, $no_entries_date, $entries);
     }
 
     /**
@@ -238,5 +237,42 @@ class PatientLevelMigration extends CConsoleCommand
             $entries[] = $entry;
         }
         return $entries;
+    }
+
+    /**
+     * Abstraction for actually saving records for the given Patient
+     *
+     * @param Patient $patient
+     * @param $no_entries_date
+     * @param $entries
+     * @return bool
+     * @throws Exception
+     */
+    protected function saveRecords($patient, $no_entries_date, $entries)
+    {
+        $transaction = Yii::app()->db->beginTransaction();
+        try {
+            $event = $this->getChangeEvent($patient);
+
+            $element = $this->getNewElement();
+            $element->event_id = $event->id;
+            if ($no_entries_date) {
+                $element->{static::$no_values_col} = $no_entries_date;
+            } else {
+                $element->{static::$element_entry_attribute} = $entries;
+            }
+            if (!$element->validate()) {
+                throw new Exception('Patient ID: ' . $patient->id . "\n" . print_r($element->getErrors(), true));
+            }
+            $element->save();
+
+            $transaction->commit();
+        }
+        catch (Exception $e) {
+            $transaction->rollback();
+            throw $e;
+        }
+        print ".";
+        return true;
     }
 }
