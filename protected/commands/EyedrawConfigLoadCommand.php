@@ -27,6 +27,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
     const DOODLE_TBL        = 'eyedraw_doodle';
     const CANVS_TBL         = 'eyedraw_canvas';
     const CANVAS_DOODLE_TBL = 'eyedraw_canvas_doodle';
+    private $searchable_terms = [];
     public function getName()
 
     {
@@ -110,6 +111,17 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
         $html_string .= $this->generateIndexHTML($index);
       }
       $html_string.="</ul></div>";
+      $searchable_terms_JSON = '[';
+      $unique = array_unique($this->searchable_terms);
+      foreach ($unique as $search_term) {
+        $words = explode(" ",$search_term);
+        foreach ($words as $word) {
+          $searchable_terms_JSON .= "\"".$word."\","; //split words i.e. history risks to work better
+        }
+      }
+      $searchable_terms_JSON=rtrim($searchable_terms_JSON,", ");
+      $searchable_terms_JSON .= ']';
+      $html_string .= "<input id=\"searchable_terms\" hidden data-searchable-terms='$searchable_terms_JSON'/>";
 
       //Formats the html to make it more readable
       include_once('EyeDrawConfigLoadCommandAssets/format.php');
@@ -330,6 +342,7 @@ private function getElementName($open_element_class_name){
       $info = $index->GENERAL_NOTE;
 
       $primary_term = $index->PRIMARY_TERM;
+      array_push($this->searchable_terms,$primary_term);
       $secondary_term_list_array = (array)$index->SECONDARY_TERM_LIST->TERM;
       $secondary_term_list = implode(", ",$secondary_term_list_array);
       $complete_term_list = $secondary_term_list_array ? $primary_term.",".$secondary_term_list : $primary_term;
