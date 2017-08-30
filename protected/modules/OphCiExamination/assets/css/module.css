@@ -22,46 +22,24 @@
 }
 /* line 19, ../sass/components/_event.scss */
 .event .event-content {
-  background-image: url('../img/watermark.png?1497601407');
+  background-image: url('../img/watermark.png?1481206058');
 }
 /* line 21, ../sass/components/_event.scss */
 .event .event-content.auto {
-  background-image: url('../img/watermark-auto.png?1497601407');
+  background-image: url('../img/watermark-auto.png?1490706503');
 }
 /* line 25, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1497601407');
+  background-image: url('../img/medium.png?1481206058');
 }
 /* line 27, ../sass/components/_event.scss */
 .event .event-title.auto {
-  background-image: url('../img/medium-auto.png?1497601407');
+  background-image: url('../img/medium-auto.png?1490706503');
 }
 
 /* line 33, ../sass/components/_event.scss */
 .refractionNotes {
   margin-top: 1em;
-}
-
-/* line 37, ../sass/components/_event.scss */
-ul.comma-list {
-  display: inline;
-  margin-left: 0px;
-}
-/* line 40, ../sass/components/_event.scss */
-ul.comma-list li {
-  white-space: nowrap;
-  margin-left: 5px;
-  margin-right: 0px;
-  display: inline;
-  list-style: none;
-}
-/* line 46, ../sass/components/_event.scss */
-ul.comma-list li:after {
-  content: " //";
-}
-/* line 49, ../sass/components/_event.scss */
-ul.comma-list li:last-child:after {
-  content: "";
 }
 
 @media print {
@@ -183,7 +161,7 @@ section.OEModule_OphCiExamination_models_Allergies table#OEModule_OphCiExaminati
 /* line 18, ../sass/components/elements/_current-management.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan .past_iop {
   height: 28px;
-  background: url('../img/past_icon.png?1497601407') no-repeat right top;
+  background: url('../img/past_icon.png?1481206058') no-repeat right top;
 }
 
 /* line 1, ../sass/components/elements/_pcr.scss */
@@ -261,7 +239,7 @@ a.stop-medication {
 
 /* line 17, ../sass/components/_gonio-cross.scss */
 .gonio-cross {
-  background: url('../img/cross.gif?1497601407') no-repeat center center;
+  background: url('../img/cross.gif?1481206058') no-repeat center center;
   height: 110px;
   margin: 0 0 10px 0;
   position: relative;
@@ -271,7 +249,7 @@ a.stop-medication {
   /* line 17, ../sass/components/_gonio-cross.scss */
   .gonio-cross {
     -webkit-print-color-adjust: exact;
-    background: url('../img/cross.gif?1497601407') no-repeat center center !important;
+    background: url('../img/cross.gif?1481206058') no-repeat center center !important;
   }
 }
 /* line 27, ../sass/components/_gonio-cross.scss */
@@ -497,4 +475,26 @@ table input.other-type-input {
 #postop-complications #draggablelist #draggablelist-items .available-items {
   max-height: 500;
   overflow: auto;
+}
+
+/* line 1, ../sass/components/_comma-list.scss */
+ul.comma-list {
+  display: inline;
+  margin-left: 0px;
+}
+/* line 4, ../sass/components/_comma-list.scss */
+ul.comma-list li {
+  white-space: nowrap;
+  margin-left: 5px;
+  margin-right: 0px;
+  display: inline;
+  list-style: none;
+}
+/* line 10, ../sass/components/_comma-list.scss */
+ul.comma-list li:after {
+  content: " //";
+}
+/* line 13, ../sass/components/_comma-list.scss */
+ul.comma-list li:last-child:after {
+  content: "";
 }

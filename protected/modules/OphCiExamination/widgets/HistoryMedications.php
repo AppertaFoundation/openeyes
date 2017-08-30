@@ -27,6 +27,8 @@ use OEModule\OphCiExamination\models\HistoryMedicationsEntry;
  */
 class HistoryMedications extends \BaseEventElementWidget
 {
+    public static $INLINE_EVENT_VIEW = 256;
+
     public static $moduleName = 'OphCiExamination';
     public $notattip_edit_warning = 'OEModule.OphCiExamination.widgets.views.HistoryMedications_edit_nottip';
     public $is_latest_element = null;
@@ -40,6 +42,16 @@ class HistoryMedications extends \BaseEventElementWidget
     protected function getNewElement()
     {
         return new HistoryMedicationsElement();
+    }
+
+    /**
+     * @param $mode
+     * @return bool
+     * @inheritdoc
+     */
+    protected function validateMode($mode)
+    {
+        return $mode === static::$INLINE_EVENT_VIEW || parent::validateMode($mode);
     }
 
     /**
@@ -241,8 +253,12 @@ class HistoryMedications extends \BaseEventElementWidget
     {
         // custom mode for rendering in the patient popup because the data is more complex
         // for this history element than others which just provide a list.
+        $short_name = substr(strrchr(get_class($this), '\\'),1);
         if ($this->mode === static::$PATIENT_POPUP_MODE) {
-            return substr(strrchr(get_class($this), '\\'),1) . '_patient_popup';
+            return  $short_name . '_patient_popup';
+        }
+        if ($this->mode === static::$INLINE_EVENT_VIEW) {
+            return $short_name . '_inline_event_view';
         }
         return parent::getView();
     }

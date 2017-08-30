@@ -208,17 +208,52 @@ class BaseEventElementWidget extends CWidget
     }
 
     /**
+     * @var string base path to assets for element widget
+     */
+    private $base_published_path;
+
+    /**
+     * @return string
+     */
+    protected function getBasePublishedPath()
+    {
+        if (!$this->base_published_path) {
+            $class = new \ReflectionClass($this);
+            $this->base_published_path = dirname($class->getFileName());
+        }
+        return $this->base_published_path;
+    }
+
+    /**
+     * @param $path
+     * @param $filename
+     * @return mixed
+     */
+    protected function getPublishedPath($path, $filename)
+    {
+        $elements = array_filter(array($this->getBasePublishedPath(), $path, $filename),
+            function($el) { return $el !== null; });
+        return $this->getApp()->getAssetManager()->publish(
+            implode(DIRECTORY_SEPARATOR, $elements)
+        );
+    }
+
+    /**
      * @param string $filename
      * @return string
      */
     public function getJsPublishedPath($filename = null)
     {
-        $class = new \ReflectionClass($this);
-        $path = dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'js/';
-        if ($filename) {
-            $path .= $filename;
-        }
-        return $this->getApp()->getAssetManager()->publish($path);
+        return $this->getPublishedPath('js', $filename);
+    }
+
+    /**
+     * @param string $filename
+     * @return mixed
+     */
+    public function getCssPublishedPath($filename = null)
+    {
+        return $this->getPublishedPath('../assets/css', $filename);
     }
 
     /**
