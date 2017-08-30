@@ -109,10 +109,18 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
         //appends HTML for the index and all of its descendant
         $html_string .= $this->generateIndexHTML($index);
       }
+      $html_string.="</ul></div>";
 
+      //Formats the html to make it more readable
+      include_once('EyeDrawConfigLoadCommandAssets/format.php');
+      $format = new Format;
+      $formatted_html = $format->HTML($html_string);
+
+      //Saves the formatted html to the view file
       $file = '/var/www/openeyes/protected/widgets/views/IndexSearch_Examination.php';
       $file_handle = fopen($file, 'w') or die('Cannot open file:  '.$file);
-      fwrite($file_handle, $html_string."</ul></div>");
+      fwrite($file_handle, $formatted_html);
+      fclose($file_handle);
     }
 
     /**
