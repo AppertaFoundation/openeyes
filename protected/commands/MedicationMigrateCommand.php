@@ -22,7 +22,7 @@ class MedicationMigrateCommand extends PatientLevelMigration
 {
     protected $event_type_cls = 'OphCiExamination';
     // Original table is renamed to this during the module database migration
-    protected static $archived_entry_table = 'medication';
+    protected static $archived_entry_table = 'archive_medication';
 
     protected static $element_class = 'OEModule\OphCiExamination\models\HistoryMedications';
     protected static $entry_class = 'OEModule\OphCiExamination\models\HistoryMedicationsEntry';
@@ -39,15 +39,24 @@ class MedicationMigrateCommand extends PatientLevelMigration
         'prescription_item_id'
     );
 
+    /**
+     * @var OphDrPrescription_API
+     */
+    protected $prescription_api;
+
     public function getHelp()
     {
         return "Migrates the original Medication records to an examination event in a change tracker episode\n";
     }
 
+    public function init()
+    {
+        $this->prescription_api = Yii::app()->moduleAPI->get('OphDrPrescription');
+    }
+
     protected function processPatientRows($patient, $rows)
     {
         $entries = parent::processPatientRows($patient, $rows);
-        print "original:" . count($entries) . "\n";
         return array_merge($entries, $this->getEntriesForUntrackedPrescriptionItems($patient, $entries));
     }
 
@@ -64,7 +73,7 @@ class MedicationMigrateCommand extends PatientLevelMigration
     private function getEntriesForUntrackedPrescriptionItems($patient, $entries)
     {
         $untracked = array();
-        if ($api = Yii::app()->moduleAPI->get('OphDrPrescription')) {
+        if ($this->prescription_api) {
             $tracked_prescr_item_ids = array_map(
                 function ($entry) {
                     return $entry->prescription_item_id;
@@ -75,7 +84,7 @@ class MedicationMigrateCommand extends PatientLevelMigration
                 )
             );
 
-            if ($untracked_prescription_items = $api->getPrescriptionItemsForPatient(
+            if ($untracked_prescription_items = $this->prescription_api->getPrescriptionItemsForPatient(
                 $patient, $tracked_prescr_item_ids)
             ) {
                 foreach ($untracked_prescription_items as $item) {
@@ -85,7 +94,41 @@ class MedicationMigrateCommand extends PatientLevelMigration
                 }
             }
         }
-        print "untracked:" . count($untracked) . "\n";
         return $untracked;
+    }
+
+    protected function generateAdditionalRecords(&$processed_count, &$patient_count)
+    {
+        $db = Yii::app()->db;
+        $query = $db->createCommand()
+            ->select('episode.patient_id')
+            ->from('et_ophdrprescription_details as t')
+            ->join('event', 't.event_id = event.id')
+            ->join('episode', 'event.episode_id = episode.id')
+            ->where('episode.deleted != true')
+            ->andWhere('event.deleted != true')
+            ->andWhere('t.draft = false')
+            ->andWhere('episode.patient_id NOT IN (select distinct patient_id from archive_medication)');
+        if ($this->patient_id) {
+            $query->andWhere('episode.patient_id = :patient_id', array(
+                ':patient_id' => $this->patient_id
+            ));
+        }
+        $query->setDistinct(true);
+        foreach ($query->queryAll() as $row) {
+            $patient_count++;
+            $patient = Patient::model()->findByPk($row['patient_id']);
+            if ($this->getApi()->getLatestElement(static::$element_class, $patient)) {
+                print $patient->id . "already processed\n";
+                continue;
+            }
+            $entries = $this->getEntriesForUntrackedPrescriptionItems($patient, array());
+            if ($this->saveRecords($patient, null, $entries)) {
+                $processed_count++;
+            } else {
+                print $patient->id . "already processed\n";
+            }
+        }
+
     }
 }

@@ -3,7 +3,8 @@
 class m170811_105835_patient_level_medications extends OEMigration
 {
     protected static $archive_tables = array(
-        'medication_stop_reason'
+        'medication_stop_reason',
+        'medication'
     );
     protected static $archive_prefix = 'archive_';
 
