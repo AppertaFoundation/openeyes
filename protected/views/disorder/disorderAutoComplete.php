@@ -7,7 +7,7 @@
       $('.multiDiagnosis[value="' + $(this).data('diagnosisId') +'"').remove();
       $('input[id=savedDiagnosis]').val('');
       $(this).parent().hide();
-      <?= isset($callback) ? $callback . '();' : '' ?>
+      <?= (isset($callback) && strlen($callback)) ? $callback . '();' : '' ?>
     });
   });
   var source = function(request, response) {
@@ -26,7 +26,7 @@
 if(is_array($value)):
 ?>
   var select = function(event, ui) {
-    <?= isset($callback) ? $callback . '(event, ui);' : ''?>
+    <?= (isset($callback) && strlen($callback)) ? $callback . '(event, ui);' : ''?>
     var $clear = $('<?=$clear_diagnosis?>'),
       $new= $('<span></span>');
 
