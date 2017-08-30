@@ -54,7 +54,9 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 		$items_data = $this->groupItems($element->items);
 		foreach ($items_data as $group => $items) {?>
 			<b>
-					<?php echo OphDrPrescription_DispenseCondition::model()->findByPk($group)->name; ?>
+					<?php
+						$group_name = OphDrPrescription_DispenseCondition::model()->findByPk($group)->name;
+						echo $group_name; ?>
 			</b>
 			<table class="borders prescription_items">
 			<thead>
@@ -65,8 +67,10 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 				<th>Freq.</th>
 				<th>Duration</th>
 				<th>Hospital Dispense Location</th>
-				<th>Dispensed</th>
-				<th>Checked</th>
+				<?php if(strpos($group_name,"Hospital") !== false ){?>
+					<th>Dispensed</th>
+					<th>Checked</th>
+				<?php }?>
 			</tr>
 			</thead>
 			<tbody>
@@ -83,8 +87,10 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 					<td><?php echo $item->frequency->long_name; ?></td>
 					<td><?php echo $item->duration->name ?></td>
 					<td><?php echo $item->dispense_location->name ?></td>
-					<td></td>
-					<td></td>
+					<?php if(strpos($group_name,"Hospital") !== false ){?>
+						<td></td>
+						<td></td>
+					<?php }?>
 				</tr>
 				<?php foreach ($item->tapers as $taper) { ?>
 					<tr class="prescriptionTaper">
@@ -98,8 +104,11 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 							} ?>
 						</td>
 						<td><?php echo $taper->duration->name ?></td>
-						<td>-</td>
-						<td>-</td>
+						<td></td>
+						<?php if(strpos($group_name,"Hospital") !== false ){?>
+							<td>-</td>
+							<td>-</td>
+						<?php }?>
 					</tr>
 					<?php
 				}
@@ -147,7 +156,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 	</tr>
 </table>
 <div class="spacer"></div>
-<table>
+<table  class="borders done_bys">
 	<tr>
 		<th>Patient's address</th>
 		<td><?php echo $this->patient->getSummaryAddress(", ") ?></td>
@@ -155,7 +164,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 </table>
 <div class="spacer"></div>
 <?php if (!$data['copy'] && $site_theatre = $this->getSiteAndTheatreForLatestEvent()) {?>
-	<table>
+	<table  class="borders done_bys">
 		<tr>
 			<th>Site</th>
 			<td><?php echo  $site_theatre->site->name?></td>
