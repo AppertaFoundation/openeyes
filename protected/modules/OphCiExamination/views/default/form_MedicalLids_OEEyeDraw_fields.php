@@ -16,6 +16,14 @@
  */
 ?>
 <div class="eyedraw-fields">
+    <div class="field-row row">
+        <div class="large-3 column">
+            <label for="<?php echo CHtml::modelName($element).'_' . $side .'_stfb';?>"><?= $element->getAttributeLabel($side . '_stfb') ?></label>
+        </div>
+        <div class="large-9 column end">
+            <?= CHtml::activeCheckBox($element, $side . '_stfb') ?>
+        </div>
+    </div>
     <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
     <div class="field-row">
         <div class="row collapse">
