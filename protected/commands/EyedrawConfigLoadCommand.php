@@ -117,7 +117,8 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
         $words = explode(" ",$search_term);
         foreach ($words as $word) {
           $searchable_terms_JSON .= "\"".$word."\","; //split words i.e. history risks to work better
-        }
+        } //case-sensitive?
+          //put threshhold on it so if no close mathces don't show anything
       }
       $searchable_terms_JSON=rtrim($searchable_terms_JSON,", ");
       $searchable_terms_JSON .= ']';

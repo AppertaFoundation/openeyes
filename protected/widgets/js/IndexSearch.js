@@ -1,5 +1,8 @@
 (function (exports) {
   'use strict';
+  function correct_it(str){
+    alert(str);
+  }
 
   /* Global Variables */
   var show_children = true;
@@ -23,6 +26,7 @@
       this.keyup(function() {
         //temporarily detaches div from DOM to reduce unnecessary rendering
         $results.detach();
+        $results.find('#didyoumean').remove();
         search_term = ($(this).val() + "").toLowerCase();
         let last_level,$this,$element,highlighted_string,alias,selector,match_pos
         ,plain_text,no_match_text,match_text,$alias,highlighted_aliases;
@@ -83,6 +87,7 @@
               near_ld = Levenshtein.get(search_term,term);
             }
           });
+          $results.append(`<h2 id="didyoumean">Did you mean <span class="correct_it">${near_term}</span>?<h2>`);
           console.log(near_term);
         }
         $parent.append($results); //reattaches the result to the DOM to be rendered so just 1 big render instead of many small renders
@@ -116,10 +121,10 @@
       for (i = 0; i < opts.ancestor_to_change; i++) {
         $this = $this.parent();
       }
-
       //allows widget to be chainable
       return $this;
     }
+
   }(jQuery));
   /* End of jQuery Search Widget*/
 
