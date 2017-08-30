@@ -51,7 +51,7 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
         /*
             checking the integration if needed
 
-        if( !\Yii::app()->internalReferralIntegration){
+        if( !\Yii::app()->hasComponent('internalReferralIntegration')){
             throw new Exception("No Internal Referral integration found");
         }
 
