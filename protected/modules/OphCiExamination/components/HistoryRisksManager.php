@@ -27,12 +27,16 @@ use OEModule\OphCiExamination\models\HistoryRisks;
 
 class HistoryRisksManager
 {
+    protected $api;
     /**
      * @return OphCiExamination_API
      */
     protected function getApi()
     {
-        return \Yii::app()->moduleAPI->get('OphCiExamination');
+        if (!$this->api) {
+            $this->api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        }
+        return $this->api;
     }
 
     /**
@@ -61,26 +65,36 @@ class HistoryRisksManager
                 $by_id[$risk->id]['comments_list'][] = (string)$tagged;
             }
         }
-        $res = array();
-        foreach (array_keys($by_id) as $id) {
-            $res[] = array(
-                'risk' => $by_id[$id]['risk'],
-                'comments' => implode(', ', $by_id[$id]['comments_list'])
-            );
-        }
+        return array_values($by_id);
         return $res;
     }
 
     /**
      * @param \Patient $patient
-     * @param array $risks - ['risk' => OphCiExaminationRisk, 'comments' => string][]
+     * @param array $risks - ['risk' => OphCiExaminationRisk, 'comments_list' => string[]][]
      */
     protected function addRisksToPatient(\Patient $patient, $risks = array())
     {
         if ($risks) {
             $element = $this->getLatestElement($patient);
-            $present_ids = $element ? array_map(function($r) { return $r->id; }, $element->present) : array();
-            $missing_risks = array_filter($risks, function($r) use ($present_ids) { return !in_array($r['risk']->id, $present_ids); });
+            $present_risks = $element ? $element->present : array();
+            $missing_risks = array_filter($risks,
+                function($r) use ($present_risks) {
+                    foreach ($present_risks as $present) {
+                        if ($r['risk']->id === $present->risk_id) {
+                            // for the matching risk, we filter it out if
+                            // all the required comments are already on the present entry
+                            return (bool) array_filter(
+                                $r['comments_list'],
+                                function($c) use ($present) {
+                                    return strpos(strtolower($present->comments), strtolower($c)) < 0;
+                                }
+                            );
+                        }
+                    }
+                    return true;
+                }
+            );
             if ($missing_risks) {
                 $this->createRiskEvent($patient, $element, $missing_risks);
             }
@@ -110,8 +124,8 @@ class HistoryRisksManager
 
     /**
      * @param \Patient $patient
-     * @param $current
-     * @param $missing_risks - ['risk' => OphCiExaminationRisk, 'comments' => string][]
+     * @param HistoryRisks $current
+     * @param $missing_risks - ['risk' => OphCiExaminationRisk, 'comments_list' => string][]
      */
     protected function createRiskEvent(\Patient $patient, $current, $missing_risks)
     {
@@ -123,15 +137,49 @@ class HistoryRisksManager
         $entries = $element->entries;
         $element->event_id = $event->id;
         foreach ($missing_risks as $risk) {
+            foreach ($entries as $current) {
+                if ($current->risk_id === $risk['risk']->id) {
+                    // there's an entry for the risk, we just need to update
+                    // the comment appropriately.
+                    $this->updateEntryComments($current, $risk['comments_list']);
+                    // and set it to being present
+                    $current->has_risk = true;
+                }
+                continue 2;
+            }
+            // got this far there is no matching risk and we need to
+            // create a whole new entry
             $entry = new HistoryRisksEntry('auto');
             $entry->risk_id = $risk['risk']->id;
             $entry->risk = $risk['risk'];
             $entry->has_risk = true;
-            $entry->comments = $risk['comments'];
+            $entry->comments = implode(', ', $risk['comments_list']);
             $entries[] = $entry;
         }
         $element->entries = $entries;
         $element->save();
+    }
+
+    /**
+     * Add any missing comments from the given list to the entry comments attribute
+     *
+     * @param $entry
+     * @param array $comments_list
+     */
+    private function updateEntryComments($entry, $comments_list = array())
+    {
+
+        if (strlen($entry->comments)) {
+            $entry_comments = array($entry->comments);
+            foreach ($comments_list as $c) {
+                if (!strpos($entry->comments, $c)) {
+                    $entry_comments[] = $c;
+                }
+            }
+            $entry->comments = implode(', ', $entry_comments);
+        } else {
+            $entry->comments = implode(', ', $comments_list);
+        }
     }
 
     /**
