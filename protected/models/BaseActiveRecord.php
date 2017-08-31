@@ -787,7 +787,6 @@ class BaseActiveRecord extends CActiveRecord
      */
     private function validateRelation($rel_name)
     {
-        OELog::log($rel_name);
         foreach ($this->$rel_name as $i => $rel_obj) {
             if (!$rel_obj->validate()) {
                 foreach ($rel_obj->getErrors() as $fld => $err) {
