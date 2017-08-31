@@ -66,7 +66,6 @@ class HistoryRisksManager
             }
         }
         return array_values($by_id);
-        return $res;
     }
 
     /**
@@ -198,8 +197,8 @@ class HistoryRisksManager
         if (array_key_exists('drugs', $params)) {
             $risks = $this->getRisksFromTagged($params['drugs']);
         }
-        if (array_key_exists('medication_drug_ids', $params)) {
-            $risks = array_merge($risks, $this->getRisksFromTagged(['medication_drugs']));
+        if (array_key_exists('medication_drugs', $params)) {
+            $risks = array_merge($risks, $this->getRisksFromTagged($params['medication_drugs']));
         }
 
         $this->addRisksToPatient($params['patient'], $risks);
