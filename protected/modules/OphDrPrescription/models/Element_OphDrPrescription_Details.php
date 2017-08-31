@@ -362,7 +362,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
 
         $this->getApp()->event->dispatch('after_medications_save', array(
             'patient' => $this->event->getPatient(),
-            'drug_ids' => array_map(function($item) {return $item->drug_id; }, $this->items)
+            'drugs' => array_map(function($item) {return $item->drug; }, $this->items)
         ));
     }
 

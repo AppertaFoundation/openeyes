@@ -27,37 +27,70 @@ use OEModule\OphCiExamination\models\HistoryRisks;
 
 class HistoryRisksManager
 {
-    private function getApi()
+    /**
+     * @return OphCiExamination_API
+     */
+    protected function getApi()
     {
         return \Yii::app()->moduleAPI->get('OphCiExamination');
     }
 
-    private function getLatestElement($patient)
+    /**
+     * @param $patient
+     * @return mixed
+     */
+    protected function getLatestElement($patient)
     {
         $api = $this->getApi();
-        return $api->getLatestElement('OEModule\OphCiExamination\models\HistoryRisks', $patient);
+        return $api->getLatestElement('models\HistoryRisks', $patient);
     }
 
-    protected function getRisksFromTagged($model, $ids) {
-        $tag_ids = array();
-        foreach ($model->with('tags')->findAllByPk($ids) as $obj) {
-            $tag_ids = array_merge($tag_ids, array_map(function($t) { return $t->id; }, $obj->tags));
+    /**
+     * @param $tagged_list
+     * @return array|mixed|null
+     */
+    protected function getRisksFromTagged($tagged_list) {
+        $by_id = array();
+        foreach ($tagged_list as $tagged) {
+            $tag_ids = array_map(function($t) { return $t->id; }, $tagged->tags);
+            $risks = OphCiExaminationRisk::findForTagIds($tag_ids);
+            foreach ($risks as $risk) {
+                if (!array_key_exists($risk->id, $by_id)) {
+                    $by_id[$risk->id] = array('risk' => $risk, 'comments_list' => array());
+                }
+                $by_id[$risk->id]['comments_list'][] = (string)$tagged;
+            }
         }
-        return OphCiExaminationRisk::findForTagIds($tag_ids);
+        $res = array();
+        foreach (array_keys($by_id) as $id) {
+            $res[] = array(
+                'risk' => $by_id[$id]['risk'],
+                'comments' => implode(', ', $by_id[$id]['comments_list'])
+            );
+        }
+        return $res;
     }
 
+    /**
+     * @param \Patient $patient
+     * @param array $risks - ['risk' => OphCiExaminationRisk, 'comments' => string][]
+     */
     protected function addRisksToPatient(\Patient $patient, $risks = array())
     {
         if ($risks) {
             $element = $this->getLatestElement($patient);
             $present_ids = $element ? array_map(function($r) { return $r->id; }, $element->present) : array();
-            $missing_risks = array_filter($risks, function($r) use ($present_ids) { return !in_array($r->id, $present_ids); });
+            $missing_risks = array_filter($risks, function($r) use ($present_ids) { return !in_array($r['risk']->id, $present_ids); });
             if ($missing_risks) {
                 $this->createRiskEvent($patient, $element, $missing_risks);
             }
         }
     }
 
+    /**
+     * @param \Patient $patient
+     * @return \Event
+     */
     protected function getChangeEvent(\Patient $patient)
     {
         $episode = \Episode::getChangeEpisode($patient);
@@ -78,7 +111,7 @@ class HistoryRisksManager
     /**
      * @param \Patient $patient
      * @param $current
-     * @param $missing_risks
+     * @param $missing_risks - ['risk' => OphCiExaminationRisk, 'comments' => string][]
      */
     protected function createRiskEvent(\Patient $patient, $current, $missing_risks)
     {
@@ -91,9 +124,10 @@ class HistoryRisksManager
         $element->event_id = $event->id;
         foreach ($missing_risks as $risk) {
             $entry = new HistoryRisksEntry('auto');
-            $entry->risk_id = $risk->id;
-            $entry->risk = $risk;
+            $entry->risk_id = $risk['risk']->id;
+            $entry->risk = $risk['risk'];
             $entry->has_risk = true;
+            $entry->comments = $risk['comments'];
             $entries[] = $entry;
         }
         $element->entries = $entries;
@@ -104,7 +138,7 @@ class HistoryRisksManager
      * A relatively simple handler for receiving notifications that drugs and/or medication drugs
      * have been added to the patient, so the relevant risks should be stored on the patient.
      *
-     * @param $params (['patient' => \Patient, 'drug_ids' => array(), 'medication_drug_ids' => array())
+     * @param $params (['patient' => \Patient, 'drugs' => \Drug[], 'medication_drugs' => \MedicationDrug[])
      * @throws \SystemException
      */
     public function addPatientMedicationRisks($params)
@@ -113,11 +147,11 @@ class HistoryRisksManager
             throw new \SystemException('Missing expected patient parameter for updating patient risks');
         }
         $risks = array();
-        if (array_key_exists('drug_ids', $params)) {
-            $risks = $this->getRisksFromTagged(\Drug::model(), $params['drug_ids']);
+        if (array_key_exists('drugs', $params)) {
+            $risks = $this->getRisksFromTagged($params['drugs']);
         }
         if (array_key_exists('medication_drug_ids', $params)) {
-            $risks = array_merge($risks, $this->getRisksFromTagged(\MedicationDrug::model(), $params['medication_drug_ids']));
+            $risks = array_merge($risks, $this->getRisksFromTagged(['medication_drugs']));
         }
 
         $this->addRisksToPatient($params['patient'], $risks);
