@@ -66,8 +66,8 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 				<th>Route</th>
 				<th>Freq.</th>
 				<th>Duration</th>
-				<th>Hospital Dispense Location</th>
 				<?php if(strpos($group_name,"Hospital") !== false ){?>
+					<th>Hospital Dispense Location</th>
 					<th>Dispensed</th>
 					<th>Checked</th>
 				<?php }?>
@@ -86,8 +86,8 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 						} ?></td>
 					<td><?php echo $item->frequency->long_name; ?></td>
 					<td><?php echo $item->duration->name ?></td>
-					<td><?php echo $item->dispense_location->name ?></td>
 					<?php if(strpos($group_name,"Hospital") !== false ){?>
+						<td><?php echo $item->dispense_location->name ?></td>
 						<td></td>
 						<td></td>
 					<?php }?>
