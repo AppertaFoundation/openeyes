@@ -115,10 +115,12 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
       $unique = array_unique($this->searchable_terms);
       foreach ($unique as $search_term) {
         $words = explode(" ",$search_term);
+        if (sizeof($words) > 1) { //insert full term and each word in searchable_terms
+          $searchable_terms_JSON .= "\"".strtolower($search_term)."\",";
+        }
         foreach ($words as $word) {
-          $searchable_terms_JSON .= "\"".$word."\","; //split words i.e. history risks to work better
-        } //case-sensitive?
-          //put threshhold on it so if no close mathces don't show anything
+          $searchable_terms_JSON .= "\"".strtolower($word)."\",";
+        }
       }
       $searchable_terms_JSON=rtrim($searchable_terms_JSON,", ");
       $searchable_terms_JSON .= ']';
@@ -341,13 +343,14 @@ private function getElementName($open_element_class_name){
       $description = $index->DESCRIPTION;
       $warning = $index->WARNING_NOTE;
       $info = $index->GENERAL_NOTE;
-
       $primary_term = $index->PRIMARY_TERM;
-      array_push($this->searchable_terms,$primary_term);
       $secondary_term_list_array = (array)$index->SECONDARY_TERM_LIST->TERM;
+      array_push($this->searchable_terms,$primary_term);
+      foreach ($secondary_term_list_array as $term) {
+        array_push($this->searchable_terms,$term);
+      }
       $secondary_term_list = implode(", ",$secondary_term_list_array);
       $complete_term_list = $secondary_term_list_array ? $primary_term.",".$secondary_term_list : $primary_term;
-
       $img = $index->IMG_URL;
       $children = $index->INDEX_LIST;
       $open_element_class_name = $index->OPEN_ELEMENT_CLASS_NAME;
@@ -357,6 +360,7 @@ private function getElementName($open_element_class_name){
       $goto_id = $index->GOTO_ID;
       $goto_tag = $index->GOTO_TAG;
       $goto_text = $index->GOTO_TEXT;
+
       $result =
       "<li style>"
       ."<div class=\"result_item"

@@ -1,8 +1,5 @@
 (function (exports) {
   'use strict';
-  function correct_it(str){
-    alert(str);
-  }
 
   /* Global Variables */
   var show_children = true;
@@ -26,7 +23,7 @@
       this.keyup(function() {
         //temporarily detaches div from DOM to reduce unnecessary rendering
         $results.detach();
-        $results.find('#didyoumean').remove();
+        $results.find('#did_you_mean_suggestion').remove();
         search_term = ($(this).val() + "").toLowerCase();
         let last_level,$this,$element,highlighted_string,alias,selector,match_pos
         ,plain_text,no_match_text,match_text,$alias,highlighted_aliases;
@@ -76,21 +73,10 @@
           });
         }
         if ($results.find("li[style!='display: none;']").length === 0){
-          console.log($results.find("li[style!='display: none;']").length);
-          console.log("did you mean? ");
-          let searchable_terms = $('#searchable_terms').data('searchableTerms');
-          let near_term = "none";
-          let near_ld = 100;
-          searchable_terms.forEach(function(term){
-            if (Levenshtein.get(search_term,term) < near_ld) {
-              near_term = term;
-              near_ld = Levenshtein.get(search_term,term);
-            }
-          });
-          $results.append(`<h2 id="didyoumean">Did you mean <span class="correct_it">${near_term}</span>?<h2>`);
-          console.log(near_term);
+          get_did_you_mean($results);
         }
-        $parent.append($results); //reattaches the result to the DOM to be rendered so just 1 big render instead of many small renders
+          $parent.append($results); //reattaches the result to the DOM to be rendered so just 1 big render instead of many small renders
+          add_did_you_mean_listerner($results); //can add refineent if more than one match i.e take first letter
       });
       return this;
     };
@@ -123,6 +109,33 @@
       }
       //allows widget to be chainable
       return $this;
+    }
+
+    function get_did_you_mean($results){
+        let searchable_terms = $('#searchable_terms').data('searchableTerms');
+        let closest_match_term = "no matches";
+        let similarity_score = 100;
+        let current_score;
+        searchable_terms.forEach(function(term){
+          if ((current_score = Levenshtein.get(search_term,term)) < similarity_score) {
+            closest_match_term = term;
+            similarity_score = current_score;
+          }
+        });
+        if (similarity_score <= 3) {
+          $results.append(`<h2 id="did_you_mean_suggestion">Did you mean <a class="sugguested_term_link">${closest_match_term}</a>?<h2>`);
+        } else {
+          $results.append(`<h2 id="did_you_mean_suggestion">No results found.<h2>`);
+        }
+    }
+
+    function add_did_you_mean_listerner($results){
+      $('.sugguested_term_link').click(function(){
+        let search_bar = `#search_bar_${last_search_pos}`;
+        $(search_bar).val($(this).text());
+        $(search_bar).trigger('keyup');
+        $(search_bar).trigger('focus');
+      });
     }
 
   }(jQuery));

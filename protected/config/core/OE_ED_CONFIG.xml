@@ -3269,7 +3269,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 						<TERM>Anterior stromal</TERM>
 						<TERM>Mid stromal</TERM>
 						<TERM>Posterior stromal</TERM>
-						<TERM>Descemet's</TERM>
+						<TERM>Descemets</TERM>
 					</SECONDARY_TERM_LIST>
 					<IMG_URL>/assets/index_search/CornealPigmentation.png</IMG_URL>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
@@ -3651,7 +3651,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 
 							<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
 							<GOTO_DOODLE_CLASS_NAME>Pterygium</GOTO_DOODLE_CLASS_NAME>
-							<GOTO_PROPERTY>Stocker's line</GOTO_PROPERTY>
+							<GOTO_PROPERTY>Stockers line</GOTO_PROPERTY>
 						</INDEX>
 					</INDEX_LIST>
 				</INDEX>
