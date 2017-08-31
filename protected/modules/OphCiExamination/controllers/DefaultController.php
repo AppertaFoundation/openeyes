@@ -334,18 +334,43 @@ class DefaultController extends \BaseEventTypeController
 
         parent::renderElement($element, $action, $form, $data, $view_data, $return, $processOutput);
     }
+
+    /**
+     * Trigger the medications save event if there is a medication element but no risk element.
+     * N.B. not sure if we should check risks or not, but it seems sensible given the initial behaviour
+     * of this event.
+     */
+    protected function triggerMedicationSave()
+    {
+        if ($meds = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryMedications')) {
+            if (!$this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryRisks')) {
+                $this->getApp()->event->dispatch('after_medications_save', array(
+                    'patient' => $this->patient,
+                    'drugs' => array_map(
+                        function($entry) {return $entry->drug; },
+                        array_filter($meds->currentOrderedEntries, function($entry) { return $entry->drug !== null;})
+                    ),
+                    'medication_drugs' => array_map(
+                        function($entry) {return $entry->medication_drug; },
+                        array_filter($meds->currentOrderedEntries, function($entry) { return $entry->medication_drug !== null;})
+                    )
+                ));
+            }
+        }
+    }
+
     /**
      * Advance the workflow step for the event if requested.
      *
      * @param Event $event
      *
-     * @throws CException
+     * @throws \CException
      */
     protected function afterUpdateElements($event)
     {
         parent::afterUpdateElements($event);
         $this->persistPcrRisk();
-
+        $this->triggerMedicationSave();
         if ($this->step) {
             // Advance the workflow
             if (!$assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
@@ -367,6 +392,7 @@ class DefaultController extends \BaseEventTypeController
     {
         parent::afterCreateElements($event);
         $this->persistPcrRisk();
+        $this->triggerMedicationSave();
     }
 
     public function getOptionalElements()

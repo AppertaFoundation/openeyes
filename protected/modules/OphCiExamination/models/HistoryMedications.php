@@ -26,6 +26,8 @@ namespace OEModule\OphCiExamination\models;
  * @property \User $usermodified
  * @property HistoryMedicationsEntry[] $entries
  * @property HistoryMedicationsEntry[] $orderedEntries
+ * @property HistoryMedicationsEntry[] $currentOrderedEntries
+ * @property HistoryMedicationsEntry[] $stoppedOrderedEntries
  */
 class HistoryMedications extends \BaseEventTypeElement
 {
