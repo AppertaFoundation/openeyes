@@ -27,7 +27,7 @@
             Medications
         </div>
         <div class="large-10 column data">
-            <i>Current:</i> <?php if ($stopped) {?><a href="#" class="kind-toggle show" data-kind="stopped"><i class="fa fa-icon fa-history" aria-hidden="true"></i></a><?php } ?>
+            <i>Current:</i> <?php if ($current && $stopped) {?><a href="#" class="kind-toggle show" data-kind="stopped"><i class="fa fa-icon fa-history" aria-hidden="true"></i></a><?php } ?>
             <?php if ($current) {?>
                 <table class="plain valign-top">
                 <?php foreach ($current as $entry) { ?>
