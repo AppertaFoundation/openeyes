@@ -115,6 +115,18 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
         ));
     }
 
+    public static function findForTagIds($tag_ids)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->addInCondition('tags.id', $tag_ids);
+        return static::model()->with(array(
+            'tags' => array(
+                'select' => false,
+                'joinType' => 'INNER JOIN',
+            ))
+        )->findAll($criteria);
+    }
+
     /**
      * @TODO: replace with DB property
      * @return bool

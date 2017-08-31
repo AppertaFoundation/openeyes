@@ -359,6 +359,11 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             OphDrPrescription_ItemTaper::model()->deleteByPk(array_values($existing_taper_ids));
             OphDrPrescription_Item::model()->deleteByPk(array_values($existing_item_ids));
         }
+
+        $this->getApp()->event->dispatch('after_medications_save', array(
+            'patient' => $this->event->getPatient(),
+            'drug_ids' => array_map(function($item) {return $item->drug_id; }, $this->items)
+        ));
     }
 
     /**
