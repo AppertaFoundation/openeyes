@@ -44,7 +44,7 @@ class TagsAdminController extends BaseAdminController
             $admin->setModelId($id);
         }
 
-        $admin->setCustomSaveURL('/OphDrPrescription/TagsAdmin/save');
+        $admin->setCustomSaveURL('/TagsAdmin/save');
 
         $admin->setEditFields(array(
             'name' => is_null($id) ? 'text' : 'label',
@@ -90,7 +90,7 @@ class TagsAdminController extends BaseAdminController
         if ($tag->save())
         {
             Yii::app()->user->setFlash('success', 'Tag '.($is_new ? 'created' : 'updated'));
-            $this->redirect(array('/OphDrPrescription/TagsAdmin/list'));
+            $this->redirect(array('/TagsAdmin/list'));
         }
         else
         {
@@ -101,7 +101,7 @@ class TagsAdminController extends BaseAdminController
                 $err_str.= implode('<br/>', $error_msg).'<br/>';
             }
             Yii::app()->user->setFlash('warning.alert', $err_str);
-            $this->redirect(array('/OphDrPrescription/TagsAdmin/edit/'.$id));
+            $this->redirect(array('/TagsAdmin/edit/'.$id));
         }
 
     }
