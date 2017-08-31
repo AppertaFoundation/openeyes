@@ -30,6 +30,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExaminationRisk extends \BaseActiveRecordVersioned
 {
+    protected $auto_update_relations = true;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -68,10 +70,17 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name', 'safe'),
+            array('name, tags', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, name', 'safe', 'on' => 'search'),
+        );
+    }
+
+    public function relations()
+    {
+        return array(
+            'tags' => array(self::MANY_MANY, 'Tag', 'ophciexamination_risk_tag(risk_id, tag_id)')
         );
     }
 
