@@ -44,13 +44,15 @@ if (!$element) { ?>
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($element->entries as $entry) {
+        <?php foreach ($element->entries as $i => $entry) {
             $this->render(
                 'FamilyHistory_Entry_event_edit',
                 array(
                     'entry' => $entry,
                     'model_name' => CHtml::modelName($element),
-                    'editable' => false
+                    'editable' => false,
+                    'row_count' => $i,
+                    'field_prefix' => $model_name . '[entries][' . $i . ']',
                 )
             );
         }
@@ -97,6 +99,7 @@ if (!$element) { ?>
                 'form' => $form,
                 'model_name' => CHtml::modelName($element),
                 'editable' => true,
+                'row_count' => '{{row_count}}',
                 'values' => array(
                     'id' => '',
                     'relative_id' => '{{relative_id}}',
