@@ -85,10 +85,14 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
         $this->refreshTuples();
 
 
-
+        // Can do approach like above when xsd is updated to support multiple files
         // Generates view file from the OE_ED_CONFIG.xml (INDEX_LIST)
-        $this->updateIndexSearchHtml($data);
+        foreach ($data->EVENT_LIST->EVENT as $event){
+            $this->processEventDefinition($event);
+        }
+        //$this->updateEventIndexSearchHTML($data);
     }
+
 
   /**
     * Method uses INDEX_LIST section of xml to update
@@ -97,22 +101,26 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
     * for examaple Examination events).
     * @param $data
     */
-    private function updateIndexSearchHtml($data)
+    private function updateEventIndexSearchHTML($index_list,$event_name)
     {
-      $html_string =
+      $html_string = $this->getIndexSearchHeader();
+      $html_string .= $this->getIndexSearchResultsHTML($index_list,$event_name);
+      $html_string .= $this->getIndexSearchHiddenTerms($event_name);
+      $html_string = $this->formatHTML($html_string);
+      $this->saveHTMLToFile($html_string, '/var/www/openeyes/protected/widgets/views/IndexSearch_'+$event_name+'.php');
+    }
+
+    private function getIndexSearchHeader(){
+      return
       "<?php \$this->render('IndexSearch_header'); ?>"
       ."<div id=\"results\">"
       ."<a href=\"#\" id=\"big_cross\"></a>"
       ."<ul class='results_list'>";
+    }
 
-      //Adds the html for the indexes
-      foreach ($data->INDEX_LIST->INDEX as $index) {
-        //appends HTML for the index and all of its descendant
-        $html_string .= $this->generateIndexHTML($index);
-      }
-      $html_string.="</ul></div>";
+    private function getIndexSearchHiddenTerms($event_name){
       $searchable_terms_JSON = '[';
-      $unique = array_unique($this->searchable_terms);
+      $unique = array_unique($this->searchable_terms["$event_name"]);
       foreach ($unique as $search_term) {
         $words = explode(" ",$search_term);
         if (sizeof($words) > 1) { //insert full term and each word in searchable_terms
@@ -124,18 +132,32 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
       }
       $searchable_terms_JSON=rtrim($searchable_terms_JSON,", ");
       $searchable_terms_JSON .= ']';
-      $html_string .= "<input id=\"searchable_terms\" hidden data-searchable-terms='$searchable_terms_JSON'/>";
+      return"<input id=\"searchable_terms\" hidden data-searchable-terms='$searchable_terms_JSON'/>";
+    }
 
+    private function formatHTML($html){
       //Formats the html to make it more readable
       include_once('EyeDrawConfigLoadCommandAssets/format.php');
       $format = new Format;
-      $formatted_html = $format->HTML($html_string);
+      return $format->HTML($html);
+    }
 
+    private function saveHTMLToFile($html,$filename){
       //Saves the formatted html to the view file
       $file = '/var/www/openeyes/protected/widgets/views/IndexSearch_Examination.php';
       $file_handle = fopen($file, 'w') or die('Cannot open file:  '.$file);
-      fwrite($file_handle, $formatted_html);
+      fwrite($file_handle, $html);
       fclose($file_handle);
+    }
+
+    private function getIndexSearchResultsHTML($index_list,$event_name){
+      $results = "";
+      //Appends HTML for the index and all of its descendants
+      foreach ($index_list->INDEX as $index) {
+        $results .= $this->generateIndexHTML($index,$event_name);
+      }
+      $results .= "</ul></div>";
+      return $results;
     }
 
     /**
@@ -290,6 +312,14 @@ class EyedrawConfigLoadCommand extends CConsoleCommand
         $this->insertOrUpdateCanvasDoodle($canvas_doodle);
     }
 
+    protected function processEventDefinition($event) //must be run last to prevent error
+    {
+        $index_list = $event->INDEX_LIST;
+        $event_name = $event->EVENT_NAME;
+        $this->searchable_terms["$event_name"] = [];
+        $this->updateEventIndexSearchHTML($index_list,$event_name);
+    }
+
     /**
      * @return string
      */
@@ -339,15 +369,15 @@ private function getElementName($open_element_class_name){
     * @param $lvl
     * @return string
     */
-    private function generateIndexHTML($index, $lvl=1){
+    private function generateIndexHTML($index, $event_name, $lvl=1){
       $description = $index->DESCRIPTION;
       $warning = $index->WARNING_NOTE;
       $info = $index->GENERAL_NOTE;
       $primary_term = $index->PRIMARY_TERM;
       $secondary_term_list_array = (array)$index->SECONDARY_TERM_LIST->TERM;
-      array_push($this->searchable_terms,$primary_term);
+      array_push($this->searchable_terms["$event_name"],$primary_term);
       foreach ($secondary_term_list_array as $term) {
-        array_push($this->searchable_terms,$term);
+        array_push($this->searchable_terms["$event_name"],$term);
       }
       $secondary_term_list = implode(", ",$secondary_term_list_array);
       $complete_term_list = $secondary_term_list_array ? $primary_term.",".$secondary_term_list : $primary_term;
@@ -414,7 +444,7 @@ private function getElementName($open_element_class_name){
       if ($children) {
         $result .= "<ul class='results_list'>";
         foreach ($children->INDEX as $child) {
-          $result .= $this->generateIndexHTML($child,$lvl+1);
+          $result .= $this->generateIndexHTML($child,$event_name,$lvl+1);
         }
         $result .= "</ul>";
       }
