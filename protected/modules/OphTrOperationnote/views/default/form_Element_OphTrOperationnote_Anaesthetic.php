@@ -43,67 +43,68 @@
     <?php } ?>
 
 
-    <div id="<?php echo 'div_' . CHtml::modelName($element); ?>" class="row field-row widget">
+    <div class="row">
+        <div class="large-6 column">
+            <div id="<?php echo 'div_' . CHtml::modelName($element); ?>" class="row field-row widget">
 
+                <div class="large-2 column">
+                    <label for="AnaestheticAgent">Agents:</label>
+                </div>
 
-        <div class="large-2 column">
-            <label for="AnaestheticAgent">Agents:</label>
+                <div class="large-7 large-offset-2 column end">
+                    <?php echo $form->multiSelectList(
+                        $element,
+                        'AnaestheticAgent',
+                        'anaesthetic_agents',
+                        'id',
+                        $this->getAnaesthetic_agent_list($element),
+                        null,
+                        array('empty' => '- Anaesthetic agents -', 'label' => 'Agents', 'nowrapper' => true),
+                        false,
+                        false,
+                        null,
+                        false,
+                        false,
+                        array('field' => 3)
+                    ) ?>
+                </div>
+            </div>
+
+            <div id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_complications" class="row field-row widget">
+
+                <div class="large-2 column">
+                    <label for="OphTrOperationnote_AnaestheticComplications">Complications:</label>
+                </div>
+
+                <div class="large-7 large-offset-2 column end">
+                    <?php echo $form->multiSelectList(
+                      $element,
+                      'OphTrOperationnote_AnaestheticComplications',
+                      'anaesthetic_complications',
+                      'id',
+                      CHtml::listData(OphTrOperationnote_AnaestheticComplications::model()->activeOrPk($element->anaestheticComplicationValues)->findAll(), 'id', 'name'),
+                      array(),
+                      array('empty' => '- Complications -', 'label' => 'Complications', 'nowrapper' => true),
+                      false,
+                      false,
+                      null,
+                      false,
+                      false,
+                      array('field' => 3)
+                  ) ?>
+                </div>
+
+            </div>
+
         </div>
+        <div class="large-6 column">
 
-        <div class="large-3 column">
-            <?php echo $form->multiSelectList(
-                $element,
-                'AnaestheticAgent',
-                'anaesthetic_agents',
-                'id',
-                $this->getAnaesthetic_agent_list($element),
-                null,
-                array('empty' => '- Anaesthetic agents -', 'label' => 'Agents', 'nowrapper' => true),
-                false,
-                false,
-                null,
-                false,
-                false,
-                array('field' => 3)
-            ) ?>
+            <div class="large-8 column end">
+                <label for="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment">Comments:</label>
+                <?php echo $form->textArea($element, 'anaesthetic_comment', array('nowrapper' => true), false, array('rows' => 4)) ?>
+
+            </div>
+
+
         </div>
-
-        <div class="large-1 column">&nbsp;</div>
-        <div class="large-3 column end">
-            <label for="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment">Comments:</label>
-        </div>
-    </div>
-
-
-
-  <div id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_complications" class="row field-row widget">
-
-      <div class="large-2 column">
-          <label for="OphTrOperationnote_AnaestheticComplications">Complications:</label>
-      </div>
-
-      <div class="large-3 column">
-          <?php echo $form->multiSelectList(
-              $element,
-              'OphTrOperationnote_AnaestheticComplications',
-              'anaesthetic_complications',
-              'id',
-              CHtml::listData(OphTrOperationnote_AnaestheticComplications::model()->activeOrPk($element->anaestheticComplicationValues)->findAll(), 'id', 'name'),
-              array(),
-              array('empty' => '- Complications -', 'label' => 'Complications', 'nowrapper' => true),
-              false,
-              false,
-              null,
-              false,
-              false,
-              array('field' => 3)
-          ) ?>
-      </div>
-
-      <div class="large-1 column">&nbsp;</div>
-      <div class="large-5 column end">
-          <?php echo $form->textArea($element, 'anaesthetic_comment', array('nowrapper' => true), false, array('rows' => 4)) ?>
-      </div>
-  </div>
-
 </div>

@@ -101,7 +101,15 @@ $warnings = $this->patient->getWarnings($clinical);
 			<?php $this->renderModulePartials('patient_summary_column1')?>
 		</div>
 		<div class="large-6 column" id="patient-summary-form-container">
-			<?php if ($this->checkAccess('OprnViewClinical')) {?>
+
+            <?php if ($component = $this->getApp()->getComponent('internalReferralIntegration')): ?>
+                <section class="box patient-info internalreferral internalreferral-doclist">
+                        <?php echo CHtml::link('View internal referrals',$component->generateUrlForDocumentList($this->patient)); ?>
+                        <span>e-WinDIP</span>
+                </section>
+            <?php endif; ?>
+
+            <?php if ($this->checkAccess('OprnViewClinical')) {?>
 				<?php $this->renderPartial('_patient_episodes', array(
                     'episodes' => $episodes,
                     'ordered_episodes' => $ordered_episodes,
