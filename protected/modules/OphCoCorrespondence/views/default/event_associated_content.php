@@ -6,7 +6,8 @@
         <table id="correspondence_attachments_table">
             <thead>
                 <tr>
-                    <th>Event</th>
+                    <th>Shortcode</th>
+                    <th>Title</th>
                     <th>Event Date</th>
                     <th>Action</th>
                 </tr>
@@ -16,11 +17,20 @@
                 if(empty($patient)){
                     $patient = $this->patient;
                 }
-                foreach($associated_content as $key => $ac){
-                    $method = $ac->initMethod->method;
+                foreach($associated_content as $key => $value){
+
+                    if(isset($value->initMethod)){
+                        $method = $value->initMethod->method;
+                        $ac = $value;
+                    } else {
+                        $method = $value->initAssociatedContent->initMethod->method;
+                        $ac = $value->initAssociatedContent;
+                    }
+
                     $last_event = json_decode( $api->{$method}( $patient ));
                 ?>
-                <tr>
+                <tr data-key = "<?= $value->id ?>">
+                    <td><?= $ac->short_code ?></td>
                     <td><?= $ac->display_title ?></td>
                     <td>
                         <?php
@@ -29,7 +39,7 @@
                         } else {
                         ?>
                             <input type="hidden" name="attachments_event_id[<?= $key ?>]" value="<?= $last_event->id ?>" />
-                            <input type="hidden" name="attachments_init_method_id[<?= $key ?>]" value="<?= $ac->init_method_id ?>" />
+                            <input type="hidden" name="attachments_id[<?= $key ?>]" value="<?= $ac->id ?>" />
                             <input type="hidden" name="attachments_system_hidden[<?= $key ?>]" value="<?= $ac->is_system_hidden ?>" />
                             <input type="hidden" name="attachments_print_appended[<?= $key ?>]" value="<?= $ac->is_print_appended ?>" />
                             <input type="hidden" name="attachments_short_code[<?= $key ?>]" value="<?= $ac->short_code ?>" />
