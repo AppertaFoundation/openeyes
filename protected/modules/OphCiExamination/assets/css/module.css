@@ -130,6 +130,16 @@ section.OEModule_OphCiExamination_models_Allergies table#OEModule_OphCiExaminati
   display: inline-block;
 }
 
+/* line 34, ../sass/components/elements/_anterior-segment.scss */
+.OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment {
+  background-color: #e4edf5;
+}
+/* line 37, ../sass/components/elements/_anterior-segment.scss */
+.OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment .sub-elements.active {
+  display: inline-block;
+  width: 100%;
+}
+
 /* line 18, ../sass/components/elements/_posterior-pole.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_PosteriorPole .eyedraw-fields {
   padding-top: 185px;

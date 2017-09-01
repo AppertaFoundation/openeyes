@@ -1429,7 +1429,8 @@ class BaseEventTypeController extends BaseModuleController
 
     public function renderSidebar($default_view)
     {
-        if ($this->show_element_sidebar && in_array($this->action->id,array('create','update'))) {
+        if ($this->show_element_sidebar && in_array($this->getActionType($this->action->id),
+                array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT), true)) {
             $this->renderPartial('//patient/_patient_element_sidebar');
         } else {
             parent::renderSidebar($default_view);

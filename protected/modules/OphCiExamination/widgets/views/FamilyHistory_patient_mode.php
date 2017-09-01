@@ -44,14 +44,15 @@ if (!$element) { ?>
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($element->entries as $idx => $entry) {
+        <?php foreach ($element->entries as $i => $entry) {
             $this->render(
                 'FamilyHistory_Entry_event_edit',
                 array(
                     'entry' => $entry,
                     'model_name' => CHtml::modelName($element),
                     'editable' => false,
-                    'row_count' => $idx
+                    'row_count' => $i,
+                    'field_prefix' => $model_name . '[entries][' . $i . ']',
                 )
             );
         }
