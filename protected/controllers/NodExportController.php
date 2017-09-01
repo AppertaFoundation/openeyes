@@ -2439,7 +2439,7 @@ EOL;
                   )
                 ) AS PupilSizeId
                 , ocpt.nodcode AS IOLPositionId
-                , oclt.name AS IOLModelId
+                , olt.display_name AS IOLModelId
                 , oc.iol_power AS IOLPower
                 , oc.predicted_refraction AS PredictedPostOperativeRefraction
                 , '' AS WoundClosureId
@@ -2458,8 +2458,8 @@ EOL;
             LEFT OUTER JOIN tmp_iol_positions ocpt
               ON ocpt.term = ocp.name
             /* Join: Look up LENS TYPE (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
-            LEFT OUTER JOIN ophtroperationnote_cataract_iol_type oclt
-              ON oclt.id = oc.iol_type_id
+            LEFT OUTER JOIN ophinbiometry_lenstype_lens olt
+              ON olt.id = oc.iol_type_id
 
             /* Join: Look up original operation note event (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
             LEFT OUTER JOIN event eon
