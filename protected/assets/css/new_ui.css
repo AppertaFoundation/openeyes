@@ -1800,6 +1800,9 @@ input:checked + .slider:before {
   padding-right: 25px;
   display: none;
 }
+#did_you_mean_suggestion {
+  margin-left: 20px;
+}
 .search_highlight {
   font-style: inherit;
   background-color: yellow;

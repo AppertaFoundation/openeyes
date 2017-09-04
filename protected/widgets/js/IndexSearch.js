@@ -20,7 +20,8 @@
       opts = $.extend({}, $.fn.search.defaults, options);
       let $results = $("#results");
       let $parent = $results.parent();
-      this.keyup(function() {
+      this.keydown(function(e, i) {
+        //let visibleOrHidden = (e.keycode == 8) ? ':hidden' : ':visible'; //trying
         //temporarily detaches div from DOM to reduce unnecessary rendering
         $results.detach();
         $results.find('#did_you_mean_suggestion').remove();
@@ -30,7 +31,7 @@
         for (selector of opts.selectors) {
           //determines whether the index selecor is for the last level i.e  the index has no children
           last_level = opts.selectors[0] == selector;
-          $results.find(selector).each(function() {
+          $results.find(selector/*+visibleOrHidden*/).each(function() {
             $this = $(this);
             $element = get_element($this);
             $alias = $element.children(':first').next('.index_row').find('.alias:first');
@@ -114,16 +115,15 @@
     function get_did_you_mean($results){
         let searchable_terms = $('#searchable_terms').data('searchableTerms');
         let closest_match_term = "no matches";
-        let similarity_score = 100;
+        let similarity_score = 100; //the lower the similarity_score the closer the match
         let current_score;
         searchable_terms.forEach(function(term){
           if ((current_score = Levenshtein.get(search_term,term)) < similarity_score) {
             closest_match_term = term;
             similarity_score = current_score;
           }
-        }); //lower is better
-        //console.log(`similarity_score = ${similarity_score}, search_term.length = ${search_term.length}`);
-        if (search_term.length - similarity_score >= Math.ceil(search_term.length / 2.0)) {
+        });
+        if (similarity_score <= Math.ceil(closest_match_term.length * 0.20)) {
           $results.append(`<h2 id="did_you_mean_suggestion">Did you mean <a class="sugguested_term_link">${closest_match_term}</a>?<h2>`);
         } else {
           $results.append(`<h2 id="did_you_mean_suggestion">No results found.<h2>`);
@@ -134,7 +134,7 @@
       $('.sugguested_term_link').click(function(){
         let search_bar = `#search_bar_${last_search_pos}`;
         $(search_bar).val($(this).text());
-        $(search_bar).trigger('keyup');
+        $(search_bar).trigger('keydown');
         $(search_bar).trigger('focus');
       });
     }
@@ -154,7 +154,7 @@
     $("#search_bar_right").focus(function(){
       $('#search_bar_left').val('');
       last_search_pos = "right";
-      $('#search_bar_right').trigger("keyup");
+      $('#search_bar_right').trigger("keydown");
       $('#search_bar_right').css('opacity','1');
       $('#search_button_right').css('opacity','1');
       $('#search_bar_left').css('opacity','0.6');
@@ -164,7 +164,7 @@
     $("#search_bar_left").focus(function(){
       $('#search_bar_right').val('');
       last_search_pos = "left";
-      $('#search_bar_left').trigger("keyup");
+      $('#search_bar_left').trigger("keydown");
       $('#search_bar_left').css('opacity','1');
       $('#search_button_left').css('opacity','1');
       $('#search_bar_right').css('opacity','0.6');
@@ -194,12 +194,12 @@
       $('.description_icon,.description_note').show();
       show_and_search_descriptions = true;
       $(current_search_bar).trigger('focus');
-      $(current_search_bar).trigger('keyup');
+      $(current_search_bar).trigger('keydown');
     } else {
       $('.description_icon,.description_note').hide();
       show_and_search_descriptions = false;
       $(current_search_bar).trigger('focus');
-      $(current_search_bar).trigger('keyup');
+      $(current_search_bar).trigger('keydown');
     }
     event.stopPropagation();
   });
@@ -207,11 +207,11 @@
     let current_search_bar = "#search_bar_"+last_search_pos;
     if (this.checked) {
       $(current_search_bar).trigger('focus');
-      $(current_search_bar).trigger('keyup');
+      $(current_search_bar).trigger('keydown');
     } else {
       show_children = false;
       $(current_search_bar).trigger('focus');
-      $(current_search_bar).trigger('keyup');
+      $(current_search_bar).trigger('keydown');
     }
     event.stopPropagation();
   });
