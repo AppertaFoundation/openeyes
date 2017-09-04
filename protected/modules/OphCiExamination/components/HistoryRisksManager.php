@@ -94,6 +94,7 @@ class HistoryRisksManager
                     return true;
                 }
             );
+
             if ($missing_risks) {
                 $this->createRiskEvent($patient, $element, $missing_risks);
             }
@@ -142,8 +143,8 @@ class HistoryRisksManager
                     $this->updateEntryComments($current, $risk['comments_list']);
                     // and set it to being present
                     $current->has_risk = true;
+                    continue 2;
                 }
-                continue 2;
             }
             // got this far there is no matching risk and we need to
             // create a whole new entry
