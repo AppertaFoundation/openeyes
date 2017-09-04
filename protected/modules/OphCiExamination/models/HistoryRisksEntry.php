@@ -205,8 +205,9 @@ class HistoryRisksEntry extends \BaseElement
         $criteria->addCondition('event.deleted <> 1');
         $criteria->addCondition('episode.patient_id = :patient_id');
         $criteria->addCondition('risk.active = 1');
-        $criteria->params = array('patient_id' => $patientId, ':type_id' => $type_id);
+        $criteria->params = array(':patient_id' => $patientId, ':type_id' => $type_id);
         $criteria->order = 'event.event_date DESC';
+        $criteria->limit = '1';
 
         return $criteria;
     }
