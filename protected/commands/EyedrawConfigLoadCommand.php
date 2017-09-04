@@ -495,9 +495,10 @@ EOSQL;
     }
 
     private function formatHTML($html) {
-      include_once('/var/www/openeyes/protected/commands/EyeDrawConfigLoadCommandAssets/format.php');
-      $format = new Format;
-      return $format->HTML($html);
+    //  include_once('/var/www/openeyes/protected/commands/EyeDrawConfigLoadCommandAssets/format.php');
+    //  $format = new Format;
+    //  return $format->HTML($html);
+    return $html;
     }
 
     private function saveHTMLToFile($html,$filename) {
