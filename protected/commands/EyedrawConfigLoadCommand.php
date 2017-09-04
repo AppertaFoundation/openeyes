@@ -495,7 +495,7 @@ EOSQL;
     }
 
     private function formatHTML($html) {
-      include_once('EyeDrawConfigLoadCommandAssets/format.php');
+      include_once('/var/www/openeyes/protected/commands/EyeDrawConfigLoadCommandAssets/format.php');
       $format = new Format;
       return $format->HTML($html);
     }

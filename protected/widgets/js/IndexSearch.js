@@ -121,8 +121,9 @@
             closest_match_term = term;
             similarity_score = current_score;
           }
-        });
-        if (similarity_score <= 3) {
+        }); //lower is better
+        //console.log(`similarity_score = ${similarity_score}, search_term.length = ${search_term.length}`);
+        if (search_term.length - similarity_score >= Math.ceil(search_term.length / 2.0)) {
           $results.append(`<h2 id="did_you_mean_suggestion">Did you mean <a class="sugguested_term_link">${closest_match_term}</a>?<h2>`);
         } else {
           $results.append(`<h2 id="did_you_mean_suggestion">No results found.<h2>`);
