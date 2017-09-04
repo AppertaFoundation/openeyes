@@ -73,7 +73,7 @@ if (!isset($values)) {
             yes
         </label>
         <label class="inline highlight">
-            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', false, array('value' => '0')); ?>
+            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === '0', array('value' => '0')); ?>
             no
         </label>
     </td>
