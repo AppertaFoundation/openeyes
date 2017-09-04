@@ -79,13 +79,13 @@ class HistoryRisks extends \BaseEventTypeElement
                 self::HAS_MANY,
                 'OEModule\OphCiExamination\models\HistoryRisksEntry',
                 'element_id',
-                'condition' => 'has_risk is null'
+                'condition' => 'has_risk = -9'
             ),
             'present' => array(
                 self::HAS_MANY,
                 'OEModule\OphCiExamination\models\HistoryRisksEntry',
                 'element_id',
-                'condition' => 'has_risk = true'
+                'condition' => 'has_risk = 1'
             ),
             'not_present' => array(
                 self::HAS_MANY,

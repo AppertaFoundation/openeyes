@@ -63,7 +63,7 @@ class HistoryRisksEntry extends \BaseElement
         // will receive user inputs.
         return array(
             array('element_id, risk_id, other, has_risk, comments', 'safe'),
-            array('risk_id', 'required'),
+            array('risk_id, has_risk', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, element_id, risk_id, other, has_risk, comments', 'safe', 'on' => 'search'),
@@ -145,7 +145,7 @@ class HistoryRisksEntry extends \BaseElement
      */
     public function getDisplayHasRisk()
     {
-        if ($this->has_risk) {
+        if ($this->has_risk === '1') {
             return 'Present';
         } elseif ($this->has_risk === '0') {
             return 'Not present';
