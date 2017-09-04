@@ -21,9 +21,9 @@
       let $results = $("#results");
       let $parent = $results.parent();
       this.keyup(function(e, i) {
-        let visibleOrHidden = (e.keycode == 8) ? ':hidden' : ':visible'; //trying
+        // TODO:  efficiency let visibleOrHidden = (e.keyCode == 8) ? ':hidden' : ':visible';
         //temporarily detaches div from DOM to reduce unnecessary rendering
-        //$results.detach();
+        $results.detach();
         $results.find('#did_you_mean_suggestion').remove();
         search_term = ($(this).val() + "").toLowerCase();
         let last_level,$this,$element,highlighted_string,alias,selector,match_pos
@@ -31,7 +31,6 @@
         for (selector of opts.selectors) {
           //determines whether the index selecor is for the last level i.e  the index has no children
           last_level = opts.selectors[0] == selector;
-          //console.log($results.find(selector));
           $results.find(selector).each(function() {
             $this = $(this);
             $element = get_element($this);
@@ -77,7 +76,7 @@
         if ($results.find("li[style!='display: none;']").length === 0){
           get_did_you_mean($results);
         }
-      //    $parent.append($results); //reattaches the result to the DOM to be rendered so just 1 big render instead of many small renders
+          $parent.append($results); //reattaches the result to the DOM to be rendered so just 1 big render instead of many small renders
           add_did_you_mean_listerner($results); //can add refineent if more than one match i.e take first letter
       });
       return this;
