@@ -20,10 +20,10 @@
       opts = $.extend({}, $.fn.search.defaults, options);
       let $results = $("#results");
       let $parent = $results.parent();
-      this.keydown(function(e, i) {
-        //let visibleOrHidden = (e.keycode == 8) ? ':hidden' : ':visible'; //trying
+      this.keyup(function(e, i) {
+        let visibleOrHidden = (e.keycode == 8) ? ':hidden' : ':visible'; //trying
         //temporarily detaches div from DOM to reduce unnecessary rendering
-        $results.detach();
+        //$results.detach();
         $results.find('#did_you_mean_suggestion').remove();
         search_term = ($(this).val() + "").toLowerCase();
         let last_level,$this,$element,highlighted_string,alias,selector,match_pos
@@ -31,7 +31,8 @@
         for (selector of opts.selectors) {
           //determines whether the index selecor is for the last level i.e  the index has no children
           last_level = opts.selectors[0] == selector;
-          $results.find(selector/*+visibleOrHidden*/).each(function() {
+          //console.log($results.find(selector));
+          $results.find(selector).each(function() {
             $this = $(this);
             $element = get_element($this);
             $alias = $element.children(':first').next('.index_row').find('.alias:first');
@@ -76,7 +77,7 @@
         if ($results.find("li[style!='display: none;']").length === 0){
           get_did_you_mean($results);
         }
-          $parent.append($results); //reattaches the result to the DOM to be rendered so just 1 big render instead of many small renders
+      //    $parent.append($results); //reattaches the result to the DOM to be rendered so just 1 big render instead of many small renders
           add_did_you_mean_listerner($results); //can add refineent if more than one match i.e take first letter
       });
       return this;
@@ -134,7 +135,7 @@
       $('.sugguested_term_link').click(function(){
         let search_bar = `#search_bar_${last_search_pos}`;
         $(search_bar).val($(this).text());
-        $(search_bar).trigger('keydown');
+        $(search_bar).trigger('keyup');
         $(search_bar).trigger('focus');
       });
     }
@@ -154,7 +155,7 @@
     $("#search_bar_right").focus(function(){
       $('#search_bar_left').val('');
       last_search_pos = "right";
-      $('#search_bar_right').trigger("keydown");
+      $('#search_bar_right').trigger("keyup");
       $('#search_bar_right').css('opacity','1');
       $('#search_button_right').css('opacity','1');
       $('#search_bar_left').css('opacity','0.6');
@@ -164,7 +165,7 @@
     $("#search_bar_left").focus(function(){
       $('#search_bar_right').val('');
       last_search_pos = "left";
-      $('#search_bar_left').trigger("keydown");
+      $('#search_bar_left').trigger("keyup");
       $('#search_bar_left').css('opacity','1');
       $('#search_button_left').css('opacity','1');
       $('#search_bar_right').css('opacity','0.6');
@@ -194,12 +195,12 @@
       $('.description_icon,.description_note').show();
       show_and_search_descriptions = true;
       $(current_search_bar).trigger('focus');
-      $(current_search_bar).trigger('keydown');
+      $(current_search_bar).trigger('keyup');
     } else {
       $('.description_icon,.description_note').hide();
       show_and_search_descriptions = false;
       $(current_search_bar).trigger('focus');
-      $(current_search_bar).trigger('keydown');
+      $(current_search_bar).trigger('keyup');
     }
     event.stopPropagation();
   });
@@ -207,11 +208,11 @@
     let current_search_bar = "#search_bar_"+last_search_pos;
     if (this.checked) {
       $(current_search_bar).trigger('focus');
-      $(current_search_bar).trigger('keydown');
+      $(current_search_bar).trigger('keyup');
     } else {
       show_children = false;
       $(current_search_bar).trigger('focus');
-      $(current_search_bar).trigger('keydown');
+      $(current_search_bar).trigger('keyup');
     }
     event.stopPropagation();
   });
@@ -468,7 +469,7 @@ function show_results(){
     'add': function(shortcut_combination,callback,opt) {
       //Provide a set of default options
       var default_options = {
-        'type':'keydown',
+        'type':'keyup',
         'propagate':false,
         'disable_in_input':false,
         'target':document,
@@ -505,8 +506,8 @@ function show_results(){
       else if (e.which) code = e.which;
       var character = String.fromCharCode(code).toLowerCase();
 
-      if(code == 188) character=","; //If the user presses , when the type is onkeydown
-      if(code == 190) character="."; //If the user presses , when the type is onkeydown
+      if(code == 188) character=","; //If the user presses , when the type is onkeyup
+      if(code == 190) character="."; //If the user presses , when the type is onkeyup
 
       var keys = shortcut_combination.split("+");
       //Key Pressed - counts the number of valid keypresses - if it is same as the number of keys, the shortcut function is invoked
