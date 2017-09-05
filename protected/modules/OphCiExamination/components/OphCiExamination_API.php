@@ -2263,7 +2263,6 @@ class OphCiExamination_API extends \BaseAPI
     public function risksByTypeForPatient($risk_id, $patient_id)
     {
       $criteria = new \CDbCriteria();
-    //  $criteria->join = 'join ophciexamination_history_risks_entry entry on t.id = entry.element_id ';
       $criteria->join = 'join et_ophciexamination_history_risks et_risk on t.element_id = et_risk.id ';
       $criteria->join .= 'join ophciexamination_risk risk on t.risk_id = risk.id ';
       $criteria->join .= " join event ON et_risk.event_id = event.id";
@@ -2275,9 +2274,6 @@ class OphCiExamination_API extends \BaseAPI
       $criteria->addCondition('risk.active = 1');
       $criteria->params = array(':patient_id' => $patient_id, ':type_id' => $risk_id);
       $criteria->order = 'event_date desc, created_date desc';
-      //$criteria->limit = 1;
       return \OEModule\OphCiExamination\models\HistoryRisksEntry::model()->find($criteria);
-
-  return $this->getElements('OEModule\OphCiExamination\models\HistoryRisksEntry',\Patient::model()->findByPk($patient_id),false,null,$criteria)[0];
     }
 }
