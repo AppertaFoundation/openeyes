@@ -950,18 +950,20 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function updateRisk($risk_name, $risk_value, $risk_comment)
     {
+      $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+      if($exam_api){
         $historyRisk = new models\Element_OphCiExamination_HistoryRisk();
         if ($risk_name === 'anticoagulant') {
             $risk_check = 'Anticoagulants';
-            $recent = $historyRisk->mostRecentCheckedAnticoag($this->patient->id);
+            $recent = $exam_api->mostRecentCheckedAnticoag($this->patient->id);
         } else {
             $risk_check = 'Alpha blockers';
-            $recent = $historyRisk->mostRecentCheckedAlpha($this->patient->id);
+            $recent = $exam_api->mostRecentCheckedAlpha($this->patient->id);
         }
-
         if (is_null($recent) || strtotime($this->event->event_date) >= strtotime($recent->event->event_date)) {
             $this->updateSummaryRisk($risk_value, $risk_comment, $risk_check);
         }
+      }
     }
 
     /**
@@ -1372,9 +1374,11 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionDelete($id)
     {
+      $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+      if($exam_api){
         $historyRisk = new models\Element_OphCiExamination_HistoryRisk();
-        $recentAnticoag = $historyRisk->mostRecentCheckedAnticoag($this->patient->id);
-        $recentAlpha = $historyRisk->mostRecentCheckedAlpha($this->patient->id);
+        $recentAnticoag = $exam_api->mostRecentCheckedAnticoag($this->patient->id);
+        $recentAlpha = $exam_api->mostRecentCheckedAlpha($this->patient->id);
         $thisRisk = $historyRisk->find('event_id = ?', array($this->event->id));
 
         if ($thisRisk) {
@@ -1395,6 +1399,9 @@ class DefaultController extends \BaseEventTypeController
         }
 
         return parent::actionDelete($id);
+
+
+      }
     }
 
     /**

@@ -2237,12 +2237,10 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @return array|mixed|null
      */
-    public function mostRecentCheckedAnticoag($patientId)
+    public function mostRecentCheckedAnticoag($patient_id)
     {
       $risk_id = \Yii::app()->db->createCommand()->select('id')->from('ophciexamination_risk')->where('name=:name', array(':name' => 'Anticoagulants'))->queryScalar();
-      $criteria = $this->risksByTypeForPatient($risk_id, $patientId);
-      $criteria->limit = 1;
-      return self::model()->find($criteria);
+      return $this->risksByTypeForPatient($risk_id, $patient_id);
     }
 
     /**
@@ -2250,29 +2248,36 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @return array|mixed|null
      */
-    public function mostRecentCheckedAlpha($patientId)
+    public function mostRecentCheckedAlpha($patient_id)
     {
-
-        $risk_id = \Yii::app()->db->createCommand()->select('id')->from('ophciexamination_risk')->where('name=:name', array(':name' => 'Alpha blockers'))->queryScalar();
-        $criteria = $this->risksByTypeForPatient($risk_id, $patientId);
-        $criteria->limit = 1;
-        return self::model()->find($criteria);
+      $risk_id = \Yii::app()->db->createCommand()->select('id')->from('ophciexamination_risk')->where('name=:name', array(':name' => 'Alpha blockers'))->queryScalar();
+      return $this->risksByTypeForPatient($risk_id, $patient_id);
     }
 
-    public function risksByTypeForPatient($risk_id, $patientId)
+    /**
+     * @param $risk_id
+     * @param $patient_id
+     *
+     * @return BaseEventTypeElement
+     */
+    public function risksByTypeForPatient($risk_id, $patient_id)
     {
       $criteria = new \CDbCriteria();
-      $criteria->join = 'join ophciexamination_risk risk on risk.id = t.risk_id ';
-      $criteria->join .= 'join et_ophciexamination_history_risks h_risk on t.element_id = h_risk.id ';
-      $criteria->join .= 'join event on h_risk.event_id = event.id ';
-      $criteria->join .= 'join episode on event.episode_id = episode.id ';
-      $criteria->addCondition('risk.id = :type_id');
+    //  $criteria->join = 'join ophciexamination_history_risks_entry entry on t.id = entry.element_id ';
+      $criteria->join = 'join et_ophciexamination_history_risks et_risk on t.element_id = et_risk.id ';
+      $criteria->join .= 'join ophciexamination_risk risk on t.risk_id = risk.id ';
+      $criteria->join .= " join event ON et_risk.event_id = event.id";
+      $criteria->join .= " join episode ON event.episode_id = episode.id";
+      $criteria->join .= " join patient ON episode.patient_id = patient.id";
+      $criteria->addCondition('t.risk_id = :type_id');
       $criteria->addCondition('event.deleted <> 1');
       $criteria->addCondition('episode.patient_id = :patient_id');
       $criteria->addCondition('risk.active = 1');
-      $criteria->params = array(':patient_id' => $patientId, ':type_id' => $type_id);
-      $criteria->order = 'event.created_date DESC';
+      $criteria->params = array(':patient_id' => $patient_id, ':type_id' => $risk_id);
+      $criteria->order = 'event_date desc, created_date desc';
+      //$criteria->limit = 1;
+      return \OEModule\OphCiExamination\models\HistoryRisksEntry::model()->find($criteria);
 
-      return $criteria;
+  return $this->getElements('OEModule\OphCiExamination\models\HistoryRisksEntry',\Patient::model()->findByPk($patient_id),false,null,$criteria)[0];
     }
 }

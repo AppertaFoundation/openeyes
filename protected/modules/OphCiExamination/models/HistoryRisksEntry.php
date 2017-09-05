@@ -182,6 +182,7 @@ class HistoryRisksEntry extends \BaseElement
      * @param $patientId
      *
      * @return array|mixed|null
+     * @deprecated since 2.0
      */
     public function mostRecentCheckedAlpha($patientId)
     {
@@ -192,7 +193,9 @@ class HistoryRisksEntry extends \BaseElement
         return self::model()->find($criteria);
     }
 
-
+    /**
+    * @deprecated since 2.0
+    */
     protected function risksByTypeForPatient($type_id, $patientId)
     {
         $criteria = new \CDbCriteria();
@@ -214,6 +217,7 @@ class HistoryRisksEntry extends \BaseElement
      * @param $patientId
      *
      * @return array|mixed|null
+     * @deprecated since 2.0
      */
     public function mostRecentCheckedAnticoag($patientId)
     {

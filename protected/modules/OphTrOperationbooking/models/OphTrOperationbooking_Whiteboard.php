@@ -206,8 +206,10 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
      */
     protected function alphaBlockerStatusAndDate($patient)
     {
-        $risks = new \OEModule\OphCiExamination\models\HistoryRisksEntry();
-        $blockers = $risks->mostRecentCheckedAlpha($patient->id);
+      $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+      if($exam_api){
+        $blockers = $exam_api->mostRecentCheckedAlpha($patient->id);
+      }
         if ($blockers) {
           switch ($blockers->has_risk){
             case '0' :
@@ -223,11 +225,13 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
      * @param $patient
      *
      * @return string
+     * @deprecated since 2.0
      */
     protected function anticoagsStatusAndDate($patient)
     {
-        $risks = new \OEModule\OphCiExamination\models\HistoryRisksEntry();
-        $anticoag = $risks->mostRecentCheckedAnticoag($patient->id);
+      $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+      if($exam_api){
+        $anticoag = $exam_api->mostRecentCheckedAnticoag($patient->id);
           if ($anticoag) {
               switch ($anticoag->has_risk) {
                 case '0' :
@@ -236,6 +240,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                   return 'Yes - ' . $anticoag->comments . ' (' . Helper::convertMySQL2NHS($anticoag->element->event->event_date) . ')';
               }
           }
-          return "Not Checked";
-        }
+      }
+      return "Not Checked";
+      }
 }

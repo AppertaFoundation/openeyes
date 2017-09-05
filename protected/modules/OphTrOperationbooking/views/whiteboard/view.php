@@ -71,35 +71,13 @@
                 <?=nl2br($data->allergies)?>
             </div>
         </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand risk">
-                <h2 class="mdl-card__title-text">Alpha-blockers</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?=$data->alpha_blocker_name?>
-            </div>
-        </div>
-    </div>
-    <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title mdl-card--expand risk">
-                <h2 class="mdl-card__title-text">Anticoagulants</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <?=$data->anticoagulant_name?> <br>
-                INR: <?=$data->inr?>
-            </div>
-        </div>
-    </div>
+      </div>
 
-
-    <?php
-   $this->widget('OEModule\OphCiExamination\widgets\HistoryRisks', array(
-                    'patient' => $data->event->episode->patient,
-                    'mode' => OEModule\OphCiExamination\widgets\HistoryRisks::$WHITEBOARD_MODE
-                ));?>
+      <?php
+      $this->widget('OEModule\OphCiExamination\widgets\HistoryRisks', array(
+        'patient' => $data->event->episode->patient,
+        'mode' => OEModule\OphCiExamination\widgets\HistoryRisks::$WHITEBOARD_MODE
+      ));?>
 
     <div class="mdl-cell mdl-cell--4-col editable">
         <div class="mdl-card mdl-shadow--2dp">
