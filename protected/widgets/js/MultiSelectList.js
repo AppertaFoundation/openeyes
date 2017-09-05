@@ -59,6 +59,18 @@ $(document).ready(function () {
         attrs[this.nodeName] = this.nodeValue;
       });
 
+        //if 'None' selected we do no allow more options
+        var selected_text = selected.text().trim();
+        if(selected_text === 'None'){
+            $(this).prop('disabled', true);
+
+            // to ensure visual feedback
+            $(this).css({'background-color':'lightgrey'});
+
+            //remove other options
+            selections.find('a').trigger('click');
+        }
+
       var inp_str = '<input type="hidden" name="' + fieldName + '[]"';
       for (var key in attrs) {
         if (attrs.hasOwnProperty(key)) {
@@ -151,8 +163,12 @@ $(document).ready(function () {
       }
     }
 
-    if (!$('select.MultiSelectList').data('searchable')) {
+    if (!select.data('searchable')) {
       select.append('<option' + attr_str + '>' + text + '</option>');
+      if(text.trim() === 'None'){
+          select.css({'background-color':'white'}).prop('disabled', false);
+      }
+
       sort_selectbox(select);
     }
 

@@ -56,8 +56,7 @@ if (!isset($values)) {
                 echo CHtml::dropDownList($field_prefix . '[relative_id]', $values['relative_id'], CHtml::listData($relative_options, 'id', 'name'), $relatives_opts);
             ?>
             <div class="<?php echo $is_other_selected ? '' : 'hidden';?> other_relative_wrapper">
-                <br>
-                <?php echo CHtml::textField($field_prefix . '[other_relative]', ( $is_other_selected ? $values['other_relative'] : ''), array('class' => 'other_relative_text', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
+                <?php echo CHtml::textField($field_prefix . '[other_relative]', ( $is_other_selected ? $values['other_relative'] : ''), array('class' => 'other_relative_text other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
             </div>
         <?php endif;?>
 

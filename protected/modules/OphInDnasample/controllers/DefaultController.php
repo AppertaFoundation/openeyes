@@ -2,7 +2,8 @@
 
 class DefaultController extends BaseEventTypeController
 {
- 
+    protected $show_element_sidebar = false;
+
     public function volumeRemaining($event_id)
     {
         $volume_remaining = 0;
