@@ -93,6 +93,14 @@
             </div>
         </div>
     </div>
+
+
+    <?php
+   $this->widget('OEModule\OphCiExamination\widgets\HistoryRisks', array(
+                    'patient' => $data->event->episode->patient,
+                    'mode' => OEModule\OphCiExamination\widgets\HistoryRisks::$WHITEBOARD_MODE
+                ));?>
+
     <div class="mdl-cell mdl-cell--4-col editable">
         <div class="mdl-card mdl-shadow--2dp">
             <div class="mdl-card__title mdl-card--expand comment">
@@ -127,4 +135,3 @@
     </div>
 
 </div>
-

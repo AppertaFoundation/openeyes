@@ -10,7 +10,7 @@ class BaseEventElementWidget extends CWidget
     public static $EVENT_VIEW_MODE = 4;
     public static $EVENT_EDIT_MODE = 8;
     public static $EPISODE_SUMMARY_MODE = 16;
-
+    public static $WHITEBOARD_MODE = 64;
     /**
      * @var string of the module name.
      */
@@ -67,7 +67,7 @@ class BaseEventElementWidget extends CWidget
     protected function validateMode($mode)
     {
         return in_array($mode,
-            array(static::$PATIENT_SUMMARY_MODE, static::$PATIENT_POPUP_MODE,
+            array(static::$WHITEBOARD_MODE,static::$PATIENT_SUMMARY_MODE, static::$PATIENT_POPUP_MODE,
                 static::$EVENT_VIEW_MODE, static::$EVENT_EDIT_MODE), true);
     }
 
@@ -96,6 +96,7 @@ class BaseEventElementWidget extends CWidget
         if (!$this->validateMode($this->mode)) {
             throw new \CHttpException('invalid mode value for ' . static::class);
         }
+
         $this->initialiseElement();
 
         parent::init();
@@ -241,7 +242,6 @@ class BaseEventElementWidget extends CWidget
 
         // quick way to get the base class name
         $short_name = substr(strrchr(get_class($this), '\\'),1);
-
         switch ($this->mode) {
             case static::$EVENT_VIEW_MODE:
                 return $short_name . '_event_view';
@@ -251,6 +251,9 @@ class BaseEventElementWidget extends CWidget
                 break;
             case static::$EPISODE_SUMMARY_MODE:
                 return $short_name . '_episodesummary';
+                break;
+            case static::$WHITEBOARD_MODE:
+                return $short_name . '_whiteboard';
                 break;
             default:
                 return $short_name . '_patient_mode';

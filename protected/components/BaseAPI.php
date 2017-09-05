@@ -240,7 +240,7 @@ class BaseAPI
                 ->find($criteria);
         }
     }
-    
+
     /**
      * gets all element of type $element for the given patient in the given episode.
      *
@@ -253,7 +253,7 @@ class BaseAPI
     public function getElementForAllEventInEpisode($episode, $element)
     {
         $event_type = $this->getEventType();
-       
+
         if($events = $episode->getAllEventsByType($event_type->id))
         {
             foreach($events as $event)

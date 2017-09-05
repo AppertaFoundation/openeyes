@@ -41,6 +41,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 'joinType' => 'INNER JOIN',
                 'alias' => 'booking',
             ),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id')
         );
     }
 

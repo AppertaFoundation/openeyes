@@ -34,6 +34,9 @@ class HistoryRisks extends \BaseEventElementWidget
     {
         return new HistoryRisksElement();
     }
+    public function test(){
+      return "Hello";
+    }
 
     /**
      * @param HistoryRisksElement $element

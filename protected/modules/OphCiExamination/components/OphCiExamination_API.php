@@ -169,7 +169,7 @@ class OphCiExamination_API extends \BaseAPI
         }
         return implode($separator, $res);
     }
-    
+
     /**
      * Get the patient history description field from the latest Examination event.
      * Limited to current data context by default.
@@ -914,7 +914,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityForEpisodeLeft($patient, $include_nr_values = false, $before_date = NULL, $use_context = true)
     {
-        
+
         if ($va = $this->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
             $patient,
             $use_context,
@@ -2230,5 +2230,49 @@ class OphCiExamination_API extends \BaseAPI
             }
         }
         return $str;
+    }
+
+    /**
+     * @param $patientId
+     *
+     * @return array|mixed|null
+     */
+    public function mostRecentCheckedAnticoag($patientId)
+    {
+      $risk_id = \Yii::app()->db->createCommand()->select('id')->from('ophciexamination_risk')->where('name=:name', array(':name' => 'Anticoagulants'))->queryScalar();
+      $criteria = $this->risksByTypeForPatient($risk_id, $patientId);
+      $criteria->limit = 1;
+      return self::model()->find($criteria);
+    }
+
+    /**
+     * @param $patientId
+     *
+     * @return array|mixed|null
+     */
+    public function mostRecentCheckedAlpha($patientId)
+    {
+
+        $risk_id = \Yii::app()->db->createCommand()->select('id')->from('ophciexamination_risk')->where('name=:name', array(':name' => 'Alpha blockers'))->queryScalar();
+        $criteria = $this->risksByTypeForPatient($risk_id, $patientId);
+        $criteria->limit = 1;
+        return self::model()->find($criteria);
+    }
+
+    public function risksByTypeForPatient($risk_id, $patientId)
+    {
+      $criteria = new \CDbCriteria();
+      $criteria->join = 'join ophciexamination_risk risk on risk.id = t.risk_id ';
+      $criteria->join .= 'join et_ophciexamination_history_risks h_risk on t.element_id = h_risk.id ';
+      $criteria->join .= 'join event on h_risk.event_id = event.id ';
+      $criteria->join .= 'join episode on event.episode_id = episode.id ';
+      $criteria->addCondition('risk.id = :type_id');
+      $criteria->addCondition('event.deleted <> 1');
+      $criteria->addCondition('episode.patient_id = :patient_id');
+      $criteria->addCondition('risk.active = 1');
+      $criteria->params = array(':patient_id' => $patientId, ':type_id' => $type_id);
+      $criteria->order = 'event.created_date DESC';
+
+      return $criteria;
     }
 }
