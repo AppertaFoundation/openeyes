@@ -104,5 +104,9 @@ class MedicationDrug extends BaseActiveRecordVersioned
         );
     }
 
+    public function __toString()
+    {
+        return $this->name;
+    }
 
 }

@@ -3260,6 +3260,11 @@ table.grid tfoot tr {
   }
 }
 
+/* line 390, ../sass/openeyes/components/_tables.scss */
+table.valign-top tr {
+  vertical-align: top;
+}
+
 /* line 22, ../sass/openeyes/components/_header.scss */
 .header {
   min-height: 70px;
@@ -4424,7 +4429,7 @@ tfoot.pagination-container .pagination-view-all {
   border-color: #e5e5e5;
   color: black;
 }
-/* line 27, ../sass/openeyes/components/_alert-boxes.scss */
+/* line 26, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box .close {
   font-size: 1.125rem;
   padding: 5px 4px 4px;
@@ -4442,39 +4447,39 @@ tfoot.pagination-container .pagination-view-all {
 .alert-box .close:hover, .alert-box .close:focus {
   opacity: 0.5;
 }
-/* line 31, ../sass/openeyes/components/_alert-boxes.scss */
+/* line 30, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box ul {
   line-height: 1.4;
   margin: 0;
 }
-/* line 35, ../sass/openeyes/components/_alert-boxes.scss */
+/* line 34, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box li {
   margin-left: 20px;
 }
-/* line 38, ../sass/openeyes/components/_alert-boxes.scss */
+/* line 37, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box p {
   margin-bottom: 12px;
 }
-/* line 41, ../sass/openeyes/components/_alert-boxes.scss */
+/* line 40, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box.with-icon {
   background-position: left top;
   background-repeat: no-repeat;
   padding-left: 48px;
 }
 @media print {
-  /* line 41, ../sass/openeyes/components/_alert-boxes.scss */
+  /* line 40, ../sass/openeyes/components/_alert-boxes.scss */
   .alert-box.with-icon {
     -webkit-print-color-adjust: exact;
     background-position: left top !important;
     background-repeat: no-repeat !important;
   }
 }
-/* line 51, ../sass/openeyes/components/_alert-boxes.scss */
+/* line 50, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box.bottom {
   margin-bottom: 0;
   margin-top: 16px;
 }
-/* line 55, ../sass/openeyes/components/_alert-boxes.scss */
+/* line 54, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box .spinner {
   float: left;
   margin-right: 10px;
@@ -5746,8 +5751,13 @@ tfoot.pagination-container .pagination-view-all {
   right: -4px;
   top: 7px;
 }
+/* line 302, ../sass/openeyes/components/panels/_patient.scss */
+.panel.patient-popup table td {
+  font-size: 11px;
+  padding-left: 0px;
+}
 
-/* line 304, ../sass/openeyes/components/panels/_patient.scss */
+/* line 310, ../sass/openeyes/components/panels/_patient.scss */
 .nhs-number {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -5761,17 +5771,17 @@ tfoot.pagination-container .pagination-view-all {
   padding: 2px 3px 1px 33px;
 }
 @media print {
-  /* line 304, ../sass/openeyes/components/panels/_patient.scss */
+  /* line 310, ../sass/openeyes/components/panels/_patient.scss */
   .nhs-number {
     padding-left: 0;
   }
 }
-/* line 319, ../sass/openeyes/components/panels/_patient.scss */
+/* line 325, ../sass/openeyes/components/panels/_patient.scss */
 .nhs-number .messages {
   display: none;
 }
 
-/* line 324, ../sass/openeyes/components/panels/_patient.scss */
+/* line 330, ../sass/openeyes/components/panels/_patient.scss */
 .messages.patient.fixed {
   position: fixed;
   z-index: 100;
@@ -7143,8 +7153,8 @@ tfoot.pagination-container .pagination-view-all {
 }
 /* line 37, ../sass/openeyes/components/events/_sub-elements.scss */
 .sub-element .sub-element-title {
-  color: #666;
   float: left;
+  color: #666;
   font-size: 0.8125rem;
   font-style: normal;
   margin: 0;
@@ -7766,19 +7776,20 @@ tfoot.pagination-container .pagination-view-all {
 /* line 8, ../sass/openeyes/components/_generic-search.scss */
 #generic-search-form > div div.submit-row {
   align-self: flex-end;
+  padding-right: 10px;
 }
-/* line 11, ../sass/openeyes/components/_generic-search.scss */
+/* line 12, ../sass/openeyes/components/_generic-search.scss */
 #generic-search-form > div div.single-search-field {
   width: 50%;
 }
-/* line 15, ../sass/openeyes/components/_generic-search.scss */
+/* line 16, ../sass/openeyes/components/_generic-search.scss */
 #generic-search-form > div div label {
   width: 95%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* line 21, ../sass/openeyes/components/_generic-search.scss */
+/* line 22, ../sass/openeyes/components/_generic-search.scss */
 #generic-search-form > div div input[type=text], #generic-search-form > div div select {
   width: 95%;
 }
@@ -7965,7 +7976,7 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
-/*
+/* 
     Created on : Dec 9, 2016, 11:56:22 AM
     Author     : sabi
 */

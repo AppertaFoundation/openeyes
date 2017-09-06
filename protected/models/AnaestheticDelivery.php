@@ -67,7 +67,9 @@ class AnaestheticDelivery extends BaseActiveRecordVersioned
      */
     public function relations()
     {
-        return array();
+        return array(
+            'anaesthetic_delivery_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_OperationAnaestheticDelivery', 'anaesthetic_delivery_id'),
+        );
     }
 
     public function behaviors()

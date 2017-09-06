@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Roboto:100,200,300,400,400i,500,500i,900");
+/*@import url("https://fonts.googleapis.com/css?family=Roboto:100,200,300,400,400i,500,500i,900");*/
 /*  ../sass/openeyes/components/_global.scss */
 html, body {
   background: #b4acac; }
@@ -736,7 +736,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
       background-position: -6px -95px; }
     .oe-element-list a .icon.collapse {
       background-position: -6px -76px; }
-    .oe-element-list a .icon.child {
+    .oe-element-list a .icon.child, .oe-element-list a:hover .icon.child {
       background-position: 0px -57px;}
     .oe-element-list .has-children a {
       background-color: #777b7e;
@@ -2419,3 +2419,12 @@ input:checked + .slider:before {
 /* End of Images */
 
 /* End of IndexSearch css*/
+.oe-event-sidebar-edit a.error, .oe-event-sidebar-edit .child a.error, .oe-event-sidebar-edit .has-children a.error {
+    background-color: #bf4040;
+    color: #fff;
+}
+
+.oe-event-sidebar-edit a:hover.error, .oe-event-sidebar-edit .child a:hover.error, .oe-event-sidebar-edit .has-children a:hover.error {
+    background-color: #df5151;
+    color: #fff;
+}

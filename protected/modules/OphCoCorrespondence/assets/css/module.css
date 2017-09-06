@@ -22,11 +22,11 @@
 }
 /* line 19, ../sass/components/_event.scss */
 .event .event-content {
-  background-image: url('../img/watermark.png?1486988887');
+  background-image: url('../img/watermark.png?1502795878');
 }
 /* line 22, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1486988887');
+  background-image: url('../img/medium.png?1502795878');
 }
 
 /* line 27, ../sass/components/_event.scss */
@@ -66,7 +66,7 @@ textarea[name="LetterMacro[body]"], textarea[name="LetterString[body]"] {
 }
 /* line 25, ../sass/components/_letter.scss */
 .correspondence-letter.draft {
-  background: #fff url('../img/bg_draft.png?1486988887') center top no-repeat;
+  background: #fff url('../img/bg_draft.png?1502795878') center top no-repeat;
 }
 /* line 28, ../sass/components/_letter.scss */
 .correspondence-letter .accessible {
@@ -110,8 +110,8 @@ textarea[name="LetterMacro[body]"], textarea[name="LetterString[body]"] {
   margin-bottom: 10px;
 }
 /* line 60, ../sass/components/_letter.scss */
-.correspondence-letter .reply-address .internal-referral-heading{
-  font-size:18px;
+.correspondence-letter .reply-address .internal-referral-heading {
+  font-size: 18px;
 }
 /* line 64, ../sass/components/_letter.scss */
 .correspondence-letter .to-address {

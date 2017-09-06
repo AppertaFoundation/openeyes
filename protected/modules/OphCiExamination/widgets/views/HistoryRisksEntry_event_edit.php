@@ -34,7 +34,7 @@ if (!isset($values)) {
 }
 
 ?>
-<tr>
+<tr data-key="<?=$row_count?>">
     <td>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
         <?php
@@ -52,7 +52,7 @@ if (!isset($values)) {
         ?>
 
           <span class="<?=  $show_other ? : 'hidden'?> <?= $model_name ?>_other_wrapper">
-            <?php echo CHtml::textField($field_prefix . '[other]', $values['other'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+            <?php echo CHtml::textField($field_prefix . '[other]', $values['other'], array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
           </span>
         <?php
         } else {
