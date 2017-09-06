@@ -336,30 +336,6 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Trigger the medications save event if there is a medication element but no risk element.
-     * N.B. not sure if we should check risks or not, but it seems sensible given the initial behaviour
-     * of this event.
-     */
-    protected function triggerMedicationSave()
-    {
-        if ($meds = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryMedications')) {
-            if (!$this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryRisks')) {
-                $this->getApp()->event->dispatch('after_medications_save', array(
-                    'patient' => $this->patient,
-                    'drugs' => array_map(
-                        function($entry) {return $entry->drug; },
-                        array_filter($meds->currentOrderedEntries, function($entry) { return $entry->drug !== null;})
-                    ),
-                    'medication_drugs' => array_map(
-                        function($entry) {return $entry->medication_drug; },
-                        array_filter($meds->currentOrderedEntries, function($entry) { return $entry->medication_drug !== null;})
-                    )
-                ));
-            }
-        }
-    }
-
-    /**
      * Advance the workflow step for the event if requested.
      *
      * @param Event $event
@@ -370,7 +346,6 @@ class DefaultController extends \BaseEventTypeController
     {
         parent::afterUpdateElements($event);
         $this->persistPcrRisk();
-        $this->triggerMedicationSave();
         if ($this->step) {
             // Advance the workflow
             if (!$assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
@@ -392,7 +367,6 @@ class DefaultController extends \BaseEventTypeController
     {
         parent::afterCreateElements($event);
         $this->persistPcrRisk();
-        $this->triggerMedicationSave();
     }
 
     public function getOptionalElements()
@@ -1161,6 +1135,18 @@ class DefaultController extends \BaseEventTypeController
     protected function setAndValidateElementsFromData($data)
     {
         $errors = parent::setAndValidateElementsFromData($data);
+
+        if ($history_meds = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryMedications')) {
+            if ($history_meds->hasRisks()) {
+                if (!$this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryRisks')) {
+                    if (!array_key_exists($this->event_type->name, $errors)) {
+                        $errors[$this->event_type->name] = array();
+                    }
+                    $errors[$this->event_type->name][] = 'History Risks element is required when History Medications has entries with associated Risks';
+                }
+            }
+        }
+
         if (isset($data['patientticket_queue']) && $api = Yii::app()->moduleAPI->get('PatientTicketing')) {
             $co_sid = @$data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];
             $status = models\OphCiExamination_ClinicOutcome_Status::model()->findByPk($co_sid);

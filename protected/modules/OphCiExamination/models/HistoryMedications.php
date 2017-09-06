@@ -169,6 +169,19 @@ class HistoryMedications extends \BaseEventTypeElement
         return \DrugFrequency::model()->activeOrPk($force)->findAll();
     }
 
+    /**
+     * @return bool
+     */
+    public function hasRisks()
+    {
+        foreach ($this->entries as $entry) {
+            if ($entry->hasRisk()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function __toString()
     {
         return 'Current: ' . implode(' // ', $this->currentOrderedEntries) .
