@@ -336,8 +336,8 @@ EOSQL;
       $data_map_attrs = array(
         'goto-id' => 'GOTO_ID',
         'goto-subcontainer' => 'GOTO_SUBCONTAINER_CLASS',
-        'goto-tag' => 'GOTO-TAG',
-        'goto-text' => 'GOTO-TEXT',
+        'goto-tag' => 'GOTO_TAG',
+        'goto-text' => 'GOTO_TEXT',
         'element-class-name' => 'OPEN_ELEMENT_CLASS_NAME',
         'doodle-class-name' => 'GOTO_DOODLE_CLASS_NAME',
         'property' => 'GOTO_PROPERTY'
@@ -495,10 +495,10 @@ EOSQL;
     }
 
     private function formatHTML($html) {
-    //  include_once('/var/www/openeyes/protected/commands/EyeDrawConfigLoadCommandAssets/format.php');
-    //  $format = new Format;
-    //  return $format->HTML($html);
-    return $html;
+      include_once('/var/www/openeyes/protected/commands/EyeDrawConfigLoadCommandAssets/format.php');
+      $format = new Format;
+      return $format->HTML($html);
+    //return $html;
     }
 
     private function saveHTMLToFile($html,$filename) {
