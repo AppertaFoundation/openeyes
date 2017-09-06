@@ -32,7 +32,6 @@ if (!isset($values)) {
         'comments' => $entry->comments,
     );
 }
-
 ?>
 <tr data-key="<?=$row_count?>">
     <td>
@@ -63,7 +62,7 @@ if (!isset($values)) {
         ?>
 
     </td>
-    <td>
+    <td id="OEModule_OphCiExamination_models_HistoryRisks_entries_<?=$row_count?>_risk_id_error">
         <label class="inline highlight">
             <?php echo CHtml::radioButton($field_prefix . '[has_risk]', false, array('value' => '-9')); ?>
             Not checked
