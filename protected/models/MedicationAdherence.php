@@ -22,6 +22,7 @@
  *
  * The followings are the available columns in table 'medication':
  *
+ * @deprecated since v2.0
  * @property int $id
  * @property int $adherence_level_id
  * @property int $patient_id
@@ -34,7 +35,7 @@ class MedicationAdherence extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'medication_adherence';
+        return 'archive_medication_adherence';
     }
 
     /**

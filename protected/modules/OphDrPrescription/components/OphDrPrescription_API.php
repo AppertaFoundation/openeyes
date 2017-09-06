@@ -94,4 +94,18 @@ class OphDrPrescription_API extends BaseAPI
 
         return $prescriptionItems;
     }
+
+    public function validatePrescriptionItemId($id, Patient $patient = null)
+    {
+        if ($item = OphDrPrescription_Item::model()->with('prescription.event.episode')->findByPk($id)) {
+            if ($item->prescription->event) {
+                if ($patient) {
+                    return $item->prescription->event->getPatientId() === $patient->id;
+                } else {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
