@@ -63,6 +63,7 @@ function updateCorrespondence(macro_id)
                 $('.internal-referrer-wrapper').slideUp();
                 resetInternalReferralFields();
 
+				$('#attachments_content_container').html(data.associated_content);
             }
         });
     }
@@ -774,6 +775,11 @@ $(document).ready(function() {
         //we have to trigger to set it
         docman.setDeliveryMethods(0);
 	})
+
+	$('#attachments_content_container').on('click', 'button.remove', function(e) {
+		e.preventDefault();
+		$(this).closest('tr').remove();
+	});
 
 });
 

@@ -27,7 +27,7 @@
 		</tr>
 		<tr>
 			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('clinic_interval_id'))?></td>
-			<td><span class="big"><?php echo $element->clinic_internal ? $element->clinic_internal->name : 'None'?></span></td>
+			<td><span class="big"><?php echo $element->clinic_interval ? $element->clinic_interval->name : 'None'?></span></td>
 		</tr>
 		<tr>
 			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('photo_id'))?></td>

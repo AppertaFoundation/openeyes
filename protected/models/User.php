@@ -87,7 +87,7 @@ class User extends BaseActiveRecordVersioned
         if (Yii::app()->params['auth_source'] == 'BASIC') {
             $user = Yii::app()->request->getPost('User');
 
-            if (isset($user['is_doctor']) && $user['is_doctor']) {
+            if (isset($user['is_surgeon']) && $user['is_surgeon'] == 1) {
                 return array_merge(
                     $commonRules,
                     array(
@@ -97,10 +97,7 @@ class User extends BaseActiveRecordVersioned
                             'pattern' => '/^[\w|\.\-_\+@]+$/',
                             'message' => 'Only letters, numbers and underscores are allowed for usernames.',
                         ),
-                        array(
-                            'username, email, first_name, last_name, active, global_firm_rights, doctor_grade_id',
-                            'required',
-                        ),
+                        array('username, email, first_name, last_name, active, global_firm_rights,doctor_grade_id,registration_code ','required',),
                         array('username, password, first_name, last_name', 'length', 'max' => 40),
                         array(
                             'password',
@@ -115,6 +112,7 @@ class User extends BaseActiveRecordVersioned
                         array('password_repeat', 'safe'),
                     )
                 );
+
             } else {
                 return array_merge(
                     $commonRules,
@@ -141,6 +139,7 @@ class User extends BaseActiveRecordVersioned
                     )
                 );
             }
+
         } elseif (Yii::app()->params['auth_source'] == 'LDAP') {
             return array_merge(
                 $commonRules,

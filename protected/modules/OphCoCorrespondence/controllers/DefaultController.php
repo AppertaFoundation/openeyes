@@ -112,7 +112,7 @@ class DefaultController extends BaseEventTypeController
         $this->jsVars['correspondence_markprinted_url'] = Yii::app()->createUrl('OphCoCorrespondence/Default/markPrinted/'.$this->event->id);
         $this->jsVars['correspondence_print_url'] = Yii::app()->createUrl('OphCoCorrespondence/Default/print/'.$this->event->id);
     }
-    
+
     public function actionView($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
@@ -283,6 +283,18 @@ class DefaultController extends BaseEventTypeController
         $data['textappend_ElementLetter_cc'] = implode("\n", $cc['text']);
         $data['elementappend_cc_targets'] = implode("\n", $cc['targets']);
         $data['sel_letter_type_id'] = $macro->letter_type_id;
+
+        $macroInitAssocContent = MacroInitAssociatedContent::model()->findAllByAttributes(array('macro_id' => $macro->id), array('order' => 'display_order asc'));
+        $data['associated_content'] = '';
+
+        if($macroInitAssocContent != null){
+            $data['associated_content'] = $this->renderPartial('event_associated_content', array(
+                'associated_content' => $macroInitAssocContent,
+                'patient' => $patient,
+                'api'   => Yii::app()->moduleAPI->get('OphCoCorrespondence')
+            ), true);
+        }
+
         echo json_encode($data);
     }
 

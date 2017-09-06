@@ -644,6 +644,40 @@ class ElementLetter extends BaseEventTypeElement
             Yii::app()->user->setState('correspondece_element_letter_saved', true);
         }
 
+
+        EventAssociatedContent::model()->deleteAll(
+            "`parent_event_id` = :parent_event_id",
+            array(':parent_event_id' => $this->event->id)
+        );
+
+        if(isset($_POST['attachments_event_id'])){
+
+            $attachments_last_event_id = Yii::app()->request->getPost('attachments_event_id');
+            $attachments_system_hidden = Yii::app()->request->getPost('attachments_system_hidden');
+            $attachments_id = Yii::app()->request->getPost('attachments_id');
+            $attachments_print_appended = Yii::app()->request->getPost('attachments_print_appended');
+            $attachments_short_code = Yii::app()->request->getPost('attachments_short_code');
+
+            if( isset( $attachments_last_event_id )){
+                $order = 1;
+                foreach($attachments_last_event_id as $key => $last_event){
+
+                    $eventAssociatedContent = new EventAssociatedContent();
+                    $eventAssociatedContent->parent_event_id = $this->event->id;
+                    $eventAssociatedContent->init_associated_content_id = $attachments_id[$key];
+                    $eventAssociatedContent->is_system_hidden  = $attachments_system_hidden[$key];
+                    $eventAssociatedContent->is_print_appended = $attachments_print_appended[$key];
+                    $eventAssociatedContent->short_code = $attachments_short_code[$key];
+                    $eventAssociatedContent->association_storage  = 'EVENT';
+                    $eventAssociatedContent->associated_event_id  = $last_event;
+                    $eventAssociatedContent->display_order   = $order;
+
+                    $eventAssociatedContent->save();
+                    $order++;
+                }
+            }
+        }
+
         return parent::afterSave();
     }
 

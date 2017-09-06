@@ -67,11 +67,8 @@
 		</div>
 	</div>
 	<div class="row field-row">
-		<div class="large-3 column">
-			<label>Comments:</label>
-		</div>
-		<div class="large-6 column end">
-			<?php echo CHtml::activeTextArea($element, $side.'_notes')?>
+		<div class="large-9 column end">
+			<?php echo CHtml::activeTextArea($element, $side.'_notes', array('rows' => 1, 'placeholder' => $element->getAttributeLabel($side.'_notes')))?>
 		</div>
 	</div>
 </div>

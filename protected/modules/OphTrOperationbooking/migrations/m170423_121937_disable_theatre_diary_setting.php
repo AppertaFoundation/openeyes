@@ -11,10 +11,16 @@ class m170423_121937_disable_theatre_diary_setting extends CDbMigration
                         'default_value' => 'off',
                         'data' => serialize(array('on'=>'On', 'off'=>'Off'))
         ));
+
+		$this->insert('setting_installation', array(
+                        'key' => 'disable_theatre_diary',
+                        'value' => 'off',
+        ));
 	}
 
 	public function down()
 	{
 		$this->delete('setting_metadata', array('key' => 'disable_theatre_diary'));
+		$this->delete('setting_installation', array('key' => 'disable_theatre_diary'));
 	}
 }

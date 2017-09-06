@@ -35,24 +35,30 @@ html, body {
     overflow: hidden; }
   .open-eyes .container.content {
     background: none;
-    min-height: 600px; }
+    min-height: 600px;
+  }
   .open-eyes .footer {
-    border-radius: 0 0 5px 5px;
-    height: 42px;
-    background: #a39c9c url("../img/_structure/openeyes_footer.png") no-repeat right top; }
+
+    height: 25px;
+    background: #a39c9c;
+    position:fixed;
+    bottom:0;
+    z-index: 9999;
+  }
     .open-eyes .footer .help .panel {
-      height: 38px;
+      height: 25px;
       border-style: none;
       border-width: 0;
-      padding-top: 14px;
       background: #bfbaba;
-      margin: 0 0 0 0; }
+      margin: 0 0 0 0;
+      border-radius: 0; }
       .open-eyes .footer .help .panel strong {
         color: #555252; }
     .open-eyes .footer .info {
       font-size: 9px;
       font-size: 0.5625rem;
-      padding-top: 7px; }
+      padding-top: 3px;
+      line-height:1.2em; }
 
 .open-eyes .panel {
   border-radius: 5px;
@@ -92,7 +98,8 @@ html, body {
     background-position: left bottom; }
 
 .event .event-content {
-  background-image: none !important; }
+  background-image: none !important;
+  margin-bottom:8px; }
 
 .alert-box {
   border: none; }
@@ -624,12 +631,12 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   padding: 0 0 5px 0;
   width: 14.6%;
   position: fixed;
-  top: 82px; }
+  top: 80px;
+}
   .open-eyes .sidebar.episodes-and-events .oe-scroll-wrapper {
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;
-    top: 2px;
     width: 180px;
     padding: 0;
     margin: 0;
@@ -649,7 +656,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     color: white; }
   .open-eyes .sidebar.episodes-and-events .scroll-blue-top {
     position: absolute;
-    top: 38px;
+    top: 2px;
     width: 180px;
     height: 8px;
     background: transparent url("../img/_elements/gradients/bg_scroll_blue_top.png") top left repeat-x;
@@ -688,7 +695,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     margin: 0;
     padding: 0; }
   .oe-element-list .has-children.expanded {
-    margin: 3px 0; }
+    margin: 4px 0; }
   .oe-element-list .has-children.collapsed {
     margin: 0 0; }
   .oe-element-list a {
@@ -697,7 +704,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     min-height: 19px;
     line-height: 19px;
     margin-bottom: 1px;
-    padding: 0 25px 0 25px;
+    padding: 0 25px 0 18px;
     overflow: hidden;
     font-size: 12px;
     font-size: 0.75rem;
@@ -707,15 +714,15 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
     .oe-element-list a.selected {
       background-image: url("../img/_elements/icons/sidebar/element-edit-arrow.png"); }
     .oe-element-list a.selected, .oe-element-list a:hover, .oe-element-list a:active {
-      color: #4b4d55;
+      color: #1d1e21;
       background-color: #e9e9e9;
       background-position: 100% -114px; }
       .oe-element-list a.selected .icon.expand, .oe-element-list a:hover .icon.expand, .oe-element-list a:active .icon.expand {
         background-position: -6px -190px; }
       .oe-element-list a.selected .icon.collapse, .oe-element-list a:hover .icon.collapse, .oe-element-list a:active .icon.collapse {
         background-position: -6px -171px; }
-    .oe-element-list a.has-icon {
-      padding-left: 25px; }
+    /*.oe-element-list a.has-icon {
+      padding-left: 18px; }*/
     .oe-element-list a .icon {
       position: absolute;
       top: 0;
@@ -725,14 +732,24 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
       height: 19px;
       overflow: hidden;
       background: transparent url("../img/_elements/icons/sidebar/element-edit-sprites.png") -6px 0 no-repeat; }
-      .oe-element-list a .icon.expand {
-        background-position: -6px -95px; }
-      .oe-element-list a .icon.collapse {
-        background-position: -6px -76px; }
-      .oe-element-list a .icon.child {
-
-        background-position: -6px -57px; }
-
+    .oe-element-list a .icon.expand {
+      background-position: -6px -95px; }
+    .oe-element-list a .icon.collapse {
+      background-position: -6px -76px; }
+    .oe-element-list a .icon.child {
+      background-position: 0px -57px;}
+    .oe-element-list .has-children a {
+      background-color: #777b7e;
+      font-weight: 500; }
+    .oe-element-list .has-children a.selected, .oe-element-list .has-children a.selected:hover, .oe-element-list .has-children a:hover {
+      background-color: #fcfcfc; }
+    .oe-element-list .child a {
+      background-color: #96999c;
+      font-style: italic;
+      font-weight: 400;
+      padding-left: 28px;  }
+    .oe-element-list .child a.selected {
+      background-color: #f5f5f5; }
 .oe-sidebar-event-creation {
   height: 38px;
   line-height: 38px;
@@ -840,8 +857,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 
 .oe-panel.specialty ol.events {
   margin: 5px 0 0 0;
-  position: relative;
-  padding-bottom: 35px; }
+  position: relative; }
   .oe-panel.specialty ol.events li {
     display: block;
     white-space: nowrap;
@@ -1413,6 +1429,11 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   margin-bottom: 2px;
 }
 
+.edit .sub-element {
+    border: 2px solid #96999c;
+    overflow: hidden;
+}
+
 .field-row {
   padding-bottom: 2px;
 }
@@ -1443,11 +1464,44 @@ label.highlight {
 }
 
 .element-title, .sub-element-title {
-  padding: 6px 8px;
+  padding: 6px 11px;
 }
 
 
 .edit .element,
 .edit .optional-elements {
   border-top: none;
+}
+
+.edit .element-header, .edit .element-title {
+    background-color: #777b7e;
+    color: white;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.edit .sub-element-header, .edit h4.sub-element-title {
+    background: #96999c;
+    color: white;
+}
+
+.edit .sub-element-header .inline {
+    color: #000;
+}
+
+.edit .element-title-additional {
+    line-height: 1.6em;
+}
+
+.edit .sub-elements {
+    padding: 5px 4px 0 4px;
+    margin: 0;
+    background: #dae6f1;
+}
+
+.centre, .center {
+    text-align: center;
+    align-content: center;
+    align-items: center;
+    align-self: center;
 }

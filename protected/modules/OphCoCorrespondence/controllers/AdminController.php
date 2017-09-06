@@ -153,9 +153,17 @@ class AdminController extends \ModuleAdminController
             throw new Exception("LetterMacro not found: $id");
         }
 
+        $init_method = new OphcorrespondenceInitMethod();
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('macro_id = '.$id);
+        $criteria->order = 'display_order asc';
+        $associated_content_saved = MacroInitAssociatedContent::model()->findAll($criteria);
+
         $errors = array();
 
         if (!empty($_POST)) {
+
             $macro->attributes = $_POST['LetterMacro'];
 
             if (!$macro->validate()) {
@@ -163,6 +171,52 @@ class AdminController extends \ModuleAdminController
             } else {
                 if (!$macro->save()) {
                     throw new Exception('Unable to save macro: '.print_r($macro->errors, true));
+                } else {
+
+                    if(isset($_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent']) && isset($_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod']) ){
+
+                        $post_associated_content = $_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent'];
+                        $post_init_method = $_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod'];
+
+                        $order = 1;
+                        foreach($post_associated_content as $key => $pac){
+
+                            if(isset($pac['id']) && ($pac['id'] > 0)){
+                                $criteria = new \CDbCriteria();
+                                $criteria->addCondition('id = '.$pac['id']);
+                                $criteria->addCondition('macro_id = '.$id);
+                                $associated_content = MacroInitAssociatedContent::model()->find($criteria);
+
+                                $method = 'update';
+                            } else {
+                                $associated_content = new MacroInitAssociatedContent();
+                                $method = 'save';
+                            }
+
+                            $associated_content->macro_id           = $id;
+                            $associated_content->is_system_hidden   = ( isset( $pac["is_system_hidden"] ) ? 1 : 0);
+                            $associated_content->is_print_appended  = ( isset( $pac["is_print_appended"] ) ? 1 : 0);
+                            $associated_content->init_method_id     = $post_init_method[$key]["method_id"];
+                            $associated_content->short_code         = $post_init_method[$key]["short_code"];
+                            $associated_content->display_order      = $order;
+                            $associated_content->display_title      = $post_init_method[$key]["title"];
+
+                            $associated_content->{$method}();
+                            $order++;
+                        }
+                    }
+
+                    if(isset($_POST['delete_associated'])){
+                        foreach($_POST['delete_associated'] as $key => $da){
+                            if($da['delete'] > 0){
+                                $criteria = new \CDbCriteria();
+                                $criteria->addCondition('id = '.$da['delete']);
+                                $criteria->addCondition('macro_id = '.$id);
+                                MacroInitAssociatedContent::model()->deleteAll($criteria);
+                            }
+                        }
+                    }
+
                 }
 
                 Audit::add('admin', 'update', $macro->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'LetterMacro'));
@@ -175,6 +229,8 @@ class AdminController extends \ModuleAdminController
 
         $this->render('_macro', array(
             'macro' => $macro,
+            'init_method' => $init_method,
+            'associated_content' => $associated_content_saved,
             'errors' => $errors,
         ));
     }
@@ -278,5 +334,30 @@ class AdminController extends \ModuleAdminController
             $this->redirect('/OphCoCorrespondence/admin/addSiteSecretary/'.$firmId);
         }
         throw new CHttpException(400, 'Invalid method for delete');
+    }
+
+    /*
+     * Get init method's data by id
+     */
+    public function actionGetInitMethodDataById()
+    {
+
+        if (Yii::app()->request->isAjaxRequest ) {
+            if (!isset($_POST['id'])) {
+                throw new CHttpException(400, 'No ID provided');
+            }
+            if (!$method = OphcorrespondenceInitMethod::model()->findByPk($_POST['id'])) {
+                throw new Exception("Method not found: ".$_POST['id']);
+            }
+
+            $result = array(
+                'success'       => 1,
+                'description'   => $method->description,
+                'short_code'    => $method->short_code
+            );
+
+            $this->renderJSON($result);
+        }
+        throw new CHttpException(400, 'Invalid method');
     }
 }

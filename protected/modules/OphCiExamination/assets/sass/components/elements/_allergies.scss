@@ -1,0 +1,14 @@
+section.#{$OE_MODEL_PREFIX}Allergies{
+
+  table##{$OE_MODEL_PREFIX}Allergies_entry_table{
+    tr{
+      td{
+        vertical-align:bottom;
+
+        &:not(.edit-column){
+          width:40%;
+        }
+      }
+    }
+  }
+}

@@ -47,8 +47,8 @@ $patient = Patient::model()->findByPk($patient_id);
 <div class="element-fields">
 
     <?php
-    $correspondeceApp = \SettingInstallation::model()->find('`key` = "ask_correspondence_approval"');
-    if($correspondeceApp->value === "on") {
+    $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
+    if($correspondeceApp === "on") {
         ?>
         <div class="row field-row">
             <div class="large-<?php echo $layoutColumns['label']; ?> column">
@@ -149,7 +149,7 @@ $patient = Patient::model()->findByPk($patient_id);
 		</div>
 	</div>
     <?php endif; ?>
-    
+
     <div class="row field-row">
         <div class="large-<?php echo $layoutColumns['label']; ?> column OphCoCorrespondence_footerLabel">
             <label for="<?php echo get_class($element) . '_clinic_date_0'; ?>">
@@ -301,7 +301,7 @@ $patient = Patient::model()->findByPk($patient_id);
                         <?php foreach ($element->cc_targets as $cc_target) {
     ?>
                                 <input type="hidden" name="CC_Targets[]" value="<?php echo $cc_target?>" />
-                        <?php 
+                        <?php
     }?>
                 </div>
         </div>
@@ -372,8 +372,8 @@ $patient = Patient::model()->findByPk($patient_id);
     </div>
 
     <?php
-    $correspondeceApp = \SettingInstallation::model()->find('`key` = "ask_correspondence_approval"');
-    if($correspondeceApp->value === "on") {
+    $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
+    if($correspondeceApp === "on") {
         ?>
         <div class="row field-row">
             <div class="large-<?php echo $layoutColumns['label']; ?> column">
@@ -393,6 +393,28 @@ $patient = Patient::model()->findByPk($patient_id);
             </div>
         </div>
         <?php
-    }
-    ?>
+    } ?>
+    <div id="attachments_content_container">
+        <?php
+
+
+        $associated_content = EventAssociatedContent::model()
+            ->with('initAssociatedContent')
+            ->findAllByAttributes(
+                array('parent_event_id' => $element->event_id),
+                array('order' => 't.display_order asc')
+            );
+
+        $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+        if($associated_content == null){
+            $associated_content = MacroInitAssociatedContent::model()->findAllByAttributes(array('macro_id' => $macro_id), array('order' => 'display_order asc'));
+        }
+
+        $this->renderPartial('event_associated_content', array(
+            'associated_content' => $associated_content,
+            'api'   => Yii::app()->moduleAPI->get('OphCoCorrespondence')
+        ));
+        ?>
+    </div>
+
 </div>

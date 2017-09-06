@@ -21,7 +21,7 @@ class PedigreeController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('Edit', 'EditStudyStatus'),
+                'actions' => array('Edit', 'Delete', 'EditStudyStatus'),
                 'roles' => array('TaskEditPedigreeData'),
             ),
             array(
@@ -256,6 +256,40 @@ class PedigreeController extends BaseModuleController
         echo CJSON::encode($output);
 
         Yii::app()->end();
+    }
+
+    /**
+     * Deletes rows for the model.
+     */
+    public function actionDelete()
+    {
+        $response = 1;
+        $model = Pedigree::model();
+        if (Yii::app()->request->isPostRequest) {
+            $post = Yii::app()->request->getPost('Pedigree', array());
+            if (array_key_exists('id', $post) && is_array($post['id'])) {
+                foreach ($post['id'] as $id) {
+
+                    $model = $model->findByPk($id);
+                    if (!count($model->subjects)) {
+                        if (isset($model->active)) {
+                            $model->active = 0;
+                            if ($model && !$model->save()) {
+                                $response = 0;
+                            }
+                        } else {
+                            if ($model && !$model->delete()) {
+                                $response = 0;
+                            }
+                        }
+                    } else {
+                        $response = 0;
+                    }
+                }
+            }
+        }
+
+        echo $response;
     }
 
 }

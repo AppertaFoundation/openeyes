@@ -49,10 +49,14 @@ namespace OEModule\OphCiExamination\models;
  * @property Event $event
  * @property User $user
  * @property User $usermodified
- * @property Gender $glaucoma_status
- * @property Gender $drop-related_prob
- * @property Gender $drops
- * @property Gender $surgery
+ * @property OphCiExamination_GlaucomaStatus $right_glaucoma_status
+ * @property OphCiExamination_DropRelProb $right_drop-related_prob
+ * @property OphCiExamination_Drops $right_drops
+ * @property OphCiExamination_ManagementSurgery $right_surgery
+ * @property OphCiExamination_GlaucomaStatus $left_glaucoma_status
+ * @property OphCiExamination_DropRelProb $left_drop-related_prob
+ * @property OphCiExamination_Drops $left_drops
+ * @property OphCiExamination_ManagementSurgery $left_surgery
  */
 
 use OEModule\OphCiExamination\components\OphCiExamination_API;
@@ -182,7 +186,7 @@ class Element_OphCiExamination_CurrentManagementPlan  extends  \SplitEventTypeEl
     {
         $result = array();
 
-        $api = $api ? $api : new OphCiExamination_API();
+        $api = $api ? $api : $this->getApp()->moduleAPI->get('OphCiExamination');
         $result['leftIOP'] = $api->getIOPReadingLeft($patient);
         $result['rightIOP'] = $api->getIOPReadingRight($patient);
         if ($result['leftIOP'] || $result['rightIOP']) {
@@ -190,5 +194,17 @@ class Element_OphCiExamination_CurrentManagementPlan  extends  \SplitEventTypeEl
         }
 
         return;
+    }
+
+    public function __toString()
+    {
+        $result = array();
+        if ($this->hasRight()) {
+            $result[] = 'R: ' . $this->right_glaucoma_status;
+        }
+        if ($this->hasLeft()) {
+            $result[] = 'L: ' . $this->left_glaucoma_status;
+        }
+        return implode(', ', $result);
     }
 }

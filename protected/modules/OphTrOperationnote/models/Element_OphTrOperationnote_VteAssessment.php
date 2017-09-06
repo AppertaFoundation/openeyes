@@ -119,8 +119,8 @@ class Element_OphTrOperationnote_VteAssessment extends Element_OpNote
 
     public function isEnabled()
     {
-        $element_enabled = \SettingInstallation::model()->find('`key` = "vte_assessment_element_enabled"');
-        return (isset($element_enabled->value) && $element_enabled->value === 'on');
+        $element_enabled = Yii::app()->params['vte_assessment_element_enabled'];
+        return (isset($element_enabled) && $element_enabled === 'on');
     }
 
     /**

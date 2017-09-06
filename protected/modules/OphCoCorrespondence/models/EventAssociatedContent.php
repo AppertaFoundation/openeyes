@@ -40,15 +40,16 @@ class EventAssociatedContent extends BaseActiveRecord
 		// will receive user inputs.
 		return array(
 			array('parent_event_id, is_system_hidden, is_print_appended, short_code, association_storage, display_order', 'required'),
-			array('is_system_hidden, is_print_appended, display_order', 'numerical', 'integerOnly'=>true),
+			array('init_associated_content_id , is_system_hidden, is_print_appended, display_order', 'numerical','integerOnly'=>true),
 			array('parent_event_id, association_storage, associated_event_id, associated_protected_file_id', 'length', 'max'=>10),
 			array('short_code', 'length', 'max'=>45),
 			array('associated_url', 'length', 'max'=>255),
 			array('display_title', 'length', 'max'=>80),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, parent_event_id, is_system_hidden, is_print_appended, short_code, association_storage, associated_event_id, associated_protected_file_id, associated_url, display_order, display_title', 'safe', 'on'=>'search'),
-		);
+			array('id, parent_event_id,init_associated_content_id, is_system_hidden, is_print_appended, short_code, association_storage, associated_event_id, associated_protected_file_id, associated_url, display_order, display_title', 'safe', 'on'=>'search'),
+			array('id, parent_event_id,init_associated_content_id, is_system_hidden, is_print_appended, short_code, association_storage, associated_event_id, associated_protected_file_id, associated_url, display_order, display_title', 'safe'),
+        );
 	}
 
 	/**
@@ -60,6 +61,7 @@ class EventAssociatedContent extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'parentEvent' => array(self::BELONGS_TO, 'Event', 'parent_event_id'),
+			'initAssociatedContent' => array(self::BELONGS_TO, 'MacroInitAssociatedContent', 'init_associated_content_id'),
 			'associatedEvent' => array(self::BELONGS_TO, 'Event', 'associated_event_id'),
 			'associatedProtectedFile' => array(self::BELONGS_TO, 'ProtectedFile', 'associated_protected_file_id'),
 		);
@@ -105,6 +107,7 @@ class EventAssociatedContent extends BaseActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('parent_event_id',$this->parent_event_id,true);
+		$criteria->compare('init_associated_content_id',$this->init_associated_content_id);
 		$criteria->compare('is_system_hidden',$this->is_system_hidden);
 		$criteria->compare('is_print_appended',$this->is_print_appended);
 		$criteria->compare('short_code',$this->short_code,true);
@@ -120,14 +123,5 @@ class EventAssociatedContent extends BaseActiveRecord
 		));
 	}
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 * Please note that you should have this exact method in all your CActiveRecord descendants!
-	 * @param string $className active record class name.
-	 * @return EventAssociatedContent the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+
 }
