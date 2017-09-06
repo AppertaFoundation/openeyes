@@ -33,10 +33,10 @@ a.stop-medication {
   background-color: transparent; // only want to show if there is a display class as below
   color: #fff;
   font-size: 9px;
-  padding: 2px 3px 2px 3px;
+  padding: 2px 4px 2px 4px;
   margin-right: 22px; // should create appropriate space to align non-lateral medications
-  -moz-border-radius:5px 5px 5px 5px;  // rounds corners for firefox
-  border-radius:5px 5px 5px 5px;  //rounds corners for other browsers
+  -moz-border-radius: 50%;  // rounds corners for firefox
+  border-radius: 50%;  //rounds corners for other browsers
   &.R {
     background-color: #9fec6d;
     color: #747782;
