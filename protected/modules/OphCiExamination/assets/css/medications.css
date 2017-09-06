@@ -40,8 +40,8 @@ ul.comma-list {
 /* line 4, ../sass/components/_comma-list.scss */
 ul.comma-list li {
   white-space: nowrap;
-  margin-left: 5px;
-  margin-right: 0px;
+  margin-left: 0px;
+  margin-right: 2px;
   display: inline;
   list-style: none;
 }
