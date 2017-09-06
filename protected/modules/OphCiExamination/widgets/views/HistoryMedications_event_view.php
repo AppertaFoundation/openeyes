@@ -22,25 +22,29 @@
   <div class="row current-kind">
     <div class="large-2 column">
       <label style="white-space: nowrap;">Current:
-          <a href="#" class="detail-toggle" data-kind="current"><i class="fa fa-icon fa-expand" aria-hidden="true"></i></a>
-          <?php if ($element->stoppedOrderedEntries) { ?><a href="#" class="kind-toggle show" data-kind="stopped"><i class="fa fa-icon fa-history" aria-hidden="true"></i></a><?php } ?></label>
+          <?php if ($element->currentOrderedEntries) { ?><a href="#" class="detail-toggle" data-kind="current"><i class="fa fa-icon fa-expand" aria-hidden="true"></i></a><?php } ?>
+          <?php if ($element->stoppedOrderedEntries) { ?><a href="#" class="kind-toggle show" data-kind="stopped" <?php if (!$element->currentOrderedEntries) { ?>style="display: none;"<?php } ?>><i class="fa fa-icon fa-history" aria-hidden="true"></i></a><?php } ?></label>
     </div>
     <div class="large-10 column end">
         <div class="data-value current">
+            <?php if ($element->currentOrderedEntries) { ?>
             <ul class="comma-list">
                 <?php foreach ($element->currentOrderedEntries as $entry) { ?>
                   <li><span class="simple"><?= $entry->getMedicationDisplay() ?></span>
                       <span class="detail" style="display: none;"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
                 <?php } ?>
             </ul>
-
+            <?php } else { ?>
+                No current medications.
+            <?php } ?>
         </div>
     </div>
   </div>
-    <div class="row stopped-kind" <?php if ($element->currentOrderedEntries) { ?>style="display: none;" <?php } ?>>
+    <div class="row stopped-kind" <?php if ($element->currentOrderedEntries) { ?>style="display: none;"<?php } ?>>
         <div class="large-2 column">
-            <label style="white-space: nowrap;">Stopped: <a href="#" class="detail-toggle" data-kind="stopped"><i class="fa fa-icon fa-expand" aria-hidden="true"></i></a>
-                <?php if ($element->currentOrderedEntries) { ?><a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i><?php } ?></a>
+            <label style="white-space: nowrap;">Stopped:
+                <?php if ($element->stoppedOrderedEntries) { ?><a href="#" class="detail-toggle" data-kind="stopped"><i class="fa fa-icon fa-expand" aria-hidden="true"></i></a><?php } ?>
+                <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a>
             </label>
         </div>
         <div class="large-10 column end">
@@ -51,7 +55,6 @@
                             <span class="detail" style="display: none;"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
                     <?php } ?>
                 </ul>
-
             </div>
         </div>
     </div>
