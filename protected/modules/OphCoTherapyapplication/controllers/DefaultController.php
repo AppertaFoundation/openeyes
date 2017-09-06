@@ -25,6 +25,8 @@ class DefaultController extends BaseEventTypeController
         'getDecisionTree' => self::ACTION_TYPE_FORM,
     );
 
+    protected $show_element_sidebar = false;
+
     // TODO: check this is in line with Jamie's change circa 3rd April 2013
     protected function beforeAction($action)
     {

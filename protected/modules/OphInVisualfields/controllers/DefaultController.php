@@ -2,6 +2,8 @@
 
 class DefaultController extends BaseEventTypeController
 {
+    protected $show_element_sidebar = false;
+
     protected function setComplexAttributes_Element_OphInVisualfields_Condition($element, $data, $index)
     {
         $abilities = array();

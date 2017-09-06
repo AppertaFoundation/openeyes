@@ -30,7 +30,8 @@ abstract class SelectionWidget extends BaseFieldWidget
         parent::init();
 
         if (is_string($this->data)) {
-            $this->data = SelectionHelper::listData($this->data, $this->element->{$this->field});
+            $value = isset($this->element->{$this->field}) ? $this->element->{$this->field} : null;
+            $this->data = SelectionHelper::listData($this->data, $value);
         }
     }
 }

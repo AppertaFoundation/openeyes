@@ -168,7 +168,7 @@ class SocialHistory extends \BaseEventTypeElement
                 if (is_a($relation, self::BELONGS_TO)) {
                     $pk = $this->{$relation_name . '_id'};
                 } else {
-                    $pk = array_map(function($i) { return $i->id;}, $this->getRelated($relation_name));
+                    $pk = array_map(function($i) { return $i->id;}, ($this->getRelated($relation_name) ? : array()));
                 }
                 return $cls::model()->activeOrPk($pk)->findAll(array('order' => 'display_order asc'));
             }

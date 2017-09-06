@@ -236,9 +236,9 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
      * Generate a request XML for document list
      * @return type
      */
-    public function generateDocumentListRequest()
+    public function generateDocumentListRequest($patient)
     {
-        //$this->request_template = 'Internalreferral.views.windipintegration.document_list_xml_test';
+        $this->request_template = 'OphCoCorrespondence.views.windipintegration.document_list_xml';
         $user = \User::model()->findByPk(\Yii::app()->user->id);
 
         $when = new \DateTime();
@@ -248,6 +248,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
         $data['message_id'] = $this->getMessageId(new \Event());
         $data['application_id'] = $this->application_id;
         $data['event_id'] = '';
+        $data['hos_num'] = $patient->hos_num;
         $data['event_date'] = $when->format('Y-m-d');
         $data['event_time'] = $when->format('H:i:s');
         $data['is_new_event'] = false;
@@ -276,9 +277,9 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
      * Generate the external application URL for document list
      * @return string
      */
-    public function generateUrlForDocumentList()
+    public function generateUrlForDocumentList($patient)
     {
-        $xml = $this->generateDocumentListRequest();
+        $xml = $this->generateDocumentListRequest($patient);
         return $this->launch_uri . '?XML=' . urlencode($xml);
     }
 

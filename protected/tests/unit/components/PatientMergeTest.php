@@ -31,15 +31,16 @@ class PatientMergeTest extends CDbTestCase
             'service_subspecialty_assignment' => 'ServiceSubspecialtyAssignment',
             'services' => 'Service',
             'specialties' => 'Specialty',
-            'patient_allergy_assignment' => 'patientAllergyAssignment',
-            'secondary_diagnosis' => 'secondaryDiagnosis',
-            'previous_operation' => 'previousOperation',
+            'patient_allergy_assignment' => 'PatientAllergyAssignment',
+            'secondary_diagnosis' => 'SecondaryDiagnosis',
+            'previous_operation' => 'PreviousOperation',
             'disorder' => 'Disorder',
-            'genetics_patient' => 'geneticsPatient',
-            'genetics_patient_relationship' => 'geneticsPatientRelationship',
-            'genetics_patient_diagnosis' => 'geneticsPatientDiagnosis',
-            'genetics_patient_pedigree' => 'geneticsPatientPedigree',
-            'genetics_study_subject' => 'geneticsStudySubject'
+            'genetics_patient' => 'GeneticsPatient',
+            'genetics_patient_relationship' => 'GeneticsPatientRelationship',
+            'genetics_patient_diagnosis' => 'GeneticsPatientDiagnosis',
+            'pedigree' => 'Pedigree',
+            'genetics_patient_pedigree' => 'GeneticsPatientPedigree',
+            'genetics_study_subject' => 'GeneticsStudySubject'
     );
 
     public function setUp()

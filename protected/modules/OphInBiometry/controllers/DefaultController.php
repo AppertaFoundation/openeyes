@@ -15,6 +15,8 @@ class DefaultController extends BaseEventTypeController
     const SHORTALLIMIT = 22;
     const LONGALLIMIT = 25;
 
+    protected $show_element_sidebar = false;
+
     /**
      * @param Event                         $unlinkedEvent
      * @param OphInBiometry_Imported_Events $importedEvent

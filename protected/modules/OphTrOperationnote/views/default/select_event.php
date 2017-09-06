@@ -23,6 +23,12 @@
     $this->moduleNameCssClass .= ' edit';
 ?>
 
+<?php
+$clinical = $clinical = $this->checkAccess('OprnViewClinical');
+
+$warnings = $this->patient->getWarnings($clinical);
+?>
+
 	<div class="row">
 		<div class="large-12 column">
 
@@ -37,6 +43,19 @@
                 ?>
 					<?php  $this->displayErrors($errors)?>
 
+    <?php if ($warnings) { ?>
+        <div class="row">
+            <div class="large-12 column">
+                <div class="alert-box patient with-icon">
+                    <?php foreach ($warnings as $warn) {?>
+                        <strong><?php echo $warn['long_msg']; ?></strong>
+                        - <?php echo $warn['details'];
+                    }?>
+                </div>
+            </div>
+        </div>
+    <?php }?>
+
 					<header class="element-header">
 						<h3 class="element-title">Create Operation Note</h3>
 					</header>
@@ -45,7 +64,7 @@
 
 						<div class="field-row">
 							<div class="field-info">
-								<?php if (count($bookings) > 0) {?>
+								<?php if (count($operations) > 0) {?>
 									Please indicate whether this operation note relates to a booking or an unbooked emergency:
 								<?php } else {?>
 									There are no open bookings in the current episode so only an emergency operation note can be created.
@@ -56,31 +75,30 @@
 						<fieldset class="row field-row">
 							<legend class="large-2 column">Select:</legend>
 							<div class="large-6 column end">
-								<?php foreach ($bookings as $booking) {?>
+								<?php foreach ($operations as $operation) {?>
 									<label class="highlight booking">
 										<span class="row">
 											<span class="large-1 column">
-												<input type="radio" value="booking<?php echo $theatre_diary_disabled ? $booking->event_id : $booking->operation->event_id; ?>" name="SelectBooking" />
+												<input type="radio" value="booking<?= $operation->event_id ?>" name="SelectBooking" />
 											</span>
 											<span class="large-1 column">
 												<img src="<?php echo Yii::app()->assetManager->createUrl('img/small.png', $assetAliasPath)?>" alt="op" style="height:15px" />
 											</span>
 											<span class="large-3 column <?php echo $theatre_diary_disabled ? 'hide' : ''?>">
-												<?php if(!$theatre_diary_disabled){ echo $booking->operation->booking->session->NHSDate('date'); } ?>
+												<?php if(!$theatre_diary_disabled){ echo $operation->booking->session->NHSDate('date'); } ?>
 											</span>
 
 											<span class="large-3 column">
 												Operation
 											</span>
-
-                                                      <span class="large-3 column">
-                                                      <?php echo $theatre_diary_disabled ? $booking->comments : $booking->operation->comments; ?>
+                                            <span class="large-3 column">
+                                              <?= $operation->comments; ?>
 											</span>
 											<span class="large-4 column">
 												<?php
 
-                                                    $procedures = $theatre_diary_disabled ? $booking->procedures : $booking->operation->procedures;
-                                                    $eye = $theatre_diary_disabled ? $booking->eye : $booking->operation->eye;
+                                                    $procedures = $operation->procedures;
+                                                    $eye = $operation->eye;
 
                                                     foreach ($procedures as $i => $procedure) {
                                                         if ($i > 0) { echo '<br/>'; }
@@ -94,7 +112,7 @@
 								<label class="highlight booking">
 									<span class="row">
 										<span class="large-1 column">
-											<input type="radio" value="emergency" name="SelectBooking" <?php if (count($bookings) == 0) {?>checked="checked" <?php }?>/>
+											<input type="radio" value="emergency" name="SelectBooking" <?php if (count($operations) == 0) {?>checked="checked" <?php }?>/>
 										</span>
 										<span class="large-11 column">
 											Emergency
