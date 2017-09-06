@@ -82,7 +82,7 @@ class DrugController extends BaseAdminController
         {
             $command = Yii::app()->db->createCommand("SELECT drug_id FROM drug_tag WHERE tag_id IN (SELECT id FROM tag WHERE name LIKE CONCAT('%', :tagname ,'%'))");
             $matching_ids = $command->queryColumn(array(':tagname' => $_GET['search']['tags.name']));
-            $criteria->addInCondition('id', $matching_ids, 'AND');
+            $criteria->addInCondition('t.id', $matching_ids, 'AND');
         }
         $criteria->with = array('tags');
 
