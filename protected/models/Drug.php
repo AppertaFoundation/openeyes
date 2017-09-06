@@ -195,4 +195,9 @@ class Drug extends BaseActiveRecordVersioned
     {
         return in_array(1, array_map(function($e){ return $e->id; }, $this->tags));
     }
+
+    public function __toString()
+    {
+        return $this->getLabel();
+    }
 }

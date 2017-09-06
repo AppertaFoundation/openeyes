@@ -191,13 +191,36 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
      */
     public function stopDateFromDuration()
     {
-        $endDate = null;
-        // !! TODO: what is the end date for different dispense conditions???
-        if (!in_array($this->duration->name, array('Other', 'Until review')) ) {
-            $startDate = new DateTime($this->prescription->event->event_date);
-            $endDate = $startDate->add(DateInterval::createFromDateString($this->duration->name));
+        if (in_array($this->duration->name, array('Other', 'Until review'))) {
+            return null;
         }
 
-        return $endDate;
+        $start_date = new DateTime($this->prescription->event->event_date);
+        $end_date = $start_date->add(DateInterval::createFromDateString($this->duration->name));
+        foreach ($this->tapers as $taper) {
+            if (in_array($taper->duration->name, array('Other', 'Until review'))) {
+                return null;
+            }
+            $end_date->add(DateInterval::createFromDateString($taper->duration->name));
+        }
+        return $end_date;
+    }
+
+    public function getAdministrationDisplay()
+    {
+        $dose = (string) $this->dose;
+        $freq = (string) $this->frequency;
+        if ($this->tapers) {
+            $last_taper = array_slice($this->tapers, -1)[0];
+            $last_dose = (string) $last_taper->dose;
+            if ($last_dose != $dose) {
+                $dose .= ' - ' . $last_dose;
+            }
+            $last_freq = (string) $last_taper->frequency;
+            if ($last_freq != $freq) {
+                $freq .= ' - ' . $last_freq;
+            }
+        }
+        return $dose . ($this->route_option ? ' ' . $this->route_option : '') . ' ' . $this->route . ' ' . $freq;
     }
 }
