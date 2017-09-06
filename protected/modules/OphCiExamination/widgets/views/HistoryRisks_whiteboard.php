@@ -2,27 +2,29 @@
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 if($exam_api){
   $alpha = $exam_api->mostRecentCheckedAlpha($this->patient->id);
-  switch ($alpha->has_risk){
-    case '0' :
-    $alpha_result =  'No (' . Helper::convertMySQL2NHS($alpha->element->event->event_date) . ')';
-    break;
-    case '1' :
-    $alpha_result =  'Yes - ' . $alpha->comments . ' (' . Helper::convertMySQL2NHS($alpha->element->event->event_date) . ')';
-    break;
-    default:
-    $alpha_result = "Not Checked";
+  $alpha_result = "Not Checked";
+  if ($alpha && isset($alpha->has_risk)){
+    switch ($alpha->has_risk){
+      case '0' :
+      $alpha_result =  'No (' . Helper::convertMySQL2NHS($alpha->element->event->event_date) . ')';
+      break;
+      case '1' :
+      $alpha_result =  'Yes - ' . $alpha->comments . ' (' . Helper::convertMySQL2NHS($alpha->element->event->event_date) . ')';
+      break;
+    }
   }
 
   $anti = $exam_api->mostRecentCheckedAnticoag($this->patient->id);
-  switch ($anti->has_risk){
-    case '0' :
-    $anti_result =  'No (' . Helper::convertMySQL2NHS($anti->element->event->event_date) . ')';
-    break;
-    case '1' :
-    $anti_result =  'Yes - ' . $anti->comments . ' (' . Helper::convertMySQL2NHS($anti->element->event->event_date) . ')';
-    break;
-    default:
-    $anti_result = "Not Checked";
+  $anti_result = "Not Checked";
+  if ($anti && isset($anti->has_risk)){
+    switch ($anti->has_risk){
+      case '0' :
+      $anti_result =  'No (' . Helper::convertMySQL2NHS($anti->element->event->event_date) . ')';
+      break;
+      case '1' :
+      $anti_result =  'Yes - ' . $anti->comments . ' (' . Helper::convertMySQL2NHS($anti->element->event->event_date) . ')';
+      break;
+    }
   }
 }
 ?>
