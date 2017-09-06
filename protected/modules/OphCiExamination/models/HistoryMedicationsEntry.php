@@ -306,6 +306,27 @@ class HistoryMedicationsEntry extends \BaseElement
     }
 
     /**
+     * Assumes that all route options indicate laterality.
+     *
+     * @return string
+     */
+    public function getLateralityDisplay()
+    {
+        if ($this->option) {
+            switch (strtolower($this->option)) {
+                case 'left':
+                    return 'L';
+                case 'right':
+                    return 'R';
+                case 'both':
+                    return 'B';
+                default:
+                    return '?';
+            }
+        }
+    }
+
+    /**
      * @return \DrugRouteOption[]
      */
     public function routeOptions()

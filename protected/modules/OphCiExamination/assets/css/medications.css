@@ -32,6 +32,37 @@ a.stop-medication {
   color: #cf0d27;
 }
 
+/* line 32, ../sass/components/elements/_history-medications.scss */
+.laterality {
+  background-color: transparent;
+  color: #fff;
+  font-size: 9px;
+  padding: 2px 3px 2px 3px;
+  margin-right: 22px;
+  -moz-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+}
+/* line 40, ../sass/components/elements/_history-medications.scss */
+.laterality.R {
+  background-color: #9fec6d;
+  color: #747782;
+  margin-left: 0px;
+  margin-right: 17px;
+}
+/* line 46, ../sass/components/elements/_history-medications.scss */
+.laterality.L {
+  background-color: #fe6767;
+  color: #747782;
+  margin-left: 15px;
+  margin-right: 2px;
+}
+/* line 52, ../sass/components/elements/_history-medications.scss */
+.laterality.B {
+  margin-right: 12px;
+  margin-left: 10px;
+  background-color: #747782;
+}
+
 /* line 1, ../sass/components/_comma-list.scss */
 ul.comma-list {
   display: inline;

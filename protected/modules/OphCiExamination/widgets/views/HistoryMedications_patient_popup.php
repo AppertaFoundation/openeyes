@@ -33,7 +33,7 @@
                 <?php foreach ($current as $entry) { ?>
                     <tr>
                         <td><?= $entry->getDatesDisplay() ?></td>
-                        <td><strong><?= $entry->getMedicationDisplay() ?></strong>
+                        <td><span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span><strong><?= $entry->getMedicationDisplay() ?></strong>
                             <?php if ($entry->prescription_item) { ?>
                                 <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="has-tooltip fa fa-eye" data-tooltip-content="View prescription"></span></a>
                             <?php } ?>
@@ -51,7 +51,7 @@
                     <?php foreach ($stopped as $entry) { ?>
                         <tr>
                             <td><?= $entry->getDatesDisplay() ?></td>
-                            <td><strong><?= $entry->getMedicationDisplay() ?></strong>
+                            <td><span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span><strong><?= $entry->getMedicationDisplay() ?></strong>
                                 <?php if ($entry->prescription_item) { ?>
                                     <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="has-tooltip fa fa-eye" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
