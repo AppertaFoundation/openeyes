@@ -119,7 +119,27 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 		<?php
 		}?>
 <div class="spacer"></div>
+<b>
+	Other medications patient is taking
+</b>
+<table class="borders prescription_items">
+	<thead>
+	<tr>
 
+	</tr>
+	</thead>
+	<tbody>
+    <tr>
+    <td>
+	<?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
+		'patient' => $this->patient,
+		'mode' => OEModule\OphCiExamination\widgets\HistoryMedications::$PRESCRIPTION_PRINT_VIEW
+	)); ?>
+    </td>
+    </tr>
+    </tbody>
+</table>
+<div class="spacer"></div>
 <p>Trust policy limits supply to a maximum of 4 weeks</p>
 
 <h2>Allergies</h2>
