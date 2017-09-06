@@ -1532,7 +1532,7 @@ EOL;
                 LEFT JOIN ophinbiometry_imported_events ON c.oe_event_id  = ophinbiometry_imported_events.event_id
                 LEFT JOIN et_ophinbiometry_selection ON c.oe_event_id  = et_ophinbiometry_selection.event_id
                         /* Restrict: LEFT/BOTH eyes */
-                        AND et_ophinbiometry_selection.eye_id = 1 OR et_ophinbiometry_selection.eye_id = 3
+                        AND (et_ophinbiometry_selection.eye_id = 1 OR et_ophinbiometry_selection.eye_id = 3)
 
                 LEFT JOIN ophinbiometry_calculation_formula 
                         ON et_ophinbiometry_selection.formula_id_left = ophinbiometry_calculation_formula.id
@@ -1580,7 +1580,7 @@ EOL;
                 LEFT JOIN ophinbiometry_imported_events ON c.oe_event_id = ophinbiometry_imported_events.event_id
                 LEFT JOIN et_ophinbiometry_selection ON c.oe_event_id  = et_ophinbiometry_selection.event_id 
                         /* Restrict: RIGHT/BOTH eyes */
-                        AND et_ophinbiometry_selection.eye_id = 2 OR et_ophinbiometry_selection.eye_id = 3
+                        AND (et_ophinbiometry_selection.eye_id = 2 OR et_ophinbiometry_selection.eye_id = 3)
 
                 LEFT JOIN ophinbiometry_calculation_formula
                         ON et_ophinbiometry_selection.formula_id_left = ophinbiometry_calculation_formula.id
@@ -2439,7 +2439,7 @@ EOL;
                   )
                 ) AS PupilSizeId
                 , ocpt.nodcode AS IOLPositionId
-                , oclt.name AS IOLModelId
+                , olt.display_name AS IOLModelId
                 , oc.iol_power AS IOLPower
                 , oc.predicted_refraction AS PredictedPostOperativeRefraction
                 , '' AS WoundClosureId
@@ -2458,8 +2458,8 @@ EOL;
             LEFT OUTER JOIN tmp_iol_positions ocpt
               ON ocpt.term = ocp.name
             /* Join: Look up LENS TYPE (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
-            LEFT OUTER JOIN ophtroperationnote_cataract_iol_type oclt
-              ON oclt.id = oc.iol_type_id
+            LEFT OUTER JOIN ophinbiometry_lenstype_lens olt
+              ON olt.id = oc.iol_type_id
 
             /* Join: Look up original operation note event (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
             LEFT OUTER JOIN event eon
