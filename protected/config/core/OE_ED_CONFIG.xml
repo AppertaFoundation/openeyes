@@ -1713,6 +1713,10 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
 					</INDEX_LIST>
 				</INDEX>
 				<INDEX>
+					<PRIMARY_TERM>Examination Medications</PRIMARY_TERM>
+					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryMedications</OPEN_ELEMENT_CLASS_NAME>
+				</INDEX>
+				<INDEX>
 					<PRIMARY_TERM>Examination Systemic Diagnoses</PRIMARY_TERM>
 					<OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SystemicDiagnoses</OPEN_ELEMENT_CLASS_NAME>
 					<INDEX_LIST>
