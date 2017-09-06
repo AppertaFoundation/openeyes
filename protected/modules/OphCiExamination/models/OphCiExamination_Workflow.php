@@ -24,7 +24,8 @@ namespace OEModule\OphCiExamination\models;
  *
  * @property int $id
  * @property string $name
- * @property OphCiExamination_Workflow_Step[] $steps
+ * @property OphCiExamination_ElementSet[] $steps
+ * @property OphCiExamination_ElementSet $first_step
  */
 class OphCiExamination_Workflow extends \BaseActiveRecordVersioned
 {
@@ -92,9 +93,13 @@ class OphCiExamination_Workflow extends \BaseActiveRecordVersioned
      * First step (set) in this workflow.
      *
      * @return OphCiExamination_ElementSet
+     * @throws \SystemException
      */
     public function getFirstStep()
     {
+        if (!$this->first_step) {
+            throw new \SystemException("Incomplete workflow '$this->name' has no steps configured");
+        }
         return $this->first_step;
     }
 

@@ -77,6 +77,10 @@
         </div>
 
         <div>
+            <?php echo $form->textField($model, 'patient_maidenname', ['placeholder' => 'Maiden name']); ?>
+        </div>
+
+        <div>
             <?php // echo $form->label($model, 'comments'); ?>
             <?php echo $form->textField($model, 'comments', ['placeholder' => 'Comments']); ?>
         </div>
@@ -107,11 +111,11 @@
                     'value' => $value,
                     'clear_diagnosis' => '&nbsp;<i class="fa fa-minus-circle" aria-hidden="true" id="clear-diagnosis-widget"></i>',
                     'placeholder' => 'Search for a diagnosis',
+                    'callback' => null
                 ));
             ?>
         </div>
-
-        <div></div>
+        
         <div></div>
 
 

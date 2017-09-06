@@ -101,5 +101,5 @@
 <?php if (!$model->isNewRecord): ?>
 
 <?php echo $this->getEpisodesHTML($model->{"{$type}Patient"});?>
-
+<?php echo $this->getGeneticsHTML($model->{"{$type}Patient"}); ?>
 <?php endif; ?>

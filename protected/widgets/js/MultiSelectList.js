@@ -18,23 +18,37 @@
 
 $(document).ready(function () {
 
+    // make Selects disabled if None is selected
+    var $multi_selects = $('.multi-select-list');
+    $.each($multi_selects, function(index, multi_select){
+
+        var $multi_select = $(multi_select);
+        var $selection = $multi_select.find('.multi-select-selections');
+
+        var lis = $($selection).find('li');
+
+        if( lis.length === 1 && $( lis[0]).find('a').data('text') === 'None'){
+            $multi_select.find('select').prop('disabled', true).css({'background-color':'lightgrey'});
+        }
+    });
+
   $(this).on('init', '.multi-select', function () {
     $('.multi-select-selections.sortable').sortable();
   });
 
-  $('.multi-select-selections.sortable').sortable();
+    $('.multi-select-selections.sortable').sortable();
 
-  // Prevent the events from being bound multiple times.
-  if ($(this).data('multi-select-events')) {
-    return;
-  }
-  $(this).data('multi-select-events', true);
+    // Prevent the events from being bound multiple times.
+    if ($(this).data('multi-select-events')) {
+        return;
+    }
+    $(this).data('multi-select-events', true);
 
-  $(this).on('click', '.multi-select .remove-all', function (e) {
-    e.preventDefault();
-    var container = $(this).closest('.multi-select');
-    container.find('.remove-one').trigger('click');
-  });
+    $(this).on('click', '.multi-select .remove-all', function (e) {
+        e.preventDefault();
+        var container = $(this).closest('.multi-select');
+        container.find('.remove-one').trigger('click');
+    });
 
   $(this).on('change', 'select.MultiSelectList', function () {
 
@@ -121,6 +135,25 @@ $(document).ready(function () {
       }
     }
 
+      //if 'None' selected we do no allow more options
+    var selected_text = selected.text().trim();
+
+    if(selected_text === 'None'){
+        $(this).prop('disabled', true);
+
+          // to ensure visual feedback
+          $(this).css({'background-color':'lightgrey'});
+
+          //remove other options
+          $.each(selections.find('li'), function( index, $item ) {
+            var $anchor = $($item).find('a.MultiSelectRemove');
+
+            if($anchor.data('text').trim() !== 'None'){
+                $anchor.trigger('click');
+            }
+          });
+    }
+
     select.trigger('MultiSelectChanged');
     return false;
   });
@@ -151,8 +184,12 @@ $(document).ready(function () {
       }
     }
 
-    if (!$('select.MultiSelectList').data('searchable')) {
+    if (!select.data('searchable')) {
       select.append('<option' + attr_str + '>' + text + '</option>');
+      if(text.trim() === 'None'){
+          select.css({'background-color':'white'}).prop('disabled', false);
+      }
+
       sort_selectbox(select);
     }
 

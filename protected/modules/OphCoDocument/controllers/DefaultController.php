@@ -17,6 +17,11 @@
 class DefaultController extends BaseEventTypeController
 {
 
+    protected $show_element_sidebar = false;
+
+    /**
+     * @var OphCoDocument_Sub_Types
+     */
     protected $sub_type;
 
     protected static $action_types = array(

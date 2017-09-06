@@ -367,4 +367,16 @@ class Element_OphCiExamination_LaserManagement extends \SplitEventTypeElement
     {
         return true;
     }
+
+    public function __toString()
+    {
+        $result = array();
+        if ($this->hasRight()) {
+            $result[] = 'R: ' . $this->right_laser_status;
+        }
+        if ($this->hasRight()) {
+            $result[] = 'L: ' . $this->left_laser_status;
+        }
+        return implode(', ', $result);
+    }
 }
