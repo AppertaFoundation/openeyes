@@ -234,7 +234,7 @@
     event.stopPropagation();
   });
   if ($('.event-actions li:contains(Create)').length > 0) {
-    $('#search_options_container').css('width','290px');
+    $('#search_options_container').css('width','260px');
   }
   let set_result_box_left = function() {
     let sidebar_left = $('.column.sidebar.episodes-and-events').offset().left;
@@ -380,6 +380,7 @@ function show_results(){
       if (parameters['goto_subcontainer']) {
         container = container.find('.'+parameters['goto_subcontainer'].replace('%position',last_search_pos));
       }
+      console.log(container);
       container.find(`${parameters['goto_tag']}:contains(${parameters['goto_text']})`).effect("highlight", {}, 6000); //if want whole row highlight hightlight parent if not div or fieldset
       reject();
     });
@@ -682,10 +683,10 @@ function show_results(){
     }
   }
 
-  shortcut.add("Ctrl+Shift+R",function() {
+  shortcut.add("Ctrl+Alt+R",function() {
     $("#search_bar_right").trigger("focus");
   });
-  shortcut.add("Ctrl+Shift+L",function() {
+  shortcut.add("Ctrl+Alt+L",function() {
     $("#search_bar_left").trigger("focus");
   });
   shortcut.add("Esc",function() {

@@ -1784,7 +1784,7 @@ input:checked + .slider:before {
 }
 #search_options_container {
   display: inline-block;
-  width: 250px;
+  width: 220px;
   vertical-align: top;
   text-align: center;
   top: -5px;
