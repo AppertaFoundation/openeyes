@@ -309,7 +309,7 @@ class ExaminationCreator
                     'patient' => $episode->patient,
                 ));
                 $message = $messageCreator->save('', array('event' => $examinationEvent->id));
-                $emailSetting = Yii::app()->params['optom_comment_alert'];
+                $emailSetting = \Yii::app()->params['optom_comment_alert'];
 
                 if($emailSetting){
                     $recipients = explode(',', $emailSetting);
