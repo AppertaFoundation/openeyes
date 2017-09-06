@@ -32,17 +32,6 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {?>
 	<section class="element">
 	<?php }?>
 	<div id="div_Element_OphDrPrescription_Details_prescription_items" class="element-fields">
-		<div class="row field-row">
-            <div class="large-2 column">
-                <label>Current Medications</label>
-            </div>
-            <div class="large-10 column end data-value">
-                <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
-                    'patient' => $this->patient,
-                    'mode' => OEModule\OphCiExamination\widgets\HistoryMedications::$INLINE_EVENT_VIEW
-                )); ?>
-            </div>
-        </div>
         <div class="row field-row">
 			<div class="large-6 column">
 				<fieldset class="row field-row">
