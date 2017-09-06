@@ -27,7 +27,7 @@
             Medications
         </div>
         <div class="large-10 column data">
-            <i>Current:</i> <?php if ($current && $stopped) {?><a href="#" class="kind-toggle show" data-kind="stopped"><i class="fa fa-icon fa-history" aria-hidden="true"></i></a><?php } ?>
+            <i>Current:</i> <?php if ($stopped) {?><a href="#" class="kind-toggle show" data-kind="stopped"><i class="fa fa-icon fa-history" aria-hidden="true"></i></a><?php } ?>
             <?php if ($current) {?>
                 <table class="plain valign-top">
                 <?php foreach ($current as $entry) { ?>
@@ -45,8 +45,8 @@
                 No current medications.
             <?php } ?>
             <?php if ($stopped) { ?>
-                <div class="row stopped-kind" <?php if ($current) { ?>style="display: none;"<?php } ?>>
-                    <i>Stopped:</i> <?php if ($current) { ?><a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a><?php } ?>
+                <div class="row stopped-kind" style="display: none;">
+                    <i>Stopped:</i> <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a>
                     <table class="plain valign-top">
                     <?php foreach ($stopped as $entry) { ?>
                         <tr>
