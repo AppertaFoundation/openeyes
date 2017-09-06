@@ -24,6 +24,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.$element = this.options.element;
     this.$table = this.$element.find('table');
     this.templateText = this.$element.find('.entry-template').text();
+    this.drugsByRisk = {};
     this.initialiseFilters();
     this.initialiseTriggers();
   }
@@ -218,6 +219,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       $container.find(this.options.medicationDisplaySelector).show();
       $container.find(this.options.medicationSearchSelector).hide();
       $container.find(this.options.drugSelectSelector).hide();
+
+      this.processRisks(item);
   };
 
   HistoryMedicationsController.prototype.loadDrugDefaults = function($row, item)
@@ -232,6 +235,36 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
               }
           }
       });
+  };
+
+  HistoryMedicationsController.prototype.processRisks = function(item)
+  {
+      if (!item.hasOwnProperty('tags')) {
+          return;
+      }
+      var self = this;
+      $.getJSON('/OphCiExamination/Risks/forTags', { tag_ids: item.tags.join(",") }, function (res) {
+          self.addDrugForRisks(item.name, res);
+      });
+  };
+
+  HistoryMedicationsController.prototype.addDrugForRisks = function(drugName, risks)
+  {
+      for (var i in risks) {
+          var risk = risks[i];
+          if (!this.drugsByRisk.hasOwnProperty(risk)) {
+              this.drugsByRisk[risk] = [drugName];
+          } else {
+              if ($.inArray(drugName, this.drugsByRisk[risk]) === -1) {
+                  this.drugsByRisk[risk].push(drugName);
+              }
+          }
+      }
+      var genericStructure = [];
+      for (var id in this.drugsByRisk) {
+          genericStructure.push([id, this.drugsByRisk[id]]);
+      }
+      exports.HistoryRisks.setForSource(genericStructure, this.$element);
   };
 
   HistoryMedicationsController.prototype.resetSearchRow = function($container, showSearch)
@@ -254,7 +287,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.showDate = function($row, $type)
   {
     var $wrapper = $row.find('.' + $type + '-date-wrapper');
-    console.log($wrapper);
     $wrapper.show();
     var $fuzzyFieldset = $wrapper.parents('fieldset');
     var date = this.dateFromFuzzyFieldSet($fuzzyFieldset);
@@ -266,7 +298,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.cancelDate = function($row, $type)
   {
     var $wrapper = $row.find('.' + $type + '-date-wrapper');
-    console.log($wrapper);
     $wrapper.hide();
     var $fuzzyFieldset = $wrapper.parents('fieldset');
     $fuzzyFieldset.find('input[type="hidden"]').val('');
