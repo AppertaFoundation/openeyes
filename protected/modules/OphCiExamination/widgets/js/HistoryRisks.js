@@ -74,7 +74,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.sync();
     };
 
-    exports.HistoryRisks = new HistoryRisksCore();
+    if (exports.HistoryRisks === undefined) {
+        exports.HistoryRisks = new HistoryRisksCore();
+    }
 
     function HistoryRisksController(options) {
         this.options = $.extend(true, {}, HistoryRisksController._defaultOptions, options);
