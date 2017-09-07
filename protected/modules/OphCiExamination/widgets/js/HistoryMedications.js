@@ -165,7 +165,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             },
             focus: function (event, ui) {
                 event.preventDefault();
-                $el.val(controller.getItemDisplayValue(ui.item));
+                if (event.hasOwnProperty('key')) {
+                    $el.val(controller.getItemDisplayValue(ui.item));
+                }
+                // otherwise do nothing as this is a mouse hover focus;
+                return false;
             },
             select: function (event, ui) {
                 controller.searchSelect($el, event, ui);
