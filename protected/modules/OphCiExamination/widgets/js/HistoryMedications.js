@@ -130,8 +130,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           }
       }
 
-      self.mapDrugsToExternalRisks('/OphCiExamination/Risks/forDrugIds', drugs, handleComplete());
-      self.mapDrugsToExternalRisks('/OphCiExamination/Risks/forMedicationDrugIds', med_drugs, handleComplete());
+      self.mapDrugsToExternalRisks('/OphCiExamination/Risks/forDrugIds', drugs, handleComplete);
+      self.mapDrugsToExternalRisks('/OphCiExamination/Risks/forMedicationDrugIds', med_drugs, handleComplete);
   };
 
   /**
@@ -139,13 +139,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
    * and then store to the internal register drug name to risks
    * @param url
    * @param idsToNames
+   * @param callback
    */
-  HistoryMedicationsController.prototype.mapDrugsToExternalRisks = function(url, idsToNames, callback())
+  HistoryMedicationsController.prototype.mapDrugsToExternalRisks = function(url, idsToNames, callback)
   {
       var self = this;
       $.getJSON(url, {'ids': Object.keys(idsToNames).join(',') }, function(data) {
-          for (var drugId in Object.keys(data)) {
-              self.addDrugForRisks(idsToNames[drugId], data[drugId]);
+          for (var drugId in data) {
+              if (data.hasOwnProperty(drugId)) {
+                  self.addDrugForRisks(idsToNames[drugId], data[drugId]);
+              }
           }
           callback();
       });
@@ -334,11 +337,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.updateCoreRisks = function()
   {
       var genericStructure = [];
-      for (var id in Object.keys(this.drugsByRisk)) {
-          genericStructure.push([id, this.drugsByRisk[id]]);
+      for (var id in this.drugsByRisk) {
+          if (this.drugsByRisk.hasOwnProperty(id)) {
+              genericStructure.push([id, this.drugsByRisk[id]]);
+          }
       }
+
       exports.HistoryRisks.setForSource(genericStructure, this.$element);
-  }
+  };
+
   HistoryMedicationsController.prototype.resetSearchRow = function($container, showSearch)
   {
       if (showSearch === undefined)
