@@ -59,7 +59,7 @@
                         popupOverflowAlert.hide();
                     }
                 }
-                
+
                 // Re-define the transitions on the popup to be none.
                 popup.addClass('clear-transition');
                 // Trigger a re-flow to reset the starting position of the transitions, now
