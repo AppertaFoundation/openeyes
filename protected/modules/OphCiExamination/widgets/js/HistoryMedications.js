@@ -27,7 +27,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.drugsByRisk = {};
     this.initialiseFilters();
     this.initialiseTriggers();
-    this.initialiseRisks();
   }
 
   HistoryMedicationsController._defaultOptions = {
@@ -97,61 +96,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         e.preventDefault();
         controller.hideStopped();
     });
-  };
-
-  /**
-   * Parses the current medications and ensures the internal and core stores
-   * of risks for drugs is up to date with the current state.
-   */
-  HistoryMedicationsController.prototype.initialiseRisks = function()
-  {
-      var self = this;
-      var drugs = {};
-      var med_drugs = {};
-
-      // Drugs could be 'drugs' or 'medication drugs' so parse table rows accordingly
-      self.$table.find('tbody tr').each(function() {
-          var name = $(this).find(self.options.medicationNameSelector).text();
-          var id = $(this).find(self.options.drugFieldSelector).val();
-          if (id) {
-              drugs[id] = name;
-          } else {
-              id = $(this).find(self.options.medicationFieldSelector).val();
-              if (id) {
-                  med_drugs[id] = name;
-              }
-          }
-      });
-
-      var complete = 0;
-      function handleComplete() {
-          if (++complete === 2) {
-              self.updateCoreRisks();
-          }
-      }
-
-      self.mapDrugsToExternalRisks('/OphCiExamination/Risks/forDrugIds', drugs, handleComplete);
-      self.mapDrugsToExternalRisks('/OphCiExamination/Risks/forMedicationDrugIds', med_drugs, handleComplete);
-  };
-
-  /**
-   * Simple abstraction to take ids for tagged models, and retrieve the related risks
-   * and then store to the internal register drug name to risks
-   * @param url
-   * @param idsToNames
-   * @param callback
-   */
-  HistoryMedicationsController.prototype.mapDrugsToExternalRisks = function(url, idsToNames, callback)
-  {
-      var self = this;
-      $.getJSON(url, {'ids': Object.keys(idsToNames).join(',') }, function(data) {
-          for (var drugId in data) {
-              if (data.hasOwnProperty(drugId)) {
-                  self.addDrugForRisks(idsToNames[drugId], data[drugId]);
-              }
-          }
-          callback();
-      });
   };
 
   HistoryMedicationsController.prototype.initialiseRow = function($row)
@@ -307,43 +251,24 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       var self = this;
       $.getJSON('/OphCiExamination/Risks/forTags', { tag_ids: item.tags.join(",") }, function (res) {
           self.addDrugForRisks(item.name, res);
-          self.updateCoreRisks();
       });
   };
 
   /**
-   * Add this drug name to the internal register of risks.
+   * send this drug name and associated risks to the core manager for inclusion in history risks
    *
    * @param drugName
    * @param risks
    */
   HistoryMedicationsController.prototype.addDrugForRisks = function(drugName, risks)
   {
+      risksMap = [];
       for (var i in risks) {
-          var risk = risks[i];
-          if (!this.drugsByRisk.hasOwnProperty(risk)) {
-              this.drugsByRisk[risk] = [drugName];
-          } else {
-              if ($.inArray(drugName, this.drugsByRisk[risk]) === -1) {
-                  this.drugsByRisk[risk].push(drugName);
-              }
+          if (risks.hasOwnProperty(i)) {
+              risksMap.push({id: risks[i], comments: [drugName]})
           }
       }
-  };
-
-  /**
-   * Update the core record of risks from history medication with the current stored set
-   */
-  HistoryMedicationsController.prototype.updateCoreRisks = function()
-  {
-      var genericStructure = [];
-      for (var id in this.drugsByRisk) {
-          if (this.drugsByRisk.hasOwnProperty(id)) {
-              genericStructure.push([id, this.drugsByRisk[id]]);
-          }
-      }
-
-      exports.HistoryRisks.setForSource(genericStructure, this.$element);
+      exports.HistoryRisks.addRisksForSource(risksMap, 'Medications');
   };
 
   HistoryMedicationsController.prototype.resetSearchRow = function($container, showSearch)

@@ -21,57 +21,41 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 (function(exports) {
     function HistoryRisksCore()
     {
-        this.risksBySource = {};
-        this.registeredControllers = [];
-        this.sourceIndex = 0;
+        this.elementTypeClass = OE_MODEL_PREFIX + 'HistoryRisks';
+        this.controllerElSelector = '#' + OE_MODEL_PREFIX + 'HistoryRisks_element';
     }
 
-    HistoryRisksCore.prototype.registerForSync = function(controller)
-    {
-        this.registeredControllers.push(controller);
-        this.sync();
-    };
-
     /**
-     * Look for elements that should be notified of diagnoses, and provide the latest set of diagnoses to them.
-     */
-    HistoryRisksCore.prototype.sync = function()
-    {
-        for (var idx in this.registeredControllers) {
-            var controller = this.registeredControllers[idx];
-            controller.setExternalRisks(this.risksBySource);
-        }
-    };
-
-    /**
-     * Track element sources with a unique id
+     * Singleton function for any element to call when wanting to add a Risk
      *
-     * @param element
-     * @returns {*|jQuery}
+     * @param risks [{id: riskId, comments: [comment, ...]}, ...]
+     * @param sourceElementName
      */
-    HistoryRisksCore.prototype.getSourceId = function(element)
+    HistoryRisksCore.prototype.addRisksForSource = function(risks, sourceElementName)
     {
-        var id = $(element).data('historyrisks-core-id');
-        if (id === undefined) {
-            id = this.sourceIndex++;
-            $(element).data('historyrisks-core-id', id);
-        }
-        return id;
+        this.callFunctionOnController('addRisks', [risks, sourceElementName]);
     };
 
     /**
-     * Singleton function for any element to call when wanting to update diagnoses that have been
-     * found from user interaction.
+     * Abstraction for calling function on the active history risks controller
      *
-     * @param diagnoses
-     * @param sourceElement
+     * @param funcName
+     * @param args
      */
-    HistoryRisksCore.prototype.setForSource = function(risks, sourceElement)
+    HistoryRisksCore.prototype.callFunctionOnController = function(funcName, args)
     {
-        var source = this.getSourceId(sourceElement);
-        this.risksBySource[source] = risks;
-        // run a sync
-        this.sync();
+        var core = this;
+        function controllerFunction() {
+            var controller = $(core.controllerElSelector).data('controller');
+            controller[funcName].apply(controller, args);
+        }
+
+        if (!$.find(core.controllerElSelector).length) {
+            var sidebar = $('aside.episodes-and-events').data('patient-sidebar');
+            sidebar.addElementByTypeClass(core.elementTypeClass, undefined, controllerFunction);
+        } else {
+            controllerFunction();
+        }
     };
 
     if (exports.HistoryRisks === undefined) {
@@ -81,6 +65,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     function HistoryRisksController(options) {
         this.options = $.extend(true, {}, HistoryRisksController._defaultOptions, options);
         this.$element = this.options.element;
+        this.$element.data('controller', this);
         // this.riskSelector = '.' + this.options.modelName + '_risk_id';
         this.riskSelector = '[name$="[risk_id]"]';
         this.hasRiskSelector = '[name$="[has_risk]"]';
@@ -94,9 +79,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$table = this.$element.find(this.tableSelector);
         this.templateText = this.$element.find('.' + this.options.modelName + '_entry_template').text();
         this.initialiseTriggers();
-
-        this.externalRisks = {};
-        exports.HistoryRisks.registerForSync(this);
     }
 
     HistoryRisksController._defaultOptions = {
@@ -172,7 +154,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     /**
-     * Add a family history section if its valid.
+     * Add a history risks row
      */
     HistoryRisksController.prototype.addEntry = function()
     {
@@ -182,56 +164,19 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     /**
-     * Syncing functions below this point - possibly ripe for refactoring if another element
-     * needs similar functionality (see Diagnosis for original example)
+     * Update the risks table with the given list of risks with comments
      */
-
-    /**
-     * risksBySource is expected to be of the format:
-     * {source_id: [[risk_id, [comment, comment ...] ...], ... }
-     *
-     * @param risksBySource
-     */
-    HistoryRisksController.prototype.setExternalRisks = function(risksBySource) {
-        // reformat to controller structure:
-        // { risk_id: [comment, ...], ... }
-        var newExternalRisks = {};
-        for (var source in risksBySource) {
-            if (risksBySource.hasOwnProperty(source)) {
-                for (var i = 0; i < risksBySource[source].length; i++) {
-                    var risk_id = risksBySource[source][i][0];
-                    if (risksBySource[source][i][0] in newExternalRisks) {
-                        // already exists, so append comments not yet stored for this risk
-                        for (var j in risksBySource[source][i][1]) {
-                            var comment = risksBySource[source][i][1][j];
-                            if (!comment in newExternalRisks[risk_id].comments) {
-                                newExternalRisks[risk_id].comments.push(comment);
-                            }
-                        }
-                    } else {
-                        // simply clone the comments list for the risk
-                        newExternalRisks[risk_id] = {comments: risksBySource[source][i][1]}
-                    }
-                }
-            }
-        }
-
-        this.externalRisks = newExternalRisks;
-
-        this.renderExternalRisks();
-    };
-
-    /**
-     * Update the risks table with all the external risks that have been set on the controller
-     */
-    HistoryRisksController.prototype.renderExternalRisks = function()
+    HistoryRisksController.prototype.addRisks = function(risks, sourceName)
     {
-        // iterate through external risks
-        for (var risk_id in this.externalRisks) {
-            // add to table if not present
-            var rowEntry = this.getTableRowForRisk(risk_id);
-            // ensure the comments include the relevant items of text
-            this.setHasRiskAndComments(rowEntry, this.externalRisks[risk_id].comments);
+        for (var idx in risks) {
+            if (risks.hasOwnProperty(idx)) {
+                risk_id = risks[idx].id;
+                // add to table if not present
+                var rowEntry = this.getTableRowForRisk(risk_id);
+                // set the risk and comment
+                this.setHasRiskAndComments(rowEntry, risks[idx].comments);
+            }
+
         }
     };
 
