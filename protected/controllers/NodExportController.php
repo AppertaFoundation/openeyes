@@ -1596,7 +1596,7 @@ EOL;
                 LEFT JOIN ophinbiometry_imported_events ON c.oe_event_id  = ophinbiometry_imported_events.event_id
                 LEFT JOIN et_ophinbiometry_selection ON c.oe_event_id  = et_ophinbiometry_selection.event_id
                         /* Restrict: LEFT/BOTH eyes */
-                        AND et_ophinbiometry_selection.eye_id = 1 OR et_ophinbiometry_selection.eye_id = 3
+                        AND (et_ophinbiometry_selection.eye_id = 1 OR et_ophinbiometry_selection.eye_id = 3)
 
                 LEFT JOIN ophinbiometry_calculation_formula 
                         ON et_ophinbiometry_selection.formula_id_left = ophinbiometry_calculation_formula.id
@@ -1644,7 +1644,7 @@ EOL;
                 LEFT JOIN ophinbiometry_imported_events ON c.oe_event_id = ophinbiometry_imported_events.event_id
                 LEFT JOIN et_ophinbiometry_selection ON c.oe_event_id  = et_ophinbiometry_selection.event_id 
                         /* Restrict: RIGHT/BOTH eyes */
-                        AND et_ophinbiometry_selection.eye_id = 2 OR et_ophinbiometry_selection.eye_id = 3
+                        AND (et_ophinbiometry_selection.eye_id = 2 OR et_ophinbiometry_selection.eye_id = 3)
 
                 LEFT JOIN ophinbiometry_calculation_formula
                         ON et_ophinbiometry_selection.formula_id_left = ophinbiometry_calculation_formula.id
