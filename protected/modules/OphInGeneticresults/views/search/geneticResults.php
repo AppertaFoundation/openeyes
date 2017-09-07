@@ -174,6 +174,7 @@
             <th><?php echo CHtml::link('Hospital no', $this->getUri(array('sortby' => 'hos_num'))) ?></th>
             <th><?php echo CHtml::link('Family Id', $this->getUri(array('sortby' => 'genetics-pedigree-id'))) ?></th>
             <th><?php echo CHtml::link('Patient name', $this->getUri(array('sortby' => 'patient_name'))) ?></th>
+            <th>Maiden Name</th>
             <th style="width:93px"><?php echo CHtml::link('Gene', $this->getUri(array('sortby' => 'gene'))) ?></th>
 <!--            <th>--><?php //echo CHtml::link('Method', $this->getUri(array('sortby' => 'method'))) ?><!--</th>-->
             <th><?php echo CHtml::link('Hom', $this->getUri(array('sortby' => 'homo'))) ?></th>
@@ -198,6 +199,7 @@
                     <?php endforeach; ?>
                 </td>
                   <td><?php echo strtoupper($test->event->episode->patient->last_name) ?>, <?php echo $test->event->episode->patient->first_name ?></td>
+                  <td><?php echo $test->event->episode->patient->maiden_name ?></td>
                   <td><?php echo str_replace(',',', ', $test->gene->name) ?></td>
 <!--                  <td>--><?php //echo $test->method->name ?><!--</td>-->
                   <td><?php echo $test->homo ? 'Yes' : 'No' ?></td>
