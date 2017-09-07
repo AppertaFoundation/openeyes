@@ -353,13 +353,31 @@ EOSQL;
     }
 
     private function getMainDivDivAttr($index){
-      return "class=\"{$this->getMainDivDivClass($index)}\" {$this->getMainDivDivData($index)}";
+      return "{$this->getMainDivDivImage($index)} {$this->getMainDivDivClass($index)} {$this->getMainDivDivData($index)}";
+    }
+
+    private function getMainDivDivImage($index){
+      $result = "";
+      if ($index->IMG_URL){
+        $path = $index->IMG_URL;
+        $image_URL = '<?php
+        if (file_exists(\''.$path.'\')){
+          echo Yii::app()->getAssetManager()->publish(\''.$path.'\');
+        } else {
+          echo "";
+        }
+        ?>';
+        $result = "style=\"background-image: url({$image_URL});\"";
+      }
+      return $result;
     }
 
     private function getMainDivDivClass($index){
-      //Change IMG_URL to IMG_CLASS_NAME
-      //IMG_URL is currently not being used and instead is used as a flag for whether img exists
-      return ($index->IMG_URL ? ("result_item result_item_with_icon is_{$index->GOTO_DOODLE_CLASS_NAME}") : ("result_item"));
+      if ($index->IMG_URL){
+        return "class=\"result_item result_item_with_icon\"";
+      } else {
+        return "class=\"result_item\"";
+      }
     }
 
     private function getMainDivSpanAttr($index,$lvl) {
