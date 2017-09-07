@@ -392,6 +392,8 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 }
 .open-eyes .panel.patient-popup .summary-data table.summary-data-table {
   width: 100%;
+  margin-left: 2px;
+  margin-right: 2px;
 }
 .open-eyes .panel.patient-popup .summary-data table.summary-data-table tr td {
   color: #0e386f;

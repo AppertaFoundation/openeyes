@@ -51,12 +51,15 @@
                 clearTimeout(hideTimer);
                 popup.show();
 
-                if (popupOverflow.height() > 415) {
-                    popupOverflow.addClass('limit');
-                    popupOverflowAlert.show();
-                } else {
-                    popupOverflowAlert.hide();
+                if (!popupOverflow.hasClass('limit')) {
+                    if (popupOverflow.height() > 415) {
+                        popupOverflow.addClass('limit');
+                        popupOverflowAlert.show();
+                    } else {
+                        popupOverflowAlert.hide();
+                    }
                 }
+                
                 // Re-define the transitions on the popup to be none.
                 popup.addClass('clear-transition');
                 // Trigger a re-flow to reset the starting position of the transitions, now
@@ -93,20 +96,20 @@
                     button
                         .removeClass(showIcon + ' ' + hideIcon)
                         .addClass(stuck ? hideIcon : showIcon);
-                    if (popupOverflow.hasClass('limit')) {
-                        if (stuck) {
-                            popupOverflow.addClass('scroll');
-                            popupOverflowAlert.hide();
-                        } else {
-                            popupOverflow.removeClass('scroll');
-                            popupOverflowAlert.show();
-                        }
-                    }
                 }
 
             },
             click: function() {
                 stuck = !stuck;
+                if (popupOverflow.hasClass('limit')) {
+                    if (stuck) {
+                        popupOverflow.addClass('scroll');
+                        popupOverflowAlert.hide();
+                    } else {
+                        popupOverflow.removeClass('scroll');
+                        popupOverflowAlert.show();
+                    }
+                }
                 update();
             }
         });
