@@ -32,6 +32,7 @@ class DefaultController extends BaseEventTypeController
         'markPrinted' => self::ACTION_TYPE_PRINT,
         'doPrintAndView' => self::ACTION_TYPE_PRINT,
         'printCopy'    => self::ACTION_TYPE_PRINT,
+        'getInitMethodDataById' => self::ACTION_TYPE_FORM,
     );
 
     protected $show_element_sidebar = false;
@@ -704,6 +705,40 @@ class DefaultController extends BaseEventTypeController
         echo CJSON::encode($attributes);
 
         Yii::app()->end();
+    }
+
+    public function actionGetInitMethodDataById()
+    {
+        if (Yii::app()->request->isAjaxRequest ) {
+            if (!isset($_POST['id'])) {
+                throw new CHttpException(400, 'No ID provided');
+            }
+
+            if (!$event = Event::model()->findByPk($_POST['id'])) {
+                throw new Exception("Method not found: ".$_POST['id']);
+            }
+
+            if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+                throw new Exception('Patient not found: '.@$_POST['patient_id']);
+            }
+
+
+            $content = $this->renderPartial('init_method_row', array(
+                'event' => $event,
+                //'api'   => Yii::app()->moduleAPI->get('OphCoCorrespondence'),
+                'patient'   => $patient
+            ), true);
+
+
+            $result = array(
+                'success'   => 1,
+                'content'   => $content,
+
+            );
+
+            $this->renderJSON($result);
+        }
+        throw new CHttpException(400, 'Invalid method');
     }
 
 }

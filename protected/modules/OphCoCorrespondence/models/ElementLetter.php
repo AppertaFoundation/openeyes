@@ -644,11 +644,12 @@ class ElementLetter extends BaseEventTypeElement
             Yii::app()->user->setState('correspondece_element_letter_saved', true);
         }
 
-
-        EventAssociatedContent::model()->deleteAll(
-            "`parent_event_id` = :parent_event_id",
-            array(':parent_event_id' => $this->event->id)
-        );
+        if(Yii::app()->getController()->getAction()->id == 'create' || Yii::app()->getController()->getAction()->id == 'update') {
+            EventAssociatedContent::model()->deleteAll(
+                "`parent_event_id` = :parent_event_id",
+                array(':parent_event_id' => $this->event->id)
+            );
+        }
 
         if(isset($_POST['attachments_event_id'])){
 
@@ -664,21 +665,49 @@ class ElementLetter extends BaseEventTypeElement
 
                     $eventAssociatedContent = new EventAssociatedContent();
                     $eventAssociatedContent->parent_event_id = $this->event->id;
-                    $eventAssociatedContent->init_associated_content_id = $attachments_id[$key];
-                    $eventAssociatedContent->is_system_hidden  = $attachments_system_hidden[$key];
-                    $eventAssociatedContent->is_print_appended = $attachments_print_appended[$key];
-                    $eventAssociatedContent->short_code = $attachments_short_code[$key];
+
+                    if(isset($attachments_id[$key])){
+                        $eventAssociatedContent->init_associated_content_id = $attachments_id[$key];
+                    }
+
+                    if(isset($attachments_system_hidden[$key])){
+                        $eventAssociatedContent->is_system_hidden  = $attachments_system_hidden[$key];
+                    } else {
+                        $eventAssociatedContent->is_system_hidden = 0;
+                    }
+
+                    if(isset($attachments_print_appended[$key])){
+                        $eventAssociatedContent->is_print_appended  = $attachments_print_appended[$key];
+                    } else {
+                        $eventAssociatedContent->is_print_appended = 0;
+                    }
+
+                    if(isset($attachments_short_code[$key])){
+                        $eventAssociatedContent->short_code  = $attachments_short_code[$key];
+                    } else {
+                        $eventAssociatedContent->short_code = $this->generateShortcodeByEventId( $attachments_last_event_id[$key] );
+                    }
+
                     $eventAssociatedContent->association_storage  = 'EVENT';
                     $eventAssociatedContent->associated_event_id  = $last_event;
                     $eventAssociatedContent->display_order   = $order;
 
                     $eventAssociatedContent->save();
+
                     $order++;
                 }
             }
         }
 
         return parent::afterSave();
+    }
+
+    private function generateShortcodeByEventId( $event_id )
+    {
+        $event = Event::model()->findByPk( $event_id );
+        $name = strtoupper (str_replace(' ', '_',  $event->eventType->name));
+
+        return $name.'_'.$event->eventType->id;
     }
 
     public function getInfotext()
