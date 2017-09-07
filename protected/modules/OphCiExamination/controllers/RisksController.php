@@ -34,12 +34,64 @@ class RisksController extends \BaseController
     }
 
     /**
+     * @param array $tag_ids
+     * @return array
+     */
+    protected function riskIdsForTagIds($tag_ids = array())
+    {
+        return array_map(
+            function($r) { return $r->id; },
+            OphCiExaminationRisk::findForTagIds($tag_ids)
+        );
+    }
+
+    /**
      * @param $tag_ids
      */
     public function actionForTags($tag_ids)
     {
-        echo \CJSON::encode(array_map(
-            function($r) { return $r->id; },
-            OphCiExaminationRisk::findForTagIds(explode(",", $tag_ids))));
+        echo \CJSON::encode($this->riskIdsForTagIds(explode(",", $tag_ids)));
+    }
+
+    protected function tagIdsForTagged($obj) {
+        return array_map(
+            function ($tag) {
+                return $tag->id;
+            }, $obj->tags
+        );
+    }
+
+    /**
+     * @param $ids
+     */
+    public function actionForDrugIds($ids)
+    {
+        $drugs = \Drug::model()->with('tags')->findAllByPk(explode(",", $ids));
+
+        $result = array();
+        foreach ($drugs as $drug) {
+            $result[$drug->id] = $this->riskIdsForTagIds(
+                $this->tagIdsForTagged($drug)
+            );
+        }
+
+        echo \CJSON::encode($result);
+    }
+
+    /**
+     * @param $ids
+     */
+    public function actionForMedicationDrugIds($ids)
+    {
+        $meds = \MedicationDrug::model()->with('tags')->findAllByPk(explode(",", $ids));
+
+        $result = array();
+        foreach ($meds as $med) {
+            $result[$med->id] = $this->riskIdsForTagIds(
+                $this->tagIdsForTagged($med)
+            );
+        }
+
+        echo \CJSON::encode($result);
     }
 }
