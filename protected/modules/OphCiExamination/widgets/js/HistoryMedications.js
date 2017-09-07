@@ -182,6 +182,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 });
             }
         });
+        $el.autocomplete("widget").css('max-height', '150px').css('overflow', 'auto');
     }
   };
 
