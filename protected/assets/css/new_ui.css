@@ -46,19 +46,22 @@ html, body {
 }
 .open-eyes .footer {
   border-radius: 0 0 5px 5px;
-  height: 42px;
   background: #98989e url("../img/_structure/openeyes_footer.png") no-repeat right top;
+  height: 25px;
+  position:fixed;
+  bottom:0;
+  z-index: 9999;
 }
 .open-eyes .footer a, .open-eyes .footer a:visited {
   color: #0e386f;
 }
 .open-eyes .footer .help .panel {
-  height: 38px;
+  height: 25px;
   border-style: none;
   border-width: 0;
-  padding-top: 14px;
   background: #a8a8af;
   margin: 0 0 0 0;
+  border-radius: 0;
 }
 .open-eyes .footer .help .panel strong {
   color: #555252;
@@ -66,7 +69,8 @@ html, body {
 .open-eyes .footer .info {
   font-size: 9px;
   font-size: 0.5625rem;
-  padding-top: 7px;
+  padding-top: 3px;
+  line-height:1.2em;
 }
 
 .open-eyes .panel {
@@ -118,6 +122,7 @@ html, body {
 
 .event .event-content {
   background-image: none !important;
+  margin-bottom:8px;
 }
 
 .alert-box {
@@ -805,39 +810,15 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   padding: 0 0 5px 0;
   width: 14.6%;
   position: fixed;
-  top: 82px;
+  top: 80px;
 }
 .open-eyes .sidebar.episodes-and-events .oe-scroll-wrapper {
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
-  top: 2px;
   width: 180px;
   padding: 0;
   margin: 0;
-  transition: all .5s ease-in-out;
-}
-.open-eyes .sidebar.episodes-and-events .show-scroll-tip {
-  position: absolute;
-  bottom: 0;
-  width: 180px;
-  height: 20px;
-  line-height: 40px;
-  background: transparent url("../img/_elements/gradients/bg_scroll_tip.png") bottom left repeat-x;
-  font-size: 10px;
-  font-size: 0.625rem;
-  letter-spacing: 1px;
-  text-align: center;
-  font-weight: 400;
-  color: white;
-}
-.open-eyes .sidebar.episodes-and-events .scroll-blue-top {
-  position: absolute;
-  top: 38px;
-  width: 180px;
-  height: 8px;
-  background: transparent url("../img/_elements/gradients/bg_scroll_blue_top.png") top left repeat-x;
-  background-size: contain;
 }
 .open-eyes .oe-sidebar-top-buttons {
   width: 180px;
@@ -1073,7 +1054,6 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 .oe-panel.specialty ol.events {
   margin: 5px 0 0 0;
   position: relative;
-  padding-bottom: 35px;
 }
 .oe-panel.specialty ol.events li {
   display: block;
