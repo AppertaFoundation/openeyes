@@ -199,7 +199,7 @@
                     <?php endforeach; ?>
                 </td>
                   <td><?php echo strtoupper($test->event->episode->patient->last_name) ?>, <?php echo $test->event->episode->patient->first_name ?></td>
-                  <td><?php echo $test->event->episode->patient->maiden_name ?></td>
+                  <td><?php echo $test->event->episode->patient->contact->maiden_name ?></td>
                   <td><?php echo str_replace(',',', ', $test->gene->name) ?></td>
 <!--                  <td>--><?php //echo $test->method->name ?><!--</td>-->
                   <td><?php echo $test->homo ? 'Yes' : 'No' ?></td>
