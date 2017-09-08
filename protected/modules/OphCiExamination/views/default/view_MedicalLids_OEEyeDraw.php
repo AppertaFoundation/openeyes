@@ -29,12 +29,6 @@
     </div>
     <div class="column large-6">
         <div class="data-row">
-            <div class="data-value">
-                <?= $element->{$side . '_stfb'} ? 'STFB' : 'No STFB' ?>
-            </div>
-        </div>
-
-        <div class="data-row">
                 <div class="data-value">
                     <?= Yii::app()->format->Ntext($element->{$side.'_ed_report'}) ?>
                 </div>
@@ -50,4 +44,3 @@
         }?>
     </div>
 </div>
-

@@ -123,6 +123,13 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected $show_element_sidebar = true;
 
+    /**
+     * Set to true if the index search bar should appear in the header when creating/editing the event
+     *
+     * @var bool
+     */
+    protected $show_index_search = false;
+
     public function behaviors()
     {
         return array(
@@ -196,6 +203,20 @@ class BaseEventTypeController extends BaseModuleController
         return $this->action_type_map[strtolower($action)];
     }
 
+    /**
+     * @param $action
+     * @return int
+     */
+    public function getElementWidgetMode($action)
+    {
+        $action_type = $this->getActionType($action);
+        return in_array($action_type,
+            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT, static::ACTION_TYPE_FORM))
+            ? BaseEventElementWidget::$EVENT_EDIT_MODE
+            : ($action_type === static::ACTION_TYPE_PRINT
+                ? BaseEventElementWidget::$EVENT_PRINT_MODE
+                : BaseEventElementWidget::$EVENT_VIEW_MODE);
+    }
     /**
      * Sets the patient object on the controller.
      *
@@ -1424,6 +1445,19 @@ class BaseEventTypeController extends BaseModuleController
 
     }
 
+    public function renderIndexSearch()
+    {
+        if ($this->show_index_search && in_array($this->action->id,array('create','update'))) {
+          $event_type_id = ($this->event->attributes["event_type_id"]);
+          $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
+          $event_name = $event_type->name;
+          if ($event_name == "Examination") {
+            $this->widget('application.widgets.IndexSearch',array('event_type' => $event_name));
+          }
+        }
+
+    }
+
 
     /**
      * Extend the parent method to support inheritance of modules (and rendering the element views from the parent module).
@@ -1493,13 +1527,14 @@ class BaseEventTypeController extends BaseModuleController
         ($use_container_view) && $this->beginContent($container_view, $view_data);
         if ($element->widgetClass) {
             // only wrap the element in a widget if it's not already in one
+            $action_type = $this->getActionType($action);
             $widget = $element->widget ? :
                 $this->createWidget($element->widgetClass,
                     array(
                         'patient' => $this->patient,
                         'element' => $view_data['element'],
                         'data' => $view_data['data'],
-                        'mode' => in_array($action, array('create', 'update')) ? BaseEventElementWidget::$EVENT_EDIT_MODE : BaseEventElementWidget::$EVENT_VIEW_MODE
+                        'mode' => $this->getElementWidgetMode($action)
                     ));
             $widget->form = $view_data['form'];
             $this->renderPartial('//elements/widget_element', array('widget' => $widget),$return, $processOutput);
@@ -1688,7 +1723,7 @@ class BaseEventTypeController extends BaseModuleController
             $wk->setDocref($event->docref);
             $wk->setPatient($event->episode->patient);
             $wk->setBarcode($event->barcodeHTML);
-            
+
             foreach (array('left', 'middle', 'right') as $section) {
                 if (isset(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name])) {
                     $setMethod = 'set'.ucfirst($section);
@@ -1708,7 +1743,7 @@ class BaseEventTypeController extends BaseModuleController
                     $wk->setCustomTag($pdf_footer_tag->tag_name, $api->{$pdf_footer_tag->method}($event->id));
                 }
             }
-            
+
             $wk->generatePDF($event->imageDirectory, 'event', $this->pdf_print_suffix, $this->pdf_print_html, (boolean) @$_GET['html'], $inject_autoprint_js);
         }
 
@@ -2044,7 +2079,7 @@ class BaseEventTypeController extends BaseModuleController
         ob_end_clean();
 
         $event->unlock();
-        
+
         $this->printLog($id, false);
 
         // Verify we have all the images by detecting eyedraw canvas elements in the page.

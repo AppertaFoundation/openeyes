@@ -56,4 +56,12 @@ class DrugRouteOption extends BaseActiveRecordVersioned
             'route' => array(self::BELONGS_TO, 'DrugRoute', 'drug_route_id'),
         );
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->name;
+    }
 }

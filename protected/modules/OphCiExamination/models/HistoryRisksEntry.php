@@ -28,10 +28,11 @@ namespace OEModule\OphCiExamination\models;
  * @property int $id
  * @property int $element_id
  * @property int $risk_id
+ * @property boolean $has_risk
  * @property string $other
  * @property string $comments
  *
- * @property Risk $risk
+ * @property OphCiExaminationRisk $risk
  * @property HistoryRisks $element
  */
 class HistoryRisksEntry extends \BaseElement
@@ -64,6 +65,7 @@ class HistoryRisksEntry extends \BaseElement
         return array(
             array('element_id, risk_id, other, has_risk, comments', 'safe'),
             array('risk_id', 'required'),
+            array('has_risk', 'required', 'message'=>'Checked Status cannot be blank'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, element_id, risk_id, other, has_risk, comments', 'safe', 'on' => 'search'),
@@ -177,54 +179,4 @@ class HistoryRisksEntry extends \BaseElement
     {
         return $this->getDisplay(true);
     }
-
-    /**
-     * @param $patientId
-     *
-     * @return array|mixed|null
-     * @deprecated since 2.0
-     */
-    public function mostRecentCheckedAlpha($patientId)
-    {
-
-        $risk_id = \Yii::app()->db->createCommand()->select('id')->from('ophciexamination_risk')->where('name=:name', array(':name' => 'Alpha blockers'))->queryScalar();
-        $criteria = $this->risksByTypeForPatient($risk_id, $patientId);
-        $criteria->limit = 1;
-        return self::model()->find($criteria);
-    }
-
-    /**
-    * @deprecated since 2.0
-    */
-    protected function risksByTypeForPatient($type_id, $patientId)
-    {
-        $criteria = new \CDbCriteria();
-        $criteria->join = 'join ophciexamination_risk risk on risk.id = t.risk_id ';
-        $criteria->join .= 'join et_ophciexamination_history_risks h_risk on t.element_id = h_risk.id ';
-        $criteria->join .= 'join event on h_risk.event_id = event.id ';
-        $criteria->join .= 'join episode on event.episode_id = episode.id ';
-        $criteria->addCondition('risk.id = :type_id');
-        $criteria->addCondition('event.deleted <> 1');
-        $criteria->addCondition('episode.patient_id = :patient_id');
-        $criteria->addCondition('risk.active = 1');
-        $criteria->params = array(':patient_id' => $patientId, ':type_id' => $type_id);
-        $criteria->order = 'event.created_date DESC';
-
-        return $criteria;
-    }
-
-    /**
-     * @param $patientId
-     *
-     * @return array|mixed|null
-     * @deprecated since 2.0
-     */
-    public function mostRecentCheckedAnticoag($patientId)
-    {
-      $risk_id = \Yii::app()->db->createCommand()->select('id')->from('ophciexamination_risk')->where('name=:name', array(':name' => 'Anticoagulants'))->queryScalar();
-      $criteria = $this->risksByTypeForPatient($risk_id, $patientId);
-      $criteria->limit = 1;
-      return self::model()->find($criteria);
-    }
-
 }

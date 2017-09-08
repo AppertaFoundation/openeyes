@@ -654,6 +654,15 @@ class Admin
             }
         }
 
+        if ($row->getMetaData()->hasRelation($attribute)) {
+            $res = $row->$attribute;
+            if (is_array($res)) {
+                $res = implode(', ', $res);
+            }
+            return $res;
+        }
+
+
         return '';
     }
 

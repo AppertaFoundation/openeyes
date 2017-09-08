@@ -47,7 +47,7 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
 	};
 
 	$.extend(params, core_params);
-	
+
 	$.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function(data) {
 		var new_element = $(data);
 		var elClass = $(element).data('element-type-class');
@@ -196,6 +196,8 @@ function removeElement(element, is_child) {
 	}
 
 	$('.js-active-elements').trigger('ElementRemoved', [ element_type_class ]);
+  var checker = getOEEyeDrawChecker();
+  checker.resync();
 }
 
 function moveToElement(element) {
