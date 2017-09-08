@@ -73,7 +73,7 @@ class DrugType extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'drug' => array(self::MANY_MANY, 'FormularyDrugs', 'drug_drug_type(drug_type_id, drug_id)'),
+            'drug' => array(self::MANY_MANY, 'Drug', 'drug_drug_type(drug_type_id, drug_id)'),
             'tag' => array(self::BELONGS_TO, 'Tag', 'tag_id')
         );
     }

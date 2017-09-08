@@ -871,4 +871,27 @@ class AdminController extends \ModuleAdminController
     {
         $this->genericAdmin('Edit Allergies', 'OEModule\OphCiExamination\models\OphCiExaminationAllergy');
     }
+
+    public function actionRisks()
+    {
+        $extra_fields = array(
+            array(
+                'field' => 'tags',
+                'type' => 'multilookup',
+                'noSelectionsMessage' => 'No Tags',
+                'htmlOptions' => array(
+                    'empty' => '- Please Select -',
+                    'nowrapper' => true,
+                ),
+                'options' => \CHtml::listData(\Tag::model()->findAll(), 'id', 'name')
+            )
+        );
+
+        $this->genericAdmin(
+            'Edit Risks',
+            'OEModule\OphCiExamination\models\OphCiExaminationRisk',
+            array(
+                'extra_fields' => $extra_fields
+            ));
+    }
 }
