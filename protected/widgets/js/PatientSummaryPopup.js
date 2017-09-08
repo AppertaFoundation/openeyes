@@ -18,6 +18,9 @@
 
     var container;
     var popup;
+    var trackedHeight;
+    var popupOverflow;
+    var popupOverflowAlert;
     var buttons;
     var helpHint;
 
@@ -25,6 +28,7 @@
     var sticky = false;
     var hideTimer = 0;
     var hoverTimer = 0;
+    var needsScroll = undefined;
 
     function update() {
         popup.add(buttons).add(helpHint).trigger('update');
@@ -34,6 +38,8 @@
 
         container = $('#patient-popup-container');
         popup = $('#patient-summary-popup');
+        popupOverflow = popup.find('.oe-popup-overflow');
+        popupOverflowAlert = popup.find('.oe-popup-overflow-alert');
         buttons = container.find('.toggle-patient-summary-popup');
         helpHint = popup.find('.help-hint');
 
@@ -46,6 +52,11 @@
                 if (popup.hasClass('show')) return;
                 clearTimeout(hideTimer);
                 popup.show();
+
+                if (needsScroll === undefined) {
+                    setScrollingProperties();
+                }
+
                 // Re-define the transitions on the popup to be none.
                 popup.addClass('clear-transition');
                 // Trigger a re-flow to reset the starting position of the transitions, now
@@ -83,9 +94,11 @@
                         .removeClass(showIcon + ' ' + hideIcon)
                         .addClass(stuck ? hideIcon : showIcon);
                 }
+
             },
             click: function() {
                 stuck = !stuck;
+                updateScrollingCss();
                 update();
             }
         });
@@ -96,7 +109,7 @@
             mouseenter: function() {
                 clearTimeout(hoverTimer);
                 // We use a timer to prevent the popup from displaying unintentionally.
-                hoverTimer = setTimeout(popup.trigger.bind(popup, 'show'), 200);
+                hoverTimer = setTimeout(popup.trigger.bind(popup, 'show'), 100);
             },
             mouseleave: function() {
                 clearTimeout(hoverTimer);
@@ -105,6 +118,50 @@
                 }
             }
         });
+    }
+
+    function setScrollingProperties() {
+        // FIXME: this ain't working cos the limit style is maxing the height. Needs thought.
+        if (trackedHeight === undefined) {
+            trackedHeight = popupOverflow.height();
+        }
+        if (trackedHeight > 415) {
+            popupOverflow.addClass('limit');
+            needsScroll = true;
+            popupOverflowAlert.show();
+        } else {
+            popupOverflow.removeClass('limit');
+            needsScroll = false;
+            popupOverflowAlert.hide();
+        }
+    }
+
+    function updateScrollingCss() {
+        if (needsScroll) {
+            if (stuck) {
+                popupOverflow.addClass('scroll');
+                popupOverflowAlert.hide();
+            } else {
+                popupOverflow.removeClass('scroll');
+                popupOverflowAlert.show();
+            }
+        }
+    }
+
+    /**
+     * This is a naive method that simply adds to the recorded height
+     * to determine whether the scrolling class is required when content
+     * is expanded by external controllers.
+     *
+     * Tracking whether the height should be added or not is the responsibility
+     * of the external controllers.
+     *
+     * @param pixels
+     */
+    function addHeight(pixels) {
+        trackedHeight+=pixels;
+        setScrollingProperties();
+        updateScrollingCss();
     }
 
     function refresh(patientId) {
@@ -125,6 +182,9 @@
     $(init);
 
     // Public API
-    exports.PatientSummaryPopup = { refresh: refresh };
+    exports.PatientSummaryPopup = {
+        refresh: refresh,
+        addHeight: addHeight
+    };
 
 }(this.OpenEyes.UI.Widgets));

@@ -44,6 +44,8 @@
     </button>
 
     <div class="panel patient-popup" id="patient-summary-popup">
+        <!-- Overflow alert -->
+        <div class="oe-popup-overflow-alert">+ &nbsp; click to view all data</div>
         <!-- Help hint -->
         <span
             class="help-hint"
@@ -87,50 +89,52 @@
                 </span>
             </div>
         <?php } ?>
-        <div class="summary-data">
-          <?php if ($this->ophthalmicDiagnoses) { ?>
-            <div class="row">
-              <div class="large-2 column label">
-                Ophthalmic Diagnoses
-              </div>
-              <div class="large-10 column data">
-                  <?php echo $this->ophthalmicDiagnoses; ?>
-              </div>
-            </div>
-            <?php } ?>
-            <?php if ($this->systemicDiagnoses) { ?>
+        <div class="oe-popup-overflow">
+            <div class="summary-data">
+              <?php if ($this->ophthalmicDiagnoses) { ?>
+                <div class="row">
+                  <div class="large-2 column label">
+                    Ophthalmic Diagnoses
+                  </div>
+                  <div class="large-10 column data">
+                      <?php echo $this->ophthalmicDiagnoses; ?>
+                  </div>
+                </div>
+                <?php } ?>
+                <?php if ($this->systemicDiagnoses) { ?>
+                  <div class="row">
+                    <div class="large-2 column label">
+                      Systemic Diagnoses
+                    </div>
+                    <div class="large-10 column data">
+                        <?php echo $this->systemicDiagnoses; ?>
+                    </div>
+                  </div>
+                <?php } ?>
               <div class="row">
                 <div class="large-2 column label">
-                  Systemic Diagnoses
+                  CVI Status
                 </div>
                 <div class="large-10 column data">
-                    <?php echo $this->systemicDiagnoses; ?>
+                    <?php echo $this->cviStatus; ?>
                 </div>
               </div>
-            <?php } ?>
-          <div class="row">
-            <div class="large-2 column label">
-              CVI Status
-            </div>
-            <div class="large-10 column data">
-                <?php echo $this->cviStatus; ?>
-            </div>
-          </div>
-            <?php if ($this->operations) { ?>
-              <div class="row">
-                <div class="large-2 column label">
-                  Operations
-                </div>
-                <div class="large-10 column data">
-                    <?php echo $this->operations; ?>
-                </div>
-              </div>
-            <?php } ?>
-            <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
-                'patient' => $this->patient,
-                'mode' => BaseEventElementWidget::$PATIENT_POPUP_MODE
-            )); ?>
+                <?php if ($this->operations) { ?>
+                  <div class="row">
+                    <div class="large-2 column label">
+                      Operations
+                    </div>
+                    <div class="large-10 column data">
+                        <?php echo $this->operations; ?>
+                    </div>
+                  </div>
+                <?php } ?>
+                <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
+                    'patient' => $this->patient,
+                    'mode' => BaseEventElementWidget::$PATIENT_POPUP_MODE
+                )); ?>
 
+            </div>
         </div>
     </div>
 </div>
