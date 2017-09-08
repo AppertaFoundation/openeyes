@@ -47,7 +47,16 @@
 			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id'))?>:</div>
 		</div>
 		<div class="large-9 column">
-			<div class="data-value"><?php echo $element->anaesthetic_type ? $element->anaesthetic_type->name : 'None'?>
+			<div class="data-value">
+                <?php
+                    $text = '';
+                    foreach($element->anaesthetic_type as $anaesthetic_type){
+                        if(!empty($text)){ $text .= ', '; }
+                        $text .= $anaesthetic_type->name;
+                    }
+
+                    echo $text;
+                ?>
 			</div>
 		</div>
 	</div>

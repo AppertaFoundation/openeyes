@@ -17,25 +17,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-/**
- * This is the model class for table "drug_set_item".
- *
- * The followings are the available columns in table 'drug_set_item':
- *
- * @property int $id
- * @property DrugSet $drug_set
- * @property Drug $drug
- * @property DrugSetItemTaper[] $tapers
- * @property string $dose
- * @property DrugFrequency $frequency
- * @property DrugDuration $duration
- */
-class DrugSetItem extends BaseActiveRecordVersioned
+
+class OphTrConsent_Procedure_AnaestheticType extends BaseActiveRecordVersioned
 {
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return DrugSetItem the static model class
+     * @return OphTrConsent_Procedure_AnaestheticType the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -47,7 +35,7 @@ class DrugSetItem extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'drug_set_item';
+        return 'ophtrconsent_procedure_anaesthetic_type';
     }
 
     /**
@@ -58,11 +46,6 @@ class DrugSetItem extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('drug_set_id, drug_id', 'required'),
-                array('dose, frequency_id, duration_id, route_id, drug_set_id, dispense_condition_id, dispense_location_id', 'safe'),
-                // The following rule is used by search().
-                // Please remove those attributes that should not be searched.
-                array('id, drug_set_id, drug_id, dose, frequency_id, duration_id, route_id, dispense_condition_id, dispense_location_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -74,14 +57,7 @@ class DrugSetItem extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'drug' => array(self::BELONGS_TO, 'Drug', 'drug_id'),
-                'drug_set' => array(self::BELONGS_TO, 'DrugSet', 'drug_set_id'),
-                'frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'frequency_id'),
-                'route' => array(self::BELONGS_TO, 'DrugRoute', 'route_id'),
-                'duration' => array(self::BELONGS_TO, 'DrugDuration', 'duration_id'),
-                'tapers' => array(self::HAS_MANY, 'DrugSetItemTaper', 'item_id'),
-                'dispense_condition' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseCondition', 'dispense_condition_id'),
-                'dispense_location' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseLocation', 'dispense_location_id'),
+            'element' => array(self::BELONGS_TO, 'Element_OphTrConsent_Procedure', 'et_ophtrconsent_procedure_id'),
         );
     }
 
@@ -107,17 +83,9 @@ class DrugSetItem extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
-        $criteria->compare('drug_set_id', $this->drug_set_id, true);
-        $criteria->compare('drug_id', $this->drug_id, true);
-        $criteria->compare('dose', $this->dose, true);
-        $criteria->compare('frequency_id', $this->frequency_id, true);
-        $criteria->compare('duration_id', $this->duration_id, true);
-        $criteria->compare('route_id', $this->route_id, true);
-        $criteria->compare('dispense_condition_id', $this->dispense_condition_id, true);
-        $criteria->compare('dispense_location_id', $this->dispense_location_id, true);
 
         return new CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
+            'criteria' => $criteria,
         ));
     }
 }

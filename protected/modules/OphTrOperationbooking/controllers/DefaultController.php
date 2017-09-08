@@ -240,7 +240,7 @@ class DefaultController extends OphTrOperationbookingEventController
             foreach($data['AnaestheticType'] as $anaesthetic_type_id){
 
                 if( !array_key_exists($anaesthetic_type_id, $type_assessments_by_id) ){
-                    $anaesthetic_type_assesment = new OphTrOperationbooking_AnaestheticAnaestheticType();
+                    $anaesthetic_type_assesment = new \OphTrOperationbooking_AnaestheticAnaestheticType();
                 } else {
                     $anaesthetic_type_assesment = $type_assessments_by_id[$anaesthetic_type_id];
                 }
