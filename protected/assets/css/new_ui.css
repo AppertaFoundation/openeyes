@@ -863,12 +863,6 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   margin: 0;
   padding: 0;
 }
-.oe-element-list .has-children.expanded {
-  margin: 3px 0;
-}
-.oe-element-list .has-children.collapsed {
-  margin: 0 0;
-}
 .oe-element-list .has-children a {
   background-color: #4d546a;
 }
@@ -878,7 +872,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
   min-height: 19px;
   line-height: 19px;
   margin-bottom: 1px;
-  padding: 0 25px 0 8px;
+  padding: 0 25px 0 18px;
   overflow: hidden;
   font-size: 11px;
   font-size: 0.6875rem;
@@ -922,9 +916,14 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 .oe-element-list a .icon.collapse {
   background-position: -6px -76px;
 }
-.oe-element-list a .icon.child {
-  background-position: -6px -57px;
-}
+.oe-element-list a .icon.child, .oe-element-list a:hover .icon.child {
+  background-position: -6px -57px;}
+.oe-element-list .has-children a {
+  font-weight: 500; }
+.oe-element-list .child a {
+  font-style: italic;
+  font-weight: 400;
+  padding-left: 28px;  }
 
 .oe-sidebar-event-creation {
   height: 38px;
