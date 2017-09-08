@@ -45,12 +45,15 @@ html, body {
   min-height: 600px;
 }
 .open-eyes .footer {
-  border-radius: 0 0 5px 5px;
-  background: #98989e url("../img/_structure/openeyes_footer.png") no-repeat right top;
+  border-radius: 0;
+  background: #98989e;
   height: 25px;
   position:fixed;
   bottom:0;
   z-index: 9999;
+  font-size: 9px;
+  padding-top: 3px;
+  line-height: 1.2em;
 }
 .open-eyes .footer a, .open-eyes .footer a:visited {
   color: #0e386f;
@@ -122,7 +125,7 @@ html, body {
 
 .event .event-content {
   background-image: none !important;
-  margin-bottom:8px;
+  margin-bottom: 13px;
 }
 
 .alert-box {
