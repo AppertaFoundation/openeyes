@@ -122,7 +122,7 @@
                 <?php if ($this->operations) { ?>
                   <div class="row">
                     <div class="large-2 column label">
-                      Operations
+                      POH
                     </div>
                     <div class="large-10 column data">
                         <?php echo $this->operations; ?>

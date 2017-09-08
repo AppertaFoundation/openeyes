@@ -28,6 +28,7 @@ use OEModule\OphCiExamination\models\HistoryMedicationsEntry;
 class HistoryMedications extends \BaseEventElementWidget
 {
     public static $INLINE_EVENT_VIEW = 256;
+    public static $PRESCRIPTION_PRINT_VIEW = 512;
 
     public static $moduleName = 'OphCiExamination';
     public $notattip_edit_warning = 'OEModule.OphCiExamination.widgets.views.HistoryMedications_edit_nottip';
@@ -51,7 +52,8 @@ class HistoryMedications extends \BaseEventElementWidget
      */
     protected function validateMode($mode)
     {
-        return $mode === static::$INLINE_EVENT_VIEW || parent::validateMode($mode);
+        return in_array($mode,
+            array(static::$PRESCRIPTION_PRINT_VIEW, static::$INLINE_EVENT_VIEW), true) || parent::validateMode($mode);
     }
 
     /**
@@ -259,6 +261,9 @@ class HistoryMedications extends \BaseEventElementWidget
         }
         if ($this->mode === static::$INLINE_EVENT_VIEW) {
             return $short_name . '_inline_event_view';
+        }
+        if ($this->mode === static::$PRESCRIPTION_PRINT_VIEW) {
+            return $short_name . '_prescription_print_view';
         }
         return parent::getView();
     }

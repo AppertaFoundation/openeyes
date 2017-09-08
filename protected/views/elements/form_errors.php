@@ -33,14 +33,14 @@
 						<?php echo $field.': '.$err?>
 					</li>
 				</ul>
-			<?php 
+			<?php
 }
     ?>
-		<?php 
+		<?php
 }
     ?>
 	</div>
-<?php 
+<?php
 }?>
 <script type="text/javascript">
 	$(document).ready(function () {

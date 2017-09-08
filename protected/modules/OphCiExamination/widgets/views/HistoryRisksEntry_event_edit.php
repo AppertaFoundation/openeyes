@@ -32,7 +32,6 @@ if (!isset($values)) {
         'comments' => $entry->comments,
     );
 }
-
 ?>
 <tr data-key="<?=$row_count?>">
     <td>
@@ -63,9 +62,9 @@ if (!isset($values)) {
         ?>
 
     </td>
-    <td>
+    <td id="OEModule_OphCiExamination_models_HistoryRisks_entries_<?=$row_count?>_risk_id_error">
         <label class="inline highlight">
-            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === null || $values['has_risk'] === '', array('value' => '')); ?>
+            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', false, array('value' => '-9')); ?>
             Not checked
         </label>
         <label class="inline highlight">
@@ -84,4 +83,3 @@ if (!isset($values)) {
         <button class="button small warning remove" <?php if (!$removable) {?>style="display: none;"<?php } ?>>remove</button>
     </td>
 </tr>
-
