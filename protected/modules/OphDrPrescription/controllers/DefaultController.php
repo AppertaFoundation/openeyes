@@ -616,6 +616,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function groupItems($items)
     {
+        $item_group = array();
         foreach($items as $item)
         {
             $item_group[$item->dispense_condition_id][] = $item;

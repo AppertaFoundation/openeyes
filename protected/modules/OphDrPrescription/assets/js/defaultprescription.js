@@ -267,13 +267,11 @@ function getNextKey() {
 }
 
 function getDispenseLocation(dispense_condition) {
-  console.log(dispense_condition.val());
   $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/GetDispenseLocation", {
         condition_id: dispense_condition.val(),
   }, function (data) {
         dispense_condition.next('select').find('option').remove();
         dispense_condition.next('select').append(data);
-    // $('').append(data);
   });
 }
 

@@ -104,13 +104,10 @@ class PrescriptionCommonController extends DefaultController
 
     public function actionGetDispenseLocation($condition_id)
     {
-        $dispense_condition = OphDrPrescription_DispenseCondition::model()->findByPk($condition_id);
-        //var_dump($dispense_condition->locations);
+        $dispense_condition = OphDrPrescription_DispenseCondition::model()->with('locations')->findByPk($condition_id);
         foreach ($dispense_condition->locations as $location)
         {
             echo '<option value="'.$location->id.'">'.$location->name.'</option>';
         }
-        // this should work in theory... :(
-        //echo CHtml::listData($dispense_condition->locations, 'id', 'name');
     }
 }
