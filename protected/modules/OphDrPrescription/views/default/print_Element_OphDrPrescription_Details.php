@@ -104,9 +104,9 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 							} ?>
 						</td>
 						<td><?php echo $taper->duration->name ?></td>
-						<td></td>
-						<?php if(strpos($group_name,"Hospital") !== false ){?>
-							<td>-</td>
+                        <?php if(strpos($group_name,"Hospital") !== false ){?>
+                            <td></td>
+						    <td>-</td>
 							<td>-</td>
 						<?php }?>
 					</tr>
