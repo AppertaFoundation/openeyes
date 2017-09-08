@@ -30,7 +30,14 @@
         'restrict' => 'unbooked',
         'restrict_common' => 'unbooked',
     ))?>
-	<?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'AnaestheticType')?>
+
+    <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', 'Anaesthetic Type',
+        false, false, false, false,
+        array(
+            'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error' : ''
+        )
+    ); ?>
+
 	<?php $form->widget('application.widgets.ProcedureSelection', array(
         'element' => $element,
         'durations' => false,
