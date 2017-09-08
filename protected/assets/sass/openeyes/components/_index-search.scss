@@ -1,4 +1,3 @@
-/* IndexSearch css -- Probably needs a better location */
 #search_bar_right, #search_bar_left {
   display: inline-block;
   font-family:Helvetica;
@@ -18,7 +17,6 @@
   font-family:Helvetica;
   cursor: pointer;
   border: none;
-  /*download this image*/
   background: url("../img/index_search/search_icon.png") no-repeat center center, #747782;
   background-size: 15px 15px;
   border-radius: 0 20px 20px 0;
@@ -300,7 +298,3 @@ input:checked + .slider:before {
 .is_loading {
   content:url(../img/index_search/loading.gif);
 }
-
-/* End of Images */
-
-/* End of IndexSearch css*/
