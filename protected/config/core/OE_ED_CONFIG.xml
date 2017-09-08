@@ -627,7 +627,7 @@
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>PhakoIncision</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>Phako incision</TITLE>
-      <INIT_DOODLE_JSON/>
+      <INIT_DOODLE_JSON>{"scaleLevel": 1,"version":1.1,"subclass":"PhakoIncision","apexY":-330,"arc":27,"rotation":90,"radius":330,"order":2}</INIT_DOODLE_JSON>
     </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>PI</EYEDRAW_CLASS_MNEMONIC>
