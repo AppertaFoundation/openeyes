@@ -40,6 +40,13 @@ class DefaultController extends \BaseEventTypeController
         'dismissCVIalert' => self::ACTION_TYPE_FORM
     );
 
+    /**
+     * Set to true if the index search bar should appear in the header when creating/editing the event
+     *
+     * @var bool
+     */
+    protected $show_index_search = true;
+
     // if set to true, we are advancing the current event step
     private $step = false;
 
