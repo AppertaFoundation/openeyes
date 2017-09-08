@@ -22,24 +22,9 @@ OpenEyes.OphCiExamination.MedicalLidsController = (function () {
   {
     this.$edReportDisplay.html(this.$edReportField.val().replace(/\n/g,'<br />'));
   };
-
-  MedicalLidsController.prototype.checkSTFB = function()
-  {
-    if (this.drawing.hasDoodleOfClass('STFB')) {
-      $('#OEModule_OphCiExamination_models_MedicalLids_' + this.options.side + '_stfb')
-        .prop('checked', false)
-        .prop('disabled', true);
-    } else {
-      $('#OEModule_OphCiExamination_models_MedicalLids_' + this.options.side + '_stfb')
-        .prop('disabled', false);
-    }
-  };
-
+  
   MedicalLidsController.prototype.drawingNotifications = function(msgArray)
   {
-    if ($.inArray(msgArray['eventName'], ['doodleAdded', 'doodleRemoved'])) {
-      this.checkSTFB();
-    }
     this.updateReport();
   };
 

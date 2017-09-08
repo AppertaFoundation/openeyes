@@ -23,47 +23,54 @@
 <?php $el_id =  CHtml::modelName($element) . '_popup'; ?>
 
 <?php if ($element && ($current || $stopped)) { ?>
-    <div class="row" id="<?= $el_id ?>">
-        <div class="large-2 column label">
-            Medications
-        </div>
-        <div class="large-10 column data">
-            <i>Current:</i> <?php if ($stopped) {?><a href="#" class="kind-toggle show" data-kind="stopped"><i class="fa fa-icon fa-history" aria-hidden="true"></i></a><?php } ?>
+    <div id="<?= $el_id ?>">
+        <div class="row">
+            <div class="large-2 column label">
+                Medications
+            </div>
+            <div class="large-10 column data">
+                <i>Current:</i> <?php if ($stopped) {?><a href="#" class="kind-toggle show" data-kind="stopped"><i class="fa fa-icon fa-history" aria-hidden="true"></i></a><?php } ?>
+                <?php if (!$current) {?>No current medications.<?php } ?>
+            </div>
             <?php if ($current) {?>
-                <table class="plain valign-top">
-                <?php foreach ($current as $entry) { ?>
-                    <tr>
-                        <td><?= $entry->getDatesDisplay() ?></td>
-                        <td><span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span><strong><?= $entry->getMedicationDisplay() ?></strong>
-                            <?php if ($entry->prescription_item) { ?>
-                                <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="has-tooltip fa fa-eye" data-tooltip-content="View prescription"></span></a>
-                            <?php } ?>
-                        </td>
-                    </tr>
-                <?php } ?>
-                </table>
-            <?php } else { ?>
-                No current medications.
-            <?php } ?>
-            <?php if ($stopped) { ?>
-                <div class="row stopped-kind" style="display: none;">
-                    <i>Stopped:</i> <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a>
-                    <table class="plain valign-top">
-                    <?php foreach ($stopped as $entry) { ?>
+                <table class="plain valign-top summary-data-table">
+                    <?php foreach ($current as $entry) { ?>
                         <tr>
-                            <td><?= $entry->getDatesDisplay() ?></td>
-                            <td><span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span><strong><?= $entry->getMedicationDisplay() ?></strong>
+                            <td style="white-space: nowrap;"><?= $entry->getDatesDisplay() ?></td>
+                            <td><span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span></td>
+                            <td><strong><?= $entry->getMedicationDisplay() ?></strong>
                                 <?php if ($entry->prescription_item) { ?>
                                     <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="has-tooltip fa fa-eye" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
                             </td>
                         </tr>
                     <?php } ?>
+                </table>
+            <?php } ?>
+        </div>
+        <?php if ($stopped) { ?>
+            <div class="stopped-kind" style="display: none;">
+                <div class="row">
+                    <div class="large-10 large-push-2 column data">
+                        <i>Stopped:</i> <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a>
+                    </div>
+
+                    <table class="plain valign-top summary-data-table">
+                        <?php foreach ($stopped as $entry) { ?>
+                            <tr>
+                                <td style="white-space: nowrap;"><?= $entry->getDatesDisplay() ?></td>
+                                <td><span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span></td>
+                                <td><strong><?= $entry->getMedicationDisplay() ?></strong>
+                                    <?php if ($entry->prescription_item) { ?>
+                                        <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="has-tooltip fa fa-eye" data-tooltip-content="View prescription"></span></a>
+                                    <?php } ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
                     </table>
                 </div>
-            <?php } ?>
-
-        </div>
+            </div>
+        <?php } ?>
     </div>
     <script type="text/javascript">
         $(document).ready(function() {

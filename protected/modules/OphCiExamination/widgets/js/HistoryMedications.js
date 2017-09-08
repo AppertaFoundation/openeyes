@@ -165,7 +165,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             },
             focus: function (event, ui) {
                 event.preventDefault();
-                $el.val(controller.getItemDisplayValue(ui.item));
+                if (event.hasOwnProperty('key')) {
+                    $el.val(controller.getItemDisplayValue(ui.item));
+                }
+                // otherwise do nothing as this is a mouse hover focus;
+                return false;
             },
             select: function (event, ui) {
                 controller.searchSelect($el, event, ui);
@@ -178,6 +182,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 });
             }
         });
+        $el.autocomplete("widget").css('max-height', '150px').css('overflow', 'auto');
     }
   };
 
@@ -383,8 +388,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if ($kindDisplay.is(':visible')) {
             // hide the show toggle
             controller.$element.find(controller.options.kindToggleSelector + '.show').hide();
+            // in the summary popup, we want to scroll to the stopped drugs if they aren't visible
+            var overflowContainer = controller.$element.parents('.oe-popup-overflow');
+            if (overflowContainer.length) {
+                if ($kindDisplay.position().top > overflowContainer.height()) {
+                    overflowContainer.scrollTop($kindDisplay.position().top);
+                }
+            }
         } else {
             controller.$element.find(controller.options.kindToggleSelector + '.show').show();
+
         }
 
     });

@@ -18,6 +18,8 @@
 
     var container;
     var popup;
+    var popupOverflow;
+    var popupOverflowAlert;
     var buttons;
     var helpHint;
 
@@ -34,6 +36,8 @@
 
         container = $('#patient-popup-container');
         popup = $('#patient-summary-popup');
+        popupOverflow = popup.find('.oe-popup-overflow');
+        popupOverflowAlert = popup.find('.oe-popup-overflow-alert');
         buttons = container.find('.toggle-patient-summary-popup');
         helpHint = popup.find('.help-hint');
 
@@ -46,6 +50,16 @@
                 if (popup.hasClass('show')) return;
                 clearTimeout(hideTimer);
                 popup.show();
+
+                if (!popupOverflow.hasClass('limit')) {
+                    if (popupOverflow.height() > 415) {
+                        popupOverflow.addClass('limit');
+                        popupOverflowAlert.show();
+                    } else {
+                        popupOverflowAlert.hide();
+                    }
+                }
+
                 // Re-define the transitions on the popup to be none.
                 popup.addClass('clear-transition');
                 // Trigger a re-flow to reset the starting position of the transitions, now
@@ -83,9 +97,19 @@
                         .removeClass(showIcon + ' ' + hideIcon)
                         .addClass(stuck ? hideIcon : showIcon);
                 }
+
             },
             click: function() {
                 stuck = !stuck;
+                if (popupOverflow.hasClass('limit')) {
+                    if (stuck) {
+                        popupOverflow.addClass('scroll');
+                        popupOverflowAlert.hide();
+                    } else {
+                        popupOverflow.removeClass('scroll');
+                        popupOverflowAlert.show();
+                    }
+                }
                 update();
             }
         });
@@ -96,7 +120,7 @@
             mouseenter: function() {
                 clearTimeout(hoverTimer);
                 // We use a timer to prevent the popup from displaying unintentionally.
-                hoverTimer = setTimeout(popup.trigger.bind(popup, 'show'), 200);
+                hoverTimer = setTimeout(popup.trigger.bind(popup, 'show'), 100);
             },
             mouseleave: function() {
                 clearTimeout(hoverTimer);
