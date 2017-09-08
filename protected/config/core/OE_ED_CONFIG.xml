@@ -612,7 +612,7 @@
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>PCIOL</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>Posterior chamber IOL</TITLE>
-      <INIT_DOODLE_JSON/>
+      <INIT_DOODLE_JSON>{"scaleLevel": 1,"version":1.1,"subclass":"PCIOL","fixation":"In-the-bag","fx":1.00,"originX":0,"originY":0,"rotation":0,"csOriginX":0.00,"order":0}</INIT_DOODLE_JSON>
     </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>PeripapillaryAtrophy</EYEDRAW_CLASS_MNEMONIC>
@@ -797,7 +797,7 @@
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>SidePort</EYEDRAW_CLASS_MNEMONIC>
       <TITLE>Side port</TITLE>
-      <INIT_DOODLE_JSON/>
+      <INIT_DOODLE_JSON>{"scaleLevel": 1,"version":1.1,"subclass":"SidePort"}</INIT_DOODLE_JSON>
     </DOODLE>
     <DOODLE>
       <EYEDRAW_CLASS_MNEMONIC>Slider</EYEDRAW_CLASS_MNEMONIC>
