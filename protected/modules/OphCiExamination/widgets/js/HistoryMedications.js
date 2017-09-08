@@ -385,19 +385,19 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         e.preventDefault();
         var $kindDisplay = controller.$element.find('.' + $(this).data('kind') + '-kind');
         $kindDisplay.toggle();
+        var overflowContainer = controller.$element.parents('.oe-popup-overflow');
         if ($kindDisplay.is(':visible')) {
             // hide the show toggle
             controller.$element.find(controller.options.kindToggleSelector + '.show').hide();
             // in the summary popup, we want to scroll to the stopped drugs if they aren't visible
-            var overflowContainer = controller.$element.parents('.oe-popup-overflow');
             if (overflowContainer.length) {
+                OpenEyes.UI.Widgets.PatientSummaryPopup.addHeight($kindDisplay.height());
                 if ($kindDisplay.position().top > overflowContainer.height()) {
                     overflowContainer.scrollTop($kindDisplay.position().top);
                 }
             }
         } else {
             controller.$element.find(controller.options.kindToggleSelector + '.show').show();
-
         }
 
     });
