@@ -206,41 +206,28 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
      */
     protected function alphaBlockerStatusAndDate($patient)
     {
-      $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
-      if($exam_api){
-        $blockers = $exam_api->mostRecentCheckedAlpha($patient->id);
-      }
-        if ($blockers) {
-          switch ($blockers->has_risk){
-            case '0' :
-              return 'No (' . Helper::convertMySQL2NHS($blockers->element->event->event_date) . ')';
-            case '1' :
-              return 'Yes - ' . $blockers->comments . ' (' . Helper::convertMySQL2NHS($blockers->element->event->event_date) . ')';
-          }
-          return "Not Checked";
+        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+        if ($exam_api) {
+            $alpha = $exam_api->getRiskByName($patient, 'Alpha blockers');
+            if ($alpha) {
+                return $alpha->getDisplayHasRisk() . ($alpha->comments ? ' - ' . $alpha->comments : '') . '(' . Helper::convertMySQL2NHS($alpha->element->event->event_date) . ')';
+            }
+        }
     }
-  }
 
     /**
      * @param $patient
      *
      * @return string
-     * @deprecated since 2.0
      */
     protected function anticoagsStatusAndDate($patient)
     {
-      $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
-      if($exam_api){
-        $anticoag = $exam_api->mostRecentCheckedAnticoag($patient->id);
-          if ($anticoag) {
-              switch ($anticoag->has_risk) {
-                case '0' :
-                  return 'No (' . Helper::convertMySQL2NHS($anticoag->element->event->event_date) . ')';
-                case '1' :
-                  return 'Yes - ' . $anticoag->comments . ' (' . Helper::convertMySQL2NHS($anticoag->element->event->event_date) . ')';
-              }
-          }
-      }
-      return "Not Checked";
-      }
+        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+        if ($exam_api) {
+            $anticoag = $exam_api->getRiskByName($patient, 'Anticoagulants');
+            if ($anticoag) {
+                return $anticoag->getDisplayHasRisk() . ($anticoag->comments ? ' - ' . $anticoag->comments : '') . '(' . Helper::convertMySQL2NHS($anticoag->element->event->event_date) . ')';
+            }
+        }
+    }
 }

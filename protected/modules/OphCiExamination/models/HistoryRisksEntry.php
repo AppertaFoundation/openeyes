@@ -28,7 +28,7 @@ namespace OEModule\OphCiExamination\models;
  * @property int $id
  * @property int $element_id
  * @property int $risk_id
- * @property boolean $has_risk
+ * @property int $has_risk
  * @property string $other
  * @property string $comments
  *

@@ -21,6 +21,7 @@ namespace OEModule\OphCiExamination\components;
  */
 
 use OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\widgets\HistoryRisks;
 use Patient;
 
 class OphCiExamination_API extends \BaseAPI
@@ -2232,48 +2233,36 @@ class OphCiExamination_API extends \BaseAPI
         return $str;
     }
 
+    protected $widget_cache = array();
+
     /**
-     * @param $patientId
+     * NB. caching on this needs to be enhanced to index by data parameters.
      *
-     * @return array|mixed|null
+     * @param $class_name
+     * @param $data
+     * @return mixed
      */
-    public function mostRecentCheckedAnticoag($patient_id)
+    protected function getWidget($class_name, $data)
     {
-      $risk_id = \Yii::app()->db->createCommand()->select('id')->from('ophciexamination_risk')->where('name=:name', array(':name' => 'Anticoagulants'))->queryScalar();
-      return $this->risksByTypeForPatient($risk_id, $patient_id);
+        if (!array_key_exists($class_name, $this->widget_cache)) {
+            $this->widget_cache[$class_name] = $this->yii->getWidgetFactory()
+                ->createWidget($this, $class_name, $data);
+            $this->widget_cache[$class_name]->init();
+        }
+        return $this->widget_cache[$class_name];
     }
 
     /**
-     * @param $patientId
+     * @TODO: convert to returning string summary or structured data to abstract away from model
      *
-     * @return array|mixed|null
+     * @param $patient
+     * @param $risk_name
+     * @return mixed
      */
-    public function mostRecentCheckedAlpha($patient_id)
-    {
-      $risk_id = \Yii::app()->db->createCommand()->select('id')->from('ophciexamination_risk')->where('name=:name', array(':name' => 'Alpha blockers'))->queryScalar();
-      return $this->risksByTypeForPatient($risk_id, $patient_id);
-    }
-
-    /**
-     * @param $risk_id
-     * @param $patient_id
-     *
-     * @return BaseEventTypeElement
-     */
-    public function risksByTypeForPatient($risk_id, $patient_id)
-    {
-      $criteria = new \CDbCriteria();
-      $criteria->join = 'join et_ophciexamination_history_risks et_risk on t.element_id = et_risk.id ';
-      $criteria->join .= 'join ophciexamination_risk risk on t.risk_id = risk.id ';
-      $criteria->join .= " join event ON et_risk.event_id = event.id";
-      $criteria->join .= " join episode ON event.episode_id = episode.id";
-      $criteria->join .= " join patient ON episode.patient_id = patient.id";
-      $criteria->addCondition('t.risk_id = :type_id');
-      $criteria->addCondition('event.deleted <> 1');
-      $criteria->addCondition('episode.patient_id = :patient_id');
-      $criteria->addCondition('risk.active = 1');
-      $criteria->params = array(':patient_id' => $patient_id, ':type_id' => $risk_id);
-      $criteria->order = 'event_date desc, created_date desc';
-      return \OEModule\OphCiExamination\models\HistoryRisksEntry::model()->find($criteria);
+    public function getRiskByName($patient, $risk_name) {
+        $widget = $this->getWidget(
+            'OEModule\OphCiExamination\widgets\HistoryRisks',
+            array('mode' => HistoryRisks::$DATA_MODE, 'patient' => $patient));
+        return $widget->element->getRiskEntryByName($risk_name);
     }
 }

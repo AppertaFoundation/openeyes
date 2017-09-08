@@ -1,34 +1,11 @@
 <?php
-$exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
-if($exam_api){
-  $alpha = $exam_api->mostRecentCheckedAlpha($this->patient->id);
-  $alpha_result = "Not Checked";
-  if ($alpha && isset($alpha->has_risk)){
-    switch ($alpha->has_risk){
-      case '0' :
-      $alpha_result =  'No (' . Helper::convertMySQL2NHS($alpha->element->event->event_date) . ')';
-      break;
-      case '1' :
-      $alpha_result =  'Yes - ' . $alpha->comments . ' (' . Helper::convertMySQL2NHS($alpha->element->event->event_date) . ')';
-      break;
-    }
-  }
-
-  $anti = $exam_api->mostRecentCheckedAnticoag($this->patient->id);
-  $anti_result = "Not Checked";
-  if ($anti && isset($anti->has_risk)){
-    switch ($anti->has_risk){
-      case '0' :
-      $anti_result =  'No (' . Helper::convertMySQL2NHS($anti->element->event->event_date) . ')';
-      break;
-      case '1' :
-      $anti_result =  'Yes - ' . $anti->comments . ' (' . Helper::convertMySQL2NHS($anti->element->event->event_date) . ')';
-      break;
-    }
-  }
+$alpha_result = $anti_result = "Unknown";
+if ($alpha = $element->getRiskEntryByName('Alphablocker')) {
+    $alpha_result = $alpha->getDisplayHasRisk() . ($alpha->comments ? ' - ' . $alpha->comments : '') . '(' . Helper::convertMySQL2NHS($alpha->element->event->event_date) . ')';
 }
-?>
-
+if ($anti = $element->getRiskEntryByName('Anticoagulant')) {
+    $anti_result = $anti->getDisplayHasRisk() . ($alpha->comments ? ' - ' . $alpha->comments : '') . '(' . Helper::convertMySQL2NHS($alpha->element->event->event_date) . ')';
+} ?>
 
 <div class="mdl-cell mdl-cell--4-col">
   <div class="mdl-card mdl-shadow--2dp">
