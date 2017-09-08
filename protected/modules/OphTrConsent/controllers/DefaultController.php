@@ -363,7 +363,7 @@ class DefaultController extends BaseEventTypeController
         $curr_by_id = array();
         foreach ($element->anaesthetic_type as $type) {
             $curr_by_id[$type->id] = OphTrConsent_Procedure_AnaestheticType::model()->findByAttributes(array(
-                'et_ophtroperationnote_anaesthetic_id' => $this->id,
+                'et_ophtrconsent_procedure_id' => $element->id,
                 'anaesthetic_type_id' => $type->id
             ));
         }
