@@ -59,7 +59,7 @@ class MedicationDrug extends BaseActiveRecordVersioned
     public function behaviors()
     {
         return array(
-            TaggedActiveRecordBehavior::class
+            'TaggedActiveRecordBehavior' => 'TaggedActiveRecordBehavior'
         );
     }
 
@@ -88,8 +88,6 @@ class MedicationDrug extends BaseActiveRecordVersioned
             'external_source' => 'Source',
             'aliases' => 'Aliases',
             'tags' => 'Tags',
-            'tags.name' => 'Tags',
-            'tagnames' => 'Tags'
         );
     }
 

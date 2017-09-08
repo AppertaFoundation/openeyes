@@ -40,6 +40,13 @@ class DefaultController extends \BaseEventTypeController
         'dismissCVIalert' => self::ACTION_TYPE_FORM
     );
 
+    /**
+     * Set to true if the index search bar should appear in the header when creating/editing the event
+     *
+     * @var bool
+     */
+    protected $show_index_search = true;
+
     // if set to true, we are advancing the current event step
     private $step = false;
 
@@ -334,18 +341,18 @@ class DefaultController extends \BaseEventTypeController
 
         parent::renderElement($element, $action, $form, $data, $view_data, $return, $processOutput);
     }
+
     /**
      * Advance the workflow step for the event if requested.
      *
      * @param Event $event
      *
-     * @throws CException
+     * @throws \CException
      */
     protected function afterUpdateElements($event)
     {
         parent::afterUpdateElements($event);
         $this->persistPcrRisk();
-
         if ($this->step) {
             // Advance the workflow
             if (!$assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
@@ -1135,6 +1142,18 @@ class DefaultController extends \BaseEventTypeController
     protected function setAndValidateElementsFromData($data)
     {
         $errors = parent::setAndValidateElementsFromData($data);
+
+        if ($history_meds = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryMedications')) {
+            if ($history_meds->hasRisks()) {
+                if (!$this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryRisks')) {
+                    if (!array_key_exists($this->event_type->name, $errors)) {
+                        $errors[$this->event_type->name] = array();
+                    }
+                    $errors[$this->event_type->name][] = 'History Risks element is required when History Medications has entries with associated Risks';
+                }
+            }
+        }
+
         if (isset($data['patientticket_queue']) && $api = Yii::app()->moduleAPI->get('PatientTicketing')) {
             $co_sid = @$data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];
             $status = models\OphCiExamination_ClinicOutcome_Status::model()->findByPk($co_sid);

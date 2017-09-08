@@ -23,7 +23,7 @@ $route_options = CHtml::listData($element->getRouteOptions(), 'id', 'name');
 $frequency_options = CHtml::listData($element->getFrequencyOptions(), 'id', 'name');
 $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', 'name');
 ?>
-
+<script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <div class="element-fields" id="<?= $model_name ?>_element">
 

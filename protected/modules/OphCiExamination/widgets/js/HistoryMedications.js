@@ -24,6 +24,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.$element = this.options.element;
     this.$table = this.$element.find('table');
     this.templateText = this.$element.find('.entry-template').text();
+    this.drugsByRisk = {};
     this.initialiseFilters();
     this.initialiseTriggers();
   }
@@ -223,6 +224,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       $container.find(this.options.medicationDisplaySelector).show();
       $container.find(this.options.medicationSearchSelector).hide();
       $container.find(this.options.drugSelectSelector).hide();
+
+      this.processRisks(item);
   };
 
   HistoryMedicationsController.prototype.loadDrugDefaults = function($row, item)
@@ -237,6 +240,40 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
               }
           }
       });
+  };
+
+  /**
+   * From the tags on the given item, retrieve the associated risks and update the core
+   * register accordingly.
+   *
+   * @param item
+   */
+  HistoryMedicationsController.prototype.processRisks = function(item)
+  {
+      if (!item.hasOwnProperty('tags')) {
+          return;
+      }
+      var self = this;
+      $.getJSON('/OphCiExamination/Risks/forTags', { tag_ids: item.tags.join(",") }, function (res) {
+          self.addDrugForRisks(item.name, res);
+      });
+  };
+
+  /**
+   * send this drug name and associated risks to the core manager for inclusion in history risks
+   *
+   * @param drugName
+   * @param risks
+   */
+  HistoryMedicationsController.prototype.addDrugForRisks = function(drugName, risks)
+  {
+      risksMap = [];
+      for (var i in risks) {
+          if (risks.hasOwnProperty(i)) {
+              risksMap.push({id: risks[i], comments: [drugName]})
+          }
+      }
+      exports.HistoryRisks.addRisksForSource(risksMap, 'Medications');
   };
 
   HistoryMedicationsController.prototype.resetSearchRow = function($container, showSearch)
@@ -259,7 +296,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.showDate = function($row, $type)
   {
     var $wrapper = $row.find('.' + $type + '-date-wrapper');
-    console.log($wrapper);
     $wrapper.show();
     var $fuzzyFieldset = $wrapper.parents('fieldset');
     var date = this.dateFromFuzzyFieldSet($fuzzyFieldset);
@@ -271,7 +307,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController.prototype.cancelDate = function($row, $type)
   {
     var $wrapper = $row.find('.' + $type + '-date-wrapper');
-    console.log($wrapper);
     $wrapper.hide();
     var $fuzzyFieldset = $wrapper.parents('fieldset');
     $fuzzyFieldset.find('input[type="hidden"]').val('');
@@ -385,9 +420,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         e.preventDefault();
         var $kindDisplay = controller.$element.find('.' + $(this).data('kind') + '-kind');
         $kindDisplay.toggle();
+        var overflowContainer = controller.$element.parents('.oe-popup-overflow');
         if ($kindDisplay.is(':visible')) {
             // hide the show toggle
             controller.$element.find(controller.options.kindToggleSelector + '.show').hide();
+            // in the summary popup, we want to scroll to the stopped drugs if they aren't visible
+            if (overflowContainer.length) {
+                OpenEyes.UI.Widgets.PatientSummaryPopup.addHeight($kindDisplay.height());
+                if ($kindDisplay.position().top > overflowContainer.height()) {
+                    overflowContainer.scrollTop($kindDisplay.position().top);
+                }
+            }
         } else {
             controller.$element.find(controller.options.kindToggleSelector + '.show').show();
         }

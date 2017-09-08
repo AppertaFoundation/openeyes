@@ -43,7 +43,7 @@ class MedicationController extends BaseAdminController
             'external_code',
             'external_source',
             'aliases',
-            'tagnames'
+            'tags'
         ));
 
         $admin->getSearch()->addSearchItem('name, aliases');
@@ -120,7 +120,7 @@ class MedicationController extends BaseAdminController
                 'relation_field_id' => 'id',
                 'label' => 'Tags',
                 'htmlOptions' => array(
-                    'autocomplete_url' => $this->createAbsoluteUrl('/oeadmin/formularyDrugs/tagsAutocomplete')
+                    'autocomplete_url' => $this->createAbsoluteUrl('/oeadmin/drug/tagsAutocomplete')
                 )
             ),
         ));

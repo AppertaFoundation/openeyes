@@ -18,6 +18,7 @@
 
     var container;
     var popup;
+    var trackedHeight;
     var popupOverflow;
     var popupOverflowAlert;
     var buttons;
@@ -27,6 +28,7 @@
     var sticky = false;
     var hideTimer = 0;
     var hoverTimer = 0;
+    var needsScroll = undefined;
 
     function update() {
         popup.add(buttons).add(helpHint).trigger('update');
@@ -51,12 +53,10 @@
                 clearTimeout(hideTimer);
                 popup.show();
 
-                if (popupOverflow.height() > 415) {
-                    popupOverflow.addClass('limit');
-                    popupOverflowAlert.show();
-                } else {
-                    popupOverflowAlert.hide();
+                if (needsScroll === undefined) {
+                    setScrollingProperties();
                 }
+
                 // Re-define the transitions on the popup to be none.
                 popup.addClass('clear-transition');
                 // Trigger a re-flow to reset the starting position of the transitions, now
@@ -93,20 +93,12 @@
                     button
                         .removeClass(showIcon + ' ' + hideIcon)
                         .addClass(stuck ? hideIcon : showIcon);
-                    if (popupOverflow.hasClass('limit')) {
-                        if (stuck) {
-                            popupOverflow.addClass('scroll');
-                            popupOverflowAlert.hide();
-                        } else {
-                            popupOverflow.removeClass('scroll');
-                            popupOverflowAlert.show();
-                        }
-                    }
                 }
 
             },
             click: function() {
                 stuck = !stuck;
+                updateScrollingCss();
                 update();
             }
         });
@@ -128,6 +120,50 @@
         });
     }
 
+    function setScrollingProperties() {
+        // FIXME: this ain't working cos the limit style is maxing the height. Needs thought.
+        if (trackedHeight === undefined) {
+            trackedHeight = popupOverflow.height();
+        }
+        if (trackedHeight > 415) {
+            popupOverflow.addClass('limit');
+            needsScroll = true;
+            popupOverflowAlert.show();
+        } else {
+            popupOverflow.removeClass('limit');
+            needsScroll = false;
+            popupOverflowAlert.hide();
+        }
+    }
+
+    function updateScrollingCss() {
+        if (needsScroll) {
+            if (stuck) {
+                popupOverflow.addClass('scroll');
+                popupOverflowAlert.hide();
+            } else {
+                popupOverflow.removeClass('scroll');
+                popupOverflowAlert.show();
+            }
+        }
+    }
+
+    /**
+     * This is a naive method that simply adds to the recorded height
+     * to determine whether the scrolling class is required when content
+     * is expanded by external controllers.
+     *
+     * Tracking whether the height should be added or not is the responsibility
+     * of the external controllers.
+     *
+     * @param pixels
+     */
+    function addHeight(pixels) {
+        trackedHeight+=pixels;
+        setScrollingProperties();
+        updateScrollingCss();
+    }
+
     function refresh(patientId) {
         if (!patientId) {
             throw new Error('Patient id is required')
@@ -146,6 +182,9 @@
     $(init);
 
     // Public API
-    exports.PatientSummaryPopup = { refresh: refresh };
+    exports.PatientSummaryPopup = {
+        refresh: refresh,
+        addHeight: addHeight
+    };
 
 }(this.OpenEyes.UI.Widgets));

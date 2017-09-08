@@ -18,6 +18,18 @@
  */
 
 return array(
+    'components' => array(
+        'event' => array(
+            'observers' => array(
+                'after_medications_save' => array(
+                    'update_patient_risks' => array(
+                        'class' => 'OEModule\OphCiExamination\components\HistoryRisksManager',
+                        'method' => 'addPatientMedicationRisks'
+                    )
+                )
+            )
+        )
+    ),
     'params' => array(
         'admin_menu' => array(
             'Inject. Mgmt - No Treatment Reasons' => '/OphCiExamination/admin/viewAllOphCiExamination_InjectionManagementComplex_NoTreatmentReason',
@@ -38,7 +50,8 @@ return array(
             'Cataract surgery reasons' => '/OphCiExamination/admin/primaryReasonForSurgery',
             'Common Post-Op Complications' => '/OphCiExamination/admin/postOpComplications',
             'Invoice Statuses' => '/OphCiExamination/admin/InvoiceStatusList',
-            'Allergies' => '/OphCiExamination/admin/Allergies'
+            'Allergies' => '/OphCiExamination/admin/Allergies',
+            'Risks' => '/OphCiExamination/admin/Risks'
         ),
         'ophciexamination_drgrading_type_required' => false,
         'ophciexamination_visualacuity_correspondence_unit' => 'Snellen Metre',

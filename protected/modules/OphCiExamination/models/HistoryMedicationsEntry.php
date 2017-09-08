@@ -261,6 +261,24 @@ class HistoryMedicationsEntry extends \BaseElement
     }
 
     /**
+     * @return bool
+     */
+    public function hasRisk()
+    {
+        $med = $this->drug ? : $this->medication_drug ? : null;
+
+        if ($med) {
+            return count(OphCiExaminationRisk::findForTagIds(array_map(
+                function($t) {
+                    return $t->id;
+                }, $med->tags
+            ))) > 0;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * @return string
      */
     public function getMedicationDisplay()

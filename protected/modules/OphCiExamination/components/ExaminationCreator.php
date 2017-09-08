@@ -27,6 +27,11 @@ class ExaminationCreator
 {
     protected $examinationEyeId;
 
+    public function __construct()
+    {
+        echo \Yii::app()->params['optom_comment_alert'] . "\n";
+    }
+
     /**
      * Create an examination event.
      *
