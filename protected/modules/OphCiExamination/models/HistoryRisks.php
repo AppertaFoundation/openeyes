@@ -79,13 +79,13 @@ class HistoryRisks extends \BaseEventTypeElement
                 self::HAS_MANY,
                 'OEModule\OphCiExamination\models\HistoryRisksEntry',
                 'element_id',
-                'condition' => 'has_risk is null'
+                'condition' => 'has_risk = -9'
             ),
             'present' => array(
                 self::HAS_MANY,
                 'OEModule\OphCiExamination\models\HistoryRisksEntry',
                 'element_id',
-                'condition' => 'has_risk = true'
+                'condition' => 'has_risk = 1'
             ),
             'not_present' => array(
                 self::HAS_MANY,
@@ -225,7 +225,7 @@ class HistoryRisks extends \BaseEventTypeElement
         if ($attribute === \CHtml::modelName($this) . '_entries') {
             // TODO: handle highlighting the "other" text field once that validation is in place.
             if (preg_match('/^(\d+)/', $message, $match) === 1) {
-                return $attribute .'_' . ($match[1]-1) . '_risk_id';
+                return $attribute .'_' . ($match[1]-1) . '_risk_id_error';
             }
         }
         return parent::errorAttributeException($attribute, $message);
