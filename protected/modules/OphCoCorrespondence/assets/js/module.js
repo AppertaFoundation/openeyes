@@ -781,6 +781,32 @@ $(document).ready(function() {
 		$(this).closest('tr').remove();
 	});
 
+	$('#attachments_content_container').on('change', 'select#description', function(e){
+        $select = $(this);
+        if($select.val() > 0){
+            $.ajax({
+                'type': 'POST',
+                'url': baseUrl + '/OphCoCorrespondence/Default/getInitMethodDataById',
+                'data' :{YII_CSRF_TOKEN: YII_CSRF_TOKEN, id: $select.val() , 'patient_id': OE_patient_id},
+                'success': function(response) {
+                    if(response.success == 1){
+                    	$last_row = $('#attachments_content_container').find('#correspondence_attachments_table_last_row');
+
+                    	$content = $(response.content);
+                        $last_row.before($content);
+
+                        $data_id = parseInt($last_row.attr("data-id"));
+                        $content.attr('data-id', $data_id);
+                        $content.find('.attachments_event_id').attr('name', 'attachments_event_id[' + $data_id+ ']');
+
+                        $last_row.attr('data-id', $data_id + 1);
+                        $select.val('');
+                    }
+                }
+            });
+        }
+    });
+
 });
 
 var et_oph_correspondence_body_cursor_position = 0;

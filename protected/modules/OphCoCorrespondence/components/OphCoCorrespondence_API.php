@@ -701,7 +701,8 @@ class OphCoCorrespondence_API extends BaseAPI
         if (isset($event)) {
             return json_encode( array(
                 'id' => $event->id,
-                'event_date' => Helper::convertDate2NHS($event->event_date)
+                'event_date' => Helper::convertDate2NHS($event->event_date),
+                'event_name' => $event->eventType->name
             ));
 
         }
@@ -712,10 +713,12 @@ class OphCoCorrespondence_API extends BaseAPI
     {
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
         $event = $api->getLatestEvent($patient, true);
+
         if (isset($event)) {
             return json_encode( array(
                 'id' => $event->id,
-                'event_date' => Helper::convertDate2NHS($event->event_date)
+                'event_date' => Helper::convertDate2NHS($event->event_date),
+                'event_name' => $event->eventType->name
             ));
 
         }
@@ -735,7 +738,8 @@ class OphCoCorrespondence_API extends BaseAPI
         if (isset($event)) {
             return json_encode( array(
                 'id' => $event->id,
-                'event_date' => Helper::convertDate2NHS($event->event_date)
+                'event_date' => Helper::convertDate2NHS($event->event_date),
+                'event_name' => $event->eventType->name
             ));
 
         }
@@ -750,7 +754,8 @@ class OphCoCorrespondence_API extends BaseAPI
         if (isset($event)) {
             return json_encode( array(
                 'id' => $event->id,
-                'event_date' => Helper::convertDate2NHS($event->event_date)
+                'event_date' => Helper::convertDate2NHS($event->event_date),
+                'event_name' => $event->eventType->name
             ));
 
         }
@@ -765,7 +770,8 @@ class OphCoCorrespondence_API extends BaseAPI
         if (isset($event)) {
             return json_encode( array(
                 'id' => $event->id,
-                'event_date' => Helper::convertDate2NHS($event->event_date)
+                'event_date' => Helper::convertDate2NHS($event->event_date),
+                'event_name' => $event->eventType->name
             ));
 
         }
