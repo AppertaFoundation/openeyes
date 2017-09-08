@@ -27,6 +27,19 @@ class DefaultController extends BaseEventTypeController
     public $booking_event;
     public $booking_operation;
     public $unbooked = false;
+
+    protected function beforeAction($action)
+    {
+        //adding Anaestethic JS
+        $url = Yii::app()->getAssetManager()->publish( Yii::getPathOfAlias('application.modules.OphTrOperationnote.assets.js') );
+        Yii::app()->clientScript->registerScriptFile($url . '/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
+        Yii::app()->clientScript->registerScript(
+            'AnaestheticController',
+            'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrConsent_Procedure_AnaestheticType\'});',CClientScript::POS_END);
+
+        return parent::beforeAction($action);
+    }
+
     /**
      * Set up procedures from booking event.
      *
@@ -39,7 +52,34 @@ class DefaultController extends BaseEventTypeController
             $element->booking_event_id = $this->booking_event->id;
             if ($this->booking_operation) {
                 $element->eye_id = $this->booking_operation->eye_id;
-                $element->anaesthetic_type_id = $this->booking_operation->anaesthetic_type_id;
+
+                $type_assessments_by_id = array();
+                foreach ($element->anaesthetic_type_assignments as $type_assignments) {
+                    $type_assessments_by_id[$type_assignments->anaesthetic_type_id] = $type_assignments;
+                }
+
+                //$element->anaesthetic_type_id = $this->booking_operation->anaesthetic_type_id;
+                $anaesthetic_types = array();
+                if ($this->booking_operation->anaesthetic_type) {
+                    foreach ($this->booking_operation->anaesthetic_type as $anaesthetic_type) {
+
+                        if( !array_key_exists($anaesthetic_type->id, $type_assessments_by_id) ){
+                            $anaesthetic_type_assesment = new OphTrConsent_Procedure_AnaestheticType();
+                        } else {
+                            $anaesthetic_type_assesment = $type_assessments_by_id[$anaesthetic_type->id];
+                        }
+
+                        $anaesthetic_type_assesment->et_ophtrconsent_procedure_id = $element->id;
+                        $anaesthetic_type_assesment->anaesthetic_type_id = $anaesthetic_type->id;
+
+                        $type_assessments[] = $anaesthetic_type_assesment;
+                        $anaesthetic_types[] = $anaesthetic_type;
+                    }
+
+                    $element->anaesthetic_type_assignments = $type_assessments;
+                    $element->anaesthetic_type = $anaesthetic_types;
+                }
+
                 $element->procedures = $this->booking_operation->procedures;
                 $additional = array();
                 $additional_ids = array();
@@ -314,6 +354,39 @@ class DefaultController extends BaseEventTypeController
             $type->draft = 0;
             if (!$type->save()) {
                 throw new Exception('Unable to mark consent form printed: '.print_r($type->getErrors(), true));
+            }
+        }
+    }
+
+    protected function saveComplexAttributes_Element_OphTrConsent_Procedure($element, $data, $index)
+    {
+        $curr_by_id = array();
+        foreach ($element->anaesthetic_type as $type) {
+            $curr_by_id[$type->id] = OphTrConsent_Procedure_AnaestheticType::model()->findByAttributes(array(
+                'et_ophtroperationnote_anaesthetic_id' => $this->id,
+                'anaesthetic_type_id' => $type->id
+            ));
+        }
+
+        if (isset($data['AnaestheticType']) && !empty($data['AnaestheticType'])) {
+            foreach ($data['AnaestheticType'] as $type_id) {
+                if (!isset($curr_by_id[$type_id])) {
+                    $type = new OphTrConsent_Procedure_AnaestheticType();
+                    $type->et_ophtrconsent_procedure_id = $element->id;
+                    $type->anaesthetic_type_id = $type_id;
+
+                    if (!$type->save()) {
+                        throw new Exception('Unable to save anaesthetic agent assignment: '.print_r($type->getErrors(), true));
+                    }
+                } else {
+                    unset($curr_by_id[$type_id]);
+                }
+            }
+        }
+
+        foreach ($curr_by_id as $type) {
+            if (!$type->delete()) {
+                throw new Exception('Unable to delete anaesthetic agent assignment: '.print_r($type->getErrors(), true));
             }
         }
     }
