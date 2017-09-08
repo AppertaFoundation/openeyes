@@ -112,10 +112,11 @@ $config = array(
         'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
         'OphInLabResults',
         'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
-        'Genetics',
+        // Uncomment next section if you want to use the genetics module
+        /*'Genetics',
         'OphInDnasample',
         'OphInDnaextraction',
-        'OphInGeneticresults',
+        'OphInGeneticresults',*/
         'OphCoDocument',
     ),
 
@@ -177,7 +178,7 @@ $config = array(
                 'client_secret' => '4c7f6f8fa93d59c45502c0ae8c4a95b',
             ),
         ),
-        'signature_app_url' => 'http://tiny.cc/oe-sign',
+        'signature_app_url' => 'https://dev.oesign.uk',
         'docman_export_dir' => '/tmp/docman',
         'docman_login_url' => 'http://localhost/site/login',
         'docman_user' => 'admin',

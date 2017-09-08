@@ -115,7 +115,7 @@ OpenEyes.OphCiExamination.SystemicDiagnosesController = (function() {
     this.$sideFld.prop('checked', false);
     this.$dateFieldSet.find('select[name="fuzzy_day"] option:selected').prop('selected', false);
     this.$dateFieldSet.find('select[name="fuzzy_month"] option:selected').prop('selected', false);
-    this.$dateFieldSet.find('select[name="fuzzy_month"] option:last').prop('selected', true);
+    this.$dateFieldSet.find('select[name="fuzzy_year"] option:last').prop('selected', true);
   };
 
   /**

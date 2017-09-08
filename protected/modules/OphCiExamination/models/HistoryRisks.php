@@ -163,7 +163,7 @@ class HistoryRisks extends \BaseEventTypeElement
             }
         }
 
-        if ($this->getScenario() != 'migration') {
+        if (!in_array($this->getScenario(),array('migration', 'auto'))) {
             // ensure required risks have been provided.
             $missing_required = array();
             foreach ($this->getRequiredRisks() as $required) {

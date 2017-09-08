@@ -52,10 +52,15 @@
                     ?>;
 		for (k = 0; k < errorObject.length; k++) {
 			//$('[id*=' + errorObject[k] + ']').addClass('highlighted-error');
-			if ($('#' + errorObject[k]).length) {
-				if(! $('#' + errorObject[k]).parent().hasClass('highlighted-error')) {
-					$('#' + errorObject[k]).wrap("<div class='highlighted-error'></div>");
-				}
+      var $field = $('#' + errorObject[k]);
+			if ($field.length) {
+			  if ($field.is('tr')) {
+			    $field.addClass('highlighted-error');
+        } else {
+          if(! $field.parent().hasClass('highlighted-error')) {
+            $field.wrap("<div class='highlighted-error'></div>");
+          }
+        }
 			} else {
 				if(! $('[id*="' + errorObject[k] + '"]').parent().hasClass('highlighted-error')) {
 					$('[id*="' + errorObject[k] + '"]:not(:hidden)').wrap("<div class='highlighted-error'></div>");

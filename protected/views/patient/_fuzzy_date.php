@@ -33,7 +33,8 @@ if (isset($date)) {
 		<?php echo $label;?>:
 	</legend>
 	<div class="<?php echo $fieldColumns;?>">
-		<div class="row">
+        <?php // TODO: reconcile this with the field abstraction (the field abstraction is using classes for the fields, not names) ?>
+        <div class="row">
 			<div class="large-4 column">
 				<select name="fuzzy_day">
 					<option value="0">Day (optional)</option>

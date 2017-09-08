@@ -1198,86 +1198,86 @@ $(document).ready(function() {
 
         $(this).next('select').val(value).change();
     });
-        
+
         /** Post Operative Complication  Event Bindings **/
 
         $('#event-content').on('change', '#OphCiExamination_postop_complication_operation_note_id-select', function(){
-            
+
             var element_id = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_PostOpComplications_id').val();
             var operation_note_id = $(this).val();
             var element_string = "";
-            
+
             if(element_id !== ""){
                 element_string = '/element_id/' + element_id;
             }
-            
+
             $.getJSON( baseUrl + '/OphCiExamination/default/getPostOpComplicationList' + element_string + '/operation_note_id/' + operation_note_id, function( data ) {
-                
+
                 var $right_table = $('#right-complication-list');
                 var $left_table = $('#left-complication-list');
-                
+
                 $('#right-complication-list tr, #left-complication-list tr').remove();
-                
+
                 $.each( data.right_values, function( key, val ) {
                     addPostOpComplicationTr(val.name, 'right-complication-list', val.id, val.display_order);
-                    
+
                 });
                 $.each( data.left_values, function( key, val ) {
                     addPostOpComplicationTr(val.name, 'left-complication-list', val.id, val.display_order);
                 });
-                
+
                 setPostOpComplicationTableText();
-                
+
                 $('#left-complication-select option').remove();
                 $('#right-complication-select option').remove();
-                
+
                 $('#right-complication-select').append( $('<option>').text("-- Select --") );
                 $.each( data.right_select, function( key, val ) {
                     $('#right-complication-select').append( $('<option>', {value: val.id, 'data-display_order':val.display_order}).text(val.name) );
                 });
-                
+
                 $('#left-complication-select').append( $('<option>').text("-- Select --") );
                 $.each( data.left_select, function( key, val ) {
                     $('#left-complication-select').append( $('<option>', {value: val.id, 'data-display_order':val.display_order}).text(val.name) );
                 });
-                
+
             });
         });
-        
+
         $("#event-content").on('change', '#right-complication-select, #left-complication-select', function(){
-            
+
             // https://bugs.jquery.com/ticket/9335
             // Chrome triggers "change" on .blur() if the value of the select has changed, so we do a blur before any changes
             $(this).blur();
-            
+
             var table_id = $(this).attr('id').replace('select', 'list');
             var selected_text = $( '#' + $(this).attr('id') + " option:selected").text();
             var select_value = $(this).val();
-            
+
             if(select_value >= 0){
                 addPostOpComplicationTr(selected_text, table_id, select_value, $(this).find('option:selected').data('display_order')  );
                 $(this).find('option:selected').remove();
                 setPostOpComplicationTableText();
             }
-            
+
         });
-        
+
         $('#event-content').on('click','a.postop-complication-remove-btn', function(){
-            
+
             var value = $(this).parent().find('input[type=hidden]').val();
             var text = $(this).closest('tr').find('.postop-complication-name').text();
 
             var select_id = $(this).closest('table').attr('id').replace('list', 'select');
-            
+
             $select = $('#' + select_id);
             $select.append( $('<option>',{value: value}).text(text));
-            
+
             $(this).closest('tr').remove();
-            
+
             setPostOpComplicationTableText();
-            
+
         });
-        
+
         /** End of Post Operative Complication Event Bindings **/
 
         /* Visual Acuity readings event binding */
@@ -1355,7 +1355,7 @@ $(document).ready(function() {
             $active_form.find('h5.no-recorded').hide();
         }
     }
-        
+
     function addPostOpComplicationTr(selected_text, table_id, select_value, display_order)
     {
 
@@ -1365,7 +1365,7 @@ $(document).ready(function() {
         var $td_name = $('<td>', {class: "postop-complication-name"}).text(selected_text);
 
         var $hidden_input = $("<input>", {
-            type:"hidden", 
+            type:"hidden",
             id:'complication_items_' + $table.data('sideletter') + '_' + $('#' + table_id + ' tr').length,
             name: 'complication_items[' + $table.data('sideletter') + '][' + $('#' + table_id + ' tr').length +']',
             value: select_value,
@@ -1379,7 +1379,7 @@ $(document).ready(function() {
         $tr.append($td_action);
         $table.append( $tr );
     }
-    
+
     /** End of Post Operative Complication function **/
 
 
@@ -1747,6 +1747,9 @@ function OphCiExamination_NearVisualAcuity_init() {
 function OphCiExamination_DRGrading_dirtyCheck(_drawing) {
     var dr_grade = $('.' + OE_MODEL_PREFIX+dr_grade_et_class);
     var grades = gradeCalculator(_drawing);
+    if (grades === false)
+      return;
+
     var retinopathy = grades[0],
         maculopathy = grades[1],
         ret_photo		= grades[2] ? '1' : '0',
@@ -1903,18 +1906,13 @@ function OphCiExamination_PosteriorPole_init() {
 
             if (!$('#drgrading_dirty').is(":visible")) {
                 var grades = gradeCalculator(_drawing);
-
-                updateDRGrades(_drawing, grades[0], grades[1], grades[2], grades[3], grades[4], grades[5]);
+                if (grades !== false)
+                    updateDRGrades(_drawing, grades[0], grades[1], grades[2], grades[3], grades[4], grades[5]);
             }
         };
 
-        if (ED.getInstance(drawingName)) {
-            func();
-        }
-        else {
-            edChecker = getOEEyeDrawChecker();
-            edChecker.registerForReady(func);
-        }
+        edChecker = getOEEyeDrawChecker();
+        edChecker.registerForReady(func);
     });
 }
 

@@ -92,20 +92,21 @@ if (!isset($uniqueid)) {
                                 ?>
                                 <td>
                                     <?php
-                                    if (gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
+                                    $attr_val = $admin->attributeValue($row, $listItem);
+                                    if (gettype($attr_val) === 'boolean'):
                                         if ($admin->attributeValue($row, $listItem)):
                                             ?><i class="fa fa-check"></i><?php
                                         else:
                                             ?><i class="fa fa-times"></i><?php
                                         endif;
-                                    elseif(gettype($admin->attributeValue($row, $listItem)) === 'array'):
+                                    elseif(gettype($attr_val) === 'array'):
                                         echo implode(',', $admin->attributeValue($row, $listItem));
                                     elseif ($listItem === 'display_order'):
                                         ?>
                                         &uarr;&darr;<input type="hidden" name="<?php echo $admin->getModelName(); ?>[display_order][]" value="<?php echo $row->id ?>">
                                         <?php
                                     else:
-                                        echo $admin->attributeValue($row, $listItem);
+                                        echo $attr_val;
                                     endif
                                     ?>
                                 </td>

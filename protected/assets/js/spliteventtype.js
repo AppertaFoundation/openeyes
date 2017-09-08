@@ -130,5 +130,7 @@ $(document).ready(function() {
 		element.find('.side.inactive').removeClass('inactive');
 
 		e.preventDefault();
+		var checker = getOEEyeDrawChecker();
+		checker.resync();
 	});
 });

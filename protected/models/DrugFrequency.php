@@ -113,4 +113,9 @@ class DrugFrequency extends BaseActiveRecordVersioned
             'criteria' => $criteria,
         ));
     }
+
+    public function __toString()
+    {
+        return $this->long_name;
+    }
 }

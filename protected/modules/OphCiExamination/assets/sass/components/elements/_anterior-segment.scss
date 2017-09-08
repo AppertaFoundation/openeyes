@@ -30,3 +30,14 @@
 .anterior-segment .ed-widget.display {
 	display: inline-block;
 }
+
+.OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment {
+	background-color: #e4edf5;
+	.sub-elements {
+		&.active {
+			display: inline-block;
+			width: 100%;
+		}
+
+	}
+}

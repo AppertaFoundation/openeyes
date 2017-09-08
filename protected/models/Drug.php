@@ -39,6 +39,8 @@
  */
 class Drug extends BaseActiveRecordVersioned
 {
+    protected $auto_update_relations = true;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -70,7 +72,8 @@ class Drug extends BaseActiveRecordVersioned
         return array(
             array('name, tallman', 'required'),
             array('name', 'unsafe', 'on' => 'update'),
-            array('tallman, dose_unit, default_dose, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe'),
+            array('tallman, dose_unit, default_dose, type_id, form_id, default_duration_id, default_frequency_id, '
+                .'default_route_id, preservative_free, active, allergies, aliases, national_code, tags', 'safe'),
         );
     }
 
@@ -87,7 +90,7 @@ class Drug extends BaseActiveRecordVersioned
             'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'default_frequency_id'),
             'default_route' => array(self::BELONGS_TO, 'DrugRoute', 'default_route_id'),
             'subspecialtyAssignments' => array(self::HAS_MANY, 'SiteSubspecialtyDrug', 'drug_id'),
-            'tags' => array(self::MANY_MANY, 'Tag', 'drug_tag(tag_id, drug_id)'),
+            'tags' => array(self::MANY_MANY, 'Tag', 'drug_tag(drug_id, tag_id)'),
         );
     }
 
@@ -107,6 +110,7 @@ class Drug extends BaseActiveRecordVersioned
     public function behaviors()
     {
         return array(
+            'TaggedActiveRecordBehavior' => 'TaggedActiveRecordBehavior',
             'LookupTable' => 'LookupTable',
         );
     }
@@ -194,5 +198,10 @@ class Drug extends BaseActiveRecordVersioned
     public function isPreservativeFree()
     {
         return in_array(1, array_map(function($e){ return $e->id; }, $this->tags));
+    }
+
+    public function __toString()
+    {
+        return $this->getLabel();
     }
 }
