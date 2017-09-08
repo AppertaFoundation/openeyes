@@ -380,7 +380,6 @@ function show_results(){
       if (parameters['goto_subcontainer']) {
         container = container.find('.'+parameters['goto_subcontainer'].replace('%position',last_search_pos));
       }
-      console.log(container);
       container.find(`${parameters['goto_tag']}:contains(${parameters['goto_text']})`).effect("highlight", {}, 6000); //if want whole row highlight hightlight parent if not div or fieldset
       reject();
     });
