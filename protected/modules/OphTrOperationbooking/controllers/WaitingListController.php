@@ -178,14 +178,12 @@ class WaitingListController extends BaseModuleController
     {
         YiiSession::set('waitinglist_searchoptions', 'subspecialty-id', $_POST['subspecialty_id']);
 
-        echo CHtml::tag('option', array('value' => ''), CHtml::encode('All firms'), true);
+        echo CHtml::tag('option', array('value' => ''), CHtml::encode("All ".Yii::app()->params['service_firm_label']."s"), true);
 
-        if (!empty($_POST['subspecialty_id'])) {
-            $firms = $this->getFilteredFirms($_POST['subspecialty_id']);
+        $firms = $this->getFilteredFirms($_POST['subspecialty_id']);
 
-            foreach ($firms as $id => $name) {
-                echo CHtml::tag('option', array('value' => $id), CHtml::encode($name), true);
-            }
+        foreach ($firms as $id => $name) {
+            echo CHtml::tag('option', array('value' => $id), CHtml::encode($name), true);
         }
     }
 
@@ -241,8 +239,11 @@ class WaitingListController extends BaseModuleController
     protected function getFilteredFirms($subspecialtyId)
     {
         $criteria = new CDbCriteria();
-        $criteria->addCondition('subspecialty_id = :subspecialtyId');
-        $criteria->params[':subspecialtyId'] = $subspecialtyId;
+        if($subspecialtyId > 0){
+            $criteria->addCondition('subspecialty_id = :subspecialtyId');
+            $criteria->params[':subspecialtyId'] = $subspecialtyId;
+        }
+        $criteria->addCondition('can_own_an_episode = 1');
         $criteria->order = '`t`.name asc';
 
         return CHtml::listData(Firm::model()
