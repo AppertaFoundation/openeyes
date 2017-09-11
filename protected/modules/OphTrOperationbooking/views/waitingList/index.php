@@ -86,8 +86,8 @@
 				<table class="grid">
 					<thead>
 					<tr>
-						<th>Service:</th>
-						<th>Firm:</th>
+						<th>Subspeciality:</th>
+						<th><?php echo ucfirst(Yii::app()->params['service_firm_label']); ?>:</th>
 						<th>Next letter due:</th>
 						<th>Site:</th>
 						<th>Hospital no:</th>
@@ -102,19 +102,20 @@
                                     'type' => 'POST',
                                     'data' => array('subspecialty_id' => 'js:this.value', 'YII_CSRF_TOKEN' => Yii::app()->request->csrfToken),
                                     'url' => Yii::app()->createUrl('/OphTrOperationbooking/waitingList/filterFirms'),
-                                    'success' => "js:function(data) {
-											if ($('#subspecialty-id').val() != '') {
-												$('#firm-id').attr('disabled', false);
-												$('#firm-id').html(data);
-											} else {
-												$('#firm-id').attr('disabled', true);
-												$('#firm-id').html(data);
-											}
-										}",
+                                    'success' => "js:function(data) { $('#firm-id').html(data); }",
                                 )))?>
 						</td>
 						<td>
-							<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], $this->getFilteredFirms(@$_POST['subspecialty-id']), array('empty' => 'All firms', 'disabled' => !@$_POST['firm-id']))?>
+							<?php
+                                $filtered_firms = $this->getFilteredFirms(@$_POST['subspecialty-id']);
+
+                                $selected = (count($filtered_firms) == 1 ? reset(array_keys($filtered_firms)) : @$_POST['firm-id']);
+                                $options = array(
+                                        'disabled' => !@$_POST['firm-id'],
+                                        'empty' => "All ".Yii::app()->params['service_firm_label']."s"
+                                    );
+
+                                echo CHtml::dropDownList('firm-id', $selected , $filtered_firms, $options) ?>
 						</td>
 						<td>
 							<?php echo CHtml::dropDownList('status', @$_POST['status'], Element_OphTrOperationbooking_Operation::getLetterOptions())?>
