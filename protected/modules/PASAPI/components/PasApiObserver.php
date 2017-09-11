@@ -60,7 +60,7 @@ class PasApiObserver
 
         $resource_model = "\\OEModule\\PASAPI\\resources\\Patient";
 
-        //will be accessed at the Patient model's search function
+        //will be accessed at the \Patient model's search function
         $results = &$data['results'];
 
         $xml = $this->pasRequest($data);
@@ -104,31 +104,27 @@ class PasApiObserver
 
                 //$resource is an instance of \OEModule\PASAPI\resources\Patient
                 $resource = $resource_model::fromXml('V1', $xml_handler->readOuterXML(), array(
-                    //   'update_only' => true,
+                       //'update_only' => true,
                 ));
 
                 $resource->id = $node->HospitalNumber;
 
                 $_assignment = $resource->getAssignment();
-                $_patient = $_assignment ? $_assignment->getInternal() : null;
-
-                //XML contains a list of patients so we are building \Patient objects for those who are not in our DB
-                if (!isset($_patient) && $patient_count > 1) {
-
-                    // we do not save this Patient, just display on the patient/view page's list
-                    $patient = $this->buildPatientObject($resource);
-                    $results[] = $patient;
-                }
+                $_patient = $_assignment->getInternal();
 
                 // If the patient is in our DB or only 1 patient returned we save it
-                if ( ($_patient instanceof \Patient) || $patient_count == 1) {
+                if ( !$_patient->isNewRecord || $patient_count == 1) {
 
-                    // we could check the $_assignment->isStale() but the request already done, we have the new data, why would we throw away
+                    // we could check the $_assignment->isStale() but the request already done, we have the new data, why would we throw it away
 
                     if (!$resource->save() && ($data['patient'] instanceof \Patient)) {
                         $data['patient']->addPasError('Patient not updated from PAS, some data may be out of date or incomplete');
                         \OELog::log('PASAPI Patient resource model could not be saved. Hos num: ' . $node->HospitalNumber . ' ' . print_r($resource->errors, true));
                     }
+                } else {
+                    // we do not save this Patient, just display on the patient/view page's list
+                    $patient = $this->buildPatientObject($resource);
+                    $results[] = $patient;
                 }
 
                 $xml_handler->next('Patient');
