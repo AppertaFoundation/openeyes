@@ -114,7 +114,7 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
     };
 
     /**
-     * @TODO: determine if we need to be smarter about date parsing to submit in the form.
+     * @TODO: should be common function across history elements
      * @param fieldset
      * @returns {*}
      */

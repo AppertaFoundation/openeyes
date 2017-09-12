@@ -18,5 +18,5 @@
  */
 ?>
 <div class="element-fields">
-	<?php echo $form->textArea($element, 'comments', array('class' => 'autosize'), false, array('placeholder' => 'Enter comments'), array('label' => 3, 'field' => 9))?>
+	<?php echo $form->textArea($element, 'comments', array('class' => 'autosize', 'rows'=>1), false, array('placeholder' => 'Enter comments'), array('label' => 3, 'field' => 9))?>
 </div>

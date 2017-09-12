@@ -11,7 +11,7 @@ class m170519_155155_event_previous_operation_record extends OEMigration
 
     public function up()
 	{
-        $this->createElementType('OphCiExamination', 'Previous Ophthalmic Surgery', array(
+        $this->createElementType('OphCiExamination', 'Previous Ophthalmic History', array(
             'class_name' => 'OEModule\OphCiExamination\models\PastSurgery',
             'display_order' => 20,
             'parent_class' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_History'

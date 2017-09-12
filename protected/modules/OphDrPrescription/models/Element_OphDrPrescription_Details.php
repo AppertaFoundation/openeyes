@@ -329,11 +329,9 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                 }
                 $item_model->frequency_id = $item['frequency_id'];
                 $item_model->duration_id = $item['duration_id'];
-                if (isset($item['continue_by_gp'])) {
-                    $item_model->continue_by_gp = $item['continue_by_gp'];
-                } else {
-                    $item_model->continue_by_gp = 0;
-                }
+                $item_model->dispense_condition_id = $item['dispense_condition_id'];
+                $item_model->dispense_location_id = $item['dispense_location_id'];
+
                 $item_model->save();
 
                 // Tapering
@@ -358,6 +356,13 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             // Delete remaining (removed) ids
             OphDrPrescription_ItemTaper::model()->deleteByPk(array_values($existing_taper_ids));
             OphDrPrescription_Item::model()->deleteByPk(array_values($existing_item_ids));
+        }
+
+        if (!$this->draft) {
+            $this->getApp()->event->dispatch('after_medications_save', array(
+                'patient' => $this->event->getPatient(),
+                'drugs' => array_map(function($item) {return $item->drug; }, $this->items)
+            ));
         }
     }
 

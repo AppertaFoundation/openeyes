@@ -27,6 +27,11 @@ class ExaminationCreator
 {
     protected $examinationEyeId;
 
+    public function __construct()
+    {
+        echo \Yii::app()->params['optom_comment_alert'] . "\n";
+    }
+
     /**
      * Create an examination event.
      *
@@ -309,10 +314,9 @@ class ExaminationCreator
                     'patient' => $episode->patient,
                 ));
                 $message = $messageCreator->save('', array('event' => $examinationEvent->id));
-                $emailSetting = Yii::app()->params['optom_comment_alert'];
-
-                if($emailSetting){
-                    $recipients = explode(',', $emailSetting);
+                $emailSetting = \SettingInstallation::model()->find('`key` = "optom_comment_alert"');
+                if($emailSetting && $emailSetting->value){
+                    $recipients = explode(',', $emailSetting->value);
                     $messageCreator->emailAlert($recipients, 'New Optom Comment', $message->message_text);
                 }
             }

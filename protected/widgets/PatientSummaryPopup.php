@@ -57,11 +57,6 @@ class PatientSummaryPopup extends BaseCWidget
             $this->patient->systemicDiagnosesSummary
         );
 
-        $this->medications = implode(
-            self::$LIST_SEPARATOR,
-            $this->patient->medicationsSummary
-        );
-
         $this->allergies = implode(
             self::$LIST_SEPARATOR,
             $this->patient->allergiesSummary

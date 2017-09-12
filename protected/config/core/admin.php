@@ -46,7 +46,6 @@ return array(
                 'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
                 'Anaesthetic Agent Mapping' => '/oeadmin/AnaestheticAgentMapping/list',
                 'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list',
-                'Risks' => '/oeadmin/risk/list',
                 'Unique Codes' => '/oeadmin/uniqueCodes/list',
                 'Examination Event Logs' => '/oeadmin/eventLog/list',
                 'Patient Shortcodes' => '/admin/patientshortcodes'
@@ -65,11 +64,11 @@ return array(
                 'Drug Sets' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/DrugSetAdmin/list'),
                 'Common Medications List ' => '/oeadmin/commonMedications/list',
                 'Medication List' => '/oeadmin/medication/list',
-                'Formulary Drugs' => '/oeadmin/formularyDrugs/list',
+                'Formulary Drugs' => '/oeadmin/drug/list',
                 'Per Op Drugs' => array('module' => 'OphTrOperationnote', 'uri' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
                 'Per Op Drug Mappings' => array('module' => 'OphTrOperationnote', 'uri' => '/oeadmin/PostOpDrugMappings/list'),
                 'Prescription Edit Options' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/Admin/PrescriptionEditOptions'),
-                'Tags' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/TagsAdmin/list'),
+                'Tags' => '/TagsAdmin/list',
                 'Drug types' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/Admin/drugType'),
             ),
             'Disorders' => array(

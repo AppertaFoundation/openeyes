@@ -18,16 +18,9 @@
  */
 
 /**
- * Created by PhpStorm.
- * User: himanshu
- * Date: 16/04/15
- * Time: 12:28.
+ * Class DrugController.
  */
-
-/**
- * Class FormularyDrugsController.
- */
-class FormularyDrugsController extends BaseAdminController
+class DrugController extends BaseAdminController
 {
     /**
      * @var string
@@ -46,10 +39,10 @@ class FormularyDrugsController extends BaseAdminController
      */
     public function actionList()
     {
-        $admin = new Admin(FormularyDrugs::model(), $this);
+        $admin = new Admin(Drug::model(), $this);
         $admin->setListFields(array(
             'name',
-            'tagnames',
+            'tags',
             'aliases',
             'active',
         ));
@@ -68,15 +61,16 @@ class FormularyDrugsController extends BaseAdminController
                 if(strpos($field, ', ') === false)
                 {
                     // Single column fields
-                    $criteria->compare($field, $_GET['search'][$field], ($field != 'active'));
+                    $criteria->compare('t.' . $field, $_GET['search'][$field], ($field != 'active'));
                 }
                 else
                 {
                     // Combined fields
                     $crit2 = new CDbCriteria();
+
                     foreach (explode(', ', $field) as $column)
                     {
-                        $crit2->compare($column, $_GET['search'][$field], true, 'OR');
+                        $crit2->compare('LOWER(t.'.$column.')', strtolower($_GET['search'][$field]), true, 'OR');
                     }
 
                     $criteria->mergeWith($crit2, 'AND');
@@ -88,8 +82,9 @@ class FormularyDrugsController extends BaseAdminController
         {
             $command = Yii::app()->db->createCommand("SELECT drug_id FROM drug_tag WHERE tag_id IN (SELECT id FROM tag WHERE name LIKE CONCAT('%', :tagname ,'%'))");
             $matching_ids = $command->queryColumn(array(':tagname' => $_GET['search']['tags.name']));
-            $criteria->addInCondition('id', $matching_ids, 'AND');
+            $criteria->addInCondition('t.id', $matching_ids, 'AND');
         }
+        $criteria->with = array('tags');
 
         $admin->getSearch()->setCriteria($criteria);
 
@@ -105,7 +100,7 @@ class FormularyDrugsController extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
-        $admin = new Admin(FormularyDrugs::model(), $this);
+        $admin = new Admin(Drug::model(), $this);
         if ($id) {
             $admin->setModelId($id);
         }
@@ -147,7 +142,7 @@ class FormularyDrugsController extends BaseAdminController
                 'layoutColumns' => null,
             ),
             'active' => 'checkbox',
-            'allergy_warnings' => array(
+            'allergies' => array(
                 'widget' => 'MultiSelectList',
                 'relation_field_id' => 'id',
                 'label' => 'Allergy Warnings',
@@ -168,7 +163,7 @@ class FormularyDrugsController extends BaseAdminController
                     'name'
                 )),*/
                 'htmlOptions' => array(
-                    'autocomplete_url' => $this->createAbsoluteUrl('/oeadmin/formularyDrugs/tagsAutocomplete')
+                    'autocomplete_url' => $this->createAbsoluteUrl('/oeadmin/drug/tagsAutocomplete')
                 )
             ),
             'national_code' => 'text',
@@ -181,7 +176,7 @@ class FormularyDrugsController extends BaseAdminController
      */
     public function actionDelete()
     {
-        $admin = new Admin(FormularyDrugs::model(), $this);
+        $admin = new Admin(Drug::model(), $this);
         $admin->deleteModel();
     }
 

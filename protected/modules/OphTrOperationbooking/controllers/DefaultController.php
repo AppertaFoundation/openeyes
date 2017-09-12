@@ -30,6 +30,8 @@ class DefaultController extends OphTrOperationbookingEventController
     /** @var Element_OphTrOperation_Operation $operation */
     protected $operation = null;
 
+    protected $show_element_sidebar = false;
+
     /**
      * setup the various js scripts for this controller.
      *
@@ -42,6 +44,14 @@ class DefaultController extends OphTrOperationbookingEventController
         Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/booking.js');
         Yii::app()->assetManager->registerScriptFile('js/jquery.validate.min.js');
         Yii::app()->assetManager->registerScriptFile('js/additional-validators.js');
+
+        //adding Anaestethic JS
+        $url = Yii::app()->getAssetManager()->publish( Yii::getPathOfAlias('application.modules.OphTrOperationnote.assets.js') );
+        Yii::app()->clientScript->registerScriptFile($url . '/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
+        Yii::app()->clientScript->registerScript(
+            'AnaestheticController',
+            'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrOperationbooking_Operation_AnaestheticType\'});',CClientScript::POS_END);
+
         $this->jsVars['nhs_date_format'] = Helper::NHS_DATE_FORMAT_JS;
 
         $return = parent::beforeAction($action);
@@ -87,7 +97,7 @@ class DefaultController extends OphTrOperationbookingEventController
 
             if (isset(Yii::app()->params[$key])) {
                 if ($at = AnaestheticType::model()->find('code=?', array(Yii::app()->params[$key]))) {
-                    $element->anaesthetic_type_id = $at->id;
+                    $element->anaesthetic_type = array($at);
                 }
             }
 
@@ -217,6 +227,32 @@ class DefaultController extends OphTrOperationbookingEventController
             }
         }
         $element->procedures = $procs;
+
+        //AnaestheticType
+        $type_assessments = array();
+        if(isset($data['AnaestheticType']) && is_array($data['AnaestheticType'])){
+
+            $type_assessments_by_id = array();
+            foreach ($element->anaesthetic_type_assignments as $type_assignments) {
+                $type_assessments_by_id[$type_assignments->anaesthetic_type_id] = $type_assignments;
+            }
+
+            foreach($data['AnaestheticType'] as $anaesthetic_type_id){
+
+                if( !array_key_exists($anaesthetic_type_id, $type_assessments_by_id) ){
+                    $anaesthetic_type_assesment = new \OphTrOperationbooking_AnaestheticAnaestheticType();
+                } else {
+                    $anaesthetic_type_assesment = $type_assessments_by_id[$anaesthetic_type_id];
+                }
+
+                $anaesthetic_type_assesment->et_ophtroperationbooking_operation_id = $element->id;
+                $anaesthetic_type_assesment->anaesthetic_type_id = $anaesthetic_type_id;
+
+                $type_assessments[] = $anaesthetic_type_assesment;
+            }
+        }
+
+        $element->anaesthetic_type_assignments = $type_assessments;
     }
 
     /**
@@ -252,6 +288,7 @@ class DefaultController extends OphTrOperationbookingEventController
     {
         // using the ProcedureSelection widget, so not a direct field on the operation element
         $element->updateProcedures(isset($data['Procedures_procs']) ? $data['Procedures_procs'] : array());
+        $element->updateAnaestheticType(isset($data['AnaestheticType']) ? $data['AnaestheticType'] : array());
     }
 
     /**

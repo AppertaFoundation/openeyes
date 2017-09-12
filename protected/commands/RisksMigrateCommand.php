@@ -39,11 +39,23 @@ class RisksMigrateCommand extends PatientLevelMigration
         return "Migrates the original Risk records to an examination event in change tracker episode\n";
     }
 
+    /**
+     * @return mixed
+     * @inheritdoc
+     */
     protected function getNewElement()
     {
+        // sets the scenario to migration to customise the validation rules on the model
         return new static::$element_class('migration');
     }
 
+    /**
+     * @param $patient_id
+     * @param null $no_entries_date
+     * @param array $rows
+     * @return bool
+     * @inheritdoc
+     */
     public function processPatient($patient_id, $no_entries_date = null, $rows = array())
     {
         // new model has an attribute that by implication is always true from the source records

@@ -25,15 +25,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$noAllergiesWrapper = $('#' + this.options.modelName + '_no_allergies_wrapper');
         this.$noAllergiesFld = $('#' + this.options.modelName + '_no_allergies');
 
-        this.$allergySelect = $('#' + this.options.modelName + '_allergy_id');
+        this.$allergySelect = $('.' + this.options.modelName + '_allergy_id');
         this.$other = $('#' + this.options.modelName + '_other');
-        this.$otherWrapper = $('#' + this.options.modelName + '_other_wrapper');
+        this.otherWrapperSelector = '.' + this.options.modelName + '_other_wrapper';
         this.$commentFld = $('#' + this.options.modelName + '_comments');
 
         this.tableSelector = '#' + this.options.modelName + '_entry_table';
         this.$table = $(this.tableSelector);
         this.templateText = $('#' + this.options.modelName + '_entry_template').text();
-
 
         this.initialiseTriggers();
 
@@ -46,13 +45,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     AllergiesController.prototype.initialiseTriggers = function()
     {
         var controller = this;
-        controller.$allergySelect.on('change', function(e) {
-            var $selected = controller.$allergySelect.find('option:selected');
+        controller.$table.on('change', '.other', function(e) {
+            var $selected = $(this).find('option:selected');
+
             if ($selected.data('other')) {
-                controller.$otherWrapper.show();
+                $(this).closest('td').find(controller.otherWrapperSelector).show();
             }
             else {
-                controller.$otherWrapper.hide();
+                $(this).closest('td').find(controller.otherWrapperSelector).hide();
                 controller.$other.val('');
             }
         });

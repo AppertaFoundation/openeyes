@@ -77,25 +77,26 @@
 				</tr>
 				<tr>
 					<th scope="col">Data:</th>
-                    <td>
-                        <?php
+					<td>
+						<?php
                         $data = @unserialize($log->data);
                         if ($data) {?>
-                            <div class="data" id="dataspan<?php echo $log->id?>">
+							<div class="data" id="dataspan<?php echo $log->id?>">
                                 <?php
-                                if( is_array($data) ){
-                                    echo "<pre>" . print_r($data, true) . "</pre>";
-                                } else {
-                                    echo $data;
-                                }
+
+                                    if( is_array($data) ){
+                                        echo "<pre>" . print_r($data, true) . "</pre>";
+                                    } else {
+                                        echo $data;
+                                    }
                                 ?>
                             </div>
-                        <?php } else {?>
-                            <div class="data">
-                                <?php echo $log->data ? $log->data : 'None';?>
-                            </div>
-                        <?php }?>
-                    </td>
+						<?php } else {?>
+							<div class="data">
+								<?php echo $log->data ? $log->data : 'None';?>
+							</div>
+						<?php }?>
+					</td>
 				</tr>
 			</table>
 		</div>

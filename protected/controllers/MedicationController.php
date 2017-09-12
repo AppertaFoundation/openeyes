@@ -76,10 +76,10 @@ class MedicationController extends BaseController
 
         if (isset($_GET['term']) && $term = strtolower($_GET['term'])) {
             $criteria = new CDbCriteria();
-            $criteria->compare('LOWER(name)', $term, true, 'OR');
-            $criteria->compare('LOWER(aliases)', $term, true, 'OR');
+            $criteria->compare('LOWER(t.name)', $term, true, 'OR');
+            $criteria->compare('LOWER(t.aliases)', $term, true, 'OR');
 
-            foreach (MedicationDrug::model()->findAll($criteria) as $md) {
+            foreach (MedicationDrug::model()->with('tags')->findAll($criteria) as $md) {
                 $label = $md->name;
                 if (strpos(strtolower($md->name), $term) === false) {
                     $label .= ' ('.$md->aliases.')';
@@ -89,10 +89,11 @@ class MedicationController extends BaseController
                     'label' => $label,
                     'value' => $md->id,
                     'type' => 'md',
+                    'tags' => array_map(function($t) { return $t->id;}, $md->tags)
                 );
             }
 
-            foreach (Drug::model()->active()->findAll($criteria) as $drug) {
+            foreach (Drug::model()->with('tags')->active()->findAll($criteria) as $drug) {
                 $label = $drug->tallmanlabel;
                 if (strpos(strtolower($drug->name), $term) === false) {
                     $label .= ' ('.$drug->aliases.')';
@@ -102,6 +103,7 @@ class MedicationController extends BaseController
                     'label' => $label,
                     'value' => $drug->id,
                     'type' => 'd',
+                    'tags' => array_map(function($t) { return $t->id;}, $drug->tags)
                 );
             }
         }
@@ -125,6 +127,14 @@ class MedicationController extends BaseController
                 'route' => $this->fetchModel('DrugRoute', $route_id),
             )
         );
+    }
+
+    public function actionRetrieveDrugRouteOptions($route_id)
+    {
+        $route = DrugRoute::model()->findByPk($route_id);
+        echo json_encode(array_map(function($opt) {
+            return array('id' => $opt->id, 'name' => $opt->name);
+        }, $route->options));
     }
 
     public function actionSave()

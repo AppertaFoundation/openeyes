@@ -323,7 +323,7 @@
 				<img class="loader" style="display: none;" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
 			</div>
 		</div>
-		<div class="reportSummary report curvybox white blueborder" style="display: none;">
+		<div class="reportSummary report curvybox white blueborder" style="display: none; overflow-y:scroll">
 		</div>
 	</div>
 </div>
