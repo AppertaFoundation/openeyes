@@ -28,6 +28,19 @@ class m170803_144416_anaesthetic_types_multiselect extends OEMigration
 
             foreach ($iterator as $element) {
 
+                // if event was deleted
+                if(!$event = $element->event) {
+                    $event = Event::model()->disableDefaultScope()->findByPk($element->event_id);
+                } else {
+                    $event = $element->event;
+                }
+
+                if(!$episode = $event->episode) {
+                    $episode = Episode::model()->disableDefaultScope()->findByPk($event->episode_id);
+                } else {
+                    $episode = $event->episode;
+                }
+
                 $anaesthetic_topical_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'Topical'))->queryScalar();
                 $anaesthetic_LA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LA'))->queryScalar();
                 $anaesthetic_LAC_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'LAC'))->queryScalar();
@@ -42,6 +55,27 @@ class m170803_144416_anaesthetic_types_multiselect extends OEMigration
                         'et_ophtroperationbooking_operation_id' => $element->id,
                         'anaesthetic_type_id' => $anaesthetic_LA_id
                     ));
+
+                    $data = array(
+
+                        'original_attributes' => array(
+                            'Element_OphTrOperationbooking_Operation' => $element->attributes,
+                        ),
+                        'new_attributes' => array(
+                            'OphTrOperationbooking_AnaestheticAnaestheticType' => array(
+                                array(
+                                    'et_ophtroperationbooking_operation_id' => $element->id,
+                                    'anaesthetic_type_id' => $anaesthetic_LA_id
+                                ),
+                            ),
+                        ),
+                        'text' => "Anaesthetic type Topical became Anaesthetic type LA",
+                    );
+
+                    Audit::add('admin', 'update', serialize($data),
+                        'Remove redundant Anaesthetic options',
+                        array('module' => 'OphTrOperationbooking', 'model' => 'Element_OphTrOperationbooking_Operation', 'event_id' => $element->event_id,
+                            'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id));
 
                 } else
 
@@ -58,12 +92,55 @@ class m170803_144416_anaesthetic_types_multiselect extends OEMigration
                         'et_ophtroperationbooking_operation_id' => $element->id,
                         'anaesthetic_type_id' => $anaesthetic_sedation_id
                     ));
+
+                    $data = array(
+
+                        'original_attributes' => array(
+                            'Element_OphTrOperationbooking_Operation' => $element->attributes,
+                        ),
+                        'new_attributes' => array(
+                            'OphTrOperationbooking_AnaestheticAnaestheticType' => array(
+                                array(
+                                    'et_ophtroperationbooking_operation_id' => $element->id,
+                                    'anaesthetic_type_id' => $anaesthetic_LA_id
+                                ),
+                            ),
+                        ),
+                        'text' => "Anaesthetic type LAS became Anaesthetic type LA",
+                    );
+
+                    Audit::add('admin', 'update', serialize($data),
+                        'Remove redundant Anaesthetic options',
+                        array('module' => 'OphTrOperationbooking', 'model' => 'Element_OphTrOperationbooking_Operation', 'event_id' => $element->event_id,
+                            'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id));
+
                 } else {
 
                     $this->createOrUpdate('OphTrOperationbooking_AnaestheticAnaestheticType', array(
                         'et_ophtroperationbooking_operation_id' => $element->id,
                         'anaesthetic_type_id' => $element->anaesthetic_type_id
                     ));
+
+                    $data = array(
+
+                        'original_attributes' => array(
+                            'Element_OphTrOperationbooking_Operation' => $element->attributes,
+                        ),
+                        'new_attributes' => array(
+                            'OphTrOperationbooking_AnaestheticAnaestheticType' => array(
+                                array(
+                                    'et_ophtroperationbooking_operation_id' => $element->id,
+                                    'anaesthetic_type_id' => $anaesthetic_LA_id
+                                ),
+                            ),
+                        ),
+                        'text' => "Anaesthetic type moved to new table : ophtroperationbooking_anaesthetic_anaesthetic_type",
+                    );
+
+                    Audit::add('admin', 'update', serialize($data),
+                        'Remove redundant Anaesthetic options',
+                        array('module' => 'OphTrOperationbooking', 'model' => 'Element_OphTrOperationbooking_Operation', 'event_id' => $element->event_id,
+                            'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id));
                 }
             }
 
@@ -81,8 +158,6 @@ class m170803_144416_anaesthetic_types_multiselect extends OEMigration
             \OELog::log($e->getMessage());
             throw $e;
         }
-
-
 	}
 
 	public function down()

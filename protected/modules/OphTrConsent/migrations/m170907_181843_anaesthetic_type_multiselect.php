@@ -54,19 +54,64 @@ class m170907_181843_anaesthetic_type_multiselect extends OEMigration
                     $element->anaesthetic_type_id == $anaesthetic_LAS_id)
                     {
 
-                    // adding LA
-                    $this->createOrUpdate('OphTrConsent_Procedure_AnaestheticType', array(
-                        'et_ophtrconsent_procedure_id' => $element->id,
-                        'anaesthetic_type_id' => $anaesthetic_LA_id
-                    ));
+                        // adding LA
+                        $this->createOrUpdate('OphTrConsent_Procedure_AnaestheticType', array(
+                            'et_ophtrconsent_procedure_id' => $element->id,
+                            'anaesthetic_type_id' => $anaesthetic_LA_id
+                        ));
+
+                        $data = array(
+                            'original_attributes' => array(
+                                'Element_OphTrConsent_Procedure' => $element->attributes,
+                            ),
+                            'new_attributes' => array(
+                                'OphTrConsent_Procedure_AnaestheticType' => array(
+                                    array(
+                                        'et_ophtrconsent_procedure_id' => $element->id,
+                                        'anaesthetic_type_id' => $element->anaesthetic_type_id
+                                    ),
+                                ),
+                            ),
+                        );
+
+                        $text_type = $element->anaesthetic_type_id == $anaesthetic_topical_id ? 'Topical' : '';
+                        $text_type = $element->anaesthetic_type_id == $anaesthetic_LAC_id ? 'LAC' : $text_type;
+                        $text_type = $element->anaesthetic_type_id == $anaesthetic_LAS_id ? 'LAS' : $text_type;
+
+                        $data['text'] = "Anaesthetic type {$text_type} became LA";
+
+                        Audit::add('admin', 'update', serialize($data),
+                            'Remove redundant Anaesthetic options',
+                            array('module' => 'OphTrConsent', 'model' => 'Element_OphTrConsent_Procedure', 'event_id' => $element->event_id,
+                                'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id));
+
                 } else {
                     $this->createOrUpdate('OphTrConsent_Procedure_AnaestheticType', array(
                         'et_ophtrconsent_procedure_id' => $element->id,
                         'anaesthetic_type_id' => $element->anaesthetic_type_id
                     ));
+
+                    $data = array(
+                        'original_attributes' => array(
+                            'Element_OphTrConsent_Procedure' => $element->attributes,
+                        ),
+                        'new_attributes' => array(
+                            'OphTrConsent_Procedure_AnaestheticType' => array(
+                                array(
+                                    'et_ophtrconsent_procedure_id' => $element->id,
+                                    'anaesthetic_type_id' => $element->anaesthetic_type_id
+                                ),
+                            ),
+                        ),
+
+                        'text' => "Anaesthetic type moved to new table: ophtrconsent_procedure_anaesthetic_type"
+                    );
+
+                    Audit::add('admin', 'update', serialize($data),
+                        'Remove redundant Anaesthetic options',
+                        array('module' => 'OphTrConsent', 'model' => 'Element_OphTrConsent_Procedure', 'event_id' => $element->event_id,
+                            'episode_id' => $event->episode_id, 'patient_id' => $episode->patient_id));
                 }
-
-
 
             }
             $transaction->commit();
