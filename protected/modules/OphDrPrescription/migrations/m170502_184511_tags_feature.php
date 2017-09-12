@@ -4,8 +4,6 @@ class m170502_184511_tags_feature extends OEMigration
 {
 	public function safeUp()
 	{
-	    $this->createIndex('idx_tag_name', 'tag', 'name', true);
-
 	    $this->execute("INSERT IGNORE INTO `tag` (`id`, `name`) VALUES (1, 'Preservative free');");
 
 	    $this->createOETable('drug_tag', array(
