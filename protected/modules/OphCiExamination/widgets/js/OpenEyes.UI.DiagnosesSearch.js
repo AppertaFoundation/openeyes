@@ -23,6 +23,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     'use strict';
 
     function DiagnosesSearchController(options) {
+
         this.options = $.extend(true, {}, DiagnosesSearchController._defaultOptions, options);
 
         this.$inputField = this.options.inputField;
@@ -36,18 +37,17 @@ OpenEyes.UI = OpenEyes.UI || {};
     }
 
     DiagnosesSearchController._defaultOptions = {
-        'code': 'systemic',
-     //   'selectedDiagnosesWrapper': '.enteredDiagnosisText',
-        'inputField': $('.diagnoses-search-autocomplete'),
-        'commonlyUsedDiagnosesUrl': '/disorder/getcommonlyuseddiagnoses/type/',
-        'single_template' :
-            "<div style=\"font-size: 13px; margin: 16px 0px 0px; display: none;\" class=\"enteredDiagnosisText panel diagnosis hidden\"></div>" +
-            "<select class=\"commonly-used-diagnosis\"></select>" +
-            "{{input_field}}" +
-            "<input type=\"hidden\" name=\"DiagnosisSelection[disorder_id]\" class=\"savedDiagnosis\" value=\"\">"
-            ,
+        code: 'systemic',
+        //   'selectedDiagnosesWrapper': '.enteredDiagnosisText',
+        //'inputField': '#diagnoses-search-autocomplete',
+        commonlyUsedDiagnosesUrl: '/disorder/getcommonlyuseddiagnoses/type/',
+        single_template :
+            "<div style='font-size: 13px; margin: 16px 0px 0px; display: none;' class='enteredDiagnosisText panel diagnosis hidden'></div>" +
+            "<select class='commonly-used-diagnosis'></select>" +
+            "{{{input_field}}}" +
+            "<input type='hidden' name='DiagnosisSelection[disorder_id]' class='savedDiagnosis' value=''>",
     };
-console.log(controller.$inputField.html());
+
     DiagnosesSearchController.prototype.init = function(){
         var controller = this;
         var $parent = controller.$inputField.parent();
@@ -55,17 +55,13 @@ console.log(controller.$inputField.html());
 
         var html = Mustache.render(
             this.single_template,
-            {'input_field': controller.$inputField.html()}
+            {'input_field': controller.$inputField.prop("outerHTML")}
         );
-console.log(html);
-        $parent.html(html);
-        /*$parent.prepend( $('<div>',{
-            'style': 'font-size:13px; margin:16px 0 0 0;',
-            'class': 'enteredDiagnosisText panel diagnosis hidden'}));*/
 
         $.getJSON(url, function(data){
-           /* var $enteredWrapper = $parent.find('.enteredDiagnosisText');
-            var $select = $('<select>',{'class': 'commonly-used-diagnosis'});
+
+            var $enteredWrapper = $parent.find('.enteredDiagnosisText');
+            var $select = $parent.find('.commonly-used-diagnosis');
 
             $select.append( $('<option>',{'text': 'Select a commonly used diagnosis'}));
             $.each(data, function(i, item){
@@ -80,7 +76,7 @@ console.log(html);
                 $parent.find('.savedDiagnosis').val( $(this).val() );
                 $enteredWrapper.show();
                 $(this).val('');
-            });*/
+            });
         });
     }
 
@@ -103,7 +99,7 @@ console.log(html);
             },
             search: function () {},
             select: function(event, ui){
-console.log(ui.item);
+                console.log(ui.item);
             },
 
             response: function (event, ui) {
