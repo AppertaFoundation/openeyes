@@ -933,47 +933,6 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Save Risks - because it's part of the History Risk element it need to be saved from that element.
-     *
-     * @param $element
-     * @param $data
-     * @param $index
-     */
-    protected function saveComplexAttributes_Element_OphCiExamination_HistoryRisk($element)
-    {
-        $event_type = \EventType::model()->find('name=?', array('Examination'));
-        $event = $this->episode->getMostRecentEventByType($event_type->id);
-        if ($event->id === $this->event->id) {
-            $this->updateRisk('anticoagulant', $element->anticoagulant, $element->anticoagulant_name);
-            $this->updateRisk('alphablocker', $element->alphablocker, $element->alpha_blocker_name);
-        }
-    }
-
-    /**
-     * Updating Patient Risk details.
-     *
-     * @param string $risk_name
-     * @param string $risk_value
-     */
-    protected function updateRisk($risk_name, $risk_value, $risk_comment)
-    {
-      $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
-      if($exam_api){
-        $historyRisk = new models\Element_OphCiExamination_HistoryRisk();
-        if ($risk_name === 'anticoagulant') {
-            $risk_check = 'Anticoagulants';
-            $recent = $exam_api->mostRecentCheckedAnticoag($this->patient->id);
-        } else {
-            $risk_check = 'Alpha blockers';
-            $recent = $exam_api->mostRecentCheckedAlpha($this->patient->id);
-        }
-        if (is_null($recent) || strtotime($this->event->event_date) >= strtotime($recent->event->event_date)) {
-            $this->updateSummaryRisk($risk_value, $risk_comment, $risk_check);
-        }
-      }
-    }
-
-    /**
      * Save the dilation treatments.
      *
      * @param models\Element_OphCiExamination_Dilation $element
@@ -1383,66 +1342,6 @@ class DefaultController extends \BaseEventTypeController
             if($element->save()) {
                 echo \CJSON::encode(array('success' => 'true'));
             }
-        }
-    }
-
-    /**
-     * @param $id
-     *
-     * @return bool
-     */
-    public function actionDelete($id)
-    {
-      $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
-      if($exam_api){
-        $historyRisk = new models\Element_OphCiExamination_HistoryRisk();
-        $recentAnticoag = $exam_api->mostRecentCheckedAnticoag($this->patient->id);
-        $recentAlpha = $exam_api->mostRecentCheckedAlpha($this->patient->id);
-        $thisRisk = $historyRisk->find('event_id = ?', array($this->event->id));
-
-        if ($thisRisk) {
-            if (is_null($recentAnticoag) || $recentAnticoag->anticoagulant === '0' || $recentAnticoag->event->id === $thisRisk->event->id) {
-                if ($previous = $historyRisk->previousCheckedAnticoag($this->patient->id, $thisRisk->event->event_date)){
-                    if ($previous->anticoagulant !== $thisRisk->anticoagulant) {
-                        $this->updateSummaryRisk($previous->anticoagulant, $previous->anticoagulant_name, 'Anticoagulants');
-                    }
-                }
-            }
-            if (is_null($recentAlpha) || $recentAlpha->alphablocker === '0' || $recentAnticoag->event->id === $thisRisk->event->id) {
-                if ($previous = $historyRisk->previousCheckedAlpha($this->patient->id, $thisRisk->event->event_date)){
-                    if ($previous->alphablocker !== $thisRisk->alphablocker) {
-                        $this->updateSummaryRisk($previous->alphablocker, $previous->alpha_blocker_name, 'Alpha blockers');
-                    }
-                }
-            }
-        }
-
-        return parent::actionDelete($id);
-
-
-      }
-    }
-
-    /**
-     * @param $risk_value
-     * @param $risk_comment
-     * @param $risk_check
-     */
-    protected function updateSummaryRisk($risk_value, $risk_comment, $risk_check)
-    {
-        $risk = \Risk::model()->find('name=?', array($risk_check));
-        $criteria = new \CDbCriteria();
-        $criteria->compare('risk_id', $risk['id']);
-        $criteria->compare('patient_id', $this->patient->id);
-        $patient_risk = \PatientRiskAssignment::model()->find($criteria);
-        if ($risk_value === '1') {
-            $patient_risk = (!$patient_risk) ? new \PatientRiskAssignment() : $patient_risk;
-            $patient_risk->risk_id = $risk['id'];
-            $patient_risk->patient_id = $this->patient->id;
-            $patient_risk->comments = $risk_comment;
-            $patient_risk->save();
-        } elseif ($patient_risk && ($risk_value === '2')) {
-            \PatientRiskAssignment::model()->deleteByPk($patient_risk->id);
         }
     }
 }
