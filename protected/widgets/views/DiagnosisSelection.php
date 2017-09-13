@@ -46,6 +46,7 @@
                 'clear_diagnosis' => $clear_diagnosis,
                 'value' => $value,
                 'placeholder' => 'or type the first few characters of a diagnosis',
+                'form' => $form,
                 'callback' => $callback
             ));
             ?>

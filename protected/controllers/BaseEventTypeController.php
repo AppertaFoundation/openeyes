@@ -197,6 +197,20 @@ class BaseEventTypeController extends BaseModuleController
     }
 
     /**
+     * @param $action
+     * @return int
+     */
+    public function getElementWidgetMode($action)
+    {
+        $action_type = $this->getActionType($action);
+        return in_array($action_type,
+            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT, static::ACTION_TYPE_FORM))
+            ? BaseEventElementWidget::$EVENT_EDIT_MODE
+            : ($action_type === static::ACTION_TYPE_PRINT
+                ? BaseEventElementWidget::$EVENT_PRINT_MODE
+                : BaseEventElementWidget::$EVENT_VIEW_MODE);
+    }
+    /**
      * Sets the patient object on the controller.
      *
      * @param $patient_id
@@ -1415,7 +1429,8 @@ class BaseEventTypeController extends BaseModuleController
 
     public function renderSidebar($default_view)
     {
-        if ($this->show_element_sidebar && in_array($this->action->id,array('create','update'))) {
+        if ($this->show_element_sidebar && in_array($this->getActionType($this->action->id),
+                array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT), true)) {
             $this->renderPartial('//patient/_patient_element_sidebar');
         } else {
             parent::renderSidebar($default_view);
@@ -1492,13 +1507,14 @@ class BaseEventTypeController extends BaseModuleController
         ($use_container_view) && $this->beginContent($container_view, $view_data);
         if ($element->widgetClass) {
             // only wrap the element in a widget if it's not already in one
+            $action_type = $this->getActionType($action);
             $widget = $element->widget ? :
                 $this->createWidget($element->widgetClass,
                     array(
                         'patient' => $this->patient,
                         'element' => $view_data['element'],
                         'data' => $view_data['data'],
-                        'mode' => in_array($action, array('create', 'update')) ? BaseEventElementWidget::$EVENT_EDIT_MODE : BaseEventElementWidget::$EVENT_VIEW_MODE
+                        'mode' => $this->getElementWidgetMode($action)
                     ));
             $widget->form = $view_data['form'];
             $this->renderPartial('//elements/widget_element', array('widget' => $widget),$return, $processOutput);

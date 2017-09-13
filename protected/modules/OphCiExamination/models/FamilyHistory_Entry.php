@@ -31,9 +31,9 @@ namespace OEModule\OphCiExamination\models;
  * @property string $other_condition
  * @property string $comments
  *
- * @property \FamilyHistoryRelative $relative
- * @property \FamilyHistorySide $side
- * @property \FamilyHistoryCondition $condition
+ * @property FamilyHistoryRelative $relative
+ * @property FamilyHistorySide $side
+ * @property FamilyHistoryCondition $condition
  * @property FamilyHistory $element
  */
 class FamilyHistory_Entry extends \BaseEventTypeElement
@@ -41,7 +41,7 @@ class FamilyHistory_Entry extends \BaseEventTypeElement
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return PreviousOperation the static model class
+     * @return FamilyHistory_Entry the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -102,14 +102,14 @@ class FamilyHistory_Entry extends \BaseEventTypeElement
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new CDbCriteria();
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('relative_id', $this->relative_id, true);
@@ -119,9 +119,28 @@ class FamilyHistory_Entry extends \BaseEventTypeElement
         $criteria->compare('other_condition', $this->other_condition, true);
         $criteria->compare('comments', $this->comments, true);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * @return bool
+     * @inheritdoc
+     */
+    public function beforeSave()
+    {
+        $relative = FamilyHistoryRelative::model()->findByPk($this->relative_id);
+        if($relative && !$relative->is_other){
+            $this->other_relative = null;
+        }
+
+        $condition = FamilyHistoryCondition::model()->findByPk($this->condition_id);
+        if($condition && !$condition->is_other){
+            $this->other_condition = null;
+        }
+
+        return parent::beforeSave();
     }
 
     /**

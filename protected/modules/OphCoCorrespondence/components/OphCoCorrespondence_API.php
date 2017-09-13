@@ -355,7 +355,7 @@ class OphCoCorrespondence_API extends BaseAPI
 
         if ($macro->cc_drss) {
             $commissioningbodytype = CommissioningBodyType::model()->find('shortname = ?', array('CCG'));
-            $commissioningbody = $patient->getCommissioningBodyOfType($commissioningbodytype);
+            $commissioningbody = $patient->practice->getCommissioningBodyOfType($commissioningbodytype);
             if($commissioningbodytype && $commissioningbody) {
                 foreach($commissioningbody->services as $service) {
                     if($service->type->shortname == 'DRSS') {
@@ -475,7 +475,7 @@ class OphCoCorrespondence_API extends BaseAPI
 
         if ($macro->cc_drss) {
             $commissioningbodytype = CommissioningBodyType::model()->find('shortname = ?', array('CCG'));
-            if($commissioningbodytype && $commissioningbody = $patient->getCommissioningBodyOfType($commissioningbodytype)) {
+            if($commissioningbodytype && $commissioningbody = $patient->practice->getCommissioningBodyOfType($commissioningbodytype)) {
                 $drss = null;
                 foreach($commissioningbody->services as $service) {
                     if($service->type->shortname == 'DRSS') {

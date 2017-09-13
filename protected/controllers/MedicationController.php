@@ -127,6 +127,14 @@ class MedicationController extends BaseController
         );
     }
 
+    public function actionRetrieveDrugRouteOptions($route_id)
+    {
+        $route = DrugRoute::model()->findByPk($route_id);
+        echo json_encode(array_map(function($opt) {
+            return array('id' => $opt->id, 'name' => $opt->name);
+        }, $route->options));
+    }
+
     public function actionSave()
     {
         if (@$_POST['MedicationAdherence']) {

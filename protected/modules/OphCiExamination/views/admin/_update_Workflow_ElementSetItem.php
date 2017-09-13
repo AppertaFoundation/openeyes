@@ -41,7 +41,7 @@
                 foreach ($step->items as $i => $item) {
                     ?>
 					<tr class="clickable" data-id="<?php echo $item->id?>">
-						<td><?php echo $item->element_type->name?></td>
+						<td><?php echo $item->element_type->nameWithParent ?></td>
 						<td><?php echo CHtml::activeCheckBox($item, 'is_hidden', array('class' => 'workflow-item-attr'))?></td>
 						<td><?php echo CHtml::activeCheckBox($item, 'is_mandatory', array('class' => 'workflow-item-attr'))?></td>
 						<td><a href="#" class="removeElementType" rel="<?php echo $item->id?>" data-element-type-id="<?php echo $item->element_type_id?>">Remove</a></td>
@@ -55,7 +55,7 @@
 						<div class="grid-view">
 							<div class="row">
 								<div class="large-3 column">
-									<?php echo CHtml::dropDownList('element_type_id', '', CHtml::listData($element_types, 'id', 'name'), array('empty' => '- Select -'))?>
+									<?php echo CHtml::dropDownList('element_type_id', '', CHtml::listData($element_types, 'id', 'nameWithParent'), array('empty' => '- Select -'))?>
 								</div>
 								<div class="large-3 column end">
 									<?php echo EventAction::button('Add element type', 'add_element_type', null, array('class' => 'small'))->toHtml()?>

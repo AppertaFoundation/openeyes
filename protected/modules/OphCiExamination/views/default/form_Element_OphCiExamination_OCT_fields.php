@@ -102,5 +102,9 @@ if (@$_POST[CHtml::modelName($element)]) {
 		</div>
 	</div>
 </div>
+<div class="field-row row">
+    <div class="column large-9 end">
+        <?php echo $form->textArea($element, $side.'_comments', array('nowrapper' => true), false, array('rows' => 1, 'placeholder' => $element->getAttributeLabel($side . '_comments')))?>
+    </div>
+</div>
 
-<?php echo $form->textArea($element, $side.'_comments', array(), false, array(), array('label' => 4, 'field' => 8))?>

@@ -1,3 +1,5 @@
+<?php $form_id = isset($form) ? $form->getId() : null; ?>
+
 <script type="text/javascript">
   $(document).ready(function() {
     $('#enteredDiagnosisText').on('click', '.clear-diagnosis-widget', function (e) {
@@ -5,7 +7,7 @@
       $('.multiDiagnosis[value="' + $(this).data('diagnosisId') +'"').remove();
       $('input[id=savedDiagnosis]').val('');
       $(this).parent().hide();
-      <?= $callback ? $callback . '();' : '' ?>
+      <?= (isset($callback) && strlen($callback)) ? $callback . '();' : '' ?>
     });
   });
   var source = function(request, response) {
@@ -24,7 +26,7 @@
 if(is_array($value)):
 ?>
   var select = function(event, ui) {
-    <?= $callback ? $callback . '(event, ui);' : ''?>
+    <?= (isset($callback) && strlen($callback)) ? $callback . '(event, ui);' : ''?>
     var $clear = $('<?=$clear_diagnosis?>'),
       $new= $('<span></span>');
 
@@ -33,14 +35,16 @@ if(is_array($value)):
     $new.text(ui.item.value).append($clear);
     $('#enteredDiagnosisText').append($new.append('<br>'));
     $('#enteredDiagnosisText').show();
-    $(event.target).parent().append('<input type="hidden" name="<?=$class ?>[<?=$name ?>][]" class="multiDiagnosis" value="' + ui.item.id + '">');
+    $(event.target).parent().append('<input type="hidden" name="<?=$class ?>[<?=$name ?>][]" class="multiDiagnosis" value="' + ui.item.id + '"' +
+        <?php echo ($form_id ? " form='{$form_id}'" : '');?>
+        + '>');
     $('#<?=$class?>_<?=$name?>').focus();
     $('#<?php echo $class?>_<?php echo $name?> option:first').attr('selected', 'selected');
     return false;
   };
 <?php else: ?>
   var select = function(event, ui) {
-    <?= $callback ? $callback . '(event, ui);' : ''?>
+    <?= isset($callback) ? $callback . '(event, ui);' : ''?>
     $('#<?=$class . '_' . str_replace('.', '', $name)?>_0').val('');
     $('#enteredDiagnosisText').html(ui.item.value + ' <?=$clear_diagnosis?> ');
     $('#enteredDiagnosisText').show();
@@ -69,10 +73,10 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 if(is_array($value)):
   foreach($value as $disorder):
 ?>
-  <input type="hidden" name="<?=$class ?>[<?=$name ?>][]" class="multiDiagnosis" value="<?=$disorder->id?>">
+  <input type="hidden" name="<?=$class ?>[<?=$name ?>][]" class="multiDiagnosis" value="<?=$disorder->id?>" <?php echo ($form_id ? "form='{$form_id}'" : '');?>>
 <?php
   endforeach;
 else:
 ?>
-  <input type="hidden" name="<?=$class ?>[<?=$name ?>]" id="savedDiagnosis" value="<?=$value?>">
+  <input type="hidden" name="<?=$class ?>[<?=$name ?>]" id="savedDiagnosis" value="<?=$value?>" <?php echo ($form_id ? "form='{$form_id}'" : '');?>>
 <?php endif; ?>

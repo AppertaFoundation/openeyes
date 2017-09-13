@@ -66,8 +66,11 @@ $targetIOPS =
 	<?php echo $form->dropDownList($element, 'hfa_id', $overallPeriods, array(), false, array('label' => 4, 'field' => 3))?>
 	<?php echo $form->dropDownList($element, 'gonio_id', $intervalVisits, array(), false, array('label' => 4, 'field' => 3)) ?>
 	<?php echo $form->dropDownList($element, 'hrt_id', $overallPeriods, array(), false, array('label' => 4, 'field' => 3))?>
-	<?php echo $form->textArea($element, 'comments', array('rows' => 6, 'cols' => 80), false, array(), array('label' => 2, 'field' => 7))?>
-
+	<div class="row field-row">
+        <div class="large-7 column end">
+        <?php echo $form->textArea($element, 'comments', array('nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'Comments'), array('field' => 7))?>
+        </div>
+    </div>
 </div>
 <div class="element-fields element-eyes row">
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {

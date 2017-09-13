@@ -1688,6 +1688,7 @@ class PatientController extends BaseController
      *
      * @param int $element_type_id
      * @param int $patient_id
+     * @param int $limit
      *
      * @throws CHttpException
      */
@@ -1704,7 +1705,11 @@ class PatientController extends BaseController
 
         $api = $element_type->eventType->getApi();
         $result = array();
-        foreach ($api->getElements($element_type->class_name, $this->patient, false, null, $limit) as $element) {
+        $criteria = new CDbCriteria();
+        if ($limit) {
+            $criteria->limit = $limit;
+        }
+        foreach ($api->getElements($element_type->class_name, $this->patient, false, null, $criteria) as $element) {
             // Note when there are more complex elements required for this,
             // would recommend pushing this into a base method that can then
             // be overridden as appropriate

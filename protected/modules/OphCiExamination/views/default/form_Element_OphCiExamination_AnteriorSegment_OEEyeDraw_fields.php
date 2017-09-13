@@ -19,19 +19,11 @@
 ?>
 <div class="field-row">
     <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
-    <div class="large-2 column">
-        <label>
-            <?php echo $element->getAttributeLabel($side . '_ed_report') ?>:
-        </label>
-    </div>
-    <div class="large-10 column end autoreport-display">
+    <div class="large-12 column autoreport-display">
         <span id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>" class="data-value"></span>
     </div>
-    <div class="large-2 column">
-        <label for="<?php echo CHtml::modelName($element) . '_' . $side . '_description'; ?>">
-            <?php echo $element->getAttributeLabel($side . '_description') ?>:
-        </label>
-    </div>
+</div>
+<div class="field-row">
     <?php
         $default = OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Nuclear::getEyedrawDefault();
         echo $form->hiddenField($element, $side.'_nuclear_id', array(
@@ -43,9 +35,9 @@
         'data-eyedraw-map' => CJSON::encode(OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_Cortical::getEyedrawMapping()),
         'data-eyedraw-default' => $default ? $default->id : ''));
     ?>
-    <div class="large-10 column end">
+    <div class="large-12 column end">
         <?php echo CHtml::activeTextArea($element, $side . '_description',
-            array('rows' => '2', 'class' => 'autosizejs')) ?>
+            array('rows' => '1', 'placeholder' => $element->getAttributeLabel($side . '_description'), 'nowrapper' => true)) ?>
     </div>
 </div>
 

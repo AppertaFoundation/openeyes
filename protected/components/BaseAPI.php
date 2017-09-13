@@ -154,20 +154,19 @@ class BaseAPI
      * @param Patient $patient
      * @param bool $use_context
      * @param string $before - date formatted string
-     * @param integer $limit
+     * @param CDbCriteria $criteria base criteria for the query to be used.
      * @return BaseEventTypeElement[]
      */
-    public function getElements($element, Patient $patient, $use_context = false, $before = null, $limit = null)
+    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null)
     {
-        $criteria = new CDbCriteria();
+        if ($criteria === null) {
+            $criteria = new CDbCriteria();
+        }
         $criteria->compare('episode.patient_id', $patient->id);
         $criteria->order = 'event.event_date desc, event.created_date desc';
 
         if ($before !== null) {
             $criteria->compare('event.event_date', '<='.$before);
-        }
-        if ($limit !== null) {
-            $criteria->limit = $limit;
         }
 
         if ($use_context) {
@@ -202,7 +201,9 @@ class BaseAPI
      */
     public function getLatestElement($element, Patient $patient, $use_context = false, $before = null)
     {
-        $result = $this->getElements($element, $patient, $use_context, $before, 1);
+        $criteria = new CDbCriteria();
+        $criteria->limit = 1;
+        $result = $this->getElements($element, $patient, $use_context, $before, $criteria);
         return count($result) ? $result[0] : null;
     }
 
@@ -211,11 +212,12 @@ class BaseAPI
      *
      * @param Episode $episode - the episode
      * @param string  $element - the element class
+     * @param string  $later_than - any English textual datetime description, this text will passed to strtotime, supported formats: http://php.net/manual/en/datetime.formats.php
      *
      * @return BaseEventTypeElement|null - Will actually be an instance of the class requested
      * @deprecated since 2.0
      */
-    public function getElementForLatestEventInEpisode($episode, $element)
+    public function getElementForLatestEventInEpisode($episode, $element, $later_than = null)
     {
         trigger_error('getElementForLatestEventInEpisode is deprecated as of version 2.0, please use getElementFromLatestEvent instead', E_USER_NOTICE);
         $event_type = $this->getEventType();
@@ -225,6 +227,13 @@ class BaseAPI
             $criteria->compare('episode_id', $episode->id);
             $criteria->compare('event_id', $event->id);
             $criteria->order = 'event.created_date desc';
+
+            if($later_than && strtotime($later_than)){
+
+                $later_than_date = date('Y-m-d H:i:s', strtotime("-3 weeks"));
+                $criteria->addCondition('event.event_date >= :later_than');
+                $criteria->params[':later_than'] = $later_than_date;
+            }
 
             return $element::model()
                 ->with('event')

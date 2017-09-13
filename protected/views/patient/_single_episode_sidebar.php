@@ -5,7 +5,7 @@
             type="button"
             id="add-event">Event</button></div>
 <?php }?>
-<div class="oe-scroll-wrapper" style="height:300px">
+<div class="oe-scroll-wrapper" style="height:2000px">
 <?php
 // Note, we are ignoring the possibility of additional specialties here and only supporting the first,
 // which is expected to be opthalmology.
@@ -180,5 +180,3 @@ $this->renderPartial('//patient/add_new_event',array(
     });
 </script>
 </div>
-<div class="show-scroll-tip">scroll down</div>
-<div class="scroll-blue-top" style="display:none;"></div>
