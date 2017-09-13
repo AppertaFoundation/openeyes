@@ -31,6 +31,7 @@ namespace OEModule\OphCiExamination\models;
  * @property string $injection_deferralreason_other
  *
  * The followings are the available model relations:
+ * @property OphCiExamination_Management_Status $injection_status
  */
 class Element_OphCiExamination_InjectionManagement extends \BaseEventTypeElement
 {
@@ -168,5 +169,13 @@ class Element_OphCiExamination_InjectionManagement extends \BaseEventTypeElement
     public function canCopy()
     {
         return true;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function __toString()
+    {
+        return $this->injection_status ? ((string) $this->injection_status) : '';
     }
 }

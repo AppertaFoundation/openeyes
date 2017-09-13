@@ -37,7 +37,7 @@
 	<input type="hidden" name="from_queue_id" value="<?= $this->ticket->current_queue->id ?>" />
 	<input type="hidden" name="ticket_id" value="<?= $this->ticket->id ?>" />
 	<div>
-		<h2><?= $t_svc->getTicketActionLabel($this->ticket) ?></h2>
+		<h3><?= $t_svc->getTicketActionLabel($this->ticket) ?></h3>
 		<?php
             if (count($this->outcome_options) > 1) { ?>
 				<fieldset class="field-row row">
@@ -66,20 +66,28 @@
 	</div>
 	<div id="PatientTicketing-queue-assignment" data-queue="<?=$this->ticket->current_queue->id?>">
 		<?php
+
+            $buttons = '<div class="buttons text-right">
+                            <button class="secondary small ok" type="button" data-queue="'.$this->ticket->current_queue->id.'">OK</button>
+                            <button class="warning small cancel" type="button" data-queue="'.$this->ticket->current_queue->id.'" data-category="'.$this->ticket->current_queue->queueset->category_id.'">Cancel</button>
+                        </div>';
+
+            $buttons_drawn = false;
+
             if ($this->outcome_queue_id) {
                 $this->widget('OEModule\PatientTicketing\widgets\QueueAssign', array(
                         'queue_id' => $this->outcome_queue_id,
                         'patient_id' => $this->ticket->patient_id,
                         'current_queue_id' => $this->ticket->current_queue->id,
                         'ticket' => $this->ticket,
+                        'extra_view_data' => array('buttons'=>$buttons)
                     ));
+
+                $buttons_drawn = true;
             }
         ?>
 
 	</div>
 	<div class="alert-box alert hidden"></div>
-	<div class="buttons">
-		<button class="secondary small ok" type="button" data-queue="<?=$this->ticket->current_queue->id?>">OK</button>
-		<button class="warning small cancel" type="button" data-queue="<?=$this->ticket->current_queue->id?>" data-category="<?=$this->ticket->current_queue->queueset->category_id?>">Cancel</button>
-	</div>
+    <?php if(!$buttons_drawn) echo $buttons; ?>
 </form>

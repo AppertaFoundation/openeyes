@@ -167,7 +167,7 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \BaseEventType
         return true;
     }
 
-    public function setDefaultOptions()
+    public function setDefaultOptions(\Patient $patient = null)
     {
         if (in_array(Yii::app()->getController()->getAction()->id, array('created', 'ElementForm'))) {
             if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
@@ -181,5 +181,10 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \BaseEventType
                 }
             }
         }
+    }
+
+    public function __toString()
+    {
+        return $this->eye->name . ' target post-op: '.$this->target_postop_refraction;
     }
 }

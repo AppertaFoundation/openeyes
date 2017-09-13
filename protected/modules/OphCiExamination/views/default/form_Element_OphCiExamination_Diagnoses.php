@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="element-fields">
+<div class="element-fields" id="<?php echo CHtml::modelName($element);?>_diagnoses">
 	<input type="hidden" name="<?php echo CHtml::modelName($element);?>[force_validation]" />
 	<?php echo $form->radioButtons(new \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis(), 'eye_id', 'Eye',
         ($this->episode && $this->episode->eye_id) ? $this->episode->eye_id : 2, false, false, false, false, array(),
@@ -48,6 +48,16 @@
 			</tr>
 		</thead>
 		<tbody class="js-diagnoses" id="OphCiExamination_diagnoses">
+            <?php foreach ($this->patient->episodes as $episode) {
+                if ($episode->id != $this->episode->id && $episode->diagnosis) { ?>
+                    <tr class="read-only">
+                        <td><?= $episode->diagnosis->term ?></td>
+                        <td><?= $episode->eye ? : 'Not Specified' ?></td>
+                        <td><?= $episode->getSubspecialtyText() ?></td>
+                        <td><span class="has-tooltip fa fa-info-circle" data-tooltip-content="You must switch to the <?= $episode->getSubspecialtyText() ?> subspecialty to alter this diagnosis"></span></td>
+                    </tr>
+                <?php }
+            } ?>
 			<?php foreach ($element->diagnoses as $i => $diagnosis) {
     ?>
 				<tr>
@@ -85,3 +95,5 @@
 		</tbody>
 	</table>
 </div>
+
+<?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Diagnoses.js", CClientScript::POS_HEAD); ?>

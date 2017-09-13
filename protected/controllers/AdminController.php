@@ -369,6 +369,7 @@ class AdminController extends BaseAdminController
 
         if ($request->getIsPostRequest()) {
             $userAtt = $request->getPost('User');
+
             $user->attributes = $userAtt;
 
             if (!$user->validate()) {
@@ -401,7 +402,7 @@ class AdminController extends BaseAdminController
 
                 Audit::add('admin-User', 'add', $user->id);
 
-                if (!isset($userAtt['roles'])) {
+                if (!isset($userAtt['roles']) || ( empty($userAtt['roles']))) {
                     $userAtt['roles'] = array();
                 }
 
@@ -443,6 +444,7 @@ class AdminController extends BaseAdminController
 
         if ($request->getIsPostRequest()) {
             $userAtt = $request->getPost('User');
+
             if (empty($userAtt['password'])) {
                 unset($userAtt['password']);
             }
@@ -451,9 +453,6 @@ class AdminController extends BaseAdminController
             if (!$user->validate()) {
                 $errors = $user->getErrors();
             } else {
-                if ($user->is_doctor != 1) {
-                    $user->doctor_grade_id = '';
-                }
 
                 if (!$user->save()) {
                     throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
@@ -482,7 +481,7 @@ class AdminController extends BaseAdminController
 
                 Audit::add('admin-User', 'edit', $user->id);
 
-                if (!isset($userAtt['roles'])) {
+                if (!isset($userAtt['roles']) || (empty($userAtt['roles']))) {
                     $userAtt['roles'] = array();
                 }
 
@@ -1931,16 +1930,6 @@ class AdminController extends BaseAdminController
     }
 
     /**
-     * Lists and allows editing of Allergy records.
-     *
-     * @throws Exception
-     */
-    public function actionAllergies()
-    {
-        $this->genericAdmin('Edit Allergies', 'Allergy');
-    }
-
-    /**
      * Lists and allows editing of AnaestheticAgent records.
      *
      * @throws Exception
@@ -2032,6 +2021,52 @@ class AdminController extends BaseAdminController
         Audit::add('admin', 'view', $id, null, array('model' => 'AnaestheticAgent'));
         $this->render('/admin/deleteanaestheticagent', array(
             'agent' => $agent,
+        ));
+    }
+
+    public function actionPatientShortcodes()
+    {
+        $this->genericAdmin('Edit Shortcodes', 'PatientShortcode', array(
+            'description' => 'You may alter the shortcode for this installation below. Otherwise this screen is purely for information',
+            'cannot_add' => true,
+            'cannot_delete' => true,
+            'label_field' => 'code',
+            'extra_fields' => array(
+                array(
+                    'field' => 'default_code',
+                    'type' => 'text',
+                    'htmlOptions' => array(
+                        'disabled' => true,
+                        'size' => 4
+                    )
+                ),
+                array(
+                    'field' => 'description',
+                    'type' => 'textarea'
+                ),
+                array(
+                    'field' => 'event_type_id',
+                    'type' => 'lookup',
+                    'model' => 'EventType',
+                    'htmlOptions' => array(
+                        'disabled' => true
+                    )
+                ),
+                array(
+                    'field' => 'method',
+                    'type' => 'text',
+                    'htmlOptions' => array(
+                        'disabled' => true,
+                    )
+                ),
+                array(
+                    'field' => 'codedoc',
+                    'type' => 'textdisplay',
+                    'htmlOptions' => array(
+                        'disabled' => true,
+                    )
+                )
+            )
         ));
     }
 }

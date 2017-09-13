@@ -23,23 +23,28 @@ $current_episode = isset($current_episode) ? $current_episode : @$this->current_
 $noEpisodes = (count($episodes) < 1 && count($supportserviceepisodes) < 1 && count($legacyepisodes) < 1);
 ?>
 
-<h1 class="badge">Episodes and events</h1>
-
 <?php if($noEpisodes && $this->checkAccess('OprnCreateEpisode')) { ?>
 	<div class="row">
 		<div class="large-8 large-centered column">
 			<div class="box content">
-				<div class="panel">
-					<div class="alert-box alert with-icon">
-						There are currently no episodes for this patient, please click the Add episode button to open a new episode.
+				<div class="oe-no-episodes">
+					<div class="alert-box alert">
+						There are currently no events for this patient, please click the button below to begin recording events.
 					</div>
-					<button class="small add-episode" id="add-episode">
-						Add episode
+					<button class="add-event tiny" id="add-event">
+						Add Event
 					</button>
 				</div>
 			</div>
 		</div>
 	</div>
+    <?php $this->renderPartial('//patient/add_new_event',array(
+        'button_selector' => '#add-event',
+        'episodes' => array(),
+        'context_firm' => $this->firm,
+        'patient_id' => $this->patient->id,
+        'eventTypes' => EventType::model()->getEventTypeModules(),
+    ));?>
 <?php } else {
 
     $this->beginContent('//patient/episodes_container', array(
@@ -59,7 +64,7 @@ $noEpisodes = (count($episodes) < 1 && count($supportserviceepisodes) < 1 && cou
     } elseif (count($legacyepisodes)) {?>
 		<h2>No episodes</h2>
 		<div class="alert-box alert with-icon">
-			There are currently no episodes for this patient, please click the Add episode button to open a new episode.
+			There are currently no events for this patient, please click the Add <?= strtolower(Episode::getEpisodeLabel()) ?> button to begin recording events.
 		</div>
 	<?php }
     $this->endContent();

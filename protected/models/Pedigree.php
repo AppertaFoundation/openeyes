@@ -92,6 +92,7 @@ class Pedigree extends BaseActiveRecord
                 self::MANY_MANY,
                 'GeneticsPatient',
                 'genetics_patient_pedigree(patient_id, pedigree_id)',
+                'with' => 'patient',
             ),
             'members' => array(self::HAS_MANY, 'GeneticsPatientPedigree', 'pedigree_id', 'with' => array('patient')),
             'base_change_type' => array(self::BELONGS_TO, 'PedigreeBaseChangeType', 'base_change_id'),

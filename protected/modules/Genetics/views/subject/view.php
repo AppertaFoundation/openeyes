@@ -39,6 +39,14 @@
                 }
             ),
             array(
+                'label' => 'Maiden Name',
+                'type' => 'raw',
+                'value' => function() use ($model){
+                    return $model->patient->contact->maiden_name;
+                }
+            ),
+
+            array(
                 'label' => $model->patient->getAttributeLabel('dob'),
                 'type' => 'raw',
                 'value' => function() use ($model){

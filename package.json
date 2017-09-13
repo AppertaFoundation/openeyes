@@ -29,6 +29,7 @@
     "grunt-mocha": "^1.0.2",
     "grunt-modernizr": "^1.0.2",
     "jshint-stylish": "^2.2.0",
-    "load-grunt-tasks": "^3.5.0"
+    "load-grunt-tasks": "^3.5.0",
+    "grunt-contrib-uglify": "~0.10.0"
   }
 }

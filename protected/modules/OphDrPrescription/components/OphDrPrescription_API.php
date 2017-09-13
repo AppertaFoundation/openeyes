@@ -24,27 +24,24 @@ class OphDrPrescription_API extends BaseAPI
      * get the prescription letter text for the latest prescription in the episode for the patient.
      *
      * @param Patient $patient
-     * @param Episode $episode
-     *
+     * @param $use_context
      * @return string
      */
-    public function getLetterPrescription($patient)
+    public function getLetterPrescription($patient, $use_context = true)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($details = $this->getElementForAllEventInEpisode($episode, 'Element_OphDrPrescription_Details')) {
-                
-                $result = '';
-                $latest =  $this->getElementForLatestEventInEpisode($episode, 'Element_OphDrPrescription_Details');
-                foreach($details as $detail)
-                {
-                    $detailDate = substr($detail->event->event_date, 0, 10);
-                    $latestDate = substr($latest->event->event_date, 0, 10);
-                    if(strtotime($detailDate) === strtotime($latestDate)){
-                        $result .= $detail->getLetterText()."\n";
-                    }
+        if($details = $this->getElements('Element_OphDrPrescription_Details', $patient, $use_context)){
+            $result = '';
+            $latest = $this->getElementFromLatestEvent('Element_OphDrPrescription_Details', $patient, $use_context);
+
+            foreach($details as $detail)
+            {
+                $detailDate = substr($detail->event->event_date, 0, 10);
+                $latestDate = substr($latest->event->event_date, 0, 10);
+                if(strtotime($detailDate) === strtotime($latestDate)){
+                    $result .= $detail->getLetterText()."\n";
                 }
-                return $result;
             }
+            return $result;
         }
     }
 
@@ -96,5 +93,19 @@ class OphDrPrescription_API extends BaseAPI
         $prescriptionItems = OphDrPrescription_Item::model()->with('prescription', 'drug', 'duration', 'prescription.event', 'prescription.event.episode')->findAll($prescriptionCriteria);
 
         return $prescriptionItems;
+    }
+
+    public function validatePrescriptionItemId($id, Patient $patient = null)
+    {
+        if ($item = OphDrPrescription_Item::model()->with('prescription.event.episode')->findByPk($id)) {
+            if ($item->prescription->event) {
+                if ($patient) {
+                    return $item->prescription->event->getPatientId() === $patient->id;
+                } else {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

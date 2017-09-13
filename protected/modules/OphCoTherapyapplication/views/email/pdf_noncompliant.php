@@ -239,7 +239,7 @@ $logoHelper = new LogoHelper();
 						<span class="form-text">&nbsp;OCT Thickness:</span>
 						<?php
                             $oct_str = 'Not measured';
-                            if ($exam_api && $oct = $exam_api->getOCTForSide($patient, $event->episode, $side)) {
+                            if ($exam_api && $oct = $exam_api->getOCTForSide($patient, $side)) {
                                 $oct_str = 'Maximum CRT: '.$oct[0].'&micro;m, Central SFT: '.$oct[1].'&micro;m';
                             }
                             echo $oct_str;

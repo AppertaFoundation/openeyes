@@ -40,6 +40,13 @@ class DefaultController extends \BaseEventTypeController
         'dismissCVIalert' => self::ACTION_TYPE_FORM
     );
 
+    /**
+     * Set to true if the index search bar should appear in the header when creating/editing the event
+     *
+     * @var bool
+     */
+    protected $show_index_search = true;
+
     // if set to true, we are advancing the current event step
     private $step = false;
 
@@ -50,6 +57,16 @@ class DefaultController extends \BaseEventTypeController
     protected $allergies = array();
 
     protected $deletedAllergies = array();
+
+    public function getTitle()
+    {
+        $title = parent::getTitle();
+        $current = $this->step ? : $this->getCurrentStep();
+        if (count($current->workflow->steps) > 1) {
+            $title .= ' (' . $current->name . ')';
+        }
+        return $title;
+    }
 
     /**
      * Need split event files.
@@ -90,8 +107,7 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Check data in child elements
      *
-     * @param BaseEventTypeElements[] $elements
-     *
+     * @param \BaseEventTypeElement[] $elements
      * @return boolean
      */
     protected function checkChildElementsForData($elements)
@@ -107,27 +123,31 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Filters elements based on coded dependencies.
+     * List of elements that should be filtered out from the event.
      *
-     * @TODO: need to ensure that we don't filter out elements that do exist when configuration changes
-     *
-     * @param BaseEventTypeElement[] $elements
-     *
-     * @return BaseEventTypeElement[]
+     * @return array
      */
-    protected function filterElements($elements)
+    protected function getElementFilterList()
     {
-        if (Yii::app()->hasModule('OphCoTherapyapplication')) {
-            $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagement');
-        } else {
-            $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
-        }
+        $remove = components\ExaminationHelper::elementFilterList();
 
         if ($this->set) {
             foreach ($this->set->HiddenElementTypes as $element) {
                 $remove[] = $element->class_name;
             }
         }
+        return $remove;
+    }
+
+    /**
+     * Filters elements based on coded dependencies.
+     *
+     * @param \BaseEventTypeElement[] $elements
+     * @return \BaseEventTypeElement[]
+     */
+    protected function filterElements($elements)
+    {
+        $remove = $this->getElementFilterList();
 
         $final = array();
         foreach ($elements as $el) {
@@ -140,6 +160,11 @@ class DefaultController extends \BaseEventTypeController
             }
         }
         return $final;
+    }
+
+    public function getElementTree($remove_list = array())
+    {
+        return parent::getElementTree($this->getElementFilterList());
     }
 
     /**
@@ -164,6 +189,8 @@ class DefaultController extends \BaseEventTypeController
         foreach (models\OphCiExamination_Refraction_Cylinder_Integer::model()->findAll(array('order' => 'display_order asc')) as $si) {
             $this->jsVars['Element_OphCiExamination_Refraction_cylinder'][$si->sign_id][] = $si->value;
         }
+
+        Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/core.js", \CClientScript::POS_HEAD);
     }
 
     /**
@@ -271,7 +298,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionStep($id)
     {
-        $this->step = true;
+        $this->step = $this->getCurrentStep()->getNextStep();
         // This is the same as update, but with a few extras, so we call the update code and then pick up on the action later
         $this->actionUpdate($id);
     }
@@ -301,33 +328,31 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
-		$active_check_value = "";
+		$active_check = "";
         if (!empty($class_array)) {
             if(array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
-                $active_check = \SettingInstallation::model()->find('t.key="city_road_satellite_view"');
-                if (!empty($active_check)) {
-                    $active_check_value = $active_check->value;
-                }
+                $active_check = Yii::app()->params['city_road_satellite_view'];
             }
         }
+
         $view_data = array_merge(array(
-            'active_check' => $active_check_value,
+            'active_check' => $active_check,
         ), $view_data);
 
         parent::renderElement($element, $action, $form, $data, $view_data, $return, $processOutput);
     }
+
     /**
      * Advance the workflow step for the event if requested.
      *
      * @param Event $event
      *
-     * @throws CException
+     * @throws \CException
      */
     protected function afterUpdateElements($event)
     {
         parent::afterUpdateElements($event);
         $this->persistPcrRisk();
-
         if ($this->step) {
             // Advance the workflow
             if (!$assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
@@ -373,17 +398,31 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Get the first workflow step using rules.
      *
-     * @TODO: examine what this is being used for as opposed to getting elements by workflow ...
-     *
      * @return OphCiExamination_ElementSet
      */
     protected function getFirstStep()
     {
         $firm_id = $this->firm->id;
-        $status_id = $this->episode->episode_status_id;
+        $status_id = ($this->episode) ? $this->episode->episode_status_id : 1;
         $workflow = new models\OphCiExamination_Workflow_Rule();
 
         return $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
+    }
+
+    /**
+     * @param null $event
+     * @return null|OphCiExamination_ElementSet
+     */
+    protected function getCurrentStep($event = null)
+    {
+        if (!$event) {
+            $event = $this->event;
+        }
+        if ($event && !$event->isNewRecord && $assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
+            return $assignment->step;
+        }
+
+        return $this->getFirstStep();
     }
 
     /**
@@ -395,14 +434,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function getNextStep($event = null)
     {
-        if (!$event) {
-            $event = $this->event;
-        }
-        if ($assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
-            $step = $assignment->step;
-        } else {
-            $step = $this->getFirstStep();
-        }
+        $step = $this->getCurrentStep();
 
         return $step->getNextStep();
     }
@@ -445,7 +477,7 @@ class DefaultController extends \BaseEventTypeController
         }
 
         foreach ($extra_by_etid as $extra_element) {
-            $extra_element->setDefaultOptions();
+            $extra_element->setDefaultOptions($this->patient);
 
             // Precache Element Type to avoid bug in usort
             $extra_element->getElementType();
@@ -1044,7 +1076,7 @@ class DefaultController extends \BaseEventTypeController
 
         $side = ucfirst(@$_GET['side']);
 
-        $api = new components\OphCiExamination_API();
+        $api = $this->getApp()->moduleAPI->get('OphCiExamination');
         $result = $api->{"getLastIOPReading{$side}"}($patient);
 
         echo $result;
@@ -1110,6 +1142,18 @@ class DefaultController extends \BaseEventTypeController
     protected function setAndValidateElementsFromData($data)
     {
         $errors = parent::setAndValidateElementsFromData($data);
+
+        if ($history_meds = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryMedications')) {
+            if ($history_meds->hasRisks()) {
+                if (!$this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryRisks')) {
+                    if (!array_key_exists($this->event_type->name, $errors)) {
+                        $errors[$this->event_type->name] = array();
+                    }
+                    $errors[$this->event_type->name][] = 'History Risks element is required when History Medications has entries with associated Risks';
+                }
+            }
+        }
+
         if (isset($data['patientticket_queue']) && $api = Yii::app()->moduleAPI->get('PatientTicketing')) {
             $co_sid = @$data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];
             $status = models\OphCiExamination_ClinicOutcome_Status::model()->findByPk($co_sid);
@@ -1238,10 +1282,7 @@ class DefaultController extends \BaseEventTypeController
     protected function setCurrentSet()
     {
         if (!$this->set) {
-            $firm_id = $this->firm->id;
-            $status_id = ($this->episode) ? $this->episode->episode_status_id : 1;
-            $workflow = new models\OphCiExamination_Workflow_Rule();
-            $this->set = $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
+            $this->set = $this->getFirstStep();
             $this->mandatoryElements = $this->set->MandatoryElementTypes;
         }
     }
@@ -1398,4 +1439,3 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 }
-

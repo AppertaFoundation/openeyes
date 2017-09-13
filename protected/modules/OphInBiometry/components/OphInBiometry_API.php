@@ -19,15 +19,23 @@
  */
 class OphInBiometry_API extends BaseAPI
 {
+    /**
+     * Last Biometry target refraction
+     *
+     * @param $patient
+     * @param $use_context
+     * @return string|null
+     */
 
-    public function getLastBiometryTargetRefraction(\Patient $patient)
+    public function getLastBiometryTargetRefraction(\Patient $patient, $use_context = true)
     {
         $biometry_left = 'LEFT: Not Recorded ';
         $biometry_right = 'RIGHT: Not Recorded';
-        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        $event = $this->getLatestEvent($patient, $use_context);
 
-        if ($episode) {
-            $biometry_element = $this->getElementForLatestEventInEpisode($episode, 'Element_OphInBiometry_Calculation');
+        if ($event) {
+            $biometry_element = $this->getLatestElement('Element_OphInBiometry_Calculation', $patient, $use_context);
+
             if($biometry_element){
                 if ($biometry_element->hasLeft() && !empty($biometry_element->target_refraction_left)) {
                     $biometry_left = 'LEFT: ' . $biometry_element->target_refraction_left;
@@ -38,7 +46,6 @@ class OphInBiometry_API extends BaseAPI
             }
         }
 
-         return $biometry_left . ' ' . $biometry_right;
+        return $biometry_left . ' ' . $biometry_right;
     }
-
 }

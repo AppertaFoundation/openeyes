@@ -18,6 +18,8 @@
 @import "elements/intraocular-pressure";
 @import "elements/diagnoses";
 @import "elements/dilation";
+@import "elements/_family-history";
+@import "elements/_allergies";
 @import "elements/gonioscopy";
 @import "elements/optic-disc";
 @import "elements/anterior-segment";
@@ -26,3 +28,10 @@
 @import "elements/comorbidities";
 @import "elements/current-management";
 @import "elements/pcr";
+@import "elements/surgical-lids";
+@import "elements/history-medications";
+
+.autoreport-display {
+  line-height: 1;
+  margin-bottom: 2px;
+}

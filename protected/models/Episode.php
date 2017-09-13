@@ -27,6 +27,8 @@
  * @property int $firm_id
  * @property string $start_date
  * @property string $end_date
+ * @property boolean $support_services
+ * @property boolean $change_tracker
  *
  * The followings are the available model relations:
  * @property Patient $patient
@@ -267,6 +269,27 @@ class Episode extends BaseActiveRecordVersioned
     }
 
     /**
+     * @param Patient $patient
+     * @return CActiveRecord|Episode
+     */
+    public static function getChangeEpisode(Patient $patient)
+    {
+        $episode = self::model()->with('events')->findByAttributes(array(
+            'patient_id' => $patient->id,
+            'change_tracker' => true
+        ));
+        if (!$episode) {
+            // note that requesting code is responsible for checking/saving new episode
+            // if necessary. This is to allow the episode to be saved in a transaction
+            // which completes successfully.
+            $episode = new Episode();
+            $episode->patient_id = $patient->id;
+            $episode->change_tracker = true;
+        }
+        return $episode;
+    }
+
+    /**
      * Get the most recent event by the given type in this episode.
      *
      * @param $event_type_id
@@ -453,5 +476,23 @@ class Episode extends BaseActiveRecordVersioned
         $properties['episode_id'] = $this->id;
         $properties['patient_id'] = $this->patient_id;
         parent::audit($target, $action, $data, $log, $properties);
+    }
+
+    /**
+     * @TODO change to configuration
+     * @return string
+     */
+    public static function getEpisodeLabel()
+    {
+				return 'Specialty';
+    }
+
+    /**
+     * @TODO Change to configuration
+     * @return string
+     */
+    public static function getEpisodeLabelPlural()
+    {
+        return 'Specialties';
     }
 }

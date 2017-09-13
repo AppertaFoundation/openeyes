@@ -83,6 +83,16 @@ class BaseController extends Controller
     }
 
     /**
+     * Override-able render function for sidebar
+     *
+     * @param $default_view
+     */
+    public function renderSidebar($default_view)
+    {
+        $this->renderPartial($default_view);
+    }
+
+    /**
      * @param string $action
      *
      * @return bool
@@ -109,6 +119,7 @@ class BaseController extends Controller
 
         // Register the main stylesheet without pre-registering to ensure it's always output first.
         $assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
+        $assetManager->registerCssFile('css/new_ui.css', null, null, AssetManager::OUTPUT_SCREEN, false);
 
         // Prevent certain assets from being outputted in certain conditions.
         $assetManager->adjustScriptMapping();
@@ -194,6 +205,20 @@ class BaseController extends Controller
 
     public function processJsVars()
     {
+        // TODO: Check logged in before setting
+        $this->jsVars['uservoice_enabled'] = Yii::app()->params['uservoice_enabled'];
+        $this->jsVars['uservoice_use_logged_in_user'] = Yii::app()->params['uservoice_use_logged_in_user'];
+        $this->jsVars['uservoice_override_account_id'] = Yii::app()->params['uservoice_override_account_id'];
+        $this->jsVars['uservoice_override_account_name'] = Yii::app()->params['uservoice_override_account_name'];
+        if (isset(Yii::app()->session['user'])) {
+          $user = User::model()->findByAttributes(array('id' => Yii::app()->session['user']->id));
+          $this->jsVars['user_id'] = $user->id;
+          $this->jsVars['user_full_name'] = $user->first_name." ".$user->last_name;
+          $this->jsVars['user_email'] = $user->email;
+        }
+        $institution = Institution::model()->findByAttributes(array('remote_id' => Yii::app()->params['institution_code']));
+        $this->jsVars['institution_code'] = $institution->remote_id;
+        $this->jsVars['institution_name'] = $institution->name;
         $this->jsVars['YII_CSRF_TOKEN'] = Yii::app()->request->csrfToken;
         $this->jsVars['OE_core_asset_path'] = Yii::app()->assetManager->getPublishedPathOfAlias('application.assets');
         $this->jsVars['OE_module_name'] = $this->module ? $this->module->id : false;

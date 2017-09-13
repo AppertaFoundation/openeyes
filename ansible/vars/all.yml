@@ -131,3 +131,6 @@ php_xdebug_remote_connect_back: true
 php_xdebug_remote_port: "9000"
 php_xdebug_idekey: across-health.xdebug
 php_xdebug_remote_log: /tmp/xdebug.log # Useful for connection debug
+
+# zealot128.wkhtmltox
+wkhtmltox_download_url: 'https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/{{wkhtmltox_main_version}}/wkhtmltox-{{wkhtmltox_minor_version}}_linux-generic-amd64.tar.xz'

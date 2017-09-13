@@ -95,4 +95,9 @@ class OphCiExamination_OverallPeriod extends \BaseActiveRecordVersioned
             'LookupTable' => 'LookupTable',
         );
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }

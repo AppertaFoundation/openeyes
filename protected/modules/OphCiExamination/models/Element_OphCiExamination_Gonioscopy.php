@@ -41,6 +41,8 @@ namespace OEModule\OphCiExamination\models;
  * @property OphCiExamination_Gonioscopy_Van_Herick $right_van_herick
  * @property string $left_eyedraw
  * @property string $right_eyedraw
+ * @property string $left_ed_report
+ * @property string $right_ed_report
  *
  * The followings are the available model relations:
  * @property Event $event
@@ -55,6 +57,22 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
+    }
+
+    // used for the letter string method in the eyedraw element behavior
+    public $letter_string_prefix = "Gonioscopy:\n";
+
+    /**
+     * @inheritdoc
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'EyedrawElementBehavior' => array(
+                'class' => 'application.behaviors.EyedrawElementBehavior',
+            ),
+        );
     }
 
     /**
@@ -75,9 +93,10 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
         return array(
                 array('eye_id, left_gonio_sup_id, left_gonio_tem_id, left_gonio_nas_id, left_gonio_inf_id,
 						right_gonio_sup_id, right_gonio_tem_id, right_gonio_nas_id, right_gonio_inf_id, left_van_herick_id,
-						right_van_herick_id, left_description, right_description, left_eyedraw, right_eyedraw', 'safe'),
-                array('left_eyedraw, left_description', 'requiredIfSide', 'side' => 'left'),
-                array('right_eyedraw, right_description', 'requiredIfSide', 'side' => 'right'),
+						right_van_herick_id, left_description, right_description, left_eyedraw, right_eyedraw,
+						left_ed_report, right_ed_report', 'safe'),
+                array('left_eyedraw, left_ed_report', 'requiredIfSide', 'side' => 'left'),
+                array('right_eyedraw, right_ed_report', 'requiredIfSide', 'side' => 'right'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
                 array('eye_id, event_id, left_description, right_description, left_eyedraw, right_eyedraw',
@@ -127,22 +146,24 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
     public function attributeLabels()
     {
         return array(
-                'id' => 'ID',
-                'event_id' => 'Event',
-                'left_van_herick_id' => 'Van Herick',
-                'right_van_herick_id' => 'Van Herick',
-                'left_gonio_sup_id' => 'Gonioscopy',
-                'left_gonio_tem_id' => 'Gonioscopy',
-                'left_gonio_nas_id' => 'Gonioscopy',
-                'left_gonio_inf_id' => 'Gonioscopy',
-                'right_gonio_sup_id' => 'Gonioscopy',
-                'right_gonio_tem_id' => 'Gonioscopy',
-                'right_gonio_nas_id' => 'Gonioscopy',
-                'right_gonio_inf_id' => 'Gonioscopy',
-                'left_description' => 'Description',
-                'right_description' => 'Description',
-                'left_eyedraw' => 'EyeDraw',
-                'right_eyedraw' => 'EyeDraw',
+            'id' => 'ID',
+            'event_id' => 'Event',
+            'left_van_herick_id' => 'Van Herick',
+            'right_van_herick_id' => 'Van Herick',
+            'left_gonio_sup_id' => 'Gonioscopy',
+            'left_gonio_tem_id' => 'Gonioscopy',
+            'left_gonio_nas_id' => 'Gonioscopy',
+            'left_gonio_inf_id' => 'Gonioscopy',
+            'right_gonio_sup_id' => 'Gonioscopy',
+            'right_gonio_tem_id' => 'Gonioscopy',
+            'right_gonio_nas_id' => 'Gonioscopy',
+            'right_gonio_inf_id' => 'Gonioscopy',
+            'left_description' => 'Comments',
+            'right_description' => 'Comments',
+            'left_eyedraw' => 'EyeDraw',
+            'right_eyedraw' => 'EyeDraw',
+            'left_ed_report' => 'Report',
+            'right_ed_report' => 'Report'
         );
     }
 
@@ -174,6 +195,8 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
         $criteria->compare('right_description', $this->right_description, true);
         $criteria->compare('left_eyedraw', $this->left_eyedraw, true);
         $criteria->compare('right_eyedraw', $this->right_eyedraw, true);
+        $criteria->compare('left_ed_report', $this->left_ed_report, true);
+        $criteria->compare('right_ed_report', $this->right_ed_report, true);
 
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
@@ -189,6 +212,9 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
                 ->findAll(array('order' => 'display_order')), 'id', 'name');
     }
 
+    /**
+     * @return array
+     */
     public function sidedDefaults()
     {
         $defaults = array();

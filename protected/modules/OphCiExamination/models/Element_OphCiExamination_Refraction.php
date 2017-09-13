@@ -113,21 +113,10 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
         return true;
     }
 
-    public function setDefaultOptions()
+    public function setDefaultOptions(\Patient $patient = null)
     {
         $this->left_axis = 0;
         $this->right_axis = 0;
-        if ($api = Yii::app()->moduleAPI->get('OphCoCataractReferral')) {
-            if ($episode = Yii::app()->getController()->patient->getEpisodeForCurrentSubspecialty()) {
-                if ($refraction = $api->getRefractionForLatestCataractReferralInEpisode($episode->id)) {
-                    foreach ($refraction as $key => $value) {
-                        if (preg_match('/^left_(?!graph)/', $key) || preg_match('/^right_(?!graph)/', $key)) {
-                            $this->{$key} = $value;
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -161,11 +150,13 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
             'left_axis' => 'Axis',
             'left_type_id' => 'Type',
             'left_type_other' => 'Other Type',
+            'left_notes' => 'Comments',
             'right_sphere' => 'Sphere',
             'right_cylinder' => 'Cylinder',
             'right_axis' => 'Axis',
             'right_type_id' => 'Type',
             'right_type_other' => 'Other Type',
+            'right_notes' => 'Comments'
         );
     }
 

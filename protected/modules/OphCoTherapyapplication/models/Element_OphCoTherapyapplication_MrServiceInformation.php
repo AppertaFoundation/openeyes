@@ -127,19 +127,4 @@ class Element_OphCoTherapyapplication_MrServiceInformation extends BaseEventType
             'criteria' => $criteria,
         ));
     }
-
-    protected function beforeSave()
-    {
-        return parent::beforeSave();
-    }
-
-    protected function afterSave()
-    {
-        return parent::afterSave();
-    }
-
-    protected function beforeValidate()
-    {
-        return parent::beforeValidate();
-    }
 }

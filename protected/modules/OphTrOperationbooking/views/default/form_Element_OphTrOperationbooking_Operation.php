@@ -43,13 +43,33 @@
 	<?php echo $form->dropDownList($element, 'named_consultant_id', CHtml::listData(User::model()->findAll(array('condition' => 'is_consultant = 1 and is_surgeon=1', 'order' => 'last_name, first_name')), 'id', 'reversedFullName'), array('empty' => '- Please select -'), false, array('field' => 3));?>
 	<?php echo $form->radioBoolean($element, 'senior_fellow_to_do')?>
 	<?php echo $form->radioBoolean($element, 'any_grade_of_doctor')?>
-	<?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'AnaestheticType')?>
+
+    <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', 'Anaesthetic Type',
+        false, false, false, false,
+        array(
+                'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error' : ''
+        )
+    ); ?>
+
 	<?php $form->radioBoolean($element, 'anaesthetist_preop_assessment') ?>
 	<?php $form->radioButtons($element, 'anaesthetic_choice_id', 'OphTrOperationbooking_Anaesthetic_Choice') ?>
 	<?php $form->radioBoolean($element, 'stop_medication') ?>
 	<?php $form->textArea($element, 'stop_medication_details', array('rows' => 4), true, array(), array_merge($form->layoutColumns, array('field' => 4))) ?>
 	<?php echo $form->radioBoolean($element, 'overnight_stay')?>
-	<?php echo $form->dropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution(), array(), false, array('field' => 2))?>
+    <?php
+
+        $options = array(
+            $this->selectedSiteId=>array('selected'=>true)
+        );
+
+        echo $form->dropDownList(
+            $element,
+            'site_id',
+            CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList(), 'id', 'short_name'),
+            array('empty' => '- None -', 'options' => $options),
+            false,
+            array('field' => 2));
+    ?>
 	<?php echo $form->radioButtons($element, 'priority_id', CHtml::listData(OphTrOperationbooking_Operation_Priority::model()->notDeletedOrPk($element->priority_id)->findAll(array('order' => 'display_order asc')), 'id', 'name'))?>
 	<?php
         if (Yii::app()->params['ophtroperationbooking_referral_link']) {

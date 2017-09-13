@@ -4,8 +4,6 @@
 
 ?>
 
-<h1 class="badge">Patient Merge Request List</h1>
-
 <?php $form = $this->beginWidget('CActiveForm', array(
     'id' => 'merge-form',
     'enableAjaxValidation' => false,

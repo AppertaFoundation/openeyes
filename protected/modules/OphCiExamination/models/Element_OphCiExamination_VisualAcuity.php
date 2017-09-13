@@ -175,7 +175,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
         parent::afterValidate();
     }
 
-    public function setDefaultOptions()
+    public function setDefaultOptions(\Patient $patient = null)
     {
         $this->unit_id = $this->getSetting('unit_id');
         if ($rows = $this->getSetting('default_rows')) {

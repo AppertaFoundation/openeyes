@@ -176,7 +176,7 @@
       throw new Error('Unable to compile dialog template. Template not found: ' + options.selector);
     }
 
-    return Mustache.render(template, options.data || {});
+    return Mustache.render(template, options.data || {}, options.partials || {});
   };
 
   /**

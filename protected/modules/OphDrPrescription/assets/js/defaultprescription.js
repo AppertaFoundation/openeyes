@@ -124,6 +124,12 @@ $('body').delegate('.drugFilter', 'change', function () {
   return false;
 });
 
+$('#prescription_items').delegate('select.dispenseCondition', 'change', function () {
+  getDispenseLocation($(this));
+  return false;
+});
+
+
 // remove all the rows from the prescription table
 function clear_prescription() {
   $('#prescription_items tbody tr').remove();
@@ -260,6 +266,14 @@ function getNextKey() {
   return (last_item.attr('data-key')) ? parseInt(last_item.attr('data-key')) + 1 : 0;
 }
 
+function getDispenseLocation(dispense_condition) {
+  $.get(baseUrl + "/OphDrPrescription/PrescriptionCommon/GetDispenseLocation", {
+        condition_id: dispense_condition.val(),
+  }, function (data) {
+        dispense_condition.next('select').find('option').remove();
+        dispense_condition.next('select').append(data);
+  });
+}
 
 // Check for existing prescriptions for today - warn if creating only
 $(document).ready(function () {

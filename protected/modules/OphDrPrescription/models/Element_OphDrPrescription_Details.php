@@ -263,12 +263,11 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
 
     protected function afterSave()
     {
-        if($this->draft)
-        {
+        if(($this->draft == 0) && ($this->printed == 0)){
+            $this->event->deleteIssue('Draft');
+        } else if($this->draft == 1) {
             $this->event->addIssue('Draft');
-        }
-        else
-        {
+        } else {
             $this->event->deleteIssue('Draft');
         }
 
@@ -330,11 +329,9 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                 }
                 $item_model->frequency_id = $item['frequency_id'];
                 $item_model->duration_id = $item['duration_id'];
-                if (isset($item['continue_by_gp'])) {
-                    $item_model->continue_by_gp = $item['continue_by_gp'];
-                } else {
-                    $item_model->continue_by_gp = 0;
-                }
+                $item_model->dispense_condition_id = $item['dispense_condition_id'];
+                $item_model->dispense_location_id = $item['dispense_location_id'];
+
                 $item_model->save();
 
                 // Tapering
@@ -360,6 +357,13 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             OphDrPrescription_ItemTaper::model()->deleteByPk(array_values($existing_taper_ids));
             OphDrPrescription_Item::model()->deleteByPk(array_values($existing_item_ids));
         }
+
+        if (!$this->draft) {
+            $this->getApp()->event->dispatch('after_medications_save', array(
+                'patient' => $this->event->getPatient(),
+                'drugs' => array_map(function($item) {return $item->drug; }, $this->items)
+            ));
+        }
     }
 
     /**
@@ -369,7 +373,9 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      */
     public function getInfotext()
     {
-        if (!$this->printed) {
+        if(($this->draft == 0) && ($this->printed == 0)){
+            return 'Saved';
+        } else if (!$this->printed) {
             return 'Draft';
         } else {
             return 'Printed';

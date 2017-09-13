@@ -105,6 +105,32 @@ function setSurgeonFromNote(ev, pcrEl) {
 }
 
 /**
+ * Gets the Eyedraw string for the classification set on the provided input element
+ * Set up for the cataract fields, but could be utilised for others as well.
+ *
+ * @param $el
+ * @returns {string}
+ */
+function getEyedrawValue($el) {
+  var reverseMap = $el.data('reverse-eyedraw-map');
+  if (!reverseMap) {
+    // cache the reverseMap for multiple state changes to the given element
+    var map = $el.data('eyedraw-map');
+    reverseMap = {};
+    for (var i in map) {
+      if (map.hasOwnProperty(i))
+        reverseMap[map[i]] = i;
+    }
+    $el.data('reverse-eyedraw-map', reverseMap);
+  }
+
+  var val = $el.val();
+  if (val in reverseMap)
+    return reverseMap[val];
+  return '';
+}
+
+/**
  * Sets whether or not the cataract is brunescent in PCR risk
  *
  * @param ev
@@ -121,8 +147,8 @@ function setPcrBrunescent(ev, pcrEl) {
   var isRight = (ev.target.id.indexOf('right') > -1);
   var $related = isRight ? $(ev.data.related.right) : $(ev.data.related.left);
 
-  var value = $cataractDrop.find(':selected').data('value');
-  var related_value = $related.find(':selected').data('value');
+  var value = getEyedrawValue($cataractDrop);
+  var related_value = getEyedrawValue($related);
   if ((value === 'Brunescent' || value === 'White') || (related_value === "Brunescent" || related_value === "White")) {
     $container.find(pcrEl).val('Y');
   } else {

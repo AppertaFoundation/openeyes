@@ -41,7 +41,7 @@ namespace OEModule\OphCiExamination\models;
  * @property Event $event
  * @property User $user
  * @property User $usermodified
- * @property Gender $clinic_internal
+ * @property OphCiExamination_OverallPeriod $clinic_interval
  * @property Gender $photo
  * @property Gender $oct
  * @property Gender $hfa
@@ -109,7 +109,7 @@ class Element_OphCiExamination_OverallManagementPlan  extends  \SplitEventTypeEl
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'gonio' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_VisitInterval', 'gonio_id'),
-            'clinic_internal' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_OverallPeriod', 'clinic_interval_id'),
+            'clinic_interval' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_OverallPeriod', 'clinic_interval_id'),
             'photo' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_OverallPeriod', 'photo_id'),
             'oct' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_OverallPeriod', 'oct_id'),
             'hfa' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_OverallPeriod', 'hfa_id'),
@@ -176,12 +176,17 @@ class Element_OphCiExamination_OverallManagementPlan  extends  \SplitEventTypeEl
         return parent::afterSave();
     }
 
-    public function setDefaultOptions()
+    public function setDefaultOptions(\Patient $patient = null)
     {
         $element_type = \ElementType::model()->find('class_name=?', array(get_class($this)));
         $defaults = \SettingMetadata::model()->findAll('element_type_id=? ', array($element_type->id));
         foreach ($defaults as $default) {
             $this->{$default->key} = $default->default_value;
         }
+    }
+
+    public function __toString()
+    {
+        return 'Clinic: ' . $this->clinic_interval;
     }
 }

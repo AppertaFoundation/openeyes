@@ -25,6 +25,8 @@ class DefaultController extends BaseEventTypeController
         'getDecisionTree' => self::ACTION_TYPE_FORM,
     );
 
+    protected $show_element_sidebar = false;
+
     // TODO: check this is in line with Jamie's change circa 3rd April 2013
     protected function beforeAction($action)
     {
@@ -254,7 +256,8 @@ class DefaultController extends BaseEventTypeController
             foreach (array(Eye::LEFT, Eye::RIGHT) as $eye_id) {
                 $prefix = $eye_id == Eye::LEFT ? 'left' : 'right';
                 // get specific disorder from injection management
-                if ($exam_api && $exam_imc = $exam_api->getInjectionManagementComplexInEpisodeForSide($this->patient, $episode, $prefix)) {
+
+                if ($exam_api && $exam_imc = $exam_api->getInjectionManagementComplexInEpisodeForSide($this->patient, $prefix)) {
                     $element->{$prefix.'_diagnosis1_id'} = $exam_imc->{$prefix.'_diagnosis1_id'};
                     $element->{$prefix.'_diagnosis2_id'} = $exam_imc->{$prefix.'_diagnosis2_id'};
                 }
@@ -266,7 +269,7 @@ class DefaultController extends BaseEventTypeController
                 // otherwise get ordered list of diagnoses for the eye in this episode, and check
                 else {
                     if ($exam_api) {
-                        $disorders = $exam_api->getOrderedDisorders($this->patient, $episode);
+                        $disorders = $exam_api->getOrderedDisorders( $this->patient );
                         foreach ($disorders as $disorder) {
                             if (($disorder['eye_id'] == $eye_id || $disorder['eye_id'] == Eye::BOTH) && in_array($disorder['disorder_id'], $vd_ids)) {
                                 $element->{$prefix.'_diagnosis1_id'} = $disorder['disorder_id'];

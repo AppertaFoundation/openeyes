@@ -39,6 +39,12 @@ $(document).ready(function () {
       e.preventDefault();
     }
   });
+    handleButton($('#et_save'), function (e) {
+        $('#Element_OphDrPrescription_Details_draft').val(0);
+        if(!checkPrescriptionLength()){
+            e.preventDefault();
+        }
+    });
   
   handleButton($('#et_save_draft'), function (e) {
     $('#Element_OphDrPrescription_Details_draft').val(1);

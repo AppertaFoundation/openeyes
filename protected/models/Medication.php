@@ -21,6 +21,7 @@
  * This is the model class for table "medication".
  *
  * The followings are the available columns in table 'medication':
+ * @deprecated since v2.0
  *
  * @property int $id
  * @property int $patient_id
@@ -41,7 +42,7 @@ class Medication extends BaseActiveRecordVersioned
      */
     public function tableName()
     {
-        return 'medication';
+        return 'archive_medication';
     }
 
     /**

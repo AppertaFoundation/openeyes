@@ -384,3 +384,11 @@ table {
 		}
 	}
 }
+
+table {
+	&.valign-top {
+		tr {
+			vertical-align: top;
+		}
+	}
+}

@@ -23,9 +23,15 @@ $this->moduleNameCssClass .= ' highlight-fields';
 ?>
 
 <?php
+$clinical = $clinical = $this->checkAccess('OprnViewClinical');
+
+$warnings = $this->patient->getWarnings($clinical);
+?>
+
+<?php
     // Event actions
     if ($this->checkPrintAccess()) {
-        $this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'small button'));
+        $this->event_actions[] = EventAction::printButton();
     }
 ?>
 
@@ -36,6 +42,19 @@ $this->moduleNameCssClass .= ' highlight-fields';
 		This event is pending deletion and has been locked.
 	</div>
 <?php }?>
+
+    <?php if ($warnings) { ?>
+        <div class="row">
+            <div class="large-12 column">
+                <div class="alert-box patient with-icon">
+                    <?php foreach ($warnings as $warn) {?>
+                        <strong><?php echo $warn['long_msg']; ?></strong>
+                        - <?php echo $warn['details'];
+                    }?>
+                </div>
+            </div>
+        </div>
+    <?php }?>
 
 <?php $this->renderOpenElements($this->action->id); ?>
 <?php $this->endContent();?>

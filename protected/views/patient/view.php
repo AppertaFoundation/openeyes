@@ -26,9 +26,7 @@ $warnings = $this->patient->getWarnings($clinical);
 
 <div class="container content">
 
-	<h1 class="badge">Patient summary</h1>
-
-	<div class="messages patient">
+	<div class="row messages patient">
 
 		<?php $this->renderPartial('//base/_messages'); ?>
 
@@ -78,7 +76,7 @@ $warnings = $this->patient->getWarnings($clinical);
 		<?php $this->renderPartial('//patient/_patient_alerts')?>
 		</div>
 
-	<div class="row">
+	<div class="row patient-content">
 		<div class="large-6 column">
 			<?php if (($refresh_url = Yii::app()->params['patient_refresh_url'])): ?>
 				<section class="box patient-info">
@@ -103,7 +101,15 @@ $warnings = $this->patient->getWarnings($clinical);
 			<?php $this->renderModulePartials('patient_summary_column1')?>
 		</div>
 		<div class="large-6 column" id="patient-summary-form-container">
-			<?php if ($this->checkAccess('OprnViewClinical')) {?>
+
+            <?php if ($component = $this->getApp()->getComponent('internalReferralIntegration')): ?>
+                <section class="box patient-info internalreferral internalreferral-doclist">
+                        <?php echo CHtml::link('View internal referrals',$component->generateUrlForDocumentList($this->patient)); ?>
+                        <span>e-WinDIP</span>
+                </section>
+            <?php endif; ?>
+
+            <?php if ($this->checkAccess('OprnViewClinical')) {?>
 				<?php $this->renderPartial('_patient_episodes', array(
                     'episodes' => $episodes,
                     'ordered_episodes' => $ordered_episodes,

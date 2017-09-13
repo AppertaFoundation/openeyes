@@ -160,7 +160,7 @@ $(document).ready(function() {
 		var id = $(this).attr('id').match(/[0-9]+/);
 		var data = $(this).next('input').val();
 		$(this).closest('.link').hide();
-		$('#dataspan'+id).html(data);
+	//	$('#dataspan'+id).html(data);
 		return false;
 	});
 

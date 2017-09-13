@@ -86,6 +86,7 @@ class BaseAdminController extends BaseController
             'filter_fields' => array(),
             'filters_ready' => true,
             'label_extra_field' => false,
+            'description' => ''
         ), $options);
 
         $columns = $model::model()->metadata->columns;
@@ -158,6 +159,12 @@ class BaseAdminController extends BaseController
 
                             foreach ($options['extra_fields'] as $field) {
                                 $name = $field['field'];
+                                if (!array_key_exists($name, $attributes)) {
+                                    // getAttributes doesn't return relations, so this sets this up
+                                    // to enable the change check below. This will give false positives for saves
+                                    // but is a simple solution for now.
+                                    $attributes[$name] = $item->$name;
+                                }
                                 $item->$name = @$_POST[$name][$i];
                             }
 

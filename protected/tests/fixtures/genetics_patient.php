@@ -21,12 +21,21 @@ return array(
     'genetics_patient1' => array(
         'id' => 1,
         'patient_id' => 1,
-        'commanets' => 'comment1'
+        'commanets' => 'comment1',
+        'last_modified_user_id' => 1,
+        'created_date' => date('Y-m-d H:i:s'),
+        'last_modified_date' => date('Y-m-d H:i:s'),
+        'created_user_id' => 1,
+
     ),
 
     'genetics_patient2' => array(
         'id' => 2,
         'patient_id' => 2,
-        'commanets' => 'comment2'
+        'commanets' => 'comment2',
+        'last_modified_user_id' => 1,
+        'created_date' => date('Y-m-d H:i:s'),
+        'last_modified_date' => date('Y-m-d H:i:s'),
+        'created_user_id' => 1,
     ),
 );

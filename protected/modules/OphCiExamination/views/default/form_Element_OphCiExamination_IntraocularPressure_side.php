@@ -54,7 +54,7 @@ use OEModule\OphCiExamination\models;
 		<button type="button" id="<?= CHtml::modelName($element).'_add_'.$side ?>" class="button small secondary">Add</button>
 	</div>
 	<div class="field-row">
-		<?= $form->textArea($element, "{$side}_comments", array('nowrapper' => true)) ?>
+		<?= $form->textArea($element, "{$side}_comments", array('nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'Comments')) ?>
 	</div>
 	<script type="text/template" id="<?= CHtml::modelName($element).'_reading_template_'.$side ?>" class="hidden">
 		<?php

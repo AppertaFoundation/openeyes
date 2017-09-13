@@ -98,7 +98,7 @@
       <?php
       $api = Yii::app()->moduleAPI->get('OphInDnasample');
       if ($api) {
-          $events = $api->getEventsByPatient($this->patient);
+          $events = $api->getEventsByPatient($patient);
           if ($events) { ?>
             <div class="row data-row">
               <div class="large-4 column">
@@ -124,7 +124,7 @@
       <?php
       $api = Yii::app()->moduleAPI->get('OphInDnaextraction');
       if ($api) {
-          $events = $api->getEventsByPatient($this->patient);
+          $events = $api->getEventsByPatient($patient);
           if ($events) { ?>
             <div class="row data-row">
               <div class="large-4 column">
@@ -150,7 +150,7 @@
       <?php
       $api = Yii::app()->moduleAPI->get('OphInGeneticresults');
       if ($api) {
-          $events = $api->getEventsByPatient($this->patient);
+          $events = $api->getEventsByPatient($patient);
           if ($events) { ?>
             <div class="row data-row">
               <div class="large-4 column">

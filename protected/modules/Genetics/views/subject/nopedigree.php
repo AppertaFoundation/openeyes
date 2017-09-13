@@ -1,5 +1,13 @@
-<?php if(!$genetics_patient || !$genetics_patient->pedigrees): ?>
-<div class="row field-row">
+<?php
+
+    $empty_pedigree_save = false;
+    // user removed all pedigrees then clicked on the Save button
+    if( isset($_POST['GeneticsPatient']['pedigrees']) && empty($_POST['GeneticsPatient']['pedigrees']) ){
+        $empty_pedigree_save = true;
+    }
+
+?>
+<div class="row field-row <?php echo (!$genetics_patient || !$genetics_patient->pedigrees || $empty_pedigree_save) ? '' : ' hidden'; ?> ">
     <div class="large-2 column">&nbsp;</div>
     <div class="large-5 column end">
         <input type="checkbox" id="no_pedigree" name="no_pedigree" />
@@ -53,4 +61,3 @@
         });
     });
 </script>
-<?php endif; ?>
