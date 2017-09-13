@@ -76,7 +76,14 @@ $based_on = implode(', ', $based_on);
                 </thead>
                 <tbody>
                 <?php foreach ($dataProvided as $i => $result) { ?>
-                    <tr id="r<?php echo $result->id ?>" class="clickable" data-link="<?php echo $result->generateEpisodeLink(); ?>">
+                    <tr id="r<?php echo $result->id ?>" class="clickable" data-link="<?php echo $result->generateEpisodeLink(); ?>"
+                        <?php
+                            echo "data-hos_num='{$result->hos_num}'";
+                            if($result->isNewRecord){
+                                echo " data-is_new_record='1'";
+                            }
+                        ?>
+                    >
                         <td><?php echo $result->hos_num ?></td>
                         <td><?php echo $result->title ?></td>
                         <td><?php echo $result->first_name ?></td>
@@ -119,7 +126,16 @@ $based_on = implode(', ', $based_on);
 </div><!-- /.row -->
 
 <script type="text/javascript">
-    $('#patient-grid tr.clickable').click(function () {
-        window.location.href = $(this).attr('data-link');
+    $('#patient-grid').on('click', 'tr.clickable', function(){
+        var url;
+
+        if( $(this).data('is_new_record') === 1 && $(this).data('hos_num') !== undefined ){
+            url = '<?php echo Yii::app()->createUrl('patient/search')?>?term=' + $(this).data('hos_num');
+        } else {
+            url = $(this).attr('data-link');
+        }
+        window.location.href = url;
+        return false;
     });
+
 </script>

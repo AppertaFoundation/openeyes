@@ -64,6 +64,12 @@ class Patient extends BaseActiveRecordVersioned
     private $_orderedepisodes;
 
     /**
+     * Holds errors PAS related errors
+     * @var array
+     */
+    private $_pas_errors = array();
+
+    /**
      * Returns the static model of the specified AR class.
      *
      * @return Patient the static model class
@@ -250,6 +256,25 @@ class Patient extends BaseActiveRecordVersioned
         );
     }
 
+    /**
+     * Adds a new error to the PAS error array.
+     * @param $error
+     */
+    public function addPasError($error)
+    {
+        $this->_pas_errors[] = $error;
+    }
+
+    /**
+     * Returns the errors of the PAS error array.
+     * @param $attribute
+     * @return mixed|null
+     */
+    public function getPasErrors()
+    {
+        return $this->_pas_errors;
+    }
+
     public function search_nr($params)
     {
         $criteria = new CDbCriteria();
@@ -303,14 +328,19 @@ class Patient extends BaseActiveRecordVersioned
 
         $criteria->order = $params['sortBy'].' '.$params['sortDir'];
 
+        $results_from_event = array();
         if($this->use_pas == true){
-            Yii::app()->event->dispatch('patient_search_criteria', array('patient' => $this, 'criteria' => $criteria, 'params' => $params));
+            Yii::app()->event->dispatch('patient_search_criteria', array('results' => &$results_from_event,'patient' => $this, 'criteria' => $criteria, 'params' => $params));
         }
 
         $dataProvider = new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
             'pagination' => array('pageSize' => $params['pageSize']),
         ));
+
+        $results = $dataProvider->getData();
+
+        $dataProvider->setData( array_merge($results, $results_from_event) );
 
         return $dataProvider;
     }

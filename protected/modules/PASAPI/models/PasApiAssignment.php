@@ -28,6 +28,18 @@ namespace OEModule\PASAPI\models;
  */
 class PasApiAssignment extends \BaseActiveRecord
 {
+
+    /**
+     * Default time (in seconds) before cached PAS details are considered stale
+     */
+    const PAS_CACHE_TIME = 300;
+
+    /**
+     * Whenever a record missing from PAS
+     * @var bool
+     */
+    public $missing_from_pas = false;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -134,6 +146,19 @@ class PasApiAssignment extends \BaseActiveRecord
 
     protected function getLockKey($resource_type, $resource_id)
     {
-        return "openeyes.mehpas.{$resource_type}:{$resource_id}";
+        return "openeyes.pasapi.{$resource_type}:{$resource_id}";
+    }
+
+    /**
+     * Does this assignment need refreshing from PAS?
+     *
+     * @return boolean
+     */
+    public function isStale()
+    {
+        if ($this->isNewRecord || $this->missing_from_pas) return true;
+
+        $cache_time = (isset(\Yii::app()->params['pasapi_cache_time'])) ? \Yii::app()->params['pasapi_cache_time'] : self::PAS_CACHE_TIME;
+        return strtotime($this->last_modified_date) < (time() - $cache_time);
     }
 }
