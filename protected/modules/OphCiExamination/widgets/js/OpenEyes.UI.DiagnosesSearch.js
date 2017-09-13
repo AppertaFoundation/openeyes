@@ -37,9 +37,8 @@ OpenEyes.UI = OpenEyes.UI || {};
     }
 
     DiagnosesSearchController._defaultOptions = {
+        modelName: 'OEModule_OphCiExamination_models_SystemicDiagnoses',
         code: 'systemic',
-        //   'selectedDiagnosesWrapper': '.enteredDiagnosisText',
-        //'inputField': '#diagnoses-search-autocomplete',
         commonlyUsedDiagnosesUrl: '/disorder/getcommonlyuseddiagnoses/type/',
         single_template :
             "<div style='font-size: 13px; margin: 16px 0px 0px; display: none;' class='enteredDiagnosisText panel diagnosis hidden'></div>" +
@@ -57,6 +56,8 @@ OpenEyes.UI = OpenEyes.UI || {};
             this.single_template,
             {'input_field': controller.$inputField.prop("outerHTML")}
         );
+
+        $parent.html(html);
 
         $.getJSON(url, function(data){
 
@@ -116,7 +117,39 @@ OpenEyes.UI = OpenEyes.UI || {};
             $parent.find('.enteredDiagnosisText').html('').hide();
         });
 
+        $('#' + controller.options.modelName + '_add_entry').on('click', function(e) {
+            e.preventDefault();
+            controller.addEntry();
+        });
+
     }
+
+    /**
+     * Add a family history section if its valid.
+     */
+    AllergiesController.prototype.addEntry = function()
+    {
+        this.$table.find('tbody').append(this.createRow());
+        this.updateNoAllergiesState();
+    };
+
+    /**
+     *
+     * @param data
+     * @returns {*}
+     */
+    AllergiesController.prototype.createRow = function(data)
+    {
+        if (data === undefined)
+            data = {};
+
+        data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
+
+        return Mustache.render(
+            this.templateText,
+            data
+        );
+    };
 
     exports.DiagnosesSearchController = DiagnosesSearchController;
 

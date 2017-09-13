@@ -19,12 +19,15 @@
 
 <script type="text/javascript" src="<?=$this->getJsPublishedPath('SystemicDiagnoses.js')?>"></script>
 
+<!--
 <script type="text/javascript" src="<?=$this->getJsPublishedPath('OpenEyes.UI.DiagnosesSearch.js')?>"></script>
+
+-->
 <?php
 $model_name = CHtml::modelName($element);
 ?>
 
-<div class="element-fields" id="OphCiExamination_SystemicDiagnoses">
+<div class="element-fields" id="<?=CHtml::modelName($element);?>_element">
 
         <?php
         $this->widget('application.widgets.DiagnosisSelection', array(
@@ -99,11 +102,54 @@ $model_name = CHtml::modelName($element);
         }
         ?>
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3"></td>
+                <td><button class="button small primary add-entry">Add</button></td>
+            </tr>
+        </tfoot>
     </table>
+
+
+    <script type="text/template" class="entry-template hidden">
+        <?php
+        $empty_entry = new \OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis();
+        $this->render(
+            'SystemicDiagnosesEntry_event_edit',
+            array(
+                'entry' => $empty_entry,
+                'form' => $form,
+                'model_name' => $model_name,
+                'field_prefix' => $model_name . '[entries][{{row_count}}]',
+                'row_count' => '{{row_count}}',
+                'removable' => true,
+
+                'values' => array(
+                    'id' => '',
+                    'disorder_id' => '{{disorder_id}}',
+                    'disorder_display' => '{{disorder_display}}',
+                    'side_id' => '{{side_id}}',
+                    'side_display' => '{{side_display}}',
+                    'date' => '{{date}}',
+                    'date_display' => '{{date_display}}'
+                )
+            )
+        );
+        ?>
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            new OpenEyes.OphCiExamination.SystemicDiagnosesController({
+                element: $('#<?=$model_name?>_element')
+            });
+        });
+    </script>
+
 </div>
 
 <script type="text/template" id="<?= CHtml::modelName($element).'_diagnosis_template' ?>" class="hidden">
-    <?php
+    <?php /*
     $empty_diagnosis = new \OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis();
     $this->render(
         'SystemicDiagnoses_Diagnosis_event_edit',
@@ -121,6 +167,8 @@ $model_name = CHtml::modelName($element);
                 'date_display' => '{{date_display}}'
             )
         )
-    );
+    );*/
+
     ?>
 </script>
+
