@@ -44,7 +44,7 @@
  * @property User $usermodified
  * @property Eye $eye
  * @property OphTrOperationbooking_Operation_Procedures $procedures
- * @property AnaestheticType $anaesthetic_type
+ * @property AnaestheticType[] $anaesthetic_type
  * @property Site $site
  * @property Element_OphTrOperationbooking_Operation_Priority $priority
  * @property Referral $refferal
@@ -869,6 +869,16 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     }
 
     /**
+     * @param $code
+     * @return bool
+     */
+    public function hasAnaestheticTypeByCode($code) {
+        return count(array_filter($this->anaesthetic_type,
+                function($a_type) use ($code) { return $a_type == $code;})
+            ) > 0;
+    }
+
+    /**
      * Calculate the EROD for this operation - the firm used to determine the service can be overridden by providing a firm.
      * (Note that this handles the emergency list by having a firm placeholder object that does not have an id - at this time,
      * no sessions are assigned to A&E firms, having the effect that no EROD can be calculated for emergency bookings).
@@ -890,7 +900,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         }
 
         //anaesthetic requirements
-        if ($this->anaesthetist_required || $this->anaesthetic_type->code == 'GA') {
+        if ($this->anaesthetist_required || ($this->hasAnaestheticTypeByCode('GA'))) {
             $criteria->addCondition('`t`.anaesthetist = :one and `t`.general_anaesthetic = :one');
         }
 
