@@ -2,3 +2,52 @@
     font-family:"Roboto";
     src: url("Roboto-Regular.ttf")
 }
+
+@font-face {
+    font-family:"Roboto";
+    font-weight: bold;
+    src: url("Roboto-Bold.ttf")
+}
+
+@font-face {
+    font-family:"Roboto";
+    font-style: italic;
+    src: url("Roboto-Italic.ttf")
+}
+
+@font-face {
+    font-family:"Roboto";
+    font-style: italic;
+    font-weight: bold;
+    src: url("Roboto-BoldItalic.ttf")
+}
+
+@font-face {
+    font-family:"Roboto";
+    font-weight: 500;
+    src: url("Roboto-Bold.ttf")
+}
+
+@font-face {
+    font-family:"Roboto";
+    font-weight: 600;
+    src: url("Roboto-Bold.ttf")
+}
+
+@font-face {
+    font-family:"Roboto";
+    font-weight: 700;
+    src: url("Roboto-Bold.ttf")
+}
+
+@font-face {
+    font-family:"Roboto";
+    font-weight: 800;
+    src: url("Roboto-Bold.ttf")
+}
+
+@font-face {
+    font-family:"Roboto";
+    font-weight: 900;
+    src: url("Roboto-Bold.ttf")
+}
