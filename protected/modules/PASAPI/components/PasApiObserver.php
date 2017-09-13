@@ -43,7 +43,7 @@ class PasApiObserver
 
         // would be nice to have some kind of NO_PROXY here (or somewhere) to exclude localhost
         $default_proxy = isset(\Yii::app()->params['curl_proxy']) ? \Yii::app()->params['curl_proxy'] : false;
-        $proxy = isset(\Yii::app()->params['pasaip']['proxy']) ? \Yii::app()->params['pasaip']['proxy'] : $default_proxy;
+        $proxy = isset(\Yii::app()->params['pasapi']['proxy']) ? \Yii::app()->params['pasapi']['proxy'] : $default_proxy;
 
         curl_setopt($this->_curl->curl, CURLOPT_PROXY, $proxy);
 
@@ -134,7 +134,7 @@ class PasApiObserver
 
         } catch (Exception $e) {
             $transaction->rollback();
-            \OELog::log("PASAIP : " . $e->getMessage());
+            \OELog::log("PASAPI : " . $e->getMessage());
         }
 
         //we do not return anything here
@@ -199,7 +199,7 @@ class PasApiObserver
             $ch = $this->_curl->curl;
 
             if(curl_errno($ch)){
-                $error = 'PASAIP cURL error occurred on API request. Request error: ' . curl_error($ch) . " ";
+                $error = 'PASAPI cURL error occurred on API request. Request error: ' . curl_error($ch) . " ";
                 \OELog::log($error);
             }
         }
