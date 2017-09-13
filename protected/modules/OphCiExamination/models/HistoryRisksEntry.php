@@ -150,9 +150,9 @@ class HistoryRisksEntry extends \BaseElement
      */
     public function getDisplayHasRisk()
     {
-        if ($this->has_risk === '1') {
+        if ($this->has_risk === (string) static::$PRESENT) {
             return 'Present';
-        } elseif ($this->has_risk === '0') {
+        } elseif ($this->has_risk === static::$NOT_PRESENT) {
             return 'Not present';
         }
         return 'Not checked';
