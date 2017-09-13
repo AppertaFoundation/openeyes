@@ -41,7 +41,7 @@ class OphTrOperationbooking_BookingHelper
             $errors[] = self::PAEDIATRIC_SESSION_REQUIRED;
         }
 
-        if ($op->anaesthetic_type->name == 'GA' && !$session->general_anaesthetic) {
+        if ($op->hasAnaestheticTypeByCode('GA') && !$session->general_anaesthetic) {
             $errors[] = self::GENERAL_ANAESTHETIC_REQUIRED;
         }
 
