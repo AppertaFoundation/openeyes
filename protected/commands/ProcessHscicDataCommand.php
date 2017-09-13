@@ -180,7 +180,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
             else {
                 switch ((string) $k) {
                     case 'url':
-                        if (preg_match('~href="(.*?\/media\/.*?\/' . $v . ')"~', $output, $match) ) {
+                        if (preg_match('~href="(.*?\/media\/.*?\/' . $v . '.*?)"~', $output, $match) ) {
                             echo "Found match for $v: $match[1]\n";
                             $struct[$k] = $match[1] . '.zip';
                         } else {
@@ -373,7 +373,7 @@ EOH;
             throw new Exception("Failed to open zip file '{$file}': ".$res, static::$UNEXPECTED_FILE_PROBLEM);
         }
 
-        $fileName = str_replace('.zip', '.csv', $pathInfo['basename']);
+        $fileName = preg_replace('/\d+/', '', str_replace('.zip', '.csv', $pathInfo['basename']));
 
         if (!($stream = $zip->getStream($fileName))) {
             throw new Exception("Failed to extract '{$fileName}' from zip file at '{$file}'", static::$UNEXPECTED_FILE_PROBLEM);
@@ -400,7 +400,7 @@ EOH;
             $this->usageError("Failed to open zip file '{$file}': ".$res);
         }
 
-        $fileName = str_replace('.zip', '.csv', $pathInfo['basename']);
+        $fileName = preg_replace('/\d+/', '', str_replace('.zip', '.csv', $pathInfo['basename']));
 
         if (!($stream = $zip->getStream($fileName))) {
             throw new Exception("Failed to extract '{$fileName}' from zip file at '{$file}'", static::$UNEXPECTED_FILE_PROBLEM);
