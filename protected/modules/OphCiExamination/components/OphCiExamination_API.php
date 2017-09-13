@@ -2253,7 +2253,6 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * @TODO: convert to returning string summary or structured data to abstract away from model
      *
      * @param $patient
      * @param $risk_name
@@ -2263,6 +2262,24 @@ class OphCiExamination_API extends \BaseAPI
         $widget = $this->getWidget(
             'OEModule\OphCiExamination\widgets\HistoryRisks',
             array('mode' => HistoryRisks::$DATA_MODE, 'patient' => $patient));
-        return $widget->element->getRiskEntryByName($risk_name);
+        if ($entry = $widget->element->getRiskEntryByName($risk_name)) {
+            $status = null;
+            switch ($entry->has_risk) {
+                case (models\HistoryRisksEntry::$PRESENT):
+                    $status = true;
+                    break;
+                case (models\HistoryRisksEntry::$NOT_PRESENT):
+                    $status = false;
+                    break;
+            }
+
+            return array(
+                'name' => (string)$entry->risk,
+                'status' => $status,
+                'comments' => $entry->comments,
+                'date' => $entry->element->event->event_date
+            );
+        }
+        return ;
     }
 }

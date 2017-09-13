@@ -37,6 +37,9 @@ namespace OEModule\OphCiExamination\models;
  */
 class HistoryRisksEntry extends \BaseElement
 {
+    public static $PRESENT = 1;
+    public static $NOT_PRESENT = 0;
+    public static $NOT_CHECKED = -9;
     /**
      * Returns the static model of the specified AR class.
      *

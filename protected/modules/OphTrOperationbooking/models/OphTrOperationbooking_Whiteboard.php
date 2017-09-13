@@ -200,6 +200,21 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     }
 
     /**
+     * @param $risk
+     * @return string
+     */
+    private function getDisplayHasRisk($risk) {
+        switch ($risk['status']) {
+            case true:
+                return 'Present';
+            case false:
+                return 'Not present';
+            default:
+                return 'Not checked';
+        }
+    }
+    
+    /**
      * @param $patient
      *
      * @return string
@@ -210,7 +225,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         if ($exam_api) {
             $alpha = $exam_api->getRiskByName($patient, 'Alpha blockers');
             if ($alpha) {
-                return $alpha->getDisplayHasRisk() . ($alpha->comments ? ' - ' . $alpha->comments : '') . '(' . Helper::convertMySQL2NHS($alpha->element->event->event_date) . ')';
+                return $this->getDisplayHasRisk($alpha) . ($alpha['comments'] ? ' - ' . $alpha['comments'] : '') . '(' . Helper::convertMySQL2NHS($alpha['date']) . ')';
             }
         }
     }
@@ -226,7 +241,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         if ($exam_api) {
             $anticoag = $exam_api->getRiskByName($patient, 'Anticoagulants');
             if ($anticoag) {
-                return $anticoag->getDisplayHasRisk() . ($anticoag->comments ? ' - ' . $anticoag->comments : '') . '(' . Helper::convertMySQL2NHS($anticoag->element->event->event_date) . ')';
+                return $this->getDisplayHasRisk($anticoag) . ($anticoag['comments'] ? ' - ' . $anticoag['comments'] : '') . '(' . Helper::convertMySQL2NHS($anticoag['date']) . ')';
             }
         }
     }

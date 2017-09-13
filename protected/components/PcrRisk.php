@@ -328,11 +328,11 @@ class PcrRisk
     {
         $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
         if($exam_api){
-          $alphaBlocker = $exam_api->mostRecentCheckedAlpha($patient->id);
+            $alphaBlocker = $exam_api->getRiskByName($patient, 'Alpha blockers');
         }
-        if(!$alphaBlocker || $alphaBlocker->alphablocker === '0') {
+        if(!$alphaBlocker || $alphaBlocker['status'] === null) {
             return 'NK';
-        } elseif ($alphaBlocker->alphablocker === '1') {
+        } elseif ($alphaBlocker['status'] === true) {
             return 'Y';
         } else {
             return 'N';
