@@ -17,8 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$correspondeceApp = \SettingInstallation::model()->find('`key` = "ask_correspondence_approval"');
-if($correspondeceApp->value === "on") {
+$correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
+if($correspondeceApp === "on") {
     ?>
     <div class="row data-row">
         <div class="large-2 column" style="margin-left: 10px;">
@@ -41,17 +41,17 @@ if($correspondeceApp->value === "on") {
     <?php
 }
 ?>
-        
+
 <div id="correspondence_out" class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?>">
 	<header>
         <?php
         $ccString = "";
         $toAddress = "";
 
-        if($element->document_instance) {            
-            
+        if($element->document_instance) {
+
             foreach ($element->document_instance as $instance) {
-                foreach ($instance->document_target as $target) {                    
+                foreach ($instance->document_target as $target) {
                     if($target->ToCc == 'To'){
                         $toAddress = $target->contact_name . "\n" . $target->address;
                     } else {
@@ -80,11 +80,11 @@ if($correspondeceApp->value === "on") {
                 ?>
 	</header>
 
-	<?php 
+	<?php
             $this->renderPartial('reply_address', array(
                 'site' => $element->site,
                 'is_internal_referral' => $element->isInternalReferral(),
-            ));  
+            ));
 
             $this->renderPartial('print_ElementLetter', array(
                 'element' => $element,
@@ -92,10 +92,10 @@ if($correspondeceApp->value === "on") {
                 'ccString' => $ccString,
                 'no_header' => true,
             ));
-            
+
             $is_document = isset($element->document_instance);
         ?>
-    
+
 	<input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter" value="<?php echo $element->print?>" />
 
         <?php if(Yii::app()->user->getState('correspondece_element_letter_saved', true)): ?>
@@ -104,5 +104,5 @@ if($correspondeceApp->value === "on") {
         <?php else: ?>
             <input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter_all" value="<?php echo $element->print_all?>" />
         <?php endif; ?>
-            
+
 </div>

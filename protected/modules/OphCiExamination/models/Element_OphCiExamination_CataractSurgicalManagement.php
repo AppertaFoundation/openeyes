@@ -182,4 +182,9 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \BaseEventType
             }
         }
     }
+
+    public function __toString()
+    {
+        return $this->eye->name . ' target post-op: '.$this->target_postop_refraction;
+    }
 }

@@ -33,18 +33,12 @@ $model_name = CHtml::modelName($element);
         </thead>
         <tbody>
         <?php
-        foreach ($element->entries as $entry) {
-            $this->render(
-                'AllergyEntry_event_edit',
-                array(
-                    'entry' => $entry,
-                    'form' => $form,
-                    'model_name' => $model_name,
-                    'editable' => false
-                )
-            );
-        }
-        ?>
+        foreach ($element->entries as $i => $entry) { ?>
+          <tr>
+            <td><?= $entry->getDisplayAllergy() ?></td>
+            <td><?= $entry->comments ?></td>
+          </tr>
+        <?php } ?>
         </tbody>
     </table>
 <?php } ?>

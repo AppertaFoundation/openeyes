@@ -17,8 +17,8 @@
 
 ?>
 
+<script type="text/javascript" src="<?=$this->getJsPublishedPath('SystemicDiagnoses.js')?>"></script>
 <?php
-Yii::app()->clientScript->registerScriptFile($this->getJsPublishedPath('SystemicDiagnoses.js'), CClientScript::POS_HEAD);
 $model_name = CHtml::modelName($element);
 ?>
 

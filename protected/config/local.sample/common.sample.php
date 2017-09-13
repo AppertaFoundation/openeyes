@@ -112,10 +112,11 @@ $config = array(
         'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
         'OphInLabResults',
         'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
-		'Genetics',
-		'OphInDnasample',
-		'OphInDnaextraction',
-		'OphInGeneticsresults',
+        // Uncomment next section if you want to use the genetics module
+        /*'Genetics',
+        'OphInDnasample',
+        'OphInDnaextraction',
+        'OphInGeneticresults',*/
         'OphCoDocument',
     ),
 
@@ -133,7 +134,7 @@ $config = array(
         'google_analytics_account' => '',
         'local_users' => array('admin', 'username'),
         //'log_events' => true,
-        'institution_code' => 'RP6',
+        'institution_code' => 'NEW',
         'specialty_codes' => array(130),
         //'default_site_code' => '',
         'specialty_sort' => array(130, 'SUP'),
@@ -142,8 +143,6 @@ $config = array(
         // 'dashboard_sortable' => true
         'event_print_method' => 'pdf',
         'wkhtmltopdf_nice_level' => 19,
-        'city_road_satellite_view' => 1,
-        'enable_concise_med_history' => false,
         // default start time used for automatic worklist definitions
         //'worklist_default_start_time' => 'H:i',
         // default end time used for automatic worklist definitions
@@ -179,7 +178,7 @@ $config = array(
                 'client_secret' => '4c7f6f8fa93d59c45502c0ae8c4a95b',
             ),
         ),
-        'signature_app_url' => 'http://tiny.cc/oe-sign',
+        'signature_app_url' => 'https://dev.oesign.uk',
         'docman_export_dir' => '/tmp/docman',
         'docman_login_url' => 'http://localhost/site/login',
         'docman_user' => 'admin',

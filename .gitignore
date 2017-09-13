@@ -43,6 +43,7 @@ node_modules
 /protected/assets/img/fieldImages/*
 /assets/
 /protected/files/*
+package-lock.json
 
 # Include core modules
 !/protected/modules/OphCiExamination/
@@ -91,3 +92,4 @@ bin/validate-json
 bin/yiic
 
 build/logs
+protected/widgets/views/IndexSearch_Examination.php

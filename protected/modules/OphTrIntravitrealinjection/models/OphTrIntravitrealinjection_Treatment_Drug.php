@@ -134,4 +134,9 @@ class OphTrIntravitrealinjection_Treatment_Drug extends BaseActiveRecordVersione
                 'criteria' => $criteria,
             ));
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }

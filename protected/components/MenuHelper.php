@@ -127,8 +127,9 @@ class MenuHelper
             {
                 $setting_key = $menu_item['requires_setting']['setting_key'];
                 $required_value = $menu_item['requires_setting']['required_value'];
-                $element_enabled = \SettingInstallation::model()->find('`key` = :setting_key', array(':setting_key'=>$setting_key));
-                if(isset($element_enabled->value) && $element_enabled->value != $required_value)
+
+                $element_enabled = Yii::app()->params[$setting_key];
+                if(isset($element_enabled) && $element_enabled != $required_value)
                 {
                     continue;
                 }

@@ -72,7 +72,7 @@ class Tag extends BaseActiveRecordVersioned
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'drugs' => array(self::MANY_MANY, 'FormularyDrugs', 'drug_tag(tag_id, drug_id)'),
+			'drugs' => array(self::MANY_MANY, 'Drug', 'drug_tag(tag_id, drug_id)'),
             'drug_type' => array(self::HAS_MANY, 'DrugType', 'tag_id'),
             'medication_drugs' => array(self::MANY_MANY, 'MedicationDrug', 'medication_drug_tag(medication_drug_id, tag_id)'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
@@ -87,7 +87,7 @@ class Tag extends BaseActiveRecordVersioned
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
+			'name' => 'Tag',
 			'last_modified_user_id' => 'Last Modified User',
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
@@ -151,5 +151,10 @@ class Tag extends BaseActiveRecordVersioned
     public function getRelatedDrugsCount()
     {
         return (int)count($this->drugs);
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }

@@ -56,18 +56,18 @@ class Allergies extends \BaseEventElementWidget
             $entries_by_id[$entry->id] = $entry;
         }
 
-        if (array_key_exists('allergy_id', $data)) {
+        if (array_key_exists('entries', $data)) {
             $entries = array();
-            foreach ($data['allergy_id'] as $i => $allergy_id) {
-                $entry = new AllergyEntry();
-                $id = $data['id'][$i];
+            foreach ($data['entries'] as $i => $entry) {
+                $allergy_entry = new AllergyEntry();
+                $id = $entry['id'];
                 if ($id && array_key_exists($id, $entries_by_id)) {
-                    $entry = $entries_by_id[$id];
+                    $allergy_entry = $entries_by_id[$id];
                 }
-                $entry->allergy_id = $allergy_id;
-                $entry->other = $data['other'][$i];
-                $entry->comments = $data['comments'][$i];
-                $entries[] = $entry;
+                $allergy_entry->allergy_id = $entry['allergy_id'];
+                $allergy_entry->other = $entry['other'];
+                $allergy_entry->comments = $entry['comments'];
+                $entries[] = $allergy_entry;
             }
             $element->entries = $entries;
         } else {

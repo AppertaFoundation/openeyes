@@ -16,14 +16,16 @@
 
 /** Examination module styles */
 
+$OE_MODULE_PREFIX: 'OEModule_OphCiExamination_';
 $OE_MODEL_PREFIX: 'OEModule_OphCiExamination_models_';
 
 @import "openeyes/module";
 @import "components/event";
-@import "components/elements";
+@import "components/elements"; 
 @import "components/gonio-cross";
 @import "components/grid";
 @import "components/dialog";
 @import "components/hints";
 @import "components/tables";
 @import "components/admin";
+@import "components/comma-list";

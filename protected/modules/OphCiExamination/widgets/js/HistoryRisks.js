@@ -19,54 +19,100 @@ var OpenEyes = OpenEyes || {};
 OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
 (function(exports) {
+    function HistoryRisksCore()
+    {
+        this.elementTypeClass = OE_MODEL_PREFIX + 'HistoryRisks';
+        this.controllerElSelector = '#' + OE_MODEL_PREFIX + 'HistoryRisks_element';
+    }
+
+    /**
+     * Singleton function for any element to call when wanting to add a Risk
+     *
+     * @param risks [{id: riskId, comments: [comment, ...]}, ...]
+     * @param sourceElementName
+     */
+    HistoryRisksCore.prototype.addRisksForSource = function(risks, sourceElementName)
+    {
+        this.callFunctionOnController('addRisks', [risks, sourceElementName]);
+    };
+
+    /**
+     * Abstraction for calling function on the active history risks controller
+     *
+     * @param funcName
+     * @param args
+     */
+    HistoryRisksCore.prototype.callFunctionOnController = function(funcName, args)
+    {
+        var core = this;
+        function controllerFunction() {
+            var controller = $(core.controllerElSelector).data('controller');
+            controller[funcName].apply(controller, args);
+        }
+
+        if (!$.find(core.controllerElSelector).length) {
+            var sidebar = $('aside.episodes-and-events').data('patient-sidebar');
+            sidebar.addElementByTypeClass(core.elementTypeClass, undefined, controllerFunction);
+        } else {
+            controllerFunction();
+        }
+    };
+
+    if (exports.HistoryRisks === undefined) {
+        exports.HistoryRisks = new HistoryRisksCore();
+    }
+
     function HistoryRisksController(options) {
         this.options = $.extend(true, {}, HistoryRisksController._defaultOptions, options);
+        this.$element = this.options.element;
+        this.$element.data('controller', this);
+        // this.riskSelector = '.' + this.options.modelName + '_risk_id';
+        this.riskSelector = '[name$="[risk_id]"]';
+        this.hasRiskSelector = '[name$="[has_risk]"]';
+        this.otherSelector = '.' + this.options.modelName + '_other_risk';
+        this.otherWrapperSelector = '.' + this.options.modelName + '_other_wrapper';
+        this.commentsSelector = '[name$="[comments]"]';
 
-        this.$noRisksWrapper = $('#' + this.options.modelName + '_no_risks_wrapper');
-        this.$noRisksFld = $('#' + this.options.modelName + '_no_risks');
-
-        this.$riskSelect = $('#' + this.options.modelName + '_risk_id');
-        this.$other = $('#' + this.options.modelName + '_other_risk');
-        this.$otherWrapper = $('#' + this.options.modelName + '_other_wrapper');
-        this.$commentFld = $('#' + this.options.modelName + '_comments');
-        this.$table = $('#' + this.options.modelName + '_entry_table');
-        this.templateText = $('#' + this.options.modelName + '_entry_template').text();
-
+        this.$noRisksWrapper = this.$element.find('.' + this.options.modelName + '_no_risks_wrapper');
+        this.$noRisksFld = this.$element.find('.' + this.options.modelName + '_no_risks');
+        this.tableSelector = '.' + this.options.modelName + '_entry_table';
+        this.$table = this.$element.find(this.tableSelector);
+        this.templateText = this.$element.find('.' + this.options.modelName + '_entry_template').text();
         this.initialiseTriggers();
-
     }
 
     HistoryRisksController._defaultOptions = {
-        modelName: 'OEModule_OphCiExamination_models_HistoryRisks'
+      modelName: 'OEModule_OphCiExamination_models_HistoryRisks',
+      element: undefined
     };
 
     HistoryRisksController.prototype.initialiseTriggers = function()
     {
         var controller = this;
-        controller.$riskSelect.on('change', function(e) {
-            var $selected = controller.$riskSelect.find('option:selected');
+        controller.$element.on('change', controller.riskSelector, function(e) {
+            var $selected = $(this).find('option:selected');
+            var $container = $(this).parents('td');
             if ($selected.data('other')) {
-                controller.$otherWrapper.show();
+                $container.find(controller.otherWrapperSelector).show();
             }
             else {
-                controller.$otherWrapper.hide();
-                controller.$other.val('');
+                $container.find(controller.otherWrapperSelector).hide();
+                $container.find(controller.otherSelector).val('');
             }
         });
 
-        $('#' + this.options.modelName + '_add_entry').on('click', function(e) {
+        controller.$element.on('click', '.' + controller.options.modelName + '_add_entry', function(e) {
             e.preventDefault();
             controller.addEntry();
-            controller.showNoRisks();
         });
 
-        this.$table.on('click', '.button.remove', function(e) {
+      controller.$table.on('click', '.button.remove', function(e) {
             e.preventDefault();
             $(e.target).parents('tr').remove();
-            controller.showNoRisks();
+            controller.updateNoRisksState();
         });
 
-        this.$noRisksFld.on('click', function() {
+      controller.$noRisksFld.on('click', function() {
             if (controller.$noRisksFld.prop('checked')) {
                 controller.$table.hide();
             }
@@ -76,24 +122,19 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         })
     };
 
-    HistoryRisksController.prototype.showNoRisks = function()
+    /**
+     * Show the no risks form section if there are no table entries
+     */
+    HistoryRisksController.prototype.updateNoRisksState = function()
     {
         if (this.$table.find('tbody tr').length === 0) {
             this.$noRisksWrapper.show();
         } else {
-            this.hideNoRisks();
+            this.$noRisksWrapper.hide();
+            this.$noRisksFld.prop('checked', false);
         }
-    };
+    }
 
-    /**
-     * hide the no allergies section of the form.
-     */
-    HistoryRisksController.prototype.hideNoRisks = function()
-    {
-        this.$noRisksWrapper.hide();
-        this.$noRisksFld.prop('checked', false);
-        this.$table.show();
-    };
 
     /**
      *
@@ -104,23 +145,87 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         if (data === undefined)
             data = {};
-        data['row_count'] = this.$table.find('tbody tr').length;
+
+        data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
         return Mustache.render(
-            template = this.templateText,
+            this.templateText,
             data
         );
     };
 
     /**
-     * Add a family history section if its valid.
+     * Add a history risks row
      */
     HistoryRisksController.prototype.addEntry = function()
     {
         var row = this.createRow();
         this.$table.find('tbody').append(row);
+        this.updateNoRisksState();
+    };
+
+    /**
+     * Update the risks table with the given list of risks with comments
+     */
+    HistoryRisksController.prototype.addRisks = function(risks, sourceName)
+    {
+        for (var idx in risks) {
+            if (risks.hasOwnProperty(idx)) {
+                risk_id = risks[idx].id;
+                // add to table if not present
+                var rowEntry = this.getTableRowForRisk(risk_id);
+                // set the risk and comment
+                this.setHasRiskAndComments(rowEntry, risks[idx].comments);
+            }
+
+        }
+    };
+
+    /**
+     * get or create a table row for the given risk
+     */
+    HistoryRisksController.prototype.getTableRowForRisk = function(risk_id)
+    {
+        var self = this;
+        var row = undefined;
+        self.$table.find('tbody tr').each(function() {
+            if ($(this).find(self.riskSelector).val() == risk_id) {
+                row = $(this);
+                return false;
+            }
+        });
+        if (row === undefined) {
+            self.addEntry();
+            row = self.$table.find('tbody tr:last');
+            row.find(self.riskSelector).val(risk_id);
+        }
+        return row;
+    };
+
+    /**
+     *
+     * @param row
+     * @param comments
+     */
+    HistoryRisksController.prototype.setHasRiskAndComments = function(row, comments)
+    {
+        // select the appropriate radio option
+        row.find(this.hasRiskSelector + '[value="1"]').prop('checked', 'checked');
+
+        // now munge comments together with current content
+        var current = row.find(this.commentsSelector).val();
+        var finalList = [];
+        if (current && current.replace(/\s/g, '').length) {
+            finalList.push(current);
+        }
+        for (var i in comments) {
+            var comment = comments[i];
+            if (!current || current.indexOf(comment) === -1) {
+                finalList.push(comment);
+            }
+        }
+        row.find(this.commentsSelector).val(finalList.join(', '));
     };
 
     exports.HistoryRisksController = HistoryRisksController;
-
 })(OpenEyes.OphCiExamination);
 

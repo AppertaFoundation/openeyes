@@ -58,13 +58,13 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('drug_id, dose, route_id, frequency_id, duration_id', 'required'),
+            array('drug_id, dose, route_id, frequency_id, duration_id, dispense_condition_id, dispense_location_id', 'required'),
             array('route_option_id', 'validateRouteOption'),
-            array('drug_id, dose, route_id, frequency_id, duration_id, id, route_option_id, continue_by_gp, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe'),
+            array('drug_id, dose, route_id, frequency_id, duration_id, id, route_option_id, last_modified_user_id, last_modified_date, created_user_id, created_date, dispense_condition_id, dispense_location_id', 'safe'),
             //array('', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, dose, prescription_id, drug_id, route_id, route_option_id, frequency_id, duration_id', 'safe', 'on' => 'search'),
+            array('id, dose, prescription_id, drug_id, route_id, route_option_id, frequency_id, duration_id, dispense_condition_id, dispense_location_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -101,6 +101,8 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'drug' => array(self::BELONGS_TO, 'Drug', 'drug_id'),
+            'dispense_condition' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseCondition', 'dispense_condition_id'),
+            'dispense_location' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseLocation', 'dispense_location_id'),
         );
     }
 
@@ -116,7 +118,8 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
             'frequency_id' => 'Frequency',
             'route_id' => 'Route',
             'route_option_id' => 'Options',
-            'continue_by_gp' => 'Continue by GP',
+            'dispense_condition_id' => 'Dispense Condition',
+            'dispense_location_id' => 'Dispense Location'
         );
     }
 
@@ -188,12 +191,36 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
      */
     public function stopDateFromDuration()
     {
-        $endDate = null;
-        if (!in_array($this->duration->name, array('Other', 'Until review')) && !$this->continue_by_gp) {
-            $startDate = new DateTime($this->prescription->event->event_date);
-            $endDate = $startDate->add(DateInterval::createFromDateString($this->duration->name));
+        if (in_array($this->duration->name, array('Other', 'Until review'))) {
+            return null;
         }
 
-        return $endDate;
+        $start_date = new DateTime($this->prescription->event->event_date);
+        $end_date = $start_date->add(DateInterval::createFromDateString($this->duration->name));
+        foreach ($this->tapers as $taper) {
+            if (in_array($taper->duration->name, array('Other', 'Until review'))) {
+                return null;
+            }
+            $end_date->add(DateInterval::createFromDateString($taper->duration->name));
+        }
+        return $end_date;
+    }
+
+    public function getAdministrationDisplay()
+    {
+        $dose = (string) $this->dose;
+        $freq = (string) $this->frequency;
+        if ($this->tapers) {
+            $last_taper = array_slice($this->tapers, -1)[0];
+            $last_dose = (string) $last_taper->dose;
+            if ($last_dose != $dose) {
+                $dose .= ' - ' . $last_dose;
+            }
+            $last_freq = (string) $last_taper->frequency;
+            if ($last_freq != $freq) {
+                $freq .= ' - ' . $last_freq;
+            }
+        }
+        return $dose . ($this->route_option ? ' ' . $this->route_option : '') . ' ' . $this->route . ' ' . $freq;
     }
 }

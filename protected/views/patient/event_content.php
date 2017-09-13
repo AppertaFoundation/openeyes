@@ -1,10 +1,11 @@
 <div class="column event
 	<?php echo $this->moduleNameCssClass;?>
 	<?php echo $this->moduleStateCssClass; ?>
-" style="margin-left:14.6%">
+	" style="margin-left:14.6%">
 
 	<header class="event-header">
 		<?php $this->renderPartial('//patient/event_tabs'); ?>
+		<?php $this->renderIndexSearch(); ?>
 		<?php $this->renderPartial('//patient/event_actions'); ?>
 	</header>
     <div class="event-content <?=($this->event->is_automated) ? 'auto' : ''?>" id="event-content">

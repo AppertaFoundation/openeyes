@@ -25,6 +25,7 @@ class PrescriptionCommonController extends DefaultController
         'itemForm' => self::ACTION_TYPE_FORM,
         'itemFormAdmin' => self::ACTION_TYPE_FORM,
         'saveDrugSetAdmin' => self::ACTION_TYPE_FORM,
+        'getDispenseLocation' => self::ACTION_TYPE_FORM,
     );
 
     /**
@@ -99,5 +100,14 @@ class PrescriptionCommonController extends DefaultController
     public function actionItemFormAdmin($key, $drug_id)
     {
         echo $this->renderPrescriptionItem($key, $drug_id);
+    }
+
+    public function actionGetDispenseLocation($condition_id)
+    {
+        $dispense_condition = OphDrPrescription_DispenseCondition::model()->with('locations')->findByPk($condition_id);
+        foreach ($dispense_condition->locations as $location)
+        {
+            echo '<option value="'.$location->id.'">'.$location->name.'</option>';
+        }
     }
 }

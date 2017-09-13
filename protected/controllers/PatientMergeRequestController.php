@@ -454,6 +454,8 @@ class PatientMergeRequestController extends BaseController
                     $notice[] = "Local patient";
                 }
 
+                $subject = GeneticsPatient::model()->findByAttributes(array('patient_id' => $patient->id));
+
                 $result[] = array(
                     'id' => $patient->id,
                     'first_name' => $patient->first_name,
@@ -468,6 +470,8 @@ class PatientMergeRequestController extends BaseController
                     'all-episodes' => $this->getEpisodesHTML($patient),
                     'warning' => $warning,
                     'notice' => $notice,
+                    'genetics-panel' => $this->getGeneticsHTML($patient),
+                    'subject_id' => $subject ? $subject->id : null,
                 );
             }
         }
@@ -503,4 +507,18 @@ class PatientMergeRequestController extends BaseController
        // you don't know how much I hate this str_replace here, but now it seems a painless method to remove a class
        return str_replace('box patient-info episodes', 'box patient-info', $html);
     }
+
+    public function getGeneticsHTML($patient)
+    {
+        $html = null;
+        $subject = GeneticsPatient::model()->findByAttributes(array('patient_id' => $patient->id));
+        if( Yii::app()->moduleAPI->get('Genetics') && $subject){
+            $html = $this->renderPartial('application.modules.Genetics.views.patientSummary._patient_genetics', array(
+                'patient' => $patient
+            ), true);
+        }
+
+        return $html;
+    }
+
 }

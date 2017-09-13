@@ -23,7 +23,7 @@
  * The followings are the available columns in table 'drug_route':
  *
  * @property int $id
- * @property int $name
+ * @property string $name
  * @property DrugRouteOption[] $options
  */
 class DrugRoute extends BaseActiveRecordVersioned
@@ -68,5 +68,13 @@ class DrugRoute extends BaseActiveRecordVersioned
         $crit->compare('drug_route_id', $this->id);
 
         return DrugRouteOption::model()->findAll($crit);
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->name;
     }
 }

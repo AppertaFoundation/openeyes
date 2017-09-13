@@ -21,12 +21,12 @@ class PedigreeController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('Edit', 'EditStudyStatus'),
+                'actions' => array('Edit', 'Delete', 'EditStudyStatus'),
                 'roles' => array('TaskEditPedigreeData'),
             ),
             array(
                 'allow',
-                'actions' => array('List', 'View'),
+                'actions' => array('List', 'View', 'Search'),
                 'roles' => array('OprnSearchPedigree'),
             ),
         );
@@ -83,7 +83,14 @@ class PedigreeController extends BaseModuleController
                 'layoutColumns' => null,
             ),
             'comments' => 'textarea',
-            'disorder' => 'label',
+
+            'disorder' => array(
+                'widget' => 'DisorderLookup',
+                'relation' => 'disorder',
+                'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+                'empty_text' => 'Select a commonly used diagnosis'
+            ),
+
             'consanguinity' => 'checkbox',
             'gene_id' => array(
                 'widget' => 'DropDownList',
@@ -213,6 +220,76 @@ class PedigreeController extends BaseModuleController
         }
 
         return $model;
+    }
+
+    /**
+     * Search for pedigree
+     * returns JSON for autocomplete
+     */
+    public function actionSearch()
+    {
+
+        $pedigree_id = Yii::app()->request->getQuery('term', null);
+
+        if( strlen($pedigree_id) > 2){
+
+            $criteria = new CDbCriteria();
+            $criteria->addSearchCondition('t.id', $pedigree_id, true);
+
+            $pedigrees = Pedigree::model()->with('gene')->findAll($criteria);
+        } else {
+
+            //if pedigree_id is 2 digit or less we return the exact match because of performance reasons
+
+            $pedigrees = Pedigree::model()->with('gene')->findByPk($pedigree_id);
+            $pedigrees = $pedigrees ? array($pedigrees) : array();
+        }
+
+        $output = array();
+        foreach($pedigrees as $pedigree){
+            $output[] = array(
+                'label' => $pedigree->id . ($pedigree->gene ? (" (" . $pedigree->gene->name . ")") : ''),
+                'value' => $pedigree->id,
+            );
+        }
+
+        echo CJSON::encode($output);
+
+        Yii::app()->end();
+    }
+
+    /**
+     * Deletes rows for the model.
+     */
+    public function actionDelete()
+    {
+        $response = 1;
+        $model = Pedigree::model();
+        if (Yii::app()->request->isPostRequest) {
+            $post = Yii::app()->request->getPost('Pedigree', array());
+            if (array_key_exists('id', $post) && is_array($post['id'])) {
+                foreach ($post['id'] as $id) {
+
+                    $model = $model->findByPk($id);
+                    if (!count($model->subjects)) {
+                        if (isset($model->active)) {
+                            $model->active = 0;
+                            if ($model && !$model->save()) {
+                                $response = 0;
+                            }
+                        } else {
+                            if ($model && !$model->delete()) {
+                                $response = 0;
+                            }
+                        }
+                    } else {
+                        $response = 0;
+                    }
+                }
+            }
+        }
+
+        echo $response;
     }
 
 }

@@ -39,6 +39,7 @@ class QueueAssign extends \CWidget
     public $patient_id;
     public $assetFolder;
     public $shortName;
+    public $extra_view_data = array();
 
     public function run()
     {
@@ -80,6 +81,6 @@ class QueueAssign extends \CWidget
             }
         }
 
-        $this->render('QueueAssign', array('queue' => $queue, 'form_fields' => $form_fields, 'form_data' => $form_data, 'auto_save' => $auto_save, 'print_letter_event' => $print_letter_event));
+        $this->render('QueueAssign', array('queue' => $queue, 'form_fields' => $form_fields, 'form_data' => $form_data, 'auto_save' => $auto_save, 'print_letter_event' => $print_letter_event, 'extra_view_data' => $this->extra_view_data));
     }
 }

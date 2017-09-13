@@ -22,14 +22,17 @@
 if (is_a(Yii::app()->getController(), 'DefaultController')) {
     echo $form->hiddenInput($element, 'draft', 1);
 }
-?>
+if (is_a(Yii::app()->getController(), 'DefaultController')) {?>
 <section class="element <?php echo $element->elementType->class_name?>"
 		 data-element-type-id="<?php echo $element->elementType->id ?>"
 		 data-element-type-class="<?php echo $element->elementType->class_name ?>"
 		 data-element-type-name="<?php echo $element->elementType->name ?>"
 		 data-element-display-order="<?php echo $element->elementType->display_order ?>">
+	<?php } else {?>
+	<section class="element">
+	<?php }?>
 	<div id="div_Element_OphDrPrescription_Details_prescription_items" class="element-fields">
-		<div class="row field-row">
+        <div class="row field-row">
 			<div class="large-6 column">
 				<fieldset class="row field-row">
 					<legend class="large-4 column">
@@ -145,14 +148,13 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
 		<th>Frequency</th>
 		<th>Duration</th>
 		<th></th>
-		<?php if (strpos($this->uniqueid, 'default')) { // we need to display this column on the front-end only?>
-			<th>Continue by GP</th>
-		<?php } ?>
+		<th>Dispense Condition/Location</th>
 	</tr>
 	</thead>
 	<tbody>
-	<?php foreach ($element->items as $key => $item) {
-    $this->renderPartial('form_Element_OphDrPrescription_Details_Item', array('key' => $key, 'item' => $item, 'patient' => $this->patient));
+	<?php
+    foreach ($element->items as $key => $item) {
+        $this->renderPartial('form_Element_OphDrPrescription_Details_Item', array('key' => $key, 'item' => $item, 'patient' => $this->patient));
 } ?>
 	</tbody>
 </table>

@@ -16,31 +16,16 @@
  */
 ?>
 <div class="eyedraw-fields">
-    <div class="field-row row">
-        <div class="large-3 column">
-            <label for="<?php echo CHtml::modelName($element).'_' . $side .'_stfb';?>"><?= $element->getAttributeLabel($side . '_stfb') ?></label>
-        </div>
-        <div class="large-9 column end">
-            <?= CHtml::activeCheckBox($element, $side . '_stfb') ?>
-        </div>
-    </div>
     <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
     <div class="field-row">
-            <label>
-                <?php echo $element->getAttributeLabel($side . '_ed_report') ?>:
-            </label>
         <div class="row collapse">
-            <div class="large-11 column">
-                <span id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>"> </span>
+            <div class="large-12 column end autoreport-display">
+                <span id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>" class="data-value"> </span>
             </div>
         </div>
-
     </div>
 
     <div class="field-row">
-        <label for="<?= get_class($element).'_'.$side.'_comments';?>">
-            <?= $element->getAttributeLabel($side.'_comments'); ?>:
-        </label>
-        <?= CHtml::activeTextArea($element, $side.'_comments', array('rows' => '2', 'cols' => '20', 'class' => 'autosize clearWithEyedraw')) ?>
+        <?= CHtml::activeTextArea($element, $side.'_comments', array('rows' => '1', 'class' => 'autosize clearWithEyedraw', 'placeholder' => $element->getAttributeLabel($side.'_comments'))) ?>
     </div>
 </div>

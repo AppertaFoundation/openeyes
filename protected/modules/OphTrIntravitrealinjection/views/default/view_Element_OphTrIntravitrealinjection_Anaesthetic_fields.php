@@ -26,7 +26,7 @@
 		</div>
 		<div class="large-8 column">
 			<div class="data-value">
-			<?php echo $element->{$side.'_anaesthetictype'}->name ?>
+			<?php echo $element->{$side.'_anaesthetictype'}->name . ($element->{$side.'_anaestheticdelivery'} ? ' - ' . $element->{$side.'_anaestheticdelivery'}->name : '') ?>
 			</div>
 		</div>
 	</div>

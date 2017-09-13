@@ -32,9 +32,8 @@ if (!isset($values)) {
         'comments' => $entry->comments,
     );
 }
-
 ?>
-<tr>
+<tr data-key="<?=$row_count?>">
     <td>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
         <?php
@@ -42,21 +41,30 @@ if (!isset($values)) {
             $risks_opts = array(
                 'options' => array(),
                 'empty' => '- select -',
+                'class' => $model_name . '_risk_id'
             );
             foreach ($risks as $risk) {
                 $risks_opts['options'][$risk->id] = array('data-other' => $risk->isOther() ? '1' : '0');
             }
             echo CHtml::dropDownList($field_prefix . '[risk_id]', $values['risk_id'], CHtml::listData($risks, 'id', 'name'), $risks_opts);
+            $show_other = $values['risk_id'] && array_key_exists($values['risk_id'], $risks_opts['options']) && ($risks_opts['options'][$values['risk_id']]['data-other'] === '1');
+        ?>
+
+          <span class="<?=  $show_other ? : 'hidden'?> <?= $model_name ?>_other_wrapper">
+            <?php echo CHtml::textField($field_prefix . '[other]', $values['other'], array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
+          </span>
+        <?php
         } else {
             echo CHtml::hiddenField($field_prefix . '[risk_id]', $values['risk_id']);
+            echo CHtml::hiddenField($field_prefix . '[other]', $values['other']);
             echo $values['risk_display'];
         }
         ?>
-        <input type="hidden" name="<?= $field_prefix ?>[other]" />
+
     </td>
-    <td>
+    <td id="OEModule_OphCiExamination_models_HistoryRisks_entries_<?=$row_count?>_risk_id_error">
         <label class="inline highlight">
-            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === null || $values['has_risk'] === '', array('value' => '')); ?>
+            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', false, array('value' => '-9')); ?>
             Not checked
         </label>
         <label class="inline highlight">
@@ -75,4 +83,3 @@ if (!isset($values)) {
         <button class="button small warning remove" <?php if (!$removable) {?>style="display: none;"<?php } ?>>remove</button>
     </td>
 </tr>
-
