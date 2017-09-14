@@ -219,15 +219,6 @@ class PatientMerge
             // Update legacy episodes
             $is_merged = $is_merged && $this->updateLegacyEpisodes($this->primary_patient, $this->secondary_patient);
 
-            // Update allergyAssignments
-            $is_merged = $is_merged && $this->updateAllergyAssignments($this->primary_patient, $this->secondary_patient);
-
-            // Updates riskAssignments
-            $is_merged = $is_merged && $this->updateRiskAssignments($this->primary_patient, $this->secondary_patient->riskAssignments);
-
-            // Update previousOperations
-            $is_merged = $is_merged && $this->updatePreviousOperations($this->primary_patient, $this->secondary_patient->previousOperations);
-
             //Update Other ophthalmic diagnoses
             $is_merged = $is_merged && $this->updateOphthalmicDiagnoses($this->primary_patient, $this->secondary_patient->ophthalmicDiagnoses);
 
@@ -455,131 +446,12 @@ class PatientMerge
     }
 
     /**
-     * Updates the patient id in the Allergy Assigment.
-     * 
-     * @param int         $new_patient_id Primary patient id
-     * @param array of AR $allergies
-     *
-     * @throws Exception AllergyAssigment cannot be saved
-     */
-    public function updateAllergyAssignments($primary_patient, $secondary_patient)
-    {
-        $primary_assignments = $primary_patient->allergyAssignments;
-        $secondary_assignments = $secondary_patient->allergyAssignments;
-
-        if (!$primary_assignments && $secondary_assignments) {
-            foreach ($secondary_assignments as $allergy_assignment) {
-                $msg = 'AllergyAssignment '.$allergy_assignment->id.' moved from patient '.$allergy_assignment->patient->hos_num.' to '.$primary_patient->hos_num;
-                $allergy_assignment->patient_id = $primary_patient->id;
-                if ($allergy_assignment->save()) {
-                    $this->addLog($msg);
-                    Audit::add('Patient Merge', 'AllergyAssignment moved patient', $msg);
-                } else {
-                    throw new Exception('Failed to update AllergyAssigment: '.$allergy_assignment->id.' '.print_r($allergy_assignment->errors, true));
-                }
-            }
-        } elseif ($primary_assignments && $secondary_assignments) {
-            foreach ($secondary_assignments as $secondary_assignment) {
-                $same_assignment = false;
-                foreach ($primary_assignments as $primary_assignment) {
-                    if ($primary_assignment->allergy_id ==  $secondary_assignment->allergy_id) {
-                        // the allergy is already present in the primary patient's record so we just update the 'comment' and 'other' fields
-
-                        $same_assignment = true;
-
-                        $comments = $primary_assignment->comments.' ; '.$secondary_assignment->comments;
-                        $other = $primary_assignment->other.' ; '.$secondary_assignment->other;
-
-                        $primary_assignment->comments = $comments;
-                        $primary_assignment->other = $other;
-
-                        if ($primary_assignment->save()) {
-                            $msg = "AllergyAssignment 'comments' and 'other' updated";
-                            $this->addLog($msg);
-                            Audit::add('Patient Merge', 'AllergyAssignment updated', $msg);
-                        } else {
-                            throw new Exception('Failed to update AllergyAssigment: '.$primary_assignment->id.' '.print_r($primary_assignment->errors, true));
-                        }
-
-                        // as we just copied the comments and other fields we remove the assignment
-                        $secondary_assignment->delete();
-                    }
-                }
-
-                // This means we have to move the assignment from secondary to primary
-                if (!$same_assignment) {
-                    $secondary_assignment->patient_id = $primary_patient->id;
-                    if ($secondary_assignment->save()) {
-                        $msg = 'AllergyAssignment '.$secondary_assignment->id.' moved from patient '.$secondary_patient->hos_num.' to '.$primary_patient->hos_num;
-                        $this->addLog($msg);
-                        Audit::add('Patient Merge', 'AllergyAssignment moved from patient', $msg);
-                    } else {
-                        throw new Exception('Failed to update AllergyAssigment: '.$secondary_assignment->id.' '.print_r($secondary_assignment->errors, true));
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Updates patient id in Risk Assignment.
-     * 
-     * @param int         $new_patient_id
-     * @param array of AR $risks
-     *
-     * @throws Exception Failed to save RiskAssigment
-     */
-    public function updateRiskAssignments($primary_patient, $risk_assignments)
-    {
-        foreach ($risk_assignments as $risk_assignment) {
-            $msg = 'RiskAssignment '.$risk_assignment->id.' moved from patient '.$risk_assignment->patient->hos_num.' to '.$primary_patient->id;
-            $risk_assignment->patient_id = $primary_patient->id;
-            if ($risk_assignment->save()) {
-                $this->addLog($msg);
-                Audit::add('Patient Merge', 'RiskAssignment moved patient', $msg);
-            } else {
-                throw new Exception('Failed to update RiskAssigment: '.$risk_assignment->id.' '.print_r($risk_assignment->errors, true));
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Moving previous operations from secondaty patient to primary.
-     * 
-     * @param Patient $new_patient
-     * @param type $previous_operations
-     *
-     * @return bool
-     *
-     * @throws Exception
-     */
-    public function updatePreviousOperations($new_patient, $previous_operations)
-    {
-
-        foreach ($previous_operations as $previous_operation) {
-            $msg = 'Previous Operation '.$previous_operation->id.' moved from Patient ' . $previous_operation->patient->hos_num.' to '.$new_patient->hos_num;
-            $previous_operation->patient_id = $new_patient->id;
-            if ($previous_operation->save()) {
-                $this->addLog($msg);
-                Audit::add('Patient Merge', 'Previous Operation moved patient', $msg);
-            } else {
-                throw new Exception('Failed to update Previous Operation: ' . $previous_operation->id.' ' . print_r($previous_operation->errors, true));
-            }
-        }
-
-        return true;
-    }
-    
-    /**
      * Updates the Ophthalmic Diagnoses' patient_id
      * 
      * @param Patient $new_patient
      * @param type $ophthalmic_diagnoses
      * @throws Exception
+     * @return boolean
      */
     public function updateOphthalmicDiagnoses($new_patient, $ophthalmic_diagnoses)
     {
@@ -604,6 +476,7 @@ class PatientMerge
      * @param type $systemic_diagnoses
      * @return boolean
      * @throws Exception
+     * @return boolean
      */
     public function updateSystemicDiagnoses($new_patient, $systemic_diagnoses)
     {

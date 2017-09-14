@@ -31,20 +31,29 @@ class PatientMergeTest extends CDbTestCase
             'service_subspecialty_assignment' => 'ServiceSubspecialtyAssignment',
             'services' => 'Service',
             'specialties' => 'Specialty',
-            'patient_allergy_assignment' => 'PatientAllergyAssignment',
             'secondary_diagnosis' => 'SecondaryDiagnosis',
-            'previous_operation' => 'PreviousOperation',
             'disorder' => 'Disorder',
-            'genetics_patient' => 'GeneticsPatient',
-            'genetics_patient_relationship' => 'GeneticsPatientRelationship',
-            'genetics_patient_diagnosis' => 'GeneticsPatientDiagnosis',
-            'pedigree' => 'Pedigree',
-            'genetics_patient_pedigree' => 'GeneticsPatientPedigree',
-            'genetics_study_subject' => 'GeneticsStudySubject'
     );
+
+    public $genetic_fixtures = array(
+        'genetics_patient' => 'GeneticsPatient',
+        'genetics_patient_relationship' => 'GeneticsPatientRelationship',
+        'genetics_patient_diagnosis' => 'GeneticsPatientDiagnosis',
+        'pedigree' => 'Pedigree',
+        'genetics_patient_pedigree' => 'GeneticsPatientPedigree',
+        'genetics_study_subject' => 'GeneticsStudySubject'
+    );
+
+    public function shouldTestGenetics()
+    {
+        return Yii::app()->getModule('Genetics') !== null;
+    }
 
     public function setUp()
     {
+        if ($this->shouldTestGenetics()) {
+            $this->fixtures = array_merge($this->fixtures, $this->genetic_fixtures);
+        }
         parent::setUp();
     }
 
@@ -444,136 +453,6 @@ class PatientMergeTest extends CDbTestCase
         $this->assertEquals(count($secondary_patient->legacyepisodes), 0);
     }
 
-    public function testUpdateAllergyAssignments_primaryHasNoAllergyAssignments()
-    {
-        $merge_handler = new PatientMerge();
-
-        $assignment1 = $this->patient_allergy_assignment('assignment1');
-        $assignment2 = $this->patient_allergy_assignment('assignment2');
-
-        $assignment1->patient_id = 1;
-        $assignment1->save();
-
-        $primary_patient = $this->patients('patient7');
-        $secondary_patient = $this->patients('patient8');
-
-        $this->assertEquals(count($primary_patient->allergyAssignments), 0);
-        $this->assertEquals(count($secondary_patient->allergyAssignments), 1);
-
-        $result = $merge_handler->updateAllergyAssignments($primary_patient, $secondary_patient);
-
-        $primary_patient->refresh();
-        $secondary_patient->refresh();
-
-        $this->assertTrue($result, 'Update Allergy Assigmant FAILED.');
-
-        $assignment2->refresh();
-        $this->assertEquals($assignment2->patient_id, 7);
-
-        $this->assertEquals(count($primary_patient->allergyAssignments), 1);
-        $this->assertEquals(count($secondary_patient->allergyAssignments), 0);
-    }
-
-    public function testUpdateAllergyAssignments_bothHaveDifferentAllergyAssignments()
-    {
-        $merge_handler = new PatientMerge();
-
-        $assignment1 = $this->patient_allergy_assignment('assignment1');
-        $assignment2 = $this->patient_allergy_assignment('assignment2');
-
-        $primary_patient = $this->patients('patient7');
-        $secondary_patient = $this->patients('patient8');
-
-        $this->assertEquals(count($primary_patient->allergyAssignments), 1);
-        $this->assertEquals(count($secondary_patient->allergyAssignments), 1);
-
-        $result = $merge_handler->updateAllergyAssignments($primary_patient, $secondary_patient);
-
-        $primary_patient->refresh();
-        $secondary_patient->refresh();
-
-        $this->assertTrue($result, 'Update Allergy Assigmant FAILED.');
-
-        $assignment1->refresh();
-        $this->assertEquals($assignment1->patient_id, 7);
-
-        $assignment2->refresh();
-        $this->assertEquals($assignment2->patient_id, 7);
-
-        $this->assertEquals(count($primary_patient->allergyAssignments), 2);
-        $this->assertEquals(count($secondary_patient->allergyAssignments), 0);
-    }
-
-    public function testUpdateAllergyAssignments_bothHaveSameAllergyAssignments()
-    {
-        $merge_handler = new PatientMerge();
-
-        $assignment1 = $this->patient_allergy_assignment('assignment1');
-        $assignment2 = $this->patient_allergy_assignment('assignment2');
-
-        $assignment2->allergy_id = 1;
-        $assignment2->save();
-        $assignment2->refresh();
-
-        $this->assertEquals($assignment1->allergy_id, $assignment2->allergy_id);
-
-        $primary_patient = $this->patients('patient7');
-        $secondary_patient = $this->patients('patient8');
-
-        $this->assertEquals(count($primary_patient->allergyAssignments), 1);
-        $this->assertEquals(count($secondary_patient->allergyAssignments), 1);
-
-        $result = $merge_handler->updateAllergyAssignments($primary_patient, $secondary_patient);
-
-        $primary_patient->refresh();
-        $secondary_patient->refresh();
-
-        $assignment1->refresh();
-        $this->assertEquals($assignment1->patient_id, 7);
-
-        $this->assertEquals($assignment1->comments, 'comment 1 ; comment 2');
-        $this->assertEquals($assignment1->other, 'other 1 ; other 2');
-    }
-
-    public function testUpdateRiskAssignments()
-    {
-    }
-
-    public function testUpdatePreviousOperations()
-    {
-        $merge_handler = new PatientMerge();
-        
-        $primary_patient = $this->patients('patient7');
-        $secondary_patient = $this->patients('patient8');
-        
-        $previous_operation1 = $this->previous_operation('previousOperation1');
-        
-        $previous_operation1->patient_id = 8;
-        $previous_operation1->save();
-        $previous_operation1->refresh();
-        
-        // Before we update the Previous Operations we check if the patient id is equals to the secondary patient id
-        $this->assertEquals(8, $previous_operation1->patient_id);
-        
-        $primary_patient->refresh();
-        $secondary_patient->refresh();
-        $this->assertEquals(0, count($primary_patient->previousOperations) );
-        $this->assertEquals(1, count($secondary_patient->previousOperations) );
-        
-        $merge_handler->updatePreviousOperations($primary_patient, $secondary_patient->previousOperations);
-        
-        $primary_patient->refresh();
-        $secondary_patient->refresh();
-        $this->assertTrue(is_array($secondary_patient->previousOperations));
-        
-        $this->assertEquals(0, count($secondary_patient->previousOperations) );
-        $this->assertEquals(1, count($primary_patient->previousOperations) );
-        
-        $previous_operation1->refresh();
-        
-        $this->assertEquals(7, $previous_operation1->patient_id);
-    }
-    
     public function testUpdateOphthalmicDiagnoses()
     {
         $merge_handler = new PatientMerge();
@@ -601,8 +480,6 @@ class PatientMergeTest extends CDbTestCase
         $this->assertEquals(0, count($secondary_patient->ophthalmicDiagnoses) );
         
         $this->assertEquals(7, $secondary_diagnoses8->patient_id);
-        
-        
     }
     
     public function testUpdateSystemicDiagnoses()
@@ -640,6 +517,9 @@ class PatientMergeTest extends CDbTestCase
 
     public function testUpdateGenetics_Primary_not_genetics()
     {
+        if (!$this->shouldTestGenetics()) {
+            $this->markTestSkipped('Genetics module needs to be enabled for this test.');
+        }
         $merge_handler = new PatientMerge();
 
         $primary_patient = $this->patients('patient3'); // is not a genetics patient
@@ -662,11 +542,19 @@ class PatientMergeTest extends CDbTestCase
     /**
      * If secondary patient is not a genetics patient we have nothing to do here
      */
-    public function testUpdateGenetics_Secondary_not_genetics(){}
+    public function testUpdateGenetics_Secondary_not_genetics(){
+        if (!$this->shouldTestGenetics()) {
+            $this->markTestSkipped('Genetics module needs to be enabled for this test.');
+        }
+        $this->markTestIncomplete('Not been written yet');
+    }
 
 
     public function testUpdateGenetics_Both_are_genetics()
     {
+        if (!$this->shouldTestGenetics()) {
+            $this->markTestSkipped('Genetics module needs to be enabled for this test.');
+        }
         $merge_handler = new PatientMerge();
 
         $primary_patient = $this->patients('patient1');
