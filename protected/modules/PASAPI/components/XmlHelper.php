@@ -56,10 +56,7 @@ class XmlHelper
     public function xml($xml)
     {
         $this->_xml = $xml;
-        if( $this->_xml_reader->xml($xml) === false){
-
-
-
+        if( !$this->isXMLContentValid($xml) || $this->_xml_reader->xml($xml) === false){
             return false;
         }
 
@@ -107,6 +104,10 @@ class XmlHelper
     public function countNodes($node_name)
     {
         $count = 0;
+
+        if( !$this->isXMLContentValid($this->_xml) ){
+            return $count;
+        }
 
         $reader = new \XMLReader();
         $reader->xml( $this->_xml );

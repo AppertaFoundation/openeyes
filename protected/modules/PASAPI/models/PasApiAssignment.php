@@ -158,7 +158,8 @@ class PasApiAssignment extends \BaseActiveRecord
     {
         if ($this->isNewRecord || $this->missing_from_pas) return true;
 
-        $cache_time = (isset(\Yii::app()->params['pasapi_cache_time'])) ? \Yii::app()->params['pasapi_cache_time'] : self::PAS_CACHE_TIME;
+        $cache_time = (isset(\Yii::app()->params['pasapi']['cache_time'])) ? \Yii::app()->params['pasapi']['cache_time'] : self::PAS_CACHE_TIME;
+
         return strtotime($this->last_modified_date) < (time() - $cache_time);
     }
 }

@@ -1,6 +1,8 @@
 <?php
 namespace OEModule\PASAPI\components;
 
+use OEModule\PASAPI\models\PasApiAssignment;
+
 /**
  * OpenEyes
  *
@@ -44,8 +46,10 @@ class PasApiObserver
         // would be nice to have some kind of NO_PROXY here (or somewhere) to exclude localhost
         $default_proxy = isset(\Yii::app()->params['curl_proxy']) ? \Yii::app()->params['curl_proxy'] : false;
         $proxy = isset(\Yii::app()->params['pasapi']['proxy']) ? \Yii::app()->params['pasapi']['proxy'] : $default_proxy;
+        $request_timeout = isset(\Yii::app()->params['pasapi']['timeout']) ? \Yii::app()->params['pasapi']['timeout'] : 60;
 
         curl_setopt($this->_curl->curl, CURLOPT_PROXY, $proxy);
+        curl_setopt($this->_curl->curl, CURLOPT_TIMEOUT, $request_timeout);
 
         $this->_xml_helper = new XmlHelper();
     }
@@ -62,6 +66,12 @@ class PasApiObserver
 
         //will be accessed at the \Patient model's search function
         $results = &$data['results'];
+        $patient = $data['patient'];
+
+        if( !$this->isPASqueryRequired($patient) ){
+            // no need to update the record
+            return false;
+        }
 
         $xml = $this->pasRequest($data);
 
@@ -78,6 +88,7 @@ class PasApiObserver
                 )), true) );
 
             $data['patient']->addPasError('Error occurred during the PAS synchronization, some data may be out of date or incomplete');
+            \Yii::app()->user->setFlash('warning.pas_unavailable', 'PAS is currently unavailable, some data may be out of date or incomplete');
 
             // XML captured in DB : audit.data
         }
@@ -218,6 +229,50 @@ class PasApiObserver
         $available = $enabled && (isset(\Yii::app()->params['pasapi']['url']) && !empty( \Yii::app()->params['pasapi']['url']));
 
         return $this->available = $available;
+    }
+
+
+    /**
+     * Checks if we have to query the PAS or not
+     * If hos_num or nhs_num was searched we check the patient if his/her record is stale
+     *
+     * @param \Patient $patient
+     * @return bool
+     */
+    public function isPASqueryRequired(\Patient $patient)
+    {
+        if( !empty($patient->hos_num) || !empty($patient->nhs_num)){
+
+            // validate the hos_num and hns_num
+            $patient_search = new \PatientSearch();
+            $hos_num = $patient_search->getHospitalNumber($patient->hos_num);
+            $nhs_num = $patient_search->getNHSnumber($patient->nhs_num);
+
+            //get the patient
+            $patient_criteria = new \CDbCriteria();
+            $patient_criteria->addCondition('hos_num =:hos_num', 'OR');
+            $patient_criteria->addCondition('nhs_num =:nhs_num', 'OR');
+            $patient_criteria->params[':nhs_num'] = $nhs_num;
+            $patient_criteria->params[':hos_num'] = $hos_num;
+
+            $_patient = \Patient::model()->find($patient_criteria);
+
+            if( $_patient ){
+                // get the assignment
+                $criteria = new \CDbCriteria();
+                $criteria->addCondition('resource_type ="Patient"');
+                $criteria->addCondition('internal_id =:id');
+                $criteria->params[':id'] = $_patient->id;
+
+                $assignment = PasApiAssignment::model()->find($criteria);
+
+                if($assignment && !$assignment->isStale()){
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
 }
