@@ -61,8 +61,11 @@ function imageUpload(field){
                     $.each(response, function(index, value){
                         filedata = field.val().split('.');
                         extension = filedata[filedata.length-1];
-
-                        $('#showUploadStatus').after('<input type="hidden" name="Element_OphCoDocument_Document['+index+']" id="Element_OphCoDocument_Document_'+index+'" value="'+value+'">');
+                        if($('#Element_OphCoDocument_Document_'+index).length) {
+                            $('#Element_OphCoDocument_Document_' + index).val(value);
+                        }else{
+                            $('#showUploadStatus').after('<input type="hidden" name="Element_OphCoDocument_Document['+index+']" id="Element_OphCoDocument_Document_'+index+'" value="'+value+'">');
+                        }
                         var elem = generateViewToFile(response , index, value , filedata  );
                         clearInputFile( index );
 
@@ -157,7 +160,11 @@ function deleteOPHCOImage( iID , index ){
             success:function(){
                 
                 $('#ophco-image-container-'+iID+'').remove();
-                $('#Element_OphCoDocument_Document_'+index).remove();
+                if($('#Element_OphCoDocument_Document_'+index).length) {
+                    $('#Element_OphCoDocument_Document_' + index).val('NULL');
+                }else{
+                    $('#showUploadStatus').after('<input type="hidden" name="Element_OphCoDocument_Document['+index+']" id="Element_OphCoDocument_Document_'+index+'" value="NULL">');
+                }
                 createUploadButton( index );
                 clearUploadStatus();
             },
