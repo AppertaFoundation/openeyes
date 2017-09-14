@@ -326,12 +326,13 @@ class PcrRisk
      */
     protected function getAlphaBlocker(Patient $patient)
     {
-        $historyRisk = new \OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk();
-        $alphaBlocker = $historyRisk->mostRecentCheckedAlpha($patient->id);
-
-        if(!$alphaBlocker || $alphaBlocker->alphablocker === '0') {
+        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+        if($exam_api){
+            $alphaBlocker = $exam_api->getRiskByName($patient, 'Alpha blockers');
+        }
+        if(!$alphaBlocker || $alphaBlocker['status'] === null) {
             return 'NK';
-        } elseif ($alphaBlocker->alphablocker === '1') {
+        } elseif ($alphaBlocker['status'] === true) {
             return 'Y';
         } else {
             return 'N';

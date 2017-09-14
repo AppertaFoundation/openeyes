@@ -21,6 +21,7 @@ namespace OEModule\OphCiExamination\components;
  */
 
 use OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\widgets\HistoryRisks;
 use Patient;
 
 class OphCiExamination_API extends \BaseAPI
@@ -169,7 +170,7 @@ class OphCiExamination_API extends \BaseAPI
         }
         return implode($separator, $res);
     }
-    
+
     /**
      * Get the patient history description field from the latest Examination event.
      * Limited to current data context by default.
@@ -914,7 +915,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityForEpisodeLeft($patient, $include_nr_values = false, $before_date = NULL, $use_context = true)
     {
-        
+
         if ($va = $this->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
             $patient,
             $use_context,
@@ -2230,5 +2231,55 @@ class OphCiExamination_API extends \BaseAPI
             }
         }
         return $str;
+    }
+
+    protected $widget_cache = array();
+
+    /**
+     * NB. caching on this needs to be enhanced to index by data parameters.
+     *
+     * @param $class_name
+     * @param $data
+     * @return mixed
+     */
+    protected function getWidget($class_name, $data)
+    {
+        if (!array_key_exists($class_name, $this->widget_cache)) {
+            $this->widget_cache[$class_name] = $this->yii->getWidgetFactory()
+                ->createWidget($this, $class_name, $data);
+            $this->widget_cache[$class_name]->init();
+        }
+        return $this->widget_cache[$class_name];
+    }
+
+    /**
+     *
+     * @param $patient
+     * @param $risk_name
+     * @return mixed
+     */
+    public function getRiskByName($patient, $risk_name) {
+        $widget = $this->getWidget(
+            'OEModule\OphCiExamination\widgets\HistoryRisks',
+            array('mode' => HistoryRisks::$DATA_MODE, 'patient' => $patient));
+        if ($entry = $widget->element->getRiskEntryByName($risk_name)) {
+            $status = null;
+            switch ($entry->has_risk) {
+                case (models\HistoryRisksEntry::$PRESENT):
+                    $status = true;
+                    break;
+                case (models\HistoryRisksEntry::$NOT_PRESENT):
+                    $status = false;
+                    break;
+            }
+
+            return array(
+                'name' => (string)$entry->risk,
+                'status' => $status,
+                'comments' => $entry->comments,
+                'date' => $entry->element->event->event_date
+            );
+        }
+        return ;
     }
 }

@@ -41,6 +41,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 'joinType' => 'INNER JOIN',
                 'alias' => 'booking',
             ),
+            'event' => array(self::BELONGS_TO, 'Event', 'event_id')
         );
     }
 
@@ -199,22 +200,33 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     }
 
     /**
+     * @param $risk
+     * @return string
+     */
+    private function getDisplayHasRisk($risk) {
+        switch ($risk['status']) {
+            case true:
+                return 'Present';
+            case false:
+                return 'Not present';
+            default:
+                return 'Not checked';
+        }
+    }
+    
+    /**
      * @param $patient
      *
      * @return string
      */
     protected function alphaBlockerStatusAndDate($patient)
     {
-        $risks = new \OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk();
-        $blockers = $risks->mostRecentCheckedAlpha($patient->id);
-        if ($blockers) {
-            if ($blockers->alphablocker === '2') {
-                return 'No (' . Helper::convertMySQL2NHS($blockers->event->event_date) . ')';
-            } else {
-                return 'Yes - ' . $blockers->alpha_blocker_name . ' (' . Helper::convertMySQL2NHS($blockers->event->event_date) . ')';
+        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+        if ($exam_api) {
+            $alpha = $exam_api->getRiskByName($patient, 'Alpha blockers');
+            if ($alpha) {
+                return $this->getDisplayHasRisk($alpha) . ($alpha['comments'] ? ' - ' . $alpha['comments'] : '') . '(' . Helper::convertMySQL2NHS($alpha['date']) . ')';
             }
-        } else {
-            return 'Not Checked';
         }
     }
 
@@ -225,16 +237,12 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
      */
     protected function anticoagsStatusAndDate($patient)
     {
-        $risks = new \OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk();
-        $anticoag = $risks->mostRecentCheckedAnticoag($patient->id);
-        if ($anticoag) {
-            if ($anticoag->anticoagulant === '2') {
-                return 'No (' . Helper::convertMySQL2NHS($anticoag->event->event_date) . ')';
-            } else {
-                return 'Yes - ' . $anticoag->anticoagulant_name . ' (' . Helper::convertMySQL2NHS($anticoag->event->event_date) . ')';
+        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+        if ($exam_api) {
+            $anticoag = $exam_api->getRiskByName($patient, 'Anticoagulants');
+            if ($anticoag) {
+                return $this->getDisplayHasRisk($anticoag) . ($anticoag['comments'] ? ' - ' . $anticoag['comments'] : '') . '(' . Helper::convertMySQL2NHS($anticoag['date']) . ')';
             }
-        } else {
-            return 'Not Checked';
         }
     }
 }

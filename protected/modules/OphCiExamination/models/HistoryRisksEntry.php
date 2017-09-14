@@ -28,7 +28,7 @@ namespace OEModule\OphCiExamination\models;
  * @property int $id
  * @property int $element_id
  * @property int $risk_id
- * @property boolean $has_risk
+ * @property int $has_risk
  * @property string $other
  * @property string $comments
  *
@@ -37,6 +37,9 @@ namespace OEModule\OphCiExamination\models;
  */
 class HistoryRisksEntry extends \BaseElement
 {
+    public static $PRESENT = 1;
+    public static $NOT_PRESENT = 0;
+    public static $NOT_CHECKED = -9;
     /**
      * Returns the static model of the specified AR class.
      *
@@ -147,9 +150,9 @@ class HistoryRisksEntry extends \BaseElement
      */
     public function getDisplayHasRisk()
     {
-        if ($this->has_risk === '1') {
+        if ($this->has_risk === (string) static::$PRESENT) {
             return 'Present';
-        } elseif ($this->has_risk === '0') {
+        } elseif ($this->has_risk === static::$NOT_PRESENT) {
             return 'Not present';
         }
         return 'Not checked';
