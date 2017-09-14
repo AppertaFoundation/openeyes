@@ -454,7 +454,14 @@ class PatientMergeRequestController extends BaseController
                     $notice[] = "Local patient";
                 }
 
-                $subject = GeneticsPatient::model()->findByAttributes(array('patient_id' => $patient->id));
+                $subject = null;
+                $genetics_panel = null;
+                if ($api = $this->getApp()->moduleAPI->get('Genetics')) {
+                    $subject = $api->getSubject($patient);
+                    if ($subject) {
+                        $genetics_panel = $this->getGeneticsHTML($patient);
+                    }
+                }
 
                 $result[] = array(
                     'id' => $patient->id,
@@ -470,7 +477,7 @@ class PatientMergeRequestController extends BaseController
                     'all-episodes' => $this->getEpisodesHTML($patient),
                     'warning' => $warning,
                     'notice' => $notice,
-                    'genetics-panel' => $this->getGeneticsHTML($patient),
+                    'genetics-panel' => $genetics_panel,
                     'subject_id' => $subject ? $subject->id : null,
                 );
             }
@@ -508,11 +515,16 @@ class PatientMergeRequestController extends BaseController
        return str_replace('box patient-info episodes', 'box patient-info', $html);
     }
 
-    public function getGeneticsHTML($patient)
+    /**
+     * @todo: look at encapsulating in the genetics module completely
+     *
+     * @param GeneticsPatient $subject
+     * @return null|string
+     */
+    public function getGeneticsHTML(Patient $patient)
     {
         $html = null;
-        $subject = GeneticsPatient::model()->findByAttributes(array('patient_id' => $patient->id));
-        if( Yii::app()->moduleAPI->get('Genetics') && $subject){
+        if( $this->getApp()->moduleAPI->get('Genetics')){
             $html = $this->renderPartial('application.modules.Genetics.views.patientSummary._patient_genetics', array(
                 'patient' => $patient
             ), true);
