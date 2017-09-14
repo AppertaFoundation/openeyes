@@ -61,4 +61,13 @@ class Genetics_API extends BaseAPI
 
         echo $return;
     }
+
+    /**
+     * @param Patient $patient
+     * @return GeneticsPatient
+     */
+    public function getSubject(Patient $patient)
+    {
+        return GeneticsPatient::model()->findByAttributes(array('patient_id' => $patient->id));
+    }
 }
