@@ -29,15 +29,25 @@ class m160728_085205_add_new_columns_ophcocvi_clericinfo_employment_status exten
         $this->addColumn('ophcocvi_clericinfo_employment_status_version', 'active', 'tinyint(1) unsigned not null default 1 AFTER `social_history_occupation_id`');
 
         $this->update('ophcocvi_clericinfo_employment_status', array('child_default' => true), 'name = :name', array(':name' => 'Child'));
-        foreach (array('Retired', 'Employed', 'Unemployed', 'Student') as $label) {
-            $sh_occ = $this->dbConnection->createCommand()->select('id')->from('socialhistory_occupation')
-                ->where('name = :name', array(':name' => $label))
-                ->queryRow();
-
-            if ($sh_occ) {
-                $this->update('ophcocvi_clericinfo_employment_status', array('social_history_occupation_id' => $sh_occ['id']), 'name = :name', array(':name' => $label));
+        $occ_tbl = null;
+        foreach (array('socialhistory_occupation', 'ophciexamination_socialhistory_occupation') as $possible) {
+            if ($this->dbConnection->schema->getTable($possible)) {
+                $occ_tbl = $possible;
+                break;
             }
         }
+        if ($occ_tbl !== null) {
+            foreach (array('Retired', 'Employed', 'Unemployed', 'Student') as $label) {
+                $sh_occ = $this->dbConnection->createCommand()->select('id')->from($occ_tbl)
+                    ->where('name = :name', array(':name' => $label))
+                    ->queryRow();
+
+                if ($sh_occ) {
+                    $this->update('ophcocvi_clericinfo_employment_status', array('social_history_occupation_id' => $sh_occ['id']), 'name = :name', array(':name' => $label));
+                }
+            }
+        }
+
     }
 
     public function down()
