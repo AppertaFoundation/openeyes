@@ -202,7 +202,7 @@ function removeElement(element, is_child) {
 
 function moveToElement(element) {
 	var offTop = element.offset().top - 130;
-	$('body').scrollTop(offTop);
+	$('html, body').scrollTop(offTop);
 	var $title = $('.element-title', element);
 	if (!$title.length) {
 		$title = $('.sub-element-title', element);
