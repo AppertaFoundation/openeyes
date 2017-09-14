@@ -220,7 +220,38 @@ function clearInputFile( index ){
     $('#Document_'+index).prop("files",null);
 }
 
+function checkDocumentsUploaded(){
+    if($( "input[name='upload_mode']:checked" ).val()=='single')
+    {
+        if($('#Element_OphCoDocument_Document_single_document_id').val() === undefined || $('#Element_OphCoDocument_Document_single_document_id').val()=='NULL'){
+            return false;
+        }
+    }
+    else if ($( "input[name='upload_mode']:checked" ).val()=='double')
+    {
+        if(($('#Element_OphCoDocument_Document_left_document_id').val() === undefined || $('#Element_OphCoDocument_Document_left_document_id').val()=='NULL')&&
+            ($('#Element_OphCoDocument_Document_right_document_id').val() === undefined || $('#Element_OphCoDocument_Document_right_document_id').val()=='NULL')){
+            return false;
+        }
+    }
+    else if(!$( "input[name='upload_mode']:checked" ).length)
+    {
+        return false;
+    }
+    return true;
+}
+
 $(document).ready(function(){
+    handleButton($('#et_save'), function (e) {
+        if(!checkDocumentsUploaded()){
+            e.preventDefault();
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Please upload at least one document!"
+            }).open();
+            enableButtons($('#et_save'));
+        }
+    });
+
     $('#single_document_uploader').hide();
     $('#double_document_uploader').hide();
     checkUploadMode();
