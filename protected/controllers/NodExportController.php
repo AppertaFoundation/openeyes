@@ -836,15 +836,11 @@ EOL;
                         IsCVIPartial )
                 SELECT
                 poi.patient_id AS PatientId,
-                IFNULL(
-                        STR_TO_DATE(REPLACE(poi.cvi_status_date, '-00', 'BAD-DATE'), '%Y-%m-%d'),
-                        DATE(poi.created_date)
-                ) AS `Date`,
-                (CASE WHEN DAYNAME(poi.cvi_status_date) IS NULL THEN 1 ELSE 0 END) AS IsDateApprox,
+                STR_TO_DATE(REPLACE(poi.cvi_status_date, '-00', '-01'), '%Y-%m-%d') AS `Date`,
+                (CASE WHEN poi.cvi_status_date LIKE '%-00%' THEN 1 ELSE 0 END) AS IsDateApprox,
                 (CASE WHEN poi.cvi_status_id=4 THEN 1 ELSE 0 END) AS IsCVIBlind,
                 (CASE WHEN poi.cvi_status_id=3 THEN 1 ELSE 0 END) AS IsCVIPartial
                 FROM patient_oph_info poi
-
                 /* Restriction: patients in control events */
                 WHERE poi.patient_id IN ( SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier}  c );
 EOL;
@@ -1034,41 +1030,36 @@ INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} (
   IsAbleToLieFlat,
   IsInabilityToCooperate
 )
-SELECT 
+SELECT DISTINCT
 c.oe_event_id,
 CASE WHEN pl.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye, /* Belt+Brace with WHERE clause or NULL */
-(SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
-(SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
+CASE WHEN (SELECT COUNT(*) FROM patient_risk_assignment pr WHERE pr.patient_id = c.patient_id AND pr.risk_id = 1) > 0 THEN 0 ELSE 1 END AS IsAbleToLieFlat,
+CASE WHEN (SELECT COUNT(*) FROM patient_risk_assignment pr WHERE pr.patient_id = c.patient_id AND pr.risk_id = 4) > 0 THEN 1 ELSE 0 END AS IsInabilityToCooperate
 /* Restriction: Start with control events */
 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
 /* Join: Associated procedures, Implicit Restriction: Operations with procedures */
 JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = c.oe_event_id
-/* Outer Join: patient risks, Implicit Cartesian: all risk_ids  */
-LEFT OUTER JOIN patient_risk_assignment pr ON pr.patient_id = c.patient_id # specify LEFT OUTER JOIN syntax in full
 /* Restrict: LEFT/BOTH eyes */
 WHERE pl.eye_id IN (1, 3)
 /* Group by required as may have multiple procedures on eye */
 GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate;
-                
-                
+
 INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} (
   oe_event_id,
   Eye,
   IsAbleToLieFlat,
   IsInabilityToCooperate
 )
-SELECT 
+SELECT DISTINCT
 c.oe_event_id,
 CASE WHEN pl.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye, /* Belt+Brace with WHERE clause or NULL */ 
-(SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
-(SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
+CASE WHEN (SELECT COUNT(*) FROM patient_risk_assignment pr WHERE pr.patient_id = c.patient_id AND pr.risk_id = 1) > 0 THEN 0 ELSE 1 END AS IsAbleToLieFlat,
+CASE WHEN (SELECT COUNT(*) FROM patient_risk_assignment pr WHERE pr.patient_id = c.patient_id AND pr.risk_id = 4) > 0 THEN 1 ELSE 0 END AS IsInabilityToCooperate
 /* Restriction: Start with control events */
 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
 /* Join: Associated procedures, Implicit Restriction: Operations with procedures */
 JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = c.oe_event_id
-/* Outer Join: patient risks, Implicit Cartesian: all risk_ids  */
-LEFT OUTER JOIN patient_risk_assignment pr ON pr.patient_id = c.patient_id # specify LEFT OUTER JOIN syntax in full
-/* Restrict: LEFT/BOTH eyes */
+/* Restrict: RIGHT/BOTH eyes */
 WHERE pl.eye_id IN (2, 3)
 /* Group by required as may have multiple procedures on eye */
 GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate;

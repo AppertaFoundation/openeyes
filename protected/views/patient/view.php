@@ -104,7 +104,7 @@ $warnings = $this->patient->getWarnings($clinical);
 
             <?php if ($component = $this->getApp()->getComponent('internalReferralIntegration')): ?>
                 <section class="box patient-info internalreferral internalreferral-doclist">
-                        <?php echo CHtml::link('View internal referrals',$component->generateUrlForDocumentList($this->patient)); ?>
+                        <?php echo CHtml::link('View patient referrals',$component->generateUrlForDocumentList($this->patient)); ?>
                         <span>e-WinDIP</span>
                 </section>
             <?php endif; ?>
