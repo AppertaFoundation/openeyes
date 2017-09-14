@@ -18,6 +18,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+use OEModule\OphCiExamination\models\HistoryRisksEntry;
+
 ?>
 
 <?php
@@ -64,15 +66,15 @@ if (!isset($values)) {
     </td>
     <td id="OEModule_OphCiExamination_models_HistoryRisks_entries_<?=$row_count?>_risk_id_error">
         <label class="inline highlight">
-            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', false, array('value' => '-9')); ?>
+            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', false, array('value' => HistoryRisksEntry::$NOT_CHECKED)); ?>
             Not checked
         </label>
         <label class="inline highlight">
-            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === '1', array('value' => '1')); ?>
+            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === (string) HistoryRisksEntry::$PRESENT, array('value' => HistoryRisksEntry::$PRESENT)); ?>
             yes
         </label>
         <label class="inline highlight">
-            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === '0', array('value' => '0')); ?>
+            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === (string) HistoryRisksEntry::$NOT_PRESENT, array('value' => HistoryRisksEntry::$NOT_PRESENT)); ?>
             no
         </label>
     </td>

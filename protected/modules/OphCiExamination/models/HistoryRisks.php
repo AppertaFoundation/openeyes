@@ -230,4 +230,19 @@ class HistoryRisks extends \BaseEventTypeElement
         }
         return parent::errorAttributeException($attribute, $message);
     }
+
+    /**
+     * @param $name
+     * @return HistoryRisksEntry|null
+     */
+    public function getRiskEntryByName($name)
+    {
+        foreach ($this->entries as $entry) {
+            if ($entry->risk->name === $name) {
+                return $entry;
+            }
+        }
+        return null;
+    }
+
 }

@@ -93,6 +93,7 @@
             </div>
         </div>
     </div>
+
     <div class="mdl-cell mdl-cell--4-col editable">
         <div class="mdl-card mdl-shadow--2dp">
             <div class="mdl-card__title mdl-card--expand comment">
@@ -127,4 +128,3 @@
     </div>
 
 </div>
-
