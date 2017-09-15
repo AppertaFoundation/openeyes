@@ -18,13 +18,12 @@
 $this->renderPartial('//admin/generic/list', array('admin' => $admin, 'displayOrder' => $displayOrder, 'buttons' => $buttons));
 
 ?>
+<?php
+if( Yii::app()->params['opnote_lens_migration_link'] == 'on'){
+?>
 <div class="admin box">
-    <?php
-        $i = 1;
-        if( $i == 1){
-            ?>
-                    <a href="/OphInBiometry/MergeLensData">Merge operation note cataract element lens data</a>
-            <?php
-        }
-    ?>
+    <a href="/OphInBiometry/MergeLensData">Merge operation note cataract element lens data</a>
 </div>
+<?php
+}
+?>
