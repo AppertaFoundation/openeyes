@@ -34,7 +34,6 @@ class OphCoDocument_API extends BaseAPI
             return $asset_manager->publish($module_path."/".$type.".png");
         }
         $file = $module_path."/".$type.str_replace(' ', '_', $element->sub_type->name).".png";
-        var_dump($file);
         if (file_exists($file))
         {
             return $asset_manager->publish($file);
