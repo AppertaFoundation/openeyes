@@ -28,37 +28,41 @@ class MergeLensDataController extends BaseAdminController
 
             foreach ($existing_cataract as $existing) {
                 $IOL_data = OphTrOperationnote_IOLType::model()->findByPk($existing['iol_type_id']);
-                $new_IOL = new OphInBiometry_LensType_Lens();
-                $new_IOL->id = $IOL_data->id + 10000;
-                $new_IOL->name = $IOL_data->name;
-                $new_IOL->display_name = $IOL_data->name;
-                $new_IOL->display_order = $IOL_data->display_order;
-                $new_IOL->active = $IOL_data->active;
-                $new_IOL->description = 'Merged from operation note cataract element IOL type values';
-                $new_IOL->save();
-                // update the existing data
-                $current_operations = Element_OphTrOperationnote_Cataract::model()->findAllByAttributes(array('iol_type_id'=>$existing['iol_type_id']));
-                $complications_none = OphTrOperationnote_CataractComplications::model()->findByAttributes(array('name'=>'None'));
+                if($IOL_data) {
+                    $new_IOL = new OphInBiometry_LensType_Lens();
+                    $new_IOL->id = $IOL_data->id + 10000;
+                    $new_IOL->name = $IOL_data->name;
+                    $new_IOL->display_name = $IOL_data->name;
+                    $new_IOL->display_order = $IOL_data->display_order;
+                    $new_IOL->active = $IOL_data->active;
+                    $new_IOL->description = 'Merged from operation note cataract element IOL type values';
+                    $new_IOL->save();
+                    // update the existing data
+                    $current_operations = Element_OphTrOperationnote_Cataract::model()->findAllByAttributes(array('iol_type_id'=>$existing['iol_type_id']));
+                    $complications_none = OphTrOperationnote_CataractComplications::model()->findByAttributes(array('name'=>'None'));
 
-                foreach($current_operations as $operation)
-                {
-//                    var_dump($operation);
-                    if(!count($operation->complications))
+                    foreach($current_operations as $operation)
                     {
-                        $operation->updateComplications(array($complications_none->id));
-                        $operation->refresh();
-                    }
+    //                    var_dump($operation);
+                        if(!count($operation->complications))
+                        {
+                            $operation->updateComplications(array($complications_none->id));
+                            $operation->refresh();
+                        }
 
-                    $operation->iol_type_id = $new_IOL->id;
-                    if(!$operation->save())
-                    {
-                        throw new Exception('Error saving cataract element data!');
+                        $operation->iol_type_id = $new_IOL->id;
+                        if(!$operation->save())
+                        {
+                            throw new Exception('Error saving cataract element data!');
+                        }
                     }
                 }
-                //var_dump($operations);
             }
             Yii::app()->db->createCommand("ALTER TABLE et_ophtroperationnote_cataract ADD CONSTRAINT et_ophtroperationnote_cataract_iol_type_id_fk FOREIGN KEY (iol_type_id) REFERENCES ophinbiometry_lenstype_lens(id)")->query();
         }
+        $setting = SettingInstallation::model()->find("`key`='opnote_lens_migration_link'");
+        $setting->value = 'Off';
+        $setting->save();
         $this->redirect(array('/OphInBiometry/lensTypeAdmin/list'));
     }
 }
