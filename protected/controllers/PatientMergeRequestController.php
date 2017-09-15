@@ -454,7 +454,10 @@ class PatientMergeRequestController extends BaseController
                     $notice[] = "Local patient";
                 }
 
-                $subject = GeneticsPatient::model()->findByAttributes(array('patient_id' => $patient->id));
+                $subject = null;
+                if(\Yii::app()->hasModule('Genetics')){
+                    $subject = GeneticsPatient::model()->findByAttributes(array('patient_id' => $patient->id));
+                }
 
                 $result[] = array(
                     'id' => $patient->id,
@@ -511,8 +514,9 @@ class PatientMergeRequestController extends BaseController
     public function getGeneticsHTML($patient)
     {
         $html = null;
-        $subject = GeneticsPatient::model()->findByAttributes(array('patient_id' => $patient->id));
-        if( Yii::app()->moduleAPI->get('Genetics') && $subject){
+        $has_genetics = \Yii::app()->hasModule('Genetics');
+
+        if( $has_genetics && GeneticsPatient::model()->findByAttributes(array('patient_id' => $patient->id)) ){
             $html = $this->renderPartial('application.modules.Genetics.views.patientSummary._patient_genetics', array(
                 'patient' => $patient
             ), true);
