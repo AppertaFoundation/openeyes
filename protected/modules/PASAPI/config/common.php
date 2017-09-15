@@ -16,6 +16,9 @@
  */
 
 return array(
+    'import' => array(
+        'application.modules.PASAPI.components.*',
+    ),
     'components' => array(
         'request' => array(
             'noCsrfValidationRoutes' => array(
@@ -29,10 +32,32 @@ return array(
                 array('PASAPI/V1/delete', 'pattern' => 'PASAPI/<controller:\w+>/(<resource_type:\w+>?/<id:\w+>)?', 'verb' => 'DELETE'),
             ),
         ),
+
+        'event' => array(
+            'observers' => array(
+                'patient_search_criteria' => array(
+                    'search_pas' => array(
+                        'class' => 'OEModule\PASAPI\components\PasApiObserver',
+                        'method' => 'search',
+                    ),
+                ),
+            ),
+        ),
     ),
+
+
     'params' => array(
         'admin_menu' => array(
             'Value Remaps' => '/PASAPI/admin/viewXpathRemaps',
+        ),
+
+        'pasapi' => array(
+            'enabled' => false,
+            'url' => 'http://localhost:4200',
+
+            // comment this out to use the params['curl_proxy']
+            // use 'false' to bypass any proxies
+            'proxy' => false
         ),
     ),
 );

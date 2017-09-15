@@ -127,6 +127,7 @@ class Patient extends BaseResource
         $patient->save();
 
         // Set the contact details
+        // ContactBehavior.php creates a contact automatically before save
         $contact = $patient->contact;
 
         $this->assignProperty($contact, 'title', 'Title');

@@ -36,6 +36,8 @@
 		<?php $this->renderPartial('//base/_header'); ?>
 
 		<div class="container content">
+            <?php $this->renderPartial('//base/_messages'); ?>
+
 			<?php echo $content; ?>
 		</div><!-- /.content.container -->
 
