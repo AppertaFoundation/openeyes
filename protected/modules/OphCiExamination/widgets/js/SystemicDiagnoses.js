@@ -27,8 +27,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$table = this.$element.find('table');
         this.templateText = this.$element.find('.entry-template').text();
 
-console.log(this.templateText);
-
         this.initialiseTriggers();
     }
 
@@ -66,6 +64,7 @@ console.log(this.templateText);
     SystemicDiagnosesController.prototype.initialiseRow = function($row)
     {
         var controller = this;
+        var DiagnosesSearchController = null;
         controller.initialiseSearch($row.find('input.search'));
 
         $row.on('change', '.fuzzy-date select', function(e) {
@@ -73,6 +72,9 @@ console.log(this.templateText);
             var date = controller.dateFromFuzzyFieldSet($fuzzyFieldset);
             $fuzzyFieldset.find('input[type="hidden"]').val(date);
         });
+
+        DiagnosesSearchController = new OpenEyes.UI.DiagnosesSearchController({'inputField': $row.find('.diagnoses-search-autocomplete') });
+        $row.find('.diagnoses-search-autocomplete').data('DiagnosesSearchController', DiagnosesSearchController );
     }
 
     SystemicDiagnosesController.prototype.initialiseSearch = function($el)
@@ -126,7 +128,6 @@ console.log(this.templateText);
 
     SystemicDiagnosesController.prototype.addEntry = function()
     {
-console.log( this.createRow() );
         var row = this.createRow();
         this.$table.find('tbody').append(row);
         this.initialiseRow(this.$table.find('tbody tr:last'));

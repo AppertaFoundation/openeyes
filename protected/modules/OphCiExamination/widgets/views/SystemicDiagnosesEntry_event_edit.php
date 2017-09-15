@@ -18,6 +18,19 @@
 ?>
 
 <?php
+if (!isset($values)) {
+    $values = array(
+        'id' => $diagnosis->id,
+        'disorder_id' => $diagnosis->disorder_id,
+        'disorder_display' => $diagnosis->disorder ? $diagnosis->disorder->term : '',
+        'side_id' => $diagnosis->side_id,
+        'side_display' => $diagnosis->side ? $diagnosis->side->adjective : 'None',
+        'date' => $diagnosis->date,
+        'date_display' => $diagnosis->getDisplayDate(),
+        'row_count' => 0,
+    );
+}
+
     if (isset($entry->date) && strtotime($entry->date)) {
         list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $entry->date);
     } else {
@@ -29,8 +42,11 @@
 
 <tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row">
     <td>
-        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
-        <input type="text" class="diagnoses-search-autocomplete" id="ddd_1">
+        <input type="hidden" name="<?= $field_prefix ?>[id][]" value="<?=$entry->id ?>" />
+        <input type="text" class="diagnoses-search-autocomplete" id="<?="diagnoses_search_autocomplete_{$values['row_count']}" ?>">
+        <input type="hidden" name="<?= $field_prefix ?>[disorder_id][]" value="">
+
+
     </td>
 
     <td><label class="inline"><input type="radio" name="<?= $model_name ?>_diagnosis_side" class="<?= $model_name ?>_diagnosis_side" value="" checked="checked" /> None </label>

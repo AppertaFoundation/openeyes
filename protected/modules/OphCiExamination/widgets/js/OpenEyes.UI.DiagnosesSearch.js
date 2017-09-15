@@ -18,18 +18,18 @@ var OpenEyes = OpenEyes || {};
 
 OpenEyes.UI = OpenEyes.UI || {};
 
-(function(exports) {
+(function (exports) {
 
     'use strict';
 
     function DiagnosesSearchController(options) {
-
         this.options = $.extend(true, {}, DiagnosesSearchController._defaultOptions, options);
 
         this.$inputField = this.options.inputField;
         this.code = this.options.code;
         this.commonlyUsedDiagnosesUrl = this.options.commonlyUsedDiagnosesUrl;
-        this.single_template = this.options.single_template;
+        this.singleTemplate = this.options.singleTemplate;
+        this.renderTemplate = this.options.renderTemplate;
 
         this.init();
         this.initialiseAutocomplete();
@@ -40,7 +40,8 @@ OpenEyes.UI = OpenEyes.UI || {};
         modelName: 'OEModule_OphCiExamination_models_SystemicDiagnoses',
         code: 'systemic',
         commonlyUsedDiagnosesUrl: '/disorder/getcommonlyuseddiagnoses/type/',
-        single_template :
+        renderTemplate: true,
+        singleTemplate :
             "<div style='font-size: 13px; margin: 16px 0px 0px; display: none;' class='enteredDiagnosisText panel diagnosis hidden'></div>" +
             "<select class='commonly-used-diagnosis'></select>" +
             "{{{input_field}}}" +
@@ -52,33 +53,28 @@ OpenEyes.UI = OpenEyes.UI || {};
         var $parent = controller.$inputField.parent();
         var url = controller.commonlyUsedDiagnosesUrl + controller.code;
 
-        var html = Mustache.render(
-            this.single_template,
-            {'input_field': controller.$inputField.prop("outerHTML")}
-        );
+        if( controller.renderTemplate === true ){
+            var html = Mustache.render(
+                this.singleTemplate,
+                {'input_field': controller.$inputField.prop("outerHTML")}
+            );
 
-        $parent.html(html);
+            $parent.html(html);
 
-        $.getJSON(url, function(data){
+            $.getJSON(url, function(data){
 
-            var $enteredWrapper = $parent.find('.enteredDiagnosisText');
-            var $select = $parent.find('.commonly-used-diagnosis');
+                var $enteredWrapper = $parent.find('.enteredDiagnosisText');
+                var $select = $parent.find('.commonly-used-diagnosis');
 
-            $select.append( $('<option>',{'text': 'Select a commonly used diagnosis'}));
-            $.each(data, function(i, item){
-                $select.append( $('<option>',{'value': item.value, 'text': item.text}));
+                $select.append( $('<option>',{'text': 'Select a commonly used diagnosis'}));
+                $.each(data, function(i, item){
+                    $select.append( $('<option>',{'value': item.value, 'text': item.text}));
+                });
+
+                $enteredWrapper.after($select);
             });
+        }
 
-            $enteredWrapper.after($select);
-
-            $select.on('change', function(){
-                $enteredWrapper.text( $(this).find('option:selected').text() );
-                $enteredWrapper.append( $('<a>', {'class': 'clear-diagnosis-widget'}).text('(Remove)') );
-                $parent.find('.savedDiagnosis').val( $(this).val() );
-                $enteredWrapper.show();
-                $(this).val('');
-            });
-        });
     }
 
     DiagnosesSearchController.prototype.initialiseAutocomplete = function(){
@@ -113,7 +109,6 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         var $parent = controller.$inputField.parent();
         $parent.on('click', '.clear-diagnosis-widget', function(){
-            console.log('asdsgfdgf');
             $parent.find('.enteredDiagnosisText').html('').hide();
         });
 
@@ -122,34 +117,18 @@ OpenEyes.UI = OpenEyes.UI || {};
             controller.addEntry();
         });
 
+        $( '#' + controller.modelName + '_diagnoses_table').on('change', 'select.commonly-used-diagnosis', function(){
+
+            var $enteredWrapper = $parent.find('.enteredDiagnosisText');
+
+            $enteredWrapper.text( $(this).find('option:selected').text() );
+            $enteredWrapper.append( $('<a>', {'class': 'clear-diagnosis-widget'}).text('(Remove)') );
+            $parent.find('.savedDiagnosis').val( $(this).val() );
+            $enteredWrapper.show();
+            $(this).val('');
+        });
+
     }
-
-    /**
-     * Add a family history section if its valid.
-     */
-    AllergiesController.prototype.addEntry = function()
-    {
-        this.$table.find('tbody').append(this.createRow());
-        this.updateNoAllergiesState();
-    };
-
-    /**
-     *
-     * @param data
-     * @returns {*}
-     */
-    AllergiesController.prototype.createRow = function(data)
-    {
-        if (data === undefined)
-            data = {};
-
-        data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
-
-        return Mustache.render(
-            this.templateText,
-            data
-        );
-    };
 
     exports.DiagnosesSearchController = DiagnosesSearchController;
 
@@ -157,8 +136,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
 $(document).ready(function() {
 
-    $.each($('.diagnoses-search-autocomplete'), function(i, item){
-        $(item).data('DiagnosesSearchController', new OpenEyes.UI.DiagnosesSearchController({'inputField': $(item) }) );
-    });
-
+    // $.each($('.diagnoses-search-autocomplete'), function(i, item){
+    //     $(item).data('DiagnosesSearchController', new OpenEyes.UI.DiagnosesSearchController({'inputField': $(item) }) );
+    // });
 });

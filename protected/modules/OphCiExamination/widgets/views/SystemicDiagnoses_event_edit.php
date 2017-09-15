@@ -18,13 +18,10 @@
 ?>
 
 <script type="text/javascript" src="<?=$this->getJsPublishedPath('SystemicDiagnoses.js')?>"></script>
-
-<!--
 <script type="text/javascript" src="<?=$this->getJsPublishedPath('OpenEyes.UI.DiagnosesSearch.js')?>"></script>
 
--->
 <?php
-$model_name = CHtml::modelName($element);
+    $model_name = CHtml::modelName($element);
 ?>
 
 <div class="element-fields" id="<?=CHtml::modelName($element);?>_element">
@@ -131,7 +128,8 @@ $model_name = CHtml::modelName($element);
                     'side_id' => '{{side_id}}',
                     'side_display' => '{{side_display}}',
                     'date' => '{{date}}',
-                    'date_display' => '{{date_display}}'
+                    'date_display' => '{{date_display}}',
+                    'row_count' => '{{row_count}}',
                 )
             )
         );
