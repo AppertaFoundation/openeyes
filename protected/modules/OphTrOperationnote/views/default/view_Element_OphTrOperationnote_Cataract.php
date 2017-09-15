@@ -72,7 +72,7 @@
 					</div>
 					<div class="large-8 column">
 						<div class="data-value"><?php
-							if(isset(Yii::app()->modules["OphTrOperationnote"])){
+							if(isset(Yii::app()->modules["OphInBiometry"])){
 								if($element->iol_type_id){
 									$iol_type = OphInBiometry_LensType_Lens::model()->findByPk($element->iol_type_id);
 									echo $iol_type->name;
