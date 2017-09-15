@@ -128,7 +128,6 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionFileUpload()
     {
-       
         foreach($_FILES as $file)
         {
             $return_data = array();
@@ -149,21 +148,6 @@ class DefaultController extends BaseEventTypeController
             }
 
             echo json_encode($return_data);
-        }
-    }
-
-    /**
-     *
-     */
-    public function actionFileRemove()
-    {
-        if($fileId = Yii::app()->request->getQuery('imgID'))
-        {
-            $pFile = ProtectedFile::model()->findByPk($fileId);
-            $pFile->delete();
-            echo 1;
-        }else{
-            echo 0;
         }
     }
 

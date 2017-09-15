@@ -26,7 +26,7 @@ function drop(ev) {
     $(ev.target).closest(".upload-box").find("input[type=file]").prop("files", ev.dataTransfer.files);
 }
 
-function imageUpload(field){
+function documentUpload(field){
     var formData;
     formData = new FormData($('#document-create')[0]);
 
@@ -151,31 +151,17 @@ function createOPHCODocumentContainer( res , value , ext, index ){
 
 
 function deleteOPHCOImage( iID , index ){
-    deleteConfirm('Do you want to delete this file?', function () {
-        
-        $.ajax({
-            url: '/OphCoDocument/Default/fileRemove',
-            type: 'GET',
-            data: {'imgID' : iID},
-            success:function(){
-                
-                $('#ophco-image-container-'+iID+'').remove();
-                if($('#Element_OphCoDocument_Document_'+index).length) {
-                    $('#Element_OphCoDocument_Document_' + index).val('NULL');
-                }else{
-                    $('#showUploadStatus').after('<input type="hidden" name="Element_OphCoDocument_Document['+index+']" id="Element_OphCoDocument_Document_'+index+'" value="NULL">');
-                }
-                createUploadButton( index );
-                clearUploadStatus();
-            },
-            error:function(){
-
-            },
-        });
-       
-    }, function () {
-            //cancel event
-    }); 
+    deleteConfirm('Do you want to delete this file?', function ()
+    {
+        $('#ophco-image-container-'+iID+'').remove();
+        if($('#Element_OphCoDocument_Document_'+index).length) {
+            $('#Element_OphCoDocument_Document_' + index).val('NULL');
+        }else{
+            $('#showUploadStatus').after('<input type="hidden" name="Element_OphCoDocument_Document['+index+']" id="Element_OphCoDocument_Document_'+index+'" value="NULL">');
+        }
+        createUploadButton( index );
+        clearUploadStatus();
+    });
 }
 
 function createUploadButton( index ){
@@ -186,7 +172,7 @@ function createUploadButton( index ){
     $('#'+index+'_row').html(btn);
     
     $('#Document_'+index+'').on('change', function(){
-        imageUpload($(this));
+        documentUpload($(this));
     });
 }
 
@@ -257,7 +243,7 @@ $(document).ready(function(){
     checkUploadMode();
 
     $('#Document_single_document_id, #Document_right_document_id, #Document_left_document_id').on('change', function(){
-        imageUpload($(this));
+        documentUpload($(this));
     });
 
     $("input[name='upload_mode']").on('change', function(){
