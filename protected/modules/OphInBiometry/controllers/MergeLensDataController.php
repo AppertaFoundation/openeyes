@@ -61,7 +61,7 @@ class MergeLensDataController extends BaseAdminController
             Yii::app()->db->createCommand("ALTER TABLE et_ophtroperationnote_cataract ADD CONSTRAINT et_ophtroperationnote_cataract_iol_type_id_fk FOREIGN KEY (iol_type_id) REFERENCES ophinbiometry_lenstype_lens(id)")->query();
         }
         $setting = SettingInstallation::model()->find("`key`='opnote_lens_migration_link'");
-        $setting->value = 'Off';
+        $setting->value = 'off';
         $setting->save();
         $this->redirect(array('/OphInBiometry/lensTypeAdmin/list'));
     }
