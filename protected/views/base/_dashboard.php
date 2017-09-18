@@ -1,5 +1,5 @@
-<div class="dashboard-container">
-<?php foreach ($items as $box_number => $item) { ?>
+<div class="dashboard-container" id="tour2">
+<?php foreach ($items as $box_number => $item) {?>
 
 <?php
     $container_id = isset($item['options']['container-id']) ? $item['options']['container-id'] : "js-toggle-container-$box_number";
@@ -26,4 +26,62 @@
         $('.dashboard-container').sortable({handle: '.sortable-anchor'});
     });
 </script>
-<?php } ?>
+<?php }?>
+
+
+<script>
+$(document).ready(function(){
+  // Instance the tour
+
+
+var tour = new Tour({
+  backdrop: true,
+  steps: [
+  {
+    element: ".oe-user-info:first",
+    backdropContainer: 'header',
+    title: "User Info Panel",
+    content: "This is where user info"
+  },
+  {
+    element: ".oe-user-home:first",
+    backdropContainer: 'header',
+    title: "Home button",
+    content: "This button takes you to the homepage"
+  },
+  {
+    element: ".oe-user-navigation:first",
+    backdropContainer: 'header',
+    title: "Navigation button",
+    content: "Use this to ...."
+  },
+  {
+    element: ".oe-user-logout:first",
+    backdropContainer: 'header',
+    title: "Logout button",
+    content: "This where ...."
+  },
+  {
+    element: ".oe-find-patient:first",
+    title: "Paitent Search",
+    content: "Search for patients here"
+  },
+  {
+    element: "#"+getMessage(),
+    title: "Paitent Search",
+    content: "Search for patients here"
+  }
+]});
+
+function getMessage(){
+  return $('section .box-title:contains(Messages):not(:contains(Sent Messages))').parent().prop('id');
+}
+
+// Initialize the tour
+tour.init();
+
+// Start the tour
+tour.restart(true);
+});
+
+</script>
