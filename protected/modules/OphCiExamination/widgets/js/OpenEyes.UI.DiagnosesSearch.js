@@ -26,6 +26,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.options = $.extend(true, {}, DiagnosesSearchController._defaultOptions, options);
 
         this.$inputField = this.options.inputField;
+        this.$row = this.options.inputField.closest('tr');
         this.code = this.options.code;
         this.commonlyUsedDiagnosesUrl = this.options.commonlyUsedDiagnosesUrl;
         this.singleTemplate = this.options.singleTemplate;
@@ -45,13 +46,15 @@ OpenEyes.UI = OpenEyes.UI || {};
             "<div style='font-size: 13px; margin: 16px 0px 0px; display: none;' class='enteredDiagnosisText panel diagnosis hidden'></div>" +
             "<select class='commonly-used-diagnosis'></select>" +
             "{{{input_field}}}" +
-            "<input type='hidden' name='DiagnosisSelection[disorder_id]' class='savedDiagnosis' value=''>",
+            "<input type='hidden' name='OEModule_OphCiExamination_models_SystemicDiagnoses[id][]' class='savedDiagnosisId' value=''>" +
+            "<input type='hidden' name='OEModule_OphCiExamination_models_SystemicDiagnoses[disorder_id][]' class='savedDiagnosis' value=''>"
     };
 
     DiagnosesSearchController.prototype.init = function(){
         var controller = this;
         var $parent = controller.$inputField.parent();
         var url = controller.commonlyUsedDiagnosesUrl + controller.code;
+        controller.$inputField.addClass('diagnoses-search-inputfield');
 
         if( controller.renderTemplate === true ){
             var html = Mustache.render(
@@ -60,6 +63,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             );
 
             $parent.html(html);
+            controller.$inputField = controller.$row.find('.diagnoses-search-inputfield');
 
             $.getJSON(url, function(data){
 
@@ -75,6 +79,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             });
         }
 
+//console.log( controller.$inputField.data('saved-diagnose') );
     }
 
     DiagnosesSearchController.prototype.initialiseAutocomplete = function(){
@@ -106,24 +111,19 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     DiagnosesSearchController.prototype.initialiseTriggers = function(){
         var controller = this;
-
         var $parent = controller.$inputField.parent();
-        $parent.on('click', '.clear-diagnosis-widget', function(){
-            $parent.find('.enteredDiagnosisText').html('').hide();
+
+        controller.$row.on('click', '.clear-diagnosis-widget', function(){
+            $(this).closest('.enteredDiagnosisText').html('').hide();
         });
 
-        $('#' + controller.options.modelName + '_add_entry').on('click', function(e) {
-            e.preventDefault();
-            controller.addEntry();
-        });
+        controller.$row.on('change', 'select.commonly-used-diagnosis', function(){
 
-        $( '#' + controller.modelName + '_diagnoses_table').on('change', 'select.commonly-used-diagnosis', function(){
-
-            var $enteredWrapper = $parent.find('.enteredDiagnosisText');
+            var $enteredWrapper = $(this).closest('td').find('.enteredDiagnosisText');
 
             $enteredWrapper.text( $(this).find('option:selected').text() );
             $enteredWrapper.append( $('<a>', {'class': 'clear-diagnosis-widget'}).text('(Remove)') );
-            $parent.find('.savedDiagnosis').val( $(this).val() );
+            controller.$row.find('.savedDiagnosis').val( $(this).val() );
             $enteredWrapper.show();
             $(this).val('');
         });

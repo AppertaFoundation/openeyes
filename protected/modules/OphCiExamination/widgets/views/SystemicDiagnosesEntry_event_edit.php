@@ -40,10 +40,17 @@ if (!isset($values)) {
     }
 ?>
 
-<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row">
+<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row" style="height:100px;width:285px;">
     <td>
+        <div class="enteredDiagnosisText panel diagnosis hide"></div>
+
         <input type="hidden" name="<?= $field_prefix ?>[id][]" value="<?=$entry->id ?>" />
-        <input type="text" class="diagnoses-search-autocomplete" id="<?="diagnoses_search_autocomplete_{$values['row_count']}" ?>">
+
+        <input type="text"
+               class="diagnoses-search-autocomplete"
+               id="<?="diagnoses_search_autocomplete_{$values['row_count']}" ?>
+data-saved-diagnoses="44054006"
+        ">
         <input type="hidden" name="<?= $field_prefix ?>[disorder_id][]" value="">
 
 
