@@ -269,7 +269,7 @@ return array(
         'ldap_dn' => '',
         'ldap_method' => 'native', // use 'zend' for the Zend_Ldap vendor module
         // set to integer value of 2 or 3 to force specific ldap protocol
-        'ldap_protocol_version' => null,
+        'ldap_protocol_version' => 3,
         // alters the prefix used when binding to a user in native ldap connections
         'ldap_username_prefix' => 'cn',
         'ldap_native_timeout' => 3,
@@ -283,7 +283,7 @@ return array(
         'local_users' => array(),
         'log_events' => true,
         'default_site_code' => '',
-        'institution_code' => 'RP6',
+        'institution_code' => '',
         'erod_lead_time_weeks' => 3,
         // specifies which specialties are available in patient summary for diagnoses etc (use specialty codes)
         'specialty_codes' => array(),
