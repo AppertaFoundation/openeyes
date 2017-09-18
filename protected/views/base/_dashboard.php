@@ -31,6 +31,40 @@
 
 <script>
 $(document).ready(function(){
+
+  $('body').append('<div id="feature-help-overlay" hidden="true"></div>');
+  let button_state = 0b0;
+  const step_1_selc = ".large-6.medium-7.column";
+  const step_1_title = "User Panel";
+  const step_1_content = "This is where....";
+  $(step_1_selc).attr('data-toggle','popover');
+  $(step_1_selc).attr('title',step_1_title);
+  $(step_1_selc).attr('data-content',step_1_content);
+  $(step_1_selc).attr('data-trigger',"manual");
+
+
+  const step_2_selc = ".oe-find-patient:first";
+  const step_2_title = "Patient Search";
+  const step_2_content = "This is where....";
+  $(step_2_selc).attr('data-toggle','popover');
+  $(step_2_selc).attr('title',step_2_title);
+  $(step_2_selc).attr('data-content',step_2_content);
+  $(step_2_selc).attr('data-trigger',"manual");
+
+  const step_3_selc = "#"+$('section .box-title:contains(Messages):not(:contains(Sent Messages))').parent().prop('id');
+  const step_3_title = "Messages";
+  const step_3_content = "This is where....";
+
+
+  //add popovers to elements
+  $(step_1_selc);
+  $(step_2_selc);
+  $(step_3_selc);
+  //show popovers
+  //show download
+  //show take a tour
+  //show cancel
+
   // Instance the tour
 
 
@@ -38,28 +72,10 @@ var tour = new Tour({
   backdrop: true,
   steps: [
   {
-    element: ".oe-user-info:first",
+    element: ".large-6.medium-7.column",
     backdropContainer: 'header',
     title: "User Info Panel",
     content: "This is where user info"
-  },
-  {
-    element: ".oe-user-home:first",
-    backdropContainer: 'header',
-    title: "Home button",
-    content: "This button takes you to the homepage"
-  },
-  {
-    element: ".oe-user-navigation:first",
-    backdropContainer: 'header',
-    title: "Navigation button",
-    content: "Use this to ...."
-  },
-  {
-    element: ".oe-user-logout:first",
-    backdropContainer: 'header',
-    title: "Logout button",
-    content: "This where ...."
   },
   {
     element: ".oe-find-patient:first",
@@ -67,21 +83,28 @@ var tour = new Tour({
     content: "Search for patients here"
   },
   {
-    element: "#"+getMessage(),
+    element: step_3_selc,
     title: "Paitent Search",
     content: "Search for patients here"
   }
 ]});
 
-function getMessage(){
-  return $('section .box-title:contains(Messages):not(:contains(Sent Messages))').parent().prop('id');
-}
-
 // Initialize the tour
 tour.init();
 
 // Start the tour
-tour.restart(true);
+$('#feature-help-button').click(function(){
+  if (button_state = ~button_state) { //add different class?
+    $("#feature-help-overlay").show();
+    //think about header stack context cannot append to non static positioned elements think of solution maybe jsut append to body?
+    $('[data-toggle="popover"]').popover('show');
+  } else {
+    $('[data-toggle="popover"]').popover('hide');
+    $("#feature-help-overlay").hide();
+  }
+
+  //tour.restart(true);
+});
 });
 
 </script>

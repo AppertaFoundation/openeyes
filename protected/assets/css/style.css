@@ -9159,7 +9159,7 @@ input[type=submit].btn-block, input[type=reset].btn-block, input[type=button].bt
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1060;
+  z-index: 10001;
   display: none;
   max-width: 276px;
   padding: 1px;
@@ -9375,7 +9375,7 @@ tbody.collapse.in {
   left: 0;
   z-index: 1100;
   background-color: #000;
-  opacity: .8;
+  opacity: .6;
   filter: alpha(opacity=80);
 }
 
@@ -9439,4 +9439,9 @@ tbody.collapse.in {
 /* line 28, ../sass/openeyes/components/_tour.scss */
 .tour-step-background {
   background: transparent;
+}
+
+/* line 31, ../sass/openeyes/components/_tour.scss */
+.popover {
+  z-index: 10001;
 }

@@ -1824,3 +1824,27 @@ label.highlight {
   background-color: #df5151;
   color: #fff;
 }
+#feature-help-button {
+  background-image: url(../img/info.png);
+  position: fixed;
+  bottom: 10px;
+  left: 12px;
+  z-index: 10001;
+  background-repeat: no-repeat;
+  background-size: 32px;
+  display: block;
+  height: 32px;
+  width: 32px;
+  cursor: pointer;
+}
+#feature-help-overlay {
+  position: fixed;
+  background-color: black;
+  display: none;
+  top: 0px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  opacity: 0.6;
+}

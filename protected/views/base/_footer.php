@@ -109,7 +109,7 @@ $(document).ready(function () {
 	});
 });
 </script>
-
+<span id="feature-help-button"></span>
 <?php
 $this->renderPartial('//base/_script_templates', array());
 ?>
