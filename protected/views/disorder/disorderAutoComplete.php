@@ -5,6 +5,9 @@
     $('#enteredDiagnosisText').on('click', '.clear-diagnosis-widget', function (e) {
       $('.multiDiagnosis[value="' + $(this).data('diagnosisId') +'"').remove();
       $(this).parent().remove();
+
+        //for the singles
+        $('#savedDiagnosis').val('');
     });
   });
   var source = function(request, response) {

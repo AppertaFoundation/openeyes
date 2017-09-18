@@ -71,7 +71,7 @@ class Pedigree extends BaseActiveRecord
         // will receive user inputs.
         return array(
             array(
-                'inheritance_id, comments, consanguinity, gene_id, base_change, amino_acid_change,' .
+                'inheritance_id, comments, consanguinity, gene_id, base_change, amino_acid_change, disorder_id, ' .
                 'base_change_id, amino_acid_change_id, genomic_coordinate, genome_version, gene_transcript',
                 'safe'
             ),
