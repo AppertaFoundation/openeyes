@@ -21,7 +21,7 @@
 <div class="element-fields element-eyes row">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
     <div id="right-eye-selection" class="element-eye right-eye top-pad left side column  <?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
-             data-side="right" onClick="switchSides($(this));">
+             data-side="right">
         <div class="active-form">
             <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
             <?php $this->renderPartial('form_Element_OphInBiometry_Selection_fields',
@@ -35,7 +35,7 @@
     </div>
 
     <div id="left-eye-selection" class="element-eye left-eye top-pad right side column <?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
-             data-side="left" onClick="switchSides($(this));">
+             data-side="left">
         <div class="active-form">
 
             <?php $this->renderPartial('form_Element_OphInBiometry_Selection_fields',

@@ -412,7 +412,7 @@ if ($refractfound) {
             <div id="right-eye-lens"
                  class="element-eye right-eye top-pad left side column  <?php if (!$element->hasRight()) {
                      ?> inactive<?php
-                 } ?>" onClick="switchSides($(this));" data-side="right">
+                 } ?>" data-side="right">
                 <div class="centre">
                     <h4><b>RIGHT</b></h4>
                 </div>
@@ -441,7 +441,7 @@ if ($refractfound) {
             <div id="left-eye-lens"
                  class="element-eye left-eye top-pad right side column <?php if (!$element->hasLeft()) {
                      ?> inactive<?php
-                 } ?>" onClick="switchSides($(this));" data-side="left">
+                 } ?>" data-side="left">
                 <div class="centre">
                     <h4><b>LEFT</b></h4>
                 </div>
@@ -466,31 +466,4 @@ if ($refractfound) {
                 </div>
             </div>
     </section>
-    <script type="text/javascript">
-        function switchSides(element) {
-            // switch from right active to left
-            if ($(element).hasClass('left-eye')) {
-                $('#right-eye-lens').addClass('disabled').removeClass('highlighted-lens');
-                $('#right-eye-selection').addClass('disabled').removeClass('highlighted-selection');
-                $('#right-eye-calculation').addClass('disabled').removeClass('highlighted-calculation');
-                $('#right-eye-comments').addClass('disabled').removeClass('highlighted-comments');
-
-                $('#left-eye-lens').removeClass('disabled').addClass('highlighted-lens');
-                $('#left-eye-selection').removeClass('disabled').addClass('highlighted-selection');
-                $('#left-eye-calculation').removeClass('disabled').addClass('highlighted-calculation');
-                $('#left-eye-comments').removeClass('disabled').addClass('highlighted-comments');
-
-            } else if ($(element).hasClass('right-eye')) {
-                $('#left-eye-lens').addClass('disabled').removeClass('highlighted-lens');
-                $('#left-eye-selection').addClass('disabled').removeClass('highlighted-selection');
-                $('#left-eye-calculation').addClass('disabled').removeClass('highlighted-calculation');
-                $('#left-eye-comments').addClass('disabled').removeClass('highlighted-comments');
-
-                $('#right-eye-lens').removeClass('disabled').addClass('highlighted-lens');
-                $('#right-eye-selection').removeClass('disabled').addClass('highlighted-selection');
-                $('#right-eye-calculation').removeClass('disabled').addClass('highlighted-calculation');
-                $('#right-eye-comments').removeClass('disabled').addClass('highlighted-comments');
-            }
-        }
-    </script>
 </section>

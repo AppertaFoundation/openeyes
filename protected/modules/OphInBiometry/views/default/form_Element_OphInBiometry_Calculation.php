@@ -28,7 +28,7 @@
 	<div class="element-fields element-eyes row">
 		<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 		<div id="right-eye-calculation" class="element-eye right-eye left side column <?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
-				 data-side="right" onClick="switchSides($(this));">
+				 data-side="right" >
 			<div class="active-form">
 
 				<?php $this->renderPartial('form_Element_OphInBiometry_Calculation_fields',
@@ -42,7 +42,7 @@
 		</div>
 
 		<div id="left-eye-calculation" class="element-eye left-eye right side column  <?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
-				 data-side="left" onClick="switchSides($(this));">
+				 data-side="left">
 			<div class="active-form">
 
 				<?php $this->renderPartial('form_Element_OphInBiometry_Calculation_fields',
@@ -50,15 +50,14 @@
 			</div>
 			<div class="inactive-form">
 				<div class="add-side">
-					Set left side lens type 
+					Set left side lens type
 				</div>
 			</div>
 		</div>
 
 	</div>
 <div class="element-fields element-eyes row edit element">
-	<div id="right-eye-comments" class="element-eye right-eye left side disabled" data-side="right"
-		 onclick="switchSides($(this));">
+	<div id="right-eye-comments" class="element-eye right-eye left side disabled" data-side="right">
 		<div class="active-form">
 			<div class="element-fields">
 				<span class="field-info">General Comments:</span>
@@ -72,8 +71,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="left-eye-comments" class="element-eye left-eye right side column disabled" data-side="left"
-		 onclick="switchSides($(this));">
+	<div id="left-eye-comments" class="element-eye left-eye right side column disabled" data-side="left">
 		<div class="active-form">
 			<div class="element-fields">
 				<span class="field-info">General Comments:</span>
