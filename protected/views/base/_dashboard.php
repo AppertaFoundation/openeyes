@@ -28,6 +28,31 @@
 </script>
 <?php }?>
 
+<div id="help-container" style="z-index: 100000;">
+    <div id="help-trigger">
+    </div>
+    <div id="help-overlay" class="action">
+      Show Help Overlay
+    </div>
+    <div id="help-tour" class="action">
+      Take a Tour
+    </div>
+    <div id="help-download" class="action">
+      Download a PDF
+    </div>
+  </div>
+
+<script>
+  $('#help-trigger').click(function(){
+    const $this = $(this).parent();
+    if ($this.hasClass('help-active')) {
+      $this.removeClass('help-active');
+    }
+    else {
+      $this.addClass('help-active');
+    }
+  });
+</script>
 
 <script>
 $(document).ready(function(){
@@ -41,6 +66,7 @@ $(document).ready(function(){
   $(step_1_selc).attr('title',step_1_title);
   $(step_1_selc).attr('data-content',step_1_content);
   $(step_1_selc).attr('data-trigger',"manual");
+  $(step_1_selc).attr('data-placement',"auto right");
 
 
   const step_2_selc = ".oe-find-patient:first";
@@ -93,12 +119,17 @@ var tour = new Tour({
 tour.init();
 
 // Start the tour
-$('#feature-help-button').click(function(){
+$('#help-overlay').click(function(){
+  const $this = $(this);
   if (button_state = ~button_state) { //add different class?
+    window.scrollTo(0,0);
+    $this.html("Hide Help Overlay");
     $("#feature-help-overlay").show();
+    //have an overlay for each context
     //think about header stack context cannot append to non static positioned elements think of solution maybe jsut append to body?
     $('[data-toggle="popover"]').popover('show');
   } else {
+    $this.html("Show Help Overlay");
     $('[data-toggle="popover"]').popover('hide');
     $("#feature-help-overlay").hide();
   }
