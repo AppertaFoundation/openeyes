@@ -9443,7 +9443,7 @@ tbody.collapse.in {
 
 /* line 31, ../sass/openeyes/components/_tour.scss */
 .popover {
-  z-index: 10001;
+  z-index: 160;
 }
 
 /* line 35, ../sass/openeyes/components/_tour.scss */
@@ -9468,6 +9468,7 @@ tbody.collapse.in {
 
 /* line 51, ../sass/openeyes/components/_tour.scss */
 #help-container {
+  z-index: 10000;
   width: 50px;
   height: 50px;
   position: fixed;
@@ -9475,46 +9476,46 @@ tbody.collapse.in {
   left: 10px;
 }
 
-/* line 58, ../sass/openeyes/components/_tour.scss */
+/* line 59, ../sass/openeyes/components/_tour.scss */
 .help-active {
   width: 120px;
   height: 200px;
 }
 
-/* line 63, ../sass/openeyes/components/_tour.scss */
+/* line 64, ../sass/openeyes/components/_tour.scss */
 #help-download {
   bottom: 140px;
 }
 
-/* line 66, ../sass/openeyes/components/_tour.scss */
+/* line 67, ../sass/openeyes/components/_tour.scss */
 #help-tour {
   bottom: 90px;
 }
 
-/* line 69, ../sass/openeyes/components/_tour.scss */
+/* line 70, ../sass/openeyes/components/_tour.scss */
 #help-overlay {
   bottom: 40px;
 }
 
-/* line 72, ../sass/openeyes/components/_tour.scss */
+/* line 73, ../sass/openeyes/components/_tour.scss */
 .help-active .action:nth-child(2) {
   transition: visibility 0s linear 0.00s;
   visibility: visible;
 }
 
-/* line 76, ../sass/openeyes/components/_tour.scss */
+/* line 77, ../sass/openeyes/components/_tour.scss */
 .help-active .action:nth-child(3) {
   transition: visibility 0s linear 0.03s;
   visibility: visible;
 }
 
-/* line 80, ../sass/openeyes/components/_tour.scss */
+/* line 81, ../sass/openeyes/components/_tour.scss */
 .help-active .action:nth-child(4) {
   transition: visibility 0s linear 0.06s;
   visibility: visible;
 }
 
-/* line 84, ../sass/openeyes/components/_tour.scss */
+/* line 85, ../sass/openeyes/components/_tour.scss */
 .action {
   visibility: hidden;
   cursor: pointer;
@@ -9535,7 +9536,7 @@ tbody.collapse.in {
   transition: box-shadow 0.2s;
 }
 
-/* line 103, ../sass/openeyes/components/_tour.scss */
+/* line 104, ../sass/openeyes/components/_tour.scss */
 .action:hover {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.14), 0 4px 8px rgba(0, 0, 0, 0.28);
 }

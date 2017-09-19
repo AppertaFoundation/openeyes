@@ -29,7 +29,7 @@
   background: transparent;
 }
 .popover {
-  z-index: 10001;
+  z-index: 160;
 }
 
 #help-trigger {
@@ -49,6 +49,7 @@
   transform: rotate(-0.25turn);
 }
 #help-container {
+  z-index: 10000;
   width: 50px;
   height: 50px;
   position: fixed;

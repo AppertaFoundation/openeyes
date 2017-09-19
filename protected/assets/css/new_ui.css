@@ -1848,3 +1848,25 @@ label.highlight {
   z-index: 10000;
   opacity: 0.6;
 }
+#help-body-overlay {
+  display: none;
+  position: fixed;
+  top: 82px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: black;
+  opacity: 0.6;
+  z-index: 159
+}
+#help-header-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  height: 82px;
+  left: 0;
+  right: 0;
+  background: black;
+  opacity: 0.6;
+  z-index: 159;
+}
