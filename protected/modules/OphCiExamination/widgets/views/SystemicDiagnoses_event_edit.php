@@ -87,13 +87,16 @@
         </thead>
         <tbody>
         <?php
-        foreach ($element->diagnoses as $diagnosis) {
+        foreach ($element->diagnoses as $row_count => $diagnosis) {
             $this->render(
-                'SystemicDiagnoses_Diagnosis_event_edit',
+                'SystemicDiagnosesEntry_event_edit',
                 array(
                     'diagnosis' => $diagnosis,
                     'form' => $form,
                     'model_name' => CHtml::modelName($element),
+                    'row_count' => $row_count,
+                    'field_prefix' => $model_name . "[entries][$row_count]",
+                    'removable' => true
                 )
             );
         }
@@ -114,7 +117,7 @@
         $this->render(
             'SystemicDiagnosesEntry_event_edit',
             array(
-                'entry' => $empty_entry,
+                'diagnosis' => $empty_entry,
                 'form' => $form,
                 'model_name' => $model_name,
                 'field_prefix' => $model_name . '[entries][{{row_count}}]',
@@ -143,30 +146,4 @@
             });
         });
     </script>
-
 </div>
-
-<script type="text/template" id="<?= CHtml::modelName($element).'_diagnosis_template' ?>" class="hidden">
-    <?php /*
-    $empty_diagnosis = new \OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis();
-    $this->render(
-        'SystemicDiagnoses_Diagnosis_event_edit',
-        array(
-            'diagnosis' => $empty_diagnosis,
-            'form' => $form,
-            'model_name' => CHtml::modelName($element),
-            'values' => array(
-                'id' => '',
-                'disorder_id' => '{{disorder_id}}',
-                'disorder_display' => '{{disorder_display}}',
-                'side_id' => '{{side_id}}',
-                'side_display' => '{{side_display}}',
-                'date' => '{{date}}',
-                'date_display' => '{{date_display}}'
-            )
-        )
-    );*/
-
-    ?>
-</script>
-

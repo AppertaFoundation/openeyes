@@ -57,15 +57,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             e.preventDefault();
             controller.addEntry();
         });
-
-
     }
 
     SystemicDiagnosesController.prototype.initialiseRow = function($row)
     {
         var controller = this;
         var DiagnosesSearchController = null;
-        controller.initialiseSearch($row.find('input.search'));
 
         $row.on('change', '.fuzzy-date select', function(e) {
             var $fuzzyFieldset = $(this).closest('fieldset');
@@ -75,43 +72,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         DiagnosesSearchController = new OpenEyes.UI.DiagnosesSearchController({'inputField': $row.find('.diagnoses-search-autocomplete') });
         $row.find('.diagnoses-search-autocomplete').data('DiagnosesSearchController', DiagnosesSearchController );
-    }
-
-    SystemicDiagnosesController.prototype.initialiseSearch = function($el)
-    {
-        var controller = this;
-
-        if (!$el.data('search')) {
-            $el.autocomplete({
-                minLength: 3,
-                delay: 300,
-                source: function(request, response) {
-                    $.getJSON(controller.options.searchSource, {
-                        term: request.term,
-                        ajax: 'ajax'
-                    }, response);
-                },
-                focus: function (event, ui) {
-                    event.preventDefault();
-                    if (event.hasOwnProperty('key')) {
-                        $el.val(controller.getItemDisplayValue(ui.item));
-                    }
-                    // otherwise do nothing as this is a mouse hover focus;
-                    return false;
-                },
-                select: function (event, ui) {
-                    controller.searchSelect($el, event, ui);
-                },
-                response: function (event, ui) {
-                    ui.content.push({
-                        value: $el.val(),
-                        label: controller.options.searchAsTypedPrefix + $el.val(),
-                        type: 't'
-                    });
-                }
-            });
-            $el.autocomplete("widget").css('max-height', '150px').css('overflow', 'auto');
-        }
     }
 
     SystemicDiagnosesController.prototype.createRow = function(data)
