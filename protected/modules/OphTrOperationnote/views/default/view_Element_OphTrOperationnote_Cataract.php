@@ -171,7 +171,7 @@
 				</div>
 			</div>
 			<div class="large-4 column">
-				<h3 class="data-title">Cataract devices</h3>
+				<h3 class="data-title">Agent(s)</h3>
 				<div class="data-value highlight">
 					<?php if (!$element->operative_devices) {?>
 						None
