@@ -218,6 +218,9 @@ class PatientMerge
             // Update legacy episodes
             $is_merged = $is_merged && $this->updateLegacyEpisodes($this->primary_patient, $this->secondary_patient);
 
+            // Update change tracker episodes
+            $is_merged = $is_merged && $this->updateChangeTrackerEpisodes($this->primary_patient, $this->secondary_patient);
+
             //Update Other ophthalmic diagnoses
             $is_merged = $is_merged && $this->updateOphthalmicDiagnoses($this->primary_patient, $this->secondary_patient->ophthalmicDiagnoses);
 
@@ -441,6 +444,44 @@ class PatientMerge
         }
 
         // if the save() functions not throwing errors than we can just return true
+        return true;
+    }
+
+    /**
+     * @param $primary_patient
+     * @param $secondary_patient
+     * @return bool
+     * @throws Exception
+     */
+    public function updateChangeTrackerEpisodes($primary_patient, $secondary_patient)
+    {
+        $primary_ep = Episode::getChangeEpisode($primary_patient, false);
+        $secondary_ep = Episode::getChangeEpisode($secondary_patient, false);
+        if ($secondary_ep) {
+            if ($primary_ep) {
+                // move events
+                $this->updateEventsEpisodeId($primary_ep->id, $secondary_ep->events);
+                // mark as deleted
+                $secondary_ep->deleted = 1;
+                if ($secondary_ep->save()) {
+                    $msg = 'Change Episode '.$secondary_ep->id."marked as deleted, events moved under the primary patient's change episode.";
+                    $this->addLog($msg);
+                    Audit::add('Patient Merge', 'Change Episode marked as deleted', $msg);
+                } else {
+                    throw new Exception('Failed to update (change) Episode: '.$secondary_ep->id.' '.print_r($secondary_ep->errors, true));
+                }
+            } else {
+                // move episode
+                $secondary_ep->patient_id = $primary_patient->id;
+                if ($secondary_ep->save()) {
+                    $msg = 'Change Episode '.$secondary_ep->id.' moved from patient '.$secondary_patient->hos_num.' to '.$primary_patient->hos_num;
+                    $this->addLog($msg);
+                    Audit::add('Patient Merge', 'Change Episode moved', $msg);
+                } else {
+                    throw new Exception('Failed to update (change) Episode: '.$secondary_ep->id.' '.print_r($secondary_ep->errors, true));
+                }
+            }
+        }
         return true;
     }
 
