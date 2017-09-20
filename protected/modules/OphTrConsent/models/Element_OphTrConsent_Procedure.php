@@ -34,7 +34,7 @@
  * @property User $usermodified
  * @property Eye $eye
  * @property EtOphtrconsentProcedureProceduresProcedures $procedures
- * @property AnaestheticType $anaesthetic_type
+ * @property AnaestheticType[] $anaesthetic_type
  * @property EtOphtrconsentProcedureAddProcsAddProcs $add_procss
  */
 class Element_OphTrConsent_Procedure extends BaseEventTypeElement
@@ -89,9 +89,6 @@ class Element_OphTrConsent_Procedure extends BaseEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
-
-            'anaesthetic_type' => array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id'),
-
 
             //Element_OphTrConsent_Procedure
             'anaesthetic_type_assignments' => array(self::HAS_MANY, 'OphTrConsent_Procedure_AnaestheticType', 'et_ophtrconsent_procedure_id'),
@@ -202,5 +199,18 @@ class Element_OphTrConsent_Procedure extends BaseEventTypeElement
         }
 
         return parent::afterSave();
+    }
+
+    /**
+     * @param string|array $code
+     * @return bool
+     */
+    public function hasAnaestheticTypeByCode($code) {
+        if (!is_array($code)) {
+            $code = array($code);
+        }
+        return count(array_filter($this->anaesthetic_type,
+                    function($a_type) use ($code) { return in_array((string)$a_type, $code);})
+            ) > 0;
     }
 }
