@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -62,6 +61,12 @@ class Patient extends BaseActiveRecordVersioned
 
     public $use_pas = true;
     private $_orderedepisodes;
+
+    /**
+     * Holds errors PAS related errors
+     * @var array
+     */
+    private $_pas_errors = array();
 
     /**
      * Returns the static model of the specified AR class.
@@ -250,6 +255,25 @@ class Patient extends BaseActiveRecordVersioned
         );
     }
 
+    /**
+     * Adds a new error to the PAS error array.
+     * @param $error
+     */
+    public function addPasError($error)
+    {
+        $this->_pas_errors[] = $error;
+    }
+
+    /**
+     * Returns the errors of the PAS error array.
+     * @param $attribute
+     * @return mixed|null
+     */
+    public function getPasErrors()
+    {
+        return $this->_pas_errors;
+    }
+
     public function search_nr($params)
     {
         $criteria = new CDbCriteria();
@@ -303,14 +327,19 @@ class Patient extends BaseActiveRecordVersioned
 
         $criteria->order = $params['sortBy'].' '.$params['sortDir'];
 
+        $results_from_event = array();
         if($this->use_pas == true){
-            Yii::app()->event->dispatch('patient_search_criteria', array('patient' => $this, 'criteria' => $criteria, 'params' => $params));
+            Yii::app()->event->dispatch('patient_search_criteria', array('results' => &$results_from_event,'patient' => $this, 'criteria' => $criteria, 'params' => $params));
         }
 
         $dataProvider = new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
             'pagination' => array('pageSize' => $params['pageSize']),
         ));
+
+        $results = $dataProvider->getData();
+
+        $dataProvider->setData( array_merge($results, $results_from_event) );
 
         return $dataProvider;
     }

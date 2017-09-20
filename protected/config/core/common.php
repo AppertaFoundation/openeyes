@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 return array(
@@ -269,7 +268,7 @@ return array(
         'ldap_dn' => '',
         'ldap_method' => 'native', // use 'zend' for the Zend_Ldap vendor module
         // set to integer value of 2 or 3 to force specific ldap protocol
-        'ldap_protocol_version' => null,
+        'ldap_protocol_version' => 3,
         // alters the prefix used when binding to a user in native ldap connections
         'ldap_username_prefix' => 'cn',
         'ldap_native_timeout' => 3,
@@ -283,7 +282,7 @@ return array(
         'local_users' => array(),
         'log_events' => true,
         'default_site_code' => '',
-        'institution_code' => 'RP6',
+        'institution_code' => '',
         'erod_lead_time_weeks' => 3,
         // specifies which specialties are available in patient summary for diagnoses etc (use specialty codes)
         'specialty_codes' => array(),
