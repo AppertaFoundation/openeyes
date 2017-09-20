@@ -44,8 +44,6 @@
 
 
 <script>
-$(document).ready(function(){
-
   function Steps() {
     this.elements = [];
     this.elementsContent = [];
@@ -53,7 +51,7 @@ $(document).ready(function(){
     this.buttons = {help: $('#help-trigger'), menu: $('#help-trigger').parent(),overlay: $('#help-overlay'), tour: $('#help-tour')};
     this._addListeners();
     this._addOverlays();
-    this.tour = new Tour({backdrop: true, debug: true, onEnd: this._tourEnd.bind(this), onStart: this._tourStart.bind(this)});
+    this.tour = new Tour({backdrop: true, onEnd: this._tourEnd.bind(this), onStart: this._tourStart.bind(this)});
   }
   Steps.prototype._tourStart = function(tour) {
     this.buttons.tour.html('End Tour');
@@ -64,16 +62,19 @@ $(document).ready(function(){
   }
   Steps.prototype._addListeners = function () {
     this.buttons.help.click(() => {this.toggleHelpMenu();});
-    this.buttons.overlay.click(() => {this.toggleOverlay();});
-    this.buttons.tour.click(() => {this.toggleTour();});
+    this.buttons.overlay.click(() => {this.toggleOverlay(true);});
+    this.buttons.tour.click(() => {this.toggleTour(true);});
   }
-  Steps.prototype.toggleTour = function () {
-    if (!this.toggles.overlay) {
-      if (this.toggles.tour = ~this.toggles.tour) {
-        this._startTour();
-      } else {
-        this._endTour();
-      }
+  Steps.prototype.toggleTour = function (force) {
+    if (!force && this.toggles.overlay) {
+      return;
+    } else if (this.toggles.overlay) {
+      this.toggleOverlay();
+    }
+    if (this.toggles.tour = ~this.toggles.tour) {
+      this._startTour();
+    } else {
+      this._endTour();
     }
   }
   Steps.prototype._startTour = function () {
@@ -88,6 +89,7 @@ $(document).ready(function(){
   }
   Steps.prototype._endTour = function () {
     this.tour.end();
+    $('.popover').remove();
   }
   Steps.prototype._addOverlays = function () {
     $('body').append('<div id="help-body-overlay" hidden="true"></div>');
@@ -103,10 +105,10 @@ $(document).ready(function(){
       this.buttons.menu.addClass('help-active');
     }
     if (this.toggles.overlay) {
-      this.toggleOverlay();
+      this.toggleOverlay(true);
     }
     if (this.toggles.tour) {
-      this.toggleTour();
+      this.toggleTour(true);
     }
   }
   Steps.prototype.addStep = function (params) {
@@ -118,11 +120,11 @@ $(document).ready(function(){
     $this.attr('data-trigger',"manual");
     $this.attr('data-placement',params.placement ? params.placement : "auto right");
     if (params.showParent) {
-     this.elements.push($this.parent());
-   } else {
-     this.elements.push($this);
-   }
-   this.elementsContent.push({element: params.element, shortContent: params.contentLess, longContent: params.content});
+      this.elements.push($this.parent());
+    } else {
+      this.elements.push($this);
+    }
+    this.elementsContent.push({element: params.element, shortContent: params.contentLess, longContent: params.content});
   };
   Steps.prototype.addSteps = function (params) {
     params.forEach((el) => {
@@ -139,52 +141,54 @@ $(document).ready(function(){
       $(el.element).attr('data-content',el.longContent);
     });
   }
-  Steps.prototype.toggleOverlay = function ($this) {
-    if (!this.toggles.tour) {
-      if (this.toggles.overlay = ~this.toggles.overlay) {
-        this._showShortContent();
-        window.scrollTo(0,0);
-        this.buttons.overlay.html("Hide Help Overlay");
-        this.elements.forEach(function(elem){
-          elem.css('z-index', 160);
-        });
-        this.header_overlay.show();
-        this.body_overlay.show();
-        $('[data-toggle="popover"]').popover('show');
-      } else {
-        this.buttons.overlay.html("Show Help Overlay");
-        this.elements.forEach(function(elem){
-          elem.css('z-index', '');
-        });
-        $('[data-toggle="popover"]').popover('hide');
-        this.header_overlay.hide();
-        this.body_overlay.hide();
-      }
+  Steps.prototype.toggleOverlay = function (force) {
+    if (!force && this.toggles.tour) {
+      return;
+    } else if (this.toggles.tour) {
+      this.toggleTour();
+    }
+    if (this.toggles.overlay = ~this.toggles.overlay) {
+      this._showShortContent();
+      window.scrollTo(0,0);
+      this.buttons.overlay.html("Hide Help Overlay");
+      this.elements.forEach(function(elem){
+        elem.css('z-index', 160);
+      });
+      this.header_overlay.show();
+      this.body_overlay.show();
+      $('[data-toggle="popover"]').popover('show');
+    } else {
+      this.buttons.overlay.html("Show Help Overlay");
+      this.elements.forEach(function(elem){
+        elem.css('z-index', '');
+      });
+      $('[data-toggle="popover"]').popover('hide');
+      this.header_overlay.hide();
+      this.body_overlay.hide();
     }
   }
-
+$(document).ready(function(){
   const steps = new Steps();
   steps.addSteps([{
-                  element: ".large-6.medium-7.column",
-                  title: "User Panel",
-                  content: "This is where....",
-                  contentLess: "This is....",
-                  backdropContainer: "header"
-                 },
-                 {
-                  element: ".oe-find-patient:first",
-                  title: "Paitent Search",
-                  content: "This is where....",
-                  contentLess: "This is....",
-                  showParent: "true"
-                 },
-                 {
-                  element: "#"+$('section .box-title:contains(Messages):not(:contains(Sent Messages))').parent().prop('id'),
-                  title: "Messages",
-                  content: "This is where....",
-                  contentLess: "This is....",
-                  placement: "bottom"
-                }]);
+    element: ".large-6.medium-7.column",
+    title: "User Panel",
+    content: "This is where....",
+    contentLess: "This is....",
+    backdropContainer: "header"
+  },
+  {
+    element: ".oe-find-patient:first",
+    title: "Paitent Search",
+    content: "This is where....",
+    contentLess: "This is....",
+    showParent: "true"
+  },
+  {
+    element: "#"+$('section .box-title:contains(Messages):not(:contains(Sent Messages))').parent().prop('id'),
+    title: "Messages",
+    content: "This is where....",
+    contentLess: "This is....",
+    placement: "bottom"
+  }]);
 });
-
 </script>

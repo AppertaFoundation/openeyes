@@ -9517,6 +9517,7 @@ tbody.collapse.in {
 
 /* line 85, ../sass/openeyes/components/_tour.scss */
 .action {
+  user-select: none;
   visibility: hidden;
   cursor: pointer;
   font-family: helvetica;
@@ -9536,7 +9537,7 @@ tbody.collapse.in {
   transition: box-shadow 0.2s;
 }
 
-/* line 104, ../sass/openeyes/components/_tour.scss */
+/* line 105, ../sass/openeyes/components/_tour.scss */
 .action:hover {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.14), 0 4px 8px rgba(0, 0, 0, 0.28);
 }

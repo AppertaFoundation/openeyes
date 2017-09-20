@@ -83,6 +83,7 @@
   visibility: visible;
 }
 .action {
+  user-select: none;
   visibility: hidden;
   cursor: pointer;
   font-family: helvetica;
