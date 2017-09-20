@@ -1907,34 +1907,6 @@ class AdminController extends BaseAdminController
         $this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors));
     }
 
-    public function actionSocialHistory()
-    {
-        $this->render('socialhistory');
-    }
-
-    public function actionSocialHistoryOccupation()
-    {
-        $this->genericAdmin(SocialHistory::model()->getAttributeLabel('occupation_id'), 'SocialHistoryOccupation');
-    }
-
-    public function actionSocialHistoryDrivingStatus()
-    {
-        $this->genericAdmin(SocialHistory::model()->getAttributeLabel('driving_status_id'),
-            'SocialHistoryDrivingStatus');
-    }
-
-    public function actionSocialHistorySmokingStatus()
-    {
-        $this->genericAdmin(SocialHistory::model()->getAttributeLabel('smoking_status_id'),
-            'SocialHistorySmokingStatus');
-    }
-
-    public function actionSocialHistoryAccommodation()
-    {
-        $this->genericAdmin(SocialHistory::model()->getAttributeLabel('accommodation_id'),
-            'SocialHistoryAccommodation');
-    }
-
     /**
      * Lists and allows editing of AnaestheticAgent records.
      *

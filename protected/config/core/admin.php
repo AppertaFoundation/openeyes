@@ -40,7 +40,6 @@ return array(
                 'Custom episode summaries' => '/admin/episodeSummaries',
                 'Medication Stop Reason' => '/admin/editmedicationstopreason',
                 'Previous Ophthalmic Surgery' => '/admin/editpreviousoperation',
-                'Social History' => '/admin/socialhistory',
                 'Findings' => '/admin/managefindings',
                 'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
                 'Anaesthetic Agent Mapping' => '/oeadmin/AnaestheticAgentMapping/list',

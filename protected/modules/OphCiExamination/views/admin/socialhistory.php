@@ -12,14 +12,16 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+$this->renderPartial('//base/_messages');
+$model = OEModule\OphCiExamination\models\SocialHistory::model();
 ?>
-<?php $this->renderPartial('//base/_messages')?>
 <div class="box admin">
 	<h2>Social History</h2>
 	<ul>
-		<li><a href="/admin/socialHistoryOccupation"><?= CHtml::encode(SocialHistory::model()->getAttributeLabel('occupation_id')) ?></a></li>
-		<li><a href="/admin/socialHistoryDrivingStatus"><?= CHtml::encode(SocialHistory::model()->getAttributeLabel('driving_status_id')) ?></a></li>
-		<li><a href="/admin/socialHistorySmokingStatus"><?= CHtml::encode(SocialHistory::model()->getAttributeLabel('smoking_status_id')) ?></a></li>
-		<li><a href="/admin/socialHistoryAccommodation"><?= CHtml::encode(SocialHistory::model()->getAttributeLabel('accommodation_id')) ?></a></li>
+		<li><a href="/OphCiExamination/admin/socialHistoryOccupation"><?= CHtml::encode($model->getAttributeLabel('occupation_id')) ?></a></li>
+		<li><a href="/OphCiExamination/admin/socialHistoryDrivingStatus"><?= CHtml::encode($model->getAttributeLabel('driving_statuses')) ?></a></li>
+		<li><a href="/OphCiExamination/admin/socialHistorySmokingStatus"><?= CHtml::encode($model->getAttributeLabel('smoking_status_id')) ?></a></li>
+		<li><a href="/OphCiExamination/admin/socialHistoryAccommodation"><?= CHtml::encode($model->getAttributeLabel('accommodation_id')) ?></a></li>
 	</ul>
 </div>
