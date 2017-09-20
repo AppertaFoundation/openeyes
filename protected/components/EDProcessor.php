@@ -143,7 +143,14 @@ class EDProcessor
         }
 
         if (!array_key_exists($canvas_mnemonic, $this->patient_doodles[$patient_id])) {
+            // init sided structure
             $this->patient_doodles[$patient_id][$canvas_mnemonic] = array('R' => array(), 'L' => array());
+
+            // get init json for any doodles that should always be present on this canvas
+            $always_init = $this->getAlwaysInitDoodlesForCanvas($canvas_mnemonic);
+            $class_by_laterality = array('R' => array(), 'L' => array());
+
+            // get the carry forward doodles
             $query_string = <<<EOSQL
 -- Query NEWEST eyedraw doodle data for set-interection-tuple groups for target patient and runtime canvas
 SELECT
@@ -227,10 +234,26 @@ EOSQL;
                 ->bindParam(':patient_id', $patient_id)
                 ->bindParam(':cvmnm', $canvas_mnemonic)->queryAll() as $result
             ) {
+                // store the carried forward doodle data
                 $this->patient_doodles[$patient_id][$canvas_mnemonic][$result['laterality']][] = $result['content_json'];
+                // store doodle class by laterality
+                $class_by_laterality[$result['laterality']][] = $result['eyedraw_class_mnemonic'];
             };
 
+            foreach (array('R', 'L') as $laterality) {
+                if (count($class_by_laterality[$laterality]) > 0) {
+                    // merge in any missing init doodle json that should always be present
+                    // if at least one doodle is present.
+                    foreach ($always_init as $always_cls => $always_json) {
+                        if (!in_array($always_cls, $class_by_laterality[$laterality])) {
+                            $this->patient_doodles[$patient_id][$canvas_mnemonic][$laterality][] = $always_json;
+                        }
+                    }
+                }
+            }
+
         }
+
         return $this->patient_doodles[$patient_id][$canvas_mnemonic][((int)$side === Eye::LEFT) ? 'L' : 'R'];
     }
 
@@ -276,6 +299,35 @@ EOSQL;
         return $results;
     }
 
+    /**
+     * Returns an array of initial json indexed by eyedraw doodle class mnemonics
+     *
+     * @param $canvas_mnemonic
+     * @return array
+     */
+    private function getAlwaysInitDoodlesForCanvas($canvas_mnemonic)
+    {
+        $query_string = <<<EOSQL
+SELECT ed.eyedraw_class_mnemonic, 
+ed.init_doodle_json 
+FROM eyedraw_doodle ed 
+LEFT JOIN eyedraw_canvas_doodle ecd
+ON ecd.eyedraw_class_mnemonic = ed.eyedraw_class_mnemonic
+WHERE ecd.canvas_mnemonic = :ecdcm
+AND ecd.eyedraw_always_init_canvas_flag = true
+EOSQL;
+        $results = array();
+        foreach ($this->app->db
+            ->createCommand($query_string)
+            ->bindParam(':ecdcm', $canvas_mnemonic)->queryAll() as $result
+        ) {
+            if ($result['init_doodle_json']) {
+                $results[$result['eyedraw_class_mnemonic']] = $result['init_doodle_json'];
+            }
+        }
+
+        return $results;
+    }
 
     /**
      * Load all the element attributes up with the appropriate set of doodles.
