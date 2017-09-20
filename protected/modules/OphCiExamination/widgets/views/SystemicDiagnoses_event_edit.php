@@ -64,8 +64,7 @@
             <input type="text" class="diagnoses-search-autocomplete" id="ddd_2">
         </div>
     </div>
-    -->
-<?php endif; ?>
+
     
     
     <div class="row">
@@ -76,7 +75,9 @@
             <button class="button small primary add-diagnosis" id="<?= $model_name ?>_add_diagnosis">Add</button>
         </div>
     </div>
-
+    -->
+<?php endif; ?>
+    
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <table id="<?= $model_name ?>_diagnoses_table">
         <thead>
