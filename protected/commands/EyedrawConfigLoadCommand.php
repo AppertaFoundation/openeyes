@@ -187,7 +187,8 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
         . ' SET eyedraw_on_canvas_toolbar_location = :eoctl, '
         . 'eyedraw_on_canvas_toolbar_order = :eocto, '
         . 'eyedraw_no_tuple_init_canvas_flag = :enticf, '
-        . 'eyedraw_carry_forward_canvas_flag = :ecfcf '
+        . 'eyedraw_carry_forward_canvas_flag = :ecfcf, '
+        . 'eyedraw_always_init_canvas_flag = :eaicf '
         . 'WHERE eyedraw_class_mnemonic = :ecm '
         . 'AND canvas_mnemonic = :cm');
       } else {
@@ -198,8 +199,9 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
         . 'eyedraw_on_canvas_toolbar_location, '
         . 'eyedraw_on_canvas_toolbar_order, '
         . 'eyedraw_no_tuple_init_canvas_flag, '
-        . 'eyedraw_carry_forward_canvas_flag) '
-        . 'VALUES (:ecm, :cm, :eoctl, :eocto, :enticf, :ecfcf)');
+        . 'eyedraw_carry_forward_canvas_flag, '
+        . 'eyedraw_always_init_canvas_flag)'
+        . 'VALUES (:ecm, :cm, :eoctl, :eocto, :enticf, :ecfcf, :eaicf)');
       }
 
       $cmd->bindValue(':ecm', $canvas_doodle->EYEDRAW_CLASS_MNEMONIC)
@@ -208,6 +210,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
       ->bindValue(':eocto', $canvas_doodle->ON_TOOLBAR_ORDER)
       ->bindValue(':enticf', strtolower($canvas_doodle->NEW_EYE_INIT_FLAG) === 'true')
       ->bindValue(':ecfcf', strtolower($canvas_doodle->CARRY_FORWARD_FLAG) === 'true')
+      ->bindValue(':eaicf', (!empty($canvas_doodle->INIT_ALWAYS_FLAG) && strtolower($canvas_doodle->INIT_ALWAYS_FLAG) === 'true'))
       ->query();
     }
 
