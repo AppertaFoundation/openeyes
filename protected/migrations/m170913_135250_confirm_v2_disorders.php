@@ -3,8 +3,8 @@
 class m170913_135250_confirm_v2_disorders extends CDbMigration
 {
     protected $disorders = array(
-        array('95725002', 'Corneal Laceration (disorder)', 'Corneal Laceration', 109),
-        array('77676001', 'Prolapse of Iris (disorder)', 'Prolapse of Iris', 109),
+        array('95725002', 'Corneal Laceration (disorder)', 'Corneal Laceration', 130),
+        array('77676001', 'Prolapse of Iris (disorder)', 'Prolapse of Iris', 130),
     );
 
 	public function up()
