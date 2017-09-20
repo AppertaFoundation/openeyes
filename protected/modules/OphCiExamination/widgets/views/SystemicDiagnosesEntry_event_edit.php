@@ -27,7 +27,6 @@ if (!isset($values)) {
         'side_display' => $diagnosis->side ? $diagnosis->side->adjective : 'None',
         'date' => $diagnosis->date,
         'date_display' => $diagnosis->getDisplayDate(),
-        'row_count' => 0,
     );
 }
     if (isset($diagnosis->date) && strtotime($diagnosis->date)) {
@@ -40,15 +39,14 @@ if (!isset($values)) {
 
 ?>
 
-<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row" style="height:100px;">
+<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row" style="height:50px;">
     <td style="width:290px;">
-        <div class="enteredDiagnosisText panel diagnosis hide"></div>
 
         <input type="hidden" name="<?= $field_prefix ?>[id][]" value="<?=$diagnosis->id ?>" />
 
         <input type="text"
                class="diagnoses-search-autocomplete"
-               id="diagnoses_search_autocomplete_<?=$values['row_count']; ?>"
+               id="diagnoses_search_autocomplete_<?=$row_count?>"
 
                <?php if(isset($diagnosis) && !$diagnosis->isNewRecord):?>
                     data-saved-diagnoses='[<?php echo json_encode(array(
@@ -59,20 +57,37 @@ if (!isset($values)) {
                <?php endif; ?>
         >
         <input type="hidden" name="<?= $field_prefix ?>[disorder_id][]" value="">
-
-
     </td>
 
-    <td><label class="inline"><input type="radio" name="<?= $model_name ?>_diagnosis_side" class="<?= $model_name ?>_diagnosis_side" value="" checked="checked" /> None </label>
-        <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) {?>
-            <label class="inline"><input type="radio" name="<?= $model_name ?>_diagnosis_side" class="<?= $model_name ?>_diagnosis_side" value="<?php echo $eye->id?>" /> <?php echo $eye->name ?></label>
-        <?php }?></td>
+    <td>
+        <div class="sides-radio-group">
+            <label class="inline">
+                <input type="radio" name="<?="{$model_name}_diagnosis_side_{$row_count}" ?>" value="" checked="checked" /> None
+            </label>
+
+            <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) {?>
+                <label class="inline">
+                    <input type="radio"
+                           name="<?="{$model_name}_diagnosis_side_{$row_count}" ?>"
+                           value="<?php echo $eye->id?>"
+                            <?php if($eye->id == $values['side_id']){ echo "checked"; }?>
+                    />
+                    <?php echo $eye->name ?>
+                </label>
+            <?php }?></td>
+        </div>
+
+        <input type="hidden" name="<?= $model_name ?>[side_id][]" class="diagnosis-side-value" value="<?=$values['side_id']?>">
     <td>
         <fieldset class="row field-row fuzzy-date">
-            <input type="hidden" name="<?= $field_prefix ?>[date]" value="<?= $diagnosis->date ?>" />
+            <input type="hidden" name="<?= $model_name ?>[date][]" value="<?= $diagnosis->date ?>" />
             <div class="large-12 column end">
                 <span class="start-date-wrapper" <?php if (!$diagnosis->date) {?>style="display: none;"<?php } ?>">
-                <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $start_sel_day, 'sel_month' => $start_sel_month, 'sel_year' => $start_sel_year)) ?>
+                    <?php $this->render('application.views.patient._fuzzy_date_fields', array(
+                            'sel_day' => $start_sel_day,
+                            'sel_month' => $start_sel_month,
+                            'sel_year' => $start_sel_year))
+                    ?>
                 </span>
             </div>
         </fieldset>

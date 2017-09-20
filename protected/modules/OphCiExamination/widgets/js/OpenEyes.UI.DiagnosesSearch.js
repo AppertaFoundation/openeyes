@@ -31,6 +31,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.commonlyUsedDiagnosesUrl = this.options.commonlyUsedDiagnosesUrl;
         this.singleTemplate = this.options.singleTemplate;
         this.renderTemplate = this.options.renderTemplate;
+        this.modelName = this.options.modelName;
 
         this.init();
         this.initialiseAutocomplete();
@@ -43,11 +44,12 @@ OpenEyes.UI = OpenEyes.UI || {};
         commonlyUsedDiagnosesUrl: '/disorder/getcommonlyuseddiagnoses/type/',
         renderTemplate: true,
         singleTemplate :
-            "<div style='margin: 0px 0px 0px; display: none;' class='enteredDiagnosisText panel diagnosis hidden'></div>" +
+            "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='fa fa-times-circle' aria-hidden='true' title='Change medication'></i></a> " +
+            "<span class='diagnosis-name'></span></span>" +
             "<select class='commonly-used-diagnosis'></select>" +
             "{{{input_field}}}" +
             "<input type='hidden' name='OEModule_OphCiExamination_models_SystemicDiagnoses[id][]' class='savedDiagnosisId' value=''>" +
-            "<input type='hidden' name='OEModule_OphCiExamination_models_SystemicDiagnoses[disorder_id][]' class='savedDiagnosis' value=''>"
+            "<input type='hidden' name='OEModule_OphCiExamination_models_SystemicDiagnoses[disorder_id][]' class='savedDiagnosis' value=''>",
     };
 
     DiagnosesSearchController.prototype.init = function(){
@@ -60,7 +62,10 @@ OpenEyes.UI = OpenEyes.UI || {};
         if( controller.renderTemplate === true ){
             var html = Mustache.render(
                 this.singleTemplate,
-                {'input_field': controller.$inputField.prop("outerHTML")}
+                {
+                    'input_field': controller.$inputField.prop("outerHTML"),
+                    'row_count': OpenEyes.Util.getNextDataKey( $('#' + controller.modelName + '_diagnoses_table').find('tbody tr'), 'key')
+                }
             );
 
             $parent.html(html);
@@ -75,7 +80,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                     $select.append( $('<option>',{'value': item.value, 'text': item.text}));
                 });
 
-                controller.$row.find('.enteredDiagnosisText').after($select);
+                controller.$inputField.before($select);
             });
         }
 
@@ -84,14 +89,31 @@ OpenEyes.UI = OpenEyes.UI || {};
         if(savedDiagnoses && savedDiagnoses.length){
 
             $.each(savedDiagnoses, function(i, diagnosis){
-                controller.$row.find('.enteredDiagnosisText').append(diagnosis.name);
-                controller.$row.find('.savedDiagnosisId').val(diagnosis.id);
-                controller.$row.find('.savedDiagnosis').val(diagnosis.value);
-                controller.$row.find('.enteredDiagnosisText').append( $('<a>', {"class":"clear-diagnosis-widget", href:"javascript:void(0)"}).text("(Remove)"));
+                controller.addDiagnosis(diagnosis.id, diagnosis.name, diagnosis.disorder_id );
             });
-
-            controller.$row.find('.enteredDiagnosisText').show();
         }
+
+    }
+
+    DiagnosesSearchController.prototype.addDiagnosis = function(id, name, value){
+        var controller = this;
+        var $displayDiagnosis = controller.$row.find('.diagnosis-display');
+        controller.$row.find('.diagnosis-name').text(name);
+
+        $displayDiagnosis.show();
+
+        //This is not the disorder's ID but the "row" or "entry" ID (SystemicDiagnoses_Diagnosis model)
+        // if there is no ID this will be a brand new entry
+        if(id){
+            controller.$row.find('.savedDiagnosisId').val(id);
+        }
+
+        //This will be the actual disorder ID - SNOMED code
+        controller.$row.find('.savedDiagnosis').val(value);
+
+        controller.$row.find('.commonly-used-diagnosis').hide();
+        controller.$row.find('.diagnoses-search-inputfield').hide();
+        controller.$row.find('.medication-display').show();
 
     }
 
@@ -118,7 +140,13 @@ OpenEyes.UI = OpenEyes.UI || {};
                 controller.$inputField.addClass('inset-loader');
             },
             select: function(event, ui){
-                console.log(ui.item);
+
+                //no multiple option
+                controller.addDiagnosis(null, ui.item.label, ui.item.id );
+
+                //clear input
+                $(this).val("");
+                return false;
             },
             response: function (event, ui) {
                 controller.$inputField.removeClass('inset-loader');
@@ -130,21 +158,16 @@ OpenEyes.UI = OpenEyes.UI || {};
         var controller = this;
         var $parent = controller.$inputField.parent();
 
-        controller.$row.on('click', '.clear-diagnosis-widget', function(){
-            $(this).closest('.enteredDiagnosisText').html('').hide();
+        controller.$row.on('click', '.diagnosis-rename', function(){
+            controller.$row.find('.commonly-used-diagnosis').show();
+            controller.$row.find('.diagnoses-search-inputfield').show();
+            $(this).closest('.medication-display').hide();
         });
 
         controller.$row.on('change', 'select.commonly-used-diagnosis', function(){
-
-            var $enteredWrapper = $(this).closest('td').find('.enteredDiagnosisText');
-
-            $enteredWrapper.text( $(this).find('option:selected').text() );
-            $enteredWrapper.append( $('<a>', {'class': 'clear-diagnosis-widget'}).text('(Remove)') );
-            controller.$row.find('.savedDiagnosis').val( $(this).val() );
-            $enteredWrapper.show();
+            controller.addDiagnosis(null, $(this).find('option:selected').text(), $(this).val() );
             $(this).val('');
         });
-
     }
 
     exports.DiagnosesSearchController = DiagnosesSearchController;

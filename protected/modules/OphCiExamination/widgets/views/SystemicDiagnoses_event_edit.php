@@ -25,8 +25,9 @@
 ?>
 
 <div class="element-fields" id="<?=CHtml::modelName($element);?>_element">
-
-        <?php
+<?php if(false): ?>
+    <!--
+      <?php
         $this->widget('application.widgets.DiagnosisSelection', array(
             'nowrapper' => true,
             'field' => 'disorder_id',
@@ -63,7 +64,8 @@
             <input type="text" class="diagnoses-search-autocomplete" id="ddd_2">
         </div>
     </div>
-
+    -->
+<?php endif; ?>
     
     
     <div class="row">

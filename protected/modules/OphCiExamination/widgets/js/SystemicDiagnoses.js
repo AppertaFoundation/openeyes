@@ -63,6 +63,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         var controller = this;
         var DiagnosesSearchController = null;
+        var $radioButtons = $row.find('.sides-radio-group');
 
         $row.on('change', '.fuzzy-date select', function(e) {
             var $fuzzyFieldset = $(this).closest('fieldset');
@@ -72,7 +73,23 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         DiagnosesSearchController = new OpenEyes.UI.DiagnosesSearchController({'inputField': $row.find('.diagnoses-search-autocomplete') });
         $row.find('.diagnoses-search-autocomplete').data('DiagnosesSearchController', DiagnosesSearchController );
+
+        // radio buttons
+        $radioButtons.on('change', 'input', function(){
+            $(this).closest('tr').find('.diagnosis-side-value').val( $(this).val() );
+        });
     }
+
+    SystemicDiagnosesController.prototype.dateFromFuzzyFieldSet = function(fieldset)
+    {
+        var res = fieldset.find('select.fuzzy_year').val();
+        var month = parseInt(fieldset.find('select.fuzzy_month option:selected').val());
+        res += '-' + ((month < 10) ? '0' + month.toString() : month.toString());
+        var day = parseInt(fieldset.find('select.fuzzy_day option:selected').val());
+        res += '-' + ((day < 10) ? '0' + day.toString() : day.toString());
+
+        return res;
+    };
 
     SystemicDiagnosesController.prototype.createRow = function(data)
     {
