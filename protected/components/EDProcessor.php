@@ -240,11 +240,14 @@ EOSQL;
                 $class_by_laterality[$result['laterality']][] = $result['eyedraw_class_mnemonic'];
             };
 
-            // merge in any missing init doodle json that should always be present
             foreach (array('R', 'L') as $side) {
-                foreach ($always_init as $always_cls => $always_json) {
-                    if (!in_array($always_cls, $class_by_laterality[$side])) {
-                        $this->patient_doodles[$patient_id][$canvas_mnemonic][$side][] = $always_json;
+                if (count($class_by_laterality[$side]) > 0) {
+                    // merge in any missing init doodle json that should always be present
+                    // if at least one doodle is present.
+                    foreach ($always_init as $always_cls => $always_json) {
+                        if (!in_array($always_cls, $class_by_laterality[$side])) {
+                            $this->patient_doodles[$patient_id][$canvas_mnemonic][$side][] = $always_json;
+                        }
                     }
                 }
             }
