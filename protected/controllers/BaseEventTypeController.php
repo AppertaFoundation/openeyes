@@ -285,6 +285,18 @@ class BaseEventTypeController extends BaseModuleController
         return $elements;
     }
 
+    /**
+     * @return ElementType[]
+     */
+    protected function getAllElementTypes()
+    {
+        return $this->event_type->getAllElementTypes();
+    }
+
+    /**
+     * @param array $remove_list
+     * @return string
+     */
     public function getElementTree($remove_list = array())
     {
         $element_types_tree = array();
@@ -1175,7 +1187,6 @@ class BaseEventTypeController extends BaseModuleController
         $elements = array();
         $el_cls_name = $element_type->class_name;
         $f_key = CHtml::modelName($el_cls_name);
-
         if (isset($data[$f_key])) {
             $keys = array_keys($data[$f_key]);
 
@@ -1220,9 +1231,8 @@ class BaseEventTypeController extends BaseModuleController
     {
         $errors = array();
         $elements = array();
-
         // only process data for elements that are part of the element type set for the controller event type
-        foreach ($this->event_type->getAllElementTypes() as $element_type) {
+        foreach ($this->getAllElementTypes() as $element_type) {
             $from_data = $this->getElementsForElementType($element_type, $data);
             if (count($from_data) > 0) {
                 $elements = array_merge($elements, $from_data);

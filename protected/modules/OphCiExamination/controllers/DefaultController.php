@@ -126,11 +126,11 @@ class DefaultController extends \BaseEventTypeController
      *
      * @return array
      */
-    protected function getElementFilterList()
+    protected function getElementFilterList($include_hidden=true)
     {
         $remove = components\ExaminationHelper::elementFilterList();
 
-        if ($this->set) {
+        if ($include_hidden && $this->set) {
             foreach ($this->set->HiddenElementTypes as $element) {
                 $remove[] = $element->class_name;
             }
@@ -159,6 +159,21 @@ class DefaultController extends \BaseEventTypeController
             }
         }
         return $final;
+    }
+
+    /**
+     * Get all the available element types for the event
+     *
+     * @return array
+     */
+    public function getAllElementTypes()
+    {
+        $remove = $this->getElementFilterList(false);
+        return array_filter(
+            parent::getAllElementTypes(),
+            function($et) use ($remove) {
+                return !in_array($et->class_name, $remove);
+            });
     }
 
     public function getElementTree($remove_list = array())
