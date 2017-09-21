@@ -269,15 +269,16 @@ class Episode extends BaseActiveRecordVersioned
 
     /**
      * @param Patient $patient
-     * @return CActiveRecord|Episode
+     * @param boolean $create - defaults to true
+     * @return Episode|null
      */
-    public static function getChangeEpisode(Patient $patient)
+    public static function getChangeEpisode(Patient $patient, $create = true)
     {
         $episode = self::model()->with('events')->findByAttributes(array(
             'patient_id' => $patient->id,
             'change_tracker' => true
         ));
-        if (!$episode) {
+        if (!$episode && $create) {
             // note that requesting code is responsible for checking/saving new episode
             // if necessary. This is to allow the episode to be saved in a transaction
             // which completes successfully.
