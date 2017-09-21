@@ -8498,11 +8498,11 @@ input:checked + .slider:before {
  * Copyright 2011-2014 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 27, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn {
   display: inline-block;
   margin-bottom: 0;
-  font-weight: 400;
+  font-weight: normal;
   text-align: center;
   vertical-align: middle;
   touch-action: manipulation;
@@ -8520,576 +8520,753 @@ input:checked + .slider:before {
   user-select: none;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn.active.focus {
+/* line 47, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn.active.focus {
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn:hover, .btn:focus, .btn.focus {
-  color: #333;
+/* line 56, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn:hover,
+.btn:focus,
+.btn.focus {
+  color: #333333;
   text-decoration: none;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn:active, .btn.active {
+/* line 62, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn:active,
+.btn.active {
   outline: 0;
   background-image: none;
   -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn.disabled, .btn[disabled], fieldset[disabled] .btn {
+/* line 69, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn.disabled,
+.btn[disabled],
+fieldset[disabled] .btn {
   cursor: not-allowed;
-  opacity: .65;
+  opacity: 0.65;
   filter: alpha(opacity=65);
   -webkit-box-shadow: none;
   box-shadow: none;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-a.btn.disabled, fieldset[disabled] a.btn {
+/* line 78, ../sass/openeyes/components/_bootstrap-tour.scss */
+a.btn.disabled,
+fieldset[disabled] a.btn {
   pointer-events: none;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 82, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-default {
-  color: #333;
-  background-color: #fff;
-  border-color: #ccc;
+  color: #333333;
+  background-color: #ffffff;
+  border-color: #cccccc;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-default:focus, .btn-default.focus {
-  color: #333;
+/* line 87, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-default:focus,
+.btn-default.focus {
+  color: #333333;
   background-color: #e6e6e6;
   border-color: #8c8c8c;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 93, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-default:hover {
-  color: #333;
+  color: #333333;
   background-color: #e6e6e6;
   border-color: #adadad;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
-  color: #333;
+/* line 98, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-default:active,
+.btn-default.active,
+.open > .dropdown-toggle.btn-default {
+  color: #333333;
   background-color: #e6e6e6;
   border-color: #adadad;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-default:active:hover, .btn-default.active:hover, .open > .dropdown-toggle.btn-default:hover, .btn-default:active:focus, .btn-default.active:focus, .open > .dropdown-toggle.btn-default:focus, .btn-default:active.focus, .btn-default.active.focus, .open > .dropdown-toggle.btn-default.focus {
-  color: #333;
+/* line 105, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-default:active:hover,
+.btn-default.active:hover,
+.open > .dropdown-toggle.btn-default:hover,
+.btn-default:active:focus,
+.btn-default.active:focus,
+.open > .dropdown-toggle.btn-default:focus,
+.btn-default:active.focus,
+.btn-default.active.focus,
+.open > .dropdown-toggle.btn-default.focus {
+  color: #333333;
   background-color: #d4d4d4;
   border-color: #8c8c8c;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
+/* line 118, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-default:active,
+.btn-default.active,
+.open > .dropdown-toggle.btn-default {
   background-image: none;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-default.disabled:hover, .btn-default[disabled]:hover, fieldset[disabled] .btn-default:hover, .btn-default.disabled:focus, .btn-default[disabled]:focus, fieldset[disabled] .btn-default:focus, .btn-default.disabled.focus, .btn-default[disabled].focus, fieldset[disabled] .btn-default.focus {
-  background-color: #fff;
-  border-color: #ccc;
+/* line 123, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-default.disabled:hover,
+.btn-default[disabled]:hover,
+fieldset[disabled] .btn-default:hover,
+.btn-default.disabled:focus,
+.btn-default[disabled]:focus,
+fieldset[disabled] .btn-default:focus,
+.btn-default.disabled.focus,
+.btn-default[disabled].focus,
+fieldset[disabled] .btn-default.focus {
+  background-color: #ffffff;
+  border-color: #cccccc;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 135, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-default .badge {
-  color: #fff;
-  background-color: #333;
+  color: #ffffff;
+  background-color: #333333;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 139, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-primary {
-  color: #fff;
+  color: #ffffff;
   background-color: #337ab7;
   border-color: #2e6da4;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-primary:focus, .btn-primary.focus {
-  color: #fff;
+/* line 144, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-primary:focus,
+.btn-primary.focus {
+  color: #ffffff;
   background-color: #286090;
   border-color: #122b40;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 150, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-primary:hover {
-  color: #fff;
+  color: #ffffff;
   background-color: #286090;
   border-color: #204d74;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
-  color: #fff;
+/* line 155, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+  color: #ffffff;
   background-color: #286090;
   border-color: #204d74;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-primary:active:hover, .btn-primary.active:hover, .open > .dropdown-toggle.btn-primary:hover, .btn-primary:active:focus, .btn-primary.active:focus, .open > .dropdown-toggle.btn-primary:focus, .btn-primary:active.focus, .btn-primary.active.focus, .open > .dropdown-toggle.btn-primary.focus {
-  color: #fff;
+/* line 162, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-primary:active:hover,
+.btn-primary.active:hover,
+.open > .dropdown-toggle.btn-primary:hover,
+.btn-primary:active:focus,
+.btn-primary.active:focus,
+.open > .dropdown-toggle.btn-primary:focus,
+.btn-primary:active.focus,
+.btn-primary.active.focus,
+.open > .dropdown-toggle.btn-primary.focus {
+  color: #ffffff;
   background-color: #204d74;
   border-color: #122b40;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+/* line 175, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
   background-image: none;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-primary.disabled:hover, .btn-primary[disabled]:hover, fieldset[disabled] .btn-primary:hover, .btn-primary.disabled:focus, .btn-primary[disabled]:focus, fieldset[disabled] .btn-primary:focus, .btn-primary.disabled.focus, .btn-primary[disabled].focus, fieldset[disabled] .btn-primary.focus {
+/* line 180, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-primary.disabled:hover,
+.btn-primary[disabled]:hover,
+fieldset[disabled] .btn-primary:hover,
+.btn-primary.disabled:focus,
+.btn-primary[disabled]:focus,
+fieldset[disabled] .btn-primary:focus,
+.btn-primary.disabled.focus,
+.btn-primary[disabled].focus,
+fieldset[disabled] .btn-primary.focus {
   background-color: #337ab7;
   border-color: #2e6da4;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 192, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-primary .badge {
   color: #337ab7;
-  background-color: #fff;
+  background-color: #ffffff;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 196, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-success {
-  color: #fff;
+  color: #ffffff;
   background-color: #5cb85c;
   border-color: #4cae4c;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-success:focus, .btn-success.focus {
-  color: #fff;
+/* line 201, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-success:focus,
+.btn-success.focus {
+  color: #ffffff;
   background-color: #449d44;
   border-color: #255625;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 207, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-success:hover {
-  color: #fff;
+  color: #ffffff;
   background-color: #449d44;
   border-color: #398439;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-success:active, .btn-success.active, .open > .dropdown-toggle.btn-success {
-  color: #fff;
+/* line 212, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-success:active,
+.btn-success.active,
+.open > .dropdown-toggle.btn-success {
+  color: #ffffff;
   background-color: #449d44;
   border-color: #398439;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-success:active:hover, .btn-success.active:hover, .open > .dropdown-toggle.btn-success:hover, .btn-success:active:focus, .btn-success.active:focus, .open > .dropdown-toggle.btn-success:focus, .btn-success:active.focus, .btn-success.active.focus, .open > .dropdown-toggle.btn-success.focus {
-  color: #fff;
+/* line 219, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-success:active:hover,
+.btn-success.active:hover,
+.open > .dropdown-toggle.btn-success:hover,
+.btn-success:active:focus,
+.btn-success.active:focus,
+.open > .dropdown-toggle.btn-success:focus,
+.btn-success:active.focus,
+.btn-success.active.focus,
+.open > .dropdown-toggle.btn-success.focus {
+  color: #ffffff;
   background-color: #398439;
   border-color: #255625;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-success:active, .btn-success.active, .open > .dropdown-toggle.btn-success {
+/* line 232, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-success:active,
+.btn-success.active,
+.open > .dropdown-toggle.btn-success {
   background-image: none;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-success.disabled:hover, .btn-success[disabled]:hover, fieldset[disabled] .btn-success:hover, .btn-success.disabled:focus, .btn-success[disabled]:focus, fieldset[disabled] .btn-success:focus, .btn-success.disabled.focus, .btn-success[disabled].focus, fieldset[disabled] .btn-success.focus {
+/* line 237, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-success.disabled:hover,
+.btn-success[disabled]:hover,
+fieldset[disabled] .btn-success:hover,
+.btn-success.disabled:focus,
+.btn-success[disabled]:focus,
+fieldset[disabled] .btn-success:focus,
+.btn-success.disabled.focus,
+.btn-success[disabled].focus,
+fieldset[disabled] .btn-success.focus {
   background-color: #5cb85c;
   border-color: #4cae4c;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 249, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-success .badge {
   color: #5cb85c;
-  background-color: #fff;
+  background-color: #ffffff;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 253, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-info {
-  color: #fff;
+  color: #ffffff;
   background-color: #5bc0de;
   border-color: #46b8da;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-info:focus, .btn-info.focus {
-  color: #fff;
+/* line 258, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-info:focus,
+.btn-info.focus {
+  color: #ffffff;
   background-color: #31b0d5;
   border-color: #1b6d85;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 264, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-info:hover {
-  color: #fff;
+  color: #ffffff;
   background-color: #31b0d5;
   border-color: #269abc;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-info:active, .btn-info.active, .open > .dropdown-toggle.btn-info {
-  color: #fff;
+/* line 269, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-info:active,
+.btn-info.active,
+.open > .dropdown-toggle.btn-info {
+  color: #ffffff;
   background-color: #31b0d5;
   border-color: #269abc;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-info:active:hover, .btn-info.active:hover, .open > .dropdown-toggle.btn-info:hover, .btn-info:active:focus, .btn-info.active:focus, .open > .dropdown-toggle.btn-info:focus, .btn-info:active.focus, .btn-info.active.focus, .open > .dropdown-toggle.btn-info.focus {
-  color: #fff;
+/* line 276, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-info:active:hover,
+.btn-info.active:hover,
+.open > .dropdown-toggle.btn-info:hover,
+.btn-info:active:focus,
+.btn-info.active:focus,
+.open > .dropdown-toggle.btn-info:focus,
+.btn-info:active.focus,
+.btn-info.active.focus,
+.open > .dropdown-toggle.btn-info.focus {
+  color: #ffffff;
   background-color: #269abc;
   border-color: #1b6d85;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-info:active, .btn-info.active, .open > .dropdown-toggle.btn-info {
+/* line 289, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-info:active,
+.btn-info.active,
+.open > .dropdown-toggle.btn-info {
   background-image: none;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-info.disabled:hover, .btn-info[disabled]:hover, fieldset[disabled] .btn-info:hover, .btn-info.disabled:focus, .btn-info[disabled]:focus, fieldset[disabled] .btn-info:focus, .btn-info.disabled.focus, .btn-info[disabled].focus, fieldset[disabled] .btn-info.focus {
+/* line 294, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-info.disabled:hover,
+.btn-info[disabled]:hover,
+fieldset[disabled] .btn-info:hover,
+.btn-info.disabled:focus,
+.btn-info[disabled]:focus,
+fieldset[disabled] .btn-info:focus,
+.btn-info.disabled.focus,
+.btn-info[disabled].focus,
+fieldset[disabled] .btn-info.focus {
   background-color: #5bc0de;
   border-color: #46b8da;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 306, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-info .badge {
   color: #5bc0de;
-  background-color: #fff;
+  background-color: #ffffff;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 310, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-warning {
-  color: #fff;
+  color: #ffffff;
   background-color: #f0ad4e;
   border-color: #eea236;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-warning:focus, .btn-warning.focus {
-  color: #fff;
+/* line 315, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-warning:focus,
+.btn-warning.focus {
+  color: #ffffff;
   background-color: #ec971f;
   border-color: #985f0d;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 321, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-warning:hover {
-  color: #fff;
+  color: #ffffff;
   background-color: #ec971f;
   border-color: #d58512;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-warning:active, .btn-warning.active, .open > .dropdown-toggle.btn-warning {
-  color: #fff;
+/* line 326, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-warning:active,
+.btn-warning.active,
+.open > .dropdown-toggle.btn-warning {
+  color: #ffffff;
   background-color: #ec971f;
   border-color: #d58512;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-warning:active:hover, .btn-warning.active:hover, .open > .dropdown-toggle.btn-warning:hover, .btn-warning:active:focus, .btn-warning.active:focus, .open > .dropdown-toggle.btn-warning:focus, .btn-warning:active.focus, .btn-warning.active.focus, .open > .dropdown-toggle.btn-warning.focus {
-  color: #fff;
+/* line 333, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-warning:active:hover,
+.btn-warning.active:hover,
+.open > .dropdown-toggle.btn-warning:hover,
+.btn-warning:active:focus,
+.btn-warning.active:focus,
+.open > .dropdown-toggle.btn-warning:focus,
+.btn-warning:active.focus,
+.btn-warning.active.focus,
+.open > .dropdown-toggle.btn-warning.focus {
+  color: #ffffff;
   background-color: #d58512;
   border-color: #985f0d;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-warning:active, .btn-warning.active, .open > .dropdown-toggle.btn-warning {
+/* line 346, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-warning:active,
+.btn-warning.active,
+.open > .dropdown-toggle.btn-warning {
   background-image: none;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-warning.disabled:hover, .btn-warning[disabled]:hover, fieldset[disabled] .btn-warning:hover, .btn-warning.disabled:focus, .btn-warning[disabled]:focus, fieldset[disabled] .btn-warning:focus, .btn-warning.disabled.focus, .btn-warning[disabled].focus, fieldset[disabled] .btn-warning.focus {
+/* line 351, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-warning.disabled:hover,
+.btn-warning[disabled]:hover,
+fieldset[disabled] .btn-warning:hover,
+.btn-warning.disabled:focus,
+.btn-warning[disabled]:focus,
+fieldset[disabled] .btn-warning:focus,
+.btn-warning.disabled.focus,
+.btn-warning[disabled].focus,
+fieldset[disabled] .btn-warning.focus {
   background-color: #f0ad4e;
   border-color: #eea236;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 363, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-warning .badge {
   color: #f0ad4e;
-  background-color: #fff;
+  background-color: #ffffff;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 367, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-danger {
-  color: #fff;
+  color: #ffffff;
   background-color: #d9534f;
   border-color: #d43f3a;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-danger:focus, .btn-danger.focus {
-  color: #fff;
+/* line 372, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-danger:focus,
+.btn-danger.focus {
+  color: #ffffff;
   background-color: #c9302c;
   border-color: #761c19;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 378, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-danger:hover {
-  color: #fff;
+  color: #ffffff;
   background-color: #c9302c;
   border-color: #ac2925;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-danger:active, .btn-danger.active, .open > .dropdown-toggle.btn-danger {
-  color: #fff;
+/* line 383, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-danger:active,
+.btn-danger.active,
+.open > .dropdown-toggle.btn-danger {
+  color: #ffffff;
   background-color: #c9302c;
   border-color: #ac2925;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-danger:active:hover, .btn-danger.active:hover, .open > .dropdown-toggle.btn-danger:hover, .btn-danger:active:focus, .btn-danger.active:focus, .open > .dropdown-toggle.btn-danger:focus, .btn-danger:active.focus, .btn-danger.active.focus, .open > .dropdown-toggle.btn-danger.focus {
-  color: #fff;
+/* line 390, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-danger:active:hover,
+.btn-danger.active:hover,
+.open > .dropdown-toggle.btn-danger:hover,
+.btn-danger:active:focus,
+.btn-danger.active:focus,
+.open > .dropdown-toggle.btn-danger:focus,
+.btn-danger:active.focus,
+.btn-danger.active.focus,
+.open > .dropdown-toggle.btn-danger.focus {
+  color: #ffffff;
   background-color: #ac2925;
   border-color: #761c19;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-danger:active, .btn-danger.active, .open > .dropdown-toggle.btn-danger {
+/* line 403, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-danger:active,
+.btn-danger.active,
+.open > .dropdown-toggle.btn-danger {
   background-image: none;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-danger.disabled:hover, .btn-danger[disabled]:hover, fieldset[disabled] .btn-danger:hover, .btn-danger.disabled:focus, .btn-danger[disabled]:focus, fieldset[disabled] .btn-danger:focus, .btn-danger.disabled.focus, .btn-danger[disabled].focus, fieldset[disabled] .btn-danger.focus {
+/* line 408, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-danger.disabled:hover,
+.btn-danger[disabled]:hover,
+fieldset[disabled] .btn-danger:hover,
+.btn-danger.disabled:focus,
+.btn-danger[disabled]:focus,
+fieldset[disabled] .btn-danger:focus,
+.btn-danger.disabled.focus,
+.btn-danger[disabled].focus,
+fieldset[disabled] .btn-danger.focus {
   background-color: #d9534f;
   border-color: #d43f3a;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 420, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-danger .badge {
   color: #d9534f;
-  background-color: #fff;
+  background-color: #ffffff;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 424, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-link {
   color: #337ab7;
-  font-weight: 400;
+  font-weight: normal;
   border-radius: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-link, .btn-link:active, .btn-link.active, .btn-link[disabled], fieldset[disabled] .btn-link {
+/* line 429, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-link,
+.btn-link:active,
+.btn-link.active,
+.btn-link[disabled],
+fieldset[disabled] .btn-link {
   background-color: transparent;
   -webkit-box-shadow: none;
   box-shadow: none;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-link, .btn-link:hover, .btn-link:focus, .btn-link:active {
+/* line 438, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-link,
+.btn-link:hover,
+.btn-link:focus,
+.btn-link:active {
   border-color: transparent;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-link:hover, .btn-link:focus {
+/* line 444, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-link:hover,
+.btn-link:focus {
   color: #23527c;
   text-decoration: underline;
   background-color: transparent;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-link[disabled]:hover, fieldset[disabled] .btn-link:hover, .btn-link[disabled]:focus, fieldset[disabled] .btn-link:focus {
-  color: #777;
+/* line 450, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-link[disabled]:hover,
+fieldset[disabled] .btn-link:hover,
+.btn-link[disabled]:focus,
+fieldset[disabled] .btn-link:focus {
+  color: #777777;
   text-decoration: none;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-lg, .btn-group-lg > .btn {
+/* line 457, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-lg,
+.btn-group-lg > .btn {
   padding: 10px 16px;
   font-size: 18px;
   line-height: 1.3333333;
   border-radius: 6px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-sm, .btn-group-sm > .btn {
+/* line 464, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-sm,
+.btn-group-sm > .btn {
   padding: 5px 10px;
   font-size: 12px;
   line-height: 1.5;
   border-radius: 3px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-xs, .btn-group-xs > .btn {
+/* line 471, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-xs,
+.btn-group-xs > .btn {
   padding: 1px 5px;
   font-size: 12px;
   line-height: 1.5;
   border-radius: 3px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 478, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-block {
   display: block;
   width: 100%;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 482, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-block + .btn-block {
   margin-top: 5px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-input[type=submit].btn-block, input[type=reset].btn-block, input[type=button].btn-block {
+/* line 485, ../sass/openeyes/components/_bootstrap-tour.scss */
+input[type="submit"].btn-block,
+input[type="reset"].btn-block,
+input[type="button"].btn-block {
   width: 100%;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-group, .btn-group-vertical {
+/* line 490, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-group,
+.btn-group-vertical {
   position: relative;
   display: inline-block;
   vertical-align: middle;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-group > .btn, .btn-group-vertical > .btn {
+/* line 496, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-group > .btn,
+.btn-group-vertical > .btn {
   position: relative;
   float: left;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-group > .btn:hover, .btn-group-vertical > .btn:hover, .btn-group > .btn:focus, .btn-group-vertical > .btn:focus, .btn-group > .btn:active, .btn-group-vertical > .btn:active, .btn-group > .btn.active, .btn-group-vertical > .btn.active {
+/* line 501, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-group > .btn:hover,
+.btn-group-vertical > .btn:hover,
+.btn-group > .btn:focus,
+.btn-group-vertical > .btn:focus,
+.btn-group > .btn:active,
+.btn-group-vertical > .btn:active,
+.btn-group > .btn.active,
+.btn-group-vertical > .btn.active {
   z-index: 2;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-group .btn + .btn, .btn-group .btn + .btn-group, .btn-group .btn-group + .btn, .btn-group .btn-group + .btn-group {
+/* line 511, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-group .btn + .btn,
+.btn-group .btn + .btn-group,
+.btn-group .btn-group + .btn,
+.btn-group .btn-group + .btn-group {
   margin-left: -1px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 517, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-toolbar {
   margin-left: -5px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-toolbar .btn, .btn-toolbar .btn-group, .btn-toolbar .input-group {
+/* line 520, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-toolbar .btn,
+.btn-toolbar .btn-group,
+.btn-toolbar .input-group {
   float: left;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-toolbar > .btn, .btn-toolbar > .btn-group, .btn-toolbar > .input-group {
+/* line 525, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-toolbar > .btn,
+.btn-toolbar > .btn-group,
+.btn-toolbar > .input-group {
   margin-left: 5px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 530, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group > .btn:not(:first-child):not(:last-child):not(.dropdown-toggle) {
   border-radius: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 533, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group > .btn:first-child {
   margin-left: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 536, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
   border-bottom-right-radius: 0;
   border-top-right-radius: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-group > .btn:last-child:not(:first-child), .btn-group > .dropdown-toggle:not(:first-child) {
+/* line 540, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-group > .btn:last-child:not(:first-child),
+.btn-group > .dropdown-toggle:not(:first-child) {
   border-bottom-left-radius: 0;
   border-top-left-radius: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 545, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group > .btn-group {
   float: left;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 548, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group > .btn-group:not(:first-child):not(:last-child) > .btn {
   border-radius: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-group > .btn-group:first-child:not(:last-child) > .btn:last-child, .btn-group > .btn-group:first-child:not(:last-child) > .dropdown-toggle {
+/* line 551, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-group > .btn-group:first-child:not(:last-child) > .btn:last-child,
+.btn-group > .btn-group:first-child:not(:last-child) > .dropdown-toggle {
   border-bottom-right-radius: 0;
   border-top-right-radius: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 556, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group > .btn-group:last-child:not(:first-child) > .btn:first-child {
   border-bottom-left-radius: 0;
   border-top-left-radius: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-group .dropdown-toggle:active, .btn-group.open .dropdown-toggle {
+/* line 560, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-group .dropdown-toggle:active,
+.btn-group.open .dropdown-toggle {
   outline: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 564, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group > .btn + .dropdown-toggle {
   padding-left: 8px;
   padding-right: 8px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 568, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group > .btn-lg + .dropdown-toggle {
   padding-left: 12px;
   padding-right: 12px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 572, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group.open .dropdown-toggle {
   -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 576, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group.open .dropdown-toggle.btn-link {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 580, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn .caret {
   margin-left: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 583, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-lg .caret {
   border-width: 5px 5px 0;
   border-bottom-width: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 587, ../sass/openeyes/components/_bootstrap-tour.scss */
 .dropup .btn-lg .caret {
   border-width: 0 5px 5px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-group-vertical > .btn, .btn-group-vertical > .btn-group, .btn-group-vertical > .btn-group > .btn {
+/* line 590, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-group-vertical > .btn,
+.btn-group-vertical > .btn-group,
+.btn-group-vertical > .btn-group > .btn {
   display: block;
   float: none;
   width: 100%;
   max-width: 100%;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 598, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group-vertical > .btn-group > .btn {
   float: none;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-group-vertical > .btn + .btn, .btn-group-vertical > .btn + .btn-group, .btn-group-vertical > .btn-group + .btn, .btn-group-vertical > .btn-group + .btn-group {
+/* line 601, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-group-vertical > .btn + .btn,
+.btn-group-vertical > .btn + .btn-group,
+.btn-group-vertical > .btn-group + .btn,
+.btn-group-vertical > .btn-group + .btn-group {
   margin-top: -1px;
   margin-left: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 608, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group-vertical > .btn:not(:first-child):not(:last-child) {
   border-radius: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 611, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group-vertical > .btn:first-child:not(:last-child) {
   border-top-right-radius: 4px;
   border-top-left-radius: 4px;
@@ -9097,7 +9274,7 @@ input[type=submit].btn-block, input[type=reset].btn-block, input[type=button].bt
   border-bottom-left-radius: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 617, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group-vertical > .btn:last-child:not(:first-child) {
   border-top-right-radius: 0;
   border-top-left-radius: 0;
@@ -9105,24 +9282,25 @@ input[type=submit].btn-block, input[type=reset].btn-block, input[type=button].bt
   border-bottom-left-radius: 4px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 623, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group-vertical > .btn-group:not(:first-child):not(:last-child) > .btn {
   border-radius: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-group-vertical > .btn-group:first-child:not(:last-child) > .btn:last-child, .btn-group-vertical > .btn-group:first-child:not(:last-child) > .dropdown-toggle {
+/* line 626, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-group-vertical > .btn-group:first-child:not(:last-child) > .btn:last-child,
+.btn-group-vertical > .btn-group:first-child:not(:last-child) > .dropdown-toggle {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 631, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group-vertical > .btn-group:last-child:not(:first-child) > .btn:first-child {
   border-top-right-radius: 0;
   border-top-left-radius: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 635, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group-justified {
   display: table;
   width: 100%;
@@ -9130,42 +9308,46 @@ input[type=submit].btn-block, input[type=reset].btn-block, input[type=button].bt
   border-collapse: separate;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.btn-group-justified > .btn, .btn-group-justified > .btn-group {
+/* line 641, ../sass/openeyes/components/_bootstrap-tour.scss */
+.btn-group-justified > .btn,
+.btn-group-justified > .btn-group {
   float: none;
   display: table-cell;
   width: 1%;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 647, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group-justified > .btn-group .btn {
   width: 100%;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 650, ../sass/openeyes/components/_bootstrap-tour.scss */
 .btn-group-justified > .btn-group .dropdown-menu {
   left: auto;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-[data-toggle=buttons] > .btn input[type=radio], [data-toggle=buttons] > .btn-group > .btn input[type=radio], [data-toggle=buttons] > .btn input[type=checkbox], [data-toggle=buttons] > .btn-group > .btn input[type=checkbox] {
+/* line 653, ../sass/openeyes/components/_bootstrap-tour.scss */
+[data-toggle="buttons"] > .btn input[type="radio"],
+[data-toggle="buttons"] > .btn-group > .btn input[type="radio"],
+[data-toggle="buttons"] > .btn input[type="checkbox"],
+[data-toggle="buttons"] > .btn-group > .btn input[type="checkbox"] {
   position: absolute;
   clip: rect(0, 0, 0, 0);
   pointer-events: none;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 661, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 10001;
+  z-index: 1060;
   display: none;
   max-width: 276px;
   padding: 1px;
-  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-style: normal;
-  font-weight: 400;
+  font-weight: normal;
   letter-spacing: normal;
   line-break: auto;
   line-height: 1.42857143;
@@ -9179,36 +9361,36 @@ input[type=submit].btn-block, input[type=reset].btn-block, input[type=button].bt
   word-spacing: normal;
   word-wrap: normal;
   font-size: 14px;
-  background-color: #fff;
+  background-color: #ffffff;
   background-clip: padding-box;
-  border: 1px solid #ccc;
+  border: 1px solid #cccccc;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 6px;
   -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 693, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover.top {
   margin-top: -10px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 696, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover.right {
   margin-left: 10px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 699, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover.bottom {
   margin-top: 10px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 702, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover.left {
   margin-left: -10px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 705, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover-title {
   margin: 0;
   padding: 8px 14px;
@@ -9218,13 +9400,14 @@ input[type=submit].btn-block, input[type=reset].btn-block, input[type=button].bt
   border-radius: 5px 5px 0 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 713, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover-content {
   padding: 9px 14px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.popover > .arrow, .popover > .arrow:after {
+/* line 716, ../sass/openeyes/components/_bootstrap-tour.scss */
+.popover > .arrow,
+.popover > .arrow:after {
   position: absolute;
   display: block;
   width: 0;
@@ -9233,140 +9416,140 @@ input[type=submit].btn-block, input[type=reset].btn-block, input[type=button].bt
   border-style: solid;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 725, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover > .arrow {
   border-width: 11px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 728, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover > .arrow:after {
   border-width: 10px;
   content: "";
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 732, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover.top > .arrow {
   left: 50%;
   margin-left: -11px;
   border-bottom-width: 0;
-  border-top-color: #999;
+  border-top-color: #999999;
   border-top-color: rgba(0, 0, 0, 0.25);
   bottom: -11px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 740, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover.top > .arrow:after {
   content: " ";
   bottom: 1px;
   margin-left: -10px;
   border-bottom-width: 0;
-  border-top-color: #fff;
+  border-top-color: #ffffff;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 747, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover.right > .arrow {
   top: 50%;
   left: -11px;
   margin-top: -11px;
   border-left-width: 0;
-  border-right-color: #999;
+  border-right-color: #999999;
   border-right-color: rgba(0, 0, 0, 0.25);
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 755, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover.right > .arrow:after {
   content: " ";
   left: 1px;
   bottom: -10px;
   border-left-width: 0;
-  border-right-color: #fff;
+  border-right-color: #ffffff;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 762, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover.bottom > .arrow {
   left: 50%;
   margin-left: -11px;
   border-top-width: 0;
-  border-bottom-color: #999;
+  border-bottom-color: #999999;
   border-bottom-color: rgba(0, 0, 0, 0.25);
   top: -11px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 770, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover.bottom > .arrow:after {
   content: " ";
   top: 1px;
   margin-left: -10px;
   border-top-width: 0;
-  border-bottom-color: #fff;
+  border-bottom-color: #ffffff;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 777, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover.left > .arrow {
   top: 50%;
   right: -11px;
   margin-top: -11px;
   border-right-width: 0;
-  border-left-color: #999;
+  border-left-color: #999999;
   border-left-color: rgba(0, 0, 0, 0.25);
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 785, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover.left > .arrow:after {
   content: " ";
   right: 1px;
   border-right-width: 0;
-  border-left-color: #fff;
+  border-left-color: #ffffff;
   bottom: -10px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 792, ../sass/openeyes/components/_bootstrap-tour.scss */
 .fade {
   opacity: 0;
-  -webkit-transition: opacity .15s linear;
-  -o-transition: opacity .15s linear;
-  transition: opacity .15s linear;
+  -webkit-transition: opacity 0.15s linear;
+  -o-transition: opacity 0.15s linear;
+  transition: opacity 0.15s linear;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 798, ../sass/openeyes/components/_bootstrap-tour.scss */
 .fade.in {
   opacity: 1;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 801, ../sass/openeyes/components/_bootstrap-tour.scss */
 .collapse {
   display: none;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 804, ../sass/openeyes/components/_bootstrap-tour.scss */
 .collapse.in {
   display: block;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 807, ../sass/openeyes/components/_bootstrap-tour.scss */
 tr.collapse.in {
   display: table-row;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 810, ../sass/openeyes/components/_bootstrap-tour.scss */
 tbody.collapse.in {
   display: table-row-group;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 813, ../sass/openeyes/components/_bootstrap-tour.scss */
 .collapsing {
   position: relative;
   height: 0;
   overflow: hidden;
-  -webkit-transition-property: height,visibility;
-  transition-property: height,visibility;
-  -webkit-transition-duration: .35s;
-  transition-duration: .35s;
+  -webkit-transition-property: height, visibility;
+  transition-property: height, visibility;
+  -webkit-transition-duration: 0.35s;
+  transition-duration: 0.35s;
   -webkit-transition-timing-function: ease;
   transition-timing-function: ease;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 824, ../sass/openeyes/components/_bootstrap-tour.scss */
 .tour-backdrop {
   position: fixed;
   top: 0;
@@ -9375,23 +9558,23 @@ tbody.collapse.in {
   left: 0;
   z-index: 1100;
   background-color: #000;
-  opacity: .6;
+  opacity: 0.8;
   filter: alpha(opacity=80);
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 835, ../sass/openeyes/components/_bootstrap-tour.scss */
 .tour-step-backdrop {
   position: relative;
   z-index: 1101;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 839, ../sass/openeyes/components/_bootstrap-tour.scss */
 .tour-step-backdrop > td {
   position: relative;
   z-index: 1101;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
+/* line 843, ../sass/openeyes/components/_bootstrap-tour.scss */
 .tour-step-background {
   position: absolute !important;
   z-index: 1100;
@@ -9399,145 +9582,214 @@ tbody.collapse.in {
   border-radius: 6px;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.popover[class*=tour-] {
+/* line 849, ../sass/openeyes/components/_bootstrap-tour.scss */
+.popover[class*="tour-"] {
   z-index: 1102;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.popover[class*=tour-] .popover-navigation {
+/* line 852, ../sass/openeyes/components/_bootstrap-tour.scss */
+.popover[class*="tour-"] .popover-navigation {
   padding: 9px 14px;
   overflow: hidden;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.popover[class*=tour-] .popover-navigation [data-role=end] {
+/* line 856, ../sass/openeyes/components/_bootstrap-tour.scss */
+.popover[class*="tour-"] .popover-navigation *[data-role="end"] {
   float: right;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.popover[class*=tour-] .popover-navigation [data-role=prev], .popover[class*=tour-] .popover-navigation [data-role=next], .popover[class*=tour-] .popover-navigation [data-role=end] {
+/* line 859, ../sass/openeyes/components/_bootstrap-tour.scss */
+.popover[class*="tour-"] .popover-navigation *[data-role="prev"],
+.popover[class*="tour-"] .popover-navigation *[data-role="next"],
+.popover[class*="tour-"] .popover-navigation *[data-role="end"] {
   cursor: pointer;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.popover[class*=tour-] .popover-navigation [data-role=prev].disabled, .popover[class*=tour-] .popover-navigation [data-role=next].disabled, .popover[class*=tour-] .popover-navigation [data-role=end].disabled {
+/* line 864, ../sass/openeyes/components/_bootstrap-tour.scss */
+.popover[class*="tour-"] .popover-navigation *[data-role="prev"].disabled,
+.popover[class*="tour-"] .popover-navigation *[data-role="next"].disabled,
+.popover[class*="tour-"] .popover-navigation *[data-role="end"].disabled {
   cursor: default;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.popover[class*=tour-].orphan {
+/* line 869, ../sass/openeyes/components/_bootstrap-tour.scss */
+.popover[class*="tour-"].orphan {
   position: fixed;
   margin-top: 0;
 }
 
-/* line 26, ../sass/openeyes/components/_tour.scss */
-.popover[class*=tour-].orphan .arrow {
+/* line 873, ../sass/openeyes/components/_bootstrap-tour.scss */
+.popover[class*="tour-"].orphan .arrow {
   display: none;
 }
 
-/* line 28, ../sass/openeyes/components/_tour.scss */
-.tour-step-background {
-  background: transparent;
+/* line 1, ../sass/openeyes/components/_feature-help.scss */
+.help-actions {
+  list-style: none;
+  color: #626568;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  margin-top: 10px;
 }
 
-/* line 31, ../sass/openeyes/components/_tour.scss */
-.popover {
+/* line 9, ../sass/openeyes/components/_feature-help.scss */
+.help-actions li {
+  text-align: left;
+  display: inline-block;
+  font-size: 12px;
+  width: 168px;
+  height: 32px;
+  line-height: 2;
+  padding: 10px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: normal;
+  background-color: #448dd6;
+  -moz-box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+  -webkit-box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+  box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+  padding: 0.3em 1em;
+}
+
+/* line 28, ../sass/openeyes/components/_feature-help.scss */
+.help-actions li:hover {
+  background-color: #5597da;
+}
+
+/* line 31, ../sass/openeyes/components/_feature-help.scss */
+.help-trigger-btn {
+  z-index: 1102;
+  opacity: 0.9;
+  position: fixed;
+  height: 40px;
+  width: 40px;
+  bottom: 5px;
+  left: 20px;
+  background-image: url(../img/help.png);
+  background-repeat: no-repeat;
+  background-size: 40px 40px;
+  cursor: pointer;
+}
+
+/* line 44, ../sass/openeyes/components/_feature-help.scss */
+.help-trigger:hover {
+  opacity: 1;
+}
+
+/* line 47, ../sass/openeyes/components/_feature-help.scss */
+body {
+  background-color: lightblue;
+}
+
+/* line 50, ../sass/openeyes/components/_feature-help.scss */
+.help-title {
+  display: inline-block;
+  width: 100%;
+  margin-top: 8px;
+  font-size: 18px;
+  text-align: center;
+}
+
+/* line 57, ../sass/openeyes/components/_feature-help.scss */
+.help-popup {
+  z-index: 1102;
+  margin: 0 auto;
+  font-family: helvetica;
+  font-size: 14px;
+  color: #4b4d4f;
+  font-weight: 600;
+  line-height: 1.4;
+  background-color: white;
+  border: lightgrey solid 1px;
+  width: 191px;
+  height: 191px;
+  border-radius: 5px;
+  position: fixed;
+  bottom: 60px;
+  left: 10px;
+  display: none;
+}
+
+/* line 75, ../sass/openeyes/components/_feature-help.scss */
+.help-popup::before {
+  content: '';
+  display: block;
+  position: absolute;
+  margin-top: 189px;
+  margin-left: 15px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 14px 14px 0 14px;
+  border-color: white transparent transparent transparent;
+}
+
+/* line 87, ../sass/openeyes/components/_feature-help.scss */
+.help-close {
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 12px;
+  width: 25px;
+  height: 25px;
+  opacity: 0.3;
+}
+
+/* line 96, ../sass/openeyes/components/_feature-help.scss */
+.help-close:hover {
+  opacity: 1;
+}
+
+/* line 99, ../sass/openeyes/components/_feature-help.scss */
+.help-close:before, .help-close:after {
+  position: absolute;
+  left: 15px;
+  content: ' ';
+  height: 17px;
+  width: 2px;
+  background-color: #333;
+}
+
+/* line 107, ../sass/openeyes/components/_feature-help.scss */
+.help-close:before {
+  transform: rotate(45deg);
+}
+
+/* line 110, ../sass/openeyes/components/_feature-help.scss */
+.help-close:after {
+  transform: rotate(-45deg);
+}
+
+/* line 113, ../sass/openeyes/components/_feature-help.scss */
+#help-body-overlay {
+  display: none;
+  position: fixed;
+  top: 82px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: black;
+  opacity: 0.6;
   z-index: 160;
 }
 
-/* line 35, ../sass/openeyes/components/_tour.scss */
-#help-trigger {
-  position: absolute;
-  bottom: 0;
-  background-image: url(../img/infoclose.png);
-  display: block;
-  width: 32px;
-  height: 32px;
-  background-repeat: no-repeat;
-  background-position: 0px 0px;
-  transform: rotate(0.25turn);
-  transition: transform 0.4s cubic-bezier(0.95, 0.05, 0.795, 0.035) 0s, background-position 0.1s linear 0.1s;
-}
-
-/* line 47, ../sass/openeyes/components/_tour.scss */
-.help-active #help-trigger {
-  background-position: -32px 0px;
-  transform: rotate(-0.25turn);
-}
-
-/* line 51, ../sass/openeyes/components/_tour.scss */
-#help-container {
-  z-index: 10000;
-  width: 50px;
-  height: 50px;
+/* line 124, ../sass/openeyes/components/_feature-help.scss */
+#help-header-overlay {
+  display: none;
   position: fixed;
-  bottom: 30px;
-  left: 10px;
+  top: 0;
+  height: 82px;
+  left: 0;
+  right: 0;
+  background: black;
+  opacity: 0.6;
+  z-index: 160;
 }
 
-/* line 59, ../sass/openeyes/components/_tour.scss */
-.help-active {
-  width: 120px;
-  height: 200px;
-}
-
-/* line 64, ../sass/openeyes/components/_tour.scss */
-#help-download {
-  bottom: 140px;
-}
-
-/* line 67, ../sass/openeyes/components/_tour.scss */
-#help-tour {
-  bottom: 90px;
-}
-
-/* line 70, ../sass/openeyes/components/_tour.scss */
-#help-overlay {
-  bottom: 40px;
-}
-
-/* line 73, ../sass/openeyes/components/_tour.scss */
-.help-active .action:nth-child(2) {
-  transition: visibility 0s linear 0.00s;
-  visibility: visible;
-}
-
-/* line 77, ../sass/openeyes/components/_tour.scss */
-.help-active .action:nth-child(3) {
-  transition: visibility 0s linear 0.03s;
-  visibility: visible;
-}
-
-/* line 81, ../sass/openeyes/components/_tour.scss */
-.help-active .action:nth-child(4) {
-  transition: visibility 0s linear 0.06s;
-  visibility: visible;
-}
-
-/* line 85, ../sass/openeyes/components/_tour.scss */
-.action {
-  user-select: none;
-  visibility: hidden;
-  cursor: pointer;
-  font-family: helvetica;
-  width: 125px;
-  line-height: 3;
-  height: 40px;
-  border-radius: 3px;
-  position: absolute;
-  bottom: 110px;
-  left: 5px;
-  color: #fff;
-  background-color: #1233b3;
-  text-align: left;
-  font-size: 12px;
-  padding-left: 3px;
-  box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.18), 0px 4px 12px -7px rgba(0, 0, 0, 0.15);
-  transition: box-shadow 0.2s;
-}
-
-/* line 105, ../sass/openeyes/components/_tour.scss */
-.action:hover {
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.14), 0 4px 8px rgba(0, 0, 0, 0.28);
+/* line 135, ../sass/openeyes/components/_feature-help.scss */
+.popover {
+  z-index: 161;
 }
