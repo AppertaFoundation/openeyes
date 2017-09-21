@@ -29,12 +29,12 @@ if (!isset($values)) {
         'date_display' => $diagnosis->getDisplayDate(),
     );
 }
-    if (isset($diagnosis->date) && strtotime($diagnosis->date)) {
-        list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $diagnosis->date);
+    if (isset($values['date']) && strtotime($values['date'])) {
+        list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $values['date']);
     } else {
         $start_sel_day = $start_sel_month = null;
         $start_sel_year = date('Y');
-        $diagnosis->date = $start_sel_year . '-00-00'; // default to the year displayed in the select dropdowns
+        $values['date'] = $start_sel_year . '-00-00'; // default to the year displayed in the select dropdowns
     }
 
 ?>
@@ -42,13 +42,13 @@ if (!isset($values)) {
 <tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row" style="height:50px;">
     <td style="width:290px;">
 
-        <input type="hidden" name="<?= $field_prefix ?>[id][]" value="<?=$diagnosis->id ?>" />
+        <input type="hidden" name="<?= $field_prefix ?>[id][]" value="<?=$values['id'] ?>" />
 
         <input type="text"
                class="diagnoses-search-autocomplete"
                id="diagnoses_search_autocomplete_<?=$row_count?>"
 
-               <?php if(isset($diagnosis) && !$diagnosis->isNewRecord):?>
+               <?php if(isset($diagnosis) /*&& !$diagnosis->isNewRecord*/):?>
                     data-saved-diagnoses='[<?php echo json_encode(array(
                             'id' => $values['id'],
                             'name' => $values['disorder_display'],
@@ -80,9 +80,9 @@ if (!isset($values)) {
         <input type="hidden" name="<?= $model_name ?>[side_id][]" class="diagnosis-side-value" value="<?=$values['side_id']?>">
     <td>
         <fieldset class="row field-row fuzzy-date">
-            <input type="hidden" name="<?= $model_name ?>[date][]" value="<?= $diagnosis->date ?>" />
+            <input type="hidden" name="<?= $model_name ?>[date][]" value="<?= $values['date'] ?>" />
             <div class="large-12 column end">
-                <span class="start-date-wrapper" <?php if (!$diagnosis->date) {?>style="display: none;"<?php } ?>">
+                <span class="start-date-wrapper" <?php if (!$values['date']) {?>style="display: none;"<?php } ?>">
                     <?php $this->render('application.views.patient._fuzzy_date_fields', array(
                             'sel_day' => $start_sel_day,
                             'sel_month' => $start_sel_month,
