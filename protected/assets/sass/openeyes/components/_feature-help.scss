@@ -6,7 +6,7 @@
   text-align: center;
   margin-top: 10px;
 }
-.help-actions li {
+.help-action {
   text-align: left;
   display: inline-block;
   font-size: 12px;
@@ -25,8 +25,30 @@
   box-shadow: 0 -1px 0 rgba(0,0,0,0.1) inset;
   padding: 0.3em 1em;
 }
-.help-actions li:hover {
+.help-action:hover {
   background-color: #5597da;
+}
+.help-action-active {
+  text-align: left;
+  display: inline-block;
+  font-size: 12px;
+  width: 168px;
+  height: 32px;
+  line-height: 2;
+  padding: 10px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  color: #fff;
+  font-weight:normal;
+  -moz-box-shadow: 0 -1px 0 rgba(0,0,0,0.1) inset;
+  -webkit-box-shadow: 0 -1px 0 rgba(0,0,0,0.1) inset;
+  box-shadow: 0 -1px 0 rgba(0,0,0,0.1) inset;
+  padding: 0.3em 1em;
+  background-color: #ca1111;
+}
+.help-action-active:hover {
+  background-color: #ff0000;
 }
 .help-trigger-btn {
   z-index: 1102;

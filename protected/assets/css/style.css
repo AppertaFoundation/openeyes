@@ -9634,7 +9634,7 @@ tbody.collapse.in {
 }
 
 /* line 9, ../sass/openeyes/components/_feature-help.scss */
-.help-actions li {
+.help-action {
   text-align: left;
   display: inline-block;
   font-size: 12px;
@@ -9655,11 +9655,37 @@ tbody.collapse.in {
 }
 
 /* line 28, ../sass/openeyes/components/_feature-help.scss */
-.help-actions li:hover {
+.help-action:hover {
   background-color: #5597da;
 }
 
 /* line 31, ../sass/openeyes/components/_feature-help.scss */
+.help-action-active {
+  text-align: left;
+  display: inline-block;
+  font-size: 12px;
+  width: 168px;
+  height: 32px;
+  line-height: 2;
+  padding: 10px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: normal;
+  -moz-box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+  -webkit-box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+  box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+  padding: 0.3em 1em;
+  background-color: #ca1111;
+}
+
+/* line 50, ../sass/openeyes/components/_feature-help.scss */
+.help-action-active:hover {
+  background-color: #ff0000;
+}
+
+/* line 53, ../sass/openeyes/components/_feature-help.scss */
 .help-trigger-btn {
   z-index: 1102;
   opacity: 0.9;
@@ -9674,17 +9700,17 @@ tbody.collapse.in {
   cursor: pointer;
 }
 
-/* line 44, ../sass/openeyes/components/_feature-help.scss */
+/* line 66, ../sass/openeyes/components/_feature-help.scss */
 .help-trigger:hover {
   opacity: 1;
 }
 
-/* line 47, ../sass/openeyes/components/_feature-help.scss */
+/* line 69, ../sass/openeyes/components/_feature-help.scss */
 body {
   background-color: lightblue;
 }
 
-/* line 50, ../sass/openeyes/components/_feature-help.scss */
+/* line 72, ../sass/openeyes/components/_feature-help.scss */
 .help-title {
   display: inline-block;
   width: 100%;
@@ -9693,7 +9719,7 @@ body {
   text-align: center;
 }
 
-/* line 57, ../sass/openeyes/components/_feature-help.scss */
+/* line 79, ../sass/openeyes/components/_feature-help.scss */
 .help-popup {
   z-index: 1102;
   margin: 0 auto;
@@ -9713,7 +9739,7 @@ body {
   display: none;
 }
 
-/* line 75, ../sass/openeyes/components/_feature-help.scss */
+/* line 97, ../sass/openeyes/components/_feature-help.scss */
 .help-popup::before {
   content: '';
   display: block;
@@ -9727,7 +9753,7 @@ body {
   border-color: white transparent transparent transparent;
 }
 
-/* line 87, ../sass/openeyes/components/_feature-help.scss */
+/* line 109, ../sass/openeyes/components/_feature-help.scss */
 .help-close {
   cursor: pointer;
   position: absolute;
@@ -9738,12 +9764,12 @@ body {
   opacity: 0.3;
 }
 
-/* line 96, ../sass/openeyes/components/_feature-help.scss */
+/* line 118, ../sass/openeyes/components/_feature-help.scss */
 .help-close:hover {
   opacity: 1;
 }
 
-/* line 99, ../sass/openeyes/components/_feature-help.scss */
+/* line 121, ../sass/openeyes/components/_feature-help.scss */
 .help-close:before, .help-close:after {
   position: absolute;
   left: 15px;
@@ -9753,17 +9779,17 @@ body {
   background-color: #333;
 }
 
-/* line 107, ../sass/openeyes/components/_feature-help.scss */
+/* line 129, ../sass/openeyes/components/_feature-help.scss */
 .help-close:before {
   transform: rotate(45deg);
 }
 
-/* line 110, ../sass/openeyes/components/_feature-help.scss */
+/* line 132, ../sass/openeyes/components/_feature-help.scss */
 .help-close:after {
   transform: rotate(-45deg);
 }
 
-/* line 113, ../sass/openeyes/components/_feature-help.scss */
+/* line 135, ../sass/openeyes/components/_feature-help.scss */
 #help-body-overlay {
   display: none;
   position: fixed;
@@ -9776,7 +9802,7 @@ body {
   z-index: 160;
 }
 
-/* line 124, ../sass/openeyes/components/_feature-help.scss */
+/* line 146, ../sass/openeyes/components/_feature-help.scss */
 #help-header-overlay {
   display: none;
   position: fixed;
@@ -9789,7 +9815,7 @@ body {
   z-index: 160;
 }
 
-/* line 135, ../sass/openeyes/components/_feature-help.scss */
+/* line 157, ../sass/openeyes/components/_feature-help.scss */
 .popover {
   z-index: 161;
 }

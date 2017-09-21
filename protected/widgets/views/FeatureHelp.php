@@ -4,13 +4,13 @@
   <span class="help-close"></span>
   <span class="help-title">Help</span>
     <ul class="help-actions">
-    <li id="help-tour-btn">
+    <li id="help-tour-btn" class="help-action">
       Take a Tour
     </li>
-    <li id="help-overlay-btn">
+    <li id="help-overlay-btn" class="help-action">
       Show Help Overlay
     </li>
-    <li id="help-download-btn">
+    <li id="help-download-btn" class="help-action">
       Download a PDF
     </li>
   </ul>
