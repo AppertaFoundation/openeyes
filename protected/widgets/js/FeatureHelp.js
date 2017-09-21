@@ -1,4 +1,54 @@
-function Steps() {
+/*
+TODO
+This controller needs to be updated so that it supports
+the changes made to the FeatureHelp Widget.
+
+Namely,
+
+The FeatureHelp widget now takes in 3 parameters:
+* Array of tours with names and order (tour steps array as it is in PHP),
+* Overlay/Splash screen steps (tour steps array)(currently uses contentLess),
+* Array of PDF links
+
+To adjust FeatureHelpController to cope this the changes:
+* The constructor takes in 3 parameters
+  Array of tours (tour steps in JSON),
+  Splash screen (tour steps in JSON),
+  Array of PDF links (strings in JSON)
+* The constructor must then use the array of tours to instatiate
+  the tours (note: conflict may occur and this needs to be handled
+  i.e. same element in multiple tours)
+* Each tour is stored in the array of Tour objects (instance attribute)
+* Each tour object has an associated toggle/state which indicates whether
+  the tour is currently being run
+* Each tour must be given callback functions for start and end so that
+  the toggle/state can be updated for this controller and in case the
+  bug occurs which is fixed by running through the tour once programmaticially
+* The constructor must also add the relevant data attributes the elements for the
+  splash screen / overlay as well as a toggle for the splash screen / overlay
+* The constructor must set up event listerners for each of now dynamically
+  generated buttons (take a tour {{tour_name}}, show help overlay, download
+  a PDF {{pdf_name}}) ensuring to bind the context (i.e. this) to the button
+  or use data attributes on the buttons to decide what to do (i.e. start specific tour)
+* Write a function that attaches a click event listener to all buttons in
+  in the help popup and then use the contents/props/attr of the buttons to execute
+  the write code - This function should ensure that only 1 button can be active at once
+
+FeatureHelp used to (Old widget) take in 1 parameter:
+* a single tour (stour steps as it is in PHP)
+This was fine as there was only 1 tour and 1 splash screen
+which shared the same steps and the splash screen used reduced content
+(contentLess)
+Now the tour and splash screen are independnent and if they are the same
+must be entered twice
+
+
+
+
+
+*/
+
+function FeatureHelpController() {
   this.elements = [];
   this.elementsContent = [];
   this.popup = $('.help-popup');
@@ -8,30 +58,30 @@ function Steps() {
   this._getBackdrops();
   this.tour = new Tour({backdrop: true, onEnd: this._tourEnd.bind(this), onStart: this._tourStart.bind(this)});
 }
-Steps.prototype._tourStart = function(tour) {
+FeatureHelpController.prototype._tourStart = function(tour) {
   this.buttons.tour.removeClass('help-action');
   this.buttons.tour.addClass('help-action-active');
   this.buttons.tour.html('End Tour');
 }
-Steps.prototype._tourEnd = function(tour) {
+FeatureHelpController.prototype._tourEnd = function(tour) {
   this.buttons.tour.removeClass('help-action-active');
   this.buttons.tour.addClass('help-action');
   this.buttons.tour.html('Take a Tour');
   this.toggles.tour = 0b0;
 }
-Steps.prototype._addListeners = function () {
+FeatureHelpController.prototype._addListeners = function () {
   this.buttons.overlay.on('click', () => {this.toggleOverlay(true);});
   this.buttons.tour.on('click', () => {this.toggleTour(true);});
   this.buttons.trigger.on('click',() => {this.togglePopup(true);});
   this.buttons.close.on('click',() => {this.closePopup();});
 }
-Steps.prototype.openPopup = function () {
+FeatureHelpController.prototype.openPopup = function () {
   if (this.popup.css('display') === 'none') {
     this.popup.show();
     this.buttons.overlay.trigger('click');
   }
 }
-Steps.prototype.closePopup = function () {
+FeatureHelpController.prototype.closePopup = function () {
   if (this.popup.css('display') !== 'none') {
     $('.help-popup').hide();
     if (this.toggles.overlay) {
@@ -42,14 +92,14 @@ Steps.prototype.closePopup = function () {
     }
   }
 }
-Steps.prototype.togglePopup = function () {
+FeatureHelpController.prototype.togglePopup = function () {
   if (this.popup.css('display') === 'none') {
     this.openPopup();
   } else {
     this.closePopup();
   }
 }
-Steps.prototype.toggleTour = function (force) {
+FeatureHelpController.prototype.toggleTour = function (force) {
   if (!force && this.toggles.overlay) {
     return;
   } else if (this.toggles.overlay) {
@@ -61,24 +111,29 @@ Steps.prototype.toggleTour = function (force) {
     this._endTour();
   }
 }
-Steps.prototype._startTour = function () {
+FeatureHelpController.prototype._startTour = function () {
+  /*
+  This is a temporary fix for bug with bootstrap-tour when using it in conjunction with popover.js
+  go through all tour steps then go back to beginning
+  as for some reason bootstrap-tour is bugged the first time round when using in conjunction with popover.js
+  */
   this._showLongContent();
-  localStorage.clear(); //this is a temporary fix for bug with bootstrap-tour when using it in conjunction with popover.js
+  localStorage.clear();
   this.tour.start(true);
   this.elements.forEach(() => {
-    this.tour.next(); //go through all tour steps then go back to beginning
-  }); //as for some reason bootstrap-tourbugs the first time round when using in conjunction with popover.js
+    this.tour.next();
+  });
   this.tour.goTo(0);
 }
-Steps.prototype._endTour = function () {
+FeatureHelpController.prototype._endTour = function () {
   this.tour.end();
   $('.popover').remove();
 }
-Steps.prototype._getBackdrops = function () {
+FeatureHelpController.prototype._getBackdrops = function () {
   this.header_overlay = $('#help-body-overlay');
   this.body_overlay = $('#help-header-overlay');
 }
-Steps.prototype.addStep = function (params) {
+FeatureHelpController.prototype.addStep = function (params) {
   this.tour.addStep(params);
   const $this = $(params.element);
   $this.attr('data-toggle','popover');
@@ -93,22 +148,22 @@ Steps.prototype.addStep = function (params) {
   }
   this.elementsContent.push({element: params.element, shortContent: params.contentLess, longContent: params.content});
 };
-Steps.prototype.addSteps = function (params) {
+FeatureHelpController.prototype.addSteps = function (params) {
   params.forEach((el) => {
     this.addStep(el);
   });
 }
-Steps.prototype._showShortContent = function () {
+FeatureHelpController.prototype._showShortContent = function () {
   this.elementsContent.forEach((el) => {
     $(el.element).attr('data-content',el.shortContent);
   });
 }
-Steps.prototype._showLongContent = function () {
+FeatureHelpController.prototype._showLongContent = function () {
   this.elementsContent.forEach((el) => {
     $(el.element).attr('data-content',el.longContent);
   });
 }
-Steps.prototype.toggleOverlay = function (force) {
+FeatureHelpController.prototype.toggleOverlay = function (force) {
   if (!force && this.toggles.tour) {
     return;
   } else if (this.toggles.tour) {

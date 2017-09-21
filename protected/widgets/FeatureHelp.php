@@ -18,9 +18,9 @@ class FeatureHelp extends BaseCWidget
       $this->render('FeatureHelp');
       $stepsJSON = json_encode($this->steps);
       echo "<script>
-      var featureHelp = new Steps();
+      var featureHelpController = new FeatureHelpController();
       var newSteps = {$stepsJSON};
-      featureHelp.addSteps(newSteps);
+      featureHelpController.addSteps(newSteps);
       </script>";
     }
 }
