@@ -18,10 +18,6 @@
  */
 ?>
 <?php
-if ( isset($this->getApp()->modules['Internalreferral']) ) {
-    $this->renderPartial('application.modules.Internalreferral.views.default.patient._patient_summary_link');
-}
-
 $this->renderPartial('_patient_all_episodes', array(
                         'episodes' => $episodes,
                         'ordered_episodes' => $ordered_episodes,
