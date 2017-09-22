@@ -29,6 +29,66 @@
 
 <?php }?>
 <?php
+$new_feature_help_parameters = array(
+  'splash_screen' => array(
+    array(
+      'element' => '.large-6.medium-7.column',
+      'title' => 'User Panel',
+      'content' => 'This is where...',
+      'contentLess' => 'This is....',
+      'backdropContainer' => 'header'
+    ),
+    array(
+      'element' => '.oe-find-patient:first',
+      'title' => 'Paitent Search',
+      'content' => 'This is where...',
+      'contentLess' => 'This is....',
+      'showParent' => 'true'
+    )
+  ),
+  'tours' => array(
+    'tour1' => array(
+      array(
+       'element' => '.large-6.medium-7.column',
+       'title' => 'User Panel',
+       'content' => 'This is where...',
+       'contentLess' => 'This is....',
+       'backdropContainer' => 'header'
+     ),
+     array(
+       'element' => '.oe-find-patient:first',
+       'title' => 'Paitent Search',
+       'content' => 'This is where...',
+       'contentLess' => 'This is....',
+       'showParent' => 'true'
+     )
+   ),
+   'tour2' => array(
+     array(
+      'element' => '.large-6.medium-7.column',
+      'title' => 'User Panel',
+      'content' => 'This is where...',
+      'contentLess' => 'This is....',
+      'backdropContainer' => 'header'
+    ),
+    array(
+      'element' => '.oe-find-patient:first',
+      'title' => 'Paitent Search',
+      'content' => 'This is where...',
+      'contentLess' => 'This is....',
+      'showParent' => 'true'
+    )
+   )
+ ),
+  'download_links' => array(
+    'link1' => 'www.google.co.uk',
+    'link2' => 'www.google.co.uk'
+  )
+);
+
+
+
+
 $feature_steps =  array(
              array(
                    'element' => '.large-6.medium-7.column',
@@ -53,4 +113,6 @@ $feature_steps =  array(
                  )
 );
 
-$this->widget('application.widgets.FeatureHelp', array('steps' => $feature_steps));?>
+$this->widget('application.widgets.FeatureHelp', array('steps' => $feature_steps));
+$this->widget('application.widgets.NewFeatureHelp', $new_feature_help_parameters);
+?>
