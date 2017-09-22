@@ -77,7 +77,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
                 $select.append( $('<option>',{'text': 'Select a commonly used diagnosis'}));
                 $.each(data, function(i, item){
-                    $select.append( $('<option>',{'value': item.value, 'text': item.text}));
+                    $select.append( $('<option>',{'value': item.id, 'text': item.label, 'data-item': JSON.stringify(item)}));
                 });
 
                 controller.$inputField.before($select);
@@ -95,10 +95,16 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     }
 
-    DiagnosesSearchController.prototype.addDiagnosis = function(id, name, value){
+    /**
+     * Diagnosis selected for the row
+     *
+     * @param id
+     * @param item
+     */
+    DiagnosesSearchController.prototype.addDiagnosis = function(id, item){
         var controller = this;
         var $displayDiagnosis = controller.$row.find('.diagnosis-display');
-        controller.$row.find('.diagnosis-name').text(name);
+        controller.$row.find('.diagnosis-name').text(item.label);
 
         $displayDiagnosis.show();
 
@@ -108,14 +114,42 @@ OpenEyes.UI = OpenEyes.UI || {};
             controller.$row.find('.savedDiagnosisId').val(id);
         }
 
+        controller.updatePatientConditions(item);
         //This will be the actual disorder ID - SNOMED code
-        controller.$row.find('.savedDiagnosis').val(value);
+        controller.$row.find('.savedDiagnosis').val(item.id);
 
         controller.$row.find('.commonly-used-diagnosis').hide();
         controller.$row.find('.diagnoses-search-inputfield').hide();
         controller.$row.find('.medication-display').show();
+    };
 
-    }
+    /**
+     * Check the given disorder item for any condition attributes that should be updated on the page
+     */
+    DiagnosesSearchController.prototype.updatePatientConditions = function(item)
+    {
+        // note that at the moment this follows the simple premise of inserting or removing additional
+        // hidden fields that are universally searched for on the page, following the pattern established
+        // by the original diagnoses element.
+        if (item.is_diabetes) {
+            this.$row.append('<input type="hidden" name="diabetic_diagnoses[]" value="1" /> ');
+        } else {
+            this.$row.find('input[name^="diabetic_diagnoses"]').remove();
+        }
+
+        // glaucoma is unlikely to come up given this is only being used for systemic disorders
+        // but it is included for completeness.
+        if (item.is_glaucoma) {
+            this.$row.append('<input type="hidden" name="glaucoma_diagnoses[]" value="1" /> ').trigger('change');
+        } else {
+            this.$row.find('input[name^="glaucoma_diagnoses"]').remove();
+        }
+        
+        // trigger event change for any controls looking for them
+        $(":input[name^='diabetic_diagnoses']").trigger('change');
+        $(":input[name^='glaucoma_diagnoses']").trigger('change');
+    };
+
 
     DiagnosesSearchController.prototype.initialiseAutocomplete = function(){
         var controller = this;
@@ -140,9 +174,8 @@ OpenEyes.UI = OpenEyes.UI || {};
                 controller.$inputField.addClass('inset-loader');
             },
             select: function(event, ui){
-
                 //no multiple option
-                controller.addDiagnosis(null, ui.item.label, ui.item.id );
+                controller.addDiagnosis(null, ui.item);
 
                 //clear input
                 $(this).val("");
@@ -152,7 +185,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                 controller.$inputField.removeClass('inset-loader');
             }
         });
-    }
+    };
 
     DiagnosesSearchController.prototype.initialiseTriggers = function(){
         var controller = this;
@@ -165,7 +198,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
 
         controller.$row.on('change', 'select.commonly-used-diagnosis', function(){
-            controller.addDiagnosis(null, $(this).find('option:selected').text(), $(this).val() );
+            controller.addDiagnosis(null, $(this).find('option:selected').data('item') );
             $(this).val('');
         });
     }

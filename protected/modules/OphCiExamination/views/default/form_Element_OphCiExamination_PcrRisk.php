@@ -1,8 +1,8 @@
 <?php
-$jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js'), false, -1);
+$jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/PCRCalculation.js', false, -1);
 ?>
 <script type="text/javascript">
-    $.getScript('<?=$jsPath?>/PCRCalculation.js', function(){
+    $.getScript('<?=$jsPath?>', function(){
         //Map the elements
         mapExaminationToPcr();
         //Make the initial calculations

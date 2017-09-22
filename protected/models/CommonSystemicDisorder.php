@@ -106,12 +106,26 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
         ));
     }
 
+    /**
+     * @return Disorders[]
+     */
+    public static function getDisorders()
+    {
+        return Disorder::model()->findAll(array(
+            'condition' => 'specialty_id is null',
+            'join' => 'JOIN common_systemic_disorder cad ON cad.disorder_id = t.id',
+            'order' => 'term',
+        ));
+    }
+
+    /**
+     * @param $firm
+     * @return array
+     */
     public static function getList($firm)
     {
-        return CHtml::listData(Disorder::model()->findAll(array(
-                'condition' => 'specialty_id is null',
-                'join' => 'JOIN common_systemic_disorder cad ON cad.disorder_id = t.id',
-                'order' => 'term',
-        )), 'id', 'term');
+        // it's unclear why this method expects a firm parameter when it is unused
+        // possibly a future proofing idea that never bore fruit
+        return CHtml::listData(static::getDisorders(), 'id', 'term');
     }
 }
