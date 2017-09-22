@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\OphCiExamination\controllers;
@@ -127,11 +126,11 @@ class DefaultController extends \BaseEventTypeController
      *
      * @return array
      */
-    protected function getElementFilterList()
+    protected function getElementFilterList($include_hidden=true)
     {
         $remove = components\ExaminationHelper::elementFilterList();
 
-        if ($this->set) {
+        if ($include_hidden && $this->set) {
             foreach ($this->set->HiddenElementTypes as $element) {
                 $remove[] = $element->class_name;
             }
@@ -160,6 +159,21 @@ class DefaultController extends \BaseEventTypeController
             }
         }
         return $final;
+    }
+
+    /**
+     * Get all the available element types for the event
+     *
+     * @return array
+     */
+    public function getAllElementTypes()
+    {
+        $remove = $this->getElementFilterList(false);
+        return array_filter(
+            parent::getAllElementTypes(),
+            function($et) use ($remove) {
+                return !in_array($et->class_name, $remove);
+            });
     }
 
     public function getElementTree($remove_list = array())
@@ -933,45 +947,6 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Save Risks - because it's part of the History Risk element it need to be saved from that element.
-     *
-     * @param $element
-     * @param $data
-     * @param $index
-     */
-    protected function saveComplexAttributes_Element_OphCiExamination_HistoryRisk($element)
-    {
-        $event_type = \EventType::model()->find('name=?', array('Examination'));
-        $event = $this->episode->getMostRecentEventByType($event_type->id);
-        if ($event->id === $this->event->id) {
-            $this->updateRisk('anticoagulant', $element->anticoagulant, $element->anticoagulant_name);
-            $this->updateRisk('alphablocker', $element->alphablocker, $element->alpha_blocker_name);
-        }
-    }
-
-    /**
-     * Updating Patient Risk details.
-     *
-     * @param string $risk_name
-     * @param string $risk_value
-     */
-    protected function updateRisk($risk_name, $risk_value, $risk_comment)
-    {
-        $historyRisk = new models\Element_OphCiExamination_HistoryRisk();
-        if ($risk_name === 'anticoagulant') {
-            $risk_check = 'Anticoagulants';
-            $recent = $historyRisk->mostRecentCheckedAnticoag($this->patient->id);
-        } else {
-            $risk_check = 'Alpha blockers';
-            $recent = $historyRisk->mostRecentCheckedAlpha($this->patient->id);
-        }
-
-        if (is_null($recent) || strtotime($this->event->event_date) >= strtotime($recent->event->event_date)) {
-            $this->updateSummaryRisk($risk_value, $risk_comment, $risk_check);
-        }
-    }
-
-    /**
      * Save the dilation treatments.
      *
      * @param models\Element_OphCiExamination_Dilation $element
@@ -1381,61 +1356,6 @@ class DefaultController extends \BaseEventTypeController
             if($element->save()) {
                 echo \CJSON::encode(array('success' => 'true'));
             }
-        }
-    }
-
-    /**
-     * @param $id
-     *
-     * @return bool
-     */
-    public function actionDelete($id)
-    {
-        $historyRisk = new models\Element_OphCiExamination_HistoryRisk();
-        $recentAnticoag = $historyRisk->mostRecentCheckedAnticoag($this->patient->id);
-        $recentAlpha = $historyRisk->mostRecentCheckedAlpha($this->patient->id);
-        $thisRisk = $historyRisk->find('event_id = ?', array($this->event->id));
-
-        if ($thisRisk) {
-            if (is_null($recentAnticoag) || $recentAnticoag->anticoagulant === '0' || $recentAnticoag->event->id === $thisRisk->event->id) {
-                if ($previous = $historyRisk->previousCheckedAnticoag($this->patient->id, $thisRisk->event->event_date)){
-                    if ($previous->anticoagulant !== $thisRisk->anticoagulant) {
-                        $this->updateSummaryRisk($previous->anticoagulant, $previous->anticoagulant_name, 'Anticoagulants');
-                    }
-                }
-            }
-            if (is_null($recentAlpha) || $recentAlpha->alphablocker === '0' || $recentAnticoag->event->id === $thisRisk->event->id) {
-                if ($previous = $historyRisk->previousCheckedAlpha($this->patient->id, $thisRisk->event->event_date)){
-                    if ($previous->alphablocker !== $thisRisk->alphablocker) {
-                        $this->updateSummaryRisk($previous->alphablocker, $previous->alpha_blocker_name, 'Alpha blockers');
-                    }
-                }
-            }
-        }
-
-        return parent::actionDelete($id);
-    }
-
-    /**
-     * @param $risk_value
-     * @param $risk_comment
-     * @param $risk_check
-     */
-    protected function updateSummaryRisk($risk_value, $risk_comment, $risk_check)
-    {
-        $risk = \Risk::model()->find('name=?', array($risk_check));
-        $criteria = new \CDbCriteria();
-        $criteria->compare('risk_id', $risk['id']);
-        $criteria->compare('patient_id', $this->patient->id);
-        $patient_risk = \PatientRiskAssignment::model()->find($criteria);
-        if ($risk_value === '1') {
-            $patient_risk = (!$patient_risk) ? new \PatientRiskAssignment() : $patient_risk;
-            $patient_risk->risk_id = $risk['id'];
-            $patient_risk->patient_id = $this->patient->id;
-            $patient_risk->comments = $risk_comment;
-            $patient_risk->save();
-        } elseif ($patient_risk && ($risk_value === '2')) {
-            \PatientRiskAssignment::model()->deleteByPk($patient_risk->id);
         }
     }
 }

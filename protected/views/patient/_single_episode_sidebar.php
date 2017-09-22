@@ -112,12 +112,12 @@ if (is_array($ordered_episodes)) {
                             data-event-date="<?= $event->event_date ?>" data-created-date="<?= $event->created_date ?>"
                             data-event-year-display="<?= substr($event->NHSDate('event_date'), -4) ?>"
                             data-event-date-display="<?= $event->NHSDate('event_date') ?>"
-                            data-event-type="<?= $event->eventType->name ?>"
+                            data-event-type="<?= $event_name ?>"
                             data-subspecialty="<?= $subspecialty_name ?>">
 
                             <!-- Quicklook tooltip -->
                             <div class="tooltip quicklook" style="display: none; ">
-                                <div class="event-name"><?php echo $event->eventType->name ?></div>
+                                <div class="event-name"><?php echo $event_name ?></div>
                                 <div class="event-info"><?php echo str_replace("\n", "<br/>", $event->info) ?></div>
                                 <?php if ($event->hasIssue()) { ?>
                                     <div class="event-issue<?= $event->hasIssue('ready') ? ' ready' : ''?>"><?php echo $event->getIssueText() ?></div>

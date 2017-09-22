@@ -91,7 +91,7 @@ $dropDowns = array(
     ),
     'can_lie_flat' => array(
         'options' => array('N' => 'No', 'Y' => 'Yes'),
-        'class' => '',
+        'class' => 'pcr_lie_flat',
     ),
 );
 echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'));

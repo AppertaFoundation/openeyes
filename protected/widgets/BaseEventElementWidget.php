@@ -11,6 +11,7 @@ class BaseEventElementWidget extends CWidget
     public static $EVENT_PRINT_MODE = 8;
     public static $EVENT_EDIT_MODE = 16;
     public static $EPISODE_SUMMARY_MODE = 32;
+    public static $DATA_MODE = 64;
 
     /**
      * @var string of the module name.
@@ -84,7 +85,7 @@ class BaseEventElementWidget extends CWidget
         return in_array($mode,
             array(static::$PATIENT_SUMMARY_MODE, static::$PATIENT_POPUP_MODE,
                 static::$EVENT_VIEW_MODE, static::$EVENT_PRINT_MODE,
-                static::$EVENT_EDIT_MODE), true);
+                static::$EVENT_EDIT_MODE, static::$DATA_MODE), true);
     }
 
     /**
@@ -126,6 +127,7 @@ class BaseEventElementWidget extends CWidget
         if (!$this->validateMode($this->mode)) {
             throw new \CHttpException('invalid mode value for ' . static::class);
         }
+
         $this->initialiseElement();
 
         parent::init();
@@ -227,12 +229,22 @@ class BaseEventElementWidget extends CWidget
     /**
      * @param $path
      * @param $filename
+     * @param boolean $core - get path for a core asset or not.
      * @return mixed
      */
-    protected function getPublishedPath($path, $filename)
+    protected function getPublishedPath($path, $filename, $core = false)
     {
-        $elements = array_filter(array($this->getBasePublishedPath(), $path, $filename),
-            function($el) { return $el !== null; });
+        $root = $core ?
+            $this->getApp()->getBasePath() . DIRECTORY_SEPARATOR . 'assets'
+            : $this->getBasePublishedPath();
+        // remove any null entries prior to implosion
+        $elements = array_filter(
+            array($root, $path, $filename),
+            function($el) {
+                return $el !== null;
+            }
+        );
+
         return $this->getApp()->getAssetManager()->publish(
             implode(DIRECTORY_SEPARATOR, $elements)
         );
@@ -240,11 +252,12 @@ class BaseEventElementWidget extends CWidget
 
     /**
      * @param string $filename
+     * @param boolean $core - js is from core or not
      * @return string
      */
-    public function getJsPublishedPath($filename = null)
+    public function getJsPublishedPath($filename = null, $core = false)
     {
-        return $this->getPublishedPath('js', $filename);
+        return $this->getPublishedPath('js', $filename, $core);
     }
 
     /**
@@ -306,7 +319,6 @@ class BaseEventElementWidget extends CWidget
 
         // quick way to get the base class name
         $short_name = substr(strrchr(get_class($this), '\\'),1);
-
         switch ($this->mode) {
             case static::$EVENT_VIEW_MODE:
                 return $short_name . '_event_view';
@@ -320,6 +332,9 @@ class BaseEventElementWidget extends CWidget
                 break;
             case static::$EPISODE_SUMMARY_MODE:
                 return $short_name . '_episodesummary';
+                break;
+            case static::$DATA_MODE:
+                throw new \SystemException('No view to render when ' . static::class . ' in DATA_MODE');
                 break;
             default:
                 return $short_name . '_patient_mode';

@@ -4,15 +4,15 @@
  *
  * (C) OpenEyes Foundation, 2017
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2017, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -56,7 +56,24 @@ class MedicationMigrateCommand extends PatientLevelMigration
 
     protected function processPatientRows($patient, $rows)
     {
-        $entries = parent::processPatientRows($patient, $rows);
+        // strip out any entries that don't actually have a medication or drug recorded
+        $rows = array_filter($rows, function($row) {
+            return $row['drug_id'] || $row['medication_drug_id'];
+        });
+        $cleaned_rows = array();
+        foreach($rows as $row) {
+            if (!$row['drug_id'] && !$row['medication_drug_id']) {
+                continue;
+            }
+            if (substr($row['start_date'], 0, 4) === '0000') {
+                $row['start_date'] = '0000-00-00';
+            }
+            if (substr($row['end_date'], 0, 4) === '0000') {
+                $row['end_date'] = '0000-00-00';
+            }
+            $cleaned_rows[] = $row;
+        }
+        $entries = parent::processPatientRows($patient, $cleaned_rows);
         return array_merge($entries, $this->getEntriesForUntrackedPrescriptionItems($patient, $entries));
     }
 

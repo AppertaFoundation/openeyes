@@ -5,16 +5,15 @@
 * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
 * (C) OpenEyes Foundation, 2011-2013
 * This file is part of OpenEyes.
-* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+* You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 *
 * @link http://www.openeyes.org.uk
 *
 * @author OpenEyes <info@openeyes.org.uk>
-* @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
 * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
-* @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+* @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 class DefaultController extends BaseEventTypeController
 {
@@ -224,6 +223,23 @@ class DefaultController extends BaseEventTypeController
             Yii::app()->user->setFlash('info.prescription_allergy', $this->patient->getAllergiesString());
         } else {
             Yii::app()->user->setFlash('patient.prescription_allergy', $this->patient->getAllergiesString());
+        }
+    }
+
+    /*
+     * Set flash message reason for edit
+     * @param $reason_id
+     * @param $reason_text
+     */
+    protected function showReasonForEdit( $reason_id, $reason_text )
+    {
+        $edit_reason = OphDrPrescriptionEditReasons::model()->findByPk($reason_id);
+        if($edit_reason != null){
+            if($reason_id > 1){
+                Yii::app()->user->setFlash('alert.edit_reason', 'Edit reason: '.$edit_reason->caption);
+            } else {
+                Yii::app()->user->setFlash('alert.edit_reason', 'Edit reason: '.$reason_text);
+            }
         }
     }
 
@@ -591,18 +607,18 @@ class DefaultController extends BaseEventTypeController
         }
         else
         {
-            if(isset($_POST['do_not_save']) && $_POST['do_not_save']=='1')
+            if(isset($_GET['do_not_save']) && $_GET['do_not_save']=='1')
             {
-                $reason_id = isset($_POST['reason']) ? $_POST['reason'] : 0;
-                $reason_other_text = isset($_POST['reason_other']) ? $_POST['reason_other'] : '';
-                $_POST=null;
+                $reason_id = isset($_GET['reason']) ? $_GET['reason'] : 0;
+                $reason_other_text = isset($_GET['reason_other']) ? $_GET['reason_other'] : '';
+               // $_POST=null;
             }
             else
             {
                 $reason_id = $model->edit_reason_id;
                 $reason_other_text = $model->edit_reason_other;
             }
-
+            $this->showReasonForEdit($reason_id,$reason_other_text);
             parent::actionUpdate($id);
         }
     }
@@ -635,5 +651,4 @@ class DefaultController extends BaseEventTypeController
         }
         return false;
     }
-
 }
