@@ -229,12 +229,22 @@ class BaseEventElementWidget extends CWidget
     /**
      * @param $path
      * @param $filename
+     * @param boolean $core - get path for a core asset or not.
      * @return mixed
      */
-    protected function getPublishedPath($path, $filename)
+    protected function getPublishedPath($path, $filename, $core = false)
     {
-        $elements = array_filter(array($this->getBasePublishedPath(), $path, $filename),
-            function($el) { return $el !== null; });
+        $root = $core ?
+            $this->getApp()->getBasePath() . DIRECTORY_SEPARATOR . 'assets'
+            : $this->getBasePublishedPath();
+        // remove any null entries prior to implosion
+        $elements = array_filter(
+            array($root, $path, $filename),
+            function($el) {
+                return $el !== null;
+            }
+        );
+
         return $this->getApp()->getAssetManager()->publish(
             implode(DIRECTORY_SEPARATOR, $elements)
         );
@@ -242,11 +252,12 @@ class BaseEventElementWidget extends CWidget
 
     /**
      * @param string $filename
+     * @param boolean $core - js is from core or not
      * @return string
      */
-    public function getJsPublishedPath($filename = null)
+    public function getJsPublishedPath($filename = null, $core = false)
     {
-        return $this->getPublishedPath('js', $filename);
+        return $this->getPublishedPath('js', $filename, $core);
     }
 
     /**
