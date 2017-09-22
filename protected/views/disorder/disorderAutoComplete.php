@@ -36,7 +36,7 @@ if(is_array($value)):
     $('#enteredDiagnosisText').show();
     $(event.target).parent().append('<input type="hidden" name="<?=$class ?>[<?=$name ?>][]" class="multiDiagnosis" value="' + ui.item.id + '"' +
         <?php echo ($form_id ? " form='{$form_id}'" : '');?>
-        + '>');
+        '>');
     $('#<?=$class?>_<?=$name?>').focus();
 
     return false;
