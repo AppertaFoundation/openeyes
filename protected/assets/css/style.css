@@ -9731,7 +9731,7 @@ body {
   background-color: white;
   border: lightgrey solid 1px;
   width: 191px;
-  height: 191px;
+  height: auto;
   border-radius: 5px;
   position: fixed;
   bottom: 60px;
@@ -9743,8 +9743,8 @@ body {
 .help-popup::before {
   content: '';
   display: block;
-  position: absolute;
-  margin-top: 189px;
+  position: fixed;
+  bottom: 49px;
   margin-left: 15px;
   width: 0;
   height: 0;

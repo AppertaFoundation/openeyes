@@ -1,3 +1,7 @@
+/* DEPRECATED */
+
+/* DONE TODO NewFeatureHelpController */
+
 /*
 TODO
 This controller needs to be updated so that it supports

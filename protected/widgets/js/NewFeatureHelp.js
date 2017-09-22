@@ -27,7 +27,6 @@ NewFeatureHelpController.prototype.toggleTour = function(tourName) {
 }
 
 NewFeatureHelpController.prototype.toggleSplashScreen = function() {
-  //$('#help-splash-screen-btn') do something to button add class change html
   if ($('#help-body-overlay').css('display') !== 'none') {
     this.hideSplashScreen();
   } else {
@@ -48,12 +47,20 @@ NewFeatureHelpController.prototype.togglePopup = function() {
 }
 
 NewFeatureHelpController.prototype.showSplashScreen = function() {
+  let $button = $('#help-splash-screen-btn');
+  $button.html('Hide Splash Screen');
+  $button.removeClass('help-action');
+  $button.addClass('help-action-active');
   this.endAllTours();
   window.scrollTo(0,0);
   this._showSplashScreen();
 }
 
 NewFeatureHelpController.prototype.hideSplashScreen = function() {
+  let $button = $('#help-splash-screen-btn');
+  $button.html('Show Splash Screen');
+  $button.removeClass('help-action-active');
+  $button.addClass('help-action');
   this.endAllTours();
   this._hideSplashScreen();
 }
@@ -97,7 +104,7 @@ NewFeatureHelpController.prototype.endAllTours = function() {
 }
 
 NewFeatureHelpController.prototype._initTours = function(tours) {
-  for (var tourName in tours) { //tourName is tour id has own but prefixed so slice n
+  for (var tourName in tours) {
     var tourSteps = tours[tourName];
     this.tours[tourName] = new Tour(
       {
@@ -127,6 +134,10 @@ NewFeatureHelpController.prototype._initSplashScreen = function(splashScreen) {
 
 NewFeatureHelpController.prototype._tourEnded = function(tourName) {
   $('.popover').remove();
+  let $button = $(`#help-tour-name-${tourName}`);
+  $button.html(`Start ${tourName}`);
+  $button.removeClass('help-action-active');
+  $button.addClass('help-action');
 }
 
 NewFeatureHelpController.prototype._tourStarted = function(tourName) {
@@ -135,4 +146,8 @@ NewFeatureHelpController.prototype._tourStarted = function(tourName) {
     this.tours[tourName].next();
   }
   this.tours[tourName].goTo(0);
+  let $button = $(`#help-tour-name-${tourName}`);
+  $button.html(`End ${tourName}`);
+  $button.removeClass('help-action');
+  $button.addClass('help-action-active');
 }
