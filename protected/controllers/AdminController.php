@@ -36,11 +36,6 @@ class AdminController extends BaseAdminController
         $this->genericAdmin('Edit Previous Ophthalmic Surgery Choices', 'CommonPreviousOperation');
     }
 
-    public function actionEditMedicationStopReason()
-    {
-        $this->genericAdmin('Edit Medication Stop Reason', 'MedicationStopReason');
-    }
-
     public function actionEditCommonOphthalmicDisorderGroups()
     {
         $this->genericAdmin('Common Ophthalmic Disorder Groups', 'CommonOphthalmicDisorderGroup');

@@ -939,4 +939,11 @@ class AdminController extends \ModuleAdminController
         $this->genericAdmin(models\FamilyHistory_Entry::model()->getAttributeLabel('condition_id'),
             'OEModule\OphCiExamination\models\FamilyHistoryCondition');
     }
+
+    public function actionHistoryMedicationsStopReason()
+    {
+        $this->genericAdmin('Medication Stop Reason',
+            'OEModule\OphCiExamination\models\HistoryMedicationsStopReason');
+    }
+
 }

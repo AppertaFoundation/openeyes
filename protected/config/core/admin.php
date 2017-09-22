@@ -38,7 +38,6 @@ return array(
                 'Commissioning body service types' => '/admin/commissioning_body_service_types',
                 'Event deletion requests' => '/admin/eventDeletionRequests',
                 'Custom episode summaries' => '/admin/episodeSummaries',
-                'Medication Stop Reason' => '/admin/editmedicationstopreason',
                 'Previous Ophthalmic Surgery' => '/admin/editpreviousoperation',
                 'Findings' => '/admin/managefindings',
                 'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
