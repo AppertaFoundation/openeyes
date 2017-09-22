@@ -170,6 +170,7 @@ class BaseEventElementWidget extends CWidget
             // we set the element to the provided data
             $this->updateElementFromData($this->element, $this->data);
         }
+        $this->element->widget = $this;
     }
 
     protected function isAtTip()

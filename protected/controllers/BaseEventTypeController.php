@@ -1537,7 +1537,6 @@ class BaseEventTypeController extends BaseModuleController
         ($use_container_view) && $this->beginContent($container_view, $view_data);
         if ($element->widgetClass) {
             // only wrap the element in a widget if it's not already in one
-            $action_type = $this->getActionType($action);
             $widget = $element->widget ? :
                 $this->createWidget($element->widgetClass,
                     array(

@@ -15,6 +15,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCiExamination\models\HistoryRisksEntry;
+
 ?>
 
 <?php
@@ -58,7 +60,8 @@ $required_risk_ids = array_map(function($r) { return $r->id; }, $element->getReq
                     'model_name' => $model_name,
                     'field_prefix' => $model_name . '[entries][' . $row_count . ']',
                     'row_count' => $row_count,
-                    'removable' => false
+                    'removable' => false,
+                    'posted_not_checked' => $element->widget->postedNotChecked($row_count)
                 )
             );
             $row_count++;
@@ -74,7 +77,8 @@ $required_risk_ids = array_map(function($r) { return $r->id; }, $element->getReq
                     'field_prefix' => $model_name . '[entries][' . $row_count . ']',
                     'row_count' => $row_count,
                     'removable' => !in_array($entry->risk_id, $required_risk_ids),
-                    'risks' => $risks_options
+                    'risks' => $risks_options,
+                    'posted_not_checked' => $element->widget->postedNotChecked($row_count)
                 )
             );
             $row_count++;
@@ -101,6 +105,7 @@ $required_risk_ids = array_map(function($r) { return $r->id; }, $element->getReq
                 'row_count' => '{{row_count}}',
                 'removable' => true,
                 'risks' => $risks_options,
+                'posted_not_checked' => false,
                 'values' => array(
                     'id' => '',
                     'risk_id' => '{{risk_id}}',

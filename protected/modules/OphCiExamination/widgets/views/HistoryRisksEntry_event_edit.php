@@ -31,7 +31,7 @@ if (!isset($values)) {
         'risk_display' => $entry->displayrisk,
         'has_risk' => $entry->has_risk,
         'other' => $entry->other,
-        'comments' => $entry->comments,
+        'comments' => $entry->comments
     );
 }
 ?>
@@ -66,7 +66,7 @@ if (!isset($values)) {
     </td>
     <td id="OEModule_OphCiExamination_models_HistoryRisks_entries_<?=$row_count?>_risk_id_error">
         <label class="inline highlight">
-            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', false, array('value' => HistoryRisksEntry::$NOT_CHECKED)); ?>
+            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $posted_not_checked, array('value' => HistoryRisksEntry::$NOT_CHECKED)); ?>
             Not checked
         </label>
         <label class="inline highlight">
