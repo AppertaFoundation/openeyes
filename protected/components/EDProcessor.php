@@ -37,13 +37,23 @@ class EDProcessor
 
     /**
      * @param int $event_id
+     * @param string $canvas_mnemonic - limit clearance to the given mnemonic
      */
-    protected function clearEvent($event_id)
+    protected function clearEvent($event_id, $canvas_mnemonic = null)
     {
-        $this->app->db
-            ->createCommand('DELETE FROM mview_datapoint_node where event_id = :eid')
-            ->bindParam(':eid', $event_id)
-            ->query();
+        $query_string = 'DELETE FROM mview_datapoint_node where event_id = :eid';
+        if ($canvas_mnemonic) {
+            $query_string .= ' AND canvas_mnemonic = :cmn';
+        }
+
+        $query = $this->app->db
+            ->createCommand($query_string)
+            ->bindParam(':eid', $event_id);
+
+        if ($canvas_mnemonic) {
+            $query->bindParam(':cmn', $canvas_mnemonic);
+        }
+        $query->query();
     }
 
     /**
@@ -106,8 +116,8 @@ class EDProcessor
      */
     public function shredElementEyedraws($element, $attributes=array())
     {
-        $this->clearEvent($element->event_id);
         $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element->getElementType()->id);
+        $this->clearEvent($element->event_id, $canvas_mnemonic);
 
         foreach ($attributes as $attr => $side) {
             if (!strlen($element->$attr)) {
@@ -122,6 +132,15 @@ class EDProcessor
                 $this->storeDoodle($element->event_id, $canvas_mnemonic, $side, $ed_doodle);
             }
         }
+    }
+
+    /**
+     * @param $element
+     */
+    public function removeElementEyedraws($element)
+    {
+        $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element->getElementType()->id);
+        $this->clearEvent($element->event_id, $canvas_mnemonic);
     }
 
     /**
