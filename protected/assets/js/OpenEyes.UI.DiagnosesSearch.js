@@ -26,12 +26,12 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.options = $.extend(true, {}, DiagnosesSearchController._defaultOptions, options);
 
         this.$inputField = this.options.inputField;
+        this.fieldPrefix = this.options.fieldPrefix;
         this.$row = this.options.inputField.closest('tr');
         this.code = this.options.code;
         this.commonlyUsedDiagnosesUrl = this.options.commonlyUsedDiagnosesUrl;
         this.singleTemplate = this.options.singleTemplate;
         this.renderTemplate = this.options.renderTemplate;
-        this.modelName = this.options.modelName;
 
         this.init();
         this.initialiseAutocomplete();
@@ -39,7 +39,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     }
 
     DiagnosesSearchController._defaultOptions = {
-        modelName: 'OEModule_OphCiExamination_models_SystemicDiagnoses',
+        fieldPrefix: 'fieldPrefixDefault',
         code: 'systemic',
         commonlyUsedDiagnosesUrl: '/disorder/getcommonlyuseddiagnoses/type/',
         renderTemplate: true,
@@ -48,9 +48,10 @@ OpenEyes.UI = OpenEyes.UI || {};
             "<span class='diagnosis-name'></span></span>" +
             "<select class='commonly-used-diagnosis'></select>" +
             "{{{input_field}}}" +
-            "<input type='hidden' name='OEModule_OphCiExamination_models_SystemicDiagnoses[id][]' class='savedDiagnosisId' value=''>" +
-            "<input type='hidden' name='OEModule_OphCiExamination_models_SystemicDiagnoses[disorder_id][]' class='savedDiagnosis' value=''>",
+            "<input type='hidden' name='{{field_prefix}}[id][]' class='savedDiagnosisId' value=''>" +
+            "<input type='hidden' name='{{field_prefix}}[disorder_id][]' class='savedDiagnosis' value=''>"
     };
+
 
     DiagnosesSearchController.prototype.init = function(){
         var controller = this;
@@ -64,7 +65,8 @@ OpenEyes.UI = OpenEyes.UI || {};
                 this.singleTemplate,
                 {
                     'input_field': controller.$inputField.prop("outerHTML"),
-                    'row_count': OpenEyes.Util.getNextDataKey( $('#' + controller.modelName + '_diagnoses_table').find('tbody tr'), 'key')
+                    'row_count': OpenEyes.Util.getNextDataKey( $('#' + controller.fieldPrefix + '_diagnoses_table').find('tbody tr'), 'key'),
+                    'field_prefix' : controller.fieldPrefix
                 }
             );
 
@@ -86,11 +88,8 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         savedDiagnoses = controller.$inputField.data('saved-diagnoses');
 
-        if(savedDiagnoses && savedDiagnoses.length){
-
-            $.each(savedDiagnoses, function(i, diagnosis){
-                controller.addDiagnosis(diagnosis.id, diagnosis.name, diagnosis.disorder_id );
-            });
+        if(savedDiagnoses){
+            controller.addDiagnosis(savedDiagnoses.id, savedDiagnoses.name, savedDiagnoses.disorder_id );
         }
 
     }
