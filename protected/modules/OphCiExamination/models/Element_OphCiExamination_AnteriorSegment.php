@@ -227,6 +227,13 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
         $processor->loadElementEyedrawDoodles($patient, $this,\Eye::RIGHT, 'right_eyedraw');
     }
 
+    public function beforeDelete()
+    {
+        $processor = new \EDProcessor();
+        $processor->removeElementEyedraws($this);
+        return parent::beforeDelete();
+    }
+
     /**
      * Performs the shredding of Eyedraw data for the patient record
      *
