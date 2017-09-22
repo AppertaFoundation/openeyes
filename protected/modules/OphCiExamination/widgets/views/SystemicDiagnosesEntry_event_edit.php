@@ -48,11 +48,11 @@ if (!isset($values)) {
                class="diagnoses-search-autocomplete"
                id="diagnoses_search_autocomplete_<?=$row_count?>"
 
-               <?php if(isset($diagnosis) /*&& !$diagnosis->isNewRecord*/):?>
-                    data-saved-diagnoses='[<?php echo json_encode(array(
+               <?php if(isset($diagnosis)):?>
+                    data-saved-diagnoses='<?php echo json_encode(array(
                             'id' => $values['id'],
                             'name' => $values['disorder_display'],
-                            'disorder_id' => $values['disorder_id'])); ?>]'
+                            'disorder_id' => $values['disorder_id'])); ?>'
 
                <?php endif; ?>
         >

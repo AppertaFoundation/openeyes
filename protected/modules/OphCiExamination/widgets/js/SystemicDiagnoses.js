@@ -71,7 +71,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $fuzzyFieldset.find('input[type="hidden"]').val(date);
         });
 
-        DiagnosesSearchController = new OpenEyes.UI.DiagnosesSearchController({'inputField': $row.find('.diagnoses-search-autocomplete') });
+        DiagnosesSearchController = new OpenEyes.UI.DiagnosesSearchController({
+            'inputField': $row.find('.diagnoses-search-autocomplete'),
+            'fieldPrefix': $row.closest('section').data('element-type-class')
+        });
         $row.find('.diagnoses-search-autocomplete').data('DiagnosesSearchController', DiagnosesSearchController );
 
         // radio buttons
