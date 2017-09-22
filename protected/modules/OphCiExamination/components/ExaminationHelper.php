@@ -41,6 +41,12 @@ class ExaminationHelper
             $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
         }
 
+        if (\Yii::app()->params['clinical_management_pcr']) {
+            // The PCR element should not be rendered as it would clash with PCR as part of cataract management.
+            $remove[] = 'OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk';
+        }
+
+
         // Deprecated elements that we keep in place for backward compatibility with rendering
         return array_merge($remove, array(
             'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy',

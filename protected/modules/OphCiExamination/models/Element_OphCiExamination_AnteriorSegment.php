@@ -228,6 +228,19 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
     }
 
     /**
+     * Ensure we remove any doodles shredded out of this element for object persistence
+     *
+     * @return bool
+     * @inheritdoc
+     */
+    public function beforeDelete()
+    {
+        $processor = new \EDProcessor();
+        $processor->removeElementEyedraws($this);
+        return parent::beforeDelete();
+    }
+
+    /**
      * Performs the shredding of Eyedraw data for the patient record
      *
      * @inheritdoc

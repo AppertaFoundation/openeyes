@@ -285,6 +285,18 @@ class BaseEventTypeController extends BaseModuleController
         return $elements;
     }
 
+    /**
+     * @return ElementType[]
+     */
+    protected function getAllElementTypes()
+    {
+        return $this->event_type->getAllElementTypes();
+    }
+
+    /**
+     * @param array $remove_list
+     * @return string
+     */
     public function getElementTree($remove_list = array())
     {
         $element_types_tree = array();
@@ -1175,7 +1187,6 @@ class BaseEventTypeController extends BaseModuleController
         $elements = array();
         $el_cls_name = $element_type->class_name;
         $f_key = CHtml::modelName($el_cls_name);
-
         if (isset($data[$f_key])) {
             $keys = array_keys($data[$f_key]);
 
@@ -1220,9 +1231,8 @@ class BaseEventTypeController extends BaseModuleController
     {
         $errors = array();
         $elements = array();
-
         // only process data for elements that are part of the element type set for the controller event type
-        foreach ($this->event_type->getAllElementTypes() as $element_type) {
+        foreach ($this->getAllElementTypes() as $element_type) {
             $from_data = $this->getElementsForElementType($element_type, $data);
             if (count($from_data) > 0) {
                 $elements = array_merge($elements, $from_data);
@@ -1446,7 +1456,8 @@ class BaseEventTypeController extends BaseModuleController
 
     public function renderIndexSearch()
     {
-        if ($this->show_index_search && in_array($this->action->id,array('create','update'))) {
+        if ($this->show_index_search && in_array($this->getActionType($this->action->id),
+                array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT), true)) {
           $event_type_id = ($this->event->attributes["event_type_id"]);
           $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
           $event_name = $event_type->name;
@@ -1526,7 +1537,6 @@ class BaseEventTypeController extends BaseModuleController
         ($use_container_view) && $this->beginContent($container_view, $view_data);
         if ($element->widgetClass) {
             // only wrap the element in a widget if it's not already in one
-            $action_type = $this->getActionType($action);
             $widget = $element->widget ? :
                 $this->createWidget($element->widgetClass,
                     array(

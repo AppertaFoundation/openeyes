@@ -56,7 +56,24 @@ class MedicationMigrateCommand extends PatientLevelMigration
 
     protected function processPatientRows($patient, $rows)
     {
-        $entries = parent::processPatientRows($patient, $rows);
+        // strip out any entries that don't actually have a medication or drug recorded
+        $rows = array_filter($rows, function($row) {
+            return $row['drug_id'] || $row['medication_drug_id'];
+        });
+        $cleaned_rows = array();
+        foreach($rows as $row) {
+            if (!$row['drug_id'] && !$row['medication_drug_id']) {
+                continue;
+            }
+            if (substr($row['start_date'], 0, 4) === '0000') {
+                $row['start_date'] = '0000-00-00';
+            }
+            if (substr($row['end_date'], 0, 4) === '0000') {
+                $row['end_date'] = '0000-00-00';
+            }
+            $cleaned_rows[] = $row;
+        }
+        $entries = parent::processPatientRows($patient, $cleaned_rows);
         return array_merge($entries, $this->getEntriesForUntrackedPrescriptionItems($patient, $entries));
     }
 
