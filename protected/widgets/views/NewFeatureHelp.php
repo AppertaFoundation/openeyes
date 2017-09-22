@@ -4,15 +4,21 @@
   <span class="help-close"></span>
   <span class="help-title">Help</span>
     <ul class="help-actions">
-    <li id="help-tour-btn" class="help-action">
-      Take a Tour
+    <li id="help-splash-screen-btn" class="help-action">
+      Show Splash Screen
     </li>
-    <li id="help-overlay-btn" class="help-action">
-      Show Help Overlay
-    </li>
-    <li id="help-download-btn" class="help-action">
-      Download a PDF
-    </li>
+    <?php foreach ($tours as $key => $value) { ?>
+      <li id="help-tour-name-<?=$key?>" class="help-action help-action-tour">
+        Start <?=$key?>
+      </li>
+    <?php } ?>
+    <?php foreach ($download_links as $key => $value) { ?>
+      <a href="<?=$value?>" download="<?=$value?>.pdf">
+      <li id="help-<?=$key?>" class="help-action">
+        Download <?=$key?>
+      </li>
+      </a>
+    <?php } ?>
   </ul>
 </div>
 

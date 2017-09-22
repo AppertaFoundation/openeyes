@@ -4,6 +4,47 @@ function NewFeatureHelpController(splashScreen, tours, downloadLinks) {
   this.downloadLinks = downloadLinks;
   this._initTours(tours);
   this._initSplashScreen(splashScreen);
+  this._addListeners();
+}
+
+NewFeatureHelpController.prototype._addListeners = function() {
+  $('.help-trigger-btn').on('click',this.togglePopup.bind(this));
+  $('#help-splash-screen-btn').on('click',this.toggleSplashScreen.bind(this));
+  $('.help-action-tour').on('click',this._toggleTour.bind(this));
+  $('.help-close').on('click',this.togglePopup.bind(this));
+}
+NewFeatureHelpController.prototype._toggleTour = function(evt) {
+  let $button = $(evt.currentTarget);
+  let buttonTourName = $button.prop('id').slice(15);
+  this.toggleTour(buttonTourName);
+}
+NewFeatureHelpController.prototype.toggleTour = function(tourName) {
+  if (this.tours[tourName].ended()) {
+    this.startTour(tourName);
+  } else {
+    this.endAllTours();
+  }
+}
+
+NewFeatureHelpController.prototype.toggleSplashScreen = function() {
+  //$('#help-splash-screen-btn') do something to button add class change html
+  if ($('#help-body-overlay').css('display') !== 'none') {
+    this.hideSplashScreen();
+  } else {
+    this.showSplashScreen();
+  }
+}
+
+NewFeatureHelpController.prototype.togglePopup = function() {
+  let $popup = $('.help-popup');
+  if ($popup.css('display') !== 'none') {
+    $popup.hide();
+    this.endAllTours();
+    this.hideSplashScreen();
+  } else {
+    $popup.show();
+    this.showSplashScreen();
+  }
 }
 
 NewFeatureHelpController.prototype.showSplashScreen = function() {
@@ -56,7 +97,7 @@ NewFeatureHelpController.prototype.endAllTours = function() {
 }
 
 NewFeatureHelpController.prototype._initTours = function(tours) {
-  for (var tourName in tours) { //tourName is tour id has own but prefixed
+  for (var tourName in tours) { //tourName is tour id has own but prefixed so slice n
     var tourSteps = tours[tourName];
     this.tours[tourName] = new Tour(
       {
@@ -74,6 +115,7 @@ NewFeatureHelpController.prototype._initSplashScreen = function(splashScreen) {
   splashScreen.forEach((popup) => {
     var $element = $(popup.element);
     $element.attr('title', popup.title);
+    $element.attr('data-toggle','popover');
     for (var data in popup) {
       if (!['element','title'].includes(data)) {
         $element.attr(`data-${data}`,popup[data]);

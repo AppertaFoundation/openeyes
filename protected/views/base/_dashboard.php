@@ -81,8 +81,8 @@ $new_feature_help_parameters = array(
    )
  ),
   'download_links' => array(
-    'link1' => 'www.google.co.uk',
-    'link2' => 'www.google.co.uk'
+    'pdf1' => 'http://www.axmag.com/download/pdfurl-guide.pdf',
+    'pdf2' => 'http://www.axmag.com/download/pdfurl-guide.pdf'
   )
 );
 
@@ -113,6 +113,6 @@ $feature_steps =  array(
                  )
 );
 
-$this->widget('application.widgets.FeatureHelp', array('steps' => $feature_steps));
+//$this->widget('application.widgets.FeatureHelp', array('steps' => $feature_steps));
 $this->widget('application.widgets.NewFeatureHelp', $new_feature_help_parameters);
 ?>
