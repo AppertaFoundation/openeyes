@@ -227,6 +227,12 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
         $processor->loadElementEyedrawDoodles($patient, $this,\Eye::RIGHT, 'right_eyedraw');
     }
 
+    /**
+     * Ensure we remove any doodles shredded out of this element for object persistence
+     *
+     * @return bool
+     * @inheritdoc
+     */
     public function beforeDelete()
     {
         $processor = new \EDProcessor();
