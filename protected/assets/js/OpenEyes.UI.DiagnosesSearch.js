@@ -89,9 +89,8 @@ OpenEyes.UI = OpenEyes.UI || {};
         savedDiagnoses = controller.$inputField.data('saved-diagnoses');
 
         if(savedDiagnoses){
-            controller.addDiagnosis(savedDiagnoses.id, savedDiagnoses.name, savedDiagnoses.disorder_id );
+            controller.addDiagnosis(savedDiagnoses.id, {label: savedDiagnoses.name, id: savedDiagnoses.disorder_id} );
         }
-
     }
 
     /**
