@@ -130,7 +130,7 @@ class PatientLevelMigration extends CConsoleCommand
         $patient_count = 0;
         $processed_count = 0;
         foreach ($query->queryAll() as $row) {
-            if ($row['patient_id'] !== $current_patient_id) {
+            if ($current_patient_id && $row['patient_id'] !== $current_patient_id) {
                 if (count($patient_rows)) {
                     if ($this->processPatient($current_patient_id, null, $patient_rows)) {
                         $processed_count++;
@@ -211,6 +211,9 @@ class PatientLevelMigration extends CConsoleCommand
     public function processPatient($patient_id, $no_entries_date = null, $rows = array())
     {
         $patient = Patient::model()->findByPk($patient_id);
+        if (!$patient) {
+            return false;
+        }
 
         if ($this->getApi()->getLatestElement(static::$element_class, $patient)) {
             return false;
