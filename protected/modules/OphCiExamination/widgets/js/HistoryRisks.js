@@ -294,7 +294,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     HistoryRisksController.prototype.getRiskStatus = function(riskLabel)
     {
         var riskId = this.getRiskIdForLabel(riskLabel);
-        console.log(riskId);
         var row = this.findTableRowForRisk(riskId);
         if (row === undefined)
             return undefined;
