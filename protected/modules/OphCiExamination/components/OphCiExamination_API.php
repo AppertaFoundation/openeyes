@@ -745,7 +745,7 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     //[vbl]
-    public function getLetterVisualAcuityLeft($patient, $use_context = true)
+    public function getLetterVisualAcuityLeft($patient, $use_context = false)
     {
         return ($best = $this->getBestVisualAcuity($patient, 'left', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
     }
@@ -757,7 +757,7 @@ class OphCiExamination_API extends \BaseAPI
      * @param bool $use_context
      * @return string
      */
-    public function getLetterVisualAcuityLeftLast3weeks($patient, $use_context = true)
+    public function getLetterVisualAcuityLeftLast3weeks($patient, $use_context = false)
     {
         $after = date('Y-m-d H:i:s', strtotime('-3 weeks'));
 
@@ -773,7 +773,7 @@ class OphCiExamination_API extends \BaseAPI
     }
 
 
-    public function getLetterVisualAcuityRight($patient, $use_context = true)
+    public function getLetterVisualAcuityRight($patient, $use_context = false)
     {
         return ($best = $this->getBestVisualAcuity($patient,'right', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
     }
@@ -785,7 +785,7 @@ class OphCiExamination_API extends \BaseAPI
      * @param bool $use_context
      * @return string - 6/24 (recorded at 7 Jun 2017)
      */
-    public function getLetterVisualAcuityRightLast3weeks($patient, $use_context = true)
+    public function getLetterVisualAcuityRightLast3weeks($patient, $use_context = false)
     {
         $after = date('Y-m-d H:i:s', strtotime('-3 weeks'));
 
@@ -802,7 +802,7 @@ class OphCiExamination_API extends \BaseAPI
 
 
 
-    public function getLetterVisualAcuityBoth($patient, $use_context = true)
+    public function getLetterVisualAcuityBoth($patient, $use_context = false)
     {
         $left = $this->getBestVisualAcuity($patient,'left', $use_context);
         $right = $this->getBestVisualAcuity($patient, 'right', $use_context);
@@ -819,7 +819,7 @@ class OphCiExamination_API extends \BaseAPI
      * @param bool $use_context
      * @return string - 6/24 (at 7 Jun 2017)
      */
-    public function getLetterVisualAcuityBothLast3weeks($patient, $use_context = true)
+    public function getLetterVisualAcuityBothLast3weeks($patient, $use_context = false)
     {
         $left = null;
         $right = null;
@@ -860,7 +860,7 @@ class OphCiExamination_API extends \BaseAPI
      * @param $use_context
      * @return string - 6/24 (at 7 Jun 2017)
      */
-    public function getLetterVisualAcuityPrincipalLast3weeks($patient, $use_context = true)
+    public function getLetterVisualAcuityPrincipalLast3weeks($patient, $use_context = false)
     {
         if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
             if ($episode->eye) {
@@ -1101,12 +1101,12 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
-    public function getLetterDRRetinopathyLeft($patient, $use_context =true)
+    public function getLetterDRRetinopathyLeft($patient, $use_context =false)
     {
         return $this->getLetterDRRetinopathy($patient,'left', $use_context);
     }
 
-    public function getLetterDRRetinopathyRight($patient, $use_context = true)
+    public function getLetterDRRetinopathyRight($patient, $use_context = false)
     {
         return $this->getLetterDRRetinopathy($patient,'right', $use_context);
     }
@@ -1138,12 +1138,12 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
-    public function getLetterDRMaculopathyLeft($patient, $use_context = true)
+    public function getLetterDRMaculopathyLeft($patient, $use_context = false)
     {
         return $this->getDRMaculopathy($patient, 'left', $use_context);
     }
 
-    public function getLetterDRMaculopathyRight($patient, $use_context = true)
+    public function getLetterDRMaculopathyRight($patient, $use_context = false)
     {
         return $this->getDRMaculopathy($patient, 'right', $use_context);
     }
@@ -1170,12 +1170,12 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
-    public function getLetterDRClinicalRetLeft($patient, $use_context = true)
+    public function getLetterDRClinicalRetLeft($patient, $use_context = false)
     {
         return $this->getDRClinicalRet($patient,'left', $use_context);
     }
 
-    public function getLetterDRClinicalRetRight($patient, $use_context = true)
+    public function getLetterDRClinicalRetRight($patient, $use_context = false)
     {
         return $this->getDRClinicalRet($patient,'right', $use_context);
     }
@@ -1210,7 +1210,7 @@ class OphCiExamination_API extends \BaseAPI
      * @return $mixed
      */
 
-    public function getLetterDRClinicalMacLeft($patient, $use_context = true)
+    public function getLetterDRClinicalMacLeft($patient, $use_context = false)
     {
         return $this->getDRClinicalMac($patient,'left', $use_context);
     }
@@ -1223,7 +1223,7 @@ class OphCiExamination_API extends \BaseAPI
      * @return $mixed
      */
 
-    public function getLetterDRClinicalMacRight($patient, $use_context = true)
+    public function getLetterDRClinicalMacRight($patient, $use_context = false)
     {
         return $this->getDRClinicalMac($patient,'right', $use_context);
     }
@@ -1436,7 +1436,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getInjectionManagementComplexInEpisodeForDisorder(
         $patient,
-        $use_context = true,
+        $use_context = false,
         $side,
         $disorder1_id,
         $disorder2_id
@@ -1608,7 +1608,7 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @return mixed
      */
-    public function getLetterMaxCRTLeft($patient, $use_context = true)
+    public function getLetterMaxCRTLeft($patient, $use_context = false)
     {
         return $this->getLetterMaxCRTForSide($patient, 'left', $use_context);
     }
@@ -1621,7 +1621,7 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @return mixed
      */
-    public function getLetterMaxCRTRight($patient, $use_context = true)
+    public function getLetterMaxCRTRight($patient, $use_context = false)
     {
         return $this->getLetterMaxCRTForSide($patient, 'right', $use_context);
     }
@@ -1653,7 +1653,7 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @return mixed
      */
-    public function getLetterCentralSFTLeft($patient, $use_context = true)
+    public function getLetterCentralSFTLeft($patient, $use_context = false)
     {
         return $this->getLetterCentralSFTForSide($patient, 'left', $use_context);
     }
@@ -1666,7 +1666,7 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @return mixed
      */
-    public function getLetterCentralSFTRight($patient)
+    public function getLetterCentralSFTRight($patient, $use_context=false)
     {
         return $this->getLetterCentralSFTForSide($patient, 'right', $use_context);
     }
@@ -1708,7 +1708,7 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @see getLetterInjectionManagementComplexDiagnosisForSide
      */
-    public function getLetterInjectionManagementComplexDiagnosisLeft($patient, $use_context = true)
+    public function getLetterInjectionManagementComplexDiagnosisLeft($patient, $use_context = false)
     {
         return $this->getLetterInjectionManagementComplexDiagnosisForSide($patient, 'left', $use_context);
     }
@@ -1723,7 +1723,7 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @see getLetterInjectionManagementComplexDiagnosisForSide
      */
-    public function getLetterInjectionManagementComplexDiagnosisRight($patient, $use_context = true)
+    public function getLetterInjectionManagementComplexDiagnosisRight($patient, $use_context = false)
     {
         return $this->getLetterInjectionManagementComplexDiagnosisForSide($patient, 'right', $use_context);
     }
@@ -1756,7 +1756,7 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @return string
      */
-    public function getLetterInjectionManagementComplexDiagnosisBoth($patient, $use_context = true)
+    public function getLetterInjectionManagementComplexDiagnosisBoth($patient, $use_context = false)
     {
         $right = $this->getLetterInjectionManagementComplexDiagnosisRight($patient, $use_context);
         $left = $this->getLetterInjectionManagementComplexDiagnosisLeft($patient, $use_context);
