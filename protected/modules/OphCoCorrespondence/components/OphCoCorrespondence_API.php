@@ -658,7 +658,7 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param bool $use_context
      * @return string
      */
-    public function getGlaucomaManagement(\Patient $patient, $use_context = true)
+    public function getGlaucomaManagement(\Patient $patient, $use_context = false)
     {
         $result = '';
 
