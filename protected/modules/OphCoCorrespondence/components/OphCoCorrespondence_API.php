@@ -657,12 +657,13 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $patient
      * @param bool $use_context
      * @return string
+     * @TODO this should be in the examination module
      */
     public function getGlaucomaManagement(\Patient $patient, $use_context = false)
     {
         $result = '';
 
-        if($el = $this->getElementFromLatestEvent(
+        if($el = $this->getLatestElement(
             'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan',
             $patient, $use_context))
         {
