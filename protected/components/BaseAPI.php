@@ -153,7 +153,6 @@ class BaseAPI
      * @param Patient $patient
      * @param bool $use_context
      * @param string $before - date formatted string
-     * @param CDbCriteria $criteria base criteria for the query to be used.
      * @return BaseEventTypeElement[]
      */
     public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null)
@@ -163,14 +162,13 @@ class BaseAPI
         }
         $criteria->compare('episode.patient_id', $patient->id);
         $criteria->order = 'event.event_date desc, event.created_date desc';
-
         if ($before !== null) {
             $criteria->compare('event.event_date', '<='.$before);
         }
-
         if ($use_context) {
             $this->current_context->addEventConstraints($criteria);
         }
+
         return $element::model()
             ->with(array(
                 'event' => array('with' => array(
@@ -196,6 +194,7 @@ class BaseAPI
      * @param Patient $patient
      * @param bool $use_context
      * @param string $before - date formatted string
+     * @param string $after - date formatted string
      * @return BaseEventTypeElement|null
      */
     public function getLatestElement($element, Patient $patient, $use_context = false, $before = null)
@@ -205,7 +204,7 @@ class BaseAPI
         $result = $this->getElements($element, $patient, $use_context, $before, $criteria);
         return count($result) ? $result[0] : null;
     }
-
+	
     /**
      * gets the element of type $element for the given patient in the given episode.
      *

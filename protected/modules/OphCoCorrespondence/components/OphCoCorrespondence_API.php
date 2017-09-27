@@ -137,7 +137,7 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLastIOLType(\Patient $patient, $use_context = true)
+    public function getLastIOLType(\Patient $patient, $use_context = false)
     {
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
         if ($element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)){
@@ -151,7 +151,7 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLastIOLPower(\Patient $patient, $use_context = true)
+    public function getLastIOLPower(\Patient $patient, $use_context = false)
     {
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
         if ($element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)){
@@ -165,7 +165,7 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLastOperatedEye(\Patient $patient, $use_context = true)
+    public function getLastOperatedEye(\Patient $patient, $use_context = false)
     {
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
         if ($element = $api->getLatestElement('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
@@ -181,7 +181,7 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $use_context
      * @return string|null
      */
-    public function getPreOpVABothEyes($patient, $use_context = true)
+    public function getPreOpVABothEyes($patient, $use_context = false)
     {
         if ($apiNote = $this->yii->moduleAPI->get('OphTrOperationnote')) {
             $opDate = $apiNote->getLastOperationDateUnformatted($patient);
@@ -230,7 +230,7 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $use_context
      * @return string|null
      */
-    public function getPreOpRefraction($patient, $use_context = true)
+    public function getPreOpRefraction($patient, $use_context = false)
     {
         if ($apiNote = $this->yii->moduleAPI->get('OphTrOperationnote')) {
             $opDate = $apiNote->getLastOperationDateUnformatted($patient);
@@ -655,17 +655,17 @@ class OphCoCorrespondence_API extends BaseAPI
     /*
      * Glaucoma Overall Management Plan from latest Examination
      * @param $patient
+     * @param bool $use_context
      * @return string
      */
-    public function getGlaucomaManagement( \Patient $patient )
+    public function getGlaucomaManagement(\Patient $patient, $use_context = true)
     {
         $result = '';
-        $episode = $patient->getEpisodeForCurrentSubspecialty();
-        $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
 
-        if ($el = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan')
-        ) {
+        if($el = $this->getElementFromLatestEvent(
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan',
+            $patient, $use_context))
+        {
 
             $result .= 'Clinic Interval: '.$el->clinic_internal->name."\n";
             $result .= 'Photo: '.$el->photo->name."\n";

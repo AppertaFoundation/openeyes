@@ -114,7 +114,7 @@ class PatientShortcode extends BaseActiveRecordVersioned
         if ($this->eventType) {
             if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
                 if (method_exists($api, $this->method)) {
-                    return preg_replace('/\['.$code.'\]/', $api->{$this->method}($patient), $text);
+                    return preg_replace('/\['.$code.'\]/', $api->{$this->method}($patient, !$this->global_scope), $text);
                 }
                 throw new Exception("Unknown API method in {$this->eventType->class_name}: $this->method");
             }
