@@ -720,27 +720,6 @@ class OphCiExamination_API extends \BaseAPI
         return;
     }
 
-    public function getAllVisualAcuityLeft($patient)
-    {
-        return ($best = $this->getBestVisualAcuity($patient,'left')) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
-    }
-
-    public function getAllVisualAcuityRight($patient)
-    {
-        return ($best = $this->getBestVisualAcuity($patient,'right')) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
-    }
-
-    public function getAllVisualAcuityLeftByDate($patient, $opDate)
-    {
-        return ($best = $this->getBestVisualAcuity($patient, 'left')) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
-    }
-
-    public function getAllVisualAcuityRightByDate($patient, $opDate)
-    {
-        return ($best = $this->getBestVisualAcuity($patient, 'right')) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
-    }
-
-
     public function getUnitName($unitId)
     {
         if ($unit = models\OphCiExamination_VisualAcuityUnit::model()->find('id = ?', array($unitId))) {
@@ -757,7 +736,14 @@ class OphCiExamination_API extends \BaseAPI
         return;
     }
 
-    //[vbl]
+    /**
+     * Returns single (best) VA reading from most recent examination event
+     * containing a VA element for the left eye. 
+     *
+     * @param $patient
+     * @param bool $use_context
+     * @return null|string
+     */
     public function getLetterVisualAcuityLeft($patient, $use_context = false)
     {
         return ($best = $this->getBestVisualAcuity($patient, 'left', $use_context)) ? $best->convertTo($best->value, $this->getSnellenUnitId()) : null;
