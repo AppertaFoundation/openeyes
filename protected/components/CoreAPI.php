@@ -18,6 +18,14 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+/**
+ * Class CoreAPI
+ *
+ * Implemented to operate on the Patient record to retrieve data from core properties in a
+ * similar fashion to the module level APIs. With moving various attributes into the
+ * examination module, this may not be required in the longer term, but it enables us to
+ * move getting the current context outside of the Patient model.
+ */
 class CoreAPI
 {
     /**
