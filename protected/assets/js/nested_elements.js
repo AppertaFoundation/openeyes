@@ -277,8 +277,8 @@ $(document).ready(function() {
     $(dialog.content).on('click', '.copy_element', function(dialog, element, event) {
 				var element_id = $(event.target).data('element-id');
 			 	$(element).addClass('clicked');
-				$(element).css('opacity', '0.5');
-				$(element).find('input, select, textarea').prop('disabled', true);
+				$(element).find('> .element-fields').css('opacity', '0.5');
+				$(element).find('> .element-fields').find('input, select, textarea').prop('disabled', true);
 				dialog.close();
 				addElement(element, false, (elementType == 'sub-element'), element_id);
 		}.bind(undefined, dialog, element));
