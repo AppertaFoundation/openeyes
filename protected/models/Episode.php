@@ -231,7 +231,9 @@ class Episode extends BaseActiveRecordVersioned
     }
 
     /**
-     * get the current episode for the patient id and subspecialty_id (if this is null, looking for support services episode).
+     * Get the current episode for the patient id and subspecialty_id (if this is null, looking for support services episode).
+     *
+     * return Episode
      */
     public static function getCurrentEpisodeBySubspecialtyId($patient_id, $subspecialty_id, $include_closed = false)
     {

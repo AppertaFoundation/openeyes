@@ -906,19 +906,6 @@ class Patient extends BaseActiveRecordVersioned
         }
     }
 
-    public function getEpd()
-    {
-        $episode = $this->getEpisodeForCurrentSubspecialty();
-
-        if ($episode && $disorder = $episode->diagnosis) {
-            if ($episode->eye) {
-                return $episode->eye->getAdjective().' '.strtolower($disorder->term);
-            } else {
-                return strtolower($disorder->term);
-            }
-        }
-    }
-
     public function getEdl()
     {
         $episode = $this->getEpisodeForCurrentSubspecialty();

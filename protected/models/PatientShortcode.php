@@ -118,16 +118,22 @@ class PatientShortcode extends BaseActiveRecordVersioned
                 }
                 throw new Exception("Unknown API method in {$this->eventType->class_name}: $this->method");
             }
-        } else {
-            if (property_exists($patient, $this->code) || method_exists($patient, 'get'.ucfirst($this->code))) {
-                if ($ucfirst) {
-                    return preg_replace('/\['.$code.'\]/', ucfirst($patient->{$this->code}), $text);
-                }
+        } elseif (property_exists($patient, $this->code) || method_exists($patient, 'get'.ucfirst($this->code))) {
+            if ($ucfirst) {
+                return preg_replace('/\['.$code.'\]/', ucfirst($patient->{$this->code}), $text);
+            }
 
-                return preg_replace('/\['.$code.'\]/', $patient->{$this->code}, $text);
+            return preg_replace('/\['.$code.'\]/', $patient->{$this->code}, $text);
+        } else {
+            $api = new CoreAPI();
+            if (method_exists($api, 'get'.ucfirst($this->code))) {
+                $result = $api->{'get' . ucfirst($this->code)}($patient);
+                if ($ucfirst) {
+                    $result = ucfirst($result);
+                }
+                return preg_replace('/\[' . $code . '\]/', $result, $text);
             }
         }
-
         return $text;
     }
 
