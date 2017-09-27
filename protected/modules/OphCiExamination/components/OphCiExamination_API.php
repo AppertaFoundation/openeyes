@@ -103,7 +103,7 @@ class OphCiExamination_API extends \BaseAPI
     {
         if ($method = $this->getEyeMethod(
             $prefix,
-            $this->getPrincipalEye($patient, $use_context))
+            $this->getPrincipalEye($patient, true))
         ) {
             return $this->{$method}($patient);
         }
@@ -1787,7 +1787,7 @@ class OphCiExamination_API extends \BaseAPI
     public function getPrincipalCCT($patient, $use_context = false)
     {
         $str = '';
-        if (($principal_eye = $this->getPrincipalEye($patient, $use_context)) &&
+        if (($principal_eye = $this->getPrincipalEye($patient, true)) &&
             ($el = $this->getElementFromLatestEvent(
                 'models\Element_OphCiExamination_AnteriorSegment_CCT',
                 $patient,
@@ -1815,7 +1815,7 @@ class OphCiExamination_API extends \BaseAPI
     {
         $str = '';
 
-        if (($principal_eye = $this->getPrincipalEye($patient, $use_context)) &&
+        if (($principal_eye = $this->getPrincipalEye($patient, true)) &&
             ($el = $this->getElementFromLatestEvent(
                 'models\Element_OphCiExamination_Gonioscopy',
                 $patient,
@@ -1842,7 +1842,7 @@ class OphCiExamination_API extends \BaseAPI
     public function getPrincipalOpticDiscDescription($patient, $use_context = false)
     {
         $str = '';
-        if (($principal_eye = $this->getPrincipalEye($patient, $use_context)) &&
+        if (($principal_eye = $this->getPrincipalEye($patient, true)) &&
             ($el = $this->getElementFromLatestEvent(
                 'models\Element_OphCiExamination_OpticDisc',
                 $patient,
