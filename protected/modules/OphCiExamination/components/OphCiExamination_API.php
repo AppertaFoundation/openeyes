@@ -103,21 +103,23 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * Simple abstraction to support generic calls to functions where the eye involved is dynamic
+     * Simple abstraction to support generic calls to functions based on the
+     * principal eye from the current context (methods will be called with
+     * the given $use_context value).
      *
      * @param $prefix
      * @param $patient
-     * @param bool $use_context
+     * @param bool $use_context defaults to false
      * @return mixed
      * @throws \CException
      */
-    protected function getMethodForEye($prefix, $patient, $use_context = false)
+    protected function getMethodForPrincipalEye($prefix, $patient, $use_context = false)
     {
         if ($method = $this->getEyeMethod(
             $prefix,
             $this->getPrincipalEye($patient, true))
         ) {
-            return $this->{$method}($patient);
+            return $this->{$method}($patient, $use_context);
         }
     }
 
@@ -403,7 +405,6 @@ class OphCiExamination_API extends \BaseAPI
 
     /**
      * Get the Intraocular Pressure reading for the principal eye from the most recent Examination event.
-     * Limited to current data context by default.
      * Will return the average for multiple readings.
      * Returns nothing if the latest Examination does not contain IOP.
      *
@@ -414,7 +415,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterIOPReadingPrincipal(\Patient $patient, $use_context = false)
     {
-        return $this->getMethodForEye('getLetterIOPReading', $patient, $use_context);
+        return $this->getMethodForPrincipalEye('getLetterIOPReading', $patient, $use_context);
     }
 
     /**
@@ -466,7 +467,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterAnteriorSegmentPrincipal($patient, $use_context = false)
     {
-        return $this->getMethodForEye('getLetterAnteriorSegment', $patient, $use_context);
+        return $this->getMethodForPrincipalEye('getLetterAnteriorSegment', $patient, $use_context);
     }
 
     /**
@@ -530,7 +531,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterPosteriorPolePrincipal($patient, $use_context = false)
     {
-        return $this->getMethodForEye('getLetterPosteriorPole', $patient, $use_context);
+        return $this->getMethodForPrincipalEye('getLetterPosteriorPole', $patient, $use_context);
     }
 
     /**
@@ -738,7 +739,7 @@ class OphCiExamination_API extends \BaseAPI
 
     /**
      * Returns single (best) VA reading from most recent examination event
-     * containing a VA element for the left eye. 
+     * containing a VA element for the left eye.
      *
      * @param $patient
      * @param bool $use_context
@@ -843,13 +844,15 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * Gets VA for the principal eye in the current context.
+     *
      * @param $patient
      * @param bool $use_context
      * @return mixed
      */
-    public function getLetterVisualAcuityPrincipal($patient, $use_context = false)
+    public function getLetterVisualAcuityPrincipal($patient, $use_context = true)
     {
-        return $this->getMethodForEye('getLetterVisualAcuity', $patient, $use_context);
+        return $this->getMethodForPrincipalEye('getLetterVisualAcuity', $patient, $use_context);
     }
 
     /**
@@ -1783,7 +1786,7 @@ class OphCiExamination_API extends \BaseAPI
     public function getPrincipalCCT($patient, $use_context = false)
     {
         $str = '';
-        if (($principal_eye = $this->getPrincipalEye($patient, true)) &&
+        if (($principal_eye = $this->getPrincipalEye($patient)) &&
             ($el = $this->getElementFromLatestEvent(
                 'models\Element_OphCiExamination_AnteriorSegment_CCT',
                 $patient,
