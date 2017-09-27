@@ -168,6 +168,7 @@ class BaseAPI
         if ($use_context) {
             $this->current_context->addEventConstraints($criteria);
         }
+
         return $element::model()
             ->with(array(
                 'event' => array('with' => array(

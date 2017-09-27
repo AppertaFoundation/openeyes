@@ -54,6 +54,18 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null)
+    {
+        // Ensure namespace prepended appropriately if necessary
+        if (strpos($element, 'models') == 0) {
+            $element = 'OEModule\OphCiExamination\\' . $element;
+        }
+        return parent::getElements($element, $patient, $use_context, $before, $criteria);
+    }
+
+    /**
      * Extends parent method to prepend model namespace.
      *
      * @param \Episode $episode
@@ -580,18 +592,22 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getBestVisualAcuity($patient, $side, $use_context = false)
     {
-        if ($va = $this->getElementFromLatestEvent(
-            'models\Element_OphCiExamination_VisualAcuity',
+        $last_best_reading = null;
+
+        if($elements = $this->getElements('models\Element_OphCiExamination_VisualAcuity',
             $patient,
-            $use_context)
-        ){
-            switch ($side) {
-                case 'left':
-                    return $va->getBestReading('left');
-                case 'right':
-                    return $va->getBestReading('right');
+            $use_context))
+        {
+            foreach($elements as $va)
+            {
+                $best_reading = $va->getBestReading($side);
+                if(!$last_best_reading || $best_reading->value < $last_best_reading->value)
+                {
+                    $last_best_reading = $best_reading;
+                }
             }
         }
+        return $last_best_reading;
     }
 
     public function getVAvalue($vareading, $unitId)
@@ -759,16 +775,11 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityLeftLast3weeks($patient, $use_context = false)
     {
-        $after = date('Y-m-d H:i:s', strtotime('-3 weeks'));
-
-        if($va = $this->getLatestElement('models\Element_OphCiExamination_VisualAcuity', $patient, $use_context, null, $after)) {
-            if( $best = $va->getBestReading('left') ){
-
-                $dateTime = new \DateTime($va->event->event_date);
-                return $best->convertTo($best->value,$this->getSnellenUnitId()) . " (recorded on {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
-            }
+        if($best = $this->getBestVisualAcuity($patient, 'left', false))
+        {
+            $dateTime = new \DateTime($best->element->event->event_date);
+            return $best->convertTo($best->value,$this->getSnellenUnitId()) . " (recorded on {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
         }
-
         return "";
     }
 
@@ -787,16 +798,11 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityRightLast3weeks($patient, $use_context = false)
     {
-        $after = date('Y-m-d H:i:s', strtotime('-3 weeks'));
-
-        if($va = $this->getLatestElement('models\Element_OphCiExamination_VisualAcuity', $patient, $use_context, null, $after)) {
-            if( $best = $va->getBestReading('right') ){
-
-                $dateTime = new \DateTime($va->event->event_date);
-                return $best->convertTo($best->value,$this->getSnellenUnitId()) . " (recorded on {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
-            }
+        if($best = $this->getBestVisualAcuity($patient, 'right', false))
+        {
+            $dateTime = new \DateTime($best->element->event->event_date);
+            return $best->convertTo($best->value,$this->getSnellenUnitId()) . " (recorded on {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
         }
-
         return "";
     }
 
@@ -862,12 +868,9 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityPrincipalLast3weeks($patient, $use_context = false)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($episode->eye) {
-                $method = 'getLetterVisualAcuity' . $episode->eye->name . 'Last3weeks';
-
-                return $this->{$method}($patient, $use_context);
-            }
+        if ($principal_eye = $this->getPrincipalEye($patient, true)) {
+            $method = 'getLetterVisualAcuity' . $principal_eye->name . 'Last3weeks';
+            return $this->{$method}($patient, $use_context);
         }
     }
 
