@@ -668,12 +668,12 @@ class OphCoCorrespondence_API extends BaseAPI
             $patient, $use_context))
         {
 
-            $result .= 'Clinic Interval: '.$el->clinic_internal->name."\n";
-            $result .= 'Photo: '.$el->photo->name."\n";
-            $result .= 'OCT: '.$el->oct->name."\n";
-            $result .= 'Visual Fields: '.$el->hfa->name."\n";
-            $result .= 'Gonioscopy: '.$el->gonio->name."\n";
-            $result .= 'HRT: '.$el->hrt->name."\n";
+            $result .= 'Clinic Interval: ' . ($el->clinic_interval ? : 'NR') . "\n";
+            $result .= 'Photo: ' . ($el->photo ? : 'NR') . "\n";
+            $result .= 'OCT: ' . ($el->oct ? : 'NR') . "\n";
+            $result .= 'Visual Fields: ' . ($el->hfa ? : 'NR') . "\n";
+            $result .= 'Gonioscopy: ' . ($el->gonio ? : 'NR') . "\n";
+            $result .= 'HRT: ' . ($el->hrt ? : 'NR') . "\n";
 
             if(!empty($el->comments)){
                 $result .= 'Glaucoma Management comments: '.$el->comments."\n";
