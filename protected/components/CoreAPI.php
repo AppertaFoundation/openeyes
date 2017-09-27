@@ -166,4 +166,20 @@ class CoreAPI
             }
         }
     }
+
+    /*
+     * Generate episode link for patient
+     * @param Patient $patient
+     * @return string
+     */
+    public function generateEpisodeLink(Patient $patient)
+    {
+        $episode = $this->getEpisodeForCurrentContext($patient);
+        if( $episode !== null){
+            return $this->yii->createURL("/patient/episode/", array("id" => $episode->id));
+        } else {
+            return $this->yii->createURL("/patient/episodes/", array("id" => $patient->id));
+        }
+    }
+
 }
