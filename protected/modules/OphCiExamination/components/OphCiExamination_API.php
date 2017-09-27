@@ -582,34 +582,31 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * returns the best visual acuity for the specified side in the given episode for the patient. This is from the most recent
-     * examination that has a visual acuity element.
+     * Returns the best visual acuity for the specified side in the given
+     * episode for the patient. This is from the most recent  examination
+     * that has a visual acuity element. And will be empty if the specified
+     * side was not recorded.
      *
      * @param Patient $patient
      * @param string $side
      * @param boolean $use_context
-     * @return OphCiExamination_VisualAcuity_Reading
+     * @return models\OphCiExamination_VisualAcuity_Reading
      */
     public function getBestVisualAcuity($patient, $side, $use_context = false)
     {
-        $last_best_reading = null;
-
-        if($elements = $this->getElements('models\Element_OphCiExamination_VisualAcuity',
+        $va = $this->getLatestElement(
+            'models\Element_OphCiExamination_VisualAcuity',
             $patient,
-            $use_context))
-        {
-            foreach($elements as $va)
-            {
-                $best_reading = $va->getBestReading($side);
-                if(!$last_best_reading || $best_reading->value < $last_best_reading->value)
-                {
-                    $last_best_reading = $best_reading;
-                }
-            }
+            $use_context);
+        if ($va) {
+            return $va->getBestReading($side);
         }
-        return $last_best_reading;
     }
 
+    /**
+     * @param $vareading
+     * @param $unitId
+     */
     public function getVAvalue($vareading, $unitId)
     {
         if ($unit = models\OphCiExamination_VisualAcuityUnitValue::model()->find('base_value = ' . $vareading . ' AND unit_id = ' . $unitId)) {
@@ -767,6 +764,27 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * Abstraction for getting VA from last 3 weeks used for several letter string methods
+     *
+     * @param $patient
+     * @param $use_context
+     * @return \BaseEventTypeElement[]
+     */
+    protected function getVisualAcuityLast3Weeks($patient, $use_context)
+    {
+        $after = date('Y-m-d 00:00:00', strtotime('-3 weeks'));
+        $criteria = new \CDbCriteria();
+        $criteria->compare('event.event_date', '>='.$after);
+
+        return $this->getElements(
+            'models\Element_OphCiExamination_VisualAcuity',
+            $patient,
+            $use_context,
+            null,
+            $criteria);
+    }
+
+    /**
      * Get the latest VA for the Left eye form examination event, if the VA is not recorded, take the value from the latest available event within a period of 3 weeks.
      *
      * @param $patient
@@ -775,12 +793,11 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityLeftLast3weeks($patient, $use_context = false)
     {
-        if($best = $this->getBestVisualAcuity($patient, 'left', false))
-        {
-            $dateTime = new \DateTime($best->element->event->event_date);
-            return $best->convertTo($best->value,$this->getSnellenUnitId()) . " (recorded on {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
+        foreach ($this->getVisualAcuityLast3Weeks($patient, $use_context) as $element) {
+            if ($best_reading = $element->getBestReading('left')) {
+                return $best_reading->convertTo($best_reading->value, $this->getSnellenUnitId()) . " (recorded on " . \Helper::convertMySQL2NHS($element->event->event_date) . ")";
+            }
         }
-        return "";
     }
 
 
@@ -794,20 +811,23 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @param $patient
      * @param bool $use_context
-     * @return string - 6/24 (recorded at 7 Jun 2017)
+     * @return string - 6/24 (recorded on 7 Jun 2017)
      */
     public function getLetterVisualAcuityRightLast3weeks($patient, $use_context = false)
     {
-        if($best = $this->getBestVisualAcuity($patient, 'right', false))
-        {
-            $dateTime = new \DateTime($best->element->event->event_date);
-            return $best->convertTo($best->value,$this->getSnellenUnitId()) . " (recorded on {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
+        foreach ($this->getVisualAcuityLast3Weeks($patient, $use_context) as $element) {
+            if ($best_reading = $element->getBestReading('right')) {
+                return $best_reading->convertTo($best_reading->value, $this->getSnellenUnitId()) . " (recorded on " . \Helper::convertMySQL2NHS($element->event->event_date) . ")";
+            }
         }
-        return "";
     }
 
 
-
+    /**
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
     public function getLetterVisualAcuityBoth($patient, $use_context = false)
     {
         $left = $this->getBestVisualAcuity($patient,'left', $use_context);
@@ -819,7 +839,8 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * Get the latest VA for both eyes form examination event, if the VA is not recorded, take the value from the latest available event within a period of 3 weeks.
+     * Get the latest VA for both eyes from examination event, if the VA is not recorded,
+     * take the value from the latest available event within a period of 3 weeks.
      *
      * @param $patient
      * @param bool $use_context
@@ -830,23 +851,9 @@ class OphCiExamination_API extends \BaseAPI
         $left = null;
         $right = null;
 
-        $after = date('Y-m-d H:i:s', strtotime('-3 weeks'));
-
-        if($va = $this->getLatestElement('models\Element_OphCiExamination_VisualAcuity', $patient, $use_context, null, $after)) {
-            $right = $va->getBestReading('right');
-            $left = $va->getBestReading('left');
-        }
-
-        $text = ($right ? $right->convertTo($right->value, $this->getSnellenUnitId()) : 'not recorded') . ' on the right and ' .
-            ($left ? $left->convertTo($left->value, $this->getSnellenUnitId()) : 'not recorded') . ' on the left';
-
-        if($va){
-            $recorder = $left ? 'recorded ' : '';
-            $dateTime = new \DateTime($va->event->event_date);
-            $text .= " ({$recorder}on {$dateTime->format(\Helper::NHS_DATE_FORMAT)})";
-        }
-
-        return $text;
+        $right = $this->getLetterVisualAcuityRightLast3weeks($patient, $use_context) ? : 'not recorded';
+        $left = $this->getLetterVisualAcuityLeftLast3weeks($patient, $use_context) ? : 'not recorded';
+        return $right . ' on the right and ' . $left . ' on the left';
     }
 
     /**
