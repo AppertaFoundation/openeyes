@@ -2058,6 +2058,19 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
+     * Checks if $this patient was merged INTO another patient - means $this is/was a secondary patient
+     * @return PatientMergeRequest object|null
+     */
+    public function isMergedInto()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->compare('secondary_hos_num', $this->hos_num);
+        $criteria->compare('status', PatientMergeRequest::STATUS_MERGED);
+
+        return PatientMergeRequest::model()->find($criteria);
+    }
+
+    /**
      * Builds a sorted list of operations carried out on the patient either historically or across relevant events.
      *
      * @return array
