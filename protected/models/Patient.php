@@ -906,41 +906,6 @@ class Patient extends BaseActiveRecordVersioned
         }
     }
 
-    public function getEdl()
-    {
-        $episode = $this->getEpisodeForCurrentSubspecialty();
-
-        if ($episode && $disorder = $episode->diagnosis) {
-            if ($episode->eye->id == Eye::BOTH || $episode->eye->id == Eye::LEFT) {
-                return ucfirst(strtolower($disorder->term));
-            }
-
-            return 'No diagnosis';
-        }
-    }
-
-    public function getEdr()
-    {
-        $episode = $this->getEpisodeForCurrentSubspecialty();
-
-        if ($episode && $disorder = $episode->diagnosis) {
-            if ($episode->eye->id == Eye::BOTH || $episode->eye->id == Eye::RIGHT) {
-                return ucfirst(strtolower($disorder->term));
-            }
-
-            return 'No diagnosis';
-        }
-    }
-
-    public function getEps()
-    {
-        $episode = $this->getEpisodeForCurrentSubspecialty();
-
-        if ($episode && $eye = $episode->eye) {
-            return strtolower($eye->adjective);
-        }
-    }
-
     public function getEthnicGroupString()
     {
         if ($this->ethnic_group) {
@@ -1665,22 +1630,6 @@ class Patient extends BaseActiveRecordVersioned
     public function getPrefix()
     {
         return 'Patient';
-    }
-
-    public function getEpc()
-    {
-        if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-            if ($user = $episode->firm->consultant) {
-                return $user->fullName;
-            }
-        }
-    }
-
-    public function getEpv()
-    {
-        if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-            return $episode->firm->serviceSubspecialtyAssignment->service->name;
-        }
     }
 
     /**

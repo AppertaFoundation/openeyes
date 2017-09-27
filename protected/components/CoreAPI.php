@@ -66,6 +66,8 @@ class CoreAPI
     }
 
     /**
+     * Principal Diagnosis For current context
+     *
      * @param Patient $patient
      * @return string
      */
@@ -82,5 +84,86 @@ class CoreAPI
         }
     }
 
+    /**
+     * Current Context Left Eye Diagnosis
+     *
+     * @param Patient $patient
+     * @return string
+     */
+    public function getEdl(Patient $patient)
+    {
+        $episode = $this->getEpisodeForCurrentContext($patient);
 
+        if ($episode && $disorder = $episode->diagnosis) {
+            if ($episode->eye->id == Eye::BOTH || $episode->eye->id == Eye::LEFT) {
+                return ucfirst(strtolower($disorder->term));
+            }
+
+            return 'No diagnosis';
+        }
+    }
+
+    /**
+     * Current Context right eye Diagnosis
+     *
+     * @param Patient $patient
+     * @return string
+     */
+    public function getEdr(Patient $patient)
+    {
+        $episode = $this->getEpisodeForCurrentContext($patient);
+
+        if ($episode && $disorder = $episode->diagnosis) {
+            if ($episode->eye->id == Eye::BOTH || $episode->eye->id == Eye::RIGHT) {
+                return ucfirst(strtolower($disorder->term));
+            }
+
+            return 'No diagnosis';
+        }
+    }
+
+    /**
+     * Get the principal side for the current context
+     *
+     * @param Patient $patient
+     * @return string
+     */
+    public function getEps(Patient $patient)
+    {
+        $episode = $this->getEpisodeForCurrentContext($patient);
+
+        if ($episode && $eye = $episode->eye) {
+            return strtolower($eye->adjective);
+        }
+    }
+
+    /**
+     * Get the name of the consultant for the current context
+     *
+     * @param Patient $patient
+     * @return mixed
+     */
+    public function getEpc(Patient $patient)
+    {
+        if ($episode = $this->getEpisodeForCurrentContext($patient)) {
+            if ($user = $episode->firm->consultant) {
+                return $user->fullName;
+            }
+        }
+    }
+
+    /**
+     * Get the name of the service for the current context
+     * 
+     * @param Patient $patient
+     * @return string|null
+     */
+    public function getEpv(Patient $patient)
+    {
+        if ($episode = $this->getEpisodeForCurrentContext($patient)) {
+            if ($episode->firm) {
+                return $episode->firm->getServiceText();
+            }
+        }
+    }
 }
