@@ -6,16 +6,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class AdminController extends BaseAdminController
 {
@@ -369,6 +368,7 @@ class AdminController extends BaseAdminController
 
         if ($request->getIsPostRequest()) {
             $userAtt = $request->getPost('User');
+
             $user->attributes = $userAtt;
 
             if (!$user->validate()) {
@@ -401,7 +401,7 @@ class AdminController extends BaseAdminController
 
                 Audit::add('admin-User', 'add', $user->id);
 
-                if (!isset($userAtt['roles'])) {
+                if (!isset($userAtt['roles']) || ( empty($userAtt['roles']))) {
                     $userAtt['roles'] = array();
                 }
 
@@ -443,6 +443,7 @@ class AdminController extends BaseAdminController
 
         if ($request->getIsPostRequest()) {
             $userAtt = $request->getPost('User');
+
             if (empty($userAtt['password'])) {
                 unset($userAtt['password']);
             }
@@ -451,9 +452,6 @@ class AdminController extends BaseAdminController
             if (!$user->validate()) {
                 $errors = $user->getErrors();
             } else {
-                if ($user->is_doctor != 1) {
-                    $user->doctor_grade_id = '';
-                }
 
                 if (!$user->save()) {
                     throw new Exception('Unable to save user: ' . print_r($user->getErrors(), true));
@@ -482,7 +480,7 @@ class AdminController extends BaseAdminController
 
                 Audit::add('admin-User', 'edit', $user->id);
 
-                if (!isset($userAtt['roles'])) {
+                if (!isset($userAtt['roles']) || (empty($userAtt['roles']))) {
                     $userAtt['roles'] = array();
                 }
 
@@ -1327,43 +1325,50 @@ class AdminController extends BaseAdminController
 
             $address->attributes = $_POST['Address'];
 
-            if (!$address->validate()) {
-                $errors = array_merge($errors, $address->getErrors());
-            }
-
             if (empty($errors)) {
-                if (!$contact = $cb->contact) {
-                    $contact = new Contact();
-                    if (!$contact->save()) {
-                        throw new Exception('Unable to save contact for commissioning body: ' . print_r($contact->getErrors(),
-                                true));
+
+                $transaction = Yii::app()->db->beginInternalTransaction();
+                try {
+
+                    if (!$contact = $cb->contact) {
+                        $contact = new Contact();
+                        if (!$contact->save()) {
+                            $errors = array_merge($errors, $contact->getErrors());
+                        }
                     }
+
+                    $cb->contact_id = $contact->id;
+
+                    $method = $cb->id ? 'edit' : 'add';
+
+                    $audit = $_POST;
+
+                    if ($method == 'edit') {
+                        $audit['id'] = $cb->id;
+                    }
+
+                    if (!$cb->save()) {
+                        $errors = array_merge($errors, $cb->getErrors());
+                    }
+
+                    $address->contact_id = $contact->id;
+
+                    if (!$address->save()) {
+                        $errors = array_merge($errors, $address->getErrors());
+                    }
+
+                    if(empty($errors)){
+                        $transaction->commit();
+                        Audit::add('admin-CommissioningBody', $method, $cb->id);
+                        $this->redirect('/admin/commissioning_bodies');
+                    } else {
+                        $transaction->rollback();
+                    }
+
+                } catch (Exception $e) {
+                    OELog::log($e->getMessage());
+                    $transaction->rollback();
                 }
-
-                $cb->contact_id = $contact->id;
-
-                $method = $cb->id ? 'edit' : 'add';
-
-                $audit = $_POST;
-
-                if ($method == 'edit') {
-                    $audit['id'] = $cb->id;
-                }
-
-                if (!$cb->save()) {
-                    throw new Exception('Unable to save CommissioningBody : ' . print_r($cb->getErrors(), true));
-                }
-
-                $address->contact_id = $contact->id;
-
-                if (!$address->save()) {
-                    throw new Exception('Unable to save CommissioningBody address: ' . print_r($address->getErrors(),
-                            true));
-                }
-
-                Audit::add('admin-CommissioningBody', $method, $cb->id);
-
-                $this->redirect('/admin/commissioning_bodies');
             }
         } else {
             Audit::add('admin-CommissioningBody', 'view', @$_GET['commissioning_body_id']);

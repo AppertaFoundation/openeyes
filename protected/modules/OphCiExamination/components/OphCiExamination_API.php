@@ -8,19 +8,19 @@ namespace OEModule\OphCiExamination\components;
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 use OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\widgets\HistoryRisks;
 use Patient;
 
 class OphCiExamination_API extends \BaseAPI
@@ -169,7 +169,7 @@ class OphCiExamination_API extends \BaseAPI
         }
         return implode($separator, $res);
     }
-    
+
     /**
      * Get the patient history description field from the latest Examination event.
      * Limited to current data context by default.
@@ -918,7 +918,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityForEpisodeLeft($patient, $include_nr_values = false, $before_date = NULL, $use_context = false)
     {
-        
+
         if ($va = $this->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
             $patient,
             $use_context,
@@ -2257,5 +2257,55 @@ class OphCiExamination_API extends \BaseAPI
             }
         }
         return $str;
+    }
+
+    protected $widget_cache = array();
+
+    /**
+     * NB. caching on this needs to be enhanced to index by data parameters.
+     *
+     * @param $class_name
+     * @param $data
+     * @return mixed
+     */
+    protected function getWidget($class_name, $data)
+    {
+        if (!array_key_exists($class_name, $this->widget_cache)) {
+            $this->widget_cache[$class_name] = $this->yii->getWidgetFactory()
+                ->createWidget($this, $class_name, $data);
+            $this->widget_cache[$class_name]->init();
+        }
+        return $this->widget_cache[$class_name];
+    }
+
+    /**
+     *
+     * @param $patient
+     * @param $risk_name
+     * @return mixed
+     */
+    public function getRiskByName($patient, $risk_name) {
+        $widget = $this->getWidget(
+            'OEModule\OphCiExamination\widgets\HistoryRisks',
+            array('mode' => HistoryRisks::$DATA_MODE, 'patient' => $patient));
+        if ($entry = $widget->element->getRiskEntryByName($risk_name)) {
+            $status = null;
+            switch ($entry->has_risk) {
+                case (models\HistoryRisksEntry::$PRESENT):
+                    $status = true;
+                    break;
+                case (models\HistoryRisksEntry::$NOT_PRESENT):
+                    $status = false;
+                    break;
+            }
+
+            return array(
+                'name' => (string)$entry->risk,
+                'status' => $status,
+                'comments' => $entry->comments,
+                'date' => $entry->element->event->event_date
+            );
+        }
+        return ;
     }
 }

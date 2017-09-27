@@ -6,16 +6,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class OphTrOperationbooking_API extends BaseAPI
 {
@@ -92,30 +91,51 @@ class OphTrOperationbooking_API extends BaseAPI
     }
 
     /**
-     * Gets 'open' bookings for the specified episode
-     * A booking is deemed open if it has no operation note linked to it.
-     * @param $episode_id
+     * Gets scheduled 'open' bookings
+     * Scheduled open means that the booking scheduled, but not completed
+     *
+     * @param Patient $patient
+     * @param boolean $use_context
      * @return mixed
-    */
-    public function getOpenBookingsForEpisode($episode_id)
+     */
+    public function getScheduledOpenOperations($patient, $use_context = false)
     {
         $criteria = new CDbCriteria();
-        $criteria->order = 'event.created_date asc';
-        $criteria->compare('episode_id', $episode_id);
-        $criteria->addCondition('`t`.booking_cancellation_date is null');
+        $criteria->addInCondition('status_id', array(
+            OphTrOperationbooking_Operation_Status::STATUS_SCHEDULED,
+            OphTrOperationbooking_Operation_Status::STATUS_RESCHEDULED
+        ));
 
-        $status_scheduled = OphTrOperationbooking_Operation_Status::model()->find('name=?', array('Scheduled'));
-        $status_rescheduled = OphTrOperationbooking_Operation_Status::model()->find('name=?', array('Rescheduled'));
+        return $this->getElements(
+            'Element_OphTrOperationbooking_Operation',
+            $patient,
+            $use_context,
+            null,
+            $criteria);
+    }
 
-        return OphTrOperationbooking_Operation_Booking::model()
-            ->with('session')
-            ->with(array(
-                'operation' => array(
-                    'condition' => "episode_id = $episode_id and status_id in ($status_scheduled->id,$status_rescheduled->id)",
-                    'with' => 'event',
-                ),
-            ))
-            ->findAll($criteria);
+    /**
+     * Get open operations for a patient
+     * An open operation in one which has not been cancelled or completed
+     *
+     * @param Patient $patient
+     * @param $use_context
+     * @return Element_OphTrOperationbooking_Operation[]
+     */
+    public function getOpenOperations(Patient $patient, $use_context=false)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addNotInCondition('status_id', array(
+            OphTrOperationbooking_Operation_Status::STATUS_CANCELLED,
+            OphTrOperationbooking_Operation_Status::STATUS_COMPLETED
+        ));
+
+        return $this->getElements(
+            'Element_OphTrOperationbooking_Operation',
+            $patient,
+            $use_context,
+            null,
+            $criteria);
     }
 
     public function getOperationProcedures($operation_id)

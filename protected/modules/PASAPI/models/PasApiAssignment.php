@@ -7,15 +7,15 @@ namespace OEModule\PASAPI\models;
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -28,6 +28,18 @@ namespace OEModule\PASAPI\models;
  */
 class PasApiAssignment extends \BaseActiveRecord
 {
+
+    /**
+     * Default time (in seconds) before cached PAS details are considered stale
+     */
+    const PAS_CACHE_TIME = 300;
+
+    /**
+     * Whenever a record missing from PAS
+     * @var bool
+     */
+    public $missing_from_pas = false;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -134,6 +146,20 @@ class PasApiAssignment extends \BaseActiveRecord
 
     protected function getLockKey($resource_type, $resource_id)
     {
-        return "openeyes.mehpas.{$resource_type}:{$resource_id}";
+        return "openeyes.pasapi.{$resource_type}:{$resource_id}";
+    }
+
+    /**
+     * Does this assignment need refreshing from PAS?
+     *
+     * @return boolean
+     */
+    public function isStale()
+    {
+        if ($this->isNewRecord || $this->missing_from_pas) return true;
+
+        $cache_time = (isset(\Yii::app()->params['pasapi']['cache_time'])) ? \Yii::app()->params['pasapi']['cache_time'] : self::PAS_CACHE_TIME;
+
+        return strtotime($this->last_modified_date) < (time() - $cache_time);
     }
 }

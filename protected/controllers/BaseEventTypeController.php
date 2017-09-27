@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -123,6 +122,13 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected $show_element_sidebar = true;
 
+    /**
+     * Set to true if the index search bar should appear in the header when creating/editing the event
+     *
+     * @var bool
+     */
+    protected $show_index_search = false;
+
     public function behaviors()
     {
         return array(
@@ -197,6 +203,20 @@ class BaseEventTypeController extends BaseModuleController
     }
 
     /**
+     * @param $action
+     * @return int
+     */
+    public function getElementWidgetMode($action)
+    {
+        $action_type = $this->getActionType($action);
+        return in_array($action_type,
+            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT, static::ACTION_TYPE_FORM))
+            ? BaseEventElementWidget::$EVENT_EDIT_MODE
+            : ($action_type === static::ACTION_TYPE_PRINT
+                ? BaseEventElementWidget::$EVENT_PRINT_MODE
+                : BaseEventElementWidget::$EVENT_VIEW_MODE);
+    }
+    /**
      * Sets the patient object on the controller.
      *
      * @param $patient_id
@@ -265,6 +285,18 @@ class BaseEventTypeController extends BaseModuleController
         return $elements;
     }
 
+    /**
+     * @return ElementType[]
+     */
+    protected function getAllElementTypes()
+    {
+        return $this->event_type->getAllElementTypes();
+    }
+
+    /**
+     * @param array $remove_list
+     * @return string
+     */
     public function getElementTree($remove_list = array())
     {
         $element_types_tree = array();
@@ -1155,7 +1187,6 @@ class BaseEventTypeController extends BaseModuleController
         $elements = array();
         $el_cls_name = $element_type->class_name;
         $f_key = CHtml::modelName($el_cls_name);
-
         if (isset($data[$f_key])) {
             $keys = array_keys($data[$f_key]);
 
@@ -1200,9 +1231,8 @@ class BaseEventTypeController extends BaseModuleController
     {
         $errors = array();
         $elements = array();
-
         // only process data for elements that are part of the element type set for the controller event type
-        foreach ($this->event_type->getAllElementTypes() as $element_type) {
+        foreach ($this->getAllElementTypes() as $element_type) {
             $from_data = $this->getElementsForElementType($element_type, $data);
             if (count($from_data) > 0) {
                 $elements = array_merge($elements, $from_data);
@@ -1415,10 +1445,25 @@ class BaseEventTypeController extends BaseModuleController
 
     public function renderSidebar($default_view)
     {
-        if ($this->show_element_sidebar && in_array($this->action->id,array('create','update'))) {
+        if ($this->show_element_sidebar && in_array($this->getActionType($this->action->id),
+                array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT), true)) {
             $this->renderPartial('//patient/_patient_element_sidebar');
         } else {
             parent::renderSidebar($default_view);
+        }
+
+    }
+
+    public function renderIndexSearch()
+    {
+        if ($this->show_index_search && in_array($this->getActionType($this->action->id),
+                array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT), true)) {
+          $event_type_id = ($this->event->attributes["event_type_id"]);
+          $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
+          $event_name = $event_type->name;
+          if ($event_name == "Examination") {
+            $this->widget('application.widgets.IndexSearch',array('event_type' => $event_name));
+          }
         }
 
     }
@@ -1498,7 +1543,7 @@ class BaseEventTypeController extends BaseModuleController
                         'patient' => $this->patient,
                         'element' => $view_data['element'],
                         'data' => $view_data['data'],
-                        'mode' => in_array($action, array('create', 'update')) ? BaseEventElementWidget::$EVENT_EDIT_MODE : BaseEventElementWidget::$EVENT_VIEW_MODE
+                        'mode' => $this->getElementWidgetMode($action)
                     ));
             $widget->form = $view_data['form'];
             $this->renderPartial('//elements/widget_element', array('widget' => $widget),$return, $processOutput);
@@ -1687,7 +1732,7 @@ class BaseEventTypeController extends BaseModuleController
             $wk->setDocref($event->docref);
             $wk->setPatient($event->episode->patient);
             $wk->setBarcode($event->barcodeHTML);
-            
+
             foreach (array('left', 'middle', 'right') as $section) {
                 if (isset(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name])) {
                     $setMethod = 'set'.ucfirst($section);
@@ -1707,7 +1752,7 @@ class BaseEventTypeController extends BaseModuleController
                     $wk->setCustomTag($pdf_footer_tag->tag_name, $api->{$pdf_footer_tag->method}($event->id));
                 }
             }
-            
+
             $wk->generatePDF($event->imageDirectory, 'event', $this->pdf_print_suffix, $this->pdf_print_html, (boolean) @$_GET['html'], $inject_autoprint_js);
         }
 
@@ -2043,7 +2088,7 @@ class BaseEventTypeController extends BaseModuleController
         ob_end_clean();
 
         $event->unlock();
-        
+
         $this->printLog($id, false);
 
         // Verify we have all the images by detecting eyedraw canvas elements in the page.

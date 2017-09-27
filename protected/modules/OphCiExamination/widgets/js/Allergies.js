@@ -3,15 +3,15 @@
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 var OpenEyes = OpenEyes || {};
@@ -25,15 +25,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$noAllergiesWrapper = $('#' + this.options.modelName + '_no_allergies_wrapper');
         this.$noAllergiesFld = $('#' + this.options.modelName + '_no_allergies');
 
-        this.$allergySelect = $('#' + this.options.modelName + '_allergy_id');
+        this.$allergySelect = $('.' + this.options.modelName + '_allergy_id');
         this.$other = $('#' + this.options.modelName + '_other');
-        this.$otherWrapper = $('#' + this.options.modelName + '_other_wrapper');
+        this.otherWrapperSelector = '.' + this.options.modelName + '_other_wrapper';
         this.$commentFld = $('#' + this.options.modelName + '_comments');
 
         this.tableSelector = '#' + this.options.modelName + '_entry_table';
         this.$table = $(this.tableSelector);
         this.templateText = $('#' + this.options.modelName + '_entry_template').text();
-
 
         this.initialiseTriggers();
 
@@ -46,13 +45,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     AllergiesController.prototype.initialiseTriggers = function()
     {
         var controller = this;
-        controller.$allergySelect.on('change', function(e) {
-            var $selected = controller.$allergySelect.find('option:selected');
+        controller.$table.on('change', '.other', function(e) {
+            var $selected = $(this).find('option:selected');
+
             if ($selected.data('other')) {
-                controller.$otherWrapper.show();
+                $(this).closest('td').find(controller.otherWrapperSelector).show();
             }
             else {
-                controller.$otherWrapper.hide();
+                $(this).closest('td').find(controller.otherWrapperSelector).hide();
                 controller.$other.val('');
             }
         });

@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -62,6 +61,12 @@ class Patient extends BaseActiveRecordVersioned
 
     public $use_pas = true;
     private $_orderedepisodes;
+
+    /**
+     * Holds errors PAS related errors
+     * @var array
+     */
+    private $_pas_errors = array();
 
     /**
      * Returns the static model of the specified AR class.
@@ -159,8 +164,6 @@ class Patient extends BaseActiveRecordVersioned
             'secondarydiagnoses' => array(self::HAS_MANY, 'SecondaryDiagnosis', 'patient_id'),
             'ethnic_group' => array(self::BELONGS_TO, 'EthnicGroup', 'ethnic_group_id'),
             'previousOperations' => array(self::HAS_MANY, 'PreviousOperation', 'patient_id', 'order' => 'CASE WHEN Date IS NULL THEN 1 ELSE 0 END, Date'),
-            //'medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date', 'condition' => 'end_date is null'),
-            //'previous_medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date', 'condition' => 'end_date is not null'),
             'commissioningbodies' => array(self::MANY_MANY, 'CommissioningBody', 'commissioning_body_patient_assignment(patient_id, commissioning_body_id)'),
             'referrals' => array(self::HAS_MANY, 'Referral', 'patient_id'),
             'lastReferral' => array(self::HAS_ONE, 'Referral', 'patient_id', 'order' => 'received_date desc'),
@@ -252,12 +255,32 @@ class Patient extends BaseActiveRecordVersioned
         );
     }
 
+    /**
+     * Adds a new error to the PAS error array.
+     * @param $error
+     */
+    public function addPasError($error)
+    {
+        $this->_pas_errors[] = $error;
+    }
+
+    /**
+     * Returns the errors of the PAS error array.
+     * @param $attribute
+     * @return mixed|null
+     */
+    public function getPasErrors()
+    {
+        return $this->_pas_errors;
+    }
+
     public function search_nr($params)
     {
         $criteria = new CDbCriteria();
         $criteria->join = 'JOIN contact ON contact_id = contact.id';
         $criteria->compare('LOWER(first_name)', strtolower($params['first_name']), false);
         $criteria->compare('LOWER(last_name)', strtolower($params['last_name']), false);
+        $criteria->compare('LOWER(maiden_name)', strtolower($params['maiden_name']), false);
         $criteria->compare('dob', $this->dob, false);
         $criteria->compare('gender', $this->gender, false);
         $criteria->compare('hos_num', $this->hos_num, false);
@@ -291,6 +314,10 @@ class Patient extends BaseActiveRecordVersioned
         if (isset($params['last_name'])) {
             $criteria->compare('contact.last_name', $params['last_name'], false);
         }
+        if (isset($params['maiden_name'])) {
+            $criteria->compare('contact.maiden_name', $params['maiden_name'], false);
+        }
+
         if (strlen($this->nhs_num) == 10) {
             $criteria->compare('nhs_num', $this->nhs_num, false);
         } else {
@@ -300,14 +327,19 @@ class Patient extends BaseActiveRecordVersioned
 
         $criteria->order = $params['sortBy'].' '.$params['sortDir'];
 
+        $results_from_event = array();
         if($this->use_pas == true){
-            Yii::app()->event->dispatch('patient_search_criteria', array('patient' => $this, 'criteria' => $criteria, 'params' => $params));
+            Yii::app()->event->dispatch('patient_search_criteria', array('results' => &$results_from_event,'patient' => $this, 'criteria' => $criteria, 'params' => $params));
         }
 
         $dataProvider = new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
             'pagination' => array('pageSize' => $params['pageSize']),
         ));
+
+        $results = $dataProvider->getData();
+
+        $dataProvider->setData( array_merge($results, $results_from_event) );
 
         return $dataProvider;
     }
@@ -725,38 +757,6 @@ class Patient extends BaseActiveRecordVersioned
         if ($api = Yii::app()->moduleAPI->get('OphDrPrescription')) {
             return $api->getPrescriptionItemsForPatient($this, $exclude);
         }
-    }
-
-    /**
-     * @param $medicationCriteria
-     *
-     * @return array
-     */
-    public function patientMedications($medicationCriteria)
-    {
-        $medicationCriteria->addCondition('patient_id = :id');
-        $medicationCriteria->params = array('id' => $this->id);
-        $medications = Medication::model()->findAll($medicationCriteria);
-
-        return $medications;
-    }
-
-    /**
-     * @param $medications
-     *
-     * @return mixed
-     */
-    public function prescriptionMedicationIds()
-    {
-        $medications = $this->patientMedications(new CDbCriteria());
-        $medicationsFromPrescriptions = array();
-        foreach ($medications as $medication) {
-            if ($medication->prescription_item_id) {
-                $medicationsFromPrescriptions[] = $medication->prescription_item_id;
-            }
-        }
-
-        return $medicationsFromPrescriptions;
     }
 
     /**
@@ -1950,98 +1950,6 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /**
-     * Gets the current medications linked with items from the prescription events.
-     *
-     * @return array
-     */
-    public function get_medications()
-    {
-        $medicationCriteria = new CDbCriteria(array('order' => 'created_date DESC'));
-        $medicationCriteria->addCondition('end_date is null or end_date > NOW()');
-        $medications = $this->patientMedications($medicationCriteria);
-        $medicationsFromPrescriptions = $this->prescriptionMedicationIds();
-        $prescriptionItems = $this->prescriptionItems($medicationsFromPrescriptions);
-
-        if ($prescriptionItems) {
-            foreach ($prescriptionItems as $item) {
-                $medication = new Medication();
-                $medication->createFromPrescriptionItem($item);
-                if ($medication->isCurrentMedication()) {
-                    $medications[] = $medication;
-                }
-            }
-        }
-
-        usort($medications, array($this, 'sortMedications'));
-
-        return $medications;
-    }
-
-    /**
-     * Gets the previous medications linked with items from the prescription events.
-     *
-     * @return array
-     */
-    public function get_previous_medications()
-    {
-        $medicationCriteria = new CDbCriteria(array('order' => 'created_date DESC'));
-        $medicationCriteria->addCondition('end_date is not null and end_date < NOW()');
-        $medications = $this->patientMedications($medicationCriteria);
-        $medicationsFromPrescriptions = $this->prescriptionMedicationIds();
-        $prescriptionItems = $this->prescriptionItems($medicationsFromPrescriptions);
-
-        if ($prescriptionItems) {
-            foreach ($prescriptionItems as $item) {
-                $medication = new Medication();
-                $medication->createFromPrescriptionItem($item);
-                if ($medication->isPreviousMedication()) {
-                    $medications[] = $medication;
-                }
-            }
-        }
-
-        usort($medications, array($this, 'sortMedications'));
-
-        return $medications;
-    }
-
-    /**
-     * Sort the medications by start date.
-     *
-     * @param $item1
-     * @param $item2
-     *
-     * @return bool
-     */
-    protected function sortMedications($item1, $item2)
-    {
-        return $item1->start_date > $item2->start_date;
-    }
-
-    /**
-     * @param $medicationList
-     * @param $prescription
-     *
-     * @return mixed
-     */
-    protected function mergeItemToMedications($medicationList, $prescription)
-    {
-        foreach ($medicationList as $medication) {
-            $currentMedication = $medication->isCurrentMedication();
-            if ($currentMedication && $medication->matches($prescription)) {
-                $medication->start_date = ($medication->start_date < $prescription->start_date) ? $medication->start_date : $prescription->start_date;
-                $endDate = $prescription->stopDateFromDuration()->format('Y-m-d');
-                if ($medication->stop_date && $medication->stop_date < $endDate) {
-                    $medication->stop_date = $endDate;
-                }
-            } else {
-            }
-        }
-
-        return $medicationList;
-    }
-
-    /**
      * Get the episode ID of the patient's cataract if it exists.
      *
      * @return mixed
@@ -2094,20 +2002,6 @@ class Patient extends BaseActiveRecordVersioned
                 return $diagnosis->ophthalmicDescription;
             }, $this->ophthalmicDiagnoses)
         );
-    }
-
-    /**
-     * Returns a summarised array of patient medications
-     * @return array
-     */
-    public function getMedicationsSummary()
-    {
-        return array_map(function($medication) {
-            $label = $medication->drug ? $medication->drug->label : $medication->medication_drug->name;
-            $option = $medication->option ? " ({$medication->option->name})" : '';
-            $frequency = $medication->frequency ? $medication->frequency->name : '';
-            return $label.$option.' '.$frequency;
-        }, $this->medications);
     }
 
     /**

@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class BaseAPI
 {
@@ -154,26 +153,18 @@ class BaseAPI
      * @param Patient $patient
      * @param bool $use_context
      * @param string $before - date formatted string
-     * @param integer $limit
-     * @param string $after - date formatted string
      * @return BaseEventTypeElement[]
      */
-    public function getElements($element, Patient $patient, $use_context = false, $before = null, $limit = null, $after = null)
+    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null)
     {
-        $criteria = new CDbCriteria();
+        if ($criteria === null) {
+            $criteria = new CDbCriteria();
+        }
         $criteria->compare('episode.patient_id', $patient->id);
         $criteria->order = 'event.event_date desc, event.created_date desc';
-
         if ($before !== null) {
             $criteria->compare('event.event_date', '<='.$before);
         }
-        if ($limit !== null) {
-            $criteria->limit = $limit;
-        }
-        if ($after !== null) {
-            $criteria->compare('event.event_date', '>='.$after);
-        }
-
         if ($use_context) {
             $this->current_context->addEventConstraints($criteria);
         }
@@ -205,12 +196,14 @@ class BaseAPI
      * @param string $after - date formatted string
      * @return BaseEventTypeElement|null
      */
-    public function getLatestElement($element, Patient $patient, $use_context = false, $before = null, $after = null)
+    public function getLatestElement($element, Patient $patient, $use_context = false, $before = null)
     {
-        $result = $this->getElements($element, $patient, $use_context, $before, 1, $after);
+        $criteria = new CDbCriteria();
+        $criteria->limit = 1;
+        $result = $this->getElements($element, $patient, $use_context, $before, $criteria);
         return count($result) ? $result[0] : null;
     }
-
+	
     /**
      * gets the element of type $element for the given patient in the given episode.
      *
@@ -244,7 +237,7 @@ class BaseAPI
                 ->find($criteria);
         }
     }
-    
+
     /**
      * gets all element of type $element for the given patient in the given episode.
      *
@@ -257,7 +250,7 @@ class BaseAPI
     public function getElementForAllEventInEpisode($episode, $element)
     {
         $event_type = $this->getEventType();
-       
+
         if($events = $episode->getAllEventsByType($event_type->id))
         {
             foreach($events as $event)

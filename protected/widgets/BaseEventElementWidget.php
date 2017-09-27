@@ -8,8 +8,10 @@ class BaseEventElementWidget extends CWidget
     public static $PATIENT_SUMMARY_MODE = 1;
     public static $PATIENT_POPUP_MODE = 2;
     public static $EVENT_VIEW_MODE = 4;
-    public static $EVENT_EDIT_MODE = 8;
-    public static $EPISODE_SUMMARY_MODE = 16;
+    public static $EVENT_PRINT_MODE = 8;
+    public static $EVENT_EDIT_MODE = 16;
+    public static $EPISODE_SUMMARY_MODE = 32;
+    public static $DATA_MODE = 64;
 
     /**
      * @var string of the module name.
@@ -23,7 +25,11 @@ class BaseEventElementWidget extends CWidget
      * @var BaseEventTypeElement
      */
     public $element;
-
+    /**
+     * @var \Firm
+     */
+    public $firm;
+    
     public $mode;
     public $view_file;
     public $data;
@@ -32,6 +38,7 @@ class BaseEventElementWidget extends CWidget
 
     public $notattip_edit_warning = 'application.widgets.views.BaseEventElement_edit_nottip';
     public $notattip_view_warning = 'application.widgets.views.BaseEventElement_view_nottip';
+    protected $print_view;
 
     public static function latestForPatient(Patient $patient)
     {
@@ -60,6 +67,15 @@ class BaseEventElementWidget extends CWidget
         return $this->app;
     }
 
+    public function getFirm()
+    {
+        if (!isset($this->firm)) {
+            $firm_id = $this->getApp()->session->get('selected_firm_id');
+            $this->firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
+        }
+        return $this->firm;
+    }
+
     /**
      * @param $mode
      * @return bool
@@ -68,7 +84,8 @@ class BaseEventElementWidget extends CWidget
     {
         return in_array($mode,
             array(static::$PATIENT_SUMMARY_MODE, static::$PATIENT_POPUP_MODE,
-                static::$EVENT_VIEW_MODE, static::$EVENT_EDIT_MODE), true);
+                static::$EVENT_VIEW_MODE, static::$EVENT_PRINT_MODE,
+                static::$EVENT_EDIT_MODE, static::$DATA_MODE), true);
     }
 
     /**
@@ -81,8 +98,22 @@ class BaseEventElementWidget extends CWidget
     /**
      * @return bool
      */
+    protected function showEditTipWarning() {
+        return $this->inEditMode();
+    }
+
+    /**
+     * @return bool
+     */
     protected function inViewMode() {
         return in_array($this->mode, array(static::$PATIENT_SUMMARY_MODE, static::$EVENT_VIEW_MODE), true);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function showViewTipWarning() {
+        return $this->inViewMode();
     }
 
     /**
@@ -96,6 +127,7 @@ class BaseEventElementWidget extends CWidget
         if (!$this->validateMode($this->mode)) {
             throw new \CHttpException('invalid mode value for ' . static::class);
         }
+
         $this->initialiseElement();
 
         parent::init();
@@ -138,6 +170,7 @@ class BaseEventElementWidget extends CWidget
             // we set the element to the provided data
             $this->updateElementFromData($this->element, $this->data);
         }
+        $this->element->widget = $this;
     }
 
     protected function isAtTip()
@@ -178,17 +211,63 @@ class BaseEventElementWidget extends CWidget
     }
 
     /**
-     * @param string $filename
+     * @var string base path to assets for element widget
+     */
+    private $base_published_path;
+
+    /**
      * @return string
      */
-    public function getJsPublishedPath($filename = null)
+    protected function getBasePublishedPath()
     {
-        $class = new \ReflectionClass($this);
-        $path = dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'js/';
-        if ($filename) {
-            $path .= $filename;
+        if (!$this->base_published_path) {
+            $class = new \ReflectionClass($this);
+            $this->base_published_path = dirname($class->getFileName());
         }
-        return $this->getApp()->getAssetManager()->publish($path);
+        return $this->base_published_path;
+    }
+
+    /**
+     * @param $path
+     * @param $filename
+     * @param boolean $core - get path for a core asset or not.
+     * @return mixed
+     */
+    protected function getPublishedPath($path, $filename, $core = false)
+    {
+        $root = $core ?
+            $this->getApp()->getBasePath() . DIRECTORY_SEPARATOR . 'assets'
+            : $this->getBasePublishedPath();
+        // remove any null entries prior to implosion
+        $elements = array_filter(
+            array($root, $path, $filename),
+            function($el) {
+                return $el !== null;
+            }
+        );
+
+        return $this->getApp()->getAssetManager()->publish(
+            implode(DIRECTORY_SEPARATOR, $elements)
+        );
+    }
+
+    /**
+     * @param string $filename
+     * @param boolean $core - js is from core or not
+     * @return string
+     */
+    public function getJsPublishedPath($filename = null, $core = false)
+    {
+        return $this->getPublishedPath('js', $filename, $core);
+    }
+
+    /**
+     * @param string $filename
+     * @return mixed
+     */
+    public function getCssPublishedPath($filename = null)
+    {
+        return $this->getPublishedPath('../assets/css', $filename);
     }
 
     /**
@@ -241,16 +320,22 @@ class BaseEventElementWidget extends CWidget
 
         // quick way to get the base class name
         $short_name = substr(strrchr(get_class($this), '\\'),1);
-
         switch ($this->mode) {
             case static::$EVENT_VIEW_MODE:
                 return $short_name . '_event_view';
+                break;
+            case static::$EVENT_PRINT_MODE:
+                // defaults to the standard view unless widget defines a print view
+                return $this->print_view ? : $short_name . '_event_view';
                 break;
             case static::$EVENT_EDIT_MODE:
                 return $short_name . '_event_edit';
                 break;
             case static::$EPISODE_SUMMARY_MODE:
                 return $short_name . '_episodesummary';
+                break;
+            case static::$DATA_MODE:
+                throw new \SystemException('No view to render when ' . static::class . ' in DATA_MODE');
                 break;
             default:
                 return $short_name . '_patient_mode';
@@ -268,11 +353,14 @@ class BaseEventElementWidget extends CWidget
         );
     }
 
+
+
     /**
      * @return string
      */
     public function run()
     {
+        // TODO: refactor this out for consistent rendering
         if ($this->mode === static::$PATIENT_POPUP_MODE) {
             return $this->popupList();
         }
@@ -285,11 +373,14 @@ class BaseEventElementWidget extends CWidget
      */
     public function renderWarnings()
     {
-        if ($this->inEditMode() && !$this->isAtTip()) {
-            return $this->render($this->notattip_edit_warning, array('element' => $this->element));
+        if (!$this->isAtTip()) {
+            if ($this->showEditTipWarning()) {
+                return $this->render($this->notattip_edit_warning, array('element' => $this->element));
+            }
+            if ($this->showViewTipWarning()) {
+                return $this->render($this->notattip_view_warning, array('element' => $this->element));
+            }
         }
-        if ($this->inViewMode() && !$this->isAtTip()) {
-            return $this->render($this->notattip_view_warning, array('element' => $this->element));
-        }
+
     }
 }
