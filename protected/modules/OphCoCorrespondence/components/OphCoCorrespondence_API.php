@@ -138,7 +138,7 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLastIOLType(\Patient $patient, $use_context = true)
+    public function getLastIOLType(\Patient $patient, $use_context = false)
     {
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
         if ($element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)){
@@ -152,7 +152,7 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLastIOLPower(\Patient $patient, $use_context = true)
+    public function getLastIOLPower(\Patient $patient, $use_context = false)
     {
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
         if ($element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)){
@@ -166,7 +166,7 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLastOperatedEye(\Patient $patient, $use_context = true)
+    public function getLastOperatedEye(\Patient $patient, $use_context = false)
     {
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
         if ($element = $api->getLatestElement('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
@@ -182,7 +182,7 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $use_context
      * @return string|null
      */
-    public function getPreOpVABothEyes($patient, $use_context = true)
+    public function getPreOpVABothEyes($patient, $use_context = false)
     {
         if ($apiNote = $this->yii->moduleAPI->get('OphTrOperationnote')) {
             $opDate = $apiNote->getLastOperationDateUnformatted($patient);
@@ -231,7 +231,7 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $use_context
      * @return string|null
      */
-    public function getPreOpRefraction($patient, $use_context = true)
+    public function getPreOpRefraction($patient, $use_context = false)
     {
         if ($apiNote = $this->yii->moduleAPI->get('OphTrOperationnote')) {
             $opDate = $apiNote->getLastOperationDateUnformatted($patient);

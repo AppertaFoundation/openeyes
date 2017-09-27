@@ -27,7 +27,7 @@ class OphDrPrescription_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLetterPrescription($patient, $use_context = true)
+    public function getLetterPrescription($patient, $use_context = false)
     {
         if($details = $this->getElements('Element_OphDrPrescription_Details', $patient, $use_context)){
             $result = '';

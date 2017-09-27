@@ -78,7 +78,7 @@ class OphCoTherapyapplication_API extends BaseAPI
      *
      * @return int $side
      */
-    public function getLatestApplicationSide($patient, $use_context = true)
+    public function getLatestApplicationSide($patient, $use_context = false)
     {
         if($el = $this->getLatestElement('Element_OphCoTherapyapplication_Therapydiagnosis', $patient, $use_context)){
             return $el->eye_id;
@@ -133,7 +133,7 @@ class OphCoTherapyapplication_API extends BaseAPI
      * @param $side
      * @param $use_context
      */
-    public function getLetterApplicationDiagnosisForSide($patient, $side, $use_context = true)
+    public function getLetterApplicationDiagnosisForSide($patient, $side, $use_context = false)
     {
         if ($el = $this->getElementFromLatestEvent(
             'Element_OphCoTherapyapplication_Therapydiagnosis',
@@ -151,7 +151,7 @@ class OphCoTherapyapplication_API extends BaseAPI
      * @param $use_context
      * @return mixed
      */
-    public function getLetterApplicationDiagnosisLeft($patient, $use_context = true)
+    public function getLetterApplicationDiagnosisLeft($patient, $use_context = false)
     {
         return $this->getLetterApplicationDiagnosisForSide($patient,'left', $use_context);
     }
@@ -163,7 +163,7 @@ class OphCoTherapyapplication_API extends BaseAPI
      * @param $use_context
      * @return mixed
      */
-    public function getLetterApplicationDiagnosisRight($patient, $use_context = true)
+    public function getLetterApplicationDiagnosisRight($patient, $use_context = false)
     {
         return $this->getLetterApplicationDiagnosisForSide($patient,'right', $use_context);
     }
@@ -175,7 +175,7 @@ class OphCoTherapyapplication_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLetterApplicationDiagnosisBoth($patient, $use_context = true)
+    public function getLetterApplicationDiagnosisBoth($patient, $use_context = false)
     {
         $res = '';
         if ($right = $this->getLetterApplicationDiagnosisRight($patient, $use_context)) {
@@ -201,7 +201,7 @@ class OphCoTherapyapplication_API extends BaseAPI
      *
      * @return mixed
      */
-    public function getLetterApplicationTreatmentForSide($patient, $side, $use_context = true)
+    public function getLetterApplicationTreatmentForSide($patient, $side, $use_context = false)
     {
         if ($el = $this->getElementFromLatestEvent(
             'Element_OphCoTherapyapplication_PatientSuitability',
@@ -221,7 +221,7 @@ class OphCoTherapyapplication_API extends BaseAPI
      * @param $use_context
      * @return mixed
      */
-    public function getLetterApplicationTreatmentLeft($patient, $use_context = true)
+    public function getLetterApplicationTreatmentLeft($patient, $use_context = false)
     {
         return $this->getLetterApplicationTreatmentForSide($patient,'left', $use_context);
     }
@@ -233,7 +233,7 @@ class OphCoTherapyapplication_API extends BaseAPI
      * @param $use_context
      * @return mixed
      */
-    public function getLetterApplicationTreatmentRight($patient, $use_context = true)
+    public function getLetterApplicationTreatmentRight($patient, $use_context = false)
     {
         return $this->getLetterApplicationTreatmentForSide($patient,'right', $use_context);
     }
@@ -245,7 +245,7 @@ class OphCoTherapyapplication_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLetterApplicationTreatmentBoth($patient, $use_context = true)
+    public function getLetterApplicationTreatmentBoth($patient, $use_context = false)
     {
         $res = '';
         if ($right = $this->getLetterApplicationTreatmentRight($patient, $use_context)) {

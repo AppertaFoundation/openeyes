@@ -27,7 +27,7 @@ class OphInBiometry_API extends BaseAPI
      * @return string|null
      */
 
-    public function getLastBiometryTargetRefraction(\Patient $patient, $use_context = true)
+    public function getLastBiometryTargetRefraction(\Patient $patient, $use_context = false)
     {
         $biometry_left = 'LEFT: Not Recorded ';
         $biometry_right = 'RIGHT: Not Recorded';

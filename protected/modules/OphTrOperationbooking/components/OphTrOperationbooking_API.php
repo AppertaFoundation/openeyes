@@ -24,7 +24,7 @@ class OphTrOperationbooking_API extends BaseAPI
      * @param $patient
      * @return mixed
      */
-    public function getLatestCompletedOperationBookingDiagnosis($patient, $use_context = true)
+    public function getLatestCompletedOperationBookingDiagnosis($patient, $use_context = false)
     {
 
         if ($operations = $this->getElements(
@@ -77,7 +77,7 @@ class OphTrOperationbooking_API extends BaseAPI
     }
 
 
-    public function getOperationsForEpisode($patient , $use_context = true)
+    public function getOperationsForEpisode($patient , $use_context = false)
     {
         if ($operations = $this->getElements(
             'Element_OphTrOperationbooking_Operation',
@@ -204,7 +204,7 @@ class OphTrOperationbooking_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLetterProcedures($patient, $use_context = true)
+    public function getLetterProcedures($patient, $use_context = false)
     {
         $return = '';
         if ($operation = $this->getElementFromLatestEvent(
@@ -230,7 +230,7 @@ class OphTrOperationbooking_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLetterProceduresSameDay( $patient, $use_context = true )
+    public function getLetterProceduresSameDay( $patient, $use_context = false )
     {
         if ($operations = $this->getElements(
             'Element_OphTrOperationbooking_Operation',
@@ -257,7 +257,7 @@ class OphTrOperationbooking_API extends BaseAPI
      * @param Patient $patient
      * @param $use_context
      */
-    public function getAdmissionDate($patient, $use_context = true)
+    public function getAdmissionDate($patient, $use_context = false)
     {
         if ($booking = $this->getMostRecentBookingForEpisode($patient, $use_context)) {
             if(isset($booking->session)){

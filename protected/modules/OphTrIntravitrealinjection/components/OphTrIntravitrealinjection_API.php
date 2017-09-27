@@ -155,7 +155,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      *
      * @return Element_OphTrIntravitrealinjection_Treatment
      */
-    protected function getPreviousTreatmentForSide($patient, $side, $use_context = true)
+    protected function getPreviousTreatmentForSide($patient, $side, $use_context = false)
     {
         $checker = ($side === 'left') ? 'hasLeft' : 'hasRight';
         $treatment = $this->getElementFromLatestEvent('Element_OphTrIntravitrealinjection_Treatment', $patient, $use_context);
@@ -172,7 +172,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentDrugForSide($patient, $side, $use_content = true)
+    public function getLetterTreatmentDrugForSide($patient, $side, $use_content = false)
     {
         if ($injection = $this->getPreviousTreatmentForSide($patient, $side, $use_content)) {
             return $injection->{$side . '_drug'}->name;
@@ -186,7 +186,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentDrugLeft($patient, $use_content = true)
+    public function getLetterTreatmentDrugLeft($patient, $use_content = false)
     {
         return $this->getLetterTreatmentDrugForSide($patient, 'left', $use_content);
     }
@@ -198,7 +198,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentDrugRight($patient, $use_content = true)
+    public function getLetterTreatmentDrugRight($patient, $use_content = false)
     {
         return $this->getLetterTreatmentDrugForSide($patient, 'right', $use_content);
     }
@@ -210,7 +210,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param $use_content
      * @return string
      */
-    public function getLetterTreatmentDrugBoth($patient, $use_content = true)
+    public function getLetterTreatmentDrugBoth($patient, $use_content = false)
     {
 
         $res = '';
@@ -237,7 +237,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentNumberForSide($patient, $side, $use_content = true)
+    public function getLetterTreatmentNumberForSide($patient, $side, $use_content = false)
     {
         if ($injection = $this->getPreviousTreatmentForSide($patient, $side, $use_content)) {
             return $injection->{$side . '_number'};
@@ -251,7 +251,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentNumberLeft($patient, $use_content = true)
+    public function getLetterTreatmentNumberLeft($patient, $use_content = false)
     {
         return $this->getLetterTreatmentNumberForSide($patient, 'left', $use_content);
     }
@@ -263,7 +263,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentNumberRight($patient, $use_content = true)
+    public function getLetterTreatmentNumberRight($patient, $use_content = false)
     {
         return $this->getLetterTreatmentNumberForSide($patient, 'right', $use_content);
     }
@@ -274,7 +274,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param Patient $patient
      * @param $use_content
      */
-    public function getLetterTreatmentNumberBoth($patient, $use_content = true)
+    public function getLetterTreatmentNumberBoth($patient, $use_content = false)
     {
         $right = $this->getLetterTreatmentNumberRight($patient, $use_content);
         $left = $this->getLetterTreatmentNumberLeft($patient, $use_content);
@@ -298,7 +298,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLetterPostInjectionDrops($patient, $use_context = true)
+    public function getLetterPostInjectionDrops($patient, $use_context = false)
     {
         if ($el = $this->getElementFromLatestEvent(
             'Element_OphTrIntravitrealinjection_PostInjectionExamination',
