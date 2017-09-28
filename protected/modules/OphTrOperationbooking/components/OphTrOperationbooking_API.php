@@ -194,18 +194,27 @@ class OphTrOperationbooking_API extends BaseAPI
     }
 
     /**
-     * Returns the most recent booking element for the given patient across all contexts (by default)
+     * Returns the most recent booking for the given patient across all
+     * contexts (by default). Looks through operations defined for the
+     * patient, and returns the current booking from the most recent
+     * operation that has a booking.
      *
      * @param Patient $patient
-     * @param bool $use_context
+     * @param bool $use_context - defaults to false.
      * @return OphTrOperationbooking_Operation_Booking|null
      */
     public function getMostRecentBooking(Patient $patient, $use_context = false)
     {
-        return $this->getLatestElement(
-            'OphTrOperationbooking_Operation_Booking',
+        foreach ($this->getElements(
+            'Element_OphTrOperationbooking_Operation',
             $patient,
-            $use_context);
+            $use_context
+        ) as $operation_element) {
+
+            if ($operation_element->booking) {
+                return $operation_element->booking;
+            }
+        }
     }
 
     /**
@@ -293,8 +302,8 @@ class OphTrOperationbooking_API extends BaseAPI
      */
     public function getAdmissionDate($patient, $use_context = false)
     {
-        if ($booking = $this->getMostRecentBookingForEpisode($patient, $use_context)) {
-            if(isset($booking->session)){
+        if ($booking = $this->getMostRecentBooking($patient, $use_context)) {
+            if (isset($booking->session)) {
                 return $booking->session->NHSDate('date');
             }
         }
