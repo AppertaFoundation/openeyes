@@ -378,4 +378,19 @@ class Element_OphCiExamination_LaserManagement extends \SplitEventTypeElement
         }
         return implode(', ', $result);
     }
+
+    /**
+     * @return string
+     */
+    public function getComments()
+    {
+        $result = array();
+        if ($this->hasRight() && $this->right_comments) {
+            $result[] = 'R: ' . $this->right_comments;
+        }
+        if ($this->hasLeft() && $this->left_comments) {
+            $result[] = 'L: ' . $this->left_comments;
+        }
+        return implode(', ', $result);
+    }
 }

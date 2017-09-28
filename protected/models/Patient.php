@@ -906,54 +906,6 @@ class Patient extends BaseActiveRecordVersioned
         }
     }
 
-    public function getEpd()
-    {
-        $episode = $this->getEpisodeForCurrentSubspecialty();
-
-        if ($episode && $disorder = $episode->diagnosis) {
-            if ($episode->eye) {
-                return $episode->eye->getAdjective().' '.strtolower($disorder->term);
-            } else {
-                return strtolower($disorder->term);
-            }
-        }
-    }
-
-    public function getEdl()
-    {
-        $episode = $this->getEpisodeForCurrentSubspecialty();
-
-        if ($episode && $disorder = $episode->diagnosis) {
-            if ($episode->eye->id == Eye::BOTH || $episode->eye->id == Eye::LEFT) {
-                return ucfirst(strtolower($disorder->term));
-            }
-
-            return 'No diagnosis';
-        }
-    }
-
-    public function getEdr()
-    {
-        $episode = $this->getEpisodeForCurrentSubspecialty();
-
-        if ($episode && $disorder = $episode->diagnosis) {
-            if ($episode->eye->id == Eye::BOTH || $episode->eye->id == Eye::RIGHT) {
-                return ucfirst(strtolower($disorder->term));
-            }
-
-            return 'No diagnosis';
-        }
-    }
-
-    public function getEps()
-    {
-        $episode = $this->getEpisodeForCurrentSubspecialty();
-
-        if ($episode && $eye = $episode->eye) {
-            return strtolower($eye->adjective);
-        }
-    }
-
     public function getEthnicGroupString()
     {
         if ($this->ethnic_group) {
@@ -1680,22 +1632,6 @@ class Patient extends BaseActiveRecordVersioned
         return 'Patient';
     }
 
-    public function getEpc()
-    {
-        if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-            if ($user = $episode->firm->consultant) {
-                return $user->fullName;
-            }
-        }
-    }
-
-    public function getEpv()
-    {
-        if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-            return $episode->firm->serviceSubspecialtyAssignment->service->name;
-        }
-    }
-
     /**
      * return the open episode of the given subspecialty if there is one, null otherwise.
      *
@@ -1765,38 +1701,25 @@ class Patient extends BaseActiveRecordVersioned
         return Event::model()->with('episode')->find($criteria);
     }
 
+    /**
+     * @return string
+     * @deprecated - since v2.0 - moved to operation note api.
+     */
     public function getLatestOperationNoteEventUniqueCode()
     {
-        $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-        $episode = $this->getEpisodeForCurrentSubspecialty();
-        $criteria = new CDbCriteria();
-        $criteria->addCondition('episode.patient_id = :pid');
-        $criteria->addCondition('t.event_type_id = :event_type_id');
-        $criteria->addCondition('t.episode_id = :episode_id');
-        $criteria->params = array(':pid' => $this->id, ':event_type_id' => $event_type->id, ':episode_id' => $episode->id);
-        $criteria->order = 't.event_date DESC, t.created_date DESC';
-        $criteria->limit = 1;
-        $event = Event::model()->with('episode')->find($criteria);
-        if (!empty($event)) {
-            return $this->getUniqueCodeForEvent($event->id);
-        } else {
-            return '';
+        if ($api = $this->getApp()->moduleAPI->get('OphTrOperationnote')) {
+            return $api->getLatestEventUniqueCode($this);
         }
     }
 
+    /**
+     * @param $id
+     * @return string
+     * @deprecated since v2.0 - moved to UniqueCodes model
+     */
     public function getUniqueCodeForEvent($id)
     {
-        if (!empty($id)) {
-            foreach (Yii::app()->db->createCommand()
-                                 ->select('uc.code')
-                                 ->from('unique_codes uc')
-                                 ->join('unique_codes_mapping ucm', 'uc.id = ucm.unique_code_id')
-                                 ->where("ucm.event_id = $id")->queryAll() as $row) {
-                return !empty($row['code']) ? $row['code'] : '';
-            }
-        }
-
-        return '';
+        return UniqueCodes::codeForEventId($id);
     }
 
     /**
@@ -2047,20 +1970,6 @@ class Patient extends BaseActiveRecordVersioned
         return OEModule\OphCiExamination\widgets\SocialHistory::latestForPatient($this);
     }
 
-
-    /*
-     * Generate episode link to searchbox and homescreen
-     * @return string
-     */
-    public function generateEpisodeLink()
-    {
-        $episode = $this->getEpisodeForCurrentSubspecialty();
-        if( $episode !== null){
-            return $this->getApp()->createURL("/patient/episode/", array("id" => $episode->id));
-        } else {
-            return $this->getApp()->createURL("/patient/episodes/", array("id" => $this->id));
-        }
-    }
 
     /**
      * Builds a sorted list of operations carried out on the patient either historically or across relevant events.

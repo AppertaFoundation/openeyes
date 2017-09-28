@@ -404,6 +404,21 @@ class OEMigration extends CDbMigration
     }
 
     /**
+     * Get the id of the event type
+     *
+     * @param $className
+     * @return mixed - the value of the id. False is returned if there is no value.
+     */
+    protected function getIdOfEventTypeByClassName($className)
+    {
+        return $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('event_type')
+            ->where('class_name=:class_name', array(':class_name' => $className))
+            ->queryScalar();
+    }
+
+    /**
      * @param $eventTypeName - string
      * @param $eventTypeClass - string
      * @param $eventTypeGroup - string
@@ -670,9 +685,10 @@ class OEMigration extends CDbMigration
      * @param $code
      * @param $method
      * @param $description
+     * @param $global_scope
      * @throws Exceptio
      */
-    public function registerShortcode($event_type_id, $code, $method, $description)
+    public function registerShortcode($event_type_id, $code, $method, $description, $global_scope = 1)
     {
         if (!preg_match('/^[a-zA-Z]{3}$/', $code)) {
             throw new Exception("Invalid shortcode: $code");
@@ -696,6 +712,7 @@ class OEMigration extends CDbMigration
             'default_code' => $default_code,
             'method' => $method,
             'description' => $description,
+            'global_scope' => $global_scope
         ));
     }
 

@@ -583,12 +583,9 @@ class DefaultController extends BaseEventTypeController
             if (!$this->patient) {
                 $this->setPatient($this->getApp()->request->getParam('patient_id'));
             }
-
-            if ($episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
-                if ($api = $this->getApp()->moduleAPI->get('OphTrOperationbooking')) {
-                    if ($booking = $api->getMostRecentBookingForEpisode($episode)) {
-                        $eye = $booking->operation->eye;
-                    }
+            if ($api = $this->getApp()->moduleAPI->get('OphTrOperationbooking')) {
+                if ($booking = $api->getMostRecentBooking($this->patient)) {
+                    $eye = $booking->operation->eye;
                 }
             }
         }
