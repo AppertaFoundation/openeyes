@@ -32,30 +32,27 @@ class OphTrOperationbooking_API extends BaseAPI
             $use_context)
         ){
             $completed = OphTrOperationbooking_Operation_Status::model()->find('name=?', array('Completed'));
-            $completedDate = NULL;
+            $completed_date = NULL;
 
             foreach ($operations as $operation){
                 if($operation->status_id == $completed->id){
-                    $completedDate = $operation->event->event_date;
+                    $completed_date = $operation->event->event_date;
                     break;
                 }
             }
-            if($completedDate === NULL){
-                $core = new CoreAPI();
-                return $core->getEpd($patient, $use_context);
-            }
-            if ($diagnosis = $this->getElementFromLatestEvent(
+            if ($completed_date !== null && $diagnosis = $this->getElementFromLatestEvent(
                 'Element_OphTrOperationbooking_Diagnosis',
                 $patient,
                 $use_context,
-                $completedDate)
+                $completed_date)
             ){
                 return $diagnosis->disorder->term;
             }
 
         }
-
-        return $patient->epd;
+        // revert to using the primary patient diagnosis
+        $core = new CoreAPI();
+        return $core->getEpd($patient, $use_context);
     }
 
     public function getBookingsForEpisode($episode_id)
