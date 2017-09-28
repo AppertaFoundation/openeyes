@@ -144,6 +144,8 @@ class OphTrOperationnote_API extends BaseAPI
      * @param Patient $patient
      * @param boolean $use_context - defaults to false
      * @return false|string
+     *
+     * @deprecated - since v2.0. Not replaced event date is inadequate for comparisons
      */
     public function getLastOperationDateUnformatted(\Patient $patient , $use_context = false)
     {

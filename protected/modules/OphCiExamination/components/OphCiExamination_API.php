@@ -557,6 +557,21 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
+    /**
+     * @param \Event $event
+     * @return string
+     */
+    public function getRefractionTextFromEvent(\Event $event)
+    {
+        if ($refract_element = models\Element_OphCiExamination_Refraction::model()->findByAttributes(array('event_id' => $event->id))) {
+            $right_spherical = number_format($refract_element->{'right_sphere'} + 0.5 * $refract_element->{'right_cylinder'}, 2);
+            $left_spherical = number_format($refract_element->{'left_sphere'} + 0.5 * $refract_element->{'left_cylinder'}, 2);
+            return $right_spherical . " Right Eye" . ", " . $left_spherical . " Left Eye";
+        }
+
+
+    }
+
     public function getMostRecentVA($eventid)
     {
         if($vaevents = models\Element_OphCiExamination_VisualAcuity::model()->findAll('event_id = ' . $eventid)) {
@@ -614,6 +629,17 @@ class OphCiExamination_API extends \BaseAPI
             $use_context);
         if ($va) {
             return $va->getBestReading($side);
+        }
+    }
+
+    /**
+     * @param \Event $event
+     * @return string
+     */
+    public function getBestVisualAcuityFromEvent(\Event $event)
+    {
+        if ($va = models\Element_OphCiExamination_VisualAcuity::model()->findByAttributes(array('event_id' => $event->id))) {
+            return $va->getBest('right') . ' Right Eye ' . $va->getBest('left') . ' Left Eye';
         }
     }
 

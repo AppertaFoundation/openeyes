@@ -171,6 +171,39 @@ class OphCoCorrespondence_API extends BaseAPI
         }
     }
 
+    /**
+     * Internal abstraction of getting data from before the most recent op note.
+     *
+     * @param $patient
+     * @param bool $use_context
+     * @param $api
+     * @param $method
+     * @return string|null
+     */
+    private function getPreOpValuesFromAPIMethod($patient, $use_context = false, $api, $method)
+    {
+        if (!$note_api = $this->yii->moduleAPI->get('OphTrOperationnote')) {
+            return null;
+        }
+
+        $op_event = $note_api->getLatestEvent($patient, $use_context);
+        $op_event_combined_date = Helper::combineMySQLDateAndDateTime($op_event->event_date, $op_event->created_date);
+        $events = $api->getEvents($patient, $use_context, $op_event->event_date);
+
+        foreach ($events as $event) {
+            // take account of event date not containing time so we ensure we get the
+            // exam from BEFORE the op note, not on the same day but after.
+            if ($event->event_date == $op_event->event_date) {
+                if (Helper::combineMySQLDateAndDateTime($event->event_date, $event->created_date) > $op_event_combined_date) {
+                    continue;
+                }
+            }
+            if ($result = $api->$method($event)) {
+                return $result;
+            }
+        }
+    }
+
 
     /**
      * Get the Pre-Op Visual Acuity - both eyes.
@@ -181,44 +214,9 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getPreOpVABothEyes($patient, $use_context = false)
     {
-        if ($apiNote = $this->yii->moduleAPI->get('OphTrOperationnote')) {
-            $opDate = $apiNote->getLastOperationDateUnformatted($patient);
+        if ($api = $this->yii->moduleAPI->get('OphCiExamination')) {
+            return $this->getPreOpValuesFromAPIMethod($patient, $use_context, $api, 'getBestVisualAcuityFromEvent');
         }
-        $exam_api = $this->yii->moduleAPI->get('OphCiExamination');
-
-        $events = $exam_api->getEvents($patient, $use_context, $opDate);
-        $data = '';
-
-        if($events){
-            for ($i = 0; $i < count($events); ++$i) {
-                // Get Most Recent VA
-                $vaID = $exam_api->getMostRecentVA($events[$i]->id);
-                if($vaID && !$data){
-                    $data = $exam_api->getMostRecentVAData($vaID->id);
-                    $chosenVA = $vaID;
-                }
-            }
-        }
-
-        if($data){
-            for ($i = 0; $i < count($data); ++$i) {
-                if($data[$i]->side == 0){
-                    $rightData[] = $data[$i];
-                }
-                if($data[$i]->side == 1){
-                    $leftData[] = $data[$i];
-                }
-            }
-            $unitId = $chosenVA->unit_id;
-
-            $rightVA = $exam_api->getVAvalue($rightData[0]->value, $unitId);
-            $leftVA = $exam_api->getVAvalue($leftData[0]->value, $unitId);
-
-            return $rightVA . " Right Eye" . " " . $leftVA . " Left Eye";
-        }else{
-            return;
-        }
-
     }
 
     /**
@@ -230,27 +228,8 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getPreOpRefraction($patient, $use_context = false)
     {
-        if ($apiNote = $this->yii->moduleAPI->get('OphTrOperationnote')) {
-            $opDate = $apiNote->getLastOperationDateUnformatted($patient);
-        }
-        $exam_api = $this->yii->moduleAPI->get('OphCiExamination');
-        $events = $exam_api->getEvents($patient, $use_context, $opDate);
-
-        $refractfound = false;
-        if($events){
-// Loop through responses, for ones that have RefractionValues
-            for ($i = 0; $i < count($events); ++$i) {
-                if ($exam_api->getRefractionValues($events[$i]->id)) {
-                    if (!$refractfound) {
-                        $refractelement = $exam_api->getRefractionValues($events[$i]->id);
-                        $refract_event_date = $events[$i]->event_date;
-                        $refractfound = true;
-                        $rightspherical = number_format($refractelement->{'right_sphere'} + 0.5 * $refractelement->{'right_cylinder'}, 2);
-                        $leftspherical = number_format($refractelement->{'left_sphere'} + 0.5 * $refractelement->{'left_cylinder'}, 2);
-                        return $rightspherical . " Right Eye" . ", " . $leftspherical . " Left Eye";
-                    }
-                }
-            }
+        if ($api = $this->yii->moduleAPI->get('OphCiExamination')) {
+            return $this->getPreOpValuesFromAPIMethod($patient, $use_context, $api, 'getRefractionTextFromEvent');
         }
     }
 

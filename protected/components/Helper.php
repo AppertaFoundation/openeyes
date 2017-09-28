@@ -432,4 +432,17 @@ class Helper
         return strtotime($date_time);
     }
 
+    /**
+     * @param $date
+     * @param $datetime
+     * @return string
+     */
+    public static function combineMySQLDateAndDateTime($date, $datetime)
+    {
+        if (preg_match('/^\d{4}-\d{2}-\d{2}/', $date)
+            && preg_match('/\d{2}:\d{2}:\d{2}$/', $datetime)
+        ) {
+            return substr($date, 0, 10) . ' ' . substr($datetime, -8);
+        }
+    }
 }
