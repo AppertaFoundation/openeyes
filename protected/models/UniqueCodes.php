@@ -188,4 +188,21 @@ class UniqueCodes extends BaseActiveRecord
 
         return $event_id;
     }
+
+    /**
+     * @param $id
+     * @return string
+     */
+    public static function codeForEventId($id)
+    {
+        if (!empty($id)) {
+            return Yii::app()->db->createCommand()
+                         ->select('uc.code')
+                         ->from('unique_codes uc')
+                         ->join('unique_codes_mapping ucm', 'uc.id = ucm.unique_code_id')
+                         ->where("ucm.event_id = $id")->queryScalar();
+        }
+
+        return '';
+    }
 }

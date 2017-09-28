@@ -101,9 +101,10 @@ class OphTrOperationnote_API extends BaseAPI
         }
     }
 
-    public function getPatientUniqueCode($patient)
+    public function getPatientUniqueCode($patient, $use_context = false)
     {
-        $patient_latest_event = $patient->getLatestOperationNoteEventUniqueCode();
+        $patient_latest_event = $this->getLatestEventUniqueCode($patient, $use_context);
+        OELog::log($patient_latest_event);
         $event_unique_code = '';
         if (!empty($patient_latest_event)) {
             $salt = isset(Yii::app()->params['portal']['credentials']['client_id']) ? Yii::app()->params['portal']['credentials']['client_id'] : '';
@@ -346,5 +347,16 @@ class OphTrOperationnote_API extends BaseAPI
             );
         }
         return $operations;
+    }
+
+    public function getLatestEventUniqueCode(Patient $patient, $use_context = false)
+    {
+        $event = $this->getLatestEvent($patient, $use_context);
+        if (!empty($event)) {
+            OELog::log($event->id);
+            return UniqueCodes::codeForEventId($event->id);
+        } else {
+            return '';
+        }
     }
 }
