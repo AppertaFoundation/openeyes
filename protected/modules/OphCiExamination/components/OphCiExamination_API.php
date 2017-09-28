@@ -30,15 +30,35 @@ class OphCiExamination_API extends \BaseAPI
     const RIGHT = 0;
 
     /**
+     * Ensure namespace prepended appropriately if necessary
+     *
+     * @param $element
+     * @return string
+     */
+    private function namespaceElementName($element)
+    {
+        if (strpos($element, 'models') == 0) {
+            $element = 'OEModule\OphCiExamination\\' . $element;
+        }
+        return $element;
+    }
+
+    /**
      * @inheritdoc
      */
     public function getElementFromLatestEvent($element, Patient $patient, $use_context = false, $before = null)
     {
-        // Ensure namespace prepended appropriately if necessary
-        if (strpos($element, 'models') == 0) {
-            $element = 'OEModule\OphCiExamination\\' . $element;
-        }
-        return parent::getElementFromLatestEvent($element, $patient, $use_context, $before);
+        return parent::getElementFromLatestEvent(
+            $this->namespaceElementName($element), $patient, $use_context, $before);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getElementFromLatestVisibleEvent($element, Patient $patient, $use_context = false, $before = null)
+    {
+        return parent::getElementFromLatestVisibleEvent(
+            $this->namespaceElementName($element), $patient, $use_context, $before);
     }
 
     /**
@@ -46,11 +66,8 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLatestElement($element, Patient $patient, $use_context = false, $before = null, $after = null)
     {
-        // Ensure namespace prepended appropriately if necessary
-        if (strpos($element, 'models') == 0) {
-            $element = 'OEModule\OphCiExamination\\' . $element;
-        }
-        return parent::getLatestElement($element, $patient, $use_context, $before, $after);
+        return parent::getLatestElement(
+            $this->namespaceElementName($element), $patient, $use_context, $before, $after);
     }
 
     /**
@@ -58,11 +75,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null)
     {
-        // Ensure namespace prepended appropriately if necessary
-        if (strpos($element, 'models') == 0) {
-            $element = 'OEModule\OphCiExamination\\' . $element;
-        }
-        return parent::getElements($element, $patient, $use_context, $before, $criteria);
+        return parent::getElements($this->namespaceElementName($element), $patient, $use_context, $before, $criteria);
     }
 
     /**
@@ -195,7 +208,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterHistory(\Patient $patient, $use_context = false)
     {
-        if ($history = $this->getElementFromLatestEvent(
+        if ($history = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_History',
             $patient,
             $use_context)
@@ -1335,12 +1348,22 @@ class OphCiExamination_API extends \BaseAPI
         return $disorders;
     }
 
+    /**
+     * @param $patient
+     * @param $element_type_id
+     * @param bool $use_context
+     * @return mixed
+     */
     public function getLetterStringForModel($patient, $element_type_id, $use_context = false)
     {
         if (!$element_type = \ElementType::model()->findByPk($element_type_id)) {
             throw new Exception("Unknown element type: $element_type_id");
         }
-        if ($element = $this->getElementFromLatestEvent(
+        // with introduction of change tracking episode, need to ensure we are retrieving
+        // letter strings from the visible events.
+        // note that if elements with letter strings start to track in the change episode
+        // this will need to be revisited.
+        if ($element = $this->getElementFromLatestVisibleEvent(
             $element_type->class_name,
             $patient,
             $use_context)
@@ -1358,11 +1381,11 @@ class OphCiExamination_API extends \BaseAPI
      *
      * @return \ElementType[] - array of various different element type objects
      */
-    public function getElementsForLatestEventInEpisode($patient, $use_context = false)
+    public function getElementsForLatestVisibleEvent($patient, $use_context = false)
     {
         $element_types = array();
 
-        if($event = $this->getLatestEvent($patient, $use_context)){
+        if($event = $this->getLatestVisibleEvent($patient, $use_context)){
             $criteria = new \CDbCriteria();
             $criteria->compare('event_type_id', $event->event_type_id);
             $criteria->order = 'display_order';

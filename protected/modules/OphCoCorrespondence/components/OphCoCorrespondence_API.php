@@ -113,8 +113,7 @@ class OphCoCorrespondence_API extends BaseAPI
     public function getLastExaminationDate(\Patient $patient, $use_context = false)
     {
         $api = $this->yii->moduleAPI->get('OphCiExamination');
-        $event = $api->getLatestEvent($patient, $use_context);
-
+        $event = $api->getLatestVisibleEvent($patient, $use_context);
         if (isset($event->event_date)) {
             return Helper::convertDate2NHS($event->event_date);
         }
