@@ -107,8 +107,7 @@
 						<td>
 							<?php
                                 $filtered_firms = $this->getFilteredFirms(@$_POST['subspecialty-id']);
-
-                                $selected = (count($filtered_firms) == 1 ? reset(array_keys($filtered_firms)) : @$_POST['firm-id']);
+                                $selected = (count($filtered_firms) == 1 ? array_keys($filtered_firms)[0] : @$_POST['firm-id']);
                                 $options = array(
                                         'disabled' => !@$_POST['firm-id'],
                                         'empty' => "All ".Yii::app()->params['service_firm_label']."s"
