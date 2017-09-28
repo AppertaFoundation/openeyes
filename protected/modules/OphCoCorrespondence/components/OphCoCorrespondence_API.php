@@ -124,7 +124,6 @@ class OphCoCorrespondence_API extends BaseAPI
 
     /*
      * List of Ophthalmic Diagnoses
-     * @param boolean $use_context
      */
     public function getOphthalmicDiagnoses(\Patient $patient)
     {
@@ -650,47 +649,5 @@ class OphCoCorrespondence_API extends BaseAPI
                 }
             }
         }
-    }
-
-    /*
-     * Glaucoma Overall Management Plan from latest Examination
-     * @param $patient
-     * @param bool $use_context
-     * @return string
-     * @TODO this should be in the examination module
-     */
-    public function getGlaucomaManagement(\Patient $patient, $use_context = false)
-    {
-        $result = '';
-
-        if($el = $this->getLatestElement(
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan',
-            $patient, $use_context))
-        {
-
-            $result .= 'Clinic Interval: ' . ($el->clinic_interval ? : 'NR') . "\n";
-            $result .= 'Photo: ' . ($el->photo ? : 'NR') . "\n";
-            $result .= 'OCT: ' . ($el->oct ? : 'NR') . "\n";
-            $result .= 'Visual Fields: ' . ($el->hfa ? : 'NR') . "\n";
-            $result .= 'Gonioscopy: ' . ($el->gonio ? : 'NR') . "\n";
-            $result .= 'HRT: ' . ($el->hrt ? : 'NR') . "\n";
-
-            if(!empty($el->comments)){
-                $result .= 'Glaucoma Management comments: '.$el->comments."\n";
-            }
-
-            $result .= "\n";
-            if(isset($el->right_target_iop->name)){
-                $result .= 'Target IOP Right Eye: '.$el->right_target_iop->name." mmHg\n";
-            }
-            if(isset($el->left_target_iop->name)){
-                $result .= 'Target IOP Left Eye: '.$el->left_target_iop->name." mmHg\n";
-            }
-
-
-
-        }
-        return $result;
-
     }
 }

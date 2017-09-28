@@ -404,6 +404,21 @@ class OEMigration extends CDbMigration
     }
 
     /**
+     * Get the id of the event type
+     *
+     * @param $className
+     * @return mixed - the value of the id. False is returned if there is no value.
+     */
+    protected function getIdOfEventTypeByClassName($className)
+    {
+        return $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('event_type')
+            ->where('class_name=:class_name', array(':class_name' => $className))
+            ->queryScalar();
+    }
+
+    /**
      * @param $eventTypeName - string
      * @param $eventTypeClass - string
      * @param $eventTypeGroup - string

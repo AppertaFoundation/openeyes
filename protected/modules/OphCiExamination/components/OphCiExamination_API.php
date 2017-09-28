@@ -1228,25 +1228,8 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * get the laser management plan.
-     *
-     * @param Patient $patient
-     * @param $use_context
-     * @deprecated since 1.4.10, user getLetterLaserManagementFindings($patient)
-     */
-    public function getLetterLaserManagementPlan($patient, $use_context = false)
-    {
-        if ($m = $this->getElementFromLatestEvent(
-            'models\Element_OphCiExamination_LaserManagement',
-            $patient,
-            $use_context)
-        ){
-            return $m->getLetter_string();
-        }
-    }
-
-    /**
-     * Get the default findings string from VA in te latest examination event (if it exists).
+     * Get the default findings string from laser management in the latest examination
+     * event (if the latest examination has laser management).
      *
      * @param $patient
      * @param $use_context
@@ -1264,7 +1247,8 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * get laser management comments.
+     * Get comments from Laser Management if the latest examination event contains
+     * laser management. Will concatenate the parent management comments as well.
      *
      * @param Patient $patient
      * @param $use_context
@@ -1272,13 +1256,24 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterLaserManagementComments($patient, $use_context = false)
     {
-        if ($m = $this->getElementFromLatestEvent(
-            'models\Element_OphCiExamination_Management',
+        $result = '';
+        if ($lm = $this->getElementFromLatestEvent(
+            'models\Element_OphCiExamination_LaserManagement',
             $patient,
             $use_context)
-        ){
-            return $m->comments;
+        ) {
+            $result = $lm->comments;
+            if ($m = $this->getElementFromLatestEvent(
+                'models\Element_OphCiExamination_Management',
+                $patient,
+                $use_context)
+            ) {
+                if (strlen($m->comments)) {
+                    $result .= ' (' . $m->comments . ')';
+                }
+            }
         }
+        return $result;
     }
 
     /**
@@ -2305,6 +2300,45 @@ class OphCiExamination_API extends \BaseAPI
                 'date' => $entry->element->event->event_date
             );
         }
-        return ;
+    }
+
+    /*
+     * Glaucoma Overall Management Plan from latest Examination
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getGlaucomaManagement(\Patient $patient, $use_context = false)
+    {
+        $result = '';
+
+        if($el = $this->getLatestElement(
+            'models\Element_OphCiExamination_OverallManagementPlan',
+            $patient, $use_context))
+        {
+
+            $result .= 'Clinic Interval: ' . ($el->clinic_interval ? : 'NR') . "\n";
+            $result .= 'Photo: ' . ($el->photo ? : 'NR') . "\n";
+            $result .= 'OCT: ' . ($el->oct ? : 'NR') . "\n";
+            $result .= 'Visual Fields: ' . ($el->hfa ? : 'NR') . "\n";
+            $result .= 'Gonioscopy: ' . ($el->gonio ? : 'NR') . "\n";
+            $result .= 'HRT: ' . ($el->hrt ? : 'NR') . "\n";
+
+            if(!empty($el->comments)){
+                $result .= 'Glaucoma Management comments: '.$el->comments."\n";
+            }
+
+            $result .= "\n";
+            if(isset($el->right_target_iop->name)){
+                $result .= 'Target IOP Right Eye: '.$el->right_target_iop->name." mmHg\n";
+            }
+            if(isset($el->left_target_iop->name)){
+                $result .= 'Target IOP Left Eye: '.$el->left_target_iop->name." mmHg\n";
+            }
+
+
+
+        }
+        return $result;
     }
 }
