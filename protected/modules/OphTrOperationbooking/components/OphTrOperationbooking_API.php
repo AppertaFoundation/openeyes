@@ -41,7 +41,8 @@ class OphTrOperationbooking_API extends BaseAPI
                 }
             }
             if($completedDate === NULL){
-                return $patient->epd;
+                $core = new CoreAPI();
+                return $core->getEpd($patient);
             }
             if ($diagnosis = $this->getElementFromLatestEvent(
                 'Element_OphTrOperationbooking_Diagnosis',
