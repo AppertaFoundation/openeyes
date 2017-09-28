@@ -50,7 +50,10 @@ return array(
             'Common Post-Op Complications' => '/OphCiExamination/admin/postOpComplications',
             'Invoice Statuses' => '/OphCiExamination/admin/InvoiceStatusList',
             'Allergies' => '/OphCiExamination/admin/Allergies',
-            'Risks' => '/OphCiExamination/admin/Risks'
+            'Risks' => '/OphCiExamination/admin/Risks',
+            'Social History' => '/OphCiExamination/admin/SocialHistory',
+            'Family History' => '/OphCiExamination/admin/FamilyHistory',
+            'Medication Stop Reasons' => '/OphCiExamination/admin/HistoryMedicationsStopReason'
         ),
         'ophciexamination_drgrading_type_required' => false,
         'ophciexamination_visualacuity_correspondence_unit' => 'Snellen Metre',
