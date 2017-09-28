@@ -283,6 +283,7 @@ return array(
         'log_events' => true,
         'default_site_code' => '',
         'institution_code' => '',
+        'institution_specialty' => 130, 
         'erod_lead_time_weeks' => 3,
         // specifies which specialties are available in patient summary for diagnoses etc (use specialty codes)
         'specialty_codes' => array(),

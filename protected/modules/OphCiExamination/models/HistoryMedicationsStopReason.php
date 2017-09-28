@@ -33,6 +33,11 @@ class HistoryMedicationsStopReason extends \BaseActiveRecordVersioned
         return 'ophciexamination_medication_stop_reason';
     }
 
+    public function defaultScope()
+    {
+        return array('order' => $this->getTableAlias(true, false).'.display_order');
+    }
+    
     public function rules()
     {
         return array(

@@ -1919,11 +1919,16 @@ class Patient extends BaseActiveRecordVersioned
             }
         }
 
-        return array_merge(
-            $principals,
-            array_map(function($diagnosis) {
-                return $diagnosis->ophthalmicDescription;
-            }, $this->ophthalmicDiagnoses)
+        // filter down to unique description to avoid duplicate diagnoses
+        // Note this will not combine L/R into bilateral, or filter a L||R
+        // clashing with bilateral
+        return array_unique(
+            array_merge(
+                $principals,
+                array_map(function($diagnosis) {
+                    return $diagnosis->ophthalmicDescription;
+                }, $this->ophthalmicDiagnoses)
+            )
         );
     }
 

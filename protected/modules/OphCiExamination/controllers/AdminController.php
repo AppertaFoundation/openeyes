@@ -893,4 +893,57 @@ class AdminController extends \ModuleAdminController
                 'extra_fields' => $extra_fields
             ));
     }
+
+    public function actionSocialHistory()
+    {
+        $this->render('socialhistory');
+    }
+
+    public function actionSocialHistoryOccupation()
+    {
+        $this->genericAdmin(models\SocialHistory::model()->getAttributeLabel('occupation_id'),
+            'OEModule\OphCiExamination\models\SocialHistoryOccupation');
+    }
+
+    public function actionSocialHistoryDrivingStatus()
+    {
+        $this->genericAdmin(models\SocialHistory::model()->getAttributeLabel('driving_statuses'),
+            'OEModule\OphCiExamination\models\SocialHistoryDrivingStatus');
+    }
+
+    public function actionSocialHistorySmokingStatus()
+    {
+        $this->genericAdmin(models\SocialHistory::model()->getAttributeLabel('smoking_status_id'),
+            'OEModule\OphCiExamination\models\SocialHistorySmokingStatus');
+    }
+
+    public function actionSocialHistoryAccommodation()
+    {
+        $this->genericAdmin(models\SocialHistory::model()->getAttributeLabel('accommodation_id'),
+            'OEModule\OphCiExamination\models\SocialHistoryAccommodation');
+    }
+
+    public function actionFamilyHistory()
+    {
+        $this->render('familyhistory');
+    }
+
+    public function actionFamilyHistoryRelative()
+    {
+        $this->genericAdmin(models\FamilyHistory_Entry::model()->getAttributeLabel('relative_id'),
+            'OEModule\OphCiExamination\models\FamilyHistoryRelative');
+    }
+
+    public function actionFamilyHistoryCondition()
+    {
+        $this->genericAdmin(models\FamilyHistory_Entry::model()->getAttributeLabel('condition_id'),
+            'OEModule\OphCiExamination\models\FamilyHistoryCondition');
+    }
+
+    public function actionHistoryMedicationsStopReason()
+    {
+        $this->genericAdmin('Medication Stop Reason',
+            'OEModule\OphCiExamination\models\HistoryMedicationsStopReason');
+    }
+
 }

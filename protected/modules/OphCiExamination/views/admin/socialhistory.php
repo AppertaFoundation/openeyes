@@ -12,24 +12,16 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class MedicationStopReason extends BaseActiveRecordVersioned
-{
-    public function tableName()
-    {
-        return 'medication_stop_reason';
-    }
 
-    public function rules()
-    {
-        return array(
-            array('name, display_order, active', 'safe'),
-        );
-    }
-
-    public function behaviors()
-    {
-        return array(
-            'LookupTable' => 'LookupTable',
-        );
-    }
-}
+$this->renderPartial('//base/_messages');
+$model = OEModule\OphCiExamination\models\SocialHistory::model();
+?>
+<div class="box admin">
+	<h2>Social History</h2>
+	<ul>
+		<li><a href="/OphCiExamination/admin/socialHistoryOccupation"><?= CHtml::encode($model->getAttributeLabel('occupation_id')) ?></a></li>
+		<li><a href="/OphCiExamination/admin/socialHistoryDrivingStatus"><?= CHtml::encode($model->getAttributeLabel('driving_statuses')) ?></a></li>
+		<li><a href="/OphCiExamination/admin/socialHistorySmokingStatus"><?= CHtml::encode($model->getAttributeLabel('smoking_status_id')) ?></a></li>
+		<li><a href="/OphCiExamination/admin/socialHistoryAccommodation"><?= CHtml::encode($model->getAttributeLabel('accommodation_id')) ?></a></li>
+	</ul>
+</div>
