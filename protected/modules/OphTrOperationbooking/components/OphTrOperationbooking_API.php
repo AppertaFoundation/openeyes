@@ -196,11 +196,27 @@ class OphTrOperationbooking_API extends BaseAPI
     }
 
     /**
+     * Returns the most recent booking element for the given patient across all contexts (by default)
+     *
+     * @param Patient $patient
+     * @param bool $use_context
+     * @return OphTrOperationbooking_Operation_Booking|null
+     */
+    public function getMostRecentBooking(Patient $patient, $use_context = false)
+    {
+        return $this->getLatestElement(
+            'OphTrOperationbooking_Operation_Booking',
+            $patient,
+            $use_context);
+    }
+
+    /**
      * Get the most recent booking for the patient in the given episode.
      *
      * @param Episode $episode
      *
      * @return OphTrOperationbooking_Operation_Booking
+     * @deprecated - since 2.0 use getMostRecentBooking instead
      */
     public function getMostRecentBookingForEpisode($episode)
     {
