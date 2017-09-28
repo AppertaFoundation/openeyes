@@ -497,6 +497,19 @@ class BaseEventTypeController extends BaseModuleController
         }
     }
 
+    protected function getPrevious($element_type, $exclude_event_id = null)
+    {
+        if ($api = $this->getApp()->moduleAPI->get($this->getModule()->name)) {
+            return array_filter(
+                $api->getElements($element_type->class_name, $this->patient, false),
+                function($el) use ($exclude_event_id) {
+                    return $el->event_id != $exclude_event_id;
+                });
+        } else {
+            return array();
+        }
+    }
+
     /**
      * Are there one or more previous instances of an element?
      *
@@ -507,11 +520,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function hasPrevious($element_type, $exclude_event_id = null)
     {
-        if ($episode = $this->episode) {
-            return count($episode->getElementsOfType($element_type, $exclude_event_id)) > 0;
-        } else {
-            return false;
-        }
+        return count($this->getPrevious($element_type, $exclude_event_id)) > 0;
     }
 
     /**
@@ -1089,13 +1098,10 @@ class BaseEventTypeController extends BaseModuleController
         // Clear script requirements as all the base css and js will already be on the page
         Yii::app()->assetManager->reset();
 
-        $this->episode = $this->getEpisode();
-
-        $elements = $this->episode->getElementsOfType($element_type);
-
-        $this->renderPartial('_previous', array(
-            'elements' => $elements,
-        ), false, true // Process output to deal with script requirements
+        $this->renderPartial(
+            '_previous', array(
+                'elements' => $this->getPrevious($element_type),
+            ), false, true // Process output to deal with script requirements
         );
     }
 
