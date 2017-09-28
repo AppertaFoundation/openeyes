@@ -1089,14 +1089,16 @@ class BaseEventTypeController extends BaseModuleController
         // Clear script requirements as all the base css and js will already be on the page
         Yii::app()->assetManager->reset();
 
-        $this->episode = $this->getEpisode();
-
-        $elements = $this->episode->getElementsOfType($element_type);
-
-        $this->renderPartial('_previous', array(
-            'elements' => $elements,
-        ), false, true // Process output to deal with script requirements
-        );
+        if ($api = $this->getApp()->moduleAPI->get($this->getModule()->name)) {
+            $elements = $api->getElements($element_type->class_name, $this->patient, false);
+            $this->renderPartial(
+                '_previous', array(
+                    'elements' => $elements,
+                ), false, true // Process output to deal with script requirements
+            );
+        } else {
+            throw new CHttpException(400);
+        }
     }
 
     /**
