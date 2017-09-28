@@ -229,7 +229,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterIOPReadingBoth(\Patient $patient, $use_context = false)
     {
-        if ($iop = $this->getElementFromLatestEvent(
+        if ($iop = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
             $use_context)
@@ -250,7 +250,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterIOPReadingBothFirst(\Patient $patient, $use_context = false)
     {
-        if ($iop = $this->getElementFromLatestEvent(
+        if ($iop = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
             $use_context)
@@ -271,7 +271,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterIOPReadingLeft(\Patient $patient, $use_context = false)
     {
-        if ($iop = $this->getElementFromLatestEvent(
+        if ($iop = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
             $use_context)
@@ -293,7 +293,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterIOPReadingRight(\Patient $patient, $use_context = false)
     {
-        if ($iop = $this->getElementFromLatestEvent(
+        if ($iop = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
             $use_context)
@@ -314,7 +314,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterIOPReadingAbbr(\Patient $patient, $use_context = false)
     {
-        if ($iop = $this->getElementFromLatestEvent(
+        if ($iop = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
             $use_context)
@@ -343,7 +343,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getIOPReadingLeft(\Patient $patient, $use_context = false)
     {
-        if ($iop = $this->getElementFromLatestEvent(
+        if ($iop = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
             $use_context)
@@ -364,7 +364,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getIOPReadingRight(\Patient $patient, $use_context = false)
     {
-        if ($iop = $this->getElementFromLatestEvent(
+        if ($iop = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
             $use_context)
@@ -441,7 +441,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterAnteriorSegmentLeft($patient, $use_context = false)
     {
-        if ($as = $this->getElementFromLatestEvent('models\Element_OphCiExamination_AnteriorSegment', $patient, $use_context)){
+        if ($as = $this->getElementFromLatestVisibleEvent('models\Element_OphCiExamination_AnteriorSegment', $patient, $use_context)){
             return $this->getEyedrawDescriptionForSide($as, 'left');
         }
     }
@@ -453,7 +453,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterAnteriorSegmentRight($patient, $use_context = false)
     {
-        if ($as = $this->getElementFromLatestEvent('models\Element_OphCiExamination_AnteriorSegment', $patient, $use_context)){
+        if ($as = $this->getElementFromLatestVisibleEvent('models\Element_OphCiExamination_AnteriorSegment', $patient, $use_context)){
             return $this->getEyedrawDescriptionForSide($as, 'right');
         }
     }
@@ -465,7 +465,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterAnteriorSegmentBoth($patient, $use_context = false)
     {
-        if ($as = $this->getElementFromLatestEvent('models\Element_OphCiExamination_AnteriorSegment', $patient, $use_context)) {
+        if ($as = $this->getElementFromLatestVisibleEvent('models\Element_OphCiExamination_AnteriorSegment', $patient, $use_context)) {
             return $this->getEyedrawDescription($as, \Eye::model()->findByPk(\Eye::BOTH));
         }
     }
@@ -494,7 +494,7 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterPosteriorPoleLeft($patient, $use_context = false)
     {
 
-        if ($element = $this->getElementFromLatestEvent(
+        if ($element = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_PosteriorPole',
             $patient,
             $use_context)
@@ -511,7 +511,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterPosteriorPoleRight($patient, $use_context = false)
     {
-        if ($element = $this->getElementFromLatestEvent(
+        if ($element = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_PosteriorPole',
             $patient,
             $use_context)
@@ -527,7 +527,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterPosteriorPoleBoth($patient, $use_context = false)
     {
-        if ($element = $this->getElementFromLatestEvent(
+        if ($element = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_PosteriorPole',
             $patient,
             $use_context)
@@ -911,7 +911,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterVisualAcuityFindings($patient, $use_context = false)
     {
-        if ($va = $this->getElementFromLatestEvent(
+        if ($va = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_VisualAcuity',
             $patient,
             $use_context)
@@ -1018,7 +1018,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterConclusion($patient, $use_context = false)
     {
-        if ($conclusion = $this->getElementFromLatestEvent(
+        if ($conclusion = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_Conclusion',
             $patient,
             $use_context)
@@ -1038,7 +1038,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterManagement($patient, $use_context = false)
     {
-        if ($management = $this->getElementFromLatestEvent(
+        if ($management = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_Management',
             $patient,
             $use_context)
@@ -1058,7 +1058,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterAdnexalComorbidityRight($patient, $use_context = false)
     {
-        if ($ac = $this->getElementFromLatestEvent(
+        if ($ac = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_AdnexalComorbidity',
             $patient,
             $use_context)
@@ -1077,7 +1077,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterAdnexalComorbidityLeft($patient, $use_context = false)
     {
-        if ($ac = $this->getElementFromLatestEvent(
+        if ($ac = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_AdnexalComorbidity',
             $patient,
             $use_context)
@@ -1097,7 +1097,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterDRRetinopathy($patient, $side, $use_context = false)
     {
-        if ($dr = $this->getElementFromLatestEvent(
+        if ($dr = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_DRGrading',
             $patient,
             $use_context)
@@ -1134,7 +1134,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getDRMaculopathy($patient, $side, $use_context = false)
     {
-        if ($dr = $this->getElementFromLatestEvent(
+        if ($dr = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_DRGrading',
             $patient,
             $use_context)
@@ -1171,7 +1171,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getDRClinicalRet($patient, $side, $use_context = false)
     {
-        if ($dr = $this->getElementFromLatestEvent(
+        if ($dr = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_DRGrading',
             $patient,
             $use_context)
@@ -1203,7 +1203,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getDRClinicalMac($patient, $side, $use_context = false)
     {
-        if ($dr = $this->getElementFromLatestEvent(
+        if ($dr = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_DRGrading',
             $patient,
             $use_context)
@@ -1250,7 +1250,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterLaserManagementFindings($patient, $use_context = false)
     {
-        if ($va = $this->getElementFromLatestEvent(
+        if ($va = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_LaserManagement',
             $patient,
             $use_context)
@@ -1270,13 +1270,13 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterLaserManagementComments($patient, $use_context = false)
     {
         $result = '';
-        if ($lm = $this->getElementFromLatestEvent(
+        if ($lm = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_LaserManagement',
             $patient,
             $use_context)
         ) {
             $result = $lm->comments;
-            if ($m = $this->getElementFromLatestEvent(
+            if ($m = $this->getElementFromLatestVisibleEvent(
                 'models\Element_OphCiExamination_Management',
                 $patient,
                 $use_context)
@@ -1308,7 +1308,7 @@ class OphCiExamination_API extends \BaseAPI
                 return $patient_ticket_followup['followup_quantity'] . ' ' . $patient_ticket_followup['followup_period'] . ' in the ' . $patient_ticket_followup['clinic_location'];
             }
         }
-        if ($o = $this->getElementFromLatestEvent(
+        if ($o = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_ClinicOutcome',
             $patient,
             $use_context)
@@ -1589,7 +1589,7 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterInvestigationDescription($patient , $use_context = false)
     {
 
-            if ($el = $this->getElementFromLatestEvent(
+            if ($el = $this->getElementFromLatestVisibleEvent(
                 'models\Element_OphCiExamination_Investigation',
                 $patient,
                 $use_context)
@@ -1608,7 +1608,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterMaxCRTForSide($patient, $side, $use_context = false)
     {
-        if ($el = $this->getElementFromLatestEvent(
+        if ($el = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_OCT',
             $patient,
             $use_context)
@@ -1653,7 +1653,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterCentralSFTForSide($patient, $side, $use_context = false)
     {
-        if ($el = $this->getElementFromLatestEvent(
+        if ($el = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_OCT',
             $patient,
             $use_context)
@@ -1699,7 +1699,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterInjectionManagementComplexDiagnosisForSide($patient, $side, $use_context = false)
     {
-        if ($el = $this->getElementFromLatestEvent(
+        if ($el = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_InjectionManagementComplex',
             $patient,
             $use_context)
@@ -1756,7 +1756,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterInjectionManagementComplexFindings($patient, $use_context = false)
     {
-        if ($el = $this->getElementFromLatestEvent(
+        if ($el = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_InjectionManagementComplex',
             $patient,
             $use_context)
@@ -1805,7 +1805,7 @@ class OphCiExamination_API extends \BaseAPI
     {
         $str = '';
         if (($principal_eye = $this->getPrincipalEye($patient)) &&
-            ($el = $this->getElementFromLatestEvent(
+            ($el = $this->getElementFromLatestVisibleEvent(
                 'models\Element_OphCiExamination_AnteriorSegment_CCT',
                 $patient,
                 $use_context
@@ -1833,7 +1833,7 @@ class OphCiExamination_API extends \BaseAPI
         $str = '';
 
         if (($principal_eye = $this->getPrincipalEye($patient, true)) &&
-            ($el = $this->getElementFromLatestEvent(
+            ($el = $this->getElementFromLatestVisibleEvent(
                 'models\Element_OphCiExamination_Gonioscopy',
                 $patient,
                 $use_context
@@ -1860,7 +1860,7 @@ class OphCiExamination_API extends \BaseAPI
     {
         $str = '';
         if (($principal_eye = $this->getPrincipalEye($patient, true)) &&
-            ($el = $this->getElementFromLatestEvent(
+            ($el = $this->getElementFromLatestVisibleEvent(
                 'models\Element_OphCiExamination_OpticDisc',
                 $patient,
                 $use_context
@@ -1996,7 +1996,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getIOPReadingLeftNoUnits($patient, $use_context = false)
     {
-        if ($iop = $this->getElementFromLatestEvent(
+        if ($iop = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
             $use_context)
@@ -2015,7 +2015,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getIOPReadingRightNoUnits($patient, $use_context = false)
     {
-        if ($iop = $this->getElementFromLatestEvent(
+        if ($iop = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
             $use_context)
@@ -2029,7 +2029,7 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getIOPValuesAsTable($patient, $use_context = false)
     {
-        if ($iop = $this->getElementFromLatestEvent(
+        if ($iop = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
             $use_context)
@@ -2075,7 +2075,7 @@ class OphCiExamination_API extends \BaseAPI
 
     public function getTargetIOP($patient, $use_context = false)
     {
-        if ($oManPlan = $this->getElementFromLatestEvent(
+        if ($oManPlan = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_OverallManagementPlan',
             $patient,
             $use_context)
@@ -2096,7 +2096,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterDiagnosesAndFindings($patient, $use_context = false)
     {
-        if ($diag = $this->getElementFromLatestEvent(
+        if ($diag = $this->getElementFromLatestVisibleEvent(
             'models\Element_OphCiExamination_Diagnoses',
             $patient,
             $use_context)
@@ -2205,7 +2205,7 @@ class OphCiExamination_API extends \BaseAPI
      */
     public function getLetterClinicOutcomeComments(\Patient $patient, $use_context = false)
     {
-        if ($outcome = $this->getElementFromLatestEvent('models\Element_OphCiExamination_ClinicOutcome',
+        if ($outcome = $this->getElementFromLatestVisibleEvent('models\Element_OphCiExamination_ClinicOutcome',
             $patient,
             $use_context)
         ) {
@@ -2225,7 +2225,7 @@ class OphCiExamination_API extends \BaseAPI
     public function getLatestOutcomeDetails(\Patient $patient, $use_context = false)
     {
         $str = '';
-        if($element = $this->getElementFromLatestEvent('models\Element_OphCiExamination_ClinicOutcome',
+        if($element = $this->getElementFromLatestVisibleEvent('models\Element_OphCiExamination_ClinicOutcome',
             $patient,
             $use_context))
         {
@@ -2254,7 +2254,7 @@ class OphCiExamination_API extends \BaseAPI
     public function getCataractSurgicalManagement(\Patient $patient, $use_context = false)
     {
         $str = '';
-        if ($element = $this->getElementFromLatestEvent('models\Element_OphCiExamination_CataractSurgicalManagement',
+        if ($element = $this->getElementFromLatestVisibleEvent('models\Element_OphCiExamination_CataractSurgicalManagement',
             $patient,
             $use_context))
         {
