@@ -32,9 +32,9 @@
 			<div class="row data-row columns-<?php echo $columns;?>">
 				<div class="column">
 					<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id'))?></h4>
-					<div class="data-value"><?php echo $element->anaesthetic_type->name?></div>
+					<div class="data-value"><?= $element->getAnaestheticTypeDisplay() ?></div>
 				</div>
-				<?php if ($element->anaesthetic_type->name != 'GA') {?>
+				<?php if (!$element->hasAnaestheticType('GA')) {?>
 					<div class="column">
 						<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetist_id'))?></h4>
 						<div class="data-value"><?php echo $element->anaesthetist->name?></div>
