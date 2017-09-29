@@ -871,10 +871,19 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
      * @param $code
      * @return bool
      */
-    public function hasAnaestheticTypeByCode($code) {
+    public function hasAnaestheticTypeByCode($code)
+    {
         return count(array_filter($this->anaesthetic_type,
                 function($a_type) use ($code) { return $a_type == $code;})
             ) > 0;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAnaestheticTypeDisplay()
+    {
+        return implode(', ', $this->anaesthetic_type);
     }
 
     /**

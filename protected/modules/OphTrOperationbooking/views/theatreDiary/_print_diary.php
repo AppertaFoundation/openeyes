@@ -76,7 +76,7 @@ foreach ($diary as $i => $theatre) {?>
 								<td><?php echo strtoupper($booking->operation->event->episode->patient->last_name)?>, <?php echo $booking->operation->event->episode->patient->first_name?></td>
 								<td><?php echo $booking->operation->event->episode->patient->age?></td>
 								<td><?php echo $booking->ward ? htmlspecialchars($booking->ward->name) : 'None'?></td>
-								<td><?php echo htmlspecialchars($booking->operation->anaesthetic_type->name)?></td>
+								<td><?php echo htmlspecialchars($booking->operation->getAnaestheticTypeDisplay())?></td>
 								<td><?php echo $booking->operation->priority->name?></td>
 								<td style="max-width: 500px; word-wrap:break-word; overflow: hidden;">
 								<?php echo $booking->operation->procedures ? '['.$booking->operation->eye->adjective.'] '.$booking->operation->getProceduresCommaSeparated() : 'No procedures'?><br/>

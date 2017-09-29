@@ -181,7 +181,7 @@ $logoHelper = new LogoHelper();
 
 		<tr>
 			<th>Anaesthesia:</th>
-			<td><?php echo $operation->anaesthetic_type->name?></td>
+			<td><?php echo $operation->getAnaestheticTypeDisplay() ?></td>
 			<?php if ($operation->booking) {?>
 				<th>Proposed admission date:</th>
 				<td><?php echo $operation->booking->session->NHSDate('date')?></td>
