@@ -706,14 +706,24 @@ class OEMigration extends CDbMigration
             echo "Warning: attempt to register duplicate shortcode '$default_code', replaced with 'z$n'\n";
         }
 
-        $this->insert('patient_shortcode', array(
+        $cols = array(
             'event_type_id' => $event_type_id,
             'code' => $code,
             'default_code' => $default_code,
             'method' => $method,
-            'description' => $description,
-            'global_scope' => $global_scope
-        ));
+            'description' => $description
+        );
+
+        // global scope was added later to the table. Uses of this method in
+        // migrations before this column was added will fail if we attempt to
+        // set a column that does not exist. It only has an effect if set to
+        // false (defaults to true in the table), so we use that as an
+        // indicator that the call should set the value.
+        if (!$global_scope) {
+            $cols['global_scope'] = 0;
+        }
+
+        $this->insert('patient_shortcode', $cols);
     }
 
     /**
