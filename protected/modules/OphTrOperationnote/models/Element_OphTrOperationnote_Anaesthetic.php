@@ -131,6 +131,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
             'anaesthetist_id' => 'Given by',
             'anaesthetic_comment' => 'Comments',
             'anaesthetic_type_id' => 'Anaesthetic Type',
+            'anaesthetic_delivery_id' => 'Anaesthetic Delivery'
         );
     }
 
