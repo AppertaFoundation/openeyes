@@ -54,10 +54,16 @@ return array(
         'pasapi' => array(
             'enabled' => false,
             'url' => 'http://localhost:4200',
+            'curl_timeout' => 10, //sec
 
             // comment this out to use the params['curl_proxy']
             // use 'false' to bypass any proxies
-            'proxy' => false
+            'proxy' => false,
+
+            // set the caching time in seconds - don't query the PAS for data that had been cached within the last X minutes
+            // set cache_time to null (never stale) to never update the object from PAS
+            // set cache_time to 0 (always stale) to update the object from PAS every time
+            'cache_time' => 300, //sec
         ),
     ),
 );
