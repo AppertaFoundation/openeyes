@@ -22,7 +22,7 @@
 		<div class="element-data">
 			<?php
                 $columns = 6;
-                if ($element->anaesthetic_type->name == 'GA') {
+                if ($element->hasAnaestheticType('GA')) {
                     $columns -= 2;
                 }
                 if (!$element->getSetting('fife')) {
