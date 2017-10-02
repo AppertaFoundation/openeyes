@@ -22,7 +22,7 @@
 		<div class="element-data">
 			<?php
                 $columns = 6;
-                if ($element->hasAnaestheticType('GA')) {
+                if ($element->hasAnaestheticType('GA') && count($element->anaesthetic_type) == 1) {
                     $columns -= 2;
                 }
                 if (!$element->getSetting('fife')) {
@@ -34,10 +34,10 @@
 					<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id'))?></h4>
 					<div class="data-value"><?= $element->getAnaestheticTypeDisplay() ?></div>
 				</div>
-				<?php if (!$element->hasAnaestheticType('GA')) {?>
+                <?php if ( count($element->anaesthetic_type) > 1 || ( count($element->anaesthetic_type) == 1 && !$element->hasAnaestheticType("GA") && !$element->hasAnaestheticType("NoA")) ) {?>
 					<div class="column">
 						<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetist_id'))?></h4>
-						<div class="data-value"><?php echo $element->anaesthetist->name?></div>
+                        <div class="data-value <?php if (!$element->anaesthetist) {?> none<?php }?>"><?php echo $element->anaesthetist ? $element->anaesthetist->name : 'None'?></div>
 					</div>
 					<div class="column">
 						<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('agents'))?></h4>
@@ -65,9 +65,17 @@
 					</div>
 					<div class="column">
 						<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_delivery_id'))?></h4>
-						<div class="data-value">
-							<?php echo $element->anaesthetic_delivery->name?>
-						</div>
+                        <div class="data-value <?php if (!$element->anaesthetic_delivery) {?> none<?php }?>">
+                            <?php
+                            $text = '';
+                            foreach($element->anaesthetic_delivery as $anaesthetic_delivery){
+                                if(!empty($text)){ $text .= ', '; }
+                                $text .= $anaesthetic_delivery->name;
+                            }
+
+                            echo $text ? $text : 'None';
+                            ?>
+                        </div>
 					</div>
 					<?php if ($element->getSetting('fife')) {?>
 						<div class="column">

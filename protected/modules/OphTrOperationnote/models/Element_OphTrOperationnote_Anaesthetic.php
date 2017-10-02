@@ -130,6 +130,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
             'anaesthetic_witness_id' => 'Witness',
             'anaesthetist_id' => 'Given by',
             'anaesthetic_comment' => 'Comments',
+            'anaesthetic_type_id' => 'Anaesthetic Type',
         );
     }
 
