@@ -96,9 +96,13 @@ function AlertDialogIfExaminationEventIsMissing(){
 
 
 $(document).ready(function() {
-	handleButton($('#et_schedulelater'),function() {
-		$('#schedule_now').val(0);
+	$("form#clinical-create").submit(function() {
+		$(this).submit(function() {
+			return false;
+		});
+        return true;
 	});
+
 
 	handleButton($('#et_save_and_schedule'),function() {
 		$('#schedule_now').val(1);
