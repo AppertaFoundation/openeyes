@@ -44,7 +44,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         commonlyUsedDiagnosesUrl: '/disorder/getcommonlyuseddiagnoses/type/',
         renderTemplate: true,
         singleTemplate :
-            "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='fa fa-times-circle' aria-hidden='true' title='Change medication'></i></a> " +
+            "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='fa fa-times-circle' aria-hidden='true' title='Change diagnosis'></i></a> " +
             "<span class='diagnosis-name'></span></span>" +
             "<select class='commonly-used-diagnosis'></select>" +
             "{{{input_field}}}" +
