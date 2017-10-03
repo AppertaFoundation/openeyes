@@ -22,8 +22,8 @@ namespace OEModule\OphCiExamination\models;
  * This is the model class for table "ophciexamination_bleb_assessment_central_area".
  *
  * @property int $id
- * @property int $area
  * @property bool $active
+ * @property string $name
  */
 class OphCiExamination_OverallPeriod extends \BaseActiveRecordVersioned
 {

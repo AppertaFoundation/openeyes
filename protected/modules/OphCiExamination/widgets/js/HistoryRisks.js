@@ -78,6 +78,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.tableSelector = '.' + this.options.modelName + '_entry_table';
         this.$table = this.$element.find(this.tableSelector);
         this.templateText = this.$element.find('.' + this.options.modelName + '_entry_template').text();
+        this.riskIdMap = undefined;
+        this.riskLabelMap = undefined;
         this.initialiseTriggers();
     }
 
@@ -181,9 +183,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     /**
-     * get or create a table row for the given risk
+     * Find the table row for the given risk id if it exists.
+     *
+     * @param risk_id
+     * @returns $('tr')|{undefined}
      */
-    HistoryRisksController.prototype.getTableRowForRisk = function(risk_id)
+    HistoryRisksController.prototype.findTableRowForRisk = function(risk_id)
     {
         var self = this;
         var row = undefined;
@@ -193,6 +198,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 return false;
             }
         });
+        return row;
+    };
+
+    /**
+     * get or create a table row for the given risk
+     */
+    HistoryRisksController.prototype.getTableRowForRisk = function(risk_id)
+    {
+        var self = this;
+        var row = self.findTableRowForRisk(risk_id);
         if (row === undefined) {
             self.addEntry();
             row = self.$table.find('tbody tr:last');
@@ -209,7 +224,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     HistoryRisksController.prototype.setHasRiskAndComments = function(row, comments)
     {
         // select the appropriate radio option
-        row.find(this.hasRiskSelector + '[value="1"]').prop('checked', 'checked');
+        row.find(this.hasRiskSelector + '[value="1"]').prop('checked', 'checked').trigger('change');
 
         // now munge comments together with current content
         var current = row.find(this.commentsSelector).val();
@@ -224,6 +239,67 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             }
         }
         row.find(this.commentsSelector).val(finalList.join(', '));
+    };
+
+    /**
+     * Create an internal map of risk ids to names
+     */
+    HistoryRisksController.prototype.initialiseRiskIdMap = function()
+    {
+        var self = this;
+        self.riskIdMap = {};
+        var tmpRow = self.createRow({});
+        $(tmpRow).find('td:first select option').each(function() {
+            self.riskIdMap[$(this).val()] = $(this).text();
+        });
+        // map out those that are not in the dropdown list.
+        self.$table.find('tr td:first').each(function() {
+            var text = $(this).text();
+            if (text.length) {
+                self.riskIdMap[$(this).find(self.riskSelector).val()] = text;
+            }
+        })
+    };
+
+    /**
+     * Find a risk id for given label (needs to partial match the risk name)
+     * @param riskLabel
+     * @returns {*}
+     */
+    HistoryRisksController.prototype.getRiskIdForLabel = function(riskLabel)
+    {
+        var self = this;
+
+        if (self.riskIdMap === undefined) {
+            self.initialiseRiskIdMap();
+        }
+        if (self.riskLabelMap === undefined) {
+            self.riskLabelMap = {};
+        }
+
+        if (!self.riskLabelMap.hasOwnProperty(riskLabel)) {
+            $.each(self.riskIdMap, function(id, name) {
+                if (name.toLowerCase().indexOf(riskLabel.toLowerCase()) >= 0) {
+                    self.riskLabelMap[riskLabel] = id;
+                }
+            });
+        }
+        return self.riskLabelMap[riskLabel];
+    };
+
+    /**
+     *
+     * @param riskLabel
+     */
+    HistoryRisksController.prototype.getRiskStatus = function(riskLabel)
+    {
+        var riskId = this.getRiskIdForLabel(riskLabel);
+        var row = this.findTableRowForRisk(riskId);
+        if (row === undefined)
+            return undefined;
+
+        var selected = row.find('input:checked');
+        return selected ? selected.val() : undefined;
     };
 
     exports.HistoryRisksController = HistoryRisksController;

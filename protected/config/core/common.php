@@ -283,6 +283,7 @@ return array(
         'log_events' => true,
         'default_site_code' => '',
         'institution_code' => '',
+        'institution_specialty' => 130, 
         'erod_lead_time_weeks' => 3,
         // specifies which specialties are available in patient summary for diagnoses etc (use specialty codes)
         'specialty_codes' => array(),
@@ -450,7 +451,7 @@ return array(
          *  Operation bookings will be automatically scheduled to the next available slot (regardless of the firm)
          */
         "auto_schedule_operation" => false,
-        'clinical_management_pcr' => true,
+        'clinical_management_pcr' => false,
         'docman_generate_csv' => false,
         'element_sidebar' => true,
         // flag to enable editing of clinical data at the patient summary level - editing is not fully implemented

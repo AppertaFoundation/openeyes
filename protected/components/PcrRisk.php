@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * 
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -46,6 +46,25 @@ class PcrRisk
     protected $patient;
 
     /**
+     * @param $age
+     * @return int
+     */
+    protected function getAgeGroup($age)
+    {
+        
+        if ($age < 60) {
+            return 1;
+        } elseif ($age < 70) {
+            return 2;
+        } elseif ($age < 80) {
+            return 3;
+        } elseif ($age < 90) {
+            return 4;
+        }
+        return 5;
+    }
+
+    /**
      * @param $patientId
      * @param $side
      * @param $element
@@ -56,7 +75,7 @@ class PcrRisk
     {
         $pcr = array();
         $this->patient = Patient::model()->findByPk((int) $patientId);
-        $patientAge = $this->patient->getAge();
+
         $eye = Eye::model()->find('LOWER(name) = ?', array(strtolower($side)));
         $pcrRiskValues = new PcrRiskValues();
         if ($eye) {
@@ -66,18 +85,7 @@ class PcrRisk
             }
         }
 
-        $ageGroup = 0;
-        if ($patientAge < 60) {
-            $ageGroup = 1;
-        } elseif (($patientAge >= 60) && ($patientAge < 70)) {
-            $ageGroup = 2;
-        } elseif (($patientAge >= 70) && ($patientAge < 80)) {
-            $ageGroup = 3;
-        } elseif (($patientAge >= 80) && ($patientAge < 90)) {
-            $ageGroup = 4;
-        } elseif (($patientAge >= 90)) {
-            $ageGroup = 5;
-        }
+        $ageGroup = $this->getAgeGroup($this->patient->getAge());
 
         $gender = ucfirst($this->patient->getGenderString());
 

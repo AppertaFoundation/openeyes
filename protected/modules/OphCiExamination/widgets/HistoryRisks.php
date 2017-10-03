@@ -79,4 +79,15 @@ class HistoryRisks extends \BaseEventElementWidget
             $element->entries = array();
         }
     }
+
+    /**
+     * @param $row
+     * @return bool
+     */
+    public function postedNotChecked($row)
+    {
+        return \Helper::elementFinder(
+            \CHtml::modelName($this->element) . ".entries.$row.has_risk", $_POST)
+            == HistoryRisksEntry::$NOT_CHECKED;
+    }
 }

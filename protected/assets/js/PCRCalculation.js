@@ -197,24 +197,37 @@ function setPcrPupil(ev, pcrEl) {
 }
 
 /**
- * Sets alpha blocker
+ * Sets values related to risks
+ *
  * @param ev
  * @param pcrEl
  */
-function setAlphaBlocker(ev, pcrEl) {
-  if (!pcrEl) {
-    pcrEl = ev.data;
+function setRisks(ev) {
+  var controller = $('#OEModule_OphCiExamination_models_HistoryRisks_element').data('controller');
+  var alphaState = controller.getRiskStatus('alpha');
+  var lieFlatState = controller.getRiskStatus('lie flat');
+
+  var alphaPcr = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .pcrrisk_arb');
+  var originalAlpha = alphaPcr.val();
+  if (alphaState === '0') {
+    alphaPcr.val('N');
+  } else if (alphaState === '1') {
+    alphaPcr.val('Y');
+  }
+  if (alphaPcr.val() !== originalAlpha) {
+    alphaPcr.trigger('change');
   }
 
-  if($(ev.target).val() === '0'){
-    return;
+  var lieFlatPcr = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .pcr_lie_flat');
+  var originalLieFlat = lieFlatPcr.val();
+  if (lieFlatState === '0') {
+    lieFlatPcr.val('Y');
+  } else if (lieFlatState === '1') {
+      lieFlatPcr.val('N');
   }
-  if ($(ev.target).val() === '1') {
-    $(pcrEl).val('Y');
-  } else {
-    $(pcrEl).val('N');
+  if (lieFlatPcr.val() !== originalLieFlat) {
+    lieFlatPcr.trigger('change');
   }
-  $(pcrEl).trigger('change');
 }
 
 /**
@@ -287,9 +300,9 @@ function mapExaminationToPcr() {
         "func": setFundalView,
         "init": true
       },
-      "#OEModule_OphCiExamination_models_Element_OphCiExamination_HistoryRisk_alphablocker input[type='radio']": {
-        "pcr": '.pcrrisk_arb',
-        "func": setAlphaBlocker,
+      "#OEModule_OphCiExamination_models_HistoryRisks_element input[type='radio']": {
+        "pcr": undefined,
+        "func": setRisks,
         "init": true
       }
     },

@@ -55,15 +55,7 @@
         <div class="large-6 column">
             <h3 class="data-title">Anaesthetic</h3>
             <div class="data-value">
-                <?php
-                $text = '';
-                foreach($element->anaesthetic_type as $anaesthetic_type){
-                    if(!empty($text)){ $text .= ', '; }
-                    $text .= $anaesthetic_type->name;
-                }
-
-                echo $text;
-                ?>
+                <?= $element->getAnaestheticTypeDisplay(); ?>
             </div>
         </div>
         <div class="large-6 column">

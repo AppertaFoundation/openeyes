@@ -146,7 +146,7 @@
                                 </td>
                                 <td class="operation leftAlign"><?php echo $booking->operation->procedures ? '[' . $booking->operation->eye->adjective . '] ' . $booking->operation->getProceduresCommaSeparated() : 'No procedures' ?></td>
                                 <td class=""><?php echo $booking->operation->priority->name ?></td>
-                                <td class="anesthetic"><?php echo $booking->operation->anaesthetic_type->name ?></td>
+                                <td class="anesthetic"><?php echo $booking->operation->getAnaestheticTypeDisplay() ?></td>
                                 <td class="ward"><?php echo $booking->ward ? $booking->ward->name : 'None' ?></td>
                                 <td class="alerts">
                                     <?php if ($booking->operation->event->episode->patient->gender == 'M') { ?>

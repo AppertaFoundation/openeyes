@@ -245,7 +245,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
     }
 
     /**
-     * Need to delete associated records.
+     * Need to delete associated records, and any doodles shredded out of this element for object persistence
      *
      * @see CActiveRecord::beforeDelete()
      */
@@ -253,6 +253,9 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
     {
         OphTrOperationnote_CataractComplication::model()->deleteAllByAttributes(array('cataract_id' => $this->id));
         OphTrOperationnote_CataractOperativeDevice::model()->deleteAllByAttributes(array('cataract_id' => $this->id));
+
+        $processor = new \EDProcessor();
+        $processor->removeElementEyedraws($this);
 
         return parent::beforeDelete();
     }

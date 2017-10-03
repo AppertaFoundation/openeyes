@@ -123,8 +123,9 @@ class OphTrOperationbooking_Operation_EROD_Rule extends BaseActiveRecordVersione
                 if ($string) {
                     $string .= ', ';
                 }
-                $firm = Firm::model()->findByPk($item['item_id']);
-                $string .= $firm->name.' ('.$firm->serviceSubspecialtyAssignment->subspecialty->name.')';
+                if ($firm = Firm::model()->findByPk($item['item_id'])) {
+                    $string .= $firm->name . ' (' . $firm->getSubspecialtyText() . ')';
+                }
             }
         }
 

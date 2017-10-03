@@ -36,11 +36,6 @@ class AdminController extends BaseAdminController
         $this->genericAdmin('Edit Previous Ophthalmic Surgery Choices', 'CommonPreviousOperation');
     }
 
-    public function actionEditMedicationStopReason()
-    {
-        $this->genericAdmin('Edit Medication Stop Reason', 'MedicationStopReason');
-    }
-
     public function actionEditCommonOphthalmicDisorderGroups()
     {
         $this->genericAdmin('Common Ophthalmic Disorder Groups', 'CommonOphthalmicDisorderGroup');
@@ -1905,34 +1900,6 @@ class AdminController extends BaseAdminController
             }
         }
         $this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors));
-    }
-
-    public function actionSocialHistory()
-    {
-        $this->render('socialhistory');
-    }
-
-    public function actionSocialHistoryOccupation()
-    {
-        $this->genericAdmin(SocialHistory::model()->getAttributeLabel('occupation_id'), 'SocialHistoryOccupation');
-    }
-
-    public function actionSocialHistoryDrivingStatus()
-    {
-        $this->genericAdmin(SocialHistory::model()->getAttributeLabel('driving_status_id'),
-            'SocialHistoryDrivingStatus');
-    }
-
-    public function actionSocialHistorySmokingStatus()
-    {
-        $this->genericAdmin(SocialHistory::model()->getAttributeLabel('smoking_status_id'),
-            'SocialHistorySmokingStatus');
-    }
-
-    public function actionSocialHistoryAccommodation()
-    {
-        $this->genericAdmin(SocialHistory::model()->getAttributeLabel('accommodation_id'),
-            'SocialHistoryAccommodation');
     }
 
     /**

@@ -277,16 +277,30 @@ WHERE ed.eyedraw_class_mnemonic != "*" -- Unsafe mode workaround
 EOSQL;
     }
 
+    /**
+     * @param $open_element_class_name
+     * @return mixed
+     * @throws SystemException
+     */
     private function getElementId($open_element_class_name) {
-      $element_type = ElementType::model()->findByAttributes(array('class_name' => $open_element_class_name));
-      $element_id = $element_type->id;
-      return $element_id;
+        if ($element_type = ElementType::model()->findByAttributes(array('class_name' => $open_element_class_name))) {
+            return $element_type->id;
+        } else {
+            throw new SystemException("Unable to find element type for {$open_element_class_name}. Have you fully migrated your database?");
+        }
     }
 
+    /**
+     * @param $open_element_class_name
+     * @return mixed
+     * @throws SystemException
+     */
     private function getElementName($open_element_class_name) {
-      $element_type = ElementType::model()->findByAttributes(array('class_name' => $open_element_class_name));
-      $element_name = $element_type->name;
-      return $element_name;
+        if ($element_type = ElementType::model()->findByAttributes(array('class_name' => $open_element_class_name))) {
+            return $element_type->name;
+        } else {
+            throw new SystemException("unable to find element type for {$open_element_class_name}.");
+        }
     }
 
     /**

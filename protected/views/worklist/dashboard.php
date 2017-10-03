@@ -27,6 +27,7 @@
             <?php
 
         } else {
+            $core_api = new CoreAPI();
             $cols = array(
                 array(
                     'id' => 'hos_num',
@@ -38,7 +39,10 @@
                     'id' => 'patient_name',
                     'class' => 'CLinkColumn',
                     'header' => 'Name',
-                    'urlExpression' => '$data->patient->generateEpisodeLink()',
+//                    'urlExpression' => '$data->patient->generateEpisodeLink()',
+                    'urlExpression' => function($data) use ($core_api) {
+                        return $core_api->generateEpisodeLink($data->patient);
+                    },
                     'labelExpression' => '$data->patient->getHSCICName()',
                 ),
                 array(

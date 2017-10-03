@@ -43,7 +43,7 @@ if (!$reschedule) {
 		<tr>
 			<td><?php echo $counter?>. <?php echo $booking->operation->event->episode->patient->getDisplayName()?></td>
 			<td><?php echo $booking->operation->getProceduresCommaSeparated()?></td>
-			<td><?php echo $booking->operation->anaesthetic_type->name?></td>
+			<td><?php echo $booking->operation->getAnaestheticTypeDisplay() ?></td>
 			<td><?php echo "{$booking->operation->total_duration} minutes"; ?></td>
 			<td><?php echo $booking->admission_time?></td>
 			<td><?php echo CHtml::encode($booking->operation->comments)?></td>

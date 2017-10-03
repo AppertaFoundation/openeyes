@@ -32,7 +32,7 @@
  * @property Event $event
  * @property EventType $eventType
  * @property ElementType $element_type
- * @property AnaestheticType $anaesthetic_type
+ * @property AnaestheticType[] $anaesthetic_type
  * @property Anaesthetist $anaesthetist
  * @property AnaestheticDelivery $anaesthetic_delivery
  * @property OphTrOperationnote_OperationAnaestheticAgent[] $anaesthetic_agent_assignments
@@ -130,6 +130,8 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
             'anaesthetic_witness_id' => 'Witness',
             'anaesthetist_id' => 'Given by',
             'anaesthetic_comment' => 'Comments',
+            'anaesthetic_type_id' => 'Anaesthetic Type',
+            'anaesthetic_delivery_id' => 'Anaesthetic Delivery'
         );
     }
 
@@ -395,6 +397,10 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         return $complication_values = array();
     }
 
+    /**
+     * @param $type_name
+     * @return bool|null
+     */
     public function hasAnaestheticType($type_name)
     {
         $type = AnaestheticType::model()->findByAttributes(array('name' => $type_name));
@@ -410,6 +416,14 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         }
 
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAnaestheticTypeDisplay()
+    {
+        return implode(', ', $this->anaesthetic_type);
     }
 
     public function afterValidate()

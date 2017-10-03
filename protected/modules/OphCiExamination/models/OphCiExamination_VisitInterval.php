@@ -22,7 +22,7 @@ namespace OEModule\OphCiExamination\models;
  * This is the model class for table "ophciexamination_visitinterval".
  *
  * @property int $id
- * @property int $name
+ * @property string $name
  */
 class OphCiExamination_VisitInterval extends \BaseActiveRecordVersioned
 {
@@ -93,4 +93,10 @@ class OphCiExamination_VisitInterval extends \BaseActiveRecordVersioned
             'LookupTable' => 'LookupTable',
         );
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
+
 }

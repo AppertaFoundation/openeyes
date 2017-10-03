@@ -20,11 +20,30 @@ class DisorderController extends BaseController
     public function accessRules()
     {
         return array(
-            array('allow',
+            array(
+                'allow',
                 'roles' => array('OprnViewClinical'),
             ),
         );
     }
+
+    /**
+     * Generate array structure of disorder for JSON structure return
+     *
+     * @param Disorder $disorder
+     * @return array
+     */
+    protected function disorderStructure(Disorder $disorder)
+    {
+        return array(
+            'label' => $disorder->term,
+            'value' => $disorder->term,
+            'id' => $disorder->id,
+            'is_diabetes' => Disorder::model()->ancestorIdsMatch(array($disorder->id), Disorder::$SNOMED_DIABETES_SET),
+            'is_glaucoma' => (strpos(strtolower($disorder->term), 'glaucoma') !== false),
+        );
+    }
+
 
     /**
      * Lists all disorders for a given search term.
@@ -56,16 +75,27 @@ class DisorderController extends BaseController
             $disorders = Disorder::model()->active()->findAll($criteria);
             $return = array();
             foreach ($disorders as $disorder) {
-                $return[] = array(
-                        'label' => $disorder->term,
-                        'value' => $disorder->term,
-                        'id' => $disorder->id,
-                        'is_diabetes' => Disorder::model()->ancestorIdsMatch(array($disorder->id), Disorder::$SNOMED_DIABETES_SET),
-                        'is_glaucoma' => (strpos(strtolower($disorder->term), 'glaucoma') !== false),
-                );
+                $return[] = $this->disorderStructure($disorder);
             }
             echo CJSON::encode($return);
         }
+    }
+
+    /**
+     * @param $type
+     */
+    public function actionGetCommonlyUsedDiagnoses($type)
+    {
+        $return = array();
+        if($type === 'systemic'){
+            foreach (CommonSystemicDisorder::getDisorders() as $disorder) {
+                $return[] = $this->disorderStructure($disorder);
+            };
+        }
+
+        echo CJSON::encode($return);
+        Yii::app()->end();
+
     }
 
     public function actionDetails()

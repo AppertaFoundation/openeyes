@@ -18,44 +18,13 @@
 ?>
 
 <script type="text/javascript" src="<?=$this->getJsPublishedPath('SystemicDiagnoses.js')?>"></script>
+<script type="text/javascript" src="<?=$this->getJsPublishedPath('OpenEyes.UI.DiagnosesSearch.js', true)?>"></script>
+
 <?php
-$model_name = CHtml::modelName($element);
+    $model_name = CHtml::modelName($element);
 ?>
 
-<div class="element-fields" id="OphCiExamination_SystemicDiagnoses">
-
-        <?php
-        $this->widget('application.widgets.DiagnosisSelection', array(
-            'nowrapper' => true,
-            'field' => 'disorder_id',
-            'options' => CommonSystemicDisorder::getList($this->controller->firm),
-            'restrict' => 'systemic',
-            'default' => false,
-            'loader' => '#find_systemic_diagnosis_loader',
-            'callback' => 'OpenEyes.OphCiExamination.SystemicDiagnosesSelectDiagnosis',
-            'allowClear' => true,
-            'layoutColumns' => array(
-                'label' => 2,
-                'field' => 4,
-            ),
-        ))?>
-    <div class="field-row row">
-        <div class="large-2 column"><label for="<?= $model_name ?>_diagnosis_side">Side:</label></div>
-        <div class="large-3 column end">
-            <label class="inline"><input type="radio" name="<?= $model_name ?>_diagnosis_side" class="<?= $model_name ?>_diagnosis_side" value="" checked="checked" /> None </label>
-            <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) {?>
-                <label class="inline"><input type="radio" name="<?= $model_name ?>_diagnosis_side" class="<?= $model_name ?>_diagnosis_side" value="<?php echo $eye->id?>" /> <?php echo $eye->name ?></label>
-            <?php }?>
-        </div>
-    </div>
-    <div class="row">
-        <div class="large-8 column">
-            <?php $this->render('application.views.patient._fuzzy_date', array('class' => $model_name . '_diagnosis_fuzzy_date')) ?>
-        </div>
-        <div class="large-4 column end">
-            <button class="button small primary add-diagnosis" id="<?= $model_name ?>_add_diagnosis">Add</button>
-        </div>
-    </div>
+<div class="element-fields" id="<?=CHtml::modelName($element);?>_element">
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <table id="<?= $model_name ?>_diagnoses_table">
@@ -69,40 +38,63 @@ $model_name = CHtml::modelName($element);
         </thead>
         <tbody>
         <?php
-        foreach ($element->diagnoses as $diagnosis) {
+        foreach ($element->diagnoses as $row_count => $diagnosis) {
             $this->render(
-                'SystemicDiagnoses_Diagnosis_event_edit',
+                'SystemicDiagnosesEntry_event_edit',
                 array(
                     'diagnosis' => $diagnosis,
                     'form' => $form,
                     'model_name' => CHtml::modelName($element),
+                    'row_count' => $row_count,
+                    'field_prefix' => $model_name . "[entries][$row_count]",
+                    'removable' => true
                 )
             );
         }
         ?>
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3"></td>
+                <td><button class="button small primary add-entry">Add</button></td>
+            </tr>
+        </tfoot>
     </table>
-</div>
 
-<script type="text/template" id="<?= CHtml::modelName($element).'_diagnosis_template' ?>" class="hidden">
-    <?php
-    $empty_diagnosis = new \OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis();
-    $this->render(
-        'SystemicDiagnoses_Diagnosis_event_edit',
-        array(
-            'diagnosis' => $empty_diagnosis,
-            'form' => $form,
-            'model_name' => CHtml::modelName($element),
-            'values' => array(
-                'id' => '',
-                'disorder_id' => '{{disorder_id}}',
-                'disorder_display' => '{{disorder_display}}',
-                'side_id' => '{{side_id}}',
-                'side_display' => '{{side_display}}',
-                'date' => '{{date}}',
-                'date_display' => '{{date_display}}'
+
+    <script type="text/template" class="entry-template hidden">
+        <?php
+        $empty_entry = new \OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis();
+        $this->render(
+            'SystemicDiagnosesEntry_event_edit',
+            array(
+                //'diagnosis' => $empty_entry,
+                'form' => $form,
+                'model_name' => $model_name,
+                'field_prefix' => $model_name . '[entries][{{row_count}}]',
+                'row_count' => '{{row_count}}',
+                'removable' => true,
+
+                'values' => array(
+                    'id' => '',
+                    'disorder_id' => '{{disorder_id}}',
+                    'disorder_display' => '{{disorder_display}}',
+                    'side_id' => '{{side_id}}',
+                    'side_display' => '{{side_display}}',
+                    'date' => '{{date}}',
+                    'date_display' => '{{date_display}}',
+                    'row_count' => '{{row_count}}',
+                )
             )
-        )
-    );
-    ?>
-</script>
+        );
+        ?>
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            new OpenEyes.OphCiExamination.SystemicDiagnosesController({
+                element: $('#<?=$model_name?>_element')
+            });
+        });
+    </script>
+</div>
