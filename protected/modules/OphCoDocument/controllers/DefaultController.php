@@ -18,7 +18,7 @@ class DefaultController extends BaseEventTypeController
 {
 
     protected $show_element_sidebar = false;
-    const MAX_DOCUMENT_SIZE = 5120000;
+    const MAX_DOCUMENT_SIZE = 10485760;
 
     /**
      * @var OphCoDocument_Sub_Types

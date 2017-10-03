@@ -23,17 +23,7 @@
 		<div class="row">
 			<div class="large-2 column">
 				<h4 class="data-title">Type</h4>
-				<div class="data-value">
-                    <?php
-                        $text = '';
-                        foreach($element->anaesthetic_type as $anaesthetic_type){
-                            if(!empty($text)){ $text .= ', '; }
-                            $text .= $anaesthetic_type->name;
-                        }
-
-                        echo $text;
-                    ?>
-                </div>
+				<div class="data-value"><?= $element->getAnaestheticTypeDisplay() ?></div>
 			</div>
             
 			<?php if ( count($element->anaesthetic_type) > 1 || ( count($element->anaesthetic_type) == 1 && !$element->hasAnaestheticType("GA") && !$element->hasAnaestheticType("NoA")) ) {?>
