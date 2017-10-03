@@ -22,6 +22,7 @@ $model_name = CHtml::modelName($element);
 $route_options = CHtml::listData($element->getRouteOptions(), 'id', 'name');
 $frequency_options = CHtml::listData($element->getFrequencyOptions(), 'id', 'name');
 $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', 'name');
+$element_errors = $element->getErrors();
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
@@ -29,7 +30,7 @@ $stop_reason_options = CHtml::listData($element->getStopReasonOptions(), 'id', '
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <button class="button small show-stopped">show stopped</button> <button class="button small hide-stopped" style="display:none;">hide stopped</button>
-    <table id="<?= $model_name ?>_entry_table">
+    <table id="<?= $model_name ?>_entry_table" <?php echo $element_errors ? 'class="highlighted-error"' : '' ?>>
         <thead>
         <tr>
             <th class="date-col">Dates</th>
