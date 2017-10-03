@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 Yii::import('application.controllers.*');
 
@@ -44,7 +43,7 @@ class PatientController extends BaseController
                 'users' => array('@'),
             ),
             array('allow',
-                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode'),
+                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -136,7 +135,8 @@ class PatientController extends BaseController
         // NOTE that this is not being used in the render
         $supportserviceepisodes = $this->patient->supportserviceepisodes;
 
-        Audit::add('patient summary', 'view', $id);
+        $properties['patient_id'] = $this->patient->id;
+        Audit::add('patient summary', 'view', $id, '', $properties);
 
         $this->logActivity('viewed patient');
 
@@ -178,7 +178,7 @@ class PatientController extends BaseController
 
         $patientSearch = new PatientSearch();
 	    $dataProvider = $patientSearch->search($term);
-	    $itemCount = $dataProvider->totalItemCount;
+	    $itemCount = $dataProvider->getItemCount(); // we could use the $dataProvider->totalItemCount but in the Patient model we set data from the event so needs to be recalculated
 	    $search_terms = $patientSearch->getSearchTerms();
 
         if ($itemCount == 0) {
@@ -209,9 +209,9 @@ class PatientController extends BaseController
 
             $this->redirect(Yii::app()->homeUrl);
         } elseif ($itemCount == 1) {
-            foreach ($dataProvider->getData() as $item) {
-                $this->redirect(array('patient/view/'.$item->id));
-            }
+            $item = $dataProvider->getData()[0];
+            $api = new CoreAPI();
+            $this->redirect(array($api->generateEpisodeLink($item)));
         } else {
             $this->renderPatientPanel = false;
 
@@ -1380,6 +1380,11 @@ class PatientController extends BaseController
         echo '1';
     }
 
+    /**
+     * @return mixed|string
+     * @throws Exception
+     * @deprecated - since version 2.0
+     */
     public function actionAddNewEpisode()
     {
         if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
@@ -1676,5 +1681,44 @@ class PatientController extends BaseController
         
         Yii::app()->end();
     }
-    
+
+    /**
+     * Ajax method for viewing previous elements.
+     *
+     * @param int $element_type_id
+     * @param int $patient_id
+     * @param int $limit
+     *
+     * @throws CHttpException
+     */
+    public function actionPreviousElements($element_type_id, $patient_id, $limit = null)
+    {
+        $element_type = ElementType::model()->findByPk($element_type_id);
+        if (!$element_type) {
+            throw new CHttpException(404, 'Unknown ElementType');
+        }
+        $this->patient = Patient::model()->findByPk($patient_id);
+        if (!$this->patient) {
+            throw new CHttpException(404, 'Unknown Patient');
+        }
+
+        $api = $element_type->eventType->getApi();
+        $result = array();
+        $criteria = new CDbCriteria();
+        if ($limit) {
+            $criteria->limit = $limit;
+        }
+        foreach ($api->getElements($element_type->class_name, $this->patient, false, null, $criteria) as $element) {
+            // Note when there are more complex elements required for this,
+            // would recommend pushing this into a base method that can then
+            // be overridden as appropriate
+            $result[] = array_merge(
+                array('subspecialty' => $element->event->episode->getSubspecialtyText(),
+                    'event_date' => $element->event->NHSDate('event_date')),
+                $element->getDisplayAttributes()
+            );
+        }
+
+        echo CJSON::encode($result);
+    }
 }

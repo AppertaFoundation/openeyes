@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -335,7 +334,7 @@ class EventType extends BaseActiveRecordVersioned
     /**
      * Get all the element types that are defined for this event type.
      *
-     * @return BaseEventTypeElement[]
+     * @return ElementType[]
      */
     public function getAllElementTypes()
     {
@@ -347,11 +346,52 @@ class EventType extends BaseActiveRecordVersioned
         $criteria->addInCondition('event_type_id', $ids);
         $criteria->order = 'display_order asc';
 
-        if (Yii::app()->params['clinical_management_pcr']) {
-            $criteria->addCondition('class_name <> :class');
-            $criteria->params['class'] = 'OEModule\\OphCiExamination\\models\\Element_OphCiExamination_PcrRisk';
+        return ElementType::model()->findAll($criteria);
+    }
+
+    /**
+     * Get the root event type elements with associated children.
+     *
+     * @return BaseEventTypeElement[]
+     */
+    public function getRootElementTypes()
+    {
+        $criteria = new CDbCriteria();
+        $ids = array($this->id);
+        foreach ($this->getParentEventTypes() as $parent) {
+            $ids[] = $parent->id;
+        }
+        $criteria->addInCondition('t.event_type_id', $ids);
+        $criteria->addCondition('t.parent_element_type_id IS NULL');
+        $criteria->order = 't.display_order asc';
+
+        return ElementType::model()->with('child_element_types')->findAll($criteria);
+    }
+
+    /**
+     * @param string $type
+     * @param Event $event
+     * @return string
+     */
+    public function getEventIcon($type='small', Event $event = null)
+    {
+        $asset_manager = Yii::app()->getAssetManager();
+        $module_path = Yii::getPathOfAlias('application.modules.' . $this->class_name . '.assets.img');
+
+        $possible_images = array();
+        if ($event && $event->is_automated) {
+            $possible_images[] = $type . '-auto.png';
+        }
+        $possible_images[] = $type . '.png';
+
+        // module specific
+        foreach ($possible_images as $possible) {
+            $file = $module_path . '/' . $possible;
+            if (file_exists($file)) {
+                return $asset_manager->publish($file);
+            }
         }
 
-        return ElementType::model()->findAll($criteria);
+        return '';
     }
 }

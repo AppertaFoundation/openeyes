@@ -5,16 +5,15 @@
 * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
 * (C) OpenEyes Foundation, 2011-2013
 * This file is part of OpenEyes.
-* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+* You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 *
 * @link http://www.openeyes.org.uk
 *
 * @author OpenEyes <info@openeyes.org.uk>
-* @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
 * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
-* @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+* @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 class DefaultController extends BaseEventTypeController
 {
@@ -32,6 +31,8 @@ class DefaultController extends BaseEventTypeController
         'markPrinted' => self::ACTION_TYPE_PRINT,
         'doPrintAndView' => self::ACTION_TYPE_PRINT,
     );
+
+    protected $show_element_sidebar = false;
 
     /**
      * Adds direct line phone numbers to jsvars to be used in dropdown select.
@@ -84,6 +85,14 @@ class DefaultController extends BaseEventTypeController
         if (in_array($action, array('create', 'update'))) {
             $this->jsVars['OE_gp_id'] = $this->patient->gp_id;
             $this->jsVars['OE_practice_id'] = $this->patient->practice_id;
+            $this->jsVars['OE_site_id'] = Yii::app()->session['selected_site_id'];
+
+            $to_location = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByAttributes(
+                array('site_id' => Yii::app()->session['selected_site_id'],
+                      'is_active' => 1)
+            );
+
+            $this->jsVars['OE_to_location_id'] = $to_location ? $to_location->id : null;
 
             $this->getApp()->assetManager->registerScriptFile('js/docman.js');
             
@@ -489,22 +498,6 @@ class DefaultController extends BaseEventTypeController
         return parent::actionPDFPrint($id);
     }
     
-    public function markRedyToSend($id)
-    {
-        $letter = ElementLetter::model()->find('event_id=?', array($id));
-        
-        $outputs = $letter->getOutputByType("Docman");
-        
-        if( $outputs ){
-            foreach($outputs as $output){
-                if( $output->output_status != "COMPLETE" ){
-                    $output->output_status = "PENDING";
-                    $output->save();
-                }
-            }
-        }
-    }
-
     /**
      * Ajax action to get user data list.
      */
@@ -575,11 +568,7 @@ class DefaultController extends BaseEventTypeController
                 throw new Exception("Unknown element type: $element_type_id");
             }
 
-            if (!$episode = $patient->getEpisodeForCurrentSubspecialty()) {
-                throw new Exception('No Episode available for patient: '.$patient_id);
-            }
-
-            return $api->getLetterStringForModel($patient, $episode, $element_type_id);
+            return $api->getLetterStringForModel($patient, $element_type_id);
         }
     }
 

@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 <div class="box admin">
@@ -174,6 +173,7 @@
             <th><?php echo CHtml::link('Hospital no', $this->getUri(array('sortby' => 'hos_num'))) ?></th>
             <th><?php echo CHtml::link('Family Id', $this->getUri(array('sortby' => 'genetics-pedigree-id'))) ?></th>
             <th><?php echo CHtml::link('Patient name', $this->getUri(array('sortby' => 'patient_name'))) ?></th>
+            <th>Maiden Name</th>
             <th style="width:93px"><?php echo CHtml::link('Gene', $this->getUri(array('sortby' => 'gene'))) ?></th>
 <!--            <th>--><?php //echo CHtml::link('Method', $this->getUri(array('sortby' => 'method'))) ?><!--</th>-->
             <th><?php echo CHtml::link('Hom', $this->getUri(array('sortby' => 'homo'))) ?></th>
@@ -198,6 +198,7 @@
                     <?php endforeach; ?>
                 </td>
                   <td><?php echo strtoupper($test->event->episode->patient->last_name) ?>, <?php echo $test->event->episode->patient->first_name ?></td>
+                  <td><?php echo $test->event->episode->patient->contact->maiden_name ?></td>
                   <td><?php echo str_replace(',',', ', $test->gene->name) ?></td>
 <!--                  <td>--><?php //echo $test->method->name ?><!--</td>-->
                   <td><?php echo $test->homo ? 'Yes' : 'No' ?></td>

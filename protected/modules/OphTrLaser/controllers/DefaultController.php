@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class DefaultController extends BaseEventTypeController
 {
@@ -102,20 +101,14 @@ class DefaultController extends BaseEventTypeController
      */
     protected function importElementEyeDraw($element)
     {
-        if ($this->episode) {
-            $el_class = get_class($element);
-            if (array_key_exists($el_class, self::$IMPORT_ELEMENTS)) {
-                $import_model = self::$IMPORT_ELEMENTS[$el_class];
-                $previous = $this->episode->getElementsOfType($import_model::model()->getElementType());
-                $import = false;
-                if (count($previous)) {
-                    $import = $previous[0];
-                }
-                if ($import) {
-                    $element->left_eyedraw = $import->left_eyedraw;
-                    $element->right_eyedraw = $import->right_eyedraw;
-                    $element->eye_id = $import->eye_id;
-                }
+        $el_class = get_class($element);
+        if (array_key_exists($el_class, self::$IMPORT_ELEMENTS)) {
+            $import_model = self::$IMPORT_ELEMENTS[$el_class];
+            $api = $this->getApp()->moduleAPI->get('OphCiExamination');
+            if ($import = $api->getLatestElement($import_model, $this->patient)) {
+                $element->left_eyedraw = $import->left_eyedraw;
+                $element->right_eyedraw = $import->right_eyedraw;
+                $element->eye_id = $import->eye_id;
             }
         }
     }

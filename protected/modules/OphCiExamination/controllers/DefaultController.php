@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\OphCiExamination\controllers;
@@ -40,6 +39,13 @@ class DefaultController extends \BaseEventTypeController
         'dismissCVIalert' => self::ACTION_TYPE_FORM
     );
 
+    /**
+     * Set to true if the index search bar should appear in the header when creating/editing the event
+     *
+     * @var bool
+     */
+    protected $show_index_search = true;
+
     // if set to true, we are advancing the current event step
     private $step = false;
 
@@ -50,6 +56,16 @@ class DefaultController extends \BaseEventTypeController
     protected $allergies = array();
 
     protected $deletedAllergies = array();
+
+    public function getTitle()
+    {
+        $title = parent::getTitle();
+        $current = $this->step ? : $this->getCurrentStep();
+        if (count($current->workflow->steps) > 1) {
+            $title .= ' (' . $current->name . ')';
+        }
+        return $title;
+    }
 
     /**
      * Need split event files.
@@ -90,8 +106,7 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Check data in child elements
      *
-     * @param BaseEventTypeElements[] $elements
-     *
+     * @param \BaseEventTypeElement[] $elements
      * @return boolean
      */
     protected function checkChildElementsForData($elements)
@@ -107,27 +122,31 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Filters elements based on coded dependencies.
+     * List of elements that should be filtered out from the event.
      *
-     * @TODO: need to ensure that we don't filter out elements that do exist when configuration changes
-     *
-     * @param BaseEventTypeElement[] $elements
-     *
-     * @return BaseEventTypeElement[]
+     * @return array
      */
-    protected function filterElements($elements)
+    protected function getElementFilterList($include_hidden=true)
     {
-        if (Yii::app()->hasModule('OphCoTherapyapplication')) {
-            $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagement');
-        } else {
-            $remove = array('OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex');
-        }
+        $remove = components\ExaminationHelper::elementFilterList();
 
-        if ($this->set) {
+        if ($include_hidden && $this->set) {
             foreach ($this->set->HiddenElementTypes as $element) {
                 $remove[] = $element->class_name;
             }
         }
+        return $remove;
+    }
+
+    /**
+     * Filters elements based on coded dependencies.
+     *
+     * @param \BaseEventTypeElement[] $elements
+     * @return \BaseEventTypeElement[]
+     */
+    protected function filterElements($elements)
+    {
+        $remove = $this->getElementFilterList();
 
         $final = array();
         foreach ($elements as $el) {
@@ -140,6 +159,26 @@ class DefaultController extends \BaseEventTypeController
             }
         }
         return $final;
+    }
+
+    /**
+     * Get all the available element types for the event
+     *
+     * @return array
+     */
+    public function getAllElementTypes()
+    {
+        $remove = $this->getElementFilterList(false);
+        return array_filter(
+            parent::getAllElementTypes(),
+            function($et) use ($remove) {
+                return !in_array($et->class_name, $remove);
+            });
+    }
+
+    public function getElementTree($remove_list = array())
+    {
+        return parent::getElementTree($this->getElementFilterList());
     }
 
     /**
@@ -164,6 +203,8 @@ class DefaultController extends \BaseEventTypeController
         foreach (models\OphCiExamination_Refraction_Cylinder_Integer::model()->findAll(array('order' => 'display_order asc')) as $si) {
             $this->jsVars['Element_OphCiExamination_Refraction_cylinder'][$si->sign_id][] = $si->value;
         }
+
+        Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/core.js", \CClientScript::POS_HEAD);
     }
 
     /**
@@ -271,7 +312,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionStep($id)
     {
-        $this->step = true;
+        $this->step = $this->getCurrentStep()->getNextStep();
         // This is the same as update, but with a few extras, so we call the update code and then pick up on the action later
         $this->actionUpdate($id);
     }
@@ -301,33 +342,31 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
-		$active_check_value = "";
+		$active_check = "";
         if (!empty($class_array)) {
             if(array_pop($class_array) === 'Element_OphCiExamination_CataractSurgicalManagement') {
-                $active_check = \SettingInstallation::model()->find('t.key="city_road_satellite_view"');
-                if (!empty($active_check)) {
-                    $active_check_value = $active_check->value;
-                }
+                $active_check = Yii::app()->params['city_road_satellite_view'];
             }
         }
+
         $view_data = array_merge(array(
-            'active_check' => $active_check_value,
+            'active_check' => $active_check,
         ), $view_data);
 
         parent::renderElement($element, $action, $form, $data, $view_data, $return, $processOutput);
     }
+
     /**
      * Advance the workflow step for the event if requested.
      *
      * @param Event $event
      *
-     * @throws CException
+     * @throws \CException
      */
     protected function afterUpdateElements($event)
     {
         parent::afterUpdateElements($event);
         $this->persistPcrRisk();
-
         if ($this->step) {
             // Advance the workflow
             if (!$assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
@@ -373,17 +412,31 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Get the first workflow step using rules.
      *
-     * @TODO: examine what this is being used for as opposed to getting elements by workflow ...
-     *
      * @return OphCiExamination_ElementSet
      */
     protected function getFirstStep()
     {
         $firm_id = $this->firm->id;
-        $status_id = $this->episode->episode_status_id;
+        $status_id = ($this->episode) ? $this->episode->episode_status_id : 1;
         $workflow = new models\OphCiExamination_Workflow_Rule();
 
         return $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
+    }
+
+    /**
+     * @param null $event
+     * @return null|OphCiExamination_ElementSet
+     */
+    protected function getCurrentStep($event = null)
+    {
+        if (!$event) {
+            $event = $this->event;
+        }
+        if ($event && !$event->isNewRecord && $assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
+            return $assignment->step;
+        }
+
+        return $this->getFirstStep();
     }
 
     /**
@@ -395,14 +448,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function getNextStep($event = null)
     {
-        if (!$event) {
-            $event = $this->event;
-        }
-        if ($assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
-            $step = $assignment->step;
-        } else {
-            $step = $this->getFirstStep();
-        }
+        $step = $this->getCurrentStep();
 
         return $step->getNextStep();
     }
@@ -445,7 +491,7 @@ class DefaultController extends \BaseEventTypeController
         }
 
         foreach ($extra_by_etid as $extra_element) {
-            $extra_element->setDefaultOptions();
+            $extra_element->setDefaultOptions($this->patient);
 
             // Precache Element Type to avoid bug in usort
             $extra_element->getElementType();
@@ -901,45 +947,6 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Save Risks - because it's part of the History Risk element it need to be saved from that element.
-     *
-     * @param $element
-     * @param $data
-     * @param $index
-     */
-    protected function saveComplexAttributes_Element_OphCiExamination_HistoryRisk($element)
-    {
-        $event_type = \EventType::model()->find('name=?', array('Examination'));
-        $event = $this->episode->getMostRecentEventByType($event_type->id);
-        if ($event->id === $this->event->id) {
-            $this->updateRisk('anticoagulant', $element->anticoagulant, $element->anticoagulant_name);
-            $this->updateRisk('alphablocker', $element->alphablocker, $element->alpha_blocker_name);
-        }
-    }
-
-    /**
-     * Updating Patient Risk details.
-     *
-     * @param string $risk_name
-     * @param string $risk_value
-     */
-    protected function updateRisk($risk_name, $risk_value, $risk_comment)
-    {
-        $historyRisk = new models\Element_OphCiExamination_HistoryRisk();
-        if ($risk_name === 'anticoagulant') {
-            $risk_check = 'Anticoagulants';
-            $recent = $historyRisk->mostRecentCheckedAnticoag($this->patient->id);
-        } else {
-            $risk_check = 'Alpha blockers';
-            $recent = $historyRisk->mostRecentCheckedAlpha($this->patient->id);
-        }
-
-        if (is_null($recent) || strtotime($this->event->event_date) >= strtotime($recent->event->event_date)) {
-            $this->updateSummaryRisk($risk_value, $risk_comment, $risk_check);
-        }
-    }
-
-    /**
      * Save the dilation treatments.
      *
      * @param models\Element_OphCiExamination_Dilation $element
@@ -1044,7 +1051,7 @@ class DefaultController extends \BaseEventTypeController
 
         $side = ucfirst(@$_GET['side']);
 
-        $api = new components\OphCiExamination_API();
+        $api = $this->getApp()->moduleAPI->get('OphCiExamination');
         $result = $api->{"getLastIOPReading{$side}"}($patient);
 
         echo $result;
@@ -1110,6 +1117,18 @@ class DefaultController extends \BaseEventTypeController
     protected function setAndValidateElementsFromData($data)
     {
         $errors = parent::setAndValidateElementsFromData($data);
+
+        if ($history_meds = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryMedications')) {
+            if ($history_meds->hasRisks()) {
+                if (!$this->getOpenElementByClassName('OEModule_OphCiExamination_models_HistoryRisks')) {
+                    if (!array_key_exists($this->event_type->name, $errors)) {
+                        $errors[$this->event_type->name] = array();
+                    }
+                    $errors[$this->event_type->name][] = 'History Risks element is required when History Medications has entries with associated Risks';
+                }
+            }
+        }
+
         if (isset($data['patientticket_queue']) && $api = Yii::app()->moduleAPI->get('PatientTicketing')) {
             $co_sid = @$data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];
             $status = models\OphCiExamination_ClinicOutcome_Status::model()->findByPk($co_sid);
@@ -1238,10 +1257,7 @@ class DefaultController extends \BaseEventTypeController
     protected function setCurrentSet()
     {
         if (!$this->set) {
-            $firm_id = $this->firm->id;
-            $status_id = ($this->episode) ? $this->episode->episode_status_id : 1;
-            $workflow = new models\OphCiExamination_Workflow_Rule();
-            $this->set = $workflow->findWorkflowCascading($firm_id, $status_id)->getFirstStep();
+            $this->set = $this->getFirstStep();
             $this->mandatoryElements = $this->set->MandatoryElementTypes;
         }
     }
@@ -1342,60 +1358,4 @@ class DefaultController extends \BaseEventTypeController
             }
         }
     }
-
-    /**
-     * @param $id
-     *
-     * @return bool
-     */
-    public function actionDelete($id)
-    {
-        $historyRisk = new models\Element_OphCiExamination_HistoryRisk();
-        $recentAnticoag = $historyRisk->mostRecentCheckedAnticoag($this->patient->id);
-        $recentAlpha = $historyRisk->mostRecentCheckedAlpha($this->patient->id);
-        $thisRisk = $historyRisk->find('event_id = ?', array($this->event->id));
-
-        if ($thisRisk) {
-            if (is_null($recentAnticoag) || $recentAnticoag->anticoagulant === '0' || $recentAnticoag->event->id === $thisRisk->event->id) {
-                if ($previous = $historyRisk->previousCheckedAnticoag($this->patient->id, $thisRisk->event->event_date)){
-                    if ($previous->anticoagulant !== $thisRisk->anticoagulant) {
-                        $this->updateSummaryRisk($previous->anticoagulant, $previous->anticoagulant_name, 'Anticoagulants');
-                    }
-                }
-            }
-            if (is_null($recentAlpha) || $recentAlpha->alphablocker === '0' || $recentAnticoag->event->id === $thisRisk->event->id) {
-                if ($previous = $historyRisk->previousCheckedAlpha($this->patient->id, $thisRisk->event->event_date)){
-                    if ($previous->alphablocker !== $thisRisk->alphablocker) {
-                        $this->updateSummaryRisk($previous->alphablocker, $previous->alpha_blocker_name, 'Alpha blockers');
-                    }
-                }
-            }
-        }
-
-        return parent::actionDelete($id);
-    }
-
-    /**
-     * @param $risk_value
-     * @param $risk_comment
-     * @param $risk_check
-     */
-    protected function updateSummaryRisk($risk_value, $risk_comment, $risk_check)
-    {
-        $risk = \Risk::model()->find('name=?', array($risk_check));
-        $criteria = new \CDbCriteria();
-        $criteria->compare('risk_id', $risk['id']);
-        $criteria->compare('patient_id', $this->patient->id);
-        $patient_risk = \PatientRiskAssignment::model()->find($criteria);
-        if ($risk_value === '1') {
-            $patient_risk = (!$patient_risk) ? new \PatientRiskAssignment() : $patient_risk;
-            $patient_risk->risk_id = $risk['id'];
-            $patient_risk->patient_id = $this->patient->id;
-            $patient_risk->comments = $risk_comment;
-            $patient_risk->save();
-        } elseif ($patient_risk && ($risk_value === '2')) {
-            \PatientRiskAssignment::model()->deleteByPk($patient_risk->id);
-        }
-    }
 }
-

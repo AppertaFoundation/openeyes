@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 <tr class="<?php 
@@ -79,12 +78,18 @@
 					<th scope="col">Data:</th>
 					<td>
 						<?php
-                        if (@unserialize($log->data)) {?>
-							<div class="link">
-								<a href="#" id="showData<?php echo $log->id?>" class="showData">show data</a>
-								<input type="hidden" name="data<?php echo $log->id?>" value="<?php echo htmlentities($log->data)?>" />
-							</div>
-							<div class="data" id="dataspan<?php echo $log->id?>"></div>
+                        $data = @unserialize($log->data);
+                        if ($data) {?>
+							<div class="data" id="dataspan<?php echo $log->id?>">
+                                <?php
+
+                                    if( is_array($data) ){
+                                        echo "<pre>" . print_r($data, true) . "</pre>";
+                                    } else {
+                                        echo $data;
+                                    }
+                                ?>
+                            </div>
 						<?php } else {?>
 							<div class="data">
 								<?php echo $log->data ? $log->data : 'None';?>

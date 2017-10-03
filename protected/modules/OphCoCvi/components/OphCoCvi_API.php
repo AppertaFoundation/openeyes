@@ -4,15 +4,15 @@
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 
@@ -30,21 +30,6 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
  */
 class OphCoCvi_API extends \BaseAPI
 {
-    protected $yii;
-
-    /**
-     * OphCoCvi_API constructor.
-     *
-     * @param \CApplication|null $yii
-     */
-    public function __construct(\CApplication $yii = null)
-    {
-        if (is_null($yii)) {
-            $yii = \Yii::app();
-        }
-
-        $this->yii = $yii;
-    }
 
     public $createOprn = 'OprnCreateCvi';
     public $createOprnArgs = array('user_id', 'firm', 'episode');
@@ -53,18 +38,24 @@ class OphCoCvi_API extends \BaseAPI
      * Get all events regardless of episode.
      *
      * @param Patient $patient
+     * @param boolean $use_context
+     * @param string $before - date formatted
+     * @param integer $limit
+     * @param integer $limit
      * @return \Event[]
      * @throws \Exception
      */
-    public function getEvents(Patient $patient)
+    public function getEvents(Patient $patient, $use_context = false, $before = null, $limit = null)
     {
-        return $this->getManager()->getEventsForPatient($patient);
+        // This was implemented before the core implementation of getEvents, and expects events in
+        // the opposite order
+        return array_reverse(parent::getEvents($patient, $use_context, $before, $limit));
     }
 
     /**
      * Convenience wrapper to allow template rendering.
      *
-     * @param       $view
+     * @param string $view
      * @param array $parameters
      * @return mixed
      */
@@ -88,6 +79,23 @@ class OphCoCvi_API extends \BaseAPI
         }
 
         return $this->cvi_manager;
+    }
+
+    /**
+     * Convenience wrapper to get the current Patient CVI Status as a piece of text.
+     *
+     * @throws \Exception
+     */
+    public function getSummaryText(Patient $patient)
+    {
+        if ($events = $this->getEvents($patient)) {
+            $ids = array_map(function($e) { return $e->id;}, $events);
+            $latest = array_pop($events);
+            return $this->getManager()->getDisplayStatusForEvent($latest);
+        }
+        else {
+            return $patient->getOphInfo()->cvi_status->name;
+        }
     }
 
     /**

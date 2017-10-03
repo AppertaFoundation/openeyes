@@ -5,19 +5,20 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\OphCiExamination\models;
+
+use Patient;
 
 /**
  * This is the model class for table "et_ophciexamination_anteriorsegment".
@@ -28,6 +29,8 @@ namespace OEModule\OphCiExamination\models;
  * @property int $event_id
  * @property int $eye_id
  * @property string $left_eyedraw
+ * @property string $left_eyedraw2
+ * @property string $left_ed_report
  * @property int $left_pupil_id
  * @property int $left_nuclear_id
  * @property int $left_cortical_id
@@ -35,6 +38,8 @@ namespace OEModule\OphCiExamination\models;
  * @property bool $left_phako
  * @property string $left_description
  * @property string $right_eyedraw
+ * @property string $right_eyedraw2
+ * @property string $right_ed_report
  * @property int $right_pupil_id
  * @property int $right_nuclear_id
  * @property int $right_cortical_id
@@ -46,6 +51,11 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
 {
+    protected static $ed_persistence_attributes = array(
+        'left_eyedraw' => \Eye::LEFT,
+        'right_eyedraw' => \Eye::RIGHT,
+    );
+
     public $service;
 
     /**
@@ -56,6 +66,22 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
+    }
+
+    // used for the letter string method in the eyedraw element behavior
+    public $letter_string_prefix = "Anterior Segment:\n";
+
+    /**
+     * @inheritdoc
+     * @return array
+     */
+    public function behaviors()
+    {
+        return array(
+            'EyedrawElementBehavior' => array(
+                'class' => 'application.behaviors.EyedrawElementBehavior',
+            ),
+        );
     }
 
     /**
@@ -74,10 +100,10 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('eye_id, left_eyedraw, left_pupil_id, left_nuclear_id, left_cortical_id, left_pxe, left_phako, left_description,
-						right_eyedraw, right_pupil_id, right_nuclear_id, right_cortical_id, right_pxe, right_phako, right_description', 'safe'),
-                array('left_eyedraw, left_description', 'requiredIfSide', 'side' => 'left'),
-                array('right_eyedraw, right_description', 'requiredIfSide', 'side' => 'right'),
+                array('eye_id, left_eyedraw, left_eyedraw2, left_ed_report, left_pupil_id, left_nuclear_id, left_cortical_id, left_pxe, left_phako, left_description,
+						right_eyedraw, right_eyedraw2, right_ed_report, right_pupil_id, right_nuclear_id, right_cortical_id, right_pxe, right_phako, right_description', 'safe'),
+                array('left_eyedraw, left_eyedraw2, left_ed_report', 'requiredIfSide', 'side' => 'left'),
+                array('right_eyedraw, right_eyedraw2, right_ed_report', 'requiredIfSide', 'side' => 'right'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
                 array('id, event_id, left_eyedraw, left_pupil_id, left_nuclear_id, left_cortical_id, left_pxe, left_phako, left_description,
@@ -87,7 +113,7 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
 
     public function sidedFields()
     {
-        return array('pupil_id', 'cortical_id', 'pxe', 'eyedraw', 'phako', 'description', 'nuclear_id');
+        return array('pupil_id', 'cortical_id', 'pxe', 'eyedraw', 'eyedraw2', 'ed_report', 'phako', 'description', 'nuclear_id');
     }
 
     public function sidedDefaults()
@@ -131,26 +157,28 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
                 'id' => 'ID',
                 'event_id' => 'Event',
                 'left_eyedraw' => 'Eyedraw',
+                'left_ed_report' => 'Report',
                 'left_pupil_id' => 'Pupil Size',
                 'left_nuclear_id' => 'Nuclear',
                 'left_cortical_id' => 'Cortical',
                 'left_pxe' => 'PXF',
-                'left_phako' => 'Phakodonesis',
-                'left_description' => 'Description',
+                'left_phako' => 'Phacodonesis',
+                'left_description' => 'Comments',
                 'right_eyedraw' => 'Eyedraw',
+                'right_ed_report' => 'Report',
                 'right_pupil_id' => 'Pupil Size',
                 'right_nuclear_id' => 'Nuclear',
                 'right_cortical_id' => 'Cortical',
                 'right_pxe' => 'PXF',
-                'right_phako' => 'Phakodonesis',
-                'right_description' => 'Description',
+                'right_phako' => 'Phacodonesis',
+                'right_description' => 'Comments',
         );
     }
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
@@ -182,8 +210,46 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
         ));
     }
 
-    public function getLetter_string()
+    /**
+     * Load in the correction values for the eyedraw fields
+     *
+     * @param Patient|null $patient
+     * @throws \CException
+     */
+    public function setDefaultOptions(Patient $patient = null)
     {
-        return "Anterior segment:\nright: $this->right_description\nleft: $this->left_description\n";
+        parent::setDefaultOptions($patient);
+        if ($patient === null) {
+            throw new \CException('patient object required for setting ' . get_class($this) . ' default options');
+        }
+        $processor = new \EDProcessor();
+        $processor->loadElementEyedrawDoodles($patient, $this,\Eye::LEFT, 'left_eyedraw');
+        $processor->loadElementEyedrawDoodles($patient, $this,\Eye::RIGHT, 'right_eyedraw');
     }
+
+    /**
+     * Ensure we remove any doodles shredded out of this element for object persistence
+     *
+     * @return bool
+     * @inheritdoc
+     */
+    public function beforeDelete()
+    {
+        $processor = new \EDProcessor();
+        $processor->removeElementEyedraws($this);
+        return parent::beforeDelete();
+    }
+
+    /**
+     * Performs the shredding of Eyedraw data for the patient record
+     *
+     * @inheritdoc
+     */
+    public function afterSave()
+    {
+        $processor = new \EDProcessor();
+        $processor->shredElementEyedraws($this, static::$ed_persistence_attributes);
+        parent::afterSave();
+    }
+
 }

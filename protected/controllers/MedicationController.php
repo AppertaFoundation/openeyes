@@ -3,15 +3,15 @@
 /**
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2014, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class MedicationController extends BaseController
 {
@@ -76,10 +76,10 @@ class MedicationController extends BaseController
 
         if (isset($_GET['term']) && $term = strtolower($_GET['term'])) {
             $criteria = new CDbCriteria();
-            $criteria->compare('LOWER(name)', $term, true, 'OR');
-            $criteria->compare('LOWER(aliases)', $term, true, 'OR');
+            $criteria->compare('LOWER(t.name)', $term, true, 'OR');
+            $criteria->compare('LOWER(t.aliases)', $term, true, 'OR');
 
-            foreach (MedicationDrug::model()->findAll($criteria) as $md) {
+            foreach (MedicationDrug::model()->with('tags')->findAll($criteria) as $md) {
                 $label = $md->name;
                 if (strpos(strtolower($md->name), $term) === false) {
                     $label .= ' ('.$md->aliases.')';
@@ -89,10 +89,11 @@ class MedicationController extends BaseController
                     'label' => $label,
                     'value' => $md->id,
                     'type' => 'md',
+                    'tags' => array_map(function($t) { return $t->id;}, $md->tags)
                 );
             }
 
-            foreach (Drug::model()->active()->findAll($criteria) as $drug) {
+            foreach (Drug::model()->with('tags')->active()->findAll($criteria) as $drug) {
                 $label = $drug->tallmanlabel;
                 if (strpos(strtolower($drug->name), $term) === false) {
                     $label .= ' ('.$drug->aliases.')';
@@ -102,6 +103,7 @@ class MedicationController extends BaseController
                     'label' => $label,
                     'value' => $drug->id,
                     'type' => 'd',
+                    'tags' => array_map(function($t) { return $t->id;}, $drug->tags)
                 );
             }
         }
@@ -125,6 +127,14 @@ class MedicationController extends BaseController
                 'route' => $this->fetchModel('DrugRoute', $route_id),
             )
         );
+    }
+
+    public function actionRetrieveDrugRouteOptions($route_id)
+    {
+        $route = DrugRoute::model()->findByPk($route_id);
+        echo json_encode(array_map(function($opt) {
+            return array('id' => $opt->id, 'name' => $opt->name);
+        }, $route->options));
     }
 
     public function actionSave()

@@ -4,16 +4,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 var correspondence_markprinted_url, correspondence_print_url;
@@ -80,9 +79,13 @@ function resetInternalReferralFields(){
 
     $('.internal-referral-section').find(':input').not(':button, :submit, :reset, :hidden').removeAttr('checked').removeAttr('selected').not(':checkbox, :radio, select').val('');
 
-    $.each( $('.internal-referral-section select').find(':input'), function(i, input){
+    $.each( $('.internal-referral-section select'), function(i, input){
         $(input).val('');
     });
+
+    // set back the defaults
+    $('#ElementLetter_is_same_condition_0').prop('checked', true);
+    $('#ElementLetter_to_location_id').val(OE_to_location_id);
 }
 
 function setRecipientToInternalReferral(){
@@ -128,33 +131,47 @@ function resetRecipientFromInternalReferral(){
 
 function updateConsultantDropdown(subspecialty_id){
 
-	$.getJSON(baseUrl + "/" + moduleName + "/Default/getConsultantsBySubspecialty", {
-        subspecialty_id: subspecialty_id,
-    }, function (data) {
-	    var options = [];
 
-        //remove old options
-        $('#ElementLetter_to_firm_id option:gt(0)').remove();
+    jQuery.ajax({
+        url: baseUrl + "/" + moduleName + "/Default/getConsultantsBySubspecialty",
+        data: {"subspecialty_id": subspecialty_id },
+        dataType: "json",
+        beforeSend: function(){
+            $('button#et_saveprint').prop('disabled', true);
+            $('button#et_savedraft').prop('disabled', true);
+        },
+        success: function(data){
+            var options = [];
 
-        //create js array from obj to sort
-        for(item in data){
-            options.push([item,data[item]]);
+            //remove old options
+            $('#ElementLetter_to_firm_id option:gt(0)').remove();
+
+            //create js array from obj to sort
+            for(item in data){
+                options.push([item,data[item]]);
+            }
+
+            options.sort(function(a,b){
+                if (a[1] > b[1]) return -1;
+                else if (a[1] < b[1]) return 1;
+                else return 0;
+            });
+            options.reverse();
+
+            //append new option to the dropdown
+            $.each(options, function(key, value) {
+                $('#ElementLetter_to_firm_id').append($("<option></option>")
+                    .attr("value", value[0]).text(value[1]));
+            });
+        },
+        complete: function(){
+            $('button#et_saveprint').prop('disabled', false);
+            $('button#et_savedraft').prop('disabled', false);
         }
 
-        options.sort(function(a,b){
-            if (a[1] > b[1]) return -1;
-            else if (a[1] < b[1]) return 1;
-            else return 0;
-        });
-        options.reverse();
-
-        //append new option to the dropdown
-        $.each(options, function(key, value) {
-            $('#ElementLetter_to_firm_id').append($("<option></option>")
-                .attr("value", value[0]).text(value[1]));
-        });
     });
 }
+
 function updateSalutation(text){
     $("#ElementLetter_introduction").val(text);
 }
@@ -173,19 +190,45 @@ $(document).ready(function() {
         subspecialty_id = $('#ElementLetter_to_subspecialty_id').find('option:contains("' + subspecialty_name + '")').val();
         $('#ElementLetter_to_subspecialty_id').val(subspecialty_id);
 
-        $.getJSON(baseUrl + "/" + moduleName + "/Default/getSalutationByFirm", {
-            firm_id: $('#ElementLetter_to_firm_id').val(),
-        }, function (data) {
-            updateSalutation(data);
+        jQuery.ajax({
+            url: baseUrl + "/" + moduleName + "/Default/getSalutationByFirm",
+            data: { firm_id: $('#ElementLetter_to_firm_id').val(), },
+            dataType: "json",
+            beforeSend: function(){
+                $('button#et_saveprint').prop('disabled', true);
+                $('button#et_savedraft').prop('disabled', true);
+            },
+            success: function(data){
+                updateSalutation(data);
+            },
+            complete: function(){
+                $('button#et_saveprint').prop('disabled', false);
+                $('button#et_savedraft').prop('disabled', false);
+            }
         });
+
     });
 
     $('#ElementLetter_to_location_id').on('change', function(){
 
-        $.getJSON(baseUrl + "/" + moduleName + "/Default/getSiteInfo", {
-            to_location_id: $('#ElementLetter_to_location_id').val(),
-        }, function (data) {
-            $('#Document_Target_Address_0').val(data.correspondence_name);
+        jQuery.ajax({
+            url: baseUrl + "/" + moduleName + "/Default/getSiteInfo",
+            data: { to_location_id: $('#ElementLetter_to_location_id').val() },
+            dataType: "json",
+            beforeSend: function(){
+
+                // empty the value of the address textarea because if the ajax slow the user may save a wrong address
+                $('#Document_Target_Address_0').val('');
+                $('button#et_saveprint').prop('disabled', true);
+                $('button#et_savedraft').prop('disabled', true);
+            },
+            success: function(data){
+                $('#Document_Target_Address_0').val(data.correspondence_name);
+            },
+            complete: function(){
+                $('button#et_saveprint').prop('disabled', false);
+                $('button#et_savedraft').prop('disabled', false);
+            }
         });
 
     });

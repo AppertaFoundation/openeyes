@@ -6,16 +6,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class BaseActiveRecordTest extends CDbTestCase
 {
@@ -39,7 +38,7 @@ class BaseActiveRecordTest extends CDbTestCase
         parent::setUp();
 
         //using allergy model to test the active record
-        $this->model = new Allergy();
+        $this->model = new Patient();
     }
 
     public function getShortModelNameDataProvider()
@@ -63,23 +62,25 @@ class BaseActiveRecordTest extends CDbTestCase
 
     /**
      * @covers BaseActiveRecord::save
-     *
-     * @todo   Implement testSave().
      */
-    public function testSave()
+    public function test_basic_save()
     {
+        $testmodel = $this->getMockBuilder(SimpleBaseActiveRecordClass::class)
+            ->setMethods(array('getIsNewRecord', 'insert'))
+            ->getMock();
 
-        //using allergy model to test the active record
+        $testmodel->setAttributes(array('test_value' => 'new value'));
 
-        $testmodel = new Allergy();
-        $testmodel->setAttributes($this->testattributes);
+        $testmodel->expects($this->any())
+            ->method('getIsNewRecord')
+            ->will($this->returnValue(true));
+
+        // Basically testing insert gets called to save the data
+        $testmodel->expects($this->once())
+            ->method('insert')
+            ->will($this->returnValue(true));
 
         $testmodel->save();
-
-        $result = Allergy::model()->findByAttributes(array('name' => 'allergy test'))->getAttributes();
-        $expected = $this->testattributes;
-
-        $this->assertEquals($expected['name'], $result['name'], 'attribute match');
     }
 
     /**
@@ -626,70 +627,30 @@ class BaseActiveRecordTest extends CDbTestCase
 
     public function testsaveOnlyIfDirty()
     {
-        $dirty_allergy_name = 'test allergy modified';
-        // make sure this attribute is not in our DB
-        Allergy::model()->deleteAllByAttributes($this->testattributes);
-        Allergy::model()->deleteAllByAttributes(array('name' => $dirty_allergy_name));
+        $testmodel = $this->getMockBuilder(SimpleBaseActiveRecordClass::class)
+            ->setMethods(array('getIsNewRecord', 'insert'))
+            ->getMock();
 
-        /* New Model **/
+        $testmodel->setAttributes(array('test_value' => 'new value'));
 
-        $allergy = new Allergy();
-        $allergy->setAttributes($this->testattributes);
+        $testmodel->expects($this->any())
+            ->method('getIsNewRecord')
+            ->will($this->returnValue(true));
 
-        // test to save a new model
-        if (!$allergy->saveOnlyIfDirty()->save()) {
-            $this->fail('Saving new model fails on saveOnlyIfDirty()');
-        }
+        // Basically testing insert gets called to save the data
+        $testmodel->expects($this->exactly(2))
+            ->method('insert')
+            ->will($this->returnValue(true));
 
-        //check if the record really saved in the DB
-        $allergy = Allergy::model()->findByAttributes($this->testattributes);
+        $this->assertTrue($testmodel->saveOnlyIfDirty()->save());
 
-        $this->assertNotNull($allergy);
-        $this->assertEquals($this->testattributes['name'], $allergy->name);
+        // no second save with no changes
+        $this->assertFalse($testmodel->saveOnlyIfDirty()->save());
 
-        /* Clean Model **/
+        $testmodel->test_value = 'a different value again';
 
-        $allergyAttributes = $allergy->getAttributes();
-
-        //Perform a save without modifing the attributes
-        if (!$allergy->saveOnlyIfDirty()->save()) {
-            $this->fail('Updating model fails on saveOnlyIfDirty()');
-        }
-
-        // compare attributes before and after, as no database action was required
-        //we except the attributes are the same (e.g.: last_modified_date)
-
-        // Retrive the model again to see what is it in the DB
-        $allergy = Allergy::model()->findByAttributes($this->testattributes);
-
-        $this->assertEquals($allergyAttributes['id'], $allergy->id);
-        $this->assertEquals($allergyAttributes['name'], $allergy->name);
-        $this->assertEquals($allergyAttributes['last_modified_user_id'], $allergy->last_modified_user_id);
-        $this->assertEquals($allergyAttributes['last_modified_date'], $allergy->last_modified_date);
-        $this->assertEquals($allergyAttributes['created_user_id'], $allergy->created_user_id);
-        $this->assertEquals($allergyAttributes['created_date'], $allergy->created_date);
-        $this->assertEquals($allergyAttributes['active'], $allergy->active);
-        $this->assertEquals($allergyAttributes['display_order'], $allergy->display_order);
-
-        /* Dirty Model **/
-
-        //let's modify the model
-        $allergy->name = $dirty_allergy_name;
-        $allergy->last_modified_date = date('Y-m-d H:i:s');
-
-        if (!$allergy->saveOnlyIfDirty()->save()) {
-            $this->fail('Updating modified model fails on saveOnlyIfDirty()');
-        }
-
-        $allergy = Allergy::model()->findByAttributes(array('name' => $dirty_allergy_name));
-
-        $this->assertNotNull($allergy);
-
-        $this->assertEquals($allergyAttributes['id'], $allergy->id);
-        $this->assertEquals($dirty_allergy_name, $allergy->name);
-
-        Allergy::model()->deleteAllByAttributes(array('name' => $dirty_allergy_name));
-        Allergy::model()->deleteAllByAttributes($this->testattributes);
+        // saved again now an attribute was altered
+        $this->assertTrue($testmodel->saveOnlyIfDirty()->save());
     }
 }
 
@@ -716,6 +677,43 @@ class ManyManyOwnerTestClass extends BaseActiveRecord
     }
 }
 
+class SimpleBaseActiveRecordClass extends BaseActiveRecord
+{
+    public $test_value;
+    public $test_pk;
+    public $created_user_id;
+    public $created_date;
+    public $last_modified_date;
+    public $last_modified_user_id;
+
+    public function __construct()
+    {
+    }
+
+    public function rules()
+    {
+        return array(
+            array('test_value', 'safe'),
+        );
+    }
+
+    public function getMetaData()
+    {
+        $columns = array(
+            'test_value' => 'string',
+            'created_user_id' => 'int',
+            'created_date' => 'string',
+            'last_modified_user_id' => 'int',
+            'last_modified_date' => 'string');
+        return ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+            'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+                'primaryKey' => 'test_pk',
+                'columns' => $columns)),
+            'columns' => $columns,
+        ));
+    }
+}
+
 class RelationTestClass extends BaseActiveRecord
 {
     public $default_prop;
@@ -736,10 +734,12 @@ class RelationTestClass extends BaseActiveRecord
 
     public function getMetaData()
     {
+        $columns = array('test_pk', 'default_prop');
         return ComponentStubGenerator::generate('CActiveRecordMetaData', array(
             'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
                 'primaryKey' => 'test_pk',
-                'columns' => array('test_pk', 'default_prop'), )),
+                'columns' => $columns)),
+            'columns' => $columns
         ));
     }
 

@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class OphCoCorrespondence_API extends BaseAPI
 {
@@ -44,7 +43,7 @@ class OphCoCorrespondence_API extends BaseAPI
         return !$letter->isGeneratedFor(['Docman', 'Internalreferral']);
     }
 
-    public function getLatestEvent($episode)
+    public function getLatestEventInEpisode($episode)
     {
         $event_type = $this->getEventType();
 
@@ -103,159 +102,134 @@ class OphCoCorrespondence_API extends BaseAPI
         return $patient->last_name;
     }
 
-
-    /**
+    /*
      * get the last Examination Date for patient for use in correspondence.
      *
      * @param Patient $patient
-     *
+     * @param boolean $use_context
      * @return string
      */
-    public function getLastExaminationDate(\Patient $patient)
-    {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
-            $event = $this->getMostRecentEventInEpisode($episode->id, $event_type->id);
-            if (isset($event->event_date)) {
-                return Helper::convertDate2NHS($event->event_date);
-            }
-        }
 
+    public function getLastExaminationDate(\Patient $patient, $use_context = false)
+    {
+        $api = $this->yii->moduleAPI->get('OphCiExamination');
+        $event = $api->getLatestVisibleEvent($patient, $use_context);
+        if (isset($event->event_date)) {
+            return Helper::convertDate2NHS($event->event_date);
+        }
         return '';
     }
 
 
+    /*
+     * List of Ophthalmic Diagnoses
+     */
     public function getOphthalmicDiagnoses(\Patient $patient)
     {
         return $patient->getUniqueDiagnosesString('- ', "\r\n", true);
     }
 
-    public function getLastIOLType(\Patient $patient)
+    /*
+     * IOL type from last cataract Operation Note
+     * @param $patient
+     * @param $use_context
+     * @return string
+     */
+    public function getLastIOLType(\Patient $patient, $use_context = false)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-            if ($element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract')) {
-                return $element->iol_type->name;
+        $api = $this->yii->moduleAPI->get('OphTrOperationnote');
+        if ($element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)){
+            return $element->iol_type->name;
+        }
+    }
+
+    /*
+     * IOL Power from last cataract operation note
+     * @param $patient
+     * @param $use_context
+     * @return string
+     */
+    public function getLastIOLPower(\Patient $patient, $use_context = false)
+    {
+        $api = $this->yii->moduleAPI->get('OphTrOperationnote');
+        if ($element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)){
+            return $element->iol_power;
+        }
+    }
+
+    /*
+     * Operated Eye (left/right) from last operation note
+     * @param $patient
+     * @param $use_context
+     * @return string
+     */
+    public function getLastOperatedEye(\Patient $patient, $use_context = false)
+    {
+        $api = $this->yii->moduleAPI->get('OphTrOperationnote');
+        if ($element = $api->getLatestElement('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
+            return $element->eye->adjective;
+        }
+    }
+
+    /**
+     * Internal abstraction of getting data from before the most recent op note.
+     *
+     * @param $patient
+     * @param bool $use_context
+     * @param $api
+     * @param $method
+     * @return string|null
+     */
+    private function getPreOpValuesFromAPIMethod($patient, $use_context = false, $api, $method)
+    {
+        if (!$note_api = $this->yii->moduleAPI->get('OphTrOperationnote')) {
+            return null;
+        }
+
+        $op_event = $note_api->getLatestEvent($patient, $use_context);
+        $op_event_combined_date = Helper::combineMySQLDateAndDateTime($op_event->event_date, $op_event->created_date);
+        $events = $api->getEvents($patient, $use_context, $op_event->event_date);
+
+        foreach ($events as $event) {
+            // take account of event date not containing time so we ensure we get the
+            // exam from BEFORE the op note, not on the same day but after.
+            if ($event->event_date == $op_event->event_date) {
+                if (Helper::combineMySQLDateAndDateTime($event->event_date, $event->created_date) > $op_event_combined_date) {
+                    continue;
+                }
+            }
+            if ($result = $api->$method($event)) {
+                return $result;
             }
         }
     }
 
-    public function getLastIOLPower(\Patient $patient)
-    {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-            if ($element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_Cataract')) {
-                return $element->iol_power;
-            }
-        }
-    }
-
-    public function getLastOperatedEye(\Patient $patient)
-    {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-            if ($element = $this->getMostRecentElementInEpisode($episode->id, $event_type->id, 'Element_OphTrOperationnote_ProcedureList')) {
-                return $element->eye->adjective;
-            }
-        }
-    }
 
     /**
      * Get the Pre-Op Visual Acuity - both eyes.
      *
      * @param $patient
-     *
+     * @param $use_context
      * @return string|null
      */
-    public function getPreOpVABothEyes($patient)
+    public function getPreOpVABothEyes($patient, $use_context = false)
     {
-        if ($apiNote = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
-                $opDate = $apiNote->getLastOperationDateUnformatted($patient);
-            }
-        $api = Yii::app()->moduleAPI->get('OphCiExamination');
-        $episode = $patient->getEpisodeForCurrentSubspecialty();
-        $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
-        $data = '';
-        $criteria = new CDbCriteria();
-        $criteria->condition = 'episode_id = :e_id AND event_type_id = :et_id';
-        $criteria->addCondition('event_date <= :event_date');
-        $criteria->order = ' event_date DESC, created_date DESC';
-        $criteria->params = array(':e_id' => $episode->id, ':et_id' => $event_type->id, 'event_date' => $opDate);
-
-        if($events = Event::model()->findAll($criteria)){
-            for ($i = 0; $i < count($events); ++$i) {
-                // Get Most Recent VA
-                $vaID = $api->getMostRecentVA($events[$i]->id);
-                if($vaID && !$data){
-                    $data = $api->getMostRecentVAData($vaID->id);
-                    $chosenVA = $vaID;
-                }
-            }
+        if ($api = $this->yii->moduleAPI->get('OphCiExamination')) {
+            return $this->getPreOpValuesFromAPIMethod($patient, $use_context, $api, 'getBestVisualAcuityFromEvent');
         }
-
-        if($data){
-            for ($i = 0; $i < count($data); ++$i) {
-                if($data[$i]->side == 0){
-                    $rightData[] = $data[$i];
-                }
-                if($data[$i]->side == 1){
-                    $leftData[] = $data[$i];
-                }
-            }
-            $unitId = $chosenVA->unit_id;
-
-            if(isset($rightData)) {
-                $rightVA = $api->getVAvalue($rightData[0]->value, $unitId);
-            }
-
-            if(isset($leftData)) {
-                $leftVA = $api->getVAvalue($leftData[0]->value, $unitId);
-            }
-
-            return (isset($rightVA) ? $rightVA : "not recorded") . " Right Eye" . ", " . (isset($leftVA) ? $leftVA : "not recorded") . " Left Eye";
-        }else{
-            return;
-        }
-
     }
 
     /**
      * Get the Pre-Op Refraction - both eyes.
      *
      * @param $patient
-     *
+     * @param $use_context
      * @return string|null
      */
-    public function getPreOpRefraction($patient)
+    public function getPreOpRefraction($patient, $use_context = false)
     {
-        if ($apiNote = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
-            $opDate = $apiNote->getLastOperationDateUnformatted($patient);
-        }
-        $api = Yii::app()->moduleAPI->get('OphCiExamination');
-        $episode = $patient->getEpisodeForCurrentSubspecialty();
-        $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
-        $eventtypeid = $event_type->id;
-// Refraction here
-        $refractfound = false;
-
-        if ($eventid = Event::model()->findAll(array(
-            'condition' => 'event_type_id = ' . $eventtypeid . ' AND episode_id = ' . $episode->id . " AND event_date <= '" . $opDate . "'",
-            'order' => 'event_date DESC',
-        ))
-        ) {
-// Loop through responses, for ones that have RefractionValues
-            for ($i = 0; $i < count($eventid); ++$i) {
-                if ($api->getRefractionValues($eventid[$i]->id)) {
-                    if (!$refractfound) {
-                        $refractelement = $api->getRefractionValues($eventid[$i]->id);
-                        $refract_event_date = $eventid[$i]->event_date;
-                        $refractfound = true;
-                        $rightspherical = number_format($refractelement->{'right_sphere'} + 0.5 * $refractelement->{'right_cylinder'}, 2);
-                        $leftspherical = number_format($refractelement->{'left_sphere'} + 0.5 * $refractelement->{'left_cylinder'}, 2);
-                        return $rightspherical . " Right Eye" . ", " . $leftspherical . " Left Eye";
-                    }
-                }
-            }
+        if ($api = $this->yii->moduleAPI->get('OphCiExamination')) {
+            return $this->getPreOpValuesFromAPIMethod($patient, $use_context, $api, 'getRefractionTextFromEvent');
         }
     }
 
@@ -271,6 +245,10 @@ class OphCoCorrespondence_API extends BaseAPI
         return $patient->getAllergiesSeparatedString(" - ", "\r\n", true);
     }
 
+    /*
+     * @param $patient_id
+     * @param $macro_id
+     */
     public function getMacroTargets($patient_id, $macro_id)
     {
         if (!$patient = Patient::model()->findByPk($patient_id)) {
@@ -353,7 +331,7 @@ class OphCoCorrespondence_API extends BaseAPI
 
         if ($macro->cc_drss) {
             $commissioningbodytype = CommissioningBodyType::model()->find('shortname = ?', array('CCG'));
-            $commissioningbody = $patient->getCommissioningBodyOfType($commissioningbodytype);
+            $commissioningbody = $patient->practice->getCommissioningBodyOfType($commissioningbodytype);
             if($commissioningbodytype && $commissioningbody) {
                 foreach($commissioningbody->services as $service) {
                     if($service->type->shortname == 'DRSS') {
@@ -378,6 +356,10 @@ class OphCoCorrespondence_API extends BaseAPI
         return $data;
     }
 
+    /*
+     * @param $patient_id
+     * @param $macro_id
+     */
     private function getMacroData($patient_id, $macro_id)
     {
         if(!$patient_id){
@@ -469,7 +451,7 @@ class OphCoCorrespondence_API extends BaseAPI
 
         if ($macro->cc_drss) {
             $commissioningbodytype = CommissioningBodyType::model()->find('shortname = ?', array('CCG'));
-            if($commissioningbodytype && $commissioningbody = $patient->getCommissioningBodyOfType($commissioningbodytype)) {
+            if($commissioningbodytype && $commissioningbody = $patient->practice->getCommissioningBodyOfType($commissioningbodytype)) {
                 $drss = null;
                 foreach($commissioningbody->services as $service) {
                     if($service->type->shortname == 'DRSS') {
@@ -533,7 +515,12 @@ class OphCoCorrespondence_API extends BaseAPI
         $element_letter = ElementLetter::model()->findByPk($id);
         return $element_letter->letter_targets;
     }
-    
+
+    /*
+     * @param int $patient_id
+     * @param string $contact_string
+     * @param boolean $nickname
+     */
     public function getAddress($patient_id, $contact_string, $nickname = false)
     {
         if (!$patient = Patient::model()->findByPk($patient_id)) {
@@ -612,7 +599,12 @@ class OphCoCorrespondence_API extends BaseAPI
             )),
         );
     }
-    
+
+    /*
+     * @param int $document_target_id
+     * @param $type
+     * @param int $letter_id
+     */
     public function updateDocumentTargetAddressFromContact($document_target_id, $type, $letter_id)
     {
         $document_target = DocumentTarget::model()->findByPk($document_target_id);
@@ -635,48 +627,5 @@ class OphCoCorrespondence_API extends BaseAPI
                 }
             }
         }
-        
-        
-    }
-
-    /*
-     * Glaucoma Overall Management Plan from latest Examination
-     * @param $patient
-     * @return string
-     */
-    public function getGlaucomaManagement( \Patient $patient )
-    {
-        $result = '';
-        $episode = $patient->getEpisodeForCurrentSubspecialty();
-        $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
-
-        if ($el = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan')
-        ) {
-
-            $result .= 'Clinic Interval: '.$el->clinic_internal->name."\n";
-            $result .= 'Photo: '.$el->photo->name."\n";
-            $result .= 'OCT: '.$el->oct->name."\n";
-            $result .= 'Visual Fields: '.$el->hfa->name."\n";
-            $result .= 'Gonioscopy: '.$el->gonio->name."\n";
-            $result .= 'HRT: '.$el->hrt->name."\n";
-
-            if(!empty($el->comments)){
-                $result .= 'Glaucoma Management comments: '.$el->comments."\n";
-            }
-
-            $result .= "\n";
-            if(isset($el->right_target_iop->name)){
-                $result .= 'Target IOP Right Eye: '.$el->right_target_iop->name." mmHg\n";
-            }
-            if(isset($el->left_target_iop->name)){
-                $result .= 'Target IOP Left Eye: '.$el->left_target_iop->name." mmHg\n";
-            }
-
-
-
-        }
-        return $result;
-
     }
 }

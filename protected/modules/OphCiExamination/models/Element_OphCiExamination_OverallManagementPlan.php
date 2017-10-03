@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\OphCiExamination\models;
@@ -41,7 +40,7 @@ namespace OEModule\OphCiExamination\models;
  * @property Event $event
  * @property User $user
  * @property User $usermodified
- * @property Gender $clinic_internal
+ * @property OphCiExamination_OverallPeriod $clinic_interval
  * @property Gender $photo
  * @property Gender $oct
  * @property Gender $hfa
@@ -109,7 +108,7 @@ class Element_OphCiExamination_OverallManagementPlan  extends  \SplitEventTypeEl
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'gonio' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_VisitInterval', 'gonio_id'),
-            'clinic_internal' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_OverallPeriod', 'clinic_interval_id'),
+            'clinic_interval' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_OverallPeriod', 'clinic_interval_id'),
             'photo' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_OverallPeriod', 'photo_id'),
             'oct' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_OverallPeriod', 'oct_id'),
             'hfa' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_OverallPeriod', 'hfa_id'),
@@ -176,12 +175,17 @@ class Element_OphCiExamination_OverallManagementPlan  extends  \SplitEventTypeEl
         return parent::afterSave();
     }
 
-    public function setDefaultOptions()
+    public function setDefaultOptions(\Patient $patient = null)
     {
         $element_type = \ElementType::model()->find('class_name=?', array(get_class($this)));
         $defaults = \SettingMetadata::model()->findAll('element_type_id=? ', array($element_type->id));
         foreach ($defaults as $default) {
             $this->{$default->key} = $default->default_value;
         }
+    }
+
+    public function __toString()
+    {
+        return 'Clinic: ' . $this->clinic_interval;
     }
 }

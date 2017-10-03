@@ -105,6 +105,32 @@ function setSurgeonFromNote(ev, pcrEl) {
 }
 
 /**
+ * Gets the Eyedraw string for the classification set on the provided input element
+ * Set up for the cataract fields, but could be utilised for others as well.
+ *
+ * @param $el
+ * @returns {string}
+ */
+function getEyedrawValue($el) {
+  var reverseMap = $el.data('reverse-eyedraw-map');
+  if (!reverseMap) {
+    // cache the reverseMap for multiple state changes to the given element
+    var map = $el.data('eyedraw-map');
+    reverseMap = {};
+    for (var i in map) {
+      if (map.hasOwnProperty(i))
+        reverseMap[map[i]] = i;
+    }
+    $el.data('reverse-eyedraw-map', reverseMap);
+  }
+
+  var val = $el.val();
+  if (val in reverseMap)
+    return reverseMap[val];
+  return '';
+}
+
+/**
  * Sets whether or not the cataract is brunescent in PCR risk
  *
  * @param ev
@@ -121,8 +147,8 @@ function setPcrBrunescent(ev, pcrEl) {
   var isRight = (ev.target.id.indexOf('right') > -1);
   var $related = isRight ? $(ev.data.related.right) : $(ev.data.related.left);
 
-  var value = $cataractDrop.find(':selected').data('value');
-  var related_value = $related.find(':selected').data('value');
+  var value = getEyedrawValue($cataractDrop);
+  var related_value = getEyedrawValue($related);
   if ((value === 'Brunescent' || value === 'White') || (related_value === "Brunescent" || related_value === "White")) {
     $container.find(pcrEl).val('Y');
   } else {
@@ -171,24 +197,37 @@ function setPcrPupil(ev, pcrEl) {
 }
 
 /**
- * Sets alpha blocker
+ * Sets values related to risks
+ *
  * @param ev
  * @param pcrEl
  */
-function setAlphaBlocker(ev, pcrEl) {
-  if (!pcrEl) {
-    pcrEl = ev.data;
+function setRisks(ev) {
+  var controller = $('#OEModule_OphCiExamination_models_HistoryRisks_element').data('controller');
+  var alphaState = controller.getRiskStatus('alpha');
+  var lieFlatState = controller.getRiskStatus('lie flat');
+
+  var alphaPcr = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .pcrrisk_arb');
+  var originalAlpha = alphaPcr.val();
+  if (alphaState === '0') {
+    alphaPcr.val('N');
+  } else if (alphaState === '1') {
+    alphaPcr.val('Y');
+  }
+  if (alphaPcr.val() !== originalAlpha) {
+    alphaPcr.trigger('change');
   }
 
-  if($(ev.target).val() === '0'){
-    return;
+  var lieFlatPcr = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk .pcr_lie_flat');
+  var originalLieFlat = lieFlatPcr.val();
+  if (lieFlatState === '0') {
+    lieFlatPcr.val('Y');
+  } else if (lieFlatState === '1') {
+      lieFlatPcr.val('N');
   }
-  if ($(ev.target).val() === '1') {
-    $(pcrEl).val('Y');
-  } else {
-    $(pcrEl).val('N');
+  if (lieFlatPcr.val() !== originalLieFlat) {
+    lieFlatPcr.trigger('change');
   }
-  $(pcrEl).trigger('change');
 }
 
 /**
@@ -261,9 +300,9 @@ function mapExaminationToPcr() {
         "func": setFundalView,
         "init": true
       },
-      "#OEModule_OphCiExamination_models_Element_OphCiExamination_HistoryRisk_alphablocker input[type='radio']": {
-        "pcr": '.pcrrisk_arb',
-        "func": setAlphaBlocker,
+      "#OEModule_OphCiExamination_models_HistoryRisks_element input[type='radio']": {
+        "pcr": undefined,
+        "func": setRisks,
         "init": true
       }
     },

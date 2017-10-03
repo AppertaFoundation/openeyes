@@ -2,19 +2,19 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * 
+ * Copyright OpenEyes Foundation, 2017
+ *
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @copyright Copyright 2017, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class EventAction
 {
@@ -40,6 +40,13 @@ class EventAction
         }
 
         return $action;
+    }
+
+    public static function printButton($label = 'Print', $name = 'print', $options = array(), $htmlOptions = array())
+    {
+        $options = array_merge(array('level' => 'print'), $options);
+        $htmlOptions = array_merge(array('class' => 'button small'), $htmlOptions);
+        return static::button($label, $name, $options, $htmlOptions);
     }
 
     public static function link($label, $href = '#', $options = null, $htmlOptions = null)
@@ -82,6 +89,10 @@ class EventAction
         }
         if ($this->options['level'] === 'cancel') {
             $this->htmlOptions['class'] .= ' button small';
+        }
+        if ($this->options['level'] === 'print') {
+            $label = '<span class="oe-btn-icon print">' . $label . '</span>';
+            $this->htmlOptions['class'] .= ' button oe-oescape-switch';
         }
 
         if ($this->options['disabled']) {

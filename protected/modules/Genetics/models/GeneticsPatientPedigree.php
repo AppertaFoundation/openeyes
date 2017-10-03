@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
@@ -59,7 +58,7 @@ class GeneticsPatientPedigree extends CActiveRecord
         return array(
             array('patient_id', 'numerical', 'integerOnly'=>true),
             array('pedigree_id, last_modified_user_id, created_user_id, status_id', 'length', 'max'=>10),
-            array('last_modified_date, created_date', 'safe'),
+            array('pedigree_id,patient_id,status_id, last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, patient_id, pedigree_id, last_modified_date, last_modified_user_id, created_user_id, created_date, status_id', 'safe', 'on'=>'search'),
@@ -76,7 +75,8 @@ class GeneticsPatientPedigree extends CActiveRecord
         return array(
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'patient' => array(self::BELONGS_TO, 'GeneticsPatient', 'patient_id'),
+            'patient' => array(self::BELONGS_TO, 'GeneticsPatient', 'patient_id',
+                'condition' => 'patient.deleted=0'),
             'pedigree' => array(self::BELONGS_TO, 'Pedigree', 'pedigree_id'),
             'status' => array(self::BELONGS_TO, 'PedigreeStatus', 'status_id'),
         );

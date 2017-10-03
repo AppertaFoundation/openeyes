@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\OphCiExamination\models;
@@ -28,8 +27,9 @@ namespace OEModule\OphCiExamination\models;
  *
  * @property string $id
  * @property int $event_id
- * @property Disorder $disorder
- * @property Eye $eye
+ *
+ * @property Event $event
+ * @property OphCiExamination_Diagnosis[] $diagnoses
  *
  * The followings are the available model relations:
  */
@@ -104,7 +104,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     * @return \CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
     public function search()
     {
@@ -134,7 +134,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      *
      * @param $update_disorders
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function updateDiagnoses($update_disorders)
     {
@@ -195,32 +195,17 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     }
 
     /**
-     * Returns the disorder ids for the element diagnoses.
-     *
-     * @return int[]
-     */
-    public function getSelectedDisorderIDs()
-    {
-        $disorder_ids = array();
-
-        foreach ($this->diagnoses as $diagnosis) {
-            $disorder_ids[] = $diagnosis->disorder_id;
-        }
-
-        return $disorder_ids;
-    }
-
-    /**
      * Gets the common ophthalmic disorders for the given firm.
      *
      * @param int $firm_id
      *
      * @return array
+     * @throws \CException
      */
     public function getCommonOphthalmicDisorders($firm_id)
     {
         if (empty($firm_id)) {
-            throw new CException('Firm is required');
+            throw new \CException('Firm is required');
         }
         $firm = \Firm::model()->findByPk($firm_id);
         if ($firm) {
@@ -242,6 +227,9 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         return parent::beforeDelete();
     }
 
+    /**
+     * @return string
+     */
     public function getLetter_string()
     {
         $text = '';

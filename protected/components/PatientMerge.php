@@ -2,19 +2,19 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * 
+ * Copyright OpenEyes Foundation, 2017
+ *
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @copyright Copyright 2017, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class PatientMerge
 {
@@ -219,14 +219,8 @@ class PatientMerge
             // Update legacy episodes
             $is_merged = $is_merged && $this->updateLegacyEpisodes($this->primary_patient, $this->secondary_patient);
 
-            // Update allergyAssignments
-            $is_merged = $is_merged && $this->updateAllergyAssignments($this->primary_patient, $this->secondary_patient);
-
-            // Updates riskAssignments
-            $is_merged = $is_merged && $this->updateRiskAssignments($this->primary_patient, $this->secondary_patient->riskAssignments);
-
-            // Update previousOperations
-            $is_merged = $is_merged && $this->updatePreviousOperations($this->primary_patient, $this->secondary_patient->previousOperations);
+            // Update change tracker episodes
+            $is_merged = $is_merged && $this->updateChangeTrackerEpisodes($this->primary_patient, $this->secondary_patient);
 
             //Update Other ophthalmic diagnoses
             $is_merged = $is_merged && $this->updateOphthalmicDiagnoses($this->primary_patient, $this->secondary_patient->ophthalmicDiagnoses);
@@ -264,6 +258,7 @@ class PatientMerge
         {
             \OELog::logException($e);
             $transaction->rollback();
+            return false;
         }
 
         return $is_merged;
@@ -309,11 +304,16 @@ class PatientMerge
 
                     if ($secondary_subspecialty == $primary_subspecialty) {
 
-                        /* We have to keep the episode with the highest status */             
+                        /* We have to keep the episode with the highest status */
 
                         if ($primary_episode->status->order > $secondary_episode->status->order) {                            
                             // the primary episode has greater status than the secondary so we move the events from the Secondary into the Primary
                             $this->updateEventsEpisodeId($primary_episode->id, $secondary_episode->events);
+
+                            // keeping the oldest episode's firm_id
+                            if($primary_episode->start_date > $secondary_episode->start_date){
+                                $primary_episode->firm_id = $secondary_episode->firm_id;
+                            }
 
                             //set earliest start date and latest end date of the two episodes
                             list($primary_episode->start_date, $primary_episode->end_date) = $this->getTwoEpisodesStartEndDate($primary_episode, $secondary_episode);
@@ -331,12 +331,17 @@ class PatientMerge
                             }
                         } else {
 
-                            // the secondary episode has greated status than the primary so we move the events from the Primary into the Secondary
+                            // the secondary episode has greater status than the primary so we move the events from the Primary into the Secondary
                             $this->updateEventsEpisodeId($secondary_episode->id, $primary_episode->events);
 
+                            // keeping the oldest episode's firm_id
+                            if($primary_episode->start_date < $secondary_episode->start_date){
+                                $secondary_episode->firm_id = $primary_episode->firm_id;
+                            }
+                            
                             list($secondary_episode->start_date, $secondary_episode->end_date) = $this->getTwoEpisodesStartEndDate($primary_episode, $secondary_episode);
 
-                            /* BUT do not forget we have to delete the primary episode AND move the secondary episode to the primary patient **/
+                            /* BUT do not forget we have to delete the primary episode - at this point we already moved the secondary episode to the primary patient **/
                             $primary_episode->deleted = 1;
 
                             if ($primary_episode->save()) {
@@ -444,131 +449,50 @@ class PatientMerge
     }
 
     /**
-     * Updates the patient id in the Allergy Assigment.
-     * 
-     * @param int         $new_patient_id Primary patient id
-     * @param array of AR $allergies
-     *
-     * @throws Exception AllergyAssigment cannot be saved
-     */
-    public function updateAllergyAssignments($primary_patient, $secondary_patient)
-    {
-        $primary_assignments = $primary_patient->allergyAssignments;
-        $secondary_assignments = $secondary_patient->allergyAssignments;
-
-        if (!$primary_assignments && $secondary_assignments) {
-            foreach ($secondary_assignments as $allergy_assignment) {
-                $msg = 'AllergyAssignment '.$allergy_assignment->id.' moved from patient '.$allergy_assignment->patient->hos_num.' to '.$primary_patient->hos_num;
-                $allergy_assignment->patient_id = $primary_patient->id;
-                if ($allergy_assignment->save()) {
-                    $this->addLog($msg);
-                    Audit::add('Patient Merge', 'AllergyAssignment moved patient', $msg);
-                } else {
-                    throw new Exception('Failed to update AllergyAssigment: '.$allergy_assignment->id.' '.print_r($allergy_assignment->errors, true));
-                }
-            }
-        } elseif ($primary_assignments && $secondary_assignments) {
-            foreach ($secondary_assignments as $secondary_assignment) {
-                $same_assignment = false;
-                foreach ($primary_assignments as $primary_assignment) {
-                    if ($primary_assignment->allergy_id ==  $secondary_assignment->allergy_id) {
-                        // the allergy is already present in the primary patient's record so we just update the 'comment' and 'other' fields
-
-                        $same_assignment = true;
-
-                        $comments = $primary_assignment->comments.' ; '.$secondary_assignment->comments;
-                        $other = $primary_assignment->other.' ; '.$secondary_assignment->other;
-
-                        $primary_assignment->comments = $comments;
-                        $primary_assignment->other = $other;
-
-                        if ($primary_assignment->save()) {
-                            $msg = "AllergyAssignment 'comments' and 'other' updated";
-                            $this->addLog($msg);
-                            Audit::add('Patient Merge', 'AllergyAssignment updated', $msg);
-                        } else {
-                            throw new Exception('Failed to update AllergyAssigment: '.$primary_assignment->id.' '.print_r($primary_assignment->errors, true));
-                        }
-
-                        // as we just copied the comments and other fields we remove the assignment
-                        $secondary_assignment->delete();
-                    }
-                }
-
-                // This means we have to move the assignment from secondary to primary
-                if (!$same_assignment) {
-                    $secondary_assignment->patient_id = $primary_patient->id;
-                    if ($secondary_assignment->save()) {
-                        $msg = 'AllergyAssignment '.$secondary_assignment->id.' moved from patient '.$secondary_patient->hos_num.' to '.$primary_patient->hos_num;
-                        $this->addLog($msg);
-                        Audit::add('Patient Merge', 'AllergyAssignment moved from patient', $msg);
-                    } else {
-                        throw new Exception('Failed to update AllergyAssigment: '.$secondary_assignment->id.' '.print_r($secondary_assignment->errors, true));
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Updates patient id in Risk Assignment.
-     * 
-     * @param int         $new_patient_id
-     * @param array of AR $risks
-     *
-     * @throws Exception Failed to save RiskAssigment
-     */
-    public function updateRiskAssignments($primary_patient, $risk_assignments)
-    {
-        foreach ($risk_assignments as $risk_assignment) {
-            $msg = 'RiskAssignment '.$risk_assignment->id.' moved from patient '.$risk_assignment->patient->hos_num.' to '.$primary_patient->id;
-            $risk_assignment->patient_id = $primary_patient->id;
-            if ($risk_assignment->save()) {
-                $this->addLog($msg);
-                Audit::add('Patient Merge', 'RiskAssignment moved patient', $msg);
-            } else {
-                throw new Exception('Failed to update RiskAssigment: '.$risk_assignment->id.' '.print_r($risk_assignment->errors, true));
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Moving previous operations from secondaty patient to primary.
-     * 
-     * @param Patient $new_patient
-     * @param type $previous_operations
-     *
+     * @param $primary_patient
+     * @param $secondary_patient
      * @return bool
-     *
      * @throws Exception
      */
-    public function updatePreviousOperations($new_patient, $previous_operations)
+    public function updateChangeTrackerEpisodes($primary_patient, $secondary_patient)
     {
-
-        foreach ($previous_operations as $previous_operation) {
-            $msg = 'Previous Operation '.$previous_operation->id.' moved from Patient ' . $previous_operation->patient->hos_num.' to '.$new_patient->hos_num;
-            $previous_operation->patient_id = $new_patient->id;
-            if ($previous_operation->save()) {
-                $this->addLog($msg);
-                Audit::add('Patient Merge', 'Previous Operation moved patient', $msg);
+        $primary_ep = Episode::getChangeEpisode($primary_patient, false);
+        $secondary_ep = Episode::getChangeEpisode($secondary_patient, false);
+        if ($secondary_ep) {
+            if ($primary_ep) {
+                // move events
+                $this->updateEventsEpisodeId($primary_ep->id, $secondary_ep->events);
+                // mark as deleted
+                $secondary_ep->deleted = 1;
+                if ($secondary_ep->save()) {
+                    $msg = 'Change Episode '.$secondary_ep->id."marked as deleted, events moved under the primary patient's change episode.";
+                    $this->addLog($msg);
+                    Audit::add('Patient Merge', 'Change Episode marked as deleted', $msg);
+                } else {
+                    throw new Exception('Failed to update (change) Episode: '.$secondary_ep->id.' '.print_r($secondary_ep->errors, true));
+                }
             } else {
-                throw new Exception('Failed to update Previous Operation: ' . $previous_operation->id.' ' . print_r($previous_operation->errors, true));
+                // move episode
+                $secondary_ep->patient_id = $primary_patient->id;
+                if ($secondary_ep->save()) {
+                    $msg = 'Change Episode '.$secondary_ep->id.' moved from patient '.$secondary_patient->hos_num.' to '.$primary_patient->hos_num;
+                    $this->addLog($msg);
+                    Audit::add('Patient Merge', 'Change Episode moved', $msg);
+                } else {
+                    throw new Exception('Failed to update (change) Episode: '.$secondary_ep->id.' '.print_r($secondary_ep->errors, true));
+                }
             }
         }
-
         return true;
     }
-    
+
     /**
      * Updates the Ophthalmic Diagnoses' patient_id
      * 
      * @param Patient $new_patient
      * @param type $ophthalmic_diagnoses
      * @throws Exception
+     * @return boolean
      */
     public function updateOphthalmicDiagnoses($new_patient, $ophthalmic_diagnoses)
     {
@@ -593,6 +517,7 @@ class PatientMerge
      * @param type $systemic_diagnoses
      * @return boolean
      * @throws Exception
+     * @return boolean
      */
     public function updateSystemicDiagnoses($new_patient, $systemic_diagnoses)
     {
@@ -635,13 +560,8 @@ class PatientMerge
             $secondary_genetics_patient->patient_id = $primary_patient->id;
 
             if($secondary_genetics_patient->save()){
-                $this->addLog("Secondary Genetics Patient's (hos_num:{$secondary_patient->hos_num}) data moved to Primary Patient(hos_num:{$primary_patient->hos_num})");
+                $this->addLog("Secondary Genetics Patient's (subject id:{$secondary_genetics_patient->id}) data moved to Primary Patient(hos_num:{$primary_patient->hos_num})");
             }
-
-            $secondary_genetics_patient->deleted = 1;
-            $secondary_genetics_patient->save();
-            Audit::add('Patient Merge', 'delete', "Genetics Patient id" . $secondary_genetics_patient->id . " hos_num:" . $secondary_genetics_patient->patient->hos_num);
-            $this->addLog("Genetics Patient(subject) flagged as deleted (id): " . $secondary_genetics_patient->id );
 
         } else if($primary_genetics_patient && $secondary_genetics_patient) {
             //else both are genetics patients
@@ -650,60 +570,103 @@ class PatientMerge
             //all the other tables that are referencing to the GeneticsPatient table.
             //We change the patient_id (which will be the genetics_patient.id in the related tables ) e.g.: genetics_patient_diagnosis.patient_id <- again, this is the genetics_patient.id
 
-            if($genetics_patient_diagnosis = GeneticsPatientDiagnosis::model()->findByAttributes(['patient_id' => $secondary_genetics_patient->id])){
-                $genetics_patient_diagnosis->patient_id = $primary_genetics_patient->id;
-                if( $genetics_patient_diagnosis->save() ){
-                    $this->addLog("Genetics Patient Diagnoses {$genetics_patient_diagnosis->id} moved from Patient(hos_num:) {$secondary_patient->hos_num} to {$primary_patient->hos_num}");
-                } else {
-                    $this->addLog("Genetics Patient Diagnoses failed to save");
-                    return false;
-                }
+            $primary_diagnoses = $primary_genetics_patient->genetics_diagnosis;
+            $primary_diagnoses_ids = array();
+            foreach($primary_diagnoses as $primary_diagnosis){
+                $primary_diagnoses_ids[$primary_diagnosis->disorder_id] = $primary_diagnosis;
             }
 
-            if($genetics_patient_pedigrees = GeneticsPatientPedigree::model()->findAllByAttributes(['patient_id' => $secondary_genetics_patient->id])){
+            if($secondary_genetics_patient->diagnoses){
 
-                foreach($genetics_patient_pedigrees as $genetics_patient_pedigree) {
-                    $genetics_patient_pedigree->patient_id = $primary_genetics_patient->id;
-                    if ($genetics_patient_pedigree->save()) {
+                $primary_diagnoses = array();
+                foreach($secondary_genetics_patient->diagnoses as $genetics_patient_diagnosis){
 
-                        $this->addLog("Genetics Patient Pedigree {$genetics_patient_pedigree->id} moved from Patient(hos_num:) {$secondary_patient->hos_num} to {$primary_patient->hos_num}");
-                    } else {
-                        $this->addLog("Genetics Patient Pedigree failed to save");
-                        return false;
+                    if( !array_key_exists($genetics_patient_diagnosis->id, $primary_diagnoses_ids) ){
+                        $primary_diagnoses[] = $genetics_patient_diagnosis;
+
+                        $this->addLog("Genetics Patient Diagnosis {$genetics_patient_diagnosis->id} moved from Subject {$secondary_genetics_patient->id} to {$primary_genetics_patient->id}");
                     }
                 }
+
+                $primary_genetics_patient->diagnoses = array_merge($primary_genetics_patient->diagnoses, $primary_diagnoses);
             }
 
-            if($genetics_study_subject = GeneticsStudySubject::model()->findByAttributes(['subject_id' => $secondary_genetics_patient->id])){
-                $genetics_study_subject->subject_id = $primary_genetics_patient->id;
-                if( $genetics_study_subject->save() ){
-                    $this->addLog("Genetics Study Subject {$genetics_study_subject->id} moved from Patient(hos_num:) {$secondary_patient->hos_num} to {$primary_patient->hos_num}");
-                } else {
-                    $this->addLog("Genetics Study Subject failed to save");
-                    return false;
+            $primary_pedigrees = $primary_genetics_patient->pedigrees;
+            $primary_pedigrees_ids = array();
+            foreach($primary_pedigrees as $primary_pedigrees){
+                $primary_pedigrees_ids[$primary_pedigrees->id] = $primary_pedigrees;
+            }
+
+            if($secondary_genetics_patient->pedigrees){
+
+                $primary_pedigrees = array();
+                foreach($secondary_genetics_patient->pedigrees as $genetics_patient_pedigree) {
+                    if( !array_key_exists($genetics_patient_pedigree->id, $primary_pedigrees_ids) ){
+                        $primary_pedigrees[] = $genetics_patient_pedigree;
+
+                        $this->addLog("Genetics Patient Pedigree {$genetics_patient_pedigree->id} moved from Subject {$secondary_genetics_patient->id} to {$primary_genetics_patient->id}");
+                    }
                 }
+
+                $primary_genetics_patient->pedigrees = array_merge($primary_genetics_patient->pedigrees, $primary_pedigrees);
             }
 
-            if($genetics_patient_relationship = GeneticsPatientRelationship::model()->findByAttributes(['patient_id' => $secondary_genetics_patient->id])){
-                $genetics_patient_relationship->patient_id = $primary_genetics_patient->id;
-                if( $genetics_patient_relationship->save() ){
-                    $this->addLog("Genetics Patient Relationship {$genetics_patient_relationship->id} moved from Patient(hos_num:) {$secondary_patient->hos_num} to {$primary_patient->hos_num}");
-                } else {
-                    $this->addLog("Genetics Patient Relationship failed to save");
-                    return false;
+            $primary_studies = $primary_genetics_patient->studies;
+            $primary_study_ids = array();
+            foreach($primary_studies as $primary_study){
+                $primary_study_ids[$primary_study->id] = $primary_study;
+            }
+            if($secondary_genetics_patient->studies){
+
+                $primary_study = array();
+                foreach($secondary_genetics_patient->studies as $genetics_patient_study){
+                    if( !array_key_exists($genetics_patient_study->id, $primary_study_ids) ){
+                        $primary_study[] = $genetics_patient_study;
+
+                        $this->addLog("Genetics Patient Study {$genetics_patient_study->id} moved from Subject {$secondary_genetics_patient->id} to {$primary_genetics_patient->id}");
+                    }
                 }
+
+                $primary_genetics_patient->studies = array_merge($primary_genetics_patient->studies, $primary_study);
             }
 
-            $primary_genetics_patient->comments .= ", " . $secondary_genetics_patient->comments;
+            $primary_relationships = $primary_genetics_patient->relationships;
+            $primary_relationship_ids = array();
+            foreach($primary_relationships as $primary_relationship){
+                $primary_relationship_ids[$primary_relationship->patient_id] = $primary_relationship;
+            }
+
+            if($secondary_genetics_patient->relationships){
+
+                $primary_relationships = array();
+                foreach($secondary_genetics_patient->relationships as $genetics_patient_relationship){
+                    if( !array_key_exists($genetics_patient_relationship->patient_id, $primary_relationship_ids) ){
+                        $primary_relationships[] = $genetics_patient_relationship;
+
+                        $this->addLog("Genetics Patient Relationship {$genetics_patient_relationship->id} moved from Subject {$secondary_genetics_patient->id} to {$primary_genetics_patient->id}");
+                    }
+                }
+
+                $primary_genetics_patient->relationships = array_merge($primary_genetics_patient->relationships, $primary_relationships);
+
+            }
+
+            $primary_genetics_patient->comments .= (!empty($primary_genetics_patient->comments) ? ", " : '') . $secondary_genetics_patient->comments;
 
             if( $primary_genetics_patient->save() ){
                 $this->addLog("Genetics Patient comment saved");
             }
 
+            $secondary_genetics_patient->studies = [];
+            $secondary_genetics_patient->pedigrees = [];
+            $secondary_genetics_patient->diagnoses = [];
+            $secondary_genetics_patient->relationships = [];
             $secondary_genetics_patient->deleted = 1;
             if( $secondary_genetics_patient->save() ){
                 Audit::add('Patient Merge', 'delete', "Genetics Patient id" . $secondary_genetics_patient->id . " hos_num:" . $secondary_genetics_patient->patient->hos_num);
                 $this->addLog("Genetics Patient(subject) flagged as deleted (id): " . $secondary_genetics_patient->id );
+            } else {
+                OELog::log(print_r($secondary_genetics_patient->getErrors(), true));
             }
 
             return true;

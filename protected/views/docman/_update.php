@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
@@ -72,15 +71,18 @@
                                     'address' => $target->address,
                                     'is_editable_contact_targets' => $target->contact_type != 'INTERNALREFERRAL',
                                     'is_editable_contact_name' => ($target->contact_type != 'INTERNALREFERRAL'),
-                                    'is_editable_address' => ($target->contact_type != 'GP') && ($target->contact_type != 'INTERNALREFERRAL'),
+                                    'is_editable_address' => ($target->contact_type != 'GP') && ($target->contact_type != 'INTERNALREFERRAL') && ($target->contact_type != 'Practice'),
                                 ));
                         ?>
                     </td>
                     <td>
                         <?php if($element->draft): ?>
                             <?php
+                                    $contact_type = strtoupper($target->contact_type);
+                                    $contact_type = $contact_type == 'PRACTICE' ? 'GP' : $contact_type;
+
                                     $this->renderPartial('//docman/table/contact_type', array(
-                                        'contact_type' => strtoupper($target->contact_type),
+                                        'contact_type' => $contact_type,
                                         // Internal referral will always be the first row - indexed 0
                                         'contact_types' => Document::getContactTypes() + (($element->isInternalReferral() && $row_index == 0) ? Document::getInternalReferralContactType() : []),
 
@@ -97,7 +99,7 @@
                     <td class="docman_delivery_method">
                         <?php $this->renderPartial('//docman/table/delivery_methods', array(
                                         'is_draft' => $element->draft,
-                                        'contact_type' => $target->contact_type,
+                                        'contact_type' => $contact_type,
                                         'target' => $target,
                                         'can_send_electronically' => $can_send_electronically,
                                         'row_index' => $row_index));

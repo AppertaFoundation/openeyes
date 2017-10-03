@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
@@ -39,8 +38,8 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
 <div class="element-fields">
 
     <?php
-    $correspondeceApp = \SettingInstallation::model()->find('`key` = "ask_correspondence_approval"');
-    if($correspondeceApp->value === "on") {
+    $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
+    if($correspondeceApp === "on") {
         ?>
         <div class="row field-row">
             <div class="large-<?php echo $layoutColumns['label']; ?> column">
@@ -96,7 +95,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
             <label>Letter type:</label>
         </div>
         <div class="large-2 column end">
-            
+
             <?php echo $form->dropDownList($element, 'letter_type_id', CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
                 array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
         </div>
@@ -137,24 +136,14 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                         );
                     } else {
 
-                        $is_mandatory = true;
-
                         if (isset($document_target['attributes']['ToCc']) && $document_target['attributes']['ToCc'] == 'Cc') {
-
-                            //if the contact_type is (GP or Patient) and the letter type is Internal referral than the fielsd is mandatory (no remove link)
-                            if($document_target['attributes']['contact_type'] == 'GP' || $document_target['attributes']['contact_type'] == 'PATIENT'){
-
-                                if( $element->letterType && ($element->letterType->name == 'Internal Referral') ){
-                                    $is_mandatory = true;
-                                }
-                            }
 
                             $macro_data['cc'][] = array(
                                 'contact_type' => $document_target['attributes']['contact_type'],
                                 'contact_id' => isset($document_target['attributes']['contact_id']) ? $document_target['attributes']['contact_id'] : null,
                                 'contact_name' => isset($document_target['attributes']['contact_name']) ? $document_target['attributes']['contact_name'] : null,
                                 'address' => isset($document_target['attributes']['address']) ? $document_target['attributes']['address'] : null,
-                                'is_mandatory' => $is_mandatory,
+                                'is_mandatory' => false,
                             );
                         }
                     }
@@ -170,14 +159,14 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
             } else {
                 $gp_address = implode("\n", $gp_address->getLetterArray());
             }
-            
+
             $contact_string = '';
             if($patient->gp){
                 $contact_string = 'Gp' . $patient->gp->id;
             } else if($patient->practice){
                 $contact_string = 'Practice' . $patient->practice->id;
             }
-            
+
             $patient_address = isset($patient->contact->correspondAddress) ? $patient->contact->correspondAddress : (isset($patient->contact->address) ? $patient->contact->address : null);
 
             if (!$patient_address) {
@@ -190,7 +179,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
             if($contact_string){
                 $address_data = $api->getAddress($patient_id, $contact_string);
             }
-            
+
             $contact_id = isset($address_data['contact_id']) ? $address_data['contact_id'] : null;
             $contact_name = isset($address_data['contact_name']) ? $address_data['contact_name'] : null;
             $address = isset($address_data['address']) ? $address_data['address'] : null;
@@ -274,18 +263,18 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
 
             $with = array(
                 'firmLetterStrings' => array(
-                    'condition' => 'firm_id is null or firm_id = :firm_id',
+                    'on' => 'firmLetterStrings.firm_id is null or firmLetterStrings.firm_id = :firm_id',
                     'params' => array(
                         ':firm_id' => $firm->id,
                     ),
                     'order' => 'firmLetterStrings.display_order asc',
                 ),
                 'subspecialtyLetterStrings' => array(
-                    'condition' => 'subspecialty_id is null',
+                    'on' => 'subspecialtyLetterStrings.subspecialty_id is null',
                     'order' => 'subspecialtyLetterStrings.display_order asc',
                 ),
                 'siteLetterStrings' => array(
-                    'condition' => 'site_id is null or site_id = :site_id',
+                    'on' => 'siteLetterStrings.site_id is null or siteLetterStrings.site_id = :site_id',
                     'params' => array(
                         ':site_id' => Yii::app()->session['selected_site_id'],
                     ),
@@ -293,11 +282,14 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                 ),
             );
             if ($firm->getSubspecialtyID()) {
-                $with['subspecialtyLetterStrings']['condition'] = 'subspecialty_id is null or subspecialty_id = :subspecialty_id';
+                $with['subspecialtyLetterStrings']['on'] = 'subspecialtyLetterStrings.subspecialty_id is null or subspecialtyLetterStrings.subspecialty_id = :subspecialty_id';
                 $with['subspecialtyLetterStrings']['params'] = array(':subspecialty_id' => $firm->getSubspecialtyID());
             }
+
             foreach (LetterStringGroup::model()->with($with)->findAll(array('order' => 't.display_order')) as $string_group) {
+                echo $string_group->name;
                 $strings = $string_group->getStrings($patient, $event_types);
+
                 ?>
                 <div class="field-row">
                     <?php echo $form->dropDownListNoPost(strtolower($string_group->name), $strings, '', array(
@@ -308,6 +300,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                     )) ?>
                 </div>
             <?php } ?>
+            &nbsp;
         </div>
         <div class="large-<?php echo $layoutColumns['field']; ?> column end">
             <?php echo $form->textArea($element, 'body', array('rows' => 20, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
@@ -401,8 +394,8 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
     </div>
 
     <?php
-    $correspondeceApp = \SettingInstallation::model()->find('`key` = "ask_correspondence_approval"');
-    if($correspondeceApp->value === "on") {
+    $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
+    if($correspondeceApp === "on") {
     ?>
         <div class="row field-row">
             <div class="large-<?php echo $layoutColumns['label']; ?> column">

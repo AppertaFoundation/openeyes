@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -27,6 +26,8 @@
  * @property int $firm_id
  * @property string $start_date
  * @property string $end_date
+ * @property boolean $support_services
+ * @property boolean $change_tracker
  *
  * The followings are the available model relations:
  * @property Patient $patient
@@ -230,7 +231,9 @@ class Episode extends BaseActiveRecordVersioned
     }
 
     /**
-     * get the current episode for the patient id and subspecialty_id (if this is null, looking for support services episode).
+     * Get the current episode for the patient id and subspecialty_id (if this is null, looking for support services episode).
+     *
+     * return Episode
      */
     public static function getCurrentEpisodeBySubspecialtyId($patient_id, $subspecialty_id, $include_closed = false)
     {
@@ -264,6 +267,28 @@ class Episode extends BaseActiveRecordVersioned
         }
         // return the episode object
         return self::model()->findByPk($episode['eid']);
+    }
+
+    /**
+     * @param Patient $patient
+     * @param boolean $create - defaults to true
+     * @return Episode|null
+     */
+    public static function getChangeEpisode(Patient $patient, $create = true)
+    {
+        $episode = self::model()->with('events')->findByAttributes(array(
+            'patient_id' => $patient->id,
+            'change_tracker' => true
+        ));
+        if (!$episode && $create) {
+            // note that requesting code is responsible for checking/saving new episode
+            // if necessary. This is to allow the episode to be saved in a transaction
+            // which completes successfully.
+            $episode = new Episode();
+            $episode->patient_id = $patient->id;
+            $episode->change_tracker = true;
+        }
+        return $episode;
     }
 
     /**
@@ -453,5 +478,23 @@ class Episode extends BaseActiveRecordVersioned
         $properties['episode_id'] = $this->id;
         $properties['patient_id'] = $this->patient_id;
         parent::audit($target, $action, $data, $log, $properties);
+    }
+
+    /**
+     * @TODO change to configuration
+     * @return string
+     */
+    public static function getEpisodeLabel()
+    {
+				return 'Specialty';
+    }
+
+    /**
+     * @TODO Change to configuration
+     * @return string
+     */
+    public static function getEpisodeLabelPlural()
+    {
+        return 'Specialties';
     }
 }

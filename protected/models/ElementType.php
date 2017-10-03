@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -30,6 +29,7 @@
  * The followings are the available model relations:
  * @property ElementType $parent_element_type
  * @property ElementType[] $child_element_types
+ * @property EventType $event_type
  */
 class ElementType extends BaseActiveRecordVersioned
 {
@@ -77,7 +77,10 @@ class ElementType extends BaseActiveRecordVersioned
         return array(
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'parent_element_type' => array(self::BELONGS_TO, 'ElementType', 'parent_element_type_id'),
-            'child_element_types' => array(self::HAS_MANY, 'ElementType', 'parent_element_type_id', 'order' => 'display_order ASC'),
+            'child_element_types' => array(self::HAS_MANY, 'ElementType', 'parent_element_type_id',
+                'alias' => 'child',
+                'order' => 'child.display_order ASC'),
+            'event_type' => array(self::BELONGS_TO, 'EventType', 'event_type_id')
         );
     }
 
@@ -152,5 +155,19 @@ class ElementType extends BaseActiveRecordVersioned
     public function getInstance()
     {
         return new $this->class_name();
+    }
+
+    /**
+     * Returns a fully qualified name for the element type by prefixing with the
+     * parent element type name if it has one.
+     *
+     * @return string
+     */
+    public function getNameWithParent()
+    {
+        if (!$this->isChild()) {
+            return $this->name;
+        }
+        return $this->parent_element_type->name . ' - ' . $this->name;
     }
 }

@@ -27,6 +27,7 @@ tags
 /protected/config/local
 /protected/views/patient/custom/info/php
 /protected/yii
+/phpMyAdmin
 *zip
 vendor
 .sass-cache
@@ -41,6 +42,8 @@ node_modules
 /docs/public
 /protected/assets/img/fieldImages/*
 /assets/
+/protected/files/*
+package-lock.json
 
 # Include core modules
 !/protected/modules/OphCiExamination/
@@ -89,3 +92,4 @@ bin/validate-json
 bin/yiic
 
 build/logs
+protected/widgets/views/IndexSearch_Examination.php

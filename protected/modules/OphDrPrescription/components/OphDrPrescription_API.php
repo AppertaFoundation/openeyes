@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class OphDrPrescription_API extends BaseAPI
 {
@@ -24,27 +23,24 @@ class OphDrPrescription_API extends BaseAPI
      * get the prescription letter text for the latest prescription in the episode for the patient.
      *
      * @param Patient $patient
-     * @param Episode $episode
-     *
+     * @param $use_context
      * @return string
      */
-    public function getLetterPrescription($patient)
+    public function getLetterPrescription($patient, $use_context = false)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            if ($details = $this->getElementForAllEventInEpisode($episode, 'Element_OphDrPrescription_Details')) {
-                
-                $result = '';
-                $latest =  $this->getElementForLatestEventInEpisode($episode, 'Element_OphDrPrescription_Details');
-                foreach($details as $detail)
-                {
-                    $detailDate = substr($detail->event->event_date, 0, 10);
-                    $latestDate = substr($latest->event->event_date, 0, 10);
-                    if(strtotime($detailDate) === strtotime($latestDate)){
-                        $result .= $detail->getLetterText()."\n";
-                    }
+        if($details = $this->getElements('Element_OphDrPrescription_Details', $patient, $use_context)){
+            $result = '';
+            $latest = $this->getElementFromLatestEvent('Element_OphDrPrescription_Details', $patient, $use_context);
+
+            foreach($details as $detail)
+            {
+                $detailDate = substr($detail->event->event_date, 0, 10);
+                $latestDate = substr($latest->event->event_date, 0, 10);
+                if(strtotime($detailDate) === strtotime($latestDate)){
+                    $result .= $detail->getLetterText()."\n";
                 }
-                return $result;
             }
+            return $result;
         }
     }
 
@@ -96,5 +92,19 @@ class OphDrPrescription_API extends BaseAPI
         $prescriptionItems = OphDrPrescription_Item::model()->with('prescription', 'drug', 'duration', 'prescription.event', 'prescription.event.episode')->findAll($prescriptionCriteria);
 
         return $prescriptionItems;
+    }
+
+    public function validatePrescriptionItemId($id, Patient $patient = null)
+    {
+        if ($item = OphDrPrescription_Item::model()->with('prescription.event.episode')->findByPk($id)) {
+            if ($item->prescription->event) {
+                if ($patient) {
+                    return $item->prescription->event->getPatientId() === $patient->id;
+                } else {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

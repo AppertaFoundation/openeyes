@@ -3,16 +3,16 @@
 // * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
 // * (C) OpenEyes Foundation, 2011-2013
 // * This file is part of OpenEyes.
-// * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-// * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-// * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+// * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+// * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 // *
 // * @package OpenEyes
 // * @link http://www.openeyes.org.uk
 // * @author OpenEyes <info@openeyes.org.uk>
-// * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+//
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
-// * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+// * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 
 // Patient panel
 //
@@ -102,25 +102,27 @@
 			};
 			text-transform: uppercase;
 		}
-		.patient-name, .patient-age {
+		.patient-name, .patient-title {
 			font-size: rem-calc(13px);
 		}
 		.hospital-number, .nhs-number {
 			font-size: rem-calc(12px);
 		}
 		.patient-summary-anchor  {
-			bottom: 12px;
 			font-size: rem-calc(11px);
-			padding-right: 8px;
-			position: absolute;
-			right: 0;
+			padding-top: 5px;
+			@media screen {
+				.stuck & {
+					display: none;
+				}
+			}
 		}
         .clinical-summary-anchor  {
-          bottom: 12px;
+          bottom: 0px;
           font-size: rem-calc(11px);
           padding-right: 8px;
           position: absolute;
-          right: 63px;
+          right: 180px;
           @media screen {
             .stuck & {
               display: none;
@@ -152,6 +154,156 @@
             repeat: no-repeat, no-repeat;
           };
 		}
+		.patient-warnings {
+			@include border-radius(2px);
+			position: absolute;
+			top: 8px;
+			right: 0;
+			padding: 2px;
+			color: #fff;
+			background: #DD6831;
+			font-size: rem-calc(11px);
+			line-height: rem-calc(11px);
+			white-space: nowrap;
+		}
+		.patient-widgets {
+			margin-top: -16px;
+			float: right;
+			.stuck & {
+				margin-top: -18px;
+			}
+			li {
+				list-style: none;
+				float: left;
+				width: 17px;
+				height: 17px;
+				margin-right: 10px;
+				&:last-child {
+					margin-right: 0;
+				}
+			}
+		}
+		.patient-edit-link {
+			font-size: 1.2em;
+			position: relative;
+			left: -10px;
+			top: -5px;
+		}
+	}
+}
+
+// PATIENT POPUP
+.toggle-patient-summary-popup:hover {
+	cursor: pointer;
+}
+.patient-popup-container {
+	position: relative;
+	top: -43px;
+	.stuck & {
+		top: -23px;
+	}
+	button {
+		margin-top: 45px;
+		.stuck & {
+			margin-top: 25px;
+		}
+		&:active, &:focus {
+			outline: none;
+		}
+	}
+}
+
+.panel {
+	&.patient-popup {
+		@include transition(opacity 0.25s ease, top 0.25s ease);
+		&.clear-transition {
+			@include transition(none);
+		}
+		background: #fce6b7;
+		border: {
+			color: #ffb212;
+			style: solid;
+			width: 2px;
+		};
+		display: none;
+		left: -366px;
+		opacity: 0;
+		padding: 5px;
+		position: absolute;
+		top: 100px;
+		text-align: left;
+		width: 400px;
+		z-index: 9999;
+		&.show {
+			opacity: 1;
+			top: 72px;
+			.stuck & {
+				top: 52px;
+			}
+		}
+		// Triangle tip
+		&:after {
+			border-bottom: 10px solid #ffb212;
+			border-left: 7px solid transparent;
+			border-right: 7px solid transparent;
+			content: "";
+			position: absolute;
+			right: 17px;
+			top: -12px;
+		}
+		.row {
+			background: #fef5e3;
+			margin: 0 0 3px 0;
+			&:last-child {
+				margin-bottom: 0;
+			}
+			.column {
+				font-size: 11px;
+				padding: 5px;
+			}
+		}
+		.label {
+			color: #b57e0d;
+			cursor: default;
+			margin: 0;
+		}
+		.alert-box {
+			display: table;
+			font-size: 11px;
+			min-height: 40px;
+			padding-bottom: 7px;
+			padding-top: 7px;
+			width: 100%;
+			span {
+				display: table-cell;
+				vertical-align: middle;
+			}
+		}
+		.help-hint {
+			@include border-radius(3px);
+			background: #fef8ec;
+			color: #999;
+			font-size: 11px;
+			padding: 2px;
+			position: absolute;
+			right: 38px;
+			top: -32px;
+			&:after {
+				border-bottom: 4px solid transparent;
+				border-left: 4px solid #fef8ec;
+				border-top: 4px solid transparent;
+				content: "";
+				position: absolute;
+				right: -4px;
+				top: 7px;
+			}
+		}
+		table {
+			td {
+				font-size: 11px;
+				padding-left: 0px;
+			}
+		}
 	}
 }
 
@@ -175,15 +327,8 @@
   }
 }
 
-.icon-patient-panel-info {
-  background: image-url('_elements/icons/information.png');
-  margin: 0;
-  width:16px;
-  height:16px;
-}
-
-.patient_general_information_tooltip {
-    width: 280px;
-    background-color: white;    
-    z-index: 10000;
+.messages.patient.fixed {
+	position: fixed;
+	z-index: 100;
+	background-color: #d2dde8;
 }

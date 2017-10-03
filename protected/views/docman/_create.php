@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
@@ -55,15 +54,20 @@
 
                                     'is_editable_contact_targets' => $contact_type != 'INTERNALREFERRAL',
                                     'is_editable_contact_name' => ($contact_type != 'INTERNALREFERRAL'),
-                                    'is_editable_address' => (ucfirst(strtolower($contact_type)) != 'Gp') && ($contact_type != 'INTERNALREFERRAL'),
+                                    'is_editable_address' => (ucfirst(strtolower($contact_type)) != 'Gp') && ($contact_type != 'INTERNALREFERRAL') && ($contact_type != 'Practice'),
                                 ));
                     ?>
 
 
                 </td>
                 <td>
-                    <?php $this->renderPartial('//docman/table/contact_type', array(
-                        'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
+                    <?php
+
+                    $contact_type = strtoupper($macro_data["to"]["contact_type"]);
+                    $contact_type = $contact_type == 'PRACTICE' ? 'GP' : $contact_type;
+
+                    $this->renderPartial('//docman/table/contact_type', array(
+                        'contact_type' => $contact_type,
                         'row_index' => $row_index,
                         // Internal referral will always be the first row - indexed 0
                         'contact_types' => Document::getContactTypes() + ((strtoupper($macro_data["to"]["contact_type"]) == 'INTERNALREFERRAL' && $row_index == 0) ? Document::getInternalReferralContactType() : []),
@@ -76,7 +80,7 @@
                 <td class="docman_delivery_method">
                     <?php $this->renderPartial('//docman/table/delivery_methods', array(
                         'is_draft' => $element->draft,
-                        'contact_type' => strtoupper($macro_data["to"]["contact_type"]),
+                        'contact_type' => $contact_type,
                         'row_index' => $row_index,
                         'can_send_electronically' => $can_send_electronically
                     ));
@@ -84,7 +88,6 @@
                 </td>
                 <td></td>
             </tr>
-            <?php $row_index++; ?>
         <?php else: ?>
             <?php
                 // if no To was set in the macro we just display an empty row
@@ -101,6 +104,7 @@
                     );
                 ?>
         <?php endif; ?>
+        <?php $row_index++; ?>
 
         <?php if( isset($macro_data['cc']) ): ?>
             <?php foreach ($macro_data['cc'] as $cc_index => $macro): ?>

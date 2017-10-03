@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class SearchController extends BaseController
 {
@@ -61,7 +60,7 @@ class SearchController extends BaseController
         if (@$_GET['search']) {
             $page = 1;
 
-            $count_command = $this->buildSearchCommand('count(et_ophindnasample_sample.id) as count');
+            $count_command = $this->buildSearchCommand('count(DISTINCT(et_ophindnasample_sample.id)) as count');
             $total_items = $count_command->queryScalar();
             $pages = ceil($total_items / $this->items_per_page);
 
@@ -69,7 +68,7 @@ class SearchController extends BaseController
                 $page = $_GET['page'];
             }
 
-            $search_command = $this->buildSearchCommand('patient.id,patient.hos_num,event.id,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments,et_ophindnasample_sample.id AS sample_id, genetics_patient.id AS genetics_patient_id, genetics_patient_pedigree.pedigree_id as genetics_pedigree_id', $page);
+            $search_command = $this->buildSearchCommand('DISTINCT(et_ophindnasample_sample.id) AS sample_id,patient.id,patient.hos_num,event.id,contact.first_name,contact.maiden_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,ophindnasample_sample_type.name,et_ophindnasample_sample.volume,et_ophindnasample_sample.comments,genetics_patient.id AS genetics_patient_id', $page);
 
             $dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
@@ -83,6 +82,10 @@ class SearchController extends BaseController
                 case 'patient_name':
                     $order = "last_name $dir, first_name $dir";
                     break;
+                case 'maiden_name':
+                    $order = "maiden_name $dir";
+                    break;
+
                 case 'date_taken':
                     $order = "event_date $dir";
                     break;
@@ -146,8 +149,10 @@ class SearchController extends BaseController
         $comment = @$_GET['comment'];
         $first_name = @$_GET['first_name'];
         $last_name = @$_GET['last_name'];
+        $maiden_name = @$_GET['maiden_name'];
         $hos_num = @$_GET['hos_num'];
         $genetics_patient_id = @$_GET['genetics_patient_id'];
+        $maiden_name = @$_GET['maiden_name'];
 
         $command = Yii::app()->db->createCommand()
             ->select($select)
@@ -196,6 +201,14 @@ class SearchController extends BaseController
             $command->andWhere((array('like', 'LOWER(last_name)', '%'. strtolower($last_name) .'%')));
         }
 
+        if($maiden_name){
+            $command->andWhere((array('like', 'LOWER(maiden_name)', '%'. strtolower($maiden_name) .'%')));
+        }
+
+        if($maiden_name){
+            $command->andWhere((array('like', 'LOWER(maiden_name)', '%'. strtolower($maiden_name) .'%')));
+        }
+
         if($hos_num){
             $command->andWhere('hos_num = :hos_num', array(':hos_num' => $hos_num));
         }
@@ -203,7 +216,6 @@ class SearchController extends BaseController
         if($genetics_patient_id){
             $command->andWhere('genetics_patient.id = :genetics_patient_id', array(':genetics_patient_id' => $genetics_patient_id));
         }
-
 
         return $command;
     }

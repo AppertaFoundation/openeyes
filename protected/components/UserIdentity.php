@@ -2,19 +2,19 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * 
+ * Copyright OpenEyes Foundation, 2017
+ *
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @copyright Copyright 2017, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -144,11 +144,12 @@ class UserIdentity extends CUserIdentity
                 }
 
                 ldap_set_option($link, LDAP_OPT_REFERRALS, 0);
-                ldap_set_option($link, LDAP_OPT_PROTOCOL_VERSION, 3);
+                if (Yii::app()->params['ldap_protocol_version'] !== null) {
+                    ldap_set_option($link, LDAP_OPT_PROTOCOL_VERSION, Yii::app()->params['ldap_protocol_version']);
+                }
                 ldap_set_option($link, LDAP_OPT_NETWORK_TIMEOUT, Yii::app()->params['ldap_native_timeout']);
 
                 // Bind as the LDAP admin user. Set parameters ldap_admin_dn and ldap_password in local config for this.
-
                 if (!@ldap_bind($link, Yii::app()->params['ldap_admin_dn'], Yii::app()->params['ldap_password'])) {
                     $audit = new Audit();
                     $audit->action = 'login-failed';
@@ -213,8 +214,12 @@ class UserIdentity extends CUserIdentity
                 }
 
                 ldap_set_option($link, LDAP_OPT_NETWORK_TIMEOUT, Yii::app()->params['ldap_native_timeout']);
+                if (Yii::app()->params['ldap_protocol_version'] !== null) {
+                    ldap_set_option($link, LDAP_OPT_PROTOCOL_VERSION, Yii::app()->params['ldap_protocol_version']);
+                }
+                $ldap_user_prefix = Yii::app()->params['ldap_username_prefix'] ?: 'cn';
 
-                if (!@ldap_bind($link, "cn=$this->username,".Yii::app()->params['ldap_dn'], $this->password)) {
+                if (!@ldap_bind($link, "$ldap_user_prefix=$this->username,".Yii::app()->params['ldap_dn'], $this->password)) {
                     $audit = new Audit();
                     $audit->action = 'login-failed';
                     $audit->target_type = 'login';
@@ -234,7 +239,7 @@ class UserIdentity extends CUserIdentity
                     if ($i > 0 && isset(Yii::app()->params['ldap_info_retry_delay'])) {
                         sleep(Yii::app()->params['ldap_info_retry_delay']);
                     }
-                    $sr = ldap_search($link, "cn=$this->username,".Yii::app()->params['ldap_dn'], "cn=$this->username");
+                    $sr = ldap_search($link, "$ldap_user_prefix=$this->username,".Yii::app()->params['ldap_dn'], "uid=$this->username");
                     $info = ldap_get_entries($link, $sr);
 
                     if (isset($info[0])) {
@@ -286,7 +291,6 @@ class UserIdentity extends CUserIdentity
         $this->_id = $user->id;
         $this->username = $user->username;
         $this->errorCode = self::ERROR_NONE;
-
         // Get all the user's firms and put them in a session
         $app = Yii::app();
 

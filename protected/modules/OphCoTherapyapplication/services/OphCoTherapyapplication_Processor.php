@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class OphCoTherapyapplication_Processor
 {
@@ -62,6 +61,7 @@ class OphCoTherapyapplication_Processor
         $warnings = array();
 
         $el_diag = $this->getElement('Element_OphCoTherapyapplication_Therapydiagnosis');
+       
         $sides = array();
         if ($el_diag->hasLeft()) {
             $sides[] = 'left';
@@ -76,7 +76,7 @@ class OphCoTherapyapplication_Processor
             foreach ($sides as $side) {
                 if (!$api->getInjectionManagementComplexInEpisodeForDisorder(
                     $this->event->episode->patient,
-                    $this->event->episode,
+                    true,
                     $side,
                     $el_diag->{$side.'_diagnosis1_id'},
                     $el_diag->{$side.'_diagnosis2_id'})) {
@@ -90,11 +90,12 @@ class OphCoTherapyapplication_Processor
 
             // if the application doesn't have a given side, the VA value can be NR (e.g. eye missing etc)
             // but if it does, then we need an actual VA value.
-            if (!$api->getLetterVisualAcuityForEpisodeLeft($this->event->episode, !$el_diag->hasLeft(), $this->event->event_date)) {
+
+            if (!$api->getLetterVisualAcuityForEpisodeLeft($this->event->episode->patient, !$el_diag->hasLeft(), $this->event->event_date, false)) {
                 $warnings[] = 'Visual acuity not found for left eye.';
             }
 
-            if (!$api->getLetterVisualAcuityForEpisodeRight($this->event->episode, !$el_diag->hasRight(), $this->event->event_date)) {
+            if (!$api->getLetterVisualAcuityForEpisodeRight($this->event->episode->patient, !$el_diag->hasRight(), $this->event->event_date, false)) {
                 $warnings[] = 'Visual acuity not found for right eye.';
             }
         }

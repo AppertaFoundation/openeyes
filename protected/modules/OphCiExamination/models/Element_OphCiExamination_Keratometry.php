@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\OphCiExamination\models;
@@ -119,7 +118,7 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
 
 
             array('right_ba_index_value, left_ba_index_value', 'numerical',
-                'integerOnly'=>false,'min'=>1, 'max'=>100),
+                'integerOnly'=>false,'min'=>0, 'max'=>999),
 
             array('right_kmax_value', 'kValueCompare', 'compare' => 'right_anterior_k2_value', 'side' => 'Right'),
             array('left_kmax_value', 'kValueCompare', 'compare' => 'left_anterior_k2_value', 'side' => 'Left'),
@@ -221,7 +220,7 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
 
         // When an eye is closed we do not want to validate that eye's info.
             $side_checks = array('_anterior_k1_value', '_axis_anterior_k1_value', '_anterior_k2_value',
-                '_axis_anterior_k2_value', '_kmax_value', '_thinnest_point_pachymetry_value', '_ba_index_value');
+                '_axis_anterior_k2_value', '_kmax_value', '_thinnest_point_pachymetry_value');
             foreach (array('left', 'right') as $side) {
                 $check = 'has' . ucfirst($side);
                 if ($this->$check()) {

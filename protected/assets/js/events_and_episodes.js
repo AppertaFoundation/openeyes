@@ -4,16 +4,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 $(document).ready(function(){
@@ -24,58 +23,6 @@ $(document).ready(function(){
 			event.preventDefault();
 			return false;
 		}
-	});
-
-	(function addNewEvent() {
-
-		var template = $('#add-new-event-template');
-		var html = template.html();
-		var data = template.data('specialty');
-
-		var dialog = new OpenEyes.UI.Dialog({
-			destroyOnClose: false,
-			title: 'Add a new ' + (data && data.name ? data.name : 'Support services') + ' event',
-			content: html,
-			dialogClass: 'dialog event add-event',
-			width: 580,
-			id: 'add-new-event-dialog'
-		});
-
-		$('button.addEvent.enabled').click(function() {
-			dialog.open();
-		});
-	}());
-
-	if (window.location.href.match(/#addEvent$/)) {
-		$('button.addEvent[data-attr-subspecialty-id="'+OE_subspecialty_id+'"]').click();
-	}
-
-	$('button.add-episode').click(function(e) {
-		$.ajax({
-			'type': 'POST',
-			'data': "YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-			'url': baseUrl+'/patient/verifyAddNewEpisode?patient_id='+OE_patient_id,
-			'success': function(response) {
-                            
-				if (response != '1') {
-					new OpenEyes.UI.Dialog.Alert({
-						content: "There is already an open episode for your firm's subspecialty.\n\nIf you wish to create a new episode in a different subspecialty please switch to a firm that has the subspecialty you want."
-					}).open();
-				} else {
-          $('#add-new-episode-dialog').remove();
-					$.ajax({
-						'type': 'POST',
-						'url': baseUrl+'/patient/addNewEpisode',
-						'data': 'patient_id='+OE_patient_id+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-						'success': function(html) {
-							$(document.body).append(html);
-						}
-					});
-				}
-			}
-		});
-
-		e.preventDefault();
 	});
 
 	$('label').die('click').live('click',function() {
@@ -314,5 +261,5 @@ function hide_linked_field(element_name,field_name)
 function scrollToElement(element) {
     $('html, body').animate({
         scrollTop: parseInt(element.offset().top - 100)
-    }, 1000);
+    }, 1);
 }

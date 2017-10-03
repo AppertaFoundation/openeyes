@@ -5,15 +5,15 @@
  *
  * (C) OpenEyes Foundation, 2017
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2017, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -72,7 +72,7 @@ class Tag extends BaseActiveRecordVersioned
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'drugs' => array(self::MANY_MANY, 'FormularyDrugs', 'drug_tag(tag_id, drug_id)'),
+			'drugs' => array(self::MANY_MANY, 'Drug', 'drug_tag(tag_id, drug_id)'),
             'drug_type' => array(self::HAS_MANY, 'DrugType', 'tag_id'),
             'medication_drugs' => array(self::MANY_MANY, 'MedicationDrug', 'medication_drug_tag(medication_drug_id, tag_id)'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
@@ -87,7 +87,7 @@ class Tag extends BaseActiveRecordVersioned
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
+			'name' => 'Tag',
 			'last_modified_user_id' => 'Last Modified User',
 			'last_modified_date' => 'Last Modified Date',
 			'created_user_id' => 'Created User',
@@ -151,5 +151,10 @@ class Tag extends BaseActiveRecordVersioned
     public function getRelatedDrugsCount()
     {
         return (int)count($this->drugs);
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }

@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -48,12 +47,19 @@
  * @property OperativeDevice[] $operative_devices
  * @property OphTrOperationnote_IOLType $iol_type
  */
-class Element_OphTrOperationnote_Cataract extends Element_OnDemand
+class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
 {
-    public $service;
-
     public $predicted_refraction = null;
+    public $requires_eye = true;
 
+    protected static $procedure_doodles = array(
+        array('doodle_class' => 'PhakoIncision',
+            'unless' => array('PhakoIncision')
+        ),
+        array('doodle_class' => 'PCIOL',
+            'unless' => array('PCIOL', 'ACIOL', 'ToricPCIOL')
+        )
+    );
     /**
      * Returns the static model of the specified AR class.
      *
@@ -88,18 +94,23 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
             array('iol_type_id', 'validateIolType'),
             array('predicted_refraction', 'validatePredictedRefraction'),
             array('iol_power', 'validateIolpower'),
-            
+
             array('complications', 'validateComplications'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             //array('id, event_id, incision_site_id, length, meridian, incision_type_id, eyedraw, report, wound_burn, iris_trauma, zonular_dialysis, pc_rupture, decentered_iol, iol_exchange, dropped_nucleus, op_cancelled, corneal_odema, iris_prolapse, zonular_rupture, vitreous_loss, iol_into_vitreous, other_iol_problem, choroidal_haem', 'on' => 'search'),
         );
     }
-    
+
+    /**
+     * Check if iol position is not 'None'
+     */
     public function validateIolType()
     {
+        $none_position = $this->getNoneIolPosition();
+
         if(isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
-            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != '8'){
+            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != $none_position->id){
                 if (!$this->iol_type_id) {
                     $this->addError('iol_type_id', 'IOL type cannot be blank');
                 }
@@ -110,7 +121,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
             }
         }
     }
-        
+
     /**
      * Validate Predicted Refraction if IOL is part of the element.
      *
@@ -118,8 +129,10 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
      */
     public function validatePredictedRefraction()
     {
+        $none_position = $this->getNoneIolPosition();
+
         if(isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
-            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != '8'){
+            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != $none_position->id){
                 $value = $this->predicted_refraction;
                 if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
                     $message = $this->addError('predicted_refraction', 'Predicted refraction must be between -30.00 and 30.00');
@@ -136,8 +149,10 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
      */
     public function validateIolPower()
     {
+        $none_position = $this->getNoneIolPosition();
+
         if(isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
-            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != '8'){
+            if(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != $none_position->id){
                 $value = $this->iol_power;
                 if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
                     $message = $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -10.00 and 40.00');
@@ -214,29 +229,23 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
         ));
     }
 
-    /**
-     * Set default values for forms on create.
-     */
-    public function setDefaultOptions()
-    {
-        if (Yii::app()->controller->selectedEyeForEyedraw->id == 1) {
-            $this->meridian = 0;
-        }
-    }
-
     protected function beforeSave()
     {
-        if(!isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
+        $position_none = $this->getNoneIolPosition();
+
+        //if(!isset(Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'])){
+        if(! $this->iol_position_id || $this->iol_position_id == $position_none->id)
+        {
             $this->iol_power = null;
             $this->iol_type_id = null;
             $this->predicted_refraction = null;
-            $this->iol_position_id = 8;
-        }    
+            $this->iol_position_id = $position_none->id;
+        }
         return parent::beforeSave();
     }
 
     /**
-     * Need to delete associated records.
+     * Need to delete associated records, and any doodles shredded out of this element for object persistence
      *
      * @see CActiveRecord::beforeDelete()
      */
@@ -244,6 +253,9 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
     {
         OphTrOperationnote_CataractComplication::model()->deleteAllByAttributes(array('cataract_id' => $this->id));
         OphTrOperationnote_CataractOperativeDevice::model()->deleteAllByAttributes(array('cataract_id' => $this->id));
+
+        $processor = new \EDProcessor();
+        $processor->removeElementEyedraws($this);
 
         return parent::beforeDelete();
     }
@@ -268,7 +280,6 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
                 $ca = new OphTrOperationnote_CataractComplication();
                 $ca->cataract_id = $this->id;
                 $ca->complication_id = $c_id;
-
                 if (!$ca->save()) {
                     throw new Exception('Unable to save complication assignment: '.print_r($ca->getErrors(), true));
                 }
@@ -317,22 +328,13 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
             }
         }
 
-        if (is_array($curr_by_id)){
-        foreach ($curr_by_id as $oda) {
-            if (!$oda->delete()) {
-                throw new Exception('Unable to delete operative device assignment: '.print_r($oda->getErrors(), true));
+        if (is_array($curr_by_id)) {
+            foreach ($curr_by_id as $oda) {
+                if (!$oda->delete()) {
+                    throw new Exception('Unable to delete operative device assignment: '.print_r($oda->getErrors(), true));
+                }
             }
         }
-    }
-    }
-    /**
-     * The eye of the procedure is stored in the parent procedure list element.
-     *
-     * @return Eye
-     */
-    public function getEye()
-    {
-        return Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($this->event_id))->eye;
     }
 
     /**
@@ -373,6 +375,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
      */
     public function getIol_hidden()
     {
+        OELog::log($this->eyedraw);
         if ($eyedraw = @json_decode($this->eyedraw)) {
             if (is_array($eyedraw)) {
                 foreach ($eyedraw as $object) {
@@ -424,11 +427,14 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
      */
     public function validateComplications()
     {
-        $noneId = 18;
+        $complications_none = OphTrOperationnote_CataractComplications::model()->findByAttributes(array('name'=>'None'));
+        $noneId = $complications_none->id;
 
         $complications = Yii::app()->request->getPost('OphTrOperationnote_CataractComplications');
         if (!$complications || !count($complications)) {
-            $this->addError('Complications', 'Cataract Complications cannot be blank.');
+            if(!$this->complications || !count($this->complications)) {
+                $this->addError('Complications', 'Cataract Complications cannot be blank.');
+            }
         } else {
             foreach ($complications as $complication) {
                 if ($complication == $noneId && count($complications) > 1) {
@@ -461,4 +467,53 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemand
             return $default;
         }
     }
+
+    private function getNoneIolPosition()
+        {
+            $position_none = OphTrOperationnote_IOLPosition::model()->findByAttributes(array('name'=>'None'));
+            if($position_none)
+            {
+                return $position_none;
+            }else
+            {
+                return false;
+            }
+        }
+
+        /**
+     * Load in the correction values for the eyedraw fields
+     *
+     * @param Patient|null $patient
+     * @throws \CException
+     */
+    public function setDefaultOptions(Patient $patient = null)
+    {
+        if ($patient === null) {
+            throw new \CException('patient object required for setting ' . get_class($this) . ' default options');
+        }
+        if ((int)$this->getEye()->id === 1) {
+            $this->meridian = 0;
+        }
+        parent::setDefaultOptions($patient);
+
+        $processor = new \EDProcessor();
+        $processor->loadElementEyedrawDoodles($patient, $this, $this->getEye()->id, 'eyedraw');
+        // current way of handling the default doodles to add to the eyedraw for the procedure
+        // this will hopefully be replaced when we have the ability to store preferences for users
+        // as to their default doodle set for the cataract procedure.
+        $processor->addElementEyedrawDoodles($this, 'eyedraw', static::$procedure_doodles);
+    }
+
+    /**
+     * Performs the shredding of Eyedraw data for the patient record
+     *
+     * @inheritdoc
+     */
+    public function afterSave()
+    {
+        $processor = new \EDProcessor();
+        $processor->shredElementEyedraws($this, array('eyedraw' => (int)$this->getEye()->id));
+        parent::afterSave();
+    }
+
 }
