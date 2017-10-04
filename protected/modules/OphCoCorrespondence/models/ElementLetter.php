@@ -395,6 +395,7 @@ class ElementLetter extends BaseEventTypeElement
     {
         if (Yii::app()->getController()->getAction()->id == 'create') {
             $this->site_id = Yii::app()->session['selected_site_id'];
+            $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 
             // TODO: determine if there are any circumstances where this is necessary. Almost certainly very redundant
             if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))->findByPk(@$_GET['patient_id'])) {
@@ -420,20 +421,7 @@ class ElementLetter extends BaseEventTypeElement
             $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
 
             if ($contact = $user->contact) {
-                $consultant = null;
-                // only want to get consultant for medical firms
-                if ($specialty = $firm->getSpecialty()) {
-                    if ($specialty->medical) {
-                        $consultant = $firm->consultant;
-                    }
-                }
-
-                $this->footer = "Yours sincerely\n\n\n\n\n".trim($contact->title.' '.$contact->first_name.' '.$contact->last_name.' '.$contact->qualifications)."\n".$user->role;
-
-                if ($consultant && $consultant->id != $user->id) {
-                    $this->footer .= "\nConsultant: {$consultant->contact->title} {$consultant->contact->first_name} {$consultant->contact->last_name}";
-                }
-
+                $this->footer = $api->getFooterText();
                 $ssa = $firm->serviceSubspecialtyAssignment;
             }
 
