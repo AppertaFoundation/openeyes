@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -286,6 +285,18 @@ class BaseEventTypeController extends BaseModuleController
         return $elements;
     }
 
+    /**
+     * @return ElementType[]
+     */
+    protected function getAllElementTypes()
+    {
+        return $this->event_type->getAllElementTypes();
+    }
+
+    /**
+     * @param array $remove_list
+     * @return string
+     */
     public function getElementTree($remove_list = array())
     {
         $element_types_tree = array();
@@ -486,6 +497,19 @@ class BaseEventTypeController extends BaseModuleController
         }
     }
 
+    protected function getPrevious($element_type, $exclude_event_id = null)
+    {
+        if ($api = $this->getApp()->moduleAPI->get($this->getModule()->name)) {
+            return array_filter(
+                $api->getElements($element_type->class_name, $this->patient, false),
+                function($el) use ($exclude_event_id) {
+                    return $el->event_id != $exclude_event_id;
+                });
+        } else {
+            return array();
+        }
+    }
+
     /**
      * Are there one or more previous instances of an element?
      *
@@ -496,11 +520,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function hasPrevious($element_type, $exclude_event_id = null)
     {
-        if ($episode = $this->episode) {
-            return count($episode->getElementsOfType($element_type, $exclude_event_id)) > 0;
-        } else {
-            return false;
-        }
+        return count($this->getPrevious($element_type, $exclude_event_id)) > 0;
     }
 
     /**
@@ -1078,13 +1098,10 @@ class BaseEventTypeController extends BaseModuleController
         // Clear script requirements as all the base css and js will already be on the page
         Yii::app()->assetManager->reset();
 
-        $this->episode = $this->getEpisode();
-
-        $elements = $this->episode->getElementsOfType($element_type);
-
-        $this->renderPartial('_previous', array(
-            'elements' => $elements,
-        ), false, true // Process output to deal with script requirements
+        $this->renderPartial(
+            '_previous', array(
+                'elements' => $this->getPrevious($element_type),
+            ), false, true // Process output to deal with script requirements
         );
     }
 
@@ -1176,7 +1193,6 @@ class BaseEventTypeController extends BaseModuleController
         $elements = array();
         $el_cls_name = $element_type->class_name;
         $f_key = CHtml::modelName($el_cls_name);
-
         if (isset($data[$f_key])) {
             $keys = array_keys($data[$f_key]);
 
@@ -1221,9 +1237,8 @@ class BaseEventTypeController extends BaseModuleController
     {
         $errors = array();
         $elements = array();
-
         // only process data for elements that are part of the element type set for the controller event type
-        foreach ($this->event_type->getAllElementTypes() as $element_type) {
+        foreach ($this->getAllElementTypes() as $element_type) {
             $from_data = $this->getElementsForElementType($element_type, $data);
             if (count($from_data) > 0) {
                 $elements = array_merge($elements, $from_data);
@@ -1447,7 +1462,8 @@ class BaseEventTypeController extends BaseModuleController
 
     public function renderIndexSearch()
     {
-        if ($this->show_index_search && in_array($this->action->id,array('create','update'))) {
+        if ($this->show_index_search && in_array($this->getActionType($this->action->id),
+                array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT), true)) {
           $event_type_id = ($this->event->attributes["event_type_id"]);
           $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
           $event_name = $event_type->name;
@@ -1527,7 +1543,6 @@ class BaseEventTypeController extends BaseModuleController
         ($use_container_view) && $this->beginContent($container_view, $view_data);
         if ($element->widgetClass) {
             // only wrap the element in a widget if it's not already in one
-            $action_type = $this->getActionType($action);
             $widget = $element->widget ? :
                 $this->createWidget($element->widgetClass,
                     array(

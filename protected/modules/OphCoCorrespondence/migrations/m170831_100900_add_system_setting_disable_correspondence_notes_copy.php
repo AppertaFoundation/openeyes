@@ -8,7 +8,7 @@ class m170831_100900_add_system_setting_disable_correspondence_notes_copy extend
             'display_order' => 0,
             'field_type_id' => 3,
             'key' => 'disable_correspondence_notes_copy',
-            'name' => 'Require Dose/Freq for systemic meds',
+            'name' => 'Disable copy for notes in correspondence',
             'data' => serialize(array('on'=>'On', 'off'=>'Off')),
             'default_value' => 'on'
         ));

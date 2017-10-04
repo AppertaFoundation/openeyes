@@ -4,15 +4,15 @@
 *
 * (C) OpenEyes Foundation, 2017
 * This file is part of OpenEyes.
-* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-* You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+* You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 *
 * @package OpenEyes
 * @link http://www.openeyes.org.uk
 * @author OpenEyes <info@openeyes.org.uk>
 * @copyright Copyright (c) 2017, OpenEyes Foundation
-* @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+* @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 /**
 * Class EyedrawConfigLoadCommand
@@ -187,7 +187,8 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
         . ' SET eyedraw_on_canvas_toolbar_location = :eoctl, '
         . 'eyedraw_on_canvas_toolbar_order = :eocto, '
         . 'eyedraw_no_tuple_init_canvas_flag = :enticf, '
-        . 'eyedraw_carry_forward_canvas_flag = :ecfcf '
+        . 'eyedraw_carry_forward_canvas_flag = :ecfcf, '
+        . 'eyedraw_always_init_canvas_flag = :eaicf '
         . 'WHERE eyedraw_class_mnemonic = :ecm '
         . 'AND canvas_mnemonic = :cm');
       } else {
@@ -198,8 +199,9 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
         . 'eyedraw_on_canvas_toolbar_location, '
         . 'eyedraw_on_canvas_toolbar_order, '
         . 'eyedraw_no_tuple_init_canvas_flag, '
-        . 'eyedraw_carry_forward_canvas_flag) '
-        . 'VALUES (:ecm, :cm, :eoctl, :eocto, :enticf, :ecfcf)');
+        . 'eyedraw_carry_forward_canvas_flag, '
+        . 'eyedraw_always_init_canvas_flag)'
+        . 'VALUES (:ecm, :cm, :eoctl, :eocto, :enticf, :ecfcf, :eaicf)');
       }
 
       $cmd->bindValue(':ecm', $canvas_doodle->EYEDRAW_CLASS_MNEMONIC)
@@ -208,6 +210,7 @@ class EyedrawConfigLoadCommand extends CConsoleCommand {
       ->bindValue(':eocto', $canvas_doodle->ON_TOOLBAR_ORDER)
       ->bindValue(':enticf', strtolower($canvas_doodle->NEW_EYE_INIT_FLAG) === 'true')
       ->bindValue(':ecfcf', strtolower($canvas_doodle->CARRY_FORWARD_FLAG) === 'true')
+      ->bindValue(':eaicf', (!empty($canvas_doodle->INIT_ALWAYS_FLAG) && strtolower($canvas_doodle->INIT_ALWAYS_FLAG) === 'true'))
       ->query();
     }
 
@@ -274,16 +277,30 @@ WHERE ed.eyedraw_class_mnemonic != "*" -- Unsafe mode workaround
 EOSQL;
     }
 
+    /**
+     * @param $open_element_class_name
+     * @return mixed
+     * @throws SystemException
+     */
     private function getElementId($open_element_class_name) {
-      $element_type = ElementType::model()->findByAttributes(array('class_name' => $open_element_class_name));
-      $element_id = $element_type->id;
-      return $element_id;
+        if ($element_type = ElementType::model()->findByAttributes(array('class_name' => $open_element_class_name))) {
+            return $element_type->id;
+        } else {
+            throw new SystemException("Unable to find element type for {$open_element_class_name}. Have you fully migrated your database?");
+        }
     }
 
+    /**
+     * @param $open_element_class_name
+     * @return mixed
+     * @throws SystemException
+     */
     private function getElementName($open_element_class_name) {
-      $element_type = ElementType::model()->findByAttributes(array('class_name' => $open_element_class_name));
-      $element_name = $element_type->name;
-      return $element_name;
+        if ($element_type = ElementType::model()->findByAttributes(array('class_name' => $open_element_class_name))) {
+            return $element_type->name;
+        } else {
+            throw new SystemException("unable to find element type for {$open_element_class_name}.");
+        }
     }
 
     /**

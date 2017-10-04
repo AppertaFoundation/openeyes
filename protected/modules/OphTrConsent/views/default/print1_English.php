@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 <div class="print-form-div <?php echo $css_class?>">
@@ -118,7 +117,7 @@
 			</p>
 			<p>
 				This procedure will involve:
-				[<?php if ($elements['Element_OphTrConsent_Procedure']->anaesthetic_type->name == 'GA') {?>x<?php } else {?>&nbsp;&nbsp;<?php }?>] general and/or regional anaesthesia<br/>[<?php if (in_array($elements['Element_OphTrConsent_Procedure']->anaesthetic_type->name, array('Topical', 'LAC', 'LA', 'LAS'))) {?>x<?php } else {?>&nbsp;&nbsp;<?php }?>] local anaesthesia&nbsp;&nbsp;[<?php if ($elements['Element_OphTrConsent_Procedure']->anaesthetic_type->name == 'LAS') {?>x<?php } else {?>&nbsp;&nbsp;<?php }?>] sedation
+				[<?php if ($elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('GA')) {?>x<?php } else {?>&nbsp;&nbsp;<?php }?>] general and/or regional anaesthesia<br/>[<?php if ($elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode(array('Topical', 'LAC', 'LA', 'LAS'))) {?>x<?php } else {?>&nbsp;&nbsp;<?php }?>] local anaesthesia&nbsp;&nbsp;[<?php if ($elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('LAS')) {?>x<?php } else {?>&nbsp;&nbsp;<?php }?>] sedation
 			</p>
 			<?php echo $this->renderPartial('signature_table1', array('vi' => ($css_class == 'impaired'), 'consultant' => $elements['Element_OphTrConsent_Other']->consultant, 'lastmodified' => $elements['Element_OphTrConsent_Other']->usermodified))?>
 			<div class="spacer"></div>
@@ -144,7 +143,7 @@
 			<p>
 				<strong>I agree</strong> to the procedure or course of treatment described on this form.<br/>
 				<strong>I understand</strong> that you cannot give me a guarantee that a particular person will perform the procedure. The person will, however, have appropriate experience.<br/>
-				<?php if ($elements['Element_OphTrConsent_Procedure']->anaesthetic_type->name == 'GA') {?>
+				<?php if ($elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('GA')) {?>
 					<strong>I understand</strong> that I will have the opportunity to discuss the details of anaesthesia before the procedure, unless the urgency of my situation prevents this.<br/>
 				<?php }?>
 				<strong>I understand</strong> that any procedure in addition to those described on this form will only be carried out if it is necessary to save my life or to prevent serious harm to my health.

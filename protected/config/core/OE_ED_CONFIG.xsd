@@ -186,6 +186,12 @@
 												eye.</xs:documentation>
 											</xs:annotation>
 										</xs:element>
+										<xs:element name="INIT_ALWAYS_FLAG" type="xs:boolean" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>If this doodle is not present in patient state,
+													it will be loaded in its init state.</xs:documentation>
+											</xs:annotation>
+										</xs:element>
 										<xs:element name="CARRY_FORWARD_FLAG" type="xs:boolean"/>
 										<xs:element name="CONDITIONAL_INIT_FLAG" type="xs:boolean">
 											<xs:annotation>

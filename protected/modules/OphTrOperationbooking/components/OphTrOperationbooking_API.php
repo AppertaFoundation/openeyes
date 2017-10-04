@@ -6,16 +6,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class OphTrOperationbooking_API extends BaseAPI
 {
@@ -24,7 +23,7 @@ class OphTrOperationbooking_API extends BaseAPI
      * @param $patient
      * @return mixed
      */
-    public function getLatestCompletedOperationBookingDiagnosis($patient, $use_context = true)
+    public function getLatestCompletedOperationBookingDiagnosis($patient, $use_context = false)
     {
 
         if ($operations = $this->getElements(
@@ -33,29 +32,27 @@ class OphTrOperationbooking_API extends BaseAPI
             $use_context)
         ){
             $completed = OphTrOperationbooking_Operation_Status::model()->find('name=?', array('Completed'));
-            $completedDate = NULL;
+            $completed_date = NULL;
 
             foreach ($operations as $operation){
                 if($operation->status_id == $completed->id){
-                    $completedDate = $operation->event->event_date;
+                    $completed_date = $operation->event->event_date;
                     break;
                 }
             }
-            if($completedDate === NULL){
-                return $patient->epd;
-            }
-            if ($diagnosis = $this->getElementFromLatestEvent(
+            if ($completed_date !== null && $diagnosis = $this->getElementFromLatestEvent(
                 'Element_OphTrOperationbooking_Diagnosis',
                 $patient,
                 $use_context,
-                $completedDate)
+                $completed_date)
             ){
                 return $diagnosis->disorder->term;
             }
 
         }
-
-        return $patient->epd;
+        // revert to using the primary patient diagnosis
+        $core = new CoreAPI();
+        return $core->getEpd($patient, $use_context);
     }
 
     public function getBookingsForEpisode($episode_id)
@@ -77,7 +74,7 @@ class OphTrOperationbooking_API extends BaseAPI
     }
 
 
-    public function getOperationsForEpisode($patient , $use_context = true)
+    public function getOperationsForEpisode($patient , $use_context = false)
     {
         if ($operations = $this->getElements(
             'Element_OphTrOperationbooking_Operation',
@@ -197,11 +194,36 @@ class OphTrOperationbooking_API extends BaseAPI
     }
 
     /**
+     * Returns the most recent booking for the given patient across all
+     * contexts (by default). Looks through operations defined for the
+     * patient, and returns the current booking from the most recent
+     * operation that has a booking.
+     *
+     * @param Patient $patient
+     * @param bool $use_context - defaults to false.
+     * @return OphTrOperationbooking_Operation_Booking|null
+     */
+    public function getMostRecentBooking(Patient $patient, $use_context = false)
+    {
+        foreach ($this->getElements(
+            'Element_OphTrOperationbooking_Operation',
+            $patient,
+            $use_context
+        ) as $operation_element) {
+
+            if ($operation_element->booking) {
+                return $operation_element->booking;
+            }
+        }
+    }
+
+    /**
      * Get the most recent booking for the patient in the given episode.
      *
      * @param Episode $episode
      *
      * @return OphTrOperationbooking_Operation_Booking
+     * @deprecated - since 2.0 use getMostRecentBooking instead
      */
     public function getMostRecentBookingForEpisode($episode)
     {
@@ -225,7 +247,7 @@ class OphTrOperationbooking_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLetterProcedures($patient, $use_context = true)
+    public function getLetterProcedures($patient, $use_context = false)
     {
         $return = '';
         if ($operation = $this->getElementFromLatestEvent(
@@ -251,7 +273,7 @@ class OphTrOperationbooking_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLetterProceduresSameDay( $patient, $use_context = true )
+    public function getLetterProceduresSameDay( $patient, $use_context = false )
     {
         if ($operations = $this->getElements(
             'Element_OphTrOperationbooking_Operation',
@@ -278,10 +300,10 @@ class OphTrOperationbooking_API extends BaseAPI
      * @param Patient $patient
      * @param $use_context
      */
-    public function getAdmissionDate($patient, $use_context = true)
+    public function getAdmissionDate($patient, $use_context = false)
     {
-        if ($booking = $this->getMostRecentBookingForEpisode($patient, $use_context)) {
-            if(isset($booking->session)){
+        if ($booking = $this->getMostRecentBooking($patient, $use_context)) {
+            if (isset($booking->session)) {
                 return $booking->session->NHSDate('date');
             }
         }

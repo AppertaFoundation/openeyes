@@ -6,16 +6,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 // this extract's execution time is more than the default 500sec
 // for 5yrs time period it can last more than 30min
@@ -1363,12 +1362,13 @@ EOL;
                         (SELECT CASE WHEN m.start_date IS NULL THEN '' ELSE m.start_date END) AS StartDate,
                         (SELECT CASE WHEN m.end_date IS NULL THEN '' ELSE m.end_date END) AS StopDate,
                         (SELECT CASE WHEN opi.prescription_id IS NOT NULL THEN 1 ELSE 0 END ) AS IsAddedByPrescription,
-                        (SELECT CASE WHEN opi.continue_by_gp IS NULL THEN 0 ELSE opi.continue_by_gp END) AS IsContinueIndefinitely,
+                        (SELECT CASE WHEN lower(dd.name) = 'until review' THEN 1 ELSE 0 END) AS IsContinueIndefinitely,
                         (SELECT CASE WHEN DAYNAME(m.start_date) IS NULL THEN 1 ELSE 0 END) AS IsStartDateApprox
 
                     FROM  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
                     JOIN medication m ON c.patient_id = m.patient_id
-                    LEFT JOIN ophdrprescription_item opi ON m.prescription_item_id = opi.id;
+                    LEFT JOIN ophdrprescription_item opi ON m.prescription_item_id = opi.id
+                    LEFT JOIN drug_duration dd ON dd.id = opi.duration_id;
                 
                 
   
@@ -1407,7 +1407,7 @@ EOL;
                     AS StopDate,
 
                     1 AS IsAddedByPrescription,
-                    continue_by_gp AS IsContinueIndefinitely,
+                    CASE WHEN lower(drug_duration.name) = 'until review' THEN 1 ELSE 0 END AS IsContinueIndefinitely,
                     0 AS IsStartDateApprox
 
                     FROM ophdrprescription_item AS opi
