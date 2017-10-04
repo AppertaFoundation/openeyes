@@ -45,7 +45,7 @@ class PasApiObserver
         // would be nice to have some kind of NO_PROXY here (or somewhere) to exclude localhost
         $default_proxy = isset(\Yii::app()->params['curl_proxy']) ? \Yii::app()->params['curl_proxy'] : false;
         $proxy = isset(\Yii::app()->params['pasapi']['proxy']) ? \Yii::app()->params['pasapi']['proxy'] : $default_proxy;
-        $request_timeout = isset(\Yii::app()->params['pasapi']['timeout']) ? \Yii::app()->params['pasapi']['timeout'] : 60;
+        $request_timeout = isset(\Yii::app()->params['pasapi']['curl_timeout']) ? \Yii::app()->params['pasapi']['curl_timeout'] : 60;
 
         curl_setopt($this->_curl->curl, CURLOPT_PROXY, $proxy);
         curl_setopt($this->_curl->curl, CURLOPT_TIMEOUT, $request_timeout);
