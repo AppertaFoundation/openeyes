@@ -34,23 +34,23 @@ a.stop-medication {
   color: #fff;
   font-size: 9px;
   padding: 2px 4px 2px 4px;
-  margin-right: 22px; // should create appropriate space to align non-lateral medications
+  margin-right: 5ch; // should create appropriate space to align non-lateral medications
   -moz-border-radius: 50%;  // rounds corners for firefox
   border-radius: 50%;  //rounds corners for other browsers
   &.R {
     background-color: #9fec6d;
     color: #747782;
     margin-left: 0px;
-    margin-right: 17px;
+    margin-right: 4ch;
   }
   &.L {
     background-color: #fe6767;
-    margin-left: 15px;
-    margin-right: 2px;
+    margin-left: 4ch;
+    margin-right: 0px;
   }
   &.B {
-    margin-right: 12px;
-    margin-left: 10px;
+    margin-right: 2ch;
+    margin-left: 2ch;
     background-color: #747782;
   }
 }
