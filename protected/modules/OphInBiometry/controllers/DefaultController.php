@@ -15,6 +15,8 @@ class DefaultController extends BaseEventTypeController
     const SHORTALLIMIT = 22;
     const LONGALLIMIT = 25;
 
+    protected $show_element_sidebar = false;
+
     /**
      * @param Event                         $unlinkedEvent
      * @param OphInBiometry_Imported_Events $importedEvent
@@ -610,8 +612,8 @@ class DefaultController extends BaseEventTypeController
         $measurementValues = $this->getMeasurementData();
         $measurementData = $measurementValues[0];
 
-        $data['left'] = $measurementData->{'al_modified_left'};
-        $data['right'] = $measurementData->{'al_modified_right'};
+        $data['left'] = $measurementData->{'al_modified_left'} && (($measurementData->{'eye_id'} == 1) || ($measurementData->{'eye_id'} == 3));
+        $data['right'] = $measurementData->{'al_modified_right'} && (($measurementData->{'eye_id'} == 2) || ($measurementData->{'eye_id'} == 3));
 
         return $data;
     }
@@ -626,8 +628,8 @@ class DefaultController extends BaseEventTypeController
         $measurementValues = $this->getMeasurementData();
         $measurementData = $measurementValues[0];
 
-        $data['left'] = $measurementData->{'k_modified_left'};
-        $data['right'] = $measurementData->{'k_modified_right'};
+        $data['left'] = $measurementData->{'k_modified_left'} && (($measurementData->{'eye_id'} == 1) || ($measurementData->{'eye_id'} == 3));
+        $data['right'] = $measurementData->{'k_modified_right'} && (($measurementData->{'eye_id'} == 2) || ($measurementData->{'eye_id'} == 3));
 
         return $data;
     }

@@ -5,20 +5,20 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\OphCiExamination\controllers;
 
+use OEModule\OphCiExamination\components\ExaminationHelper;
 use Yii;
 use Audit;
 use CDbCriteria;
@@ -379,14 +379,21 @@ class AdminController extends \ModuleAdminController
         $et_exam = \EventType::model()->find('class_name=?', array('OphCiExamination'));
 
         $criteria = new CDbCriteria();
-        $criteria->addCondition('event_type_id = :event_type_id');
-        $criteria->addNotInCondition('id', $element_type_ids);
+        $criteria->addCondition('t.event_type_id = :event_type_id');
+        $criteria->addNotInCondition('t.id', $element_type_ids);
         $criteria->params[':event_type_id'] = $et_exam->id;
-        $criteria->order = 'name asc';
+        // deprecated or invalid element types for this installation
+        $criteria->addNotInCondition('t.class_name', ExaminationHelper::elementFilterList()) ;
+        $criteria->order = 'parent_element_type.name asc, t.name asc';
+
+        $element_types = \ElementType::model()->with('parent_element_type')->findAll($criteria);
+        uasort($element_types, function($a, $b) {
+            return $a->nameWithParent > $b->nameWithParent;
+        });
 
         $this->renderPartial('_update_Workflow_ElementSetItem', array(
             'step' => $step,
-            'element_types' => \ElementType::model()->findAll($criteria),
+            'element_types' => $element_types,
         ));
     }
 
@@ -778,4 +785,165 @@ class AdminController extends \ModuleAdminController
 
         $this->redirect(array('/OphCiExamination/admin/postOpComplications', 'subspecialty_id' => $subspecialty_id));
     }
+
+    /*
+     * Invoice status admin list
+     */
+    public function actionInvoiceStatusList()
+    {
+
+        $model = new models\InvoiceStatus();
+
+        $this->render('list_OphCiExamination_Invoice_status', array(
+            'model_class' => $model,
+            'model_list' => $model::model()->findAll(array('order' => 'id asc')),
+            'title' => 'Invoice Statuses',
+        ));
+
+    }
+
+    /*
+     * Add new invoice status in admin screen
+     */
+    public function actionAddInvoiceStatus()
+    {
+        $model = new models\InvoiceStatus();
+
+        if (isset($_POST[\CHtml::modelName($model)])) {
+            $model->attributes = $_POST[\CHtml::modelName($model)];
+
+            if ($model->save()) {
+                // Audit::add('admin', 'create', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Workflow'));
+                Yii::app()->user->setFlash('success', 'Invoice status added');
+
+                $this->redirect(array('InvoiceStatusList'));
+            }
+        }
+
+        $this->render('update', array(
+            'model' => $model,
+            'title' => 'Add invoice status',
+            'cancel_uri' => '/OphCiExamination/admin/InvoiceStatusList'
+        ));
+    }
+
+    /*
+     * Edit exist invoice
+     */
+    public function actionEditInvoiceStatus( $id )
+    {
+        $model = models\InvoiceStatus::model()->findByPk((int) $id);
+
+        if (isset($_POST[\CHtml::modelName($model)])) {
+
+            $model->attributes = $_POST[\CHtml::modelName($model)];
+            if ($model->save()) {
+               // Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_ElementSet'));
+                Yii::app()->user->setFlash('success', 'Invoice status updated');
+
+                $this->redirect(array('InvoiceStatusList'));
+            }
+        }
+
+        $this->render('update', array(
+            'model' => $model,
+            'title' => 'Edit invoice status',
+            'cancel_uri' => '/OphCiExamination/admin/InvoiceStatusList'
+        ));
+    }
+
+
+    /*
+     * Delete invoice
+     */
+    public function deleteInvoiceStatus( $id )
+    {
+
+    }
+
+    /**
+     * Lists and allows editing of Allergy records.
+     *
+     * @throws Exception
+     */
+    public function actionAllergies()
+    {
+        $this->genericAdmin('Edit Allergies', 'OEModule\OphCiExamination\models\OphCiExaminationAllergy');
+    }
+
+    public function actionRisks()
+    {
+        $extra_fields = array(
+            array(
+                'field' => 'tags',
+                'type' => 'multilookup',
+                'noSelectionsMessage' => 'No Tags',
+                'htmlOptions' => array(
+                    'empty' => '- Please Select -',
+                    'nowrapper' => true,
+                ),
+                'options' => \CHtml::listData(\Tag::model()->findAll(), 'id', 'name')
+            )
+        );
+
+        $this->genericAdmin(
+            'Edit Risks',
+            'OEModule\OphCiExamination\models\OphCiExaminationRisk',
+            array(
+                'extra_fields' => $extra_fields
+            ));
+    }
+
+    public function actionSocialHistory()
+    {
+        $this->render('socialhistory');
+    }
+
+    public function actionSocialHistoryOccupation()
+    {
+        $this->genericAdmin(models\SocialHistory::model()->getAttributeLabel('occupation_id'),
+            'OEModule\OphCiExamination\models\SocialHistoryOccupation');
+    }
+
+    public function actionSocialHistoryDrivingStatus()
+    {
+        $this->genericAdmin(models\SocialHistory::model()->getAttributeLabel('driving_statuses'),
+            'OEModule\OphCiExamination\models\SocialHistoryDrivingStatus');
+    }
+
+    public function actionSocialHistorySmokingStatus()
+    {
+        $this->genericAdmin(models\SocialHistory::model()->getAttributeLabel('smoking_status_id'),
+            'OEModule\OphCiExamination\models\SocialHistorySmokingStatus');
+    }
+
+    public function actionSocialHistoryAccommodation()
+    {
+        $this->genericAdmin(models\SocialHistory::model()->getAttributeLabel('accommodation_id'),
+            'OEModule\OphCiExamination\models\SocialHistoryAccommodation');
+    }
+
+    public function actionFamilyHistory()
+    {
+        $this->render('familyhistory');
+    }
+
+    public function actionFamilyHistoryRelative()
+    {
+        $this->genericAdmin(models\FamilyHistory_Entry::model()->getAttributeLabel('relative_id'),
+            'OEModule\OphCiExamination\models\FamilyHistoryRelative');
+    }
+
+    public function actionFamilyHistoryCondition()
+    {
+        $this->genericAdmin(models\FamilyHistory_Entry::model()->getAttributeLabel('condition_id'),
+            'OEModule\OphCiExamination\models\FamilyHistoryCondition');
+    }
+
+    public function actionHistoryMedicationsStopReason()
+    {
+        $this->genericAdmin('Medication Stop Reason',
+            'OEModule\OphCiExamination\models\HistoryMedicationsStopReason');
+    }
+
 }

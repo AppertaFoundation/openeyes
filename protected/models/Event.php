@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -22,10 +21,18 @@
  *
  * The followings are the available columns in table 'event':
  *
- * @property string    $id
- * @property string    $episode_id
- * @property string    $user_id
- * @property string    $event_type_id
+ * @property string $id
+ * @property string $episode_id
+ * @property string $user_id
+ * @property string $event_type_id
+ * @property string $info
+ * @property boolean $deleted
+ * @property string $delete_reason
+ * @property boolean $is_automated
+ * @property array $automated_source - json structure
+ * @property string $event_date
+ * @property string $created_date
+ * @property string $last_modified_date
  *
  * The followings are the available model relations:
  * @property Episode   $episode
@@ -144,9 +151,19 @@ class Event extends BaseActiveRecordVersioned
         return parent::beforeSave();
     }
 
+    /**
+     * @return BaseAPI|null
+     */
+    public function getApi()
+    {
+        if ($this->eventType) {
+            return Yii::app()->moduleAPI->get($this->eventType->class_name);
+        }
+    }
+
     public function moduleAllowsEditing()
     {
-        if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
+        if ($api = $this->getApi()) {
             if (method_exists($api, 'canUpdate')) {
                 return $api->canUpdate($this->id);
             }
@@ -193,11 +210,20 @@ class Event extends BaseActiveRecordVersioned
     /**
      * Does this event have some kind of issue that the user should know about.
      *
+     * @param string $type
      * @return bool
      */
-    public function hasIssue()
+    public function hasIssue($type = null)
     {
-        return (boolean)$this->issues;
+        if ($type === null) {
+            return (boolean)$this->issues;
+        }
+        foreach ($this->issues as $event_issue) {
+            if (strtolower($event_issue->issue->name) === strtolower($type)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -305,7 +331,7 @@ class Event extends BaseActiveRecordVersioned
 
     public function showDeleteIcon()
     {
-        if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
+        if ($api = $this->getApi()) {
             if (method_exists($api, 'showDeleteIcon')) {
                 return $api->showDeleteIcon($this->id);
             }
@@ -413,6 +439,18 @@ class Event extends BaseActiveRecordVersioned
     }
 
     /**
+     * @param Event $event
+     * @return bool
+     */
+    public function isAfterEvent(Event $event)
+    {
+        if ($this->event_date === $event->event_date) {
+            return $this->created_date > $event->created_date;
+        }
+        return $this->event_date > $event->event_date;
+    }
+
+    /**
      * Sets various default properties for audit calls on this event.
      *
      * @param       $target
@@ -510,7 +548,7 @@ class Event extends BaseActiveRecordVersioned
 
     public function getImagePath($name)
     {
-        return $this->imageDirectory . "/$name.png";
+        return $this->getImageDirectory() . DIRECTORY_SEPARATOR . "$name.png";
     }
 
     public function getPDF($pdf_print_suffix = null)
@@ -559,12 +597,25 @@ class Event extends BaseActiveRecordVersioned
             32)) . '/{{PAGE}}';
     }
 
+    /**
+     * Returns the automated source text
+     *
+     * @return string
+     */
     public function automatedText()
     {
-        if ($this->is_automated) {
+        $result = '';
+        if ($this->is_automated && $this->automated_source) {
+            // TODO: this really should be in the module API with some kind of default text here
             if (property_exists($this->automated_source, 'goc_number')) {
-                return ' - Community optometric examination by ' . $this->automated_source->name . ' (' . $this->automated_source->goc_number . ')';
+                $result .= ' - Community optometric examination by ' . $this->automated_source->name . ' (' . $this->automated_source->goc_number . ')'. "<br>";
+
             }
+            if(property_exists($this->automated_source, 'address')){
+                $result .= 'Optometrist Address: '.$this->automated_source->address;
+            }
+
+            return $result;
         }
     }
 
@@ -582,5 +633,50 @@ class Event extends BaseActiveRecordVersioned
         $criteria->order = 'event_date asc';
 
         return Event::model()->with('episode')->findAll($criteria);
+    }
+
+    /**
+     * @param string $type
+     * @return string
+     */
+    public function getEventIcon($type = 'small')
+    {
+        if ($api = $this->getApi()) {
+            if (method_exists($api, 'getEventIcon')) {
+                return $api->getEventIcon($type, $this);
+            }
+        }
+
+        if ($this->eventType) {
+            return $this->eventType->getEventIcon($type, $this);
+        }
+
+        // TODO: add default images that can be returned
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getEventName()
+    {
+        if ($api = $this->getApi()) {
+            if (method_exists($api, 'getEventName')) {
+                return $api->getEventName($this);
+            }
+        }
+        return $this->eventType ? $this->eventType->name : 'Event';
+    }
+
+    /**
+     * Convenience function to retrieve the patient for event.
+     *
+     * @return Patient
+     */
+    public function getPatient()
+    {
+        if ($this->episode) {
+            return $this->episode->patient;
+        }
     }
 }

@@ -1,0 +1,3725 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2011 rel. 3 (x64) (http://www.altova.com) by Jason Brown (Department of Health and Ageing) -->
+<OE_ED_CONFIG xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="OE_ED_CONFIG.xsd">
+  <CANVAS_LIST>
+    <CANVAS>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <CANVAS_NAME>Examination Anterior Segment</CANVAS_NAME>
+      <OE_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OE_ELEMENT_CLASS_NAME>
+    </CANVAS>
+    <CANVAS>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <CANVAS_NAME>Operation Note Cataract Anterior Segment</CANVAS_NAME>
+      <OE_ELEMENT_CLASS_NAME>Element_OphTrOperationnote_Cataract</OE_ELEMENT_CLASS_NAME>
+    </CANVAS>
+    <CANVAS>
+      <CANVAS_MNEMONIC>LASER_ANT_SEG</CANVAS_MNEMONIC>
+      <CANVAS_NAME>Laser Anterior Segment</CANVAS_NAME>
+      <OE_ELEMENT_CLASS_NAME>Element_OphTrLaser_AnteriorSegment</OE_ELEMENT_CLASS_NAME>
+    </CANVAS>
+    <CANVAS>
+      <CANVAS_MNEMONIC>INJECTION_ANT_SEG</CANVAS_MNEMONIC>
+      <CANVAS_NAME>Injection Anterior Segment</CANVAS_NAME>
+      <OE_ELEMENT_CLASS_NAME>Element_OphTrIntravitrealinjection_AnteriorSegment</OE_ELEMENT_CLASS_NAME>
+    </CANVAS>
+  </CANVAS_LIST>
+  <DOODLE_LIST>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ACIOL</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Anterior chamber IOL</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ACMaintainer</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>AC maintainer</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>AdnexalEye</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Adnexal eye template</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>AngleGrade</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Angle grade</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>AngleGradeEast</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Angle Grade East</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>AngleGradeNorth</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Angle Grade North</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>AngleGradeSouth</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Angle Grade South</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>AngleGradeWest</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Angle Grade West</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>AngleNV</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Angle new vessels</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>AngleRecession</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Angle recession</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>AntPVR</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Anterior PVR</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>AntSeg</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Anterior segment</TITLE>
+      <INIT_DOODLE_JSON>{"scaleLevel": 1,"version":1.1,"subclass":"AntSeg","pupilSize":"Large","apexY":-260,"rotation":0,"pxe":false,"coloboma":false,"colour":"Blue","ectropion":false,"cornealSize":"Normal","cells":"Not Checked","flare":"Not Checked","order":1}</INIT_DOODLE_JSON>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>AntSegAngleMarks</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Angle Marks</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>AntSynech</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Anterior synechiae</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>APattern</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>A pattern</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ArcuateKeratotomy</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Arcuate keratotomy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ArcuateScotoma</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Arcuate scotoma</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Arrow</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Arrow</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>BiopsySite</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Biopsy site</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Bleb</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Trabeculectomy bleb</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>BlotHaemorrhage</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Blot haemorrhage</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Buckle</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Buckle</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>BuckleOperation</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Buckle operation</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>BuckleSuture</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Buckle suture</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>BusaccaNodule</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Busacca nodule</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CapsularTensionRing</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Capsular Tension Ring</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ChandelierDouble</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Double chandelier</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ChandelierSingle</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Chandelier</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ChoroidalHaemorrhage</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Choroidal haemorrhage</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ChoroidalNaevus</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Choroidal naevus</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CiliaryInjection</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Cilary injection</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Circinate</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Circinate retinopathy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CircumferentialBuckle</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Circumferential buckle</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CNV</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Choroidal new vessels</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ConjunctivalFlap</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Conjunctival flap</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ConjunctivalSuture</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Conjunctival suture</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Conjunctivitis</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Conjunctivitis</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealAbrasion</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Corneal abrasion</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Cornea</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Cornea</TITLE>
+      <INIT_DOODLE_JSON>{"scaleLevel":1,"version":1.1,"subclass":"Cornea","shape":"Normal","pachymetry":540,"csOriginX":50,"csApexX":-363,"csApexY":0,"order":0}</INIT_DOODLE_JSON>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealEpithelialDefect</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Corneal epithelial defect</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealErosion</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Removal of corneal epithelium</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealGraft</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Corneal graft</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealInlay</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Corneal inlay</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealOedema</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Corneal oedema</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealOpacity</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Corneal opacity</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealPigmentation</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Corneal pigmentation</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealScar</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Corneal scar</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealStriae</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Corneal striae</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealSuture</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Corneal suture</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CorticalCataract</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Cortical cataract</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CottonWoolSpot</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Cotton wool spot</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Cryo</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Cryotherapy scar</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CutterPI</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Cutter iridectomy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CystoidMacularOedema</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Cystoid macular oedema</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>DendriticUlcer</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Dendritic ulcer</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>DiabeticNV</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Diabetic new vessels</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Dialysis</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Dialysis</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>DiscHaemorrhage</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Disc haemorrhage</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>DiscPallor</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Disc pallor</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>DrainageRetinotomy</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Drainage retinotomy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>DrainageSite</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Drainage site</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>EncirclingBand</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Encircling band</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>EntrySiteBreak</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Entry site break</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>EpiretinalMembrane</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Epiretinal membrane</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Episcleritis</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Episcleritis</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>FibrousProliferation</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Fibrous proliferation</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>FibrovascularScar</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Fibrovascular Scar</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>FocalLaser</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Focal laser</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Freehand</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Freehand drawing</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Fuchs</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Guttata</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Fundus</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Fundus</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Geographic</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Geographic atrophy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Gonioscopy</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Gonioscopy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>GRT</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Giant retinal tear</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>HardDrusen</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Hard drusen</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>HardExudate</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Hard exudate</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Hyphaema</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Hyphaema</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Hypopyon</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Hypopyon</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>IatrogenicBreak</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>IatrogenicBreak</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ILMPeel</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>ILM peel</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ICL</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Implantable Collamer Lens</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>IOL</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Intraocular lens</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>InjectionSite</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Injection site</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>InnerLeafBreak</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Inner leaf break</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Iris</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Iris</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>IrisHook</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Iris hook</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>IrisNaevus</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Iris naevus</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>IRMA</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Intraretinal microvascular abnormalities</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>KeraticPrecipitates</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Keratic precipitates</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>KoeppeNodule</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Koeppe nodule</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>KrukenbergSpindle</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Krukenberg spindle</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Label</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Label</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>LaserCircle</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Circle of laser photocoagulation</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>LaserDemarcation</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Laser demarcation</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>LasikFlap</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>LASIK flap</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>LaserSpot</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Laser spot</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Lattice</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Lattice</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Lens</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Lens</TITLE>
+      <INIT_DOODLE_JSON>{"scaleLevel": 1,"version":1.1,"subclass":"Lens","rotation":0,"originY":0,"nuclearGrade":"None","corticalGrade":"None","posteriorSubcapsularGrade":"None","anteriorPolar":false,"posteriorPolar":false,"coronary":false,"phakodonesis":false,"order":0}</INIT_DOODLE_JSON>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>LimbalRelaxingIncision</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Limbal relaxing incision</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Macroaneurysm</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Macroaneurysm</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>MacularDystrophy</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Macular dystrophy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>MacularGrid</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Macular grid laser</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>MacularHole</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Macular hole</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>MacularThickening</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Macular thickening</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Malyugin</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Malyugin ring</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>MattressSuture</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Mattress suture</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Microaneurysm</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Microaneurysm</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>NerveFibreDefect</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Nerve fibre defect</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>NuclearCataract</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Nuclear cataract</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>OpticCup</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Optic cup</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>OpticDisc</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Optic disc</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>OpticDiscPit</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Optic disc pit</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>OrthopticEye</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Orthoptic eye</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>OuterLeafBreak</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Outer leaf break</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Palpebral Conjunctivitis</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Palpebral Conjunctivitis</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Papilloedema</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Papilloedema</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Patch</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Tube patch</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PCIOL</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Posterior chamber IOL</TITLE>
+      <INIT_DOODLE_JSON>{"scaleLevel": 1,"version":1.1,"subclass":"PCIOL","fixation":"In-the-bag","fx":1.00,"originX":0,"originY":0,"rotation":0,"csOriginX":0.00,"order":0}</INIT_DOODLE_JSON>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PeripapillaryAtrophy</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Peripapillary atrophy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PeripheralRetinectomy</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Peripheral retinectomy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PhakoIncision</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Phako incision</TITLE>
+      <INIT_DOODLE_JSON>{"scaleLevel": 1,"version":1.1,"subclass":"PhakoIncision","apexY":-330,"arc":27,"rotation":90,"radius":330,"order":2}</INIT_DOODLE_JSON>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PI</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Peripheral iridectomy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PointInLine</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Point in line</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PosteriorCapsule</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Posterior capsule</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PosteriorEmbryotoxon</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Posterior embryotoxon</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PostPole</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Posterior pole</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PostSubcapCataract</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Posterior subcapsular cataract</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PosteriorRetinectomy</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Posterior retinectomy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PosteriorSynechia</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Posterior synechia</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PreRetinalHaemorrhage</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Pre-retinal haemorrhage</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PRP</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Panretinal photocoagulation</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PRPPostPole</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Panretinal photocoagulation (posterior pole)</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>PTK</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Phototherapeutic keratectomy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Pupil</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Pupil</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>RadialSponge</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Radial sponge</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>RetinalArteryOcclusionPostPole</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Retinal artery occlusion</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>RetinalHaemorrhage</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Retinal haemorrhage</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>RetinalTouch</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Retinal touch</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>RetinalVeinOcclusionPostPole</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Retinal vein occluson</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Retinoschisis</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Retinoschisis</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>RK</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Radial keratotomy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>RoundHole</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Round hole</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>RPEAtrophy</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>RPE Atrophy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>RPEDetachment</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>RPE detachment</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>RPEHypertrophy</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>RPE Hypertrophy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>RPERip</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>RPE rip</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>RRD</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Rhegmatogenous retinal detachment</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Rubeosis</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Rubeosis iridis</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>SectorPRP</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Sector PRP</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>SectorPRPPostPole</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Sector PRP (posterior pole)</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ScleralIncision</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Scleral Incision</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Sclerostomy</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Sclerostomy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>SectorIridectomy</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Sector iridectomy</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Shading</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Shading</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>SidePort</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Side port</TITLE>
+      <INIT_DOODLE_JSON>{"scaleLevel": 1,"version":1.1,"subclass":"SidePort"}</INIT_DOODLE_JSON>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Slider</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Slider</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>SMILE</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Small incision lenticule extraction</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>SPEE</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>SPEE</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>StarFold</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Star fold</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>STFB</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>STFB</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>SubretinalFluid</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Subretinal fluid</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>SubretinalPFCL</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Subretinal PFCL</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Supramid</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Supramid suture</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>SwollenDisc</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Swollen disc</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Telangiectasis</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Parafoveal telangiectasia</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Trabectome</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Trabectome</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>TrabyConjIncision</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Trabeculectomy conjunctival incision</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>TrabyFlap</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Trabeculectomy flap</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>TrabySuture</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Trabeculectomy suture</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ToricPCIOL</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Toric posterior chamber IOL</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>TractionRetinalDetachment</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Traction retinal detachment</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>TransilluminationDefect</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Transillumination defect</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Tube</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Drainage tube</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>TubeExtender</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Tube extender</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>TubeLigation</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Ligation suture</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>UpDrift</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Up drift</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>UpShoot</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Up shoot</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>UTear</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Traction ‘U’ tear</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Vicryl</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Vicryl suture</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>ViewObscured</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>View obscured</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>VitreousOpacity</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Vitreous opacity</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>VPattern</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>V pattern</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Crepitations</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Crepitations</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Stenosis</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Stenosis</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Wheeze</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Wheeze</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Effusion</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Pleural effusion</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>LeftCoronaryArtery</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Left coronary artery</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>DrugStent</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Drug eluting stent</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>MetalStent</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Metal stent</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Bypass</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Coronary artery bypass</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Bruit</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Bruit</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Bruising</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Bruising</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Haematoma</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Haematoma</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>AdenoviralKeratitis</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Adenoviral keratitis</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>MarginalKeratitis</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Marginal keratitis</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealLaceration</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Corneal laceration</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>MetallicForeignBody</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Metallic foreign body</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Pingueculum</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Pingueculum</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Pterygium</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Pterygium</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
+  </DOODLE_LIST>
+  <DOODLE_USAGE_LIST>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>AntSeg</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION/>
+      <ON_TOOLBAR_ORDER/>
+      <NEW_EYE_INIT_FLAG>true</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Lens</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>1</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>true</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Cornea</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION/>
+      <ON_TOOLBAR_ORDER/>
+      <NEW_EYE_INIT_FLAG>true</NEW_EYE_INIT_FLAG>
+      <INIT_ALWAYS_FLAG>true</INIT_ALWAYS_FLAG>
+      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>PCIOL</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>2</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Bleb</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>3</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>PI</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>4</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Fuchs</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>5</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealOedema</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>6</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>PosteriorCapsule</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>7</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealPigmentation</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>8</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>TransilluminationDefect</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>9</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Hypopyon</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>10</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Hyphaema</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>11</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealScar</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>12</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Rubeosis</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>13</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>SectorIridectomy</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>14</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>ACIOL</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>15</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>LasikFlap</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>16</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealSuture</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>17</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>ConjunctivalSuture</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>18</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>TrabySuture</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>19</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>DendriticUlcer</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>20</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>AdenoviralKeratitis</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>21</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealLaceration</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>22</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>MarginalKeratitis</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>23</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>MetallicForeignBody</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>24</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Pingueculum</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>25</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Pterygium</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>26</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>SPEE</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>1</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealEpithelialDefect</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>2</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealOpacity</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>3</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Conjunctivitis</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>4</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>PosteriorSynechia</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>5</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>KeraticPrecipitates</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>6</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Episcleritis</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>7</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>TrabyFlap</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>8</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Tube</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>9</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>TubeExtender</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>10</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Supramid</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>11</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>TubeLigation</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>12</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Patch</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>13</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>SidePort</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>14</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>RK</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>2</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>15</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>AntSeg</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>LASER_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION/>
+      <ON_TOOLBAR_ORDER/>
+      <NEW_EYE_INIT_FLAG>true</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>LaserSpot</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>LASER_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>1</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>FocalLaser</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>LASER_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>2</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>MacularGrid</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>LASER_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>3</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>AntSeg</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>INJECTION_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION/>
+      <ON_TOOLBAR_ORDER/>
+      <NEW_EYE_INIT_FLAG>true</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>InjectionSite</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>INJECTION_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>1</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>true</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Cornea</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION/>
+      <ON_TOOLBAR_ORDER/>
+      <NEW_EYE_INIT_FLAG>true</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+    <EYEDRAW_CLASS_MNEMONIC>AntSeg</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION/>
+      <ON_TOOLBAR_ORDER/>
+      <NEW_EYE_INIT_FLAG>true</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Lens</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION/>
+      <ON_TOOLBAR_ORDER/>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+      <COMMENT>This usage mapping is required to include Lens in same intersection tuple as OP_NOTE_CAT_ANT_SEG and EXAM_ANT_SEG.
+
+The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward into OpNote, as currently local lens removal is not driven by runtime selected procedures.</COMMENT>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>PhakoIncision</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>1</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>true</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>true</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>SidePort</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>2</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>true</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>IrisHook</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>3</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>Malyugin</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>4</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>PCIOL</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>5</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>true</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>true</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>true</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>ACIOL</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>6</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>PI</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>7</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>MattressSuture</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>8</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>CapsularTensionRing</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>9</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>CornealSuture</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>10</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>ToricPCIOL</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>11</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>true</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>LimbalRelaxingIncision</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>OP_NOTE_CAT_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION>1</ON_TOOLBAR_LOCATION>
+      <ON_TOOLBAR_ORDER>12</ON_TOOLBAR_ORDER>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+    <DOODLE_USAGE>
+      <EYEDRAW_CLASS_MNEMONIC>ToricPCIOL</EYEDRAW_CLASS_MNEMONIC>
+      <CANVAS_MNEMONIC>EXAM_ANT_SEG</CANVAS_MNEMONIC>
+      <ON_TOOLBAR_LOCATION/>
+      <ON_TOOLBAR_ORDER/>
+      <NEW_EYE_INIT_FLAG>false</NEW_EYE_INIT_FLAG>
+      <CARRY_FORWARD_FLAG>false</CARRY_FORWARD_FLAG>
+      <CONDITIONAL_INIT_FLAG>false</CONDITIONAL_INIT_FLAG>
+      <CONDITIONAL_REMOVE_FLAG>false</CONDITIONAL_REMOVE_FLAG>
+    </DOODLE_USAGE>
+  </DOODLE_USAGE_LIST>
+  <EVENT_LIST>
+    <EVENT>
+      <EVENT_NAME>Examination</EVENT_NAME>
+      <INDEX_LIST>
+        <INDEX>
+          <PRIMARY_TERM>Description</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>help</TERM>
+            <TERM>info</TERM>
+            <TERM>manual</TERM>
+          </SECONDARY_TERM_LIST>
+          <DESCRIPTION>This feature allows you to search for canvases, doodles and fields in the above search bars (one for each eye). Clicking on a search result will take you to the relevant item and if it is a doodle it will add it for you.</DESCRIPTION>
+          <GENERAL_NOTE><![CDATA[
+         <strong>Shortcuts:</strong><br />
+         Ctrl+Alt+R = Start search in right eye<br />
+         Ctrl+Alt+L = Start search in left eye<br />
+        ]]></GENERAL_NOTE>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Examination History</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Presenting Compliant</TERM>
+            <TERM>Follow Up Including History</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_History</OPEN_ELEMENT_CLASS_NAME>
+          <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_History_description</GOTO_ID>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Examination Risks</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryRisks</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Alpha blockers</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryRisks</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_TAG>tr</GOTO_TAG>
+              <GOTO_TEXT>Alpha blockers</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Anticoagulants</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryRisks</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_TAG>tr</GOTO_TAG>
+              <GOTO_TEXT>Anticoagulants</GOTO_TEXT>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Medications</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>PMH</TERM>
+            <TERM>Medical History</TERM>
+            <TERM>Medication History</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryMedications</OPEN_ELEMENT_CLASS_NAME>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Examination Systemic Diagnoses</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Diagnosis</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SystemicDiagnoses</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Diagnosis</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SystemicDiagnoses</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>DiagnosisSelection_disorder_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Side</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SystemicDiagnoses</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_TAG>label</GOTO_TAG>
+              <GOTO_TEXT>Side</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Date</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SystemicDiagnoses</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_TAG>legend</GOTO_TAG>
+              <GOTO_TEXT>Date</GOTO_TEXT>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Examination Comorbidities</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Comorbidities</OPEN_ELEMENT_CLASS_NAME>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Examiantion Allergies</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Allergies</OPEN_ELEMENT_CLASS_NAME>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Previous Ophthalmic Surgery</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Past Surgery</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\PastSurgery</OPEN_ELEMENT_CLASS_NAME>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Family History</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Relative</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\FamilyHistory</OPEN_ELEMENT_CLASS_NAME>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Social History</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Employment</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>div_OEModule_OphCiExamination_models_SocialHistory_occupation_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Driving Status</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_SocialHistory_driving_statuses</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Smoking Status</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>div_OEModule_OphCiExamination_models_SocialHistory_smoking_status_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Accommodation</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>div_OEModule_OphCiExamination_models_SocialHistory_accommodation_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Carer</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>div_OEModule_OphCiExamination_models_SocialHistory_carer_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Alcohol Intake</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>div_OEModule_OphCiExamination_models_SocialHistory_alcohol_intake</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Substance Misuse</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SocialHistory</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>div_OEModule_OphCiExamination_models_SocialHistory_substance_misuse_id</GOTO_ID>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Visual Function</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>RAPD</TERM>
+            <TERM>Relative Afferent Pupillary Defect</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_VisualFunction</OPEN_ELEMENT_CLASS_NAME>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Visual Acuity</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>VA</TERM>
+            <TERM>DVA</TERM>
+            <TERM>UDVA</TERM>
+            <TERM>CDVA</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity</OPEN_ELEMENT_CLASS_NAME>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Near Visual Acuity</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>NVA</TERM>
+            <TERM>UNVA</TERM>
+            <TERM>CNVA</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_NearVisualAcuity</OPEN_ELEMENT_CLASS_NAME>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Colour Vision</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Ishihara /15</TERM>
+            <TERM>Ishihara /21</TERM>
+            <TERM>Red desaturation</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_ColourVision</OPEN_ELEMENT_CLASS_NAME>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Refraction</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Sphere</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+              <GOTO_TAG>legend</GOTO_TAG>
+              <GOTO_TEXT>Sphere</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Cylinder</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+              <GOTO_TAG>legend</GOTO_TAG>
+              <GOTO_TEXT>Cylinder</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Axis</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_%position_axis</GOTO_ID>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Adnexal</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AdnexalComorbidity</OPEN_ELEMENT_CLASS_NAME>
+          <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_AdnexalComorbidity_right_description</GOTO_ID>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Lids Surgical</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SurgicalLids</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Lids</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SurgicalLids</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Lids</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Comments</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\SurgicalLids</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_SurgicalLids_right_comments</GOTO_ID>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Lids Medical</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicalLids</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Palpebral Conjunctivitis</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/PalpebralConjunctivitis.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicalLids</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>PalpebralConjunctivitis</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Type</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicalLids</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>PalpebralConjunctivitis</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Hyperaemia</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicalLids</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>PalpebralConjunctivitis</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Hyperaemia</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>STFB</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Sub-tarsal foreign body</TERM>
+              </SECONDARY_TERM_LIST>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/STFB.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicalLids</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>STFB</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Label</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Label.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicalLids</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
+              <GOTO_PROPERTY>Text</GOTO_PROPERTY>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Comments</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\MedicalLids</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_MedicalLids_%position_comments</GOTO_ID>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Pupillary Abnormalities</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PupillaryAbnormalities</OPEN_ELEMENT_CLASS_NAME>
+          <GOTO_ID>div_OEModule_OphCiExamination_models_Element_OphCiExamination_PupillaryAbnormalities_%position_abnormality_id</GOTO_ID>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Bleb Assessment</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_BlebAssessment</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Area (Central)</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_BlebAssessment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_%position_central_area_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Area (Maximal)</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_BlebAssessment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_%position_max_area_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Height</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_BlebAssessment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_%position_height_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Vascularity</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_BlebAssessment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_%position_vasc_id</GOTO_ID>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>CCT</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Corneal Thickness</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CCT</OPEN_ELEMENT_CLASS_NAME>
+          <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_CCT_%position_value</GOTO_ID>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Keratoconus Monitoring</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Asthma</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_TAG>label</GOTO_TAG>
+              <GOTO_TEXT>Asthma</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Previous CXL</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Previous Corneal Cross-linking</TERM>
+              </SECONDARY_TERM_LIST>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+              <GOTO_TAG>label</GOTO_TAG>
+              <GOTO_TEXT>Previous CXL</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Previous Refractive Surgery</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+              <GOTO_TAG>label</GOTO_TAG>
+              <GOTO_TEXT>Previous Refractive Surgery</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Intacs/Kera-ring</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+              <GOTO_TAG>label</GOTO_TAG>
+              <GOTO_TEXT>Intacs/Kera-ring</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Previous HSK Keratitis</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+              <GOTO_TAG>label</GOTO_TAG>
+              <GOTO_TEXT>Previous HSK Keratitis</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Eczema</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_TAG>label</GOTO_TAG>
+              <GOTO_TEXT>Eczema</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Eye Rubber</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_TAG>label</GOTO_TAG>
+              <GOTO_TEXT>Eye Rubber</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Hayfever</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CXL_History</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_TAG>label</GOTO_TAG>
+              <GOTO_TEXT>Hayfever</GOTO_TEXT>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Corneal Tomography</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Tomographer Device</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_tomographer_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Front K1</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_anterior_k1_value</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Front K2</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_anterior_k2_value</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Quality Score - Front</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_quality_front</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Back K1</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_axis_anterior_k1_value</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Quality Score - Back</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_quality_back</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Kmax</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_kmax_value</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Thinnest Point Pachymetry (µm)</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_thinnest_point_pachymetry_value</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>B-A Index</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_ba_index_value</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Flourescein</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+              <GOTO_TAG>label</GOTO_TAG>
+              <GOTO_TEXT>Flourescein</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>CL Removed?</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Keratometry</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry_%position_cl_removed</GOTO_ID>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Specular Microscopy</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Specular Microscope</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy_specular_microscope_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Scan Quality</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy_scan_quality_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Endothelial Cell Density (cells/mm2)</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy_%position_endothelial_cell_density_value</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Coefficient of Variation (CV)</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Specular_Microscopy</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Specular_Microscopy_%position_coefficient_variation_value</GOTO_ID>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>KC/CXL-Specific Slit Lamp</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Keratoconus</TERM>
+            <TERM>Corneal cross-linking</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Allergic Conjunctivitis</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp_%position_allergic_conjunctivitis_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Blepharitis</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp_%position_blepharitis_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Dry Eye</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp_%position_dry_eye_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Cornea</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Slit_Lamp</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Slit_Lamp_%position_cornea_id</GOTO_ID>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Intraocular Pressure</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>IOP</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure</OPEN_ELEMENT_CLASS_NAME>
+          <GOTO_ID>OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_%position_values_0_reading_id</GOTO_ID>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Dilation</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Dilation</OPEN_ELEMENT_CLASS_NAME>
+          <GOTO_ID>dilation_drug_%position</GOTO_ID>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>DR Grading</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Diabetic Retinopathy</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Diabetes type</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_TAG>legend</GOTO_TAG>
+              <GOTO_TEXT>Diabetes type</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Clinical Grading for retinopathy</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_DRGrading_%position_clinicalret_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>NSC retinopathy</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_DRGrading_%position_nscretinopathy_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Retinopathy photocoagulation</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+              <GOTO_TAG>legend</GOTO_TAG>
+              <GOTO_TEXT>Retinopathy photocoagulation</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Clinical Grading for maculopathy</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_DRGrading_%position_clinicalmac_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>NSC maculopathy</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_DRGrading_%position_nscmaculopathy_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Maculopathy photocoagulation</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_DRGrading</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+              <GOTO_TAG>legend</GOTO_TAG>
+              <GOTO_TEXT>Maculopathy photocoagulation</GOTO_TEXT>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Diagnoses</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Diagnosis</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses</OPEN_ELEMENT_CLASS_NAME>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Further Findings</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_FurtherFindings</OPEN_ELEMENT_CLASS_NAME>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Investigation</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Investigation</OPEN_ELEMENT_CLASS_NAME>
+          <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation_description</GOTO_ID>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>OCT</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Optical coherence tomography</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Image Type</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_method_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Maximum CRT</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Corneal Refractive Therapy</TERM>
+              </SECONDARY_TERM_LIST>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_crt</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Central SFT</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Solitary fibrous tumor</TERM>
+              </SECONDARY_TERM_LIST>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_sft</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Thickness increase of 100µm</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+              <GOTO_TAG>legend</GOTO_TAG>
+              <GOTO_TEXT>Thickness increase of 100µm</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Dry</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+              <GOTO_TAG>legend</GOTO_TAG>
+              <GOTO_TEXT>Dry</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Comments</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OCT</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OCT_%position_comments</GOTO_ID>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>PCR Risk</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Posterior capsular opacification grading</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Glaucoma</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_glaucoma</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>PXF/Phacodonesis</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_pxf</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Diabetic</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_diabetic</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Pupil Size</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_pupil_size</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Fundus obscured</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_no_fundal_view</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Axial Length (mm)</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_axial_length_group</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Brunescent/White Cataract</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_brunescent_white_cataract</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Alpha receptor blocker</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_alpha_receptor_blocker</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Surgeon Grade</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>pcrrisk_%position_doctor_grade_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Can lie flat</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_%position_can_lie_flat</GOTO_ID>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Clinical Management</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Management</OPEN_ELEMENT_CLASS_NAME>
+          <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Management_comments</GOTO_ID>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Cataract Surgical Management</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Which eye?</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>First eye</TERM>
+                <TERM>Second eye</TERM>
+              </SECONDARY_TERM_LIST>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_TAG>div</GOTO_TAG>
+              <GOTO_TEXT>First eye</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Straightforward case?</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_TAG>label</GOTO_TAG>
+              <GOTO_TEXT>Straightforward case</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Post operative refractive target</PRIMARY_TERM>
+              <DESCRIPTION>Post operative refractive target in dioptres</DESCRIPTION>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_target_postop_refraction</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Post operative refractive target</PRIMARY_TERM>
+              <DESCRIPTION>The post operative refractive target has been discussed with the patient</DESCRIPTION>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_TAG>div</GOTO_TAG>
+              <GOTO_TEXT>The post operative refractive target has been discussed with the patient</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Suitable for surgeon</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_suitable_for_surgeon_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Previous refractive surgery</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_TAG>div</GOTO_TAG>
+              <GOTO_TEXT>Previous refractive surgery</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Vitrectomised eye</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_TAG>div</GOTO_TAG>
+              <GOTO_TEXT>Vitrectomised eye</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Primary reason for cataract surgery</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_reasonForSurgery</GOTO_ID>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Glaucoma Overall Management plan</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Clinic interval</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_clinic_interval_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Photo</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_photo_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>OCT</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Optical coherence tomography</TERM>
+              </SECONDARY_TERM_LIST>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_oct_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Visual Fields</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_hfa_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Gonio</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Gonioscopy</TERM>
+              </SECONDARY_TERM_LIST>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_gonio_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>HRT</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Heidelberg Retinal Tomography</TERM>
+              </SECONDARY_TERM_LIST>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_hrt_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Comments</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_comments</GOTO_ID>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Glaucoma Current Management plan</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CurrentManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Glaucoma status</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CurrentManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_%position_glaucoma_status_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Drop-related problems</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CurrentManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_%position_drop-related_prob_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Drops</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CurrentManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_right_drops_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Surgery</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_CurrentManagementPlan</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_%position_surgery_id</GOTO_ID>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Laser Management</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_LaserManagement</OPEN_ELEMENT_CLASS_NAME>
+          <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_LaserManagement_%position_laser_status_id</GOTO_ID>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Injection Management</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Treatment</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_SUBCONTAINER_CLASS>$position-eye</GOTO_SUBCONTAINER_CLASS>
+              <GOTO_TAG>legend</GOTO_TAG>
+              <GOTO_TEXT>Treatment</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Diagnosis</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_%position_diagnosis1_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Intended Treatment</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_%position_treatment_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Risks</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_%position_risks</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Comments</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_InjectionManagementComplex</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_%position_comments</GOTO_ID>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Clinic Outcome</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome</OPEN_ELEMENT_CLASS_NAME>
+          <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome_status_id</GOTO_ID>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Examination Posterior Pole</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Comments</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_PosteriorPole_%position_description</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Hard drusen</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/HardDrusen.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>HardDrusen</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Geographic</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Geographic.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Geographic</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Choroidal new vessels</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/CNV.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>CNV</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>RPE detachment</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/RPEDetachment.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>RPEDetachment</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Epiretinal membrane</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/EpiretinalMembrane.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>EpiretinalMembrane</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Macular hole</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/MacularHole.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>MacularHole</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Macular dystrophy</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/MacularDystrophy.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>MacularDystrophy</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Macroaneurysm</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Macroaneurysm.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Macroaneurysm</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Retinal vein occluson</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/RetinalVeinOcclusionPostPole.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>RetinalVeinOcclusionPostPole</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Retinal artery occlusion</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/RetinalArteryOcclusionPostPole.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>RetinalArteryOcclusionPostPole</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Microaneurysm</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Microaneurysm.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Microaneurysm</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Blot Haemorrhage</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/BlotHaemorrhage.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>BlotHaemorrhage</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Hard Exudate</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/HardExudate.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>HardExudate</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>IMA</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Intraretinal microvascular abnormalities</TERM>
+              </SECONDARY_TERM_LIST>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/IRMA.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>IRMA</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Circinate retinopathy</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Circinate.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Circinate</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Macular thickening</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/MacularThickening.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>MacularThickening</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Cystoid macular oedema</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/CystoidMacularOedema.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>CystoidMacularOedema</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Pre-retinal haemorrhage</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/PreRetinalHaemorrhage.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>PreRetinalHaemorrhage</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Cotton wool spot</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/CottonWoolSpot.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>CottonWoolSpot</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Diabetic new vessels</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/DiabeticNV.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>DiabeticNV</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Vitreous opacity</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/VitreousOpacity.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>VitreousOpacity</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Fibrous proliferation</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/FibrousProliferation.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>FibrousProliferation</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Traction retinal detachment</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/TractionRetinalDetachment.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>TractionRetinalDetachment</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Swollen disc</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/SwollenDisc.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>SwollenDisc</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Parafoveal telangiectasia</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Telangiectasis.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Telangiectasis</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Choroidal haemorrhage</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/ChoroidalHaemorrhage.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>ChoroidalHaemorrhage</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Choroidal naevus</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/ChoroidalNaevus.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>ChoroidalNaevus</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Laser spot</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/LaserSpot.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>LaserSpot</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Focal laser</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/FocalLaser.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>FocalLaser</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Macular grid laser</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/MacularGrid.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>MacularGrid</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Sector PRP</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/SectorPRPPostPole.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>SectorPRPPostPole</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Panretinal photocoagulation</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/PRPPostPole.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>PRPPostPole</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Label</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Label.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
+              <GOTO_PROPERTY>Text</GOTO_PROPERTY>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Examination Gonioscopy</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Angle Open?</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Angle Close?</TERM>
+              </SECONDARY_TERM_LIST>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_SUBCONTAINER_CLASS>%position-eye</GOTO_SUBCONTAINER_CLASS>
+              <GOTO_TAG>div.field-label</GOTO_TAG>
+              <GOTO_TEXT>Angle Open?</GOTO_TEXT>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Van Herick</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy_%position_van_herick_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Comments</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy_%position_description</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Angle new vessels</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/AngleNV.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>AngleNV</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Anterior synechiae</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/AntSynech.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>AntSynech</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Angle recession</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/AngleRecession.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>AngleRecession</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Label</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Label.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Gonioscopy</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
+              <GOTO_PROPERTY>Text</GOTO_PROPERTY>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Examination Optic Disc</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Mode</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>%position_opticdisc_mode</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>C/D Ratio</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Cup To Disc Ratio</TERM>
+              </SECONDARY_TERM_LIST>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_%position_cd_ratio_id</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Vertical Diameter</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_%position_diameter</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Comments</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_%position_description</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Peripapillary atrophy</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/PeripapillaryAtrophy.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>PeripapillaryAtrophy</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Disc pallor</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/DiscPallor.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>DiscPallor</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Disc haemorrhage</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/DiscHaemorrhage.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>DiscHaemorrhage</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Nerve fibre defect</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/NerveFibreDefect.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>NerveFibreDefect</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Optic disc pit</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/OpticDiscPit.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>OpticDiscPit</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Papilloedema</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Papilloedema.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Papilloedema</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Label</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Label.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_OpticDisc</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
+              <GOTO_PROPERTY>Text</GOTO_PROPERTY>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Examination Fundus</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Vitreous</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Fundus_%position_vitreous</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Comments</PRIMARY_TERM>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Fundus_%position_description</GOTO_ID>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Rhegmatogenous retinal detachment</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/RRD.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>RRD</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Traction ‘U’ tear</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/UTear.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>UTear</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Round hole</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/RoundHole.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>RoundHole</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Dialysis</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Dialysis.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Dialysis</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Giant retinal tear</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/GRT.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>GRT</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Macular hole</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/MacularHole.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>MacularHole</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Star fold</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/StarFold.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>StarFold</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Anterior PVR</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/AntPVR.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>AntPVR</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Lattice</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Lattice.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Lattice</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Cryotherapy scar</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Cryo.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Cryo</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Circle of laser photocoagulation</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/LaserCircle.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>LaserCircle</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Drainage retinotomy</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/DrainageRetinotomy.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>DrainageRetinotomy</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Retinoschisis</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Retinoschisis.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Retinoschisis</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Outer leaf break</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/OuterLeafBreak.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>OuterLeafBreak</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Inner leaf break</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/InnerLeafBreak.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>InnerLeafBreak</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Label</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Label.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Fundus</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
+              <GOTO_PROPERTY>Text</GOTO_PROPERTY>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+        <INDEX>
+          <PRIMARY_TERM>Examination Anterior Segment</PRIMARY_TERM>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+          <INDEX_LIST>
+            <INDEX>
+              <PRIMARY_TERM>Label</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Label.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Label</GOTO_DOODLE_CLASS_NAME>
+              <GOTO_PROPERTY>Text</GOTO_PROPERTY>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Anterior chamber IOL</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Intraocular lens</TERM>
+                <TERM>ACIOL</TERM>
+                <TERM>AC</TERM>
+              </SECONDARY_TERM_LIST>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/ACIOL.png</IMG_URL>
+              <DESCRIPTION>Anterior chamber lens are fixed with the support of iris. Primarily used as a backup lens when there is damage to the Posterior Chamber. AC IOL is also used in refractive surgery – implanting a lens in phakic eye to correct the refractive power.</DESCRIPTION>
+              <GENERAL_NOTE>This is a general note</GENERAL_NOTE>
+              <WARNING_NOTE>This is a warning note</WARNING_NOTE>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>ACIOL</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Adenoviral keratitis</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/AdenoviralKeratitis.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>AdenoviralKeratitis</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Anterior segment</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/AntSeg.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>AntSeg</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Pupil size</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>AntSeg</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Pupil size</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>PXE</PRIMARY_TERM>
+                  <SECONDARY_TERM_LIST>
+                    <TERM>Pseudoxanthoma elasticum</TERM>
+                  </SECONDARY_TERM_LIST>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>AntSeg</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>PXE</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Coloboma</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>AntSeg</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Coloboma</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Colour</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>AntSeg</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Colour</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Ectropion uveae</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>AntSeg</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Ectropion uveae</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Corneal size</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>AntSeg</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Corneal size</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Cells</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>AntSeg</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Cells</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Flare</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>AntSeg</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Flare</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Trabeculectomy bleb</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Bleb.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Bleb</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Conjunctival suture</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/ConjunctivalSuture.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>ConjunctivalSuture</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Orientated</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>ConjunctivalSuture</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Orientated</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Type</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>ConjunctivalSuture</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Material</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>ConjunctivalSuture</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Material</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Size</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>ConjunctivalSuture</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Size</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Conjunctivitis</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Conjunctivitis.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Conjunctivitis</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Type</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Conjunctivitis</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Mucopurulent</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Conjunctivitis</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Mucopurulent</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Hyperaemia</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Conjunctivitis</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Hyperaemia</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Corneal epithelial defect</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/CornealEpithelialDefect.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>CornealEpithelialDefect</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Height</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CornealEpithelialDefect</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Height</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Width</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CornealEpithelialDefect</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Width</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Corneal laceration</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/CornealLaceration.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>CornealLaceration</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Laceration Depth %</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CornealLaceration</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Laceration Depth %</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Iris prolapse</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CornealLaceration</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Iris prolapse</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Corneal oedema</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/CornealOedema.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>CornealOedema</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Intensity</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CornealOedema</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Intensity</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Epithelial</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CornealOedema</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Epithelial</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Stromal</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CornealOedema</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Stromal</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Endothelial</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CornealOedema</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Endothelial</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Corneal opacity</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/CornealOpacity.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>CornealOpacity</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Height</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CornealOpacity</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Height</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Width</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CornealOpacity</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Width</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Depth (%)</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CornealOpacity</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Depth (%)</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Infiltrate width</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CornealOpacity</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Infiltrate width</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Corneal pigmentation</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Krukenberg spindle</TERM>
+                <TERM>Endothelium</TERM>
+                <TERM>Epithelial</TERM>
+                <TERM>Subepithelial</TERM>
+                <TERM>Anterior stromal</TERM>
+                <TERM>Mid stromal</TERM>
+                <TERM>Posterior stromal</TERM>
+                <TERM>Descemets</TERM>
+              </SECONDARY_TERM_LIST>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/CornealPigmentation.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>CornealPigmentation</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Level</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CornealPigmentation</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Level</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Type</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CornealPigmentation</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Corneal scar</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/CornealScar.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>CornealScar</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Corneal suture</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/CornealSuture.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>CornealSuture</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Removed</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>CornealSuture</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Removed</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Dendritic ulcer</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/DendriticUlcer.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>DendriticUlcer</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Episcleritis</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Episcleritis.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Episcleritis</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Severity</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Episcleritis</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Severity</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Guttata</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Fuchs</TERM>
+              </SECONDARY_TERM_LIST>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Fuchs.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Fuchs</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Hyphaema</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Hyphaema.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Hyphaema</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Hypopyon</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Hypopyon.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Hypopyon</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Keratic precipitates</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/KeraticPrecipitates.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>KeraticPrecipitates</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>LASIK flap</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Laser-assisted in situ keratomileusis</TERM>
+              </SECONDARY_TERM_LIST>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/LasikFlap.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>LasikFlap</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Hinge</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>LasikFlap</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Hinge</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Femto laser</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>LasikFlap</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Femto laser</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Diameter</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>LasikFlap</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Diameter</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Depth</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>LasikFlap</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Depth</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Sidecut angle</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>LasikFlap</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Sidecut angle</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Spot separation</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>LasikFlap</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Spot separation</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Line separation</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>LasikFlap</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Line separation</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Lens</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Lens.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Lens</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Nuclear cataract</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Lens</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Nuclear</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Cortical cataract</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Lens</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Cortical</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Posterior subcapsular cataract</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Lens</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Posterior subcapsular</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Anterior polar</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Lens</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Anterior polar</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Posterior polar</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Lens</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Posterior polar</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Coronary</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Lens</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Coronary</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Phacodonesis</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Lens</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Phacodonesis</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Marginal keratitis</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/MarginalKeratitis.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>MarginalKeratitis</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>% Epithelial defect of corneal infiltrate</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>MarginalKeratitis</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>% Epithelial defect of corneal infiltrate</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Metallic foreign body</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/MetallicForeignBody.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>MetallicForeignBody</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Metallic foreign body</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>MetallicForeignBody</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Metallic foreign body</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Rust ring</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>MetallicForeignBody</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Rust ring</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Coats ring</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>MetallicForeignBody</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Coats ring</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Tube patch</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Patch.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Patch</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Material</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Patch</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Material</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Posterior chamber IOL</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Intraocular lens</TERM>
+              </SECONDARY_TERM_LIST>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/PCIOL.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>PCIOL</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Fixation</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>PCIOL</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Fixation</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Peripheral iridectomy</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/PI.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>PI</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Type</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>PI</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Patent</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>PI</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Patent</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Pingueculum</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Pingueculum.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Pingueculum</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Posterior capsule</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/PosteriorCapsule.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>PosteriorCapsule</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Opacity</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>PosteriorCapsule</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Opacity</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Capsulotomy</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>PosteriorCapsule</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Capsulotomy</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Posterior synechia</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/PosteriorSynechia.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>PosteriorSynechia</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Pterygium</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Pterygium.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Pterygium</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Injection</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Pterygium</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Injection</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Stockers line</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Pterygium</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Stockers line</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Radial keratotomy</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/RK.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>RK</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Number of Cuts</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>RK</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Number of Cuts</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Rubeosis iridis</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Rubeosis.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Rubeosis</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Sector iridectomy</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/SectorIridectomy.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>SectorIridectomy</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Side port</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/SidePort.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>SidePort</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>SPEE</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Superficial punctate epithelial erosions</TERM>
+              </SECONDARY_TERM_LIST>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/SPEE.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>SPEE</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Supramid suture</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/Supramid.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Supramid</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Percentage of tube</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Supramid</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Percentage of tube</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Trabeculectomy flap</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/TrabyFlap.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>TrabyFlap</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Trabeculectomy suture</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/TrabySuture.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>TrabySuture</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Shape</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>TrabySuture</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Shape</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Material</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>TrabySuture</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Material</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Size</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>TrabySuture</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Size</GOTO_PROPERTY>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Removed</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>TrabySuture</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Removed</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Transillumination defect</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/TransilluminationDefect.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>TransilluminationDefect</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Drainage tube</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/new/Tube.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Tube</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Type</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>Tube</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Type</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Tube extender</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/TubeExtender.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>TubeExtender</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
+            <INDEX>
+              <PRIMARY_TERM>Ligation suture</PRIMARY_TERM>
+              <IMG_URL>protected/modules/eyedraw/assets/img/icons/32x32/draw/old/TubeLigation.png</IMG_URL>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>TubeLigation</GOTO_DOODLE_CLASS_NAME>
+              <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Material</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_DOODLE_CLASS_NAME>TubeLigation</GOTO_DOODLE_CLASS_NAME>
+                  <GOTO_PROPERTY>Material</GOTO_PROPERTY>
+                </INDEX>
+              </INDEX_LIST>
+            </INDEX>
+          </INDEX_LIST>
+        </INDEX>
+      </INDEX_LIST>
+    </EVENT>
+  </EVENT_LIST>
+</OE_ED_CONFIG>

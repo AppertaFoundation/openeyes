@@ -4,16 +4,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
  ?>
 <fieldset class="element-fields">
@@ -43,13 +42,33 @@
 	<?php echo $form->dropDownList($element, 'named_consultant_id', CHtml::listData(User::model()->findAll(array('condition' => 'is_consultant = 1 and is_surgeon=1', 'order' => 'last_name, first_name')), 'id', 'reversedFullName'), array('empty' => '- Please select -'), false, array('field' => 3));?>
 	<?php echo $form->radioBoolean($element, 'senior_fellow_to_do')?>
 	<?php echo $form->radioBoolean($element, 'any_grade_of_doctor')?>
-	<?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'AnaestheticType')?>
+
+    <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', 'Anaesthetic Type',
+        false, false, false, false,
+        array(
+                'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error' : ''
+        )
+    ); ?>
+
 	<?php $form->radioBoolean($element, 'anaesthetist_preop_assessment') ?>
 	<?php $form->radioButtons($element, 'anaesthetic_choice_id', 'OphTrOperationbooking_Anaesthetic_Choice') ?>
 	<?php $form->radioBoolean($element, 'stop_medication') ?>
 	<?php $form->textArea($element, 'stop_medication_details', array('rows' => 4), true, array(), array_merge($form->layoutColumns, array('field' => 4))) ?>
 	<?php echo $form->radioBoolean($element, 'overnight_stay')?>
-	<?php echo $form->dropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution(), array(), false, array('field' => 2))?>
+    <?php
+
+        $options = array(
+            $this->selectedSiteId=>array('selected'=>true)
+        );
+
+        echo $form->dropDownList(
+            $element,
+            'site_id',
+            CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList(), 'id', 'short_name'),
+            array('empty' => '- None -', 'options' => $options),
+            false,
+            array('field' => 2));
+    ?>
 	<?php echo $form->radioButtons($element, 'priority_id', CHtml::listData(OphTrOperationbooking_Operation_Priority::model()->notDeletedOrPk($element->priority_id)->findAll(array('order' => 'display_order asc')), 'id', 'name'))?>
 	<?php
         if (Yii::app()->params['ophtroperationbooking_referral_link']) {

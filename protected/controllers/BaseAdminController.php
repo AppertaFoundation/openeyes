@@ -6,16 +6,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class BaseAdminController extends BaseController
 {
@@ -86,6 +85,7 @@ class BaseAdminController extends BaseController
             'filter_fields' => array(),
             'filters_ready' => true,
             'label_extra_field' => false,
+            'description' => ''
         ), $options);
 
         $columns = $model::model()->metadata->columns;
@@ -158,6 +158,12 @@ class BaseAdminController extends BaseController
 
                             foreach ($options['extra_fields'] as $field) {
                                 $name = $field['field'];
+                                if (!array_key_exists($name, $attributes)) {
+                                    // getAttributes doesn't return relations, so this sets this up
+                                    // to enable the change check below. This will give false positives for saves
+                                    // but is a simple solution for now.
+                                    $attributes[$name] = $item->$name;
+                                }
                                 $item->$name = @$_POST[$name][$i];
                             }
 
@@ -202,9 +208,18 @@ class BaseAdminController extends BaseController
                         $this->addFilterCriteria($criteria, $options['filter_fields']);
 
                         $to_delete = $model::model()->findAll($criteria);
-                        foreach ($to_delete as $item) {
+                        foreach ($to_delete as $i=>$item) {
                             if (!$item->delete()) {
-                                throw new Exception("Unable to delete {$model}:{$item->primaryKey}");
+                                $tx->rollback();
+                                $error = $item->getErrors();
+                                foreach ($error as $e)
+                                {
+                                    $errors[$i]=$e[0];
+                                }
+
+                                Yii::app()->user->setFlash('error.error', implode('<br/>', $errors));
+                                $this->redirect(Yii::app()->request->url);
+
                             }
                             Audit::add('admin', 'delete', $item->primaryKey, null, array(
                                 'module' => (is_object($this->module)) ? $this->module->id : 'core',

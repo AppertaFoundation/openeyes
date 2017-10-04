@@ -5,38 +5,37 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<h1 class="badge">Theatre Diaries</h1>
 <div class="row">
     <div class="large-8 large-centered column">
         <?php $this->renderPartial('//base/_messages'); ?>
     </div>
 </div>
 <div class="box content">
-
-	<div class="panel panel actions row">
-            
+	<div class="oe-header-panel row">
 		<div class="large-12 column">
-			<div class="label">
-				Use the filters below to view Theatre schedules:
-			</div>
-			<?php if ($this->checkAccess('OprnPrint')) {?>
-				<div class="button-bar">
-					<button id="btn_print_diary" class="small">Print</button>
-					<button id="btn_print_diary_list" class="small">Print list</button>
+			<h1>Theatre Diaries</h1>
+			<div class="panel actions">
+				<div class="label">
+					Use the filters below to view Theatre schedules:
 				</div>
-			<?php }?>
+				<?php if ($this->checkAccess('OprnPrint')) {?>
+					<div class="button-bar">
+						<button id="btn_print_diary" class="small">Print</button>
+						<button id="btn_print_diary_list" class="small">Print list</button>
+					</div>
+				<?php }?>
+			</div>
 		</div>
 	</div>
 

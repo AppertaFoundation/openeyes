@@ -19,6 +19,9 @@ class GenericAdmin extends BaseCWidget
     public $data;
     public $display_order;
     public $label_extra_field;
+    public $description;
+    public $cannot_add = false;
+    public $cannot_delete = false;
 
     public function init()
     {

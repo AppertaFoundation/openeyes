@@ -5,46 +5,58 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 <?php
+$cross_section_ed = null;
+
+if ($element->isNewRecord || $element->{$side . '_eyedraw2'}) {
+    // only display the cross section eyedraw for elements created after it was introduced
+    // legacy records will not have the the eyedraw2 property
+    // Having checked it though, we set the value to null, so that it's contents are driven
+    // by the stored data in the core eyedraw attribute.
+    $element->{$side . '_eyedraw2'} = null;
+
+    $cross_section_ed = $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+        'listenerArray' => array('anteriorSegmentListener'),
+        'idSuffix' => $side.'_'.$element->elementType->id . '_side',
+        'side' => ($side == 'right') ? 'R' : 'L',
+        'mode' => 'edit',
+        'width' => 198,
+        'height' => 300,
+        'model' => $element,
+        'attribute' => $side . '_eyedraw2',
+        'offsetX' => 10,
+        'offsetY' => 10,
+        'toolbar' => false,
+        'showDrawingControls' => false,
+        'showDoodlePopup' => true,
+        'showDoodlePopupForDoodles' => array('CorneaCrossSection'),
+        'popupDisplaySide' => 'left',
+        'template' => 'OEEyeDrawWidget_InlineToolbar',
+    ), true);
+}
+
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
-        array('NuclearCataract', 'CorticalCataract', 'PostSubcapCataract', 'PCIOL', 'ACIOL', 'Bleb', 'PI',
-            'Fuchs', 'RK', 'LasikFlap', 'CornealScar', 'SectorIridectomy', 'PosteriorSynechia', 'Rubeosis',
-            'TransilluminationDefect', 'KrukenbergSpindle', 'KeraticPrecipitates', 'PosteriorCapsule', 'Hypopyon',
-            'CornealOedema', 'Episcleritis', 'Hyphaema', ),
-        array('TrabySuture', 'Supramid', 'TubeLigation', 'CornealSuture', 'TrabyFlap', 'SidePort', 'Patch',
-            'ConjunctivalSuture', 'ACMaintainer', 'Tube', 'TubeExtender', ),
+        array('Lens', 'PCIOL', 'Bleb', 'PI', 'Fuchs', 'CornealOedema', 'PosteriorCapsule', 'CornealPigmentation',
+            'TransilluminationDefect', 'Hypopyon', 'Hyphaema', 'CornealScar', 'Rubeosis', 'SectorIridectomy', 'ACIOL',
+            'LasikFlap', 'CornealSuture', 'ConjunctivalSuture', 'TrabySuture', 'DendriticUlcer','AdenoviralKeratitis',
+            'CornealLaceration', 'MarginalKeratitis', 'MetallicForeignBody', 'Pingueculum', 'Pterygium'),
+        array('SPEE', 'CornealEpithelialDefect', 'CornealOpacity', 'Conjunctivitis', 'PosteriorSynechia',
+            'KeraticPrecipitates', 'Episcleritis', 'TrabyFlap', 'Tube', 'TubeExtender', 'Supramid', 'TubeLigation',
+            'Patch', 'SidePort', 'RK',)
     ),
-    'onReadyCommandArray' => array(
-        array('addDoodle', array('AntSeg')),
-        array('deselectDoodles', array()),
-    ),
-    'bindingArray' => array(
-        'NuclearCataract' => array(
-            'grade' => array('id' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_nuclear_id', 'attribute' => 'data-value'),
-        ),
-        'CorticalCataract' => array(
-            'grade' => array('id' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_cortical_id', 'attribute' => 'data-value'),
-        ),
-    ),
-    'deleteValueArray' => array(
-        'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_nuclear_id' => '',
-        'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_cortical_id' => '',
-    ),
-    'listenerArray' => array('anteriorListener', 'pupilListener'),
-
+    'listenerArray' => array('anteriorSegmentListener', 'autoReportListener'),
     'idSuffix' => $side.'_'.$element->elementType->id,
     'side' => ($side == 'right') ? 'R' : 'L',
     'mode' => 'edit',
@@ -55,10 +67,10 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'maxToolbarButtons' => 7,
     'template' => 'OEEyeDrawWidget_InlineToolbar',
     'toggleScale' => 0.72,
-    'fields' => $this->renderPartial($element->form_view.'_OEEyeDraw_fields', array(
-        'form' => $form,
-        'side' => $side,
-        'element' => $element,
-    ), true),
+    'popupDisplaySide' => 'left',
+    'autoReport' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment_'.$side.'_ed_report',
+    'autoReportEditable' => false,
+    'fields' => $cross_section_ed
 ));
+
 ?>

@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class DefaultController extends BaseEventTypeController
 {
@@ -27,6 +26,19 @@ class DefaultController extends BaseEventTypeController
     public $booking_event;
     public $booking_operation;
     public $unbooked = false;
+
+    protected function beforeAction($action)
+    {
+        //adding Anaestethic JS
+        $url = Yii::app()->getAssetManager()->publish( Yii::getPathOfAlias('application.modules.OphTrOperationnote.assets.js') );
+        Yii::app()->clientScript->registerScriptFile($url . '/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
+        Yii::app()->clientScript->registerScript(
+            'AnaestheticController',
+            'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrConsent_Procedure_AnaestheticType\'});',CClientScript::POS_END);
+
+        return parent::beforeAction($action);
+    }
+
     /**
      * Set up procedures from booking event.
      *
@@ -39,7 +51,34 @@ class DefaultController extends BaseEventTypeController
             $element->booking_event_id = $this->booking_event->id;
             if ($this->booking_operation) {
                 $element->eye_id = $this->booking_operation->eye_id;
-                $element->anaesthetic_type_id = $this->booking_operation->anaesthetic_type_id;
+
+                $type_assessments_by_id = array();
+                foreach ($element->anaesthetic_type_assignments as $type_assignments) {
+                    $type_assessments_by_id[$type_assignments->anaesthetic_type_id] = $type_assignments;
+                }
+
+                //$element->anaesthetic_type_id = $this->booking_operation->anaesthetic_type_id;
+                $anaesthetic_types = array();
+                if ($this->booking_operation->anaesthetic_type) {
+                    foreach ($this->booking_operation->anaesthetic_type as $anaesthetic_type) {
+
+                        if( !array_key_exists($anaesthetic_type->id, $type_assessments_by_id) ){
+                            $anaesthetic_type_assesment = new OphTrConsent_Procedure_AnaestheticType();
+                        } else {
+                            $anaesthetic_type_assesment = $type_assessments_by_id[$anaesthetic_type->id];
+                        }
+
+                        $anaesthetic_type_assesment->et_ophtrconsent_procedure_id = $element->id;
+                        $anaesthetic_type_assesment->anaesthetic_type_id = $anaesthetic_type->id;
+
+                        $type_assessments[] = $anaesthetic_type_assesment;
+                        $anaesthetic_types[] = $anaesthetic_type;
+                    }
+
+                    $element->anaesthetic_type_assignments = $type_assessments;
+                    $element->anaesthetic_type = $anaesthetic_types;
+                }
+
                 $element->procedures = $this->booking_operation->procedures;
                 $additional = array();
                 $additional_ids = array();
@@ -125,6 +164,17 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
+     * @param $default_view
+     */
+    public function renderSidebar($default_view)
+    {
+        if (!$this->booking_event && !$this->unbooked) {
+            $this->show_element_sidebar = false;
+        }
+        parent::renderSidebar($default_view);
+    }
+
+    /**
      * Manage picking an extant booking for setting consent form defaults.
      *
      * (non-phpdoc)
@@ -154,9 +204,7 @@ class DefaultController extends BaseEventTypeController
             $bookings = array();
 
             if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-                if ($episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
-                    $bookings = $api->getOperationsForEpisode($episode->id);
-                }
+                $bookings = $api->getOperationsForEpisode($this->patient);
             }
 
             $this->title = 'Please select booking';
@@ -305,6 +353,39 @@ class DefaultController extends BaseEventTypeController
             $type->draft = 0;
             if (!$type->save()) {
                 throw new Exception('Unable to mark consent form printed: '.print_r($type->getErrors(), true));
+            }
+        }
+    }
+
+    protected function saveComplexAttributes_Element_OphTrConsent_Procedure($element, $data, $index)
+    {
+        $curr_by_id = array();
+        foreach ($element->anaesthetic_type as $type) {
+            $curr_by_id[$type->id] = OphTrConsent_Procedure_AnaestheticType::model()->findByAttributes(array(
+                'et_ophtrconsent_procedure_id' => $element->id,
+                'anaesthetic_type_id' => $type->id
+            ));
+        }
+
+        if (isset($data['AnaestheticType']) && !empty($data['AnaestheticType'])) {
+            foreach ($data['AnaestheticType'] as $type_id) {
+                if (!isset($curr_by_id[$type_id])) {
+                    $type = new OphTrConsent_Procedure_AnaestheticType();
+                    $type->et_ophtrconsent_procedure_id = $element->id;
+                    $type->anaesthetic_type_id = $type_id;
+
+                    if (!$type->save()) {
+                        throw new Exception('Unable to save anaesthetic agent assignment: '.print_r($type->getErrors(), true));
+                    }
+                } else {
+                    unset($curr_by_id[$type_id]);
+                }
+            }
+        }
+
+        foreach ($curr_by_id as $type) {
+            if (!$type->delete()) {
+                throw new Exception('Unable to delete anaesthetic agent assignment: '.print_r($type->getErrors(), true));
             }
         }
     }

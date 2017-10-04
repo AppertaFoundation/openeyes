@@ -6,16 +6,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -263,12 +262,11 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
 
     protected function afterSave()
     {
-        if($this->draft)
-        {
+        if(($this->draft == 0) && ($this->printed == 0)){
+            $this->event->deleteIssue('Draft');
+        } else if($this->draft == 1) {
             $this->event->addIssue('Draft');
-        }
-        else
-        {
+        } else {
             $this->event->deleteIssue('Draft');
         }
 
@@ -330,11 +328,9 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
                 }
                 $item_model->frequency_id = $item['frequency_id'];
                 $item_model->duration_id = $item['duration_id'];
-                if (isset($item['continue_by_gp'])) {
-                    $item_model->continue_by_gp = $item['continue_by_gp'];
-                } else {
-                    $item_model->continue_by_gp = 0;
-                }
+                $item_model->dispense_condition_id = $item['dispense_condition_id'];
+                $item_model->dispense_location_id = $item['dispense_location_id'];
+
                 $item_model->save();
 
                 // Tapering
@@ -360,6 +356,13 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
             OphDrPrescription_ItemTaper::model()->deleteByPk(array_values($existing_taper_ids));
             OphDrPrescription_Item::model()->deleteByPk(array_values($existing_item_ids));
         }
+
+        if (!$this->draft) {
+            $this->getApp()->event->dispatch('after_medications_save', array(
+                'patient' => $this->event->getPatient(),
+                'drugs' => array_map(function($item) {return $item->drug; }, $this->items)
+            ));
+        }
     }
 
     /**
@@ -369,7 +372,9 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      */
     public function getInfotext()
     {
-        if (!$this->printed) {
+        if(($this->draft == 0) && ($this->printed == 0)){
+            return 'Saved';
+        } else if (!$this->printed) {
             return 'Draft';
         } else {
             return 'Printed';

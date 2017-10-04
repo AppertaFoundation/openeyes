@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2012
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class ProcessHscicDataCommand extends CConsoleCommand
 {
@@ -73,31 +72,31 @@ class ProcessHscicDataCommand extends CConsoleCommand
     private static $file_config = array(
         'full' => array(
             'gp' => array(
-                    'url' => '/media/370/egpcur/zip/egpcur.zip',
+                    'url' => 'egpcur',
                     'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
              ),
             'practice' => array(
-                    'url' => '/media/372/epraccur/zip/epraccur.zip',
+                    'url' => 'epraccur',
                     'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
             'ccg' => array(
-                    'url' => '/media/354/eccg/zip/eccg.zip',
+                    'url' => 'eccg',
                     'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
             ),
             'ccgAssignment' => array(
-                    'url' => '/media/378/epcmem/zip/epcmem.zip',
+                    'url' => 'epcmem',
                     'fields' => array('practice_code', 'ccg_code'),
             ),
         ),
         'monthly' => array(
             'gp' => array(
-                'url' => '/media/510/egpam/zip/egpam.zip',
+                'url' => 'egpam',
                 'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
         ),
         'quarterly' => array(
             'gp' => array(
-                'url' => '/media/530/egpaq/zip/egpaq.zip',
+                'url' => 'egpaq',
                 'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
         ),
@@ -118,7 +117,50 @@ class ProcessHscicDataCommand extends CConsoleCommand
             mkdir($this->tempPath, 0777, true);
         }
 
-        $this->files = $this->mapFileConfig(static::$file_config);
+        echo "Identifying dynamic file URLs...\n";
+        $error_message = null;
+
+        $curl = curl_init(static::$base_url . '/organisation-data-service/data-downloads/gp-data');
+        curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $output = curl_exec($curl);
+
+        if (curl_errno($curl)) {
+            $error_message = 'Curl error: '.curl_errno($curl);
+        } else {
+            $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            if ($status != 200) {
+                $error_message = 'Bad Status Code: '.$status;
+            }
+        }
+        curl_close($curl);
+
+        if ($error_message) {
+            throw new Exception($error_message, static::$DOWNLOAD_FAILED);
+        }
+
+        $curl = curl_init(static::$base_url . '/organisation-data-service/data-downloads/other-nhs');
+        curl_setopt($curl, CURLOPT_PROXY, Yii::app()->params['curl_proxy']);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $this->timeout);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $output2 = curl_exec($curl);
+
+        if (curl_errno($curl)) {
+            $error_message = 'Curl error: '.curl_errno($curl);
+        } else {
+            $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            if ($status != 200) {
+                $error_message = 'Bad Status Code: '.$status;
+            }
+        }
+        curl_close($curl);
+
+        if ($error_message) {
+            throw new Exception($error_message, static::$DOWNLOAD_FAILED);
+        }
+
+        $this->files = $this->mapFileConfig(static::$file_config, $output . $output2);
 
         parent::__construct(null, null);
     }
@@ -127,20 +169,21 @@ class ProcessHscicDataCommand extends CConsoleCommand
      * @param $config
      * @return array
      */
-    private function mapFileConfig($config)
+    private function mapFileConfig($config, $output)
     {
         $struct = array();
         foreach ($config as $k => $v) {
             if (is_array($v)) {
-                $struct[$k] = $this->mapFileConfig($v);
+                $struct[$k] = $this->mapFileConfig($v, $output);
             }
             else {
                 switch ((string) $k) {
                     case 'url':
-                        if (substr($v, 0, 4) == 'http') {
-                            $struct[$k] = $v;
+                        if (preg_match('~href="(.*?\/media\/.*?\/' . $v . '.*?)"~', $output, $match) ) {
+                            echo "Found match for $v: $match[1]\n";
+                            $struct[$k] = $match[1] . '.zip';
                         } else {
-                            $struct[$k] = static::$base_url . $v;
+                            throw new Exception("Could not find match for $v", static::$DOWNLOAD_FAILED);
                         }
                         break;
                     default:
@@ -329,7 +372,7 @@ EOH;
             throw new Exception("Failed to open zip file '{$file}': ".$res, static::$UNEXPECTED_FILE_PROBLEM);
         }
 
-        $fileName = str_replace('.zip', '.csv', $pathInfo['basename']);
+        $fileName = preg_replace('/\d+/', '', str_replace('.zip', '.csv', $pathInfo['basename']));
 
         if (!($stream = $zip->getStream($fileName))) {
             throw new Exception("Failed to extract '{$fileName}' from zip file at '{$file}'", static::$UNEXPECTED_FILE_PROBLEM);
@@ -356,7 +399,7 @@ EOH;
             $this->usageError("Failed to open zip file '{$file}': ".$res);
         }
 
-        $fileName = str_replace('.zip', '.csv', $pathInfo['basename']);
+        $fileName = preg_replace('/\d+/', '', str_replace('.zip', '.csv', $pathInfo['basename']));
 
         if (!($stream = $zip->getStream($fileName))) {
             throw new Exception("Failed to extract '{$fileName}' from zip file at '{$file}'", static::$UNEXPECTED_FILE_PROBLEM);
@@ -951,7 +994,7 @@ EOH;
      */
     private function download($url, $file)
     {
-        echo 'Downloading... '.basename($file);
+        echo "Downloading $url to $file\n";
         $error_message = null;
 
         $file_handler = fopen($file, 'w');

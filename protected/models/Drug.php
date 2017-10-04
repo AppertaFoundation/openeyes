@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -29,16 +28,18 @@
  * @property string $aliases
  * @property string $dose_unit
  * @property string $default_dose
- * @property int $preservative_free
  * @property Allergy[] $allergies
- * @property DrugType $type
+ * @property DrugType[] $type
  * @property DrugForm $form
  * @property DrugRoute $default_route
  * @property DrugFrequency $default_frequency
  * @property DrugDuration $default_duration
+ * @property Tag[] $tags
  */
 class Drug extends BaseActiveRecordVersioned
 {
+    protected $auto_update_relations = true;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -70,7 +71,8 @@ class Drug extends BaseActiveRecordVersioned
         return array(
             array('name, tallman', 'required'),
             array('name', 'unsafe', 'on' => 'update'),
-            array('tallman, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe'),
+            array('tallman, dose_unit, default_dose, type_id, form_id, default_duration_id, default_frequency_id, '
+                .'default_route_id, preservative_free, active, allergies, aliases, national_code, tags', 'safe'),
         );
     }
 
@@ -81,12 +83,13 @@ class Drug extends BaseActiveRecordVersioned
     {
         return array(
             'allergies' => array(self::MANY_MANY, 'Allergy', 'drug_allergy_assignment(drug_id, allergy_id)'),
-            'type' => array(self::BELONGS_TO, 'DrugType', 'type_id'),
+            'type' => array(self::MANY_MANY, 'DrugType', 'drug_drug_type(drug_id, drug_type_id)'),
             'form' => array(self::BELONGS_TO, 'DrugForm', 'form_id'),
             'default_duration' => array(self::BELONGS_TO, 'DrugDuration', 'default_duration_id'),
             'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'default_frequency_id'),
             'default_route' => array(self::BELONGS_TO, 'DrugRoute', 'default_route_id'),
             'subspecialtyAssignments' => array(self::HAS_MANY, 'SiteSubspecialtyDrug', 'drug_id'),
+            'tags' => array(self::MANY_MANY, 'Tag', 'drug_tag(drug_id, tag_id)'),
         );
     }
 
@@ -106,13 +109,14 @@ class Drug extends BaseActiveRecordVersioned
     public function behaviors()
     {
         return array(
+            'TaggedActiveRecordBehavior' => 'TaggedActiveRecordBehavior',
             'LookupTable' => 'LookupTable',
         );
     }
 
     public function getLabel()
     {
-        if ($this->preservative_free) {
+        if ($this->isPreservativeFree()) {
             return $this->name.' (No Preservative)';
         } else {
             return $this->name;
@@ -121,7 +125,7 @@ class Drug extends BaseActiveRecordVersioned
 
     public function getTallmanLabel()
     {
-        if ($this->preservative_free) {
+        if ($this->isPreservativeFree()) {
             return $this->tallman.' (No Preservative)';
         } else {
             return $this->tallman;
@@ -181,5 +185,22 @@ class Drug extends BaseActiveRecordVersioned
             'route_id' => $this->default_route_id,
             'frequency_id' => $this->default_frequency_id,
         );
+    }
+
+    /**
+     * @return bool
+     *
+     * Returns true if the tag 'Preservative free' is
+     * added to this drug
+     */
+
+    public function isPreservativeFree()
+    {
+        return in_array(1, array_map(function($e){ return $e->id; }, $this->tags));
+    }
+
+    public function __toString()
+    {
+        return $this->getLabel();
     }
 }

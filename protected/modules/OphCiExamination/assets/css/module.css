@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 /* line 17, ../sass/components/_event.scss */
 .event {
@@ -22,19 +21,19 @@
 }
 /* line 19, ../sass/components/_event.scss */
 .event .event-content {
-  background-image: url('../img/watermark.png');
+  background-image: url('../img/watermark.png?1481206058');
 }
 /* line 21, ../sass/components/_event.scss */
 .event .event-content.auto {
-  background-image: url('../img/watermark-auto.png');
+  background-image: url('../img/watermark-auto.png?1490706503');
 }
 /* line 25, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png');
+  background-image: url('../img/medium.png?1481206058');
 }
 /* line 27, ../sass/components/_event.scss */
 .event .event-title.auto {
-  background-image: url('../img/medium-auto.png');
+  background-image: url('../img/medium-auto.png?1490706503');
 }
 
 /* line 33, ../sass/components/_event.scss */
@@ -90,6 +89,21 @@
   width: 4em;
 }
 
+/* line 5, ../sass/components/elements/_family-history.scss */
+section.OEModule_OphCiExamination_models_FamilyHistory table#OEModule_OphCiExamination_models_FamilyHistory_entry_table tr td {
+  vertical-align: top;
+  width: 20%;
+}
+
+/* line 5, ../sass/components/elements/_allergies.scss */
+section.OEModule_OphCiExamination_models_Allergies table#OEModule_OphCiExamination_models_Allergies_entry_table tr td {
+  vertical-align: bottom;
+}
+/* line 8, ../sass/components/elements/_allergies.scss */
+section.OEModule_OphCiExamination_models_Allergies table#OEModule_OphCiExamination_models_Allergies_entry_table tr td:not(.edit-column) {
+  width: 40%;
+}
+
 /* line 18, ../sass/components/elements/_gonioscopy.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_Gonioscopy .eyedraw-fields {
   padding-top: 36px;
@@ -100,14 +114,34 @@
   padding-top: 35px;
 }
 
-/* line 18, ../sass/components/elements/_anterior-segment.scss */
-.OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment .eyedraw-fields {
-  padding-top: 36px;
+/* line 19, ../sass/components/elements/_anterior-segment.scss */
+.OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment .left .eyedraw-row {
+  margin-left: -13px;
+}
+/* line 23, ../sass/components/elements/_anterior-segment.scss */
+.OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment .ed-fields-container {
+  padding-top: 111px;
+  left: -15px;
+}
+
+/* line 30, ../sass/components/elements/_anterior-segment.scss */
+.anterior-segment .ed-widget.display {
+  display: inline-block;
+}
+
+/* line 34, ../sass/components/elements/_anterior-segment.scss */
+.OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment {
+  background-color: #e4edf5;
+}
+/* line 37, ../sass/components/elements/_anterior-segment.scss */
+.OEModule_OphCiExamination_models_Element_OphCiExamination_AnteriorSegment .sub-elements.active {
+  display: inline-block;
+  width: 100%;
 }
 
 /* line 18, ../sass/components/elements/_posterior-pole.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_PosteriorPole .eyedraw-fields {
-  padding-top: 140px;
+  padding-top: 185px;
 }
 
 /* line 19, ../sass/components/elements/_visual-acuity.scss */
@@ -136,7 +170,7 @@
 /* line 18, ../sass/components/elements/_current-management.scss */
 .OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan .past_iop {
   height: 28px;
-  background: url('../img/past_icon.png') no-repeat right top;
+  background: url('../img/past_icon.png?1481206058') no-repeat right top;
 }
 
 /* line 1, ../sass/components/elements/_pcr.scss */
@@ -167,9 +201,84 @@
   background-color: #008000;
 }
 
+/* line 2, ../sass/components/elements/_surgical-lids.scss */
+.OEModule_OphCiExamination_models_SurgicalLids .eyedraw-fields {
+  padding-top: 40px;
+}
+
+/* line 1, ../sass/components/elements/_history-medications.scss */
+.date-control {
+  float: right;
+}
+
+/* line 7, ../sass/components/elements/_history-medications.scss */
+.OEModule_OphCiExamination_models_HistoryMedications table tr {
+  vertical-align: top;
+}
+/* line 9, ../sass/components/elements/_history-medications.scss */
+.OEModule_OphCiExamination_models_HistoryMedications table tr fieldset.row {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+/* line 14, ../sass/components/elements/_history-medications.scss */
+.OEModule_OphCiExamination_models_HistoryMedications table th.date-col {
+  min-width: 300px;
+}
+
+/* line 20, ../sass/components/elements/_history-medications.scss */
+a.start-medication {
+  color: #43a844;
+}
+
+/* line 24, ../sass/components/elements/_history-medications.scss */
+a.stop-medication {
+  color: #cf0d27;
+}
+
+/* line 28, ../sass/components/elements/_history-medications.scss */
+.not-synced {
+  color: #cf0d27;
+}
+
+/* line 32, ../sass/components/elements/_history-medications.scss */
+.laterality {
+  background-color: transparent;
+  color: #fff;
+  font-size: 9px;
+  padding: 2px 4px 2px 4px;
+  margin-right: 22px;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+}
+/* line 40, ../sass/components/elements/_history-medications.scss */
+.laterality.R {
+  background-color: #9fec6d;
+  color: #747782;
+  margin-left: 0px;
+  margin-right: 17px;
+}
+/* line 46, ../sass/components/elements/_history-medications.scss */
+.laterality.L {
+  background-color: #fe6767;
+  margin-left: 15px;
+  margin-right: 2px;
+}
+/* line 51, ../sass/components/elements/_history-medications.scss */
+.laterality.B {
+  margin-right: 12px;
+  margin-left: 10px;
+  background-color: #747782;
+}
+
+/* line 34, ../sass/components/_elements.scss */
+.autoreport-display {
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
 /* line 17, ../sass/components/_gonio-cross.scss */
 .gonio-cross {
-  background: url('../img/cross.gif') no-repeat center center;
+  background: url('../img/cross.gif?1481206058') no-repeat center center;
   height: 110px;
   margin: 0 0 10px 0;
   position: relative;
@@ -179,7 +288,7 @@
   /* line 17, ../sass/components/_gonio-cross.scss */
   .gonio-cross {
     -webkit-print-color-adjust: exact;
-    background: url('../img/cross.gif') no-repeat center center !important;
+    background: url('../img/cross.gif?1481206058') no-repeat center center !important;
   }
 }
 /* line 27, ../sass/components/_gonio-cross.scss */
@@ -365,6 +474,20 @@
 table.bleb-assessment th, table.bleb-assessment td {
   text-align: center;
 }
+/* line 24, ../sass/components/_tables.scss */
+table .fuzzy-date .row {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+/* line 28, ../sass/components/_tables.scss */
+table .fuzzy-date .column {
+  padding-left: 0.1rem;
+  padding-right: 0.1rem;
+}
+/* line 34, ../sass/components/_tables.scss */
+table input.other-type-input {
+  margin-top: 3px;
+}
 
 /* line 18, ../sass/components/_admin.scss */
 #admin_workflow_steps .selectable {
@@ -391,4 +514,26 @@ table.bleb-assessment th, table.bleb-assessment td {
 #postop-complications #draggablelist #draggablelist-items .available-items {
   max-height: 500;
   overflow: auto;
+}
+
+/* line 1, ../sass/components/_comma-list.scss */
+ul.comma-list {
+  display: inline;
+  margin-left: 0px;
+}
+/* line 4, ../sass/components/_comma-list.scss */
+ul.comma-list li {
+  white-space: nowrap;
+  margin-left: 0px;
+  margin-right: 2px;
+  display: inline;
+  list-style: none;
+}
+/* line 10, ../sass/components/_comma-list.scss */
+ul.comma-list li:after {
+  content: " //";
+}
+/* line 13, ../sass/components/_comma-list.scss */
+ul.comma-list li:last-child:after {
+  content: "";
 }

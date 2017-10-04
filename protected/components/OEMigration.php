@@ -3,19 +3,19 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * 
+ * Copyright OpenEyes Foundation, 2017
+ *
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @copyright Copyright 2017, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class OEMigration extends CDbMigration
 {
@@ -378,6 +378,9 @@ class OEMigration extends CDbMigration
         if (isset($params['parent_name'])) {
             $parent_class = "Element_{$event_type}_{$params['parent_name']}";
             $row['parent_element_type_id'] = $this->getIdOfElementTypeByClassName($parent_class);
+        } elseif (isset($params['parent_class'])) {
+            // introduced for supporting elements that are a little more flexible on class name vs name
+            $row['parent_element_type_id'] = $this->getIdOfElementTypeByClassName($params['parent_class']);
         }
 
         $this->insert('element_type', $row);
@@ -397,6 +400,21 @@ class OEMigration extends CDbMigration
         return $this->dbConnection->createCommand()
             ->select('id')
             ->from('element_type')
+            ->where('class_name=:class_name', array(':class_name' => $className))
+            ->queryScalar();
+    }
+
+    /**
+     * Get the id of the event type
+     *
+     * @param $className
+     * @return mixed - the value of the id. False is returned if there is no value.
+     */
+    protected function getIdOfEventTypeByClassName($className)
+    {
+        return $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('event_type')
             ->where('class_name=:class_name', array(':class_name' => $className))
             ->queryScalar();
     }
@@ -661,6 +679,75 @@ class OEMigration extends CDbMigration
     public function setVerbose($verbose = true)
     {
         $this->verbose = $verbose;
+    }
+
+    /**
+     * @param $event_type_id
+     * @param $code
+     * @param $method
+     * @param $description
+     * @param $global_scope
+     * @throws Exceptio
+     */
+    public function registerShortcode($event_type_id, $code, $method, $description, $global_scope = 1)
+    {
+        if (!preg_match('/^[a-zA-Z]{3}$/', $code)) {
+            throw new Exception("Invalid shortcode: $code");
+        }
+
+        $default_code = $code;
+
+        if ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where('code = :code', array(':code' => strtolower($code)))->queryRow()) {
+            $n = '00';
+            while ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where('code = :code', array(':code' => 'z'.$n))->queryRow()) {
+                $n = str_pad((int) $n + 1, 2, '0', STR_PAD_LEFT);
+            }
+            $code = "z$n";
+
+            echo "Warning: attempt to register duplicate shortcode '$default_code', replaced with 'z$n'\n";
+        }
+
+        $cols = array(
+            'event_type_id' => $event_type_id,
+            'code' => $code,
+            'default_code' => $default_code,
+            'method' => $method,
+            'description' => $description
+        );
+
+        // global scope was added later to the table. Uses of this method in
+        // migrations before this column was added will fail if we attempt to
+        // set a column that does not exist. It only has an effect if set to
+        // false (defaults to true in the table), so we use that as an
+        // indicator that the call should set the value.
+        if (!$global_scope) {
+            $cols['global_scope'] = 0;
+        }
+
+        $this->insert('patient_shortcode', $cols);
+    }
+
+    /**
+     * Create $dest table and duplicate data from $source into it
+     *
+     * @param $source
+     * @param $dest
+     * @param $cols
+     */
+    public function duplicateTable($source, $dest, $cols)
+    {
+        $this->createOETable($dest, array_merge(
+            array('id' => 'pk', 'active' => 'boolean default true'),
+            $cols
+        ), true);
+        $source_rows = $this->dbConnection->createCommand()
+            // force the id to ensure maintaining it
+            ->select(array_merge(array('id'), array_keys($cols)))
+            ->from($source)
+            ->queryAll();
+        foreach ($source_rows as $row) {
+            $this->insert($dest, $row);
+        }
     }
 
     public function setEventTypeRBACSuffix($class_name, $rbac_operation_suffix)

@@ -4,19 +4,38 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 $(document).ready(function(){
+    var toolTip = new OpenEyes.UI.Tooltip({
+        className: 'quicklook',
+        offset: {
+            x: 10,
+            y: 10
+        },
+        viewPortOffset: {
+            x: 0,
+            y: 32 // height of sticky footer
+        }
+    });
+    $(this).on('mouseover', '.has-tooltip', function() {
+        if ($(this).data('tooltip-content') && $(this).data('tooltip-content').length) {
+            toolTip.setContent($(this).data('tooltip-content'));
+            var offsets = $(this).offset();
+            toolTip.show(offsets.left, offsets.top);
+        }
+    }).mouseout(function (e) {
+        toolTip.hide();
+    });
 
 	// override the behaviour for showing search results
 	$.ui.autocomplete.prototype._renderItem = function( ul, item ) {
@@ -53,7 +72,9 @@ $(document).ready(function(){
 			trigger
 			.removeClass('toggle-hide')
 			.addClass('toggle-show');
-			body.slideUp('fast');
+			body.slideUp('fast', function() {
+                $(container).trigger('oe:toggled');
+			});
 		// open
 		} else {
 			// set state to open
@@ -63,6 +84,7 @@ $(document).ready(function(){
 			.addClass('toggle-hide');
 			body.slideDown('fast', function() {
 				body.css('overflow', 'visible');
+                $(container).trigger('oe:toggled');
 			});
 		}
 
@@ -145,41 +167,6 @@ $(document).ready(function(){
 		});
 	}());
 
-	(function stickyElements() {
-
-		var banner = new OpenEyes.UI.StickyElement('.admin.banner', {
-			offset: 30,
-			wrapperHeight: function(instance) {
-				return instance.element.outerHeight(true);
-			}
-		});
-
-		var options = {
-			enableHandler: function(instance) {
-				instance.element.width(instance.element.width());
-				instance.enable();
-			},
-			disableHandler: function(instance) {
-				instance.element.width('auto');
-				instance.disable();
-			}
-		};
-
-		var header = new OpenEyes.UI.StickyElement('.header:not(.static)', $.extend({
-			offset: 25
-		}, options));
-
-		var eventHead = new OpenEyes.UI.StickyElement('.event-header', $.extend({
-			wrapperClass: 'sticky-wrapper sticky-wrapper-event-header',
-			offset: function() {
-				return header.element.height() * -1;
-			},
-			wrapperHeight: function(instance) {
-				return instance.element.outerHeight(true);
-			}
-		}, options));
-	}());
-
 	/**
 	 * Tab hover
 	 */
@@ -244,14 +231,15 @@ $(document).ready(function(){
 		};
 
 		// Show the 'change firm' dialog when clicking on the 'change firm' link.
-		$('.change-firm a').click(function(e) {
+		$(document).on('click', '.change-firm', function(e) {
 
 			e.preventDefault();
+			var returnUrl = window.location.href;
 
 			new OpenEyes.UI.Dialog($.extend({}, options, {
 				url: baseUrl + '/site/changesiteandfirm',
 				data: {
-					returnUrl: window.location.href,
+					returnUrl: returnUrl,
 					patient_id: window.OE_patient_id || null
 				}
 			})).open();

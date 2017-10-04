@@ -13,6 +13,7 @@ module.exports = function(grunt) {
 		hub: require('./hub'),
 		mocha: require('./mocha'),
 		connect: require('./connect'),
-		test: require('./test')
+		test: require('./test'),
+		uglify: require('./uglify'),
 	};
 };

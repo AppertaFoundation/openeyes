@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\OphCiExamination\components;
@@ -26,6 +25,11 @@ use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
 class ExaminationCreator
 {
     protected $examinationEyeId;
+
+    public function __construct()
+    {
+        echo \Yii::app()->params['optom_comment_alert'] . "\n";
+    }
 
     /**
      * Create an examination event.
@@ -60,7 +64,7 @@ class ExaminationCreator
 
             $this->createComments($userId, $examination, $examinationEvent);
 
-            $this->createMessage($episodeId, $userId, $examination, $examinationEvent);
+            $this->createMessage($episodeId, $userId, $examination, $examinationEvent, $opNoteEventId);
 
             if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity']) || count($examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'])) {
                 $this->createVisualFunction($userId, $examinationEvent);
@@ -85,10 +89,12 @@ class ExaminationCreator
                 $sphereSide = $eyeLabel.'_sphere';
                 $cylinderSide = $eyeLabel.'_cylinder';
                 $axisSide = $eyeLabel.'_axis';
+                $axisEyedrawSide = $eyeLabel.'_axis_eyedraw';
                 $refraction->$typeSide = $refractionType['id'];
                 $refraction->$sphereSide = $refractionReading['sphere'];
                 $refraction->$cylinderSide = $refractionReading['cylinder'];
                 $refraction->$axisSide = $refractionReading['axis'];
+                $refraction->$axisEyedrawSide = '[{"scaleLevel": 1,"version":1.1,"subclass":"TrialLens","rotation":' . (180 - $refractionReading['axis']) . ',"order":0},{"scaleLevel": 1,"version":1.1,"subclass":"TrialFrame","order":1}]';
 
                 foreach ($eye['reading'][0]['visual_acuity'] as $vaData) {
                     $this->addVisualAcuityReading($userId, $visualAcuity, $unit, $vaData, $eyeLabel);
@@ -275,11 +281,17 @@ class ExaminationCreator
      * @param $examinationEvent
      * @throws \CDbException
      */
-    protected function createMessage($episodeId, $userId, $examination, $examinationEvent)
+    protected function createMessage($episodeId, $userId, $examination, $examinationEvent, $opNoteEventId = NULL)
     {
         if (isset(\Yii::app()->modules['OphCoMessaging'])) {
             $episode = \Episode::model()->findByPk($episodeId);
-            $recipient = \User::model()->findByPk($episode->firm->consultant_id);
+            //$recipient = \User::model()->findByPk($episode->firm->consultant_id);
+            $recipient = NULL;
+            if($opNoteEventId !== NULL){
+                $surgeon = \Element_OphTrOperationnote_Surgeon::model()->findByAttributes(array('event_id' => $opNoteEventId ));
+                $recipient = $surgeon->surgeon;
+            }
+
             if ($recipient) {
                 $sender = \User::model()->findByPk($userId);
                 $type = OphCoMessaging_Message_MessageType::model()->findByAttributes(array('name' => 'General'));
@@ -295,6 +307,7 @@ class ExaminationCreator
                 $messageCreator->setMessageTemplate('application.modules.OphCoMessaging.views.templates.optom');
                 $messageCreator->setMessageData(array(
                     'optom' => $examination['op_tom']['name'] . ' (' . $examination['op_tom']['goc_number'] . ')',
+                    'optom_address' => $examination['op_tom']['address'],
                     'ready' => $ready,
                     'comments' => ($examination['patient']['comments']) ? $examination['patient']['comments'] : 'No Comments',
                     'patient' => $episode->patient,

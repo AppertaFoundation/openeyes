@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 return array(
@@ -79,6 +78,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
+            'time' => '201709130855',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -267,6 +267,10 @@ return array(
         'ldap_password' => '',
         'ldap_dn' => '',
         'ldap_method' => 'native', // use 'zend' for the Zend_Ldap vendor module
+        // set to integer value of 2 or 3 to force specific ldap protocol
+        'ldap_protocol_version' => 3,
+        // alters the prefix used when binding to a user in native ldap connections
+        'ldap_username_prefix' => 'cn',
         'ldap_native_timeout' => 3,
         'ldap_info_retries' => 3,
         'ldap_info_retry_delay' => 1,
@@ -278,7 +282,8 @@ return array(
         'local_users' => array(),
         'log_events' => true,
         'default_site_code' => '',
-        'institution_code' => 'RP6',
+        'institution_code' => '',
+        'institution_specialty' => 130, 
         'erod_lead_time_weeks' => 3,
         // specifies which specialties are available in patient summary for diagnoses etc (use specialty codes)
         'specialty_codes' => array(),
@@ -290,81 +295,62 @@ return array(
         'profile_user_show_menu' => true,
         'profile_user_can_change_password' => true,
         'menu_bar_items' => array(
-            'home' => array(
-                'title' => 'Home',
-                'uri' => '',
-                'position' => 1,
-            ),
-            'admin' => array(
-                'title' => 'More',
-                'uri' => '#',
-                'position' => 2,
-                'userrule' => 'isSurgeon',
-                'restricted' => array('admin', 'Report', 'NOD Export', 'Add patient', 'Patient Merge', 'Patient Merge Request'),
-                'sub' => array(
-                    'admin' => array(
-                        'title' => 'Admin',
-                        'uri' => 'admin',
-                        'position' => 1,
-                        'restricted' => array('admin'),
-                    ),
-                    'audit' => array(
-                        'title' => 'Audit',
-                        'uri' => 'audit',
-                        'position' => 2,
-                        'restricted' => array('admin'),
-                    ),
-                    'reports' => array(
-                        'title' => 'Reports',
-                        'uri' => 'report',
-                        'position' => 3,
-                        'restricted' => array('Report'),
-                    ),
-                    'cataract' => array(
-                        'title' => 'Cataract Audit',
-                        'uri' => 'dashboard/cataract',
-                        'position' => 4,
-                        'userrule' => 'isSurgeon',
-                        'restricted' => array('admin'),
-                        'options' => array('target' => '_blank'), ),
-                    'nodexport' => array(
-                        'title' => 'NOD Export',
-                        'uri' => 'NodExport',
-                        'position' => 5,
-                        'restricted' => array('NOD Export'),
-                    ),
-                    'cxldataset' => array(
-                        'title' => 'CXL Dataset',
-                        'uri' => 'CxlDataset',
-                        'position' => 6,
-                        'restricted' => array('CXL Dataset'),
-                    ),
-                    'patientmergerequest' => array(
-                        'title' => 'Patient Merge',
-                        'uri' => 'patientMergeRequest/index',
-                        'position' => 17,
-                        'restricted' => array('Patient Merge', 'Patient Merge Request'),
-                    ),
-                    'patient' => array(
-                        'title' => 'Add Patient',
-                        'uri' => 'patient/create',
-                        'position' => 9,
-                        'restricted' => array('TaskAddPatient'),
-                    ),
-
+                'admin' => array(
+                    'title' => 'Admin',
+                    'uri' => 'admin',
+                    'position' => 1,
+                    'restricted' => array('admin'),
                 ),
-            ),
+                'audit' => array(
+                    'title' => 'Audit',
+                    'uri' => 'audit',
+                    'position' => 2,
+                    'restricted' => array('admin'),
+                ),
+                'reports' => array(
+                    'title' => 'Reports',
+                    'uri' => 'report',
+                    'position' => 3,
+                    'restricted' => array('Report'),
+                ),
+                'cataract' => array(
+                    'title' => 'Cataract Audit',
+                    'uri' => 'dashboard/cataract',
+                    'position' => 4,
+                    'userrule' => 'isSurgeon',
+                    'restricted' => array('admin'),
+                    'options' => array('target' => '_blank'), ),
+                'nodexport' => array(
+                    'title' => 'NOD Export',
+                    'uri' => 'NodExport',
+                    'position' => 5,
+                    'restricted' => array('NOD Export'),
+                ),
+                'cxldataset' => array(
+                    'title' => 'CXL Dataset',
+                    'uri' => 'CxlDataset',
+                    'position' => 6,
+                    'restricted' => array('CXL Dataset'),
+                ),
+
+                'patientmergerequest' => array(
+                    'title' => 'Patient Merge',
+                    'uri' => 'patientMergeRequest/index',
+                    'position' => 17,
+                    'restricted' => array('Patient Merge', 'Patient Merge Request'),
+                ),
+                'patient' => array(
+                    'title' => 'Add Patient',
+                    'uri' => 'patient/create',
+                    'position' => 46,
+                    'restricted' => array('TaskAddPatient'),
+                ),
 // temporarily disabled
 //			'worklist' => array(
 //				'title' => 'Worklists',
 //				'uri' => '/worklist',
 //				'position' => 3,
 //			),
-            'logout' => array(
-                'title' => 'Logout',
-                'uri' => 'site/logout',
-                'position' => 9999,
-            ),
         ),
         'admin_menu' => array(
         ),
@@ -386,7 +372,7 @@ return array(
         'reports' => array(
         ),
         'opbooking_disable_both_eyes' => false,
-        'html_autocomplete' => 'off',
+        //'html_autocomplete' => 'off',
         // html|pdf, pdf requires wkhtmltopdf with patched QT
         'event_print_method' => 'pdf',
         // use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.
@@ -399,7 +385,6 @@ return array(
         'wkhtmltopdf_left_margin' => '20mm',
         'wkhtmltopdf_right_margin' => '20mm',
         'wkhtmltopdf_nice_level' => false,
-        'OphCoTherapyapplication_sender_email' => array('openeyes.servicedesk@moorfields.nhs.uk' => 'OpenEyes Therapy Application'),
         'curl_proxy' => null,
         'hscic' => array(
             'data' => array(
@@ -432,14 +417,14 @@ return array(
          * To be overriden in local config
          */
         'electronic_sending_method_label' => 'Electronic',
-        
+
         /**
          * Action buttons to be displayed when create/update a correspondence letter
          * Available actions
          *      - 'savedraft' => 'Save draft',
          *      - 'save' => 'Save',
          *      - 'saveprint' => 'Save and print'
-         * To remove an option set it to NULL 
+         * To remove an option set it to NULL
          * e.g: saveprint' => null,
          */
         'OphCoCorrespondence_event_actions' => array(
@@ -466,8 +451,22 @@ return array(
          *  Operation bookings will be automatically scheduled to the next available slot (regardless of the firm)
          */
         "auto_schedule_operation" => false,
-        'clinical_management_pcr' => true,
-
-
+        'clinical_management_pcr' => false,
+        'docman_generate_csv' => false,
+        'element_sidebar' => true,
+        // flag to enable editing of clinical data at the patient summary level - editing is not fully implemented
+        // in v2.0.0, so this should only be turned on if you really know what you are doing.
+        'allow_patient_summary_clinic_changes' => false,
+        'patient_summary_id_widgets' => array(
+            array(
+                'class' => 'application.widgets.PatientSummaryPopup',
+                'order' => PHP_INT_MAX
+            )
+        ),
+        /**
+         * Enables the admin->Settings->Logo screen */
+        'letter_logo_upload' => true,
+        /* ID of the Tag that indicates "preservative free" */
+        'preservative_free_tag_id' => 1
     ),
 );

@@ -1,5 +1,6 @@
-<h1 class="badge">Episodes and events</h1>
+<div class="row messages patient fixed">
 <?php $this->renderPartial('//patient/_patient_alerts')?>
+</div>
 <div class="box content row">
 
 	<?php if ($this->patient->isDeceased()) {?>
@@ -8,8 +9,9 @@
 		</div>
 	<?php }?>
 
-	<?php $this->renderPartial('//patient/episodes_sidebar');?>
-	<?php $this->renderPartial('//patient/event_content', array(
+
+    <?php $this->renderSidebar('//patient/episodes_sidebar') ?>
+    <?php $this->renderPartial('//patient/event_content', array(
         'content' => $content,
     )); ?>
 </div>

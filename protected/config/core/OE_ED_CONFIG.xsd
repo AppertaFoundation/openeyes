@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2011 rel. 3 (x64) (http://www.altova.com) by Jason Brown (Department of Health and Ageing) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+	<xs:complexType name="INDEX_TYPE">
+		<xs:sequence>
+			<xs:element name="PRIMARY_TERM" maxOccurs="unbounded" minOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:whiteSpace value="preserve"/>
+						<xs:pattern value="[^\s|']([^']*)[^\s|']"/>
+						<xs:minLength value="1"/>
+						<xs:maxLength value="41"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="SECONDARY_TERM_LIST" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TERM" maxOccurs="unbounded">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:pattern value="[^\s|']([^']*)[^\s|']"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element minOccurs="0" name="IMG_URL">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="[^\s|'](.*)[^\s|']"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element minOccurs="0" name="DESCRIPTION">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="[^\s](.*)[^\s]"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element minOccurs="0" name="GENERAL_NOTE">
+				<xs:simpleType>
+					<xs:restriction base="xs:string"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element minOccurs="0" name="WARNING_NOTE">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="[^\s](.*)[^\s]"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:sequence minOccurs="0">
+				<xs:element name="OPEN_ELEMENT_CLASS_NAME">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:pattern value="[^\s](.*)[^\s]"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:choice minOccurs="0">
+					<xs:sequence>
+						<xs:element name="GOTO_DOODLE_CLASS_NAME">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:pattern value="[^\s](.*)[^\s]"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:sequence minOccurs="0">
+							<xs:element name="GOTO_PROPERTY">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:pattern value="[^\s](.*)[^\s]"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+						</xs:sequence>
+					</xs:sequence>
+					<xs:sequence>
+						<xs:element minOccurs="0" name="GOTO_SUBCONTAINER_CLASS">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:pattern value="[^\s](.*)[^\s]"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:choice>
+							<xs:element name="GOTO_ID">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:pattern value="[^\s](.*)[^\s]"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:sequence>
+								<xs:element name="GOTO_TAG">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:pattern value="[^\s](.*)[^\s]"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+								<xs:sequence>
+									<xs:element name="GOTO_TEXT">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:pattern value="[^\s](.*)[^\s]"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:sequence>
+						</xs:choice>
+					</xs:sequence>
+				</xs:choice>
+			</xs:sequence>
+			<xs:element minOccurs="0" name="INDEX_LIST">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element maxOccurs="unbounded" name="INDEX" type="INDEX_TYPE"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="OE_ED_CONFIG">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="CANVAS_LIST">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="CANVAS" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="CANVAS_MNEMONIC" type="xs:string"/>
+										<xs:element name="CANVAS_NAME" type="xs:string"/>
+										<xs:element name="OE_ELEMENT_CLASS_NAME" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>Used to look up
+												openeyes.element_type.ID</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="DOODLE_LIST">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="DOODLE" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="EYEDRAW_CLASS_MNEMONIC" type="xs:string"/>
+										<xs:element name="TITLE" type="xs:string"/>
+										<xs:element name="INIT_DOODLE_JSON" type="xs:string"
+											nillable="true"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="DOODLE_USAGE_LIST">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="DOODLE_USAGE" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="EYEDRAW_CLASS_MNEMONIC" type="xs:string"/>
+										<xs:element name="CANVAS_MNEMONIC" type="xs:string"/>
+										<xs:element name="ON_TOOLBAR_LOCATION" type="xs:string"/>
+										<xs:element name="ON_TOOLBAR_ORDER" type="xs:string"/>
+										<xs:element name="NEW_EYE_INIT_FLAG" type="xs:boolean">
+											<xs:annotation>
+												<xs:documentation>These doodles are initialised if
+												nothing is known about patient
+												eye.</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="INIT_ALWAYS_FLAG" type="xs:boolean" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>If this doodle is not present in patient state,
+													it will be loaded in its init state.</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="CARRY_FORWARD_FLAG" type="xs:boolean"/>
+										<xs:element name="CONDITIONAL_INIT_FLAG" type="xs:boolean">
+											<xs:annotation>
+												<xs:documentation>These doodles are initialised
+												conditionally based on other clinical information,
+												e.g. the operation procedure(s)
+												selected.</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="CONDITIONAL_REMOVE_FLAG" type="xs:boolean">
+											<xs:annotation>
+												<xs:documentation>These doodles are removed
+												conditionally based on other clinical information,
+												e.g. the operation procedure(s)
+												selected.</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element minOccurs="0" name="COMMENT" type="xs:string"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="EVENT_LIST">
+					<xs:complexType>
+						<xs:sequence maxOccurs="1" minOccurs="1">
+							<xs:element maxOccurs="unbounded" minOccurs="1" name="EVENT">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="EVENT_NAME">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+												<xs:pattern value="[^\s]*"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="INDEX_LIST">
+											<xs:complexType>
+												<xs:sequence>
+												<xs:element name="INDEX" type="INDEX_TYPE"
+												maxOccurs="unbounded"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+		<xs:unique name="CANVAS_PK">
+			<xs:selector xpath="CANVAS_LIST/CANVAS"/>
+			<xs:field xpath="CANVAS_MNEMONIC"/>
+		</xs:unique>
+		<xs:unique name="DOODLE_PK">
+			<xs:selector xpath="DOODLE_LIST/DOODLE"/>
+			<xs:field xpath="EYEDRAW_CLASS_MNEMONIC"/>
+		</xs:unique>
+		<xs:keyref name="DOODLE_USAGE_FK1" refer="CANVAS_PK">
+			<xs:selector xpath="DOODLE_USAGE_LIST/DOODLE_USAGE"/>
+			<xs:field xpath="CANVAS_MNEMONIC"/>
+		</xs:keyref>
+		<xs:keyref name="DOODLE_USAGE_FK2" refer="DOODLE_PK">
+			<xs:selector xpath="DOODLE_USAGE_LIST/DOODLE_USAGE"/>
+			<xs:field xpath="EYEDRAW_CLASS_MNEMONIC"/>
+		</xs:keyref>
+	</xs:element>
+</xs:schema>

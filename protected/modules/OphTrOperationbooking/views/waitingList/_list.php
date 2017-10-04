@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
@@ -48,6 +47,9 @@
 					<input type="checkbox" id="checkall" value="" /> All
 				</label>
 			</th>
+            <?php if($this->module->isTheatreDiaryDisabled()): ?>
+            <th></th>
+            <?php endif; ?>
 		</tr>
 		</thead>
 		<tbody>
@@ -138,6 +140,11 @@
 							<span class="no-address error">No Address</span>
 						<?php }?>
 					</td>
+                    <?php if($this->module->isTheatreDiaryDisabled()): ?>
+                    <td>
+                        <button data-event-id="<?php echo $eo->event_id; ?>" class="small btn-booked">Booked</button>
+                    </td>
+                    <?php endif; ?>
 				</tr>
 				<?php
                 ++$i;
@@ -211,4 +218,24 @@
 		var $tr = $(this).closest("tr");
 		$tr.toggleClass('hover');
 	});
+
+    // Mark item as booked (in case theatre diary is disabled)
+    $(document).on("click", ".btn-booked", function(e){
+        e.preventDefault();
+        var event_id = $(this).data("event-id");
+        $.get("/OphTrOperationbooking/waitingList/setBooked?event_id="+event_id,
+                function(data){
+                    if(data.success)
+                    {
+                        window.location.reload();
+                    }
+                    else
+                    {
+                        var alert = new OpenEyes.UI.Dialog.Alert({
+                            content: 'An error occured: '+data.message
+                        });
+                        alert.open();
+                    }
+                });
+    })
 </script>

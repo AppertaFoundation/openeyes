@@ -6,16 +6,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 // this extract's execution time is more than the default 500sec
 // for 5yrs time period it can last more than 30min
@@ -330,45 +329,6 @@ FROM disorder d;
 				(5, 'Iris fixated'),
 				(13, 'Other');
 
-			DROP TEMPORARY TABLE IF EXISTS tmp_anaesthesia_type;
-
-			CREATE TEMPORARY TABLE tmp_anaesthesia_type(
-				`id` INT(10) UNSIGNED NOT NULL,
-				`name` VARCHAR(50),
-				`code` VARCHAR(50),
-				`nod_code` VARCHAR(50),
-				`nod_desc` VARCHAR(50),
-				KEY `tmp_anaesthesia_type_name` (`name`)
-			);
-
-			INSERT INTO tmp_anaesthesia_type(`id`, `name`, `code`, `nod_code`, `nod_desc`)
-			VALUE
-			(1, 'Topical', 'Top', 4, 'Topical anaesthesia alone'),
-			(2, 'LAC',     'LAC', 2, 'Local anaesthesia alone'),
-			(3, 'LA',      'LA',  2, 'Local anaesthesia alone'),
-			(4, 'LAS',     'LAS', 2, 'Local anaesthesia alone'),
-			(5, 'GA',      'GA',  1, 'General anaesthesia alone');
-
-                        DROP TEMPORARY TABLE IF EXISTS tmp_sedation_type;
-
-                        CREATE TEMPORARY TABLE tmp_sedation_type(
-                                `id` INT(10) UNSIGNED NOT NULL,
-                                `name` VARCHAR(50),
-                                `code` VARCHAR(50),
-                                `nod_code` VARCHAR(50),
-                                `nod_desc` VARCHAR(50),
-                                KEY `tmp_sedation_type_name` (`name`)
-                        );
-
-                        INSERT INTO tmp_sedation_type(`id`, `name`, `code`, `nod_code`, `nod_desc`)
-                        VALUE
-                        (1, 'Topical', 'Top', 0, 'No sedation'),
-                        (2, 'LAC',     'LAC', 0, 'No sedation'),
-                        (3, 'LA',      'LA',  0, 'No sedation'),
-                        (4, 'LAS',     'LAS', 2, 'Sedation + anaesthesia'),
-                        (5, 'GA',      'GA',  0, 'No sedation');
-			
-					
 		DROP TABLE IF EXISTS tmp_complication_type;
 
 		CREATE TABLE tmp_complication_type (
@@ -430,28 +390,6 @@ FROM disorder d;
                         (13, 'Other', 12, 'Other');
                         -- (0, '', 99, 'Not recorded');
 
-#anaesthetic delivery mapping is not finished yet
-                    
-                        
-                        DROP TEMPORARY TABLE IF EXISTS tmp_anaesthetic_delivery;
-
-                        CREATE TEMPORARY TABLE tmp_anaesthetic_delivery (
-                                `oe_id` INT(10) UNSIGNED NOT NULL,
-                                `oe_desc` VARCHAR(100),
-                                `nod_id` INT(10) UNSIGNED NOT NULL,
-                                `nod_desc` VARCHAR(100)
-                        );
-
-                        INSERT INTO tmp_anaesthetic_delivery (`oe_id`, `oe_desc`, `nod_id`, `nod_desc` )
-                        VALUES
-                        (1, 'Retrobulbar', 2, 'Retrobulbar'),
-                        (2, 'Peribulbar', 1, 'Peribulbar'),	
-                        (3, 'Subtenons', 3, 'Sub-Tenon');
-                        -- (4, 'Subconjunctival', 0, ''),
-                        -- (5, 'Topical', 0, ''),
-                        -- (6, 'Topical and intracameral', 0, ''),	
-                        -- (6, 'Other', 0, '');
-                        
                         DROP TABLE IF EXISTS tmp_biometry_formula;
                         CREATE TABLE tmp_biometry_formula (
                                 `code` INT(10) UNSIGNED NOT NULL,
@@ -597,9 +535,6 @@ EOL;
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodeDiagnoses_{$this->extractIdentifier};
                 
                 DROP TEMPORARY TABLE IF EXISTS tmp_complication;
-                DROP TEMPORARY TABLE IF EXISTS tmp_anaesthesia_type;
-                DROP TEMPORARY TABLE IF EXISTS tmp_sedation_type;
-                DROP TEMPORARY TABLE IF EXISTS tmp_anaesthetic_delivery;
                 DROP TEMPORARY TABLE IF EXISTS tmp_iol_positions;
                 DROP TABLE IF EXISTS tmp_rco_nod_pathology_type;
                 DROP TEMPORARY TABLE IF EXISTS tmp_operation_ids;
@@ -1457,12 +1392,13 @@ EOL;
                         (SELECT CASE WHEN m.start_date IS NULL THEN '' ELSE m.start_date END) AS StartDate,
                         (SELECT CASE WHEN m.end_date IS NULL THEN '' ELSE m.end_date END) AS StopDate,
                         (SELECT CASE WHEN opi.prescription_id IS NOT NULL THEN 1 ELSE 0 END ) AS IsAddedByPrescription,
-                        (SELECT CASE WHEN opi.continue_by_gp IS NULL THEN 0 ELSE opi.continue_by_gp END) AS IsContinueIndefinitely,
+                        (SELECT CASE WHEN lower(dd.name) = 'until review' THEN 1 ELSE 0 END) AS IsContinueIndefinitely,
                         (SELECT CASE WHEN DAYNAME(m.start_date) IS NULL THEN 1 ELSE 0 END) AS IsStartDateApprox
 
                     FROM  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
                     JOIN medication m ON c.patient_id = m.patient_id
-                    LEFT JOIN ophdrprescription_item opi ON m.prescription_item_id = opi.id;
+                    LEFT JOIN ophdrprescription_item opi ON m.prescription_item_id = opi.id
+                    LEFT JOIN drug_duration dd ON dd.id = opi.duration_id;
                 
                 
   
@@ -1501,7 +1437,7 @@ EOL;
                     AS StopDate,
 
                     1 AS IsAddedByPrescription,
-                    continue_by_gp AS IsContinueIndefinitely,
+                    CASE WHEN lower(drug_duration.name) = 'until review' THEN 1 ELSE 0 END AS IsContinueIndefinitely,
                     0 AS IsStartDateApprox
 
                     FROM ophdrprescription_item AS opi
@@ -2524,7 +2460,7 @@ EOL;
                   )
                 ) AS PupilSizeId
                 , ocpt.nodcode AS IOLPositionId
-                , oclt.name AS IOLModelId
+                , olt.display_name AS IOLModelId
                 , oc.iol_power AS IOLPower
                 , oc.predicted_refraction AS PredictedPostOperativeRefraction
                 , '' AS WoundClosureId
@@ -2543,8 +2479,8 @@ EOL;
             LEFT OUTER JOIN tmp_iol_positions ocpt
               ON ocpt.term = ocp.name
             /* Join: Look up LENS TYPE (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
-            LEFT OUTER JOIN ophtroperationnote_cataract_iol_type oclt
-              ON oclt.id = oc.iol_type_id
+            LEFT OUTER JOIN ophinbiometry_lenstype_lens olt
+              ON olt.id = oc.iol_type_id
 
             /* Join: Look up original operation note event (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
             LEFT OUTER JOIN event eon
@@ -2621,32 +2557,77 @@ EOL;
                       SurgeonId,
                       ComplicationId
                   )
-                      SELECT a.event_id AS oe_event_id,
-                        (SELECT nod_code FROM tmp_anaesthesia_type WHERE at.name = name) AS AnaesthesiaTypeId,
-                        IFNULL(
-                            (SELECT nod_id FROM tmp_anaesthetic_delivery WHERE a.anaesthetic_delivery_id = oe_id),
-                            0
-                        ) AS AnaesthesiaNeedle,
-                        IFNULL(
-                            (SELECT nod_code FROM tmp_sedation_type WHERE at.name = name),
-                            9
-                        ) AS Sedation,
-                        ( SELECT CASE
-                                   WHEN a.anaesthetist_id = 2
-                                   THEN s.surgeon_id
-                                   ELSE NULL
-                                 END
-                        ) as SurgeonId,
-                        (
-                            SELECT tmp_complication.nod_id FROM tmp_complication WHERE oe_id = acs.id
-                        ) as ComplicationId
-
-                        FROM et_ophtroperationnote_anaesthetic a
-                        JOIN anaesthetic_type at ON a.anaesthetic_type_id = at.id
-                        JOIN ophtroperationnote_anaesthetic_anaesthetic_complication ac ON a.id = ac.et_ophtroperationnote_anaesthetic_id
-                        JOIN ophtroperationnote_anaesthetic_anaesthetic_complications acs ON ac.anaesthetic_complication_id = acs.id
-                        JOIN tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON c.oe_event_id = a.event_id
-                        LEFT JOIN et_ophtroperationnote_surgeon s ON s.event_id = a.event_id;";
+SELECT oe_event_id
+     , CASE
+         WHEN at_list NOT LIKE '%,LA,%' AND at_list NOT LIKE '%,GA,%' AND at_list LIKE '%,NoA,%'
+         THEN 0
+         WHEN at_list NOT LIKE '%,LA,%' AND at_list LIKE '%,GA,%' AND at_list NOT LIKE '%,NoA,%'
+         THEN 1
+         WHEN at_list LIKE '%,LA,%' AND at_list NOT LIKE '%,GA,%' AND at_list NOT LIKE '%,NoA,%' AND ad_list NOT LIKE '%,Topical%'
+         THEN 2
+         WHEN at_list LIKE '%,LA,%' AND at_list LIKE '%,GA,%' AND at_list NOT LIKE '%,NoA,%'
+         THEN 3
+         WHEN at_list LIKE '%,LA,%' AND at_list NOT LIKE '%,GA,%' AND at_list NOT LIKE '%,NoA,%' AND ad_list LIKE '%,Topical,%' AND ad_list NOT LIKE '%,Peribulbar,%' AND ad_list NOT LIKE '%,Retrobulbar,%' AND ad_list NOT LIKE '%,Subtenons,%' AND ad_list NOT LIKE '%,Subconjunctival,%' AND ad_list NOT LIKE '%,Topical and intracameral,%' AND ad_list NOT LIKE '%,Other,%'
+         THEN 4
+         WHEN at_list LIKE '%,LA,%' AND at_list NOT LIKE '%,GA,%' AND at_list NOT LIKE '%,NoA,%' AND ad_list LIKE '%,Topical%' AND (ad_list LIKE '%,Peribulbar,%' OR ad_list LIKE '%,Retrobulbar,%' OR ad_list LIKE '%,Subtenons,%' OR ad_list LIKE '%,Subconjunctival,%' OR ad_list LIKE '%,Topical and intracameral,%' OR ad_list LIKE '%,Other,%')
+         THEN 5
+         ELSE 9
+       END AnaesthesiaTypeId
+     , CASE
+         WHEN ad_list NOT LIKE '%,Peribulbar,%' AND ad_list NOT LIKE '%,Retrobulbar,%' AND ad_list NOT LIKE '%,Subtenons,%'
+         THEN 0
+         WHEN ad_list LIKE '%,Peribulbar,%' AND ad_list NOT LIKE '%,Retrobulbar,%' AND ad_list NOT LIKE '%,Subtenons,%'
+         THEN 1
+         WHEN ad_list NOT LIKE '%,Peribulbar,%' AND ad_list LIKE '%,Retrobulbar,%' AND ad_list NOT LIKE '%,Subtenons,%'
+         THEN 2
+         WHEN ad_list NOT LIKE '%,Peribulbar,%' AND ad_list NOT LIKE '%,Retrobulbar,%' AND ad_list LIKE '%,Subtenons,%'
+         THEN 3
+         WHEN ad_list LIKE '%,Peribulbar,%' AND ad_list LIKE '%,Retrobulbar,%' AND ad_list NOT LIKE '%,Subtenons,%'
+         THEN 4
+         WHEN ad_list LIKE '%,Peribulbar,%' AND ad_list NOT LIKE '%,Retrobulbar,%' AND ad_list LIKE '%,Subtenons,%'
+         THEN 5
+         WHEN ad_list NOT LIKE '%,Peribulbar,%' AND ad_list LIKE '%,Retrobulbar,%' AND ad_list LIKE '%,Subtenons,%'
+         THEN 6
+         WHEN ad_list LIKE '%,Peribulbar,%' AND ad_list LIKE '%,Retrobulbar,%' AND ad_list LIKE '%,Subtenons,%'
+         THEN 7
+         ELSE 9
+       END AnaesthesiaNeedle
+     , CASE
+         WHEN at_list NOT LIKE '%,Sed,%'
+         THEN 0
+         WHEN at_list LIKE '%,Sed,%' AND at_list NOT LIKE '%,LA,%' AND at_list NOT LIKE '%,GA,%' AND at_list NOT LIKE '%,NoA,%'
+         THEN 1
+         WHEN at_list LIKE '%,Sed,%' AND (at_list LIKE '%,LA,%' OR at_list LIKE '%,GA,%') AND at_list NOT LIKE '%,NoA,%'
+         THEN 2
+         ELSE 9
+       END Sedation
+     , SurgeonId
+     , ComplicationId
+FROM   ( SELECT    a.event_id oe_event_id
+                 , CASE
+                     WHEN a.anaesthetist_id = 2
+                     THEN s.surgeon_id
+                     ELSE NULL
+                   END SurgeonId
+                 , ( SELECT tmp_complication.nod_id
+                     FROM   tmp_complication WHERE oe_id = acs.id
+                   ) ComplicationId
+                 , ( SELECT concat(',', IFNULL(group_concat(at.code separator ','), 'NULL'), ',')
+                     FROM   ophtroperationnote_anaesthetic_anaesthetic_type aat
+                     JOIN   anaesthetic_type at ON at.id = aat.anaesthetic_type_id
+                     WHERE  aat.et_ophtroperationnote_anaesthetic_id = a.id
+                   ) at_list
+                 , ( SELECT concat(',', IFNULL(group_concat(ad.name separator ','), 'NULL'), ',')
+                     FROM   ophtroperationnote_anaesthetic_anaesthetic_delivery aad
+                     JOIN   anaesthetic_delivery ad ON ad.id = aad.anaesthetic_delivery_id
+                     WHERE  aad.et_ophtroperationnote_anaesthetic_id = a.id
+                   ) ad_list
+         FROM      et_ophtroperationnote_anaesthetic a
+         JOIN      ophtroperationnote_anaesthetic_anaesthetic_complication ac ON a.id = ac.et_ophtroperationnote_anaesthetic_id
+         JOIN      ophtroperationnote_anaesthetic_anaesthetic_complications acs ON ac.anaesthetic_complication_id = acs.id
+         JOIN      tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c ON c.oe_event_id = a.event_id
+         LEFT JOIN et_ophtroperationnote_surgeon s ON s.event_id = a.event_id
+       ) x;";
 
         return $query;
     }

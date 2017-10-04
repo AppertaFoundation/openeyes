@@ -6,16 +6,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class MedicationController extends BaseAdminController
 {
@@ -43,8 +42,48 @@ class MedicationController extends BaseAdminController
             'external_code',
             'external_source',
             'aliases',
+            'tags'
         ));
-        $admin->searchAll();
+
+        $admin->getSearch()->addSearchItem('name, aliases');
+        $admin->getSearch()->addSearchItem('external_code');
+        $admin->getSearch()->addSearchItem('external_source');
+        $admin->getSearch()->addSearchItem('tags.name');
+
+        $criteria = new CDbCriteria();
+
+        foreach (array('name, aliases', 'external_code', 'external_source') as $field)
+        {
+            if(isset($_GET['search'][$field]) && $_GET['search'][$field] != '')
+            {
+                if(strpos($field, ', ') === false)
+                {
+                    // Single column fields
+                    $criteria->compare($field, $_GET['search'][$field], ($field != 'active'));
+                }
+                else
+                {
+                    // Combined fields
+                    $crit2 = new CDbCriteria();
+                    foreach (explode(', ', $field) as $column)
+                    {
+                        $crit2->compare($column, $_GET['search'][$field], true, 'OR');
+                    }
+
+                    $criteria->mergeWith($crit2, 'AND');
+                }
+            }
+        }
+
+        if(isset($_GET['search']['tags.name']) && $_GET['search']['tags.name'] != '')
+        {
+            $command = Yii::app()->db->createCommand("SELECT medication_drug_id FROM medication_drug_tag WHERE tag_id IN (SELECT id FROM tag WHERE name LIKE CONCAT('%', :tagname ,'%'))");
+            $matching_ids = $command->queryColumn(array(':tagname' => $_GET['search']['tags.name']));
+            $criteria->addInCondition('id', $matching_ids, 'AND');
+        }
+
+        $admin->getSearch()->setCriteria($criteria);
+
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
         $admin->listModel();
     }
@@ -74,6 +113,15 @@ class MedicationController extends BaseAdminController
                 'layoutColumns' => null,
             ),
             'external_code' => 'text',
+            'tags' => array(
+                'widget' => 'TagsInput',
+                'relation' => 'tags',
+                'relation_field_id' => 'id',
+                'label' => 'Tags',
+                'htmlOptions' => array(
+                    'autocomplete_url' => $this->createAbsoluteUrl('/oeadmin/drug/tagsAutocomplete')
+                )
+            ),
         ));
         $admin->editModel();
     }

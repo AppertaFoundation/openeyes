@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class OphCoTherapyapplication_API extends BaseAPI
 {
@@ -78,9 +77,9 @@ class OphCoTherapyapplication_API extends BaseAPI
      *
      * @return int $side
      */
-    public function getLatestApplicationSide($patient, $episode)
+    public function getLatestApplicationSide($patient, $use_context = false)
     {
-        if ($el = $this->getMostRecentElementInEpisode($episode->id, $this->getEventType()->id, 'Element_OphCoTherapyapplication_Therapydiagnosis')) {
+        if($el = $this->getLatestElement('Element_OphCoTherapyapplication_Therapydiagnosis', $patient, $use_context)){
             return $el->eye_id;
         }
     }
@@ -130,12 +129,16 @@ class OphCoTherapyapplication_API extends BaseAPI
      * return the diagnosis string for the patient on the given side.
      *
      * @param $patient
-     * @param $episode
      * @param $side
+     * @param $use_context
      */
-    public function getLetterApplicationDiagnosisForSide($patient, $episode, $side)
+    public function getLetterApplicationDiagnosisForSide($patient, $side, $use_context = false)
     {
-        if ($el = $this->getElementForLatestEventInEpisode($episode, 'Element_OphCoTherapyapplication_Therapydiagnosis')) {
+        if ($el = $this->getElementFromLatestEvent(
+            'Element_OphCoTherapyapplication_Therapydiagnosis',
+            $patient,
+            $use_context)
+        ){
             return $el->getDiagnosisStringForSide($side);
         }
     }
@@ -144,44 +147,40 @@ class OphCoTherapyapplication_API extends BaseAPI
      * get the therapy application diagnosis description for the left.
      *
      * @param Patient $patient
-     *
+     * @param $use_context
      * @return mixed
      */
-    public function getLetterApplicationDiagnosisLeft($patient)
+    public function getLetterApplicationDiagnosisLeft($patient, $use_context = false)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            return $this->getLetterApplicationDiagnosisForSide($patient, $episode, 'left');
-        }
+        return $this->getLetterApplicationDiagnosisForSide($patient,'left', $use_context);
     }
 
     /**
      * get the therapy application diagnosis description for the right if there is one.
      *
      * @param Patient $patient
-     *
+     * @param $use_context
      * @return mixed
      */
-    public function getLetterApplicationDiagnosisRight($patient)
+    public function getLetterApplicationDiagnosisRight($patient, $use_context = false)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            return $this->getLetterApplicationDiagnosisForSide($patient, $episode, 'right');
-        }
+        return $this->getLetterApplicationDiagnosisForSide($patient,'right', $use_context);
     }
 
     /**
      * get the therapy application diagnosis description for all sides that have one for this patient.
      *
      * @param Patient $patient
-     *
+     * @param $use_context
      * @return string
      */
-    public function getLetterApplicationDiagnosisBoth($patient)
+    public function getLetterApplicationDiagnosisBoth($patient, $use_context = false)
     {
         $res = '';
-        if ($right = $this->getLetterApplicationDiagnosisRight($patient)) {
+        if ($right = $this->getLetterApplicationDiagnosisRight($patient, $use_context)) {
             $res .= 'Right eye: '.$right;
         }
-        if ($left = $this->getLetterApplicationDiagnosisLeft($patient)) {
+        if ($left = $this->getLetterApplicationDiagnosisLeft($patient, $use_context)) {
             if ($right) {
                 $res .= "\n";
             }
@@ -196,14 +195,18 @@ class OphCoTherapyapplication_API extends BaseAPI
      * Get the therapy application treatment for the given side if there is one.
      *
      * @param $patient
-     * @param $episode
      * @param $side
+     * @param $use_context
      *
      * @return mixed
      */
-    public function getLetterApplicationTreatmentForSide($patient, $episode, $side)
+    public function getLetterApplicationTreatmentForSide($patient, $side, $use_context = false)
     {
-        if ($el = $this->getElementForLatestEventInEpisode($episode, 'Element_OphCoTherapyapplication_PatientSuitability')) {
+        if ($el = $this->getElementFromLatestEvent(
+            'Element_OphCoTherapyapplication_PatientSuitability',
+            $patient,
+            $use_context)
+        ){
             if ($drug = $el->{$side.'_treatment'}) {
                 return $drug->name;
             }
@@ -214,44 +217,40 @@ class OphCoTherapyapplication_API extends BaseAPI
      * get the left side therapy application treatment if there is one.
      *
      * @param $patient
-     *
+     * @param $use_context
      * @return mixed
      */
-    public function getLetterApplicationTreatmentLeft($patient)
+    public function getLetterApplicationTreatmentLeft($patient, $use_context = false)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            return $this->getLetterApplicationTreatmentForSide($patient, $episode, 'left');
-        }
+        return $this->getLetterApplicationTreatmentForSide($patient,'left', $use_context);
     }
 
     /**
      * get the right side therapy application treatment if there is one.
      *
      * @param $patient
-     *
+     * @param $use_context
      * @return mixed
      */
-    public function getLetterApplicationTreatmentRight($patient)
+    public function getLetterApplicationTreatmentRight($patient, $use_context = false)
     {
-        if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-            return $this->getLetterApplicationTreatmentForSide($patient, $episode, 'right');
-        }
+        return $this->getLetterApplicationTreatmentForSide($patient,'right', $use_context);
     }
 
     /**
      * get the therapy application treatment for all sides that have one for this patient.
      *
      * @param Patient $patient
-     *
+     * @param $use_context
      * @return string
      */
-    public function getLetterApplicationTreatmentBoth($patient)
+    public function getLetterApplicationTreatmentBoth($patient, $use_context = false)
     {
         $res = '';
-        if ($right = $this->getLetterApplicationTreatmentRight($patient)) {
+        if ($right = $this->getLetterApplicationTreatmentRight($patient, $use_context)) {
             $res .= $right.' to the right eye';
         }
-        if ($left = $this->getLetterApplicationTreatmentLeft($patient)) {
+        if ($left = $this->getLetterApplicationTreatmentLeft($patient, $use_context)) {
             if ($right) {
                 $res .= ' and ';
             }
