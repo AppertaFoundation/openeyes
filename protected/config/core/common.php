@@ -305,7 +305,7 @@ return array(
                     'title' => 'Audit',
                     'uri' => 'audit',
                     'position' => 2,
-                    'restricted' => array('admin'),
+                    'restricted' => array('TaskViewAudit'),
                 ),
                 'reports' => array(
                     'title' => 'Reports',
