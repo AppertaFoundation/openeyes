@@ -39,7 +39,7 @@ class PatientController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'practiceList' ),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'practiceList', 'getInternalReferralDocumentListUrl' ),
                 'users' => array('@'),
             ),
             array('allow',
@@ -1680,6 +1680,18 @@ class PatientController extends BaseController
         echo CJSON::encode($output);
         
         Yii::app()->end();
+    }
+
+    public function actionGetInternalReferralDocumentListUrl($id)
+    {
+        $patient = $this->loadModel($id);
+
+        if ($component = $this->getApp()->getComponent('internalReferralIntegration')) {
+            $link = $component->generateUrlForDocumentList($patient);
+        }
+
+        echo \CJSON::encode(array('link' => $link));
+        $this->getApp()->end();
     }
 
     /**
