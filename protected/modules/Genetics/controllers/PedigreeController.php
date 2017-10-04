@@ -84,7 +84,7 @@ class PedigreeController extends BaseModuleController
             ),
             'comments' => 'textarea',
 
-            'disorder' => array(
+            'disorder_id' => array(
                 'widget' => 'DisorderLookup',
                 'relation' => 'disorder',
                 'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),

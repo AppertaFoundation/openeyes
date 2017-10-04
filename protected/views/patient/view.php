@@ -104,6 +104,7 @@ $warnings = $this->patient->getWarnings($clinical);
             <?php if ($component = $this->getApp()->getComponent('internalReferralIntegration')): ?>
                 <section class="box patient-info internalreferral internalreferral-doclist">
                         <?php echo CHtml::link('View patient referrals',$component->generateUrlForDocumentList($this->patient)); ?>
+                        <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
                         <span>e-WinDIP</span>
                 </section>
             <?php endif; ?>
