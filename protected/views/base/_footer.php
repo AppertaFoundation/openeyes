@@ -44,7 +44,10 @@
 			</ul>
 		</div>
 	</div>
-	<script>
+    <?php
+    $this->widget('application.widgets.NewFeatureHelp');
+    ?>
+    <script>
 	if (uservoice_enabled == 'on') {
 		// Include the UserVoice JavaScript SDK (only needed once on a page)
 		UserVoice=window.UserVoice||[];(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='http://widget.uservoice.com/xiXrGR5j7JSb6wqDtOQJw.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})();

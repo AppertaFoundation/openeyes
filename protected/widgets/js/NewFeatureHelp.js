@@ -1,10 +1,18 @@
 function NewFeatureHelpController(splashScreen, tours, downloadLinks) {
-  this.tours = [];
+  this.tourDefinitions = {};
   this.splashScreenElements = [];
-  this.downloadLinks = downloadLinks;
+  this.downloadLinks = downloadLinks ? downloadLinks : [];
   this._initTours(tours);
   this._initSplashScreen(splashScreen);
-  this._addListeners();
+  if (Object.keys(this.tourDefinitions).length
+      || this.downloadLinks.length
+      || this.splashScreenElements.length) {
+    // we have some help to show
+    this._addListeners();
+  } else {
+    $('.help-trigger-btn').hide();
+  }
+
 }
 
 NewFeatureHelpController.prototype._addListeners = function() {
@@ -13,35 +21,37 @@ NewFeatureHelpController.prototype._addListeners = function() {
   $('.help-action-tour').on('click',this._toggleTour.bind(this));
   $('.help-close').on('click',this.togglePopup.bind(this));
 }
+
 NewFeatureHelpController.prototype._toggleTour = function(evt) {
   let $button = $(evt.currentTarget);
-  let buttonTourName = $button.prop('id').slice(15);
-  this.toggleTour(buttonTourName);
+  let buttonTourId = $button.prop('id').slice(15);
+  this.toggleTour(buttonTourId);
 }
-NewFeatureHelpController.prototype.toggleTour = function(tourName) {
-  if (this.tours[tourName].ended()) {
-    this.startTour(tourName);
+
+NewFeatureHelpController.prototype.toggleTour = function(tourId) {
+  if (this.tourDefinitions[tourId]['_bsTour'].ended()) {
+    this.startTour(tourId);
   } else {
     this.endAllTours();
   }
+}
+
+NewFeatureHelpController.prototype.togglePopup = function() {
+    let $popup = $('.help-popup');
+    if ($popup.css('display') !== 'none') {
+        $popup.hide();
+        this.endAllTours();
+        this.hideSplashScreen();
+    } else {
+        $popup.show();
+        this.showSplashScreen();
+    }
 }
 
 NewFeatureHelpController.prototype.toggleSplashScreen = function() {
   if ($('#help-body-overlay').css('display') !== 'none') {
     this.hideSplashScreen();
   } else {
-    this.showSplashScreen();
-  }
-}
-
-NewFeatureHelpController.prototype.togglePopup = function() {
-  let $popup = $('.help-popup');
-  if ($popup.css('display') !== 'none') {
-    $popup.hide();
-    this.endAllTours();
-    this.hideSplashScreen();
-  } else {
-    $popup.show();
     this.showSplashScreen();
   }
 }
@@ -67,7 +77,7 @@ NewFeatureHelpController.prototype.hideSplashScreen = function() {
 
 NewFeatureHelpController.prototype._showSplashScreen = function() {
   this.splashScreenElements.forEach(($element) => {
-    if ($element.attr('data-showparent') === 'true') {
+    if ($element.data('showparent')) {
       $element.parent().css('z-index','161');
     }
     $element.css('z-index','161');
@@ -79,7 +89,7 @@ NewFeatureHelpController.prototype._showSplashScreen = function() {
 
 NewFeatureHelpController.prototype._hideSplashScreen = function() {
   this.splashScreenElements.forEach(($element) => {
-    if ($element.attr('data-showparent') === 'true') {
+    if ($element.data('showparent')) {
       $element.parent().css('z-index','');
     }
     $element.css('z-index','');
@@ -89,30 +99,38 @@ NewFeatureHelpController.prototype._hideSplashScreen = function() {
   $('[data-toggle="popover"]').popover('hide');
 }
 
-NewFeatureHelpController.prototype.startTour = function(tourName) {
+NewFeatureHelpController.prototype.startTour = function(tourId) {
   this.hideSplashScreen();
   this.endAllTours();
-  this.tours[tourName].restart();
+  this.tourDefinitions[tourId]['_bsTour'].restart();
 }
 
 NewFeatureHelpController.prototype.endAllTours = function() {
-  for (var tour in this.tours) {
-    if (this.tours.hasOwnProperty(tour) && !this.tours[tour].ended()) {
-      this.tours[tour].end();
+  for (var tourId in this.tourDefinitions) {
+    if (this.tourDefinitions.hasOwnProperty(tourId)) {
+      let tourObj = this.tourDefinitions[tourId]['_bsTour'];
+      if (!tourObj.ended()) {
+        tourObj.end();
+      }
     }
   }
 }
 
 NewFeatureHelpController.prototype._initTours = function(tours) {
-  for (var tourName in tours) {
-    var tourSteps = tours[tourName];
-    this.tours[tourName] = new Tour(
+  for (var idx in tours) {
+    if (!tours.hasOwnProperty(idx)) {
+      continue;
+    }
+    var definition = tours[idx];
+    var tourId = definition['id'];
+    this.tourDefinitions[tourId] = definition;
+    this.tourDefinitions[tourId]['_bsTour'] = new Tour(
       {
-        name: tourName,
+        name: tourId,
         backdrop: true,
-        steps: tourSteps,
-        onEnd: this._tourEnded.bind(this,tourName),
-        onStart: this._tourStarted.bind(this,tourName)
+        steps: definition['steps'],
+        onEnd: this._tourEnded.bind(this,tourId),
+        onStart: this._tourStarted.bind(this,tourId)
       }
     );
   }
@@ -132,22 +150,21 @@ NewFeatureHelpController.prototype._initSplashScreen = function(splashScreen) {
   });
 }
 
-NewFeatureHelpController.prototype._tourEnded = function(tourName) {
+NewFeatureHelpController.prototype._tourEnded = function(tourId) {
   $('.popover').remove();
-  let $button = $(`#help-tour-name-${tourName}`);
-  $button.html(`Start ${tourName}`);
+  let $button = $(`#help-tour-name-${tourId}`);
+  let definition = this.tourDefinitions[tourId];
+  $button.html(`Start ${definition['name']}`);
   $button.removeClass('help-action-active');
   $button.addClass('help-action');
 }
 
-NewFeatureHelpController.prototype._tourStarted = function(tourName) {
-  this.tours[tourName].goTo(0);
-  for (var i = 0; i < this.tours[tourName]._options.steps.length; i++) {
-    this.tours[tourName].next();
-  }
-  this.tours[tourName].goTo(0);
-  let $button = $(`#help-tour-name-${tourName}`);
-  $button.html(`End ${tourName}`);
+NewFeatureHelpController.prototype._tourStarted = function(tourId) {
+  var definition = this.tourDefinitions[tourId];
+  definition['_bsTour'].goTo(0);
+
+  let $button = $(`#help-tour-name-${tourId}`);
+  $button.html(`End ${definition['name']}`);
   $button.removeClass('help-action');
   $button.addClass('help-action-active');
 }

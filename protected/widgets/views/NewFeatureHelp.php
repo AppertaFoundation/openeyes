@@ -4,12 +4,14 @@
   <span class="help-close"></span>
   <span class="help-title">Help</span>
     <ul class="help-actions">
+    <?php if ($this->splash_screen) { ?>
     <li id="help-splash-screen-btn" class="help-action">
       Show Splash Screen
     </li>
-    <?php foreach ($tours as $key => $value) { ?>
-      <li id="help-tour-name-<?=$key?>" class="help-action help-action-tour">
-        Start <?=$key?>
+    <?php } ?>
+    <?php foreach ($this->tours as $key => $value) { ?>
+      <li id="help-tour-name-<?= $value['id'] ? : $key; ?>" class="help-action help-action-tour">
+        Start <?=$value['name']?>
       </li>
     <?php } ?>
     <?php foreach ($download_links as $key => $value) { ?>
@@ -23,4 +25,11 @@
 </div>
 
 <div id="help-body-overlay" hidden="true"></div>
-<script>$('header:first').append('<div id="help-header-overlay" hidden="true"></div>')</script>
+<script>
+    $(document).ready(function() {
+        $('header:first').append('<div id="help-header-overlay" hidden="true"></div>');
+        new NewFeatureHelpController(
+            <?= json_encode($this->splash_screen) ?>,
+            <?= json_encode($this->tours) ?>);
+    });
+</script>

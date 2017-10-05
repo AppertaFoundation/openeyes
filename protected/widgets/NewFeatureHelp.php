@@ -10,22 +10,25 @@ class NewFeatureHelp extends BaseCWidget
     public $tours = array();
     public $download_links = array();
 
-    public function init()
+    protected function loadConfig()
     {
-      parent::init();
+        $config = require Yii::getPathOfAlias('application.tours') . '/common.php';
+        $current_url = Yii::app()->request->requestUri;
+        foreach ($config as $tour) {
+            if (!isset($tour['url_pattern']) || preg_match($tour['url_pattern'], $current_url) > 0) {
+                if (isset($tour['auto']) && $tour['auto'] && !$this->splash_screen) {
+                    $this->splash_screen = $tour;
+                } else {
+                    $this->tours[] = $tour;
+                }
+            }
+        }
+
     }
 
     public function run()
     {
-      $this->render('NewFeatureHelp');
-      $splash_screen_JSON = json_encode($this->splash_screen);
-      $tours_JSON = json_encode($this->tours);
-      $download_links_JSON = json_encode($this->download_links);
-      echo "<script>
-      var splash_screen = {$splash_screen_JSON};
-      var tours = {$tours_JSON};
-      var download_links = {$download_links_JSON};
-      var newFeatureHelpController = new NewFeatureHelpController(splash_screen, tours, download_links);
-      </script>";
+        $this->loadConfig();
+        $this->render('NewFeatureHelp');
     }
 }

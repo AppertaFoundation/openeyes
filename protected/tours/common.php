@@ -3,7 +3,7 @@ return array(
     array(
         'name' => 'OpenEyes Welcome',
         'id' => 'openeyes-welcome',
-        'url_pattern' => '^/{0,1}$',
+        'url_pattern' => '/^\/{0,1}$/',
         'steps' => array(
             array(
                 'orphan' => true,
