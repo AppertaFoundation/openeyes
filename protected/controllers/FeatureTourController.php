@@ -23,12 +23,7 @@ class FeatureTourController extends BaseController
 
     public function accessRules()
     {
-        return array(
-            array('allow',
-                'actions' => array('tourComplete', 'tourSleep'),
-                'users' => array('@'),
-            ),
-        );
+        return array(array('allow', 'roles' => array('User')));
     }
 
     protected function sendResponse($status = 200)
@@ -48,8 +43,9 @@ class FeatureTourController extends BaseController
 
     /**
      * @param $id
+     * @throws CHttpException
      */
-    public function actionTourComplete($id)
+    public function actionComplete($id)
     {
         if (!$this->getApp()->request->isPostRequest) {
             throw new CHttpException(400);
@@ -77,7 +73,7 @@ class FeatureTourController extends BaseController
      * @param $id
      * @throws CHttpException
      */
-    public function actionTourSleep($id)
+    public function actionSleep($id)
     {
         if (!$this->getApp()->request->isPostRequest) {
             throw new CHttpException(400);

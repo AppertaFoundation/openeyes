@@ -18,11 +18,7 @@ class NewFeatureHelp extends BaseCWidget
         foreach ($config as $tour) {
             if (!isset($tour['url_pattern']) || preg_match($tour['url_pattern'], $current_url) > 0) {
                 $this->updateTourState($tour, $user_id);
-                if (isset($tour['auto']) && $tour['auto'] && !$this->splash_screen) {
-                    $this->splash_screen = $tour;
-                } else {
-                    $this->tours[] = $tour;
-                }
+                $this->tours[] = $tour;
             }
         }
 
@@ -35,7 +31,10 @@ class NewFeatureHelp extends BaseCWidget
     protected function updateTourState(&$tour, $user_id)
     {
         $user_state = UserFeatureTourState::model()->findOrCreate($user_id, $tour['id']);
-        $tour['completed'] = $user_state->completed;
+        // don't want a tour the user has already seen to auto start
+        if ($tour['auto'] && $user_state->completed) {
+            $tour['auto'] = false;
+        }
     }
 
     public function run()

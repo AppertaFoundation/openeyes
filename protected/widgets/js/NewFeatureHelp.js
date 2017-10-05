@@ -1,5 +1,6 @@
 function NewFeatureHelpController(splashScreen, tours, downloadLinks) {
   this.tourDefinitions = {};
+  this.autoTours = [];
   this.splashScreenElements = [];
   this.downloadLinks = downloadLinks ? downloadLinks : [];
   this._initTours(tours);
@@ -9,6 +10,7 @@ function NewFeatureHelpController(splashScreen, tours, downloadLinks) {
       || this.splashScreenElements.length) {
     // we have some help to show
     this._addListeners();
+    this._autoStart();
   } else {
     $('.help-trigger-btn').hide();
   }
@@ -21,6 +23,12 @@ NewFeatureHelpController.prototype._addListeners = function() {
   $('.help-action-tour').on('click',this._toggleTour.bind(this));
   $('.help-close').on('click',this.togglePopup.bind(this));
 }
+
+NewFeatureHelpController.prototype._autoStart = function() {
+  if (this.autoTours.length) {
+    this.startTour(this.autoTours.pop());
+  }
+};
 
 NewFeatureHelpController.prototype._toggleTour = function(evt) {
   let $button = $(evt.currentTarget);
@@ -123,12 +131,15 @@ NewFeatureHelpController.prototype._initTours = function(tours) {
     }
     var definition = tours[idx];
     var tourId = definition['id'];
+    if (definition['auto']) {
+        this.autoTours.push(tourId);
+    }
     this.tourDefinitions[tourId] = definition;
     this.tourDefinitions[tourId]['_bsTour'] = new Tour(
       {
         name: tourId,
         backdrop: true,
-        storage: true,
+        storage: window.localStorage,
         steps: definition['steps'],
         onEnd: this._tourEnded.bind(this,tourId),
         onStart: this._tourStarted.bind(this,tourId),
@@ -172,8 +183,12 @@ NewFeatureHelpController.prototype._tourStarted = function(tourId) {
 }
 
 NewFeatureHelpController.prototype._setTourState = function(key, value) {
-  console.log(key, value);
   if (key.match(/_end$/) && value === 'yes') {
-    console.log('finished the tour.');
+    let id = key.substring(0, key.length-4);
+    console.log(id);
+    $.post(
+        '/FeatureTour/complete?id=' + id,
+        {YII_CSRF_TOKEN: YII_CSRF_TOKEN}
+    );
   }
 }
