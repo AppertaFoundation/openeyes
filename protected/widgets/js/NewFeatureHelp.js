@@ -128,9 +128,11 @@ NewFeatureHelpController.prototype._initTours = function(tours) {
       {
         name: tourId,
         backdrop: true,
+        storage: true,
         steps: definition['steps'],
         onEnd: this._tourEnded.bind(this,tourId),
-        onStart: this._tourStarted.bind(this,tourId)
+        onStart: this._tourStarted.bind(this,tourId),
+        afterSetState: this._setTourState.bind(this)
       }
     );
   }
@@ -167,4 +169,11 @@ NewFeatureHelpController.prototype._tourStarted = function(tourId) {
   $button.html(`End ${definition['name']}`);
   $button.removeClass('help-action');
   $button.addClass('help-action-active');
+}
+
+NewFeatureHelpController.prototype._setTourState = function(key, value) {
+  console.log(key, value);
+  if (key.match(/_end$/) && value === 'yes') {
+    console.log('finished the tour.');
+  }
 }
