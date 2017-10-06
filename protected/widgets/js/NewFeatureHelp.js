@@ -129,8 +129,9 @@ NewFeatureHelpController.prototype._initTours = function(tours) {
     if (!tours.hasOwnProperty(idx)) {
       continue;
     }
-    var definition = tours[idx];
-    var tourId = definition['id'];
+
+    let definition = tours[idx];
+    let tourId = definition['id'];
     if (definition['auto']) {
         this.autoTours.push(tourId);
     }
@@ -141,9 +142,8 @@ NewFeatureHelpController.prototype._initTours = function(tours) {
         backdrop: true,
         storage: window.localStorage,
         steps: definition['steps'],
-        onEnd: this._tourEnded.bind(this,tourId),
-        onStart: this._tourStarted.bind(this,tourId),
-        afterSetState: this._setTourState.bind(this)
+        onEnd: this._tourEnded.bind(this, tourId),
+        onStart: this._tourStarted.bind(this, tourId)
       }
     );
   }
@@ -167,6 +167,7 @@ NewFeatureHelpController.prototype._tourEnded = function(tourId) {
   $('.popover').remove();
   let $button = $(`#help-tour-name-${tourId}`);
   let definition = this.tourDefinitions[tourId];
+  this._checkEndedState(tourId);
   $button.html(`Start ${definition['name']}`);
   $button.removeClass('help-action-active');
   $button.addClass('help-action');
@@ -182,13 +183,18 @@ NewFeatureHelpController.prototype._tourStarted = function(tourId) {
   $button.addClass('help-action-active');
 }
 
-NewFeatureHelpController.prototype._setTourState = function(key, value) {
-  if (key.match(/_end$/) && value === 'yes') {
-    let id = key.substring(0, key.length-4);
-    console.log(id);
+/**
+ * When a tour is ended, check if the user saw the last slide, and mark
+ * it as complete for them in the backend.
+ *
+ * @param tourId
+ */
+NewFeatureHelpController.prototype._checkEndedState = function(tourId) {
+  let definition = this.tourDefinitions[tourId]['_bsTour'];
+  if (!definition.getStep(definition.getCurrentStep()+1)) {
     $.post(
-        '/FeatureTour/complete?id=' + id,
-        {YII_CSRF_TOKEN: YII_CSRF_TOKEN}
+      '/FeatureTour/complete?id=' + tourId,
+      {YII_CSRF_TOKEN: YII_CSRF_TOKEN}
     );
   }
 }
