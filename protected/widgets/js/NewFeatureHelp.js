@@ -1,8 +1,20 @@
+/**
+ * Controller for managing the feature tours on the front end.
+ *
+ * NB. development at this point has focused on the tours, and
+ * not the splashScreen or downloadLinks options.
+ *
+ * @param splashScreen
+ * @param tours
+ * @param downloadLinks
+ * @constructor
+ */
 function NewFeatureHelpController(splashScreen, tours, downloadLinks) {
   this.tourDefinitions = {};
   this.autoTours = [];
   this.splashScreenElements = [];
   this.downloadLinks = downloadLinks ? downloadLinks : [];
+  this.sleepPeriod = undefined;
   this._initTours(tours);
   this._initSplashScreen(splashScreen);
   if (Object.keys(this.tourDefinitions).length
@@ -27,6 +39,9 @@ NewFeatureHelpController.prototype._addListeners = function() {
 NewFeatureHelpController.prototype._autoStart = function() {
   if (this.autoTours.length) {
     this.startTour(this.autoTours.pop());
+  } else {
+    // no more auto tours, so ensure sleep period is reset
+    this.sleepPeriod = undefined;
   }
 };
 
@@ -142,8 +157,11 @@ NewFeatureHelpController.prototype._initTours = function(tours) {
         backdrop: true,
         storage: window.localStorage,
         steps: definition['steps'],
+        template: this._tourTemplate.bind(this, tourId),
         onEnd: this._tourEnded.bind(this, tourId),
-        onStart: this._tourStarted.bind(this, tourId)
+        onStart: this._tourStarted.bind(this, tourId),
+        onShow: this._tourShow.bind(this, tourId),
+        onHide: this._tourHide.bind(this, tourId)
       }
     );
   }
@@ -190,11 +208,75 @@ NewFeatureHelpController.prototype._tourStarted = function(tourId) {
  * @param tourId
  */
 NewFeatureHelpController.prototype._checkEndedState = function(tourId) {
-  let definition = this.tourDefinitions[tourId]['_bsTour'];
-  if (!definition.getStep(definition.getCurrentStep()+1)) {
+  let definition = this.tourDefinitions[tourId];
+  let tour = definition['_bsTour'];
+
+  if (tour.getStep(tour.getCurrentStep()+1)) {
+    // not at the end of the tour, which indicates early dismissal
+    if (this.sleepPeriod) {
+      $.post(
+        '/FeatureTour/sleep?id=' + tourId,
+        {
+          YII_CSRF_TOKEN: YII_CSRF_TOKEN,
+          period: this.sleepPeriod
+        }
+      );
+    }
+  } else {
     $.post(
       '/FeatureTour/complete?id=' + tourId,
       {YII_CSRF_TOKEN: YII_CSRF_TOKEN}
     );
   }
+}
+
+NewFeatureHelpController.prototype._tourHide = function(tourId) {
+  // store the sleep value if the element is there
+  if ($('select[name="sleep-period"]').length)
+    this.sleepPeriod = $('select[name="sleep-period"]').val();
+}
+
+NewFeatureHelpController.prototype._tourShow = function(tourId) {
+  let definition = this.tourDefinitions[tourId];
+  let tour = definition['_bsTour'];
+  if (definition['auto']) {
+    if (!tour.getStep(tour.getCurrentStep()+1)) {
+      // don't show sleep periods for the last step
+      $('select[name="sleep-period"]').hide()
+    } else {
+      // maintain the sleep value across steps if it has been set
+      if (this.sleepPeriod !== undefined && $('select[name="sleep-period"]').length) {
+          $('select[name="sleep-period"]').val(this.sleepPeriod);
+      }
+    }
+  }
+}
+
+
+NewFeatureHelpController.prototype._tourTemplate = function(tourId, i, step) {
+    let definition = this.tourDefinitions[tourId];
+    if (definition['auto']) {
+        return `<div class='popover tour'>
+      <div class='arrow'></div>
+  <h3 class='popover-title'></h3>
+  <div class='popover-content'></div>
+  <div class='popover-navigation'>
+    <button class='btn btn-default' data-role='prev'>« Prev</button>
+    <button class='btn btn-default' data-role='next'>Next »</button>
+    <select name="sleep-period"><option>Show me ...</option><option value="-1">Never again</option><option value="+5 minutes">In 5 minutes</option><option value="+1 hour">1 hour</option><option value="+1 day">1 day</option><option value="+1 week">1 week</option></select>
+    <button class='btn btn-default' data-role='end'>Later</button>
+  </div>          
+  </div>`
+    } else {
+        return `<div class='popover tour'>
+      <div class='arrow'></div>
+  <h3 class='popover-title'></h3>
+  <div class='popover-content'></div>
+  <div class='popover-navigation'>
+    <button class='btn btn-default' data-role='prev'>« Prev</button>
+    <button class='btn btn-default' data-role='next'>Next »</button>
+    <button class='btn btn-default' data-role='end'>End</button>
+  </div>          
+  </div>`
+    }
 }
