@@ -261,10 +261,10 @@ NewFeatureHelpController.prototype._tourTemplate = function(tourId, i, step) {
   <h3 class='popover-title'></h3>
   <div class='popover-content'></div>
   <div class='popover-navigation'>
-    <button class='btn btn-default' data-role='prev'>« Prev</button>
-    <button class='btn btn-default' data-role='next'>Next »</button>
+    <button class='btn btn-sm btn-default' data-role='prev'>« Prev</button>
+    <button class='btn btn-sm btn-default' data-role='next'>Next »</button>
+    <button class='btn btn-sm btn-default' data-role='end'>Later</button>
     <select name="sleep-period"><option>Show me ...</option><option value="-1">Never again</option><option value="+5 minutes">In 5 minutes</option><option value="+1 hour">1 hour</option><option value="+1 day">1 day</option><option value="+1 week">1 week</option></select>
-    <button class='btn btn-default' data-role='end'>Later</button>
   </div>          
   </div>`
     } else {
@@ -273,9 +273,9 @@ NewFeatureHelpController.prototype._tourTemplate = function(tourId, i, step) {
   <h3 class='popover-title'></h3>
   <div class='popover-content'></div>
   <div class='popover-navigation'>
-    <button class='btn btn-default' data-role='prev'>« Prev</button>
-    <button class='btn btn-default' data-role='next'>Next »</button>
-    <button class='btn btn-default' data-role='end'>End</button>
+    <button class='btn btn-sm btn-default' data-role='prev'>« Prev</button>
+    <button class='btn btn-sm btn-default' data-role='next'>Next »</button>
+    <button class='btn btn-sm btn-default' data-role='end'>End</button>
   </div>          
   </div>`
     }
