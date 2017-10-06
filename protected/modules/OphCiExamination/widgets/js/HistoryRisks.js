@@ -182,10 +182,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 selectedRisks.push($selected.val());
             }
         });
-        console.log(selectedRisks);
+        
         self.$element.find(self.riskSelector).each(function() {
             $(this).find('option').each(function() {
-                console.log($(this).val());
                 if (!$(this).is(':selected') && ($.inArray($(this).val(), selectedRisks) > -1)) {
                     $(this).hide();
                 } else {
