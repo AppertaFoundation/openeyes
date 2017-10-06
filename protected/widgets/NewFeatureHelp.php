@@ -70,8 +70,14 @@ class NewFeatureHelp extends BaseCWidget
     {
         $user_state = UserFeatureTourState::model()->findOrCreate($user_id, $tour['id']);
         // don't want a tour the user has already seen to auto start
-        if ($tour['auto'] && $user_state->completed) {
-            $tour['auto'] = false;
+        if ($tour['auto']) {
+            if ($user_state->completed) {
+                $tour['auto'] = false;
+            } elseif ($user_state->sleep_until) {
+                $now = new DateTime();
+                $cmp = DateTime::createFromFormat('Y-m-d H:i:s', $user_state->sleep_until);
+                $tour['auto'] = $now >= $cmp;
+            }
         }
     }
 

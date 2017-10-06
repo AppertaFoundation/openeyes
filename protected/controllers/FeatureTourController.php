@@ -64,9 +64,20 @@ class FeatureTourController extends BaseController
      */
     protected function calculateDateFromPeriod($period)
     {
+        if ($period === '-1') {
+            return '9999-12-31 23:59:59';
+        }
         $interval = DateInterval::createFromDateString($period);
         $now = new DateTime();
-        return $now->add($interval)->format('Y-m-d');
+        $today = $now->format('d');
+        $until_day = $now->add($interval)->format('d');
+        // if the sleep date is another day, we don't want to wait until the exact time,
+        // so we null out the time portion of the datetime
+        if ($until_day === $today) {
+            return $now->format('Y-m-d H:i:s');
+        } else {
+            return $now->format('Y-m-d 00:00:00');
+        }
     }
 
     /**

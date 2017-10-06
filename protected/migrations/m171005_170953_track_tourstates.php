@@ -8,7 +8,7 @@ class m171005_170953_track_tourstates extends CDbMigration
             'user_id' => 'int(10) unsigned NOT NULL',
             'tour_id' => 'varchar(511) NOT NULL',
             'completed' => 'boolean default false',
-            'sleep_until' => 'date'
+            'sleep_until' => 'datetime'
         ));
 	}
 
