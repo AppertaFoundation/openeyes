@@ -12,10 +12,30 @@ class NewFeatureHelp extends BaseCWidget
 
     /**
      * Resolves loading of the configuration
+     *
+     * NB does not support module based tours at the moment, given that all modules are a
+     * part of the full application, and this is an entirely new piece of functionality.
+     * This was also implemented with considerable time constraints, so supporting multi-level
+     * tours seemed an unnecessary complication.
      */
     protected function loadConfig()
     {
-        $config = require Yii::getPathOfAlias('application.tours') . '/common.php';
+        $config = array();
+        foreach (array('common', 'local') as $filename) {
+            $path = Yii::getPathOfAlias('application.tours') . "/{$filename}.php";
+            if (file_exists($path)) {
+                $config = array_merge($config, require $path);
+            }
+        }
+
+        $this->mapConfigToTours($config);
+    }
+
+    /**
+     * @param $config
+     */
+    protected function mapConfigToTours($config)
+    {
         $current_url = Yii::app()->request->requestUri;
         $user_id = Yii::app()->user->id;
 
