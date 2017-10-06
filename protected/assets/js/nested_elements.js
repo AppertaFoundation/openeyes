@@ -195,8 +195,10 @@ function removeElement(element, is_child) {
 	}
 
 	$('.js-active-elements').trigger('ElementRemoved', [ element_type_class ]);
-  var checker = getOEEyeDrawChecker();
-  checker.resync();
+  	if (typeof(getOEEyeDrawChecker) === 'function') {
+        var checker = getOEEyeDrawChecker();
+        checker.resync();
+	}
 }
 
 function moveToElement(element) {
