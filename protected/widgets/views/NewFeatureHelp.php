@@ -10,9 +10,7 @@
     </li>
     <?php } ?>
     <?php foreach ($this->tours as $key => $value) { ?>
-      <li id="help-tour-name-<?= $value['id'] ? : $key; ?>" class="help-action help-action-tour">
-        Start <?=$value['name']?>
-      </li>
+      <li id="help-tour-name-<?= $value['id'] ? : $key; ?>" class="help-action help-action-tour"><?=$value['name']?></li>
     <?php } ?>
     <?php foreach ($download_links as $key => $value) { ?>
       <a href="<?=$value?>" download="<?=$value?>.pdf">

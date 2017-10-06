@@ -155,12 +155,13 @@ NewFeatureHelpController.prototype._initTours = function(tours) {
       {
         name: tourId,
         backdrop: true,
+        keyboard: true,
         storage: window.localStorage,
         steps: definition['steps'],
         template: this._tourTemplate.bind(this, tourId),
         onEnd: this._tourEnded.bind(this, tourId),
         onStart: this._tourStarted.bind(this, tourId),
-        onShow: this._tourShow.bind(this, tourId),
+        onShown: this._tourShown.bind(this, tourId),
         onHide: this._tourHide.bind(this, tourId)
       }
     );
@@ -189,6 +190,7 @@ NewFeatureHelpController.prototype._tourEnded = function(tourId) {
   $button.html(`Start ${definition['name']}`);
   $button.removeClass('help-action-active');
   $button.addClass('help-action');
+  this._autoStart();
 }
 
 NewFeatureHelpController.prototype._tourStarted = function(tourId) {
@@ -236,13 +238,14 @@ NewFeatureHelpController.prototype._tourHide = function(tourId) {
     this.sleepPeriod = $('select[name="sleep-period"]').val();
 }
 
-NewFeatureHelpController.prototype._tourShow = function(tourId) {
+NewFeatureHelpController.prototype._tourShown = function(tourId) {
   let definition = this.tourDefinitions[tourId];
   let tour = definition['_bsTour'];
   if (definition['auto']) {
     if (!tour.getStep(tour.getCurrentStep()+1)) {
       // don't show sleep periods for the last step
-      $('select[name="sleep-period"]').hide()
+      $('select[name="sleep-period"]').hide();
+      $('#btn-later').text('End');
     } else {
       // maintain the sleep value across steps if it has been set
       if (this.sleepPeriod !== undefined && $('select[name="sleep-period"]').length) {
@@ -263,8 +266,15 @@ NewFeatureHelpController.prototype._tourTemplate = function(tourId, i, step) {
   <div class='popover-navigation'>
     <button class='btn btn-sm btn-default' data-role='prev'>« Prev</button>
     <button class='btn btn-sm btn-default' data-role='next'>Next »</button>
-    <button class='btn btn-sm btn-default' data-role='end'>Later</button>
-    <select name="sleep-period"><option>Show me ...</option><option value="-1">Never again</option><option value="+5 minutes">In 5 minutes</option><option value="+1 hour">1 hour</option><option value="+1 day">1 day</option><option value="+1 week">1 week</option></select>
+    <button class='btn btn-sm btn-default' id='btn-later' data-role='end'>Later</button>
+    <select name="sleep-period">
+    <option value="">Show me ...</option>
+    <option value="-1">Never again</option>
+    <option value="+5 minutes">In 5 minutes</option>
+    <option value="+1 hour">1 hour</option>
+    <option value="+1 day">1 day</option>
+    <option value="+1 week">1 week</option>
+    </select>
   </div>          
   </div>`
     } else {

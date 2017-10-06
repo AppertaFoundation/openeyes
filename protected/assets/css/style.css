@@ -9631,11 +9631,11 @@ tbody.collapse.in {
 /**
 Extension to bootstrap tour sass to allow the original to be replaced from source as and when necessary
  */
-/* line 6, ../sass/openeyes/components/_bootstrap-tour-ext.scss */
-.popover.tour.orphan {
+/* line 5, ../sass/openeyes/components/_bootstrap-tour-ext.scss */
+.popover.tour {
   max-width: 350px;
 }
-/* line 9, ../sass/openeyes/components/_bootstrap-tour-ext.scss */
+/* line 7, ../sass/openeyes/components/_bootstrap-tour-ext.scss */
 .popover.tour select {
   line-height: 1.5px;
   font-size: 12px;

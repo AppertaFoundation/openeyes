@@ -3,9 +3,7 @@ Extension to bootstrap tour sass to allow the original to be replaced from sourc
  */
 .popover {
   &.tour {
-    &.orphan {
-      max-width: 350px;
-    }
+    max-width: 350px;
     & select {
       line-height: 1.5px;
       font-size: 12px;
