@@ -29,7 +29,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'cdRatio' => array('id' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_'.$side.'_cd_ratio_id', 'attribute' => 'data-value'),
         ),
     ),
-    'listenerArray' => array('autoReportListener'),
+    'listenerArray' => array('opticDiscListener', 'autoReportListener'),
     'idSuffix' => $side.'_'.$element->elementType->id,
     'side' => ($side == 'right') ? 'R' : 'L',
     'mode' => 'edit',
