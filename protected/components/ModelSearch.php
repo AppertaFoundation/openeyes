@@ -276,7 +276,8 @@ class ModelSearch
                 if ($order) {
                     $sortColumn .= ' DESC';
                 }
-                $this->criteria->order = 't.'.$sortColumn;
+                $sortPrefix = strpos($sortColumn, '.');
+                $this->criteria->order = ($sortPrefix === false ? 't.' : '') . $sortColumn;
             }
         }
     }
