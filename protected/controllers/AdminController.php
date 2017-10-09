@@ -49,6 +49,29 @@ class AdminController extends BaseAdminController
 
     public function actionEditCommonOphthalmicDisorder()
     {
+        if( Yii::app()->request->isPostRequest){
+            echo "<pre>" . print_r($_POST, true) . "</pre>";
+            die;
+        }
+        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js');
+        Yii::app()->getClientScript()->registerScriptFile($generic_admin);
+
+        Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.DiagnosesSearch.js'), ClientScript::POS_END);
+
+        $subspecialty_id = Yii::app()->request->getParam('subspecialty_id', 1);
+
+        $criteria = new CDbCriteria();
+        $criteria->compare('subspecialty_id', $subspecialty_id);
+
+        $this->render('editcommonophthalmicdisorder',array(
+            'dataProvider' => new CActiveDataProvider('CommonOphthalmicDisorder', array(
+                'criteria' => $criteria,
+                'pagination' => false,
+            )),
+            'subspecialty' => Subspecialty::model()->findAll()
+        ));
+
+die;
         $this->genericAdmin('Common Ophthalmic Disorder', 'CommonOphthalmicDisorder',
             array(
                 'label_relation' => 'disorder',
