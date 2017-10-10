@@ -95,7 +95,8 @@ class OphCoCvi_API extends \BaseAPI
                 ' (' . \Helper::convertMySQL2NHS($mgr->getDisplayStatusDateForEvent($latest)) . ')';
         }
         else {
-            return $patient->getOphInfo()->cvi_status->name;
+            return $patient->getOphInfo()->cvi_status->name .
+                ' (' . \Helper::formatFuzzyDate($patient->getOphInfo()->cvi_status_date) . ')';
         }
     }
 
