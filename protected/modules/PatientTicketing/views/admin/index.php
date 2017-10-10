@@ -48,6 +48,6 @@
 
 		</div>
 
-		<div id="chart" class="column large-8 end orgChart"></div>
+		<div id="chart" class="column large-8 end orgChart" style="overflow-y: auto;"></div>
 	</div>
 </div>
