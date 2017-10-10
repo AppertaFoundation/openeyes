@@ -196,4 +196,9 @@ class PatientMergeRequest extends BaseActiveRecordVersioned
 
         return $text;
     }
+
+    public function getMergedMessage()
+    {
+        return 'Hospital Number <strong>'. $this->secondary_hos_num .'</strong> was merged into <strong>' . $this->primary_hos_num . '</strong>';
+    }
 }
