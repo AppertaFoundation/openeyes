@@ -3532,6 +3532,12 @@ input[type="text"].inline, input[type="password"].inline, input[type="date"].inl
 }
 
 /* line 64, ../sass/openeyes/components/_forms.scss */
+input.inset-loader {
+  background: url('../img/ajax-loader.gif') right center no-repeat !important;
+  background-size: 12px !important;
+}
+
+/* line 69, ../sass/openeyes/components/_forms.scss */
 input[type="range"] {
   width: 100%;
 }
