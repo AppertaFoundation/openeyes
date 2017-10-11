@@ -600,6 +600,44 @@ class OphCoCorrespondence_API extends BaseAPI
         );
     }
 
+    /**
+     * Returns the footer text for the correspondence
+     *
+     * @param User|null $user
+     * @param Firm|null $firm
+     * @param User|null $consultant
+     * @return string
+     */
+    public function getFooterText(\User $user = null, \Firm $firm = null, \User $consultant = null)
+    {
+        $user = $user ? $user : \User::model()->findByPk(\Yii::app()->session['user']['id']);
+        $firm = $firm ? $firm : \Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(\Yii::app()->session['selected_firm_id']);
+
+        if(!$consultant){
+            // only want a consultant for medical firms
+            if ($specialty = $firm->getSpecialty()) {
+                if ($specialty->medical) {
+                    $consultant = $firm->consultant;
+                }
+            }
+        }
+
+        if ($contact = $user->contact) {
+            $consultant_name = false;
+
+            // if we have a consultant for the firm, and its not the matched user, attach the consultant name to the entry
+            if ($consultant && ($user->id != $consultant->id) ) {
+                $consultant_name = trim($consultant->contact->title.' '.$consultant->contact->first_name.' '.$consultant->contact->last_name);
+            }
+
+            $full_name = trim($contact->title.' '.$contact->first_name.' '.$contact->last_name.' '.$contact->qualifications);
+
+            return "Yours sincerely\n\n\n\n\n" . $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Consultant: " . $consultant_name : '');
+        }
+
+        return null;
+    }
+
     /*
      * @param int $document_target_id
      * @param $type
