@@ -188,17 +188,6 @@
     </form>
 </div>
 
-<script id="common_ophtalmic_disorder" type="text/template" class="hidden">
-    <tr class="" data-row="{{row_count}}" style="">
-        <td class="reorder">
-            <span>&uarr;&darr;</span>
-            <input autocomplete="off" type="hidden" value="" name="CommonOphthalmicDisorder[display_order][{{row_count}}]" id="CommonOphthalmicDisorder_{{row_count}}_display_order" />	</td>
-        <td>
-        <td>
-            <a href="javascript:void(0)" class="add disorder-add">add</a>
-        </td>
-</script>
-
 <script>
     var $table = $('.generic-admin');
 
