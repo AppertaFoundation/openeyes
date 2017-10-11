@@ -1014,6 +1014,11 @@
       <TITLE>Pingueculum</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Pterygium</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Pterygium</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
   </DOODLE_LIST>
   <DOODLE_USAGE_LIST>
     <DOODLE_USAGE>
