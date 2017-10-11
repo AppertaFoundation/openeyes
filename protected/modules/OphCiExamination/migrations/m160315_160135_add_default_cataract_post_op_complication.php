@@ -53,16 +53,17 @@ class m160315_160135_add_default_cataract_post_op_complication extends CDbMigrat
     public function up()
     {
         $subspecialty = \Subspecialty::model()->findByAttributes(array('name' => 'Cataract'));
+        if($subspecialty){
+            foreach ($this->defaultCataractComplications as $step => $complications) {
+                $complication = \OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->findByAttributes(array('code' => $complications['code']));
 
-        foreach ($this->defaultCataractComplications as $step => $complications) {
-            $complication = \OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications::model()->findByAttributes(array('code' => $complications['code']));
-
-            $this->insert('ophciexamination_postop_complications_subspecialty', array(
-                            'subspecialty_id' => $subspecialty->id,
-                            'complication_id' => $complication->id,
-                            'display_order' => ($step * 2),
-                        )
-                );
+                $this->insert('ophciexamination_postop_complications_subspecialty', array(
+                                'subspecialty_id' => $subspecialty->id,
+                                'complication_id' => $complication->id,
+                                'display_order' => ($step * 2),
+                            )
+                    );
+            }
         }
     }
 
