@@ -157,7 +157,7 @@
 						if(isset(Yii::app()->modules["OphInBiometry"])){
 							if($element->iol_type_id){
 								$iol_type = OphInBiometry_LensType_Lens::model()->findByPk($element->iol_type_id);
-								echo $iol_type->name;
+								echo $iol_type->display_name;
 							}else{
 								echo 'None';
 							}
