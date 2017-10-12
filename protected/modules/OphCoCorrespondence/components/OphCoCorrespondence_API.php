@@ -139,7 +139,7 @@ class OphCoCorrespondence_API extends BaseAPI
     {
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
         if ($element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)){
-            return $element->iol_type->name;
+            return $element->iol_type ? $element->iol_type->name : null;
         }
     }
 
