@@ -143,7 +143,7 @@ class OphCoCorrespondence_API extends BaseAPI
 
             if(\Yii::app()->hasModule("OphInBiometry") && $element->iol_type_id){
                 $iol_type = OphInBiometry_LensType_Lens::model()->findByPk($element->iol_type_id);
-                $name = $iol_type->name;
+                $name = $iol_type->display_name;
             } else {
                 // iol_type here will be an instance of OphTrOperationnote_IOLType
                 $name = $element->iol_type ? $element->iol_type->name : null;
