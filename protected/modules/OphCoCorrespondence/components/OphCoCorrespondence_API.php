@@ -137,11 +137,21 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getLastIOLType(\Patient $patient, $use_context = false)
     {
+        $name = null;
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
         if ($element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)){
-            return $element->iol_type->name;
+
+            if(\Yii::app()->hasModule("OphInBiometry") && $element->iol_type_id){
+                $iol_type = OphInBiometry_LensType_Lens::model()->findByPk($element->iol_type_id);
+                $name = $iol_type->name;
+            } else {
+                // iol_type here will be an instance of OphTrOperationnote_IOLType
+                $name = $element->iol_type ? $element->iol_type->name : null;
+            }
         }
+        return $name;
     }
+
 
     /*
      * IOL Power from last cataract operation note
