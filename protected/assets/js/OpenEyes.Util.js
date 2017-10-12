@@ -64,7 +64,6 @@
             return 0;
         }
 	}
-
 	exports.Util = Util;
 
 }(this.OpenEyes));
