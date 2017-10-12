@@ -21,31 +21,32 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 (function(exports) {
     function AllergiesController(options) {
         this.options = $.extend(true, {}, AllergiesController._defaultOptions, options);
-
+        this.$element = this.options.element;
         this.$noAllergiesWrapper = $('#' + this.options.modelName + '_no_allergies_wrapper');
         this.$noAllergiesFld = $('#' + this.options.modelName + '_no_allergies');
 
-        this.$allergySelect = $('.' + this.options.modelName + '_allergy_id');
+        this.allergySelector = '[name$="[allergy_id]"]';
         this.$other = $('#' + this.options.modelName + '_other');
         this.otherWrapperSelector = '.' + this.options.modelName + '_other_wrapper';
-        this.$commentFld = $('#' + this.options.modelName + '_comments');
 
         this.tableSelector = '#' + this.options.modelName + '_entry_table';
         this.$table = $(this.tableSelector);
         this.templateText = $('#' + this.options.modelName + '_entry_template').text();
 
         this.initialiseTriggers();
+        this.dedupeAllergySelectors();
 
     }
 
     AllergiesController._defaultOptions = {
-        modelName: 'OEModule_OphCiExamination_models_Allergies'
+        modelName: 'OEModule_OphCiExamination_models_Allergies',
+        element: undefined
     };
 
     AllergiesController.prototype.initialiseTriggers = function()
     {
         var controller = this;
-        controller.$table.on('change', '.other', function(e) {
+        controller.$table.on('change', controller.allergySelector, function(e) {
             var $selected = $(this).find('option:selected');
 
             if ($selected.data('other')) {
@@ -55,6 +56,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 $(this).closest('td').find(controller.otherWrapperSelector).hide();
                 controller.$other.val('');
             }
+            controller.dedupeAllergySelectors();
         });
 
 
@@ -67,6 +69,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             e.preventDefault();
             $(this).closest('tr').remove();
             controller.updateNoAllergiesState();
+            controller.dedupeAllergySelectors();
         });
 
         this.$noAllergiesFld.on('click', function() {
@@ -113,9 +116,36 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     AllergiesController.prototype.addEntry = function()
     {
         this.$table.find('tbody').append(this.createRow());
+        this.dedupeAllergySelectors();
         this.updateNoAllergiesState();
     };
 
+    /**
+     * Run through each Allergies drop down and ensure selected options are not
+     * available in other rows.
+     */
+    AllergiesController.prototype.dedupeAllergySelectors = function()
+    {
+        var self = this;
+        var selectedAllergies = [];
+        self.$element.find(self.allergySelector).each(function() {
+            var $selected = $(this).find('option:selected');
+            if ($selected.val() && !$selected.data('other')) {
+                selectedAllergies.push($selected.val());
+            }
+        });
+
+        self.$element.find(self.allergySelector).each(function() {
+            $(this).find('option').each(function() {
+                if (!$(this).is(':selected') && ($.inArray($(this).val(), selectedAllergies) > -1)) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                }
+            });
+        });
+    }
+    
     exports.AllergiesController = AllergiesController;
 
 })(OpenEyes.OphCiExamination);

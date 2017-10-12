@@ -44,7 +44,9 @@ class OphTrOperationbookingEventController extends BaseEventTypeController
 
     protected function beforeAction($action)
     {
-        Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/module.js');
+        if (!$this->isPrintAction($action->id)) {
+            Yii::app()->clientScript->registerScriptFile($this->assetPath . '/js/module.js');
+        }
 
         return parent::beforeAction($action);
     }

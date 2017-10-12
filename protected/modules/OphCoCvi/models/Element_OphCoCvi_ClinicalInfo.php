@@ -385,8 +385,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
      */
     public function getDisplayStatus()
     {
-        $considered_blind = $this->getDisplayConsideredBlind();
-        return $considered_blind === static::$NULL_BOOLEAN ? $considered_blind : '';
+        return $this->getDisplayConsideredBlind();
     }
 
     /**

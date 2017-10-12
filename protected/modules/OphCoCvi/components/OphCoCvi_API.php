@@ -89,12 +89,14 @@ class OphCoCvi_API extends \BaseAPI
     public function getSummaryText(Patient $patient)
     {
         if ($events = $this->getEvents($patient)) {
-            $ids = array_map(function($e) { return $e->id;}, $events);
             $latest = array_pop($events);
-            return $this->getManager()->getDisplayStatusForEvent($latest);
+            $mgr = $this->getManager();
+            return $mgr->getDisplayStatusForEvent($latest) .
+                ' (' . \Helper::convertMySQL2NHS($mgr->getDisplayStatusDateForEvent($latest)) . ')';
         }
         else {
-            return $patient->getOphInfo()->cvi_status->name;
+            return $patient->getOphInfo()->cvi_status->name .
+                ' (' . \Helper::formatFuzzyDate($patient->getOphInfo()->cvi_status_date) . ')';
         }
     }
 

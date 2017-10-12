@@ -39,7 +39,7 @@ class PatientController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'practiceList' ),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent', 'gpList', 'practiceList', 'getInternalReferralDocumentListUrl' ),
                 'users' => array('@'),
             ),
             array('allow',
@@ -123,6 +123,15 @@ class PatientController extends BaseController
         Yii::app()->assetManager->registerScriptFile('js/patientSummary.js');
 
         $this->patient = $this->loadModel($id);
+
+        if($merged = $this->patient->isMergedInto()){
+            $primary_patient = $this->loadModel($merged->primary_id);
+
+            //display the flash message
+            Yii::app()->user->setFlash('warning.no-results', $merged->getMergedMessage());
+
+            $this->redirect(array('/patient/view/' . $primary_patient->id));
+        }
         
         $tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
         $eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
@@ -271,10 +280,28 @@ class PatientController extends BaseController
         $this->redirect(Yii::app()->createUrl('/'.$event->parent->eventType->class_name.'/default/view/'.$event->parent_id));
     }
 
+    /**
+     * Redirect the request if the the patient was merged into a primary patient
+     */
+    public function redirectIfMerged($redirect_link = null)
+    {
+        if( $this->patient && ($merged = $this->patient->isMergedInto()) ){
+            $primary_patient = $this->loadModel($merged->primary_id);
+
+            //display the flash message
+            Yii::app()->user->setFlash('warning.no-results', $merged->getMergedMessage());
+
+            $this->redirect( ($redirect_link ? $redirect_link : $primary_patient->generateEpisodeLink()));
+        }
+    }
+
     public function actionEpisodes()
     {
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->loadModel($_GET['id']);
+
+        //if $this->patient was merged we redirect the user to the primary patient's page
+        $this->redirectIfMerged();
 
         $episodes = $this->patient->episodes;
         $legacyepisodes = $this->patient->legacyepisodes;
@@ -326,6 +353,9 @@ class PatientController extends BaseController
 
         $this->layout = '//layouts/events_and_episodes';
         $this->patient = $this->episode->patient;
+
+        //if $this->patient was merged we redirect the user to the primary patient's page
+        $this->redirectIfMerged();
 
         $episodes = $this->patient->episodes;
 
@@ -1680,6 +1710,18 @@ class PatientController extends BaseController
         echo CJSON::encode($output);
         
         Yii::app()->end();
+    }
+
+    public function actionGetInternalReferralDocumentListUrl($id)
+    {
+        $patient = $this->loadModel($id);
+
+        if ($component = $this->getApp()->getComponent('internalReferralIntegration')) {
+            $link = $component->generateUrlForDocumentList($patient);
+        }
+
+        echo \CJSON::encode(array('link' => $link));
+        $this->getApp()->end();
     }
 
     /**

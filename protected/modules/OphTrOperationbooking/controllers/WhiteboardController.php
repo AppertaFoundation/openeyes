@@ -185,8 +185,8 @@ class WhiteboardController extends BaseDashboardController
 
         $savable = array('comments', 'predicted_additional_equipment');
         foreach($savable as $toSave){
-            if(Yii::app()->request->getPost($toSave, '')){
-                $whiteboard->$toSave = Yii::app()->request->getPost($toSave);
+            if( isset($_POST[$toSave])){
+                $whiteboard->$toSave = $_POST[$toSave];
             }
         }
 

@@ -112,7 +112,7 @@ $required_risk_ids = array_map(function($r) { return $r->id; }, $element->getReq
                     'risk_display' => '{{risk_display}}',
                     'other' => '{{other}}',
                     'comments' => '{{comments}}',
-                    'has_risk' => -9
+                    'has_risk' => (string) HistoryRisksEntry::$PRESENT
                 )
             )
         );

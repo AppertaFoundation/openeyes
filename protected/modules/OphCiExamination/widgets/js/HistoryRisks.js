@@ -81,6 +81,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.riskIdMap = undefined;
         this.riskLabelMap = undefined;
         this.initialiseTriggers();
+        this.dedupeRiskSelectors();
     }
 
     HistoryRisksController._defaultOptions = {
@@ -101,6 +102,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 $container.find(controller.otherWrapperSelector).hide();
                 $container.find(controller.otherSelector).val('');
             }
+            controller.dedupeRiskSelectors();
         });
 
         controller.$element.on('click', '.' + controller.options.modelName + '_add_entry', function(e) {
@@ -112,6 +114,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             e.preventDefault();
             $(e.target).parents('tr').remove();
             controller.updateNoRisksState();
+            controller.dedupeRiskSelectors();
         });
 
       controller.$noRisksFld.on('click', function() {
@@ -135,8 +138,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             this.$noRisksWrapper.hide();
             this.$noRisksFld.prop('checked', false);
         }
-    }
-
+    };
 
     /**
      *
@@ -162,8 +164,35 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         var row = this.createRow();
         this.$table.find('tbody').append(row);
+        this.dedupeRiskSelectors();
         this.updateNoRisksState();
     };
+
+    /**
+     * Run through each Risk drop down and ensure selected options are not
+     * available in other rows.
+     */
+    HistoryRisksController.prototype.dedupeRiskSelectors = function()
+    {
+        var self = this;
+        var selectedRisks = [];
+        self.$element.find(self.riskSelector).each(function() {
+            var $selected = $(this).find('option:selected');
+            if ($selected.val() && !$selected.data('other')) {
+                selectedRisks.push($selected.val());
+            }
+        });
+
+        self.$element.find(self.riskSelector).each(function() {
+            $(this).find('option').each(function() {
+                if (!$(this).is(':selected') && ($.inArray($(this).val(), selectedRisks) > -1)) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                }
+            });
+        });
+    }
 
     /**
      * Update the risks table with the given list of risks with comments

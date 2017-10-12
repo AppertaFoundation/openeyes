@@ -493,7 +493,6 @@ EOL;
         $query .= $this->populateTmpRcoNodEpisodeDrug();
         $query .= $this->populateTmpRcoNodEpisodeIOP();
         $query .= $this->populateTmpRcoNodEpisodeBiometry();
-        $query .= $this->populateTmpRcoNodSurgeon();
         $query .= $this->populateTmpRcoNodEpisodeDiabeticDiagnosis();
         $query .= $this->populateTmpRcoNodPostOpComplication();
         $query .= $this->populateTmpRcoNodEpisodeOperationCoPathology();
@@ -504,6 +503,7 @@ EOL;
         $query .= $this->populateTmpRcoNodEpisodeOperationComplication();
         $query .= $this->populateTmpRcoNodEpisodeDiagnosis();
         $query .= $this->populateTmpRcoNodEpisodeVisualAcuity();
+        $query .= $this->populateTmpRcoNodSurgeon();  // Depends on earlier tables being populated.
 
         return $query;
     }
@@ -590,14 +590,22 @@ EOL;
                 FirstName,
                 CurrentGradeId
             )
-            SELECT 
-                id AS Surgeonid, 
-                IFNULL(registration_code, '') AS GMCnumber, 
-                IFNULL(title, '') AS Title,
-                IFNULL(first_name, '') AS FirstName,
-                IFNULL(user.doctor_grade_id, '')  AS CurrentGradeId
-            FROM user
-            WHERE is_surgeon = 1 AND active = 1;
+            SELECT id AS Surgeonid
+                 , IFNULL(registration_code, '') AS GMCnumber
+                 , IFNULL(title, '') AS Title
+                 , IFNULL(first_name, '') AS FirstName
+                 , IFNULL(user.doctor_grade_id, '') AS CurrentGradeId
+            FROM   user
+            WHERE  id IN ( SELECT SurgeonId FROM tmp_rco_nod_EpisodeDiagnoses_{$this->extractIdentifier} WHERE SurgeonId IS NOT NULL
+                           UNION
+                           SELECT SurgeonId FROM tmp_rco_nod_EpisodeOperationAnaesthesia_{$this->extractIdentifier} WHERE SurgeonId IS NOT NULL
+                           UNION
+                           SELECT SurgeonId FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier}
+                           UNION
+                           SELECT AssistantId FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} WHERE AssistantId IS NOT NULL
+                           UNION
+                           SELECT ConsultantId FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} WHERE ConsultantId IS NOT NULL
+                         );
 EOL;
         #Yii::app()->db->createCommand($query)->execute();
         return $query;
@@ -843,6 +851,28 @@ EOL;
                 /* Restriction: patients in control events */
                 WHERE poi.patient_id IN ( SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier}  c );
 EOL;
+
+        if (Yii::app()->hasModule('OphCoCvi')) {
+            $query = <<<EOL
+                INSERT INTO tmp_rco_nod_PatientCVIStatus_{$this->extractIdentifier} (
+                        PatientId,
+                        date,
+                        IsDateApprox,
+                        IsCVIBlind,
+                        IsCVIPartial )
+                SELECT ep.patient_id AS PatientId
+                     , DATE(e.event_date) AS `Date`
+                     , 0 AS IsDateApprox
+                     , CASE WHEN cci.is_considered_blind = 1 THEN 1 ELSE 0 END AS IsCVIBlind
+                     , CASE WHEN cci.is_considered_blind = 1 THEN 0 ELSE 1 END AS IsCVIPartial
+                FROM   episode ep
+                JOIN   event e ON e.episode_id = ep.id AND e.deleted = 0
+                JOIN   et_ophcocvi_eventinfo cei ON cei.event_id = e.id AND cei.is_draft = 0
+                JOIN   et_ophcocvi_clinicinfo cci ON cci.event_id = e.id
+                WHERE  ep.patient_id IN ( SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c );
+EOL;
+        }
+
         return $query;
     }       
     

@@ -351,6 +351,7 @@ if ($element->isEditable()) {
             if ($element->letterType === 'Invitation') {
                 $this->event_actions[] = EventAction::button('Print Admission form', 'print_admission_form', null, array('class' => 'small button'));
             }
+            $this->event_actions[] = EventAction::printButton();
         }
         if ($this->checkScheduleAccess() && !$td_disabled) {
             $this->event_actions[] = EventAction::link('Schedule now',
