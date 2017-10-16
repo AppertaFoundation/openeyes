@@ -630,4 +630,26 @@ class OphTrOperationbooking_API extends BaseAPI
         return null;
     }
 
+    /**
+     * @param int $event_id
+     * @return int
+     *
+     * Returns the last Operation Booking status that is not 'COMPLETE'
+     * Defaults to STATUS_SCHEDULED
+     */
+
+    public function getLastNonCompleteStatus($event_id)
+    {
+        $element = new Element_OphTrOperationbooking_Operation();
+        $status_id = Yii::app()->db->createCommand()
+            ->select('status_id')
+            ->from($element->getVersionTableSchema())
+            ->where('event_id = :event_id AND status != :status', array(':event_id'=>$event_id, ':status'=>OphTrOperationbooking_Operation_Status::STATUS_COMPLETED))
+            ->order('created_date DESC')
+            ->limit(1)
+            ->queryScalar();
+
+        return $status_id !== false ? $status_id : OphTrOperationbooking_Operation_Status::STATUS_SCHEDULED;
+    }
+
 }
