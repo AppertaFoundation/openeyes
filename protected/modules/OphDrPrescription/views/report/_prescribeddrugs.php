@@ -29,6 +29,7 @@
             <th>Prescribed Clinician’s name</th>
             <th>Prescribed Clinician’s Job-role</th>
             <th>Prescription event date</th>
+            <th>Preservative Free</th>
         </tr>
     </thead>
     <tbody>
@@ -53,6 +54,7 @@
                     <td><?php echo $drug['user_first_name'].' '.$drug['user_last_name']; ?></td>
                     <td><?php echo $drug['role']; ?></td>
                     <td><?php echo date('j M Y', strtotime($drug['event_date']))?> <?php echo substr($drug['event_date'], 11, 5)?></td>
+                    <td><?php echo $drug['preservative_free'] ? 'Yes' : 'No'; ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php endif; ?>
