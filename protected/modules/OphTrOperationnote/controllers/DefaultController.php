@@ -319,7 +319,9 @@ class DefaultController extends BaseEventTypeController
         if (parent::actionDelete($id)) {
             if ($proclist && $proclist->booking_event_id) {
                 if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-                    $api->setOperationStatus($proclist->booking_event_id, 'Scheduled or Rescheduled');
+                    $last_status_id = $api->getLastNonCompleteStatus($proclist->booking_event_id);
+                    $status = OphTrOperationbooking_Operation_Status::model()->findByPk($last_status_id);
+                    $api->setOperationStatus($proclist->booking_event_id, $status->name);
                 }
             }
 
