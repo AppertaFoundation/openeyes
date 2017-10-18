@@ -1069,6 +1069,13 @@ class DefaultController extends \BaseEventTypeController
         parent::actionCreate();
     }
 
+    public function actionUpdate($id)
+    {
+        $this->setCurrentSet();
+
+        parent::actionUpdate($id);
+    }
+
     public function getPupilliaryAbnormalitiesList($selected_id)
     {
         $criteria = new \CDbCriteria();
