@@ -66,6 +66,16 @@ class ReportController extends BaseReportController
                 if (!$firm = Firm::model()->findByPk($firm_id)) {
                     throw new CException("Unknown firm $firm_id");
                 }
+
+                if( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ){
+
+                    //if the user has no Report role than he/she must be a consultant
+                    if($firm->consultant_id !== Yii::app()->user->id){
+                        throw new CException("Not authorised: Only for consultant");
+                    }
+                }
+
+
             }
             if (@$_GET['date_from'] && date('Y-m-d', strtotime($_GET['date_from']))) {
                 $date_from = date('Y-m-d', strtotime($_GET['date_from']));
@@ -125,7 +135,7 @@ class ReportController extends BaseReportController
         }
 
         $results = array();
-        $cache = array();
+
         foreach ($command->queryAll(true, $params) as $row) {
             $record = array(
                 'application_date' => date('j M Y', strtotime($row['created_date'])),

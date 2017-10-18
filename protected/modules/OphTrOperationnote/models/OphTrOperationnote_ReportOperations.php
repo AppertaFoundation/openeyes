@@ -142,6 +142,10 @@ class OphTrOperationnote_ReportOperations extends BaseReport
         $date_from = date('Y-m-d', strtotime('-1 year'));
         $date_to = date('Y-m-d');
 
+        if( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ){
+            $this->surgeon_id = Yii::app()->user->id;
+        }
+
         if ($this->surgeon_id) {
             $surgeon_id = (int) $this->surgeon_id;
 
