@@ -3,19 +3,19 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * 
+ * Copyright OpenEyes Foundation, 2017
+ *
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @copyright Copyright 2017, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class OEMigration extends CDbMigration
 {
@@ -405,6 +405,21 @@ class OEMigration extends CDbMigration
     }
 
     /**
+     * Get the id of the event type
+     *
+     * @param $className
+     * @return mixed - the value of the id. False is returned if there is no value.
+     */
+    protected function getIdOfEventTypeByClassName($className)
+    {
+        return $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('event_type')
+            ->where('class_name=:class_name', array(':class_name' => $className))
+            ->queryScalar();
+    }
+
+    /**
      * @param $eventTypeName - string
      * @param $eventTypeClass - string
      * @param $eventTypeGroup - string
@@ -671,9 +686,10 @@ class OEMigration extends CDbMigration
      * @param $code
      * @param $method
      * @param $description
+     * @param $global_scope
      * @throws Exceptio
      */
-    public function registerShortcode($event_type_id, $code, $method, $description)
+    public function registerShortcode($event_type_id, $code, $method, $description, $global_scope = 1)
     {
         if (!preg_match('/^[a-zA-Z]{3}$/', $code)) {
             throw new Exception("Invalid shortcode: $code");
@@ -691,13 +707,24 @@ class OEMigration extends CDbMigration
             echo "Warning: attempt to register duplicate shortcode '$default_code', replaced with 'z$n'\n";
         }
 
-        $this->insert('patient_shortcode', array(
+        $cols = array(
             'event_type_id' => $event_type_id,
             'code' => $code,
             'default_code' => $default_code,
             'method' => $method,
-            'description' => $description,
-        ));
+            'description' => $description
+        );
+
+        // global scope was added later to the table. Uses of this method in
+        // migrations before this column was added will fail if we attempt to
+        // set a column that does not exist. It only has an effect if set to
+        // false (defaults to true in the table), so we use that as an
+        // indicator that the call should set the value.
+        if (!$global_scope) {
+            $cols['global_scope'] = 0;
+        }
+
+        $this->insert('patient_shortcode', $cols);
     }
 
     /**

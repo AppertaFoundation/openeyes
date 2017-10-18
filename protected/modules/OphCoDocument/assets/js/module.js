@@ -26,7 +26,7 @@ function drop(ev) {
     $(ev.target).closest(".upload-box").find("input[type=file]").prop("files", ev.dataTransfer.files);
 }
 
-function imageUpload(field){
+function documentUpload(field){
     var formData;
     formData = new FormData($('#document-create')[0]);
 
@@ -61,8 +61,11 @@ function imageUpload(field){
                     $.each(response, function(index, value){
                         filedata = field.val().split('.');
                         extension = filedata[filedata.length-1];
-
-                        $('#showUploadStatus').after('<input type="hidden" name="Element_OphCoDocument_Document['+index+']" id="Element_OphCoDocument_Document_'+index+'" value="'+value+'">');
+                        if($('#Element_OphCoDocument_Document_'+index).length) {
+                            $('#Element_OphCoDocument_Document_' + index).val(value);
+                        }else{
+                            $('#showUploadStatus').after('<input type="hidden" name="Element_OphCoDocument_Document['+index+']" id="Element_OphCoDocument_Document_'+index+'" value="'+value+'">');
+                        }
                         var elem = generateViewToFile(response , index, value , filedata  );
                         clearInputFile( index );
 
@@ -148,26 +151,17 @@ function createOPHCODocumentContainer( res , value , ext, index ){
 
 
 function deleteOPHCOImage( iID , index ){
-    deleteConfirm('Do you want to delete this file?', function () {
-        
-        $.ajax({
-            url: '/OphCoDocument/Default/fileRemove',
-            type: 'GET',
-            data: {'imgID' : iID},
-            success:function(){
-                
-                $('#ophco-image-container-'+iID+'').remove();
-                createUploadButton( index );
-                clearUploadStatus();
-            },
-            error:function(){
-
-            },
-        });
-       
-    }, function () {
-            //cancel event
-    }); 
+    deleteConfirm('Do you want to delete this file?', function ()
+    {
+        $('#ophco-image-container-'+iID+'').remove();
+        if($('#Element_OphCoDocument_Document_'+index).length) {
+            $('#Element_OphCoDocument_Document_' + index).val('NULL');
+        }else{
+            $('#showUploadStatus').after('<input type="hidden" name="Element_OphCoDocument_Document['+index+']" id="Element_OphCoDocument_Document_'+index+'" value="NULL">');
+        }
+        createUploadButton( index );
+        clearUploadStatus();
+    });
 }
 
 function createUploadButton( index ){
@@ -178,7 +172,7 @@ function createUploadButton( index ){
     $('#'+index+'_row').html(btn);
     
     $('#Document_'+index+'').on('change', function(){
-        imageUpload($(this));
+        documentUpload($(this));
     });
 }
 
@@ -212,13 +206,44 @@ function clearInputFile( index ){
     $('#Document_'+index).prop("files",null);
 }
 
+function checkDocumentsUploaded(){
+    if($( "input[name='upload_mode']:checked" ).val()=='single')
+    {
+        if($('#Element_OphCoDocument_Document_single_document_id').val() === undefined || $('#Element_OphCoDocument_Document_single_document_id').val()=='NULL'){
+            return false;
+        }
+    }
+    else if ($( "input[name='upload_mode']:checked" ).val()=='double')
+    {
+        if(($('#Element_OphCoDocument_Document_left_document_id').val() === undefined || $('#Element_OphCoDocument_Document_left_document_id').val()=='NULL')&&
+            ($('#Element_OphCoDocument_Document_right_document_id').val() === undefined || $('#Element_OphCoDocument_Document_right_document_id').val()=='NULL')){
+            return false;
+        }
+    }
+    else if(!$( "input[name='upload_mode']:checked" ).length)
+    {
+        return false;
+    }
+    return true;
+}
+
 $(document).ready(function(){
+    handleButton($('#et_save'), function (e) {
+        if(!checkDocumentsUploaded()){
+            e.preventDefault();
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Please upload at least one document!"
+            }).open();
+            enableButtons($('#et_save'));
+        }
+    });
+
     $('#single_document_uploader').hide();
     $('#double_document_uploader').hide();
     checkUploadMode();
 
     $('#Document_single_document_id, #Document_right_document_id, #Document_left_document_id').on('change', function(){
-        imageUpload($(this));
+        documentUpload($(this));
     });
 
     $("input[name='upload_mode']").on('change', function(){

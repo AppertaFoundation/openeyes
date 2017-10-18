@@ -9,21 +9,9 @@
             <?php 
             if($element->single_document) {?>
                 <div class="large-12 column">
-                    <?php 
-                        
-                        if(strrchr($element->single_document->name, '.') == '.pdf'){
-                            ?>
-                            <object width="100%" height="500px" data="/file/view/<?php echo $element->single_document_id ?>/image<?php echo strrchr ($element->single_document->name, '.') ?>" type="application/pdf">
-                                <embed src="/file/view/<?php echo $element->single_document_id ?>/image<?php echo strrchr ($element->single_document->name, '.') ?>" type="application/pdf" />
-                            </object>
-                            <?php
-                        } else {
-                            ?>
-                               <img src="/file/view/<?php echo $element->single_document_id?>/image<?php echo strrchr ($element->single_document->name, '.') ?>" border="0">
-                            <?php
-                        }
+                    <?php
+                        $this->renderPartial('view_'.$this->getTemplateForMimeType($element->single_document->mimetype), array('element'=>$element, 'index'=>'single_document'));
                     ?>
-                    
                 </div>
             <?php } ?>
         </div>
@@ -45,38 +33,16 @@
             ?>
         <div id="right-eye">
             <?php
-            if(strrchr($element->right_document->name, '.') == '.pdf'){
-                ?>
-                <object width="100%" height="500px" data="/file/view/<?php echo $element->right_document_id ?>/image<?php echo strrchr ($element->right_document->name, '.') ?>" type="application/pdf">
-                    <embed src="/file/view/<?php echo $element->right_document_id ?>/image<?php echo strrchr ($element->right_document->name, '.') ?>" type="application/pdf" />
-                </object>
-                <?php
-            } else {
-                ?>
-                   <img src="/file/view/<?php echo $element->right_document_id?>/image<?php echo strrchr($element->right_document->name, '.')?>" border="0">
-                <?php
-            }
+                $this->renderPartial('view_'.$this->getTemplateForMimeType($element->right_document->mimetype), array('element'=>$element, 'index'=>'right_document'));
             ?>
-            
         </div>
         <?php } ?>
         
         <?php if($element->left_document_id) {?>
         <div id="left-eye">
             <?php
-            if(strrchr($element->left_document->name, '.') == '.pdf'){
-                ?>
-                <object width="100%" height="500px" data="/file/view/<?php echo $element->left_document_id ?>/image<?php echo strrchr ($element->left_document->name, '.') ?>" type="application/pdf">
-                    <embed src="/file/view/<?php echo $element->left_document_id ?>/image<?php echo strrchr ($element->left_document->name, '.') ?>" type="application/pdf" />
-                </object>
-                <?php
-            } else {
-                ?>
-                    <img src="/file/view/<?php echo $element->left_document_id?>/image<?php echo strrchr($element->left_document->name, '.')?>" border="0">
-                <?php
-            }
+                $this->renderPartial('view_'.$this->getTemplateForMimeType($element->left_document->mimetype), array('element'=>$element, 'index'=>'left_document'));
             ?>
-                             
         </div>
         <?php } ?>
     </div>

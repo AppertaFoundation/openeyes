@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 <?php
@@ -22,14 +21,17 @@
 if (is_a(Yii::app()->getController(), 'DefaultController')) {
     echo $form->hiddenInput($element, 'draft', 1);
 }
-?>
+if (is_a(Yii::app()->getController(), 'DefaultController')) {?>
 <section class="element <?php echo $element->elementType->class_name?>"
 		 data-element-type-id="<?php echo $element->elementType->id ?>"
 		 data-element-type-class="<?php echo $element->elementType->class_name ?>"
 		 data-element-type-name="<?php echo $element->elementType->name ?>"
 		 data-element-display-order="<?php echo $element->elementType->display_order ?>">
+	<?php } else {?>
+	<section class="element">
+	<?php }?>
 	<div id="div_Element_OphDrPrescription_Details_prescription_items" class="element-fields">
-		<div class="row field-row">
+        <div class="row field-row">
 			<div class="large-6 column">
 				<fieldset class="row field-row">
 					<legend class="large-4 column">
@@ -145,14 +147,13 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
 		<th>Frequency</th>
 		<th>Duration</th>
 		<th></th>
-		<?php if (strpos($this->uniqueid, 'default')) { // we need to display this column on the front-end only?>
-			<th>Continue by GP</th>
-		<?php } ?>
+		<th>Dispense Condition/Location</th>
 	</tr>
 	</thead>
 	<tbody>
-	<?php foreach ($element->items as $key => $item) {
-    $this->renderPartial('form_Element_OphDrPrescription_Details_Item', array('key' => $key, 'item' => $item, 'patient' => $this->patient));
+	<?php
+    foreach ($element->items as $key => $item) {
+        $this->renderPartial('form_Element_OphDrPrescription_Details_Item', array('key' => $key, 'item' => $item, 'patient' => $this->patient));
 } ?>
 	</tbody>
 </table>

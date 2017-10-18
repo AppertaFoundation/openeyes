@@ -12,7 +12,7 @@
     );
 
     $(document).ready(function() {
-        new OpenEyes.UI.PatientSidebar($('aside.episodes-and-events'), {
+        event_sidebar = new OpenEyes.UI.PatientSidebar($('aside.episodes-and-events'), {
             patient_sidebar_json: '<?php echo $this->getElementTree() ?>',
             tree_id: 'patient-sidebar-elements'
             <?php if ($this->event->id) {?>,

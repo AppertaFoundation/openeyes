@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -35,7 +34,7 @@
  * @property User $usermodified
  * @property Eye $eye
  * @property EtOphtrconsentProcedureProceduresProcedures $procedures
- * @property AnaestheticType $anaesthetic_type
+ * @property AnaestheticType[] $anaesthetic_type
  * @property EtOphtrconsentProcedureAddProcsAddProcs $add_procss
  */
 class Element_OphTrConsent_Procedure extends BaseEventTypeElement
@@ -90,7 +89,13 @@ class Element_OphTrConsent_Procedure extends BaseEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
-            'anaesthetic_type' => array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id'),
+
+            //Element_OphTrConsent_Procedure
+            'anaesthetic_type_assignments' => array(self::HAS_MANY, 'OphTrConsent_Procedure_AnaestheticType', 'et_ophtrconsent_procedure_id'),
+            'anaesthetic_type' => array(self::HAS_MANY, 'AnaestheticType', 'anaesthetic_type_id',
+                'through' => 'anaesthetic_type_assignments', ),
+
+
             'procedure_assignments' => array(self::HAS_MANY, 'EtOphtrconsentProcedureProceduresProcedures', 'element_id'),
             'procedures' => array(self::HAS_MANY, 'Procedure', 'proc_id',
                 'through' => 'procedure_assignments', ),
@@ -194,5 +199,18 @@ class Element_OphTrConsent_Procedure extends BaseEventTypeElement
         }
 
         return parent::afterSave();
+    }
+
+    /**
+     * @param string|array $code
+     * @return bool
+     */
+    public function hasAnaestheticTypeByCode($code) {
+        if (!is_array($code)) {
+            $code = array($code);
+        }
+        return count(array_filter($this->anaesthetic_type,
+                    function($a_type) use ($code) { return in_array((string)$a_type, $code);})
+            ) > 0;
     }
 }

@@ -7,15 +7,15 @@
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
  * version. OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
- * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details. You should have received a copy of the GNU General Public License along with OpenEyes in a file titled
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+ * details. You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled
  * COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2017, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\OphCiExamination\models;
@@ -28,14 +28,18 @@ namespace OEModule\OphCiExamination\models;
  * @property int $id
  * @property int $element_id
  * @property int $risk_id
+ * @property int $has_risk
  * @property string $other
  * @property string $comments
  *
- * @property Risk $risk
+ * @property OphCiExaminationRisk $risk
  * @property HistoryRisks $element
  */
 class HistoryRisksEntry extends \BaseElement
 {
+    public static $PRESENT = 1;
+    public static $NOT_PRESENT = 0;
+    public static $NOT_CHECKED = -9;
     /**
      * Returns the static model of the specified AR class.
      *
@@ -64,6 +68,7 @@ class HistoryRisksEntry extends \BaseElement
         return array(
             array('element_id, risk_id, other, has_risk, comments', 'safe'),
             array('risk_id', 'required'),
+            array('has_risk', 'required', 'message'=>'Checked Status cannot be blank'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, element_id, risk_id, other, has_risk, comments', 'safe', 'on' => 'search'),
@@ -145,9 +150,9 @@ class HistoryRisksEntry extends \BaseElement
      */
     public function getDisplayHasRisk()
     {
-        if ($this->has_risk) {
+        if ($this->has_risk === (string) static::$PRESENT) {
             return 'Present';
-        } elseif ($this->has_risk === '0') {
+        } elseif ($this->has_risk === static::$NOT_PRESENT) {
             return 'Not present';
         }
         return 'Not checked';

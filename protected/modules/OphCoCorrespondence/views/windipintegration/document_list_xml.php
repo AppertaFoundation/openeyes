@@ -4,25 +4,26 @@
  *
  * (C) OpenEyes Foundation, 2016
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 ?>
-<?php echo '<?xml version="1.0" encoding="utf-8" ?>'; ?>
+<?php echo '<?xml version="1.0" encoding="utf-8"?>'; ?>
 <linkparameters>
     <security>
-        <authentication><?=$authentication_hash?></authentication>
-        <timestamp><?=$timestamp?></timestamp>
-        <xmlid><?=$message_id?></xmlid>
-    </security><revision number="4.2" />
+        <authentication><?=$authentication_hash; ?></authentication>
+        <timestamp><?=$timestamp; ?></timestamp>
+        <xmlid><?=$message_id; ?></xmlid>
+    </security>
+    <revision number="4.2"/>
     <applicationid><?=$application_id?></applicationid>
     <user>
         <id><?=$username?></id>
@@ -30,43 +31,11 @@
     </user>
     <primarylink>
         <process>0</process>
-        <uniquereference type="I"><?=$event_id?></uniquereference>
-        <typeid><?=$windip_type_id?></typeid>
-        <eventdate><?=$event_date?></eventdate>
-        <eventtime><?=$event_time?></eventtime>
-        <OUID>DID1</OUID>
+        <uniquereference type="I"><?=$hos_num; ?></uniquereference>
+        <OUID></OUID>
     </primarylink>
-    <additionalindexes count="<?=count($additional_indexes)?>">
-        <?php foreach ($additional_indexes as $i=>$index) {?>
-            <index_<?=$i+1?>>
-                    <id><?=$index['id']?></id>
-                    <value><?=	$index['value']?></value>
-            </index_<?=$i+1?>>
-            <?php } ?>
-    </additionalindexes>
     <event>
         <status>0</status>
         <failuredescription></failuredescription>
     </event>
-    <automation>
-        <application>
-            <sb value="1" />
-            <tb value="1" />
-            <ub value="1" />
-            <db value="1" />
-            <mb value="0" />
-            <rm value="0" />
-            <cm value="0" />
-            <em value="0" />
-        </application>
-        <formstyle>
-            <caption value="1" />
-        </formstyle>
-        <viewer>
-            <showdetail value="1" />
-            <icons value="0" />
-            <position value="0" />
-            <buttons value="111111111111" />
-        </viewer>
-    </automation>
 </linkparameters>
