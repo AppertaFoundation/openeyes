@@ -25,7 +25,7 @@ class ReportController extends BaseReportController
         return array(
             array('allow',
                 'actions' => array('applications', 'pendingApplications'),
-                'roles' => array('OprnGenerateReport', 'admin'),
+                'expression' => array('ReportController', 'checkSurgonOrRole'),
             ),
         );
     }
@@ -340,5 +340,13 @@ class ReportController extends BaseReportController
         }
 
         $this->render('pending_applications', array('sent' => $sent));
+    }
+
+    public function canUseTherapyReport()
+    {
+        $has_role = Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id);
+        $is_consultant = Firm::model()->findByAttributes( array('consultant_id' => Yii::app()->user->id));
+
+        return $has_role || $is_consultant;
     }
 }

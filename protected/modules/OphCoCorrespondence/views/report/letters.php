@@ -145,7 +145,19 @@
 				</label>
 			</div>
 			<div class="large-3 column end">
+                <?php if ( Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ):?>
 				<?php echo CHtml::dropDownList('OphCoCorrespondence_ReportLetters[author_id]','',CHtml::listData(User::model()->findAll(array('order' => 'first_name asc,last_name asc')),'id','fullName'),array('empty' => '--- Please select ---'))?>
+                <?php else: ?>
+                    <?php
+                        $user = User::model()->findByPk(Yii::app()->user->id);
+                        echo CHtml::dropDownList(null, '',
+                            array(Yii::app()->user->id => $user->fullName),
+                            array('disabled' => 'disabled', 'readonly' => 'readonly', 'style'=>'background-color:#D3D3D3;') //for some reason the chrome doesn't gray out
+                            );
+                        echo CHtml::hiddenField('OphCoCorrespondence_ReportLetters[author_id]', Yii::app()->user->id);
+                    ?>
+                <?php endif ?>
+
 			</div>
 		</div>
 		<div class="row field-row">

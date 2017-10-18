@@ -192,7 +192,14 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 
             $clause .= ' )';
         }
+
+        //If user does NOT have the RBAC role 'Report' then select the current user
+        if( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ){
+            $this->author_id = Yii::app()->user->id;
+        }
+
         if ($this->author_id) {
+
             if (!$author = User::model()->findByPk($this->author_id)) {
                 throw new Exception("User not found: $this->author_id");
             }
