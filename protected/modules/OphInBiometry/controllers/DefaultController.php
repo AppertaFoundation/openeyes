@@ -25,6 +25,7 @@ class DefaultController extends BaseEventTypeController
     {
         $transaction = Yii::app()->db->beginTransaction();
         try {
+            $unlinkedEvent->setScenario('allowFutureEvent');
             $unlinkedEvent->episode_id = $this->episode->id;
             $unlinkedEvent->created_user_id = Yii::app()->user->getId();
 
@@ -134,6 +135,10 @@ class DefaultController extends BaseEventTypeController
                 } elseif ($isKMod['right']) {
                     $warning_flash_message .= '<li>K value for right eye was entered manually. Use with caution.</li>';
                 }
+            }
+
+            if ($this->event && $this->event->event_date > $this->event->created_date) {
+                $warning_flash_message .= '<li>The study time for this report was later than the import time. It is possible the clock was wrong on the device.</li>';
             }
 
             foreach ($event_data as $detail) {

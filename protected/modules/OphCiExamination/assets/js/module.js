@@ -811,10 +811,6 @@ $(document).ready(function() {
         OphCiExamination_Refraction_updateType(this);
     });
 
-    $(this).delegate('#event-content .' + OE_MODEL_PREFIX + 'Element_OphCiExamination_OpticDisc .opticdisc-mode', 'change', function() {
-        OphCiExamination_OpticDisc_updateCDRatio(this);
-    });
-
     $(this).delegate('#event-content .' + OE_MODEL_PREFIX + 'Element_OphCiExamination_Gonioscopy .gonioscopy-mode', 'change', function() {
         OphCiExamination_Gonioscopy_update(this);
     });
@@ -952,60 +948,6 @@ $(document).ready(function() {
         var side = $(this).closest('.side').attr('data-side');
         $(this).closest('.side').find('tr.colourvisionReading a.removeCVReading').click();
         $(this).addClass('hidden');
-        e.preventDefault();
-    });
-
-    /**
-     * Dilation hooks
-     */
-    $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_Dilation_time_right').die('keypress').live('keypress',function(e) {
-        if (e.keyCode == 13) {
-            return false;
-        }
-        return true;
-    });
-
-    $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_Dilation_time_left').die('keypress').live('keypress',function(e) {
-        if (e.keyCode == 13) {
-            return false;
-        }
-        return true;
-    });
-
-    $(this).delegate('.dilation_drug', 'change', function(e) {
-        var side = $(this).closest('.side').attr('data-side');
-        OphCiExamination_Dilation_addTreatment(this, side);
-        e.preventDefault();
-    });
-
-    $('.dilation_drug').keypress(function(e) {
-        if (e.keyCode == 13) {
-        var side = $(this).closest('.side').attr('data-side');
-        OphCiExamination_Dilation_addTreatment(this, side);
-        }
-    });
-
-    $(this).delegate('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_Dilation .removeTreatment', 'click', function(e) {
-        var wrapper = $(this).closest('.side');
-        var side = wrapper.attr('data-side');
-        var row = $(this).closest('tr');
-        var data_order = row.attr('data-order');
-        var id = $('.drugId', row).val();
-        var name = $('.drugName', row).text();
-        row.remove();
-        var dilation_drug = wrapper.find('.dilation_drug');
-        dilation_drug.append('<option value="'+id+'" data-order="'+ data_order +'">'+name+'</option>');
-        sort_selectbox(dilation_drug);
-        if ($('.dilation_table tbody tr', wrapper).length == 0) {
-            $('.dilation_table', wrapper).hide();
-            $('.timeDiv', wrapper).hide();
-        }
-        e.preventDefault();
-    });
-
-    $(this).delegate('#event-content .'+OE_MODEL_PREFIX+'Element_OphCiExamination_Dilation .clearDilation', 'click', function(e) {
-        var side = $(this).closest('.side').attr('data-side');
-        $(this).closest('.side').find('tr.dilationTreatment a.removeTreatment').click();
         e.preventDefault();
     });
 
@@ -1476,39 +1418,6 @@ function OphCiExamination_ColourVision_addReading(element, side) {
         // Show table
         var table = $('#event-content .'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision [data-side="' + side +'"] .colourvision_table');
         table.show();
-        $('tbody', table).append(form);
-    }
-}
-
-function OphCiExamination_Dilation_getNextKey() {
-    var keys = $('#event-content .'+OE_MODEL_PREFIX+'Element_OphCiExamination_Dilation .dilationTreatment').map(function(index, el) {
-        return parseInt($(el).attr('data-key'));
-    }).get();
-    if(keys.length) {
-        return Math.max.apply(null, keys) + 1;
-    } else {
-        return 0;
-    }
-}
-
-function OphCiExamination_Dilation_addTreatment(element, side) {
-    var drug_id = $('option:selected', element).val();
-    var data_order = $('option:selected', element).data('order');
-    if(drug_id) {
-        var drug_name = $('option:selected', element).text();
-        $('option:selected', element).remove();
-        var template = $('#dilation_treatment_template').html();
-        var data = {
-            "key" : OphCiExamination_Dilation_getNextKey(),
-            "side" : side,
-            "drug_name" : drug_name,
-            "drug_id" : drug_id,
-            "data_order" : data_order
-        };
-        var form = Mustache.render(template, data);
-        var table = $('#event-content .'+OE_MODEL_PREFIX+'Element_OphCiExamination_Dilation [data-side="' + side + '"] .dilation_table');
-        table.show();
-        $(element).closest('.side').find('.timeDiv').show();
         $('tbody', table).append(form);
     }
 }
@@ -2320,17 +2229,6 @@ function OphCiExamination_Gonioscopy_switch_mode(canvas, mode) {
     }
 }
 
-function OphCiExamination_OpticDisc_init() {
-    func = function() {
-        $('#event-content .Element_OphCiExamination_OpticDisc .opticdisc-mode').each(function() {
-            OphCiExamination_OpticDisc_updateCDRatio(this);
-        });
-    }
-    ED.Checker.onAllReady(func);
-    // edChecker = getOEEyeDrawChecker();
-    // edChecker.registerForReady(func);
-}
-
 function OphCiExamination_GlaucomaRisk_init() {
     $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk_descriptions').dialog({
         title: 'Glaucoma Risk Stratifications',
@@ -2351,27 +2249,6 @@ function OphCiExamination_ClinicOutcome_LoadTemplate(template_id) {
         $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_ClinicOutcome_followup_period_id')
             .val(Element_OphCiExamination_ClinicOutcome_templates[template_id]['followup_period_id']);
 
-    }
-}
-
-function OphCiExamination_OpticDisc_updateCDRatio(field) {
-    var cdratio_field = $(field).closest('.eyedraw-fields').find('.cd-ratio');
-    var _drawing = ED.getInstance($(field).closest('.side').find('canvas').first().attr('data-drawing-name'));
-    if($(field).val() == 'Basic') {
-        $(field).closest('.eyedraw-fields').find('.cd-ratio-readonly').remove();
-        _drawing.unRegisterForNotifications(this);
-        cdratio_field.show();
-    } else {
-        cdratio_field.hide();
-        var readonly = $('<span class="cd-ratio-readonly"></span>');
-        readonly.html($('option:selected', cdratio_field).attr('data-value'));
-        cdratio_field.after(readonly);
-        _drawing.registerForNotifications(this, 'handler', ['parameterChanged']);
-        this.handler = function(_messageArray) {
-            if(_messageArray.eventName == 'parameterChanged' && _messageArray.object.parameter == 'cdRatio') {
-                readonly.html(_messageArray.object.value);
-            }
-        }
     }
 }
 

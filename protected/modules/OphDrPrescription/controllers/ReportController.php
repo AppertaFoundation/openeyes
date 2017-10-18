@@ -28,7 +28,7 @@ class ReportController extends BaseReportController
         return array(
             array('allow',
                 'actions' => array('getDrugsBySubspecialty', 'prescribedDrugs', 'runReport', 'downloadReport'),
-                'roles' => array('OprnGenerateReport', 'admin'),
+                'expression' => array('ReportController', 'checkSurgonOrRole'),
             ),
         );
     }

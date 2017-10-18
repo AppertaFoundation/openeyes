@@ -142,7 +142,19 @@
                             <label for="author_id">User</label>
                         </div>
                         <div class="large-7 column end">
-                            <?php echo CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[user_id]', '', CHtml::listData($users, 'id', 'fullName'), array('empty' => '--- Please select ---'))?>
+                            <?php if ( Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ):?>
+                                <?php echo CHtml::dropDownList('OphDrPrescription_ReportPrescribedDrugs[user_id]', '',
+                                                                CHtml::listData($users, 'id', 'fullName'), array('empty' => '--- Please select ---'))?>
+                            <?php else: ?>
+                                <?php
+                                    $user = User::model()->findByPk(Yii::app()->user->id);
+                                    echo CHtml::dropDownList(null, '',
+                                        array(Yii::app()->user->id => $user->fullName),
+                                        array('disabled' => 'disabled', 'readonly' => 'readonly', 'style'=>'background-color:#D3D3D3;') //for some reason the chrome doesn't gray out
+                                    );
+                                    echo CHtml::hiddenField('OphDrPrescription_ReportPrescribedDrugs[user_id]', Yii::app()->user->id);
+                                ?>
+                            <?php endif ?>
                         </div>
                 </div>
                 

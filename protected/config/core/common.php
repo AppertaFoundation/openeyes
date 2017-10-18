@@ -305,13 +305,14 @@ return array(
                     'title' => 'Audit',
                     'uri' => 'audit',
                     'position' => 2,
-                    'restricted' => array('admin'),
+                    'restricted' => array('TaskViewAudit'),
                 ),
                 'reports' => array(
                     'title' => 'Reports',
                     'uri' => 'report',
                     'position' => 3,
                     'restricted' => array('Report'),
+                    'userrule' => 'isSurgeon',
                 ),
                 'cataract' => array(
                     'title' => 'Cataract Audit',

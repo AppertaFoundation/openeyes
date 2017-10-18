@@ -38,7 +38,7 @@ a.stop-medication {
   color: #fff;
   font-size: 9px;
   padding: 2px 4px 2px 4px;
-  margin-right: 22px;
+  margin-right: 5ch;
   -moz-border-radius: 50%;
   border-radius: 50%;
 }
@@ -47,18 +47,18 @@ a.stop-medication {
   background-color: #9fec6d;
   color: #747782;
   margin-left: 0px;
-  margin-right: 17px;
+  margin-right: 4ch;
 }
 /* line 46, ../sass/components/elements/_history-medications.scss */
 .laterality.L {
   background-color: #fe6767;
-  margin-left: 15px;
-  margin-right: 2px;
+  margin-left: 4ch;
+  margin-right: 0px;
 }
 /* line 51, ../sass/components/elements/_history-medications.scss */
 .laterality.B {
-  margin-right: 12px;
-  margin-left: 10px;
+  margin-right: 2ch;
+  margin-left: 2ch;
   background-color: #747782;
 }
 

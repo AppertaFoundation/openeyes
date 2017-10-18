@@ -162,7 +162,7 @@ class Site extends BaseActiveRecordVersioned
             $site_name = '';
 
             if ($institution->short_name && $site->name != 'Unknown') {
-                if ($display_institution) {
+                if ($display_institution === 'On') {
                     $site_name = $institution->short_name.' at ';
                 }
             }
