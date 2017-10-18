@@ -114,7 +114,7 @@
             mouseleave: function() {
                 clearTimeout(hoverTimer);
                 if (!stuck) {
-                    popup.trigger('hide');
+                    hoverTimer = setTimeout(popup.trigger.bind(popup, 'hide'), 100);
                 }
             }
         });

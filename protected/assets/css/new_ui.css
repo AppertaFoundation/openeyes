@@ -294,7 +294,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 }
 .open-eyes .panel.patient a:hover, .open-eyes .panel.patient a:focus {
   background: none;
-  color: #d2dde8;
+  color:#91acc7;
 }
 .open-eyes .panel.patient .patient-details {
   padding: 0;
