@@ -38,6 +38,8 @@
  */
 class Drug extends BaseActiveRecordVersioned
 {
+    public $preservative_free;
+
     protected $auto_update_relations = true;
 
     /**
