@@ -23,7 +23,7 @@ class ReportController extends BaseReportController
         return array(
             array('allow',
                 'actions' => array('injections', 'runReport', 'downloadReport', 'ArvoPresentation'),
-                'roles' => array('OprnGenerateReport', 'admin'),
+                'expression' => array('ReportController', 'checkSurgonOrRole'),
             ),
             array('deny'),
         );

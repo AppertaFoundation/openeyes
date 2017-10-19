@@ -142,6 +142,10 @@ class OphTrOperationnote_ReportOperations extends BaseReport
         $date_from = date('Y-m-d', strtotime('-1 year'));
         $date_to = date('Y-m-d');
 
+        if( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ){
+            $this->surgeon_id = Yii::app()->user->id;
+        }
+
         if ($this->surgeon_id) {
             $surgeon_id = (int) $this->surgeon_id;
 
@@ -843,11 +847,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
             if ($cataract_element = Element_OphTrOperationnote_Cataract::model()->find('event_id = :event_id', array(':event_id' => $event_id))) {
                 $record['cataract_report'] = trim(preg_replace('/\s\s+/', ' ', $cataract_element['report']));
                 $record['cataract_predicted_refraction'] = $cataract_element->predicted_refraction;
-                if ($cataract_element->iol_type) {
-                    $record['cataract_iol_type'] = $cataract_element->iol_type->name;
-                } else {
-                    $record['cataract_iol_type'] = 'None';
-                }
+                $record['cataract_iol_type'] = $cataract_element->iol_type ? $cataract_element->iol_type->display_name : 'None';
                 $record['cataract_iol_power'] = $cataract_element->iol_power;
             }
         }

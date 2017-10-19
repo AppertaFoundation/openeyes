@@ -312,6 +312,7 @@ return array(
                     'uri' => 'report',
                     'position' => 3,
                     'restricted' => array('Report'),
+                    'userrule' => 'isSurgeon',
                 ),
                 'cataract' => array(
                     'title' => 'Cataract Audit',

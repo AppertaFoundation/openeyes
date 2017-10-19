@@ -140,14 +140,7 @@ class OphCoCorrespondence_API extends BaseAPI
         $name = null;
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
         if ($element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)){
-
-            if(\Yii::app()->hasModule("OphInBiometry") && $element->iol_type_id){
-                $iol_type = OphInBiometry_LensType_Lens::model()->findByPk($element->iol_type_id);
-                $name = $iol_type->display_name;
-            } else {
-                // iol_type here will be an instance of OphTrOperationnote_IOLType
-                $name = $element->iol_type ? $element->iol_type->name : null;
-            }
+            $name = $element->iol_type ? $element->iol_type->display_name : null;
         }
         return $name;
     }
