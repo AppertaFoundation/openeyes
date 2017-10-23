@@ -25,9 +25,13 @@ $(document).ready(function() {
 	});
 
 	$('#question_disorder').bind('change', function() {
-		did = $(this).val();
+		var did = $(this).val(),
+        	url;
+
 		if (did) {
-			window.location.href = URI(window.location.href).setSearch('disorder_id',did);
+			url = '/' + OE_module_name + '/admin/ViewOphCiExamination_InjectionManagementComplex_Question/disorder_id/';
+            console.log(url + did);
+            window.location.href = url + did;
 		}
 	});
 
