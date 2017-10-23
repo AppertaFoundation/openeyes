@@ -1069,6 +1069,13 @@ class DefaultController extends \BaseEventTypeController
         parent::actionCreate();
     }
 
+    public function actionUpdate($id)
+    {
+        $this->setCurrentSet();
+
+        parent::actionUpdate($id);
+    }
+
     public function getPupilliaryAbnormalitiesList($selected_id)
     {
         $criteria = new \CDbCriteria();
@@ -1242,7 +1249,7 @@ class DefaultController extends \BaseEventTypeController
     {
         if (isset($this->mandatoryElements)) {
             foreach ($this->mandatoryElements as $mandatoryElement) {
-                if (get_class($element) === $mandatoryElement->class_name) {
+                if (get_class($element) === $mandatoryElement->class_name || get_class($element) === $mandatoryElement->parent_element_type->class_name) {
                     return true;
                 }
             }

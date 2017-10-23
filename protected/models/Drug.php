@@ -38,6 +38,8 @@
  */
 class Drug extends BaseActiveRecordVersioned
 {
+    public $preservative_free;
+
     protected $auto_update_relations = true;
 
     /**
@@ -70,7 +72,6 @@ class Drug extends BaseActiveRecordVersioned
     {
         return array(
             array('name, tallman', 'required'),
-            array('name', 'unsafe', 'on' => 'update'),
             array('tallman, dose_unit, default_dose, type_id, form_id, default_duration_id, default_frequency_id, '
                 .'default_route_id, preservative_free, active, allergies, aliases, national_code, tags', 'safe'),
         );
