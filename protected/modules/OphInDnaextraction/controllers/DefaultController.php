@@ -20,7 +20,7 @@ class DefaultController extends BaseEventTypeController
     {
         return array(
             array('allow',
-                'actions' => array('Create', 'Update', 'View', 'Print', 'AddTransaction','GetNewStorageFields','getAvailableLetterNumberToBox','saveNewStorage', 'refreshStorageSelect', 'updateDnaTests'),
+                'actions' => array('Create', 'Update', 'View', 'Print', 'Delete', 'AddTransaction','GetNewStorageFields','getAvailableLetterNumberToBox','saveNewStorage', 'refreshStorageSelect', 'updateDnaTests'),
                 'roles' => array('OprnEditDNAExtraction'),
             ),
             array('allow',
