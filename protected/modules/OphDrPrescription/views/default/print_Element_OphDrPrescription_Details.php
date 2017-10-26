@@ -187,8 +187,10 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 		<tr>
 			<th>Site</th>
 			<td><?php echo  $site_theatre->site->name?></td>
+            <?php if($site_theatre->theatre){ ?>
 			<th>Theatre</th>
 			<td><?php echo  $site_theatre->theatre->name?></td>
+            <?php  } ?>
 		</tr>
 	</table>
 	<div class="spacer"></div>

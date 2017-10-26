@@ -77,6 +77,7 @@ class BaseEventTypeController extends BaseModuleController
         'delete' => self::ACTION_TYPE_DELETE,
         'requestDeletion' => self::ACTION_TYPE_REQUESTDELETE,
         'eventImage' => self::ACTION_TYPE_VIEW,
+        'printCopy' => self::ACTION_TYPE_PRINT,
     );
 
     /**
@@ -114,6 +115,7 @@ class BaseEventTypeController extends BaseModuleController
     public $pdf_print_suffix = null;
     public $pdf_print_documents = 1;
     public $pdf_print_html = null;
+    public $attachment_print_title = null;
 
     /**
      * Set to false if the event list should remain on the sidebar when creating/editing the event
@@ -1708,7 +1710,7 @@ class BaseEventTypeController extends BaseModuleController
         $this->printInit($id);
         $this->printHTML($id, $this->open_elements);
     }
-    
+
     public function actionPrintCopy($id)
     {
         $event = \Event::model()->findByPk($id);
@@ -1717,13 +1719,65 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         $class = $event->eventType->class_name;
-        $path = "\\OEModule\\".$class."\\controllers\DefaultController";
-        $controller = new $path( 'default', \Yii::app()->getModule($class) );
+        $patient = $event->episode->patient;
 
-        $controller->printInit($id);
-        $controller->printHTMLCopy($id, $this->open_elements);
+        $controller = Yii::app()->createController('/'.$class."/Default/printInit/$id");
+
+        $this->patient = $patient;
+        $controller[0]->patient = $patient;
+        $controller[0]->printInit($id);
+        $controller[0]->setAction( $this->getAction() );
+
+        $controller[0]->printHTMLCopy($id, $controller[0]->open_elements);
     }
 
+    /*
+    public function actionPrintCopy($id)
+    {
+
+        $this->printInit($id);
+      //  var_dump($this->event->eventType->class_name);
+
+        $event = \Event::model()->findByPk($id);
+        if (!$event = Event::model()->findByPk($id)) {
+            throw new Exception("Event not found: $id");
+        }
+
+        $class = $event->eventType->class_name;
+
+        //$path = "\\OEModule\\".$class."\\controllers\DefaultController";
+        //class_alias($path, $class.'_default');
+        //$class_init = $class.'_default';
+        //$controller = new BaseEventTypeController( 'defaulttest', \Yii::app()->getModule($class) );
+
+       // $controller = \Yii::app()->getModule($class);
+
+
+       // $this->modulePathAlias = 'application.modules.'.$this->event->eventType->class_name;
+       // $this->assetPathAlias = $this->modulePathAlias.'.assets';
+
+        $module = Yii::app()->findModule( $this->event->eventType->class_name );
+        $controller = $controller = Yii::app()->createController("Default/printInit/$id", \Yii::app()->getModule( $this->event->eventType->class_name ));
+
+        $result = $controller[0]->actionPrint($id);
+        var_dump($result);
+        exit;
+        $this->printHTMLCopy($id, $this->open_elements, Yii::getPathOfAlias('application.modules.'.$this->event->eventType->class_name.'.views.default') . DIRECTORY_SEPARATOR . 'print.php' );
+        //exit;
+    }
+
+    public function getViewPath( )
+    {
+        $current_module = $this->getModule()->name;
+        $event_module = $this->event->eventType->class_name;
+
+        if($current_module !== $event_module){
+            return Yii::getPathOfAlias('application.modules.'.$event_module) .DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.$this->getId();
+        } else{
+            parent::getViewPath();
+        }
+    }
+*/
     public function actionPDFPrint($id)
     {
         if (!$event = Event::model()->findByPk($id)) {
@@ -1732,6 +1786,8 @@ class BaseEventTypeController extends BaseModuleController
 
         $auto_print = Yii::app()->request->getParam('auto_print', true);
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
+
+        $this->attachment_print_title = Yii::app()->request->getParam('attachment_print_title', true);
 
         $event->lock();
 
@@ -1745,7 +1801,7 @@ class BaseEventTypeController extends BaseModuleController
         if (!$event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
             if (!$this->pdf_print_html) {
                 ob_start();
-                $this->actionPrint($id);
+                $this->actionPrint($id );
                 $this->pdf_print_html = ob_get_contents();
                 ob_end_clean();
             }
@@ -1827,11 +1883,11 @@ class BaseEventTypeController extends BaseModuleController
         $this->layout = '//layouts/print';
         $this->render($template, array(
             'elements' => $elements,
-            'eventId' => $id,
+            'eventId' => $id
         ));
     }
     
-    protected function printHTMLCopy($id, $elements, $template = 'print')
+    public function printHTMLCopy($id, $elements, $template = 'print')
     {
         $this->layout = '//layouts/printCopy';
         $result = $this->render($template, array(

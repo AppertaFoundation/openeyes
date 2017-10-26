@@ -87,4 +87,24 @@
 	<?php }?>
 
 <?php }?>
+
+<?php
+    $associated_content = EventAssociatedContent::model()
+    ->with('initAssociatedContent')
+    ->findAllByAttributes(
+        array('parent_event_id' => $element->event->id),
+        array('order' => 't.display_order asc')
+    );
+
+    if($associated_content){
+        ?>
+        Attachments:
+        <?php
+        $attachments = array();
+        foreach($associated_content as $ac){
+            $attachments[] = $ac->display_title;
+        }
+        echo implode(", ", $attachments);
+    }
+?>
 </p>

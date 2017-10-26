@@ -47,12 +47,6 @@ class m170816_112457_ophcorrespondence_init_method extends CDbMigration
         ));
 
         $this->insert('ophcorrespondence_init_method',array(
-            'method'=>'getLastLaserInSs',
-            'short_code' =>'LAST_LASER_IN_SS',
-            'description' => 'Last Laser Event',
-        ));
-
-        $this->insert('ophcorrespondence_init_method',array(
             'method'=>'getLastPrescriptionInSs',
             'short_code' =>'LAST_PRESCRIPTION_IN_SS',
             'description' => 'Last Prescription Event',

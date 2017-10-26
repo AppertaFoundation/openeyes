@@ -488,9 +488,18 @@ class DefaultController extends BaseEventTypeController
     }
     
     public function actionPrintCopy($id) {
-       // $this->actionPrint($id);
-        $eventid = 3686356;
+        //$this->actionPrint($id);
+        $eventid = 3685413;
         parent::actionPrintCopy( $eventid );
+    }
+
+    public function renderAllProcedureElements($action, $form = null, $data = null)
+    {
+        foreach ($this->open_elements as $el) {
+            if (get_class($el) == 'Element_OphTrOperationnote_ProcedureList') {
+                $this->renderChildOpenElements($el, $action, $form, $data);
+            }
+        }
     }
 
     public function actionPDFPrint($id)

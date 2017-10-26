@@ -16,6 +16,8 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+require_once '../vendor/setasign/fpdi/pdf_parser.php';
 class DocManDeliveryCommand extends CConsoleCommand
 {
     //if export path provided it will overwrite the $path
@@ -223,8 +225,7 @@ class DocManDeliveryCommand extends CConsoleCommand
             curl_setopt($ch, CURLOPT_POST, false);
             curl_setopt($ch, CURLOPT_URL, $print_url . $event->id . '?auto_print=' . (int)$inject_autoprint_js . '&print_only_gp=' . $print_only_gp);
             $content = curl_exec($ch);
-            
-            curl_close($ch);
+
             
             if(substr($content, 0, 4) !== "%PDF"){
                 echo 'File is not a PDF for event id: '.$this->event->id."\n";
@@ -245,8 +246,57 @@ class DocManDeliveryCommand extends CConsoleCommand
                     }
                 }
             }
-            
-            $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
+
+            $associated_content = EventAssociatedContent::model()
+                ->with('initAssociatedContent')
+                ->findAllByAttributes(
+                    array('parent_event_id' => $event->id),
+                    array('order' => 't.display_order asc')
+                );
+
+            $pdf_files = array();
+
+
+            if($associated_content){
+                $pdf_generated = (file_put_contents($this->path . "/" . $filename . "_front.pdf", $content) !== false);
+                $pdf_files[] = $filename . "_front.pdf";
+                foreach($associated_content as $key => $ac){
+                    $event = Event::model()->findByPk( $ac->associated_event_id );
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_POST, false);
+                    curl_setopt($ch, CURLOPT_URL, 'http://localhost/'.$event->eventType->class_name.'/default/PDFprint/' . $event->id. '?attachment_print_title='.urlencode($ac->display_title));
+
+                    $attachment_pdf = curl_exec($ch);
+                    if(substr($attachment_pdf, 0, 4) !== "%PDF"){
+                        echo 'Attachment file is not a PDF for event: '.$event->eventType->name." id:".$event->id."\n";
+                    } else {
+                        file_put_contents($this->path . "/" . $filename ."_".$key.".pdf", $attachment_pdf);
+                        $pdf_files[] = $filename ."_".$key.".pdf";
+                    }
+
+                }
+            } else {
+                $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
+            }
+
+            curl_close($ch);
+
+            if(count($pdf_files) > 1){
+                $fpdf = new FPDI();
+
+                foreach($pdf_files as $pdf_file){
+                    $pagecount = $fpdf->setSourceFile($this->path . "/" .$pdf_file);
+
+                    for($i = 1; $i <= $pagecount; $i++)
+                    {
+                        $fpdf->AddPage('P');
+                        $tplidx = $fpdf->ImportPage($i);
+                        $fpdf->useTemplate($tplidx);
+                    }
+                    unlink( $this->path . "/" .$pdf_file );
+                }
+                $fpdf->Output("F", $this->path . "/" . $filename . ".pdf");
+            }
 
             if ($this->generate_xml) {
                 $xml_generated = $this->generateXMLOutput($filename, $document_output);
