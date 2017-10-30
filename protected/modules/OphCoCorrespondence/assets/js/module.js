@@ -799,12 +799,28 @@ $(document).ready(function() {
                         $content.find('.attachments_event_id').attr('name', 'attachments_event_id[' + $data_id+ ']');
 
                         $last_row.attr('data-id', $data_id + 1);
+
+                        savePDFprint( response.module ,$select.val())
                         $select.val('');
                     }
                 }
             });
         }
     });
+
+    function savePDFprint( module ,event_id )
+    {
+        $.ajax({
+            'type': 'POST',
+            'url': baseUrl + '/'+module+'/Default/savePDFprint',
+            'data' :{YII_CSRF_TOKEN: YII_CSRF_TOKEN, id: event_id},
+            'success': function(response) {
+                if(response.success == 1){
+
+                }
+            }
+        });
+    }
 
 });
 

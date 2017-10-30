@@ -31,7 +31,7 @@ class DefaultController extends BaseEventTypeController
         'markPrinted' => self::ACTION_TYPE_PRINT,
         'doPrintAndView' => self::ACTION_TYPE_PRINT,
         'printCopy'    => self::ACTION_TYPE_PRINT,
-        'getInitMethodDataById' => self::ACTION_TYPE_FORM,
+        'getInitMethodDataById' => self::ACTION_TYPE_FORM
     );
 
     protected $show_element_sidebar = false;
@@ -730,23 +730,20 @@ class DefaultController extends BaseEventTypeController
                 throw new Exception('Patient not found: '.@$_POST['patient_id']);
             }
 
-
             $content = $this->renderPartial('init_method_row', array(
-                'event' => $event,
-                //'api'   => Yii::app()->moduleAPI->get('OphCoCorrespondence'),
-                'patient'   => $patient
+                'event'     => $event,
+                'patient'   => $patient,
             ), true);
 
 
             $result = array(
                 'success'   => 1,
                 'content'   => $content,
-
+                'module'    => $event->eventType->class_name
             );
 
             $this->renderJSON($result);
         }
         throw new CHttpException(400, 'Invalid method');
     }
-
 }
