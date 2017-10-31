@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class OphCoCorrespondence_API extends BaseAPI
 {
@@ -114,8 +113,7 @@ class OphCoCorrespondence_API extends BaseAPI
     public function getLastExaminationDate(\Patient $patient, $use_context = false)
     {
         $api = $this->yii->moduleAPI->get('OphCiExamination');
-        $event = $api->getLatestEvent($patient, $use_context);
-
+        $event = $api->getLatestVisibleEvent($patient, $use_context);
         if (isset($event->event_date)) {
             return Helper::convertDate2NHS($event->event_date);
         }
@@ -125,7 +123,6 @@ class OphCoCorrespondence_API extends BaseAPI
 
     /*
      * List of Ophthalmic Diagnoses
-     * @param boolean $use_context
      */
     public function getOphthalmicDiagnoses(\Patient $patient)
     {
@@ -138,7 +135,7 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLastIOLType(\Patient $patient, $use_context = true)
+    public function getLastIOLType(\Patient $patient, $use_context = false)
     {
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
         if ($element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)){
@@ -152,7 +149,7 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLastIOLPower(\Patient $patient, $use_context = true)
+    public function getLastIOLPower(\Patient $patient, $use_context = false)
     {
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
         if ($element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)){
@@ -166,11 +163,44 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLastOperatedEye(\Patient $patient, $use_context = true)
+    public function getLastOperatedEye(\Patient $patient, $use_context = false)
     {
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
         if ($element = $api->getLatestElement('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
             return $element->eye->adjective;
+        }
+    }
+
+    /**
+     * Internal abstraction of getting data from before the most recent op note.
+     *
+     * @param $patient
+     * @param bool $use_context
+     * @param $api
+     * @param $method
+     * @return string|null
+     */
+    private function getPreOpValuesFromAPIMethod($patient, $use_context = false, $api, $method)
+    {
+        if (!$note_api = $this->yii->moduleAPI->get('OphTrOperationnote')) {
+            return null;
+        }
+
+        $op_event = $note_api->getLatestEvent($patient, $use_context);
+        $op_event_combined_date = Helper::combineMySQLDateAndDateTime($op_event->event_date, $op_event->created_date);
+        $events = $api->getEvents($patient, $use_context, $op_event->event_date);
+
+        foreach ($events as $event) {
+            // take account of event date not containing time so we ensure we get the
+            // exam from BEFORE the op note, not on the same day but after.
+            if ($event->event_date == $op_event->event_date) {
+                if (Helper::combineMySQLDateAndDateTime($event->event_date, $event->created_date) > $op_event_combined_date) {
+                    continue;
+                }
+            }
+            if ($result = $api->$method($event)) {
+                return $result;
+            }
         }
     }
 
@@ -182,46 +212,11 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $use_context
      * @return string|null
      */
-    public function getPreOpVABothEyes($patient, $use_context = true)
+    public function getPreOpVABothEyes($patient, $use_context = false)
     {
-        if ($apiNote = $this->yii->moduleAPI->get('OphTrOperationnote')) {
-            $opDate = $apiNote->getLastOperationDateUnformatted($patient);
+        if ($api = $this->yii->moduleAPI->get('OphCiExamination')) {
+            return $this->getPreOpValuesFromAPIMethod($patient, $use_context, $api, 'getBestVisualAcuityFromEvent');
         }
-        $exam_api = $this->yii->moduleAPI->get('OphCiExamination');
-
-        $events = $exam_api->getEvents($patient, $use_context, $opDate);
-        $data = '';
-
-        if($events){
-            for ($i = 0; $i < count($events); ++$i) {
-                // Get Most Recent VA
-                $vaID = $exam_api->getMostRecentVA($events[$i]->id);
-                if($vaID && !$data){
-                    $data = $exam_api->getMostRecentVAData($vaID->id);
-                    $chosenVA = $vaID;
-                }
-            }
-        }
-
-        if($data){
-            for ($i = 0; $i < count($data); ++$i) {
-                if($data[$i]->side == 0){
-                    $rightData[] = $data[$i];
-                }
-                if($data[$i]->side == 1){
-                    $leftData[] = $data[$i];
-                }
-            }
-            $unitId = $chosenVA->unit_id;
-
-            $rightVA = $exam_api->getVAvalue($rightData[0]->value, $unitId);
-            $leftVA = $exam_api->getVAvalue($leftData[0]->value, $unitId);
-
-            return $rightVA . " Right Eye" . " " . $leftVA . " Left Eye";
-        }else{
-            return;
-        }
-
     }
 
     /**
@@ -231,29 +226,10 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param $use_context
      * @return string|null
      */
-    public function getPreOpRefraction($patient, $use_context = true)
+    public function getPreOpRefraction($patient, $use_context = false)
     {
-        if ($apiNote = $this->yii->moduleAPI->get('OphTrOperationnote')) {
-            $opDate = $apiNote->getLastOperationDateUnformatted($patient);
-        }
-        $exam_api = $this->yii->moduleAPI->get('OphCiExamination');
-        $events = $exam_api->getEvents($patient, $use_context, $opDate);
-
-        $refractfound = false;
-        if($events){
-// Loop through responses, for ones that have RefractionValues
-            for ($i = 0; $i < count($events); ++$i) {
-                if ($exam_api->getRefractionValues($events[$i]->id)) {
-                    if (!$refractfound) {
-                        $refractelement = $exam_api->getRefractionValues($events[$i]->id);
-                        $refract_event_date = $events[$i]->event_date;
-                        $refractfound = true;
-                        $rightspherical = number_format($refractelement->{'right_sphere'} + 0.5 * $refractelement->{'right_cylinder'}, 2);
-                        $leftspherical = number_format($refractelement->{'left_sphere'} + 0.5 * $refractelement->{'left_cylinder'}, 2);
-                        return $rightspherical . " Right Eye" . ", " . $leftspherical . " Left Eye";
-                    }
-                }
-            }
+        if ($api = $this->yii->moduleAPI->get('OphCiExamination')) {
+            return $this->getPreOpValuesFromAPIMethod($patient, $use_context, $api, 'getRefractionTextFromEvent');
         }
     }
 

@@ -4,16 +4,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 /**
@@ -2806,7 +2805,7 @@ html, body {
 /* line 18, ../sass/openeyes/components/containers/_main.scss */
 .container.main {
   border-radius: 5px;
-  background: #dae6f1 url('../img/_structure/gradient_bg.png?1502795878') 0 0 repeat-x;
+  background: #dae6f1 url('../img/_structure/gradient_bg.png?1505738034') 0 0 repeat-x;
   border: 2px solid #b3b0ae;
   margin-bottom: 40px;
   width: 1234px;
@@ -3260,13 +3259,18 @@ table.grid tfoot tr {
   }
 }
 
+/* line 390, ../sass/openeyes/components/_tables.scss */
+table.valign-top tr {
+  vertical-align: top;
+}
+
 /* line 22, ../sass/openeyes/components/_header.scss */
 .header {
   min-height: 70px;
 }
 /* line 24, ../sass/openeyes/components/_header.scss */
 .header .logo {
-  background: url('../img/_structure/openeyes.png?1502795878') no-repeat;
+  background: url('../img/_structure/openeyes.png?1505738034') no-repeat;
   background-size: 100%;
   display: block;
   height: 70px;
@@ -3276,7 +3280,7 @@ table.grid tfoot tr {
   /* line 24, ../sass/openeyes/components/_header.scss */
   .header .logo {
     -webkit-print-color-adjust: exact;
-    background: url('../img/_structure/openeyes.png?1502795878') no-repeat !important;
+    background: url('../img/_structure/openeyes.png?1505738034') no-repeat !important;
     background-size: 100% !important;
   }
 }
@@ -3306,7 +3310,7 @@ table.grid tfoot tr {
 
 /* line 19, ../sass/openeyes/components/_footer.scss */
 .footer {
-  background: #b3b0ae url('../img/_structure/openeyes_footer.png?1502795878') no-repeat right top;
+  background: #b3b0ae url('../img/_structure/openeyes_footer.png?1505738034') no-repeat right top;
 }
 /* line 22, ../sass/openeyes/components/_footer.scss */
 .footer .info {
@@ -3533,11 +3537,17 @@ input[type="text"].inline, input[type="password"].inline, input[type="date"].inl
 }
 
 /* line 64, ../sass/openeyes/components/_forms.scss */
+input.inset-loader {
+  background: url('../img/ajax-loader.gif?1502795878') right center no-repeat !important;
+  background-size: 12px !important;
+}
+
+/* line 69, ../sass/openeyes/components/_forms.scss */
 input[type="range"] {
   width: 100%;
 }
 
-/* line 69, ../sass/openeyes/components/_forms.scss */
+/* line 74, ../sass/openeyes/components/_forms.scss */
 input[readonly], input[readonly]:focus {
   color: #666;
   background: #f3f3f3;
@@ -3547,51 +3557,51 @@ input[readonly], input[readonly]:focus {
   border: 1px solid #6b8aaa;
 }
 
-/* line 77, ../sass/openeyes/components/_forms.scss */
+/* line 82, ../sass/openeyes/components/_forms.scss */
 textarea, .oe-tagsinput-wrapper .tagsinput {
   resize: vertical;
   min-height: 2em;
 }
-/* line 80, ../sass/openeyes/components/_forms.scss */
+/* line 85, ../sass/openeyes/components/_forms.scss */
 textarea.address, .oe-tagsinput-wrapper .address.tagsinput {
   font-family: courier;
   color: #000;
 }
 
-/* line 86, ../sass/openeyes/components/_forms.scss */
+/* line 91, ../sass/openeyes/components/_forms.scss */
 select {
   font-size: 0.8125rem;
   max-width: 100%;
 }
-/* line 89, ../sass/openeyes/components/_forms.scss */
+/* line 94, ../sass/openeyes/components/_forms.scss */
 select.inline {
   width: auto;
 }
-/* line 92, ../sass/openeyes/components/_forms.scss */
+/* line 97, ../sass/openeyes/components/_forms.scss */
 select.textMacro {
   width: 120px;
 }
 @media print {
-  /* line 86, ../sass/openeyes/components/_forms.scss */
+  /* line 91, ../sass/openeyes/components/_forms.scss */
   select {
     background: #fff !important;
   }
 }
 
 /* Normalize file input width */
-/* line 103, ../sass/openeyes/components/_forms.scss */
+/* line 108, ../sass/openeyes/components/_forms.scss */
 input[type="file"] {
   width: 100%;
 }
 
 /* We add basic fieldset styling */
-/* line 108, ../sass/openeyes/components/_forms.scss */
+/* line 113, ../sass/openeyes/components/_forms.scss */
 fieldset {
   border: 0;
   padding: 0;
   margin: 0;
 }
-/* line 113, ../sass/openeyes/components/_forms.scss */
+/* line 118, ../sass/openeyes/components/_forms.scss */
 fieldset.inline legend {
   display: inline-block;
   float: left;
@@ -3600,7 +3610,7 @@ fieldset.inline legend {
   line-height: 16px;
   margin: 0;
 }
-/* line 123, ../sass/openeyes/components/_forms.scss */
+/* line 128, ../sass/openeyes/components/_forms.scss */
 fieldset legend {
   font-weight: normal;
   font-size: 0.8125rem;
@@ -3610,19 +3620,19 @@ fieldset legend {
   margin: 0 0 1em 0;
   width: 100%;
 }
-/* line 134, ../sass/openeyes/components/_forms.scss */
+/* line 139, ../sass/openeyes/components/_forms.scss */
 fieldset legend.column {
   margin-bottom: 0;
 }
 
 /* Error Handling */
-/* line 142, ../sass/openeyes/components/_forms.scss */
+/* line 147, ../sass/openeyes/components/_forms.scss */
 .error label,
 label.error {
   color: red;
 }
 
-/* line 147, ../sass/openeyes/components/_forms.scss */
+/* line 152, ../sass/openeyes/components/_forms.scss */
 .error small,
 small.error {
   display: block;
@@ -3637,7 +3647,7 @@ small.error {
 }
 
 /* Attach elements to the beginning or end of an input */
-/* line 154, ../sass/openeyes/components/_forms.scss */
+/* line 159, ../sass/openeyes/components/_forms.scss */
 .prefix,
 .postfix {
   display: inline-block;
@@ -3645,33 +3655,33 @@ small.error {
 }
 
 /* Field helpers */
-/* line 164, ../sass/openeyes/components/_forms.scss */
+/* line 169, ../sass/openeyes/components/_forms.scss */
 .field-info {
   font-size: 0.8125rem;
   display: inline-block;
   /* FIXME */
 }
-/* line 168, ../sass/openeyes/components/_forms.scss */
+/* line 173, ../sass/openeyes/components/_forms.scss */
 .field-info select, .field-info input, .field-info textarea, .field-info .oe-tagsinput-wrapper .tagsinput, .oe-tagsinput-wrapper .field-info .tagsinput {
   font-size: 1em;
 }
 
 /* Field highlight */
-/* line 174, ../sass/openeyes/components/_forms.scss */
+/* line 179, ../sass/openeyes/components/_forms.scss */
 .field-highlight {
   display: block;
   max-width: 100%;
 }
-/* line 178, ../sass/openeyes/components/_forms.scss */
+/* line 183, ../sass/openeyes/components/_forms.scss */
 .field-highlight.inline {
   display: inline-block;
 }
-/* line 181, ../sass/openeyes/components/_forms.scss */
+/* line 186, ../sass/openeyes/components/_forms.scss */
 .field-highlight select {
   width: 100%;
 }
 
-/* line 187, ../sass/openeyes/components/_forms.scss */
+/* line 192, ../sass/openeyes/components/_forms.scss */
 label.highlight {
   background: #e3f0f2;
   padding: 4px 11px 5px 8px;
@@ -3680,28 +3690,28 @@ label.highlight {
   -webkit-border-radius: 3px;
   border-radius: 3px;
 }
-/* line 192, ../sass/openeyes/components/_forms.scss */
+/* line 197, ../sass/openeyes/components/_forms.scss */
 label.highlight:hover {
   background: #fff;
 }
-/* line 195, ../sass/openeyes/components/_forms.scss */
+/* line 200, ../sass/openeyes/components/_forms.scss */
 label.highlight.booking {
   padding: 7px 10px 8px 8px;
 }
-/* line 197, ../sass/openeyes/components/_forms.scss */
+/* line 202, ../sass/openeyes/components/_forms.scss */
 label.highlight.booking:hover {
   background: #3665ff;
   color: #fff;
 }
-/* line 201, ../sass/openeyes/components/_forms.scss */
+/* line 206, ../sass/openeyes/components/_forms.scss */
 label.highlight.booking img {
   vertical-align: top;
 }
-/* line 204, ../sass/openeyes/components/_forms.scss */
+/* line 209, ../sass/openeyes/components/_forms.scss */
 label.highlight.booking .row {
   display: block;
 }
-/* line 209, ../sass/openeyes/components/_forms.scss */
+/* line 214, ../sass/openeyes/components/_forms.scss */
 label input[type="checkbox"],
 label input[type="radio"] {
   margin: 0;
@@ -3715,45 +3725,45 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
   border-radius: 3px;
   height: auto;
 }
-/* line 235, ../sass/openeyes/components/_forms.scss */
+/* line 240, ../sass/openeyes/components/_forms.scss */
 input[type="text"].small, input[type="password"].small, input[type="date"].small, input[type="datetime"].small, input[type="datetime-local"].small, input[type="month"].small, input[type="week"].small, input[type="email"].small, input[type="number"].small, input[type="search"].small, input[type="tel"].small, input[type="time"].small, input[type="url"].small, textarea.small, .oe-tagsinput-wrapper .small.tagsinput {
   padding: 2px 3px;
 }
-/* line 238, ../sass/openeyes/components/_forms.scss */
+/* line 243, ../sass/openeyes/components/_forms.scss */
 input[type="text"].fixed-width, input[type="password"].fixed-width, input[type="date"].fixed-width, input[type="datetime"].fixed-width, input[type="datetime-local"].fixed-width, input[type="month"].fixed-width, input[type="week"].fixed-width, input[type="email"].fixed-width, input[type="number"].fixed-width, input[type="search"].fixed-width, input[type="tel"].fixed-width, input[type="time"].fixed-width, input[type="url"].fixed-width, textarea.fixed-width, .oe-tagsinput-wrapper .fixed-width.tagsinput {
   width: 90px;
 }
-/* line 241, ../sass/openeyes/components/_forms.scss */
+/* line 246, ../sass/openeyes/components/_forms.scss */
 input[type="text"].large, input[type="password"].large, input[type="date"].large, input[type="datetime"].large, input[type="datetime-local"].large, input[type="month"].large, input[type="week"].large, input[type="email"].large, input[type="number"].large, input[type="search"].large, input[type="tel"].large, input[type="time"].large, input[type="url"].large, textarea.large, .oe-tagsinput-wrapper .large.tagsinput {
   padding: 7px 4px;
 }
 
-/* line 248, ../sass/openeyes/components/_forms.scss */
+/* line 253, ../sass/openeyes/components/_forms.scss */
 .field-row, .eyedraw-row, .data-row {
   padding-bottom: 2px;
 }
-/* line 250, ../sass/openeyes/components/_forms.scss */
+/* line 255, ../sass/openeyes/components/_forms.scss */
 .field-row table:last-child, .eyedraw-row table:last-child, .data-row table:last-child {
   margin-bottom: 0;
 }
 
-/* line 259, ../sass/openeyes/components/_forms.scss */
+/* line 264, ../sass/openeyes/components/_forms.scss */
 .field-value, .field-label, .data-label, .data-value {
   font-size: 0.8125rem;
   line-height: 1.3;
   margin: 0;
   word-wrap: break-word;
 }
-/* line 263, ../sass/openeyes/components/_forms.scss */
+/* line 268, ../sass/openeyes/components/_forms.scss */
 .field-value li, .field-label li, .data-label li, .data-value li {
   margin-left: 18px;
 }
-/* line 266, ../sass/openeyes/components/_forms.scss */
+/* line 271, ../sass/openeyes/components/_forms.scss */
 .field-value.none, .none.field-label, .none.data-label, .none.data-value {
   color: #999;
   font-style: italic;
 }
-/* line 270, ../sass/openeyes/components/_forms.scss */
+/* line 275, ../sass/openeyes/components/_forms.scss */
 .field-value.highlight, .highlight.field-label, .highlight.data-label, .highlight.data-value {
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -3764,33 +3774,33 @@ input[type="text"].large, input[type="password"].large, input[type="date"].large
   margin: 0 -10px;
   list-style-type: none;
 }
-/* line 277, ../sass/openeyes/components/_forms.scss */
+/* line 282, ../sass/openeyes/components/_forms.scss */
 .field-value.highlight li, .highlight.field-label li, .highlight.data-label li, .highlight.data-value li {
   padding: 4px 0;
   margin: 0;
   font-size: 1rem;
 }
-/* line 282, ../sass/openeyes/components/_forms.scss */
+/* line 287, ../sass/openeyes/components/_forms.scss */
 .field-value.highlight.important, .highlight.important.field-label, .highlight.important.data-label, .highlight.important.data-value {
   background: #fff300;
 }
 
-/* line 289, ../sass/openeyes/components/_forms.scss */
+/* line 294, ../sass/openeyes/components/_forms.scss */
 .field-label, .data-label {
   word-wrap: normal;
 }
 
-/* line 295, ../sass/openeyes/components/_forms.scss */
+/* line 300, ../sass/openeyes/components/_forms.scss */
 .generic-admin .reorder {
   width: 2em;
 }
-/* line 297, ../sass/openeyes/components/_forms.scss */
+/* line 302, ../sass/openeyes/components/_forms.scss */
 .generic-admin .reorder input {
   display: inline-block;
   width: 40px;
 }
 
-/* line 304, ../sass/openeyes/components/_forms.scss */
+/* line 309, ../sass/openeyes/components/_forms.scss */
 .generic-admin-no-default {
   text-align: right;
 }
@@ -5746,8 +5756,13 @@ tfoot.pagination-container .pagination-view-all {
   right: -4px;
   top: 7px;
 }
+/* line 302, ../sass/openeyes/components/panels/_patient.scss */
+.panel.patient-popup table td {
+  font-size: 11px;
+  padding-left: 0px;
+}
 
-/* line 304, ../sass/openeyes/components/panels/_patient.scss */
+/* line 310, ../sass/openeyes/components/panels/_patient.scss */
 .nhs-number {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -5761,17 +5776,17 @@ tfoot.pagination-container .pagination-view-all {
   padding: 2px 3px 1px 33px;
 }
 @media print {
-  /* line 304, ../sass/openeyes/components/panels/_patient.scss */
+  /* line 310, ../sass/openeyes/components/panels/_patient.scss */
   .nhs-number {
     padding-left: 0;
   }
 }
-/* line 319, ../sass/openeyes/components/panels/_patient.scss */
+/* line 325, ../sass/openeyes/components/panels/_patient.scss */
 .nhs-number .messages {
   display: none;
 }
 
-/* line 324, ../sass/openeyes/components/panels/_patient.scss */
+/* line 330, ../sass/openeyes/components/panels/_patient.scss */
 .messages.patient.fixed {
   position: fixed;
   z-index: 100;
@@ -6456,15 +6471,15 @@ tfoot.pagination-container .pagination-view-all {
 /**
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2014, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 /* line 16, ../sass/openeyes/components/tabs/_search.scss */
 .tabs.search li {
@@ -7143,8 +7158,8 @@ tfoot.pagination-container .pagination-view-all {
 }
 /* line 37, ../sass/openeyes/components/events/_sub-elements.scss */
 .sub-element .sub-element-title {
-  color: #666;
   float: left;
+  color: #666;
   font-size: 0.8125rem;
   font-style: normal;
   margin: 0;
@@ -7766,20 +7781,20 @@ tfoot.pagination-container .pagination-view-all {
 /* line 8, ../sass/openeyes/components/_generic-search.scss */
 #generic-search-form > div div.submit-row {
   align-self: flex-end;
-  padding-right:10px;
+  padding-right: 10px;
 }
-/* line 11, ../sass/openeyes/components/_generic-search.scss */
+/* line 12, ../sass/openeyes/components/_generic-search.scss */
 #generic-search-form > div div.single-search-field {
   width: 50%;
 }
-/* line 15, ../sass/openeyes/components/_generic-search.scss */
+/* line 16, ../sass/openeyes/components/_generic-search.scss */
 #generic-search-form > div div label {
   width: 95%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* line 21, ../sass/openeyes/components/_generic-search.scss */
+/* line 22, ../sass/openeyes/components/_generic-search.scss */
 #generic-search-form > div div input[type=text], #generic-search-form > div div select {
   width: 95%;
 }
@@ -8033,15 +8048,15 @@ table.detailview tr th {
  *
  * (C) OpenEyes Foundation, 2017
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2017, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 /* line 25, ../sass/openeyes/components/_tagsinput.scss */
 .oe-tagsinput-wrapper .tagsinput .tag {
@@ -8070,4 +8085,395 @@ table.detailview tr th {
 .oe-tagsinput-wrapper .tagsinput .tag a:hover {
   filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
   opacity: 1;
+}
+
+/* line 1, ../sass/openeyes/components/_index-search.scss */
+#search_bar_right, #search_bar_left {
+  display: inline-block;
+  font-family: Helvetica;
+  box-sizing: border-box;
+  font-size: 12px;
+  vertical-align: top;
+  padding: 0 10px;
+  font-size: 10px;
+  width: 210px;
+  height: 28px;
+  border: 1px solid #b3b3b3;
+  border-radius: 10px 0 0 10px;
+  z-index: 1003;
+}
+
+/* line 15, ../sass/openeyes/components/_index-search.scss */
+#search_button_right, #search_button_left {
+  display: inline-block;
+  font-family: Helvetica;
+  cursor: pointer;
+  border: none;
+  background: url("../img/index_search/search_icon.png") no-repeat center center, #747782;
+  background-size: 15px 15px;
+  border-radius: 0 20px 20px 0;
+  padding: 10px 25px;
+  display: inline-block;
+  width: 20px;
+  z-index: 1004;
+  position: relative;
+  right: 5px;
+  height: 28px;
+}
+
+/* line 31, ../sass/openeyes/components/_index-search.scss */
+#results {
+  outline: 0px;
+  z-index: 1005;
+  top: 130px;
+  bottom: 50px;
+  width: 1051px;
+  display: none;
+  overflow-y: scroll;
+  background-color: #fff;
+  padding: 0px;
+  font-size: .8rem;
+  box-shadow: 2px 2px 2px 2px #666666;
+  border-radius: 7px;
+  font-family: Helvetica, Arial, sans-serif;
+  border: 1px solid #aaaaaa;
+  color: #222222;
+  margin: 0;
+  box-sizing: border-box;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1.5;
+  cursor: auto;
+  position: fixed;
+  background: #fff;
+  background-image: url("../img/index_search/line.png");
+  background-size: 4px;
+  background-repeat: repeat-y;
+  background-position: 325px;
+  background-attachment: local;
+  overflow-x: hidden;
+}
+
+/* line 62, ../sass/openeyes/components/_index-search.scss */
+.results_list {
+  margin: 0;
+  list-style: none;
+  padding: 10px;
+}
+
+/* line 67, ../sass/openeyes/components/_index-search.scss */
+.results_list .results_list {
+  padding: 0px;
+  padding-left: 45px;
+}
+
+/* line 71, ../sass/openeyes/components/_index-search.scss */
+.result_item, .result_item_with_icon {
+  width: 222px;
+  display: block;
+  margin: 0 0 0px 0;
+  height: 19px;
+  line-height: 19px;
+  background-color: #EEEEED;
+  background-size: 524px 500px;
+  background-repeat: no-repeat;
+  background-position: left;
+  background-size: 16px 16px;
+  color: #0b59da;
+  cursor: pointer;
+  font-size: .75rem;
+  box-sizing: border-box;
+  text-align: -webkit-match-parent;
+  margin-bottom: 4px;
+  list-style-position: inside;
+  font-family: inherit;
+  padding-left: 12px;
+  border-radius: 3px;
+  z-index: 10001;
+}
+
+/* line 94, ../sass/openeyes/components/_index-search.scss */
+.result_item_with_icon {
+  padding-left: 25px;
+}
+
+/* line 97, ../sass/openeyes/components/_index-search.scss */
+.result_item:hover, .result_item_with_icon:hover {
+  background-color: #3665ff;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* line 102, ../sass/openeyes/components/_index-search.scss */
+#big_cross {
+  background: #fff url("../img/index_search/bigCross.png") center no-repeat;
+  display: block;
+  cursor: pointer;
+  width: 32px;
+  height: 37px;
+  margin-right: 10px;
+  float: right;
+}
+
+/* line 111, ../sass/openeyes/components/_index-search.scss */
+li ul li ul li .result_item {
+  background-color: transparent;
+}
+
+/* line 114, ../sass/openeyes/components/_index-search.scss */
+#results > ul > li > div:first-child {
+  position: sticky;
+  top: 0;
+  z-index: 10000;
+}
+
+/* line 119, ../sass/openeyes/components/_index-search.scss */
+#results > ul > li > div:first-child:hover {
+  background-color: #3665ff;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* line 124, ../sass/openeyes/components/_index-search.scss */
+.alias {
+  font-size: 0.7em;
+  font-style: italic;
+  color: grey;
+  position: relative;
+}
+
+/* line 130, ../sass/openeyes/components/_index-search.scss */
+.index_row {
+  display: flex;
+  /* equal height of the children */
+  width: 930px;
+  margin-bottom: -10px;
+}
+
+/* line 135, ../sass/openeyes/components/_index-search.scss */
+.index_col_left {
+  flex: 0.85;
+  position: relative;
+  top: -7px;
+  margin-left: 21px;
+}
+
+/* line 142, ../sass/openeyes/components/_index-search.scss */
+.index_col_left_lvl1, .index_col_left_lvl2, .index_col_left_lvl3 {
+  /*flex: 0.85;*/
+  position: relative;
+  top: -7px;
+  margin-left: 21px;
+  min-height: 10px;
+}
+
+/* line 150, ../sass/openeyes/components/_index-search.scss */
+.index_col_left_lvl1 {
+  flex: 1;
+}
+
+/* line 154, ../sass/openeyes/components/_index-search.scss */
+.index_col_left_lvl2 {
+  flex: 0.8;
+}
+
+/* line 158, ../sass/openeyes/components/_index-search.scss */
+.index_col_left_lvl3 {
+  flex: 0.6;
+}
+
+/* line 162, ../sass/openeyes/components/_index-search.scss */
+li li li .index_col_left {
+  top: -11px;
+}
+
+/* line 165, ../sass/openeyes/components/_index-search.scss */
+.index_col_right {
+  flex: 2;
+  position: relative;
+  top: -25px;
+  margin-left: 10px;
+}
+
+/* line 171, ../sass/openeyes/components/_index-search.scss */
+.warning_icon, .info_icon {
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+  background-color: white;
+  display: inline-block;
+  height: 16px;
+  width: 16px;
+  position: relative;
+  top: 3px;
+}
+
+/* line 181, ../sass/openeyes/components/_index-search.scss */
+.warning_icon {
+  top: 4px;
+  background-image: url("../img/index_search/warning.png");
+}
+
+/* line 185, ../sass/openeyes/components/_index-search.scss */
+.info_icon {
+  background-image: url("../img/index_search/info.png");
+}
+
+/* line 188, ../sass/openeyes/components/_index-search.scss */
+.description_icon {
+  font-size: 0.8em;
+  font-weight: bold;
+  font-style: italic;
+}
+
+/* line 194, ../sass/openeyes/components/_index-search.scss */
+.warning_note, .info_note, .description_note {
+  font-size: 0.8em;
+  padding-left: 6px;
+  padding-right: 20px;
+}
+
+/* line 199, ../sass/openeyes/components/_index-search.scss */
+.description_note {
+  padding-left: 0px;
+}
+
+/* The switch - the box around the slider */
+/* line 203, ../sass/openeyes/components/_index-search.scss */
+.switch {
+  display: none;
+  position: relative;
+  width: 30px;
+  height: 17px;
+  top: 7px;
+}
+
+/* line 210, ../sass/openeyes/components/_index-search.scss */
+#description_switch {
+  display: inline-block;
+}
+
+/* line 213, ../sass/openeyes/components/_index-search.scss */
+#children_switch {
+  display: inline-block;
+}
+
+/* Hide default HTML checkbox */
+/* line 217, ../sass/openeyes/components/_index-search.scss */
+.switch input {
+  display: none;
+}
+
+/* The slider */
+/* line 219, ../sass/openeyes/components/_index-search.scss */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+/* line 230, ../sass/openeyes/components/_index-search.scss */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 13px;
+  width: 13px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+/* line 241, ../sass/openeyes/components/_index-search.scss */
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+/* line 244, ../sass/openeyes/components/_index-search.scss */
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+/* line 247, ../sass/openeyes/components/_index-search.scss */
+input:checked + .slider:before {
+  -webkit-transform: translateX(13px);
+  -ms-transform: translateX(13px);
+  transform: translateX(13px);
+}
+
+/* Rounded sliders */
+/* line 253, ../sass/openeyes/components/_index-search.scss */
+.slider.round {
+  border-radius: 17px;
+}
+
+/* line 256, ../sass/openeyes/components/_index-search.scss */
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* line 259, ../sass/openeyes/components/_index-search.scss */
+#description_toggle_label {
+  display: inline-block;
+  font-size: 0.65em;
+}
+
+/* line 263, ../sass/openeyes/components/_index-search.scss */
+#children_toggle_label {
+  display: inline-block;
+  font-size: 0.65em;
+}
+
+/* line 267, ../sass/openeyes/components/_index-search.scss */
+#search_bars_and_options {
+  padding-top: 5px;
+  margin-left: 27px;
+  display: inline-block;
+}
+
+/* line 272, ../sass/openeyes/components/_index-search.scss */
+#search_options_container {
+  display: inline-block;
+  width: 220px;
+  vertical-align: top;
+  text-align: center;
+  top: -5px;
+  height: 37px;
+  position: relative;
+  padding-top: 4px;
+}
+
+/* line 282, ../sass/openeyes/components/_index-search.scss */
+#children_toggle_container {
+  padding-right: 25px;
+  display: none;
+}
+
+/* line 286, ../sass/openeyes/components/_index-search.scss */
+#description_toogle_container {
+  padding-right: 25px;
+  display: none;
+}
+
+/* line 290, ../sass/openeyes/components/_index-search.scss */
+#did_you_mean_suggestion {
+  margin-left: 20px;
+}
+
+/* line 293, ../sass/openeyes/components/_index-search.scss */
+.search_highlight {
+  font-style: inherit;
+  background-color: yellow;
+  color: black;
+}
+
+/* line 298, ../sass/openeyes/components/_index-search.scss */
+.is_loading {
+  content: url(../img/index_search/loading.gif);
 }

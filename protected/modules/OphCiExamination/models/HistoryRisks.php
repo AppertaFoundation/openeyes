@@ -4,15 +4,15 @@
  *
  * (C) OpenEyes Foundation, 2017
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2017, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 
@@ -79,13 +79,13 @@ class HistoryRisks extends \BaseEventTypeElement
                 self::HAS_MANY,
                 'OEModule\OphCiExamination\models\HistoryRisksEntry',
                 'element_id',
-                'condition' => 'has_risk is null'
+                'condition' => 'has_risk = -9'
             ),
             'present' => array(
                 self::HAS_MANY,
                 'OEModule\OphCiExamination\models\HistoryRisksEntry',
                 'element_id',
-                'condition' => 'has_risk = true'
+                'condition' => 'has_risk = 1'
             ),
             'not_present' => array(
                 self::HAS_MANY,
@@ -163,7 +163,7 @@ class HistoryRisks extends \BaseEventTypeElement
             }
         }
 
-        if ($this->getScenario() != 'migration') {
+        if (!in_array($this->getScenario(),array('migration', 'auto'))) {
             // ensure required risks have been provided.
             $missing_required = array();
             foreach ($this->getRequiredRisks() as $required) {
@@ -225,9 +225,24 @@ class HistoryRisks extends \BaseEventTypeElement
         if ($attribute === \CHtml::modelName($this) . '_entries') {
             // TODO: handle highlighting the "other" text field once that validation is in place.
             if (preg_match('/^(\d+)/', $message, $match) === 1) {
-                return $attribute .'_' . ($match[1]-1) . '_risk_id';
+                return $attribute .'_' . ($match[1]-1) . '_risk_id_error';
             }
         }
         return parent::errorAttributeException($attribute, $message);
     }
+
+    /**
+     * @param $name
+     * @return HistoryRisksEntry|null
+     */
+    public function getRiskEntryByName($name)
+    {
+        foreach ($this->entries as $entry) {
+            if ($entry->risk->name === $name) {
+                return $entry;
+            }
+        }
+        return null;
+    }
+
 }

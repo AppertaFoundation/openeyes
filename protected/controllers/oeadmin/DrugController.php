@@ -5,29 +5,21 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
- * Created by PhpStorm.
- * User: himanshu
- * Date: 16/04/15
- * Time: 12:28.
+ * Class DrugController.
  */
-
-/**
- * Class FormularyDrugsController.
- */
-class FormularyDrugsController extends BaseAdminController
+class DrugController extends BaseAdminController
 {
     /**
      * @var string
@@ -46,10 +38,10 @@ class FormularyDrugsController extends BaseAdminController
      */
     public function actionList()
     {
-        $admin = new Admin(FormularyDrugs::model(), $this);
+        $admin = new Admin(Drug::model(), $this);
         $admin->setListFields(array(
             'name',
-            'tagnames',
+            'tags',
             'aliases',
             'active',
         ));
@@ -68,7 +60,7 @@ class FormularyDrugsController extends BaseAdminController
                 if(strpos($field, ', ') === false)
                 {
                     // Single column fields
-                    $criteria->compare($field, $_GET['search'][$field], ($field != 'active'));
+                    $criteria->compare('t.' . $field, $_GET['search'][$field], ($field != 'active'));
                 }
                 else
                 {
@@ -77,7 +69,7 @@ class FormularyDrugsController extends BaseAdminController
 
                     foreach (explode(', ', $field) as $column)
                     {
-                        $crit2->compare('LOWER('.$column.')', strtolower($_GET['search'][$field]), true, 'OR');
+                        $crit2->compare('LOWER(t.'.$column.')', strtolower($_GET['search'][$field]), true, 'OR');
                     }
 
                     $criteria->mergeWith($crit2, 'AND');
@@ -89,8 +81,9 @@ class FormularyDrugsController extends BaseAdminController
         {
             $command = Yii::app()->db->createCommand("SELECT drug_id FROM drug_tag WHERE tag_id IN (SELECT id FROM tag WHERE name LIKE CONCAT('%', :tagname ,'%'))");
             $matching_ids = $command->queryColumn(array(':tagname' => $_GET['search']['tags.name']));
-            $criteria->addInCondition('id', $matching_ids, 'AND');
+            $criteria->addInCondition('t.id', $matching_ids, 'AND');
         }
+        $criteria->with = array('tags');
 
         $admin->getSearch()->setCriteria($criteria);
 
@@ -106,7 +99,7 @@ class FormularyDrugsController extends BaseAdminController
      */
     public function actionEdit($id = false)
     {
-        $admin = new Admin(FormularyDrugs::model(), $this);
+        $admin = new Admin(Drug::model(), $this);
         if ($id) {
             $admin->setModelId($id);
         }
@@ -148,7 +141,7 @@ class FormularyDrugsController extends BaseAdminController
                 'layoutColumns' => null,
             ),
             'active' => 'checkbox',
-            'allergy_warnings' => array(
+            'allergies' => array(
                 'widget' => 'MultiSelectList',
                 'relation_field_id' => 'id',
                 'label' => 'Allergy Warnings',
@@ -169,7 +162,7 @@ class FormularyDrugsController extends BaseAdminController
                     'name'
                 )),*/
                 'htmlOptions' => array(
-                    'autocomplete_url' => $this->createAbsoluteUrl('/oeadmin/formularyDrugs/tagsAutocomplete')
+                    'autocomplete_url' => $this->createAbsoluteUrl('/oeadmin/drug/tagsAutocomplete')
                 )
             ),
             'national_code' => 'text',
@@ -182,7 +175,7 @@ class FormularyDrugsController extends BaseAdminController
      */
     public function actionDelete()
     {
-        $admin = new Admin(FormularyDrugs::model(), $this);
+        $admin = new Admin(Drug::model(), $this);
         $admin->deleteModel();
     }
 

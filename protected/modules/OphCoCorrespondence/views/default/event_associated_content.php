@@ -17,7 +17,7 @@
                 if(empty($patient)){
                     $patient = $this->patient;
                 }
-
+                $key = 0;
                 foreach($associated_content as $key => $value){
                     $method = null;
                     $event_name = null;
@@ -35,10 +35,10 @@
                     }
 
                     if($method != null){
-                        $last_event = json_decode( $api->{$method}( $patient ));
-                        if($last_event){
-                            $event_name = $last_event->event_name;
-                            $event_date = $last_event->event_date;
+                        $event = json_decode( $api->{$method}( $patient ));
+                        if($event){
+                            $event_name = $event->event_name;
+                            $event_date = $event->event_date;
                         }
 
                     } else {
@@ -46,20 +46,17 @@
                         $event_name = $event->eventType->name;
                         $event_date = Helper::convertDate2NHS($event->event_date);
                     }
-
-
-
                 ?>
                 <tr data-key = "<?= $value->id ?>" data-id="<?= $key ?>">
                     <td><?= $event_name ?></td>
                     <td><?= (isset($ac->display_title) ? $ac->display_title : $event->eventType->name); ?></td>
                     <td>
                         <?php
-                        if( empty($last_event) ){
+                        if( empty($event) ){
                             echo "None";
                         } else {
                         ?>
-                            <input type="hidden" name="attachments_event_id[<?= $key ?>]" value="<?= $last_event->id ?>" />
+                            <input type="hidden" name="attachments_event_id[<?= $key ?>]" value="<?= $event->id ?>" />
                             <input type="hidden" name="attachments_id[<?= $key ?>]" value="<?= $ac->id ?>" />
                             <input type="hidden" name="attachments_system_hidden[<?= $key ?>]" value="<?= $ac->is_system_hidden ?>" />
                             <input type="hidden" name="attachments_print_appended[<?= $key ?>]" value="<?= $ac->is_print_appended ?>" />
@@ -72,6 +69,7 @@
                     </td>
                 </tr>
                 <?php } ?>
+
                 <tr id="correspondence_attachments_table_last_row" data-id="<?= $key+1 ?>">
                     <td colspan="2"><td>
                     <td>

@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -191,13 +190,36 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
      */
     public function stopDateFromDuration()
     {
-        $endDate = null;
-        // !! TODO: what is the end date for different dispense conditions???
-        if (!in_array($this->duration->name, array('Other', 'Until review')) ) {
-            $startDate = new DateTime($this->prescription->event->event_date);
-            $endDate = $startDate->add(DateInterval::createFromDateString($this->duration->name));
+        if (in_array($this->duration->name, array('Other', 'Until review'))) {
+            return null;
         }
 
-        return $endDate;
+        $start_date = new DateTime($this->prescription->event->event_date);
+        $end_date = $start_date->add(DateInterval::createFromDateString($this->duration->name));
+        foreach ($this->tapers as $taper) {
+            if (in_array($taper->duration->name, array('Other', 'Until review'))) {
+                return null;
+            }
+            $end_date->add(DateInterval::createFromDateString($taper->duration->name));
+        }
+        return $end_date;
+    }
+
+    public function getAdministrationDisplay()
+    {
+        $dose = (string) $this->dose;
+        $freq = (string) $this->frequency;
+        if ($this->tapers) {
+            $last_taper = array_slice($this->tapers, -1)[0];
+            $last_dose = (string) $last_taper->dose;
+            if ($last_dose != $dose) {
+                $dose .= ' - ' . $last_dose;
+            }
+            $last_freq = (string) $last_taper->frequency;
+            if ($last_freq != $freq) {
+                $freq .= ' - ' . $last_freq;
+            }
+        }
+        return $dose . ($this->route_option ? ' ' . $this->route_option : '') . ' ' . $this->route . ' ' . $freq;
     }
 }

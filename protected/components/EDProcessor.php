@@ -3,17 +3,18 @@
 /**
  * OpenEyes
  *
- * (C) OpenEyes Foundation, 2017
+ * Copyright OpenEyes Foundation, 2017
+ *
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2017, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class EDProcessor
 {
@@ -37,13 +38,23 @@ class EDProcessor
 
     /**
      * @param int $event_id
+     * @param string $canvas_mnemonic - limit clearance to the given mnemonic
      */
-    protected function clearEvent($event_id)
+    protected function clearEvent($event_id, $canvas_mnemonic = null)
     {
-        $this->app->db
-            ->createCommand('DELETE FROM mview_datapoint_node where event_id = :eid')
-            ->bindParam(':eid', $event_id)
-            ->query();
+        $query_string = 'DELETE FROM mview_datapoint_node where event_id = :eid';
+        if ($canvas_mnemonic) {
+            $query_string .= ' AND canvas_mnemonic = :cmn';
+        }
+
+        $query = $this->app->db
+            ->createCommand($query_string)
+            ->bindParam(':eid', $event_id);
+
+        if ($canvas_mnemonic) {
+            $query->bindParam(':cmn', $canvas_mnemonic);
+        }
+        $query->query();
     }
 
     /**
@@ -106,8 +117,8 @@ class EDProcessor
      */
     public function shredElementEyedraws($element, $attributes=array())
     {
-        $this->clearEvent($element->event_id);
         $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element->getElementType()->id);
+        $this->clearEvent($element->event_id, $canvas_mnemonic);
 
         foreach ($attributes as $attr => $side) {
             if (!strlen($element->$attr)) {
@@ -122,6 +133,15 @@ class EDProcessor
                 $this->storeDoodle($element->event_id, $canvas_mnemonic, $side, $ed_doodle);
             }
         }
+    }
+
+    /**
+     * @param $element
+     */
+    public function removeElementEyedraws($element)
+    {
+        $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element->getElementType()->id);
+        $this->clearEvent($element->event_id, $canvas_mnemonic);
     }
 
     /**
@@ -143,7 +163,14 @@ class EDProcessor
         }
 
         if (!array_key_exists($canvas_mnemonic, $this->patient_doodles[$patient_id])) {
+            // init sided structure
             $this->patient_doodles[$patient_id][$canvas_mnemonic] = array('R' => array(), 'L' => array());
+
+            // get init json for any doodles that should always be present on this canvas
+            $always_init = $this->getAlwaysInitDoodlesForCanvas($canvas_mnemonic);
+            $class_by_laterality = array('R' => array(), 'L' => array());
+
+            // get the carry forward doodles
             $query_string = <<<EOSQL
 -- Query NEWEST eyedraw doodle data for set-interection-tuple groups for target patient and runtime canvas
 SELECT
@@ -227,10 +254,26 @@ EOSQL;
                 ->bindParam(':patient_id', $patient_id)
                 ->bindParam(':cvmnm', $canvas_mnemonic)->queryAll() as $result
             ) {
+                // store the carried forward doodle data
                 $this->patient_doodles[$patient_id][$canvas_mnemonic][$result['laterality']][] = $result['content_json'];
+                // store doodle class by laterality
+                $class_by_laterality[$result['laterality']][] = $result['eyedraw_class_mnemonic'];
             };
 
+            foreach (array('R', 'L') as $laterality) {
+                if (count($class_by_laterality[$laterality]) > 0) {
+                    // merge in any missing init doodle json that should always be present
+                    // if at least one doodle is present.
+                    foreach ($always_init as $always_cls => $always_json) {
+                        if (!in_array($always_cls, $class_by_laterality[$laterality])) {
+                            $this->patient_doodles[$patient_id][$canvas_mnemonic][$laterality][] = $always_json;
+                        }
+                    }
+                }
+            }
+
         }
+
         return $this->patient_doodles[$patient_id][$canvas_mnemonic][((int)$side === Eye::LEFT) ? 'L' : 'R'];
     }
 
@@ -276,6 +319,35 @@ EOSQL;
         return $results;
     }
 
+    /**
+     * Returns an array of initial json indexed by eyedraw doodle class mnemonics
+     *
+     * @param $canvas_mnemonic
+     * @return array
+     */
+    private function getAlwaysInitDoodlesForCanvas($canvas_mnemonic)
+    {
+        $query_string = <<<EOSQL
+SELECT ed.eyedraw_class_mnemonic, 
+ed.init_doodle_json 
+FROM eyedraw_doodle ed 
+LEFT JOIN eyedraw_canvas_doodle ecd
+ON ecd.eyedraw_class_mnemonic = ed.eyedraw_class_mnemonic
+WHERE ecd.canvas_mnemonic = :ecdcm
+AND ecd.eyedraw_always_init_canvas_flag = true
+EOSQL;
+        $results = array();
+        foreach ($this->app->db
+            ->createCommand($query_string)
+            ->bindParam(':ecdcm', $canvas_mnemonic)->queryAll() as $result
+        ) {
+            if ($result['init_doodle_json']) {
+                $results[$result['eyedraw_class_mnemonic']] = $result['init_doodle_json'];
+            }
+        }
+
+        return $results;
+    }
 
     /**
      * Load all the element attributes up with the appropriate set of doodles.

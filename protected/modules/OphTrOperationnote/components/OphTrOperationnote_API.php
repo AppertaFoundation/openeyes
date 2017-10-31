@@ -6,16 +6,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class OphTrOperationnote_API extends BaseAPI
 {
@@ -27,7 +26,7 @@ class OphTrOperationnote_API extends BaseAPI
      * @param boolean $use_context - defaults to true
      * @return string
      */
-    public function getLetterProcedures($patient , $use_context = true)
+    public function getLetterProcedures($patient , $use_context = false)
     {
         $return = '';
 
@@ -48,7 +47,7 @@ class OphTrOperationnote_API extends BaseAPI
      * @param boolean $use_context - defaults to true
      * @return integer
      */
-    public function getLetterProceduresBookingEventID($patient, $use_context = true)
+    public function getLetterProceduresBookingEventID($patient, $use_context = false)
     {
         if($plist =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
             return $plist->booking_event_id;
@@ -60,7 +59,7 @@ class OphTrOperationnote_API extends BaseAPI
      * @param boolean $use_context - defaults to true
      * @return integer
      */
-    public function getLastEye( $patient , $use_context = true )
+    public function getLastEye( $patient , $use_context = false )
     {
         if($plist =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
             return $plist->eye_id;
@@ -73,7 +72,7 @@ class OphTrOperationnote_API extends BaseAPI
      * @param boolean $use_context - defaults to true
      * @return string
      */
-    public function getLetterProceduresSNOMED($patient , $use_context = true)
+    public function getLetterProceduresSNOMED($patient , $use_context = false)
     {
         $return = '';
         if($plist =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_ProcedureList', $patient, $use_context)){
@@ -87,7 +86,7 @@ class OphTrOperationnote_API extends BaseAPI
         return $return;
     }
 
-    public function getOpnoteWithCataractElementInCurrentEpisode($patient, $use_context = true)
+    public function getOpnoteWithCataractElementInCurrentEpisode($patient, $use_context = false)
     {
         if($episode = $this->getLatestEvent($patient, $use_context)){
             $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
@@ -102,9 +101,10 @@ class OphTrOperationnote_API extends BaseAPI
         }
     }
 
-    public function getPatientUniqueCode($patient)
+    public function getPatientUniqueCode($patient, $use_context = false)
     {
-        $patient_latest_event = $patient->getLatestOperationNoteEventUniqueCode();
+        $patient_latest_event = $this->getLatestEventUniqueCode($patient, $use_context);
+        OELog::log($patient_latest_event);
         $event_unique_code = '';
         if (!empty($patient_latest_event)) {
             $salt = isset(Yii::app()->params['portal']['credentials']['client_id']) ? Yii::app()->params['portal']['credentials']['client_id'] : '';
@@ -130,7 +130,7 @@ class OphTrOperationnote_API extends BaseAPI
      * @return false|string
      */
 
-    public function getLastOperationDate(\Patient $patient , $use_context = true)
+    public function getLastOperationDate(\Patient $patient , $use_context = false)
     {
         $event = $this->getLatestEvent($patient , $use_context);
         if (isset($event->event_date)) {
@@ -142,10 +142,12 @@ class OphTrOperationnote_API extends BaseAPI
     /**
      * Get the last operation date
      * @param Patient $patient
-     * @param boolean $use_context - defaults to true
+     * @param boolean $use_context - defaults to false
      * @return false|string
+     *
+     * @deprecated - since v2.0. Not replaced event date is inadequate for comparisons
      */
-    public function getLastOperationDateUnformatted(\Patient $patient , $use_context = true)
+    public function getLastOperationDateUnformatted(\Patient $patient , $use_context = false)
     {
         $event = $this->getLatestEvent($patient, $use_context);
         if (isset($event->event_date)) {
@@ -158,11 +160,11 @@ class OphTrOperationnote_API extends BaseAPI
      * Get the last operation's surgeon name
      *
      * @param Patient $patient
-     * @param boolean $use_context - defaults to true
+     * @param boolean $use_context - defaults to false
      * @return string
      */
 
-    public function getLastOperationSurgeonName(\Patient $patient, $use_context = true)
+    public function getLastOperationSurgeonName(\Patient $patient, $use_context = false)
     {
         $surgeon_name = '';
         if($surgeon_element =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_Surgeon', $patient, $use_context)){
@@ -175,10 +177,10 @@ class OphTrOperationnote_API extends BaseAPI
      * Get the last operation's location
      *
      * @param Patient $patient
-     * @param boolean $use_context - defaults to true
+     * @param boolean $use_context - defaults to false
      * @return string
      */
-    public function getLastOperationLocation(\Patient $patient, $use_context = true )
+    public function getLastOperationLocation(\Patient $patient, $use_context = false )
     {
         $site = '';
         if($site_element =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_SiteTheatre', $patient, $use_context)){
@@ -191,9 +193,9 @@ class OphTrOperationnote_API extends BaseAPI
     /*
      * Cataract Element from the latest operation note
      * @param Patient $patient
-     * @param boolean $use_context - defaults to true
+     * @param boolean $use_context - defaults to false
      */
-    public function getLatestCataractElementForEpisode(\Patient $patient, $use_context = true)
+    public function getLatestCataractElementForEpisode(\Patient $patient, $use_context = false)
     {
         if($cataract_element =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_Cataract', $patient, $use_context)){
             return $cataract_element;
@@ -204,12 +206,13 @@ class OphTrOperationnote_API extends BaseAPI
     /**
      * Get the last operation Incision Meridian
      * @param Patient $patient
+     * @param bool $use_context
      * @return string
      */
-    public function getLastOperationIncisionMeridian(\Patient $patient)
+    public function getLastOperationIncisionMeridian(\Patient $patient, $use_context = true)
     {
         $meridian = '';
-        $cataract_element = $this->getLatestCataractElementForEpisode($patient);
+        $cataract_element = $this->getLatestCataractElementForEpisode($patient, $use_context);
         if ($cataract_element) {
             $meridian = $cataract_element->meridian . ' degrees';
         }
@@ -220,12 +223,13 @@ class OphTrOperationnote_API extends BaseAPI
     /**
      * Get the last operation Predicted Refraction
      * @param Patient $patient
+     * @param bool $use_context
      * @return string
      */
-    public function getLastOperationPredictedRefraction(\Patient $patient)
+    public function getLastOperationPredictedRefraction(\Patient $patient, $use_context = true)
     {
         $predicted_refraction = '';
-        if ($cataract_element = $this->getLatestCataractElementForEpisode($patient)) {
+        if ($cataract_element = $this->getLatestCataractElementForEpisode($patient, $use_context)) {
             $predicted_refraction = $cataract_element->predicted_refraction ?: '';
         }
 
@@ -235,12 +239,13 @@ class OphTrOperationnote_API extends BaseAPI
     /**
      * Get the last operation Details
      * @param Patient $patient
+     * @param bool $use_context
      * @return string
      */
-    public function getLastOperationDetails(\Patient $patient)
+    public function getLastOperationDetails(\Patient $patient, $use_context = true)
     {
         $details = '';
-        if ($cataract_element = $this->getLatestCataractElementForEpisode($patient)) {
+        if ($cataract_element = $this->getLatestCataractElementForEpisode($patient, $use_context)) {
             $details = $cataract_element->report2 ?: '';
         }
 
@@ -254,7 +259,7 @@ class OphTrOperationnote_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLastOperationPeriOperativeComplications(\Patient $patient, $use_context = true)
+    public function getLastOperationPeriOperativeComplications(\Patient $patient, $use_context = false)
     {
         $result = '';
         if ($latestCataract = $this->getElementFromLatestEvent(
@@ -293,7 +298,7 @@ class OphTrOperationnote_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLastOperationComments(\Patient $patient, $use_context = true)
+    public function getLastOperationComments(\Patient $patient, $use_context = false)
     {
         $comments = '';
         if ($comments = $this->getElementFromLatestEvent(
@@ -313,7 +318,7 @@ class OphTrOperationnote_API extends BaseAPI
      * @return string
      */
 
-    public function getLastOperationPostOpInstructions(\Patient $patient, $use_context = true )
+    public function getLastOperationPostOpInstructions(\Patient $patient, $use_context = false )
     {
         if($latest =  $this->getElementFromLatestEvent('Element_OphTrOperationnote_Comments', $patient, $use_context)){
             return $latest->postop_instructions;
@@ -344,5 +349,16 @@ class OphTrOperationnote_API extends BaseAPI
             );
         }
         return $operations;
+    }
+
+    public function getLatestEventUniqueCode(Patient $patient, $use_context = false)
+    {
+        $event = $this->getLatestEvent($patient, $use_context);
+        if (!empty($event)) {
+            OELog::log($event->id);
+            return UniqueCodes::codeForEventId($event->id);
+        } else {
+            return '';
+        }
     }
 }

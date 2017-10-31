@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 /**
@@ -78,6 +77,8 @@ class BaseEventTypeController extends BaseModuleController
         'delete' => self::ACTION_TYPE_DELETE,
         'requestDeletion' => self::ACTION_TYPE_REQUESTDELETE,
         'eventImage' => self::ACTION_TYPE_VIEW,
+        'printCopy' => self::ACTION_TYPE_PRINT,
+        'savePDFprint' => self::ACTION_TYPE_PRINT,
     );
 
     /**
@@ -115,6 +116,7 @@ class BaseEventTypeController extends BaseModuleController
     public $pdf_print_suffix = null;
     public $pdf_print_documents = 1;
     public $pdf_print_html = null;
+    public $attachment_print_title = null;
 
     /**
      * Set to false if the event list should remain on the sidebar when creating/editing the event
@@ -122,6 +124,13 @@ class BaseEventTypeController extends BaseModuleController
      * @var bool
      */
     protected $show_element_sidebar = true;
+
+    /**
+     * Set to true if the index search bar should appear in the header when creating/editing the event
+     *
+     * @var bool
+     */
+    protected $show_index_search = false;
 
     public function behaviors()
     {
@@ -197,6 +206,20 @@ class BaseEventTypeController extends BaseModuleController
     }
 
     /**
+     * @param $action
+     * @return int
+     */
+    public function getElementWidgetMode($action)
+    {
+        $action_type = $this->getActionType($action);
+        return in_array($action_type,
+            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT, static::ACTION_TYPE_FORM))
+            ? BaseEventElementWidget::$EVENT_EDIT_MODE
+            : ($action_type === static::ACTION_TYPE_PRINT
+                ? BaseEventElementWidget::$EVENT_PRINT_MODE
+                : BaseEventElementWidget::$EVENT_VIEW_MODE);
+    }
+    /**
      * Sets the patient object on the controller.
      *
      * @param $patient_id
@@ -265,6 +288,18 @@ class BaseEventTypeController extends BaseModuleController
         return $elements;
     }
 
+    /**
+     * @return ElementType[]
+     */
+    protected function getAllElementTypes()
+    {
+        return $this->event_type->getAllElementTypes();
+    }
+
+    /**
+     * @param array $remove_list
+     * @return string
+     */
     public function getElementTree($remove_list = array())
     {
         $element_types_tree = array();
@@ -465,6 +500,19 @@ class BaseEventTypeController extends BaseModuleController
         }
     }
 
+    protected function getPrevious($element_type, $exclude_event_id = null)
+    {
+        if ($api = $this->getApp()->moduleAPI->get($this->getModule()->name)) {
+            return array_filter(
+                $api->getElements($element_type->class_name, $this->patient, false),
+                function($el) use ($exclude_event_id) {
+                    return $el->event_id != $exclude_event_id;
+                });
+        } else {
+            return array();
+        }
+    }
+
     /**
      * Are there one or more previous instances of an element?
      *
@@ -475,11 +523,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function hasPrevious($element_type, $exclude_event_id = null)
     {
-        if ($episode = $this->episode) {
-            return count($episode->getElementsOfType($element_type, $exclude_event_id)) > 0;
-        } else {
-            return false;
-        }
+        return count($this->getPrevious($element_type, $exclude_event_id)) > 0;
     }
 
     /**
@@ -1057,13 +1101,10 @@ class BaseEventTypeController extends BaseModuleController
         // Clear script requirements as all the base css and js will already be on the page
         Yii::app()->assetManager->reset();
 
-        $this->episode = $this->getEpisode();
-
-        $elements = $this->episode->getElementsOfType($element_type);
-
-        $this->renderPartial('_previous', array(
-            'elements' => $elements,
-        ), false, true // Process output to deal with script requirements
+        $this->renderPartial(
+            '_previous', array(
+                'elements' => $this->getPrevious($element_type),
+            ), false, true // Process output to deal with script requirements
         );
     }
 
@@ -1155,7 +1196,6 @@ class BaseEventTypeController extends BaseModuleController
         $elements = array();
         $el_cls_name = $element_type->class_name;
         $f_key = CHtml::modelName($el_cls_name);
-
         if (isset($data[$f_key])) {
             $keys = array_keys($data[$f_key]);
 
@@ -1200,9 +1240,8 @@ class BaseEventTypeController extends BaseModuleController
     {
         $errors = array();
         $elements = array();
-
         // only process data for elements that are part of the element type set for the controller event type
-        foreach ($this->event_type->getAllElementTypes() as $element_type) {
+        foreach ($this->getAllElementTypes() as $element_type) {
             $from_data = $this->getElementsForElementType($element_type, $data);
             if (count($from_data) > 0) {
                 $elements = array_merge($elements, $from_data);
@@ -1424,6 +1463,20 @@ class BaseEventTypeController extends BaseModuleController
 
     }
 
+    public function renderIndexSearch()
+    {
+        if ($this->show_index_search && in_array($this->getActionType($this->action->id),
+                array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT), true)) {
+          $event_type_id = ($this->event->attributes["event_type_id"]);
+          $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
+          $event_name = $event_type->name;
+          if ($event_name == "Examination") {
+            $this->widget('application.widgets.IndexSearch',array('event_type' => $event_name));
+          }
+        }
+
+    }
+
 
     /**
      * Extend the parent method to support inheritance of modules (and rendering the element views from the parent module).
@@ -1503,7 +1556,7 @@ class BaseEventTypeController extends BaseModuleController
                         'patient' => $this->patient,
                         'element' => $view_data['element'],
                         'data' => $view_data['data'],
-                        'mode' => in_array($action, array('create', 'update')) ? BaseEventElementWidget::$EVENT_EDIT_MODE : BaseEventElementWidget::$EVENT_VIEW_MODE
+                        'mode' => $this->getElementWidgetMode($action)
                     ));
             $widget->form = $view_data['form'];
             $this->renderPartial('//elements/widget_element', array('widget' => $widget),$return, $processOutput);
@@ -1658,7 +1711,7 @@ class BaseEventTypeController extends BaseModuleController
         $this->printInit($id);
         $this->printHTML($id, $this->open_elements);
     }
-    
+
     public function actionPrintCopy($id)
     {
         $event = \Event::model()->findByPk($id);
@@ -1667,21 +1720,80 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         $class = $event->eventType->class_name;
-        $path = "\\OEModule\\".$class."\\controllers\DefaultController";
-        $controller = new $path( 'default', \Yii::app()->getModule($class) );
+        $patient = $event->episode->patient;
 
-        $controller->printInit($id);
-        $controller->printHTMLCopy($id, $this->open_elements);
+        $controller = Yii::app()->createController('/'.$class."/Default/printInit/$id");
+
+        $this->patient = $patient;
+        $controller[0]->patient = $patient;
+        $controller[0]->printInit($id);
+        $controller[0]->setAction( $this->getAction() );
+
+        $controller[0]->printHTMLCopy($id, $controller[0]->open_elements);
     }
 
-    public function actionPDFPrint($id)
+    /*
+    public function actionPrintCopy($id)
     {
+
+        $this->printInit($id);
+      //  var_dump($this->event->eventType->class_name);
+
+        $event = \Event::model()->findByPk($id);
         if (!$event = Event::model()->findByPk($id)) {
             throw new Exception("Event not found: $id");
         }
 
+        $class = $event->eventType->class_name;
+
+        //$path = "\\OEModule\\".$class."\\controllers\DefaultController";
+        //class_alias($path, $class.'_default');
+        //$class_init = $class.'_default';
+        //$controller = new BaseEventTypeController( 'defaulttest', \Yii::app()->getModule($class) );
+
+       // $controller = \Yii::app()->getModule($class);
+
+
+       // $this->modulePathAlias = 'application.modules.'.$this->event->eventType->class_name;
+       // $this->assetPathAlias = $this->modulePathAlias.'.assets';
+
+        $module = Yii::app()->findModule( $this->event->eventType->class_name );
+        $controller = $controller = Yii::app()->createController("Default/printInit/$id", \Yii::app()->getModule( $this->event->eventType->class_name ));
+
+        $result = $controller[0]->actionPrint($id);
+        var_dump($result);
+        exit;
+        $this->printHTMLCopy($id, $this->open_elements, Yii::getPathOfAlias('application.modules.'.$this->event->eventType->class_name.'.views.default') . DIRECTORY_SEPARATOR . 'print.php' );
+        //exit;
+    }
+
+    public function getViewPath( )
+    {
+        $current_module = $this->getModule()->name;
+        $event_module = $this->event->eventType->class_name;
+
+        if($current_module !== $event_module){
+            return Yii::getPathOfAlias('application.modules.'.$event_module) .DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.$this->getId();
+        } else{
+            parent::getViewPath();
+        }
+    }
+*/
+    public function actionSavePDFprint( )
+    {
+        
+        if (!isset($_POST['id'])) {
+            throw new CHttpException(400, 'No ID provided');
+        }
+
+        if (!$event = Event::model()->findByPk($_POST['id'])) {
+            throw new Exception("Method not found: ".$_POST['id']);
+        }
+
         $auto_print = Yii::app()->request->getParam('auto_print', true);
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
+
+        $this->attachment_print_title = Yii::app()->request->getParam('attachment_print_title', true);
 
         $event->lock();
 
@@ -1695,7 +1807,7 @@ class BaseEventTypeController extends BaseModuleController
         if (!$event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
             if (!$this->pdf_print_html) {
                 ob_start();
-                $this->actionPrint($id);
+                $this->actionPrint( $event->id );
                 $this->pdf_print_html = ob_get_contents();
                 ob_end_clean();
             }
@@ -1707,7 +1819,7 @@ class BaseEventTypeController extends BaseModuleController
             $wk->setDocref($event->docref);
             $wk->setPatient($event->episode->patient);
             $wk->setBarcode($event->barcodeHTML);
-            
+
             foreach (array('left', 'middle', 'right') as $section) {
                 if (isset(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name])) {
                     $setMethod = 'set'.ucfirst($section);
@@ -1727,7 +1839,84 @@ class BaseEventTypeController extends BaseModuleController
                     $wk->setCustomTag($pdf_footer_tag->tag_name, $api->{$pdf_footer_tag->method}($event->id));
                 }
             }
-            
+
+            $wk->generatePDF($event->imageDirectory, 'event', $this->pdf_print_suffix, $this->pdf_print_html, (boolean) @$_GET['html'], $inject_autoprint_js);
+        }
+
+        $pf = ProtectedFile::createFromFile( $event->imageDirectory.'/event_'.$this->pdf_print_suffix.'.pdf');
+        $pf->save();
+        if ($pf->save()) {
+            $result = array(
+                'success'   => 1,
+                'id'   => $pf->id
+            );
+
+        } else {
+            $result = array(
+                'success'   => 0,
+                'message'   => "couldn't save file object".print_r($pf->getErrors(), true)
+            );
+        }
+
+        $this->renderJSON($result);
+    }
+
+    public function actionPDFPrint($id)
+    {
+        if (!$event = Event::model()->findByPk($id)) {
+            throw new Exception("Event not found: $id");
+        }
+
+        $auto_print = Yii::app()->request->getParam('auto_print', true);
+        $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
+
+        $this->attachment_print_title = Yii::app()->request->getParam('attachment_print_title', true);
+
+        $event->lock();
+
+        // Ensure exclusivity of PDF to avoid race conditions
+        if(method_exists($this,"getSession")) {
+            $this->pdf_print_suffix .= Yii::app()->user->id . '_' . rand();
+        }else{
+            $this->pdf_print_suffix .= getmypid().rand();
+        }
+
+        if (!$event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
+            if (!$this->pdf_print_html) {
+                ob_start();
+                $this->actionPrint($id );
+                $this->pdf_print_html = ob_get_contents();
+                ob_end_clean();
+            }
+
+            $wk = new WKHtmlToPDF();
+
+            $wk->setCanvasImagePath($event->imageDirectory);
+            $wk->setDocuments($this->pdf_print_documents);
+            $wk->setDocref($event->docref);
+            $wk->setPatient($event->episode->patient);
+            $wk->setBarcode($event->barcodeHTML);
+
+            foreach (array('left', 'middle', 'right') as $section) {
+                if (isset(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name])) {
+                    $setMethod = 'set'.ucfirst($section);
+                    $wk->$setMethod(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name]);
+                }
+            }
+
+            foreach (array('top', 'bottom', 'left', 'right') as $margin) {
+                if (isset(Yii::app()->params['wkhtmltopdf_'.$margin.'_margin_'.$this->event_type->class_name])) {
+                    $setMethod = 'setMargin'.ucfirst($margin);
+                    $wk->$setMethod(Yii::app()->params['wkhtmltopdf_'.$margin.'_margin_'.$this->event_type->class_name]);
+                }
+            }
+
+            foreach (PDFFooterTag::model()->findAll('event_type_id = ?', array($this->event_type->id)) as $pdf_footer_tag) {
+                if ($api = Yii::app()->moduleAPI->get($this->event_type->class_name)) {
+                    $wk->setCustomTag($pdf_footer_tag->tag_name, $api->{$pdf_footer_tag->method}($event->id));
+                }
+            }
+
             $wk->generatePDF($event->imageDirectory, 'event', $this->pdf_print_suffix, $this->pdf_print_html, (boolean) @$_GET['html'], $inject_autoprint_js);
         }
 
@@ -1777,11 +1966,11 @@ class BaseEventTypeController extends BaseModuleController
         $this->layout = '//layouts/print';
         $this->render($template, array(
             'elements' => $elements,
-            'eventId' => $id,
+            'eventId' => $id
         ));
     }
     
-    protected function printHTMLCopy($id, $elements, $template = 'print')
+    public function printHTMLCopy($id, $elements, $template = 'print')
     {
         $this->layout = '//layouts/printCopy';
         $result = $this->render($template, array(
@@ -2074,7 +2263,7 @@ class BaseEventTypeController extends BaseModuleController
         ob_end_clean();
 
         $event->unlock();
-        
+
         $this->printLog($id, false);
 
         // Verify we have all the images by detecting eyedraw canvas elements in the page.

@@ -6,16 +6,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class OphTrIntravitrealinjection_API extends BaseAPI
 {
@@ -155,7 +154,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      *
      * @return Element_OphTrIntravitrealinjection_Treatment
      */
-    protected function getPreviousTreatmentForSide($patient, $side, $use_context = true)
+    protected function getPreviousTreatmentForSide($patient, $side, $use_context = false)
     {
         $checker = ($side === 'left') ? 'hasLeft' : 'hasRight';
         $treatment = $this->getElementFromLatestEvent('Element_OphTrIntravitrealinjection_Treatment', $patient, $use_context);
@@ -172,7 +171,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentDrugForSide($patient, $side, $use_content = true)
+    public function getLetterTreatmentDrugForSide($patient, $side, $use_content = false)
     {
         if ($injection = $this->getPreviousTreatmentForSide($patient, $side, $use_content)) {
             return $injection->{$side . '_drug'}->name;
@@ -186,7 +185,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentDrugLeft($patient, $use_content = true)
+    public function getLetterTreatmentDrugLeft($patient, $use_content = false)
     {
         return $this->getLetterTreatmentDrugForSide($patient, 'left', $use_content);
     }
@@ -198,7 +197,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentDrugRight($patient, $use_content = true)
+    public function getLetterTreatmentDrugRight($patient, $use_content = false)
     {
         return $this->getLetterTreatmentDrugForSide($patient, 'right', $use_content);
     }
@@ -210,7 +209,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param $use_content
      * @return string
      */
-    public function getLetterTreatmentDrugBoth($patient, $use_content = true)
+    public function getLetterTreatmentDrugBoth($patient, $use_content = false)
     {
 
         $res = '';
@@ -237,7 +236,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentNumberForSide($patient, $side, $use_content = true)
+    public function getLetterTreatmentNumberForSide($patient, $side, $use_content = false)
     {
         if ($injection = $this->getPreviousTreatmentForSide($patient, $side, $use_content)) {
             return $injection->{$side . '_number'};
@@ -251,7 +250,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentNumberLeft($patient, $use_content = true)
+    public function getLetterTreatmentNumberLeft($patient, $use_content = false)
     {
         return $this->getLetterTreatmentNumberForSide($patient, 'left', $use_content);
     }
@@ -263,7 +262,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param $use_content
      * @return mixed
      */
-    public function getLetterTreatmentNumberRight($patient, $use_content = true)
+    public function getLetterTreatmentNumberRight($patient, $use_content = false)
     {
         return $this->getLetterTreatmentNumberForSide($patient, 'right', $use_content);
     }
@@ -274,7 +273,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param Patient $patient
      * @param $use_content
      */
-    public function getLetterTreatmentNumberBoth($patient, $use_content = true)
+    public function getLetterTreatmentNumberBoth($patient, $use_content = false)
     {
         $right = $this->getLetterTreatmentNumberRight($patient, $use_content);
         $left = $this->getLetterTreatmentNumberLeft($patient, $use_content);
@@ -298,7 +297,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      * @param $use_context
      * @return string
      */
-    public function getLetterPostInjectionDrops($patient, $use_context = true)
+    public function getLetterPostInjectionDrops($patient, $use_context = false)
     {
         if ($el = $this->getElementFromLatestEvent(
             'Element_OphTrIntravitrealinjection_PostInjectionExamination',

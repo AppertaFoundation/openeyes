@@ -5,16 +5,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
@@ -86,8 +85,8 @@
 				<table class="grid">
 					<thead>
 					<tr>
-						<th>Service:</th>
-						<th>Firm:</th>
+						<th>Subspeciality:</th>
+						<th><?php echo ucfirst(Yii::app()->params['service_firm_label']); ?>:</th>
 						<th>Next letter due:</th>
 						<th>Site:</th>
 						<th>Hospital no:</th>
@@ -102,19 +101,19 @@
                                     'type' => 'POST',
                                     'data' => array('subspecialty_id' => 'js:this.value', 'YII_CSRF_TOKEN' => Yii::app()->request->csrfToken),
                                     'url' => Yii::app()->createUrl('/OphTrOperationbooking/waitingList/filterFirms'),
-                                    'success' => "js:function(data) {
-											if ($('#subspecialty-id').val() != '') {
-												$('#firm-id').attr('disabled', false);
-												$('#firm-id').html(data);
-											} else {
-												$('#firm-id').attr('disabled', true);
-												$('#firm-id').html(data);
-											}
-										}",
+                                    'success' => "js:function(data) { $('#firm-id').html(data); }",
                                 )))?>
 						</td>
 						<td>
-							<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], $this->getFilteredFirms(@$_POST['subspecialty-id']), array('empty' => 'All firms', 'disabled' => !@$_POST['firm-id']))?>
+							<?php
+                                $filtered_firms = $this->getFilteredFirms(@$_POST['subspecialty-id']);
+                                $selected = (count($filtered_firms) == 1 ? array_keys($filtered_firms)[0] : @$_POST['firm-id']);
+                                $options = array(
+                                        'disabled' => !@$_POST['firm-id'],
+                                        'empty' => "All ".Yii::app()->params['service_firm_label']."s"
+                                    );
+
+                                echo CHtml::dropDownList('firm-id', $selected , $filtered_firms, $options) ?>
 						</td>
 						<td>
 							<?php echo CHtml::dropDownList('status', @$_POST['status'], Element_OphTrOperationbooking_Operation::getLetterOptions())?>

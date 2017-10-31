@@ -6,16 +6,15 @@
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 // this extract's execution time is more than the default 500sec
 // for 5yrs time period it can last more than 30min
@@ -494,7 +493,6 @@ EOL;
         $query .= $this->populateTmpRcoNodEpisodeDrug();
         $query .= $this->populateTmpRcoNodEpisodeIOP();
         $query .= $this->populateTmpRcoNodEpisodeBiometry();
-        $query .= $this->populateTmpRcoNodSurgeon();
         $query .= $this->populateTmpRcoNodEpisodeDiabeticDiagnosis();
         $query .= $this->populateTmpRcoNodPostOpComplication();
         $query .= $this->populateTmpRcoNodEpisodeOperationCoPathology();
@@ -505,6 +503,7 @@ EOL;
         $query .= $this->populateTmpRcoNodEpisodeOperationComplication();
         $query .= $this->populateTmpRcoNodEpisodeDiagnosis();
         $query .= $this->populateTmpRcoNodEpisodeVisualAcuity();
+        $query .= $this->populateTmpRcoNodSurgeon();  // Depends on earlier tables being populated.
 
         return $query;
     }
@@ -591,14 +590,22 @@ EOL;
                 FirstName,
                 CurrentGradeId
             )
-            SELECT 
-                id AS Surgeonid, 
-                IFNULL(registration_code, '') AS GMCnumber, 
-                IFNULL(title, '') AS Title,
-                IFNULL(first_name, '') AS FirstName,
-                IFNULL(user.doctor_grade_id, '')  AS CurrentGradeId
-            FROM user
-            WHERE is_surgeon = 1 AND active = 1;
+            SELECT id AS Surgeonid
+                 , IFNULL(registration_code, '') AS GMCnumber
+                 , IFNULL(title, '') AS Title
+                 , IFNULL(first_name, '') AS FirstName
+                 , IFNULL(user.doctor_grade_id, '') AS CurrentGradeId
+            FROM   user
+            WHERE  id IN ( SELECT SurgeonId FROM tmp_rco_nod_EpisodeDiagnoses_{$this->extractIdentifier} WHERE SurgeonId IS NOT NULL
+                           UNION
+                           SELECT SurgeonId FROM tmp_rco_nod_EpisodeOperationAnaesthesia_{$this->extractIdentifier} WHERE SurgeonId IS NOT NULL
+                           UNION
+                           SELECT SurgeonId FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier}
+                           UNION
+                           SELECT AssistantId FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} WHERE AssistantId IS NOT NULL
+                           UNION
+                           SELECT ConsultantId FROM tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} WHERE ConsultantId IS NOT NULL
+                         );
 EOL;
         #Yii::app()->db->createCommand($query)->execute();
         return $query;
@@ -836,18 +843,36 @@ EOL;
                         IsCVIPartial )
                 SELECT
                 poi.patient_id AS PatientId,
-                IFNULL(
-                        STR_TO_DATE(REPLACE(poi.cvi_status_date, '-00', 'BAD-DATE'), '%Y-%m-%d'),
-                        DATE(poi.created_date)
-                ) AS `Date`,
-                (CASE WHEN DAYNAME(poi.cvi_status_date) IS NULL THEN 1 ELSE 0 END) AS IsDateApprox,
+                STR_TO_DATE(REPLACE(poi.cvi_status_date, '-00', '-01'), '%Y-%m-%d') AS `Date`,
+                (CASE WHEN poi.cvi_status_date LIKE '%-00%' THEN 1 ELSE 0 END) AS IsDateApprox,
                 (CASE WHEN poi.cvi_status_id=4 THEN 1 ELSE 0 END) AS IsCVIBlind,
                 (CASE WHEN poi.cvi_status_id=3 THEN 1 ELSE 0 END) AS IsCVIPartial
                 FROM patient_oph_info poi
-
                 /* Restriction: patients in control events */
                 WHERE poi.patient_id IN ( SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier}  c );
 EOL;
+
+        if (Yii::app()->hasModule('OphCoCvi')) {
+            $query = <<<EOL
+                INSERT INTO tmp_rco_nod_PatientCVIStatus_{$this->extractIdentifier} (
+                        PatientId,
+                        date,
+                        IsDateApprox,
+                        IsCVIBlind,
+                        IsCVIPartial )
+                SELECT ep.patient_id AS PatientId
+                     , DATE(e.event_date) AS `Date`
+                     , 0 AS IsDateApprox
+                     , CASE WHEN cci.is_considered_blind = 1 THEN 1 ELSE 0 END AS IsCVIBlind
+                     , CASE WHEN cci.is_considered_blind = 1 THEN 0 ELSE 1 END AS IsCVIPartial
+                FROM   episode ep
+                JOIN   event e ON e.episode_id = ep.id AND e.deleted = 0
+                JOIN   et_ophcocvi_eventinfo cei ON cei.event_id = e.id AND cei.is_draft = 0
+                JOIN   et_ophcocvi_clinicinfo cci ON cci.event_id = e.id
+                WHERE  ep.patient_id IN ( SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c );
+EOL;
+        }
+
         return $query;
     }       
     
@@ -1034,41 +1059,36 @@ INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} (
   IsAbleToLieFlat,
   IsInabilityToCooperate
 )
-SELECT 
+SELECT DISTINCT
 c.oe_event_id,
 CASE WHEN pl.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye, /* Belt+Brace with WHERE clause or NULL */
-(SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
-(SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
+CASE WHEN (SELECT COUNT(*) FROM patient_risk_assignment pr WHERE pr.patient_id = c.patient_id AND pr.risk_id = 1) > 0 THEN 0 ELSE 1 END AS IsAbleToLieFlat,
+CASE WHEN (SELECT COUNT(*) FROM patient_risk_assignment pr WHERE pr.patient_id = c.patient_id AND pr.risk_id = 4) > 0 THEN 1 ELSE 0 END AS IsInabilityToCooperate
 /* Restriction: Start with control events */
 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
 /* Join: Associated procedures, Implicit Restriction: Operations with procedures */
 JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = c.oe_event_id
-/* Outer Join: patient risks, Implicit Cartesian: all risk_ids  */
-LEFT OUTER JOIN patient_risk_assignment pr ON pr.patient_id = c.patient_id # specify LEFT OUTER JOIN syntax in full
 /* Restrict: LEFT/BOTH eyes */
 WHERE pl.eye_id IN (1, 3)
 /* Group by required as may have multiple procedures on eye */
 GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate;
-                
-                
+
 INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} (
   oe_event_id,
   Eye,
   IsAbleToLieFlat,
   IsInabilityToCooperate
 )
-SELECT 
+SELECT DISTINCT
 c.oe_event_id,
 CASE WHEN pl.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye, /* Belt+Brace with WHERE clause or NULL */ 
-(SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 1 THEN 1 ELSE 0 END) AS IsAbleToLieFlat,
-(SELECT CASE WHEN pr.risk_id IS NULL THEN 0 WHEN pr.risk_id = 4 THEN 1 ELSE 0 END) AS IsInabilityToCooperate
+CASE WHEN (SELECT COUNT(*) FROM patient_risk_assignment pr WHERE pr.patient_id = c.patient_id AND pr.risk_id = 1) > 0 THEN 0 ELSE 1 END AS IsAbleToLieFlat,
+CASE WHEN (SELECT COUNT(*) FROM patient_risk_assignment pr WHERE pr.patient_id = c.patient_id AND pr.risk_id = 4) > 0 THEN 1 ELSE 0 END AS IsInabilityToCooperate
 /* Restriction: Start with control events */
 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
 /* Join: Associated procedures, Implicit Restriction: Operations with procedures */
 JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = c.oe_event_id
-/* Outer Join: patient risks, Implicit Cartesian: all risk_ids  */
-LEFT OUTER JOIN patient_risk_assignment pr ON pr.patient_id = c.patient_id # specify LEFT OUTER JOIN syntax in full
-/* Restrict: LEFT/BOTH eyes */
+/* Restrict: RIGHT/BOTH eyes */
 WHERE pl.eye_id IN (2, 3)
 /* Group by required as may have multiple procedures on eye */
 GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate;
@@ -1372,12 +1392,13 @@ EOL;
                         (SELECT CASE WHEN m.start_date IS NULL THEN '' ELSE m.start_date END) AS StartDate,
                         (SELECT CASE WHEN m.end_date IS NULL THEN '' ELSE m.end_date END) AS StopDate,
                         (SELECT CASE WHEN opi.prescription_id IS NOT NULL THEN 1 ELSE 0 END ) AS IsAddedByPrescription,
-                        (SELECT CASE WHEN opi.continue_by_gp IS NULL THEN 0 ELSE opi.continue_by_gp END) AS IsContinueIndefinitely,
+                        (SELECT CASE WHEN lower(dd.name) = 'until review' THEN 1 ELSE 0 END) AS IsContinueIndefinitely,
                         (SELECT CASE WHEN DAYNAME(m.start_date) IS NULL THEN 1 ELSE 0 END) AS IsStartDateApprox
 
                     FROM  tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c 
                     JOIN medication m ON c.patient_id = m.patient_id
-                    LEFT JOIN ophdrprescription_item opi ON m.prescription_item_id = opi.id;
+                    LEFT JOIN ophdrprescription_item opi ON m.prescription_item_id = opi.id
+                    LEFT JOIN drug_duration dd ON dd.id = opi.duration_id;
                 
                 
   
@@ -1416,7 +1437,7 @@ EOL;
                     AS StopDate,
 
                     1 AS IsAddedByPrescription,
-                    continue_by_gp AS IsContinueIndefinitely,
+                    CASE WHEN lower(drug_duration.name) = 'until review' THEN 1 ELSE 0 END AS IsContinueIndefinitely,
                     0 AS IsStartDateApprox
 
                     FROM ophdrprescription_item AS opi

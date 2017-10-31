@@ -4,15 +4,15 @@
  *
  * (C) OpenEyes Foundation, 2017
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2016, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\OphCiExamination\models;
@@ -27,11 +27,9 @@ namespace OEModule\OphCiExamination\models;
  * @property string $left_eyedraw
  * @property string $left_ed_report
  * @property string $left_comments
- * @property boolean $left_stfb
  * @property string $right_eyedraw
  * @property string $right_ed_report
  * @property string $right_comments
- * @property boolean $right_stfb
  *
  * The followings are the available model relations:
  * @property \EventType $eventType
@@ -68,22 +66,22 @@ class MedicalLids extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('eye_id, left_eyedraw, left_ed_report, left_comments, left_stfb, ' .
-                'right_eyedraw, right_ed_report, right_comments, right_stfb', 'safe'),
+            array('eye_id, left_eyedraw, left_ed_report, left_comments, ' .
+                'right_eyedraw, right_ed_report, right_comments', 'safe'),
             array('left_eyedraw', 'requiredIfSide', 'side' => 'left'),
             array('right_eyedraw', 'requiredIfSide', 'side' => 'right'),
             array('left_ed_report', 'requiredIfSide', 'side' => 'left'),
             array('right_ed_report', 'requiredIfSide', 'side' => 'right'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, eye_id, left_eyedraw, left_ed_report, left_comments, left_stfb, ' .
-                'right_eyedraw, right_ed_report, right_comments, right_stfb', 'safe', 'on' => 'search'),
+            array('id, event_id, eye_id, left_eyedraw, left_ed_report, left_comments, ' .
+                'right_eyedraw, right_ed_report, right_comments', 'safe', 'on' => 'search'),
         );
     }
 
     public function sidedFields()
     {
-        return array('ed_report', 'comments', 'eyedraw', 'stfb');
+        return array('ed_report', 'comments', 'eyedraw',);
     }
 
     public function canCopy()
@@ -118,11 +116,9 @@ class MedicalLids extends \SplitEventTypeElement
             'left_eyedraw' => 'Eyedraw',
             'left_ed_report' => 'Report',
             'left_comments' => 'Comments',
-            'left_stfb' => 'STFB',
             'right_eyedraw' => 'Eyedraw',
             'right_comments' => 'Comments',
             'right_ed_report' => 'Report',
-            'right_stfb' => 'STFB'
         );
     }
 
@@ -137,18 +133,14 @@ class MedicalLids extends \SplitEventTypeElement
         // should not be searched.
 
         $criteria = new \CDbCriteria();
-
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
-
         $criteria->compare('left_eyedraw', $this->left_eyedraw);
         $criteria->compare('left_ed_report', $this->left_ed_report);
         $criteria->compare('left_comments', $this->left_comments);
-        $criteria->compare('left_stfb', $this->left_stfb);
         $criteria->compare('right_eyedraw', $this->right_eyedraw);
         $criteria->compare('right_ed_report', $this->right_ed_report);
         $criteria->compare('right_comments', $this->right_comments);
-        $criteria->compare('right_stfb', $this->right_stfb);
 
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,

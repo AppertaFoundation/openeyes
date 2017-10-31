@@ -2,19 +2,18 @@
 /**
  * OpenEyes.
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * 
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 class PcrRisk
 {
@@ -47,6 +46,25 @@ class PcrRisk
     protected $patient;
 
     /**
+     * @param $age
+     * @return int
+     */
+    protected function getAgeGroup($age)
+    {
+        
+        if ($age < 60) {
+            return 1;
+        } elseif ($age < 70) {
+            return 2;
+        } elseif ($age < 80) {
+            return 3;
+        } elseif ($age < 90) {
+            return 4;
+        }
+        return 5;
+    }
+
+    /**
      * @param $patientId
      * @param $side
      * @param $element
@@ -57,7 +75,7 @@ class PcrRisk
     {
         $pcr = array();
         $this->patient = Patient::model()->findByPk((int) $patientId);
-        $patientAge = $this->patient->getAge();
+
         $eye = Eye::model()->find('LOWER(name) = ?', array(strtolower($side)));
         $pcrRiskValues = new PcrRiskValues();
         if ($eye) {
@@ -67,18 +85,7 @@ class PcrRisk
             }
         }
 
-        $ageGroup = 0;
-        if ($patientAge < 60) {
-            $ageGroup = 1;
-        } elseif (($patientAge >= 60) && ($patientAge < 70)) {
-            $ageGroup = 2;
-        } elseif (($patientAge >= 70) && ($patientAge < 80)) {
-            $ageGroup = 3;
-        } elseif (($patientAge >= 80) && ($patientAge < 90)) {
-            $ageGroup = 4;
-        } elseif (($patientAge >= 90)) {
-            $ageGroup = 5;
-        }
+        $ageGroup = $this->getAgeGroup($this->patient->getAge());
 
         $gender = ucfirst($this->patient->getGenderString());
 
@@ -326,12 +333,13 @@ class PcrRisk
      */
     protected function getAlphaBlocker(Patient $patient)
     {
-        $historyRisk = new \OEModule\OphCiExamination\models\Element_OphCiExamination_HistoryRisk();
-        $alphaBlocker = $historyRisk->mostRecentCheckedAlpha($patient->id);
-
-        if(!$alphaBlocker || $alphaBlocker->alphablocker === '0') {
+        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+        if($exam_api){
+            $alphaBlocker = $exam_api->getRiskByName($patient, 'Alpha blockers');
+        }
+        if(!$alphaBlocker || $alphaBlocker['status'] === null) {
             return 'NK';
-        } elseif ($alphaBlocker->alphablocker === '1') {
+        } elseif ($alphaBlocker['status'] === true) {
             return 'Y';
         } else {
             return 'N';

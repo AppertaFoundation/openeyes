@@ -92,3 +92,4 @@ bin/validate-json
 bin/yiic
 
 build/logs
+protected/widgets/views/IndexSearch_Examination.php
