@@ -1249,7 +1249,8 @@ class DefaultController extends \BaseEventTypeController
     {
         if (isset($this->mandatoryElements)) {
             foreach ($this->mandatoryElements as $mandatoryElement) {
-                if (get_class($element) === $mandatoryElement->class_name || get_class($element) === $mandatoryElement->parent_element_type->class_name) {
+                $class_name = get_class($element);
+                if ($class_name === $mandatoryElement->class_name || ($mandatoryElement->parent_element_type && ($class_name === $mandatoryElement->parent_element_type->class_name))) {
                     return true;
                 }
             }
