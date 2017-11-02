@@ -151,7 +151,7 @@ $config = array(
         // number of days in the future to retrieve worklists for the automatic dashboard render
         //'worklist_dashboard_future_days' => int,
         // days of the week to be ignored when determining which worklists to render - Mon, Tue etc
-        //'worklist_dashboard_skip_days' => array()
+        'worklist_dashboard_skip_days' => array('NONE'),
         //how far in advance worklists should be generated for matching
         //'worklist_default_generation_limit' => interval string (e.g. 3 months)
         // override edit checks on definitions so they can always be edited (use at own peril)
