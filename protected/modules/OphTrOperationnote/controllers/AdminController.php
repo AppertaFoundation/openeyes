@@ -209,6 +209,33 @@ class AdminController extends ModuleAdminController
      */
     public function actionPostOpInstructions()
     {
+
+        if(Yii::app()->request->isAjaxRequest){
+
+            if( isset($_POST['action']) && $_POST['action'] == 'save'){
+                $instruction = new OphTrOperationnote_PostopInstruction;
+                $instruction->content = $_POST['content'];
+                $instruction->site_id = $_POST['site_id'];
+                $instruction->subspecialty_id = $_POST['subspecialty_id'];
+
+                echo json_encode(array(
+                    'success' => (int)$instruction->save()
+                ));
+            } elseif (isset($_POST['action']) && $_POST['action'] == 'delete'){
+                $instruction = OphTrOperationnote_PostopInstruction::model()->findByPk($_POST['id']);
+
+                echo json_encode(array(
+                    'success' => (int)$instruction->delete()
+                ));
+            }
+            Yii::app()->end();
+        }
+
+        $this->render('/admin/postOpInstructions/list', array(
+            'instructions' => OphTrOperationnote_PostopInstruction::model()->findAll(array('order' => 'display_order'))
+        ));
+
+        die;
         $this->genericAdmin('Per Op Instructions', 'OphTrOperationnote_PostopInstruction', array(
             'extra_fields' => array(
                 array(
