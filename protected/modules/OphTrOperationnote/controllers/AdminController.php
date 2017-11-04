@@ -232,23 +232,7 @@ class AdminController extends ModuleAdminController
         }
 
         $this->render('/admin/postOpInstructions/list', array(
-            'instructions' => OphTrOperationnote_PostopInstruction::model()->findAll(array('order' => 'display_order'))
-        ));
-
-        die;
-        $this->genericAdmin('Per Op Instructions', 'OphTrOperationnote_PostopInstruction', array(
-            'extra_fields' => array(
-                array(
-                    'field' => 'site_id',
-                    'type' => 'lookup',
-                    'model' => 'Site',
-                ),
-                array(
-                    'field' => 'subspecialty_id',
-                    'type' => 'lookup',
-                    'model' => 'Subspecialty',
-                ),
-            ),
+            'instructions' => OphTrOperationnote_PostopInstruction::model()->findAll()
         ));
     }
 

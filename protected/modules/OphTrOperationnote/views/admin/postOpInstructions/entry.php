@@ -11,11 +11,9 @@
     </td>
     <td class="actions">
         <div class="wrapper">
-            <?php if($instruction->isNewRecord):?>
-                <a href="javascript:void(0)" class="save">save</a>
-            <?php else: ?>
-                <a href="javascript:void(0)" class="save">save</a> | <a href="javascript:void(0)" class="delete">delete</a>
-            <?php endif; ?>
+            <a href="javascript:void(0)" class="save">save</a> | <a href="javascript:void(0)"
+                                                                    class="delete <?php echo $instruction->isNewRecord ? 'hidden' : ''?>" >delete</a>
+
         </div>
     </td>
 </tr>

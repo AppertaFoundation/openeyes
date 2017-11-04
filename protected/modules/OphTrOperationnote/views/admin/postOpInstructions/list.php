@@ -89,6 +89,7 @@
                         $tr.find('td.actions .loader').remove();
                         if(data.success === 1){
                             $actions.append( $('<span>',{'style':'color:green;font-weight:bold'}).text('saved'));
+                            $actions.find('a.delete').removeClass('hidden');
                             $actions.find('span').fadeOut(1000, function(){
                              $actions.find('.wrapper').show();
                                 $actions.find('span').remove();
