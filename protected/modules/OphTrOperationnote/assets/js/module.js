@@ -513,12 +513,10 @@ function sidePortController(_drawing) {
                 break;
 
             case 'beforeReset':
-                console.log("beforeReset");
                 iol_position = $('#Element_OphTrOperationnote_Cataract_iol_position_id').val();
                 break;
 
             case 'reset':
-                console.log("reset");
                 this.addSidePorts();
                 break;
             case 'resetEdit':
