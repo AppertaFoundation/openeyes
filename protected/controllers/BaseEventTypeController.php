@@ -1524,7 +1524,7 @@ class BaseEventTypeController extends BaseModuleController
         if (strcasecmp($action, 'PDFPrint') == 0 || strcasecmp($action, 'saveCanvasImages') == 0) {
             $action = 'print';
         }
-        if($action == 'printCopy'){
+        if($action == 'savePDFprint'){
             $action = 'print';
         }
        
@@ -1712,113 +1712,44 @@ class BaseEventTypeController extends BaseModuleController
         $this->printHTML($id, $this->open_elements);
     }
 
-    public function actionPrintCopy($id)
+    public function setPDFprintData( $id )
     {
-        $event = \Event::model()->findByPk($id);
-        if (!$event = Event::model()->findByPk($id)) {
-            throw new Exception("Event not found: $id");
-        }
-
-        $class = $event->eventType->class_name;
-        $patient = $event->episode->patient;
-
-        $controller = Yii::app()->createController('/'.$class."/Default/printInit/$id");
-
-        $this->patient = $patient;
-        $controller[0]->patient = $patient;
-        $controller[0]->printInit($id);
-        $controller[0]->setAction( $this->getAction() );
-
-        $controller[0]->printHTMLCopy($id, $controller[0]->open_elements);
-    }
-
-    /*
-    public function actionPrintCopy($id)
-    {
-
-        $this->printInit($id);
-      //  var_dump($this->event->eventType->class_name);
-
-        $event = \Event::model()->findByPk($id);
-        if (!$event = Event::model()->findByPk($id)) {
-            throw new Exception("Event not found: $id");
-        }
-
-        $class = $event->eventType->class_name;
-
-        //$path = "\\OEModule\\".$class."\\controllers\DefaultController";
-        //class_alias($path, $class.'_default');
-        //$class_init = $class.'_default';
-        //$controller = new BaseEventTypeController( 'defaulttest', \Yii::app()->getModule($class) );
-
-       // $controller = \Yii::app()->getModule($class);
-
-
-       // $this->modulePathAlias = 'application.modules.'.$this->event->eventType->class_name;
-       // $this->assetPathAlias = $this->modulePathAlias.'.assets';
-
-        $module = Yii::app()->findModule( $this->event->eventType->class_name );
-        $controller = $controller = Yii::app()->createController("Default/printInit/$id", \Yii::app()->getModule( $this->event->eventType->class_name ));
-
-        $result = $controller[0]->actionPrint($id);
-        var_dump($result);
-        exit;
-        $this->printHTMLCopy($id, $this->open_elements, Yii::getPathOfAlias('application.modules.'.$this->event->eventType->class_name.'.views.default') . DIRECTORY_SEPARATOR . 'print.php' );
-        //exit;
-    }
-
-    public function getViewPath( )
-    {
-        $current_module = $this->getModule()->name;
-        $event_module = $this->event->eventType->class_name;
-
-        if($current_module !== $event_module){
-            return Yii::getPathOfAlias('application.modules.'.$event_module) .DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.$this->getId();
-        } else{
-            parent::getViewPath();
-        }
-    }
-*/
-    public function actionSavePDFprint( )
-    {
-        
-        if (!isset($_POST['id'])) {
+        if (!isset($_GET['id'])) {
             throw new CHttpException(400, 'No ID provided');
         }
 
-        if (!$event = Event::model()->findByPk($_POST['id'])) {
-            throw new Exception("Method not found: ".$_POST['id']);
+        if (!$this->event = Event::model()->findByPk($_GET['id'])) {
+            throw new Exception("Method not found: ".$_GET['id']);
         }
 
         $auto_print = Yii::app()->request->getParam('auto_print', true);
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
-        $this->attachment_print_title = Yii::app()->request->getParam('attachment_print_title', true);
+        $this->attachment_print_title = Yii::app()->request->getParam('attachment_print_title', null);
 
-        $event->lock();
+        $this->event->lock();
 
-        // Ensure exclusivity of PDF to avoid race conditions
         if(method_exists($this,"getSession")) {
             $this->pdf_print_suffix .= Yii::app()->user->id . '_' . rand();
-        }else{
+        } else {
             $this->pdf_print_suffix .= getmypid().rand();
         }
 
-        if (!$event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
+        if (!$this->event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
             if (!$this->pdf_print_html) {
                 ob_start();
-                $this->actionPrint( $event->id );
+                $this->actionPrint( $this->event->id );
                 $this->pdf_print_html = ob_get_contents();
                 ob_end_clean();
             }
 
             $wk = new WKHtmlToPDF();
 
-            $wk->setCanvasImagePath($event->imageDirectory);
+            $wk->setCanvasImagePath($this->event->imageDirectory);
             $wk->setDocuments($this->pdf_print_documents);
-            $wk->setDocref($event->docref);
-            $wk->setPatient($event->episode->patient);
-            $wk->setBarcode($event->barcodeHTML);
+            $wk->setDocref($this->event->docref);
+            $wk->setPatient($this->event->episode->patient);
+            $wk->setBarcode($this->event->barcodeHTML);
 
             foreach (array('left', 'middle', 'right') as $section) {
                 if (isset(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name])) {
@@ -1836,20 +1767,36 @@ class BaseEventTypeController extends BaseModuleController
 
             foreach (PDFFooterTag::model()->findAll('event_type_id = ?', array($this->event_type->id)) as $pdf_footer_tag) {
                 if ($api = Yii::app()->moduleAPI->get($this->event_type->class_name)) {
-                    $wk->setCustomTag($pdf_footer_tag->tag_name, $api->{$pdf_footer_tag->method}($event->id));
+                    $wk->setCustomTag($pdf_footer_tag->tag_name, $api->{$pdf_footer_tag->method}($this->event->id));
                 }
             }
 
-            $wk->generatePDF($event->imageDirectory, 'event', $this->pdf_print_suffix, $this->pdf_print_html, (boolean) @$_GET['html'], $inject_autoprint_js);
+            $wk->generatePDF($this->event->imageDirectory, 'event', $this->pdf_print_suffix, $this->pdf_print_html, (boolean) @$_GET['html'], $inject_autoprint_js);
         }
 
-        $pf = ProtectedFile::createFromFile( $event->imageDirectory.'/event_'.$this->pdf_print_suffix.'.pdf');
-        $pf->save();
+        $this->event->unlock();
+
+        return $this->pdf_print_suffix;
+    }
+
+    public function actionSavePDFprint( $id , $is_auto_print = true )
+    {
+        $pdf_route = $this->setPDFprintData( $_GET['id'] );
+        $pf = ProtectedFile::createFromFile( $this->event->imageDirectory.'/event_'.$pdf_route.'.pdf');
         if ($pf->save()) {
             $result = array(
                 'success'   => 1,
-                'id'   => $pf->id
+                'file_id'   => $pf->id,
             );
+
+
+            if( !isset( $_GET['ajax'])){
+                $result['name'] = $pf->name;
+                $result['mime'] = $pf->mimetype;
+                $result['path'] = $pf->getPath();
+
+                return $result;
+            }
 
         } else {
             $result = array(
@@ -1863,70 +1810,13 @@ class BaseEventTypeController extends BaseModuleController
 
     public function actionPDFPrint($id)
     {
-        if (!$event = Event::model()->findByPk($id)) {
-            throw new Exception("Event not found: $id");
-        }
 
-        $auto_print = Yii::app()->request->getParam('auto_print', true);
-        $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
-
-        $this->attachment_print_title = Yii::app()->request->getParam('attachment_print_title', true);
-
-        $event->lock();
-
-        // Ensure exclusivity of PDF to avoid race conditions
-        if(method_exists($this,"getSession")) {
-            $this->pdf_print_suffix .= Yii::app()->user->id . '_' . rand();
-        }else{
-            $this->pdf_print_suffix .= getmypid().rand();
-        }
-
-        if (!$event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
-            if (!$this->pdf_print_html) {
-                ob_start();
-                $this->actionPrint($id );
-                $this->pdf_print_html = ob_get_contents();
-                ob_end_clean();
-            }
-
-            $wk = new WKHtmlToPDF();
-
-            $wk->setCanvasImagePath($event->imageDirectory);
-            $wk->setDocuments($this->pdf_print_documents);
-            $wk->setDocref($event->docref);
-            $wk->setPatient($event->episode->patient);
-            $wk->setBarcode($event->barcodeHTML);
-
-            foreach (array('left', 'middle', 'right') as $section) {
-                if (isset(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name])) {
-                    $setMethod = 'set'.ucfirst($section);
-                    $wk->$setMethod(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name]);
-                }
-            }
-
-            foreach (array('top', 'bottom', 'left', 'right') as $margin) {
-                if (isset(Yii::app()->params['wkhtmltopdf_'.$margin.'_margin_'.$this->event_type->class_name])) {
-                    $setMethod = 'setMargin'.ucfirst($margin);
-                    $wk->$setMethod(Yii::app()->params['wkhtmltopdf_'.$margin.'_margin_'.$this->event_type->class_name]);
-                }
-            }
-
-            foreach (PDFFooterTag::model()->findAll('event_type_id = ?', array($this->event_type->id)) as $pdf_footer_tag) {
-                if ($api = Yii::app()->moduleAPI->get($this->event_type->class_name)) {
-                    $wk->setCustomTag($pdf_footer_tag->tag_name, $api->{$pdf_footer_tag->method}($event->id));
-                }
-            }
-
-            $wk->generatePDF($event->imageDirectory, 'event', $this->pdf_print_suffix, $this->pdf_print_html, (boolean) @$_GET['html'], $inject_autoprint_js);
-        }
-
-        $event->unlock();
-
+        $pdf_route = $this->setPDFprintData( $id );
         if (@$_GET['html']) {
             return Yii::app()->end();
         }
 
-        $pdf = $event->getPDF($this->pdf_print_suffix);
+        $pdf = $this->event->getPDF($pdf_route);
 
         header('Content-Type: application/pdf');
         header('Content-Length: '.filesize($pdf));
@@ -2269,6 +2159,7 @@ class BaseEventTypeController extends BaseModuleController
         // Verify we have all the images by detecting eyedraw canvas elements in the page.
         // If we don't, the "outofdate" response will trigger a page-refresh so we can re-send the canvas elements to the
         // server as PNGs.
+
         if (preg_match('/<canvas.*?class="ed-canvas-display"/is', $html)) {
             echo 'outofdate';
 

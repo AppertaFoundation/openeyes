@@ -15,6 +15,7 @@
 * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
+require_once './vendor/setasign/fpdi/pdf_parser.php';
 class DefaultController extends BaseEventTypeController
 {
     protected static $action_types = array(
@@ -486,12 +487,6 @@ class DefaultController extends BaseEventTypeController
             }
         }
     }
-    
-    public function actionPrintCopy($id) {
-        //$this->actionPrint($id);
-        $eventid = 3685413;
-        parent::actionPrintCopy( $eventid );
-    }
 
     public function renderAllProcedureElements($action, $form = null, $data = null)
     {
@@ -504,6 +499,13 @@ class DefaultController extends BaseEventTypeController
 
     public function actionPDFPrint($id)
     {
+        if (!$event = Event::model()->findByPk($id)) {
+            throw new Exception("Event not found: $id");
+        }
+
+        $auto_print = Yii::app()->request->getParam('auto_print', true);
+        $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
+
         $letter = ElementLetter::model()->find('event_id=?', array($id));
         $print_outputs = $letter->getOutputByType("Print");
 
@@ -515,7 +517,7 @@ class DefaultController extends BaseEventTypeController
             $this->pdf_print_suffix = 'all';
             $this->pdf_print_documents = count($print_outputs);
         }
-        
+
         if( $print_outputs ){
             foreach($print_outputs as $output){
                 $output->output_status = "COMPLETE";
@@ -523,8 +525,61 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
+        /*
+         * Attachments
+         */
 
-        return parent::actionPDFPrint($id);
+        $associated_content = EventAssociatedContent::model()
+            ->with('initAssociatedContent')
+            ->findAllByAttributes(
+                array('parent_event_id' => $id),
+                array('order' => 't.display_order asc')
+            );
+
+        if($associated_content){
+            $pdf_files = array();
+            $j = 1;
+
+            $pdf_files[$j] = parent::actionSavePDFprint( $id , true);
+            foreach($associated_content as $key => $ac){
+                if($ac->associated_protected_file_id){
+                    $j++;
+                    $file = ProtectedFile::model()->findByPk($ac->associated_protected_file_id);
+                    $pdf_files[$j]['path'] = $file->getPath();
+                    $pdf_files[$j]['name'] = $file->name;
+                    $pdf_files[$j]['mime'] = $file->mimetype;
+                }
+            }
+
+            $fpdf = new FPDI();
+
+            foreach($pdf_files as $pdf_file){
+                $pagecount = $fpdf->setSourceFile( $pdf_file['path'] );
+
+                for($i = 1; $i <= $pagecount; $i++)
+                {
+                    $fpdf->AddPage('P');
+                    $tplidx = $fpdf->ImportPage($i);
+                    $fpdf->useTemplate($tplidx);
+                }
+            }
+
+            $fpdf->Output("F",   $event->imageDirectory.'/event_'.$this->pdf_print_suffix.".pdf");
+
+            $event->unlock();
+
+            $pdf = $event->getPDF( $this->pdf_print_suffix );
+
+
+            header('Content-Type: application/pdf');
+            header('Content-Length: '.filesize($pdf));
+
+            readfile($pdf);
+            //@unlink($pdf);
+
+        } else {
+            return parent::actionPDFPrint($id);
+        }
     }
     
     /**

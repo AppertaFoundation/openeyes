@@ -800,7 +800,7 @@ $(document).ready(function() {
 
                         $last_row.attr('data-id', $data_id + 1);
 
-                        savePDFprint( response.module ,$select.val())
+                        savePDFprint( response.module ,$select.val(), $content, $data_id)
                         $select.val('');
                     }
                 }
@@ -808,15 +808,20 @@ $(document).ready(function() {
         }
     });
 
-    function savePDFprint( module ,event_id )
+    function savePDFprint( module , event_id , $content, $data_id)
     {
         $.ajax({
-            'type': 'POST',
-            'url': baseUrl + '/'+module+'/Default/savePDFprint',
-            'data' :{YII_CSRF_TOKEN: YII_CSRF_TOKEN, id: event_id},
+            'type': 'GET',
+            'url': baseUrl + '/'+module+'/Default/savePDFprint/' + event_id + '?ajax=1',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-Requested-With', 'sas');
+            },
             'success': function(response) {
                 if(response.success == 1){
-
+                    $hidden = '<input type="hidden" name="file_id[' + $data_id+ ']" value="'+response.file_id+'" />';
+                    $content.prepend($hidden);
+                } else {
+                    console.log(response.message);
                 }
             }
         });
