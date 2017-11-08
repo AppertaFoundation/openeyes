@@ -481,15 +481,11 @@ function sidePortController(_drawing) {
     _drawing.registerForNotifications(this, 'notificationHandler', ['ready', 'beforeReset', 'reset', 'resetEdit', 'parameterChanged', 'doodleAdded', 'doodleDeleted', 'doodlesLoaded']);
 
     this.addSidePorts = function() {
+        var has_sideport = _drawing.hasDoodleOfClass('SidePort');
+        var doodles = _drawing.allDoodlesOfClass('SidePort');
 
-        if(_drawing.hasDoodleOfClass('SidePort')){
-            var doodles = _drawing.allDoodlesOfClass('SidePort');
-            sidePort1 = doodles[0];
-            sidePort2 = doodles[1];
-        } else {
-            sidePort1 = _drawing.addDoodle('SidePort', {rotation: 0});
-            sidePort2 = _drawing.addDoodle('SidePort', {rotation: Math.PI});
-        }
+        sidePort1 = has_sideport ? doodles[0] : _drawing.addDoodle('SidePort', {rotation: 0});
+        sidePort2 = has_sideport ? doodles[1] : _drawing.addDoodle('SidePort', {rotation: Math.PI});
 
         _drawing.deselectDoodles();
     };
