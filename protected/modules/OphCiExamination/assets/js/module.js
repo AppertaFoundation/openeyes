@@ -1725,12 +1725,13 @@ function OphCiExamination_DRGrading_dirtyCheck(_drawing) {
         });
 
         // retinopathy photocogaulation
-        if ($('input[name="'+OE_MODEL_PREFIX + dr_grade_et_class+'\['+side+'_nscretinopathy_photocoagulation\]"]:checked').val() != ret_photo) {
+        // at the beginning neither Yes nor No value is selected so the value of this input field is undefined. However ret_photo is 0
+        if ( ($('input[name="'+OE_MODEL_PREFIX + dr_grade_et_class+'\['+side+'_nscretinopathy_photocoagulation\]"]:checked').val() || 0) != ret_photo) {
             dirty = true;
         }
 
         // maculopathy photocoagulation
-        if ($('input[name="'+OE_MODEL_PREFIX + dr_grade_et_class+'\['+side+'_nscmaculopathy_photocoagulation\]"]:checked').val() != mac_photo) {
+        if (($('input[name="'+OE_MODEL_PREFIX + dr_grade_et_class+'\['+side+'_nscmaculopathy_photocoagulation\]"]:checked').val() || 0) != mac_photo) {
             dirty = true;
         }
 
