@@ -9589,7 +9589,7 @@ tbody.collapse.in {
 
 /* line 849, ../sass/openeyes/components/_bootstrap-tour.scss */
 .popover[class*="tour-"] {
-  z-index: 1102;
+  z-index: 9999;
 }
 
 /* line 852, ../sass/openeyes/components/_bootstrap-tour.scss */
