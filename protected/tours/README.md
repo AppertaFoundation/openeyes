@@ -14,6 +14,8 @@ The definition of tours has been abstracted away into two files:
 * `protected/tours/common.php` - this file defines all the tours that are a core of OpenEyes.
 * `protected/tours/local.php` - This file must be created for a specific installation and is provided to allow individual sites to define additional information to their users. The `local.sample.php` file should be used to start this file.
 
+Tours use jQuery selectors to attach steps to elements on the page. More info on how to use selectors can be found at [https://api.jquery.com/category/selectors/](https://api.jquery.com/category/selectors/)
+
 Implementation Details
 ----------------------
 
@@ -26,7 +28,7 @@ The tours have been implemented extending work done previously. The original imp
    user through some pre-defined steps and explains them.
  * Lastly, the widget allows the user to select a document to download,
    for example, a PDF of old paperwork.
-   
+
 However the efforts to get this functionality ready for production has solely focused on the tours functionality.
 
 Key Components
@@ -36,4 +38,3 @@ Key Components
 * `widgets/js/NewFeatureHelp.js` Custom JS wrapper around the bootstrap-tour component to manage multiple tours, and tracking of user interaction with them.
 * `controllers/FeatureTourController.php` Simple endpoint controller to receive notifications from the frontend regarding user interaction.
 * `models/UserFeatureTourState` Lightweight active record model for tracking user state on the different tours.
-
