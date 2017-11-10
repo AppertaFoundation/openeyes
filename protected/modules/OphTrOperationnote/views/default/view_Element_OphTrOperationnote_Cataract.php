@@ -70,18 +70,9 @@
 						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('iol_type_id'))?>:</div>
 					</div>
 					<div class="large-8 column">
-						<div class="data-value"><?php
-							if(isset(Yii::app()->modules["OphInBiometry"])){
-								if($element->iol_type_id){
-									$iol_type = OphInBiometry_LensType_Lens::model()->findByPk($element->iol_type_id);
-									echo $iol_type->name;
-								}else{
-									echo 'None';
-								}
-							}else{
-								echo $element->iol_type ? $element->iol_type->name : 'None';
-							}
-							?></div>
+						<div class="data-value">
+                            <?php echo $element->iol_type ? $element->iol_type->display_name : 'None'; ?>
+                        </div>
 					</div>
 				</div>
 				<div class="row data-row">

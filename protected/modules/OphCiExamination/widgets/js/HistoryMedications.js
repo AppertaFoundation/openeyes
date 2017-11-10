@@ -250,7 +250,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
    */
   HistoryMedicationsController.prototype.processRisks = function(item)
   {
-      if (!item.hasOwnProperty('tags')) {
+      if (!item.hasOwnProperty('tags') || !item.tags.length) {
           return;
       }
       var self = this;

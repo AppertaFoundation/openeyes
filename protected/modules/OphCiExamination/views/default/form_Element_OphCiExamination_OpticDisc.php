@@ -61,5 +61,6 @@
 		</div>
 	</div>
 </div>
+<?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/OpticDisc.js", CClientScript::POS_HEAD); ?>
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/AutoReport.js", CClientScript::POS_HEAD); ?>
 

@@ -29,6 +29,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.fieldPrefix = this.options.fieldPrefix;
         this.$row = this.options.inputField.closest('tr');
         this.code = this.options.code;
+        this.renderCommonlyUsedDiagnoses = this.options.renderCommonlyUsedDiagnoses;
         this.commonlyUsedDiagnosesUrl = this.options.commonlyUsedDiagnosesUrl;
         this.singleTemplate = this.options.singleTemplate;
         this.renderTemplate = this.options.renderTemplate;
@@ -41,6 +42,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     DiagnosesSearchController._defaultOptions = {
         fieldPrefix: 'fieldPrefixDefault',
         code: 'systemic',
+        renderCommonlyUsedDiagnoses: true,
         commonlyUsedDiagnosesUrl: '/disorder/getcommonlyuseddiagnoses/type/',
         renderTemplate: true,
         singleTemplate :
@@ -73,17 +75,20 @@ OpenEyes.UI = OpenEyes.UI || {};
             $parent.html(html);
             controller.$inputField = controller.$row.find('.diagnoses-search-inputfield');
 
-            $.getJSON(url, function(data){
+            if( controller.renderCommonlyUsedDiagnoses === true ){
+                $.getJSON(url, function(data){
 
-                var $select = $parent.find('.commonly-used-diagnosis');
+                    var $select = $parent.find('.commonly-used-diagnosis');
 
-                $select.append( $('<option>',{'text': 'Select a commonly used diagnosis'}));
-                $.each(data, function(i, item){
-                    $select.append( $('<option>',{'value': item.id, 'text': item.label, 'data-item': JSON.stringify(item)}));
+                    $select.append( $('<option>',{'text': 'Select a commonly used diagnosis'}));
+                    $.each(data, function(i, item){
+                        $select.append( $('<option>',{'value': item.id, 'text': item.label, 'data-item': JSON.stringify(item)}));
+                        $select.show();
+                    });
+
+                    controller.$inputField.before($select);
                 });
-
-                controller.$inputField.before($select);
-            });
+            }
         }
 
         savedDiagnoses = controller.$inputField.data('saved-diagnoses');
@@ -142,7 +147,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         } else {
             this.$row.find('input[name^="glaucoma_diagnoses"]').remove();
         }
-        
+
         // trigger event change for any controls looking for them
         $(":input[name^='diabetic_diagnoses']").trigger('change');
         $(":input[name^='glaucoma_diagnoses']").trigger('change');
@@ -190,9 +195,16 @@ OpenEyes.UI = OpenEyes.UI || {};
         var $parent = controller.$inputField.parent();
 
         controller.$row.on('click', '.diagnosis-rename', function(){
-            controller.$row.find('.commonly-used-diagnosis').show();
+            if(controller.renderCommonlyUsedDiagnoses){
+                controller.$row.find('.commonly-used-diagnosis').show();
+            }
             controller.$row.find('.diagnoses-search-inputfield').show();
             $(this).closest('.medication-display').hide();
+
+            controller.$row.find('.savedDiagnosisId').val('');
+            controller.$row.find('.savedDiagnosis').val('');
+            controller.$inputField.val('');
+            controller.$inputField.focus();
         });
 
         controller.$row.on('change', 'select.commonly-used-diagnosis', function(){

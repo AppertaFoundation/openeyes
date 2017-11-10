@@ -84,21 +84,15 @@ $(document).ready(function() {
 	});
 
 	$('#patient-summary-form-container').on('click', '.internalreferral-doclist a', function(e){
-		var link = $(this).attr('href');
 		e.preventDefault();
-
-		OpenEyes.UI.Window.createNewWindow(link, 'Internalreferralintegration',
-			function(popup) {
-				// get new link as we need new message_id to re-open the window
-				$.get( "/Internalreferral/default/getIntegratedServiceUrlForEvent/type/list/patient_id/" + OE_patient_id, function( data ) {
-					var json = JSON.parse(data);
-					$('.internalreferral-doclist a').attr('href', json.link);
-				});
-				popup.focus();
-			},
-			function(){
-			}
-		);
+        var $loader = $(this).next('.loader').show();
+        $loader.show();
+        // get new link as we need new message_id to re-open the window
+        $.get( "/patient/getInternalReferralDocumentListUrl/patient_id/" + OE_patient_id, function( data ) {
+            var json = JSON.parse(data);
+            OpenEyes.UI.Window.createNewWindow(json.link, 'Internalreferralintegration');
+            $loader.hide();
+        });
 	});
 });
 

@@ -5,7 +5,9 @@
             <span>Report sent</span>
         <?php else:?>
             <form>
-                <button type="submit" name="report" value="generate">Generate</button>
+                <button type="submit" name="report" value="generate"
+                        <?php echo !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ? 'disabled' : ''; ?>
+                >Generate</button>
             </form>
         <?php endif;?>
     </div>

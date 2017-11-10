@@ -231,12 +231,8 @@ class V1Controller extends \CController
 
             $this->sendSuccessResponse($status_code, $response);
         } catch (\Exception $e) {
-            if (YII_DEBUG) {
-                $errors = $resource->errors;
-                $errors[] = $e->getMessage();
-            } else {
-                $errors = array('Could not save resource');
-            }
+            $errors = $resource->errors;
+            $errors[] = $e->getMessage();
 
             $this->sendErrorResponse(500, $errors);
         }
@@ -267,11 +263,7 @@ class V1Controller extends \CController
                 $this->sendResponse(204);
             }
         } catch (\Exception $e) {
-            if (YII_DEBUG) {
-                $errors[] = $e->getMessage();
-            } else {
-                $errors = array('Could not delete resource');
-            }
+            $errors[] = $e->getMessage();
 
             $this->sendErrorResponse(500, $errors);
         }

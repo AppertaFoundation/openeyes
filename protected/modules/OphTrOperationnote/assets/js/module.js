@@ -481,8 +481,12 @@ function sidePortController(_drawing) {
     _drawing.registerForNotifications(this, 'notificationHandler', ['ready', 'beforeReset', 'reset', 'resetEdit', 'parameterChanged', 'doodleAdded', 'doodleDeleted', 'doodlesLoaded']);
 
     this.addSidePorts = function() {
-        sidePort1 = _drawing.addDoodle('SidePort', {rotation: 0});
-        sidePort2 = _drawing.addDoodle('SidePort', {rotation: Math.PI});
+        var has_sideport = _drawing.hasDoodleOfClass('SidePort');
+        var doodles = _drawing.allDoodlesOfClass('SidePort');
+
+        sidePort1 = has_sideport ? doodles[0] : _drawing.addDoodle('SidePort', {rotation: 0});
+        sidePort2 = has_sideport ? doodles[1] : _drawing.addDoodle('SidePort', {rotation: Math.PI});
+
         _drawing.deselectDoodles();
     };
 
@@ -534,32 +538,31 @@ function sidePortController(_drawing) {
 
             // Parameter change notification
             case 'parameterChanged':
-                // Only sync for new drawings
-                if (_drawing.isNew) {
-                    // Get rotation value of surgeon doodle
-                    var surgeonDrawing = ED.getInstance('ed_drawing_edit_Position');
-                    var surgeonRotation = surgeonDrawing.firstDoodleOfClass('Surgeon').rotation;
+                // Get rotation value of surgeon doodle
+                var surgeonDrawing = ED.getInstance('ed_drawing_edit_Position');
+                var surgeonRotation = surgeonDrawing.firstDoodleOfClass('Surgeon').rotation;
 
-                    // Get doodle that has moved in opnote drawing
-                    var masterDoodle = _messageArray['object'].doodle;
+                // Get doodle that has moved in opnote drawing
+                var masterDoodle = _messageArray['object'].doodle;
 
-                    // Stop syncing if PhakoIncision or a SidePort is changed
-                    if (masterDoodle.drawing.isActive && (masterDoodle.className == 'PhakoIncision' || masterDoodle.className == 'SidePort')) {
-                        if (typeof(phakoIncision) != 'undefined') {
-                            phakoIncision.willSync = false;
-                        }
-                    }
-
-                    // Keep sideports in sync with PhakoIncision while surgeon is still syncing with it
-                    if (masterDoodle.className == "PhakoIncision" && masterDoodle.willSync) {
-                        if (typeof(sidePort1) != 'undefined') {
-                            sidePort1.setSimpleParameter('rotation', (surgeonRotation + Math.PI / 2) % (2 * Math.PI));
-                        }
-                        if (typeof(sidePort2) != 'undefined') {
-                            sidePort2.setSimpleParameter('rotation', (surgeonRotation - Math.PI / 2) % (2 * Math.PI));
-                        }
+                // Stop syncing if PhakoIncision or a SidePort is changed
+                if (masterDoodle.drawing.isActive && (masterDoodle.className == 'PhakoIncision' || masterDoodle.className == 'SidePort')) {
+                    if (typeof(phakoIncision) != 'undefined') {
+                        phakoIncision.willSync = false;
                     }
                 }
+
+                // Keep sideports in sync with PhakoIncision while surgeon is still syncing with it
+                if (masterDoodle.className == "PhakoIncision" && masterDoodle.willSync) {
+
+                    if (typeof(sidePort1) != 'undefined') {
+                        sidePort1.setSimpleParameter('rotation', (surgeonRotation + Math.PI / 2) % (2 * Math.PI));
+                    }
+                    if (typeof(sidePort2) != 'undefined') {
+                        sidePort2.setSimpleParameter('rotation', (surgeonRotation - Math.PI / 2) % (2 * Math.PI));
+                    }
+                }
+
                 break;
             case 'doodleDeleted':
                 showHideIOLFields(_drawing, true);

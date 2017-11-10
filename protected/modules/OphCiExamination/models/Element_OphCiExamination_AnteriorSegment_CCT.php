@@ -64,8 +64,8 @@ class Element_OphCiExamination_AnteriorSegment_CCT extends \SplitEventTypeElemen
                 array('eye_id', 'safe'),
                 array('left_method_id ,left_value', 'requiredIfSide', 'side' => 'left'),
                 array('right_method_id, right_value', 'requiredIfSide', 'side' => 'right'),
-                array('left_value', 'numerical', 'integerOnly' => true, 'max' => 1000, 'min' => 0),
-                array('right_value', 'numerical', 'integerOnly' => true, 'max' => 1000, 'min' => 0),
+                array('left_value', 'numerical', 'integerOnly' => true, 'max' => 1500, 'min' => 0),
+                array('right_value', 'numerical', 'integerOnly' => true, 'max' => 1500, 'min' => 0),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
                 array('id, event_id, left_method_id, right_method_id, left_value, right_value', 'safe', 'on' => 'search'),

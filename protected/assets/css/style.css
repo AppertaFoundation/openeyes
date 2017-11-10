@@ -5789,7 +5789,7 @@ tfoot.pagination-container .pagination-view-all {
 /* line 330, ../sass/openeyes/components/panels/_patient.scss */
 .messages.patient.fixed {
   position: fixed;
-  z-index: 100;
+  z-index: 110;
   background-color: #d2dde8;
 }
 

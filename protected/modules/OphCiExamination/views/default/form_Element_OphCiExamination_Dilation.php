@@ -17,6 +17,8 @@
  */
 ?>
 <?php
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Dilation.js", CClientScript::POS_END);
+
 $key = 0;
 $dilation_drugs = \OEModule\OphCiExamination\models\OphCiExamination_Dilation_Drugs::model()->findAll();
 

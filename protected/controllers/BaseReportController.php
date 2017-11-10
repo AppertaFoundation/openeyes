@@ -26,11 +26,21 @@ class BaseReportController extends BaseController
 
     public function accessRules()
     {
-        return array(array('allow', 'roles' => array('admin')));
+        return array(array('allow', 'roles' => array('Report')));
+    }
+
+    public function checkSurgonOrRole()
+    {
+        if( Yii::app()->user->isSurgeon() || Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ){
+            return true;
+        }
+
+        return false;
     }
 
     protected function beforeAction($action)
     {
+
         parent::beforeAction($action);
 
         Yii::app()->assetManager->registerCssFile('css/reports.css', null, 10);
