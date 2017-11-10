@@ -812,9 +812,9 @@ $(document).ready(function() {
     {
         $.ajax({
             'type': 'GET',
-            'url': baseUrl + '/'+module+'/Default/savePDFprint/' + event_id + '?ajax=1',
+            'url': baseUrl + '/'+module+'/Default/savePDFprint/' + event_id + '?ajax=1&auto_print=0',
             beforeSend: function(xhr) {
-                xhr.setRequestHeader('X-Requested-With', 'sas');
+                xhr.setRequestHeader('X-Requested-With', 'pdfprint');
             },
             'success': function(response) {
                 if(response.success == 1){

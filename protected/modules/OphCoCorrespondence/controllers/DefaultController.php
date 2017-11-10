@@ -540,7 +540,7 @@ class DefaultController extends BaseEventTypeController
             $pdf_files = array();
             $j = 1;
 
-            $pdf_files[$j] = parent::actionSavePDFprint( $id , true);
+            $pdf_files[$j] = parent::actionSavePDFprint( $id );
             foreach($associated_content as $key => $ac){
                 if($ac->associated_protected_file_id){
                     $j++;
@@ -551,7 +551,7 @@ class DefaultController extends BaseEventTypeController
                 }
             }
 
-            $fpdf = new FPDI();
+            $fpdf = new PDF_JavaScript();
 
             foreach($pdf_files as $pdf_file){
                 $pagecount = $fpdf->setSourceFile( $pdf_file['path'] );
@@ -562,6 +562,11 @@ class DefaultController extends BaseEventTypeController
                     $tplidx = $fpdf->ImportPage($i);
                     $fpdf->useTemplate($tplidx);
                 }
+            }
+
+            if($inject_autoprint_js){
+                $script = 'print(true);';
+                $fpdf->IncludeJS($script);
             }
 
             $fpdf->Output("F",   $event->imageDirectory.'/event_'.$this->pdf_print_suffix.".pdf");
