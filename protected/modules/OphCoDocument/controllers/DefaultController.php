@@ -20,6 +20,13 @@ class DefaultController extends BaseEventTypeController
     protected $show_element_sidebar = false;
     const MAX_DOCUMENT_SIZE = 10485760;
 
+    protected $allowed_file_types = array(
+        'pdf'   => 'application/pdf',
+        'jpg'   => 'image/jpeg',
+        'jpeg'  => 'image/jpeg',
+        'png'   => 'image/png',
+    );
+
     /**
      * @var OphCoDocument_Sub_Types
      */
@@ -29,6 +36,26 @@ class DefaultController extends BaseEventTypeController
         'fileUpload' => self::ACTION_TYPE_FORM,
         'fileRemove' => self::ACTION_TYPE_FORM,
     );
+
+    /**
+     * Returns the allowed file size in MB or bytes
+     * @param bool $to_mb
+     * @return int
+     */
+    public function getMaxDocumentSize($to_mb = true)
+    {
+        $size = $to_mb ? (number_format(self::MAX_DOCUMENT_SIZE / 1048576, 0)) : self::MAX_DOCUMENT_SIZE;
+        return $size;
+    }
+
+    /**
+     * Returns the allowed file types (extensions)
+     * @return array
+     */
+    public function getAllowedFileTypes()
+    {
+        return array_keys($this->allowed_file_types);
+    }
 
     /**
      *
@@ -46,28 +73,24 @@ class DefaultController extends BaseEventTypeController
      * @param $index
      * @return null|string
      */
-    private function documentErrorHandler($files, $index )
+    private function documentErrorHandler($files, $index)
     {
         $message = NULL;
-      
-        if($files['Document']['size'][$index] > self::MAX_DOCUMENT_SIZE){
-            $message = 'The document\'s size is too large!' ;
-            return $message;
-        }
-        
+
         switch ($files['Document']['error'][$index]) {
-			case 'UPLOAD_ERR_OK':
+			case UPLOAD_ERR_OK:
 			break;
-			case 'UPLOAD_ERR_NO_FILE':
+			case UPLOAD_ERR_NO_FILE:
 				$message = 'No file was uploaded!';
                 return $message;
 			break;
-			case 'UPLOAD_ERR_INI_SIZE':
-                $message = 'The document\'s size is too large!' ;
+			case UPLOAD_ERR_INI_SIZE:
+                $size = (number_format($files['Document']['size'][$index] / 1048576, 2));
+                $message = "The file you tried to upload exceeds the maximum allowed file size, which is $size MB " . $files['Document']['size'][$index];
                 return $message;
             break;
-			case 'UPLOAD_ERR_FORM_SIZE':
-				$message = 'The document\'s size is too large!' ;
+			case UPLOAD_ERR_FORM_SIZE:
+				$message = 'The document\'s size is too large!';
                 return $message;
 			break;
 			default:
@@ -76,16 +99,13 @@ class DefaultController extends BaseEventTypeController
 		}
 
 		$finfo = new finfo(FILEINFO_MIME_TYPE);
-		
-        $ext = array(
-            'pdf'   => 'application/pdf',
-            'jpg'   => 'image/jpeg',
-            'jpeg'  => 'image/jpeg',
-            'png'   => 'image/png',
-        );
-        
-		if (false === $ext = array_search(	strtolower($finfo->file($files['Document']['tmp_name'][$index])), $ext, true )) {
-            $message = 'File extension is not allowed! ('.$finfo->file($files['Document']['tmp_name'][$index]).')';
+
+        $file_mime = strtolower($finfo->file($files['Document']['tmp_name'][$index]));
+        $extension = pathinfo($files['Document']['name'][$index], PATHINFO_EXTENSION);
+
+		if (false === array_search($file_mime, $this->allowed_file_types, true)) {
+            $message = 'Only the following file types can be uploaded: ' . ( implode(', ', $this->getAllowedFileTypes()) ) . '.';
+            $message .= "\n\nFor reference, the type of the file you tried to upload is: <i>$extension</i>, which is mime type: <i>$file_mime</i>";
 		}
         
         return $message;
@@ -94,6 +114,7 @@ class DefaultController extends BaseEventTypeController
     /**
      * @param $tmp_name
      * @param $original_name
+     * @return int|boolean
      */
     private function uploadFile($tmp_name, $original_name)
     {

@@ -33,7 +33,7 @@ function documentUpload(field){
 	$.ajax({
             url: '/OphCoDocument/Default/fileUpload',
             type: 'POST',
-            xhr: function() { 
+            xhr: function() {
                 var myXhr = $.ajaxSettings.xhr();
                 if(myXhr.upload){
                     myXhr.upload.addEventListener('progress', showIMGProgress, false);
