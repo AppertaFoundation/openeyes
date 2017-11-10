@@ -206,33 +206,40 @@ return array(
         'steps' => array(
             array(
                 'orphan' => true,
-                'title' => 'Examination event',
+                'title' => 'Introduction to the Examination event',
                 'content' => 'This is the Examination event. It allows you to record many clinical details about your patient, including; Past medical/Ophthalmic history, observations, diagnoses and clinical management.<br><br>This is the biggest event in OpenEyes, so let\'s take a look around to familiarise ourselves with it',
             ),
             array(
+                'element' => "input#search_bar_right",
+                'backdropElement' => "div#search_bars_and_options",
+                'title' => 'Find anything',
+                'placement' => 'bottom',
+                'content' => "If you ever have trouble finding what you're looking for, you can use these handy search boxes.<br><br>These will take you directly to the place on the page that you need. And for Eyedraws, it will even add the item or you!<br><br><b>Tip:</b> This is a real time-saver",
+                'backdropPadding' => 8,
+            ),
+            array(
                 'element' => '#event-content',
-                'title' => 'Elements',
                 'placement' => 'top',
-                'content' => 'The form elements within the event window allow you to record the various clinical detail required at this stage.'
+                'content' => "This is where you record data. Each section focuses on different areas of information.<br><br>The sections shown are determined by the 'Context' that you selected when creating the event.",
             ),
             array(
                 'element' => '#patient-sidebar-elements',
-                'title' => 'Adding Elements',
+                'title' => 'Adding and navigating sections',
                 'placement' => 'right',
-                'content' => 'You can use the element sidebar to select additional elements to add to the event, or to navigate to elements already in the form.'
+                'content' => "You can use this side-bar to add more sections to the page. The white sections are ones that are already open. Clicking on one of these will navigate you directly to that section of the page<br><br>As you can see, there are lots of different things you can record in an Examination. Don't forget you can always use the search boxes at the top if you have trouble finding what you need",
             ),
             array(
-                'element' => '#search_bars_and_options',
-                'title' => 'Find clinical concepts',
-                'placement' => 'bottom',
-                'content' => 'Or you can use these search fields to look directly for clinical concepts you wish to record on your patient.'
+                'element' => '.js-remove-element:eq(2)',
+                'title' => 'Removing sections',
+                'placement' => 'top',
+                'content' => "If a section is open then it <b>must</b> be filled in. If you don't want to fill it in then you can use this close button in the section header to remove it<br><br><b>Hint:</b> You can always add the section back again using the side-bar.",
+                'backdropElement' => '.element-header:eq(2)',
             ),
             array(
-                'element' => '#event.title',
+                'element' => 'h2.event-title',
                 'title' => 'Multi-step workflows',
                 'content' => 'Exam events may be completed in a number of \'steps\' by different people (with each person completing different sections).<br>When you are in a multi-step workflow, the current step name is shown here in brackets' ,
                 'placement' => 'bottom',
-                'showParent' => true,
             ),
         )
     )
