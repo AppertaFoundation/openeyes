@@ -14,7 +14,8 @@ The definition of tours has been abstracted away into two files:
 * `protected/tours/common.php` - this file defines all the tours that are a core of OpenEyes.
 * `protected/tours/local.php` - This file must be created for a specific installation and is provided to allow individual sites to define additional information to their users. The `local.sample.php` file should be used to start this file.
 
-Tours use jQuery selectors to attach steps to elements on the page. More info on how to use selectors can be found at [https://api.jquery.com/category/selectors/](https://api.jquery.com/category/selectors/)
+Tours use jQuery and CSS selectors to attach steps to elements on the page. More info on how to use selectors can be found at [https://api.jquery.com/category/selectors/](https://api.jquery.com/category/selectors/)
+[https://www.w3schools.com/cssref/css_selectors.asp](https://www.w3schools.com/cssref/css_selectors.asp)
 
 Implementation Details
 ----------------------
