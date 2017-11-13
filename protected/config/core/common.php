@@ -191,6 +191,11 @@ return array(
             'noCsrfValidationRoutes' => array(
                 'site/login', //disabled csrf check on login form
                 'api/',
+                //If the user uploads a too large file (php.ini) then CSRF validation error comes back
+                //instead of the proper error message
+                'OphCoDocument/Default/create',
+                'OphCoDocument/Default/update',
+                'OphCoDocument/Default/fileUpload',
             ),
         ),
         'service' => array(
