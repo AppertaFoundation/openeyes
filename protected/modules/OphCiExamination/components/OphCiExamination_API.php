@@ -213,7 +213,7 @@ class OphCiExamination_API extends \BaseAPI
             $patient,
             $use_context)
         ) {
-            return strtolower($history->description);
+            return $history->description;
         }
     }
 
