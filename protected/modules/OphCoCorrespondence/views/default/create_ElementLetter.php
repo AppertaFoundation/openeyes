@@ -425,6 +425,11 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                 'associated_content' => $associated_content,
                 'api'   => $api
             ));
+        } else {
+            $this->renderPartial('event_associated_content_select', array(
+                'associated_content' => $associated_content,
+                'api'   => $api
+            ));
         }
         ?>
     </div>

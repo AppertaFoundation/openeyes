@@ -1714,15 +1714,13 @@ class BaseEventTypeController extends BaseModuleController
 
     public function setPDFprintData( $id , $inject_autoprint_js )
     {
-        if (!isset($_GET['id'])) {
+        if (!isset($id)) {
             throw new CHttpException(400, 'No ID provided');
         }
 
-        if (!$this->event = Event::model()->findByPk($_GET['id'])) {
-            throw new Exception("Method not found: ".$_GET['id']);
+        if (!$this->event = Event::model()->findByPk($id)) {
+            throw new Exception("Method not found: ".$id);
         }
-
-
 
         $this->attachment_print_title = Yii::app()->request->getParam('attachment_print_title', null);
 
@@ -1780,6 +1778,7 @@ class BaseEventTypeController extends BaseModuleController
 
     public function actionSavePDFprint( $id  )
     {
+
         $auto_print = Yii::app()->request->getParam('auto_print', true);
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
@@ -1790,7 +1789,6 @@ class BaseEventTypeController extends BaseModuleController
                 'success'   => 1,
                 'file_id'   => $pf->id,
             );
-
 
             if( !isset( $_GET['ajax'])){
                 $result['name'] = $pf->name;
@@ -1816,7 +1814,6 @@ class BaseEventTypeController extends BaseModuleController
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
         $pdf_route = $this->setPDFprintData( $id , $inject_autoprint_js );
-
         if (@$_GET['html']) {
             return Yii::app()->end();
         }
