@@ -102,7 +102,14 @@
         <?php
         $attachments = array();
         foreach($associated_content as $ac){
-            $attachments[] = $ac->display_title;
+            if($ac->display_title){
+                $attachments[] = $ac->display_title;
+            } else {
+                $associated_event = Event::model()->findByPk($ac->associated_event_id);
+
+                $attachments[] = $associated_event->eventType->name.' ('.Helper::convertDate2NHS($associated_event->event_date).')';
+            }
+
         }
         echo implode(", ", $attachments);
     }
