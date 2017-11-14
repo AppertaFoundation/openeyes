@@ -18,4 +18,14 @@
 
 return array(
 
+    'params' => array(
+        'OphCoDocument' => array(
+            'allowed_file_types' => array(
+                'pdf'   => 'application/pdf',
+                'jpg'   => 'image/jpeg',
+                'jpeg'  => 'image/jpeg',
+                'png'   => 'image/png',
+            )
+        )
+    )
 );
