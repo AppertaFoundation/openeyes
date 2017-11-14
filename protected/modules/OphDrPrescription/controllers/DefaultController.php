@@ -534,19 +534,8 @@ class DefaultController extends BaseEventTypeController
 
                 // Source is an drug set item which contains frequency and duration data
                 $item->drug_id = $source->drug_id;
-                $item->loadDefaults();
-                foreach (array('dispense_condition_id', 'dispense_location_id') as $field) {
-                    if ($source->$field) {
-                        $item->$field = $source->$field;
-                    }
-                }
-
-                // set DrugSetItem with route/frequency/dose/duration = NULL to default route/frequency/dose/duration for the drug
-                foreach (array('duration_id', 'frequency_id', 'dose', 'route_id') as $field) {
-                    if(!$source->$field){
-                        $default_field = "default_$field";
-                        $item->$field = $source->drug->$default_field;
-                    }
+                foreach (array('duration_id', 'frequency_id', 'dose', 'route_id', 'dispense_condition_id', 'dispense_location_id') as $field) {
+                    $item->$field = $source->$field;
                 }
 
                 if ($source->tapers) {
