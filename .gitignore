@@ -18,6 +18,7 @@ tags
 /protected/models/elements/ElementExample.php
 /protected/modules/sample
 /protected/modules/eyedraw
+/protected/runtime/*
 /protected/runtime/
 /protected/tests/report/
 /protected/tests/test_results/
