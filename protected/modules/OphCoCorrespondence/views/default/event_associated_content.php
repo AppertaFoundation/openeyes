@@ -18,6 +18,7 @@
                     $patient = $this->patient;
                 }
                 $key = 0;
+
                 foreach($associated_content as $key => $value){
                     $method = null;
                     $event_name = null;
@@ -48,6 +49,12 @@
                     }
                 ?>
                 <tr data-key = "<?= $value->id ?>" data-id="<?= $key ?>">
+                    <?php
+
+                    if(isset($value->associated_protected_file_id)){ ?>
+                        <input type="hidden" name="file_id[<?= $key ?>]" value="<?= $value->associated_protected_file_id ?>" />
+                        <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $key ?>]" value="<?= $event->id ?>" />
+                    <?php } ?>
                     <td><?= $event_name ?></td>
                     <td><?= (isset($ac->display_title) ? $ac->display_title : $event->eventType->name); ?></td>
                     <td>
