@@ -194,6 +194,10 @@ class HistoryMedications extends \BaseEventElementWidget
     public function getMergedEntries()
     {
 
+        //$this->element->currentOrderedEntries and stoppedOrderedEntries relations are not uses here as we
+        //need to include the untracked Prescription Items as well and those are already loaded into the
+        //$this->element->entries (alongside with tracked Prescription Items)
+
         $result['current'] = array();
         $result['stopped'] = array();
 
