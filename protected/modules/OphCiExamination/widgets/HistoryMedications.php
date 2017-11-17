@@ -198,6 +198,18 @@ class HistoryMedications extends \BaseEventElementWidget
         //need to include the untracked Prescription Items as well and those are already loaded into the
         //$this->element->entries (alongside with tracked Prescription Items)
 
+        // setElementFromDefaults() only called when the element is a new record (BaseEventElementWidget like ~166)
+        // and this is where the untracked elements are loaded into the $this->element->entries
+        // so if it isn't a new element ->entries only contains tracked medications
+        if(!$this->element->isNewRecord){
+            if ($untracked = $this->getEntriesForUntrackedPrescriptionItems()) {
+                // tracking prescription items.
+                $this->element->entries = array_merge(
+                    $this->element->entries,
+                    $untracked);
+            }
+        }
+
         $result['current'] = array();
         $result['stopped'] = array();
 
