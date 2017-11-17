@@ -63,6 +63,9 @@ function updateCorrespondence(macro_id)
                 resetInternalReferralFields();
 
 				$('#attachments_content_container').html(data.associated_content);
+				if(parseInt(data.checkAttachmentFileExist) == 1){
+                    checkAttachmentFileExist( 0 );
+				}
             }
         });
     }
@@ -800,34 +803,73 @@ $(document).ready(function() {
 
                         $last_row.attr('data-id', $data_id + 1);
 
-                        savePDFprint( response.module ,$select.val(), $content, $data_id)
+                        savePDFprint( response.module ,$select.val(), $content, $data_id);
                         $select.val('');
                     }
                 }
             });
         }
     });
-
-    function savePDFprint( module , event_id , $content, $data_id)
-    {
-        $.ajax({
-            'type': 'GET',
-            'url': baseUrl + '/'+module+'/Default/savePDFprint/' + event_id + '?ajax=1&auto_print=0',
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader('X-Requested-With', 'pdfprint');
-            },
-            'success': function(response) {
-                if(response.success == 1){
-                    $hidden = '<input type="hidden" name="file_id[' + $data_id+ ']" value="'+response.file_id+'" />';
-                    $content.prepend($hidden);
-                } else {
-                    console.log(response.message);
-                }
-            }
-        });
-    }
-
 });
+
+function savePDFprint( module , event_id , $content, $data_id)
+{
+    $.ajax({
+        'type': 'GET',
+        'url': baseUrl + '/'+module+'/Default/savePDFprint/' + event_id + '?ajax=1&auto_print=0',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader('X-Requested-With', 'pdfprint');
+        },
+        'success': function(response) {
+            if(response.success == 1){
+                $hidden = '<input type="hidden" name="file_id[' + $data_id+ ']" value="'+response.file_id+'" />';
+                $content.prepend($hidden);
+            } else {
+                console.log(response.message);
+            }
+        }
+    });
+}
+
+
+var checkAttachmentFileExist = function( index ) {
+
+    var table = $('#correspondence_attachments_table');
+    var rows = table.find('tbody tr[id!="correspondence_attachments_table_last_row"]');
+
+    if (rows.length == index) {
+		//console.log("checkAttachmentFileExist Success", rows);
+		return;
+	}
+
+	var row = $(rows[index]);
+    var attachments_event_id = row.find("input[name*='attachments_event_id']").val();
+    //var last_row = $('#attachments_content_container').find('#correspondence_attachments_table_last_row');
+    var data_id = parseInt(row.attr("data-id"));
+
+	$.ajax({
+		'type': 'POST',
+		'cache': false,
+		'url': baseUrl + '/OphCoCorrespondence/Default/getInitMethodDataById',
+		'data' :{YII_CSRF_TOKEN: YII_CSRF_TOKEN, id: attachments_event_id , 'patient_id': OE_patient_id},
+		'success': function(response) {
+			if(response.success == 1){
+				savePDFprint( response.module ,attachments_event_id, row, data_id);
+			}
+		},
+        error: function() {
+            console.error("checkAttachmentFileExist Error", "user", arguments);
+        },
+		'complete': function() {
+           // row.attr('data-id', data_id);
+            row.prepend('<input type="hidden" name="attachments_event_id[' + data_id + ']" value="' + attachments_event_id + '" />');
+
+            //last_row.attr('data-id', data_id + 1);
+            checkAttachmentFileExist(++index);
+		}
+	});
+}
+
 
 var et_oph_correspondence_body_cursor_position = 0;
 var re_field = null;

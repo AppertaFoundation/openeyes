@@ -287,10 +287,19 @@ class DefaultController extends BaseEventTypeController
 
         $macroInitAssocContent = MacroInitAssociatedContent::model()->findAllByAttributes(array('macro_id' => $macro->id), array('order' => 'display_order asc'));
         $data['associated_content'] = '';
+        $data['checkAttachmentFileExist'] = 0;
 
         if($macroInitAssocContent != null){
             $data['associated_content'] = $this->renderPartial('event_associated_content', array(
                 'associated_content' => $macroInitAssocContent,
+                'patient'   => $patient,
+                'api'       => Yii::app()->moduleAPI->get('OphCoCorrespondence'),
+            ), true);
+
+            $data['checkAttachmentFileExist'] = 1;
+
+        } else {
+            $data['associated_content'] = $this->renderPartial('event_associated_content_select', array(
                 'patient' => $patient,
                 'api'   => Yii::app()->moduleAPI->get('OphCoCorrespondence')
             ), true);
@@ -417,7 +426,7 @@ class DefaultController extends BaseEventTypeController
             }
         }
     }
-    
+
     public function actionPrint($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
@@ -542,9 +551,9 @@ class DefaultController extends BaseEventTypeController
 
             $pdf_files[$j] = parent::actionSavePDFprint( $id );
             foreach($associated_content as $key => $ac){
+                $j++;
                 if($ac->associated_protected_file_id){
-                    $j++;
-                    $file = ProtectedFile::model()->findByPk($ac->associated_protected_file_id);
+                    $file = ProtectedFile::model()->findByPk( $ac->associated_protected_file_id );
                     $pdf_files[$j]['path'] = $file->getPath();
                     $pdf_files[$j]['name'] = $file->name;
                     $pdf_files[$j]['mime'] = $file->mimetype;
@@ -580,13 +589,13 @@ class DefaultController extends BaseEventTypeController
             header('Content-Length: '.filesize($pdf));
 
             readfile($pdf);
-            //@unlink($pdf);
+            @unlink($pdf);
 
         } else {
             return parent::actionPDFPrint($id);
         }
     }
-    
+
     /**
      * Ajax action to get user data list.
      */
