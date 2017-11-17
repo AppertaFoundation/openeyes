@@ -39,7 +39,7 @@
     <div class="large-3 column">
         <select class="fuzzy_year">
             <option value="0000">- Year -</option>
-            <?php for ($i = date('Y') - 50;$i <= date('Y');++$i) {?>
+            <?php for ($i = date('Y') - 102;$i <= date('Y');++$i) {?>
                 <option value="<?= $i?>"<?= ($i == $sel_year) ? ' selected' : ''?>><?= $i?></option>
             <?php }?>
         </select>

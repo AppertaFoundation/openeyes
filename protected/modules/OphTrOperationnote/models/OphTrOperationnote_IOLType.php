@@ -83,6 +83,7 @@ class OphTrOperationnote_IOLType extends BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
+            'display_name' => 'Name'
         );
     }
 
@@ -91,6 +92,11 @@ class OphTrOperationnote_IOLType extends BaseActiveRecordVersioned
         return array(
             'LookupTable' => 'LookupTable',
         );
+    }
+
+    public function getDisplay_name()
+    {
+        return $this->name;
     }
 
     /**

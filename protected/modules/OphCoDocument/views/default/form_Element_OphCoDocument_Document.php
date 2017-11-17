@@ -49,5 +49,10 @@
             }
         }
     ?>
+    <div class="upload-info" style="font-size:13px">
+        <span class="has-tooltip fa fa-info-circle left" style="margin:3px 3px 0px 0px"></span> The following file types are accepted: <?php echo implode(', ', $this->getAllowedFileTypes()); ?>
+        (Maximum size: <?=$this->getMaxDocumentSize();?> MB)
+    </div>
+
 </div>
 

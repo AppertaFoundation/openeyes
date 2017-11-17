@@ -140,14 +140,7 @@ class OphCoCorrespondence_API extends BaseAPI
         $name = null;
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
         if ($element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)){
-
-            if(\Yii::app()->hasModule("OphInBiometry") && $element->iol_type_id){
-                $iol_type = OphInBiometry_LensType_Lens::model()->findByPk($element->iol_type_id);
-                $name = $iol_type->display_name;
-            } else {
-                // iol_type here will be an instance of OphTrOperationnote_IOLType
-                $name = $element->iol_type ? $element->iol_type->name : null;
-            }
+            $name = $element->iol_type ? $element->iol_type->display_name : null;
         }
         return $name;
     }
@@ -197,21 +190,26 @@ class OphCoCorrespondence_API extends BaseAPI
         }
 
         $op_event = $note_api->getLatestEvent($patient, $use_context);
-        $op_event_combined_date = Helper::combineMySQLDateAndDateTime($op_event->event_date, $op_event->created_date);
-        $events = $api->getEvents($patient, $use_context, $op_event->event_date);
+        if($op_event){
+            $op_event_combined_date = Helper::combineMySQLDateAndDateTime($op_event->event_date, $op_event->created_date);
+            $events = $api->getEvents($patient, $use_context, $op_event->event_date);
 
-        foreach ($events as $event) {
-            // take account of event date not containing time so we ensure we get the
-            // exam from BEFORE the op note, not on the same day but after.
-            if ($event->event_date == $op_event->event_date) {
-                if (Helper::combineMySQLDateAndDateTime($event->event_date, $event->created_date) > $op_event_combined_date) {
-                    continue;
+            foreach ($events as $event) {
+
+                // take account of event date not containing time so we ensure we get the
+                // exam from BEFORE the op note, not on the same day but after.
+                if ($event->event_date == $op_event->event_date) {
+                    if (Helper::combineMySQLDateAndDateTime($event->event_date, $event->created_date) > $op_event_combined_date) {
+                        continue;
+                    }
+                }
+                if ($result = $api->$method($event)) {
+                    return $result;
                 }
             }
-            if ($result = $api->$method($event)) {
-                return $result;
-            }
         }
+
+        return null;
     }
 
 

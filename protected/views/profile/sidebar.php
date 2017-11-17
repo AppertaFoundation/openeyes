@@ -6,7 +6,7 @@
 		if (Yii::app()->params['profile_user_show_menu']) {
 			$links['Basic information'] = '/profile/info';
 			$links['Sites'] = '/profile/sites';
-			$links['Firms'] = '/profile/firms';
+			$links[Firm::contextLabel() . 's'] = '/profile/firms';
 		}
 		if (Yii::app()->params['profile_user_can_change_password']) {
 			$links['Change password'] = '/profile/password';

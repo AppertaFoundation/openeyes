@@ -285,7 +285,7 @@ class HistoryMedicationsEntry extends \BaseElement
             $this->addError('medication_name', 'A drug must be provided.');
         }
         if ($this->start_date && $this->end_date && $this->start_date > $this->end_date) {
-            $this->addError('end_date', 'Stop date must be on or before start_date');
+            $this->addError('end_date', 'Stop date must be on or after start date');
         }
         parent::afterValidate();
     }
