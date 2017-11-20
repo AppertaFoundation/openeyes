@@ -788,15 +788,29 @@ class DefaultController extends BaseEventTypeController
     {
         if (Yii::app()->request->isAjaxRequest ) {
             if (!isset($_POST['id'])) {
-                throw new CHttpException(400, 'No ID provided');
+                $result = array(
+                    'success'   => 0,
+                    'message'   => 'No ID provided',
+                );
+                echo $this->renderJSON($result);
             }
 
             if (!$event = Event::model()->findByPk($_POST['id'])) {
-                throw new Exception("Method not found: ".$_POST['id']);
+                $result = array(
+                    'success'   => 0,
+                    'message'   => "Method not found: ".$_POST['id']
+                );
+
+                echo $this->renderJSON($result);
             }
 
             if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
-                throw new Exception('Patient not found: '.@$_POST['patient_id']);
+                $result = array(
+                    'success'   => 0,
+                    'message'   => 'Patient not found: '.@$_POST['patient_id']
+                );
+
+                echo $this->renderJSON($result);
             }
 
             $content = $this->renderPartial('init_method_row', array(

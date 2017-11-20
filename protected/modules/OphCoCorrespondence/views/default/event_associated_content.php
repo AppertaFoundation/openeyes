@@ -35,17 +35,20 @@
                         }
                     }
 
+
                     if($method != null){
                         $event = json_decode( $api->{$method}( $patient ));
-                        if($event){
+                        if($event !== null){
                             $event_name = $event->event_name;
                             $event_date = $event->event_date;
                         }
-
                     } else {
-                        $event = Event::model()->findByPk( $ac->associated_event_id );
                         $event_name = $event->eventType->name;
                         $event_date = Helper::convertDate2NHS($event->event_date);
+                    }
+
+                    if( empty($event) || ($event == null)){
+                        continue;
                     }
                 ?>
                 <tr data-key = "<?= $value->id ?>" data-id="<?= $key ?>">
@@ -58,18 +61,12 @@
                     <td><?= $event_name ?></td>
                     <td><?= (isset($ac->display_title) ? $ac->display_title : $event->eventType->name); ?></td>
                     <td>
-                        <?php
-                        if( empty($event) ){
-                            echo "None";
-                        } else {
-                        ?>
-                            <input type="hidden" name="attachments_event_id[<?= $key ?>]" value="<?= $event->id ?>" />
-                            <input type="hidden" name="attachments_id[<?= $key ?>]" value="<?= $ac->id ?>" />
-                            <input type="hidden" name="attachments_system_hidden[<?= $key ?>]" value="<?= $ac->is_system_hidden ?>" />
-                            <input type="hidden" name="attachments_print_appended[<?= $key ?>]" value="<?= $ac->is_print_appended ?>" />
-                            <input type="hidden" name="attachments_short_code[<?= $key ?>]" value="<?= $ac->short_code ?>" />
-                            <?= $event_date ?>
-                        <?php } ?>
+                        <input type="hidden" name="attachments_event_id[<?= $key ?>]" value="<?= $event->id ?>" />
+                        <input type="hidden" name="attachments_id[<?= $key ?>]" value="<?= $ac->id ?>" />
+                        <input type="hidden" name="attachments_system_hidden[<?= $key ?>]" value="<?= $ac->is_system_hidden ?>" />
+                        <input type="hidden" name="attachments_print_appended[<?= $key ?>]" value="<?= $ac->is_print_appended ?>" />
+                        <input type="hidden" name="attachments_short_code[<?= $key ?>]" value="<?= $ac->short_code ?>" />
+                        <?= $event_date ?>
                     </td>
                     <td>
                         <button class="button small warning remove">remove</button>
@@ -86,7 +83,7 @@
                         $criteria = new CDbCriteria();
                         $criteria->with = array("eventType"=>array("select"=>"name"));
                         $criteria->compare('t.episode_id', $current_episode->id);
-                        $criteria->order = 't.event_date desc, t.created_date desc';
+                        $criteria->order = 't.event_date desc';
 
                         $events = Event::model()->findAll($criteria);
                         ?>
