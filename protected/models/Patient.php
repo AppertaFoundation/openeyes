@@ -139,6 +139,7 @@ class Patient extends BaseActiveRecordVersioned
             'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
                 'condition' => '(patient_episode.legacy=0 or patient_episode.legacy is null)',
                 'alias' => 'patient_episode',
+                'order' => 'patient_episode.start_date',
             ),
             'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
             'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
