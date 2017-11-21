@@ -398,11 +398,16 @@ class DefaultController extends BaseEventTypeController
         $this->printInit($id);
         $this->layout = '//layouts/print';
 
-        $this->render('print');
-        $this->render('print', array('copy' => 'notes'));
-        $this->render('print', array('copy' => 'patient'));
+        $pdf_documents = (int)Yii::app()->request->getParam('pdf_documents');
+        if( $pdf_documents == 1 ){
+            $this->render('print');
+        } else {
+            $this->render('print');
+            $this->render('print', array('copy' => 'notes'));
+            $this->render('print', array('copy' => 'patient'));
+        }
     }
-    
+
     public function actionPrintCopy($id)
     {
         $this->actionPrint($id);
@@ -412,11 +417,11 @@ class DefaultController extends BaseEventTypeController
         $api->printEvent( $eventid ); 
     }
 
+
     public function actionPDFPrint($id)
     {
         $this->pdf_print_suffix = Site::model()->findByPk(Yii::app()->session['selected_site_id'])->id;
         $this->pdf_print_documents = 3;
-
         return parent::actionPDFPrint($id);
     }
 
