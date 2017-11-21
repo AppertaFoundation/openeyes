@@ -784,6 +784,7 @@ $(document).ready(function() {
 	});
 
 	$('#attachments_content_container').on('change', 'select#description', function(e){
+        disableButtons();
         $select = $(this);
         if($select.val() > 0){
             $.ajax({
@@ -805,7 +806,9 @@ $(document).ready(function() {
 
                         savePDFprint( response.module ,$select.val(), $content, $data_id);
                         $select.val('');
-                    }
+                    } else {
+                    	console.log(response.message);
+					}
                 }
             });
         }
@@ -814,6 +817,7 @@ $(document).ready(function() {
 
 function savePDFprint( module , event_id , $content, $data_id)
 {
+    disableButtons();
     $.ajax({
         'type': 'GET',
         'url': baseUrl + '/'+module+'/Default/savePDFprint/' + event_id + '?ajax=1&auto_print=0',
@@ -827,13 +831,16 @@ function savePDFprint( module , event_id , $content, $data_id)
             } else {
                 console.log(response.message);
             }
-        }
+        },
+		'complete': function(){
+            enableButtons();
+		}
     });
 }
 
 
 var checkAttachmentFileExist = function( index ) {
-
+    disableButtons();
     var table = $('#correspondence_attachments_table');
     var rows = table.find('tbody tr[id!="correspondence_attachments_table_last_row"]');
 
@@ -855,16 +862,15 @@ var checkAttachmentFileExist = function( index ) {
 		'success': function(response) {
 			if(response.success == 1){
 				savePDFprint( response.module ,attachments_event_id, row, data_id);
-			}
+			} else {
+                console.log(response.message);
+            }
 		},
         error: function() {
-            console.error("checkAttachmentFileExist Error", "user", arguments);
+            console.log("checkAttachmentFileExist Error");
         },
 		'complete': function() {
-           // row.attr('data-id', data_id);
             row.prepend('<input type="hidden" name="attachments_event_id[' + data_id + ']" value="' + attachments_event_id + '" />');
-
-            //last_row.attr('data-id', data_id + 1);
             checkAttachmentFileExist(++index);
 		}
 	});
