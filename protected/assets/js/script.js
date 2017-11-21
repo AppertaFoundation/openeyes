@@ -227,7 +227,7 @@ $(document).ready(function(){
 		// Default dialog options.
 		var options = {
 			id: 'site-and-firm-dialog',
-			title: 'Select a new Site and/or Firm'
+			title: 'Select a new Site and/or Context'
 		};
 
 		// Show the 'change firm' dialog when clicking on the 'change firm' link.

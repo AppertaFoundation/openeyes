@@ -361,4 +361,22 @@ class OphTrOperationnote_API extends BaseAPI
             return '';
         }
     }
+
+    /**
+     * This method will be triggered
+     * after every softDelete calls
+     * on Events of type OphTrOperationnote
+     */
+
+    public function afterSoftDeleteEvent(Event $event)
+    {
+        $proclist = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($event->id));
+        if ($proclist && $proclist->booking_event_id) {
+            if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
+                $last_status_id = $api->getLastNonCompleteStatus($proclist->booking_event_id);
+                $status = OphTrOperationbooking_Operation_Status::model()->findByPk($last_status_id);
+                $api->setOperationStatus($proclist->booking_event_id, $status->name);
+            }
+        }
+    }
 }

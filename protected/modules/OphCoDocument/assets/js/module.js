@@ -26,14 +26,51 @@ function drop(ev) {
     $(ev.target).closest(".upload-box").find("input[type=file]").prop("files", ev.dataTransfer.files);
 }
 
+function validateFile(input){
+    var valid = true;
+
+    if (typeof FileReader !== "undefined") {
+
+        var $input = $(input);
+        var input_selector = $input.attr('id');
+        var file = document.getElementById(input_selector).files[0];
+        var size = file.size;
+
+        if( $input.val() ){
+            if(size > max_document_size || size > max_content_length){
+                new OpenEyes.UI.Dialog.Alert({
+                    content: 'The file you tried to upload exceeds the maximum allowed file size, which is ' + (max_document_size / 1048576) + ' MB'
+                }).open();
+
+                valid = false;
+            }
+
+            if(allowed_file_types.indexOf(file.type) === -1){
+                valid = false;
+
+                new OpenEyes.UI.Dialog.Alert({
+                    content: 'Only the following file types can be uploaded: ' + allowed_file_types.join(', ') +
+                             '\n\nFor reference, the type of the file you tried to upload is: ' + file.type
+                }).open();
+            }
+        }
+
+    }
+    return valid;
+}
+
 function documentUpload(field){
     var formData;
     formData = new FormData($('#document-create')[0]);
 
+    if( !validateFile(field) ){
+        return false;
+    }
+
 	$.ajax({
             url: '/OphCoDocument/Default/fileUpload',
             type: 'POST',
-            xhr: function() { 
+            xhr: function() {
                 var myXhr = $.ajaxSettings.xhr();
                 if(myXhr.upload){
                     myXhr.upload.addEventListener('progress', showIMGProgress, false);

@@ -312,17 +312,9 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionDelete($id)
     {
-        $proclist = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($id));
-
-        $this->dont_redirect = true;
+       $this->dont_redirect = true;
 
         if (parent::actionDelete($id)) {
-            if ($proclist && $proclist->booking_event_id) {
-                if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-                    $api->setOperationStatus($proclist->booking_event_id, 'Scheduled or Rescheduled');
-                }
-            }
-
             if (Event::model()->count('episode_id=?', array($this->event->episode_id)) == 0) {
                 $this->redirect(array('/patient/episodes/'.$this->event->episode->patient->id));
             } else {
