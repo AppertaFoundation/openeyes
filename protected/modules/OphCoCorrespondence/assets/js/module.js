@@ -806,9 +806,7 @@ $(document).ready(function() {
 
                         savePDFprint( response.module ,$select.val(), $content, $data_id);
                         $select.val('');
-                    } else {
-                    	console.log(response.message);
-					}
+                    }
                 }
             });
         }
@@ -820,7 +818,7 @@ function savePDFprint( module , event_id , $content, $data_id)
     disableButtons();
     $.ajax({
         'type': 'GET',
-        'url': baseUrl + '/'+module+'/Default/savePDFprint/' + event_id + '?ajax=1&auto_print=0',
+        'url': baseUrl + '/'+module+'/Default/savePDFprint/' + event_id + '?ajax=1&auto_print=0&pdf_documents=1',
         beforeSend: function(xhr) {
             xhr.setRequestHeader('X-Requested-With', 'pdfprint');
         },
@@ -828,8 +826,6 @@ function savePDFprint( module , event_id , $content, $data_id)
             if(response.success == 1){
                 $hidden = '<input type="hidden" name="file_id[' + $data_id+ ']" value="'+response.file_id+'" />';
                 $content.prepend($hidden);
-            } else {
-                console.log(response.message);
             }
         },
 		'complete': function(){
@@ -840,18 +836,17 @@ function savePDFprint( module , event_id , $content, $data_id)
 
 
 var checkAttachmentFileExist = function( index ) {
-    disableButtons();
+
     var table = $('#correspondence_attachments_table');
     var rows = table.find('tbody tr[id!="correspondence_attachments_table_last_row"]');
 
     if (rows.length == index) {
-		//console.log("checkAttachmentFileExist Success", rows);
 		return;
 	}
 
+    disableButtons();
 	var row = $(rows[index]);
     var attachments_event_id = row.find("input[name*='attachments_event_id']").val();
-    //var last_row = $('#attachments_content_container').find('#correspondence_attachments_table_last_row');
     var data_id = parseInt(row.attr("data-id"));
 
 	$.ajax({
@@ -862,13 +857,8 @@ var checkAttachmentFileExist = function( index ) {
 		'success': function(response) {
 			if(response.success == 1){
 				savePDFprint( response.module ,attachments_event_id, row, data_id);
-			} else {
-                console.log(response.message);
-            }
+			}
 		},
-        error: function() {
-            console.log("checkAttachmentFileExist Error");
-        },
 		'complete': function() {
             row.prepend('<input type="hidden" name="attachments_event_id[' + data_id + ']" value="' + attachments_event_id + '" />');
             checkAttachmentFileExist(++index);
