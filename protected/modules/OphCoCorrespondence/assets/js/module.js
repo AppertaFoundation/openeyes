@@ -844,26 +844,29 @@ var checkAttachmentFileExist = function( index ) {
 		return;
 	}
 
-    disableButtons();
 	var row = $(rows[index]);
     var attachments_event_id = row.find("input[name*='attachments_event_id']").val();
     var data_id = parseInt(row.attr("data-id"));
+    var file_id = row.find("input[name*='file_id']").val();
 
-	$.ajax({
-		'type': 'POST',
-		'cache': false,
-		'url': baseUrl + '/OphCoCorrespondence/Default/getInitMethodDataById',
-		'data' :{YII_CSRF_TOKEN: YII_CSRF_TOKEN, id: attachments_event_id , 'patient_id': OE_patient_id},
-		'success': function(response) {
-			if(response.success == 1){
-				savePDFprint( response.module ,attachments_event_id, row, data_id);
+    if(typeof file_id == "undefined"){
+        disableButtons();
+		$.ajax({
+			'type': 'POST',
+			'cache': false,
+			'url': baseUrl + '/OphCoCorrespondence/Default/getInitMethodDataById',
+			'data' :{YII_CSRF_TOKEN: YII_CSRF_TOKEN, id: attachments_event_id , 'patient_id': OE_patient_id},
+			'success': function(response) {
+				if(response.success == 1){
+					savePDFprint( response.module ,attachments_event_id, row, data_id);
+				}
+			},
+			'complete': function() {
+				row.prepend('<input type="hidden" name="attachments_event_id[' + data_id + ']" value="' + attachments_event_id + '" />');
+				checkAttachmentFileExist(++index);
 			}
-		},
-		'complete': function() {
-            row.prepend('<input type="hidden" name="attachments_event_id[' + data_id + ']" value="' + attachments_event_id + '" />');
-            checkAttachmentFileExist(++index);
-		}
-	});
+		});
+    }
 }
 
 
