@@ -18,6 +18,7 @@
                     $patient = $this->patient;
                 }
                 $key = 0;
+                $event_id_compare = array();
 
                 foreach($associated_content as $key => $value){
                     $method = null;
@@ -35,7 +36,6 @@
                         }
                     }
 
-
                     if($method != null){
                         $event = json_decode( $api->{$method}( $patient ));
                         if($event !== null){
@@ -43,23 +43,33 @@
                             $event_date = $event->event_date;
                         }
                     } else {
-                        $event_name = $event->eventType->name;
+                        $event = Event::model()->findByPk( $ac->associated_event_id );
+                        if(isset($event->eventType)){
+                            $event_name = $event->eventType->name;
+                        } else {
+                            $event_name = $event->event_name;
+                        }
                         $event_date = Helper::convertDate2NHS($event->event_date);
                     }
 
                     if( empty($event) || ($event == null)){
                         continue;
                     }
+                    $event_id_compare[] = $event->id;
                 ?>
                 <tr data-key = "<?= $value->id ?>" data-id="<?= $key ?>">
                     <?php
 
-                    if(isset($value->associated_protected_file_id)){ ?>
+                    if(isset($_POST['attachments_event_id'])){ ?>
+                        <input type="hidden" name="file_id[<?= $key ?>]" value="<?= $_POST['file_id'][$key] ?>" />
+                        <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $key ?>]" value="<?= $_POST['attachments_event_id'][$key] ?>" />
+                    <?php } else if(isset($value->associated_protected_file_id)){ ?>
                         <input type="hidden" name="file_id[<?= $key ?>]" value="<?= $value->associated_protected_file_id ?>" />
                         <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $key ?>]" value="<?= $event->id ?>" />
                     <?php } ?>
+
                     <td><?= $event_name ?></td>
-                    <td><?= (isset($ac->display_title) ? $ac->display_title : $event->eventType->name); ?></td>
+                    <td><?= (isset($ac->display_title) ? $ac->display_title : $event_name); ?></td>
                     <td>
                         <input type="hidden" name="attachments_event_id[<?= $key ?>]" value="<?= $event->id ?>" />
                         <input type="hidden" name="attachments_id[<?= $key ?>]" value="<?= $ac->id ?>" />
@@ -72,7 +82,36 @@
                         <button class="button small warning remove">remove</button>
                     </td>
                 </tr>
-                <?php } ?>
+                <?php }
+
+                if(isset($_POST['attachments_event_id'])){
+
+                    $posted_data = array_diff_assoc($_POST['attachments_event_id'] , $event_id_compare);
+                    if(!empty($posted_data)){
+
+                        foreach($posted_data as $pdk => $pdv){
+                            $event = Event::model()->findByPk($pdv);
+                            $value->id++;
+                            $key++;
+                            ?>
+
+                            <tr data-key = "<?= $value->id ?>" data-id="<?= $key ?>">
+                                <input type="hidden" name="file_id[<?= $key ?>]" value="<?= $_POST['file_id'][$pdk] ?>" />
+                                <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $key ?>]" value="<?=  $_POST['attachments_event_id'][$pdk] ?>" />
+                                <td><?= $event->eventType->name ?></td>
+                                <td><?= $event->eventType->name ?></td>
+                                <td>
+                                    <?= Helper::convertDate2NHS($event->event_date); ?>
+                                </td>
+                                <td>
+                                    <button class="button small warning remove">remove</button>
+                                </td>
+                            </tr>
+                            <?php
+                        }
+                    }
+                }
+                ?>
 
                 <tr id="correspondence_attachments_table_last_row" data-id="<?= $key+1 ?>">
                     <td colspan="2"><td>
