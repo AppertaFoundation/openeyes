@@ -61,6 +61,11 @@
   font-size: 0.8em;
 }
 
+/* line 1, ../sass/components/_inbox.scss */
+.grid.message-table tr td.message {
+    word-break: break-all;
+}
+
 /* line 21, ../sass/components/_inbox.scss */
 #sent-table {
   padding-top: 3px;
