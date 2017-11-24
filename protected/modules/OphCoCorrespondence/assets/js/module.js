@@ -263,7 +263,7 @@ $(document).ready(function() {
         checkAttachmentFileExist( 0 );
         var event_button = $(this);
         var event_form = event_button.attr('form');
-		console.log(event_form);
+
         $(document).ajaxStop(function() {
             disableButtons();
 			$('#ElementLetter_draft').val(0);
