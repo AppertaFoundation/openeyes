@@ -61,15 +61,22 @@
                     <?php
 
                     if(isset($_POST['attachments_event_id'])){ ?>
-                        <input type="hidden" name="file_id[<?= $key ?>]" value="<?= $_POST['file_id'][$key] ?>" />
+
                         <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $key ?>]" value="<?= $_POST['attachments_event_id'][$key] ?>" />
                     <?php } else if(isset($value->associated_protected_file_id)){ ?>
                         <input type="hidden" name="file_id[<?= $key ?>]" value="<?= $value->associated_protected_file_id ?>" />
                         <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $key ?>]" value="<?= $event->id ?>" />
-                    <?php } ?>
+                    <?php }
+
+                    if(isset($_POST['attachments_display_title'])){
+                        $display_title = $_POST['attachments_display_title'][$key];
+                    } else {
+                        $display_title = (isset($ac->display_title) ? $ac->display_title : $event_name);
+                    }
+                    ?>
 
                     <td><?= $event_name ?></td>
-                    <td><?= (isset($ac->display_title) ? $ac->display_title : $event_name); ?></td>
+                    <td><input type="text" class="attachments_display_title" name="attachments_display_title[<?= $key ?>]"   value="<?= $display_title ?>" /></td>
                     <td>
                         <input type="hidden" name="attachments_event_id[<?= $key ?>]" value="<?= $event->id ?>" />
                         <input type="hidden" name="attachments_id[<?= $key ?>]" value="<?= $ac->id ?>" />
@@ -99,7 +106,7 @@
                                 <input type="hidden" name="file_id[<?= $key ?>]" value="<?= $_POST['file_id'][$pdk] ?>" />
                                 <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $key ?>]" value="<?=  $_POST['attachments_event_id'][$pdk] ?>" />
                                 <td><?= $event->eventType->name ?></td>
-                                <td><?= $event->eventType->name ?></td>
+                                <td><input type="text" class="attachments_display_title" name="attachments_display_title[<?= $key ?>]"   value="<?= $_POST['attachments_display_title'][$pdk] ?>" /></td>
                                 <td>
                                     <?= Helper::convertDate2NHS($event->event_date); ?>
                                 </td>
