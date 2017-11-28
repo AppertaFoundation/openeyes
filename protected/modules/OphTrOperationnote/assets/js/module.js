@@ -492,6 +492,7 @@ function sidePortController(_drawing) {
 
     // Method called for notification
     this.notificationHandler = function (_messageArray) {
+
         switch (_messageArray['eventName']) {
             // Ready notification
             case 'ready':
@@ -553,7 +554,9 @@ function sidePortController(_drawing) {
                 }
 
                 // Keep sideports in sync with PhakoIncision while surgeon is still syncing with it
-                if (masterDoodle.className == "PhakoIncision" && masterDoodle.willSync) {
+                // !isNaN(surgeonRotation) : because at the beginning "rotation" is undefined
+                if (masterDoodle.className == "PhakoIncision" && masterDoodle.willSync && !Number.isNaN(surgeonRotation)) {
+                    surgeonRotation
 
                     if (typeof(sidePort1) != 'undefined') {
                         sidePort1.setSimpleParameter('rotation', (surgeonRotation + Math.PI / 2) % (2 * Math.PI));
