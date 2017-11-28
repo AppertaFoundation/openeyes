@@ -436,5 +436,4 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
 </div>
 <script type="text/javascript">
     setDropDownWidth('macro_id');
-    checkAttachmentFileExist( 0 );
 </script>

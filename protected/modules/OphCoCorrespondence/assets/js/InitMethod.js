@@ -81,10 +81,13 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
             data = {};
 
         data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
+        data['is_print_appended_js'] = 'CHECKED';
+
         return Mustache.render(
             this.templateText,
             data
         );
+
     };
 
     InitMethodController.prototype.getInitMethodData = function( select )

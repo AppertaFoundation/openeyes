@@ -20,7 +20,15 @@
 $copy = $data['copy'];
 ?>
 
-<h1>Prescription Form</h1>
+<h1>
+    <?php
+    if($this->attachment_print_title){
+        echo $this->attachment_print_title;
+    } else {
+        echo 'Prescription Form';
+    }
+    ?>
+</h1>
 
 <?php
 $firm = $element->event->episode->firm;

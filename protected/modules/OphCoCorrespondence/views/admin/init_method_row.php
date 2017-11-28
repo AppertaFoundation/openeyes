@@ -9,7 +9,6 @@ if (!isset($values)) {
         'title' => $model_associated_content->display_title,
     );
 }
-
 $is_system_hidden_checked = ($values['is_system_hidden'] == 1 ? 'CHECKED' : '');
 $is_print_appended_checked = ($values['is_print_appended'] == 1 ? 'CHECKED' : '');
 ?>
@@ -19,7 +18,7 @@ $is_print_appended_checked = ($values['is_print_appended'] == 1 ? 'CHECKED' : ''
         <input type="checkbox" name="<?= $prefix_associated ?>[is_system_hidden]" id="<?= $associated_model_name.'_'.$row_count ?>_is_system_hidden" <?= $is_system_hidden_checked ?> />
     </td>
     <td>
-        <input type="checkbox" name="<?= $prefix_associated ?>[is_print_appended]" id="<?= $associated_model_name.'_'.$row_count ?>_is_print_appended" <?= $is_print_appended_checked ?>/>
+        <input type="checkbox" name="<?= $prefix_associated ?>[is_print_appended]" id="<?= $associated_model_name.'_'.$row_count ?>_is_print_appended" <?= $is_print_appended_checked ?> {{is_print_appended_js}} />
     </td>
     <td><?=
            CHtml::dropDownList('description', $values['method_id'], CHtml::listData(OphcorrespondenceInitMethod::model()->findAll(array('condition' => 'active=1', 'order' => 'id asc')), 'id', 'description'), array('empty' => '- Select -')) ;

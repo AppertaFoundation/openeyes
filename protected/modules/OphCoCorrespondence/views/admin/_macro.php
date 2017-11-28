@@ -134,7 +134,8 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
                             'method_id' => '{{method_id}}',
                             'short_code' => '{{short_code}}',
                             'title' => '{{title}}',
-                        )
+                            'is_print_appended_js' => '{{is_print_appended_js}}'
+                        ),
                     )
                 );
                 ?>

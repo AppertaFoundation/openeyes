@@ -658,6 +658,7 @@ class ElementLetter extends BaseEventTypeElement
             $attachments_print_appended = Yii::app()->request->getPost('attachments_print_appended');
             $attachments_short_code = Yii::app()->request->getPost('attachments_short_code');
             $attachments_protected_file_id = Yii::app()->request->getPost('file_id');
+            $attachments_display_title = Yii::app()->request->getPost('attachments_display_title');
 
             if( isset( $attachments_last_event_id )){
                 $order = 1;
@@ -692,6 +693,12 @@ class ElementLetter extends BaseEventTypeElement
                         $eventAssociatedContent->associated_protected_file_id  = $attachments_protected_file_id[$key];
                     } else {
                         $eventAssociatedContent->associated_protected_file_id = null;
+                    }
+
+                    if(isset($attachments_display_title[$key])){
+                        $eventAssociatedContent->display_title  = $attachments_display_title[$key];
+                    } else {
+                        $eventAssociatedContent->display_title = null;
                     }
 
                     $eventAssociatedContent->association_storage  = 'EVENT';
