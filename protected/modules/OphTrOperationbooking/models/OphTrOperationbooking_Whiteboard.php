@@ -228,6 +228,9 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 return $this->getDisplayHasRisk($alpha) . ($alpha['comments'] ? ' - ' . $alpha['comments'] : '') . '(' . Helper::convertMySQL2NHS($alpha['date']) . ')';
             }
         }
+
+        //default value when no Risk element exists
+        return 'Not checked';
     }
 
     /**
@@ -244,5 +247,8 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 return $this->getDisplayHasRisk($anticoag) . ($anticoag['comments'] ? ' - ' . $anticoag['comments'] : '') . '(' . Helper::convertMySQL2NHS($anticoag['date']) . ')';
             }
         }
+
+        //default value when no Risk element exists
+        return 'Not checked';
     }
 }
