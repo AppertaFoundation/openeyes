@@ -359,25 +359,20 @@ function updateIolRefTable(side) {
 
 	var l_id = ($('#Element_OphInBiometry_Selection_lens_id_' + side + ' option:selected').val());
 	var f_id = ($('#Element_OphInBiometry_Selection_formula_id_' + side + ' option:selected').val());
-	if (side == 'left') {
-		$('table[id^="left_"]').hide();
-		$('span[id^="emmetropia_left_"]').hide();
-		$('span[id^="aconstant_left_"]').hide();
-	}
+	console.log('hablabla');
+	console.log(f_id);
 
-	if (side == 'right') {
-		$('table[id^="right_"]').hide();
-		$('span[id^="emmetropia_right_"]').hide();
-		$('span[id^="aconstant_right_"]').hide();
-	}
+	$('table[id^="'+side+'_"]').hide();
+	$('span[id^="emmetropia_'+side+'_"]').hide();
+	$('span[id^="aconstant_'+side+'_"]').hide();
 
 	if (!isNaN(parseInt(l_id)) && !isNaN(parseInt(f_id))) {
 		var swtb = side + '_' + l_id + '_' + f_id;
 		var swsn = 'emmetropia_'+side + '_' + l_id + '_' + f_id;
 		var asn = 'aconstant_'+side + '_' + l_id + '_' + f_id;
-		$('table[id^=' + swtb + ']').show();
-		$('span[id^=' + swsn + ']').show();
-		$('span[id^=' + asn + ']').show();
+		$('#' + swtb ).show();
+		$('#' + swsn).show();
+		$('#' + asn).show();
 	}
 }
 
