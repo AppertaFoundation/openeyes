@@ -94,6 +94,7 @@ $cols = array(
             return strlen($data->message_text) > 50 ? \Yii::app()->format->Ntext(substr($data->message_text, 0, 50).' ...') : \Yii::app()->format->Ntext($data->message_text);
         },
         'type' => 'raw',
+        'htmlOptions' => array('class' => 'message'),
     ),
 );
 
@@ -136,7 +137,7 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
 $header_style = 'background: transparent url(' . $asset_path . 'img/small.png) left center no-repeat;';
 
 $this->widget('zii.widgets.grid.CGridView', array(
-    'itemsCssClass' => 'grid',
+    'itemsCssClass' => 'grid message-table',
     'dataProvider' => $dp,
     'htmlOptions' => array('id' => 'inbox-table'),
     'summaryText' => '<h3 style="' . $header_style .'">'.$viewing_label.'<small> {start}-{end} of {count} </small></h3>',
