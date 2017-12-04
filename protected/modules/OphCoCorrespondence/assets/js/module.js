@@ -260,31 +260,47 @@ $(document).ready(function() {
 
     $('#et_saveprint, #et_save').click(function(e){
         e.preventDefault();
-        checkAttachmentFileExist( 0 );
+        var attachment_check = checkAttachmentFileExist( 0 );
+
         var event_button = $(this);
         var event_form = event_button.attr('form');
 
-        $(document).ajaxStop(function() {
+        if(attachment_check == 1){
             disableButtons();
-			$('#ElementLetter_draft').val(0);
+            $('#ElementLetter_draft').val(0);
             $('#'+event_form ).submit();
-        });
+		} else {
+            $(document).ajaxStop(function() {
+                disableButtons();
+                $('#ElementLetter_draft').val(0);
+                $('#'+event_form ).submit();
+            });
+		}
+
     });
 
     $('#et_savedraft').click(function(e){
         e.preventDefault();
-        checkAttachmentFileExist( 0 );
+        var attachment_check = checkAttachmentFileExist( 0 );
+
         var event_button = $(this);
         var event_form = event_button.attr('form');
 
-        $(document).ajaxStop(function() {
-        	disableButtons();
-			$('#ElementLetter_draft').val(1);
+        if(attachment_check == 1){
+            disableButtons();
+            $('#ElementLetter_draft').val(1);
             $('#'+event_form ).submit();
-        });
+        } else {
+            $(document).ajaxStop(function() {
+                disableButtons();
+                $('#ElementLetter_draft').val(1);
+                $('#'+event_form ).submit();
+            });
+        }
+
     });
 
-	handleButton($('#et_cancel'),function() {
+    handleButton($('#et_cancel'),function() {
 		$('#dialog-confirm-cancel').dialog({
 			resizable: false,
 			//height: 140,
@@ -794,11 +810,19 @@ $(document).ready(function() {
 
 	$('#attachments_content_container').on('click', 'button.remove', function(e) {
 		e.preventDefault();
-		$(this).closest('tr').remove();
+        $(this).closest('tr').remove();
+
+        var table = $('#correspondence_attachments_table');
+        var rows = table.find('tbody tr[id!="correspondence_attachments_table_last_row"]');
+        $last_row = $('#attachments_content_container').find('#correspondence_attachments_table_last_row');
+        if(rows.length == 0){
+            $last_row.attr('data-id', 0);
+		}
 	});
 
 	$('#attachments_content_container').on('change', 'select#description', function(e){
         disableButtons();
+
         $select = $(this);
         if($select.val() > 0){
             $.ajax({
@@ -819,7 +843,6 @@ $(document).ready(function() {
 
                         $last_row.attr('data-id', $data_id + 1);
 
-                        //savePDFprint( response.module ,$select.val(), $content, $data_id);
                         $select.val('');
                         enableButtons();
                     }
@@ -834,6 +857,7 @@ function savePDFprint( module , event_id , $content, $data_id, title)
 	if(typeof title == 'undefined'){
 		title = '';
 	}
+
     disableButtons();
     $.ajax({
         'type': 'GET',
@@ -860,7 +884,7 @@ var checkAttachmentFileExist = function( index ) {
     var rows = table.find('tbody tr[id!="correspondence_attachments_table_last_row"]');
 
     if (rows.length == index) {
-        return;
+        return 1;
 	}
 
 	var row = $(rows[index]);
