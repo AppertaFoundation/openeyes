@@ -380,7 +380,7 @@ if ($element->isEditable()) {
                 array('id' => 'btn_reschedule-now', 'class' => 'button small')
             );
         }
-        if ($this->checkEditAccess()) {
+        if ($this->checkEditAccess() && !$td_disabled) {
             $this->event_actions[] = EventAction::link('Reschedule later',
                 Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/booking/rescheduleLater/' . $element->event_id),
                 array('level' => 'secondary'),
