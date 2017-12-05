@@ -79,7 +79,6 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
                         <td>Hidden</td>
                         <td>Print appended</td>
                         <td>Event</td>
-                        <td>Short Code</td>
                         <td>Title</td>
                         <td>Action</td>
                     </tr>
