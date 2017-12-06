@@ -115,9 +115,9 @@
                         <?php 
                             $contact_name = isset($macro["contact_name"]) ? $macro["contact_name"] : null;
                             $contact_type = isset($macro["contact_type"]) ? $macro["contact_type"] : null;
-
+                            $contact_id = isset($macro["contact_id"]) ? $macro["contact_id"] : null;
                             $this->renderPartial('//docman/table/contact_name_address', array(
-                                        'contact_id' => $macro["contact_id"],
+                                        'contact_id' => $contact_id,
                                         'contact_name' => $contact_name,
                                         'address_targets' => $element->address_targets,
                                         'is_editable_address' => ucfirst(strtolower($contact_type)) != 'Gp',
