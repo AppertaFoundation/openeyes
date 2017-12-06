@@ -291,7 +291,7 @@
     </section>
 <?php } ?>
 
-<?php if ($element->status->name === 'Cancelled' && $element->operation_cancellation_date) { ?>
+<?php if ( ($element->status->name === 'Cancelled' || $element->status->name === 'Requires rescheduling' ) && $element->operation_cancellation_date) { ?>
     <section class="element">
         <h3 class="element-title highlight">Cancellation details</h3>
         <div class="element-data">
@@ -380,7 +380,7 @@ if ($element->isEditable()) {
                 array('id' => 'btn_reschedule-now', 'class' => 'button small')
             );
         }
-        if ($this->checkEditAccess() && !$td_disabled) {
+        if ($this->checkEditAccess()) {
             $this->event_actions[] = EventAction::link('Reschedule later',
                 Yii::app()->createUrl('/' . $element->event->eventType->class_name . '/booking/rescheduleLater/' . $element->event_id),
                 array('level' => 'secondary'),
