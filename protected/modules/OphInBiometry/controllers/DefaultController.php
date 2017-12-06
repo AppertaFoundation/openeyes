@@ -137,10 +137,6 @@ class DefaultController extends BaseEventTypeController
                 }
             }
 
-            if ($this->event && $this->event->event_date > $this->event->created_date) {
-                $warning_flash_message .= '<li>The study time for this report was later than the import time. It is possible the clock was wrong on the device.</li>';
-            }
-
             foreach ($event_data as $detail) {
                 $issue_flash_message .= '<b>Data Source</b>: ' . $detail['device_name'] . ' (<i>' . $detail['device_manufacturer'] . ' ' . $detail['device_model'] . '</i>)';
 
