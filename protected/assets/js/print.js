@@ -51,7 +51,10 @@ function printEvent(printOptions)
 	printIFrameUrl(OE_print_url, printOptions);
 }
 
-function saveCanvasImagesToPdf(){
+function saveCanvasImagesToPdf( printOptions ){
+    if(typeof printOptions == "undefined"){
+        printOptions = null;
+    }
     var data = {canvas: {}};
     var has_canvas_data = false;
 
@@ -69,6 +72,7 @@ function saveCanvasImagesToPdf(){
             'success': function(resp) {
                 switch (resp) {
                     case "ok":
+                        printIFrameUrl(OE_print_url, printOptions);
                         break;
                     case "outofdate":
                         $.cookie('print',1);
