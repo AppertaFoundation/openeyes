@@ -235,6 +235,7 @@ function setRisks(ev) {
  * examination are reflected in the PCR risk calculation automatically
  */
 function mapExaminationToPcr() {
+  var left_eyedraw, right_eyedraw, risk_element;
   var examinationMap = {
       "#Element_OphTrOperationnote_Surgeon_surgeon_id": {
         "pcr": '.pcr_doctor_grade',
@@ -328,6 +329,36 @@ function mapExaminationToPcr() {
   }
 }
 
+/**
+ * when eyedraw element is loaded and intact hidden filed for e.g. pupilSize (input[id*='_pupilSize_control']) are not created
+ * @param risk_element
+ */
+function loadFromHiddenFieds(risk_element){
+    left_eyedraw = $("input[id$='_left_eyedraw").val();
+    right_eyedraw = $("input[id$='_right_eyedraw").val();
+
+    if(left_eyedraw){
+        left_eyedraw = JSON.parse( $("input[id$='_left_eyedraw").val() );
+        $.each(left_eyedraw, function(key, outer_value) {
+            $.each(outer_value, function(key, value) {
+                if(key === 'pupilSize'){
+                    risk_element.find('.left-eye').find("select.pcrrisk_pupil_size").val(value);
+                }
+            });
+        });
+    }
+
+    if(right_eyedraw){
+        right_eyedraw = JSON.parse( $("input[id$='_right_eyedraw").val() );
+        $.each(right_eyedraw, function(key, outer_value) {
+            $.each(outer_value, function(key, value) {
+                if(key === 'pupilSize'){
+                    risk_element.find('.right-eye').find("select.pcrrisk_pupil_size").val(value);
+                }
+            });
+        });
+    }
+}
 /**
  * Capitalises the first letter of a string
  *
