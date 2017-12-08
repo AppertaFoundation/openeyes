@@ -210,9 +210,14 @@ OpenEyes.OphCiExamination.AnteriorSegmentController = (function (ED) {
    */
   AnteriorSegmentController.prototype.primaryDrawingNotification = function (msgArray) {
     switch (msgArray['eventName']) {
-      case 'ready':
+        case 'ready':
         if (this.secondaryDrawingReady()) {
           this.loadSecondaryDoodles();
+        }
+        //when PCR risk was already open and AnteriorSegment opened we need to syn with the PCR element
+        //pcr_init can be defined multiple places depening on the event type e.g.: form_Element_OphCiExamination_PcrRisk.php
+        if(typeof pcr_init === 'function'){
+            pcr_init();
         }
         break;
       case 'doodlesLoaded':
