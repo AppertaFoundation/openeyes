@@ -195,6 +195,11 @@ return array(
             ),
         ),
     ),
+
+    ######################################################################
+    # Examination Event
+    ######################################################################
+
     array(
         'name' => 'Examination Overview',
         'id' => 'examination-overview',
@@ -240,6 +245,12 @@ return array(
             ),
         ),
     ),
+
+
+######################################################################
+# Biometry Event
+######################################################################
+
     array(
         'name' => 'Select Biometry Report',
         'id' => 'biometry-select-report',
@@ -270,4 +281,61 @@ return array(
             ),
         ),
     ),
+    array(
+        'name' => 'Making your lens choice',
+        'id' => 'biometry-lens-choice',
+        'auto' => true,
+        'url_pattern' => '|^/OphInBiometry/default/update/|i',
+        'position' => 6,
+        'steps' => array(
+            array(
+                'element' => "[id^='Element_OphInBiometry_Selection_lens_id']:first",
+                'title' => 'Choose lens',
+                'content' => "First, select your preferred lens, then your preferred formula from these boxes. You will then be shown a choice of target refractions",
+                'placement' => 'auto',
+                'backdropElement' => "[id$='-eye-selection']:first",
+            ),
+            array(
+                'element' => "[id$='-eye-selection']:first table:visible",
+                'title' => 'Choose Power',
+                'content' => "Select the row in the table that most closely matches your desired post-operative refraction.<br><br><b>The closest option to your previously indicated target is in bold</b><br><br>These choices ae calculated by your device. If you calculate more target refractions on your device, they will be added to this list",
+                'placement' => 'bottom',
+                'backdropElement' => "[id$='-eye-selection']:first",
+            ),
+            array(
+                'element' => "section.Element_OphInBiometry_Measurement.element:first",
+                'content' => "Latest known refration and Visual Acuity is displayed here to help you with your choice, along with all the eye measurements",
+                'placement' => 'auto',
+
+            ),
+            array(
+                'element' => "button#et_save",
+                'content' => "Once you've finished making your choice(s), click save to finalise. Your choice will then be pulled automatically into the Operation Note. It will also show on the electronic Theatre Whireboard.",
+                'placement' => 'auto',
+
+            ),
+        ),
+    ),
+
+
+    ######################################################################
+    # Operation Booking Event
+    ######################################################################
+
+    array(
+        'name' => 'Theatre whiteboard',
+        'id' => 'op-booking-whiteboard-button',
+        'auto' => true,
+        'url_pattern' => '|^/OphTrOperationbooking/default/view/|i',
+        'position' => 6,
+        'steps' => array(
+            array(
+                'element' => "a:contains('Display Whiteboard')",
+                'title' => 'Whiteboard view',
+                'content' => "Clicking this button will bring up the theatre whiteboard view.<br/><br/>You can use this to record important comments / reminders to be shown during the operation.<br/><br/>The whiteboard will update when you make a lens selection or if any risks/allergies are recorded against the patient",
+                'placement' => 'auto'
+            ),
+        ),
+    ),
+
 );
