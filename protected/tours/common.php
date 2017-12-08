@@ -116,7 +116,7 @@ return array(
         'name' => 'Patient Header and summary',
         'id' => 'patient-summary-intro',
         'auto' => true,
-        'url_pattern' => '|^/patient/episode.?/|i',
+        'url_pattern' => '|^/patient/episode/|i',
         'position' => 30,
         'steps' => array(
             array(
@@ -138,7 +138,8 @@ return array(
         'name' => 'Events Intro',
         'id' => 'events-intro',
         'auto' => true,
-        'url_pattern' => '|^/patient/episode/|i',
+        # Show when viewing an episode summary view OR when viewing an event (these are the 2 situtaions in which the event list is visible)
+        'url_pattern' => '~^(/Oph.*/default/view/)|(/patient/episode/)~i',
         'position' => 10,
         'steps' => array(
             array(
@@ -159,17 +160,13 @@ return array(
             array(
                 'element' => '.add-event',
                 'title' => 'Add a new Event',
-                'content' => 'To start recording a new event, use this button.<br>There are a lot of different types of event. E.g, Examinations, Operation Notes, Consent Forms, etc.<br><br>To start recording a new event, click this button',
-            ),
-            array(
-                'element' => ".oe-create-event-popup",
-                'content' => "blahhhhhhh",
+                'content' => 'To start recording a new event, use this button.<br>There are a lot of different types of event. E.g, Examinations, Operation Notes, Consent Forms, etc.',
             ),
         ),
     ),
     array(
         'name' => 'Create Event Intro',
-        'id' => 'crete-event-intro',
+        'id' => 'create-event-intro',
         'auto' => true,
         'url_pattern' => '|^/patient/episode.?/|i',
         'position' => 5,
@@ -241,6 +238,36 @@ return array(
                 'content' => 'Exam events may be completed in a number of \'steps\' by different people (with each person completing different sections).<br>When you are in a multi-step workflow, the current step name is shown here in brackets' ,
                 'placement' => 'bottom',
             ),
-        )
-    )
+        ),
+    ),
+    array(
+        'name' => 'Select Biometry Report',
+        'id' => 'biometry-select-report',
+        'auto' => true,
+        'url_pattern' => '|^/OphInBiometry/Default/create|i',
+        'position' => 5,
+        'steps' => array(
+            array(
+                'element' => 'form#biometry-event-select div.element-fields',
+                'title' => 'Choose an available report',
+                'content' => "This is a list of all the reports available for this patient from your biometry device(es). Please select which of these reports you would like to use and click the Continue button",
+                'placement' => 'top',
+            ),
+        ),
+    ),
+    array(
+        'name' => 'How to choose a lens (1)',
+        'id' => 'biometry-point-to-lens',
+        'auto' => true,
+        'url_pattern' => '|^/OphInBiometry/default/view/|i',
+        'position' => 6,
+        'steps' => array(
+            array(
+                'element' => "li a:contains('Edit')",
+                'title' => 'TIP:',
+                'content' => "When you want to select a lens for surgery, Click this button",
+                'placement' => 'auto',
+            ),
+        ),
+    ),
 );
