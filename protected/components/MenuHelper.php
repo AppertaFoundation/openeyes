@@ -138,7 +138,7 @@ class MenuHelper
             if (isset($menu_item['api'])) {
                 $api = Yii::app()->moduleAPI->get($menu_item['api']);
                 foreach ($api->getMenuItems($menu_item['position']) as $item) {
-                    $menu[$position] = $item;
+                    $menu[$position++] = $item;
                 }
             } else {
                 $menu[$position] = $menu_item;
