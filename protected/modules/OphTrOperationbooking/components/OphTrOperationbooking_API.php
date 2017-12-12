@@ -242,7 +242,8 @@ class OphTrOperationbooking_API extends BaseAPI
     public function getMostRecentBookingEye(Patient $patient, $use_context = false)
     {
         $eye = null;
-        if( !Yii::app()->getModule('OphTrOperationbooking')->isTheatreDiaryDisabled() ){
+
+        if( Yii::app()->getModule('OphTrOperationbooking')->isTheatreDiaryDisabled() ){
             // $booking_operation is Element_OphTrOperationbooking_Operation here
             $booking_operation = $this->getMostRecentOpBooking($patient);
             $eye = $booking_operation->eye;
