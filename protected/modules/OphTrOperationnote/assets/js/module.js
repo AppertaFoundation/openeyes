@@ -555,8 +555,7 @@ function sidePortController(_drawing) {
 
                 // Keep sideports in sync with PhakoIncision while surgeon is still syncing with it
                 // !isNaN(surgeonRotation) : because at the beginning "rotation" is undefined
-                if (masterDoodle.className == "PhakoIncision" && masterDoodle.willSync && !Number.isNaN(surgeonRotation)) {
-                    surgeonRotation
+                if (masterDoodle.className == "PhakoIncision" && masterDoodle.willSync && typeof surgeonRotation === 'number') {
 
                     if (typeof(sidePort1) != 'undefined') {
                         sidePort1.setSimpleParameter('rotation', (surgeonRotation + Math.PI / 2) % (2 * Math.PI));

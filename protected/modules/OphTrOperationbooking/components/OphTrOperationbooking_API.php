@@ -216,16 +216,43 @@ class OphTrOperationbooking_API extends BaseAPI
      */
     public function getMostRecentBooking(Patient $patient, $use_context = false)
     {
-        foreach ($this->getElements(
+        $elements = $this->getElements(
             'Element_OphTrOperationbooking_Operation',
             $patient,
             $use_context
-        ) as $operation_element) {
+        );
+
+        foreach ($elements as $operation_element) {
 
             if ($operation_element->booking) {
                 return $operation_element->booking;
             }
         }
+    }
+
+    public function getMostRecentOpBooking(Patient $patient, $use_context = false)
+    {
+        return $this->getLatestElement(
+            'Element_OphTrOperationbooking_Operation',
+            $patient,
+            $use_context
+        );
+    }
+
+    public function getMostRecentBookingEye(Patient $patient, $use_context = false)
+    {
+        $eye = null;
+        if( !Yii::app()->getModule('OphTrOperationbooking')->isTheatreDiaryDisabled() ){
+            // $booking_operation is Element_OphTrOperationbooking_Operation here
+            $booking_operation = $this->getMostRecentOpBooking($patient);
+            $eye = $booking_operation->eye;
+
+        } elseif ($booking = $this->getMostRecentBooking($patient)) {
+            // booking is OphTrOperationbooking_Operation_Booking
+            $eye = $booking->operation->eye;
+        }
+
+        return $eye;
     }
 
     /**
