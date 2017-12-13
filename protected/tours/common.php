@@ -102,10 +102,10 @@ return array(
         'id' => 'blank-patient-intro',
         'auto' => true,
         'url_pattern' => '|^/patient/episodes/|i',
-        'position' => 10,
+        'position' => 50,
         'steps' => array(
             array(
-                'element' => '.add-event',
+                'element' => 'div.oe-no-episodes > .add-event',
                 'title' => 'Creating first event',
                 'content' => 'This patient is new and has no events recorded.<br><br>There are a lot of different types of event in OpenEyes. E.g, Examinations, Operation Notes, Consent Forms, etc.<br><br>To start recording the first event for this patient, click this button',
                 'backdropElement' => ".oe-no-episodes"
@@ -116,7 +116,7 @@ return array(
         'name' => 'Patient Header and summary',
         'id' => 'patient-summary-intro',
         'auto' => true,
-        'url_pattern' => '|^/patient/episode/|i',
+        'url_pattern' => '|^/patient/episode[s]?/|i',
         'position' => 30,
         'steps' => array(
             array(
@@ -139,13 +139,13 @@ return array(
         'id' => 'events-intro',
         'auto' => true,
         # Show when viewing an episode summary view OR when viewing an event (these are the 2 situtaions in which the event list is visible)
-        'url_pattern' => '~^(/Oph.*/default/view/)|(/patient/episode/)~i',
-        'position' => 10,
+        'url_pattern' => '~^(/Oph.*/default/view/)|(/patient/episode[s]?/)~i',
+        'position' => 20,
         'steps' => array(
             array(
                 'element' => 'ol.events',
                 'title' => 'Event list',
-                'content' => 'As new events are recorded, they will be shown in this list. You can click on any event to view it',
+                'content' => 'Each patient encounter in OpenEyes is recorded in an event.<br/><br/>As new events are recorded, they will be shown in this list. You can click on any event to view it<br/><br/>There are lots of different types of event (e.g, Examinations, Operation Notes, Consent Forms and more). Each event type has a different icon to make it easy to identify',
             ),
             array(
                 'element' => 'div.controls',
@@ -158,7 +158,7 @@ return array(
                 'content' => 'To see a subspecialty-specific summary screen for this patient, click on the subspecialty name here.<br><br>There will be a different summary for each subspecialty that the patient is active in.',
             ),
             array(
-                'element' => '.add-event',
+                'element' => 'div.oe-sidebar-top-buttons > .add-event',
                 'title' => 'Add a new Event',
                 'content' => 'To start recording a new event, use this button.<br>There are a lot of different types of event. E.g, Examinations, Operation Notes, Consent Forms, etc.',
             ),
@@ -169,7 +169,7 @@ return array(
         'id' => 'create-event-intro',
         'auto' => true,
         'url_pattern' => '|^/patient/episode.?/|i',
-        'position' => 5,
+        'position' => 25,
         'steps' => array(
             array(
                 'element' => 'td.step-subspecialties',
