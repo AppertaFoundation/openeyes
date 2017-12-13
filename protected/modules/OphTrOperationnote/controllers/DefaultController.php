@@ -577,6 +577,10 @@ class DefaultController extends BaseEventTypeController
             }
 
             if ($api = $this->getApp()->moduleAPI->get('OphTrOperationbooking')) {
+
+                /* TODO?: When we select the Operation (not the Emergency) the url has GET[booking_event_id], shouldn't we use it
+                          instead of the Most recent booking
+                */
                 $eye = $api->getMostRecentBookingEye($this->patient);
             }
         }

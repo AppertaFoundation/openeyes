@@ -230,6 +230,13 @@ class OphTrOperationbooking_API extends BaseAPI
         }
     }
 
+    /**
+     * Returns the most recent instance of the Element_OphTrOperationbooking_Operation element if it exists.
+     *
+     * @param Patient $patient
+     * @param bool $use_context
+     * @return BaseEventTypeElement|null
+     */
     public function getMostRecentOpBooking(Patient $patient, $use_context = false)
     {
         return $this->getLatestElement(
@@ -239,6 +246,15 @@ class OphTrOperationbooking_API extends BaseAPI
         );
     }
 
+    /**
+     * Returns the eye AR of the most recent instance of the Op Booking if it exists.
+     * Either Element_OphTrOperationbooking_Operation or OphTrOperationbooking_Operation_Booking
+     * depends on If the theatre diary is dieabled or not.
+     *
+     * @param Patient $patient
+     * @param bool $use_context
+     * @return Eye|null
+     */
     public function getMostRecentBookingEye(Patient $patient, $use_context = false)
     {
         $eye = null;
