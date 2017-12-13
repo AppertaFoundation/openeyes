@@ -152,7 +152,7 @@ class HistoryRisksEntry extends \BaseElement
     {
         if ($this->has_risk === (string) static::$PRESENT) {
             return 'Present';
-        } elseif ($this->has_risk === static::$NOT_PRESENT) {
+        } elseif ($this->has_risk === (string) static::$NOT_PRESENT) {
             return 'Not present';
         }
         return 'Not checked';
