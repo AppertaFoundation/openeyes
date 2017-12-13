@@ -563,7 +563,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function getSelectedEyeForEyedraw()
     {
-        $eye = new Eye();
+        $eye = null;
 
         if (!empty($_POST['Element_OphTrOperationnote_ProcedureList']['eye_id'])) {
             $eye = Eye::model()->findByPk($_POST['Element_OphTrOperationnote_ProcedureList']['eye_id']);
@@ -576,20 +576,20 @@ class DefaultController extends BaseEventTypeController
                 $this->setPatient($this->getApp()->request->getParam('patient_id'));
             }
 
-            if ($api = $this->getApp()->moduleAPI->get('OphTrOperationbooking')) {
+            $booking_event_id = $this->getApp()->request->getParam('booking_event_id');
 
-                /* TODO?: When we select the Operation (not the Emergency) the url has GET[booking_event_id], shouldn't we use it
-                          instead of the Most recent booking
-                */
-                $eye = $api->getMostRecentBookingEye($this->patient);
+            if ($booking_event_id) {
+                $operation = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($booking_event_id));
+                $eye = $operation ? $operation->eye : null;
             }
         }
 
-        if ($eye->name == 'Both') {
+        if ($eye && $eye->name == 'Both') {
             $eye = Eye::model()->find('name=?', array('Right'));
         }
 
-        return $eye;
+        //return Right if eye isn't set
+        return $eye ? $eye : Eye::model()->find('name=?', array('Right'));
     }
 
     /**

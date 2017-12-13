@@ -216,60 +216,16 @@ class OphTrOperationbooking_API extends BaseAPI
      */
     public function getMostRecentBooking(Patient $patient, $use_context = false)
     {
-        $elements = $this->getElements(
+        foreach ($this->getElements(
             'Element_OphTrOperationbooking_Operation',
             $patient,
             $use_context
-        );
-
-        foreach ($elements as $operation_element) {
+        ) as $operation_element) {
 
             if ($operation_element->booking) {
                 return $operation_element->booking;
             }
         }
-    }
-
-    /**
-     * Returns the most recent instance of the Element_OphTrOperationbooking_Operation element if it exists.
-     *
-     * @param Patient $patient
-     * @param bool $use_context
-     * @return BaseEventTypeElement|null
-     */
-    public function getMostRecentOpBooking(Patient $patient, $use_context = false)
-    {
-        return $this->getLatestElement(
-            'Element_OphTrOperationbooking_Operation',
-            $patient,
-            $use_context
-        );
-    }
-
-    /**
-     * Returns the eye AR of the most recent instance of the Op Booking if it exists.
-     * Either Element_OphTrOperationbooking_Operation or OphTrOperationbooking_Operation_Booking
-     * depends on If the theatre diary is dieabled or not.
-     *
-     * @param Patient $patient
-     * @param bool $use_context
-     * @return Eye|null
-     */
-    public function getMostRecentBookingEye(Patient $patient, $use_context = false)
-    {
-        $eye = null;
-
-        if( Yii::app()->getModule('OphTrOperationbooking')->isTheatreDiaryDisabled() ){
-            // $booking_operation is Element_OphTrOperationbooking_Operation here
-            $booking_operation = $this->getMostRecentOpBooking($patient);
-            $eye = $booking_operation->eye;
-
-        } elseif ($booking = $this->getMostRecentBooking($patient)) {
-            // booking is OphTrOperationbooking_Operation_Booking
-            $eye = $booking->operation->eye;
-        }
-
-        return $eye;
     }
 
     /**
