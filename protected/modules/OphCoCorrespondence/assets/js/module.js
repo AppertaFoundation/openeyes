@@ -258,7 +258,7 @@ $(document).ready(function() {
 		}
 	});
 
-    $('#et_saveprint, #et_save').click(function(e){
+    $('#et_save').click(function(e){
         e.preventDefault();
         var attachment_check = checkAttachmentFileExist( 0 );
 
@@ -276,7 +276,28 @@ $(document).ready(function() {
                 $('#'+event_form ).submit();
             });
 		}
+    });
 
+    $('#et_saveprint').click(function(e){
+        e.preventDefault();
+        var attachment_check = checkAttachmentFileExist( 0 );
+
+        var event_button = $(this);
+        var event_form = event_button.attr('form');
+        $('#'+event_form ).append('<input type="hidden" name="saveprint" value="1" /> ');
+
+        if(attachment_check == 1){
+            disableButtons();
+            $('#ElementLetter_draft').val(0);
+
+            $('#'+event_form ).submit();
+        } else {
+            $(document).ajaxStop(function() {
+                disableButtons();
+                $('#ElementLetter_draft').val(0);
+                $('#'+event_form ).submit();
+            });
+        }
     });
 
     $('#et_savedraft').click(function(e){
