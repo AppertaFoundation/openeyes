@@ -841,7 +841,7 @@ $(document).ready(function() {
 		}
 	});
 
-	$('#attachments_content_container').on('change', 'select#description', function(e){
+	$('#attachments_content_container').on('change', 'select#attachment_events', function(e){
         disableButtons();
 
         $select = $(this);

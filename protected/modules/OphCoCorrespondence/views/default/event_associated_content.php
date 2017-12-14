@@ -98,11 +98,10 @@
 
                         foreach($posted_data as $pdk => $pdv){
                             $event = Event::model()->findByPk($pdv);
-                            $value->id++;
                             $key++;
                             ?>
 
-                            <tr data-key = "<?= $value->id ?>" data-id="<?= $key ?>">
+                            <tr data-key = "<?=  $event->id  ?>" data-id="<?= $key ?>">
                                 <input type="hidden" name="file_id[<?= $key ?>]" value="<?= $_POST['file_id'][$pdk] ?>" />
                                 <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $key ?>]" value="<?=  $_POST['attachments_event_id'][$pdk] ?>" />
                                 <td><?= $event->eventType->name ?></td>
@@ -124,17 +123,26 @@
                     <td colspan="2"><td>
                     <td>
                         <?php
-                        $current_episode = $patient->getEpisodeForCurrentSubspecialty();
-
                         $criteria = new CDbCriteria();
-                        $criteria->with = array("eventType"=>array("select"=>"name"));
-                        $criteria->compare('t.episode_id', $current_episode->id);
-                        $criteria->order = 't.event_date desc';
+                        $criteria->with =
+                            array('episode' =>
+                                array('with' =>
+                                    array(
+                                        'firm' => array(
+                                            'with' => 'serviceSubspecialtyAssignment'
+                                        ),
+                                        'patient'
+                                    )
+                                ),
+                                "eventType"=>array("select"=>"name")
+                            );
+                        $criteria->compare('episode.patient_id', $patient->id);
+                        $criteria->order = 't.event_date desc, t.created_date desc';
 
                         $events = Event::model()->findAll($criteria);
-                        ?>
-                    <?= CHtml::dropDownList(
-                            'description',
+
+                        echo CHtml::dropDownList(
+                            'attachment_events',
                             ' ',
                             CHtml::listData($events,'id',function($events) {
                                 return CHtml::encode($events->eventType->name. ' - '.Helper::convertDate2NHS($events->event_date));
