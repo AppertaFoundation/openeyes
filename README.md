@@ -33,15 +33,15 @@ If you need to share repositories with members of the core development team, you
 
 OpenEyes follows the [gitflow](http://nvie.com/posts/a-successful-git-branching-model/) model for git branches. As such, the stable release branch is always on master. For bleeding edge development, use the develop branch.
 
-Setup and installation documentation is available from the README file in the [oe_installer repository](https://github.com/openeyes/oe_installer.)
+Setup and installation documentation is available from the README file in the [oe_installer repository](https://github.com/appertafoundation/oe_installer.)
 
-We are beginning to evolve some documentation for developers on [our github wiki](https://github.com/openeyes/OpenEyes/wiki) including [coding guidelines](https://github.com/openeyes/OpenEyes/wiki/Coding-Guidelines), [working with the core team](https://github.com/openeyes/OpenEyes/wiki/Working-With-The-Core-Team) and our [Event type module development guide](https://github.com/openeyes/OpenEyes/wiki/Event-Type-Module-Development-Guide).
+We are beginning to evolve some documentation for developers on [our github wiki](https://github.com/appertafoundation/OpenEyes/wiki) including [coding guidelines](https://github.com/openeyes/appertafoundation/wiki/Coding-Guidelines), [working with the core team](https://github.com/openeyes/appertafoundation/wiki/Working-With-The-Core-Team) and our [Event type module development guide](https://github.com/openeyes/appertafoundation/wiki/Event-Type-Module-Development-Guide).
 
-Issues in the core should be logged through the [github issues system](https://github.com/openeyes/OpenEyes/issues) for the moment.  Though we will be making our internal JIRA system available in due course, and will transition logged issues across to this so that we can keep everything in one place  Links for this will follow when this becomes available.
+Issues in the core should be logged through the [github issues system](https://github.com/appertafoundation/OpenEyes/issues) for the moment.  Though please be aware that no service level agreement exists for the open source project and no support can be given via github. The team will do their best to fix any critical issues reported, but no gaurantees are given. For official support with SLAs, please contact our commercial partner, [ABEHR Digital](http://abehr.com)
 
 Dev Setup
 ---------
-To make life easier and also help ensure consistency in environments we use [Vagrant](http://vagrantup.com). Full setup instructions can be found in the [oe_installer repository](https://github.com/openeyes/oe_installer)
+To make life easier and also help ensure consistency in environments we use [Vagrant](http://vagrantup.com). Full setup instructions can be found in the [oe_installer repository](https://github.com/appertafoundation/oe_installer)
 
 Once the build has finished you can access OpenEyes using the link:
 
@@ -51,7 +51,7 @@ Once the build has finished you can access OpenEyes using the link:
 
 ## Command Line Options
 
-To allow for multiple environments to be built at the same time the hostname and the servername (used in the VM GUI to identify machines) can be changed via the command line as below when building the VM:
+(OPTIONAL) To allow for multiple environments to be built at the same time the hostname and the servername (used in the VM GUI to identify machines) can be changed via the command line as below when building the VM:
 
 	--hostname="openeyes.dev.local"
 	--servername="My Open Eyes Dev Server"
@@ -64,7 +64,7 @@ If either are omitted the default vales of "openeyes.vm"" and "OpenEyes Dev Serv
 
 **Note:** if the options are omitted the default values are used, the command line options have to be before the vagrant command for them to work.
 
-**Further Note:** These options must be used each time the box is brought up; at the moment vagrant does not respect the original values used, and will fall over. See [issue 457](https://github.com/openeyes/OpenEyes/issues/457)
+**Further Note:** These options must be used each time the box is brought up; at the moment vagrant does not respect the original values used, and will fall over.
 
 ### Useful Vagrant Commands
 
@@ -82,4 +82,4 @@ Printing
 --------
 
 OpenEyes now supports full PDF printing using wkhtmltopdf, but it needs to be compiled with a patched QT library in order to work properly. As of version 1.12 a pre-compiled binary
-is shipped in the oe_installer repository. However, should you need to re-compile it, you can find instructions for doing this [here](https://github.com/openeyes/OpenEyes/wiki/Compiling-WKHtmlToPDF-to-enable-PDF-printing).
+is shipped in the oe_installer repository. However, should you need to re-compile it, you can find instructions for doing this [here](https://github.com/openeyes/appertafoundation/wiki/Compiling-WKHtmlToPDF-to-enable-PDF-printing).
