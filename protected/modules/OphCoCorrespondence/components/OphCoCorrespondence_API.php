@@ -652,7 +652,7 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getPortalUrl()
     {
-        return isset(Yii::app()->params['portal']['uri']) ? Yii::app()->params['portal']['uri'] : null;
+        return isset(Yii::app()->params['portal']['frontend_url']) ? Yii::app()->params['portal']['frontend_url'] : null;
     }
 
     /*

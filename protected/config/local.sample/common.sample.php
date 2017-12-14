@@ -164,6 +164,7 @@ $config = array(
         //'worklist_ignore_date => 'Y-m-d',
         'portal' => array(
             'uri' => 'http://api.localhost:8000',
+            'frontend_url' => 'https://oegateway.org.uk/',
             'endpoints' => array(
                 'auth' => '/oauth/access',
                 'examinations' => '/examinations/searches',
