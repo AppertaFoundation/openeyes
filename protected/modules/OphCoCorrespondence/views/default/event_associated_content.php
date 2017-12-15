@@ -101,7 +101,7 @@
                             $key++;
                             ?>
 
-                            <tr data-key = "<?=  $event->id  ?>" data-id="<?= $key ?>">
+                            <tr data-id="<?= $key ?>">
                                 <input type="hidden" name="file_id[<?= $key ?>]" value="<?= $_POST['file_id'][$pdk] ?>" />
                                 <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $key ?>]" value="<?=  $_POST['attachments_event_id'][$pdk] ?>" />
                                 <td><?= $event->eventType->name ?></td>
@@ -137,6 +137,7 @@
                                 "eventType"=>array("select"=>"name")
                             );
                         $criteria->compare('episode.patient_id', $patient->id);
+                        $criteria->compare('t.deleted', 0);
                         $criteria->order = 't.event_date desc, t.created_date desc';
 
                         $events = Event::model()->findAll($criteria);
