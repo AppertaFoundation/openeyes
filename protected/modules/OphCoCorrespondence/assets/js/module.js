@@ -63,9 +63,7 @@ function updateCorrespondence(macro_id)
                 resetInternalReferralFields();
 
 				$('#attachments_content_container').html(data.associated_content);
-				if(parseInt(data.checkAttachmentFileExist) == 1){
-                    checkAttachmentFileExist( 0 );
-				}
+
             }
         });
     }

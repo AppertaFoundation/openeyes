@@ -17,7 +17,7 @@
                 if(empty($patient)){
                     $patient = $this->patient;
                 }
-                $key = 0;
+                $row_index = 0;
                 $event_id_compare = array();
 
                 foreach($associated_content as $key => $value){
@@ -57,39 +57,40 @@
                     }
                     $event_id_compare[] = $event->id;
                 ?>
-                <tr data-key = "<?= $value->id ?>" data-id="<?= $key ?>">
+                <tr data-id="<?= $row_index ?>">
                     <?php
 
                     if(isset($_POST['attachments_event_id'])){ ?>
 
-                        <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $key ?>]" value="<?= $_POST['attachments_event_id'][$key] ?>" />
+                        <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $row_index ?>]" value="<?= $_POST['attachments_event_id'][$row_index] ?>" />
                     <?php } else if(isset($value->associated_protected_file_id)){ ?>
-                        <input type="hidden" name="file_id[<?= $key ?>]" value="<?= $value->associated_protected_file_id ?>" />
-                        <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $key ?>]" value="<?= $event->id ?>" />
+                        <input type="hidden" name="file_id[<?= $row_index ?>]" value="<?= $value->associated_protected_file_id ?>" />
+                        <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $row_index ?>]" value="<?= $event->id ?>" />
                     <?php }
 
                     if(isset($_POST['attachments_display_title'])){
-                        $display_title = $_POST['attachments_display_title'][$key];
+                        $display_title = $_POST['attachments_display_title'][$row_index];
                     } else {
                         $display_title = (isset($ac->display_title) ? $ac->display_title : $event_name);
                     }
                     ?>
 
                     <td><?= $event_name ?></td>
-                    <td><input type="text" class="attachments_display_title" name="attachments_display_title[<?= $key ?>]"   value="<?= $display_title ?>" /></td>
+                    <td><input type="text" class="attachments_display_title" name="attachments_display_title[<?= $row_index ?>]"   value="<?= $display_title ?>" /></td>
                     <td>
-                        <input type="hidden" name="attachments_event_id[<?= $key ?>]" value="<?= $event->id ?>" />
-                        <input type="hidden" name="attachments_id[<?= $key ?>]" value="<?= $ac->id ?>" />
-                        <input type="hidden" name="attachments_system_hidden[<?= $key ?>]" value="<?= $ac->is_system_hidden ?>" />
-                        <input type="hidden" name="attachments_print_appended[<?= $key ?>]" value="<?= $ac->is_print_appended ?>" />
-                        <input type="hidden" name="attachments_short_code[<?= $key ?>]" value="<?= $ac->short_code ?>" />
+                        <input type="hidden" name="attachments_event_id[<?= $row_index ?>]" value="<?= $event->id ?>" />
+                        <input type="hidden" name="attachments_id[<?= $row_index ?>]" value="<?= $ac->id ?>" />
+                        <input type="hidden" name="attachments_system_hidden[<?= $row_index ?>]" value="<?= $ac->is_system_hidden ?>" />
+                        <input type="hidden" name="attachments_print_appended[<?= $row_index ?>]" value="<?= $ac->is_print_appended ?>" />
+                        <input type="hidden" name="attachments_short_code[<?= $row_index ?>]" value="<?= $ac->short_code ?>" />
                         <?= $event_date ?>
                     </td>
                     <td>
                         <button class="button small warning remove">remove</button>
                     </td>
                 </tr>
-                <?php }
+                <?php $row_index++;
+                }
 
                 if(isset($_POST['attachments_event_id'])){
 
@@ -98,15 +99,14 @@
 
                         foreach($posted_data as $pdk => $pdv){
                             $event = Event::model()->findByPk($pdv);
-                            $value->id++;
-                            $key++;
+                            $row_index++;
                             ?>
 
-                            <tr data-key = "<?= $value->id ?>" data-id="<?= $key ?>">
-                                <input type="hidden" name="file_id[<?= $key ?>]" value="<?= $_POST['file_id'][$pdk] ?>" />
-                                <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $key ?>]" value="<?=  $_POST['attachments_event_id'][$pdk] ?>" />
+                            <tr data-id="<?= $row_index ?>">
+                                <input type="hidden" name="file_id[<?= $row_index ?>]" value="<?= $_POST['file_id'][$pdk] ?>" />
+                                <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $row_index ?>]" value="<?=  $_POST['attachments_event_id'][$pdk] ?>" />
                                 <td><?= $event->eventType->name ?></td>
-                                <td><input type="text" class="attachments_display_title" name="attachments_display_title[<?= $key ?>]"   value="<?= $_POST['attachments_display_title'][$pdk] ?>" /></td>
+                                <td><input type="text" class="attachments_display_title" name="attachments_display_title[<?= $row_index ?>]"   value="<?= $_POST['attachments_display_title'][$pdk] ?>" /></td>
                                 <td>
                                     <?= Helper::convertDate2NHS($event->event_date); ?>
                                 </td>
@@ -120,7 +120,7 @@
                 }
                 ?>
 
-                <tr id="correspondence_attachments_table_last_row" data-id="<?= $key+1 ?>">
+                <tr id="correspondence_attachments_table_last_row" data-id="<?= $row_index ?>">
                     <td colspan="2"><td>
                     <td>
                         <?php

@@ -296,8 +296,6 @@ class DefaultController extends BaseEventTypeController
                 'api'       => Yii::app()->moduleAPI->get('OphCoCorrespondence'),
             ), true);
 
-            $data['checkAttachmentFileExist'] = 1;
-
         } else {
             $data['associated_content'] = $this->renderPartial('event_associated_content_select', array(
                 'patient' => $patient,
