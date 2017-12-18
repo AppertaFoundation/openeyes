@@ -48,7 +48,11 @@ class AdminController extends BaseAdminController
         $this->jsVars['common_ophthalmic_disorder_group_options'] = $data;
 
         $errors = array();
-        $subspecialty_id = Yii::app()->request->getParam('subspecialty_id', 1);
+        $subspecialties = Subspecialty::model()->findAll(array('order'=>'name'));
+        $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
+        if(!$subspecialty_id){
+            $subspecialty_id = (isset($subspecialties[0]) && isset($subspecialties[0]->id)) ? $subspecialties[0]->id : null;
+        }
 
         if( Yii::app()->request->isPostRequest){
 
@@ -138,7 +142,7 @@ class AdminController extends BaseAdminController
                 'pagination' => false,
             )),
             'subspecialty_id' => $subspecialty_id,
-            'subspecialty' => Subspecialty::model()->findAll()
+            'subspecialty' => $subspecialties,
         ));
     }
 
