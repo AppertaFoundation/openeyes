@@ -101,7 +101,7 @@ class Helper
     public static function convertDate2NHS($value, $empty_string = '-')
     {
         $time = strtotime($value);
-        if ($time) {
+        if ($time !== false) {
             return date(self::NHS_DATE_FORMAT, $time);
         } else {
             return $empty_string;
@@ -111,7 +111,7 @@ class Helper
     public static function convertDate2HTML($value, $empty_string = '-')
     {
         $time = strtotime($value);
-        if ($time) {
+        if ($time !== false) {
             return '<span class="day">'.date('j', $time).'</span><span class="mth">'.date('M', $time).'</span><span class="yr">'.date('Y', $time).'</span>';
         } else {
             return $empty_string;
@@ -129,7 +129,7 @@ class Helper
     {
         $time = strtotime($value);
 
-        return $time ? $time * 1000 : null;
+        return $time !== false ? $time * 1000 : null;
     }
 
     /**
