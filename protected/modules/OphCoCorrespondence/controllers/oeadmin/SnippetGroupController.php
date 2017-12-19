@@ -80,6 +80,9 @@ class SnippetGroupController extends ModuleAdminController
                 ),
             ),
         ));
+
+        $this->admin->addExtraButton(array('add-snippet' => '/' . $this->module->id . '/oeadmin/snippet/edit/'));
+
         $this->admin->editModel();
     }
 

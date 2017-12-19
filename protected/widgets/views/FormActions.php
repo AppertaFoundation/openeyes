@@ -30,6 +30,14 @@
 		<?php if ($buttonOptions['delete']) {
     echo EventAction::button($buttonOptions['delete'], 'delete', array(), array('class' => 'warning button small'))->toHtml();
 }?>
+        <?php
+        if(isset($buttonOptions['add-snippet'])){
+
+            // GenericAdmin and FormActions is so great that I cannot add extra buttons dynamically.... so let's just hardcode here
+            //@TODO: get rid of the GenericAdmin (+FormActions) to not to risk devs mental health
+
+            echo EventAction::link('Add Snippet', $buttonOptions['add-snippet'], array(), array('type' => 'button', 'class' => 'button small'))->toHtml();
+         } ?>
 		<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 	</div>
 </div>
