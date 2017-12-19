@@ -74,12 +74,15 @@ EOD;
         }
     }
 
-    public function actionDown($level = 1)
+    public function actionDown($level = 1, $connectionID = 'db')
     {
+        /* @var CDbConnection $db */
+        $db = Yii::app()->getComponent($connectionID);
+
         $commandPath = Yii::getPathOfAlias('application.commands');
         $modules = Yii::app()->modules;
         $moduleDir = 'application.modules.';
-        $migrationNames = Yii::app()->db->createCommand()->select('version')->from('tbl_migration')->order('version DESC')->limit($level)->queryAll();
+        $migrationNames = $db->createCommand()->select('version')->from('tbl_migration')->order('version DESC')->limit($level)->queryAll();
 
         $moduleFile = false;
 
@@ -94,6 +97,10 @@ EOD;
                         'down',
                         '--migrationPath='.$moduleDir.$module.'.migrations',
                     );
+
+                    if ($connectionID) {
+                        $args[] = '--connectionID='.$connectionID;
+                    }
                 }
             }
             // migration was not found in the modules
