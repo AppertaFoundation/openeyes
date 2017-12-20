@@ -241,9 +241,9 @@ $assetManager = Yii::app()->getAssetManager();
     <?php
     $form_actions = array();
     if ($admin->getCustomCancelURL() != '') {
-   //     $form_actions = array('cancel-uri' => $admin->getCustomCancelURL());
+        $form_actions = array('cancel-uri' => $admin->getCustomCancelURL());
     } else {
-  //      $form_actions = array('cancel-uri' => (Yii::app()->request->getParam('returnUri')) ? Yii::app()->request->getParam('returnUri') : '/' . $this->uniqueid . '/list');
+        $form_actions = array('cancel-uri' => (Yii::app()->request->getParam('returnUri')) ? Yii::app()->request->getParam('returnUri') : '/' . $this->uniqueid . '/list');
     }
 
     $form_actions = array_merge($this->admin->getExtraButton(), $form_actions);
