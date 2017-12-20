@@ -455,7 +455,6 @@ class DefaultController extends BaseEventTypeController
                 foreach($print_outputs as $print_output){
                     $document_target = DocumentTarget::model()->findByPk($print_output->document_target_id);
                     $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
-                    
                     //extra printout for note
                     if($document_target->ToCc == 'To' && $document_target->contact_type != 'GP'){
                         if(!Yii::app()->params['disable_correspondence_notes_copy']){
@@ -548,23 +547,25 @@ class DefaultController extends BaseEventTypeController
             $j = 1;
 
             $pdf_files[$j] = parent::actionSavePDFprint( $id );
-            foreach($associated_content as $key => $ac){
-                $j++;
-                if($ac->associated_protected_file_id){
-                    $file = ProtectedFile::model()->findByPk( $ac->associated_protected_file_id );
-                    $pdf_files[$j]['path'] = $file->getPath();
-                    $pdf_files[$j]['name'] = $file->name;
-                    $pdf_files[$j]['mime'] = $file->mimetype;
+            for($k = 1; $k<$this->pdf_print_documents; $k++) {
+                foreach ($associated_content as $key => $ac) {
+                    $j++;
+                    if ($ac->associated_protected_file_id) {
+                        $file = ProtectedFile::model()->findByPk($ac->associated_protected_file_id);
+                        $pdf_files[$j + $k]['path'] = $file->getPath();
+                        $pdf_files[$j + $k]['name'] = $file->name;
+                        $pdf_files[$j + $k]['mime'] = $file->mimetype;
+                    }
                 }
             }
 
+
             $fpdf = new PDF_JavaScript();
 
-            foreach($pdf_files as $pdf_file){
-                $pagecount = $fpdf->setSourceFile( $pdf_file['path'] );
+            foreach ($pdf_files as $pdf_file) {
+                $pagecount = $fpdf->setSourceFile($pdf_file['path']);
 
-                for($i = 1; $i <= $pagecount; $i++)
-                {
+                for ($i = 1; $i <= $pagecount; $i++) {
                     $fpdf->AddPage('P');
                     $tplidx = $fpdf->ImportPage($i);
                     $fpdf->useTemplate($tplidx);
