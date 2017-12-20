@@ -68,6 +68,14 @@ class SnippetController extends ModuleAdminController
         if ($id) {
             $this->admin->setModelId($id);
         }
+
+        $group_id = Yii::app()->request->getParam('group_id');
+
+        if(!$id && $group_id){
+            $this->admin->getModel()->letter_string_group_id = $group_id;
+        }
+
+
         $this->admin->setEditFields(array(
             'site_id' => array(
                 'widget' => 'DropDownList',
@@ -80,7 +88,6 @@ class SnippetController extends ModuleAdminController
             'letter_string_group_id' => array(
                 'widget' => 'DropDownList',
                 'options' => CHtml::listData(LetterStringGroup::model()->findAll(), 'id', 'name'),
-                'default' => Yii::app()->request->getParam('group_id'),
                 'htmlOptions' => null,
                 'hidden' => false,
                 'layoutColumns' => null,
