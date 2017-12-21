@@ -48,6 +48,6 @@
     </div>
     <?php } ?>
     <div class="row data-row">
-        <div class="large-12 column end"><div class="data-value "><?php if($element->comment) echo "<b>Comments: </b><br>".nl2br($element->comment); ?></div></div>
+        <div class="large-12 column end"><div class="data-value "><?php if($element->comment) echo "<br/><b>Comments: </b><br>".nl2br($element->comment); ?></div></div>
     </div>
 </div>

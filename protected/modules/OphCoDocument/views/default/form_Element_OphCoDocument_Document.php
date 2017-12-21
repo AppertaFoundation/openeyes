@@ -53,10 +53,10 @@
         <span class="has-tooltip fa fa-info-circle left" style="margin:3px 3px 0px 0px"></span> The following file types are accepted: <?php echo implode(', ', $this->getAllowedFileTypes()); ?>
         (Maximum size: <?=$this->getMaxDocumentSize();?> MB)
     </div>
-
-    <div class="row field-row">
+    
+    <div class="row field-row" style="padding-top:10px;">
         <div class="large-8 column">
-            <label>Comments:</label>
+            <label style="font-weight:bold">Comments:</label>
             <?php
                 echo $form->textArea($element, 'comment', array('rows' => '5', 'cols' => '80', 'class' => 'autosize', 'nowrapper' => true), false);
             ?>
