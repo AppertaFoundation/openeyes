@@ -54,5 +54,13 @@
         (Maximum size: <?=$this->getMaxDocumentSize();?> MB)
     </div>
 
+    <div class="row field-row">
+        <div class="large-8 column">
+            <label>Comments:</label>
+            <?php
+                echo $form->textArea($element, 'comment', array('rows' => '5', 'cols' => '80', 'class' => 'autosize', 'nowrapper' => true), false);
+            ?>
+        </div>
+    </div>
 </div>
 
