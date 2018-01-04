@@ -25,7 +25,7 @@ $sessions = $sessions['data'];
 <form id="admin_sessions_filters" class="panel">
 	<div class="row field-row">
 		<div class="large-2 column">
-			<?php echo CHtml::dropDownList('firm_id', @$_GET['firm_id'], Firm::model()->getListWithSpecialtiesAndEmergency(), array('empty' => '- Firm -'))?>
+			<?php echo CHtml::dropDownList('firm_id', @$_GET['firm_id'], Firm::model()->getListWithSpecialtiesAndEmergency(), array('empty' => '- ' . Firm::contextLabel() . ' -'))?>
 		</div>
 		<div class="large-2 column">
 			<?php echo CHtml::dropDownList('theatre_id', @$_GET['theatre_id'], CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->active()->findAll(), 'id', 'name'), array('empty' => '- Theatre -'))?>
@@ -130,7 +130,7 @@ $sessions = $sessions['data'];
 		<thead>
 		<tr>
 			<th><input type="checkbox" id="checkall" class="sessions" /></th>
-			<th><?php echo CHtml::link('Firm', $this->getUri(array('sortby' => 'firm')))?></th>
+			<th><?php echo CHtml::link(Firm::contextLabel(), $this->getUri(array('sortby' => 'firm')))?></th>
 			<th><?php echo CHtml::link('Theatre', $this->getUri(array('sortby' => 'theatre')))?></th>
 			<th><?php echo CHtml::link('Date', $this->getUri(array('sortby' => 'dates')))?></th>
 			<th><?php echo CHtml::link('Time', $this->getUri(array('sortby' => 'time')))?></th>
@@ -186,7 +186,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     ))?>
 <div class="row field-row">
 	<div class="large-2 column">
-		<label for="">Firm:</label>
+		<label for=""><?php echo Firm::contextLabel() ?>:</label>
 	</div>
 	<div class="large-5 column end">
 		<?php echo CHtml::dropDownList('inline_firm_id', '', Firm::model()->getListWithSpecialties(), array('empty' => '- Don\'t change -'))?>

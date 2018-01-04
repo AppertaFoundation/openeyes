@@ -97,7 +97,7 @@ class OphTrOperationbooking_Admission_Letter_Warning_Rule extends BaseTree
             'parent_rule_id' => 'Parent',
             'rule_order' => 'Rule order',
             'site_id' => 'Site',
-            'firm_id' => 'Firm',
+            'firm_id' => Firm::contextLabel(),
             'subspecialty_id' => 'Subspecialty',
             'theatre_id' => 'Theatre',
             'is_child' => 'Is child',
