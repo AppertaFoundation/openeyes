@@ -95,7 +95,7 @@ class WorklistDefinitionDisplayContext extends BaseActiveRecord
         return array(
             'site_id' => 'Site',
             'subspecialty_id' => 'Subspecialty',
-            'firm_id' => 'Firm',
+            'firm_id' => Firm::contextLabel(),
         );
     }
 

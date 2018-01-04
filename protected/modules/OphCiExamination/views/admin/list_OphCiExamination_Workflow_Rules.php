@@ -36,7 +36,7 @@
 				<tr>
 					<th><input type="checkbox" name="selectall" id="selectall" /></th>
 					<th>Subspecialty</th>
-					<th>Firm</th>
+					<th><?php echo Firm::contextLabel() ?></th>
 					<th>Episode status</th>
 					<th>Workflow</th>
 				</tr>
@@ -59,7 +59,7 @@
 							<?php echo $model->workflow->name?>
 						</td>
 					</tr>
-				<?php 
+				<?php
 }?>
 			</tbody>
 			<tfoot class="pagination-container">

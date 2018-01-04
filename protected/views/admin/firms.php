@@ -18,7 +18,7 @@
 ?>
 <div class="admin box">
 
-	<h2>Firms</h2>
+	<h2><?php echo Firm::contextLabel() ?>s</h2>
 
 	<?php $this->widget('GenericSearch', array('search' => $search)); ?>
 

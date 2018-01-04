@@ -89,7 +89,7 @@ class LetterMacro extends BaseActiveRecordVersioned
             'cc_drss' => 'CC DRSS',
             'site_id' => 'Site',
             'subspecialty_id' => 'Subspecialty',
-            'firm_id' => 'Firm',
+            'firm_id' => Firm::contextLabel(),
             'episode_status_id' => 'Episode status',
             'recipient_id' => 'Default recipient',
             'letter_type_id' => 'Letter Type'
