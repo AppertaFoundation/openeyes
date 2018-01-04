@@ -37,6 +37,8 @@ class DefaultController extends BaseEventTypeController
 
     protected $show_element_sidebar = false;
 
+    protected $pdf_output;
+
     /**
      * Adds direct line phone numbers to jsvars to be used in dropdown select.
      */
@@ -425,28 +427,45 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
-    public function actionPrint($id)
+    /**
+     * Renders one letter for one recipient internally... It returns the rendered HTML as a string
+     *
+     * @param $letter
+     * @param $recipient_address
+     * @return string
+     */
+    private function renderOneRecipient($letter, $recipient_address)
+    {
+        return $this->render('print', array(
+            'element' => $letter,
+            'letter_address' => $recipient_address
+        ), true);
+    }
+
+    /**
+     * Gets all the recipients for a letter based on the ElementLetter model
+     *
+     * @param $id
+     * @return array
+     */
+    private function getRecipients($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
 
-        $this->printInit($id);
-        $this->layout = '//layouts/print';
-        
+        $recipients = array();
+
         // after "Save and Print" button clicked we only print out what the user checked
         if( isset($_GET['OphCoCorrespondence_print_checked']) && $_GET['OphCoCorrespondence_print_checked'] == "1" ){
-            
+
             // check if the first recipient is GP
             $docunemt_instance = $letter->document_instance[0];
             $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)',array(
                 ':id' => $docunemt_instance->id, ':ToCc' => 'To', ':type_gp' => 'GP', ':type_ir' => 'INTERNALREFERRAL', ));
-            
+
             if($to_recipient_gp){
                 // print an extra copy to note
                 if(!Yii::app()->params['disable_correspondence_notes_copy']) {
-                    $this->render('print', array(
-                        'element' => $letter,
-                        'letter_address' => ($to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address)
-                    ));
+                    $recipients[] = $to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address;
                 }
             }
 
@@ -454,11 +473,11 @@ class DefaultController extends BaseEventTypeController
             if($print_outputs){
                 foreach($print_outputs as $print_output){
                     $document_target = DocumentTarget::model()->findByPk($print_output->document_target_id);
-                    $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
+                    $recipients[] = ($document_target->contact_name . "\n" . $document_target->address);
                     //extra printout for note
                     if($document_target->ToCc == 'To' && $document_target->contact_type != 'GP'){
                         if(!Yii::app()->params['disable_correspondence_notes_copy']){
-                            $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
+                            $recipients[] = $document_target->contact_name . "\n" . $document_target->address;
                         }
                     }
                 }
@@ -474,23 +493,60 @@ class DefaultController extends BaseEventTypeController
 
                 $gp_targets = $letter->getTargetByContactType("GP");
                 foreach($gp_targets as $gp_target){
-                    $this->render('print', array('element' => $letter, 'letter_address' => $gp_target->contact_name . "\n" . $gp_target->address ));
+                    $recipients[] = $gp_target->contact_name . "\n" . $gp_target->address;
                 }
 
-                return;
+                return $recipients;
             }
-            
-            $this->render('print', array('element' => $letter));
 
-            if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
-                if(!Yii::app()->params['disable_correspondence_notes_copy']) {
-                    $this->render('print', array('element' => $letter));
-                }
+            $print_outputs = $letter->getOutputByType("Print");
 
-                foreach ($letter->getCcTargets() as $letter_address) {
-                    $this->render('print', array('element' => $letter, 'letter_address' => $letter_address));
+            if($print_outputs){
+                foreach($print_outputs as $print_output){
+                    $document_target = DocumentTarget::model()->findByPk($print_output->document_target_id);
+                    $recipients[] = ($document_target->contact_name . "\n" . $document_target->address);
+                    //extra printout for note
+                    if($document_target->ToCc == 'To' && $document_target->contact_type != 'GP'){
+                        if(!Yii::app()->params['disable_correspondence_notes_copy']){
+                            $recipients[] = $document_target->contact_name . "\n" . $document_target->address;
+                        }
+                    }
                 }
             }
+
+            /* TODO: !!!!! ask Sabi!!!
+            foreach ($letter->getCcTargets() as $letter_address) {
+                    $recipients[] = $letter_address;
+            }
+            */
+        }
+        return $recipients;
+
+    }
+
+    /**
+     * The normal print action had been replaced by the PDFPrint in Correspondence...
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function actionPrint($id)
+    {
+        return true;
+    }
+
+    /**
+     * Merges a PDF file to the end of the output
+     *
+     * @param $pdf_path
+     */
+    private function addPDFToOutput($pdf_path)
+    {
+        $pagecount = $this->pdf_output->setSourceFile($pdf_path);
+        for ($i = 1; $i <= $pagecount; $i++) {
+            $this->pdf_output->AddPage('P');
+            $tplidx = $this->pdf_output->ImportPage($i);
+            $this->pdf_output->useTemplate($tplidx);
         }
     }
 
@@ -503,8 +559,21 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    /**
+     * The PDFPrint action is used in all cases, normal print action won't work!
+     * This is required to make sure that the PDF attachments can be merged to the letter.
+     * TODO: need to check audit trail!
+     *
+     * @param $id
+     * @throws Exception
+     */
     public function actionPDFPrint($id)
     {
+        $letter = ElementLetter::model()->find('event_id=?', array($id));
+
+        $this->printInit($id);
+        $this->layout = '//layouts/print';
+
         if (!$event = Event::model()->findByPk($id)) {
             throw new Exception("Event not found: $id");
         }
@@ -512,7 +581,6 @@ class DefaultController extends BaseEventTypeController
         $auto_print = Yii::app()->request->getParam('auto_print', true);
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
 
-        $letter = ElementLetter::model()->find('event_id=?', array($id));
         $print_outputs = $letter->getOutputByType("Print");
 
         if (Yii::app()->request->getQuery('all', false)) {
@@ -530,69 +598,46 @@ class DefaultController extends BaseEventTypeController
                 $output->save();
             }
         }
+        // render 1 recipient's letter + attachments at once...
+        // we need the letter as PDF
 
-        /*
-         * Attachments
-         */
+        $attachments = $letter->getAllAttachments();
+        $recipients = $this->getRecipients($id);
+        $this->pdf_output = new PDF_JavaScript();
 
-        $associated_content = EventAssociatedContent::model()
-            ->with('initAssociatedContent')
-            ->findAllByAttributes(
-                array('parent_event_id' => $id),
-                array('order' => 't.display_order asc')
-            );
+        foreach($recipients as $recipient)
+        {
+            $html_letter =  $this->renderOneRecipient($letter, $recipient);
+            $pdf_letter = $this->renderAndSavePDFFromHtml($html_letter, $inject_autoprint_js);
+            $this->addPDFToOutput($event->imageDirectory.'/event_'.$pdf_letter.".pdf");
 
-        if($associated_content){
-            $pdf_files = array();
-            $j = 1;
-
-            $pdf_files[$j] = parent::actionSavePDFprint( $id );
-            for($k = 1; $k<$this->pdf_print_documents; $k++) {
-                foreach ($associated_content as $key => $ac) {
-                    $j++;
-                    if ($ac->associated_protected_file_id) {
-                        $file = ProtectedFile::model()->findByPk($ac->associated_protected_file_id);
-                        $pdf_files[$j + $k]['path'] = $file->getPath();
-                        $pdf_files[$j + $k]['name'] = $file->name;
-                        $pdf_files[$j + $k]['mime'] = $file->mimetype;
-                    }
+            // add attachments for each
+            if(count($attachments)>0)
+            {
+                foreach ($attachments as $attachment)
+                {
+                    $this->addPDFToOutput($attachment['path']);
                 }
             }
-
-
-            $fpdf = new PDF_JavaScript();
-
-            foreach ($pdf_files as $pdf_file) {
-                $pagecount = $fpdf->setSourceFile($pdf_file['path']);
-
-                for ($i = 1; $i <= $pagecount; $i++) {
-                    $fpdf->AddPage('P');
-                    $tplidx = $fpdf->ImportPage($i);
-                    $fpdf->useTemplate($tplidx);
-                }
-            }
-
-            if($inject_autoprint_js){
-                $script = 'print(true);';
-                $fpdf->IncludeJS($script);
-            }
-
-            $fpdf->Output("F",   $event->imageDirectory.'/event_'.$this->pdf_print_suffix.".pdf");
-
-            $event->unlock();
-
-            $pdf = $event->getPDF( $this->pdf_print_suffix );
-
-
-            header('Content-Type: application/pdf');
-            header('Content-Length: '.filesize($pdf));
-
-            readfile($pdf);
-            @unlink($pdf);
-
-        } else {
-            return parent::actionPDFPrint($id);
         }
+
+        if($inject_autoprint_js){
+            $script = 'print(true);';
+            $this->pdf_output->IncludeJS($script);
+        }
+
+        $pdf_path = $event->imageDirectory.'/event_'.$this->pdf_print_suffix.".pdf";
+
+        $this->pdf_output->Output("F",   $pdf_path);
+
+        $event->unlock();
+
+        header('Content-Type: application/pdf');
+        header('Content-Length: '.filesize($pdf_path));
+
+        readfile($pdf_path);
+        //@unlink($pdf_path);
+
     }
 
     /**

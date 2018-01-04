@@ -964,4 +964,31 @@ class ElementLetter extends BaseEventTypeElement
         return $list ? CHtml::listData($locations, 'id', 'site.short_name') : $locations;
 
     }
+
+    public function getAllAttachments()
+    {
+        /*
+        * Attachments
+        */
+
+        $associated_content = EventAssociatedContent::model()
+            ->with('initAssociatedContent')
+            ->findAllByAttributes(
+                array('parent_event_id' => $this->event->id),
+                array('order' => 't.display_order asc')
+            );
+
+        if($associated_content){
+            $pdf_files = array();
+            foreach ($associated_content as $key => $ac) {
+                if ($ac->associated_protected_file_id) {
+                    $file = ProtectedFile::model()->findByPk($ac->associated_protected_file_id);
+                    $pdf_files[$key]['path'] = $file->getPath();
+                    $pdf_files[$key]['name'] = $file->name;
+                    $pdf_files[$key]['mime'] = $file->mimetype;
+                }
+            }
+        }
+        return $pdf_files;
+    }
 }
