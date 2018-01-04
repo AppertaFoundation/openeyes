@@ -31,6 +31,11 @@
                         <li<?php
                         $requestUriArray = explode('?', Yii::app()->getController()->request->requestUri);
                         $requestUri = $requestUriArray[0];
+                        // Nasty hack beacuse Firm::contextLabel() is not available within config/core/admin.php
+                        // simply replaces all occurrences of context_firm_label with output of Firm::contextLabel
+                        $title = str_replace('context_firm_label', Firm::contextLabel(), $title);
+                        $title = str_replace('service_firm_label', Firm::serviceLabel(), $title);
+                        // end of nasty hack
                         if ($requestUri == $uri) { ?> class="selected"<?php } ?>>
                             <?php if ($requestUri == $uri) { ?>
                                 <script type="text/javascript">

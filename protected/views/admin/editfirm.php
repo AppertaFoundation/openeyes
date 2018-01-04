@@ -17,7 +17,7 @@
  */
 ?>
 <div class="box admin">
-	<h2><?php echo $firm->id ? 'Edit' : 'Add' ?> firm</h2>
+	<h2><?php echo $firm->id ? 'Edit' : 'Add' ?> <?php echo Firm::contextLabel() . ' / ' . Firm::serviceLabel() ?></h2>
 	<?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
 	<?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
