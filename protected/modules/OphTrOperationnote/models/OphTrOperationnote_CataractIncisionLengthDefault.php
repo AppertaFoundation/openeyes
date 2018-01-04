@@ -72,7 +72,9 @@ class OphTrOperationnote_CataractIncisionLengthDefault extends BaseActiveRecordV
      */
     public function attributeLabels()
     {
-        return array();
+        return array(
+            'firm_id' => \Firm::contextLabel(),
+        );
     }
 
     public function behaviors()
