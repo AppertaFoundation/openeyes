@@ -25,7 +25,7 @@
             <div class="data-value current">
                 <ul class="comma-list">
                     <?php foreach ($element->currentOrderedEntries as $entry) { ?>
-                        <li><?= $entry->getMedicationDisplay() ?></li>
+                        <li><span class="detail"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
                     <?php } ?>
                 </ul>
             </div>
@@ -39,7 +39,7 @@
             <div class="data-value stopped">
                 <ul class="comma-list">
                     <?php foreach ($element->stoppedOrderedEntries as $entry) { ?>
-                        <li><?= $entry->getMedicationDisplay() ?></li>
+                        <li><span class="detail"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
                     <?php } ?>
                 </ul>
             </div>
