@@ -977,9 +977,9 @@ class ElementLetter extends BaseEventTypeElement
                 array('parent_event_id' => $this->event->id),
                 array('order' => 't.display_order asc')
             );
+        $pdf_files = array();
 
         if($associated_content){
-            $pdf_files = array();
             foreach ($associated_content as $key => $ac) {
                 if ($ac->associated_protected_file_id) {
                     $file = ProtectedFile::model()->findByPk($ac->associated_protected_file_id);
