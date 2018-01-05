@@ -173,7 +173,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     {
         return array(
             'sequence_id' => 'Sequence ID',
-            'firm_id' => 'Firm',
+            'firm_id' => Firm::contextLabel(),
             'theatre_id' => 'Theatre',
             'start_time' => 'Start time',
             'end_time' => 'End time',

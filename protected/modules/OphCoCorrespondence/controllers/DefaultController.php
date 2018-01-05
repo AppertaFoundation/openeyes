@@ -72,9 +72,9 @@ class DefaultController extends BaseEventTypeController
 
             if($action == 'update'){
                 if( !Yii::app()->request->isPostRequest && $letter->draft){
-                    
+
                     $gp_targets = $letter->getTargetByContactType("GP");
-              
+
                     foreach($gp_targets as $gp_target){
                         $api->updateDocumentTargetAddressFromContact($gp_target->id, 'Gp', $letter->id);
                     }
@@ -95,10 +95,10 @@ class DefaultController extends BaseEventTypeController
             $this->jsVars['OE_to_location_id'] = $to_location ? $to_location->id : null;
 
             $this->getApp()->assetManager->registerScriptFile('js/docman.js');
-            
+
             $this->loadDirectLines();
-        }       
-        
+        }
+
     }
 
     /**
@@ -110,7 +110,7 @@ class DefaultController extends BaseEventTypeController
         $this->jsVars['correspondence_markprinted_url'] = Yii::app()->createUrl('OphCoCorrespondence/Default/markPrinted/'.$this->event->id);
         $this->jsVars['correspondence_print_url'] = Yii::app()->createUrl('OphCoCorrespondence/Default/print/'.$this->event->id);
     }
-    
+
     public function actionView($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
@@ -127,7 +127,7 @@ class DefaultController extends BaseEventTypeController
         }
         parent::actionView($id);
     }
-    
+
     public function actionUpdate($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
@@ -144,7 +144,7 @@ class DefaultController extends BaseEventTypeController
 
         parent::actionUpdate($id);
     }
-    
+
     /**
      * Ajax action to get the address for a contact.
      *
@@ -152,8 +152,8 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionGetAddress()
     {
-        
-        
+
+
         if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
             throw new Exception('Unknown patient: '.@$_GET['patient_id']);
         }
@@ -161,11 +161,11 @@ class DefaultController extends BaseEventTypeController
         if (!preg_match('/^([a-zA-Z]+)([0-9]+)$/', @$_GET['contact'], $m)) {
             throw new Exception('Invalid contact format: '.@$_GET['contact']);
         }
-        
+
         $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
         $data = $api->getAddress($_GET['patient_id'], $_GET['contact']);
         echo json_encode($data);
-        
+
         return;
     }
 
@@ -308,7 +308,7 @@ class DefaultController extends BaseEventTypeController
                 break;
             case 'firm':
                 if (!$firm = FirmLetterString::model()->findByPk(@$_GET['string_id'])) {
-                    throw new Exception('Firm letter string not found: '.@$_GET['string_id']);
+                    throw new Exception(Firm::contextLabel() . ' letter string not found: '.@$_GET['string_id']);
                 }
                 break;
             case 'examination':
@@ -402,22 +402,22 @@ class DefaultController extends BaseEventTypeController
             }
         }
     }
-    
+
     public function actionPrint($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
 
         $this->printInit($id);
         $this->layout = '//layouts/print';
-        
+
         // after "Save and Print" button clicked we only print out what the user checked
         if( isset($_GET['OphCoCorrespondence_print_checked']) && $_GET['OphCoCorrespondence_print_checked'] == "1" ){
-            
+
             // check if the first recipient is GP
             $docunemt_instance = $letter->document_instance[0];
             $to_recipient_gp = DocumentTarget::model()->find('document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)',array(
                 ':id' => $docunemt_instance->id, ':ToCc' => 'To', ':type_gp' => 'GP', ':type_ir' => 'INTERNALREFERRAL', ));
-            
+
             if($to_recipient_gp){
                 // print an extra copy to note
                 if(!Yii::app()->params['disable_correspondence_notes_copy']) {
@@ -433,7 +433,7 @@ class DefaultController extends BaseEventTypeController
                 foreach($print_outputs as $print_output){
                     $document_target = DocumentTarget::model()->findByPk($print_output->document_target_id);
                     $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
-                    
+
                     //extra printout for note
                     if($document_target->ToCc == 'To' && $document_target->contact_type != 'GP'){
                         if(!Yii::app()->params['disable_correspondence_notes_copy']){
@@ -458,7 +458,7 @@ class DefaultController extends BaseEventTypeController
 
                 return;
             }
-            
+
             $this->render('print', array('element' => $letter));
 
             if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
@@ -486,7 +486,7 @@ class DefaultController extends BaseEventTypeController
             $this->pdf_print_suffix = 'all';
             $this->pdf_print_documents = count($print_outputs);
         }
-        
+
         if( $print_outputs ){
             foreach($print_outputs as $output){
                 $output->output_status = "COMPLETE";
@@ -497,7 +497,7 @@ class DefaultController extends BaseEventTypeController
 
         return parent::actionPDFPrint($id);
     }
-    
+
     /**
      * Ajax action to get user data list.
      */
@@ -594,7 +594,7 @@ class DefaultController extends BaseEventTypeController
         if (!$letter = ElementLetter::model()->find('event_id=?', array($id))) {
             throw new Exception("Letter not found for event id: $id");
         }
-                
+
         $letter->print = 1;
 
         if (@$_GET['all']) {
@@ -668,7 +668,7 @@ class DefaultController extends BaseEventTypeController
         $firm = Firm::model()->findByPk($firm_id);
 
         if(!$firm){
-            throw new Exception("Firm not found. ID: $firm_id");
+            throw new Exception(Firm::contextLabel() . " not found. ID: $firm_id");
         }
         $user = User::model()->findByPk($firm->consultant_id);
 

@@ -38,7 +38,7 @@
         'item_id',
         Firm::model()->getListWithSpecialties(),
         array(),
-        array('empty' => '- Firms -', 'label' => 'Firms')
+        array('empty' => '- ' . Firm::contextLabel() . 's -', 'label' => Firm::contextLabel())
     ) ?>
     <?php echo $form->formActions(); ?>
     <?php $this->endWidget() ?>

@@ -30,16 +30,16 @@
 	<form id="admin_sessions_filters" class="panel">
 		<div class="row field-row">
 			<div class="large-2 column">
-				<?php echo CHtml::dropDownList('type', '', array('site' => 'Site', 'subspecialty' => 'Subspecialty', 'firm' => 'Firm'), array('empty' => '- Type -'))?>
+				<?php echo CHtml::dropDownList('type', '', array('site' => 'Site', 'subspecialty' => 'Subspecialty', 'firm' => Firm::contextLabel()), array('empty' => '- Type -'))?>
 			</div>
-			<div class="large-2 column typeSite" style="display: none">
+			<div class="large-2 column typeSite" >
 				<?php echo CHtml::dropDownList('site_id', @$_GET['site_id'], Site::model()->getListForCurrentInstitution(), array('empty' => '- Site -'))?>
 			</div>
-			<div class="large-2 column typeSubspecialty" style="display: none">
+			<div class="large-2 column typeSubspecialty" >
 				<?php echo CHtml::dropDownList('subspecialty_id', @$_GET['subspecialty_id'], CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- Subspecialty -'))?>
 			</div>
-			<div class="large-2 column typeFirm" style="display: none">
-				<?php echo CHtml::dropDownList('firm_id', @$_GET['firm_id'], Firm::model()->getListWithSpecialties(), array('empty' => '- Firm -'))?>
+			<div class="large-2 column typeFirm">
+				<?php echo CHtml::dropDownList('firm_id', @$_GET['firm_id'], Firm::model()->getListWithSpecialties(), array('empty' => '- ' . Firm::contextLabel() . ' -'))?>
 			</div>
 			<div class="large-2 column">
 				<?php echo CHtml::dropDownList('name', @$_GET['name'], $unique_names, array('empty' => '- Name -'))?>

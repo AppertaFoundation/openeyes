@@ -26,7 +26,7 @@ return array(
             ),
             'Core' => array(
                 'Users' => '/admin/users',
-                'Firms' => '/admin/firms',
+                'context_firm_labels and service_firm_labels' => '/admin/firms',
                 'Contacts' => '/admin/contacts',
                 'Contact labels' => '/admin/contactlabels',
                 'Data sources' => '/admin/datasources',
@@ -76,7 +76,7 @@ return array(
             ),
             'Consent' => array(
                 'Leaflets' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/Leaflets/list'),
-                'Leaflet Subspecialty and Firm Assignment' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/LeafletSubspecialtyFirm/list'),
+                'Leaflet Subspecialty context_firm_label Assignment' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/LeafletSubspecialtyFirm/list'),
             ),
 
         ),

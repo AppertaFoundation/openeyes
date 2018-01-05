@@ -29,7 +29,7 @@
 				<tr>
 					<th><input type="checkbox" name="selectall" id="selectall" /></th>
 					<th>Value</th>
-					<th>Firm ID</th>
+					<th><?php echo Firm::contextLabel() ?></th>
 				</tr>
 			</thead>
 			<tbody>
