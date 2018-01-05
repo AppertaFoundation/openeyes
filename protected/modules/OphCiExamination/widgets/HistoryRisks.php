@@ -22,6 +22,7 @@ namespace OEModule\OphCiExamination\widgets;
 
 use OEModule\OphCiExamination\models\HistoryRisks as HistoryRisksElement;
 use OEModule\OphCiExamination\models\HistoryRisksEntry;
+use OEModule\OphCiExamination\models\OphCiExaminationRisk;
 
 class HistoryRisks extends \BaseEventElementWidget
 {
@@ -33,6 +34,58 @@ class HistoryRisks extends \BaseEventElementWidget
     protected function getNewElement()
     {
         return new HistoryRisksElement();
+    }
+
+    public function getRequiredRisks()
+    {
+        $firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
+        $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
+        $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
+
+        $criteria->addCondition("(t.age_min <= :age OR t.age_min IS NULL)");
+        $criteria->addCondition("(t.age_max >= :age OR t.age_max IS NULL)");
+        $criteria->addCondition("(t.gender = :gender OR t.gender IS NULL)");
+
+        $criteria->params['subspecialty_id'] = $subspecialty_id;
+        $criteria->params['firm_id'] = $firm->id;
+        $criteria->params['age'] = $this->patient->age;
+        $criteria->params['gender'] = $this->patient->gender;
+
+        return OphCiExaminationRisk::model()->findAll($criteria);
+    }
+
+    public function getRiskOptions()
+    {
+        $force = array();
+        foreach ($this->element->entries as $entry) {
+            $force[] = $entry->risk_id;
+        }
+
+        $ignore = array_map(function($r) { return $r->id; }, $this->getRequiredRisks());
+
+        $criteria = new \CDbCriteria();
+        $criteria->addNotInCondition('id', $ignore);
+
+        return OphCiExaminationRisk::model()->activeOrPk($force)->findAll($criteria);
+    }
+
+    public function getMissingRequiredRisks()
+    {
+
+        $current_ids = array_map(function ($e) { return $e->risk_id; }, $this->element->entries);
+        $missing = array();
+        foreach ($this->getRequiredRisks() as $required) {
+            if (!in_array($required->id, $current_ids)) {
+                $entry = new HistoryRisksEntry();
+                $entry->risk_id = $required->id;
+                $missing[] = $entry;
+            }
+        }
+        return $missing;
+
     }
 
     /**

@@ -21,9 +21,9 @@ use OEModule\OphCiExamination\models\HistoryRisksEntry;
 
 <?php
 $model_name = CHtml::modelName($element);
-$risks_options = $element->getRiskOptions();
-$missing_req_risks = $element->getMissingRequiredRisks();
-$required_risk_ids = array_map(function($r) { return $r->id; }, $element->getRequiredRisks());
+$risks_options = $this->getRiskOptions();
+$missing_req_risks = $this->getMissingRequiredRisks();
+$required_risk_ids = array_map(function($r) { return $r->id; }, $this->getRequiredRisks());
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 <div class="element-fields" id="<?= $model_name ?>_element">

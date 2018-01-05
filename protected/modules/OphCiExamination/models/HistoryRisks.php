@@ -112,33 +112,6 @@ class HistoryRisks extends \BaseEventTypeElement
     }
 
     private $required_risks = null;
-    /**
-     * @return OphCiExaminationRisk[]
-     */
-    public function getRequiredRisks()
-    {
-        if ($this->required_risks === null) {
-            $this->required_risks = OphCiExaminationRisk::model()->findAllByAttributes(array('required' => true));
-        }
-        return $this->required_risks;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMissingRequiredRisks()
-    {
-        $current_ids = array_map(function ($e) { return $e->risk_id; }, $this->entries);
-        $missing = array();
-        foreach ($this->getRequiredRisks() as $required) {
-            if (!in_array($required->id, $current_ids)) {
-                $entry = new HistoryRisksEntry();
-                $entry->risk_id = $required->id;
-                $missing[] = $entry;
-            }
-        }
-        return $missing;
-    }
 
     /**
      * Various checks against the entries assigned to the model
