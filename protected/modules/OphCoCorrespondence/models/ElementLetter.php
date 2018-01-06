@@ -991,4 +991,55 @@ class ElementLetter extends BaseEventTypeElement
         }
         return $pdf_files;
     }
+
+    /**
+     * @return mixed|string
+     */
+    public function getToAddress()
+    {
+        if($this->document_instance && $this->document_instance[0]->document_target) {
+
+            foreach ($this->document_instance as $instance) {
+                foreach ($instance->document_target as $target) {
+                    if($target->ToCc == 'To'){
+                        return $target->contact_name . "\n" . $target->address;
+                    }
+                }
+            }
+        }else
+        {
+            // for old legacy letters
+            return $this->address;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getCCString()
+    {
+        $ccString = "";
+
+        if($this->document_instance && $this->document_instance[0]->document_target) {
+
+            foreach ($this->document_instance as $instance) {
+                foreach ($instance->document_target as $target) {
+                    if($target->ToCc != 'To'){
+                        $contact_type = $target->contact_type != 'GP' ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                        $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $this->renderSourceAddress($target->address)."<br/>";
+                    }
+                }
+            }
+        }else
+        {
+            // for old legacy letters
+            foreach (explode("\n", trim($this->cc)) as $line) {
+                if (trim($line)) {
+                    $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
+                }
+            }
+        }
+
+        return $ccString;
+    }
 }

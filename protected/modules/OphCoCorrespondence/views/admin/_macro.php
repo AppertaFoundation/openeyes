@@ -65,10 +65,10 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
                 </div>
             </div>
         </div>
-    <?php if(isset($init_method) && isset($associated_content)){
 
-        $model_init_method = CHtml::modelName('OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod');
-        $model_associated_content = CHtml::modelName('OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent');
+        <?php
+            $model_init_method = CHtml::modelName('OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod');
+            $model_associated_content = CHtml::modelName('OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent');
         ?>
 
         <div class="field-row">
@@ -94,7 +94,6 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
                                     'form' => $form,
                                     'init_method_model_name' => $model_init_method,
                                     'associated_model_name' => $model_associated_content,
-                                    'model_init_method' => $init_method,
                                     'model_associated_content' => $content,
                                     'prefix_init_method' => $model_init_method.'[' . ($row_count) . ']',
                                     'prefix_associated' => $model_associated_content.'[' . ($row_count) . ']',
@@ -120,9 +119,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
                         'form' => $form,
                         'init_method_model_name' => $model_init_method,
                         'associated_model_name' => $model_associated_content,
-                        'model_init_method' => $init_method,
                         'model_associated_content' => $associated_content,
-                        'model_init_method' => $init_method,
                         'prefix_init_method' => $model_init_method.'[{{row_count}}]',
                         'prefix_associated' => $model_associated_content.'[{{row_count}}]',
                         'row_count' => '{{row_count}}',
@@ -140,7 +137,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.j
                 ?>
             </script>
         </div>
-    <?php } ?>
+
 
     <div class="row field-row">
             <div class="large-10 large-offset-2 column">

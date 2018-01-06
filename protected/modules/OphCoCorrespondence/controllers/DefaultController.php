@@ -499,26 +499,17 @@ class DefaultController extends BaseEventTypeController
                 return $recipients;
             }
 
-            $print_outputs = $letter->getOutputByType("Print");
+            $recipients[] = $letter->getToAddress();
 
-            if($print_outputs){
-                foreach($print_outputs as $print_output){
-                    $document_target = DocumentTarget::model()->findByPk($print_output->document_target_id);
-                    $recipients[] = ($document_target->contact_name . "\n" . $document_target->address);
-                    //extra printout for note
-                    if($document_target->ToCc == 'To' && $document_target->contact_type != 'GP'){
-                        if(!Yii::app()->params['disable_correspondence_notes_copy']){
-                            $recipients[] = $document_target->contact_name . "\n" . $document_target->address;
-                        }
-                    }
+            if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
+                if(!Yii::app()->params['disable_correspondence_notes_copy']) {
+                    $recipients[] = $letter->getToAddress();
+                }
+                foreach ($letter->getCcTargets() as $letter_address) {
+                    $recipients[] = $letter_address;
                 }
             }
 
-            /* TODO: !!!!! ask Sabi!!!
-            foreach ($letter->getCcTargets() as $letter_address) {
-                    $recipients[] = $letter_address;
-            }
-            */
         }
         return $recipients;
 

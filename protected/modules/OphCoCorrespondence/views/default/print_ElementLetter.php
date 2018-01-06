@@ -19,32 +19,9 @@
 <?php if (!@$no_header) {?>
 	<header>
 	<?php 
-        $ccString = "";
-        $toAddress = "";
+        $ccString = $element->getCCString();
+        $toAddress = $element->getToAddress();
         
-        if($element->document_instance && $element->document_instance[0]->document_target) {
-            
-            foreach ($element->document_instance as $instance) {
-                foreach ($instance->document_target as $target) {
-                    if($target->ToCc == 'To'){
-                        $toAddress = $target->contact_name . "\n" . $target->address;
-                    } else {
-
-                        $contact_type = $target->contact_type != 'GP' ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
-                        $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
-                    }
-                }
-            }
-        }else
-        {
-            $toAddress = $element->address;
-            foreach (explode("\n", trim($element->cc)) as $line) {
-                if (trim($line)) {
-                    $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
-                }
-            }
-        }
-
         $this->renderPartial('letter_start', array(
             'toAddress' => isset($letter_address) ? $letter_address : $toAddress, // defaut address is coming from the 'To'
             'patient' => $this->patient,

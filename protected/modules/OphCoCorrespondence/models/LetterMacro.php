@@ -147,6 +147,55 @@ class LetterMacro extends BaseActiveRecordVersioned
         return parent::beforeSave();
     }
 
+    public function afterSave()
+    {
+        if(isset($_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent']) && isset($_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod']) ){
+
+            $post_associated_content = $_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent'];
+            $post_init_method = $_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod'];
+
+            $order = 1;
+            foreach($post_associated_content as $key => $pac){
+
+                if(isset($pac['id']) && ($pac['id'] > 0)){
+                    $criteria = new \CDbCriteria();
+                    $criteria->addCondition('id = '.$pac['id']);
+                    $criteria->addCondition('macro_id = '.$this->id);
+                    $associated_content = MacroInitAssociatedContent::model()->find($criteria);
+
+                    $method = 'update';
+                } else {
+                    $associated_content = new MacroInitAssociatedContent();
+                    $method = 'save';
+                }
+
+                $associated_content->macro_id           = $this->id;
+                $associated_content->is_system_hidden   = ( isset( $pac["is_system_hidden"] ) ? 1 : 0);
+                $associated_content->is_print_appended  = ( isset( $pac["is_print_appended"] ) ? 1 : 0);
+                $associated_content->init_method_id     = $post_init_method[$key]["method_id"];
+                $associated_content->short_code         = $post_init_method[$key]["short_code"];
+                $associated_content->display_order      = $order;
+                $associated_content->display_title      = $post_init_method[$key]["title"];
+
+                $associated_content->{$method}();
+                $order++;
+            }
+        }
+
+        if(isset($_POST['delete_associated'])){
+            foreach($_POST['delete_associated'] as $key => $da){
+                if($da['delete'] > 0){
+                    $criteria = new \CDbCriteria();
+                    $criteria->addCondition('id = '.$da['delete']);
+                    $criteria->addCondition('macro_id = '.$this->id);
+                    MacroInitAssociatedContent::model()->deleteAll($criteria);
+                }
+            }
+        }
+
+    }
+
+
     public function substitute($patient)
     {
         $this->body = OphCoCorrespondence_Substitution::replace($this->body, $patient);
