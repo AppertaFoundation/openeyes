@@ -183,8 +183,18 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
             'operative_device_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_CataractOperativeDevice', 'cataract_id'),
             'operative_devices' => array(self::HAS_MANY, 'OperativeDevice', 'operative_device_id',
                 'through' => 'operative_device_assignments', ),
-            'iol_type' => array(self::BELONGS_TO, 'OphTrOperationnote_IOLType', 'iol_type_id'),
         );
+    }
+
+    public function getIol_type()
+    {
+        $model_name = "OphTrOperationnote_IOLType";
+
+        if(\Yii::app()->hasModule("OphInBiometry")){
+            $model_name = "OphInBiometry_LensType_Lens";
+        }
+
+        return $model_name::model()->findByPk($this->iol_type_id);
     }
 
     /**

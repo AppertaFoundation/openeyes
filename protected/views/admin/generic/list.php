@@ -52,6 +52,8 @@ if (!isset($uniqueid)) {
         <form id="generic-admin-list">
             <?php endif; ?>
             <input type="hidden" name="page" value="<?php echo Yii::app()->request->getParam('page', 1) ?>"/>
+            <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+
             <table class="grid">
                 <thead>
                 <tr>

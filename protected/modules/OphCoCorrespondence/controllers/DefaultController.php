@@ -637,6 +637,7 @@ class DefaultController extends BaseEventTypeController
     public function actionUsers()
     {
         $users = array();
+        $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
 
         $criteria = new CDbCriteria();
 
@@ -667,17 +668,24 @@ class DefaultController extends BaseEventTypeController
                     $consultant_name = trim($consultant->contact->title.' '.$consultant->contact->first_name.' '.$consultant->contact->last_name);
                 }
 
-                $users[] = array(
+                $user_data = array(
                     'id' => $user->id,
-                    'value' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name.' '.$contact->qualifications).' ('.$user->role.')',
-                    'fullname' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name.' '.$contact->qualifications),
+                    'value' => trim($contact->fullName . ' ' . $contact->qualifications).' ('.$user->role.')',
+                    'fullname' => trim($contact->fullName . ' ' . $contact->qualifications),
                     'role' => $user->role,
                     'consultant' => $consultant_name,
                 );
+
+                if( isset($_GET['correspondence-footer'])){
+                    $user_data['correspondence_footer_text'] = $api->getFooterText($user, $firm, $consultant);
+                }
+
+                $users[] = $user_data;
             }
         }
 
         echo json_encode($users);
+        \Yii::app()->end();
     }
 
     /**

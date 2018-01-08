@@ -102,7 +102,7 @@ class Event extends BaseActiveRecordVersioned
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, episode_id, event_type_id, created_date, event_date, parent_id', 'safe', 'on' => 'search'),
-            array('event_date', 'OEDateValidatorNotFuture'),
+            array('event_date', 'OEDateValidatorNotFuture', 'except' => 'allowFutureEvent'),
         );
     }
 
@@ -369,11 +369,29 @@ class Event extends BaseActiveRecordVersioned
             if ($transaction) {
                 $transaction->commit();
             }
+
+            $this->afterSoftDelete();
+
         } catch (Exception $e) {
             if ($transaction) {
                 $transaction->rollback();
             }
             throw $e;
+        }
+    }
+
+    /**
+     * AfterSoftDelete event
+     * Checks if the event type's API has a handler for this event
+     * if so, calls it
+     */
+
+    protected function afterSoftDelete()
+    {
+        if($api = $this->eventType->getApi()) {
+            if(method_exists($api, 'afterSoftDeleteEvent')) {
+                $api->afterSoftDeleteEvent($this);
+            }
         }
     }
 

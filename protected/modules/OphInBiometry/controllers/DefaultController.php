@@ -25,6 +25,7 @@ class DefaultController extends BaseEventTypeController
     {
         $transaction = Yii::app()->db->beginTransaction();
         try {
+            $unlinkedEvent->setScenario('allowFutureEvent');
             $unlinkedEvent->episode_id = $this->episode->id;
             $unlinkedEvent->created_user_id = Yii::app()->user->getId();
 

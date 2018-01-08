@@ -85,7 +85,13 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             $this->date_to = date('Y-m-d', strtotime($this->date_to));
         }
 
+        //If user does NOT have the RBAC role 'Report' then select the current user
+        if( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ){
+            $this->given_by_id = Yii::app()->user->id;
+        }
+
         if ($this->given_by_id) {
+
             if (!$user = User::model()->findByPk($this->given_by_id)) {
                 throw new Exception('User not found: ' . $this->given_by_id);
             }

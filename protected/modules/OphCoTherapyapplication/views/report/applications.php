@@ -7,7 +7,28 @@
 				<?php echo CHtml::label('Consultant', 'firm_id') ?>
 			</div>
 			<div class="large-4 column end">
-				<?php echo CHtml::dropDownList('firm_id', null, $firms, array('empty' => 'All consultants')) ?>
+
+                <?php if ( Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ):?>
+				    <?php echo CHtml::dropDownList('firm_id', null, $firms, array('empty' => 'All consultants')) ?>
+                <?php else: ?>
+                    <?php
+                        $firm = Firm::model()->findByAttributes( array('consultant_id' => Yii::app()->user->id));
+
+                        if($firm) {
+                            echo CHtml::dropDownList(null, '',
+                                array($firm->id => $firm->name),
+                                array('disabled' => 'disabled', 'readonly' => 'readonly', 'style' => 'background-color:#D3D3D3;') //for some reason the chrome doesn't gray out
+                            );
+                            echo CHtml::hiddenField('consultant_id', $firm->id);
+                        } else {
+                            echo CHtml::dropDownList(null, '',array(),
+                                array(  'disabled' => 'disabled',
+                                        'readonly' => 'readonly',
+                                        'style' => 'background-color:#D3D3D3;',
+                                        'empty' => '- select -')); //for some reason the chrome doesn't gray out
+                        }
+                    ?>
+                <?php endif ?>
 			</div>
 		</div>
 		<div class="row field-row">
@@ -75,7 +96,17 @@
 		</div>
 			<div class="row field-row">
 				<div class="large-4 column end">
-					<?php echo CHtml::submitButton('Generate Report') ?>
+                    <?php
+                    $htmlOptions = array();
+                        if(!$this->canUseTherapyReport()){
+                            $htmlOptions = array(
+                                    'disabled' => 'disabled',
+                                    'readonly' => 'readonly'
+                            );
+                        }
+
+                    ?>
+					<?php echo CHtml::submitButton('Generate Report', $htmlOptions) ?>
 				</div>
 			</div>
 		</form>

@@ -258,6 +258,7 @@ class AdminController extends \ModuleAdminController
 
         $this->render('update', array(
             'model' => $model,
+            'cancel_uri' => \Yii::app()->request->urlReferrer ?: '/OphCiExamination/admin/viewOphCiExamination_InjectionManagementComplex_Question',
         ));
     }
 

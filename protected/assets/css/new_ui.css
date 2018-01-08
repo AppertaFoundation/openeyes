@@ -294,7 +294,7 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 }
 .open-eyes .panel.patient a:hover, .open-eyes .panel.patient a:focus {
   background: none;
-  color: #d2dde8;
+  color:#91acc7;
 }
 .open-eyes .panel.patient .patient-details {
   padding: 0;
@@ -385,6 +385,9 @@ button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-act
 }
 .open-eyes .panel.patient-popup .zone2 .row b {
   font-weight: 500;
+}
+.open-eyes .panel.patient-popup .summary-data .fa.fa-eye {
+  color:#06F;
 }
 .open-eyes .panel.patient-popup .summary-data .row {
   background: #d2dde8;

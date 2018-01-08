@@ -40,27 +40,30 @@ class DefaultController extends OphTrOperationbookingEventController
      */
     protected function beforeAction($action)
     {
-        Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/booking.js');
-        Yii::app()->assetManager->registerScriptFile('js/jquery.validate.min.js');
-        Yii::app()->assetManager->registerScriptFile('js/additional-validators.js');
+        if (!$this->isPrintAction($action->id)) {
+            Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/booking.js');
+            Yii::app()->assetManager->registerScriptFile('js/jquery.validate.min.js');
+            Yii::app()->assetManager->registerScriptFile('js/additional-validators.js');
 
-        //adding Anaestethic JS
-        $url = Yii::app()->getAssetManager()->publish( Yii::getPathOfAlias('application.modules.OphTrOperationnote.assets.js') );
-        Yii::app()->clientScript->registerScriptFile($url . '/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
-        Yii::app()->clientScript->registerScript(
-            'AnaestheticController',
-            'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrOperationbooking_Operation_AnaestheticType\'});',CClientScript::POS_END);
+            //adding Anaestethic JS
+            $url = Yii::app()->getAssetManager()->publish( Yii::getPathOfAlias('application.modules.OphTrOperationnote.assets.js') );
+            Yii::app()->clientScript->registerScriptFile($url . '/OpenEyes.UI.OphTrOperationnote.Anaesthetic.js');
+            Yii::app()->clientScript->registerScript(
+                'AnaestheticController',
+                'new OpenEyes.OphTrOperationnote.AnaestheticController({ typeSelector: \'#Element_OphTrOperationbooking_Operation_AnaestheticType\'});',CClientScript::POS_END);
 
-        $this->jsVars['nhs_date_format'] = Helper::NHS_DATE_FORMAT_JS;
+            $this->jsVars['nhs_date_format'] = Helper::NHS_DATE_FORMAT_JS;
+        }
 
         $return = parent::beforeAction($action);
 
-        $this->jsVars['priority_canschedule'] = array();
+        if (!$this->isPrintAction($action->id)) {
+            $this->jsVars['priority_canschedule'] = array();
 
-        foreach (OphTrOperationbooking_Operation_Priority::model()->findAll() as $priority) {
-            $this->jsVars['priority_canschedule'][$priority->id] = $this->checkScheduleAccess($priority);
+            foreach (OphTrOperationbooking_Operation_Priority::model()->findAll() as $priority) {
+                $this->jsVars['priority_canschedule'][$priority->id] = $this->checkScheduleAccess($priority);
+            }
         }
-
         return $return;
     }
 

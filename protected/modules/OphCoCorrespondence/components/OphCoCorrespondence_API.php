@@ -137,11 +137,14 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function getLastIOLType(\Patient $patient, $use_context = false)
     {
+        $name = null;
         $api = $this->yii->moduleAPI->get('OphTrOperationnote');
         if ($element = $api->getLatestElement('Element_OphTrOperationnote_Cataract', $patient, $use_context)){
-            return $element->iol_type->name;
+            $name = $element->iol_type ? $element->iol_type->display_name : null;
         }
+        return $name;
     }
+
 
     /*
      * IOL Power from last cataract operation note
@@ -187,21 +190,26 @@ class OphCoCorrespondence_API extends BaseAPI
         }
 
         $op_event = $note_api->getLatestEvent($patient, $use_context);
-        $op_event_combined_date = Helper::combineMySQLDateAndDateTime($op_event->event_date, $op_event->created_date);
-        $events = $api->getEvents($patient, $use_context, $op_event->event_date);
+        if($op_event){
+            $op_event_combined_date = Helper::combineMySQLDateAndDateTime($op_event->event_date, $op_event->created_date);
+            $events = $api->getEvents($patient, $use_context, $op_event->event_date);
 
-        foreach ($events as $event) {
-            // take account of event date not containing time so we ensure we get the
-            // exam from BEFORE the op note, not on the same day but after.
-            if ($event->event_date == $op_event->event_date) {
-                if (Helper::combineMySQLDateAndDateTime($event->event_date, $event->created_date) > $op_event_combined_date) {
-                    continue;
+            foreach ($events as $event) {
+
+                // take account of event date not containing time so we ensure we get the
+                // exam from BEFORE the op note, not on the same day but after.
+                if ($event->event_date == $op_event->event_date) {
+                    if (Helper::combineMySQLDateAndDateTime($event->event_date, $event->created_date) > $op_event_combined_date) {
+                        continue;
+                    }
+                }
+                if ($result = $api->$method($event)) {
+                    return $result;
                 }
             }
-            if ($result = $api->$method($event)) {
-                return $result;
-            }
         }
+
+        return null;
     }
 
 
@@ -598,6 +606,53 @@ class OphCoCorrespondence_API extends BaseAPI
                 'nickname' => (boolean) $nickname,
             )),
         );
+    }
+
+    /**
+     * Returns the footer text for the correspondence
+     *
+     * @param User|null $user
+     * @param Firm|null $firm
+     * @param User|null $consultant
+     * @return string
+     */
+    public function getFooterText(\User $user = null, \Firm $firm = null, \User $consultant = null)
+    {
+        $user = $user ? $user : \User::model()->findByPk(\Yii::app()->session['user']['id']);
+        $firm = $firm ? $firm : \Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(\Yii::app()->session['selected_firm_id']);
+
+        if(!$consultant){
+            // only want a consultant for medical firms
+            if ($specialty = $firm->getSpecialty()) {
+                if ($specialty->medical) {
+                    $consultant = $firm->consultant;
+                }
+            }
+        }
+
+        if ($contact = $user->contact) {
+            $consultant_name = false;
+
+            // if we have a consultant for the firm, and its not the matched user, attach the consultant name to the entry
+            if ($consultant && ($user->id != $consultant->id) ) {
+                $consultant_name = trim($consultant->contact->title.' '.$consultant->contact->first_name.' '.$consultant->contact->last_name);
+            }
+
+            $full_name = trim($contact->title.' '.$contact->first_name.' '.$contact->last_name.' '.$contact->qualifications);
+
+            return "Yours sincerely\n\n\n\n\n" . $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Consultant: " . $consultant_name : '');
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the Optom portal URL
+     * @return string|null
+     */
+    public function getPortalUrl()
+    {
+        return isset(Yii::app()->params['portal']['frontend_url']) ? Yii::app()->params['portal']['frontend_url'] : null;
     }
 
     /*

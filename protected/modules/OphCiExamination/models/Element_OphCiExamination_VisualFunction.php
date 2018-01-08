@@ -132,12 +132,14 @@ class Element_OphCiExamination_VisualFunction extends \SplitEventTypeElement
         if ($this->scenario == 'formHasNoChildren') {
             $values = false;
             if ($this->hasLeft()) {
-                if ($this->left_rapd || $this->left_comments) {
+                // $this->left_rapd can be 0 for "not checked"
+                if (is_numeric($this->left_rapd) || $this->left_comments) {
                     $values = true;
                 }
             }
             if (!$values && $this->hasRight()) {
-                if ($this->right_rapd || $this->right_comments) {
+                // $this->right_rapd can be 0 for "not checked"
+                if (is_numeric($this->right_rapd) || $this->right_comments) {
                     $values = true;
                 }
             }

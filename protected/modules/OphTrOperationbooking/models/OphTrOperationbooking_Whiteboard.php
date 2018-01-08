@@ -202,15 +202,16 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
      * @param $risk
      * @return string
      */
-    private function getDisplayHasRisk($risk) {
-        switch ($risk['status']) {
-            case true:
-                return 'Present';
-            case false:
-                return 'Not present';
-            default:
-                return 'Not checked';
-        }
+    private function getDisplayHasRisk($risk)
+    {
+        //$risk['status'] can be true/false/null
+
+        $status = 'Not checked';
+
+        if($risk['status'] === true){ $status = 'Present'; };
+        if($risk['status'] === false){ $status = 'Not present'; };
+
+        return $status;
     }
     
     /**
@@ -227,6 +228,9 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 return $this->getDisplayHasRisk($alpha) . ($alpha['comments'] ? ' - ' . $alpha['comments'] : '') . '(' . Helper::convertMySQL2NHS($alpha['date']) . ')';
             }
         }
+
+        //default value when no Risk element exists
+        return 'Not checked';
     }
 
     /**
@@ -243,5 +247,8 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 return $this->getDisplayHasRisk($anticoag) . ($anticoag['comments'] ? ' - ' . $anticoag['comments'] : '') . '(' . Helper::convertMySQL2NHS($anticoag['date']) . ')';
             }
         }
+
+        //default value when no Risk element exists
+        return 'Not checked';
     }
 }

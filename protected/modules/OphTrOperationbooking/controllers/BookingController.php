@@ -224,13 +224,6 @@ class BookingController extends OphTrOperationbookingEventController
     {
         $operation = $this->operation;
 
-        if($this->module->isTheatreDiaryDisabled())
-        {
-            $operation->status_id = 3;
-            $operation->save();
-            return $this->redirect(array('default/view/'.$this->event->id));
-        }
-
         if (in_array($operation->status->name, array('Requires scheduling', 'Requires rescheduling', 'Cancelled'))) {
             return $this->redirect(array('default/view/'.$this->event->id));
         }
@@ -246,13 +239,19 @@ class BookingController extends OphTrOperationbookingEventController
             }
             if (!$reason = OphTrOperationbooking_Operation_Cancellation_Reason::model()->findByPk($_POST['cancellation_reason'])) {
                 $errors[] = 'Please select a rescheduling reason';
-            } elseif (isset($_POST['booking_id']) && empty($errors)) {
-                if (!$booking = OphTrOperationbooking_Operation_Booking::model()->findByPk($_POST['booking_id'])) {
-                    throw new Exception('Booking not found: '.@$_POST['booking_id']);
-                }
+            } else {
 
-                $booking->cancel($reason, $_POST['cancellation_comment'], false);
-                $operation->setStatus('Requires rescheduling');
+                $comment = isset($_POST['cancellation_comment']) ? $_POST['cancellation_comment'] : null;
+
+                $is_cancelled = $operation->cancel($_POST['cancellation_reason'], $comment)['result'];
+
+                if($is_cancelled){
+                    $operation->setStatus('Requires rescheduling');
+
+                    if (!$operation->event->hasIssue('Operation requires scheduling')) {
+                        $operation->event->addIssue('Operation requires scheduling');
+                    }
+                }
 
                 $this->redirect(array('default/view/'.$this->event->id));
             }

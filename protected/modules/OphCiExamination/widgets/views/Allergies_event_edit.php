@@ -21,7 +21,7 @@
     $model_name = CHtml::modelName($element);
 ?>
 
-<div class="element-fields">
+<div class="element-fields" id="<?= $model_name ?>_element">
     <div class="field-row row<?=count($element->entries) ? ' hidden' : ''?>" id="<?=$model_name?>_no_allergies_wrapper">
         <div class="large-3 column">
             <label for="<?=$model_name?>_no_allergies">Confirm patient has no allergies:</label>
@@ -96,6 +96,8 @@
 </script>
 <script type="text/javascript">
     $(document).ready(function() {
-        new OpenEyes.OphCiExamination.AllergiesController();
+        new OpenEyes.OphCiExamination.AllergiesController({
+            element: $('#<?=$model_name?>_element')
+        });
     });
 </script>

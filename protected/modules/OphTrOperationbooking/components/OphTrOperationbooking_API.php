@@ -168,10 +168,21 @@ class OphTrOperationbooking_API extends BaseAPI
 
         if ($operation->status_id != $status->id) {
             $operation->status_id = $status->id;
-
             if (!$operation->save()) {
                 throw new Exception('Unable to save operation: ' . print_r($operation->getErrors(), true));
             }
+
+            $completed_status_id = Yii::app()->db->createCommand()
+                ->select('id')
+                ->from('ophtroperationbooking_operation_status')->where('name=:name', array(':name' => 'Completed'))
+                ->queryScalar();
+
+            //When a booking has a status of completed, it should no longer show notices that it requires scheduling.
+            $operation->refresh();
+            if($completed_status_id == $operation->status_id){
+                $operation->event->deleteIssue('Operation requires scheduling');
+            }
+
         }
     }
 
@@ -628,6 +639,28 @@ class OphTrOperationbooking_API extends BaseAPI
         }
         
         return null;
+    }
+
+    /**
+     * @param int $event_id
+     * @return int
+     *
+     * Returns the last Operation Booking status that is not 'COMPLETE'
+     * Defaults to STATUS_SCHEDULED
+     */
+
+    public function getLastNonCompleteStatus($event_id)
+    {
+        $element = new Element_OphTrOperationbooking_Operation();
+        $status_id = Yii::app()->db->createCommand()
+            ->select('status_id')
+            ->from($element->getVersionTableSchema()->name)
+            ->where('event_id = :event_id AND status_id != :status_id', array(':event_id'=>$event_id, ':status_id'=>OphTrOperationbooking_Operation_Status::STATUS_COMPLETED))
+            ->order('last_modified_date DESC')
+            ->limit(1)
+            ->queryScalar();
+
+        return $status_id !== false ? $status_id : OphTrOperationbooking_Operation_Status::STATUS_SCHEDULED;
     }
 
 }

@@ -312,17 +312,9 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionDelete($id)
     {
-        $proclist = Element_OphTrOperationnote_ProcedureList::model()->find('event_id=?', array($id));
-
-        $this->dont_redirect = true;
+       $this->dont_redirect = true;
 
         if (parent::actionDelete($id)) {
-            if ($proclist && $proclist->booking_event_id) {
-                if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-                    $api->setOperationStatus($proclist->booking_event_id, 'Scheduled or Rescheduled');
-                }
-            }
-
             if (Event::model()->count('episode_id=?', array($this->event->episode_id)) == 0) {
                 $this->redirect(array('/patient/episodes/'.$this->event->episode->patient->id));
             } else {
@@ -571,7 +563,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function getSelectedEyeForEyedraw()
     {
-        $eye = new Eye();
+        $eye = null;
 
         if (!empty($_POST['Element_OphTrOperationnote_ProcedureList']['eye_id'])) {
             $eye = Eye::model()->findByPk($_POST['Element_OphTrOperationnote_ProcedureList']['eye_id']);
@@ -583,18 +575,21 @@ class DefaultController extends BaseEventTypeController
             if (!$this->patient) {
                 $this->setPatient($this->getApp()->request->getParam('patient_id'));
             }
-            if ($api = $this->getApp()->moduleAPI->get('OphTrOperationbooking')) {
-                if ($booking = $api->getMostRecentBooking($this->patient)) {
-                    $eye = $booking->operation->eye;
-                }
+
+            $booking_event_id = $this->getApp()->request->getParam('booking_event_id');
+
+            if ($booking_event_id) {
+                $operation = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($booking_event_id));
+                $eye = $operation ? $operation->eye : null;
             }
         }
 
-        if ($eye->name == 'Both') {
+        if ($eye && $eye->name == 'Both') {
             $eye = Eye::model()->find('name=?', array('Right'));
         }
 
-        return $eye;
+        //return Right if eye isn't set
+        return $eye ? $eye : Eye::model()->find('name=?', array('Right'));
     }
 
     /**

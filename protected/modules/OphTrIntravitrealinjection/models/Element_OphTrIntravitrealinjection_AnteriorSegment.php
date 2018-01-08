@@ -68,8 +68,8 @@ class Element_OphTrIntravitrealinjection_AnteriorSegment extends SplitEventTypeE
         // will receive user inputs.
         return array(
             array('event_id, eye_id, left_eyedraw, left_lens_status_id, right_eyedraw, right_lens_status_id', 'safe'),
-            array('left_eyedraw, left_lens_status_id', 'requiredIfSide', 'side' => 'left'),
-            array('right_eyedraw, right_lens_status_id', 'requiredIfSide', 'side' => 'right'),
+            array('left_eyedraw', 'requiredIfSide', 'side' => 'left'),
+            array('right_eyedraw', 'requiredIfSide', 'side' => 'right'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, eye_id, left_eyedraw, left_lens_status_id, right_eyedraw, right_lens_status_id', 'safe', 'on' => 'search'),

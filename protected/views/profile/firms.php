@@ -17,7 +17,7 @@
  */
 ?>
 <div class="box admin">
-	<h2>Firms you work in</h2>
+	<h2><?php echo Firm::contextLabel()?>s you work in</h2>
 	<form id="profile_firms" method="post" action="/profile/firms">
 		<table class="grid">
 			<thead>
@@ -45,7 +45,7 @@
 			<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
 		</div>
 		<div class="large-6 column text-right table-actions">
-			<label for="profile_firm_id" class="inline">Add firm:</label>
+			<label for="profile_firm_id" class="inline">Add <?php echo strtolower(Firm::contextLabel())?>:</label>
 			<?php echo CHtml::dropDownList('profile_firm_id', '', $user->getNotSelectedFirmList(), array('empty' => '- Select -'))?>
 			<?php echo CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info'))?>
 		</div>

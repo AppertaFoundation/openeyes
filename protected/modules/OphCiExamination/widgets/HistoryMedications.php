@@ -155,7 +155,6 @@ class HistoryMedications extends \BaseEventElementWidget
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
-
         // pre-cache current entries so any entries that remain in place will use the same db row
         $entries_by_id = array();
         foreach ($element->entries as $entry) {
@@ -194,19 +193,34 @@ class HistoryMedications extends \BaseEventElementWidget
      */
     public function getMergedEntries()
     {
-        $result = array(
-            'current' => $this->element->currentOrderedEntries,
-            'stopped' => $this->element->stoppedOrderedEntries
-        );
-        // determine if there are any prescription items that are not tracked by the element
-        if ($untracked = $this->getEntriesForUntrackedPrescriptionItems()) {
-            $current = $this->element->currentOrderedEntries;
-            $stopped = $this->element->stoppedOrderedEntries;
-            foreach ($untracked as $u) {
-                if ($u->end_date) {
-                   $stopped[] = $u;
+
+        //$this->element->currentOrderedEntries and stoppedOrderedEntries relations are not uses here as we
+        //need to include the untracked Prescription Items as well and those are already loaded into the
+        //$this->element->entries (alongside with tracked Prescription Items)
+
+        // setElementFromDefaults() only called when the element is a new record (BaseEventElementWidget like ~166)
+        // and this is where the untracked elements are loaded into the $this->element->entries
+        // so if it isn't a new element ->entries only contains tracked medications
+        if(!$this->element->isNewRecord){
+            if ($untracked = $this->getEntriesForUntrackedPrescriptionItems()) {
+                // tracking prescription items.
+                $this->element->entries = array_merge(
+                    $this->element->entries,
+                    $untracked);
+            }
+        }
+
+        $result['current'] = array();
+        $result['stopped'] = array();
+
+        if($this->element->entries){
+            $stopped = array();
+            $current = array();
+            foreach($this->element->entries as $entry){
+                if ($entry->end_date) {
+                    $stopped[] = $entry;
                 } else {
-                    $current[] = $u;
+                    $current[] = $entry;
                 }
             }
             $sorter = function($a , $b) {
@@ -218,6 +232,7 @@ class HistoryMedications extends \BaseEventElementWidget
             $result['current'] = $current;
             $result['stopped'] = $stopped;
         }
+
         // now remove any that are no longer relevant because the prescription item
         // has been deleted
         $filter = function($entry) {

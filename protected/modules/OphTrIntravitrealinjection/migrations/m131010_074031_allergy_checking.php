@@ -20,7 +20,7 @@ class m131010_074031_allergy_checking extends CDbMigration
                 'CONSTRAINT `ophtrintravitinjection_antiseptic_allergy_assign_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
                 'CONSTRAINT `ophtrintravitinjection_antiseptic_allergy_assign_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
                 'CONSTRAINT `ophtrintravitinjection_antiseptic_allergy_assign_iopi_fk` FOREIGN KEY (`antisepticdrug_id`) REFERENCES `ophtrintravitinjection_antiseptic_drug` (`id`)',
-                'CONSTRAINT `ophtrintravitinjection_antiseptic_allergy_assign_allergyi_fk` FOREIGN KEY (`allergy_id`) REFERENCES `allergy` (`id`)',
+                'CONSTRAINT `ophtrintravitinjection_antiseptic_allergy_assign_allergyi_fk` FOREIGN KEY (`allergy_id`) REFERENCES `archive_allergy` (`id`)',
             ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
         $this->createTable('ophtrintravitinjection_skindrug_allergy_assignment', array(
@@ -39,7 +39,7 @@ class m131010_074031_allergy_checking extends CDbMigration
                 'CONSTRAINT `ophtrintravitinjection_skindrug_allergy_assign_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
                 'CONSTRAINT `ophtrintravitinjection_skindrug_allergy_assign_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
                 'CONSTRAINT `ophtrintravitinjection_skindrug_allergy_assign_iopi_fk` FOREIGN KEY (`skindrug_id`) REFERENCES `ophtrintravitinjection_skin_drug` (`id`)',
-                'CONSTRAINT `ophtrintravitinjection_skindrug_allergy_assign_allergyi_fk` FOREIGN KEY (`allergy_id`) REFERENCES `allergy` (`id`)',
+                'CONSTRAINT `ophtrintravitinjection_skindrug_allergy_assign_allergyi_fk` FOREIGN KEY (`allergy_id`) REFERENCES `archive_allergy` (`id`)',
             ), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
     }
 

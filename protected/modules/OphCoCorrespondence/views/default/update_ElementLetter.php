@@ -264,11 +264,11 @@ $patient = Patient::model()->findByPk($patient_id);
                         'id' => 'OphCoCorrespondence_footerAutoComplete',
                         'name' => 'OphCoCorrespondence_footerAutoComplete',
                         'value' => '',
-                        'sourceUrl' => array('default/users'),
+                        'sourceUrl' => array('default/users/correspondence-footer/true'),
                         'options' => array(
                             'minLength' => '3',
                             'select' => "js:function(event, ui) {
-									$('#ElementLetter_footer').val(\"Yours sincerely\\n\\n\\n\\n\\n\"+ui.item.fullname+\"\\n\"+ui.item.role+\"\\n\"+(ui.item.consultant?\"Consultant: \"+ui.item.consultant:''));
+									$('#ElementLetter_footer').val(ui.item.correspondence_footer_text);
 									$('#OphCoCorrespondence_footerAutoComplete').val('');
 									return false;
 								}",
