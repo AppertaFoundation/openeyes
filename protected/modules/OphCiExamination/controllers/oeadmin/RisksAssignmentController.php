@@ -34,35 +34,21 @@ class RisksAssignmentController extends \ModuleAdminController
     }
 
     /**
-     * Displays a particular model.
-     * @param integer $id the ID of the model to be displayed
-     */
-    public function actionView($id)
-    {
-        $this->render('view',array(
-            'model'=>$this->loadModel($id),
-        ));
-    }
-
-    /**
      * Creates a new model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      */
     public function actionCreate()
     {
-        $model=new OphCiExaminationRisk;
+        $model = new OphCiExaminationRisk;
 
-        // Uncomment the following line if AJAX validation is needed
-        // $this->performAjaxValidation($model);
-
-        if(isset($_POST['OphCiExaminationRisk']))
+        if(isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationRisk']))
         {
-            $model->attributes=$_POST['OphCiExaminationRisk'];
+            $model->attributes=$_POST['OEModule_OphCiExamination_models_OphCiExaminationRisk'];
             if($model->save())
-                $this->redirect(array('view','id'=>$model->id));
+                $this->redirect(array('index'));
         }
 
-        $this->render('create',array(
+        $this->render('/admin/riskassignment/create',array(
             'model'=>$model,
         ));
     }
@@ -79,14 +65,14 @@ class RisksAssignmentController extends \ModuleAdminController
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if(isset($_POST['OphCiExaminationRisk']))
+        if(isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationRisk']))
         {
-            $model->attributes=$_POST['OphCiExaminationRisk'];
+            $model->attributes=$_POST['OEModule_OphCiExamination_models_OphCiExaminationRisk'];
             if($model->save())
-                $this->redirect(array('view','id'=>$model->id));
+                $this->redirect(array('index'));
         }
 
-        $this->render('update',array(
+        $this->render('/admin/riskassignment/update',array(
             'model'=>$model,
         ));
     }
