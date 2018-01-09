@@ -401,7 +401,9 @@ class DefaultController extends BaseEventTypeController
         if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
             $this->render('print', array('copy' => 'notes'));
         }
-        $this->render('print', array('copy' => 'patient'));
+        if(Yii::app()->params['disable_prescription_patient_copy'] == 'off') {
+            $this->render('print', array('copy' => 'patient'));
+        }
     }
 
     public function actionPDFPrint($id)
