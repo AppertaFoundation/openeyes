@@ -4,51 +4,56 @@ class m180104_110527_add_new_cols_to_risk extends OEMigration
 {
 	public function up()
 	{
-	    $this->addColumn('ophciexamination_risk', 'subspecialty_id', 'int(10) unsigned');
-	    $this->addColumn('ophciexamination_risk_version', 'subspecialty_id', 'int(10) unsigned');
+        $this->addColumn('ophciexamination_risk', 'gender', 'varchar(1) NULL AFTER name');
+        $this->addColumn('ophciexamination_risk_version', 'gender', 'varchar(1) NULL AFTER name');
 
-	    $this->addColumn('ophciexamination_risk', 'firm_id', 'int(10) unsigned');
-	    $this->addColumn('ophciexamination_risk_version', 'firm_id', 'int(10) unsigned');
+        $this->addColumn('ophciexamination_risk', 'age_min', 'int(3) unsigned AFTER gender');
+        $this->addColumn('ophciexamination_risk_version', 'age_min', 'int(3) unsigned AFTER gender');
 
-	    $this->addColumn('ophciexamination_risk', 'gender', 'varchar(1) NULL');
-	    $this->addColumn('ophciexamination_risk_version', 'gender', 'varchar(1) NULL');
+        $this->addColumn('ophciexamination_risk', 'age_max', 'int(3) unsigned AFTER age_min');
+        $this->addColumn('ophciexamination_risk_version', 'age_max', 'int(3) unsigned AFTER age_min');
 
-	    $this->addColumn('ophciexamination_risk', 'age_min', 'int(3) unsigned');
-	    $this->addColumn('ophciexamination_risk_version', 'age_min', 'int(3) unsigned');
-
-	    $this->addColumn('ophciexamination_risk', 'age_max', 'int(3) unsigned');
-	    $this->addColumn('ophciexamination_risk_version', 'age_max', 'int(3) unsigned');
-
-	    $this->addForeignKey('ophciexamination_risk_subspecialty', 'ophciexamination_risk', 'subspecialty_id', 'subspecialty', 'id');
-	    $this->addForeignKey('ophciexamination_risk_firm', 'ophciexamination_risk', 'firm_id', 'firm', 'id');
-
-	    $this->alterColumn("ophciexamination_risk", 'last_modified_user_id', 'int(10) unsigned NOT NULL AFTER age_max');
-	    $this->alterColumn("ophciexamination_risk", 'last_modified_date', 'datetime NOT NULL AFTER last_modified_user_id');
-	    $this->alterColumn("ophciexamination_risk", 'created_user_id', 'int(10) unsigned NOT NULL AFTER last_modified_date');
-	    $this->alterColumn("ophciexamination_risk", 'created_date', 'datetime NOT NULL AFTER created_user_id');
-
-	    $this->alterColumn("ophciexamination_risk_version", 'last_modified_user_id', 'int(10) unsigned NOT NULL AFTER age_max');
-	    $this->alterColumn("ophciexamination_risk_version", 'last_modified_date', 'datetime NOT NULL AFTER last_modified_user_id');
-	    $this->alterColumn("ophciexamination_risk_version", 'created_user_id', 'int(10) unsigned NOT NULL AFTER last_modified_date');
-	    $this->alterColumn("ophciexamination_risk_version", 'created_date', 'datetime NOT NULL AFTER created_user_id');
+	    $this->createOETable('ophciexamination_risk_set',
+	        array(
+	            'id' => 'pk',
+	            'name' => 'varchar(255) NULL',
+                'firm_id' => 'int(10) unsigned',
+                'subspecialty_id' =>  'int(10) unsigned',
+            ),true
+        );
 
 
+        $this->addForeignKey('ophciexamination_risk_set_subspecialty', 'ophciexamination_risk_set', 'subspecialty_id', 'subspecialty', 'id');
+        $this->addForeignKey('ophciexamination_risk_set_firm', 'ophciexamination_risk_set', 'firm_id', 'firm', 'id');
 
 	    $this->dropColumn("ophciexamination_risk", "required");
 	    $this->dropColumn("ophciexamination_risk_version", "required");
+
+
+        $this->createOETable('ophciexamination_risk_set_assignment',
+            array(
+                'id' => 'pk',
+                'ophciexamination_risk_id' => 'int(11)',
+                'risk_set_id' => 'int(11)',
+            ),true
+        );
+
+        $this->addForeignKey('ophciexamination_risk_set_assignment_risk', 'ophciexamination_risk_set_assignment', 'ophciexamination_risk_id', 'ophciexamination_risk', 'id');
+        $this->addForeignKey('ophciexamination_risk_set_assignment_set', 'ophciexamination_risk_set_assignment', 'risk_set_id', 'ophciexamination_risk_set', 'id');
 	}
 
 	public function down()
 	{
-	    $this->dropForeignKey('ophciexamination_risk_subspecialty', 'ophciexamination_risk');
-	    $this->dropForeignKey('ophciexamination_risk_firm', 'ophciexamination_risk');
 
-        $this->dropColumn('ophciexamination_risk', 'subspecialty_id');
-        $this->dropColumn('ophciexamination_risk', 'firm_id');
-        $this->dropColumn('ophciexamination_risk', 'gender_id');
-        $this->dropColumn('ophciexamination_risk', 'age_min');
-        $this->dropColumn('ophciexamination_risk', 'age_max');
+	    $this->dropForeignKey('ophciexamination_risk_set_subspecialty', 'ophciexamination_risk_set');
+	    $this->dropForeignKey('ophciexamination_risk_set_firm', 'ophciexamination_risk_set');
+        $this->dropForeignKey('ophciexamination_risk_set_risk', 'ophciexamination_risk_set');
+        $this->dropForeignKey('ophciexamination_risk_set_assignment_risk', 'ophciexamination_risk_set_assignment');
+        $this->dropForeignKey('ophciexamination_risk_set_assignment_set', 'ophciexamination_risk_set_assignment');
 
-        $this->addColumn("required", "tinyint(1) NOT NULL");
+        $this->addColumn('ophciexamination_risk', "required", "tinyint(1) NOT NULL");
+
+        $this->dropOETable('ophciexamination_risk_set', true);
+        $this->dropOETable('ophciexamination_risk_set_risk', true);
 	}
 }

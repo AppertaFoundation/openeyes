@@ -23,6 +23,7 @@ namespace OEModule\OphCiExamination\widgets;
 use OEModule\OphCiExamination\models\HistoryRisks as HistoryRisksElement;
 use OEModule\OphCiExamination\models\HistoryRisksEntry;
 use OEModule\OphCiExamination\models\OphCiExaminationRisk;
+use OEModule\OphCiExamination\models\OphCiExaminationRiskSet;
 
 class HistoryRisks extends \BaseEventElementWidget
 {
@@ -44,17 +45,34 @@ class HistoryRisks extends \BaseEventElementWidget
         $criteria = new \CDbCriteria();
         $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
         $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
-
-        $criteria->addCondition("(t.age_min <= :age OR t.age_min IS NULL)");
-        $criteria->addCondition("(t.age_max >= :age OR t.age_max IS NULL)");
-        $criteria->addCondition("(t.gender = :gender OR t.gender IS NULL)");
+        $criteria->with = array(
+            'ophciexamination_risks' => array(
+                'condition' =>
+                    '((age_min <= :age OR age_min IS NULL) AND' .
+                    '(age_max >= :age OR age_max IS NULL)) AND' .
+                    '(gender = :gender OR gender IS NULL)'
+            ),
+        );
 
         $criteria->params['subspecialty_id'] = $subspecialty_id;
         $criteria->params['firm_id'] = $firm->id;
         $criteria->params['age'] = $this->patient->age;
         $criteria->params['gender'] = $this->patient->gender;
 
-        return OphCiExaminationRisk::model()->findAll($criteria);
+        $sets = OphCiExaminationRiskSet::model()->findAll($criteria);
+
+        $required = array();
+        if($sets){
+            foreach($sets as $set){
+                if($set->ophciexamination_risks){
+                    foreach($set->ophciexamination_risks as $ophciexamination_risks){
+                        $required[] = $ophciexamination_risks;
+                    }
+                }
+            }
+        }
+
+        return $required;
     }
 
     public function getRiskOptions()

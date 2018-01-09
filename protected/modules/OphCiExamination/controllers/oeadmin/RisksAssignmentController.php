@@ -20,9 +20,10 @@
 
 namespace OEModule\OphCiExamination\controllers;
 
-
-use OEModule\OphCiExamination\models\HistoryRisks;
 use OEModule\OphCiExamination\models\OphCiExaminationRisk;
+use OEModule\OphCiExamination\models\OphCiExaminationRiskSet;
+use OEModule\OphCiExamination\models\OphciexaminationRiskSetAssignment;
+use WebDriver\Exception;
 
 class RisksAssignmentController extends \ModuleAdminController
 {
@@ -31,6 +32,22 @@ class RisksAssignmentController extends \ModuleAdminController
         return array(
             array('allow', 'users' => array('@')),
         );
+    }
+
+    /**
+     * Lists all models.
+     */
+    public function actionIndex()
+    {
+
+        $model= new OphCiExaminationRiskSet();
+        $model->unsetAttributes();
+        if(isset($_GET['OphCiExaminationRisk']))
+            $model->attributes=$_GET['OphCiExaminationRisk'];
+
+        $this->render('/admin/riskassignment/index',array(
+            'model' => $model,
+        ));
     }
 
     /**
@@ -62,13 +79,52 @@ class RisksAssignmentController extends \ModuleAdminController
     {
         $model=$this->loadModel($id);
 
-        // Uncomment the following line if AJAX validation is needed
-        // $this->performAjaxValidation($model);
-
-        if(isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationRisk']))
+        if(isset($_POST['OEModule_OphCiExamination_models_OphciexaminationRiskSet']))
         {
-            $model->attributes=$_POST['OEModule_OphCiExamination_models_OphCiExaminationRisk'];
-            if($model->save())
+            $model->attributes=$_POST['OEModule_OphCiExamination_models_OphciexaminationRiskSet'];
+
+            if($model->save()){
+
+                $risks = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRisk', array());
+
+                foreach($risks as $risk){
+
+                    if(isset($risk['id'])){
+                        $risk_model = OphCiExaminationRisk::model()->findByPk($risk['id']);
+                    } else {
+                        throw new \Exception("OphCiExaminationRisk not found");
+                    }
+
+                    $risk_model->gender = $risk['gender'];
+                    $risk_model->age_min = $risk['age_min'];
+                    $risk_model->age_max = $risk['age_max'];
+
+                    if($risk_model->save()){
+                        $criteria = new \CDbCriteria();
+                        $criteria->addCondition('risk_set_id = :set_id');
+                        $criteria->addCondition('ophciexamination_risk_id = :set_id');
+                        $criteria->params[':set_id'] = $model->id;
+                        $criteria->params[':ophciexamination_risk_id'] = $risk_model->id;
+
+                        $assignment = OphciexaminationRiskSetAssignment::model()->find($criteria);
+
+                        if(!$assignment){
+                            $assignment = new OphciexaminationRiskSetAssignment;
+                            $assignment->ophciexamination_risk_id = $risk_model->id;
+                            $assignment->risk_set_id = $model->id;
+
+                            $assignment->save();
+                        }
+                    }else{
+                        throw new \Exception('OphCiExaminationRisk cannot be saved.');
+                    }
+                }
+
+
+
+            } else {
+
+            }
                 $this->redirect(array('index'));
         }
 
@@ -82,29 +138,17 @@ class RisksAssignmentController extends \ModuleAdminController
      * If deletion is successful, the browser will be redirected to the 'admin' page.
      * @param integer $id the ID of the model to be deleted
      */
-    public function actionDelete($id)
+    public function actionDelete()
     {
-        $this->loadModel($id)->delete();
+        $model_ids = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRisk', array());
 
-        // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-        if(!isset($_GET['ajax']))
-            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-    }
+        foreach($model_ids as $model_id){
+            $this->loadModel($model_id)->delete();
+        }
 
-    /**
-     * Lists all models.
-     */
-    public function actionIndex()
-    {
-
-        $model= new OphCiExaminationRisk('search');
-        $model->unsetAttributes();  // clear any default values
-        if(isset($_GET['OphCiExaminationRisk']))
-            $model->attributes=$_GET['OphCiExaminationRisk'];
-
-        $this->render('/admin/riskassignment/index',array(
-            'model' => $model,
-        ));
+        //handleButton.js's handleButton($('#et_delete') function needs this return
+        echo "1";
+        \Yii::app()->end();
     }
 
     /**
@@ -116,23 +160,10 @@ class RisksAssignmentController extends \ModuleAdminController
      */
     public function loadModel($id)
     {
-        $model=OphCiExaminationRisk::model()->findByPk($id);
+        $model=OphCiExaminationRiskSet::model()->findByPk($id);
         if($model===null)
             throw new CHttpException(404,'The requested page does not exist.');
         return $model;
-    }
-
-    /**
-     * Performs the AJAX validation.
-     * @param OphCiExaminationRisk $model the model to be validated
-     */
-    protected function performAjaxValidation($model)
-    {
-        if(isset($_POST['ajax']) && $_POST['ajax']==='oph-ci-examination-risk-form')
-        {
-            echo CActiveForm::validate($model);
-            \Yii::app()->end();
-        }
     }
 
 }
