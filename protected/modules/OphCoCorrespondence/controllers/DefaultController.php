@@ -420,7 +420,7 @@ class DefaultController extends BaseEventTypeController
 
             if($to_recipient_gp){
                 // print an extra copy to note
-                if(!Yii::app()->params['disable_correspondence_notes_copy']) {
+                if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
                     $this->render('print', array(
                         'element' => $letter,
                         'letter_address' => ($to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address)
@@ -436,7 +436,7 @@ class DefaultController extends BaseEventTypeController
 
                     //extra printout for note
                     if($document_target->ToCc == 'To' && $document_target->contact_type != 'GP'){
-                        if(!Yii::app()->params['disable_correspondence_notes_copy']){
+                        if(Yii::app()->params['disable_print_notes_copy'] == 'off'){
                             $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
                         }
                     }
@@ -462,7 +462,7 @@ class DefaultController extends BaseEventTypeController
             $this->render('print', array('element' => $letter));
 
             if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
-                if(!Yii::app()->params['disable_correspondence_notes_copy']) {
+                if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
                     $this->render('print', array('element' => $letter));
                 }
 

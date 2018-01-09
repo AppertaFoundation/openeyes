@@ -646,6 +646,15 @@ class OphCoCorrespondence_API extends BaseAPI
         return null;
     }
 
+    /**
+     * Returns the Optom portal URL
+     * @return string|null
+     */
+    public function getPortalUrl()
+    {
+        return isset(Yii::app()->params['portal']['frontend_url']) ? Yii::app()->params['portal']['frontend_url'] : null;
+    }
+
     /*
      * @param int $document_target_id
      * @param $type

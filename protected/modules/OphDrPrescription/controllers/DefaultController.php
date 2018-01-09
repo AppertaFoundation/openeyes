@@ -184,12 +184,12 @@ class DefaultController extends BaseEventTypeController
             $status_name = $this->episode->status->name;
             $subspecialty_id = $this->firm->getSubspecialtyID();
             $params = array(':subspecialty_id' => $subspecialty_id, ':status_name' => $status_name);
-            
+
             $set = DrugSet::model()->find(array(
                 'condition' => 'subspecialty_id = :subspecialty_id AND name = :status_name',
                 'params' => $params,
             ));
-            
+
             if ($set) {
                 foreach ($set->items as $item) {
                     $item_model = new OphDrPrescription_Item();
@@ -198,15 +198,15 @@ class DefaultController extends BaseEventTypeController
                     $attr = $item->getAttributes();
                     unset($attr['drug_set_id']);
                     $item_model->attributes = $attr;
-                    
+
                     $item_model->tapers = $item->tapers;
-                    
+
                     if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
                         if ($apieye = $api->getLastEye($this->patient, false)) {
                             $item_model->route_option_id = $apieye;
                         }
                     }
-                    
+
                     $items[] = $item_model;
                 }
             }
@@ -398,7 +398,9 @@ class DefaultController extends BaseEventTypeController
         $this->layout = '//layouts/print';
 
         $this->render('print');
-        $this->render('print', array('copy' => 'notes'));
+        if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
+            $this->render('print', array('copy' => 'notes'));
+        }
         $this->render('print', array('copy' => 'patient'));
     }
 
@@ -458,7 +460,7 @@ class DefaultController extends BaseEventTypeController
         if(!$event_id){
             throw new Exception('Prescription id not provided');
         }
-        
+
         if (!$prescription = Element_OphDrPrescription_Details::model()->find('event_id=?', array($event_id))) {
             throw new Exception('Prescription not found for event id: '.$event_id);
         }
