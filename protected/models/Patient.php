@@ -356,7 +356,7 @@ class Patient extends BaseActiveRecordVersioned
         //FIXME : this should be done with application.behaviors.OeDateFormat
         foreach (array('dob', 'date_of_death') as $date_column) {
             $date = $this->{$date_column};
-            if (strtotime($date)) {
+            if (strtotime($date) !== false) {
                 $this->{$date_column} = date('Y-m-d', strtotime($date));
             } else {
                 $this->{$date_column} = null;

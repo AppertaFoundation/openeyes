@@ -48,7 +48,11 @@ class AdminController extends BaseAdminController
         $this->jsVars['common_ophthalmic_disorder_group_options'] = $data;
 
         $errors = array();
-        $subspecialty_id = Yii::app()->request->getParam('subspecialty_id', 1);
+        $subspecialties = Subspecialty::model()->findAll(array('order'=>'name'));
+        $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
+        if(!$subspecialty_id){
+            $subspecialty_id = (isset($subspecialties[0]) && isset($subspecialties[0]->id)) ? $subspecialties[0]->id : null;
+        }
 
         if( Yii::app()->request->isPostRequest){
 
@@ -138,7 +142,7 @@ class AdminController extends BaseAdminController
                 'pagination' => false,
             )),
             'subspecialty_id' => $subspecialty_id,
-            'subspecialty' => Subspecialty::model()->findAll()
+            'subspecialty' => $subspecialties,
         ));
     }
 
@@ -1887,24 +1891,24 @@ class AdminController extends BaseAdminController
                 foreach (glob($savePath . $logoKey) as $existingLogo) {
                     unlink($savePath . $existingLogo);
                 }
+
                 if (in_array($fileInfo['extension'], $fileFormats, true)) {
+
                     if ($logoKey === 'header_logo') {
-                        $logoTemp = $_FILES['Logo']['tmp_name']['header_logo'];
-                        list($width, $height) = getimagesize($logoTemp);
-                        $condition = $height . '==100 && ' . $width . '==500';
+                        if($uploadLogo->saveAs($savePath . $logoKey . '.' . $fileInfo['extension'])){
+                            Yii::app()->user->setFlash('success', 'Header Logo Saved Successfully');
+                        } else {
+                            Yii::app()->user->setFlash('error', 'Header Logo logo was not saved. Please try again.');
+                        }
                     }
                     if ($logoKey === 'secondary_logo') {
-                        $logoTemp = $_FILES['Logo']['tmp_name']['secondary_logo'];
-                        list($width, $height) = getimagesize($logoTemp);
-                        $condition = $height . '==100 && ' . $width . '==120';
+                        if($uploadLogo->saveAs($savePath . $logoKey . '.' . $fileInfo['extension'])){
+                            Yii::app()->user->setFlash('success', 'Header Logo Saved Successfully');
+                        } else {
+                            Yii::app()->user->setFlash('error', 'Header Logo logo was not saved. Please try again.');
+                        }
                     }
 
-                    if ($condition) {
-                        $uploadLogo->saveAs($savePath . $logoKey . '.' . $fileInfo['extension']);
-                        Yii::app()->user->setFlash('success', 'Logo Saved Successfully');
-                    } else {
-                        Yii::app()->user->setFlash('error', ' logo size must be defined dimension');
-                    }
                 } else {
                     Yii::app()->user->setFlash('error', 'Upload valid image formats (jpg,jpeg,png,gif)');
                 }
