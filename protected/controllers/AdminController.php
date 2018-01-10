@@ -1895,27 +1895,17 @@ class AdminController extends BaseAdminController
                 if (in_array($fileInfo['extension'], $fileFormats, true)) {
 
                     if ($logoKey === 'header_logo') {
-                        $logoTemp = $_FILES['Logo']['tmp_name']['header_logo'];
-                        list($width, $height) = getimagesize($logoTemp);
-
-                        if($height == 100 && $width == 500){
-                            //@TODO: check the value of the saveAs method to see if the logo was saved successfully
-                            $uploadLogo->saveAs($savePath . $logoKey . '.' . $fileInfo['extension']);
+                        if($uploadLogo->saveAs($savePath . $logoKey . '.' . $fileInfo['extension'])){
                             Yii::app()->user->setFlash('success', 'Header Logo Saved Successfully');
                         } else {
-                            Yii::app()->user->setFlash('error', 'Header Logo logo size must be defined dimension (500x100)');
+                            Yii::app()->user->setFlash('error', 'Header Logo logo was not saved. Please try again.');
                         }
                     }
                     if ($logoKey === 'secondary_logo') {
-                        $logoTemp = $_FILES['Logo']['tmp_name']['secondary_logo'];
-                        list($width, $height) = getimagesize($logoTemp);
-
-                        if($height == 100 && $width == 120){
-                            //@TODO: check the value of the saveAs method to see if the logo was saved successfully
-                            $uploadLogo->saveAs($savePath . $logoKey . '.' . $fileInfo['extension']);
+                        if($uploadLogo->saveAs($savePath . $logoKey . '.' . $fileInfo['extension'])){
                             Yii::app()->user->setFlash('success', 'Header Logo Saved Successfully');
                         } else {
-                            Yii::app()->user->setFlash('error', 'Header Logo logo size must be defined dimension (120x100)');
+                            Yii::app()->user->setFlash('error', 'Header Logo logo was not saved. Please try again.');
                         }
                     }
 
