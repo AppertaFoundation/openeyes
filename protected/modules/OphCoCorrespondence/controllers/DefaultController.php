@@ -77,9 +77,9 @@ class DefaultController extends BaseEventTypeController
 
             if($action == 'update'){
                 if( !Yii::app()->request->isPostRequest && $letter->draft){
-                    
+
                     $gp_targets = $letter->getTargetByContactType("GP");
-              
+
                     foreach($gp_targets as $gp_target){
                         $api->updateDocumentTargetAddressFromContact($gp_target->id, 'Gp', $letter->id);
                     }
@@ -100,10 +100,10 @@ class DefaultController extends BaseEventTypeController
             $this->jsVars['OE_to_location_id'] = $to_location ? $to_location->id : null;
 
             $this->getApp()->assetManager->registerScriptFile('js/docman.js');
-            
+
             $this->loadDirectLines();
-        }       
-        
+        }
+
     }
 
     /**
@@ -132,7 +132,7 @@ class DefaultController extends BaseEventTypeController
         }
         parent::actionView($id);
     }
-    
+
     public function actionUpdate($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
@@ -149,7 +149,7 @@ class DefaultController extends BaseEventTypeController
 
         parent::actionUpdate($id);
     }
-    
+
     /**
      * Ajax action to get the address for a contact.
      *
@@ -157,8 +157,8 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionGetAddress()
     {
-        
-        
+
+
         if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
             throw new Exception('Unknown patient: '.@$_GET['patient_id']);
         }
@@ -166,11 +166,11 @@ class DefaultController extends BaseEventTypeController
         if (!preg_match('/^([a-zA-Z]+)([0-9]+)$/', @$_GET['contact'], $m)) {
             throw new Exception('Invalid contact format: '.@$_GET['contact']);
         }
-        
+
         $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
         $data = $api->getAddress($_GET['patient_id'], $_GET['contact']);
         echo json_encode($data);
-        
+
         return;
     }
 
@@ -464,7 +464,7 @@ class DefaultController extends BaseEventTypeController
 
             if($to_recipient_gp){
                 // print an extra copy to note
-                if(!Yii::app()->params['disable_correspondence_notes_copy']) {
+                if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
                     $recipients[] = $to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address;
                 }
             }
@@ -476,7 +476,7 @@ class DefaultController extends BaseEventTypeController
                     $recipients[] = ($document_target->contact_name . "\n" . $document_target->address);
                     //extra printout for note
                     if($document_target->ToCc == 'To' && $document_target->contact_type != 'GP'){
-                        if(!Yii::app()->params['disable_correspondence_notes_copy']){
+                        if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
                             $recipients[] = $document_target->contact_name . "\n" . $document_target->address;
                         }
                     }
@@ -502,7 +502,7 @@ class DefaultController extends BaseEventTypeController
             $recipients[] = $letter->getToAddress();
 
             if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
-                if(!Yii::app()->params['disable_correspondence_notes_copy']) {
+                if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
                     $recipients[] = $letter->getToAddress();
                 }
                 foreach ($letter->getCcTargets() as $letter_address) {
@@ -727,7 +727,7 @@ class DefaultController extends BaseEventTypeController
         if (!$letter = ElementLetter::model()->find('event_id=?', array($id))) {
             throw new Exception("Letter not found for event id: $id");
         }
-                
+
         $letter->print = 1;
 
         if (@$_GET['all']) {
