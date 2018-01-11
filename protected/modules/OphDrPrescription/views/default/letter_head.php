@@ -7,7 +7,7 @@
     if(isset($logo['headerLogo'])){
     ?>
         <div class="ophdrprescription-letter-logo">
-            <img src="<?php  echo $logo['headerLogo']; ?>" alt="letterhead_Moorfields_NHS" width="350" />
+            <img src="<?php  echo $logo['headerLogo']; ?>" alt="letterhead_NHS" width="350" />
         </div>
     <?php } ?>
 </div>

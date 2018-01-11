@@ -425,7 +425,18 @@ class DefaultController extends BaseEventTypeController
     public function actionPDFPrint($id)
     {
         $this->pdf_print_suffix = Site::model()->findByPk(Yii::app()->session['selected_site_id'])->id;
-        $this->pdf_print_documents = 3;
+
+        $document_count = 1;
+        if(Yii::app()->params['disable_print_notes_copy'] == 'off'){
+            $document_count++;
+        }
+
+        if(Yii::app()->params['disable_prescription_patient_copy'] == 'off'){
+            $document_count++;
+        }
+
+        $this->pdf_print_documents = $document_count;
+
         return parent::actionPDFPrint($id);
     }
 

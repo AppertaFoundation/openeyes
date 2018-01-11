@@ -85,7 +85,7 @@
     <table class="grid">
         <tbody>
             <tr>
-                <td><?php echo $form->labelEx($model, 'Header Logo'); ?> (dimensions 500x100 pixels)</td>
+                <td><?php echo $form->labelEx($model, 'Header Logo'); ?> (recommended dimensions is less than 500x100 pixels)</td>
                 <td>
                     <?php 
                     if (!empty($headerLogo)) { ?>
@@ -96,7 +96,7 @@
                 </td>
             </tr>
             <tr>
-                <td><?php echo $form->labelEx($model, 'Secondary Logo'); ?> (dimensions 120x100 pixels)</td>
+                <td><?php echo $form->labelEx($model, 'Secondary Logo'); ?> (recommended dimensions is less than dimensions 120x100 pixels)</td>
                 <td><?php 
                     if (!empty($secondaryLogo)) { ?>
                         <img src="<?php echo $yourImageUrl.'/'.$secondaryLogo; ?>" >
