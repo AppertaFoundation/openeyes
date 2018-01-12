@@ -191,21 +191,21 @@ SELECT
 , in_ecd.eyedraw_no_tuple_init_canvas_flag
 , in_ecd.eyedraw_carry_forward_canvas_flag
 -- All episodes for subject patient (see restriction)
-FROM openeyes.episode in_ep
+FROM episode in_ep
 -- All events for subject patient
-JOIN openeyes.event in_ev
+JOIN event in_ev
   ON in_ev.episode_id = in_ep.id 
 -- All EyeDraw data point for subject patient events
-JOIN openeyes.mview_datapoint_node in_mdp
+JOIN mview_datapoint_node in_mdp
   ON in_mdp.event_id = in_ev.id
 -- Look up eyedraw doodle/canvas rules
-JOIN openeyes.eyedraw_canvas_doodle in_ecd
+JOIN eyedraw_canvas_doodle in_ecd
   ON in_ecd.eyedraw_class_mnemonic = in_mdp.eyedraw_class_mnemonic
 -- Restrict-join: The doodle/canvas rule lookup required the runtime target canvas mnenonic 
 -- Restrict-join: "AND NOT" the source canvas that was used to shred the doodle data)  
  AND in_ecd.canvas_mnemonic = :cvmnm
 -- Look up eyedraw doodle rules
-JOIN openeyes.eyedraw_doodle in_ed
+JOIN eyedraw_doodle in_ed
   ON in_ed.eyedraw_class_mnemonic = in_ecd.eyedraw_class_mnemonic
 -- Restrict by patient subject
 WHERE in_ep.patient_id = :patient_id -- <<<<<<<<<<<<<<<<<<<<<<<<<<< BIND APP DATA HERE
@@ -219,15 +219,15 @@ AND in_ep.deleted = 0
 AND NOT EXISTS (
     SELECT 1
     -- All episodes for subject patient (see restriction)
-    FROM openeyes.episode in2_ep
+    FROM episode in2_ep
     -- All events for subject patient
-    JOIN openeyes.event in2_ev 
+    JOIN event in2_ev 
       ON in2_ev.episode_id = in2_ep.id 
     -- All EyeDraw data point for subject patient events
-    JOIN openeyes.mview_datapoint_node in2_mdp
+    JOIN mview_datapoint_node in2_mdp
       ON in2_mdp.event_id = in2_ev.id
     -- Look up eyedraw doodle (uses short circuit hop join - is safe J.Brown 27/07/2017) to determine set-intersection-tuples 
-    JOIN openeyes.eyedraw_doodle in2_ed
+    JOIN eyedraw_doodle in2_ed
       ON in2_ed.eyedraw_class_mnemonic = in2_mdp.eyedraw_class_mnemonic
     -- Restrict by patient subject (same as outer query)
     WHERE in2_ep.patient_id = in_ep.patient_id
