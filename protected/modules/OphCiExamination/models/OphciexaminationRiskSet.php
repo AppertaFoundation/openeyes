@@ -18,7 +18,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
-use OEModule\OphCiExamination\models\OphciexaminationRiskSetAssignment;
+use OEModule\OphCiExamination\models\OphciExaminationRiskSetAssignment;
 
 
 /**
@@ -45,7 +45,7 @@ use OEModule\OphCiExamination\models\OphciexaminationRiskSetAssignment;
  * @property OphciexaminationRisk $ophciexaminationRisk
  * @property Subspecialty $subspecialty
  */
-class OphciexaminationRiskSet extends \BaseActiveRecordVersioned
+class OphciExaminationRiskSet extends \BaseActiveRecordVersioned
 {
     /**
      * @return string the associated database table name
@@ -83,10 +83,10 @@ class OphciexaminationRiskSet extends \BaseActiveRecordVersioned
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'ophciexaminationRisk' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphciexaminationRisk', 'ophciexamination_risk_id'),
+            'ophciexaminationRisk' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphciexaminationRiskSetEntry', 'ophciexamination_risk_entry_id'),
             'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
-            'ophciexamination_risk_set_assignments' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphciexaminationRiskSetAssignment', 'risk_set_id'),
-            'ophciexamination_risks' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphciexaminationRisk', 'ophciexamination_risk_id', 'through' => 'ophciexamination_risk_set_assignments'),
+            'ophciexamination_risk_set_assignments' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphciExaminationRiskSetAssignment', 'risk_set_id'),
+            'ophciexamination_risks_entry' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphciexaminationRiskSetEntry', 'ophciexamination_risk_entry_id', 'through' => 'ophciexamination_risk_set_assignments'),
         );
     }
 
@@ -98,7 +98,7 @@ class OphciexaminationRiskSet extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
-            'ophciexamination_risk_id' => 'Risk',
+            'ophciexamination_risk_entry_id' => 'Risk',
             'firm_id' => \Firm::contextLabel(),
             'subspecialty_id' => 'Subspecialty',
             'gender' => 'Gender',
@@ -143,7 +143,7 @@ class OphciexaminationRiskSet extends \BaseActiveRecordVersioned
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!
      * @param string $className active record class name.
-     * @return OphciexaminationRiskSet the static model class
+     * @return OphciExaminationRiskSet the static model class
      */
     public static function model($className=__CLASS__)
     {

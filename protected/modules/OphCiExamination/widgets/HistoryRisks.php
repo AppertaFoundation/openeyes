@@ -23,7 +23,7 @@ namespace OEModule\OphCiExamination\widgets;
 use OEModule\OphCiExamination\models\HistoryRisks as HistoryRisksElement;
 use OEModule\OphCiExamination\models\HistoryRisksEntry;
 use OEModule\OphCiExamination\models\OphCiExaminationRisk;
-use OEModule\OphCiExamination\models\OphCiExaminationRiskSet;
+use OEModule\OphCiExamination\models\OphciExaminationRiskSet;
 
 class HistoryRisks extends \BaseEventElementWidget
 {
@@ -46,7 +46,7 @@ class HistoryRisks extends \BaseEventElementWidget
         $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
         $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
         $criteria->with = array(
-            'ophciexamination_risks' => array(
+            'ophciexamination_risks_entry' => array(
                 'condition' =>
                     '((age_min <= :age OR age_min IS NULL) AND' .
                     '(age_max >= :age OR age_max IS NULL)) AND' .
@@ -59,14 +59,14 @@ class HistoryRisks extends \BaseEventElementWidget
         $criteria->params['age'] = $this->patient->age;
         $criteria->params['gender'] = $this->patient->gender;
 
-        $sets = OphCiExaminationRiskSet::model()->findAll($criteria);
+        $sets = OphciExaminationRiskSet::model()->findAll($criteria);
 
         $required = array();
         if($sets){
             foreach($sets as $set){
-                if($set->ophciexamination_risks){
-                    foreach($set->ophciexamination_risks as $ophciexamination_risks){
-                        $required[] = $ophciexamination_risks;
+                if($set->ophciexamination_risks_entry){
+                    foreach($set->ophciexamination_risks_entry as $ophciexamination_risks){
+                        $required[] = $ophciexamination_risks->ophciexamination_risk;
                     }
                 }
             }

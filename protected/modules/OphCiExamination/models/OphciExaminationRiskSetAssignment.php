@@ -25,7 +25,7 @@ namespace OEModule\OphCiExamination\models;
  *
  * The followings are the available columns in table 'ophciexamination_risk_set_assignment':
  * @property integer $id
- * @property integer $ophciexamination_risk_entry_id
+ * @property integer $ophciexamination_risk_id
  * @property integer $risk_set_id
  * @property string $last_modified_user_id
  * @property string $last_modified_date
@@ -56,12 +56,12 @@ class OphciExaminationRiskSetAssignment extends \BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('ophciexamination_risk_entry_id, risk_set_id', 'numerical', 'integerOnly'=>true),
+            array('ophciexamination_risk_id, risk_set_id', 'numerical', 'integerOnly'=>true),
             array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
             array('last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, ophciexamination_risk_entry_id, risk_set_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+            array('id, ophciexamination_risk_id, risk_set_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
         );
     }
 
@@ -76,7 +76,7 @@ class OphciExaminationRiskSetAssignment extends \BaseActiveRecordVersioned
             'riskSet' => array(self::BELONGS_TO, 'OphciexaminationRiskSet', 'risk_set_id'),
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'ophciexaminationRiskEntry' => array(self::BELONGS_TO, 'OphciexaminationRiskSetEntry', 'ophciexamination_risk_entry_id'),
+            'ophciexaminationRisk' => array(self::BELONGS_TO, 'OphciexaminationRisk', 'ophciexamination_risk_id'),
         );
     }
 
@@ -87,7 +87,7 @@ class OphciExaminationRiskSetAssignment extends \BaseActiveRecordVersioned
     {
         return array(
             'id' => 'ID',
-            'ophciexamination_risk_entry_id' => 'Ophciexamination Risk',
+            'ophciexamination_risk_id' => 'Ophciexamination Risk',
             'risk_set_id' => 'Risk Set',
             'last_modified_user_id' => 'Last Modified User',
             'last_modified_date' => 'Last Modified Date',
@@ -115,7 +115,7 @@ class OphciExaminationRiskSetAssignment extends \BaseActiveRecordVersioned
         $criteria=new CDbCriteria;
 
         $criteria->compare('id',$this->id);
-        $criteria->compare('ophciexamination_risk_entry_id',$this->ophciexamination_risk_entry_id);
+        $criteria->compare('ophciexamination_risk_id',$this->ophciexamination_risk_id);
         $criteria->compare('risk_set_id',$this->risk_set_id);
         $criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
         $criteria->compare('last_modified_date',$this->last_modified_date,true);

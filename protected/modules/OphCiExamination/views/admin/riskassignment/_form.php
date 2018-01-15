@@ -45,7 +45,9 @@
                 'name' => 'Risk Name',
                 'type' => 'raw',
                 'value' => function($data, $row) use ($examination_risk_listdata){
-                    return CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRisk[$row][id]", $data->id, $examination_risk_listdata, array('empty' => '- select --'));
+                    return
+                        CHtml::hiddenField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][id]", $data->id) .
+                        CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][ophciexamination_risk_id]", $data->ophciexamination_risk_id, $examination_risk_listdata, array('empty' => '- select --'));
                 }
             ),
             array(
@@ -53,8 +55,7 @@
                 'name' => 'gender',
                 'type' => 'raw',
                 'value' => function($data, $row) use ($gender_options){
-
-                    echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRisk[$row][gender]", $data->gender, $gender_options, array('empty' => '-- select --'));
+                    echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][gender]", $data->gender, $gender_options, array('empty' => '-- select --'));
                 }
             ),
             array(
@@ -62,7 +63,7 @@
                 'name' => 'age_min',
                 'type' => 'raw',
                 'value' => function($data, $row){
-                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRisk[$row][age_min]", $data->age_min, array("style"=>"width:55px;"));
+                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_min]", $data->age_min, array("style"=>"width:55px;"));
                 }
             ),
             array(
@@ -70,7 +71,7 @@
                 'name' => 'age_max',
                 'type' => 'raw',
                 'value' => function($data, $row){
-                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRisk[$row][age_max]", $data->age_max, array("style"=>"width:55px;"));
+                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_max]", $data->age_max, array("style"=>"width:55px;"));
                 }
             ),
             array(
@@ -82,8 +83,8 @@
             ),
 
         );
-        $dataProvider = new \CActiveDataProvider('OEModule\OphCiExamination\models\OphciexaminationRisk');
-        $dataProvider->setData($model->ophciexamination_risks);
+        $dataProvider = new \CActiveDataProvider('OEModule\OphCiExamination\models\OphCiExaminationRiskSetEntry');
+        $dataProvider->setData($model->ophciexamination_risks_entry);
         $this->widget('zii.widgets.grid.CGridView', array(
             'dataProvider' => $dataProvider,
             'itemsCssClass' => 'generic-admin grid',
@@ -106,20 +107,20 @@
     <tr data-row="{{row}}">
         <td>
             <?php
-                echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRisk[{{row}}][id]",
+                echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][ophciexamination_risk_id]",
                                         null, $examination_risk_listdata, array("empty" => '-- select --'));
             ?>
         </td>
         <td>
             <?php
-                echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRisk[{{row}}][gender]", null, $gender_options, array('empty' => '-- select --'));
+                echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][gender]", null, $gender_options, array('empty' => '-- select --'));
             ?>
         </td>
         <td>
-            <input style="width:55px;" type="number" name="OEModule_OphCiExamination_models_OphCiExaminationRisk[{{row}}][age_min]" id="OEModule_OphCiExamination_models_OphCiExaminationRisk_{{row}}_age_min">
+            <input style="width:55px;" type="number" name="OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][age_min]" id="OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry_{{row}}_age_min">
         </td>
         <td>
-            <input style="width:55px;" type="number" name="OEModule_OphCiExamination_models_OphCiExaminationRisk[{{row}}][age_max]" id="OEModule_OphCiExamination_models_OphCiExaminationRisk_{{row}}_age_max">
+            <input style="width:55px;" type="number" name="OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][age_max]" id="OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry_{{row}}_age_max">
         </td>
         <td>
             <a href="javascript:void(0)" class="remove_risk_entry">remove</a>
