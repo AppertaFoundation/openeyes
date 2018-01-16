@@ -37,6 +37,7 @@ if(empty($patient)){
                             );
                         $criteria->compare('episode.patient_id', $patient->id);
                         $criteria->compare('t.deleted', 0);
+                        $criteria->addNotInCondition('event_type_id', EventType::model()->getNonPrintableEventTypes());
                         $criteria->order = 't.event_date desc, t.created_date desc';
 
                         $events = Event::model()->findAll($criteria);

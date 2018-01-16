@@ -483,6 +483,17 @@ class DefaultController extends BaseEventTypeController
                 }
             }
 
+            // if there is no print copy checked and press save and print we should return the GP as recipient
+            if(!count($recipients) >= 1)
+            {
+                $gp_targets = $letter->getTargetByContactType("GP");
+                foreach($gp_targets as $gp_target){
+                    $recipients[] = $gp_target->contact_name . "\n" . $gp_target->address;
+                }
+
+                return $recipients;
+            }
+
         } else {
 
             /**
@@ -815,6 +826,9 @@ class DefaultController extends BaseEventTypeController
         Yii::app()->end();
     }
 
+    /**
+     * @param $to_location_id
+     */
     public function actionGetSiteInfo($to_location_id)
     {
         $to_location = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByPk($to_location_id);
@@ -827,6 +841,9 @@ class DefaultController extends BaseEventTypeController
         Yii::app()->end();
     }
 
+    /**
+     * @throws CHttpException
+     */
     public function actionGetInitMethodDataById()
     {
         if (Yii::app()->request->isAjaxRequest ) {
