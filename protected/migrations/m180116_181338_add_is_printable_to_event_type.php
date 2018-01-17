@@ -18,7 +18,8 @@ class m180116_181338_add_is_printable_to_event_type extends CDbMigration
                             'Genetics',
                             'OphInGeneticresults',
                             'OphInDnaextraction',
-                            'OphInDnasample')");
+                            'OphInDnasample',
+                            'OphCoCvi')");
 	}
 
 	public function down()

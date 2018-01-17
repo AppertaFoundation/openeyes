@@ -482,18 +482,6 @@ class DefaultController extends BaseEventTypeController
                     }
                 }
             }
-
-            // if there is no print copy checked and press save and print we should return the GP as recipient
-            if(!count($recipients) >= 1)
-            {
-                $gp_targets = $letter->getTargetByContactType("GP");
-                foreach($gp_targets as $gp_target){
-                    $recipients[] = $gp_target->contact_name . "\n" . $gp_target->address;
-                }
-
-                return $recipients;
-            }
-
         } else {
 
             /**
@@ -605,6 +593,13 @@ class DefaultController extends BaseEventTypeController
 
         $attachments = $letter->getAllAttachments();
         $recipients = $this->getRecipients($id);
+
+        // check if printing is necessary
+        if(count($recipients) == 0)
+        {
+            return true;
+        }
+
         $this->pdf_output = new PDF_JavaScript();
 
         foreach($recipients as $recipient)
