@@ -70,7 +70,12 @@
                     if(isset($_POST['attachments_display_title'])){
                         $display_title = $_POST['attachments_display_title'][$row_index];
                     } else {
-                        $display_title = (isset($ac->display_title) ? $ac->display_title : $event_name);
+                        if(isset($value->display_title) && strlen($value->display_title) > 0)
+                        {
+                            $display_title = $value->display_title;
+                        }else {
+                            $display_title = (isset($ac->display_title) ? $ac->display_title : $event_name);
+                        }
                     }
                     ?>
 
