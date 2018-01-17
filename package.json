@@ -23,13 +23,13 @@
     "grunt-contrib-connect": "^1.0.2",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-uglify": "~1.0.2",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-hub": "^0.7.0",
-    "grunt-jsdoc": "^2.1.0",
+    "grunt-jsdoc": "^2.2.1",
     "grunt-mocha": "^1.0.2",
     "grunt-modernizr": "^1.0.2",
     "jshint-stylish": "^2.2.0",
-    "load-grunt-tasks": "^3.5.0",
-    "grunt-contrib-uglify": "~0.10.0"
+    "load-grunt-tasks": "^3.5.0"
   }
 }
