@@ -108,7 +108,7 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
                         $('#' + controller.options.modelName + '_'+ row_id +'_method_id').val( $select.val() );
 
                         if( $('#' + controller.options.assocModelName + '_'+ row_id +'_is_print_appended').is(':checked') ){
-                            $('#' + controller.options.modelName + '_'+ row_id +'_title').val( response.description.replace("Last ", "") );
+                            $('#' + controller.options.modelName + '_'+ row_id +'_title').val( response.description.replace("Last ", "").replace(" Event","") );
                         }
                     }
                 }
