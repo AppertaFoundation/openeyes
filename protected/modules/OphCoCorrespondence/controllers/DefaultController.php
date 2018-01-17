@@ -884,4 +884,32 @@ class DefaultController extends BaseEventTypeController
         }
         throw new CHttpException(400, 'Invalid method');
     }
+
+    /**
+     * @return array|mixed|null
+     */
+    protected function getAttachableEvents()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->with =
+            array('episode' =>
+                array('with' =>
+                    array(
+                        'firm' => array(
+                            'with' => 'serviceSubspecialtyAssignment'
+                        ),
+                        'patient'
+                    )
+                ),
+                "eventType"=>array("select"=>"name")
+            );
+        $criteria->compare('episode.patient_id', $this->patient->id);
+        $criteria->compare('t.deleted', 0);
+        $criteria->addCondition('episode.change_tracker is null');
+        $criteria->addNotInCondition('event_type_id', EventType::model()->getNonPrintableEventTypes());
+        $criteria->order = 't.event_date desc, t.created_date desc';
+
+        return Event::model()->findAll($criteria);
+
+    }
 }

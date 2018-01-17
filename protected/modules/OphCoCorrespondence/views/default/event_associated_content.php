@@ -124,25 +124,8 @@
                     <td colspan="2"><td>
                     <td>
                         <?php
-                        $criteria = new CDbCriteria();
-                        $criteria->with =
-                            array('episode' =>
-                                array('with' =>
-                                    array(
-                                        'firm' => array(
-                                            'with' => 'serviceSubspecialtyAssignment'
-                                        ),
-                                        'patient'
-                                    )
-                                ),
-                                "eventType"=>array("select"=>"name")
-                            );
-                        $criteria->compare('episode.patient_id', $patient->id);
-                        $criteria->compare('t.deleted', 0);
-                        $criteria->addNotInCondition('event_type_id', EventType::model()->getNonPrintableEventTypes());
-                        $criteria->order = 't.event_date desc, t.created_date desc';
 
-                        $events = Event::model()->findAll($criteria);
+                        $events = $this->getAttachableEvents();
 
                         echo CHtml::dropDownList(
                             'attachment_events',
