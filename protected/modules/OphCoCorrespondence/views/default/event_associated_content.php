@@ -125,7 +125,7 @@
                     <td>
                         <?php
 
-                        $events = $this->getAttachableEvents();
+                        $events = $this->getAttachableEvents($patient);
 
                         echo CHtml::dropDownList(
                             'attachment_events',

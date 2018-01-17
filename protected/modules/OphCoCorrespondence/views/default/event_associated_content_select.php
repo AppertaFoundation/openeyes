@@ -23,10 +23,10 @@ if(empty($patient)){
                     <td>
                         <?php
 
-                        $events = $this->getAttachableEvents();
+                        $events = $this->getAttachableEvents($patient);
                         ?>
                     <?= CHtml::dropDownList(
-                            'description',
+                            'attachment_events',
                             ' ',
                             CHtml::listData($events,'id',function($events) {
                                 return CHtml::encode($events->eventType->name. ' - '.Helper::convertDate2NHS($events->event_date));

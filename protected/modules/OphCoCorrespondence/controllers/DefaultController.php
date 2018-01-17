@@ -888,7 +888,7 @@ class DefaultController extends BaseEventTypeController
     /**
      * @return array|mixed|null
      */
-    protected function getAttachableEvents()
+    protected function getAttachableEvents($patient)
     {
         $criteria = new CDbCriteria();
         $criteria->with =
@@ -903,7 +903,7 @@ class DefaultController extends BaseEventTypeController
                 ),
                 "eventType"=>array("select"=>"name")
             );
-        $criteria->compare('episode.patient_id', $this->patient->id);
+        $criteria->compare('episode.patient_id', $patient->id);
         $criteria->compare('t.deleted', 0);
         $criteria->addCondition('episode.change_tracker is null');
         $criteria->addNotInCondition('event_type_id', EventType::model()->getNonPrintableEventTypes());
