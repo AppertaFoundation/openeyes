@@ -1092,6 +1092,17 @@ class DefaultController extends \BaseEventTypeController
         return \CHtml::listData(models\OphCiExamination_PupillaryAbnormalities_Abnormality::model()->findAll($criteria), 'id', 'name');
     }
 
+    public function getElementSetAssignment()
+    {
+        $event = $this->event;
+
+        if ($event && !$event->isNewRecord && $assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
+            return $assignment->step;
+        }
+        return null;
+    }
+
+
     /**
      * Actually handles the processing of patient ticketing if the module is present and a referral has been selected.
      *
@@ -1164,6 +1175,18 @@ class DefaultController extends \BaseEventTypeController
                         $errors[$et_name] = $err;
                     }
                 }
+            }
+        }
+
+        if($errors){
+            if($this->event && !$this->event->isNewRecord && !$this->getElementSetAssignment()){
+                //after the first step, there is no assignment saved in ophciexamination_event_elementset_assignment table
+                //therefore ->getCurrentStep() returns the first step as it wasn't already completed...
+                //so if there is an error on the page we need to set back the Set(as we will go back to the same update page)
+                //but we know the first set already done, we move to the ->getNextStep()
+                //@TODO : review this functionality after OE-7035 is ready, after that this block probably could be removed
+                $this->set = $this->getNextStep();
+                $this->mandatoryElements = $this->set->MandatoryElementTypes;
             }
         }
 
