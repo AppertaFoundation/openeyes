@@ -16,6 +16,8 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+require_once '../vendor/setasign/fpdi/pdf_parser.php';
 class DocManDeliveryCommand extends CConsoleCommand
 {
     //if export path provided it will overwrite the $path
@@ -200,8 +202,8 @@ class DocManDeliveryCommand extends CConsoleCommand
             curl_setopt($ch, CURLOPT_COOKIESESSION, true);
             curl_setopt($ch, CURLOPT_COOKIEJAR, '/tmp/cookie.txt');
             curl_setopt($ch, CURLOPT_COOKIEFILE, '/tmp/cookie.txt');
-
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
             $response = curl_exec($ch);
             if (curl_errno($ch)) {
                 die(curl_error($ch));
@@ -223,15 +225,15 @@ class DocManDeliveryCommand extends CConsoleCommand
             curl_setopt($ch, CURLOPT_POST, false);
             curl_setopt($ch, CURLOPT_URL, $print_url . $event->id . '?auto_print=' . (int)$inject_autoprint_js . '&print_only_gp=' . $print_only_gp);
             $content = curl_exec($ch);
-            
+
             curl_close($ch);
-            
+
             if(substr($content, 0, 4) !== "%PDF"){
                 echo 'File is not a PDF for event id: '.$this->event->id."\n";
                 $this->updateFailedDelivery($output_id);
                 return false;
             }
-            
+
             if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] === 'format1') {
                 $filename = "OPENEYES_" . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . $this->event->id . "_" . rand();
             } else {
@@ -245,16 +247,14 @@ class DocManDeliveryCommand extends CConsoleCommand
                     }
                 }
             }
-            
-            $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
 
+            $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
             if ($this->generate_xml) {
                 $xml_generated = $this->generateXMLOutput($filename, $document_output);
             }
-
+            
             if (!$pdf_generated || ($this->generate_xml && !$xml_generated)) {
                 echo 'Generating Docman file ' . $filename . ' failed' . PHP_EOL;
-
                 return false;
             }
 

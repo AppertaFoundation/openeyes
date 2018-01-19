@@ -19,32 +19,9 @@
 <?php if (!@$no_header) {?>
 	<header>
 	<?php 
-        $ccString = "";
-        $toAddress = "";
+        $ccString = $element->getCCString();
+        $toAddress = $element->getToAddress();
         
-        if($element->document_instance && $element->document_instance[0]->document_target) {
-            
-            foreach ($element->document_instance as $instance) {
-                foreach ($instance->document_target as $target) {
-                    if($target->ToCc == 'To'){
-                        $toAddress = $target->contact_name . "\n" . $target->address;
-                    } else {
-
-                        $contact_type = $target->contact_type != 'GP' ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
-                        $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $element->renderSourceAddress($target->address)."<br/>";
-                    }
-                }
-            }
-        }else
-        {
-            $toAddress = $element->address;
-            foreach (explode("\n", trim($element->cc)) as $line) {
-                if (trim($line)) {
-                    $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
-                }
-            }
-        }
-
         $this->renderPartial('letter_start', array(
             'toAddress' => isset($letter_address) ? $letter_address : $toAddress, // defaut address is coming from the 'To'
             'patient' => $this->patient,
@@ -87,4 +64,31 @@
 	<?php }?>
 
 <?php }?>
+
+<?php
+    $associated_content = EventAssociatedContent::model()
+    ->with('initAssociatedContent')
+    ->findAllByAttributes(
+        array('parent_event_id' => $element->event->id),
+        array('order' => 't.display_order asc')
+    );
+
+    if($associated_content){
+        ?>
+        Attachments:
+        <?php
+        $attachments = array();
+        foreach($associated_content as $ac){
+            if($ac->display_title){
+                $attachments[] = $ac->display_title;
+            } else {
+                $associated_event = Event::model()->findByPk($ac->associated_event_id);
+
+                $attachments[] = $associated_event->eventType->name.' ('.Helper::convertDate2NHS($associated_event->event_date).')';
+            }
+
+        }
+        echo implode(", ", $attachments);
+    }
+?>
 </p>

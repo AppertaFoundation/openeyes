@@ -26,6 +26,7 @@ class DefaultController extends BaseEventTypeController
         'routeOptions' => self::ACTION_TYPE_FORM,
         'doPrint' => self::ACTION_TYPE_PRINT,
         'markPrinted' => self::ACTION_TYPE_PRINT,
+        'printCopy'    => self::ACTION_TYPE_PRINT,
     );
 
     private function userIsAdmin()
@@ -397,19 +398,44 @@ class DefaultController extends BaseEventTypeController
         $this->printInit($id);
         $this->layout = '//layouts/print';
 
-        $this->render('print');
-        if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
-            $this->render('print', array('copy' => 'notes'));
-        }
-        if(Yii::app()->params['disable_prescription_patient_copy'] == 'off') {
-            $this->render('print', array('copy' => 'patient'));
+        $pdf_documents = (int)Yii::app()->request->getParam('pdf_documents');
+        if( $pdf_documents == 1 ){
+            $this->render('print');
+        } else {
+            $this->render('print');
+            if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
+                $this->render('print', array('copy' => 'notes'));
+            }
+            if(Yii::app()->params['disable_prescription_patient_copy'] == 'off') {
+                $this->render('print', array('copy' => 'patient'));
+            }
         }
     }
+
+    public function actionPrintCopy($id)
+    {
+        $this->actionPrint($id);
+
+        $eventid = 3686356;
+        $api = Yii::app()->moduleAPI->get('OphCiExamination');
+        $api->printEvent( $eventid );
+    }
+
 
     public function actionPDFPrint($id)
     {
         $this->pdf_print_suffix = Site::model()->findByPk(Yii::app()->session['selected_site_id'])->id;
-        $this->pdf_print_documents = 3;
+
+        $document_count = 1;
+        if(Yii::app()->params['disable_print_notes_copy'] == 'off'){
+            $document_count++;
+        }
+
+        if(Yii::app()->params['disable_prescription_patient_copy'] == 'off'){
+            $document_count++;
+        }
+
+        $this->pdf_print_documents = $document_count;
 
         return parent::actionPDFPrint($id);
     }

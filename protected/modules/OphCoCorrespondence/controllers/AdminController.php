@@ -140,8 +140,12 @@ class AdminController extends \ModuleAdminController
             Audit::add('admin', 'view', $macro->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'LetterMacro'));
         }
 
+        $init_method = new OphcorrespondenceInitMethod();
+
         $this->render('_macro', array(
             'macro' => $macro,
+            'init_method' => $init_method,
+            'associated_content' => array(),
             'errors' => $errors,
         ));
     }
@@ -152,9 +156,17 @@ class AdminController extends \ModuleAdminController
             throw new Exception("LetterMacro not found: $id");
         }
 
+        $init_method = new OphcorrespondenceInitMethod();
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('macro_id = '.$id);
+        $criteria->order = 'display_order asc';
+        $associated_content_saved = MacroInitAssociatedContent::model()->findAll($criteria);
+
         $errors = array();
 
         if (!empty($_POST)) {
+
             $macro->attributes = $_POST['LetterMacro'];
 
             if (!$macro->validate()) {
@@ -174,6 +186,8 @@ class AdminController extends \ModuleAdminController
 
         $this->render('_macro', array(
             'macro' => $macro,
+            'init_method' => $init_method,
+            'associated_content' => $associated_content_saved,
             'errors' => $errors,
         ));
     }
@@ -277,5 +291,30 @@ class AdminController extends \ModuleAdminController
             $this->redirect('/OphCoCorrespondence/admin/addSiteSecretary/'.$firmId);
         }
         throw new CHttpException(400, 'Invalid method for delete');
+    }
+
+    /*
+     * Get init method's data by id
+     */
+    public function actionGetInitMethodDataById()
+    {
+
+        if (Yii::app()->request->isAjaxRequest ) {
+            if (!isset($_POST['id'])) {
+                throw new CHttpException(400, 'No ID provided');
+            }
+            if (!$method = OphcorrespondenceInitMethod::model()->findByPk($_POST['id'])) {
+                throw new Exception("Method not found: ".$_POST['id']);
+            }
+
+            $result = array(
+                'success'       => 1,
+                'description'   => $method->description,
+                'short_code'    => $method->short_code
+            );
+
+            $this->renderJSON($result);
+        }
+        throw new CHttpException(400, 'Invalid method');
     }
 }

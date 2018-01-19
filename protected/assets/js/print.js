@@ -48,12 +48,12 @@ function printIFrameUrl(url, data) {
 
 function printEvent(printOptions)
 {
-	var data = {canvas: {}};
-	var has_canvas_data = false;
+    var data = {canvas: {}};
+    var has_canvas_data = false;
 
-	$('canvas.ed-canvas-display').map(function() {
-		data['canvas'][$(this).data('drawing-name')] = $(this).get(0).toDataURL();
-	});
+    $('canvas.ed-canvas-display').map(function() {
+        data['canvas'][$(this).data('drawing-name')] = $(this).get(0).toDataURL();
+    });
 
 	data['last_modified_date'] = OE_event_last_modified;
 
@@ -78,6 +78,42 @@ function printEvent(printOptions)
 	});
 }
 
+function saveCanvasImagesToPdf( printOptions ){
+    if(typeof printOptions == "undefined"){
+        printOptions = null;
+    }
+    var data = {canvas: {}};
+    var has_canvas_data = false;
+
+    $('canvas.ed-canvas-display').map(function() {
+        data['canvas'][$(this).data('drawing-name')] = $(this).get(0).toDataURL();
+    });
+
+    if( typeof OE_event_last_modified !== "undefined" ){
+        data['last_modified_date'] = OE_event_last_modified;
+
+        $.ajax({
+            'type': 'POST',
+            'url': baseUrl + '/' + OE_module_class + '/default/saveCanvasImages/' + OE_event_id,
+            'data': $.param(data) + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+            'success': function(resp) {
+                switch (resp) {
+                    case "ok":
+                        break;
+                    case "outofdate":
+                        $.cookie('print',1);
+                        window.location.reload();
+                        break;
+                    default:
+                        alert("Something went wrong trying to print the event. Please try again or contact support for assistance.");
+                        break;
+                }
+            }
+        });
+	}
+}
+
+
 $(document).ready(function() {
 	if ($.cookie('print') == 1) {
 		disableButtons();
@@ -85,6 +121,10 @@ $(document).ready(function() {
 		$.removeCookie('print');
 		setTimeout(function() { printWhenReady(); }, 500);
 	}
+
+});
+$(window).load(function() {
+    saveCanvasImagesToPdf();
 });
 
 function printWhenReady()
