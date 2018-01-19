@@ -15,36 +15,36 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
+<br>
 <div class="element-data row clearfix">
     <div class="row">
         <div class=" large-2 column">
             <label>Current:</label>
         </div>
         <div class="large-10 column end">
-            <div class="data-value current">
-                <ul class="comma-list">
-                    <?php foreach ($element->currentOrderedEntries as $entry) { ?>
-                        <li><span class="detail"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
-                    <?php } ?>
-                </ul>
-            </div>
+            <?php foreach ($element->currentOrderedEntries as $entry): ?>
+                <div class="row">
+                    <div class="large-12 column">
+                        <span class="detail"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?> //</span>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
+    <br>
     <div class="row">
         <div class="large-2 column">
             <label>Stopped:</label>
         </div>
         <div class="large-10 column end">
-            <div class="data-value stopped">
-                <ul class="comma-list">
-                    <?php foreach ($element->stoppedOrderedEntries as $entry) { ?>
-                        <li><span class="detail"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
-                    <?php } ?>
-                </ul>
-            </div>
+            <?php foreach ($element->stoppedOrderedEntries as $entry): ?>
+                <div class="row">
+                    <div class="large-12 column">
+                        <span class="detail"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?> //</span>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </div>
-
 
