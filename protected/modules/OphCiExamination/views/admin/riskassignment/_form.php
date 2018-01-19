@@ -29,7 +29,7 @@
     echo $form->dropDownList($model, "firm_id", $options, array('empty' => '-- select --'));
     echo "<br>";
 
-    $examination_risk_listdata = CHtml::listData(OEModule\OphCiExamination\models\OphciexaminationRisk::model()->findAll(), 'id', 'name');
+    $examination_risk_listdata = CHtml::listData(OEModule\OphCiExamination\models\OphCiExaminationRisk::model()->findAll(), 'id', 'name');
     $gender_models = Gender::model()->findAll();
     $gender_options = CHtml::listData($gender_models, function ($gender_model) {
         return CHtml::encode($gender_model->name)[0];
