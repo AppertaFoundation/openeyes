@@ -15,7 +15,9 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.js", \CClientScript::POS_HEAD);
 ?>
+
 <div class="box admin">
     <h2>Edit macro</h2>
     <?php echo $this->renderPartial('_form_errors', array('errors' => $errors))?>
@@ -63,7 +65,81 @@
                 </div>
             </div>
         </div>
-        <div class="row field-row">
+
+        <?php
+            $model_init_method = CHtml::modelName('OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod');
+            $model_associated_content = CHtml::modelName('OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent');
+        ?>
+
+        <div class="field-row">
+            <p>Attachments</p>
+            <table class="grid" id="OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod_table">
+                <thead>
+                    <tr>
+                        <td>Hidden</td>
+                        <td>Print appended</td>
+                        <td>Event</td>
+                        <td>Title</td>
+                        <td>Action</td>
+                    </tr>
+                </thead>
+                <tbody class="sortable ui-sortable">
+                <?php
+                    $row_count = 0;
+                    if(isset($associated_content)){
+                        foreach($associated_content as $content){
+                            $this->renderPartial(
+                                'init_method_row',
+                                array(
+                                    'form' => $form,
+                                    'init_method_model_name' => $model_init_method,
+                                    'associated_model_name' => $model_associated_content,
+                                    'model_associated_content' => $content,
+                                    'prefix_init_method' => $model_init_method.'[' . ($row_count) . ']',
+                                    'prefix_associated' => $model_associated_content.'[' . ($row_count) . ']',
+                                    'row_count' => $row_count
+                                )
+                            );
+                            $row_count++;
+                        }
+                    }
+
+                    ?>
+                </tbody>
+                <tfoot>
+                    <td class="text-right" colspan="6"><button class="button small primary event-action" name="save" type="button" id="OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod_add">Add</button></td>
+                </tfoot>
+            </table>
+
+            <script type="text/template" id="OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod_template" class="hidden">
+                <?php
+                $this->renderPartial(
+                    'init_method_row',
+                    array(
+                        'form' => $form,
+                        'init_method_model_name' => $model_init_method,
+                        'associated_model_name' => $model_associated_content,
+                        'model_associated_content' => $associated_content,
+                        'prefix_init_method' => $model_init_method.'[{{row_count}}]',
+                        'prefix_associated' => $model_associated_content.'[{{row_count}}]',
+                        'row_count' => '{{row_count}}',
+                        'values' => array(
+                            'id' => '',
+                            'is_system_hidden' => '{{is_system_hidden}}',
+                            'is_print_appended' => '{{is_print_appended}}',
+                            'method_id' => '{{method_id}}',
+                            'short_code' => '{{short_code}}',
+                            'title' => '{{title}}',
+                            'is_print_appended_js' => '{{is_print_appended_js}}'
+                        ),
+                    )
+                );
+                ?>
+            </script>
+        </div>
+
+
+    <div class="row field-row">
             <div class="large-10 large-offset-2 column">
                 <button class="button small primary event-action" name="save" type="submit" id="et_save">Save</button>
                 <button class="warning button small primary cancelEditMacro" name="cancel" type="submit">Cancel</button>
@@ -71,3 +147,11 @@
         </div>
     <?php $this->endWidget()?>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        new OpenEyes.OphCoCorrespondence.InitMethodController();
+        $( ".sortable" ).sortable();
+        $( ".sortable" ).disableSelection();
+    });
+</script>

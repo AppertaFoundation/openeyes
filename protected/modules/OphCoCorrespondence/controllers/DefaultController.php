@@ -15,6 +15,7 @@
 * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
+require_once './vendor/setasign/fpdi/pdf_parser.php';
 class DefaultController extends BaseEventTypeController
 {
     protected static $action_types = array(
@@ -30,9 +31,13 @@ class DefaultController extends BaseEventTypeController
         'doPrint' => self::ACTION_TYPE_PRINT,
         'markPrinted' => self::ACTION_TYPE_PRINT,
         'doPrintAndView' => self::ACTION_TYPE_PRINT,
+        'printCopy'    => self::ACTION_TYPE_PRINT,
+        'getInitMethodDataById' => self::ACTION_TYPE_FORM
     );
 
     protected $show_element_sidebar = false;
+
+    protected $pdf_output;
 
     /**
      * Adds direct line phone numbers to jsvars to be used in dropdown select.
@@ -281,6 +286,25 @@ class DefaultController extends BaseEventTypeController
         $data['textappend_ElementLetter_cc'] = implode("\n", $cc['text']);
         $data['elementappend_cc_targets'] = implode("\n", $cc['targets']);
         $data['sel_letter_type_id'] = $macro->letter_type_id;
+
+        $macroInitAssocContent = MacroInitAssociatedContent::model()->findAllByAttributes(array('macro_id' => $macro->id), array('order' => 'display_order asc'));
+        $data['associated_content'] = '';
+        $data['checkAttachmentFileExist'] = 0;
+
+        if($macroInitAssocContent != null){
+            $data['associated_content'] = $this->renderPartial('event_associated_content', array(
+                'associated_content' => $macroInitAssocContent,
+                'patient'   => $patient,
+                'api'       => Yii::app()->moduleAPI->get('OphCoCorrespondence'),
+            ), true);
+
+        } else {
+            $data['associated_content'] = $this->renderPartial('event_associated_content_select', array(
+                'patient' => $patient,
+                'api'   => Yii::app()->moduleAPI->get('OphCoCorrespondence')
+            ), true);
+        }
+
         echo json_encode($data);
     }
 
@@ -403,12 +427,32 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
-    public function actionPrint($id)
+    /**
+     * Renders one letter for one recipient internally... It returns the rendered HTML as a string
+     *
+     * @param $letter
+     * @param $recipient_address
+     * @return string
+     */
+    private function renderOneRecipient($letter, $recipient_address)
+    {
+        return $this->render('print', array(
+            'element' => $letter,
+            'letter_address' => $recipient_address
+        ), true);
+    }
+
+    /**
+     * Gets all the recipients for a letter based on the ElementLetter model
+     *
+     * @param $id
+     * @return array
+     */
+    private function getRecipients($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
 
-        $this->printInit($id);
-        $this->layout = '//layouts/print';
+        $recipients = array();
 
         // after "Save and Print" button clicked we only print out what the user checked
         if( isset($_GET['OphCoCorrespondence_print_checked']) && $_GET['OphCoCorrespondence_print_checked'] == "1" ){
@@ -421,10 +465,7 @@ class DefaultController extends BaseEventTypeController
             if($to_recipient_gp){
                 // print an extra copy to note
                 if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
-                    $this->render('print', array(
-                        'element' => $letter,
-                        'letter_address' => ($to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address)
-                    ));
+                    $recipients[] = $to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address;
                 }
             }
 
@@ -432,17 +473,15 @@ class DefaultController extends BaseEventTypeController
             if($print_outputs){
                 foreach($print_outputs as $print_output){
                     $document_target = DocumentTarget::model()->findByPk($print_output->document_target_id);
-                    $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
-
+                    $recipients[] = ($document_target->contact_name . "\n" . $document_target->address);
                     //extra printout for note
                     if($document_target->ToCc == 'To' && $document_target->contact_type != 'GP'){
-                        if(Yii::app()->params['disable_print_notes_copy'] == 'off'){
-                            $this->render('print', array('element' => $letter, 'letter_address' => ($document_target->contact_name . "\n" . $document_target->address)));
+                        if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
+                            $recipients[] = $document_target->contact_name . "\n" . $document_target->address;
                         }
                     }
                 }
             }
-
         } else {
 
             /**
@@ -453,29 +492,85 @@ class DefaultController extends BaseEventTypeController
 
                 $gp_targets = $letter->getTargetByContactType("GP");
                 foreach($gp_targets as $gp_target){
-                    $this->render('print', array('element' => $letter, 'letter_address' => $gp_target->contact_name . "\n" . $gp_target->address ));
+                    $recipients[] = $gp_target->contact_name . "\n" . $gp_target->address;
                 }
 
-                return;
+                return $recipients;
             }
 
-            $this->render('print', array('element' => $letter));
+            $recipients[] = $letter->getToAddress();
 
             if ($this->pdf_print_suffix == 'all' || @$_GET['all']) {
                 if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
-                    $this->render('print', array('element' => $letter));
+                    $recipients[] = $letter->getToAddress();
                 }
-
                 foreach ($letter->getCcTargets() as $letter_address) {
-                    $this->render('print', array('element' => $letter, 'letter_address' => $letter_address));
+                    $recipients[] = $letter_address;
                 }
+            }
+
+        }
+        return $recipients;
+
+    }
+
+    /**
+     * The normal print action had been replaced by the PDFPrint in Correspondence...
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function actionPrint($id)
+    {
+        return true;
+    }
+
+    /**
+     * Merges a PDF file to the end of the output
+     *
+     * @param $pdf_path
+     */
+    private function addPDFToOutput($pdf_path)
+    {
+        $pagecount = $this->pdf_output->setSourceFile($pdf_path);
+        for ($i = 1; $i <= $pagecount; $i++) {
+            $this->pdf_output->AddPage('P');
+            $tplidx = $this->pdf_output->ImportPage($i);
+            $this->pdf_output->useTemplate($tplidx);
+        }
+    }
+
+    public function renderAllProcedureElements($action, $form = null, $data = null)
+    {
+        foreach ($this->open_elements as $el) {
+            if (get_class($el) == 'Element_OphTrOperationnote_ProcedureList') {
+                $this->renderChildOpenElements($el, $action, $form, $data);
             }
         }
     }
 
+    /**
+     * The PDFPrint action is used in all cases, normal print action won't work!
+     * This is required to make sure that the PDF attachments can be merged to the letter.
+     * TODO: need to check audit trail!
+     *
+     * @param $id
+     * @throws Exception
+     */
     public function actionPDFPrint($id)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
+
+        $this->printInit($id);
+        $this->layout = '//layouts/print';
+
+        if (!$event = Event::model()->findByPk($id)) {
+            throw new Exception("Event not found: $id");
+        }
+
+        $auto_print = Yii::app()->request->getParam('auto_print', true);
+        $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
+
         $print_outputs = $letter->getOutputByType("Print");
 
         if (Yii::app()->request->getQuery('all', false)) {
@@ -493,9 +588,53 @@ class DefaultController extends BaseEventTypeController
                 $output->save();
             }
         }
+        // render 1 recipient's letter + attachments at once...
+        // we need the letter as PDF
 
+        $attachments = $letter->getAllAttachments();
+        $recipients = $this->getRecipients($id);
 
-        return parent::actionPDFPrint($id);
+        // check if printing is necessary
+        if(count($recipients) == 0)
+        {
+            return true;
+        }
+
+        $this->pdf_output = new PDF_JavaScript();
+
+        foreach($recipients as $recipient)
+        {
+            $html_letter =  $this->renderOneRecipient($letter, $recipient);
+            $pdf_letter = $this->renderAndSavePDFFromHtml($html_letter, $inject_autoprint_js);
+            $this->addPDFToOutput($event->imageDirectory.'/event_'.$pdf_letter.".pdf");
+
+            // add attachments for each
+            if(count($attachments)>0)
+            {
+                foreach ($attachments as $attachment)
+                {
+                    $this->addPDFToOutput($attachment['path']);
+                }
+            }
+        }
+
+        if($inject_autoprint_js){
+            $script = 'print(true);';
+            $this->pdf_output->IncludeJS($script);
+        }
+
+        $pdf_path = $event->imageDirectory.'/event_'.$this->pdf_print_suffix.".pdf";
+
+        $this->pdf_output->Output("F",   $pdf_path);
+
+        $event->unlock();
+
+        header('Content-Type: application/pdf');
+        header('Content-Length: '.filesize($pdf_path));
+
+        readfile($pdf_path);
+        //@unlink($pdf_path);
+
     }
 
     /**
@@ -682,6 +821,9 @@ class DefaultController extends BaseEventTypeController
         Yii::app()->end();
     }
 
+    /**
+     * @param $to_location_id
+     */
     public function actionGetSiteInfo($to_location_id)
     {
         $to_location = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByPk($to_location_id);
@@ -694,4 +836,80 @@ class DefaultController extends BaseEventTypeController
         Yii::app()->end();
     }
 
+    /**
+     * @throws CHttpException
+     */
+    public function actionGetInitMethodDataById()
+    {
+        if (Yii::app()->request->isAjaxRequest ) {
+            if (!isset($_POST['id'])) {
+                $result = array(
+                    'success'   => 0,
+                    'message'   => 'No ID provided',
+                );
+                echo $this->renderJSON($result);
+            }
+
+            if (!$event = Event::model()->findByPk($_POST['id'])) {
+                $result = array(
+                    'success'   => 0,
+                    'message'   => "Method not found: ".$_POST['id']
+                );
+
+                echo $this->renderJSON($result);
+            }
+
+            if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+                $result = array(
+                    'success'   => 0,
+                    'message'   => 'Patient not found: '.@$_POST['patient_id']
+                );
+
+                echo $this->renderJSON($result);
+            }
+
+            $content = $this->renderPartial('init_method_row', array(
+                'event'     => $event,
+                'patient'   => $patient,
+            ), true);
+
+
+            $result = array(
+                'success'   => 1,
+                'content'   => $content,
+                'module'    => $event->eventType->class_name
+            );
+
+            $this->renderJSON($result);
+        }
+        throw new CHttpException(400, 'Invalid method');
+    }
+
+    /**
+     * @return array|mixed|null
+     */
+    protected function getAttachableEvents($patient)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->with =
+            array('episode' =>
+                array('with' =>
+                    array(
+                        'firm' => array(
+                            'with' => 'serviceSubspecialtyAssignment'
+                        ),
+                        'patient'
+                    )
+                ),
+                "eventType"=>array("select"=>"name")
+            );
+        $criteria->compare('episode.patient_id', $patient->id);
+        $criteria->compare('t.deleted', 0);
+        $criteria->addCondition('episode.change_tracker is null');
+        $criteria->addNotInCondition('event_type_id', EventType::model()->getNonPrintableEventTypes());
+        $criteria->order = 't.event_date desc, t.created_date desc';
+
+        return Event::model()->findAll($criteria);
+
+    }
 }
