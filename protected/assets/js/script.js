@@ -244,13 +244,6 @@ $(document).ready(function(){
 				}
 			})).open();
 		});
-
-		// Show the 'change firm' dialog on page load.
-		if ($('#site-and-firm-form').length) {
-			new OpenEyes.UI.Dialog($.extend({}, options, {
-				content: $('#site-and-firm-form')
-			})).open();
-		}
 	}());
 
 	$('#checkall').click(function() {
