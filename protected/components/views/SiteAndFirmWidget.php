@@ -20,7 +20,8 @@
 
 <?php
 $form = $this->beginWidget('CActiveForm', array(
-    'id' => 'site-and-firm-form',
+    'id' => ($this->mode === 'static' ? 'static-' : '') . 'site-and-firm-form',
+    'htmlOptions' => array( 'class' => $this->mode . '-site-and-firm-form'),
     'action' => Yii::app()->createUrl('/site/changesiteandfirm'),
 ));
 ?>
@@ -74,11 +75,13 @@ $form = $this->beginWidget('CActiveForm', array(
 		</div>
 	</div>
 
-	<div class="field-row row">
-		<div class="large-9 large-offset-3 column">
-			<?php echo CHtml::submitButton('Confirm', array('class' => 'secondary small')); ?>
-		</div>
-	</div>
+    <?php if($this->mode === "popup"): ?>
+        <div class="field-row row">
+            <div class="large-9 large-offset-3 column">
+                <?php echo CHtml::submitButton('Confirm', array('class' => 'secondary small')); ?>
+            </div>
+        </div>
+    <?php endif;?>
 
 <?php
 if (Yii::app()->components['user']->loginRequiredAjaxResponse) {
@@ -95,3 +98,11 @@ if (Yii::app()->components['user']->loginRequiredAjaxResponse) {
 ?>
 
 <?php $this->endWidget(); ?>
+
+<script>
+    $(document).ready(function(){
+        $('.static-site-and-firm-form').on('change', 'select', function(){
+            $(this).closest('form').submit();
+        });
+    });
+</script>

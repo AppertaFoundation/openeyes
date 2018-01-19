@@ -56,6 +56,18 @@
             </div>
         </div>
         <?php $this->endWidget(); ?>
+
+        <div class="row">
+            <div class="large-12 large-centered column">
+            <section id="1-inbox-container" class="box dashboard js-toggle-container">
+                <div class="large-12 large-centered column">
+                    <?php $this->renderPartial('change_site_and_firm', array('returnUrl' => 'index', 'mode' => 'static')); ?>
+                </div>
+            </section>
+            </div>
+
+        </div>
+
     </div>
     <div class="large-8 column">
 
