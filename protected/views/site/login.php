@@ -1,59 +1,70 @@
 <?php
-    $this->pageTitle = Yii::app()->name.' - Login';
+$this->pageTitle = Yii::app()->name . ' - Login';
 ?>
 
-<div class="container content">
-	<div class="row">
-		<div class="large-11 large-centered column">
+<div class="oe-login">
+  <div class="login">
+    <h1>OpenEyes 3.0</h1>
+    <div class="user">
 
-			<?php $form = $this->beginWidget('CActiveForm', array(
-                'id' => 'loginform',
-                'enableAjaxValidation' => false,
-                'htmlOptions' => array(
-                    'class' => 'form panel login',
-                ),
-            ))?>
+        <?php $form = $this->beginWidget('CActiveForm', array(
+            'id' => 'loginform',
+            'enableAjaxValidation' => false,
+            'htmlOptions' => array(
+                'class' => 'form panel login',
+            ),
+        )); ?>
 
-				<?php echo $form->error($model, 'password', array('class' => 'alert-box alert')); ?>
+        <?php echo $form->error($model, 'password', array('class' => 'alert-box alert')); ?>
+        <?php echo $form->textField($model, 'username', array(
+            'autocomplete' => Yii::app()->params['html_autocomplete'],
+            'placeholder' => 'Username',
+        )); ?>
 
-				<div class="row field-row">
-					<div class="large-4 column">
-						<?php echo CHtml::activeLabel($model, 'username', array('label' => 'Username:', 'class' => 'align')); ?>
-					</div>
-					<div class="large-8 column">
-						<?php echo $form->textField($model, 'username', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'Enter username...', 'class' => 'large')); ?>
-					</div>
-				</div>
+        <?php echo $form->passwordField($model, 'password',
+            array('autocomplete' => 'off', 'placeholder' => 'Password')); ?>
 
-				<div class="row field-row">
-					<div class="large-4 column">
-						<?php echo CHtml::activeLabel($model, 'password', array('label' => 'Password:', 'class' => 'align')); ?>
-					</div>
-					<div class="large-8 column">
-						<?php echo $form->passwordField($model, 'password', array('autocomplete' => 'off', 'placeholder' => 'Enter password...', 'class' => 'large')); ?>
-					</div>
-				</div>
+      <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
+           alt="loading..." style="display:none"/>
 
-				<div class="row field-row text-right">
-					<div class="large-12 column">
+      <button type="submit" id="login_button" class="green hint">
+        Login
+      </button>
 
-						<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display:none" />
+        <?php $this->endWidget(); ?>
+      <!-- user -->
+    </div>
+    <div class="info">
+      <div class="flex-layout">
+        <span>Need Help?
 
-						<button type="submit" id="login_button" class="primary long">
-							Login
-						</button>
-					</div>
-				</div>
-			<?php $this->endWidget(); ?>
-		</div>
-	</div>
+            <?php if (Yii::app()->params['helpdesk_email']): ?>
+              <?php echo Yii::app()->params['helpdesk_email'] ?>
+            <?php endif; ?>
+
+            <?php if (Yii::app()->params['helpdesk_phone']): ?>
+              <strong><?php echo Yii::app()->params['helpdesk_phone'] ?></strong>
+            <?php endif; ?>
+
+            <?php if (Yii::app()->params['help_url']): ?>
+              <?php echo CHtml::link('Help Documentation', Yii::app()->params['help_url'],
+                      array('target' => '_blank')) ?>
+            <?php endif; ?>
+
+        </span>
+        <a href="#">About</a>
+      </div>
+      <!-- info -->
+    </div>
+    <!-- login -->
+  </div>
 </div>
 
 <script type="text/javascript">
-	if ($('#LoginForm_username').val() == '') {
-		$('#LoginForm_username').focus();
-	} else {
-		$('#LoginForm_password').select().focus();
-	}
-	handleButton($('#login_button'));
+  if ($('#LoginForm_username').val() == '') {
+    $('#LoginForm_username').focus();
+  } else {
+    $('#LoginForm_password').select().focus();
+  }
+  handleButton($('#login_button'));
 </script>
