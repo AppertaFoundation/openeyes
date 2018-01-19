@@ -59,8 +59,8 @@
 
         <div class="row">
             <div class="large-12 large-centered column">
-            <section id="1-inbox-container" class="box dashboard js-toggle-container">
-                <div class="large-12 large-centered column">
+            <section id="site-context-box" class="box dashboard js-toggle-container">
+                <div class="large-12 large-centered column" style="padding-top:14px;">
                     <?php $this->renderPartial('change_site_and_firm', array('returnUrl' => 'index', 'mode' => 'static')); ?>
                 </div>
             </section>

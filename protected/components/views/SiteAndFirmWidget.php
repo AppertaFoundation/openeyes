@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -33,7 +33,7 @@ $form = $this->beginWidget('CActiveForm', array(
 		<p>
 			To add an event to this episode you must switch to a <?php echo $this->subspecialty->name?> firm.
 		</p>
-	<?php 
+	<?php
 }?>
 
 	<?php if ($this->support_services) {
@@ -42,13 +42,13 @@ $form = $this->beginWidget('CActiveForm', array(
 		<p>
 			To add an event to this episode you must switch to a support services firm.
 		</p>
-	<?php 
+	<?php
 }?>
 
 	<?php if ($this->patient) {
     ?>
 		<?php echo CHtml::hiddenField('patient_id', $this->patient->id)?>
-	<?php 
+	<?php
 }?>
 
 	<?php
@@ -59,7 +59,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
 	<div class="field-row row">
 		<div class="large-3 column text-right">
-			<?php echo $form->labelEx($model, 'site_id'); ?>
+			<?php echo $form->label($model, 'site_id'); ?>
 		</div>
 		<div class="large-9 column">
 			<?php echo $form->dropDownList($model, 'site_id', $sites); ?>
@@ -68,7 +68,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
 	<div class="field-row row">
 		<div class="large-3 column text-right">
-			<?php echo $form->labelEx($model, 'firm_id'); ?>
+			<?php echo $form->label($model, 'firm_id'); ?>
 		</div>
 		<div class="large-9 column">
 			<?php echo $form->dropDownList($model, 'firm_id', $firms); ?>
