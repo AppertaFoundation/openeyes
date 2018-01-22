@@ -10,9 +10,6 @@ $this->pageTitle = Yii::app()->name . ' - Login';
         <?php $form = $this->beginWidget('CActiveForm', array(
             'id' => 'loginform',
             'enableAjaxValidation' => false,
-            'htmlOptions' => array(
-                'class' => 'form panel login',
-            ),
         )); ?>
 
         <?php echo $form->error($model, 'password', array('class' => 'alert-box alert')); ?>
