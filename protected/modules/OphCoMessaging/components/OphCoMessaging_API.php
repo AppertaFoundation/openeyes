@@ -228,10 +228,10 @@ class OphCoMessaging_API extends \BaseAPI
 
         \Yii::app()->getAssetManager()->registerCssFile('module.css', 'application.modules.OphCoMessaging.assets.css');
 
-        $inbox_view = \Yii::app()->controller->renderPartial('OphCoMessaging.views.sent.grid', array(
+        $inbox_view = \Yii::app()->controller->renderPartial('OphCoMessaging.views.inbox.grid', array(
             'module_class' => $this->getModuleClass(),
             'messages' => $messages,
-            'dataProvider' => $dataProvider,
+            'dp' => $dataProvider,
         ), true);
 
         return array(

@@ -23,7 +23,6 @@ return array(
                 // default action is the 'renderDashboard' if 'actions' array is  not set
                 'actions' => array(
                     'getInboxMessages',
-                    'getSentMessages',
                  ),
                 'position' => 5,
             ),

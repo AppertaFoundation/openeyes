@@ -100,7 +100,6 @@
 </footer>
 
 <script type="text/javascript">
-$(document).foundation();
 $(document).ready(function () {
 	$('#support-info-link').live('click', function (e) {
 		e.preventDefault();

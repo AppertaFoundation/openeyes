@@ -15,5 +15,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+$logoUrl = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.newblue.svg') . '/oe-logo.svg');
 ?>
-<?php echo CHtml::link('<div class="logo"/></div>', $this->createUrl('/site/index')); ?>
+<div class="oe-logo" id="js-openeyes-btn">
+    <svg viewBox="0 0 300.06 55.35" class="oe-openeyes">
+        <use xlink:href="<?= $logoUrl . '#openeyes-logo'; ?>"></use>
+    </svg>
+</div>

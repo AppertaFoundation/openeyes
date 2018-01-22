@@ -6,20 +6,8 @@
     $is_open = isset($item['options']['js-toggle-open']) && $item['options']['js-toggle-open'];
     ?>
 
-    <section id="<?php echo $container_id; ?>" class="box dashboard js-toggle-container">
-      <h3 class="box-title"><?= $item['title'] ?></h3>
-      <?php if ($sortable) { ?><span class="sortable-anchor fa fa-arrows"></span><?php }?>
-      <a href="#" class="toggle-trigger <?php echo  $is_open ? 'toggle-hide' : 'toggle-show' ?> js-toggle">
-        <span class="icon-showhide">
-          Show/hide this section
-        </span>
-      </a>
-      <div class="js-toggle-body" style="<?php echo  $is_open ? 'display:block' : 'display:none' ?>">
-        <?= $item['content']; ?>
-      </div>
-    </section>
-  <?php } ?>
-</div>
+    <?= $item['content']; ?>
+<?php } ?>
 <?php if ($sortable) { ?>
   <script type="text/javascript">
   $(document).ready(function() {
