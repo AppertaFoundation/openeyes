@@ -411,4 +411,15 @@ class EventType extends BaseActiveRecordVersioned
         }
         return $result;
     }
+
+    /**
+     * Gets the CSS class that is used to display the event icon
+     * (replaces EventType::getEventIcon()
+     *
+     * @return string A CSS classname
+     */
+    public function getEventIconCssClass()
+    {
+        return 'i-' . str_replace('Oph', '', $this->class_name);
+    }
 }
