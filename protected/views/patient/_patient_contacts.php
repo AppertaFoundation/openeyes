@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="box patient-info patient-contacts js-toggle-container">
+<section class="element patient-info patient-contacts js-toggle-container">
   <h3 class="box-title">Associated contacts:</h3>
   <a href="#" class="toggle-trigger toggle-hide js-toggle">
 		<span class="icon-showhide">
@@ -334,7 +334,6 @@
                 <button class="small btn_add_site" type="submit">Add site/institution</button>
               </div>
               <div class="large-7 column text-right">
-                <img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" class="edit_contact_loader" style="display: none;"/>
                 <button class="secondary small btn_save_editcontact" type="submit">Save</button>
                 <button class="warning small btn_cancel_editcontact" type="submit">Cancel</button>
               </div>
@@ -392,7 +391,6 @@
           <div class="buttons">
             <button type="submit" class="secondary small btn_add_site_ok">Send</button>
             <button type="submit" class="warning small btn_add_site_cancel">Cancel</button>
-            <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="display: none;"/>
           </div>
         </div>
       <?php } ?>

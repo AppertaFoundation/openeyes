@@ -19,7 +19,7 @@
 <?php if ($cbs_by_type = $this->patient->getDistinctCommissioningBodiesByType()) {
     foreach (CommissioningBodyType::model()->findAll() as $cbt) {
         if (array_key_exists($cbt->id, $cbs_by_type)) { ?>
-			<section class="box patient-info js-toggle-container">
+			<section class="element patient-info js-toggle-container">
 				<h3 class="box-title"><?= $cbt->name ?>(s):</h3>
 				<a href="#" class="toggle-trigger toggle-hide js-toggle">
 					<span class="icon-showhide">

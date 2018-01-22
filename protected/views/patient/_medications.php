@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="box patient-info associated-data js-toggle-container">
+<section class="element patient-info associated-data js-toggle-container">
   <header class="box-header">
     <h3 class="box-title">
       <span class="icon-patient-clinician-hd_flag"></span>

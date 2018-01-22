@@ -23,62 +23,50 @@ $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 $warnings = $this->patient->getWarnings($clinical);
 ?>
 
-<div class="container content">
-
-	<div class="row messages patient">
-
+<div class="main-event edit">
+	<div class="messages patient">
 		<?php $this->renderPartial('//base/_messages'); ?>
-
 		<?php if ($this->patient->contact->address && !$this->patient->contact->address->isCurrent()) {?>
 			<div class="row">
-				<div class="large-12 column">
 					<div id="no-current-address-error" class="alert-box alert with-icon">
 						Warning: The patient has no current address. The address shown is their last known address.
 					</div>
-				</div>
 			</div>
 		<?php }?>
 
 		<?php if ($this->patient->isDeceased()) {?>
 			<div clas="row">
-				<div class="large-12 column">
 					<div id="deceased-notice" class="alert-box alert with-icon">
 						This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
 					</div>
-				</div>
 			</div>
 		<?php }?>
 
 		<?php if (!$this->patient->practice || !$this->patient->practice->contact->address) {?>
 			<div class="row">
-				<div class="large-12 column">
 					<div id="no-practice-address" class="alert-box alert with-icon">
 						Patient has no GP practice address, please correct in PAS before printing GP letter.
 					</div>
-				</div>
 			</div>
 		<?php }?>
 
 		<?php if ($warnings) { ?>
 			<div class="row">
-				<div class="large-12 column">
 					<div class="alert-box patient with-icon">
 						<?php foreach ($warnings as $warn) {?>
 							<strong><?php echo $warn['long_msg']; ?></strong>
 							- <?php echo $warn['details'];
                         }?>
 					</div>
-				</div>
 			</div>
 		<?php }?>
 
 		<?php $this->renderPartial('//patient/_patient_alerts')?>
 		</div>
 
-	<div class="row patient-content">
-		<div class="large-6 column">
+	<div class="patient-content">
 			<?php if (($refresh_url = Yii::app()->params['patient_refresh_url'])): ?>
-				<section class="box patient-info">
+				<section class="element patient-info">
 					<div class="row data-row">
 						<?php $last_updated = strtotime($this->patient->last_modified_date) ?>
 						<div class="large-4 column data-label">Last updated:</div>
@@ -98,9 +86,7 @@ $warnings = $this->patient->getWarnings($clinical);
 			<?php $this->renderPartial('_patient_commissioningbodies')?>
 			<?php $this->renderPartial('_patient_contacts')?>
 			<?php $this->renderModulePartials('patient_summary_column1')?>
-		</div>
-		<div class="large-6 column" id="patient-summary-form-container">
-
+		<div id="patient-summary-form-container">
             <?php if ($component = $this->getApp()->getComponent('internalReferralIntegration')): ?>
                 <section class="box patient-info internalreferral internalreferral-doclist">
                         <?php echo CHtml::link('View patient referrals',$component->generateUrlForDocumentList($this->patient)); ?>

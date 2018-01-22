@@ -17,7 +17,7 @@
  */
 ?>
 
-<section class="box patient-info associated-data js-toggle-container">
+<section class="element patient-info associated-data js-toggle-container">
 	<header class="box-header">
 		<h3 class="box-title">
 			<span class="icon-patient-clinician-hd_flag"></span>

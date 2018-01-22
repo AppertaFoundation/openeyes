@@ -17,7 +17,7 @@
  */
 ?>
 
-<section class="box patient-info episodes">
+<section class="element patient-info episodes">
 	<header class="box-header">
 		<h3 class="box-title">All <?= Episode::getEpisodeLabelPlural() ?></h3>
 		<div class="box-info">
