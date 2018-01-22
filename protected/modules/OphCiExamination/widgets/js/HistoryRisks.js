@@ -72,6 +72,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.otherSelector = '.' + this.options.modelName + '_other_risk';
         this.otherWrapperSelector = '.' + this.options.modelName + '_other_wrapper';
         this.commentsSelector = '[name$="[comments]"]';
+        this.pcrRiskLinks = this.options.pcrRiskLinks;
 
         this.$noRisksWrapper = this.$element.find('.' + this.options.modelName + '_no_risks_wrapper');
         this.$noRisksFld = this.$element.find('.' + this.options.modelName + '_no_risks');
@@ -86,7 +87,22 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     HistoryRisksController._defaultOptions = {
       modelName: 'OEModule_OphCiExamination_models_HistoryRisks',
-      element: undefined
+      element: undefined,
+      pcrRiskLinks: [
+          {
+              name: "Cannot Lie Flat",
+              selector:"select.pcr_lie_flat",
+              "function": function(container){
+
+                  $(container).on('change.pcr', 'input[type="radio"]', function(){
+                        if($(this).val() === 1){
+                            $('select.pcr_lie_flat').val("N");
+                        } else {
+                            $('select.pcr_lie_flat').val("Y");
+                        }
+                  });
+              }
+          }]
     };
 
     HistoryRisksController.prototype.initialiseTriggers = function()
@@ -95,6 +111,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         controller.$element.on('change', controller.riskSelector, function(e) {
             var $selected = $(this).find('option:selected');
             var $container = $(this).parents('td');
+            var $tr = $(this).closest('tr');
             if ($selected.data('other')) {
                 $container.find(controller.otherWrapperSelector).show();
             }
@@ -102,6 +119,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 $container.find(controller.otherWrapperSelector).hide();
                 $container.find(controller.otherSelector).val('');
             }
+            $tr.off('.pcr');
+            controller.setPcrRisk($tr, $(this).find('option:selected').text());
             controller.dedupeRiskSelectors();
         });
 
@@ -125,6 +144,19 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 controller.$table.show();
             }
         })
+    };
+    HistoryRisksController.prototype.setPcrRisk = function(container, text)
+    {
+        var controller = this;
+
+        for (var idx in controller.pcrRiskLinks) {
+            var link = controller.pcrRiskLinks[idx];
+            if (link.name === text && typeof link.function) {
+                link.function(container);
+                $(container).find('input[type="radio"]:checked').trigger('change');
+
+            }
+        }
     };
 
     /**
