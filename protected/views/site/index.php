@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
 <?php
 $this->beginWidget('CActiveForm', array(
     'id' => 'search-form',
@@ -29,6 +30,11 @@ $this->beginWidget('CActiveForm', array(
   <div class="search-patient">
       <?php echo CHtml::textField('query', '', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'search', 'placeholder' => 'Search')); ?>
     <button type="submit" id="js-find-patient" class="blue hint">Find Patient</button>
+    <div class="find-by">Search by Hospital Number, NHS Number, Firstname Surname or Surname, Firstname</div>
+    <div class="text-center">
+      <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
+           alt="loading..."/>
+    </div>
   </div>
 </div>
 <?php $this->endWidget(); ?>
