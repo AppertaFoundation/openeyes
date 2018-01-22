@@ -80,4 +80,12 @@ $navIconsUrl = Yii::app()->assetManager->publish(Yii::getPathOfAlias('applicatio
       <use xlink:href="<?php echo $navIconsUrl; ?>#lightening-viewer-icon"></use>
     </svg>
   </div>
+
+     <!-- Widgets (extra icons, links etc) -->
+  <ul class="patient-widgets">
+      <?php foreach ($this->widgets as $widget) {
+        echo "<li>{$widget}</li>";
+        }?>
+        </ul>
+  </div>
 </div>

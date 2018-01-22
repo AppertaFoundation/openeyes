@@ -138,16 +138,6 @@
   </div>
   <!-- .row -->
 <!--  Old Code -->
-    <!-- Patient warnings -->
-    <?php
-    if ($this->warnings) { ?>
-        <div class="patient-warnings toggle-patient-summary-popup">
-            <?php echo implode(', ', array_unique(array_map(function ($warning) {
-                return $warning['short_msg'];
-            }, $this->warnings))); ?>
-        </div>
-    <?php } ?>
-
     <!-- Patient icon -->
     <button
         class="hide toggle-patient-summary-popup icon-patient-patient-id_small<?= count($this->warnings) ? '-warning' : ''; ?>">
@@ -194,7 +184,7 @@
                 <div class="large-10 column data"><?= $this->patient->getSummaryAddress(', ') ?></div>
             </div>
         </div>
-
+        
         <!-- Warnings -->
         <?php if ($this->warnings) { ?>
             <div class="alert-box patient with-icon">
@@ -246,8 +236,6 @@
                     </div>
                   </div>
                 <?php } ?>
-
-
     </div>
 
 <!--  Old Code End-->
