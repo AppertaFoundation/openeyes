@@ -21,11 +21,6 @@
         if (array_key_exists($cbt->id, $cbs_by_type)) { ?>
 			<section class="element patient-info js-toggle-container">
 				<h3 class="element-header"><?= $cbt->name ?>(s):</h3>
-				<a href="#" class="toggle-trigger toggle-hide js-toggle">
-					<span class="icon-showhide">
-						Show/hide this section
-					</span>
-				</a>
 				<div class="js-toggle-body">
 					<?php foreach ($cbs_by_type[$cbt->id] as $cb) { ?>
 						<div class="row data-row">

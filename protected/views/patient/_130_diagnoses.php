@@ -23,11 +23,6 @@
 			<span class="icon-patient-clinician-hd_flag"></span>
 			Other ophthalmic diagnoses
 		</h3>
-		<a href="#" class="toggle-trigger toggle-hide js-toggle">
-			<span class="icon-showhide">
-				Show/hide this section
-			</span>
-		</a>
 	</header>
 
 	<div class="js-toggle-body">

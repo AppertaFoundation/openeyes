@@ -18,11 +18,6 @@
 ?>
 <section class="element patient-info patient-contacts js-toggle-container">
   <h3 class="element-header">Associated contacts:</h3>
-  <a href="#" class="toggle-trigger toggle-hide js-toggle">
-		<span class="icon-showhide">
-			Show/hide this section
-		</span>
-  </a>
   <div class="js-toggle-body">
     <table class="plain patient-data patient-contacts">
       <thead>

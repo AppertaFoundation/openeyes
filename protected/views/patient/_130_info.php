@@ -23,11 +23,6 @@
             <span class="icon-patient-clinician-hd_flag"></span>
             CVI Status
         </h3>
-        <a href="#" class="toggle-trigger toggle-hide js-toggle">
-        <span class="icon-showhide">
-            Show/hide this section
-        </span>
-        </a>
     </header>
     <div class="js-toggle-body">
         <?php if ($override = $this->renderOverride('patient_summary_render.cvi_status', array($this->patient))) {
