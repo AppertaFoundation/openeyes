@@ -37,3 +37,19 @@
 <?php $assetManager->registerScriptFile('js/bootstrap-tour-standalone.min.js');?>
 <?php $assetManager->registerScriptFile('js/oelauncher.js');?>
 <?php $assetManager->registerScriptFile('js/idg-oe.min.js', 'application.assets.newblue');?>
+<?php $newBlue = $assetManager->publish(Yii::getPathOfAlias('application.assets.newblue')); ?>
+<script>
+    (function(){
+        /* IDG demo only. Replace with a more permanent solution. */
+        // use localStorage for CSS Themes Switching
+        var css = "style_oe3.0_classic.min.css"; // default Classic theme (until they get used to PRO! ;)
+        if(localStorage.getItem("oeTheme")){
+            var theme = localStorage.getItem("oeTheme");
+            if(theme === 'pro'){
+                css = "style_oe3.0.min.css";
+            }
+        }
+        // build CSS <link>
+        document.write('<link rel="stylesheet" type="text/css" href="<?php echo $newBlue; ?>/css/'+ css + '">');
+    })();
+</script>

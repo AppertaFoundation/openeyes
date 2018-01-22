@@ -125,7 +125,7 @@ class BaseController extends Controller
         // to render the HTML template for the TCPDF engine)
 
         // Register the main stylesheet without pre-registering to ensure it's always output first.
-        $assetManager->registerCssFile('newblue/css/style_oe3.0.css', null, null, AssetManager::OUTPUT_ALL, false);
+        //$assetManager->registerCssFile('newblue/css/style_oe3.0.css', null, null, AssetManager::OUTPUT_ALL, false);
         //$assetManager->registerCssFile('newblue/css/style_oe3.0_classic.min.css', null, null, AssetManager::OUTPUT_SCREEN, false);
 
         // Prevent certain assets from being outputted in certain conditions.
