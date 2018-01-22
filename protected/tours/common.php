@@ -24,12 +24,6 @@ return array(
             ),
             array(
                 // the element attribute is the selector used for locating the section of the page to highlight
-                'element' => '.ui-dialog .ui-dialog-content',
-                'title' => 'Set your working context',
-                'content' => 'First things first, you need to say which site you\'re working at. Don\'t worry about \'Firms\' for now',
-                //'showParent' => 'true',
-            ),
-            array(
                 'element' => "input#query",
                 'title' => 'Finding patients',
                 'content' => 'You can open a patient record from the search box by entering a hospital number, NHS number or the patient\'s name',
@@ -44,14 +38,18 @@ return array(
                 'placement' => 'bottom',
             ),
             array(
-
                 'element' => "[id$='-automatic-worklists-container'] > .js-toggle-body > .row:first-of-type",
                 'title' => 'Clinic lists',
                 'content' => 'Here you will see all booked patient appointments in your clinic(s). Arrival information is updated live from your PAS<br/><br/>Clicking on a patient name will take you directly to the patient record',
                 // placement options can be one of 'top', 'bottom', 'left', 'right', 'auto'.
                 'placement' => 'left',
                 'backdropElement' => "[id$='-automatic-worklists-container'] > .js-toggle-body > .row:first-of-type, [id$='-automatic-worklists-container'] > .js-toggle-body > h1:first-of-type"
-
+            ),
+            array(
+                'element' => '#site-context-box',
+                'title' => 'Set your working context',
+                'content' => 'Use this box to change which clinic list(s) are displayed, depending on where you are (site) and which working \'context\' you are interested in',
+                //'showParent' => 'true',
             ),
             array(
                 'element' => '.oe-user-info',
@@ -98,26 +96,12 @@ return array(
         )
     ),
     array(
-        'name' => 'Adding Events',
-        'id' => 'blank-patient-intro',
+        'name' => 'Patient Header',
+        'id' => 'patient-header-tour',
         'auto' => true,
-        'url_pattern' => '|^/patient/episodes/|i',
-        'position' => 50,
-        'steps' => array(
-            array(
-                'element' => 'div.oe-no-episodes > .add-event',
-                'title' => 'Creating first event',
-                'content' => 'This patient is new and has no events recorded.<br><br>There are a lot of different types of event in OpenEyes. E.g, Examinations, Operation Notes, Consent Forms, etc.<br><br>To start recording the first event for this patient, click this button',
-                'backdropElement' => ".oe-no-episodes"
-            ),
-        )
-    ),
-    array(
-        'name' => 'Patient Header and summary',
-        'id' => 'patient-summary-intro',
-        'auto' => true,
-        'url_pattern' => '|^/patient/episode[s]?/|i',
-        'position' => 30,
+        #'url_pattern' => '~^/Oph.*/default/view/~i',
+        'url_pattern' => '~^(/patient/episode/)|(/Oph.*/default/view/)~i',
+        'position' => 33,
         'steps' => array(
             array(
                 'element' => '.patient.panel',
@@ -130,7 +114,21 @@ return array(
                 'title' => 'Summary pop-up',
                 'content' => 'Hover the mouse over this icon and a summary of the patient\'s current state will be shown (diagnoses, allergies, medications, history, etc.)<br><br>You can use this to quickly get an overview of the patient. It can be accessed from any screen.<br><br><b>Tip:</b> Clicking the icon will lock the panel in place.',
                 'backdropPadding' => 20,
-                //'backdropElement' => "div#patient-summary-popup, div#patient-popup-container, .patient.panel"
+            ),
+        )
+    ),
+    array(
+        'name' => 'Adding Events',
+        'id' => 'blank-patient-intro',
+        'auto' => true,
+        'url_pattern' => '~^/patient/episodes/~i',
+        'position' => 50,
+        'steps' => array(
+            array(
+                'element' => 'div.oe-no-episodes > .add-event',
+                'title' => 'Creating first event',
+                'content' => 'This patient is new and has no events recorded.<br><br>There are a lot of different types of event in OpenEyes. E.g, Examinations, Operation Notes, Consent Forms, etc.<br><br>To start recording the first event for this patient, click this button',
+                'backdropElement' => ".oe-no-episodes"
             ),
         )
     ),
@@ -139,13 +137,13 @@ return array(
         'id' => 'events-intro',
         'auto' => true,
         # Show when viewing an episode summary view OR when viewing an event (these are the 2 situtaions in which the event list is visible)
-        'url_pattern' => '~^(/Oph.*/default/view/)|(/patient/episode[s]?/)~i',
-        'position' => 20,
+        'url_pattern' => '~^/patient/episode/~i',
+        'position' => 22,
         'steps' => array(
             array(
                 'element' => 'ol.events',
                 'title' => 'Event list',
-                'content' => 'Each patient encounter in OpenEyes is recorded in an event.<br/><br/>As new events are recorded, they will be shown in this list. You can click on any event to view it<br/><br/>There are lots of different types of event (e.g, Examinations, Operation Notes, Consent Forms and more). Each event type has a different icon to make it easy to identify',
+                'content' => "Each patient encounter in OpenEyes is recorded in an event.<br/><br/>As new events are recorded, they will be shown in this list. You can click on any event to view it<br/><br/>There are lots of different types of event (e.g, Examinations, Operation Notes, Consent Forms and more). Each event type has a different icon to make it easy to identify",
             ),
             array(
                 'element' => 'div.controls',
@@ -155,10 +153,10 @@ return array(
             array(
                 'element' => 'ol.subspecialties',
                 'title' => 'Subspecialty Summaries',
-                'content' => 'To see a subspecialty-specific summary screen for this patient, click on the subspecialty name here.<br><br>There will be a different summary for each subspecialty that the patient is active in.',
+                'content' => "To see a subspecialty-specific summary screen for this patient, click on the subspecialty name here.<br><br>There will be a different summary for each subspecialty that the patient is active in.",
             ),
             array(
-                'element' => 'div.oe-sidebar-top-buttons > .add-event',
+                'element' => "div.oe-sidebar-top-buttons > .add-event",
                 'title' => 'Add a new Event',
                 'content' => 'To start recording a new event, use this button.<br>There are a lot of different types of event. E.g, Examinations, Operation Notes, Consent Forms, etc.',
             ),
@@ -168,8 +166,8 @@ return array(
         'name' => 'Create Event Intro',
         'id' => 'create-event-intro',
         'auto' => true,
-        'url_pattern' => '|^/patient/episode.?/|i',
-        'position' => 25,
+        'url_pattern' => '~^/patient/episode[s]?/~i',
+        'position' => 90,
         'steps' => array(
             array(
                 'element' => 'td.step-subspecialties',
@@ -271,7 +269,7 @@ return array(
         'id' => 'biometry-point-to-lens',
         'auto' => true,
         'url_pattern' => '|^/OphInBiometry/default/view/|i',
-        'position' => 6,
+        'position' => 90,
         'steps' => array(
             array(
                 'element' => "li a:contains('Edit')",
@@ -286,7 +284,7 @@ return array(
         'id' => 'biometry-lens-choice',
         'auto' => true,
         'url_pattern' => '|^/OphInBiometry/default/update/|i',
-        'position' => 6,
+        'position' => 10,
         'steps' => array(
             array(
                 'element' => "[id^='Element_OphInBiometry_Selection_lens_id']:first",
