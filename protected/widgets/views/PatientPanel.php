@@ -20,62 +20,64 @@
 //$clinical = $this->checkAccess('OprnViewClinical');
 $warnings = $this->patient->getWarnings($allow_clinical);
 Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
+$navIconsUrl = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.newblue.svg') . '/oe-nav-icons.svg');
+
 ?>
 
-<div class="panel patient<?php if ($warnings): echo ' warning'; endif; ?><?= $this->patient->isDeceased() ? ' patient-deceased' : ''?>" id="patientID">
-    <div class="patient-details">
-        <?php echo CHtml::link($this->patient->getDisplayName(), array('/patient/view/'.$this->patient->id)) ?>
-        <span class="patient-title">
-			(<?= $this->patient->title ?>)
-            </span>
-    </div>
+<div id="oe-patient-details" class="oe-patient">
+  <div class="patient-name">
+    <span class="patient-surname"><?php echo $this->patient->getLast_name(); ?></span>,
+    <span class="patient-firstname">
+      <?php echo $this->patient->getFirst_name(); ?>
+      <?php echo $this->patient->getTitle() ? "({$this->patient->getTitle()})" : ''; ?>
+    </span>
+  </div>
+
+  <div class="patient-details">
     <div class="hospital-number">
-		<span>
-			Hospital No.
-		</span>
-        <?php echo $this->patient->hos_num?>
+      <span>No. </span>
+        <?php echo $this->patient->hos_num ?>
     </div>
-    <div class="row">
-        <div class="large-8 column">
-            <!-- NHS number -->
-            <div class="nhs-number warning">
-				<span class="hide-text print-only">
-					NHS number:
-				</span>
-                <?php echo $this->patient->nhsnum?>
-                <?php if ($this->patient->nhsNumberStatus && $this->patient->nhsNumberStatus->isAnnotatedStatus()):?>
-                    <i class="fa fa-asterisk" aria-hidden="true"></i><span class="messages"><?= $this->patient->nhsNumberStatus->description;?></span>
-                <?php endif;?>
-            </div>
-
-            <!-- Gender -->
-            <span class="patient-gender">
-				<?php echo $this->patient->getGenderString() ?>
-			</span>
-
-        </div>
-        <div class="large-4 column end">
-            <div class="row">
-                <div class="patient-summary-anchor">
-                    <?php echo CHtml::link('Summary',array('/patient/view/'.$this->patient->id)); ?>
-                </div>
-            </div>
-            <?php if(Yii::app()->params['allow_clinical_summary']){?>
-                <div class="large-4 column clinical-summary-anchor">
-                    <?php echo CHtml::link('Clinical Summary', array('/dashboard/oescape/'.$this->patient->id), array('target' => '_blank')); ?>
-                </div>
-            <?php }?>
-        </div>
-    </div>
-    <!-- Widgets (extra icons, links etc) -->
-    <ul class="patient-widgets">
-        <?php if($this->patient->isEditable() ):?>
-            <li>
-                <a class="patient-edit-link" href="<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>"> <span class="fa fa-pencil-square" aria-hidden="true" aria-title="Edit patient"></span></a>
-            </li>
+    <div class="nhs-number">
+      <span>NHS</span>
+        <?php echo $this->patient->nhsnum ?>
+        <?php if ($this->patient->nhsNumberStatus && $this->patient->nhsNumberStatus->isAnnotatedStatus()): ?>
+          <i class="fa fa-asterisk" aria-hidden="true"></i><span
+              class="messages"><?= $this->patient->nhsNumberStatus->description; ?></span>
         <?php endif; ?>
-        <?php foreach ($this->widgets as $widget) {
-            echo "<li>{$widget}</li>";
-        }?>
-    </ul>
+    </div>
+
+    <div class="patient-gender">
+      <em>Gender</em>
+        <?php echo $this->patient->getGenderString() ?>
+    </div>
+
+    <div class="patient-age">
+      <em>Age</em>
+        <?php echo $this->patient->getAge(); ?>
+    </div>
+
+  </div>
+
+  <div id="js-allergies-risks-btn" class="patient-allergies-risks">
+    <div class="patient-warning">Allergies, Risks</div>
+    <svg class="icon" viewBox="0 0 30 30">
+      <use xlink:href="<?php echo $navIconsUrl; ?>#warning-icon"></use>
+    </svg>
+  </div>
+  <div id="js-demographics-btn" class="patient-demographics">
+    <svg class="icon" viewBox="0 0 60 60">
+      <use xlink:href="<?php echo $navIconsUrl; ?>#patient-icon"></use>
+    </svg>
+  </div>
+  <div id="quicklook-btn" class="patient-quicklook">
+    <svg class="icon" viewBox="0 0 30 30">
+      <use xlink:href="<?php echo $navIconsUrl; ?>#quicklook-icon"></use>
+    </svg>
+  </div>
+  <div id="js-lightening-viewer-btn" class="patient-lightening-viewer">
+    <svg viewBox="0 0 30 30" class="icon">
+      <use xlink:href="<?php echo $navIconsUrl; ?>#lightening-viewer-icon"></use>
+    </svg>
+  </div>
 </div>

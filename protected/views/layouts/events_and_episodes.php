@@ -19,29 +19,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php $this->renderPartial('//base/head/_meta'); ?>
-	<?php $this->renderPartial('//base/head/_assets'); ?>
-	<?php $this->renderPartial('//patient/head/_assets'); ?>
-	<?php $this->renderPartial('//base/head/_tracking'); ?>
+    <?php $this->renderPartial('//base/head/_meta'); ?>
+    <?php $this->renderPartial('//base/head/_assets'); ?>
+    <?php $this->renderPartial('//patient/head/_assets'); ?>
+    <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
 
-<body class="open-eyes">
+<body class="open-eyes oe-grid">
 
-	<?php $this->renderPartial('//base/_banner_watermark'); ?>
-	<?php $this->renderPartial('//base/_debug'); ?>
+<?php $this->renderPartial('//base/_banner_watermark'); ?>
+<?php $this->renderPartial('//base/_debug'); ?>
+<?php $this->renderPartial('//base/_header'); ?>
 
-	<div class="container main" role="main">
 
-		<?php $this->renderPartial('//base/_header'); ?>
+<div class="container content">
+    <?php $this->renderPartial('//base/_messages'); ?>
 
-		<div class="container content">
-            <?php $this->renderPartial('//base/_messages'); ?>
+    <?php echo $content; ?>
+</div><!-- /.content.container -->
 
-			<?php echo $content; ?>
-		</div><!-- /.content.container -->
+<?php $this->renderPartial('//base/_footer'); ?>
 
-		<?php $this->renderPartial('//base/_footer'); ?>
-
-	</div><!-- /.main.container -->
 </body>
 </html>
