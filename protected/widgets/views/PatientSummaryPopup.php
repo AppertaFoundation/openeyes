@@ -16,8 +16,128 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div id="patient-popup-container" class="patient-popup-container">
+<div id="patient-popup-quicklook" class="patient-popup-quicklook">
+  <div class="row">
+    <div class="col-left">
+      <!-- oe-popup-overflow handles scrolling if data overflow height -->
+      <div class="oe-popup-overflow">
+        <!-- Warnings -->
+          <?php if ($this->warnings) { ?>
+            <div class="alert-box patient">
+                <span>
+                    <?php foreach ($this->warnings as $warn) { ?>
+                      <strong><?php echo $warn['long_msg']; ?></strong>
+                        - <?php echo $warn['details']; ?><br />
+                    <?php } ?>
+                </span>
+            </div>
+          <?php } ?>
+        <!-- Data -->
+        <div class="summary-data">
+          <div class="oe-popup-overflow">
+            <div class="summary-data">
+                <?php if ($this->ophthalmicDiagnoses) { ?>
+                  <div class="row">
+                    <div class="large-2 column label">
+                      Ophthalmic Diagnoses
+                    </div>
+                    <div class="large-10 column data">
+                        <?php echo $this->ophthalmicDiagnoses; ?>
+                    </div>
+                  </div>
+                <?php } ?>
+                <?php if ($this->systemicDiagnoses) { ?>
+                  <div class="row">
+                    <div class="large-2 column label">
+                      Systemic Diagnoses
+                    </div>
+                    <div class="large-10 column data">
+                        <?php echo $this->systemicDiagnoses; ?>
+                    </div>
+                  </div>
+                <?php } ?>
+              <div class="row">
+                <div class="large-2 column label">
+                  CVI Status
+                </div>
+                <div class="large-10 column data">
+                    <?php echo $this->cviStatus; ?>
+                </div>
+              </div>
+                <?php if ($this->operations) { ?>
+                  <div class="row">
+                    <div class="large-2 column label">
+                      POH
+                    </div>
+                    <div class="large-10 column data">
+                        <?php echo $this->operations; ?>
+                    </div>
+                  </div>
+                <?php } ?>
+                <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
+                    'patient' => $this->patient,
+                    'mode' => BaseEventElementWidget::$PATIENT_POPUP_MODE
+                )); ?>
 
+            </div>
+          </div>
+        </div>
+        <!-- .summary-data -->
+      </div>
+      <!-- 	.oe-popup-overflow -->
+    </div>
+    <!-- .col-left -->
+    <div class="col-right">
+      <!-- oe-popup-overflow handles scrolling if data overflow height -->
+      <div class="oe-popup-overflow">
+        <div class="popup-management-summaries collapse-group" data-collapse="expanded">
+          <div class="collapse-group-icon"><i class="oe-i minus pro-theme"></i></div>
+          <div class="collapse-group-header subtitle">Management Summaries</div>
+          <div class="collapse-group-content">
+            <ul class="management-summaries">
+              <li>
+                <h6>Catract</h6>
+                <p>Anxious about about operation but keen to proceed; will need help with drops post-op</p>
+              </li>
+              <li>
+                <h6>Medical Retina</h6>
+                <p>AMD is stable; no further injections planned</p>
+              </li>
+              <li>
+                <h6>Glaucoma</h6>
+                <p>The Lencitis injections have made IOP control difficult; Ganfort added last review</p><p>
+                </p></li>
+              <li>
+                <h6>Strabismus</h6>
+                <p>Esophoria well controlled; monitor in clinic</p>
+              </li>
+            </ul>
+
+          </div><!-- .collapse-group-content -->
+        </div>
+        <!-- .popup-management-summaries -->
+        <div class="problems-plans">
+
+          <div class="subtitle">Problems &amp; Plans</div>
+
+          <ul class="problems-plans-sortable" id="problems-plans-sortable">
+            <li><span class="drag-handle">☰</span>Bilateral Catracts<div class="remove">×</div></li>
+            <li><span class="drag-handle">☰</span>Early left ptosis<div class="remove">×</div></li>
+            <li><span class="drag-handle">☰</span>On oral steroids<div class="remove">×</div></li>
+            <li><span class="drag-handle">☰</span>Significant dry eyes<div class="remove">×</div></li>
+          </ul>
+          <div class="create-new-problem-plan">
+            <input id="create-problem-plan" type="text">
+            <div class="add-problem-plan-btn tiny" id="js-add-pp-btn"><i class="oe-i plus"></i></div>
+          </div>
+        </div>
+      </div>
+      <!-- .oe-popup-overflow -->
+    </div>
+    <!-- .col-right -->
+  </div>
+  <!-- .row -->
+<!--  Old Code -->
     <!-- Patient warnings -->
     <?php
     if ($this->warnings) { ?>
@@ -127,28 +247,9 @@
                   </div>
                 <?php } ?>
 
-                <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
-                    'patient' => $this->patient,
-                    'mode' => BaseEventElementWidget::$PATIENT_POPUP_MODE
-                )); ?>
 
-                <?php if(!empty($this->family_history->entries)): ?>
-                    <div class="row">
-                        <div class="large-2 column label">Family History</div>
-                        <div class="large-10 column data">
-                            <?php echo $this->family_history; ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
-                <?php if((string)$this->social_history !== ''): ?>
-                    <div class="row">
-                        <div class="large-2 column label">Social History</div>
-                        <div class="large-10 column data">
-                            <?php echo $this->social_history; ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </div>
     </div>
+
+<!--  Old Code End-->
 </div>
+<!-- .patient-popup-quicklook -->

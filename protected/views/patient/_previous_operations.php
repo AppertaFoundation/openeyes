@@ -18,7 +18,7 @@
 ?>
 <section class="element patient-info associated-data js-toggle-container">
 	<header class="element-header">
-		<h3 class="box-title">
+		<h3 class="element-header">
 			<span class="icon-patient-clinician-hd_flag"></span>
 			Previous ophthalmic history
 		</h3>
