@@ -388,6 +388,19 @@ class DefaultController extends \BaseEventTypeController
     {
         parent::afterCreateElements($event);
         $this->persistPcrRisk();
+        if ($this->step) {
+            // Advance the workflow
+            if (!$assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find('event_id = ?', array($event->id))) {
+                // Create initial workflow assignment if event hasn't already got one
+                $assignment = new models\OphCiExamination_Event_ElementSet_Assignment();
+                $assignment->event_id = $event->id;
+            }
+
+            $assignment->step_id = $this->step->id;
+            if (!$assignment->save()) {
+                throw new \CException('Cannot save assignment');
+            }
+        }
     }
 
     public function getOptionalElements()
@@ -1060,6 +1073,7 @@ class DefaultController extends \BaseEventTypeController
     public function actionCreate()
     {
         $this->setCurrentSet();
+        $this->step = $this->getCurrentStep();
 
         if (Yii::app()->request->getPost('patientticketing__notes', null) != null) {
             $_POST['patientticketing__notes'] = htmlspecialchars(Yii::app()->request->getPost('patientticketing__notes',
