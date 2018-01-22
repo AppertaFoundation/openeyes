@@ -29,8 +29,13 @@
 
 <?php $this->renderPartial('//base/_banner_watermark'); ?>
 <?php $this->renderPartial('//base/_debug'); ?>
-<?php $this->renderPartial('//base/_header'); ?>
 
+<!-- Branding (logo) -->
+<div class="openeyes-brand">
+    <?php $this->renderPartial('//base/_brand'); ?>
+</div>
+
+<?php $this->renderPartial('//base/_header'); ?>
 
 <div class="container content">
     <?php $this->renderPartial('//base/_messages'); ?>
