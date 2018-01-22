@@ -18,7 +18,7 @@
 ?>
 
 <section class="element patient-info associated-data js-toggle-container">
-	<header class="box-header">
+	<header class="element-header">
 		<h3 class="box-title">
 			<span class="icon-patient-clinician-hd_flag"></span>
 			Family History

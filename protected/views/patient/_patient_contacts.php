@@ -17,7 +17,7 @@
  */
 ?>
 <section class="element patient-info patient-contacts js-toggle-container">
-  <h3 class="box-title">Associated contacts:</h3>
+  <h3 class="element-header">Associated contacts:</h3>
   <a href="#" class="toggle-trigger toggle-hide js-toggle">
 		<span class="icon-showhide">
 			Show/hide this section
@@ -149,7 +149,6 @@
           </div>
 
           <div class="large-2 column">
-            <img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" class="loader hide" alt="loading..."/>
             <button id="btn-add-contact" class="secondary small hide" type="button">Add</button>
           </div>
         </div>

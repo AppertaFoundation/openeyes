@@ -17,7 +17,7 @@
  */
 ?>
 <section class="element patient-info js-toggle-container">
-	<h3 class="box-title">Contact details:</h3>
+	<h3 class="element-header">Contact details:</h3>
 	<a href="#" class="toggle-trigger toggle-hide js-toggle">
 		<span class="icon-showhide">
 			Show/hide this section
