@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div id="patient-popup-quicklook" class="patient-popup-quicklook">
+<div class="patient-popup-quicklook" id="patient-summary-quicklook" style="display: none;">
   <div class="row">
     <div class="col-left">
       <!-- oe-popup-overflow handles scrolling if data overflow height -->

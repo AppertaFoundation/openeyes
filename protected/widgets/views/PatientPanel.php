@@ -70,7 +70,7 @@ $navIconsUrl = Yii::app()->assetManager->publish(Yii::getPathOfAlias('applicatio
       <use xlink:href="<?php echo $navIconsUrl; ?>#patient-icon"></use>
     </svg>
   </div>
-  <div id="quicklook-btn" class="patient-quicklook">
+  <div id="js-quicklook-btn" class="patient-quicklook">
     <svg class="icon" viewBox="0 0 30 30">
       <use xlink:href="<?php echo $navIconsUrl; ?>#quicklook-icon"></use>
     </svg>
