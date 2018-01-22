@@ -16,6 +16,8 @@
  */
 
 $(document).ready(function(){
+
+    idg.init();
     var toolTip = new OpenEyes.UI.Tooltip({
         className: 'quicklook',
         offset: {

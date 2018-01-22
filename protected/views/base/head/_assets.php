@@ -37,8 +37,3 @@
 <?php $assetManager->registerScriptFile('js/bootstrap-tour-standalone.min.js');?>
 <?php $assetManager->registerScriptFile('js/oelauncher.js');?>
 <?php $assetManager->registerScriptFile('js/idg-oe.min.js', 'application.assets.newblue');?>
-<script type="text/javascript">
-    $(document).ready(function() {
-        idg.init();
-    })
-</script>
