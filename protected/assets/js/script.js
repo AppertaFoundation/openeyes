@@ -17,7 +17,9 @@
 
 $(document).ready(function(){
 
+	// Initialise the IDG javascript event handlers. This will allow the new UI to function properly.
     idg.init();
+
     var toolTip = new OpenEyes.UI.Tooltip({
         className: 'quicklook',
         offset: {
