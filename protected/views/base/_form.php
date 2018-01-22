@@ -62,7 +62,7 @@ if (!Yii::app()->user->isGuest) {
         <?= $menuHelper->render($navIconUrl) ?>
       <li class="oe-nav-btn">
         <a class="icon-btn" href="<?= Yii::app()->createUrl('/site/logout'); ?>">
-          <svg viewBox="0 0 80 40" class="icon-logout">
+          <svg viewBox="0 0 80 40" class="icon logout">
             <use xlink:href="<?= $navIconUrl . '#logout-icon'; ?>"></use>
           </svg>
           <img src="" class="icon-logout"/>
