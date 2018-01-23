@@ -32,7 +32,7 @@
               <?php if (array_key_exists('side', $operation) && $operation['side']=='Right') { ?>
                 <i class="oe-i laterality R small pad"></i>
                 <i class="oe-i laterality NA small pad"></i>
-              <?php } elseif (array_key_exists('side', $operation) && $operation['side']=='Both') { ?>
+              <?php } elseif (array_key_exists('side', $operation) && $operation['side']=='Bilateral') { ?>
                 <i class="oe-i laterality R small pad"></i>
                 <i class="oe-i laterality L small pad"></i>
               <?php } elseif (array_key_exists('side', $operation) && $operation['side']=='Left') { ?>

@@ -53,14 +53,18 @@
               <table>
                 <tbody>
                 <?php foreach ($this->patient->systemicDiagnoses as $diagnosis) {
-                    Yii::log("Operation details ".var_export($diagnosis->eye->adjective,true)); ?>
+                  if ($diagnosis->eye){
+                    Yii::log("Operation details ".var_export($diagnosis,true));} ?>
                   <tr>
-                    <td><?php echo $diagnosis->eye ? $diagnosis->eye->adjective : ''?> <?php echo $diagnosis->disorder->term?></td>
+                    <td> <?php echo $diagnosis->disorder->term?></td>
                     <td>
-                        <?php if ($diagnosis->eye && $diagnosis->eye->adjective=='Right') { ?>
+                        <?php if (!$diagnosis->eye) { ?>
+                          <i class="oe-i laterality NA small pad"></i>
+                          <i class="oe-i laterality NA small pad"></i>
+                        <?php } elseif ($diagnosis->eye && $diagnosis->eye->adjective=='Right') { ?>
                           <i class="oe-i laterality R small pad"></i>
                           <i class="oe-i laterality NA small pad"></i>
-                        <?php } elseif ($diagnosis->eye && $diagnosis->eye->adjective=='Both') { ?>
+                        <?php } elseif ($diagnosis->eye && $diagnosis->eye->adjective=='Bilateral') { ?>
                           <i class="oe-i laterality R small pad"></i>
                           <i class="oe-i laterality L small pad"></i>
                         <?php } elseif ($diagnosis->eye && $diagnosis->eye->adjective=='Left') { ?>
