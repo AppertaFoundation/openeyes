@@ -18,18 +18,32 @@
 ?>
 <table class="plain patient-data">
     <thead>
-    <tr>
-        <th>Date</th>
-        <th>Operation</th>
-    </tr>
     </thead>
     <tbody>
     <?php foreach ($operations as $operation) {?>
         <tr>
-            <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date']); ?></td>
-            <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayOperation() : $operation['operation']; ?>
-                <?php if (array_key_exists('link', $operation)) { ?><a href="<?= $operation['link'] ?>"><span class="has-tooltip fa fa-eye" data-tooltip-content="View operation note"></span></a><?php } ?>
-            </td>
+          <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayOperation() : $operation['operation']; ?></td>
+          <td>
+              <?php if (array_key_exists('link', $operation)) { ?>
+                <i class="oe-i eye pro-theme small pad js-has-tooltip" data-tooltip-content="View Element"></i>
+              <?php } ?>
+          </td>
+          <td>
+              <?php if (array_key_exists('side', $operation) && $operation['side']=='Right') { ?>
+                <i class="oe-i laterality R small pad"></i>
+                <i class="oe-i laterality NA small pad"></i>
+              <?php } elseif (array_key_exists('side', $operation) && $operation['side']=='Both') { ?>
+                <i class="oe-i laterality R small pad"></i>
+                <i class="oe-i laterality L small pad"></i>
+              <?php } elseif (array_key_exists('side', $operation) && $operation['side']=='Left') { ?>
+                <i class="oe-i laterality NA small pad"></i>
+                <i class="oe-i laterality L small pad"></i>
+              <?php } ?>
+          </td>
+          <td>
+
+          </td>
+          <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date']); ?></td>
         </tr>
     <?php }?>
     </tbody>

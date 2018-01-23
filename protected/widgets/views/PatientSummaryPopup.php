@@ -52,13 +52,23 @@
 
               <table>
                 <tbody>
-                <?php foreach ($this->patient->systemicDiagnoses as $diagnosis) {?>
+                <?php foreach ($this->patient->systemicDiagnoses as $diagnosis) {
+                    Yii::log("Operation details ".var_export($diagnosis->eye->adjective,true)); ?>
                   <tr>
-                    <td><?php echo $diagnosis->dateText?></td>
                     <td><?php echo $diagnosis->eye ? $diagnosis->eye->adjective : ''?> <?php echo $diagnosis->disorder->term?></td>
-                      <?php if ($this->checkAccess('OprnEditSystemicDiagnosis')) { ?>
-                        <td><a href="#" class="removeDiagnosis" rel="<?php echo $diagnosis->id?>">Remove</a></td>
-                      <?php } ?>
+                    <td>
+                        <?php if ($diagnosis->eye && $diagnosis->eye->adjective=='Right') { ?>
+                          <i class="oe-i laterality R small pad"></i>
+                          <i class="oe-i laterality NA small pad"></i>
+                        <?php } elseif ($diagnosis->eye && $diagnosis->eye->adjective=='Both') { ?>
+                          <i class="oe-i laterality R small pad"></i>
+                          <i class="oe-i laterality L small pad"></i>
+                        <?php } elseif ($diagnosis->eye && $diagnosis->eye->adjective=='Left') { ?>
+                          <i class="oe-i laterality NA small pad"></i>
+                          <i class="oe-i laterality L small pad"></i>
+                        <?php } ?>
+                    </td>
+                    <td><?php echo $diagnosis->dateText?></td>
                   </tr>
                 <?php }?>
                 </tbody>
@@ -145,22 +155,6 @@
           <div class="collapse-group-content">
 
             <ul class="management-summaries">
-              <li>
-                <h6>Catract</h6>
-                <p></p>
-              </li>
-              <li>
-                <h6>Medical Retina</h6>
-                <p></p>
-              </li>
-              <li>
-                <h6>Glaucoma</h6>
-                <p></p><p>
-                </p></li>
-              <li>
-                <h6>Strabismus</h6>
-                <p></p>
-              </li>
             </ul>
 
           </div><!-- .collapse-group-content -->
@@ -171,10 +165,6 @@
           <div class="subtitle">Problems &amp; Plans</div>
 
           <ul class="problems-plans-sortable" id="problems-plans-sortable">
-            <li><span class="drag-handle">☰</span>Bilateral Catracts<div class="remove">×</div></li>
-            <li><span class="drag-handle">☰</span>Early left ptosis<div class="remove">×</div></li>
-            <li><span class="drag-handle">☰</span>On oral steroids<div class="remove">×</div></li>
-            <li><span class="drag-handle">☰</span>Significant dry eyes<div class="remove">×</div></li>
           </ul>
           <div class="create-new-problem-plan">
             <input id="create-problem-plan" type="text">
