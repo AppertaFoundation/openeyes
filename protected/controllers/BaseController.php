@@ -124,9 +124,9 @@ class BaseController extends Controller
         // stylesheets. Ideally we should suppress the inclusion here. (Or we should be using a different approach
         // to render the HTML template for the TCPDF engine)
 
-        // Register the main stylesheet without pre-registering to ensure it's always output first.
-        //$assetManager->registerCssFile('newblue/css/style_oe3.0.css', null, null, AssetManager::OUTPUT_ALL, false);
-        //$assetManager->registerCssFile('newblue/css/style_oe3.0_classic.min.css', null, null, AssetManager::OUTPUT_SCREEN, false);
+        // Publish the newblue assets and pass the base URL into javascript variables.
+        $newBlue = $assetManager->publish(Yii::getPathOfAlias('application.assets.newblue'));
+        $this->jsVars['newblueBaseUrl'] = $newBlue;
 
         // Prevent certain assets from being outputted in certain conditions.
         $assetManager->adjustScriptMapping();
