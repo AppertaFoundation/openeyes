@@ -22,22 +22,27 @@
     <tbody>
     <?php foreach ($operations as $operation) {?>
         <tr>
-          <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayOperation() : $operation['operation']; ?></td>
+          <td><?= array_key_exists('object', $operation) ? $operation['object']->operation : $operation['operation'];
+              array_key_exists('object', $operation) ? Yii::log("Operation side: ".$operation['object']->side): '';
+          ?></td>
           <td>
               <?php if (array_key_exists('link', $operation)) { ?>
                 <i class="oe-i eye pro-theme small pad js-has-tooltip" data-tooltip-content="View Element"></i>
               <?php } ?>
           </td>
           <td>
-              <?php if (array_key_exists('side', $operation) && $operation['side']=='Right') { ?>
+              <?php if ((array_key_exists('side', $operation) && $operation['side']=='Right') || (array_key_exists('object', $operation)&&$operation['object']->side=='Right')) { ?>
                 <i class="oe-i laterality R small pad"></i>
                 <i class="oe-i laterality NA small pad"></i>
-              <?php } elseif (array_key_exists('side', $operation) && $operation['side']=='Bilateral') { ?>
+              <?php } elseif ((array_key_exists('side', $operation) && $operation['side']=='Bilateral')||(array_key_exists('object', $operation) && $operation['object']->side=='Both')) { ?>
                 <i class="oe-i laterality R small pad"></i>
                 <i class="oe-i laterality L small pad"></i>
-              <?php } elseif (array_key_exists('side', $operation) && $operation['side']=='Left') { ?>
+              <?php } elseif ((array_key_exists('side', $operation) && $operation['side']=='Left')||(array_key_exists('object', $operation) && $operation['object']->side=='Left')) { ?>
                 <i class="oe-i laterality NA small pad"></i>
                 <i class="oe-i laterality L small pad"></i>
+              <?php } else { ?>
+                <i class="oe-i laterality NA small pad"></i>
+                <i class="oe-i laterality NA small pad"></i>
               <?php } ?>
           </td>
           <td>

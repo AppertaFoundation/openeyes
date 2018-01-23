@@ -22,10 +22,14 @@
       <!-- oe-popup-overflow handles scrolling if data overflow height -->
       <div class="cols-4 oe-popup-overflow pad">
         <!-- Warnings -->
-        <div class="alert-box patient">
-          <strong>Patient has allergies</strong>  - Cephalosporins, Opiates, Brimonidine<br>
-          <strong>Patient has risks</strong> - Cannot Lie Flat<br>
-        </div>
+          <?php
+          if ($this->warnings) { ?>
+            <div class="alert-box patient">
+                  <?php echo implode(', ', array_unique(array_map(function ($warning) {
+                    return $warning['short_msg'];
+                    }, $this->warnings))); ?>
+          </div>
+          <?php } ?>
         <!-- Data -->
         <div class="summary-data">
           <div class="row">
@@ -53,8 +57,7 @@
               <table>
                 <tbody>
                 <?php foreach ($this->patient->systemicDiagnoses as $diagnosis) {
-                  if ($diagnosis->eye){
-                    Yii::log("Operation details ".var_export($diagnosis,true));} ?>
+                  ?>
                   <tr>
                     <td> <?php echo $diagnosis->disorder->term?></td>
                     <td>

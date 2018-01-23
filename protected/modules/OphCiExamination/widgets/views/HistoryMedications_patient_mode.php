@@ -20,21 +20,40 @@ $model_name = CHtml::modelName($element);
 <?php if (!$current && !$stopped) { ?>
     <p>No medications recorded.</p>
 <?php } else { ?>
-    <table class="plain valign-top patient-data" id="<?= $model_name ?>_entry_table">
+    <table id="<?= $model_name ?>_entry_table">
         <tbody>
         <?php if ($current) { ?>
             <tr>
                 <th colspan="3">Current Medications</th>
             </tr>
             <?php
-            foreach ($current as $entry) { ?>
+            foreach ($current as $entry) {?>
                 <tr>
-                    <td><?= $entry->getMedicationDisplay() ?></td>
-                    <td><?= $entry->getDatesDisplay() ?></td>
-                    <td><?php if ($entry->prescription_item) { ?>
-                            <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="has-tooltip fa fa-eye"
-                                                                                      data-tooltip-content="View prescription"></span></a>
-                        <?php } ?></td>
+                  <td><?= $entry->getMedicationDisplay() ?></td>
+                  <td><?php switch ($entry->getLateralityDisplay()){
+                          case 'L': ?>
+                            <i class="oe-i laterality NA small"></i>
+                            <i class="oe-i laterality L small"></i>
+                          <?php break;
+                          case 'R': ?>
+                            <i class="oe-i laterality R small"></i>
+                            <i class="oe-i laterality NA small"></i>
+                          <?php break;
+                          case 'B': ?>
+                            <i class="oe-i laterality R small"></i>
+                            <i class="oe-i laterality L small"></i>
+                          <?php break;
+                          case '?': ?>
+                            <i class="oe-i laterality NA small"></i>
+                            <i class="oe-i laterality NA small"></i>
+                          <?php break;
+                          default: ?>
+                            <i class="oe-i laterality NA small"></i>
+                            <i class="oe-i laterality NA small"></i>
+                          <?php } ?>
+                            </td>
+                  <td><?= $entry->getDatesDisplay() ?></td>
+
                 </tr>
             <?php }
         }

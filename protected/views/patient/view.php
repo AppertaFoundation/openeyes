@@ -22,8 +22,7 @@ $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 
 $warnings = $this->patient->getWarnings($clinical);
 ?>
-
-<div class="main-event edit">
+<main class="main-event edit">
 	<div class="messages patient">
 		<?php $this->renderPartial('//base/_messages'); ?>
 		<?php if ($this->patient->contact->address && !$this->patient->contact->address->isCurrent()) {?>
@@ -109,4 +108,4 @@ $warnings = $this->patient->getWarnings($clinical);
 			<?php }?>
 		</div>
 	</div>
-</div>
+</main>
