@@ -49,7 +49,7 @@ $this->pageTitle = Yii::app()->name . ' - Login';
             <?php endif; ?>
 
         </span>
-        <a href="#">About</a>
+        <a href="#" onclick="$('#js-openeyes-btn').click();">About</a>
       </div>
       <!-- info -->
     </div>
