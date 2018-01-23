@@ -212,7 +212,7 @@
 
   EpisodeSidebar.prototype.getGroupingPicker = function () {
     var self = this;
-    var select = '<span class="sidebar-grouping"><label for="grouping-picker">Grp by:</label>';
+    var select = '<span class="sidebar-grouping">';
     select += '<select name="grouping-picker" class="' + self.options.grouping_picker_class + '">';
     $(groupings).each(function () {
       select += '<option value="' + this.id + '"';
