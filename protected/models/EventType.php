@@ -21,8 +21,8 @@
  *
  * The followings are the available columns in table 'event_type':
  *
- * @property int     $id
- * @property string  $name
+ * @property int $id
+ * @property string $name
  *
  * The followings are the available model relations:
  * @property Event[] $events
@@ -99,7 +99,8 @@ class EventType extends BaseActiveRecordVersioned
         $legacy_events = EventGroup::model()->find('code=?', array('Le'));
 
         $criteria = new CDbCriteria();
-        $criteria->condition = "class_name in ('" . implode("','", array_keys(Yii::app()->getModules())) . "') and event_group_id != $legacy_events->id";
+        $criteria->condition = "class_name in ('" . implode("','",
+                array_keys(Yii::app()->getModules())) . "') and event_group_id != $legacy_events->id";
         $criteria->order = 'name asc';
         $criteria->addCondition('parent_id is null');
 
@@ -373,7 +374,7 @@ class EventType extends BaseActiveRecordVersioned
      * @param Event $event
      * @return string
      */
-    public function getEventIcon($type='small', Event $event = null)
+    public function getEventIcon($type = 'small', Event $event = null)
     {
         $asset_manager = Yii::app()->getAssetManager();
         $module_path = Yii::getPathOfAlias('application.modules.' . $this->class_name . '.assets.img');
@@ -420,6 +421,47 @@ class EventType extends BaseActiveRecordVersioned
      */
     public function getEventIconCssClass()
     {
-        return 'i-' . str_replace('Oph', '', $this->class_name);
+        static $style_mapping = array(
+            'OphCiAmdinjection' => 'i-TrIntravitrealInjection',
+            'OphCiAnaesth' => 'i-CiAnaestheticExam',
+            'OphCiExamination' => 'i-CiExamination',
+            'OphCiOrthoptics' => 'i-CiOrthoptics',
+            'OphCiPhasing' => 'i-CiPhasing',
+            'OphCiPreassess' => 'i-CiExamination',
+            'OphCiRefraction' => 'i-CiRefraction',
+            'OphCoAmdapplication' => 'i-CoIVTApplication',
+            'OphCoCorrespondence ' => 'i-CoCorrespondence',
+            'OphCoCorrespondence' => 'i-CoTelephoneCall',
+            'OphCoDocument' => 'i-CoDocument',
+            'OphCoLetterin' => 'i-CoLetterIn',
+            'OphCoLetterout' => 'i-CoLetterOut',
+            'OphCoMessaging' => 'i-CoTelephoneCall',
+            'OphCoTherapyapplication' => 'i-CoIVTApplication',
+            'OphDrInjection' => 'i-TrIntravitrealInjection',
+            'OphDrPrescription' => 'i-DrPrescription',
+            'OphImCtscan' => 'i-InMRI-CT',
+            'OphImFfa' => 'i-ImOCT',
+            'OphImIcg' => 'i-ImOCT',
+            'OphImMriscan' => 'i-InMRI-CT',
+            'OphImOct' => 'i-ImOCT',
+            'OphImUltrasound' => 'i-ImUltraSound',
+            'OphImXray' => 'i-InMRI-CT',
+            'OphInBiometry' => 'i-InBiometry',
+            'OphInBloodtest' => 'i-InBlood',
+            'OphInHfa' => 'i-ImOCT',
+            'OphInLabResults' => 'i-InLabRequest',
+            'OphInVisualfields' => 'i-InVisualField',
+            'OphLeEpatientletter' => 'i-CoLetterIn',
+            'OphLeIntravitrealinjection' => 'i-TrIntravitrealInjection',
+            'OphOuAnaestheticsatisfactionaudit' => 'i-OuAnaestheticSatisfaction',
+            'OphTrConsent' => 'i-CoPatentConsent',
+            'OphTrIntravitrealinjection' => 'i-TrIntravitrealInjection',
+            'OphTrLaser' => 'i-TrLaser',
+            'OphTrOperation' => 'i-TrOperationProcedure',
+            'OphTrOperationbooking' => 'i-TrOperationProcedure',
+            'OphTrOperationnote' => 'i-TrOperationNotes',
+        );
+
+        return array_key_exists($this->class_name, $style_mapping) ? $style_mapping[$this->class_name] : null;
     }
 }
