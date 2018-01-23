@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue.svg') . '/oe-logo.svg');
+$commit = preg_replace('/[\s\t].*$/s', '', @file_get_contents(Yii::app()->basePath.'/../.git/FETCH_HEAD'));
+$commitDate = exec("git show -s --format=%cD $commit");
 ?>
 <div class="oe-logo" id="js-openeyes-btn">
     <svg viewBox="0 0 300.06 55.35" class="oe-openeyes">
@@ -24,7 +26,7 @@ $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('applic
 </div>
 <div class="oe-product-info" id="js-openeyes-info">
   <h3>OpenEyes</h3>
-  <p class="gap">Release Date: 22nd Jan 2018</p>
+  <p class="gap">Release Date: <?php echo Helper::convertDate2NHS($commitDate); ?></p>
   <p class="gap">
     <a href="#activate-pro-theme" id="js-theme-pro" style="display: inline-block; margin-bottom: 4px;">PRO theme (recommended)</a>
     <br/>
