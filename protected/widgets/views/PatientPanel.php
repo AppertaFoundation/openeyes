@@ -59,23 +59,23 @@ $navIconsUrl = Yii::app()->assetManager->publish(Yii::getPathOfAlias('applicatio
 
   </div>
 
-  <div id="js-allergies-risks-btn" class="patient-allergies-risks">
+  <div class="patient-allergies-risks" id="js-allergies-risks-btn">
     <div class="patient-warning">Allergies, Risks</div>
-    <svg class="icon" viewBox="0 0 30 30">
+    <svg viewBox="0 0 30 30" class="icon">
       <use xlink:href="<?php echo $navIconsUrl; ?>#warning-icon"></use>
     </svg>
   </div>
-  <div id="js-demographics-btn" class="patient-demographics">
-    <svg class="icon" viewBox="0 0 60 60">
+  <div class="patient-demographics" id="js-demographics-btn">
+    <svg viewBox="0 0 60 60" class="icon">
       <use xlink:href="<?php echo $navIconsUrl; ?>#patient-icon"></use>
     </svg>
   </div>
-  <div id="js-quicklook-btn" class="patient-quicklook">
-    <svg class="icon" viewBox="0 0 30 30">
+  <div class="patient-quicklook" id="js-quicklook-btn">
+    <svg viewBox="0 0 30 30" class="icon">
       <use xlink:href="<?php echo $navIconsUrl; ?>#quicklook-icon"></use>
     </svg>
   </div>
-  <div id="js-lightening-viewer-btn" class="patient-lightening-viewer">
+  <div class="patient-lightening-viewer" id="js-lightening-viewer-btn">
     <svg viewBox="0 0 30 30" class="icon">
       <use xlink:href="<?php echo $navIconsUrl; ?>#lightening-viewer-icon"></use>
     </svg>
