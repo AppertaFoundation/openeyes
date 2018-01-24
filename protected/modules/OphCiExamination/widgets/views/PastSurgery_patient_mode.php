@@ -31,23 +31,11 @@
               <?php } ?>
           </td>
           <td>
-              <?php $side = array_key_exists('side', $operation) ? $operation['side']: (array_key_exists('object', $operation) ? $operation['object']->side : '');
-              if ($side == 'Right') { ?>
-                <i class="oe-i laterality R small pad"></i>
-                <i class="oe-i laterality NA small pad"></i>
-              <?php } elseif ( $side=='Bilateral'|| $side=='Both') { ?>
-                <i class="oe-i laterality R small pad"></i>
-                <i class="oe-i laterality L small pad"></i>
-              <?php } elseif ($side == 'Left') { ?>
-                <i class="oe-i laterality NA small pad"></i>
-                <i class="oe-i laterality L small pad"></i>
-              <?php } else { ?>
-                <i class="oe-i laterality NA small pad"></i>
-                <i class="oe-i laterality NA small pad"></i>
-              <?php } ?>
+              <?php $side = array_key_exists('side', $operation) ? $operation['side']: (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
+                <i class="oe-i laterality <?php echo  $side=='Right'||$side=='Both'||$side=='Bilateral'? 'R':'NA' ?> small pad"></i>
+                <i class="oe-i laterality <?php echo $side=='Left'||$side=='Both'||$side=='Bilateral'? 'L':'NA' ?> small pad"></i>
           </td>
           <td>
-
           </td>
           <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date']); ?></td>
         </tr>

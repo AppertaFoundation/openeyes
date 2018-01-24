@@ -61,19 +61,8 @@
                   <tr>
                     <td> <?php echo $diagnosis->disorder->term?></td>
                     <td>
-                        <?php if (!$diagnosis->eye) { ?>
-                          <i class="oe-i laterality NA small pad"></i>
-                          <i class="oe-i laterality NA small pad"></i>
-                        <?php } elseif ($diagnosis->eye && $diagnosis->eye->adjective=='Right') { ?>
-                          <i class="oe-i laterality R small pad"></i>
-                          <i class="oe-i laterality NA small pad"></i>
-                        <?php } elseif ($diagnosis->eye && $diagnosis->eye->adjective=='Bilateral') { ?>
-                          <i class="oe-i laterality R small pad"></i>
-                          <i class="oe-i laterality L small pad"></i>
-                        <?php } elseif ($diagnosis->eye && $diagnosis->eye->adjective=='Left') { ?>
-                          <i class="oe-i laterality NA small pad"></i>
-                          <i class="oe-i laterality L small pad"></i>
-                        <?php } ?>
+                      <i class="oe-i laterality <?php echo $diagnosis->eye && ($diagnosis->eye->adjective=='Right'||$diagnosis->eye->adjective=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
+                      <i class="oe-i laterality <?php echo $diagnosis->eye && ($diagnosis->eye->adjective=='Left'||$diagnosis->eye->adjective=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
                     </td>
                     <td><?php echo $diagnosis->dateText?></td>
                   </tr>
