@@ -16,14 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<ul class="inline-list tabs event-actions">
-	<?php foreach ($this->event_tabs as $tab) { ?>
-	<li<?php if (@$tab['active']) { ?> class="selected"<?php } ?>>
-		<?php if (@$tab['href']) { ?>
-			<a href="<?php echo $tab['href'] ?>"><?php echo $tab['label'] ?></a>
-		<?php } else { //FIXME: don't select?>
-			<a href="#"><?php echo $tab['label'] ?></a>
-		<?php } ?>
-	</li>
-	<?php } ?>
-</ul>
+<i class="oe-i-e large "></i>
+<?php foreach ($this->event_tabs as $tab) { ?>
+    <a href="<?php echo @$tab['href'] ? $tab['href'] : '#'?>" class="button <?php if (@$tab['active']) { ?>selected<?php } ?>">
+        <?php echo $tab['label'] ?>
+    </a>
+<?php } ?>

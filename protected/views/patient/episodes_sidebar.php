@@ -22,6 +22,11 @@ extract($this->getEpisodes());
 $current_episode = @$this->current_episode;
 ?>
 
+<header class="event-header">
+    <?php $this->renderPartial('//patient/event_tabs') ?>
+    <?php $this->renderPartial('//patient/event_actions'); ?>
+</header>
+
 <nav class="sidebar-header">
     <?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && $this->checkAccess('OprnCreateEpisode')) { ?>
       <button id="add-event" class="button green add-event" type="button">Add Event</button>
