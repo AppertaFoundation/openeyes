@@ -20,7 +20,10 @@
     <thead>
     </thead>
     <tbody>
-    <?php foreach ($operations as $operation) {?>
+    <?php if (!$operations || sizeof($operations)==0) { ?>
+      <p>No ophthalmic diagnoses recorded.</p>
+    <?php } else {
+     foreach ($operations as $operation) {?>
         <tr>
           <td><?= array_key_exists('object', $operation) ? $operation['object']->operation : $operation['operation'];
               array_key_exists('object', $operation) ? Yii::log("Operation side: ".$operation['object']->side): '';
@@ -39,6 +42,6 @@
           </td>
           <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date']); ?></td>
         </tr>
-    <?php }?>
+    <?php } }?>
     </tbody>
 </table>

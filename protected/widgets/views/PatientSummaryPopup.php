@@ -53,10 +53,12 @@
           <div class="row">
             <div class="label">Systemic Diagnoses</div>
             <div class="data">
-
               <table>
                 <tbody>
-                <?php foreach ($this->patient->systemicDiagnoses as $diagnosis) {
+                <?php if (sizeof($this->patient->systemicDiagnoses)==0){ ?>
+                    <p>No systemic diagnoses recorded.</p>
+                <?php }
+                foreach ($this->patient->systemicDiagnoses as $diagnosis) {
                   ?>
                   <tr>
                     <td> <?php echo $diagnosis->disorder->term?></td>
