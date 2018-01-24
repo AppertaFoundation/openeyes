@@ -16,6 +16,6 @@
  */
 ?>
 
-<div class="element-data">
+<div class="element-data full-width">
     <div class="data-value"><?= $element ?></div>
 </div>

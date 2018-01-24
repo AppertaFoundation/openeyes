@@ -18,21 +18,32 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data element-data-inline">
-    <?php if ($element->no_risks_date) { ?>
+<section class="element title view-risks">
+  <!--
+	*******  Element Data Type (VIEW): * Risks *
+	*******  CSS: "element-data view-risks" (+ any extra css)
+	*******  CSS hook used for element specific styling only where required
+	*******  Only minimum required DOM and CSS for UI is shown here
+	-->
+  <header class="element-header">
+    <h3 class="element-title">Risks</h3>
+  </header>
+  <div class="element-data full-width">
+    <div class="data-row">
+      <?php if ($element->no_risks_date) { ?>
         <div class="data-value">Patient has no known risks.</div>
-    <?php } else { ?>
-        <?php if ($element->present) { ?>
-            <div class="data-label"><strong><?= $element->getAttributeLabel('present') ?>:</strong></div>
-            <div class="data-value"><?= $element->getEntriesDisplay('present') ?></div>
-        <?php } ?>
-        <?php if ($element->not_checked) { ?>
-            <div class="data-label"><strong><?= $element->getAttributeLabel('not_checked') ?>:</strong></div>
-            <div class="data-value"><?= $element->getEntriesDisplay('not_checked') ?></div>
-        <?php } ?>
-        <?php if ($element->not_present) { ?>
-            <div class="data-label"><strong><?= $element->getAttributeLabel('not_present') ?>:</strong></div>
-            <div class="data-value"><?= $element->getEntriesDisplay('not_present') ?></div>
-        <?php } ?>
-    <?php } ?>
-</div>
+      <?php } else { ?>
+          <?php if ($element->present) { ?>
+          <div class="data-value"><?= $element->getAttributeLabel('present') ?>:<?= $element->getEntriesDisplay('present') ?></div>
+          <?php } ?>
+          <?php if ($element->not_checked) { ?>
+          <div class="data-value"><?= $element->getAttributeLabel('not_checked') ?>:<?= $element->getEntriesDisplay('not_checked') ?></div>
+          <?php } ?>
+          <?php if ($element->not_present) { ?>
+          <div class="data-value">&nbsp; and &nbsp;<?= $element->getAttributeLabel('not_present') ?>:<?= $element->getEntriesDisplay('not_present') ?></div>
+          <?php } ?>
+      <?php } ?>
+    </div>
+  </div>
+
+</section>
