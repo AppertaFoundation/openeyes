@@ -16,7 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<i class="oe-i-e large "></i>
+<?php if ($this->event): ?>
+  <i class="oe-i-e large <?php echo $this->event->eventType->getEventIconCssClass(); ?>"></i>
+<?php endif; ?>
 <?php foreach ($this->event_tabs as $tab) { ?>
     <a href="<?php echo @$tab['href'] ? $tab['href'] : '#'?>" class="button <?php if (@$tab['active']) { ?>selected<?php } ?>">
         <?php echo $tab['label'] ?>

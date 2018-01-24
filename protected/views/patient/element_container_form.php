@@ -59,34 +59,33 @@ if ($this->isHiddenInUI($element)) {
 			</div>
 		<?php }?>
 
-		<!-- Element actions -->
-		<div class="<?php if (@$child) {?>sub-<?php }?>element-actions">
-
-			<!-- Copy previous element -->
-			<?php if ($this->canCopy($element) || $this->canViewPrevious($element)) {?>
-				<a href="#" title="View Previous" class="viewPrevious<?php if (@$child) {?> subElement<?php }?>">
-					<img src="<?php echo Yii::app()->assetManager->createUrl('img/_elements/btns/load.png')?>" />
-				</a>
-			<?php }?>
-
-			<!-- Remove element -->
-			<?php if (!@$child) {?>
-				<a href="#" class="button button-icon small js-remove-element <?=($this->isRequiredInUI($element)) ? 'disabled' : '' ?>" title="<?=($this->isRequiredInUI($element)) ? 'mandatory' : '' ?>">
-					<span class="icon-button-small-mini-cross"></span>
-					<span class="hide-offscreen">Remove element</span>
-				</a>
-			<?php }?>
-
-			<!-- Remove sub-element -->
-			<?php if (@$child) {?>
-				<a href="#" class="button button-icon small js-remove-child-element <?=($this->isRequiredInUI($element)) ? 'disabled' : '' ?>" title="<?=($this->isRequiredInUI($element)) ? 'mandatory': '' ?>">
-					<span class="icon-button-small-mini-cross"></span>
-					<span class="hide-offscreen">Remove sub-element</span>
-				</a>
-			<?php }?>
-		</div>
 	</header>
+    <!-- Element actions -->
+    <div class="<?php if (@$child) {?>sub-<?php }?>element-actions">
+
+      <!-- Copy previous element -->
+        <?php if ($this->canCopy($element) || $this->canViewPrevious($element)) {?>
+          <a href="#" title="View Previous" class="viewPrevious<?php if (@$child) {?> subElement<?php }?>">
+            <i class="oe-i duplicate"></i>
+          </a>
+        <?php }?>
+
+      <!-- Remove element -->
+        <?php if (!@$child) {?>
+          <span class="js-remove-element <?=($this->isRequiredInUI($element)) ? 'hidden' : '' ?>" title="<?=($this->isRequiredInUI($element)) ? 'mandatory' : '' ?>">
+          <i class="oe-i remove-circle"></i>
+        </span>
+        <?php }?>
+
+      <!-- Remove sub-element -->
+        <?php if (@$child) {?>
+          <span class="js-remove-child-element <?=($this->isRequiredInUI($element)) ? 'hidden' : '' ?>" title="<?=($this->isRequiredInUI($element)) ? 'mandatory': '' ?>">
+          <i class="oe-i remove-circle small"></i>
+        </span>
+        <?php }?>
+    </div>
 	<?php } ?>
+
 	<?php echo $content; ?>
 
 	<!-- Sub elements -->
