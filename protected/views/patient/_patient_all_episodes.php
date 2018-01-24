@@ -20,7 +20,7 @@
 <section class="element patient-info episodes">
 	<header class="element-header">
 		<h3 class="element-header">All <?= Episode::getEpisodeLabelPlural() ?></h3>
-		<div class="box-info">
+		<div class="box-info" style="position: relative; float: right; ">
 			<strong>open <?php echo $episodes_open?> &nbsp;|&nbsp;closed <?php echo $episodes_closed?></strong>
 		</div>
 	</header>
