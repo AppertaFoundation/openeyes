@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
 <?php if ($this->event): ?>
   <i class="oe-i-e large <?php echo $this->event->eventType->getEventIconCssClass(); ?>"></i>
 <?php endif; ?>
@@ -24,3 +25,4 @@
         <?php echo $tab['label'] ?>
     </a>
 <?php } ?>
+

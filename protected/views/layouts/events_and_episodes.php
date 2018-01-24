@@ -37,9 +37,13 @@
 
 <?php $this->renderPartial('//base/_header'); ?>
 
-<?php $this->renderPartial('//base/_messages'); ?>
 
-<?php echo $content; ?>
+<nav class="event-header">
+    <?php $this->renderPartial('//base/_messages'); ?>
+
+    <?php echo $content; ?>
+</nav><!-- /.content.container -->
+
 
 </body>
 </html>

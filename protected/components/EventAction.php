@@ -93,6 +93,7 @@ class EventAction
         if ($this->options['level'] === 'print') {
             $label = '<i class="oe-i print"></i>';
             $this->htmlOptions['class'] .= ' icon';
+
         }
 
         if ($this->options['disabled']) {
