@@ -31,13 +31,14 @@
               <?php } ?>
           </td>
           <td>
-              <?php if ((array_key_exists('side', $operation) && $operation['side']=='Right') || (array_key_exists('object', $operation)&&$operation['object']->side=='Right')) { ?>
+              <?php $side = array_key_exists('side', $operation) ? $operation['side']: (array_key_exists('object', $operation) ? $operation['object']->side : '');
+              if ($side == 'Right') { ?>
                 <i class="oe-i laterality R small pad"></i>
                 <i class="oe-i laterality NA small pad"></i>
-              <?php } elseif ((array_key_exists('side', $operation) && $operation['side']=='Bilateral')||(array_key_exists('object', $operation) && $operation['object']->side=='Both')) { ?>
+              <?php } elseif ( $side=='Bilateral'|| $side=='Both') { ?>
                 <i class="oe-i laterality R small pad"></i>
                 <i class="oe-i laterality L small pad"></i>
-              <?php } elseif ((array_key_exists('side', $operation) && $operation['side']=='Left')||(array_key_exists('object', $operation) && $operation['object']->side=='Left')) { ?>
+              <?php } elseif ($side == 'Left') { ?>
                 <i class="oe-i laterality NA small pad"></i>
                 <i class="oe-i laterality L small pad"></i>
               <?php } else { ?>

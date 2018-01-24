@@ -30,28 +30,11 @@ $model_name = CHtml::modelName($element);
             foreach ($current as $entry) {?>
                 <tr>
                   <td><?= $entry->getMedicationDisplay() ?></td>
-                  <td><?php switch ($entry->getLateralityDisplay()){
-                          case 'L': ?>
-                            <i class="oe-i laterality NA small"></i>
-                            <i class="oe-i laterality L small"></i>
-                          <?php break;
-                          case 'R': ?>
-                            <i class="oe-i laterality R small"></i>
-                            <i class="oe-i laterality NA small"></i>
-                          <?php break;
-                          case 'B': ?>
-                            <i class="oe-i laterality R small"></i>
-                            <i class="oe-i laterality L small"></i>
-                          <?php break;
-                          case '?': ?>
-                            <i class="oe-i laterality NA small"></i>
-                            <i class="oe-i laterality NA small"></i>
-                          <?php break;
-                          default: ?>
-                            <i class="oe-i laterality NA small"></i>
-                            <i class="oe-i laterality NA small"></i>
-                          <?php } ?>
-                            </td>
+                  <td>
+                    <?php $laterality = $entry->getLateralityDisplay();  ?>
+                    <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>" ></i>
+                    <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>" ></i>
+                  </td>
                   <td><?= $entry->getDatesDisplay() ?></td>
 
                 </tr>
