@@ -47,17 +47,43 @@ class OphCoMessaging_API extends \BaseAPI
     }
 
     /**
+     * @return array Dashboard widget content and options (No need for title).
+     */
+    public function getMessages($user = null)
+    {
+        $inbox_messages = $this->getInboxMessages($user);
+        $sent_messages = $this->getSentMessages($user);
+
+        \Yii::app()->getAssetManager()->registerCssFile('module.css', 'application.modules.OphCoMessaging.assets.css');
+
+        // Generate the dashboard widget HTML.
+        $dashboard_view = \Yii::app()->controller->renderPartial('OphCoMessaging.views.dashboard.message_dashboard', array(
+                'inbox' => $inbox_messages['list'],
+                'sent' => $sent_messages['list'],
+                'inbox_unread' => $inbox_messages['unread'],
+                'sent_unread' => $sent_messages['unread'],
+                'module_class' => $this->getModuleClass(),
+            )
+        );
+
+        return array(
+            'content' => $dashboard_view,
+            'options' => array(
+                'container-id' => \Yii::app()->user->id.'-dashboard-container',
+            ),
+        );
+    }
+
+    /**
      * Get received messages.
      * 
-     * @param CWebUser $user
+     * @param \CWebUser $user
      *
-     * @return array title and content of for the widget
+     * @return array data provider and total unread messages
      */
-    public function getInboxMessages($user = null)
+    private function getInboxMessages($user = null)
     {
-        $read_check = (\Yii::app()->request->getQuery('OphCoMessaging_read', '0') === '1');
-
-        if (is_null($user)) {
+        if ($user === null) {
             $user = \Yii::app()->user;
         }
 
@@ -82,7 +108,7 @@ class OphCoMessaging_API extends \BaseAPI
 
         $from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
         $to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
-        $params = array(':uid' => $user->id, ':read' => $read_check);
+        $params = array(':uid' => $user->id);
 
         $criteria = new \CDbCriteria();
         $criteria->select = array(
@@ -92,7 +118,7 @@ class OphCoMessaging_API extends \BaseAPI
             new \CDbExpression('IF(comment.created_user_id = :uid, t.created_user_id, IF(comment.marked_as_read = 0, comment.created_user_id, t.created_user_id)) as created_user_id'),
         );
 
-        $criteria->addCondition('t.for_the_attention_of_user_id = :uid AND t.marked_as_read = :read');
+        $criteria->addCondition('t.for_the_attention_of_user_id = :uid');
         $criteria->addCondition('t.created_user_id = :uid AND comment.marked_as_read = 0', 'OR');
         $criteria->join = 'LEFT JOIN ophcomessaging_message_comment AS comment ON t.id = comment.element_id';
         $criteria->with = array('event', 'for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact');
@@ -120,54 +146,30 @@ class OphCoMessaging_API extends \BaseAPI
                 ),
             ));
 
-        $messages = Element_OphCoMessaging_Message::model()->with(array('event'))->findAll($criteria);
+        $unread_criteria = new \CDbCriteria();
+        $unread_criteria->addCondition('t.marked_as_read != 1');
 
-        \Yii::app()->getAssetManager()->registerCssFile('module.css', 'application.modules.OphCoMessaging.assets.css');
+        $unread_criteria->mergeWith($criteria);
+        $unread_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($unread_criteria);
 
-        $inbox_view = \Yii::app()->controller->renderPartial('OphCoMessaging.views.inbox.grid', array(
-                            'module_class' => $this->getModuleClass(),
-                            'messages' => $messages,
-                            'dp' => $dp,
-                            'read_check' => $read_check,
-                        ), true);
 
-        $is_open = ($read_check && $dp->totalItemCount > 0) ? true : false;
-
-        $cookie_name = \Yii::app()->user->id.'-inbox-container-state';
-
-        if (\Yii::app()->request->cookies->contains($cookie_name)) {
-
-            //unread messages
-            if (!$read_check) {
-                //always open the widget if there are unread messages
-                $is_open = $dp->totalItemCount > 0 ? true : (bool) \Yii::app()->request->cookies[$cookie_name]->value;
-            } else {
-                // read messages
-                $is_open = (bool) \Yii::app()->request->cookies[$cookie_name]->value;
-            }
-        }
-        \Yii::app()->request->cookies[$cookie_name] = new \CHttpCookie($cookie_name, (int) $is_open);
 
         return array(
-            'title' => 'Messages'.(!$read_check && $dp->totalItemCount ? " [{$dp->totalItemCount}]" : ''),
-            'content' => $inbox_view,
-            'options' => array(
-                'container-id' => \Yii::app()->user->id.'-inbox-container',
-                'js-toggle-open' => $is_open,
-            ),
+            'list' => $dp,
+            'unread' => $unread_messages
         );
     }
 
     /**
      * Get sent messages.
      * 
-     * @param CWebUser $user
+     * @param \CWebUser $user
      *
-     * @return array title and content for the widget
+     * @return array data provider and total unread messages
      */
-    public function getSentMessages($user = null)
+    private function getSentMessages($user = null)
     {
-        if (is_null($user)) {
+        if ($user === null) {
             $user = \Yii::app()->user;
         }
 
@@ -224,23 +226,15 @@ class OphCoMessaging_API extends \BaseAPI
                 ),
             ));
 
-        $messages = Element_OphCoMessaging_Message::model()->findAll($criteria);
+        $unread_criteria = new \CDbCriteria();
+        $unread_criteria->addCondition('t.marked_as_read != 1');
 
-        \Yii::app()->getAssetManager()->registerCssFile('module.css', 'application.modules.OphCoMessaging.assets.css');
-
-        $inbox_view = \Yii::app()->controller->renderPartial('OphCoMessaging.views.inbox.grid', array(
-            'module_class' => $this->getModuleClass(),
-            'messages' => $messages,
-            'dp' => $dataProvider,
-        ), true);
+        $unread_criteria->mergeWith($criteria);
+        $unread_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($unread_criteria);
 
         return array(
-            'title' => 'Sent Messages',
-            'content' => $inbox_view,
-            'options' => array(
-                'container-id' => \Yii::app()->user->id.'-sent-container',
-                'js-toggle-open' => \Yii::app()->request->cookies->contains(\Yii::app()->user->id.'-sent-container-state') ? (bool) \Yii::app()->request->cookies[\Yii::app()->user->id.'-sent-container-state']->value : false,
-            ),
+            'list' => $dataProvider,
+            'unread' => $unread_messages
         );
     }
 }

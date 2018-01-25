@@ -17,7 +17,7 @@
  ?>
 <?php $this->beginContent('//patient/event_container')?>
 
-	<?php echo CHtml::form(array('Default/requestDeletion/'.$this->event->id), 'post', array('id' => 'deleteForm'))?>	<div id="delete_event">
+	<?php echo CHtml::form(array('Default/requestDeletion/'.$this->event->id), 'post', array('id' => 'deleteForm'))?>	<div id="event-delete">
 		<h3>Request event deletion</h3>
 		<div class="alert-box issue with-icon">
 			<strong>This will send a request to delete the event to an admin user.</strong>
@@ -30,10 +30,10 @@
 		<p><strong>Are you sure you want to proceed?</strong></p>
     
 		<?php echo CHtml::hiddenField('event_id', $this->event->id)?>
-        <button type="submit" class="warning" id="et_deleteevent" name="et_deleteevent">
+        <button type="submit" class="button small red" id="et_deleteevent" name="et_deleteevent">
 			Request deletion
 		</button>
-		<button type="submit" class="secondary" id="et_canceldelete" name="et_canceldelete">
+		<button type="submit" class="button small green" id="et_canceldelete" name="et_canceldelete">
 			Cancel
 		</button>
 		<?php echo CHtml::endForm()?>	</div>

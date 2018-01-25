@@ -22,7 +22,7 @@ return array(
                 'module' => 'OphCoMessaging',
                 // default action is the 'renderDashboard' if 'actions' array is  not set
                 'actions' => array(
-                    'getInboxMessages',
+                    'getMessages',
                  ),
                 'position' => 5,
             ),
