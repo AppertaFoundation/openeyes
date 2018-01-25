@@ -1568,10 +1568,8 @@ class BaseEventTypeController extends BaseModuleController
                     ));
             $widget->form = $view_data['form'];
             $this->renderPartial('//elements/widget_element', array('widget' => $widget),$return, $processOutput);
-            Yii::log("Widgets: ".var_export($element->widgetClass, true));
         } else {
             $this->renderPartial($this->getElementViewPathAlias($element).$view, $view_data, $return, $processOutput);
-            Yii::log("View path name: ". $this->getElementViewPathAlias($element).$view);
         }
         ($use_container_view) && $this->endContent();
     }
