@@ -17,13 +17,13 @@
  */
 ?>
 <section
-	class=" element full priority
-<!--	--><?php //if (@$child) { echo 'tile'; } else { echo 'full priority';} ?><!--  -->
-	view-<?php echo CHtml::modelName($element->elementType->class_name)?>"
-	data-element-type-id="<?php echo $element->elementType->id?>"
-	data-element-type-class="<?php echo $element->elementType->class_name?>"
-	data-element-type-name="<?php echo $element->elementType->name?>"
-	data-element-display-order="<?php echo $element->elementType->display_order?>">
+	class=" element
+	<?php
+  if ($element->elementType->name=='Medications'||$element->elementType->name=='Risks'){
+    echo 'full';
+  }
+  elseif (@$child) {  echo 'tile'; } else { echo 'full priority';} ?>
+	view-<?php echo $element->elementType->name?>">
 	<?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
 		<header class=" element-header">
 			<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
@@ -33,14 +33,33 @@
 </section>
 
 <?php $child_elements = $this->getChildElements($element->getElementType());
-  for ($i=0; $i<sizeof($child_elements); $i++) {
-//      if ($i % 3 == 0) {
-          ?>
-        <div class="flex-layout flex-left flex-stretch">
-<!--      --><?php //}
-  $this->renderChildOpenElements($child_elements[$i], 'view', @$form, @$data);
-//      if ($i % 3 == 2 || $i==sizeof($child_elements)-1) {
-//          ?>
-        </div>
-<!--      --><?php //}
-  }?>
+      $new_elements = array();
+      if (sizeof($child_elements)!=0) {
+        foreach ($child_elements as $child_element) {
+        if ($child_element->elementType->name == 'Medications') {
+            $med_element = $child_element;
+        }
+        elseif ($child_element->elementType->name == 'Risks') {
+            $risk_element = $child_element;
+        }
+        else{
+          array_push($new_elements,$child_element);
+        }
+    }
+        for ($i=0; $i<sizeof($new_elements); $i++) {
+          if ($i %3== 0) { ?>
+            <div class="flex-layout flex-left flex-stretch">
+          <?php }
+          $this->renderChildOpenElements($new_elements[$i], 'view', @$form, @$data);
+          if ($i %3 == 2 || $i == sizeof($new_elements)-1) {
+              ?></div>
+          <?php }
+        }
+        if (isset($med_element)) {
+          $this->renderChildOpenElements($med_element, 'view', @$form, @$data);
+        }
+        if (isset($risk_element)) {
+          $this->renderChildOpenElements($risk_element, 'view', @$form, @$data);
+        }
+}
+  ?>

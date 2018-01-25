@@ -353,6 +353,28 @@ class HistoryMedicationsEntry extends \BaseElement
         return implode(' ', $res);
     }
 
+    public function getStartDateDisplay(){
+        $res = array();
+        if ($this->start_date) {
+            $res[] = \Helper::formatFuzzyDate($this->start_date);
+        }
+        return implode(' ', $res);
+    }
+    public function getStopDateDisplay(){
+        $res = array();
+        if ($this->end_date) {
+            $res[] = \Helper::formatFuzzyDate($this->end_date);
+        }
+        return implode(' ', $res);
+    }
+
+    public function getStopReasonDisplay(){
+        $res = array();
+        if ($this->stop_reason) {
+            $res[] = "{$this->stop_reason}";
+        }
+        return implode(' ', $res);
+    }
     /**
      * Assumes that all route options indicate laterality.
      *

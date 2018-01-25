@@ -27,15 +27,9 @@
       <div class="cols-10">
         <div id="js-listview-meds-current-pro" style="display:none;">
             <?php if ($element->currentOrderedEntries) { ?>
-            <ul class="dslash-listt">
+            <ul class="dslash-list">
                 <?php foreach ($element->currentOrderedEntries as $entry) { ?>
-                  <li><span class="simple"><?= $entry->getMedicationDisplay() ?></span>
-                      <span class="detail" style="display: none;">
-                        <strong><?= $entry->getMedicationDisplay() ?></strong>
-                          <?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?>
-                          <?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?>
-                      </span>
-                  </li>
+                  <li><?= $entry->getMedicationDisplay() ?></li>
                 <?php } ?>
             </ul>
             <?php } else { ?>
@@ -55,7 +49,7 @@
                     <tr>
                       <td><?= $entry->getMedicationDisplay() ?></td>
                       <td> <?= $entry->getAdministrationDisplay() ?  $entry->getAdministrationDisplay() : ''?></td>
-                      <td class="nowrap"><i class="oe-i start small pad"></i><?= $entry->getDatesDisplay() ? $entry->getDatesDisplay() : ''?></td>
+                      <td class="nowrap"><i class="oe-i start small pad"></i><?= $entry->getStartDateDisplay() ? $entry->getStartDateDisplay() : ''?></td>
                       <td></td>
                       <td></td>
                     </tr>
@@ -78,15 +72,7 @@
             <div class="js-listview-meds-stopped-pro" style="display: none;">
                 <ul class="dslash-list">
                     <?php foreach ($element->stoppedOrderedEntries as $entry) { ?>
-                        <li>
-                          <span class="simple"><?= $entry->getMedicationDisplay() ?></span>
-                            <span class="detail" style="display: none;">
-                              <strong><?= $entry->getMedicationDisplay() ?></strong>
-                                <?= $entry->getAdministrationDisplay() ?  $entry->getAdministrationDisplay() : ''?>
-                                <?= $entry->getDatesDisplay() ? $entry->getDatesDisplay() : ''?>
-                            </span>
-                          <i class="oe-i triangle small pad"></i>
-                        </li>
+                        <li><?= $entry->getMedicationDisplay() ?><i class="oe-i triangle small pad"></i></li>
                     <?php } ?>
                 </ul>
             </div>
@@ -102,9 +88,9 @@
                     <tr>
                       <td><i class="oe-i stop small pad"></i><?= $entry->getMedicationDisplay() ?></td>
                       <td> <?= $entry->getAdministrationDisplay() ?  $entry->getAdministrationDisplay() : ''?></td>
-                      <td class="nowrap"><i class="oe-i start small pad"></i><?= $entry->getDatesDisplay() ? $entry->getDatesDisplay() : ''?></td>
-                      <td></td>
-                      <td></td>
+                      <td class="nowrap"><i class="oe-i start small pad"></i><?= $entry->getStartDateDisplay() ? $entry->getStartDateDisplay() : ''?></td>
+                      <td class="nowrap"><i class="oe-i stop small pad"></i><?= $entry->getStopDateDisplay() ? $entry->getStopDateDisplay() : ''?></td>
+                      <td><?= $entry->getStopReasonDisplay() ? $entry->getStopReasonDisplay() : ''?></td>
                     </tr>
                   <?php } ?>
               </tbody>

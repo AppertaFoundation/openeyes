@@ -353,7 +353,6 @@ class BaseEventTypeController extends BaseModuleController
                 }
             }
         }
-
         return $open_child_elements;
     }
 
