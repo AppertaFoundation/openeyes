@@ -18,43 +18,104 @@
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <?php $el_id =  CHtml::modelName($element) . '_element'; ?>
 
-<div class="element-data" id="<?=$el_id?>">
-  <div class="row current-kind">
-    <div class="large-2 column">
-      <label style="white-space: nowrap;">Current:
-          <?php if ($element->stoppedOrderedEntries) { ?><a href="#" class="kind-toggle show" data-kind="stopped" <?php if (!$element->currentOrderedEntries) { ?>style="display: none;"<?php } ?>><i class="fa fa-icon fa-history" aria-hidden="true"></i></a><?php } ?></label>
-    </div>
-    <div class="large-10 column end">
-        <div class="data-value current">
+<div class="element-data full-width" id="<?=$el_id?>">
+  <div class="data-row">
+    <div class="flex-layout flex-top">
+      <div class="cols-1">Current &nbsp;
+        <i class="oe-i history medium pad" id="js-stopped-meds-btn"></i>
+      </div>
+      <div class="cols-10">
+        <div id="js-listview-meds-current-pro" style="display:none;">
             <?php if ($element->currentOrderedEntries) { ?>
-            <ul class="comma-list">
+            <ul class="dslash-listt">
                 <?php foreach ($element->currentOrderedEntries as $entry) { ?>
-                  <li><span class="detail" style="display: inline;"><strong><?= $entry->getMedicationDisplay()  ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
+                  <li><span class="simple"><?= $entry->getMedicationDisplay() ?></span>
+                      <span class="detail" style="display: none;">
+                        <strong><?= $entry->getMedicationDisplay() ?></strong>
+                          <?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?>
+                          <?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?>
+                      </span>
+                  </li>
                 <?php } ?>
             </ul>
             <?php } else { ?>
                 No current medications.
             <?php } ?>
         </div>
-    </div>
-  </div>
-    <div class="row stopped-kind" <?php if ($element->currentOrderedEntries) { ?>style="display: none;"<?php } ?>>
-        <div class="large-2 column">
-            <label style="white-space: nowrap;">Stopped:
-                <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a>
-            </label>
+        <div class id="js-listview-meds-current-full" style>
+          <table>
+            <colgroup>
+              <col class="cols-4">
+              <col class="cols-3">
+            </colgroup>
+            <tbody>
+              <?php if ($element->currentOrderedEntries) {
+                  foreach ($element->currentOrderedEntries as $entry) {
+                    ?>
+                    <tr>
+                      <td><?= $entry->getMedicationDisplay() ?></td>
+                      <td> <?= $entry->getAdministrationDisplay() ?  $entry->getAdministrationDisplay() : ''?></td>
+                      <td class="nowrap"><i class="oe-i start small pad"></i><?= $entry->getDatesDisplay() ? $entry->getDatesDisplay() : ''?></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+              <?php }
+              } ?>
+            </tbody>
+          </table>
         </div>
-        <div class="large-10 column end">
-            <div class="data-value stopped">
-                <ul class="comma-list">
+    </div>
+      <i class="oe-i small pad js-listview-expand-btn collapse" data-list="meds-current"></i>
+  </div>
+    <!-- flex-layout -->
+    <div class="divider"></div>
+    <div class="flex-layout flex-top" id="js-meds-stopped">
+        <div class="cols-1"> Stopped
+<!--                --><?php //if ($element->stoppedOrderedEntries) { ?><!--<a href="#" class="detail-toggle" data-kind="stopped"><i class="fa fa-icon fa-expand" aria-hidden="true"></i></a>--><?php //} ?>
+<!--                <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a>-->
+        </div>
+        <div class="cols-10">
+            <div class="js-listview-meds-stopped-pro" style="display: none;">
+                <ul class="dslash-list">
                     <?php foreach ($element->stoppedOrderedEntries as $entry) { ?>
-                        <li><span class="detail" style="display: inline;"><strong><?= $entry->getMedicationDisplay() ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
+                        <li>
+                          <span class="simple"><?= $entry->getMedicationDisplay() ?></span>
+                            <span class="detail" style="display: none;">
+                              <strong><?= $entry->getMedicationDisplay() ?></strong>
+                                <?= $entry->getAdministrationDisplay() ?  $entry->getAdministrationDisplay() : ''?>
+                                <?= $entry->getDatesDisplay() ? $entry->getDatesDisplay() : ''?>
+                            </span>
+                          <i class="oe-i triangle small pad"></i>
+                        </li>
                     <?php } ?>
                 </ul>
             </div>
+          <div class id="js-listview-meds-stopped-full" style>
+            <table>
+              <colgroup>
+                <col class="cols-4">
+                <col class="cols-3">
+              </colgroup>
+              <tbody>
+              <?php foreach ($element->stoppedOrderedEntries as $entry) {
+                      ?>
+                    <tr>
+                      <td><i class="oe-i stop small pad"></i><?= $entry->getMedicationDisplay() ?></td>
+                      <td> <?= $entry->getAdministrationDisplay() ?  $entry->getAdministrationDisplay() : ''?></td>
+                      <td class="nowrap"><i class="oe-i start small pad"></i><?= $entry->getDatesDisplay() ? $entry->getDatesDisplay() : ''?></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  <?php } ?>
+              </tbody>
+            </table>
+          </div>
         </div>
+      <i class="oe-i small pad js-listview-expand-btn collapse" data-list="meds-stopped"></i>
     </div>
+    <!-- flex-layout -->
 </div>
+  <!-- data-row -->
 <script type="text/javascript">
   $(document).ready(function() {
     new OpenEyes.OphCiExamination.HistoryMedicationsViewController({

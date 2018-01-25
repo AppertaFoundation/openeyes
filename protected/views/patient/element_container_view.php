@@ -17,7 +17,9 @@
  */
 ?>
 <section
-	class=" element <?php if (@$child) { echo 'tile'; } else { echo 'full priority';} ?>  view-<?php echo CHtml::modelName($element->elementType->class_name)?>"
+	class=" element full priority
+<!--	--><?php //if (@$child) { echo 'tile'; } else { echo 'full priority';} ?><!--  -->
+	view-<?php echo CHtml::modelName($element->elementType->class_name)?>"
 	data-element-type-id="<?php echo $element->elementType->id?>"
 	data-element-type-class="<?php echo $element->elementType->class_name?>"
 	data-element-type-name="<?php echo $element->elementType->name?>"
@@ -32,13 +34,13 @@
 
 <?php $child_elements = $this->getChildElements($element->getElementType());
   for ($i=0; $i<sizeof($child_elements); $i++) {
-      if ($i % 3 == 0) {
+//      if ($i % 3 == 0) {
           ?>
         <div class="flex-layout flex-left flex-stretch">
-      <?php }
+<!--      --><?php //}
   $this->renderChildOpenElements($child_elements[$i], 'view', @$form, @$data);
-      if ($i % 3 == 2 || $i==sizeof($child_elements)-1) {
-          ?>
+//      if ($i % 3 == 2 || $i==sizeof($child_elements)-1) {
+//          ?>
         </div>
-      <?php }
+<!--      --><?php //}
   }?>
