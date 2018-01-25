@@ -149,6 +149,6 @@ class PastSurgery extends \BaseEventTypeElement
      */
     public function __toString()
     {
-        return implode(' // ', $this->operations);
+        return implode(' <br> ', $this->operations);
     }
 }

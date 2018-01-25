@@ -230,6 +230,6 @@ class SocialHistory extends \BaseEventTypeElement
                 $res[] = $this->getAttributeLabel($id) . ': ' . $this->$source;
             }
         }
-        return implode(' // ', $res);
+        return implode(' <br> ', $res);
     }
 }

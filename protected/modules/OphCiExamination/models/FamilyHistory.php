@@ -180,7 +180,7 @@ class FamilyHistory extends \BaseEventTypeElement
         if ($this->no_family_history_date) {
             return 'Patient has no known family history';
         } else {
-            return implode(' // ', $this->entries);
+            return implode(' <br> ', $this->entries);
         }
     }
 }

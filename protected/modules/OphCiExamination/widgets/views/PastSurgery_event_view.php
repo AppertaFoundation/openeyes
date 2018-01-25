@@ -18,9 +18,11 @@ $widget = $this;
 ?>
 
 <div class="element-data">
-    <div class="data-value"><?=
-        implode(' // ', array_map(function($op) use ($widget) {
+    <div class="data-row">
+        <div class="data-value"><?=
+        implode(' <br> ', array_map(function($op) use ($widget) {
             return array_key_exists('object', $op) ? (string) $op['object'] : $widget->formatExternalOperation($op);
         }, $operations))
-    ?></div>
+            ?></div>
+    </div>
 </div>

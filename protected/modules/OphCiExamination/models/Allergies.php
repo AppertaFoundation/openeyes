@@ -199,7 +199,7 @@ class Allergies extends \BaseEventTypeElement
                }
                return $a->has_allergy < $b->has_allergy ? 1 : -1;
             });
-            return implode(' // ', $entries);
+            return implode(' <br /> ', $entries);
         }
     }
 
