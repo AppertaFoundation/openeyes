@@ -1321,6 +1321,17 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
+     * Render the open child elements for the given parent element type;
+     * @param \BaseEventTypeElement $parent_element
+     * @param string $action
+     * @param null $form
+     * @param null $data
+     */
+    public function renderChildOpenElements($element, $action, $form = null, $data = null)
+    {
+            $this->renderElement($element, $action, $form, $data);
+    }
+    /**
      * Is this element required in the UI? (Prevents the user from being able
      * to remove the element.).
      *

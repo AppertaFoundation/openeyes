@@ -18,16 +18,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element title view-risks">
   <!--
 	*******  Element Data Type (VIEW): * Risks *
 	*******  CSS: "element-data view-risks" (+ any extra css)
 	*******  CSS hook used for element specific styling only where required
 	*******  Only minimum required DOM and CSS for UI is shown here
 	-->
-  <header class="element-header">
-    <h3 class="element-title">Risks</h3>
-  </header>
   <div class="element-data full-width">
     <div class="data-row">
       <?php if ($element->no_risks_date) { ?>
@@ -46,4 +42,3 @@
     </div>
   </div>
 
-</section>
