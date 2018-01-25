@@ -29,7 +29,13 @@
             <?php if ($element->currentOrderedEntries) { ?>
             <ul class="dslash-list">
                 <?php foreach ($element->currentOrderedEntries as $entry) { ?>
-                  <li><?= $entry->getMedicationDisplay() ?></li>
+                  <li><span class="simple"><?= $entry->getMedicationDisplay() ?></span>
+                      <span class="detail" style="display: none;">
+                        <strong><?= $entry->getMedicationDisplay() ?></strong>
+                          <?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?>
+                          <?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?>
+                      </span>
+                  </li>
                 <?php } ?>
             </ul>
             <?php } else { ?>
@@ -72,7 +78,15 @@
             <div class="js-listview-meds-stopped-pro" style="display: none;">
                 <ul class="dslash-list">
                     <?php foreach ($element->stoppedOrderedEntries as $entry) { ?>
-                        <li><?= $entry->getMedicationDisplay() ?><i class="oe-i triangle small pad"></i></li>
+                        <li>
+                          <span class="simple"><?= $entry->getMedicationDisplay() ?></span>
+                            <span class="detail" style="display: none;">
+                              <strong><?= $entry->getMedicationDisplay() ?></strong>
+                                <?= $entry->getAdministrationDisplay() ?  $entry->getAdministrationDisplay() : ''?>
+                                <?= $entry->getDatesDisplay() ? $entry->getDatesDisplay() : ''?>
+                            </span>
+                          <i class="oe-i triangle small pad"></i>
+                        </li>
                     <?php } ?>
                 </ul>
             </div>
