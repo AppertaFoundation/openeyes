@@ -15,22 +15,29 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+<<<<<<< HEAD
 $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-logo.svg';
 $commit = preg_replace('/[\s\t].*$/s', '', @file_get_contents(Yii::app()->basePath.'/../.git/FETCH_HEAD'));
+=======
+$logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue.svg') . '/oe-logo.svg');
+$commit = preg_replace('/[\s\t].*$/s', '', @file_get_contents(Yii::app()->basePath . '/../.git/FETCH_HEAD'));
+>>>>>>> v3: Changed references to the "classic/pro" themes to "light dark" instead
 $commitDate = exec("git show -s --format=%cD $commit");
 ?>
 <div class="oe-logo" id="js-openeyes-btn">
-    <svg viewBox="0 0 300.06 55.35" class="oe-openeyes">
-        <use xlink:href="<?= $logoUrl . '#openeyes-logo'; ?>"></use>
-    </svg>
+  <svg viewBox="0 0 300.06 55.35" class="oe-openeyes">
+    <use xlink:href="<?= $logoUrl . '#openeyes-logo'; ?>"></use>
+  </svg>
 </div>
 <div class="oe-product-info" id="js-openeyes-info">
   <h3>OpenEyes</h3>
   <p class="gap">Release Date: <?php echo Helper::convertDate2NHS($commitDate); ?></p>
   <p class="gap">
-    <a href="#activate-pro-theme" id="js-theme-pro" style="display: inline-block; margin-bottom: 4px;">PRO theme (recommended)</a>
+    <a href="#activate-dark-theme" id="js-theme-dark" style="display: inline-block; margin-bottom: 4px;">
+      Dark theme (recommended)
+    </a>
     <br/>
-    <a href="#activate-classic-theme" id="js-theme-classic">Classic theme (default)</a>
+    <a href="#activate-light-theme" id="js-theme-light">Light theme (default)</a>
   </p>
   <p class="gap">OpenEyes is released under the AGPL3 license and is free to download and use.</p>
   <p class="gap">
@@ -44,22 +51,22 @@ $commitDate = exec("git show -s --format=%cD $commit");
   </p>
 </div>
 <script>
-    (function(){
-        /* IDG demo only */
-        // use localStorage for CSS Themes Switching
-        var pro = document.getElementById("js-theme-pro");
-        var classic = document.getElementById("js-theme-classic");
+  (function () {
+    /* IDG demo only */
+    // use localStorage for CSS Themes Switching
+    var dark = document.getElementById("js-theme-dark");
+    var light = document.getElementById("js-theme-light");
 
-        pro.onclick = function( e ) {
-            e.preventDefault();
-            localStorage.setItem( "oeTheme",'pro' );
-            location.reload();
-        };
+    dark.onclick = function (e) {
+      e.preventDefault();
+      localStorage.setItem("oeTheme", 'dark');
+      location.reload();
+    };
 
-        classic.onclick = function( e ) {
-            e.preventDefault();
-            localStorage.setItem( "oeTheme",'classic' );
-            location.reload();
-        };
-    })();
+    light.onclick = function (e) {
+      e.preventDefault();
+      localStorage.setItem("oeTheme", 'light');
+      location.reload();
+    };
+  })();
 </script>
