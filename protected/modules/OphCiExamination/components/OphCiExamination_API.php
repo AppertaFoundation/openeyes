@@ -1441,9 +1441,11 @@ class OphCiExamination_API extends \BaseAPI
             $criteria->order = 'display_order';
 
             foreach (\ElementType::model()->findAll($criteria) as $element_type) {
+
                 $class = $element_type->class_name;
 
                 if ($element = $class::model()->find('event_id=?', array($event->id))) {
+
                     // need to check for element behaviour for eyedraw elements
                     if (method_exists($element, 'getLetter_string') || $element->asa('EyedrawElementBehavior')) {
                         $element_types[] = $element_type;
@@ -1451,6 +1453,7 @@ class OphCiExamination_API extends \BaseAPI
                 }
             }
         }
+
         return $element_types;
     }
 
