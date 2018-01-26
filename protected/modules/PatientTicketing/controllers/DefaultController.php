@@ -142,7 +142,7 @@ class DefaultController extends \BaseModuleController
             }
         }
 
-        $criteria->order = 't.created_date desc';
+        $criteria->order = 't.created_date asc';
 
         return array($criteria, $patient_filter);
     }

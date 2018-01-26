@@ -25,17 +25,6 @@ if (!Yii::app()->user->isGuest) {
         if (!$user->has_selected_firms && !$user->global_firm_rights && empty(Yii::app()->session['shown_reminder'])) {
             Yii::app()->session['shown_reminder'] = true;
             $this->widget('SiteAndFirmWidgetReminder');
-        } else {
-            if (!empty(Yii::app()->session['confirm_site_and_firm'])) {
-                ?>
-				<script type="text/javascript">
-					$(document).ready(function(){
-						$('.change-firm a').trigger('click');
-					});
-				</script>
-				<?php
-
-            }
         }
     }
     if (empty(Yii::app()->session['user'])) {

@@ -78,6 +78,7 @@ class QueueSet extends \BaseActiveRecordVersioned
             'default_queue_id' => 'Default queue',
             'filter_my_tickets' => 'Filter My Patients',
             'filter_closed_tickets' => 'Filter Completed Patients',
+            'filter_firm' => 'Filter ' . \Firm::contextLabel(),
         );
     }
 

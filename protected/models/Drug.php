@@ -73,7 +73,7 @@ class Drug extends BaseActiveRecordVersioned
         return array(
             array('name, tallman', 'required'),
             array('tallman, dose_unit, default_dose, type_id, form_id, default_duration_id, default_frequency_id, '
-                .'default_route_id, preservative_free, active, allergies, aliases, national_code, tags', 'safe'),
+                .'default_route_id, active, allergies, aliases, national_code, tags', 'safe'),
         );
     }
 

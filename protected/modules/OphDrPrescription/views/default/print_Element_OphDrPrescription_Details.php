@@ -20,7 +20,15 @@
 $copy = $data['copy'];
 ?>
 
-<h1>Prescription Form</h1>
+<h1>
+    <?php
+    if($this->attachment_print_title){
+        echo $this->attachment_print_title;
+    } else {
+        echo 'Prescription Form';
+    }
+    ?>
+</h1>
 
 <?php
 $firm = $element->event->episode->firm;
@@ -159,7 +167,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 <table class="borders pharmacy_checkboxes">
 	<tr>
 		<th>Used medication before?</th>
-		<td>Yes <span class="checkbox">❑</span> / No <span class="checkbox">❑</span></td>
+		<td>Yes <span class="checkbox">&#10065;</span> / No <span class="checkbox">❑</span></td>
 		<th>Allergies / reactions</th>
 		<td>Yes <span class="checkbox">❑</span> / No <span class="checkbox">❑</span></td>
 	</tr>
@@ -187,8 +195,10 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 		<tr>
 			<th>Site</th>
 			<td><?php echo  $site_theatre->site->name?></td>
+            <?php if($site_theatre->theatre){ ?>
 			<th>Theatre</th>
 			<td><?php echo  $site_theatre->theatre->name?></td>
+            <?php  } ?>
 		</tr>
 	</table>
 	<div class="spacer"></div>

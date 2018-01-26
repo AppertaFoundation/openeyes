@@ -101,7 +101,7 @@ class OphTrOperationbooking_Letter_Contact_Rule extends BaseTree
             'rule_order' => 'Rule order',
             'site_id' => 'Site',
             'subspecialty_id' => 'Subspecialty',
-            'firm_id' => 'Firm',
+            'firm_id' => Firm::contextLabel(),
             'theatre_id' => 'Theatre',
         );
     }

@@ -218,24 +218,49 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * Get the Intraocular Pressure reading for both eyes from the most recent Examination event.
-     * Limited to current data context by default.
-     * Will return the average for multiple readings on either eye.
-     * Returns nothing if the latest Examination does not contain IOP.
+     * Returns the most recent Element_OphCiExamination_IntraocularPressure
      *
      * @param Patient $patient
-     * @param boolean $use_context - defaults to false
-     * @return string
+     * @param bool $use_context
+     * @param string $after - time limit, default to -3 weeks
      */
-    public function getLetterIOPReadingBoth(\Patient $patient, $use_context = false)
+    private function getIntraocularPressureElement(\Patient $patient, $use_context = false, $after = '-3 weeks')
     {
-        if ($iop = $this->getElementFromLatestVisibleEvent(
+        $after_date = date('Y-m-d 00:00:00', strtotime($after));
+        $criteria = new \CDbCriteria();
+        $criteria->compare('event.event_date', '>='.$after_date);
+        $criteria->limit = 1;
+
+
+        $iop = $this->getElements(
             'models\Element_OphCiExamination_IntraocularPressure',
             $patient,
-            $use_context)
-        ) {
-            return $iop->getLetter_reading('right') . ' on the right, and ' . $iop->getLetter_reading('left') . ' on the left';
+            $use_context,
+            null,
+            $criteria);
+
+        return isset($iop[0]) ? $iop[0] : null;
+
+
+    }
+
+    /**
+     * Get the most recent Intraocular Pressure reading for both eyes from the Examination event within the last 3 weeks
+     * Limited to current data context by default.
+     * Will return the average for multiple readings on either eye.
+     * @param Patient $patient
+     * @param boolean $use_context - defaults to false
+     * @return string|null
+     */
+    public function getLetterIOPReadingBothLast3weeks(\Patient $patient, $use_context = false)
+    {
+        $iop = $this->getIntraocularPressureElement($patient, false, '-3 weeks');
+        if($iop){
+            return $iop->getLetter_reading('right') . ' on the right, and ' . $iop->getLetter_reading('left') . ' on the left' .
+                   ' (recorded on ' . \Helper::convertMySQL2NHS($iop->event->event_date) . ')';
         }
+
+        return null;
     }
 
     /**
@@ -248,36 +273,33 @@ class OphCiExamination_API extends \BaseAPI
      * @param boolean $use_context - defaults to false
      * @return string
      */
-    public function getLetterIOPReadingBothFirst(\Patient $patient, $use_context = false)
+    public function getLetterIOPReadingBothFirstLast3weeks(\Patient $patient, $use_context = false)
     {
-        if ($iop = $this->getElementFromLatestVisibleEvent(
-            'models\Element_OphCiExamination_IntraocularPressure',
-            $patient,
-            $use_context)
-        ) {
-            return $iop->getLetter_reading_first('right') . ' on the right, and ' . $iop->getLetter_reading_first('left') . ' on the left';
+        $iop = $this->getIntraocularPressureElement($patient, false, '-3 weeks');
+
+        if ($iop) {
+            return $iop->getLetter_reading_first('right') . ' on the right, and ' . $iop->getLetter_reading_first('left') . ' on the left' .
+                   ' (recorded on ' . \Helper::convertMySQL2NHS($iop->event->event_date) . ')';
         }
     }
 
     /**
-     * Get the Intraocular Pressure reading for the left eye from the most recent Examination event.
+     * Get the most recent Intraocular Pressure reading for the left eyes from the Examination event within the last 3 weeks
      * Limited to current data context by default.
      * Will return the average for multiple readings.
-     * Returns nothing if the latest Examination does not contain IOP.
+     * Returns nothing if the Examination from the last 3 weeks does not contain IOP.
      *
      * @param \Patient $patient
      * @param boolean $use_context - defaults to false
      * @return mixed
      */
-    public function getLetterIOPReadingLeft(\Patient $patient, $use_context = false)
+    public function getLetterIOPReadingLeftLast3weeks(\Patient $patient, $use_context = false)
     {
-        if ($iop = $this->getElementFromLatestVisibleEvent(
-            'models\Element_OphCiExamination_IntraocularPressure',
-            $patient,
-            $use_context)
-        ) {
-            return $iop->getLetter_reading('left');
+        $iop = $this->getIntraocularPressureElement($patient, false, '-3 weeks');
+        if($iop){
+            return $iop->getLetter_reading('left') . ' (recorded on ' . \Helper::convertMySQL2NHS($iop->event->event_date) . ')';
         }
+        return null;
 
     }
 
@@ -291,15 +313,15 @@ class OphCiExamination_API extends \BaseAPI
      * @param boolean $use_context - defaults to false
      * @return mixed
      */
-    public function getLetterIOPReadingRight(\Patient $patient, $use_context = false)
+    public function getLetterIOPReadingRightLast3weeks(\Patient $patient, $use_context = false)
     {
-        if ($iop = $this->getElementFromLatestVisibleEvent(
-            'models\Element_OphCiExamination_IntraocularPressure',
-            $patient,
-            $use_context)
-        ) {
-            return $iop->getLetter_reading('right');
+        $iop = $this->getIntraocularPressureElement($patient, false, '-3 weeks');
+
+        if($iop){
+            return $iop->getLetter_reading('right') .
+            ' (recorded on ' . \Helper::convertMySQL2NHS($iop->event->event_date) . ')';
         }
+        return null;
     }
 
     /**
@@ -312,13 +334,11 @@ class OphCiExamination_API extends \BaseAPI
      * @param boolean $use_context - defaults to false
      * @return string|null
      */
-    public function getLetterIOPReadingAbbr(\Patient $patient, $use_context = false)
+    public function getLetterIOPReadingAbbrLast3weeks(\Patient $patient, $use_context = false)
     {
-        if ($iop = $this->getElementFromLatestVisibleEvent(
-            'models\Element_OphCiExamination_IntraocularPressure',
-            $patient,
-            $use_context)
-        ) {
+        $iop = $this->getIntraocularPressureElement($patient, false, '-3 weeks');
+
+        if ($iop ) {
             $readings = array();
             if (($reading = $iop->getReading('right'))) {
                 $readings[] = "r:{$reading}" . ($iop->isReadingAverage('right') ? ' (avg)' : '');
@@ -327,8 +347,10 @@ class OphCiExamination_API extends \BaseAPI
                 $readings[] = "l:{$reading}" . ($iop->isReadingAverage('left') ? ' (avg)' : '');
             }
 
-            return implode(', ', $readings);
+            return implode(', ', $readings) . ' (recorded on ' . \Helper::convertMySQL2NHS($iop->event->event_date) . ')';
         }
+
+        return null;
     }
 
     /**
@@ -417,18 +439,20 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * Get the Intraocular Pressure reading for the principal eye from the most recent Examination event.
-     * Will return the average for multiple readings.
-     * Returns nothing if the latest Examination does not contain IOP.
+     * Get the Intraocular Pressure reading for the principal eye from the Examination event within the last 3 weeks.
+     * Returns nothing if the Examination withing last 3 weeks does not contain IOP.
      *
      * @param \Patient $patient
      * @param boolean $use_context - defaults to false
      * @return mixed
      * @throws \CException
      */
-    public function getLetterIOPReadingPrincipal(\Patient $patient, $use_context = false)
+    public function getLetterIOPReadingPrincipalLast3weeks(\Patient $patient, $use_context = false)
     {
-        return $this->getMethodForPrincipalEye('getLetterIOPReading', $patient, $use_context);
+        $principal_eye = $this->getPrincipalEye($patient, true);
+        $method = "getLetterIOPReading{$principal_eye}Last3weeks";
+
+        return $this->{$method}($patient, $use_context);
     }
 
     /**
@@ -1417,9 +1441,11 @@ class OphCiExamination_API extends \BaseAPI
             $criteria->order = 'display_order';
 
             foreach (\ElementType::model()->findAll($criteria) as $element_type) {
+
                 $class = $element_type->class_name;
 
                 if ($element = $class::model()->find('event_id=?', array($event->id))) {
+
                     // need to check for element behaviour for eyedraw elements
                     if (method_exists($element, 'getLetter_string') || $element->asa('EyedrawElementBehavior')) {
                         $element_types[] = $element_type;
@@ -1427,6 +1453,7 @@ class OphCiExamination_API extends \BaseAPI
                 }
             }
         }
+
         return $element_types;
     }
 
@@ -2020,13 +2047,11 @@ class OphCiExamination_API extends \BaseAPI
      * @param $patient
      * @param $use_context
      */
-    public function getIOPReadingLeftNoUnits($patient, $use_context = false)
+    public function getLetterIOPReadingLeftNoUnitsLast3weeks($patient, $use_context = false)
     {
-        if ($iop = $this->getElementFromLatestVisibleEvent(
-            'models\Element_OphCiExamination_IntraocularPressure',
-            $patient,
-            $use_context)
-        ){
+        $iop = $this->getIntraocularPressureElement($patient, false, '-3 weeks');
+
+        if ($iop){
             if ($reading = $iop->getReading('left')) {
                 return $reading;
             }
@@ -2039,13 +2064,11 @@ class OphCiExamination_API extends \BaseAPI
      * @param $patient
      * @param $use_context
      */
-    public function getIOPReadingRightNoUnits($patient, $use_context = false)
+    public function getLetterIOPReadingRightNoUnitsLast3weeks($patient, $use_context = false)
     {
-        if ($iop = $this->getElementFromLatestVisibleEvent(
-            'models\Element_OphCiExamination_IntraocularPressure',
-            $patient,
-            $use_context)
-        ){
+        $iop = $this->getIntraocularPressureElement($patient, false, '-3 weeks');
+
+        if ($iop){
             if ($reading = $iop->getReading('right')) {
                 return $reading;
             }

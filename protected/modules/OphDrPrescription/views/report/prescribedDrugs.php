@@ -202,6 +202,6 @@
 
    
 
-    <div class="reportSummary report curvybox white blueborder" style="display: none;">
+    <div class="reportSummary report curvybox white blueborder" style="display: none; overflow: auto">
     </div>
 </div>

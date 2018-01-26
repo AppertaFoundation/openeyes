@@ -62,6 +62,8 @@ function updateCorrespondence(macro_id)
                 $('.internal-referrer-wrapper').slideUp();
                 resetInternalReferralFields();
 
+				$('#attachments_content_container').html(data.associated_content);
+
             }
         });
     }
@@ -254,19 +256,70 @@ $(document).ready(function() {
 		}
 	});
 
-	handleButton($('#et_savedraft'),function() {
-		$('#ElementLetter_draft').val(1);
-	});
+    $('#et_save').click(function(e){
+        e.preventDefault();
+        var attachment_check = checkAttachmentFileExist( 0 );
 
-	handleButton($('#et_saveprint'),function() {
-		$('#ElementLetter_draft').val(0);
-	});
-        
-	handleButton($('#et_save'),function() {
-		$('#ElementLetter_draft').val(0);
-	});
+        var event_button = $(this);
+        var event_form = event_button.attr('form');
 
-	handleButton($('#et_cancel'),function() {
+        if(attachment_check == 1){
+            disableButtons();
+            $('#ElementLetter_draft').val(0);
+            $('#'+event_form ).submit();
+		} else {
+            $(document).ajaxStop(function() {
+                disableButtons();
+                $('#ElementLetter_draft').val(0);
+                $('#'+event_form ).submit();
+            });
+		}
+    });
+
+    $('#et_saveprint').click(function(e){
+        e.preventDefault();
+        var attachment_check = checkAttachmentFileExist( 0 );
+
+        var event_button = $(this);
+        var event_form = event_button.attr('form');
+        $('#'+event_form ).append('<input type="hidden" name="saveprint" value="1" /> ');
+
+        if(attachment_check == 1){
+            disableButtons();
+            $('#ElementLetter_draft').val(0);
+
+            $('#'+event_form ).submit();
+        } else {
+            $(document).ajaxStop(function() {
+                disableButtons();
+                $('#ElementLetter_draft').val(0);
+                $('#'+event_form ).submit();
+            });
+        }
+    });
+
+    $('#et_savedraft').click(function(e){
+        e.preventDefault();
+        var attachment_check = checkAttachmentFileExist( 0 );
+
+        var event_button = $(this);
+        var event_form = event_button.attr('form');
+
+        if(attachment_check == 1){
+            disableButtons();
+            $('#ElementLetter_draft').val(1);
+            $('#'+event_form ).submit();
+        } else {
+            $(document).ajaxStop(function() {
+                disableButtons();
+                $('#ElementLetter_draft').val(1);
+                $('#'+event_form ).submit();
+            });
+        }
+
+    });
+
+    handleButton($('#et_cancel'),function() {
 		$('#dialog-confirm-cancel').dialog({
 			resizable: false,
 			//height: 140,
@@ -774,7 +827,107 @@ $(document).ready(function() {
         docman.setDeliveryMethods(0);
 	})
 
+	$('#attachments_content_container').on('click', 'button.remove', function(e) {
+		e.preventDefault();
+        $(this).closest('tr').remove();
+
+        var table = $('#correspondence_attachments_table');
+        var rows = table.find('tbody tr[id!="correspondence_attachments_table_last_row"]');
+        $last_row = $('#attachments_content_container').find('#correspondence_attachments_table_last_row');
+        if(rows.length == 0){
+            $last_row.attr('data-id', 0);
+		}
+	});
+
+	$('#attachments_content_container').on('change', 'select#attachment_events', function(e){
+        disableButtons();
+
+        $select = $(this);
+        if($select.val() > 0){
+            $.ajax({
+                'type': 'POST',
+                'url': baseUrl + '/OphCoCorrespondence/Default/getInitMethodDataById',
+                'data' :{YII_CSRF_TOKEN: YII_CSRF_TOKEN, id: $select.val() , 'patient_id': OE_patient_id},
+                'success': function(response) {
+                    if(response.success == 1){
+                    	$last_row = $('#attachments_content_container').find('#correspondence_attachments_table_last_row');
+
+                    	$content = $(response.content);
+                        $last_row.before($content);
+
+                        $data_id = parseInt($last_row.attr("data-id"));
+                        $content.attr('data-id', $data_id);
+                        $content.find('.attachments_event_id').attr('name', 'attachments_event_id[' + $data_id+ ']');
+                        $content.find('.attachments_display_title').attr('name', 'attachments_display_title[' + $data_id+ ']');
+
+                        $last_row.attr('data-id', $data_id + 1);
+
+                        $select.val('');
+                        enableButtons();
+                    }
+                }
+            });
+        }
+    });
 });
+
+function savePDFprint( module , event_id , $content, $data_id, title)
+{
+	if(typeof title == 'undefined'){
+		title = '';
+	}
+
+    disableButtons();
+    $.ajax({
+        'type': 'GET',
+        'url': baseUrl + '/'+module+'/Default/savePDFprint/' + event_id + '?ajax=1&auto_print=0&pdf_documents=1&attachment_print_title='+title,
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader('X-Requested-With', 'pdfprint');
+        },
+        'success': function(response) {
+            if(response.success == 1){
+                $hidden = '<input type="hidden" name="file_id[' + $data_id+ ']" value="'+response.file_id+'" />';
+                $content.prepend($hidden);
+            }
+        },
+		'complete': function(){
+            enableButtons();
+		}
+    });
+}
+
+
+var checkAttachmentFileExist = function( index ) {
+
+    var table = $('#correspondence_attachments_table');
+    var rows = table.find('tbody tr[id!="correspondence_attachments_table_last_row"]');
+
+    if (rows.length == index) {
+        return 1;
+	}
+
+	var row = $(rows[index]);
+    var attachments_event_id = row.find("input[name*='attachments_event_id']").val();
+    var data_id = parseInt(row.attr("data-id"));
+    var attachment_title = row.find(".attachments_display_title").val();
+
+	$.ajax({
+		'type': 'POST',
+		'cache': false,
+		'url': baseUrl + '/OphCoCorrespondence/Default/getInitMethodDataById',
+		'data' :{YII_CSRF_TOKEN: YII_CSRF_TOKEN, id: attachments_event_id , 'patient_id': OE_patient_id},
+		'success': function(response) {
+			if(response.success == 1){
+				savePDFprint( response.module ,attachments_event_id, row, data_id, attachment_title);
+			}
+		},
+		'complete': function() {
+			row.prepend('<input type="hidden" name="attachments_event_id[' + data_id + ']" value="' + attachments_event_id + '" />');
+			checkAttachmentFileExist(++index);
+		}
+	});
+}
+
 
 var et_oph_correspondence_body_cursor_position = 0;
 var re_field = null;

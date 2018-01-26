@@ -232,7 +232,7 @@ class PcrRisk
         $as['pxf_phako'] = (!is_null($storedValues->pxf)) ? $storedValues->pxf : 'NK';
         $as['pxe'] = null;
         $as['phakodonesis'] = null;
-        $as['pupil_size'] = (!is_null($storedValues->pupil_size)) ? $storedValues->pupil_size : 'Medium';
+        $as['pupil_size'] = (!is_null($storedValues->pupil_size)) ? $storedValues->pupil_size : 'Large';
         $as['brunescent_white_cataract'] = (!is_null($storedValues->brunescent_white_cataract)) ? $storedValues->brunescent_white_cataract : 'NK';
         $as['pxf_phako_nk'] = 0;
         $anteriorsegment = Yii::app()->db->createCommand()

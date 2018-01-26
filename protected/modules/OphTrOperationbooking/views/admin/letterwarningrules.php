@@ -40,7 +40,7 @@
 					<?php echo CHtml::dropDownList('lcr_subspecialty_id', '', CHtml::listData(Subspecialty::model()->findAllByCurrentSpecialty(), 'id', 'name'), array('empty' => '- Subspecialty -'))?>
 				</div>
 				<div class="large-2 column">
-					<?php echo CHtml::dropDownList('lcr_firm_id', '', array(), array('empty' => '- Firm -'))?>
+					<?php echo CHtml::dropDownList('lcr_firm_id', '', array(), array('empty' => '- ' . Firm::contextLabel() . ' -'))?>
 				</div>
 				<div class="large-2 column">
 					<?php echo CHtml::dropDownList('lcr_theatre_id', '', array(), array('empty' => '- Theatre -'))?>

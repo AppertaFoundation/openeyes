@@ -646,6 +646,15 @@ class OphCoCorrespondence_API extends BaseAPI
         return null;
     }
 
+    /**
+     * Returns the Optom portal URL
+     * @return string|null
+     */
+    public function getPortalUrl()
+    {
+        return isset(Yii::app()->params['portal']['frontend_url']) ? Yii::app()->params['portal']['frontend_url'] : null;
+    }
+
     /*
      * @param int $document_target_id
      * @param $type
@@ -673,5 +682,130 @@ class OphCoCorrespondence_API extends BaseAPI
                 }
             }
         }
+    }
+
+    /*
+     * Glaucoma Overall Management Plan from latest Examination
+     * @param $patient
+     * @return string
+     */
+    public function getGlaucomaManagement( \Patient $patient )
+    {
+        $result = '';
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
+
+        if ($el = $this->getMostRecentElementInEpisode($episode->id, $event_type->id,
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan')
+        ) {
+
+            $result .= 'Clinic Interval: '.$el->clinic_internal->name."\n";
+            $result .= 'Photo: '.$el->photo->name."\n";
+            $result .= 'OCT: '.$el->oct->name."\n";
+            $result .= 'Visual Fields: '.$el->hfa->name."\n";
+            $result .= 'Gonioscopy: '.$el->gonio->name."\n";
+            $result .= 'HRT: '.$el->hrt->name."\n";
+
+            if(!empty($el->comments)){
+                $result .= 'Glaucoma Management comments: '.$el->comments."\n";
+            }
+
+            $result .= "\n";
+            if(isset($el->right_target_iop->name)){
+                $result .= 'Target IOP Right Eye: '.$el->right_target_iop->name." mmHg\n";
+            }
+            if(isset($el->left_target_iop->name)){
+                $result .= 'Target IOP Left Eye: '.$el->left_target_iop->name." mmHg\n";
+            }
+
+
+
+        }
+        return $result;
+    }
+
+    public function getLastExaminationInSs( \Patient $patient )
+    {
+        $api = $this->yii->moduleAPI->get('OphCiExamination');
+        $event = $api->getLatestEvent($patient, true);
+
+        if (isset($event)) {
+            return json_encode( array(
+                'id' => $event->id,
+                'event_date' => Helper::convertDate2NHS($event->event_date),
+                'event_name' => $event->eventType->name
+            ));
+
+        }
+        return '';
+    }
+
+    public function getLastOpNoteInSs( \Patient $patient )
+    {
+        $api = $this->yii->moduleAPI->get('OphTrOperationnote');
+        $event = $api->getLatestEvent($patient, true);
+
+        if (isset($event)) {
+            return json_encode( array(
+                'id' => $event->id,
+                'event_date' => Helper::convertDate2NHS($event->event_date),
+                'event_name' => $event->eventType->name
+            ));
+
+        }
+        return '';
+    }
+
+    public function getLastEventInSs( \Patient $patient )
+    {
+
+    }
+
+    public function getLastInjectionInSs( \Patient $patient )
+    {
+        $api = $this->yii->moduleAPI->get('OphTrIntravitrealinjection');
+        $event = $api->getLatestEvent($patient, true);
+
+        if (isset($event)) {
+            return json_encode( array(
+                'id' => $event->id,
+                'event_date' => Helper::convertDate2NHS($event->event_date),
+                'event_name' => $event->eventType->name
+            ));
+
+        }
+        return '';
+    }
+
+    public function getLastLaserInSs( \Patient $patient )
+    {
+        $api = $this->yii->moduleAPI->get('OphTrLaser');
+        $event = $api->getLatestEvent($patient, true);
+
+        if (isset($event)) {
+            return json_encode( array(
+                'id' => $event->id,
+                'event_date' => Helper::convertDate2NHS($event->event_date),
+                'event_name' => $event->eventType->name
+            ));
+
+        }
+        return '';
+    }
+
+    public function getLastPrescriptionInSs( \Patient $patient )
+    {
+        $api = $this->yii->moduleAPI->get('OphDrPrescription');
+        $event = $api->getLatestEvent($patient, true);
+
+        if (isset($event)) {
+            return json_encode( array(
+                'id' => $event->id,
+                'event_date' => Helper::convertDate2NHS($event->event_date),
+                'event_name' => $event->eventType->name
+            ));
+
+        }
+        return '';
     }
 }

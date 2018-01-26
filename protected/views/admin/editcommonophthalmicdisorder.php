@@ -27,7 +27,7 @@
         <div class="row field-row">
             <div class="large-2 column"><label for="subspecialty_id">Subspecialty</label></div>
             <div class="large-5 column end">
-                <?php echo CHtml::dropDownList('subspecialty_id', (isset($_GET['subspecialty_id']) ? $_GET['subspecialty_id'] : null), CHtml::listData($subspecialty, 'id', 'name')); ?>
+                <?php echo CHtml::dropDownList('subspecialty_id', $subspecialty_id, CHtml::listData($subspecialty, 'id', 'name')); ?>
             </div>
         </div>
     </form>
@@ -189,6 +189,7 @@
 </div>
 
 <script>
+
     var $table = $('.generic-admin');
 
     function initialiseRow($row){
@@ -311,7 +312,7 @@
                 <span class="diagnosis-name"></span>
             </span>
                 <input class="diagnoses-search-autocomplete diagnoses-search-inputfield ui-autocomplete-input"
-                       data-saved-diagnoses="" type="text" name="CommonOphthalmicDisorder[0][disorder_id]" id="CommonOphthalmicDisorder_0_disorder_id" autocomplete="off">
+                       data-saved-diagnoses="" type="text" name="CommonOphthalmicDisorder[{{row_count}}][disorder_id]" id="CommonOphthalmicDisorder_{{row_count}}_disorder_id" autocomplete="off">
                 <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
                 <input type="hidden" name="CommonOphthalmicDisorder[{{row_count}}][disorder_id]" class="savedDiagnosis" value="">
         </td>

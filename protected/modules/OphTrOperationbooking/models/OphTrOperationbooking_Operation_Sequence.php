@@ -103,7 +103,7 @@ class OphTrOperationbooking_Operation_Sequence extends BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
-            'firm_id' => 'Firm',
+            'firm_id' => Firm::contextLabel(),
             'theatre_id' => 'Theatre',
             'start_date' => 'Start date',
             'end_date' => 'End date',

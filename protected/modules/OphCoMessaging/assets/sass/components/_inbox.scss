@@ -1,3 +1,12 @@
+.grid.message-table {
+  tr {
+    td {
+      &.message {
+        word-break: break-all;
+      }
+    }
+  }
+}
 #inbox-table {
   padding-top: 3px;
   padding-bottom: 3px;

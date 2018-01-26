@@ -631,7 +631,84 @@ class ElementLetter extends BaseEventTypeElement
             Yii::app()->user->setState('correspondece_element_letter_saved', true);
         }
 
+        if(Yii::app()->getController()->getAction()->id == 'create' || Yii::app()->getController()->getAction()->id == 'update') {
+            EventAssociatedContent::model()->deleteAll(
+                "`parent_event_id` = :parent_event_id",
+                array(':parent_event_id' => $this->event->id)
+            );
+        }
+
+        if(isset($_POST['attachments_event_id'])){
+
+            $attachments_last_event_id = Yii::app()->request->getPost('attachments_event_id');
+            $attachments_system_hidden = Yii::app()->request->getPost('attachments_system_hidden');
+            $attachments_id = Yii::app()->request->getPost('attachments_id');
+            $attachments_print_appended = Yii::app()->request->getPost('attachments_print_appended');
+            $attachments_short_code = Yii::app()->request->getPost('attachments_short_code');
+            $attachments_protected_file_id = Yii::app()->request->getPost('file_id');
+            $attachments_display_title = Yii::app()->request->getPost('attachments_display_title');
+
+            if( isset( $attachments_last_event_id )){
+                $order = 1;
+                foreach($attachments_last_event_id as $key => $last_event){
+
+                    $eventAssociatedContent = new EventAssociatedContent();
+                    $eventAssociatedContent->parent_event_id = $this->event->id;
+
+                    if(isset($attachments_id[$key])){
+                        $eventAssociatedContent->init_associated_content_id = $attachments_id[$key];
+                    }
+
+                    if(isset($attachments_system_hidden[$key])){
+                        $eventAssociatedContent->is_system_hidden  = $attachments_system_hidden[$key];
+                    } else {
+                        $eventAssociatedContent->is_system_hidden = 0;
+                    }
+
+                    if(isset($attachments_print_appended[$key])){
+                        $eventAssociatedContent->is_print_appended  = $attachments_print_appended[$key];
+                    } else {
+                        $eventAssociatedContent->is_print_appended = 0;
+                    }
+
+                    if(isset($attachments_short_code[$key])){
+                        $eventAssociatedContent->short_code  = $attachments_short_code[$key];
+                    } else {
+                        $eventAssociatedContent->short_code = $this->generateShortcodeByEventId( $attachments_last_event_id[$key] );
+                    }
+
+                    if(isset($attachments_protected_file_id[$key])){
+                        $eventAssociatedContent->associated_protected_file_id  = $attachments_protected_file_id[$key];
+                    } else {
+                        $eventAssociatedContent->associated_protected_file_id = null;
+                    }
+
+                    if(isset($attachments_display_title[$key])){
+                        $eventAssociatedContent->display_title  = $attachments_display_title[$key];
+                    } else {
+                        $eventAssociatedContent->display_title = null;
+                    }
+
+                    $eventAssociatedContent->association_storage  = 'EVENT';
+                    $eventAssociatedContent->associated_event_id  = $last_event;
+                    $eventAssociatedContent->display_order   = $order;
+
+                    $eventAssociatedContent->save();
+
+                    $order++;
+                }
+            }
+        }
+
         return parent::afterSave();
+    }
+
+    private function generateShortcodeByEventId( $event_id )
+    {
+        $event = Event::model()->findByPk( $event_id );
+        $name = strtoupper (str_replace(' ', '_',  $event->eventType->name));
+
+        return $name.'_'.$event->eventType->id;
     }
 
     public function getInfotext()
@@ -874,5 +951,83 @@ class ElementLetter extends BaseEventTypeElement
 
         return $list ? CHtml::listData($locations, 'id', 'site.short_name') : $locations;
 
+    }
+
+    public function getAllAttachments()
+    {
+        /*
+        * Attachments
+        */
+
+        $associated_content = EventAssociatedContent::model()
+            ->with('initAssociatedContent')
+            ->findAllByAttributes(
+                array('parent_event_id' => $this->event->id),
+                array('order' => 't.display_order asc')
+            );
+        $pdf_files = array();
+
+        if($associated_content){
+            foreach ($associated_content as $key => $ac) {
+                if ($ac->associated_protected_file_id) {
+                    $file = ProtectedFile::model()->findByPk($ac->associated_protected_file_id);
+                    $pdf_files[$key]['path'] = $file->getPath();
+                    $pdf_files[$key]['name'] = $file->name;
+                    $pdf_files[$key]['mime'] = $file->mimetype;
+                }
+            }
+        }
+        return $pdf_files;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getToAddress()
+    {
+        if($this->document_instance && $this->document_instance[0]->document_target) {
+
+            foreach ($this->document_instance as $instance) {
+                foreach ($instance->document_target as $target) {
+                    if($target->ToCc == 'To'){
+                        return $target->contact_name . "\n" . $target->address;
+                    }
+                }
+            }
+        }else
+        {
+            // for old legacy letters
+            return $this->address;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getCCString()
+    {
+        $ccString = "";
+
+        if($this->document_instance && $this->document_instance[0]->document_target) {
+
+            foreach ($this->document_instance as $instance) {
+                foreach ($instance->document_target as $target) {
+                    if($target->ToCc != 'To'){
+                        $contact_type = $target->contact_type != 'GP' ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                        $ccString .= "CC: " . $contact_type . ": " . $target->contact_name . ", " . $this->renderSourceAddress($target->address)."<br/>";
+                    }
+                }
+            }
+        }else
+        {
+            // for old legacy letters
+            foreach (explode("\n", trim($this->cc)) as $line) {
+                if (trim($line)) {
+                    $ccString .= "CC: " . str_replace(';', ',', $line)."<br/>";
+                }
+            }
+        }
+
+        return $ccString;
     }
 }

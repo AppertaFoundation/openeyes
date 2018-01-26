@@ -164,6 +164,7 @@ $config = array(
         //'worklist_ignore_date => 'Y-m-d',
         'portal' => array(
             'uri' => 'http://api.localhost:8000',
+            'frontend_url' => 'https://localhost:8000/', #url for the optom portal (read by patient shourtcode [pul])
             'endpoints' => array(
                 'auth' => '/oauth/access',
                 'examinations' => '/examinations/searches',

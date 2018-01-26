@@ -7,8 +7,8 @@ class m160525_092545_user extends CDbMigration
         $username = (array_key_exists('portal_user', Yii::app()->params)) ? Yii::app()->params['portal_user'] : 'portal_user';
         $this->insert('user', array(
             'username' => $username,
-            'first_name' => 'Portal',
-            'last_name' => 'User',
+            'first_name' => 'Community',
+            'last_name' => 'Portal',
             'email' => 'portal_user@openeyes.com',
             'active' => 1,
             'title' => 'Mr',
