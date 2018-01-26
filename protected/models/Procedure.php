@@ -232,8 +232,21 @@ class Procedure extends BaseActiveRecordVersioned
 
     public function validateOpNotes($attribute, $params)
     {
-        if (count($this->$attribute) > 1) {
-            $this->addError($attribute, 'Only one Operation Note element per Procedure');
+        $is_cataract = false;
+        $is_biometry = false;
+
+        $count = count($this->$attribute);
+        if ($count > 1) {
+
+            //At this moment, only Cataract and Biometry can be saved together
+            foreach($this->$attribute as $attr){
+                $is_cataract =  $attr->class_name == 'Element_OphTrOperationnote_Cataract' ? true : $is_cataract;
+                $is_biometry =  $attr->class_name == 'Element_OphTrOperationnote_Biometry' ? true : $is_biometry;
+            }
+
+            if($count != 2 || !$is_cataract || !$is_biometry){
+                $this->addError($attribute, 'Only one Operation Note element (or Cataract and Biometry) per Procedure');
+            }
         }
     }
 
