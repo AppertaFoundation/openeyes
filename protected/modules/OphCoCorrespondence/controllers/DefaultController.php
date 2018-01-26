@@ -474,7 +474,8 @@ class DefaultController extends BaseEventTypeController
                 foreach($print_outputs as $print_output){
                     $document_target = DocumentTarget::model()->findByPk($print_output->document_target_id);
                     $recipients[] = ($document_target->contact_name . "\n" . $document_target->address);
-                    //extra printout for note
+
+                    //extra printout for note when the main recipient is NOT GP
                     if($document_target->ToCc == 'To' && $document_target->contact_type != 'GP'){
                         if(Yii::app()->params['disable_print_notes_copy'] == 'off') {
                             $recipients[] = $document_target->contact_name . "\n" . $document_target->address;
@@ -575,12 +576,19 @@ class DefaultController extends BaseEventTypeController
 
         if (Yii::app()->request->getQuery('all', false)) {
             $this->pdf_print_suffix = 'all';
-            $this->pdf_print_documents = 2 + count($letter->getCcTargets());
         }
         if (Yii::app()->request->getQuery('OphCoCorrespondence_print_checked', false)) {
             $this->pdf_print_suffix = 'all';
-            $this->pdf_print_documents = count($print_outputs);
         }
+
+        /**
+         * In other modules pdf_print_documents used to let WKHtmlToPDF to know how many documents we have
+         * like, if we print a document that has 3 pages, 2 times (means 6 pages)
+         * we set the pdf_print_documents to 2 so the page number can be calculated correctly
+         * But here in Correspondence WKHtmlToPDF called separately for each recipients(then PDF_JavaScript merged them to one)
+         * therefore pdf_print_documents will be always 1
+         */
+        $this->pdf_print_documents = 1;
 
         if( $print_outputs ){
             foreach($print_outputs as $output){
@@ -590,7 +598,6 @@ class DefaultController extends BaseEventTypeController
         }
         // render 1 recipient's letter + attachments at once...
         // we need the letter as PDF
-
         $attachments = $letter->getAllAttachments();
         $recipients = $this->getRecipients($id);
 
