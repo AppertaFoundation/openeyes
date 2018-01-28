@@ -27,17 +27,46 @@
   <div class="element-data full-width">
     <div class="data-row">
       <?php if ($element->no_risks_date) { ?>
-        <div class="data-value">Patient has no known risks.</div>
+        <div class="data-value flex-layout flex-top">Patient has no known risks.</div>
       <?php } else { ?>
-          <?php if ($element->present) { ?>
-          <div class="data-value"><?= $element->getAttributeLabel('present') ?>:<?= $element->getEntriesDisplay('present') ?></div>
-          <?php } ?>
-          <?php if ($element->not_checked) { ?>
-          <div class="data-value"><?= $element->getAttributeLabel('not_checked') ?>:<?= $element->getEntriesDisplay('not_checked') ?></div>
-          <?php } ?>
-          <?php if ($element->not_present) { ?>
-          <div class="data-value">&nbsp; and &nbsp;<?= $element->getAttributeLabel('not_present') ?>:<?= $element->getEntriesDisplay('not_present') ?></div>
-          <?php } ?>
+          <div class="data-value flex-layout flex-top">
+            <div class="cols-11">
+            <div class="cols-11" id="js-list-view-risks-pro" style>
+              <ul class="dslash-list">
+                <li>YES: <?php if ($element->present) {  $element->getEntriesDisplay('present'); } ?></li>
+                <li>NO: <?php if ($element->not_checked) {  $element->getEntriesDisplay('not_checked'); } ?></li>
+                <li>Not checked: <?php if ($element->not_present) {  $element->getEntriesDisplay('not_present'); } ?></li>
+              </ul>
+            </div>
+            <div class="col-6" id="js-listview-risks-full" style="display: none;">
+            <table class="last-left">
+            <thead>
+              <tr>
+                <th class="cols-4">Present</th>
+                <th class="cols-4">Not Checked</th>
+                <th class="cols-4">Not Present</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><?php if ($element->present) { ?>
+                    <span class="large-text"><?= $element->getEntriesDisplay('present') ?></span>
+                    <?php } ?></td>
+                <td><?php if ($element->not_checked) { ?>
+                    <span class="large-text"><?= $element->getEntriesDisplay('not_checked') ?></span>
+                    <?php } ?></td>
+                <td> <?php if ($element->not_present) { ?>
+                    <span class="large-text"><?= $element->getEntriesDisplay('not_present') ?></span>
+                    <?php } ?></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+            </div>
+            <div>
+              <i class="oe-i small js-listview-expand-btn expand" data-list="risks"></i>
+            </div>
+          </div>
       <?php } ?>
     </div>
   </div>
