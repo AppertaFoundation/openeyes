@@ -26,7 +26,7 @@
     Sidebar._defaultOptions = {
         showHelpOnce: true,
         scrollTip: 'scroll down',
-        minimumHeight: 500
+        minimumHeight: 500 // this needs to match initial in-line style height
     };
 
     Sidebar.prototype.initialise = function()
