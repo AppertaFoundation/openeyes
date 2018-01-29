@@ -44,6 +44,14 @@
 		<?php echo $form->textField($user, 'email', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => (!Yii::app()->params['profile_user_can_edit'] || !Yii::app()->params['profile_user_show_menu'])));?>
 		<?php echo $form->textField($user, 'qualifications', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => (!Yii::app()->params['profile_user_can_edit'] || !Yii::app()->params['profile_user_show_menu'])));?>
 
+  <div class="row field-row">
+    <div class="large-2 column">
+      <label for="User_qualifications">Display Theme:</label>
+    </div>
+    <div class="large-5 column end">
+        <?php echo CHtml::dropDownList('display_theme', $display_theme, array(null => 'Default', 'light' => 'Light', 'dark' => 'Dark')); ?>
+  </div>
+
 		<?php if (Yii::app()->params['profile_user_can_edit']) {?>
 			<div class="row field-row">
 				<div class="large-5 large-offset-2 column">

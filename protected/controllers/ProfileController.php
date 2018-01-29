@@ -51,6 +51,9 @@ class ProfileController extends BaseController
         }
         $errors = array();
         $user = User::model()->findByPk(Yii::app()->user->id);
+        $display_theme_setting = SettingUser::model()->find('user_id = :user_id AND `key` = "display_theme"',
+            array('user_id' => $user->id));
+
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_edit']) {
                 foreach (array('title', 'first_name', 'last_name', 'email', 'qualifications') as $field) {
@@ -63,11 +66,26 @@ class ProfileController extends BaseController
                 } else {
                     Yii::app()->user->setFlash('success', 'Your profile has been updated.');
                 }
+
+                if ($_POST['display_theme']) {
+                    if ($display_theme_setting === null) {
+                        $display_theme_setting = new SettingUser();
+                        $display_theme_setting->user_id = $user->id;
+                        $display_theme_setting->key = 'display_theme';
+                    }
+                    $display_theme_setting->value = $_POST['display_theme'];
+                    $display_theme_setting->save();
+                } elseif ($display_theme_setting) {
+                    $display_theme_setting->delete();
+                    $display_theme_setting = null;
+                }
             }
         }
+
         $this->render('/profile/info', array(
             'user' => $user,
             'errors' => $errors,
+            'display_theme' => $display_theme_setting ? $display_theme_setting->value : null,
         ));
     }
 
