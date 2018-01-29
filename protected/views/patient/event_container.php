@@ -1,9 +1,8 @@
-
 <header class="event-header">
     <?php $this->renderPartial('//patient/event_tabs'); ?>
     <?php $this->renderIndexSearch(); ?>
     <?php $this->renderPartial('//patient/event_actions'); ?>
-</header>asdasd
+</header>
 
 <div class="row messages patient fixed">
     <?php $this->renderPartial('//patient/_patient_alerts') ?>
