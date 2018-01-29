@@ -18,10 +18,10 @@
 ?>
 <?php if (!$nowrapper) {?>
 	<div id="div_<?php echo CHtml::modelName($element)?>_<?php echo $field?>" class="row field-row"<?php if ($hidden) echo 'style="display: none"'; ?>>
-		<div class="cols-<?php echo $layoutColumns['label']?> column">
+		<div class="cols-<?php echo $layoutColumns['label']?>">
 			<label for="<?php echo CHtml::modelName($element)."_$field"?>"><?php if ($label) echo CHtml::encode($element->getAttributeLabel($field)).':'?></label>
 		</div>
-		<div class="cols-<?php echo $layoutColumns['field']?> column">
+		<div class="cols-<?php echo $layoutColumns['field']?>">
 	<?php }?>
 	<?php
     $attr = array(
@@ -36,7 +36,7 @@
         $attr['cols'] = $cols;
     }
     ?>
- 	<textarea
+ 	<textarea class="cols-<?php echo $layoutColumns['field']?>"
 			<?php echo CHtml::renderAttributes(array_merge($htmlOptions, $attr));?>><?php echo CHtml::encode($value)?></textarea>
 		<?php if (!$nowrapper) {?>
 			<?php if ($button) {?>
