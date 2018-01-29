@@ -322,16 +322,12 @@
         if (itemData.children && itemData.children.length) {
              var subList = $('<ul>').addClass('oe-element-list collapse-group-content');
 
+        item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme minus"></i></div> <h3 class="collapse-group-header">itemData.name</h3>');
+        //children
+        if (itemData.children && itemData.children.length) {
+            var subList = item.append('<ul class="oe-element-list collapse-group-content" style></ul>');
             $.each(itemData.children, function () {
-              var id_name = this.name.replace(/\s+/g,'-');
-              var subListItem = $("<li>")
-                .data('container-selector','section[data-element-type-id="'+itemData.id+'"]')
-                .data('element-type-class', this.class_name)
-                .data('element-type-id', this.id)
-                .data('element-display-order', this.display_order)
-                .data('element-type-name', this.name)
-                .attr('id','side-element-'+id_name ).addClass('element');
-              subListItem.append('<a href="#">'+this.name+'</a>');
+              var subListItem = $("<li>").attr('id',itemData.class_name + '-children').addClass('children');
               subList.append(subListItem);
             });
 
