@@ -83,7 +83,7 @@ function documentUpload(field){
             cache: false,
             contentType: false,
             processData: false,
-            beforeSend: function(){	
+            beforeSend: function(){
 
             },
             success:function(response){
@@ -110,8 +110,8 @@ function documentUpload(field){
                         $('#Document_'+index).closest(".upload-box").hide();
                     });
                 }
-                
-               
+
+
             },
             error:function( xhr, ajaxOptions, thrownError ){
                 alert( xhr.responseText );
@@ -120,31 +120,32 @@ function documentUpload(field){
 
             }
 	});
- 
+
 }
 
 function showIMGProgress(evt) {
-    if (evt.lengthComputable) {		
+    if (evt.lengthComputable) {
         var percentComplete = (evt.loaded / evt.total) * 100;
         $('#showUploadStatus').text( parseInt ( percentComplete ) + "%" );
         $('#showUploadStatus').width( percentComplete*9);
-    }  
+    }
 }
 
 function generateViewToFile( res , index, value , filedata ){
     extension = filedata[filedata.length-1].toLowerCase();
-    
+
     switch (extension) {
         case 'jpg':
         case 'jpeg':
         case 'png':
+        case 'gif':
             result = createOPHCOImageContainer( res , value , extension , index );
         break;
         case 'pdf':
             result = createOPHCODocumentContainer( res , value , extension , index );
         break;
     }
-    
+
     return result;
 }
 
@@ -157,7 +158,7 @@ function createOPHCOImageContainer( res , value , ext, index ){
     } else{
         sideID = res.left_document_id;
     }
-   
+
     imageContainer = '<div id="ophco-image-container-'+sideID+'" class="ophco-image-container">'
         +'<img id="single-image-'+ sideID +'" class="image-upload-del" src="/file/view/'+value+'/image.'+ext+'" border="0">'
         +'<span title="Delete" onclick="deleteOPHCOImage('+sideID+', \''+index+'\' );" class="image-del-icon">X</span>'
@@ -175,7 +176,7 @@ function createOPHCODocumentContainer( res , value , ext, index ){
     } else{
         sideID = res.left_document_id;
     }
-    
+
     documentContainer = '<div id="ophco-image-container-'+sideID+'" class="ophco-image-container">'
         +'<object width="90%" height="500px" data="/file/view/'+value+'/image.'+ext+'" type="application/pdf">'
             +'<embed src="/file/view/'+value+'/image.'+ext+'" type="application/pdf" />'
@@ -207,7 +208,7 @@ function createUploadButton( index ){
         '<input autocomplete="off" type="file" name="Document['+index+']" id="Document_'+index+'" style="display:none;">' +
         '</div>';
     $('#'+index+'_row').html(btn);
-    
+
     $('#Document_'+index+'').on('change', function(){
         documentUpload($(this));
     });
@@ -286,7 +287,7 @@ $(document).ready(function(){
     $("input[name='upload_mode']").on('change', function(){
         checkUploadMode();
     })
-    
+
     $( "#ophco-document-viewer" ).tabs();
 
 });
