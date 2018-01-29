@@ -69,9 +69,9 @@
         var $realContainer = self.$element.find('.all-panels');
 
         var $children = $realContainer.children();
-        var $newContent = $('<div class="oe-event-sidebar-edit"><ul class="oe-element-list"></ul></div>');
+        var $newContent = $('<div class="groupings"></div>');
         $realContainer.attr('id', self.options.tree_id);
-        self.$element = $newContent.find('ul');
+        self.$element = $newContent;
 
         self.openElements();
 
@@ -310,7 +310,6 @@
     PatientSidebar.prototype.buildTree = function() {
         var self = this;
 
-
         $.each(self.patient_sidebar_array, function () {
             self.$element.append(
               self.buildTreeItem(this)
@@ -322,29 +321,15 @@
      *  Build an item to add to the tree, can be called recusively to add children to a parent.
      *
      */
-    PatientSidebar.prototype.buildTreeItem = function(itemData, child) {
+    PatientSidebar.prototype.buildTreeItem = function(itemData) {
+        console.log('Item Data');
+        console.log(itemData);
         var self = this;
-        if (child == undefined)
-          child = false;
 
         var open = $.inArray(itemData.class_name, self.patient_open_elements) !== -1;
-        var itemClass;
+        var itemClass = "collapse-group";
         var hrefClass = '';
         var span = '';
-        if (itemData.children && itemData.children.length) {
-            itemClass = 'has-children';
-            itemClass += open ? ' expanded' : ' collapsed';
-            hrefClass = 'has-icon';
-            span = '<span class="icon ' + (open ? 'collapse in' : 'expand') + '"></span>';
-
-        } else if (child) {
-            itemClass = 'child';
-            hrefClass = 'has-icon';
-            span = '<span class="icon child"></span>';
-
-        } else {
-            itemClass = 'normal';
-        }
 
         if (open)
             hrefClass += ' selected';
@@ -354,7 +339,7 @@
             hrefClass += ' error';
         }
 
-        var item = $("<li>")
+        var item = $("<div>")
           .data('element-type-class', itemData.class_name)
           .data('element-type-id', itemData.id)
           .data('element-display-order', itemData.display_order)
@@ -362,12 +347,13 @@
           .addClass(itemClass);
 
 
-        item.append('<a href="#" class="' + hrefClass + '">' + itemData.name + span + '</a>');
-
+        item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme minus"></i></div> <h3 class="collapse-group-header">itemData.name</h3>');
+        //children
         if (itemData.children && itemData.children.length) {
-            var subList = $("<ul>").attr('id',itemData.class_name + '-children').addClass('children');
+            var subList = item.append('<ul class="oe-element-list collapse-group-content" style></ul>');
             $.each(itemData.children, function () {
-                subList.append(self.buildTreeItem(this, true).data('container-selector', 'section[data-element-type-id="' + itemData.id + '"]'));
+              var subListItem = $("<li>").attr('id',itemData.class_name + '-children').addClass('children');
+              subList.append(subListItem);
             });
 
             if (!open) {

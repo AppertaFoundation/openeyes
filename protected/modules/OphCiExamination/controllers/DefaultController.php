@@ -1327,7 +1327,7 @@ class DefaultController extends \BaseEventTypeController
      * @param null $form
      * @param null $data
      */
-    public function renderChildOpenElements($element, $action, $form = null, $data = null)
+    public function renderSingleChildOpenElements($element, $action, $form = null, $data = null)
     {
             $this->renderElement($element, $action, $form, $data);
     }

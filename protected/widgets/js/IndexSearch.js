@@ -237,8 +237,8 @@
     $('#search_options_container').css('width','260px');
   }
   let set_result_box_left = function() {
-    let sidebar_left = $('.column.sidebar.episodes-and-events').offset().left;
-    let sidebar_width = $('.column.sidebar.episodes-and-events').width();
+    let sidebar_left = $('#episodes-and-events').offset().left;
+    let sidebar_width = $('#episodes-and-events').width();
     let result_box_left = sidebar_left+sidebar_width;
     $('#results').css('left','result_box_left'+'px');
   };

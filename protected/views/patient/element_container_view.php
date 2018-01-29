@@ -54,22 +54,22 @@
         }
     }
           if (isset($visual_acuity_element)) {
-              $this->renderChildOpenElements($visual_acuity_element, 'view', @$form, @$data);
+              $this->renderSingleChildOpenElements($visual_acuity_element, 'view', @$form, @$data);
           }
         for ($i=0; $i<sizeof($new_elements); $i++) {
           if ($i %3== 0) { ?>
             <div class="flex-layout flex-left flex-stretch">
           <?php }
-          $this->renderChildOpenElements($new_elements[$i], 'view', @$form, @$data);
+          $this->renderSingleChildOpenElements($new_elements[$i], 'view', @$form, @$data);
           if ($i %3 == 2 || $i == sizeof($new_elements)-1) {
               ?></div>
           <?php }
         }
         if (isset($med_element)) {
-          $this->renderChildOpenElements($med_element, 'view', @$form, @$data);
+          $this->renderSingleChildOpenElements($med_element, 'view', @$form, @$data);
         }
         if (isset($risk_element)) {
-          $this->renderChildOpenElements($risk_element, 'view', @$form, @$data);
+          $this->renderSingleChildOpenElements($risk_element, 'view', @$form, @$data);
         }
 
 }
