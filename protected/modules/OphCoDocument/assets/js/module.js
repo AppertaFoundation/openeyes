@@ -144,6 +144,10 @@ function generateViewToFile( res , index, value , filedata ){
         case 'pdf':
             result = createOPHCODocumentContainer( res , value , extension , index );
         break;
+        case 'mp4':
+        case 'ogg':
+            result = createOPHCOVideoContainer( res , value , extension , index );
+        break;
     }
 
     return result;
@@ -166,6 +170,27 @@ function createOPHCOImageContainer( res , value , ext, index ){
 
     return imageContainer;
 }
+
+function createOPHCOVideoContainer( res , value , ext, index ){
+    var sideID;
+    if(res.single_document_id){
+        sideID = res.single_document_id;
+    } else if( res.right_document_id ){
+        sideID = res.right_document_id;
+    } else{
+        sideID = res.left_document_id;
+    }
+
+    imageContainer = '<div id="ophco-image-container-'+sideID+'" class="ophco-image-container">'
+        +'<video id="single-image-'+ sideID +'" class="image-upload-del" width="320" controls>'
+        +    '<source src="/file/view/'+value+'/image.'+ext+'" type="video/' +ext+ '">'
+        +'</video>'
+        +'<span title="Delete" onclick="deleteOPHCOImage('+sideID+', \''+index+'\' );" class="image-del-icon">X</span>'
+        +'</div>';
+
+    return imageContainer;
+}
+
 
 function createOPHCODocumentContainer( res , value , ext, index ){
     var sideID;
