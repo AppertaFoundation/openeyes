@@ -223,18 +223,6 @@ $(document).ready(function(){
 		submitted = true;
 	});
 
-  /* IDG demo only. Replace with a more permanent solution. */
-  // use localStorage for CSS Themes Switching
-  var css = "style_oe3.0_classic.min.css"; // default light theme (until they get used to dark)
-  if (localStorage.getItem("oeTheme")) {
-    var theme = localStorage.getItem("oeTheme");
-    if (theme === 'dark') {
-      css = "style_oe3.0.min.css";
-    }
-  }
-  // build CSS <link>
-  $('head').append('<link rel="stylesheet" type="text/css" href="' + newblueBaseUrl + '/css/' + css + '">');
-
 	/**
 	 * Site / firm switcher
 	 */
