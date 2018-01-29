@@ -25,8 +25,8 @@
             'label' => 4,
             'field' => 2,
         )); ?>
-    <div class="row field-row">
-        <div class="large-8 column">
+    <div class="row">
+        <div class="cols-8 column">
             <label class="inline highlight">
                 <input type="radio" name="upload_mode" value="single" <?php if($element->single_document_id >0){echo "checked";}?>>Single file
             </label>
@@ -35,25 +35,25 @@
             </label>
         </div>
     </div>
-    <div class="row field-row" id="single_document_uploader">
-        <div class="large-8 column" id="single_document_id_row">
+    <div class="row" id="single_document_uploader">
+        <div class="cols-8 column" id="single_document_id_row">
             <?php $this->generateFileField($element, 'single_document'); ?>
         </div>
     </div>
     <div id="double_document_uploader">
-        <div class="row field-row">
-            <div class="large-6 column">
+        <div class="row">
+            <div class="cols-6 column">
                 <b>RIGHT</b>
             </div>
-            <div class="large-6 column">
+            <div class="cols-6 column">
                 <b>LEFT</b>
             </div>
         </div>
-        <div class="row field-row" id="double_document_uploader">
-            <div class="large-6 column" id="right_document_id_row">
+        <div class="row" id="double_document_uploader">
+            <div class="cols-6 column" id="right_document_id_row">
                 <?php $this->generateFileField($element, 'right_document'); ?>
             </div>
-            <div class="large-6 column" id="left_document_id_row">
+            <div class="cols-6 column" id="left_document_id_row">
                 <?php $this->generateFileField($element, 'left_document'); ?>
             </div>
         </div>
