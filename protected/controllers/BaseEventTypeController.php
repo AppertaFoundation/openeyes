@@ -1542,7 +1542,6 @@ class BaseEventTypeController extends BaseModuleController
         $view = isset($element->{$action . '_view'})
             ? $element->{$action . '_view'}
             : $element->getDefaultView();
-
         $container_view = isset($element->{'container_' . $action . '_view'})
             ? $element->{'container_' . $action . '_view'}
             : $element->getDefaultContainerView();

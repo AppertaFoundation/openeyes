@@ -36,21 +36,26 @@
 
 <?php echo CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
 
-
-<div class="element-data element-eyes row">
-    <div class="element-eye right-eye column">
+<div class="element-data element-eyes">
+    <div class="element-eye right-eye">
         <?php if ($element->hasRight()) {
             ?>
             <?php if ($element->getCombined('right')) {
                 ?>
                 <div class="data-row">
                     <div class="data-value">
-                        <?php echo $element->unit->name ?> <?php echo $this->renderPartial('_visual_acuity_tooltip', array('element' => $element, 'side'=>'right', 'is_near'=>false)); ?>
+                      <span class="large-text">
+                        <?php echo $element->unit->name ?>
+                      </span>
+                      <i class="oe-i info small pad"></i>
                     </div>
                 </div>
                 <div class="data-row">
                     <div class="data-value">
+                      <span class="large-text">
                         <?php echo $element->getCombined('right') ?>
+                      </span>
+                      <i class="oe-i info small pad"></i>
                     </div>
                 </div>
                 <?php
@@ -88,19 +93,25 @@
             <?php
         } ?>
     </div>
-    <div class="element-eye left-eye column">
+    <div class="element-eye left-eye">
         <?php if ($element->hasLeft()) {
             ?>
             <?php if ($element->getCombined('left')) {
                 ?>
                 <div class="data-row">
                     <div class="data-value">
-                        <?php echo $element->unit->name ?> <?php echo $this->renderPartial('_visual_acuity_tooltip', array('element' => $element, 'side'=>'left', 'is_near'=>false)); ?>
+                      <span class="large-text">
+                        <?php echo $element->unit->name ?>
+                      </span>
+                      <i class="oe-i info small pad"></i>
                     </div>
                 </div>
                 <div class="data-row">
                     <div class="data-value">
+                      <span class="large-text">
                         <?php echo $element->getCombined('left') ?>
+                      </span>
+                      <i class="oe-i info small pad"></i>
                     </div>
                 </div>
                 <?php

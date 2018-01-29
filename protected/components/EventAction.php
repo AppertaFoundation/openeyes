@@ -89,6 +89,7 @@ class EventAction
         }
         if ($this->options['level'] === 'cancel') {
             $this->htmlOptions['class'] .= ' red';
+
         }
         if ($this->options['level'] === 'print') {
             $label = '<i class="oe-i print"></i>';

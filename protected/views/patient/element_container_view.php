@@ -16,11 +16,15 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section
-	class=" element
+<section class=" element
 	<?php
+    $eye_divider_list = ['Visual Acuity','Anterior Segment','Intraocular Pressure',
+        'Refraction','Gonioscopy','Adnexal','Pupillary Abnormalities', 'CCT','Keratoconus Monitoring',
+        'Posterior Pole'];
   if ($element->elementType->name=='Medications'||$element->elementType->name=='Risks'){
     echo 'full';
+  }elseif (in_array($element->elementType->name, $eye_divider_list)){
+    echo 'full priority eye-divider view-visual-acuity';
   }
   elseif (@$child) {  echo 'tile'; } else { echo 'full priority';} ?>
 	view-<?php echo $element->elementType->name?>">
@@ -42,10 +46,16 @@
         elseif ($child_element->elementType->name == 'Risks') {
             $risk_element = $child_element;
         }
+        elseif ($child_element->elementType->name == 'Visual Acuity'){
+            $visual_acuity_element = $child_element;
+        }
         else{
           array_push($new_elements,$child_element);
         }
     }
+          if (isset($visual_acuity_element)) {
+              $this->renderChildOpenElements($visual_acuity_element, 'view', @$form, @$data);
+          }
         for ($i=0; $i<sizeof($new_elements); $i++) {
           if ($i %3== 0) { ?>
             <div class="flex-layout flex-left flex-stretch">
@@ -61,5 +71,6 @@
         if (isset($risk_element)) {
           $this->renderChildOpenElements($risk_element, 'view', @$form, @$data);
         }
+
 }
   ?>

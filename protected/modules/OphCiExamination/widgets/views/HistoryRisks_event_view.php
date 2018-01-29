@@ -33,9 +33,10 @@
             <div class="cols-11">
             <div class="cols-11" id="js-list-view-risks-pro" style>
               <ul class="dslash-list">
-                <li>YES: <?php if ($element->present) {  $element->getEntriesDisplay('present'); } ?></li>
-                <li>NO: <?php if ($element->not_checked) {  $element->getEntriesDisplay('not_checked'); } ?></li>
-                <li>Not checked: <?php if ($element->not_present) {  $element->getEntriesDisplay('not_present'); } ?></li>
+                <li>YES: <?php if ($element->present) {  echo $element->getEntriesDisplay('present'); } else { echo 'None'; } ?></li>
+                <li>NO: <?php if ($element->not_checked) { echo $element->getEntriesDisplay('not_checked'); }  else { echo 'None'; } ?></li>
+                <li>Not checked: <?php if ($element->not_present) { echo $element->getEntriesDisplay('not_present'); }
+                                    else { echo 'None'; } ?></li>
               </ul>
             </div>
             <div class="col-6" id="js-listview-risks-full" style="display: none;">
