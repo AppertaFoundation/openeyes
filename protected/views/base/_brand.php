@@ -15,13 +15,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-<<<<<<< HEAD
 $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-logo.svg';
-$commit = preg_replace('/[\s\t].*$/s', '', @file_get_contents(Yii::app()->basePath.'/../.git/FETCH_HEAD'));
-=======
-$logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue.svg') . '/oe-logo.svg');
 $commit = preg_replace('/[\s\t].*$/s', '', @file_get_contents(Yii::app()->basePath . '/../.git/FETCH_HEAD'));
->>>>>>> v3: Changed references to the "classic/pro" themes to "light dark" instead
 $commitDate = exec("git show -s --format=%cD $commit");
 ?>
 <div class="oe-logo" id="js-openeyes-btn">
@@ -32,13 +27,17 @@ $commitDate = exec("git show -s --format=%cD $commit");
 <div class="oe-product-info" id="js-openeyes-info">
   <h3>OpenEyes</h3>
   <p class="gap">Release Date: <?php echo Helper::convertDate2NHS($commitDate); ?></p>
-  <p class="gap">
-    <a href="#activate-dark-theme" id="js-theme-dark" style="display: inline-block; margin-bottom: 4px;">
-      Dark theme (recommended)
-    </a>
-    <br/>
-    <a href="#activate-light-theme" id="js-theme-light">Light theme (default)</a>
-  </p>
+    <?php if (!Yii::app()->user->isGuest): ?>
+      <p class="gap">
+          <?php echo CHtml::link('Dark theme (recommended)', Yii::app()->createUrl('/profile/changeDisplayTheme',
+              array('user_id' => Yii::app()->user->id, 'display_theme' => 'dark')),
+              array('style' => 'display: inline-block; margin-bottom: 4px;')); ?>
+        <br/>
+          <?php echo CHtml::link('Light theme (default)', Yii::app()->createUrl('/profile/changeDisplayTheme',
+              array('user_id' => Yii::app()->user->id, 'display_theme' => 'light')),
+              array('id' => 'js-theme-light')); ?>
+      </p>
+    <?php endif; ?>
   <p class="gap">OpenEyes is released under the AGPL3 license and is free to download and use.</p>
   <p class="gap">
     OpenEyes is maintained by the <a href="https://openeyes.org.uk/" target="_blank">OpenEyes Foundation</a>.
