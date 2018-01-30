@@ -49,23 +49,3 @@ $commitDate = exec("git show -s --format=%cD $commit");
     Send <a href="#">feedback or suggestions.</a>
   </p>
 </div>
-<script>
-  (function () {
-    /* IDG demo only */
-    // use localStorage for CSS Themes Switching
-    var dark = document.getElementById("js-theme-dark");
-    var light = document.getElementById("js-theme-light");
-
-    dark.onclick = function (e) {
-      e.preventDefault();
-      localStorage.setItem("oeTheme", 'dark');
-      location.reload();
-    };
-
-    light.onclick = function (e) {
-      e.preventDefault();
-      localStorage.setItem("oeTheme", 'light');
-      location.reload();
-    };
-  })();
-</script>
