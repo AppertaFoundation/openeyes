@@ -24,7 +24,7 @@
     <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
 <body class="open-eyes">
-<?php $this->renderPartial('//base/_banner_watermark'); ?>
+<?php //$this->renderPartial('//base/_banner_watermark'); ?>
 <?php $this->renderPartial('//base/_debug'); ?>
 <div class="container main" role="main">
     <?php $this->renderPartial('//base/_header'); ?>

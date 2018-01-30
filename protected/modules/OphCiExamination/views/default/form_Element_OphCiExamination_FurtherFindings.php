@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="sub-element-fields">
+<div class="element-fields flex-layout full-width ">
 	<div class="field-row furtherfindings-multi-select">
 		<?php echo $form->multiSelectListFreeText($element, CHtml::modelName($element).'[further_findings_assignment]',
             'further_findings_assignment', 'finding_id', CHtml::encodeArray(CHtml::listData(

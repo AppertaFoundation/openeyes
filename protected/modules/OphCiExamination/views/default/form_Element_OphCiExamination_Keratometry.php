@@ -20,7 +20,7 @@
 <?php
 //var_dump($element);
 ?>
-<div class="element-fields row">
+<div class="element-fields flex-layout full-width">
 	<div class="large-2 column">
 		<label><?php echo $element->getAttributeLabel('tomographer_id')?>:</label>
 	</div>
@@ -34,7 +34,7 @@
 	<div class="large-2 column"> </div>
 </div>
 
-<div class="element-fields element-eyes row">
+<div class="element-fields flex-layout full-width">
 <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 <div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {
 	?> inactive<?php

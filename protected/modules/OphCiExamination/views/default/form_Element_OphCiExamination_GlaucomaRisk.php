@@ -16,8 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="sub-element-fields">
-	<div class="field-row row collapse in">
+<div class="element-fields flex-layout full-width ">
+	<div class="field-row row collapse">
 		<div class="large-2 column">
 			<div class="field-highlight<?php if ($element->risk) {
     ?> <?php echo $element->risk->class?><?php 

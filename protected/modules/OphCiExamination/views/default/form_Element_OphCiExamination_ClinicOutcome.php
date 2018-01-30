@@ -23,7 +23,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
 }
 ?>
 
-<div class="element-fields">
+<div class="element-fields flex-layout full-width ">
     <div id="div_<?php echo CHtml::modelName($element)?>_status">
 		<div class="field-row row">
 			<div class="large-3 column">

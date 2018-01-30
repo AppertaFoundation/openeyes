@@ -64,7 +64,7 @@ $iop = $element->getLatestIOP($this->patient);
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CurrentManagement.js", CClientScript::POS_HEAD);
 
 ?>
-<div class="element-fields element-eyes row">
+<div class="element-fields flex-layout full-width">
 	<script type="text/javascript">
 		var previous_iop = <?php echo json_encode($iop)?>;
 	</script>

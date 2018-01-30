@@ -17,107 +17,81 @@
  */
 ?>
 <?php
-$section_classes = array(CHtml::modelName($element->elementType->class_name));
-$section_classes[] = @$child ? 'sub-element' : 'element';
+$section_classes = array('element full edit');
+$section_classes[] = CHtml::modelName($element->elementType->class_name);
 if ($this->isRequired($element)) {
     $section_classes[] = 'required';
 }
 if ($this->isHiddenInUI($element)) {
     $section_classes[] = 'hide';
 }
+if (is_subclass_of($element, 'SplitEventTypeElement')) {
+    $section_classes[] = 'eye-divider';
+}
+
+$element_Type = $element->getElementType();
 ?>
 
 <?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
-<section
-	class="<?php echo implode(' ', $section_classes);?>"
-	data-element-type-id="<?php echo $element->elementType->id?>"
-	data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
-	data-element-type-name="<?php echo $element->elementType->name?>"
-	data-element-display-order="<?php echo $element->elementType->display_order?>">
+  <section
+    class="<?php echo implode(' ', $section_classes); ?>"
+      data-element-type-id="<?php echo $element->elementType->id ?>"
+      data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
+      data-element-type-name="<?php echo $element->elementType->name ?>"
+      data-element-display-order="<?= $element->getChildDisplayOrder($this->action) ?>"
+      data-element-parent-id="<?php
+      if ($element->elementType->isChild()) {
+          echo $element->elementType->parent_element_type_id;
+      } ?>"
+      data-element-parent-display-order="<?= $element->getParentDisplayOrder($this->action) ?>"
 
-	<?php if (!property_exists($element, 'hide_form_header') || !$element->hide_form_header) { ?>
-		<header class="<?php if (@$child) {?>sub-<?php }?>element-header">
-            <!-- Add a element remove flag which is used when saving data -->
-            <input type="hidden" name="<?php echo CHtml::modelName($element->elementType->class_name)?>[element_removed]"value="0">
+      style="min-height: 80px;"
+  >
+
+      <?php if (!property_exists($element, 'hide_form_header') || !$element->hide_form_header) { ?>
+        <header class="element-header">
 		<!-- Element title -->
-		<?php if (!@$child) {?>
-			<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
-
-		<?php }else{?>
-			<h4 class="sub-element-title"><?php echo $element->elementType->name?></h4>
-		<?php }?>
-            <?php ?>
-
-		<!-- Additional element title information -->
-		<?php if (isset($this->clips['element-title-additional'])){?>
-			<div class="element-title-additional">
-				<?php
-                $this->renderClip('element-title-additional');
-                // don't want the header clip to repeat in child elements
-                unset($this->clips['element-title-additional']);
-    ?>
-			</div>
-		<?php }?>
-
-	</header>
+          <h3 class="element-title"><?php echo $element->getFormTitle() ?></h3>
+        </header>
+    <!-- Additional element title information -->
+          <?php if (isset($this->clips['element-title-additional'])) { ?>
+          <div class="element-title-additional">
+              <?php
+              $this->renderClip('element-title-additional');
+              // don't want the header clip to repeat in child elements
+              unset($this->clips['element-title-additional']);
+              ?>
+          </div>
+          <?php } ?>
     <!-- Element actions -->
-    <div class="<?php if (@$child) {?>sub-<?php }?>element-actions">
-
-      <!-- Copy previous element -->
-        <?php if ($this->canCopy($element) || $this->canViewPrevious($element)) {?>
-          <a href="#" title="View Previous" class="viewPrevious<?php if (@$child) {?> subElement<?php }?>">
+        <div class="element-actions">
+          <!-- order is important for layout because of Flex -->
+            <?php if ($this->canViewPrevious($element) || $this->canCopy($element)) { ?>
+              <span class="js-duplicate-element">
             <i class="oe-i duplicate"></i>
-          </a>
-        <?php }?>
+          </span>
+            <?php } ?>
+      <!-- remove MUST be last element -->
+          <span class="<?= ($this->isRequiredInUI($element)) ? 'disabled' : 'js-remove-element' ?>"
+                title="<?= ($this->isRequiredInUI($element)) ? 'Mandatory Field' : '' ?>">
+            <i class="oe-i trash-blue"></i>
+          </span>
+        </div>
+      <?php } ?>
 
-      <!-- Remove element -->
-        <?php if (!@$child) {?>
-          <span class="js-remove-element <?=($this->isRequiredInUI($element)) ? 'hidden' : '' ?>" title="<?=($this->isRequiredInUI($element)) ? 'mandatory' : '' ?>">
-          <i class="oe-i remove-circle"></i>
-        </span>
-        <?php }?>
 
-      <!-- Remove sub-element -->
-        <?php if (@$child) {?>
-          <span class="js-remove-child-element <?=($this->isRequiredInUI($element)) ? 'hidden' : '' ?>" title="<?=($this->isRequiredInUI($element)) ? 'mandatory': '' ?>">
-          <i class="oe-i remove-circle small"></i>
-        </span>
-        <?php }?>
-    </div>
-	<?php } ?>
+      <?php echo $content; ?>
 
-	<?php echo $content; ?>
-
-	<!-- Sub elements -->
-	<?php if (!@$child) {?>
-		<div class="sub-elements active">
-			<?php $this->renderChildOpenElements($element, $this->action->id, $form, $data)?>
-		</div>
-        <?php if($this->show_element_sidebar === false):?>
-            <div class="sub-elements inactive">
-                <ul class="sub-elements-list">
-                    <?php $this->renderChildOptionalElements($element, $this->action->id, $form, $data)?>
-                </ul>
-            </div>
-        <?php endif;?>
-	<?php } ?>
-</section>
+  </section>
 <?php } else { ?>
-	<section
-		class="<?php echo implode(' ', $section_classes); ?>"
-		data-element-type-id="<?php echo $element->elementType->id ?>"
-		data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
-		data-element-type-name="<?php echo $element->elementType->name ?>"
-		data-element-display-order="<?php echo $element->elementType->display_order ?>">
+  <section
+      class="<?php echo implode(' ', $section_classes); ?>"
+      data-element-type-id="<?php echo $element->elementType->id ?>"
+      data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
+      data-element-type-name="<?php echo $element->elementType->name ?>"
+      data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
-		<?php echo $content; ?>
+      <?php echo $content; ?>
 
-		<!-- Sub elements -->
-		<?php if (!@$child) { ?>
-			<div class="sub-elements active">
-				<?php $this->renderChildOpenElements($element, $this->action->id, $form, $data) ?>
-			</div>
-		<?php } ?>
-
-	</section>
+  </section>
 <?php } ?>

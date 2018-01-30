@@ -25,7 +25,7 @@
 </head>
 <body class="open-eyes oe-grid">
 
-	<?php $this->renderPartial('//base/_banner_watermark'); ?>
+<!--	--><?php //$this->renderPartial('//base/_banner_watermark'); ?>
 	<?php $this->renderPartial('//base/_debug'); ?>
 
   <!-- Branding (logo) -->

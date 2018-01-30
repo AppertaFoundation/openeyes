@@ -44,7 +44,7 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
 
     $.getScript('<?=$jsPath?>', pcr_init);
 </script>
-<div class="element-eyes element-fields">
+<div class="element-eyes element-fields flex-layout full-width ">
 <?php
 if ($this->patient->getDiabetes()) {
     $diabeticOptions = array('Y' => 'Diabetes present');

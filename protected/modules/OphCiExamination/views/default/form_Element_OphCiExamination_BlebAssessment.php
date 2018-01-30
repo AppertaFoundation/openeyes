@@ -47,7 +47,7 @@ $vascularities = CHtml::listData(
 $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_BlebAssessment_Vascularity::model()->getFieldImages();
 
 ?>
-<div class="element-fields element-eyes row">
+<div class="element-fields flex-layout full-width">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 	<script type="text/javascript">
 		var idToImagesArr = {

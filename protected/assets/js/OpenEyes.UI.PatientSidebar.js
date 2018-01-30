@@ -77,7 +77,7 @@
         if (this.sidebarController) {
             this.sidebarController.checkSideNavHeight();
         }
-        
+
         // self.$elementContainer = $(document).find(self.options.element_container_selector);
         //
         // // couple of hooks to keep the menu in sync with the elements on the page.

@@ -17,7 +17,7 @@
  */
 ?>
 <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-<div class="element-fields row">
+<div class="element-fields flex-layout full-width">
 	<div class="large-2 column">
 		<label><?php echo $element->getAttributeLabel('specular_microscope_id')?>:</label>
 	</div>
@@ -41,7 +41,7 @@
 	</div>
 	<div class="large-2 column"></div>
 </div>
-<div class="element-fields element-eyes row">
+<div class="element-fields flex-layout full-width">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 <div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {
 ?> inactive<?php

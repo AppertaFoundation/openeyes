@@ -56,7 +56,7 @@ $targetIOPS =
 
 ?>
 
-<div class="element-fields row">
+<div class="element-fields flex-layout full-width">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
 	<?php echo $form->dropDownList($element, 'clinic_interval_id', $overallPeriods, array(), false, array('label' => 4, 'field' => 3))?>
@@ -71,7 +71,7 @@ $targetIOPS =
         </div>
     </div>
 </div>
-<div class="element-fields element-eyes row">
+<div class="element-fields flex-layout full-width">
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
     ?> inactive<?php 
 }?>" data-side="right">

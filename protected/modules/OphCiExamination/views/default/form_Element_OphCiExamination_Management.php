@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields">
+<div class="element-fields flex-layout full-width ">
 	<div class="field-row textMacros">
 		<?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'comments', 'form' => $form))?>
 	</div>

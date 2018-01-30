@@ -17,7 +17,7 @@
  */
 ?>
 
-<div class="sub-element-fields" id="div_<?php echo CHtml::modelName($element)?>_injection">
+<div class="element-fields flex-layout full-width " id="div_<?php echo CHtml::modelName($element)?>_injection">
 	<div class="row field-row">
 		<div class="large-3 column">
 			<label>
@@ -36,7 +36,7 @@
 	</div>
 </div>
 
-<div class="sub-element-fields" id="div_<?php echo CHtml::modelName($element)?>_injection_deferralreason"<?php if (!($element->injection_status && $element->injection_status->deferred)) {
+<div class="element-fields flex-layout full-width " id="div_<?php echo CHtml::modelName($element)?>_injection_deferralreason"<?php if (!($element->injection_status && $element->injection_status->deferred)) {
     ?> style="display: none;"<?php 
 }?>>
 	<div class="row field-row">
@@ -57,7 +57,7 @@
 	</div>
 </div>
 
-<div class="sub-element-fields" id="div_<?php echo CHtml::modelName($element)?>_injection_deferralreason_other"<?php if (!($element->injection_deferralreason && $element->injection_deferralreason->other)) {
+<div class="element-fields flex-layout full-width " id="div_<?php echo CHtml::modelName($element)?>_injection_deferralreason_other"<?php if (!($element->injection_deferralreason && $element->injection_deferralreason->other)) {
     ?> style="display: none;"<?php 
 }?>>
 	<div class="row field-row">

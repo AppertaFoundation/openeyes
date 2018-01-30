@@ -24,7 +24,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
 }
 
 ?>
-<div class="element-fields element-eyes row">
+<div class="element-fields flex-layout full-width">
 	<script type="text/javascript">
 		var colourVisionMethodValues = {
 			<?php  echo implode(',', $method_values); ?>

@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields row">
+<div class="element-fields flex-layout full-width">
     <div class="large-1 column">
         <label><?php echo $element->getAttributeLabel('asthma_id')?>:</label>
     </div>
@@ -122,7 +122,7 @@
         ?>
     </div>
 </div>
-<div class="element-fields element-eyes row">
+<div class="element-fields flex-layout full-width">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
     <div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
         ?> inactive<?php

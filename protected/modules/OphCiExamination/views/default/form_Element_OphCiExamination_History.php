@@ -16,27 +16,30 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields">
-	<div class="field-row textMacros">
-		<?php $this->renderPartial('OEModule.OphCiExamination.views.default._attributes', array('element' => $element, 'field' => 'description', 'form' => $form))?>
-	</div>
-	<div class="field-row">
-		<?php echo $form->textArea($element, 'description', array('rows' => '1', 'cols' => '80', 'class' => 'autosize', 'nowrapper' => true), false, array('placeholder' => 'Enter comments here'))?>
-	</div>
-    <div class="field-row row">
-        <div class="large-2 column">
-            <div class="data-label">Previous Management</div>
-        </div>
-        <div class="large-10 column end">
-            <div class="data-value">
-                <div class="inline-previous-element"
-                     data-element-type-id="<?= ElementType::model()->findByAttributes(array('class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Management'))->id ?>"
-                     data-no-results-text="No previous management recorded"
-                     data-limit="1"
-                     data-template-id="previous-management-template">Loading previous management information ...</div>
-            </div>
-        </div>
+<div class="element-fields flex-layout full-width ">
+  <div class="cols-11 flex-layout">
+    <textarea id="js-history-input-demo" autocomplete="off" rows="1" class="cols-6" placeholder="History" style="overflow: hidden; word-wrap: break-word; height: 24px;"></textarea>
+    <div class="cols-5">
+      <div class="data-label">Previous Management</div>
+      <div class="data-value">
+        <div class="inline-previous-element"
+             data-element-type-id="<?= ElementType::model()->findByAttributes(array('class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Management'))->id ?>"
+             data-no-results-text="No previous management recorded"
+             data-limit="1"
+             data-template-id="previous-management-template">Loading previous management information ...</div>
+      </div>
     </div>
+  </div>
+
+  <div class="flex-item-bottom">
+    <button class="button hint green js-add-select-search">
+      <i class="oe-i plus pro-theme"></i>
+    </button>
+    <!-- popup to add to element is click -->
+    <div id="add-to-history" class="oe-add-select-search auto-width" style="bottom: -124px; display: none;">
+      <?php $this->renderPartial('OEModule.OphCiExamination.views.default._attributes', array('element' => $element, 'field' => 'description', 'form' => $form))?>
+    </div>
+  </div>
 </div>
 <script type="text/html" id="previous-management-template">
     <strong>{{subspecialty}} {{event_date}} ({{last_modified_user_display}} <span class="has-tooltip fa fa-info-circle" data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> {{comments_or_children}}

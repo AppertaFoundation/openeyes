@@ -21,7 +21,7 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
     $item_ids = $element->getItemIds();
 }
 ?>
-<div class="sub-element-fields">
+<div class="element-fields flex-layout full-width ">
     <?php echo CHtml::hiddenField('comorbidities_items_valid', 1, array('id' => 'comorbidities_items_valid')) ?>
   <div class="field-row comorbidities-multi-select">
       <?php echo $form->multiSelectList(

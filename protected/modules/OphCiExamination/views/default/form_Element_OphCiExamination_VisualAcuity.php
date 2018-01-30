@@ -46,7 +46,7 @@ $this->endClip('element-title-additional');
         echo $form->hiddenInput($element, 'cvi_alert_dismissed', false, array('class' => 'cvi_alert_dismissed'));
     }
 ?>
-<div class="element-fields element-eyes row">
+<div class="element-fields flex-layout full-width">
     <input type="hidden" name="visualacuity_readings_valid" value="1" />
     <?php echo $form->hiddenInput($element, 'id', false, array('class' => 'element_id')); ?>
     <?php echo $form->hiddenInput($element, 'unit_id', false); ?>

@@ -35,7 +35,7 @@
 </div>
 <?php $this->endClip('element-title-additional');?>
 
-<div class="sub-element-fields">
+<div class="element-fields flex-layout full-width ">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
 	<fieldset class="field-row row">
 		<legend class="large-2 column">
@@ -52,7 +52,7 @@
 		</div>
 	</fieldset>
 </div>
-<div class="sub-element-fields element-eyes row">
+<div class="element-fields flex-layout full-width">
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
     ?> inactive<?php 
 }?><?php if ($element->id || !empty($_POST)) {
