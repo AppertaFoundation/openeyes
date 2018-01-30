@@ -39,10 +39,13 @@
 
 
 <nav class="event-header">
-    <?php $this->renderPartial('//base/_messages'); ?>
+    <i class="oe-i-e large i-CiExamination"></i>
+    <?php $this->renderPartial('//patient/event_tabs'); ?>
+     <!-- right hand side buttons-->
+    <?php $this->renderPartial('//patient/event_actions'); ?>
 
-    <?php echo $content; ?>
 </nav><!-- /.content.container -->
+<?php echo $content; ?>
 
 
 </body>

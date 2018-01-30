@@ -1,4 +1,3 @@
-
 <main class="main-event <?php echo $this->moduleStateCssClass; ?>">
 
   <h2 class="event-title <?= ($this->event->is_automated) ? 'auto' : '' ?>">
