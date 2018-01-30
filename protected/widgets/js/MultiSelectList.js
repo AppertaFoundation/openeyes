@@ -114,10 +114,10 @@ $(document).ready(function () {
 
       selections
         .append(item)
-        .removeClass('hide');
+        .show();
 
-      noSelectionsMsg.addClass('hide');
-      removeAll.removeClass('hide');
+      noSelectionsMsg.hide();
+      removeAll.show();
 
       if (!select.data('searchable')) {
         selected.remove();
@@ -196,8 +196,8 @@ $(document).ready(function () {
     input.remove();
 
     if (!selections.children().length) {
-      selections.add(removeAll).addClass('hide');
-      noSelectionsMsg.removeClass('hide');
+      selections.add(removeAll).hide();
+      noSelectionsMsg.show();
       var container = select.closest('.multi-select');
       var inputField = container.find('.multi-select-list-name');
       var fieldName = inputField.attr('name').match(/\[MultiSelectList_(.*?)\]$/)[1];

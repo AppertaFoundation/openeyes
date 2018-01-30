@@ -59,7 +59,7 @@ $widgetOptionsJson = json_encode(array(
 
 <?php if (!@$htmlOptions['nowrapper']) { ?>
 <div id="<?php echo $div_id ?>"
-     class="<?php echo $div_class ?> row field-row widget"<?php if ($hidden) { ?> style="display: none;"<?php } ?>>
+     class="<?php echo $div_class ?> row field-row widget" <?php if ($hidden) { ?>hidden<?php } ?>>
   <div class="large-<?php echo $layoutColumns['label']; ?> column">
     <label for="<?php echo $field ?>">
         <?php echo @$htmlOptions['label'] ?>:
