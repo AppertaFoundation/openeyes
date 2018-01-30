@@ -58,7 +58,8 @@ $widgetOptionsJson = json_encode(array(
 ?>
 
 <?php if (!@$htmlOptions['nowrapper']) { ?>
-<div id="<?php echo $div_id ?>" class="<?php echo $div_class ?> row field-row widget"<?php if ($hidden) { ?> style="display: none;"<?php } ?>>
+<div id="<?php echo $div_id ?>"
+     class="<?php echo $div_class ?> row field-row widget"<?php if ($hidden) { ?> style="display: none;"<?php } ?>>
   <div class="large-<?php echo $layoutColumns['label']; ?> column">
     <label for="<?php echo $field ?>">
         <?php echo @$htmlOptions['label'] ?>:
@@ -66,11 +67,14 @@ $widgetOptionsJson = json_encode(array(
   </div>
   <div class="large-<?php echo $layoutColumns['field']; ?> column end">
       <?php } ?>
-    <div class="multi-select<?php if (!$inline) {echo ' multi-select-list';} ?>"
+    <div class="multi-select<?php if (!$inline) {
+        echo ' multi-select-list';
+    } ?>"
          data-options='<?php echo $widgetOptionsJson; ?>'
-         <?php if($through): ?>data-statuses='<?=json_encode($through['options'])?>' <?php endif; ?>
+         <?php if ($through): ?>data-statuses='<?= json_encode($through['options']) ?>' <?php endif; ?>
     >
-      <input type="hidden" name="<?php echo CHtml::modelName($element) ?>[MultiSelectList_<?php echo $field ?>]" class="multi-select-list-name"/>
+      <input type="hidden" name="<?php echo CHtml::modelName($element) ?>[MultiSelectList_<?php echo $field ?>]"
+             class="multi-select-list-name"/>
       <div class="multi-select-dropdown-container">
         <select id="<?php echo CHtml::getIdByName($field) ?>"
                 class="MultiSelectList<?php if ($showRemoveAllLink) { ?> inline<?php } ?><?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"
@@ -103,53 +107,63 @@ $widgetOptionsJson = json_encode(array(
           <?php } ?>
       </div>
         <?php if ($noSelectionsMessage) { ?>
-          <div class="no-selections-msg pill<?php if ($found) { ?> hide<?php } ?>"><?php echo $noSelectionsMessage; ?></div>
+          <div
+              class="no-selections-msg pill<?php if ($found) { ?> hide<?php } ?>"><?php echo $noSelectionsMessage; ?></div>
         <?php } ?>
 
-        <?php if(Yii::app()->request->isPostRequest && empty($selected_ids)): ?>
-            <input type="hidden" name="<?php echo $field ?>" >
+        <?php if (Yii::app()->request->isPostRequest && empty($selected_ids)): ?>
+          <input type="hidden" name="<?php echo $field ?>">
         <?php endif; ?>
-      <ul class="MultiSelectList multi-select-selections<?php if (!$found) {echo ' hide';} ?><?php if ($sortable) { ?> sortable<?php } ?>">
+      <ul class="MultiSelectList multi-select-selections<?php if (!$found) {
+          echo ' hide';
+      } ?><?php if ($sortable) { ?> sortable<?php } ?>">
           <?php foreach ($selected_ids as $id) {
               if (isset($options[$id])) { ?>
                 <li>
-                  <?php
-                  if(isset($link) && $link): ?>
-                  <a href="<?= sprintf($link, $id)?>">
-                  <?php endif;?>
+                    <?php
+                    if (isset($link) && $link): ?>
+                  <a href="<?= sprintf($link, $id) ?>">
+                      <?php endif; ?>
                     <span class="text">
                       <?php echo strip_tags($options[$id]) ?>
                     </span>
-                  <?php if(isset($link) && $link): ?>
+                      <?php if (isset($link) && $link): ?>
                   </a>
-                  <?php endif;?>
-                  <a href="#" data-text="<?php echo $options[$id] ?>"
-                     class="MultiSelectRemove remove-one<?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"<?php if (isset($htmlOptions['data-linked-fields'])) { ?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"<?php } ?><?php if (isset($htmlOptions['data-linked-values'])) { ?> data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"<?php } ?>>Remove</a>
+                <?php endif; ?>
+
+                  <span data-text="<?php echo $options[$id] ?>"
+                      class="multi-select-remove <?php if (isset($htmlOptions['class'])) { ?><?php echo $htmlOptions['class'] ?><?php } ?>"
+                      <?php if (isset($htmlOptions['data-linked-fields'])) { ?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"<?php } ?>
+                      <?php if (isset($htmlOptions['data-linked-values'])) { ?> data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"<?php } ?>>
+                    <i class="oe-i remove-circle small"></i>
+                  </span>
                   <input type="hidden" name="<?php echo $field ?>[]" value="<?php echo $id ?>"
-                      <?php if (isset($opts[$id])) {
-                          foreach ($opts[$id] as $key => $val) {
-                              echo ' ' . $key . '="' . $val . '"';
-                          }
-                      } ?>
-                  />
-                  <?php
-                    if($through) {
-                      $currentField = isset($through['default_option']) ? $through['default_option'] : 0;
-                      foreach ( $through['current'] as $current) {
-                        if($current->{$through['related_by']} === $id){
-                            $currentField = $current->{$through['field']} ? $current->{$through['field']} : $currentField;
-                            break;
+                    <?php if (isset($opts[$id])) {
+                        foreach ($opts[$id] as $key => $val) {
+                            echo ' ' . $key . '="' . $val . '"';
                         }
+                    } ?>
+                  />
+                    <?php
+                    if ($through) {
+                        $currentField = isset($through['default_option']) ? $through['default_option'] : 0;
+                        foreach ($through['current'] as $current) {
+                            if ($current->{$through['related_by']} === $id) {
+                                $currentField = $current->{$through['field']} ? $current->{$through['field']} : $currentField;
+                                break;
+                            }
 
-                      }
-                  ?>
+                        }
+                        ?>
 
-                      <select name="<?= preg_replace('#\[(.*)\]#', '[${1}_through]', $field) ?>[<?= $id ?>][<?= $through['field'] ?>]">
-                        <?php foreach ($through['options'] as $option_id => $option) { ?>
-                          <option value="<?=$option_id?>" <?php if($currentField && $currentField == $option_id):?> selected <?php endif;?>><?=$option?></option>
-                        <?php } ?>
+                      <select name="<?= preg_replace('#\[(.*)\]#', '[${1}_through]',
+                          $field) ?>[<?= $id ?>][<?= $through['field'] ?>]">
+                          <?php foreach ($through['options'] as $option_id => $option) { ?>
+                            <option
+                                value="<?= $option_id ?>" <?php if ($currentField && $currentField == $option_id): ?> selected <?php endif; ?>><?= $option ?></option>
+                          <?php } ?>
                       </select>
-                  <?php } ?>
+                    <?php } ?>
                 </li>
               <?php } ?>
           <?php } ?>

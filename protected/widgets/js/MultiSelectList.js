@@ -83,9 +83,7 @@ $(document).ready(function () {
       var input = $(inp_str);
 
       var remote_data = {
-        'href': '#',
-        'class': 'MultiSelectRemove remove-one ' + selected.val(),
-        'text': 'Remove',
+        'class': 'multi-select-remove remove-one ' + selected.val(),
         'data-name': fieldName + '[]',
         'data-text': selected.text()
       };
@@ -96,7 +94,9 @@ $(document).ready(function () {
         remote_data['data-linked-values'] = $(this).data('linked-values');
       }
 
-      var remove = $('<a />', remote_data);
+      var remove = $('<span></span>', remote_data);
+      var remove_icon = $('<i class="oe-i remove-circle small "></i>');
+      remove.append(remove_icon);
 
       var item = $('<li><span class="text">' + selected.text() + '</span></li>');
       item.append(remove);
@@ -145,7 +145,7 @@ $(document).ready(function () {
 
           //remove other options
           $.each(selections.find('li'), function( index, $item ) {
-            var $anchor = $($item).find('a.MultiSelectRemove');
+            var $anchor = $($item).find('.multi-select-remove');
 
             if($anchor.data('text').trim() !== 'None'){
                 $anchor.trigger('click');
@@ -157,7 +157,7 @@ $(document).ready(function () {
     return false;
   });
 
-  $(this).on('click', 'a.MultiSelectRemove', 'click', function (e) {
+  $(this).on('click', '.multi-select-remove', 'click', function (e) {
     e.preventDefault();
     var anchor = $(this);
     var container = anchor.closest('.multi-select');

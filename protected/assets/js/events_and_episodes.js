@@ -252,7 +252,7 @@ function hide_linked_field(element_name,field_name)
 	$('select[name="'+element_name+'['+field_name+']"]').val('');
 
 	if ($('#'+field_name).hasClass('MultiSelectList')) {
-		$('a.MultiSelectRemove[data-name="'+field_name+'[]"]').map(function() {
+		$('.multi-select-remove[data-name="'+field_name+'[]"]').map(function() {
 			$(this).click();
 		});
 	}

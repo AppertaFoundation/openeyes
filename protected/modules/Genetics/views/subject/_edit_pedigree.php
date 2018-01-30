@@ -81,7 +81,9 @@
                                 </span>
                             </a>
 
-                            <a href="#" data-text="<?=$pedigree->pedigree_id;?>" class="MultiSelectRemove remove-one">Remove</a>
+                            <span class="multi-select-remove remove-one" data-text="<?=$pedigree->pedigree_id;?>" >
+                              <i class="oe-i remove-circle small"></i>
+                            </span>
                             <input type="hidden" name="GeneticsPatient[pedigrees][]" value="<?=$pedigree->pedigree_id;?>">
 
                             <select name="GeneticsPatient[pedigrees_through][<?=$pedigree->pedigree_id;?>][status_id]">
@@ -104,7 +106,7 @@
     <script>
 
         pedigree_status_template = '<li><a href="/Genetics/pedigree/edit/{{pedigreeId}}"><span class="text">{{label}}</span></a>' +
-            '<a href="#" data-text="{{pedigreeId}}" class="MultiSelectRemove remove-one">Remove</a>' +
+            '<span data-text="{{pedigreeId}}" class="multi-select-remove remove-one"><i class="oe-i remove-circle small"></i></span>' +
             '<input type="hidden" name="GeneticsPatient[pedigrees][]" value="{{pedigreeId}}">' +
 
             '<select name="GeneticsPatient[pedigrees_through][{{pedigreeId}}][status_id]">' +

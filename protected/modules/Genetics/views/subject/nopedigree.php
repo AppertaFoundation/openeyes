@@ -20,7 +20,7 @@
             var checked = $(this).prop("checked");
             if(checked)
             {
-                $("#div_GeneticsPatient_Pedigree .MultiSelectList .MultiSelectRemove").trigger("click");
+                $("#div_GeneticsPatient_Pedigree .MultiSelectList .multi-select-remove").trigger("click");
                 $('#GeneticsPatient_pedigrees').prop('disabled', true).trigger("chosen:updated");
             }
             else
