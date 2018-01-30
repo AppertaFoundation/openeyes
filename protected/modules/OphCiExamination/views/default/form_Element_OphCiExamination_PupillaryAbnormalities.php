@@ -22,8 +22,8 @@
     ?> inactive<?php 
 }?>" data-side="right">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<?php echo $form->dropDownList($element, 'right_abnormality_id', $this->getPupilliaryAbnormalitiesList($element->right_abnormality_id), array('empty' => '-- Select --'), false, array('label' => 3, 'field' => 6)); ?>
+      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+        <?php echo $form->dropDownList($element, 'right_abnormality_id', $this->getPupilliaryAbnormalitiesList($element->right_abnormality_id), array('empty' => '-- Select --'), false, array('label' => 3, 'field' => 6)); ?>
 		</div>
 		<div class="inactive-form">
 			<div class="add-side">
@@ -37,8 +37,8 @@
     ?> inactive<?php 
 }?>" data-side="left">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<?php echo $form->dropDownList($element, 'left_abnormality_id', $this->getPupilliaryAbnormalitiesList($element->left_abnormality_id), array('empty' => '-- Select --'), false, array('label' => 3, 'field' => 6)) ?>
+      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+        <?php echo $form->dropDownList($element, 'left_abnormality_id', $this->getPupilliaryAbnormalitiesList($element->left_abnormality_id), array('empty' => '-- Select --'), false, array('label' => 3, 'field' => 6)) ?>
 		</div>
 		<div class="inactive-form">
 			<div class="add-side">

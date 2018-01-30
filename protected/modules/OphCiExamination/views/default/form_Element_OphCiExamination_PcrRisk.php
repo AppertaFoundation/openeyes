@@ -117,7 +117,7 @@ foreach (array('right', 'left') as $side):
         echo CHtml::hiddenField('gender', $pcr['gender']);
         ?>
         <div class="active-form">
-            <a href="#" class="icon-remove-side remove-side">Remove side</a>
+          <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
             <?php foreach ($dropDowns as $key => $data):
                 if ($key === 'doctor_grade_id'):?>
                     <div id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_pcr_doctor_grade" class="row field-row">

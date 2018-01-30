@@ -87,7 +87,7 @@ $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_B
     ?> inactive<?php 
 }?>" data-side="right">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<table class="bleb-assessment">
 				<thead>
 					<tr>
@@ -139,7 +139,7 @@ $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_B
     ?> inactive<?php 
 }?>" data-side="left">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<table cellspacing="0" class="bleb-assessment">
 				<thead>
 					<tr>

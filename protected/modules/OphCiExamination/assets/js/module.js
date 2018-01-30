@@ -1061,12 +1061,12 @@ $(document).ready(function() {
 
 
     // perform the inits for the elements
-    $('.js-active-elements .element,.js-active-elements .sub-element').each(function() {
-        var initFunctionName = $(this).attr('data-element-type-class').replace(OE_MODEL_PREFIX + 'Element_', '') + '_init';
-        if(typeof(window[initFunctionName]) == 'function') {
-            window[initFunctionName]();
-        }
-    });
+    // $('.js-active-elements .element,.js-active-elements .sub-element').each(function() {
+    //     var initFunctionName = $(this).attr('data-element-type-class').replace(OE_MODEL_PREFIX + 'Element_', '') + '_init';
+    //     if(typeof(window[initFunctionName]) == 'function') {
+    //         window[initFunctionName]();
+    //     }
+    // });
 
     updateTextMacros();
 

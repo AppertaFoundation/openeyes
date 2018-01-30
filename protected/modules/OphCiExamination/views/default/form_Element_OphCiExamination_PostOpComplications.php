@@ -61,9 +61,9 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
         ?>
 	<div class="element-eye right-eye column left side" data-side="right">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<?php
-                                echo $form->dropDownList(
+      echo $form->dropDownList(
                                     OphCiExamination_PostOpComplications::model(),
                                     'name', $right_eye_data,
                                     array(
@@ -135,7 +135,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 	</div>
 	<div class="element-eye left-eye column right side" data-side="left">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<?php echo $form->dropDownList(OphCiExamination_PostOpComplications::model(), 'name', $left_eye_data,
                                     array(
                                         'empty' => array('-1' => '-- Select --'),

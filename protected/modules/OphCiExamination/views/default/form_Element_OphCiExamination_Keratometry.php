@@ -40,7 +40,7 @@
 	?> inactive<?php
 }?>" data-side="right">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<div class="row field-row">
 				<div class="large-4 column">
 					<label><?php echo $element->getAttributeLabel('right_anterior_k1_value')?>:</label>
@@ -196,7 +196,7 @@
 	}?>" data-side="left">
 
 	<div class="active-form">
-		<a href="#" class="icon-remove-side remove-side">Remove side</a>
+    <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 		<div class="row field-row">
 			<div class="large-4 column">
 				<label><?php echo $element->getAttributeLabel('left_anterior_k1_value')?>:</label>

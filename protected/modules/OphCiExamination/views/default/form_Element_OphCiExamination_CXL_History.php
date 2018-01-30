@@ -128,7 +128,7 @@
         ?> inactive<?php
     }?>" data-side="right">
         <div class="active-form">
-            <a href="#" class="icon-remove-side remove-side">Remove side</a>
+          <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
             <div class="row field-row">
                 <div class="large-5 column">
                     <label><?php echo $element->getAttributeLabel('right_previous_cxl_value')?>:</label>
@@ -267,7 +267,7 @@
         ?> inactive<?php
     }?>" data-side="left">
         <div class="active-form">
-            <a href="#" class="icon-remove-side remove-side">Remove side</a>
+          <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
             <div class="row field-row">
                 <div class="large-5 column">
                     <label><?php echo $element->getAttributeLabel('left_previous_cxl_value')?>:</label>

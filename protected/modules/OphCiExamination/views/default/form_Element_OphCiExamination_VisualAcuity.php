@@ -56,7 +56,7 @@ $this->endClip('element-title-additional');
     ?> inactive<?php 
 }?>" data-side="right">
         <div class="active-form">
-            <a href="#" class="icon-remove-side remove-side">Remove side</a>
+          <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
             <table class="blank va_readings"<?php if (!$element->right_readings) {
     ?> style="display: none;" <?php 
 } ?>>
@@ -107,7 +107,7 @@ $this->endClip('element-title-additional');
     ?> inactive<?php 
 }?>" data-side="left">
         <div class="active-form">
-            <a href="#" class="icon-remove-side remove-side">Remove side</a>
+          <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
             <table class="blank va_readings"<?php if (!$element->left_readings) {
     ?> style="display: none;" <?php 
 } ?>>

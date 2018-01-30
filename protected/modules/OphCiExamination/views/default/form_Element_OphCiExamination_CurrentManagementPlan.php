@@ -73,7 +73,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CurrentManag
     ?> inactive<?php 
 }?>" data-side="right">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<div id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_right_iop_id" class="row field-row">
 				<div class="large-3 column"><label>IOP:</label></div>
 				<div class="large-8 column end" id="OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_right_iop"><?php echo ($iop == null) ? 'N/A' : $iop['rightIOP'].' mmHg'?></div>
@@ -95,7 +95,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CurrentManag
     ?> inactive<?php 
 }?>" data-side="left">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<div id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_left_iop_id" class="row field-row">
 				<div class="large-3 column"><label>IOP:</label></div>
 				<div class="large-8 column end" id="OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_left_iop"><?php echo ($iop == null) ? 'N/A' : $iop['leftIOP'].' mmHg'?></div>

@@ -35,7 +35,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
     ?> inactive<?php 
 }?>" data-side="right">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<div class="field-row">
 				<?php echo $form->dropDownListNoPost('colourvision_method_right', CHtml::listData($element->getUnusedReadingMethods('right'), 'id', 'name'), '', array('class' => 'inline colourvision_method', 'empty' => '--- Please select ---', 'nowrapper' => true))?>
 				<button class="small secondary clearCV<?php if (!$element->right_readings) {
@@ -81,7 +81,7 @@ foreach (OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method::
     ?> inactive<?php 
 }?>" data-side="left">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<div class="field-row">
 				<?php echo $form->dropDownListNoPost('colourvision_method_left', CHtml::listData($element->getUnusedReadingMethods('left'), 'id', 'name'), '', array('class' => 'inline colourvision_method', 'empty' => '--- Please select ---', 'nowrapper' => true))?>
 				<button class="small secondary clearCV<?php if (!$element->left_readings) {

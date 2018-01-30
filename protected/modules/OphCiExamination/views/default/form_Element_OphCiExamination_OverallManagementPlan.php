@@ -76,7 +76,7 @@ $targetIOPS =
     ?> inactive<?php 
 }?>" data-side="right">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<div class="row field-row">
 				<div class="large-3 column"><label for="<?= CHtml::modelName($element).'[right_target_iop_id]' ?>">Target IOP:</label></div>
 				<div class="large-3 column"><?= $form->dropDownList($element, 'right_target_iop_id', $targetIOPS, array('nowrapper' => true, 'empty' => '- Select -')) ?></div>
@@ -95,7 +95,7 @@ $targetIOPS =
     ?> inactive<?php 
 }?>" data-side="left">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<div class="row field-row">
 				<div class="large-3 column"><label for="<?= CHtml::modelName($element).'[left_target_iop_id]' ?>">Target IOP:</label></div>
 				<div class="large-3 column"><?= $form->dropDownList($element, 'left_target_iop_id', $targetIOPS, array('nowrapper' => true, 'empty' => '- Select -')) ?></div>

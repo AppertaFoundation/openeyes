@@ -26,7 +26,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/IntraocularP
     ?> inactive<?php 
 }?>" data-side="right">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<?php $this->renderPartial($element->form_view.'_side', array('side' => 'right', 'element' => $element, 'form' => $form))?>
 		</div>
 		<div class="inactive-form">
@@ -41,7 +41,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/IntraocularP
     ?> inactive<?php 
 }?>" data-side="left">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
+      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<?php $this->renderPartial($element->form_view.'_side', array('side' => 'left', 'element' => $element, 'form' => $form))?>
 		</div>
 		<div class="inactive-form">
