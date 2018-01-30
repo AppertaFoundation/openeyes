@@ -19,34 +19,39 @@
 <?php if (@$htmlOptions['nowrapper']) { ?>
     <?php echo CHtml::activeDropDownList($element, $field, $data, $htmlOptions) ?>
 <?php } else { ?>
-<div id="div_<?php echo CHtml::modelName($element) ?>_<?php echo $field ?>" class="row field-row"<?php if (@$hidden) { ?> style="display: none;"<?php } ?>>
+<div id="div_<?php echo CHtml::modelName($element) ?>_<?php echo $field ?>"
+     class="row field-row"<?php if (@$hidden) { ?> style="display: none;"<?php } ?>>
 
     <?php if (@$htmlOptions['layout'] === 'vertical') { ?>
-  <div class="large-12 column end">
+  <div class="cols-12 column">
     <label for="<?php echo CHtml::modelName($element) ?>_<?php echo $field ?>">
         <?php echo CHtml::encode($element->getAttributeLabel($field)) ?>
     </label>
       <?php } else { ?>
-        <div class="large-<?php echo $layoutColumns['label']; ?> column">
+        <div class="cols-<?php echo $layoutColumns['label']; ?> column">
             <?php if (!@$htmlOptions['nolabel']) { ?>
-              <label for="<?php echo CHtml::modelName($element) ?>_<?php echo $field ?>"><?php echo $element->getAttributeLabel($field) ?>:</label>
+              <label
+                  for="<?php echo CHtml::modelName($element) ?>_<?php echo $field ?>"><?php echo $element->getAttributeLabel($field) ?>
+                :</label>
             <?php } ?>
         </div>
       <?php } ?>
 
       <?php if (@$htmlOptions['layout'] !== 'vertical') { ?>
-    <div class="large-<?php echo $layoutColumns['field']; ?> column end">
+    <div class="cols-<?php echo $layoutColumns['field']; ?> column">
         <?php } ?>
 
         <?php if (@$htmlOptions['divided']) { ?>
-          <select name="<?php echo CHtml::modelName($element) ?>[<?php echo $field ?>]" id="<?php echo CHtml::modelName($element) ?>_<?php echo $field ?>">
+          <select name="<?php echo CHtml::modelName($element) ?>[<?php echo $field ?>]"
+                  id="<?php echo CHtml::modelName($element) ?>_<?php echo $field ?>">
               <?php if (isset($htmlOptions['empty'])) { ?>
                 <option value=""><?php echo $htmlOptions['empty'] ?></option>
               <?php } ?>
               <?php foreach ($data as $i => $optgroup) { ?>
                 <optgroup label="---------------">
                     <?php foreach ($optgroup as $id => $option) { ?>
-                      <option value="<?php echo $id ?>"<?php if ($id == $value) { ?> selected="selected"<?php } ?>><?php echo CHtml::encode($option) ?></option>
+                      <option
+                          value="<?php echo $id ?>"<?php if ($id == $value) { ?> selected="selected"<?php } ?>><?php echo CHtml::encode($option) ?></option>
                     <?php } ?>
                 </optgroup>
               <?php } ?>
@@ -61,7 +66,6 @@
             }
             echo CHtml::activeDropDownList($element, $field, $data, $htmlOptions) ?>
         <?php } ?>
-
     </div>
   </div>
-<?php } ?>
+    <?php } ?>
