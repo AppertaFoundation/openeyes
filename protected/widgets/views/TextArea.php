@@ -21,7 +21,7 @@
 		<div class="cols-<?php echo $layoutColumns['label']?>">
 			<label for="<?php echo CHtml::modelName($element)."_$field"?>"><?php if ($label) echo CHtml::encode($element->getAttributeLabel($field)).':'?></label>
 		</div>
-		<div class="cols-<?php echo $layoutColumns['field']?>">
+		<div class="cols-<?php echo $layoutColumns['field']?> column">
 	<?php }?>
 	<?php
     $attr = array(
@@ -36,7 +36,7 @@
         $attr['cols'] = $cols;
     }
     ?>
- 	<textarea class="cols-<?php echo $layoutColumns['field']?>"
+ 	<textarea class="cols-<?php echo $layoutColumns['field']?> column"
 			<?php echo CHtml::renderAttributes(array_merge($htmlOptions, $attr));?>><?php echo CHtml::encode($value)?></textarea>
 		<?php if (!$nowrapper) {?>
 			<?php if ($button) {?>
