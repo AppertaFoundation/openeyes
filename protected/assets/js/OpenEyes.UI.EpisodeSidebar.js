@@ -227,11 +227,11 @@
 
   EpisodeSidebar.prototype.getListControls = function () {
     var controls = '<div class="list-controls">';
-    controls += '<span class="sorting-order asc"><i class="oe-i arrow-up"></i></span>';
-    controls += '<span class="sorting-order desc"><i class="oe-i arrow-down"></i></span>';
+    controls += '<span class="sorting-order asc"><i class="oe-i arrow-up pro-theme"></i></span>';
+    controls += '<span class="sorting-order desc"><i class="oe-i arrow-down pro-theme"></i></span>';
     controls += '<div class="right">';
-    controls += '<span class="expand-all"><i class="oe-i plus"></i></span>';
-    controls += '<span class="collapse-all"><i class="oe-i minus"></i></span>';
+    controls += '<span class="expand-all"><i class="oe-i plus pro-theme"></i></span>';
+    controls += '<span class="collapse-all"><i class="oe-i minus pro-theme"></i></span>';
     controls += '</div>';
     controls += '</div>';
     return controls;
@@ -271,8 +271,8 @@
     $(groupingVals).each(function () {
       var grouping = '<div class="collapse-group" data-grouping-val="' + this + '">' +
         '<div class="collapse-group-icon">' +
-        '<i class="oe-i minus"></i>' +
-        '<i class="oe-i plus"></i>' +
+        '<i class="oe-i minus pro-theme"></i>' +
+        '<i class="oe-i plus pro-theme"></i>' +
         '</div>' +
         '<h3 class="collapse-group-header">' +
         this + ' <span class="count">(' + itemsByGrouping[this].length.toString() + ')</span>' +
