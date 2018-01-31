@@ -146,6 +146,8 @@ function generateViewToFile( res , index, value , filedata ){
         break;
         case 'mp4':
         case 'ogg':
+        case 'mov':
+	case 'quicktime':
             result = createOPHCOVideoContainer( res , value , extension , index );
         break;
     }
