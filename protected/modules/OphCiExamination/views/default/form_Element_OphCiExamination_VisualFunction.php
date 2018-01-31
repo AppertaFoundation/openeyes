@@ -17,15 +17,13 @@
  */
 ?>
 
-<div class="element-fields flex-layout full-width">
+<div class="element-fields element-eyes ">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
-    ?> inactive<?php 
-}?>" data-side="right">
-		<div class="active-form">
+	<div class="element-eye right-eye left side <?php if (!$element->hasRight()) { ?> inactive <?php } ?> " data-side="right">
+		<div class="active-form field-row flex-layout">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-      <div class="field-row row">
-				<div class="large-12 column end">
+      <div class="cols-9">
+				<div class="cols-full">
 					<?php echo $form->radioButtons($element, 'right_rapd', array(
                             0 => 'Not Checked',
                             1 => 'Yes',
@@ -42,12 +40,23 @@
                         ));
                     ?>
 				</div>
+        <div class="field-row-pad-top" style="display: none;">
+            <?php echo $form->textArea($element, 'right_comments', array('rows' => 1, 'nowrapper' => true), false, array('placeholder' => $element->getAttributeLabel('right_comments'))) ?>
+        </div>
 			</div>
-			<div class="field-row">
-				<?php echo $form->textArea($element, 'right_comments', array('rows' => 1, 'nowrapper' => true), false, array('placeholder' => $element->getAttributeLabel('right_comments'))) ?>
-			</div>
+      <!-- Cols -->
+      <div class="flex-item-bottom">
+        <button class="button js-add-comments" data-input="#pupils-right-comments">
+          <i class="oe-i comments small-icon"></i>
+        </button>
+        <button class="button hint green js-add-select-search">
+          <i class="oe-i plus pro-theme"></i>
+        </button>
+      </div>
+      <!--flex bottom-->
 		</div>
-		<div class="inactive-form">
+    <!-- active form-->
+		<div class="inactive-form" style="display: none">
 			<div class="add-side">
 				<a href="#">
 					Add right side <span class="icon-add-side"></span>
@@ -55,13 +64,11 @@
 			</div>
 		</div>
 	</div>
-	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {
-    ?> inactive<?php 
-}?>" data-side="left">
-		<div class="active-form flex-layout">
+	<div class="element-eye left-eye right side <?php if (!$element->hasLeft()) { ?> inactive <?php } ?>" data-side="left">
+		<div class="active-form field-row flex-layout">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-      <div class="field-row row">
-				<div class="large-12 column end">
+      <div class="cols-9">
+				<div class="cols-full">
 					<?php echo $form->radioButtons($element, 'left_rapd', array(
                             0 => 'Not Checked',
                             1 => 'Yes',
@@ -78,12 +85,22 @@
                         ));
                     ?>
 				</div>
+        <div class="field-row-pad-top" style="display:none">
+            <?php echo $form->textArea($element, 'left_comments', array('rows' => 1, 'nowrapper' => true), false, array('placeholder' => $element->getAttributeLabel('left_comments')) ); ?>
+        </div>
 			</div>
-			<div class="field-row">
-				<?php echo $form->textArea($element, 'left_comments', array('rows' => 1, 'nowrapper' => true), false, array('placeholder' => $element->getAttributeLabel('left_comments')) ); ?>
-			</div>
+      <!-- Cols -->
+      <div class="flex-item-bottom">
+        <button class="button js-add-comments" data-input="#pupils-right-comments">
+          <i class="oe-i comments small-icon"></i>
+        </button>
+        <button class="button hint green js-add-select-search">
+          <i class="oe-i plus pro-theme"></i>
+        </button>
+      </div>
+      <!--flex bottom-->
 		</div>
-		<div class="inactive-form">
+		<div class="inactive-form" style="display: none">
 			<div class="add-side">
 				<a href="#">
 					Add left side <span class="icon-add-side"></span>
