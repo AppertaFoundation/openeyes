@@ -14,10 +14,6 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$items_per_page = $dp->getPagination()->getPageSize();
-$page_num = $dp->getPagination()->getCurrentPage();
-$from = ($page_num * $items_per_page) + 1;
-$to = min(($page_num + 1) * $items_per_page, $dp->totalItemCount);
 
 ?>
 
@@ -39,9 +35,15 @@ $to = min(($page_num + 1) * $items_per_page, $dp->totalItemCount);
     <th>Messages</th>
     <th></th>
     <th colspan="3">
-        <?php echo $from . ' - ' . $to . ' of ' . $dp->totalItemCount; ?>
-      <i class="oe-i arrow-left-bold medium pad"></i>
-      <i class="oe-i arrow-right-bold medium pad"></i>
+        <?php $this->widget('LinkPager', array(
+                'pages' => $dp->getPagination(),
+                'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
+                'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
+                'htmlOptions' => array(
+                    'class' => 'pagination',
+                ),
+            )
+        ); ?>
     </th>
   </tr>
   </thead>

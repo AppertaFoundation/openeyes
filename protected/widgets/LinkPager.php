@@ -17,7 +17,7 @@
  */
 
 /**
- * Extends CLinkPager to add a 'showing 1 to 100 of 187' line.
+ * Extends CLinkPager to add a 1 - 100 of 187' line.
  */
 class LinkPager extends CLinkPager
 {
@@ -41,9 +41,65 @@ class LinkPager extends CLinkPager
             $to = $this->getItemCount();
         }
         $from = $page;
+
         if ($page > 1) {
             $from = (($page - 1) * $this->pages->getPageSize()) + 1;
         }
-        $this->header = 'Showing '.$from.' to '.$to.' of '.$this->getItemCount();
+
+        $this->header = $from.' - '.$to.' of '.$this->getItemCount();
+    }
+
+    /**
+     * LinkPager overrides CLinkPager's run function to render the next/previous buttons as sequential i tags rather than list tags.
+     */
+    public function run()
+    {
+        $this->registerClientScript();
+        $buttons=$this->createPageButtons();
+        if(empty($buttons))
+            return;
+        echo $this->header;
+        echo implode("\n",$buttons); // There will only ever be a maximum of two buttons when using this pager (next/previous).
+        echo $this->footer;
+    }
+
+    /**
+     * Create the next/previous buttons
+     * @return array Previous/next buttons
+     */
+    protected function createPageButtons()
+    {
+        if(($pageCount=$this->getPageCount())<=1)
+            return array();
+
+        $currentPage=$this->getCurrentPage(false); // currentPage is calculated in getPageRange()
+        $buttons=array();
+
+        // prev page
+        if(($page=$currentPage-1)<0)
+            $page=0;
+        $buttons[]=$this->createPageButton($this->prevPageLabel,$page,$this->previousPageCssClass,$currentPage<=0,false);
+
+        // next page
+        if(($page=$currentPage+1)>=$pageCount-1)
+            $page=$pageCount-1;
+        $buttons[]=$this->createPageButton($this->nextPageLabel,$page,$this->nextPageCssClass,$currentPage>=$pageCount-1,false);
+
+        return $buttons;
+    }
+
+    /**
+     * @param string $label Button label (unused)
+     * @param int $page Page number (unused)
+     * @param string $class Button class
+     * @param bool $hidden Indicates if the button is hidden from sight
+     * @param bool $selected Indicates if the button has been selected.
+     * @return string HTML for the given button.
+     */
+    protected function createPageButton($label,$page,$class,$hidden,$selected)
+    {
+        if($hidden || $selected)
+            $class.=' '.($hidden ? $this->hiddenPageCssClass : $this->selectedPageCssClass);
+        return CHtml::link('<i class="'.$class.'"></i>',$this->createPageUrl($page));
     }
 }

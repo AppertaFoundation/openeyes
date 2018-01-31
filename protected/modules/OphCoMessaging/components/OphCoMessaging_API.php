@@ -137,12 +137,15 @@ class OphCoMessaging_API extends \BaseAPI
 
         $criteria->params = $params;
 
+        $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
+
         $dp = new \CActiveDataProvider('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
             array(
                 'sort' => $sort,
                 'criteria' => $criteria,
                 'pagination' => array(
                     'pageSize' => 10,
+                    'itemCount' => $total_messages
                 ),
             ));
 
@@ -151,8 +154,6 @@ class OphCoMessaging_API extends \BaseAPI
 
         $unread_criteria->mergeWith($criteria);
         $unread_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($unread_criteria);
-
-
 
         return array(
             'list' => $dp,
@@ -217,14 +218,18 @@ class OphCoMessaging_API extends \BaseAPI
 
         $criteria->params = $params;
 
+        $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
+
         $dataProvider = new \CActiveDataProvider('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
             array(
                 'sort' => $sort,
                 'criteria' => $criteria,
                 'pagination' => array(
                     'pageSize' => 10,
+                    'itemCount' => $total_messages
                 ),
             ));
+
 
         $unread_criteria = new \CDbCriteria();
         $unread_criteria->addCondition('t.marked_as_read != 1');
