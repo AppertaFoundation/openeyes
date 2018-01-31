@@ -29,7 +29,7 @@
               <?php echo $form->textField($element, 'result', $element->getHtmlOptionsForInput('result'), array());?>
           </tr>
           <tr>
-              <?php echo $form->textArea($element, 'comment', array(), false);?>
+              <?php echo $form->textArea($element, 'comment', $element->getHtmlOptionsForInput('comment'), array());?>
           </tr>
         </tbody>
       </table>
