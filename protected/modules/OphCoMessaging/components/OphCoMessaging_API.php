@@ -109,36 +109,7 @@ class OphCoMessaging_API extends \BaseAPI
 
         $sort->defaultOrder = 'event_date desc';
 
-        $from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
-        $to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
-        $params = array(':uid' => $user->id);
-
-        $criteria = new \CDbCriteria();
-        $criteria->select = array(
-            '*',
-            new \CDbExpression('IF(comment.created_user_id = :uid, t.message_text, IF(comment.marked_as_read = 0, comment.comment_text, t.message_text))  as message_text'),
-            new \CDbExpression('IF(comment.created_user_id = :uid, t.created_date, IF(comment.marked_as_read = 0, comment.created_date, t.created_date))  as created_date'),
-            new \CDbExpression('IF(comment.created_user_id = :uid, t.created_user_id, IF(comment.marked_as_read = 0, comment.created_user_id, t.created_user_id)) as created_user_id'),
-        );
-
-        $criteria->addCondition('t.for_the_attention_of_user_id = :uid');
-        $criteria->addCondition('t.created_user_id = :uid AND comment.marked_as_read = 0', 'OR');
-        $criteria->join = 'LEFT JOIN ophcomessaging_message_comment AS comment ON t.id = comment.element_id';
-        $criteria->with = array('event', 'for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact');
-        $criteria->together = true;
-        if ($from) {
-            $criteria->addCondition('DATE(t.created_date) >= :from');
-            $params[':from'] = \Helper::convertNHS2MySQL($from);
-        }
-        if ($to) {
-            $criteria->addCondition('DATE(t.created_date) <= :to');
-            $params[':to'] = \Helper::convertNHS2MySQL($to);
-        }
-
-        $criteria->addCondition('event.deleted = 0');
-        $criteria->addCondition('episode.deleted = 0');
-
-        $criteria->params = $params;
+        $criteria = $this->buildInboxCriteria($user);
 
         $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
 
@@ -196,37 +167,8 @@ class OphCoMessaging_API extends \BaseAPI
 
         $sort->defaultOrder = 'event_date desc';
 
-        $from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
-        $to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
-        $params = array(':uid' => $user->id);
-
-        $criteria = new \CDbCriteria();
-        $criteria->select = array(
-            '*',
-            new \CDbExpression('IF(comment.created_user_id = :uid, t.message_text, IF(comment.marked_as_read = 0, comment.comment_text, t.message_text))  as message_text'),
-            new \CDbExpression('IF(comment.created_user_id = :uid, t.created_date, IF(comment.marked_as_read = 0, comment.created_date, t.created_date))  as created_date'),
-            new \CDbExpression('IF(comment.created_user_id = :uid, t.created_user_id, IF(comment.marked_as_read = 0, comment.created_user_id, t.created_user_id)) as created_user_id'),
-        );
-
-        $criteria->addCondition('t.for_the_attention_of_user_id = :uid');
-        $criteria->addCondition('t.created_user_id = :uid AND comment.marked_as_read = 0', 'OR');
-        $criteria->join = 'LEFT JOIN ophcomessaging_message_comment AS comment ON t.id = comment.element_id';
-        $criteria->with = array('event', 'for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact');
-        $criteria->together = true;
-        if ($from) {
-            $criteria->addCondition('DATE(t.created_date) >= :from');
-            $params[':from'] = \Helper::convertNHS2MySQL($from);
-        }
-        if ($to) {
-            $criteria->addCondition('DATE(t.created_date) <= :to');
-            $params[':to'] = \Helper::convertNHS2MySQL($to);
-        }
-
-        $criteria->addCondition('event.deleted = 0');
-        $criteria->addCondition('episode.deleted = 0');
+        $criteria = $this->buildInboxCriteria($user);
         $criteria->addCondition('t.urgent != 0');
-
-        $criteria->params = $params;
 
         $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
 
@@ -332,5 +274,44 @@ class OphCoMessaging_API extends \BaseAPI
             'list' => $dataProvider,
             'unread' => $unread_messages
         );
+    }
+
+    /**
+     * @param $user \CWebUser
+     * @return \CDbCriteria Criteria common to both the inbox and urgent tabs.
+     */
+    private function buildInboxCriteria($user)
+    {
+        $from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
+        $to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
+        $params = array(':uid' => $user->id);
+
+        $criteria = new \CDbCriteria();
+        $criteria->select = array(
+            '*',
+            new \CDbExpression('IF(comment.created_user_id = :uid, t.message_text, IF(comment.marked_as_read = 0, comment.comment_text, t.message_text))  as message_text'),
+            new \CDbExpression('IF(comment.created_user_id = :uid, t.created_date, IF(comment.marked_as_read = 0, comment.created_date, t.created_date))  as created_date'),
+            new \CDbExpression('IF(comment.created_user_id = :uid, t.created_user_id, IF(comment.marked_as_read = 0, comment.created_user_id, t.created_user_id)) as created_user_id'),
+        );
+
+        $criteria->addCondition('t.for_the_attention_of_user_id = :uid');
+        $criteria->addCondition('t.created_user_id = :uid AND comment.marked_as_read = 0', 'OR');
+        $criteria->join = 'LEFT JOIN ophcomessaging_message_comment AS comment ON t.id = comment.element_id';
+        $criteria->with = array('event', 'for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact');
+        $criteria->together = true;
+        if ($from) {
+            $criteria->addCondition('DATE(t.created_date) >= :from');
+            $params[':from'] = \Helper::convertNHS2MySQL($from);
+        }
+        if ($to) {
+            $criteria->addCondition('DATE(t.created_date) <= :to');
+            $params[':to'] = \Helper::convertNHS2MySQL($to);
+        }
+
+        $criteria->addCondition('event.deleted = 0');
+        $criteria->addCondition('episode.deleted = 0');
+        $criteria->params = $params;
+
+        return $criteria;
     }
 }
