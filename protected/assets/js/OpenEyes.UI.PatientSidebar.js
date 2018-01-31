@@ -165,7 +165,6 @@
 
     PatientSidebar.prototype.loadClickedItem = function($item, data, callback)
     {
-
         var self = this;
 
         if (!$item.hasClass('selected')) {
@@ -326,16 +325,22 @@
         //children
         if (itemData.children && itemData.children.length) {
              var subList = $('<ul>').addClass('oe-element-list collapse-group-content');
+
             $.each(itemData.children, function () {
-              var subListItem = $("<li>").attr('id','side-element-'+this.name ).addClass('element');
+              var id_name = this.name.replace(/\s+/g,'-');
+              var subListItem = $("<li>").attr('id','side-element-'+id_name ).addClass('element');
+              subListItem.append('<a href="#">'+this.name+'</a>');
               subList.append(subListItem);
             });
 
             if (!open) {
                 subList.hide();
             }
-          item.append(subList);
+            item.append(subList);
             item.addClass('has-children');
+            item.addClass('has-children');
+        }
+        else {
         }
         return item;
     };
