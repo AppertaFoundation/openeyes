@@ -87,14 +87,14 @@ $warnings = $this->patient->getWarnings($clinical);
 			<?php $this->renderPartial('_patient_contacts')?>
 			<?php $this->renderModulePartials('patient_summary_column1')?>
     </div>
-		<div class="col-right" id="patient-summary-form-container">
-            <?php if ($component = $this->getApp()->getComponent('internalReferralIntegration')): ?>
-                <section class="box patient-info internalreferral internalreferral-doclist">
-                        <?php echo CHtml::link('View patient referrals',$component->generateUrlForDocumentList($this->patient)); ?>
-                        <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-                        <span>e-WinDIP</span>
-                </section>
-            <?php endif; ?>
+    <div class="col-right" id="patient-summary-form-container">
+        <?php if ($component = $this->getApp()->getComponent('internalReferralIntegration')): ?>
+          <section class="box patient-info internalreferral internalreferral-doclist">
+              <?php echo CHtml::link('View patient referrals', $component->generateUrlForDocumentList($this->patient)); ?>
+            <i class="spinner" title="Loading..." style="display: none;"></i>
+            <span>e-WinDIP</span>
+          </section>
+        <?php endif; ?>
 
             <?php if ($this->checkAccess('OprnViewClinical')) {?>
 				<?php $this->renderPartial('_patient_episodes', array(

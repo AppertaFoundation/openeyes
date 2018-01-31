@@ -17,8 +17,7 @@
  */
 ?>
 <div class="buttons-right">
-  <img class="loader" style="display: none;"
-       src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..."/>
+  <i class="spinner" title="Loading..." style="display: none;"></i>
     <?php foreach ($this->event_actions as $action) { ?>
         <?php echo $action->toHtml(); ?>
     <?php } ?>

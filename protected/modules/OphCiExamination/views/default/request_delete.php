@@ -40,7 +40,7 @@
 			<button type="submit" class="secondary" id="et_canceldelete" name="et_canceldelete">
 				Cancel
 			</button>
-			<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+    <i class="spinner" title="Loading..." style="display: none;"></i>
 		<?php echo CHtml::endForm(); ?>
 	</div>
 

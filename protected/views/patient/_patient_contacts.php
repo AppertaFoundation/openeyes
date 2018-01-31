@@ -264,7 +264,7 @@
                 <button class="small btn_add_site" type="submit">Add site/institution</button>
               </div>
               <div class="large-7 column text-right">
-                <img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" class="add_contact_loader" style="display: none;"/>
+                <i class="spinner" title="Loading..." style="display: none;"></i>
                 <button class="secondary small btn_save_contact" type="submit">Save</button>
                 <button class="warning small btn_cancel_contact" type="submit">Cancel</button>
               </div>
