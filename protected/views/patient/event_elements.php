@@ -17,7 +17,7 @@
  */
 ?>
 
-<div class="js-active-elements">
+<div class="js-active-elements" id="element-content">
 	<?php $this->renderOpenElements($this->action->id, $form)?>
 </div>
 

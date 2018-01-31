@@ -27,13 +27,18 @@
     echo 'full priority eye-divider view-visual-acuity';
   }
   elseif (@$child) {  echo 'tile'; } else { echo 'full priority';} ?>
-	view-<?php echo $element->elementType->name?>">
+	view-<?php echo $element->elementType->name?>"
+         data-element-type-id="<?php echo $element->elementType->id?>"
+         data-element-type-class="<?php echo $element->elementType->class_name?>"
+         data-element-type-name="<?php echo $element->elementType->name?>"
+         data-element-display-order="<?php echo $element->elementType->display_order?>">
 	<?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
 		<header class=" element-header">
 			<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
 		</header>
 	<?php } ?>
 	<?php echo $content;?>
+
 </section>
 
 <?php $child_elements = $this->getChildElements($element->getElementType());

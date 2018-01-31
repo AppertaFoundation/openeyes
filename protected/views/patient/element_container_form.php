@@ -33,20 +33,13 @@ $element_Type = $element->getElementType();
 ?>
 
 <?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
-  <section
-    class="<?php echo implode(' ', $section_classes); ?>"
-      data-element-type-id="<?php echo $element->elementType->id ?>"
-      data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
-      data-element-type-name="<?php echo $element->elementType->name ?>"
-      data-element-display-order="<?= $element->getChildDisplayOrder($this->action) ?>"
-      data-element-parent-id="<?php
-      if ($element->elementType->isChild()) {
-          echo $element->elementType->parent_element_type_id;
-      } ?>"
-      data-element-parent-display-order="<?= $element->getParentDisplayOrder($this->action) ?>"
 
-      style="min-height: 80px;"
-  >
+<section
+	class="<?php echo implode(' ', $section_classes);?>"
+	data-element-type-id="<?php echo $element->elementType->id?>"
+  data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
+  data-element-type-name="<?php echo $element->elementType->name?>"
+	data-element-display-order="<?php echo $element->elementType->display_order?>">
 
       <?php if (!property_exists($element, 'hide_form_header') || !$element->hide_form_header) { ?>
         <header class="element-header">

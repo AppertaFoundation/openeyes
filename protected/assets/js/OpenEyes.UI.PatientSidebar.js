@@ -58,7 +58,6 @@
     PatientSidebar.prototype.create = function() {
         var self = this;
 
-        console.log(self.$element);
         var $scrollElement = self.$element;
         var $newContent = $('<div class="groupings"></div>');
 
@@ -71,13 +70,9 @@
         self.parseJSON();
 
         self.buildTree();
-        console.log(self.$element);
-        console.log($newContent);
         $scrollElement.append($newContent);
-        if (this.sidebarController) {
-            this.sidebarController.checkSideNavHeight();
-        }
 
+        //
         // self.$elementContainer = $(document).find(self.options.element_container_selector);
         //
         // // couple of hooks to keep the menu in sync with the elements on the page.
@@ -88,37 +83,50 @@
         // self.$elementContainer.on('click', '.js-remove-child-element', function(e) {
         //     self.removeElememt(e.target);
         // });
-        //
-        // // expand or collapse the menu for the given menu item
-        // self.$element.on('click', 'a .icon', function(e) {
-        //     e.preventDefault();
-        //     e.stopPropagation();
-        //
-        //     var li = $(this).parent().parent();
-        //     if($(this).hasClass('expand')){
-        //         li.removeClass('collapsed').addClass('expanded');
-        //         li.children('ul.children').slideDown(100);
-        //         $(this).removeClass('expand').addClass('collapse');
-        //     } else {
-        //         li.removeClass('expanded').addClass('collapsed');
-        //         li.children('ul.children').slideUp(100);
-        //         $(this).removeClass('collapse').addClass('expand');
-        //     }
-        // });
-        //
-        // // if the clicked element is a child, ensures parent loaded first. if the element is already
-        // // loaded, then just move the view port appropriately.
-        // self.$element.on('click', 'a', function(e) {
-        //     e.preventDefault();
-        //     self.loadClickedItem($(e.target));
-        //     var li = $(e.target).parent();
-        //     if (li.hasClass('has-children') && li.hasClass('collapsed')) {
-        //         $(e.target).find('.icon').trigger('click');
-        //     }
-        // }.bind(self));
-    };
 
-    /**
+      // find and set up all collapse-groups
+      $('.collapse-group').each(function() {
+        var group = new CollapseGroup($(this).find('.collapse-group-icon .oe-i'),
+          $(this).find('.collapse-group-header'),
+          $(this).find('.collapse-group-content'),
+          $(this).data('collapse'));
+      });
+
+        // if the clicked element is a child, ensures parent loaded first. if the element is already
+        // loaded, then just move the view port appropriately.
+        self.$element.on('click', '.element', function(e) {
+            e.preventDefault();
+            self.loadClickedItem($(e.target));
+        }.bind(self));
+    };
+  function CollapseGroup( icon, header, content, initialState ){
+    var $icon = icon,
+      $header = header,
+      $content = content,
+      expanded = initialState == 'expanded' ? true : false;
+
+    if(expanded == false) $content.removeClass('hidden').hide();
+
+    $icon.click(function(){
+      change();
+    });
+
+    $header.click(function(){
+      change();
+    });
+
+    function change(){
+      if(expanded){
+        $content.hide();
+      } else {
+        $content.show();
+      }
+
+      $icon.toggleClass('minus plus');
+      expanded = !expanded;
+    }
+  }
+  /**
      * Calls the function that will set the view port to the given element for the menu item.
      */
     PatientSidebar.prototype.moveTo = function($item) {
@@ -159,6 +167,7 @@
 
     PatientSidebar.prototype.loadClickedItem = function($item, data, callback)
     {
+
         var self = this;
 
         if (!$item.hasClass('selected')) {
@@ -167,7 +176,6 @@
             if ($item.parent().hasClass('child')) {
                 // child element, need to ensure parent loaded first.
                 var $parent = $item.parents('li:last').find('a:first');
-
 
                 if (!$parent.hasClass('selected')) {
                     $parent.addClass('selected');
@@ -188,7 +196,7 @@
             if (callback)
               callback();
         }
-    }
+    };
 
     /**
      * Loads a selected element
@@ -199,7 +207,13 @@
      */
     PatientSidebar.prototype.loadElement = function(item, data, callback) {
         var self = this;
-        var $parentLi = $(item).parents('li:first');
+        console.log("LoadElement self");
+        console.log(self);
+        console.log("LoadElement item");
+        console.log(item);
+        console.log("LoadElement data");
+        console.log(data);
+        var $parentLi = $(item).parent().parent();
         if (data === undefined)
             data = {};
 
@@ -314,7 +328,7 @@
         var self = this;
         var open = $.inArray(itemData.class_name, self.patient_open_elements) !== -1;
         var itemClass = "collapse-group";
-        var hrefClass = '';
+        var hrefClass = 'has-icon';
 
         if (open)
             hrefClass += ' selected';
@@ -329,22 +343,29 @@
           .data('element-type-id', itemData.id)
           .data('element-display-order', itemData.display_order)
           .data('element-type-name', itemData.name)
+          .attr( 'data-collapse', 'collapsed')
           .addClass(itemClass);
 
-
-        item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme minus"></i></div> <h3 class="collapse-group-header">'+itemData.name+'</h3>');
+      item.append('<a href="#" class="' + hrefClass + '"></a>');
+      item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme plus"></i></div> <h3 class="collapse-group-header">'+itemData.name+'</h3>');
         //children
         if (itemData.children && itemData.children.length) {
              var subList = $('<ul>').addClass('oe-element-list collapse-group-content');
+
             $.each(itemData.children, function () {
-              var subListItem = $("<li>").attr('id','side-element-'+this.name ).addClass('element');
+              var id_name = this.name.replace(/\s+/g,'-');
+              var subListItem = $("<li>").attr('id','side-element-'+id_name ).addClass('element');
+              subListItem.append('<a href="#">'+this.name+'</a>');
               subList.append(subListItem);
             });
 
             if (!open) {
                 subList.hide();
             }
-          item.append(subList);
+            item.append(subList);
+            item.addClass('has-children');
+        }
+        else {
         }
         return item;
     };

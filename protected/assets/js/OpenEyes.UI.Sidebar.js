@@ -45,7 +45,7 @@
         self.checkSideNavHeight();
         // make sure we re-do all the sizing when the window resizes
         $(window).on('resize', function() {
-            self.checkSideNavHeight()
+            self.checkSideNavHeight();
         });
 
     };
@@ -53,12 +53,13 @@
     Sidebar.prototype.checkSideNavHeight = function()
     {
         var self = this;
-        furniture = $('header').outerHeight() + $('footer').outerHeight() + $('#patient-alert-patientticketing').outerHeight();
-        h = window.innerHeight - furniture - $('.oe-sidebar-top-buttons').outerHeight();
+        furniture = $('.oe-header').outerHeight()  + $('#patient-alert-patientticketing').outerHeight();
+        h = window.innerHeight - furniture - $('.sidebar-header').outerHeight();
         if(h < self.options.minimumHeight)
-            h = h+48;
+            h = self.options.minimumHeight;
+        console.log('height h '+h);
         self.$el.height(h+'px');
-        $('.container.content').css({'min-height':h+50+'px'})
+        $('.container.content').css({'min-height':h+50+'px'});
     };
 
     exports.Sidebar = Sidebar;
