@@ -184,9 +184,9 @@
     var self = this;
     var controls = '';
     controls += self.getGroupingPicker();
-    controls += self.getListControls();
 
     $(controls).insertBefore(self.element.find('.events'));
+    $(self.getListControls()).insertBefore(self.element.find('.events'));
 
     self.element.on('change', '.' + self.options.grouping_picker_class, function (e) {
       self.grouping.id = $(e.target).val();
@@ -212,7 +212,7 @@
 
   EpisodeSidebar.prototype.getGroupingPicker = function () {
     var self = this;
-    var select = '<span class="sidebar-grouping">';
+    var select = '<div class="sidebar-grouping">';
     select += '<select name="grouping-picker" class="' + self.options.grouping_picker_class + '">';
     $(groupings).each(function () {
       select += '<option value="' + this.id + '"';

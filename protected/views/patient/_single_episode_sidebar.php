@@ -78,66 +78,63 @@ if (is_array($ordered_episodes)):
           } ?>
       </ul>
 
-      <div class="specialty">
-        <ul class="events">
-            <?php foreach ($specialty_episodes['episodes'] as $i => $episode): ?>
-              <!-- Episode events -->
-                <?php
-                if ($episode->subspecialty) {
-                    $tag = $episode->subspecialty ? $episode->subspecialty->ref_spec : 'Ss';
-                } else {
-                    $tag = "Le";
-                }
-                $subspecialty_name = $episode->getSubspecialtyText();
-                ?>
-                <?php foreach ($episode->events as $event):
-                    $highlight = false;
+      <ul class="events">
+          <?php foreach ($specialty_episodes['episodes'] as $i => $episode): ?>
+            <!-- Episode events -->
+              <?php
+              if ($episode->subspecialty) {
+                  $tag = $episode->subspecialty ? $episode->subspecialty->ref_spec : 'Ss';
+              } else {
+                  $tag = "Le";
+              }
+              $subspecialty_name = $episode->getSubspecialtyText();
+              ?>
+              <?php foreach ($episode->events as $event):
+                  $highlight = false;
 
-                    if (isset($this->event) && $this->event->id == $event->id) {
-                        $highlight = true;
-                        $current_subspecialty = $episode->subspecialty;
-                    }
+                  if (isset($this->event) && $this->event->id == $event->id) {
+                      $highlight = true;
+                      $current_subspecialty = $episode->subspecialty;
+                  }
 
-                    $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
+                  $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
 
-                    $event_name = $event->getEventName();
-                    $icon_class = $event->eventType->getEventIconCssClass();
-                    ?>
+                  $event_name = $event->getEventName();
+                  $icon_class = $event->eventType->getEventIconCssClass();
+                  ?>
 
-                <li id="js-sideEvent<?php echo $event->id ?>"
-                    class="event <?php if ($highlight) { ?> selected<?php } ?>"
-                    data-event-date="<?= $event->event_date ?>" data-created-date="<?= $event->created_date ?>"
-                    data-event-year-display="<?= substr($event->NHSDate('event_date'), -4) ?>"
-                    data-event-date-display="<?= $event->NHSDate('event_date') ?>"
-                    data-event-type="<?= $event_name ?>"
-                    data-subspecialty="<?= $subspecialty_name ?>">
+              <li id="js-sideEvent<?php echo $event->id ?>"
+                  class="event <?php if ($highlight) { ?> selected<?php } ?>"
+                  data-event-date="<?= $event->event_date ?>" data-created-date="<?= $event->created_date ?>"
+                  data-event-year-display="<?= substr($event->NHSDate('event_date'), -4) ?>"
+                  data-event-date-display="<?= $event->NHSDate('event_date') ?>"
+                  data-event-type="<?= $event_name ?>"
+                  data-subspecialty="<?= $subspecialty_name ?>">
 
-                  <div class="tooltip quicklook" style="display: none; ">
-                    <div class="event-name"><?php echo $event_name ?></div>
-                    <div class="event-info"><?php echo str_replace("\n", "<br/>", $event->info) ?></div>
-                      <?php if ($event->hasIssue()) { ?>
-                        <div
-                            class="event-issue<?= $event->hasIssue('ready') ? ' ready' : '' ?>"><?php echo $event->getIssueText() ?></div>
-                      <?php } ?>
-                  </div>
+                <div class="tooltip quicklook" style="display: none; ">
+                  <div class="event-name"><?php echo $event_name ?></div>
+                  <div class="event-info"><?php echo str_replace("\n", "<br/>", $event->info) ?></div>
+                    <?php if ($event->hasIssue()) { ?>
+                      <div
+                          class="event-issue<?= $event->hasIssue('ready') ? ' ready' : '' ?>"><?php echo $event->getIssueText() ?></div>
+                    <?php } ?>
+                </div>
 
-                  <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
+                <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
                     <span
                         class="event-type js-event-a <?= ($event->hasIssue()) ? ($event->hasIssue('ready') ? 'ready' : 'alert') : '' ?>">
                     <i class="oe-i-e <?php echo $icon_class; ?>"></i>
                   </span>
 
-                    <span
-                        class="event-date <?php echo ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
+                  <span class="event-date <?php echo ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
                     <?php echo $event->event_date ? $event->NHSDateAsHTML('event_date') : $event->NHSDateAsHTML('created_date'); ?>
                   </span>
-                    <span class="tag"><?= $tag ?></span>
-                  </a>
-                </li>
-                <?php endforeach; ?>
-            <?php endforeach; ?>
-        </ul>
-      </div>
+                  <span class="tag"><?= $tag ?></span>
+                </a>
+              </li>
+              <?php endforeach; ?>
+          <?php endforeach; ?>
+      </ul>
     <?php endforeach;
 endif; ?>
 
@@ -164,7 +161,7 @@ foreach ($subspecialty_labels as $id => $label) {
       $('.sidebar .oe-scroll-wrapper')
     );
 
-    $('div.specialty').each(function () {
+    $('nav.sidebar').each(function () {
       new OpenEyes.UI.EpisodeSidebar(this, {
         patient_id: OE_patient_id,
         user_context: <?= CJSON::encode(NewEventDialogHelper::structureFirm($this->firm)) ?>,
