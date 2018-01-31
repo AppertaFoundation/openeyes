@@ -117,7 +117,7 @@
 		$('#<?php echo $class?>_total_duration_'+identifier).val(totalDuration);
 	}
 
-	$('a.removeProcedure').die('click').live('click',function() {
+	$('.removeProcedure').die('click').live('click',function() {
 		var m = $(this).parent().parent().parent().parent().attr('id').match(/^procedureList_(.*?)$/);
 		removeProcedure($(this),m[1]);
 		return false;
