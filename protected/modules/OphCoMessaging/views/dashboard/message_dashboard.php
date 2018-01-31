@@ -27,6 +27,18 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
             $('#display-inbox').addClass('selected');
             $('#sent').addClass('hidden');
             $('#display-sent').removeClass('selected');
+            $('#urgent').addClass('hidden');
+            $('#display-urgent').removeClass('selected');
+        });
+
+        $('#display-urgent').click(function(e) {
+            e.preventDefault();
+            $('#urgent').removeClass('hidden');
+            $('#display-urgent').addClass('selected');
+            $('#sent').addClass('hidden');
+            $('#display-sent').removeClass('selected');
+            $('#inbox').addClass('hidden');
+            $('#display-inbox').removeClass('selected');
         });
 
         $('#display-sent').click(function(e) {
@@ -35,6 +47,8 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
             $('#display-inbox').removeClass('selected');
             $('#sent').removeClass('hidden');
             $('#display-sent').addClass('selected');
+            $('#urgent').addClass('hidden');
+            $('#display-urgent').removeClass('selected');
         });
     });
 </script>
@@ -49,6 +63,13 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
         } else {
             echo CHtml::link('Inbox', '#', array('id' => 'display-inbox', 'class' => 'selected'));
         } ?>
+      </li>
+      <li>
+          <?php if ($urgent_unread > 0) {
+              echo CHtml::link("Urgent ($urgent_unread)", '#', array('id' => 'display-urgent'));
+          } else {
+              echo CHtml::link('Urgent', '#', array('id' => 'display-urgent'));
+          } ?>
       </li>
       <li>
           <?php if ($sent_unread > 0) {
@@ -73,6 +94,11 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
       'dp' => $inbox,
       'type' => 'inbox',
       'display' => true
+  ));
+  $this->renderPartial('OphCoMessaging.views.dashboard.message_list', array(
+      'dp' => $urgent,
+      'type' => 'urgent',
+      'display' => false
   ));
   $this->renderPartial('OphCoMessaging.views.dashboard.message_list', array(
       'dp' => $sent,
