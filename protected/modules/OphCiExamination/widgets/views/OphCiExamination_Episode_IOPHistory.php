@@ -15,14 +15,14 @@
 ?>
 <?php if ($chart->hasData()): ?>
 	<div class="row">
-		<div class="column large-12">
+		<div class="column cols-12">
 			<div id="iop-history-chart" class="chart" style="width: 100%; height: 500px"></div>
 		</div>
 	</div>
 	<?= $chart->run(); ?>
 <?php else: ?>
 	<div class="row">
-		<div class="large-12 column">
+		<div class="cols-12 column">
 			<div class="data-row">
 				<div class="data-value">(no data)</div>
 			</div>

@@ -15,8 +15,8 @@
 ?>
 <?php if ($chart->hasData()): ?>
 	<div class="row">
-		<div class="data-label column large-9"></div>
-		<div class="data-value column large-3">
+		<div class="data-label column cols-9"></div>
+		<div class="data-value column cols-3">
 			<form action="#OphCiExamination_Episode_MedicalRetinalHistory">
 				<label for="mr_history_va_unit_id">Visual Acuity unit</label>
 				<?= CHtml::dropDownList('mr_history_va_unit_id', $va_unit->id, CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(), 'id', 'name'))?>
@@ -25,7 +25,7 @@
 	</div>
 
 	<div class="row">
-		<div class="column large-12">
+		<div class="column cols-12">
 			<div id="mr-history-chart" class="chart" style="width: 100%; height: 500px"></div>
 		</div>
 	</div>
@@ -127,7 +127,7 @@
 	</script>
 <?php else: ?>
 	<div class="row">
-		<div class="large-12 column">
+		<div class="cols-12 column">
 			<div class="data-row">
 				<div class="data-value">(no data)</div>
 			</div>
