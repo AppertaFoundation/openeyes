@@ -17,23 +17,34 @@
  */
 ?>
 <?php
-    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-        'doodleToolBarArray' => array(
-            0 => array('RRD', 'UTear', 'RoundHole', 'Dialysis', 'GRT', 'MacularHole', 'StarFold', 'AntPVR', 'Cryo', 'LaserCircle'),
+$this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+    'doodleToolBarArray' => array(
+        0 => array(
+            'RRD',
+            'UTear',
+            'RoundHole',
+            'Dialysis',
+            'GRT',
+            'MacularHole',
+            'StarFold',
+            'AntPVR',
+            'Cryo',
+            'LaserCircle',
         ),
-        'onReadyCommandArray' => array(
-            array('addDoodle', array('Fundus')),
-            array('deselectDoodles', array()),
-        ),
-        'side' => $this->selectedEyeForEyedraw->shortName,
-        'idSuffix' => 'Vitrectomy',
-        'mode' => 'edit',
-        'width' => 300,
-        'height' => 300,
-        'model' => $element,
-        'attribute' => 'eyedraw',
-        'offsetX' => 10,
-        'offsetY' => 10,
-        'template' => 'OEEyeDrawWidget_InlineToolbar',
-    ));
+    ),
+    'onReadyCommandArray' => array(
+        array('addDoodle', array('Fundus')),
+        array('deselectDoodles', array()),
+    ),
+    'side' => $this->selectedEyeForEyedraw->shortName,
+    'idSuffix' => 'Vitrectomy',
+    'mode' => 'edit',
+    'width' => 300,
+    'height' => 300,
+    'model' => $element,
+    'attribute' => 'eyedraw',
+    'offsetX' => 10,
+    'offsetY' => 10,
+    'template' => 'OEEyeDrawWidget_InlineToolbar',
+));
 ?>

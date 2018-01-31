@@ -16,33 +16,36 @@
  */
 ?>
 <?php
-    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-        'doodleToolBarArray' => array(
-            0 => array('TubeExtender', 'Patch', 'PI', 'Supramid', 'TubeLigation', 'ACMaintainer'),
-        ),
-        'onReadyCommandArray' => array(
-            array('addDoodle', array('AntSeg')),
-            array('addDoodle', array('Tube')),
-            array('deselectDoodles', array()),
-        ),
-        'bindingArray' => array(
-            'Tube' => array(
-                'platePosition' => array('id' => 'Element_OphTrOperationnote_GlaucomaTube_plate_position_id', 'attribute' => 'data-value'),
+$this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+    'doodleToolBarArray' => array(
+        0 => array('TubeExtender', 'Patch', 'PI', 'Supramid', 'TubeLigation', 'ACMaintainer'),
+    ),
+    'onReadyCommandArray' => array(
+        array('addDoodle', array('AntSeg')),
+        array('addDoodle', array('Tube')),
+        array('deselectDoodles', array()),
+    ),
+    'bindingArray' => array(
+        'Tube' => array(
+            'platePosition' => array(
+                'id' => 'Element_OphTrOperationnote_GlaucomaTube_plate_position_id',
+                'attribute' => 'data-value',
             ),
         ),
-        'listenerArray' => array(
-            'glaucomaController',
-        ),
-        'side' => $this->selectedEyeForEyedraw->shortName,
-        'idSuffix' => $element->elementType->id,
-        'mode' => 'edit',
-        'width' => 300,
-        'height' => 300,
-        'model' => $element,
-        'attribute' => 'eyedraw',
-        'offsetX' => 10,
-        'offsetY' => 10,
-        'scale' => 0.72,
-        'template' => 'OEEyeDrawWidget_InlineToolbar',
+    ),
+    'listenerArray' => array(
+        'glaucomaController',
+    ),
+    'side' => $this->selectedEyeForEyedraw->shortName,
+    'idSuffix' => $element->elementType->id,
+    'mode' => 'edit',
+    'width' => 300,
+    'height' => 300,
+    'model' => $element,
+    'attribute' => 'eyedraw',
+    'offsetX' => 10,
+    'offsetY' => 10,
+    'scale' => 0.72,
+    'template' => 'OEEyeDrawWidget_InlineToolbar',
 ));
 ?>

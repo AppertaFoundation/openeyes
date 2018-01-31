@@ -16,8 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields">
-	<?php echo $form->dropDownListRow(
+<div class="element-fields full-width">
+    <?php echo $form->dropDownListRow(
         $element,
         array(
             'surgeon_id',
@@ -32,6 +32,8 @@
             array('empty' => '- None -'),
         ),
         array('field' => 9)
-    )?>
-	<?php echo $form->dropDownList($element, 'supervising_surgeon_id', CHtml::listData($element->surgeons, 'id', 'ReversedFullName'), array('empty' => '- None -'), false, array('field' => 3))?>
+    ) ?>
+    <?php echo $form->dropDownList($element, 'supervising_surgeon_id',
+        CHtml::listData($element->surgeons, 'id', 'ReversedFullName'), array('empty' => '- None -'), false,
+        array('field' => 3)) ?>
 </div>

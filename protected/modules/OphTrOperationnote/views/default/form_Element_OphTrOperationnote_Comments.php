@@ -21,16 +21,17 @@
 $layoutColumns = array(
     'label' => 4,
     'field' => 8,
-);?>
+); ?>
 
-<div class="element-fields">
-	<div class="row">
-		<div class="large-6 column">
-			<?php echo $form->textArea($element, 'comments', array(), false, array(), $layoutColumns)?>
-		</div>
-		<div class="large-6 column">
-			<?php echo $form->dropDownTextSelection($element, 'postop_instructions', $element->postop_instructions_list, array(), $layoutColumns)?>
-			<?php echo $form->textArea($element, 'postop_instructions', array(), false, array(), $layoutColumns)?>
-		</div>
+<div class="element-fields full-width">
+  <div class="row">
+    <div class="cols-5 column">
+        <?php echo $form->textArea($element, 'comments', array(), false, array(), $layoutColumns) ?>
+    </div>
+    <div class="cols-7 column">
+        <?php echo $form->dropDownTextSelection($element, 'postop_instructions', $element->postop_instructions_list,
+            array(), $layoutColumns) ?>
+        <?php echo $form->textArea($element, 'postop_instructions', array(), false, array(), $layoutColumns) ?>
+    </div>
+  </div>
 </div>
-

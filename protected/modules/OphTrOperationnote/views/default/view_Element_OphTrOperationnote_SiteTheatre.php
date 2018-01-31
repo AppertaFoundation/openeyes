@@ -16,22 +16,25 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
 <section class="element">
-	<h3 class="element-title highlight">Location</h3>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-4 column">
-				<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('site_id'))?></h4>
-				<div class="data-value"><?php echo $element->site->name?></div>
-			</div>
-			<div class="large-4 column">
-				<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('theatre_id'))?></h4>
-				
-				<?php $hasModule = Yii::app()->hasModule('OphTrOperationbooking'); ?>
-				<div class="data-value <?php echo $hasModule ? '' : 'none'?>">
-					<?php echo $hasModule && $element->theatre ? $element->theatre->name : 'None'?>
-				</div>
-			</div>
-		</div>
-	</div>
+  <header class="element-header">
+    <h3 class="element-title">Location</h3>
+  </header>
+  <section class="element-fields full-width">
+
+    <div class="row">
+      <div class="cols-4 column">
+        <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('site_id')) ?></h4>
+        <div class="data-value"><?php echo $element->site->name ?></div>
+      </div>
+      <div class="cols-4 column">
+        <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('theatre_id')) ?></h4>
+          <?php $hasModule = Yii::app()->hasModule('OphTrOperationbooking'); ?>
+        <div class="data-value <?php echo $hasModule ? '' : 'none' ?>">
+            <?php echo $hasModule && $element->theatre ? $element->theatre->name : 'None' ?>
+        </div>
+      </div>
+    </div>
+  </section>
 </section>

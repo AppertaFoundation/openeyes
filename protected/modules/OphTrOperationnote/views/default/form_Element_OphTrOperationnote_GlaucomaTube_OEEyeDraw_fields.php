@@ -22,29 +22,34 @@ $html_options = array('label' => $element->getAttributeLabel('plate_position_id'
 foreach ($plate_positions as $pp) {
     $html_options['options'][$pp->id] = array('data-value' => $pp->eyedraw_value);
 }
-echo $form->dropDownList($element, 'plate_position_id', CHtml::listData($plate_positions, 'id', 'name'), $html_options, false, array('field' => 3))?>
-<div id="div_Element_OphTrOperationnote_GlaucomaTube_plate_limbus" class="row field-row">
-	<div class="large-3 column">
-		<label for="Element_OphTrOperationnote_GlaucomaTube_plate_limbus"><?= $element->getAttributeLabel('plate_limbus'); ?></label>
-	</div>
-	<div class="large-2 column">
-		<?php echo CHtml::activeTextField($element, 'plate_limbus', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'clearWithEyedraw')); ?>
-	</div>
-	<div class="large-1 column end field-info postfix align">
-		mm
-	</div>
+echo $form->dropDownList($element, 'plate_position_id', CHtml::listData($plate_positions, 'id', 'name'), $html_options,
+    false, array('field' => 3)) ?>
+<div id="div_Element_OphTrOperationnote_GlaucomaTube_plate_limbus" class="row">
+  <div class="cols-3 column">
+    <label
+        for="Element_OphTrOperationnote_GlaucomaTube_plate_limbus"><?= $element->getAttributeLabel('plate_limbus'); ?></label>
+  </div>
+  <div class="cols-2 column">
+      <?php echo CHtml::activeTextField($element, 'plate_limbus',
+          array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'clearWithEyedraw')); ?>
+  </div>
+  <div class="cols-1 column end field-info postfix align">
+    mm
+  </div>
 </div>
 
-<?php echo $form->dropDownList($element, 'tube_position_id', CHtml::listData(OphTrOperationnote_GlaucomaTube_TubePosition::model()->activeOrPk($element->tube_position_id)->findAll(), 'id', 'name'), array('empty' => '- Please select -'), false, array('field' => 3))?>
-<?php echo $form->checkbox($element, 'stent', array('class' => 'clearWithEyedraw'))?>
-<?php echo $form->checkbox($element, 'slit', array('class' => 'clearWithEyedraw'))?>
-<?php echo $form->checkbox($element, 'visco_in_ac', array('class' => 'clearWithEyedraw'))?>
-<?php echo $form->checkbox($element, 'flow_tested', array('class' => 'clearWithEyedraw'))?>
-<?php echo $form->textArea($element, 'description', array('rows' => 4, 'class' => 'autosize clearWithEyedraw'))?>
-<div class="row field-row">
-	<div class="large-3 column">&nbsp;</div>
-	<div class="large-4 column end">
-		<button id="btn-glaucomatube-report" class="ed_report secondary small">Report</button>
-		<button class="ed_clear secondary small">Clear</button>
-	</div>
+<?php echo $form->dropDownList($element, 'tube_position_id',
+    CHtml::listData(OphTrOperationnote_GlaucomaTube_TubePosition::model()->activeOrPk($element->tube_position_id)->findAll(),
+        'id', 'name'), array('empty' => '- Please select -'), false, array('field' => 3)) ?>
+<?php echo $form->checkbox($element, 'stent', array('class' => 'clearWithEyedraw')) ?>
+<?php echo $form->checkbox($element, 'slit', array('class' => 'clearWithEyedraw')) ?>
+<?php echo $form->checkbox($element, 'visco_in_ac', array('class' => 'clearWithEyedraw')) ?>
+<?php echo $form->checkbox($element, 'flow_tested', array('class' => 'clearWithEyedraw')) ?>
+<?php echo $form->textArea($element, 'description', array('rows' => 4, 'class' => 'autosize clearWithEyedraw')) ?>
+<div class="row">
+  <div class="cols-3 column">&nbsp;</div>
+  <div class="cols-4 column end">
+    <button id="btn-glaucomatube-report" class="ed_report secondary small">Report</button>
+    <button class="ed_clear secondary small">Clear</button>
+  </div>
 </div>

@@ -17,31 +17,41 @@
  */
 ?>
 
-<section class="element element-data">
-    <div class="row">
-        <div class="large-6 column">
-            <h3 class="data-title"><?php echo $element->elementType->name ?></h3>
-            <ul class="data-value highlight important">
-                <?php foreach ($element->procedures as $procedure) { ?>
-                    <li><?php echo $element->eye->adjective . ' ' ?><?php echo $procedure->term ?></li>
-                <?php } ?>
-            </ul>
-        </div>
-        <div class="large-6 column">
-            <h3 class="data-title"><?php echo $procedure->getAttributeLabel('opcsCodes.name') . 's'; ?></h3>
-            <?php
-            $codes = [];
-            foreach ($element->procedures as $procedure) {
-                $size = count($procedure->opcsCodes) - 1;
-                foreach ($procedure->opcsCodes as $code) {
-                    $codes[] = $code->name;
-                }
-            }
-            echo implode(', ', $codes);
-            ?>
-        </div>
+<section class="element">
+  <header class="element-header">
+    <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+  </header>
+
+  <section class="element-fields full-width">
+    <ul class="data-value highlight important">
+        <?php foreach ($element->procedures as $procedure) { ?>
+          <li>
+              <?php echo $element->eye->adjective ?>
+              <?php echo $procedure->term ?>
+          </li>
+        <?php } ?>
+    </ul>
+    <div class="cols-6 column">
+      <header class="element-header">
+        <h3 class="element-title"><?php echo $procedure->getAttributeLabel('opcsCodes.name'); ?></h3>
+      </header>
+
+      <section class="element-fields full-width">
+          <?php
+          $codes = [];
+          foreach ($element->procedures as $procedure) {
+              $size = count($procedure->opcsCodes) - 1;
+              foreach ($procedure->opcsCodes as $code) {
+                  $codes[] = $code->name;
+              }
+          }
+          echo implode(', ', $codes);
+          ?>
+      </section>
     </div>
     <div class="sub-elements">
         <?php $this->renderChildOpenElements($element, 'view', $form, $data) ?>
     </div>
+  </section>
+
 </section>

@@ -18,26 +18,28 @@
 ?>
 
 <section class="element">
-	<div class="element-data element-eyes row">
-		<div class="element-eye right-eye column">
-			<div class="element-header right-side">
-				<h4>Right side</h4>
-			</div>
-			<?php if ($element->hasRight()) {
-    $this->renderPartial('form_Element_OphTrOperationnote_Biometry_Data_Fields', array('side' => 'right', 'element' => $element));
-            } else { ?>
-				<div class="data-value">Not recorded</div>
-			<?php } ?>
-		</div>
-		<div class="element-eye left-eye column">
-			<div class="element-header left-side">
-				<h4>Left side</h4>
-			</div>
-			<?php if ($element->hasLeft()) {
-    $this->renderPartial('form_Element_OphTrOperationnote_Biometry_Data_Fields', array('side' => 'left', 'element' => $element));
-            } else { ?>
-				<div class="data-value">Not recorded</div>
-			<?php } ?>
-		</div>
-	</div>
+  <div class="element-data element-eyes row">
+    <div class="element-eye right-eye column">
+      <div class="element-header right-side">
+        <h4>Right side</h4>
+      </div>
+        <?php if ($element->hasRight()) {
+            $this->renderPartial('form_Element_OphTrOperationnote_Biometry_Data_Fields',
+                array('side' => 'right', 'element' => $element));
+        } else { ?>
+          <div class="data-value">Not recorded</div>
+        <?php } ?>
+    </div>
+    <div class="element-eye left-eye column">
+      <div class="element-header left-side">
+        <h4>Left side</h4>
+      </div>
+        <?php if ($element->hasLeft()) {
+            $this->renderPartial('form_Element_OphTrOperationnote_Biometry_Data_Fields',
+                array('side' => 'left', 'element' => $element));
+        } else { ?>
+          <div class="data-value">Not recorded</div>
+        <?php } ?>
+    </div>
+  </div>
 </section>

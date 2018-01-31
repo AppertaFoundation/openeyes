@@ -29,6 +29,7 @@
 <?php echo $form->textArea($element, 'comments', array(), false, array('rows' => 1,)) ?>
 <?php
 if (isset(Yii::app()->modules["OphInBiometry"])) {
+
     echo $form->dropDownList($element, 'iol_type_id', CHtml::listData(OphInBiometry_LensType_Lens::model()->findAll(array(
         'condition' => ($element->iol_type_id > 0) ? 'active=1 or id=' . $element->iol_type_id : 'active=1',
         'order' => 'display_name',
@@ -47,42 +48,40 @@ if (isset(Yii::app()->modules["OphInBiometry"])) {
     ),
         array('empty' => '- Please select -', 'divided' => true), $element->iol_hidden, array('field' => 4));
 } ?>
-<div id="div_Element_OphTrOperationnote_Cataract_iol_power" class="row field-row">
-    <div class="large-3 column">
-        <label for="Element_OphTrOperationnote_Cataract_iol_power">IOL power:</label>
-    </div>
 
-    <div class="large-2 column end">
-        <input id="Element_OphTrOperationnote_Cataract_iol_power" type="text"
-               name="Element_OphTrOperationnote_Cataract[iol_power]" autocomplete="off" hide=""
-               value="<?php echo $element->iol_power; ?>">
-    </div>
-    <div class="large-3 column">
-        <label for="Element_OphTrOperationnote_Cataract_predicted_refraction">Predicted refraction:</label>
-    </div>
-    <div class="large-2 column end">
-        <input id="Element_OphTrOperationnote_Cataract_predicted_refraction" type="text"
-               name="Element_OphTrOperationnote_Cataract[predicted_refraction]" autocomplete="off"
-               value="<?php echo $element->predicted_refraction; ?>">
-    </div>
+<div id="div_Element_OphTrOperationnote_Cataract_iol_power" class="row">
+  <div class="cols-3 column">
+    <label for="Element_OphTrOperationnote_Cataract_iol_power">IOL power:</label>
+  </div>
+  <div class="cols-2 column end">
+    <input id="Element_OphTrOperationnote_Cataract_iol_power" type="text"
+           name="Element_OphTrOperationnote_Cataract[iol_power]" autocomplete="off" hide=""
+           value="<?php echo $element->iol_power; ?>">
+  </div>
+  <div class="large-3 column">
+    <label for="Element_OphTrOperationnote_Cataract_predicted_refraction">Predicted refraction:</label>
+  </div>
+  <div class="large-2 column end">
+    <input id="Element_OphTrOperationnote_Cataract_predicted_refraction" type="text"
+           name="Element_OphTrOperationnote_Cataract[predicted_refraction]" autocomplete="off"
+           value="<?php echo $element->predicted_refraction; ?>">
+  </div>
+
 </div>
-<?php
-//var_dump($element); //, 'iol_position_id'
-?>
 
 <?php echo $form->dropDownList($element, 'iol_position_id', 'OphTrOperationnote_IOLPosition',
     array(
         'empty' => '- Please select -',
         'options' => array(
             8 => array('disabled' => 'disabled'),
-        )
+        ),
     ),
     $element->iol_hidden, array('field' => 4)
+
 ) ?>
-<?php
-echo $form->multiSelectList($element, 'OphTrOperationnote_CataractOperativeDevices', 'operative_devices', 'id',
+<?php echo $form->multiSelectList($element, 'OphTrOperationnote_CataractOperativeDevices', 'operative_devices', 'id',
     $this->getOperativeDeviceList($element), $this->getOperativeDeviceDefaults(),
-    array('empty' => '- Agents -', 'label' => 'Agents'), false, false, null, false, false, array('field' => 4)); ?>
+    array('empty' => '- Agents -', 'label' => 'Agents'), false, false, null, false, false, array('field' => 4)) ?>
 
 <div id="div_Element_OphTrOperationnote_Cataract_phaco_cde" class="row field-row">
     <div class="large-3 column">

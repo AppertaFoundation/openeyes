@@ -22,36 +22,37 @@ $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 
 $warnings = $this->patient->getWarnings($clinical);
 ?>
-	<?php
-        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-            'id' => 'opnote-update',
-            'enableAjaxValidation' => false,
-            'focus' => '#procedure_id',
-        ));
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'opnote-update',
+    'enableAjaxValidation' => false,
+    'focus' => '#procedure_id',
+));
 
-        // Event actions
-        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'opnote-update'));
-    ?>
+// Event actions
+$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'),
+    array('form' => 'opnote-update'));
+?>
 
-		<?php $this->displayErrors($errors)?>
+<?php $this->displayErrors($errors) ?>
 
-    <?php if ($warnings) { ?>
-        <div class="row">
-            <div class="large-12 column">
-                <div class="alert-box patient with-icon">
-                    <?php foreach ($warnings as $warn) {?>
-                        <strong><?php echo $warn['long_msg']; ?></strong>
-                        - <?php echo $warn['details'];
-                    }?>
-                </div>
-            </div>
-        </div>
-    <?php }?>
+<?php if ($warnings) { ?>
+  <div class="row">
+    <div class="cols-12 column">
+      <div class="alert-box patient with-icon">
+          <?php foreach ($warnings as $warn) { ?>
+            <strong><?php echo $warn['long_msg']; ?></strong>
+            - <?php echo $warn['details'];
+          } ?>
+      </div>
+    </div>
+  </div>
+<?php } ?>
 
-		<?php $this->renderOpenElements($this->action->id, $form); ?>
-		<?php $this->renderOptionalElements($this->action->id, $form); ?>
-		<?php $this->displayErrors($errors, true)?>
+<?php $this->renderOpenElements($this->action->id, $form); ?>
+<?php $this->renderOptionalElements($this->action->id, $form); ?>
+<?php $this->displayErrors($errors, true) ?>
 
-	<?php $this->endWidget(); ?>
+<?php $this->endWidget(); ?>
 
-<?php $this->endContent();?>
+<?php $this->endContent(); ?>

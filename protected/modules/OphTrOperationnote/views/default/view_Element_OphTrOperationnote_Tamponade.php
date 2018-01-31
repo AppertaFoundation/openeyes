@@ -17,48 +17,50 @@
  */
 ?>
 
-<section class="sub-element">
-	<h3 class="sub-element-title highlight"><?php echo $element->elementType->name ?></h3>
-	<div class="sub-element-data">
-		<div class="row">
-			<div class="large-6 column end">
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('gas_type_id'))?>
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo $element->gas_type->name?>
-						</div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('gas_percentage_id'))?>
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo $element->gas_percentage->value?>%
-						</div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('gas_volume_id'))?>
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo $element->gas_volume ? $element->gas_volume->value : '-'?>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+<section class="element">
+  <header class="element-header">
+    <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+  </header>
+  <section class="element-fields full-width">
+    <div class="row">
+      <div class="cols-6 column end">
+        <div class="row data-row">
+          <div class="cols-4 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel('gas_type_id')) ?>
+            </div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value">
+                <?php echo $element->gas_type->name ?>
+            </div>
+          </div>
+        </div>
+        <div class="row data-row">
+          <div class="cols-4 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel('gas_percentage_id')) ?>
+            </div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value">
+                <?php echo $element->gas_percentage->value ?>%
+            </div>
+          </div>
+        </div>
+        <div class="row data-row">
+          <div class="cols-4 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel('gas_volume_id')) ?>
+            </div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value">
+                <?php echo $element->gas_volume ? $element->gas_volume->value : '-' ?>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </section>

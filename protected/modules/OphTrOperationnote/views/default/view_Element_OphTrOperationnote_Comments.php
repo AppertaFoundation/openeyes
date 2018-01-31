@@ -18,24 +18,29 @@
 ?>
 
 <section class="element">
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-4 column">
-				<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('postop_instructions'))?></h4>
-				<div class="data-value<?php if (!$element->postop_instructions) {?> none<?php }?>"><?php echo CHtml::encode($element->postop_instructions) ? Yii::app()->format->Ntext($element->postop_instructions) : 'None'?></div>
-			</div>
-			<div class="large-8 column end">
-			<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('comments'))?></h4>
-				<div class="data-value<?php if (!$element->comments) {?> none<?php }?>"><?php echo CHtml::encode($element->comments) ? Yii::app()->format->Ntext($element->comments) : 'None'?></div>
-			</div>
-		</div>
-	</div>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-4 column">
-				<h4 class="data-title">Site</h4>
-				<div class="data-value<?php if (!$site = $this->findBookingSite()) {?> none<?php }?>"><?php echo $site ? $site->name : 'N/A (Emergency)'?></div>
-			</div>
-		</div>
-	</div>
+  <section class="element-fields full-width">
+    <div class="row">
+      <div class="cols-4 column">
+        <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('postop_instructions')) ?></h4>
+        <div
+            class="data-value<?php if (!$element->postop_instructions) { ?> none<?php } ?>"><?php echo CHtml::encode($element->postop_instructions) ? Yii::app()->format->Ntext($element->postop_instructions) : 'None' ?></div>
+      </div>
+      <div class="cols-8 column end">
+        <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('comments')) ?></h4>
+        <div class="data-value<?php if (!$element->comments) { ?> none<?php } ?>">
+            <?php echo CHtml::encode($element->comments) ? Yii::app()->format->Ntext($element->comments) : 'None' ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="element-data">
+    <div class="row">
+      <div class="cols-4 column">
+        <h4 class="data-label">Site</h4>
+        <div
+            class="data-value<?php if (!$site = $this->findBookingSite()) { ?> none<?php } ?>"><?php echo $site ? $site->name : 'N/A (Emergency)' ?></div>
+      </div>
+    </div>
+  </div>
+  </section>
 </section>

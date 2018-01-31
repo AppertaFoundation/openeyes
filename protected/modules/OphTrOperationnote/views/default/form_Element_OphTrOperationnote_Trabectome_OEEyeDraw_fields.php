@@ -15,14 +15,16 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php echo $form->dropDownList($element, 'power_id', CHtml::listData(OphTrOperationnote_Trabectome_Power::model()->activeOrPk($element->power_id)->findAll(), 'id', 'name'),
+<?php echo $form->dropDownList($element, 'power_id',
+    CHtml::listData(OphTrOperationnote_Trabectome_Power::model()->activeOrPk($element->power_id)->findAll(), 'id',
+        'name'),
     array('empty' => '- Please select -'), false, array('field' => 3)) ?>
 <?php echo $form->checkbox($element, 'blood_reflux', array('class' => 'clearWithEyedraw')) ?>
 <?php echo $form->checkbox($element, 'hpmc', array('class' => 'clearWithEyedraw')) ?>
 <?php echo $form->textArea($element, 'description', array('rows' => 4, 'class' => 'autosize clearWithEyedraw')) ?>
-<div class="row field-row">
-  <div class="large-3 column">&nbsp;</div>
-  <div class="large-4 column end">
+<div class="row">
+  <div class="cols-3 column">&nbsp;</div>
+  <div class="cols-4 column end">
     <button id="btn-trabectome-report" class="ed_report secondary small">Report</button>
     <button class="ed_clear secondary small">Clear</button>
   </div>
@@ -51,16 +53,17 @@ echo $form->multiSelectList(
     array('field' => 4)
 )
 ?>
-<div class="row field-row<?php if (!$element->hasOtherComplication()) {
+<div class="row <?php if (!$element->hasOtherComplication()) {
     echo ' hidden';
 } ?>" id="div_<?= CHtml::modelName($element) ?>_complication_other">
-  <div class="large-3 column">
+  <div class="cols-3 column">
     <label for="<?php echo CHtml::modelName($element) ?>_complication_other">
         <?php echo $element->getAttributeLabel('complication_other') ?>
     </label>
   </div>
-  <div class="large-4 column end">
-      <?php $form->textArea($element, 'complication_other', array('rows' => 2, 'class' => 'autosize', 'nowrapper' => true)); ?>
+  <div class="cols-4 column end">
+      <?php $form->textArea($element, 'complication_other',
+          array('rows' => 2, 'class' => 'autosize', 'nowrapper' => true)); ?>
   </div>
 </div>
 

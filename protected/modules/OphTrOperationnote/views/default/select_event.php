@@ -17,9 +17,9 @@
  */
 ?>
 <?php
-    $this->beginContent('//patient/event_container');
-    $assetAliasPath = 'application.modules.OphTrOperationbooking.assets';
-    $this->moduleNameCssClass .= ' edit';
+$this->beginContent('//patient/event_container');
+$assetAliasPath = 'application.modules.OphTrOperationbooking.assets';
+$this->moduleNameCssClass .= ' edit';
 ?>
 
 <?php
@@ -28,104 +28,111 @@ $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 $warnings = $this->patient->getWarnings($clinical);
 ?>
 
-	<div class="row">
-		<div class="large-12 column">
+<div class="row">
+  <div class="cols-12 column">
 
-			<section class="element">
-				<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-                        'id' => 'operation-note-select',
-                        'enableAjaxValidation' => false,
-                    ));
+    <section class="element">
+        <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+            'id' => 'operation-note-select',
+            'enableAjaxValidation' => false,
+        ));
 
-                    // Event actions
-                    $this->event_actions[] = EventAction::button('Create Operation Note', 'save', array('level' => 'secondary'), array('form' => 'operation-note-select', 'class' => 'button small'));
-                ?>
-					<?php  $this->displayErrors($errors)?>
+        // Event actions
+        $this->event_actions[] = EventAction::button('Create Operation Note', 'save', array('level' => 'secondary'),
+            array('form' => 'operation-note-select', 'class' => 'button small'));
+        ?>
+        <?php $this->displayErrors($errors) ?>
 
-    <?php if ($warnings) { ?>
-        <div class="row">
-            <div class="large-12 column">
-                <div class="alert-box patient with-icon">
-                    <?php foreach ($warnings as $warn) {?>
-                        <strong><?php echo $warn['long_msg']; ?></strong>
-                        - <?php echo $warn['details'];
-                    }?>
-                </div>
+        <?php if ($warnings) { ?>
+          <div class="row">
+            <div class="cols-12 column">
+              <div class="alert-box patient with-icon">
+                  <?php foreach ($warnings as $warn) { ?>
+                    <strong><?php echo $warn['long_msg']; ?></strong>
+                    - <?php echo $warn['details'];
+                  } ?>
+              </div>
             </div>
+          </div>
+        <?php } ?>
+
+      <header class="element-header">
+        <h3 class="element-title">Create Operation Note</h3>
+      </header>
+
+      <div class="element-fields full-width">
+
+        <div class="field-row">
+          <div class="field-info">
+              <?php if (count($operations) > 0) { ?>
+                Please indicate whether this operation note relates to a booking or an unbooked emergency:
+              <?php } else { ?>
+                There are no open bookings in the current episode so only an emergency operation note can be created.
+              <?php } ?>
+          </div>
         </div>
-    <?php }?>
 
-					<header class="element-header">
-						<h3 class="element-title">Create Operation Note</h3>
-					</header>
-
-					<div class="element-fields">
-
-						<div class="field-row">
-							<div class="field-info">
-								<?php if (count($operations) > 0) {?>
-									Please indicate whether this operation note relates to a booking or an unbooked emergency:
-								<?php } else {?>
-									There are no open bookings in the current episode so only an emergency operation note can be created.
-								<?php }?>
-							</div>
-						</div>
-
-						<fieldset class="row field-row">
-							<legend class="large-2 column">Select:</legend>
-							<div class="large-6 column end">
-								<?php foreach ($operations as $operation) {?>
-									<label class="highlight booking">
+        <fieldset class="row field-row">
+          <legend class="cols-2 column">Select:</legend>
+          <div class="cols-6 column end">
+              <?php foreach ($operations as $operation) { ?>
+                <label class="highlight booking">
 										<span class="row">
-											<span class="large-1 column">
-												<input type="radio" value="booking<?= $operation->event_id ?>" name="SelectBooking" />
+											<span class="cols-1 column">
+												<input type="radio" value="booking<?= $operation->event_id ?>" name="SelectBooking"/>
 											</span>
-											<span class="large-1 column">
-												<img src="<?php echo Yii::app()->assetManager->createUrl('img/small.png', $assetAliasPath)?>" alt="op" style="height:15px" />
+											<span class="cols-1 column">
+												<img src="<?php echo Yii::app()->assetManager->createUrl('img/small.png', $assetAliasPath) ?>"
+                             alt="op" style="height:15px"/>
 											</span>
-											<span class="large-3 column <?php echo $theatre_diary_disabled ? 'hide' : ''?>">
-												<?php if(!$theatre_diary_disabled){ echo $operation->booking->session->NHSDate('date'); } ?>
+											<span class="cols-3 column <?php echo $theatre_diary_disabled ? 'hide' : '' ?>">
+												<?php if (!$theatre_diary_disabled) {
+                            echo $operation->booking->session->NHSDate('date');
+                        } ?>
 											</span>
 
-											<span class="large-3 column">
+											<span class="cols-3 column">
 												Operation
 											</span>
-                                            <span class="large-3 column">
+                                            <span class="cols-3 column">
                                               <?= $operation->comments; ?>
 											</span>
-											<span class="large-4 column">
+											<span class="cols-4 column">
 												<?php
 
-                                                    $procedures = $operation->procedures;
-                                                    $eye = $operation->eye;
+                        $procedures = $operation->procedures;
+                        $eye = $operation->eye;
 
-                                                    foreach ($procedures as $i => $procedure) {
-                                                        if ($i > 0) { echo '<br/>'; }
-                                                        echo $eye->name.' '.$procedure->term;
-                                                    }
-                                               ?>
+                        foreach ($procedures as $i => $procedure) {
+                            if ($i > 0) {
+                                echo '<br/>';
+                            }
+                            echo $eye->name . ' ' . $procedure->term;
+                        }
+                        ?>
 											</span>
 										</span>
-									</label>
-								<?php }?>
-								<label class="highlight booking">
+                </label>
+              <?php } ?>
+            <label class="highlight booking">
 									<span class="row">
-										<span class="large-1 column">
-											<input type="radio" value="emergency" name="SelectBooking" <?php if (count($operations) == 0) {?>checked="checked" <?php }?>/>
+										<span class="cols-1 column">
+											<input type="radio" value="emergency" name="SelectBooking"
+                             <?php if (count($operations) == 0) { ?>checked="checked" <?php } ?>/>
 										</span>
-										<span class="large-11 column">
+										<span class="cols-11 column">
 											Emergency
 										</span>
 									</span>
-								</label>
-							</div>
-						</fieldset>
-					</div>
+            </label>
+          </div>
+        </fieldset>
+      </div>
 
-					<?php $this->displayErrors($errors, true)?>
-				<?php $this->endWidget(); ?>
-			</section>
-		</div>
-	</div>
+        <?php $this->displayErrors($errors, true) ?>
+        <?php $this->endWidget(); ?>
+    </section>
+  </div>
+</div>
 
-<?php $this->endContent();?>
+<?php $this->endContent(); ?>

@@ -17,21 +17,29 @@
  */
 ?>
 
+
 <section class="element">
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-3 column">
-				<h4 class="data-title"><?php echo $element->elementType->name?></h4>
-				<div class="data-value <?php if (!$element->drugs) {?> none<?php }?>">
-					<?php if (!$element->drugs) {?>
-						None
-					<?php } else {?>
-						<?php foreach ($element->drugs as $drug) {?>
-							<?php echo $drug->name?><br/>
-						<?php }?>
-					<?php }?>
-				</div>
-			</div>
-		</div>
-	</div>
+  <header class="element-header">
+    <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+  </header>
+  <section class="element-fields full-width">
+    <div class="data-row">
+      <div class="data-value <?php if (!$element->drugs) { ?> none<?php } ?>">
+          <?php if (!$element->drugs) { ?>
+            None
+          <?php } else { ?>
+            <table>
+              <tbody>
+              <?php foreach ($element->drugs as $drug) { ?>
+                <tr>
+                  <td><?php echo $drug->name ?></td>
+                  <td></td>
+                </tr>
+              <?php } ?>
+              </tbody>
+            </table>
+          <?php } ?>
+      </div>
+    </div>
+  </section>
 </section>

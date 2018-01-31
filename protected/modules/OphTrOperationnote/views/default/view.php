@@ -28,32 +28,32 @@ $warnings = $this->patient->getWarnings($clinical);
 ?>
 
 <?php
-    // Event actions
-    if ($this->checkPrintAccess()) {
-        $this->event_actions[] = EventAction::printButton();
-    }
+// Event actions
+if ($this->checkPrintAccess()) {
+    $this->event_actions[] = EventAction::printButton();
+}
 ?>
 
-<input type="hidden" id="moduleCSSPath" value="<?php echo $this->assetPath?>/css" />
+<input type="hidden" id="moduleCSSPath" value="<?php echo $this->assetPath ?>/css"/>
 
-<?php if ($this->event->delete_pending) {?>
-	<div class="alert-box alert with-icon">
-		This event is pending deletion and has been locked.
-	</div>
-<?php }?>
+<?php if ($this->event->delete_pending) { ?>
+  <div class="alert-box alert with-icon">
+    This event is pending deletion and has been locked.
+  </div>
+<?php } ?>
 
-    <?php if ($warnings) { ?>
-        <div class="row">
-            <div class="large-12 column">
-                <div class="alert-box patient with-icon">
-                    <?php foreach ($warnings as $warn) {?>
-                        <strong><?php echo $warn['long_msg']; ?></strong>
-                        - <?php echo $warn['details'];
-                    }?>
-                </div>
-            </div>
-        </div>
-    <?php }?>
+<?php if ($warnings) { ?>
+  <div class="row">
+    <div class="cols-12 column">
+      <div class="alert-box patient with-icon">
+          <?php foreach ($warnings as $warn) { ?>
+            <strong><?php echo $warn['long_msg']; ?></strong>
+            - <?php echo $warn['details'];
+          } ?>
+      </div>
+    </div>
+  </div>
+<?php } ?>
 
 <?php $this->renderOpenElements($this->action->id); ?>
-<?php $this->endContent();?>
+<?php $this->endContent(); ?>

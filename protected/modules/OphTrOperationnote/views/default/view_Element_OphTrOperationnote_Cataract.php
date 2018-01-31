@@ -16,171 +16,190 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<section class="element">
+  <header class="element-header">
+    <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+  </header>
+  <section class="element-fields full-width">
+    <div class="row highlight-container">
+      <div class="cols-6 column data-value highlight">
+        <div class="row">
+          <div class="cols-4 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('incision_site_id')) ?>:</div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value"><?php echo $element->incision_site->name ?></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="cols-4 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('length')) ?>:</div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value"><?php echo $element->length ?></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="cols-4 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('meridian')) ?>:</div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value"><?php echo $element->meridian ?></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="cols-4 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('incision_type_id')) ?>:</div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value"><?php echo $element->incision_type->name ?></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="cols-4 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('report2')) ?>:</div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value"><?php echo CHtml::encode($element->report2) ?></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="cols-4 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('iol_type_id')) ?>:</div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value">
+                <?php echo $element->iol_type ? $element->iol_type->display_name : 'None'; ?>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="cols-4 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('iol_power')) ?>:</div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value"><?php echo CHtml::encode($element->iol_power) ?></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="cols-4 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('predicted_refraction')) ?>:
+            </div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value"><?php echo CHtml::encode($element->predicted_refraction) ?></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="cols-4 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('iol_position_id')) ?>:</div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value"><?php echo CHtml::encode($element->iol_position->name) ?></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="cols-4 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('pcr_risk')) ?>:</div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value"><?php echo CHtml::encode($element->pcr_risk) ?></div>
+          </div>
+        </div>
 
-<section class="sub-element">
-	<header class="sub-element-header">
-		<h3 class="sub-element-title"><?php echo $element->elementType->name ?></h3>
-	</header>
+        <div class="row">
+          <div class="cols-4 column">
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('phaco_cde'))?>:</div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value"><?php echo $element->phaco_cde != '' ? CHtml::encode($element->phaco_cde) : 'not recorded'?></div>
+          </div>
+        </div>
 
-	<div class="sub-element-data">
-		<div class="row highlight-container">
-			<div class="large-6 column data-value highlight">
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('incision_site_id'))?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo $element->incision_site->name?></div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('length'))?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo $element->length?></div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('meridian'))?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo $element->meridian?></div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('incision_type_id'))?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo $element->incision_type->name?></div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('report2'))?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo CHtml::encode($element->report2) . '<br>'. CHtml::encode($element->comments)?></div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('iol_type_id'))?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-                            <?php echo $element->iol_type ? $element->iol_type->display_name : 'None'; ?>
-                        </div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('iol_power'))?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo CHtml::encode($element->iol_power)?></div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('predicted_refraction'))?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo CHtml::encode($element->predicted_refraction)?></div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('iol_position_id'))?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo CHtml::encode($element->iol_position->name)?></div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('phaco_cde'))?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php
-						if($element->phaco_cde == ""){
-								echo "not recorded";
-						}else
-						{
-								echo CHtml::encode($element->phaco_cde);
-						}?></div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('pcr_risk'))?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo CHtml::encode($element->pcr_risk)?></div>
-					</div>
-				</div>
-			</div>
-			<div class="large-6 column">
-				<?php
-                $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-                        'idSuffix' => 'Cataract',
-                        'side' => $element->eye->getShortName(),
-                        'mode' => 'view',
-                        'width' => 200,
-                        'height' => 200,
-                        'model' => $element,
-                        'attribute' => 'eyedraw',
-                        'idSuffix' => 'Cataract',
-                    ));
-                ?>
-				<?php
-                $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-                        'idSuffix' => 'Position',
-                        'side' => $element->eye->getShortName(),
-                        'mode' => 'view',
-                        'width' => 200,
-                        'height' => 200,
-                        'model' => $element,
-                        'attribute' => 'eyedraw2',
-                    ));
-                ?>
-			</div>
-		</div>
+          <?php if ($element->getSetting('fife')) { ?>
+            <div class="row">
+              <div class="cols-4 column">
+                <div
+                    class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('intraocular_solution_id')) ?>
+                  :
+                </div>
+              </div>
+              <div class="cols-8 column">
+                <div
+                    class="data-value"><?php echo $element->intraocular_solution ? $element->intraocular_solution->name : 'Not specified' ?></div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="cols-4 column">
+                <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('skin_preparation_id')) ?>
+                  :
+                </div>
+              </div>
+              <div class="cols-8 column">
+                <div
+                    class="data-value"><?php echo $element->skin_preparation ? $element->skin_preparation->name : 'Not specified' ?></div>
+              </div>
+            </div>
+          <?php } ?>
+      </div>
+      <div class="cols-6 column">
+          <?php
+          $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+              'idSuffix' => 'Cataract',
+              'side' => $element->eye->getShortName(),
+              'mode' => 'view',
+              'width' => 200,
+              'height' => 200,
+              'model' => $element,
+              'attribute' => 'eyedraw',
+          ));
+          ?>
+          <?php
+          $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+              'idSuffix' => 'Position',
+              'side' => $element->eye->getShortName(),
+              'mode' => 'view',
+              'width' => 200,
+              'height' => 200,
+              'model' => $element,
+              'attribute' => 'eyedraw2',
+          ));
+          ?>
+      </div>
+    </div>
 
-		<div class="row data-row">
-			<div class="large-4 column">
-				<h3 class="data-title">Cataract report</h3>
-				<div class="data-value highlight">
-					<?= nl2br(CHtml::encode($element->report)); ?>
-				</div>
-			</div>
-			<div class="large-4 column">
-				<h3 class="data-title">Agent(s)</h3>
-				<div class="data-value highlight">
-					<?php if (!$element->operative_devices) {?>
-						None
-					<?php } else {?>
-							<?php foreach ($element->operative_devices as $device) {?>
-								<?php echo $device->name?><br/>
-							<?php }?>
-					<?php }?>
-				</div>
-			</div>
-			<div class="large-3 column left">
-				<h3 class="data-title">Cataract complications</h3>
-				<div class="data-value highlight">
-					<?php if (!$element->complications && !$element->complication_notes) {?>
-						None
-					<?php } else {?>
-							<?php foreach ($element->complications as $complication) {?>
-								<?php echo $complication->name?><br/>
-							<?php }?>
-							<?php echo CHtml::encode($element->complication_notes)?>
-					<?php }?>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="row">
+      <div class="cols-4 column">
+        <h3 class="data-label">Cataract report</h3>
+        <div class="data-value highlight">
+            <?= nl2br(CHtml::encode($element->report)); ?>
+        </div>
+      </div>
+      <div class="cols-4 column">
+        <h3 class="data-label">Agent(s)</h3>
+        <div class="data-value highlight">
+            <?php if (!$element->operative_devices) { ?>
+              None
+            <?php } else { ?>
+                <?php foreach ($element->operative_devices as $device) { ?>
+                    <?php echo $device->name ?><br/>
+                <?php } ?>
+            <?php } ?>
+        </div>
+      </div>
+      <div class="cols-3 column left">
+        <h3 class="data-label">Cataract complications</h3>
+        <div class="data-value highlight">
+            <?php if (!$element->complications && !$element->complication_notes) { ?>
+              None
+            <?php } else { ?>
+                <?php foreach ($element->complications as $complication) { ?>
+                    <?php echo $complication->name ?><br/>
+                <?php } ?>
+                <?php echo CHtml::encode($element->complication_notes) ?>
+            <?php } ?>
+        </div>
+      </div>
+    </div>
+  </section>
 </section>

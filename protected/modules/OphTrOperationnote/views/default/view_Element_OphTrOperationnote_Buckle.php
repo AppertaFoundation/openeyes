@@ -18,88 +18,86 @@
 ?>
 
 <section class="sub-element">
-
-	<header class="sub-element-header">
-		<h3 class="sub-element-title"><?php echo $element->elementType->name ?></h3>
-	</header>
-
-	<div class="element-data row">
-		<div class="row">
-			<div class="large-6 column">
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('drainage_type_id'))?>:
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo $element->drainage_type->name?>
-						</div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('drain_haem'))?>:
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo $element->drain_haem ? 'Yes' : 'No'?>
-						</div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('deep_suture'))?>:
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo $element->deep_suture ? 'Yes' : 'No'?>
-						</div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('report'))?>:
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo CHtml::encode($element->report)?>
-						</div>
-					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label">
-							<?php echo CHtml::encode($element->getAttributeLabel('comments'))?>:
-						</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value">
-							<?php echo Yii::app()->format->Ntext($element->comments)?>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="large-6 column">
-				<?php
-                $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-                    'side' => $element->eye->getShortName(),
-                    'mode' => 'view',
-                    'width' => 200,
-                    'height' => 200,
-                    'model' => $element,
-                    'attribute' => 'eyedraw',
-                    'idSuffix' => 'Buckle',
-                ));
-                ?>
-			</div>
-		</div>
-	</div>
+  <header class="sub-element-header">
+    <h3 class="sub-element-title"><?php echo $element->elementType->name ?></h3>
+  </header>
+  <div class="element-data row">
+    <div class="row">
+      <div class="cols-6 column">
+        <div class="row">
+          <div class="cols-4 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel('drainage_type_id')) ?>:
+            </div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value">
+                <?php echo $element->drainage_type->name ?>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="cols-4 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel('drain_haem')) ?>:
+            </div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value">
+                <?php echo $element->drain_haem ? 'Yes' : 'No' ?>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="cols-4 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel('deep_suture')) ?>:
+            </div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value">
+                <?php echo $element->deep_suture ? 'Yes' : 'No' ?>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="cols-4 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel('report')) ?>:
+            </div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value">
+                <?php echo CHtml::encode($element->report) ?>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="cols-4 column">
+            <div class="data-label">
+                <?php echo CHtml::encode($element->getAttributeLabel('comments')) ?>:
+            </div>
+          </div>
+          <div class="cols-8 column">
+            <div class="data-value">
+                <?php echo Yii::app()->format->Ntext($element->comments) ?>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cols-6 column">
+          <?php
+          $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+              'side' => $element->eye->getShortName(),
+              'mode' => 'view',
+              'width' => 200,
+              'height' => 200,
+              'model' => $element,
+              'attribute' => 'eyedraw',
+              'idSuffix' => 'Buckle',
+          ));
+          ?>
+      </div>
+    </div>
+  </div>
 </section>

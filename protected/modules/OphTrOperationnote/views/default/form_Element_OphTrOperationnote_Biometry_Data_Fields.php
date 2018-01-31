@@ -28,134 +28,143 @@
 
 <div class="element-data" <?="data-biometry_data='" . json_encode($biometry_data) ."'"?>>
 
-    <div class="row data-row">
-        <input type="hidden" id="Element_OphTrOperationnote_Biometry_id_hidden"
-               name="Element_OphTrOperationnote_Biometry[id]" value="<?php echo $element->id; ?>">
+  <div class="row">
+    <input type="hidden" id="Element_OphTrOperationnote_Biometry_id_hidden"
+           name="Element_OphTrOperationnote_Biometry[id]" value="<?php echo $element->id; ?>">
 
-        <div class="large-2 column">
-            <div class="data-label"><b><?php echo CHtml::encode($element->getAttributeLabel('lens_id_'.$side)) ?></b>
-            </div>
-        </div>
-        <div class="large-10 column end">
-            <div class="data-value iolDisplayHighlited"
-                 id="lens_<?php echo $side ?>"><?php echo $element->{'lens_display_name_'.$side} ? $element->{'lens_display_name_'.$side} : 'None' ?>
-            <input type="hidden" class="selected_lens" value="<?php echo $element->{'lens_id_'.$side} ?>"></div>
-        </div>
+    <div class="cols-2 column">
+      <div class="data-label"><b><?php echo CHtml::encode($element->getAttributeLabel('lens_id_' . $side)) ?></b>
+      </div>
     </div>
-    <div class="row field-row">
-        <div class="large-2 column">
-            <div class="data-label">
-                <b><?php echo CHtml::encode($element->getAttributeLabel('iol_power_'.$side)) ?></b></div>
-        </div>
-        <div class="large-4 column end">
-            <div class="data-value iolDisplayHighlited iolDisplay"><?php echo CHtml::encode($element->{'iol_power_'.$side}) ?></div>
-        </div>
-        <div class="large-2 column">
-            <div class="data-label">
-                <b><?php echo CHtml::encode($element->getAttributeLabel('predicted_refraction_'.$side)) ?></b></div>
-        </div>
-        <div class="large-4 column">
-            <div class="data-value predictedRefraction"
-                 id="predicted_refraction_<?php echo $side ?>"><?php echo $element->{'predicted_refraction_'.$side} ? $element->{'predicted_refraction_'.$side} : 'None' ?></div>
-        </div>
+    <div class="cols-10 column end">
+      <div class="data-value iolDisplayHighlited"
+           id="lens_<?php echo $side ?>"><?php echo $element->{'lens_display_name_' . $side} ? $element->{'lens_display_name_' . $side} : 'None' ?>
+        <input type="hidden" class="selected_lens" value="<?php echo $element->{'lens_id_' . $side} ?>"></div>
     </div>
-    <div class="row data-row">
-        <div class="large-2 column">
-            <div class="data-label">
-                <b><?php echo CHtml::encode($element->getAttributeLabel('formula_'.$side)) ?></b></div>
-        </div>
-        <div class="large-4 column">
-            <div class="data-value"
-                 id="formula_<?php echo $side ?>"><?php echo $element->{'formula_'.$side} ? $element->{'formula_'.$side} : 'None' ?>&nbsp;</div>
-        </div>
-        <div class="large-2 column">
-            <div class="data-label">
-                <b><?php echo CHtml::encode($element->getAttributeLabel('lens_acon_'.$side)) ?></b></div>
-        </div>
-        <div class="large-4 column">
-            <div class="data-value"
-                 id="acon_<?php echo $side ?>"><?php echo $element->{'lens_acon_'.$side} ? $this->formatAconst($element->{'lens_acon_'.$side}) : 'None' ?></div>
-        </div>
+  </div>
+  <div class="row">
+    <div class="cols-2 column">
+      <div class="data-label">
+        <b><?php echo CHtml::encode($element->getAttributeLabel('iol_power_' . $side)) ?></b></div>
     </div>
+    <div class="cols-4 column end">
+      <div
+          class="data-value iolDisplayHighlited iolDisplay"><?php echo CHtml::encode($element->{'iol_power_' . $side}) ?></div>
+    </div>
+    <div class="cols-2 column">
+      <div class="data-label">
+        <b><?php echo CHtml::encode($element->getAttributeLabel('predicted_refraction_' . $side)) ?></b></div>
+    </div>
+    <div class="cols-4 column">
+      <div class="data-value predictedRefraction"
+           id="predicted_refraction_<?php echo $side ?>"><?php echo $element->{'predicted_refraction_' . $side} ? $element->{'predicted_refraction_' . $side} : 'None' ?></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="cols-2 column">
+      <div class="data-label">
+        <b><?php echo CHtml::encode($element->getAttributeLabel('formula_' . $side)) ?></b></div>
+    </div>
+    <div class="cols-4 column">
+      <div class="data-value"
+           id="formula_<?php echo $side ?>"><?php echo $element->{'formula_' . $side} ? $element->{'formula_' . $side} : 'None' ?>
+        &nbsp;
+      </div>
+    </div>
+    <div class="cols-2 column">
+      <div class="data-label">
+        <b><?php echo CHtml::encode($element->getAttributeLabel('lens_acon_' . $side)) ?></b></div>
+    </div>
+    <div class="cols-4 column">
+      <div class="data-value"
+           id="acon_<?php echo $side ?>"><?php echo $element->{'lens_acon_' . $side} ? $this->formatAconst($element->{'lens_acon_' . $side}) : 'None' ?></div>
+    </div>
+  </div>
 
-    <div class="row field-row">
-        <div class="large-12 column">&nbsp;</div>
+  <div class="row">
+    <div class="cols-12 column">&nbsp;</div>
+  </div>
+
+  <div class="row">
+    <div class="cols-2 column">
+      <div class="data-label">
+        <b><?php echo CHtml::encode($element->getAttributeLabel('axial_length_' . $side)) ?></b></div>
     </div>
-
-    <div class="row field-row">
-        <div class="large-2 column">
-            <div class="data-label">
-                <b><?php echo CHtml::encode($element->getAttributeLabel('axial_length_'.$side)) ?></b></div>
-        </div>
-        <div class="large-4 column">
-            <div class="data-value"
-                 id="axial_length_<?php echo $side ?>"><?php echo CHtml::encode($element->{'axial_length_'.$side}) ?>
-                &nbsp;mm
-            </div>
-        </div>
-
-        <div class="large-2 column">
-            <div class="data-label"><b><?php echo CHtml::encode($element->getAttributeLabel('snr_'.$side)) ?></b>
-            </div>
-        </div>
-        <div class="large-4 column">
-            <div class="data-value"
-                 id="snr_<?php echo $side ?>"><?php echo CHtml::encode($element->{'snr_'.$side}) ?></div>
-        </div>
+    <div class="cols-4 column">
+      <div class="data-value"
+           id="axial_length_<?php echo $side ?>"><?php echo CHtml::encode($element->{'axial_length_' . $side}) ?>
+        &nbsp;mm
+      </div>
     </div>
 
-    <div class="row field-row">
-        <div class="large-2 column">
-            <div class="data-label"><b><?php echo CHtml::encode($element->getAttributeLabel('k1_'.$side)) ?></b></div>
-        </div>
-        <div class="large-4 column">
-            <div class="data-value" id="k1_<?php echo $side ?>"><?php echo CHtml::encode($element->{'k1_'.$side}) ?>
-                &nbsp;D&nbsp;<b>@</b>&nbsp;<?php echo CHtml::encode($element->{'axis_k1_'.$side}) ?>&deg;</div>
-        </div>
-        <div class="large-2 column">
-            <div class="data-label">
-                <b>&Delta;<?php echo CHtml::encode($element->getAttributeLabel('delta_k_'.$side)) ?></b></div>
-        </div>
-        <div class="large-4 column">
-            <div class="data-value"
-                 id="k1_<?php echo $side ?>"><?php if (($element->{'delta_k_'.$side}) > 0) echo '+'; echo CHtml::encode($element->{'delta_k_'.$side}) ?>&nbsp;D&nbsp;<b>@</b>&nbsp;<?php echo CHtml::encode($element->{'delta_k_axis_'.$side}) ?>&deg;
-            </div>
-        </div>
+    <div class="cols-2 column">
+      <div class="data-label"><b><?php echo CHtml::encode($element->getAttributeLabel('snr_' . $side)) ?></b>
+      </div>
     </div>
-    <div class="row field-row">
-        <div class="large-2 column">
-            <div class="data-label"><b><?php echo CHtml::encode($element->getAttributeLabel('k2_'.$side)) ?></b></div>
-        </div>
-        <div class="large-4 column">
-            <div class="data-value" id="k1_<?php echo $side ?>"><?php echo CHtml::encode($element->{'k2_'.$side}) ?>
-                &nbsp;D&nbsp;<b>@</b>&nbsp;<?php echo CHtml::encode($element->{'k2_axis_'.$side}) ?>&deg;</div>
-        </div>
-        <div class="large-2 column">
-            <div class="data-label"><b><?php echo CHtml::encode($element->getAttributeLabel('acd_'.$side)) ?></b>
-            </div>
-        </div>
-        <div class="large-4 column">
-            <div class="data-value" id="k1_<?php echo $side ?>"><?php echo CHtml::encode($element->{'acd_'.$side}) ?>
-                &nbsp;mm
-            </div>
-        </div>
+    <div class="cols-4 column">
+      <div class="data-value"
+           id="snr_<?php echo $side ?>"><?php echo CHtml::encode($element->{'snr_' . $side}) ?></div>
     </div>
+  </div>
 
-    <div class="row field-row">
-        <div class="large-2 column">
-            <div class="data-label"><b><?php echo CHtml::encode($element->getAttributeLabel('status_'.$side)) ?></b>
-            </div>
-        </div>
-        <div class="large-10 column end">
-            <div class="data-value"><?php echo CHtml::encode($element->{'status_'.$side}) ?></div>
-        </div>
+  <div class="row">
+    <div class="cols-2 column">
+      <div class="data-label"><b><?php echo CHtml::encode($element->getAttributeLabel('k1_' . $side)) ?></b></div>
     </div>
-    <div class="row field-row">
-        <div class="large-2 column">
-            <div class="data-label"><b>Comments</b></div>
-        </div>
-        <div class="large-10 column end">
-            <div class="data-value"><?php echo CHtml::encode($element->{'comments'}) ?></div>
-        </div>
+    <div class="cols-4 column">
+      <div class="data-value" id="k1_<?php echo $side ?>"><?php echo CHtml::encode($element->{'k1_' . $side}) ?>
+        &nbsp;D&nbsp;<strong>@</strong>&nbsp;<?php echo CHtml::encode($element->{'axis_k1_' . $side}) ?>&deg;
+      </div>
     </div>
+    <div class="cols-2 column">
+      <div class="data-label">
+        <strong>&Delta;<?php echo CHtml::encode($element->getAttributeLabel('delta_k_' . $side)) ?></strong></div>
+    </div>
+    <div class="cols-4 column">
+      <div class="data-value"
+           id="k1_<?php echo $side ?>"><?php if (($element->{'delta_k_' . $side}) > 0) {
+              echo '+';
+          }
+          echo CHtml::encode($element->{'delta_k_' . $side}) ?>
+        &nbsp;D&nbsp;<strong>@</strong>&nbsp;<?php echo CHtml::encode($element->{'delta_k_axis_' . $side}) ?>&deg;
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="cols-2 column">
+      <div class="data-label"><b><?php echo CHtml::encode($element->getAttributeLabel('k2_' . $side)) ?></b></div>
+    </div>
+    <div class="cols-4 column">
+      <div class="data-value" id="k1_<?php echo $side ?>"><?php echo CHtml::encode($element->{'k2_' . $side}) ?>
+        &nbsp;D&nbsp;<strong>@</strong>&nbsp;<?php echo CHtml::encode($element->{'k2_axis_' . $side}) ?>&deg;
+      </div>
+    </div>
+    <div class="cols-2 column">
+      <div class="data-label"><b><?php echo CHtml::encode($element->getAttributeLabel('acd_' . $side)) ?></b>
+      </div>
+    </div>
+    <div class="cols-4 column">
+      <div class="data-value" id="k1_<?php echo $side ?>"><?php echo CHtml::encode($element->{'acd_' . $side}) ?>
+        &nbsp;mm
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="cols-2 column">
+      <div class="data-label"><b><?php echo CHtml::encode($element->getAttributeLabel('status_' . $side)) ?></b>
+      </div>
+    </div>
+    <div class="cols-10 column end">
+      <div class="data-value"><?php echo CHtml::encode($element->{'status_' . $side}) ?></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="cols-2 column">
+      <div class="data-label"><b>Comments</b></div>
+    </div>
+    <div class="cols-10 column end">
+      <div class="data-value"><?php echo CHtml::encode($element->{'comments'}) ?></div>
+    </div>
+  </div>
 </div>

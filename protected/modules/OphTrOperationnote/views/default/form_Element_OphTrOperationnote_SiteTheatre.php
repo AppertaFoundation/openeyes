@@ -16,25 +16,31 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields">
-	<div class="row">
-		<div class="large-6 column">
-	<?php
+<div class="element-fields full-width">
+  <div class="row">
+    <div class="cols-3 column">
+        <?php
         echo $form->dropDownList(
             $element,
             'site_id',
-            CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id), 'id', 'short_name'),
+            CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id), 'id',
+                'short_name'),
             array('empty' => '- None -'),
             false);
-    ?>
-		</div>
-		<div class="large-6 column">
-	<?php
-        if (array_key_exists('OphTrOperationbooking', Yii::app()->modules) && in_array('ophtroperationbooking_operation_theatre', Yii::app()->db->getSchema()->getTableNames())) {
+        ?>
+    </div>
+    <div class="cols-3 column">
+        <?php
+        if (array_key_exists('OphTrOperationbooking',
+                Yii::app()->modules) && in_array('ophtroperationbooking_operation_theatre',
+                Yii::app()->db->getSchema()->getTableNames())) {
             $siteId = ($element->site_id) ? $element->site_id : Yii::app()->session['selected_site_id'];
-            $getTheatreData = OphTrOperationbooking_Operation_Theatre::model()->findAll(array('condition' => 'active=1 and site_id='.$siteId, 'order' => 'name'));
+            $getTheatreData = OphTrOperationbooking_Operation_Theatre::model()->findAll(array(
+                'condition' => 'active=1 and site_id=' . $siteId,
+                'order' => 'name',
+            ));
 
-            if(count($getTheatreData) == 1){
+            if (count($getTheatreData) == 1) {
                 echo $form->dropDownList(
                     $element,
                     'theatre_id',
@@ -49,23 +55,23 @@
                     false);
             }
         }
-    ?>
-		</div>
-	</div>
+        ?>
+    </div>
+  </div>
 </div>
 <script type="text/javascript">
-	$(document).ready(function(){
-		$('#Element_OphTrOperationnote_SiteTheatre_site_id').change(function(){
-			$.ajax({
-				type: 'GET',
-				url: '/OphTrOperationnote/Default/getTheatreOptions',
-				data: {
-						siteId: $(this).val()
-					},
-				success: function( result ){
-					$('#Element_OphTrOperationnote_SiteTheatre_theatre_id').html(result);
-					}
-			});
-		});
-	});
+  $(document).ready(function () {
+    $('#Element_OphTrOperationnote_SiteTheatre_site_id').change(function () {
+      $.ajax({
+        type: 'GET',
+        url: '/OphTrOperationnote/Default/getTheatreOptions',
+        data: {
+          siteId: $(this).val()
+        },
+        success: function (result) {
+          $('#Element_OphTrOperationnote_SiteTheatre_theatre_id').html(result);
+        }
+      });
+    });
+  });
 </script>

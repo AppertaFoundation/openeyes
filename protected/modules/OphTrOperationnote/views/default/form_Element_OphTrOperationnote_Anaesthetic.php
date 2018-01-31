@@ -16,24 +16,26 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields" id="OphTrOperationnote_Anaesthetic">
+<div class="element-fields full-width" id="OphTrOperationnote_Anaesthetic">
 
     <?php
 
-        $is_hidden = function() use ($element){
-          if( count($element->anaesthetic_type_assignments) == 1 && ( $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'GA' || $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'NoA' ) ){
-              return true;
-          }
-            return false;
-        };
+    $is_hidden = function () use ($element) {
+        if (count($element->anaesthetic_type_assignments) == 1 && ($element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'GA' || $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'NoA')) {
+            return true;
+        }
 
-        echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', 'Type');
+        return false;
+    };
 
-        echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', 'LA Delivery Methods',
+    echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', 'Type');
+
+    echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', 'LA Delivery Methods',
         false, false, false, false, array('fieldset-class' => ($is_hidden() ? 'hidden' : '')));
 
-        echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist', $element->anaesthetist_id, false, false, false, false,
-            array('fieldset-class' => ($is_hidden() ? 'hidden' : '')) );
+    echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist', $element->anaesthetist_id, false, false,
+        false, false,
+        array('fieldset-class' => ($is_hidden() ? 'hidden' : '')));
     ?>
 
     <div class="row">
@@ -86,18 +88,69 @@
                       array('field' => 3)
                   ) ?>
                 </div>
-
             </div>
 
+        <div class="cols-2 column">
+          <label for="AnaestheticAgent">Agents:</label>
         </div>
-        <div class="large-6 column">
 
-            <div class="large-8 column end">
-                <label for="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment">Comments:</label>
-                <?php echo $form->textArea($element, 'anaesthetic_comment', array('nowrapper' => true), false, array('rows' => 4)) ?>
-
-            </div>
-
-
+        <div class="cols-7 column end">
+            <?php echo $form->multiSelectList(
+                $element,
+                'AnaestheticAgent',
+                'anaesthetic_agents',
+                'id',
+                $this->getAnaesthetic_agent_list($element),
+                null,
+                array('empty' => '- Anaesthetic agents -', 'label' => 'Agents', 'nowrapper' => true),
+                false,
+                false,
+                null,
+                false,
+                false,
+                array('field' => 3)
+            ) ?>
         </div>
+      </div>
+
+      <div id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_complications" class="row field-row widget">
+
+        <div class="cols-2 column">
+          <label for="OphTrOperationnote_AnaestheticComplications">Complications:</label>
+        </div>
+
+        <div class="cols-7 column end">
+            <?php echo $form->multiSelectList(
+                $element,
+                'OphTrOperationnote_AnaestheticComplications',
+                'anaesthetic_complications',
+                'id',
+                CHtml::listData(OphTrOperationnote_AnaestheticComplications::model()->activeOrPk($element->anaestheticComplicationValues)->findAll(),
+                    'id', 'name'),
+                array(),
+                array('empty' => '- Complications -', 'label' => 'Complications', 'nowrapper' => true),
+                false,
+                false,
+                null,
+                false,
+                false,
+                array('field' => 3)
+            ) ?>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="cols-6 column">
+      <div class="cols-2 column">
+
+        <label for="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment">Comments:</label>
+      </div>
+      <div class="cols-6 column">
+          <?php echo $form->textArea($element, 'anaesthetic_comment', array('nowrapper' => true), false,
+              array('rows' => 4)) ?>
+
+      </div>
+    </div>
+  </div>
 </div>

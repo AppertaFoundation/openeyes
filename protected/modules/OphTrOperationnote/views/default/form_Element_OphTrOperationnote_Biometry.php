@@ -30,7 +30,7 @@ if ($element->patientId > 0) {
     $latestData = null;
 }
 ?>
-<div class="element-fields" <?="data-has_biometry='" . (bool)$latestData . "'" ?>;>
+<div class="element-fields full-width" <?="data-has_biometry='" . (bool)$latestData . "'" ?>>
 	<div class="row ">
 		<div class="fixed column">
 			<?php if(!$latestData) { ?>
