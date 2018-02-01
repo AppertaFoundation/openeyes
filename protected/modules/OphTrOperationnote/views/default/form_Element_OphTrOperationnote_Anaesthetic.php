@@ -148,7 +148,7 @@
       </div>
       <div class="cols-6 column">
           <?php echo $form->textArea($element, 'anaesthetic_comment', array('nowrapper' => true), false,
-              array('rows' => 4)) ?>
+              array('rows' => 4, 'cols' => 40)) ?>
 
       </div>
     </div>

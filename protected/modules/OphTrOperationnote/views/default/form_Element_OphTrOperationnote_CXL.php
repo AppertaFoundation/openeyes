@@ -155,7 +155,7 @@
         array('options' => array($default_interpulse_duration_id => array('selected' => true))),
         null, array('field' => 2)); ?>
 
-    <?php echo $form->textArea($element, 'cxl_comments', array(), false, array('rows' => 4)) ?>
+    <?php echo $form->textArea($element, 'cxl_comments', array(), false, array('rows' => 4, 'cols' => 40)) ?>
 
 </div>
 <script type="text/javascript">

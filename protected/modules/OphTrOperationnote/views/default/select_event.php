@@ -76,7 +76,7 @@ $warnings = $this->patient->getWarnings($clinical);
           <legend class="cols-2 column">Select:</legend>
           <div class="cols-6 column end">
               <?php foreach ($operations as $operation) { ?>
-                <label class="highlight booking">
+                <label>
 										<span class="row">
 											<span class="cols-1 column">
 												<input type="radio" value="booking<?= $operation->event_id ?>" name="SelectBooking"/>
@@ -114,7 +114,7 @@ $warnings = $this->patient->getWarnings($clinical);
 										</span>
                 </label>
               <?php } ?>
-            <label class="highlight booking">
+            <label>
 									<span class="row">
 										<span class="cols-1 column">
 											<input type="radio" value="emergency" name="SelectBooking"

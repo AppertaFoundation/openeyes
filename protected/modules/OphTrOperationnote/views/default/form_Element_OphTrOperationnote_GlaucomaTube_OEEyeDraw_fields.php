@@ -45,7 +45,7 @@ echo $form->dropDownList($element, 'plate_position_id', CHtml::listData($plate_p
 <?php echo $form->checkbox($element, 'slit', array('class' => 'clearWithEyedraw')) ?>
 <?php echo $form->checkbox($element, 'visco_in_ac', array('class' => 'clearWithEyedraw')) ?>
 <?php echo $form->checkbox($element, 'flow_tested', array('class' => 'clearWithEyedraw')) ?>
-<?php echo $form->textArea($element, 'description', array('rows' => 4, 'class' => 'autosize clearWithEyedraw')) ?>
+<?php echo $form->textArea($element, 'description', array('rows' => 4, 'cols' => 40, 'class' => 'autosize clearWithEyedraw')) ?>
 <div class="row">
   <div class="cols-3 column">&nbsp;</div>
   <div class="cols-4 column end">

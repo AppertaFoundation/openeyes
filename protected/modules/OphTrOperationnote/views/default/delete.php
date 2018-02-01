@@ -32,7 +32,7 @@
         <?php $this->displayErrors(@$errors) ?>
       <div style="width:300px; margin-bottom: 0.6em;">
         <p>Reason for deletion:</p>
-          <?php echo CHtml::textArea('delete_reason', '') ?>
+          <?php echo CHtml::textArea('delete_reason', '', array('cols' => 40)) ?>
       </div>
       <p>
         <strong>Are you sure you want to proceed?</strong>

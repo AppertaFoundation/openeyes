@@ -52,7 +52,7 @@ $numHash = crc32($element->getElementTypeName());
       </div>
       <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
           <?php echo CHtml::textArea(get_class($element) . '[' . $element->proc_id . '][comments]', $element->comments,
-              array('rows' => 4, 'id' => get_class($element) . '_comments_' . $numHash)) ?>
+              array('rows' => 4, 'cols'=> 40, 'id' => get_class($element) . '_comments_' . $numHash)) ?>
       </div>
     </div>
   </div>

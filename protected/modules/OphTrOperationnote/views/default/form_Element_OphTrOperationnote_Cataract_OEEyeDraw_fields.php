@@ -48,25 +48,24 @@ if (isset(Yii::app()->modules["OphInBiometry"])) {
     ),
         array('empty' => '- Please select -', 'divided' => true), $element->iol_hidden, array('field' => 4));
 } ?>
+<div id="div_Element_OphTrOperationnote_Cataract_iol_power" class="row field-row">
+    <div class="large-3 column">
+        <label for="Element_OphTrOperationnote_Cataract_iol_power">IOL power:</label>
+    </div>
 
-<div id="div_Element_OphTrOperationnote_Cataract_iol_power" class="row">
-  <div class="cols-3 column">
-    <label for="Element_OphTrOperationnote_Cataract_iol_power">IOL power:</label>
-  </div>
-  <div class="cols-2 column end">
-    <input id="Element_OphTrOperationnote_Cataract_iol_power" type="text"
-           name="Element_OphTrOperationnote_Cataract[iol_power]" autocomplete="off" hide=""
-           value="<?php echo $element->iol_power; ?>">
-  </div>
-  <div class="large-3 column">
-    <label for="Element_OphTrOperationnote_Cataract_predicted_refraction">Predicted refraction:</label>
-  </div>
-  <div class="large-2 column end">
-    <input id="Element_OphTrOperationnote_Cataract_predicted_refraction" type="text"
-           name="Element_OphTrOperationnote_Cataract[predicted_refraction]" autocomplete="off"
-           value="<?php echo $element->predicted_refraction; ?>">
-  </div>
-
+    <div class="large-2 column end">
+        <input id="Element_OphTrOperationnote_Cataract_iol_power" type="text"
+               name="Element_OphTrOperationnote_Cataract[iol_power]" autocomplete="off" hide=""
+               value="<?php echo $element->iol_power; ?>">
+    </div>
+    <div class="large-3 column">
+        <label for="Element_OphTrOperationnote_Cataract_predicted_refraction">Predicted refraction:</label>
+    </div>
+    <div class="large-2 column end">
+        <input id="Element_OphTrOperationnote_Cataract_predicted_refraction" type="text"
+               name="Element_OphTrOperationnote_Cataract[predicted_refraction]" autocomplete="off"
+               value="<?php echo $element->predicted_refraction; ?>">
+    </div>
 </div>
 
 <?php echo $form->dropDownList($element, 'iol_position_id', 'OphTrOperationnote_IOLPosition',
@@ -74,14 +73,14 @@ if (isset(Yii::app()->modules["OphInBiometry"])) {
         'empty' => '- Please select -',
         'options' => array(
             8 => array('disabled' => 'disabled'),
-        ),
+        )
     ),
     $element->iol_hidden, array('field' => 4)
-
 ) ?>
-<?php echo $form->multiSelectList($element, 'OphTrOperationnote_CataractOperativeDevices', 'operative_devices', 'id',
+<?php
+echo $form->multiSelectList($element, 'OphTrOperationnote_CataractOperativeDevices', 'operative_devices', 'id',
     $this->getOperativeDeviceList($element), $this->getOperativeDeviceDefaults(),
-    array('empty' => '- Agents -', 'label' => 'Agents'), false, false, null, false, false, array('field' => 4)) ?>
+    array('empty' => '- Agents -', 'label' => 'Agents'), false, false, null, false, false, array('field' => 4)); ?>
 
 <div id="div_Element_OphTrOperationnote_Cataract_phaco_cde" class="row field-row">
     <div class="large-3 column">
@@ -100,7 +99,7 @@ if (isset(Yii::app()->modules["OphInBiometry"])) {
     CHtml::listData(OphTrOperationnote_CataractComplications::model()->activeOrPk($element->cataractComplicationValues)->findAll(array('order' => 'display_order asc')),
         'id', 'name'), null, array('empty' => '- Complications -', 'label' => 'Complications'), false, false, null,
     false, false, array('field' => 4)) ?>
-<?php echo $form->textArea($element, 'complication_notes', array(), false, array('rows' => 1)) ?>
+<?php echo $form->textArea($element, 'complication_notes', array(), false, array('rows' => 6, 'cols' => 40)) ?>
 <?php echo $form->hiddenInput($element, 'pcr_risk') ?>
 <script>
     $(document).ready(function () {

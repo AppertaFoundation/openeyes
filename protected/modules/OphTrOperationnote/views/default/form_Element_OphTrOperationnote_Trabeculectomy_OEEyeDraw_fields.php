@@ -32,7 +32,7 @@
           array('field' => 4)) ?>
       <?php echo $form->dropDownList($element, 'viscoelastic_flow_id',
           'OphTrOperationnote_Trabeculectomy_Viscoelastic_Flow', array(), false, array('field' => 4)) ?>
-      <?php echo $form->textArea($element, 'report', array(), false, array(), array('field' => 9)) ?>
+      <?php echo $form->textArea($element, 'report', array(), false, array('cols' => 40), array('field' => 9)) ?>
     <div class="row">
       <div class="cols-9 column end">
         <button id="btn-trabeculectomy-report" class="secondary small ed_report">
@@ -66,7 +66,7 @@
           array('field' => 4)
       ) ?>
       <?php echo $form->textArea($element, 'difficulty_other', array(),
-          !$element->hasMultiSelectValue('difficulties', 'Other'), array(), array('field' => 6)) ?>
+          !$element->hasMultiSelectValue('difficulties', 'Other'), array('cols' => 40), array('field' => 6)) ?>
       <?php echo $form->multiSelectList(
           $element,
           'MultiSelect_Complications',
@@ -90,6 +90,6 @@
           array('field' => 4)
       ) ?>
       <?php echo $form->textArea($element, 'complication_other', array(),
-          !$element->hasMultiSelectValue('complications', 'Other'), array(), array('field' => 6)) ?>
+          !$element->hasMultiSelectValue('complications', 'Other'), array('cols' => 40), array('field' => 6)) ?>
   </div>
 </div>
