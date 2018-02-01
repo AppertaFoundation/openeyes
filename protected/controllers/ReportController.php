@@ -43,6 +43,7 @@ class ReportController extends BaseReportController
 
     public function actionDiagnoses()
     {
+        Audit::add('Reports', 'view', print_r(['name' => 'Diagnoses report'], true) );
         $this->render('diagnoses');
     }
 

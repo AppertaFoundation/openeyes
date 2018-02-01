@@ -110,6 +110,11 @@ class BaseReportController extends BaseController
                 return;
             }
 
+            Audit::add('Reports', 'display', "<pre>" . print_r([
+                    'name' => $_POST['report-name'],
+                    $_POST
+                ], true) . "</pre>" );
+
             $report->run();
 
             echo json_encode(array(
@@ -144,6 +149,11 @@ class BaseReportController extends BaseController
 
             return;
         }
+
+        Audit::add('Reports', 'download', "<pre>" . print_r([
+                'name' => $_POST['report-name'],
+                $_POST
+            ], true) . "</pre>", null, ['model' => $report_class] );
 
         if (!$report->validate()) {
             throw new Exception('Report errors: '.print_r($report->errors, true));
