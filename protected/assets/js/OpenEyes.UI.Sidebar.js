@@ -57,7 +57,6 @@
         h = window.innerHeight - furniture - $('.sidebar-header').outerHeight();
         if(h < self.options.minimumHeight)
             h = self.options.minimumHeight;
-        console.log('height h '+h);
         self.$el.height(h+'px');
         $('.container.content').css({'min-height':h+50+'px'});
     };

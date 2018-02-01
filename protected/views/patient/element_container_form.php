@@ -39,7 +39,11 @@ $element_Type = $element->getElementType();
 	data-element-type-id="<?php echo $element->elementType->id?>"
   data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
   data-element-type-name="<?php echo $element->elementType->name?>"
-	data-element-display-order="<?php echo $element->elementType->display_order?>">
+	data-element-display-order="<?php echo $element->elementType->display_order?>"
+  data-element-parent-id = "<?php $et = $element->getElementType();
+  if ($et->isChild()){
+    echo $et->parent_element_type_id;
+  } ?>">
 
       <?php if (!property_exists($element, 'hide_form_header') || !$element->hide_form_header) { ?>
         <header class="element-header">
@@ -86,5 +90,14 @@ $element_Type = $element->getElementType();
 
       <?php echo $content; ?>
 
-  </section>
+	</section>
+    <?php $this->renderChildOpenElements($element, $this->action->id, $form, $data)?>
 <?php } ?>
+
+<script>
+  $('.js-remove-element').on('click',function (e) {
+    e.preventDefault();
+    var parent = $(this).parent().parent();
+    removeElement(parent);
+  });
+</script>
