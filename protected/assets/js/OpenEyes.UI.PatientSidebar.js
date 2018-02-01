@@ -328,7 +328,13 @@
 
             $.each(itemData.children, function () {
               var id_name = this.name.replace(/\s+/g,'-');
-              var subListItem = $("<li>").attr('id','side-element-'+id_name ).addClass('element');
+              var subListItem = $("<li>")
+                .data('container-selector','section[data-element-type-id="'+itemData.id+'"]')
+                .data('element-type-class', this.class_name)
+                .data('element-type-id', this.id)
+                .data('element-display-order', this.display_order)
+                .data('element-type-name', this.name)
+                .attr('id','side-element-'+id_name ).addClass('element');
               subListItem.append('<a href="#">'+this.name+'</a>');
               subList.append(subListItem);
             });
