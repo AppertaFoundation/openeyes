@@ -46,7 +46,7 @@ if (!Yii::app()->user->isGuest) {
       <li><em>Site</em><?= Site::model()->findByPk($this->selectedSiteId)->short_name; ?></li>
       <li>
         <em><?= Firm::contextLabel() ?></em><?= Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?>
-        <span class="change-firm"><a href="#" data-window-title="Select a new Site and/or <?= Firm::contextLabel() ?>">change</a></span>
+        <a id="change-firm" href="#" data-window-title="Select a new Site and/or <?= Firm::contextLabel() ?>">change</a></span>
       </li>
     </ul>
   </div>

@@ -25,37 +25,61 @@ $form = $this->beginWidget('CActiveForm', array(
     'action' => Yii::app()->createUrl('/site/changesiteandfirm'),
 ));
 ?>
-	<?php echo CHtml::hiddenField('returnUrl', $this->returnUrl)?>
+<?php echo CHtml::hiddenField('returnUrl', $this->returnUrl) ?>
 
-	<?php if ($this->subspecialty) {
+<?php if ($this->subspecialty) {
     ?>
-		<?php echo CHtml::hiddenField('subspecialty_id', $this->subspecialty->id)?>
-		<p>
-			To add an event to this episode you must switch to a <?php echo $this->subspecialty->name?> firm.
-		</p>
-	<?php
-}?>
+    <?php echo CHtml::hiddenField('subspecialty_id', $this->subspecialty->id) ?>
+  <p>
+    To add an event to this episode you must switch to a <?php echo $this->subspecialty->name ?> firm.
+  </p>
+    <?php
+} ?>
 
-	<?php if ($this->support_services) {
+<?php if ($this->support_services) {
     ?>
-		<?php echo CHtml::hiddenField('support_services', 1)?>
-		<p>
-			To add an event to this episode you must switch to a support services firm.
-		</p>
-	<?php
-}?>
+    <?php echo CHtml::hiddenField('support_services', 1) ?>
+  <p>
+    To add an event to this episode you must switch to a support services firm.
+  </p>
+    <?php
+} ?>
 
-	<?php if ($this->patient) {
+<?php if ($this->patient) {
     ?>
-		<?php echo CHtml::hiddenField('patient_id', $this->patient->id)?>
-	<?php
-}?>
+    <?php echo CHtml::hiddenField('patient_id', $this->patient->id) ?>
+    <?php
+} ?>
 
-	<?php
-    if ($errors = $form->errorSummary($model)) {
-        echo '<div>'.$errors.'</div>';
-    }
-    ?>
+<?php
+if ($errors = $form->errorSummary($model)) {
+    echo '<div>' . $errors . '</div>';
+}
+?>
+<table>
+  <colgroup>
+    <col class="cols-3">
+  </colgroup>
+  <tbody>
+  <tr>
+    <td><?php echo $form->labelEx($model, 'site_id'); ?></td>
+    <td>
+        <?php echo $form->dropDownList($model, 'site_id', $sites); ?>
+    </td>
+  </tr>
+  <tr>
+    <td><?php echo $form->labelEx($model, 'firm_id'); ?></td>
+    <td>
+        <?php echo $form->dropDownList($model, 'firm_id', $firms); ?>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="align-right">
+        <?php echo CHtml::submitButton('Confirm change', array('class' => 'green hint')); ?>
+    </td>
+  </tr>
+  </tbody>
+</table>
 
 	<div class="field-row row">
 		<div class="large-3 column text-right">
@@ -88,8 +112,8 @@ if (Yii::app()->components['user']->loginRequiredAjaxResponse) {
     Yii::app()->clientScript->registerScript('ajaxLoginRequired', '
             jQuery("body").ajaxComplete(
                 function(event, request, options) {
-                    if (request.responseText == "'.Yii::app()->components['user']->loginRequiredAjaxResponse.'") {
-                        window.location.href = "'.Yii::app()->createUrl('/site/login').'"
+                    if (request.responseText == "' . Yii::app()->components['user']->loginRequiredAjaxResponse . '") {
+                        window.location.href = "' . Yii::app()->createUrl('/site/login') . '"
                     }
                 }
             );

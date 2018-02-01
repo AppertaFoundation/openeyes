@@ -235,7 +235,7 @@ $(document).ready(function(){
 		};
 
 		// Show the 'change firm' dialog when clicking on the 'change firm' link.
-		$(document).on('click', '.change-firm', function(e) {
+		$(document).on('click', '#change-firm', function(e) {
 
 			e.preventDefault();
 			var returnUrl = window.location.href;
@@ -246,7 +246,7 @@ $(document).ready(function(){
 					returnUrl: returnUrl,
 					patient_id: window.OE_patient_id || null
 				}
-			})).open();
+			}));
 		});
 	}());
 
