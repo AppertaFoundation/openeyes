@@ -34,7 +34,7 @@
         ?>
         <tr class="prescription-item<?= $additional_class ?>">
             <td class="prescription-label"><?php echo $item->drug->tallmanlabel; ?></td>
-            <td><?php echo $item->dose ?></td>
+            <td><?php echo is_numeric($item->dose) ? ($item->dose . " " . $item->drug->dose_unit) : $item->dose ?></td>
             <td><?php echo $item->route->name ?>
                 <?php if ($item->route_option) {
                     echo ' (' . $item->route_option->name . ')';
@@ -47,7 +47,7 @@
         <?php foreach ($item->tapers as $taper) { ?>
             <tr class="prescription-tapier <?php echo (($key % 2) == 0) ? 'even' : 'odd'; ?>">
                 <td class="prescription-label"><span>then</span></td>
-                <td><?php echo $taper->dose ?></td>
+                <td><?php echo is_numeric($taper->dose) ? ($taper->dose . " " . $item->drug->dose_unit) : $taper->dose ?></td>
                 <td></td>
                 <td><?php echo $taper->frequency->name ?></td>
                 <td><?php echo $taper->duration->name ?></td>
