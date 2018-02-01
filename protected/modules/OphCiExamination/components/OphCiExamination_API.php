@@ -452,7 +452,9 @@ class OphCiExamination_API extends \BaseAPI
         $principal_eye = $this->getPrincipalEye($patient, true);
         $method = "getLetterIOPReading{$principal_eye}Last3weeks";
 
-        return $this->{$method}($patient, $use_context);
+        if(method_exists($this, $method)){
+            return $this->{$method}($patient, $use_context);
+        }
     }
 
     /**
