@@ -18,41 +18,173 @@
 
 <script type="text/javascript" src="<?=$this->getJsPublishedPath("SocialHistory.js")?>"></script>
 <div class="element-fields flex-layout full-width">
-    <?php
-    echo $form->dropDownList($element, 'occupation_id',
-        CHtml::listData($element->occupation_options, 'id', 'name'),
-        array('empty' => '- Select -'), false, array('label' => 2, 'field' => 2));
-
-    echo $form->textField($element, 'type_of_job', array('hide' => true, 'autocomplete' => Yii::app()->params['html_autocomplete']), null, array('label' => 2, 'field' => 3));
-
-    echo $form->multiSelectList($element, CHtml::modelName($element) . '[driving_statuses]', 'driving_statuses', 'id',
-        CHtml::listData($element->driving_statuses_options, 'id', 'name'),
-        array(),
-        array('empty' => '- Select -', 'label' => $element->getAttributeLabel('driving_statuses')),
-        false, false, null, false, false, // various attributes we don't care about
-        array('label' => 2, 'field' => 2));
-
-    echo $form->dropDownList($element, 'smoking_status_id',
-        CHtml::listData($element->smoking_status_options, 'id', 'name'),
-        array('empty' => '- Select -'), false, array('label' => 2, 'field' => 2));
-
-    echo $form->dropDownList($element, 'accommodation_id', CHtml::listData($element->accommodation_options, 'id', 'name'),
-        array('empty' => '- Select -'), false, array('label' => 2, 'field' => 2));
-
-    echo $form->textArea($element, 'comments', array('rows' => '1', 'cols' => '80', 'class' => 'autosize'), false,
-        array('placeholder' => 'Enter comments here'), array('label' => 2, 'field' => 6));
-
-    echo $form->dropDownList($element, 'carer_id', CHtml::listData($element->carer_options, 'id', 'name'),
-        array('empty' => '- Select -'), false, array('label' => 2, 'field' => 2));
-
-    echo $form->textField($element, 'alcohol_intake',
-        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => 'units/week'),
-        null,
-        array('label' => 2, 'field' => 2, 'append-text' => 2));
-
-    echo $form->dropDownList($element, 'substance_misuse_id',
-        CHtml::listData($element->substance_misuse_options, 'id', 'name'),
-        array('empty' => '- Select -'), false, array('label' => 2, 'field' => 2));
-
-    ?>
+  <table class="cols-11">
+    <thead>
+      <tr>
+        <th>Employment</th>
+        <th>Driving Status</th>
+        <th>Smoking Status</th>
+        <th>Accommodations</th>
+        <th>Comments</th>
+        <th class="cols-1">Carer</th>
+        <th>Alcohol Intake</th>
+        <th class="cols-1">Substance Misuse</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="flex-item-bottom">
+    <button class="button hint green js-add-select-search">
+      <i class="oe-i plus pro-theme"></i>
+    </button>
+    <div id="add-to-social-history" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
+      <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
+      <div class="select-icon-btn"><i class="oe-i menu selected"></i></div>
+      <button class="button hint green add-icon-btn"><i class="oe-i plus pro-theme"></i></button>
+      <table class="select-options">
+        <tr>
+          <td>
+            <div class="flex-layout flex-top flex-left">
+              <ul class="add-options" data-multi="true" data-clickadd="false">
+                  <?php
+                  $occup_list = $element->occupation_options;
+                  foreach ($occup_list as $occup_item) {
+                      ?>
+                    <li data-str="<?php echo $occup_item->name; ?>">
+                      <span class="restrict-width"><?php echo $occup_item->name; ?></span>
+                    </li>
+                  <?php } ?>
+              </ul>
+            </div>
+            <!-- flex layout -->
+          </td>
+          <td>
+            <div class="flex-layout flex-top flex-left">
+              <ul class="add-options" data-multi="true" data-clickadd="false">
+                  <?php
+                  $driving_status_list = $element->driving_statuses_options;
+                  foreach ($driving_status_list as $driving_status) {
+                      ?>
+                    <li data-str="<?php echo $driving_status->name; ?>">
+                      <span class="restrict-width"><?php echo $driving_status->name; ?></span>
+                    </li>
+                  <?php } ?>
+              </ul>
+            </div>
+            <!-- flex layout -->
+          </td>
+          <td>
+            <div class="flex-layout flex-top flex-left">
+              <ul class="add-options" data-multi="true" data-clickadd="false">
+                  <?php
+                  $smoking_status_list = $element->smoking_status_options;
+                  foreach ($smoking_status_list as $smoking_status) {
+                      ?>
+                    <li data-str="<?php echo $smoking_status->name; ?>">
+                      <span class="restrict-width"><?php echo $smoking_status->name; ?></span>
+                    </li>
+                  <?php } ?>
+              </ul>
+            </div>
+            <!-- flex layout -->
+          </td>
+          <td>
+            <div class="flex-layout flex-top flex-left">
+              <ul class="add-options" data-multi="true" data-clickadd="false">
+                  <?php
+                  $accommodation_options = $element->accommodation_options;
+                  foreach ($accommodation_options as $accommodation_item) { ?>
+                    <li data-str="<?php echo $accommodation_item->name; ?>">
+                      <span class="restrict-width"><?php echo $accommodation_item->name; ?></span>
+                    </li>
+                  <?php } ?>
+              </ul>
+            </div>
+            <!-- flex layout -->
+          </td>
+          <td>
+            <div class="flex-layout flex-top flex-left">
+              <ul class="add-options" data-multi="true" data-clickadd="false">
+                  <?php
+                  $carer_options = $element->carer_options;
+                  foreach ($carer_options as $carer_item) { ?>
+                    <li data-str="<?php echo $carer_item->name; ?>">
+                      <span class="restrict-width"><?php echo $carer_item->name; ?></span>
+                    </li>
+                  <?php } ?>
+              </ul>
+            </div>
+            <!-- flex layout -->
+          </td>
+          <td>
+            <div class="flex-layout flex-top flex-left">
+              <ul class="add-options" data-multi="true" data-clickadd="false">
+                  <?php
+                  $substance_misuse_options = $element->substance_misuse_options;
+                  foreach ($substance_misuse_options as $substance_item) { ?>
+                    <li data-str="<?php echo $substance_item->name; ?>">
+                      <span class="restrict-width"><?php echo $substance_item->name; ?></span>
+                    </li>
+                  <?php } ?>
+              </ul>
+            </div>
+            <!-- flex layout -->
+          </td>
+        </tr>
+      </table>
+      <div class="search-icon-btn"><i class="oe-i search"></i></div>
+      <div class="search-options" style="display:none;">
+        <input type="text" class="cols-full js-search-autocomplete" placeholder="search for option (type 'auto-complete' to demo)">
+        <!-- ajax auto-complete results, height is limited -->
+      </div>
+    </div>
+  </div>
+<!--    --><?php
+//    echo $form->dropDownList($element, 'occupation_id',
+//        CHtml::listData($element->occupation_options, 'id', 'name'),
+//        array('empty' => '- Select -'), false, array('label' => 2, 'field' => 2));
+//
+//    echo $form->textField($element, 'type_of_job', array('hide' => true, 'autocomplete' => Yii::app()->params['html_autocomplete']), null, array('label' => 2, 'field' => 3));
+//
+//    echo $form->multiSelectList($element, CHtml::modelName($element) . '[driving_statuses]', 'driving_statuses', 'id',
+//        CHtml::listData($element->driving_statuses_options, 'id', 'name'),
+//        array(),
+//        array('empty' => '- Select -', 'label' => $element->getAttributeLabel('driving_statuses')),
+//        false, false, null, false, false, // various attributes we don't care about
+//        array('label' => 2, 'field' => 2));
+//
+//    echo $form->dropDownList($element, 'smoking_status_id',
+//        CHtml::listData($element->smoking_status_options, 'id', 'name'),
+//        array('empty' => '- Select -'), false, array('label' => 2, 'field' => 2));
+//
+//    echo $form->dropDownList($element, 'accommodation_id', CHtml::listData($element->accommodation_options, 'id', 'name'),
+//        array('empty' => '- Select -'), false, array('label' => 2, 'field' => 2));
+//
+//    echo $form->textArea($element, 'comments', array('rows' => '1', 'cols' => '80', 'class' => 'autosize'), false,
+//        array('placeholder' => 'Enter comments here'), array('label' => 2, 'field' => 6));
+//
+//    echo $form->dropDownList($element, 'carer_id', CHtml::listData($element->carer_options, 'id', 'name'),
+//        array('empty' => '- Select -'), false, array('label' => 2, 'field' => 2));
+//
+//    echo $form->textField($element, 'alcohol_intake',
+//        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => 'units/week'),
+//        null,
+//        array('label' => 2, 'field' => 2, 'append-text' => 2));
+//
+//    echo $form->dropDownList($element, 'substance_misuse_id',
+//        CHtml::listData($element->substance_misuse_options, 'id', 'name'),
+//        array('empty' => '- Select -'), false, array('label' => 2, 'field' => 2));
+//
+//    ?>
 </div>
