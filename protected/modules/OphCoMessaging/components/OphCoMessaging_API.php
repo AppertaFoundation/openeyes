@@ -53,7 +53,7 @@ class OphCoMessaging_API extends \BaseAPI
     {
         $inbox_messages = $this->getInboxMessages($user);
         $sent_messages = $this->getSentMessages($user);
-        $urgent_messages = $this->getUrgentMessages($user);
+        $urgent_messages = $this->getInboxMessages($user, true);
 
         \Yii::app()->getAssetManager()->registerCssFile('module.css', 'application.modules.OphCoMessaging.assets.css');
 
@@ -81,10 +81,11 @@ class OphCoMessaging_API extends \BaseAPI
      * Get received messages.
      * 
      * @param \CWebUser $user
+     * @param bool $urgent_only
      *
      * @return array data provider and total unread messages
      */
-    private function getInboxMessages($user = null)
+    private function getInboxMessages($user = null, $urgent_only = false)
     {
         if ($user === null) {
             $user = \Yii::app()->user;
@@ -109,66 +110,38 @@ class OphCoMessaging_API extends \BaseAPI
 
         $sort->defaultOrder = 'event_date desc';
 
-        $criteria = $this->buildInboxCriteria($user);
+        $from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
+        $to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
+        $params = array(':uid' => $user->id);
 
-        $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
-
-        $dp = new \CActiveDataProvider('OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
-            array(
-                'sort' => $sort,
-                'criteria' => $criteria,
-                'pagination' => array(
-                    'pageSize' => 10,
-                    'itemCount' => $total_messages
-                ),
-            ));
-
-        $unread_criteria = new \CDbCriteria();
-        $unread_criteria->addCondition('t.marked_as_read != 1');
-
-        $unread_criteria->mergeWith($criteria);
-        $unread_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($unread_criteria);
-
-        return array(
-            'list' => $dp,
-            'unread' => $unread_messages
+        $criteria = new \CDbCriteria();
+        $criteria->select = array(
+            '*',
+            new \CDbExpression('IF(comment.created_user_id = :uid, t.message_text, IF(comment.marked_as_read = 0, comment.comment_text, t.message_text))  as message_text'),
+            new \CDbExpression('IF(comment.created_user_id = :uid, t.created_date, IF(comment.marked_as_read = 0, comment.created_date, t.created_date))  as created_date'),
+            new \CDbExpression('IF(comment.created_user_id = :uid, t.created_user_id, IF(comment.marked_as_read = 0, comment.created_user_id, t.created_user_id)) as created_user_id'),
         );
-    }
 
-    /**
-     * Get urgent messages.
-     *
-     * @param \CWebUser $user
-     *
-     * @return array data provider and total unread messages
-     */
-    private function getUrgentMessages($user = null)
-    {
-        if ($user === null) {
-            $user = \Yii::app()->user;
+        $criteria->addCondition('t.for_the_attention_of_user_id = :uid');
+        $criteria->addCondition('t.created_user_id = :uid AND comment.marked_as_read = 0', 'OR');
+        $criteria->join = 'LEFT JOIN ophcomessaging_message_comment AS comment ON t.id = comment.element_id';
+        $criteria->with = array('event', 'for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact');
+        $criteria->together = true;
+        if ($from) {
+            $criteria->addCondition('DATE(t.created_date) >= :from');
+            $params[':from'] = \Helper::convertNHS2MySQL($from);
+        }
+        if ($to) {
+            $criteria->addCondition('DATE(t.created_date) <= :to');
+            $params[':to'] = \Helper::convertNHS2MySQL($to);
         }
 
-        $sort = new \CSort();
-
-        $sort->attributes = array(
-            'priority' => array('asc' => 'urgent asc',
-                'desc' => 'urgent desc', ),
-            'event_date' => array('asc' => 't.created_date asc',
-                'desc' => 't.created_date desc', ),
-            'patient_name' => array('asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
-                'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc', ),
-            'hos_num' => array('asc' => 'patient.hos_num asc',
-                'desc' => 'patient.hos_num desc', ),
-            'dob' => array('asc' => 'patient.dob asc',
-                'desc' => 'patient.dob desc', ),
-            'user' => array('asc' => 'lower(for_the_attention_of_user.last_name) asc, lower(for_the_attention_of_user.first_name) asc',
-                'desc' => 'lower(for_the_attention_of_user.last_name) desc, lower(for_the_attention_of_user.first_name) desc', ),
-        );
-
-        $sort->defaultOrder = 'event_date desc';
-
-        $criteria = $this->buildInboxCriteria($user);
-        $criteria->addCondition('t.urgent != 0');
+        $criteria->addCondition('event.deleted = 0');
+        $criteria->addCondition('episode.deleted = 0');
+        if ($urgent_only) {
+            $criteria->addCondition('t.urgent != 0');
+        }
+        $criteria->params = $params;
 
         $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
 
@@ -274,44 +247,5 @@ class OphCoMessaging_API extends \BaseAPI
             'list' => $dataProvider,
             'unread' => $unread_messages
         );
-    }
-
-    /**
-     * @param $user \CWebUser
-     * @return \CDbCriteria Criteria common to both the inbox and urgent tabs.
-     */
-    private function buildInboxCriteria($user)
-    {
-        $from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
-        $to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
-        $params = array(':uid' => $user->id);
-
-        $criteria = new \CDbCriteria();
-        $criteria->select = array(
-            '*',
-            new \CDbExpression('IF(comment.created_user_id = :uid, t.message_text, IF(comment.marked_as_read = 0, comment.comment_text, t.message_text))  as message_text'),
-            new \CDbExpression('IF(comment.created_user_id = :uid, t.created_date, IF(comment.marked_as_read = 0, comment.created_date, t.created_date))  as created_date'),
-            new \CDbExpression('IF(comment.created_user_id = :uid, t.created_user_id, IF(comment.marked_as_read = 0, comment.created_user_id, t.created_user_id)) as created_user_id'),
-        );
-
-        $criteria->addCondition('t.for_the_attention_of_user_id = :uid');
-        $criteria->addCondition('t.created_user_id = :uid AND comment.marked_as_read = 0', 'OR');
-        $criteria->join = 'LEFT JOIN ophcomessaging_message_comment AS comment ON t.id = comment.element_id';
-        $criteria->with = array('event', 'for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact');
-        $criteria->together = true;
-        if ($from) {
-            $criteria->addCondition('DATE(t.created_date) >= :from');
-            $params[':from'] = \Helper::convertNHS2MySQL($from);
-        }
-        if ($to) {
-            $criteria->addCondition('DATE(t.created_date) <= :to');
-            $params[':to'] = \Helper::convertNHS2MySQL($to);
-        }
-
-        $criteria->addCondition('event.deleted = 0');
-        $criteria->addCondition('episode.deleted = 0');
-        $criteria->params = $params;
-
-        return $criteria;
     }
 }
