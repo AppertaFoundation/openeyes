@@ -36,73 +36,32 @@ if (!isset($values)) {
 <tr class="row-<?=$row_count;?><?php if($editable){ echo " read-only"; } ?>" data-key="<?=$row_count;?>">
     <td>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
-
-        <?php if(!$editable): ?>
             <?= $values['relative_display'] ?>
-        <?php else: ?>
-            <?php
-                $relatives_opts = array(
-                    'options' => array(),
-                    'empty' => '- select -',
-                    'class' => 'relatives'
-                );
-                $is_other_selected = false;
-                foreach ($relative_options as $rel) {
-                    $relatives_opts['options'][$rel->id] = array('data-other' => $rel->is_other ? '1' : '0');
-                    if ($rel->id == $values['relative_id'] && $rel->is_other){
-                        $is_other_selected = true;
-                    }
-                }
-                echo CHtml::dropDownList($field_prefix . '[relative_id]', $values['relative_id'], CHtml::listData($relative_options, 'id', 'name'), $relatives_opts);
-            ?>
-            <div class="<?php echo $is_other_selected ? '' : 'hidden';?> other_relative_wrapper">
-                <?php echo CHtml::textField($field_prefix . '[other_relative]', ( $is_other_selected ? $values['other_relative'] : ''), array('class' => 'other_relative_text other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
-            </div>
-        <?php endif;?>
-
     </td>
     <td>
-        <?php if(!$editable): ?>
-            <?= $values['side_display'] ?>
-        <?php else: ?>
-            <?php echo CHtml::dropDownList($field_prefix . '[side_id]', $values['side_id'], CHtml::listData($side_options, 'id', 'name'))?>
-        <?php endif;?>
-
+        <?= $values['side_display'] ?>
     </td>
     <td>
-        <?php if(!$editable): ?>
-            <?= $values['condition_display'] ?>
-        <?php else: ?>
-            <?php
-            $conditions_opts = array(
-                'options' => array(),
-                'empty' => '- select -',
-                'class' => 'conditions',
-            );
-            $is_other_selected = false;
-            foreach ($condition_options as $con) {
-                $conditions_opts['options'][$con->id] = array('data-other' => $con->is_other ? '1' : '0');
-                if ($con->id == $values['condition_id'] && $con->is_other){
-                    $is_other_selected = true;
-                }
-            }
-            echo CHtml::dropDownList($field_prefix . '[condition_id]', $values['condition_id'], CHtml::listData($condition_options, 'id', 'name'), $conditions_opts);
-            ?>
-
-            <div class="<?php echo $is_other_selected ? '' : 'hidden';?> other_condition_wrapper">
-                <br>
-                <?php echo CHtml::textField($field_prefix . '[other_condition]', $values['other_condition'], array('class'=>'other_condition_text', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
-            </div>
-        <?php endif;?>
+        <?= $values['condition_display'] ?>
     </td>
     <td>
         <?php if(!$editable): ?>
             <?= $values['comments'] ?>
         <?php else: ?>
-            <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+          <div class="cols-full ">
+            <button class="button  js-add-comments" data-input="next" style="display: none;">
+              <i class="oe-i comments  small-icon"></i>
+            </button>
+              <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+          </div>
         <?php endif;?>
     </td>
-    <td class="edit-column" <?php if (!$editable) {?>style="display: none;"<?php } ?>>
-        <button class="button small warning remove">remove</button>
-    </td>
+
+    <?php if($editable) : ?>
+      <td>
+        <i class="oe-i trash"></i>
+      </td>
+    <?php else: ?>
+      <td>read only <i class="oe-i info small pad"></i></td>
+    <?php endif; ?>
 </tr>

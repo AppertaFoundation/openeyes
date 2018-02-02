@@ -31,7 +31,7 @@
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
-  <table id="<?= $model_name ?>_entry_table" class="<?=$element->no_family_history_date ? 'hidden' :''?>">
+  <table id="<?= $model_name ?>_entry_table" class="cols-10 <?=$element->no_family_history_date ? 'hidden' :''?>">
       <thead>
       <tr>
           <th>Relative</th>
@@ -64,6 +64,70 @@
           ?>
       </tbody>
   </table>
+  <div class="flex-item-bottom">
+    <button class="button hint green js-add-select-search">
+      <i class="oe-i plus pro-theme"></i>
+    </button>
+    <div id="add-to-POH" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
+      <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
+      <div class="select-icon-btn"><i class="oe-i menu selected"></i></div>
+      <button class="button hint green add-icon-btn"><i class="oe-i plus pro-theme"></i></button>
+      <table class="select-options">
+        <tr>
+          <td>
+            <div class="flex-layout flex-top flex-left">
+              <ul class="add-options" data-multi="true" data-clickadd="false">
+                  <?php
+                  $relative_list = $element->getRelativeOptions();
+                  foreach ($relative_list as $relative_item) {
+                      ?>
+                    <li data-str="<?php echo $relative_item->name; ?>">
+                      <span class="restrict-width"><?php echo $relative_item->name; ?></span>
+                    </li>
+                  <?php } ?>
+              </ul>
+            </div>
+            <!-- flex layout -->
+          </td>
+          <td>
+            <div class="flex-layout flex-top flex-left">
+              <ul class="add-options" data-multi="true" data-clickadd="false">
+                  <?php
+                  $side_options = $element->getSideOptions();
+                  foreach ($side_options as $side_item) {
+                      ?>
+                    <li data-str="<?php echo $side_item->name; ?>">
+                      <span class="restrict-width"><?php echo $side_item->name; ?></span>
+                    </li>
+                  <?php } ?>
+              </ul>
+            </div>
+            <!-- flex layout -->
+          </td>
+          <td>
+            <div class="flex-layout flex-top flex-left">
+              <ul class="add-options" data-multi="true" data-clickadd="false">
+                  <?php
+                  $condition_list =$element->getConditionOptions();
+                  foreach ($condition_list as $condition_item) {
+                      ?>
+                    <li data-str="<?php echo $condition_item->name; ?>">
+                      <span class="restrict-width"><?php echo $condition_item->name; ?></span>
+                    </li>
+                  <?php } ?>
+              </ul>
+            </div>
+            <!-- flex layout -->
+          </td>
+        </tr>
+      </table>
+      <div class="search-icon-btn"><i class="oe-i search"></i></div>
+      <div class="search-options" style="display:none;">
+        <input type="text" class="cols-full js-search-autocomplete" placeholder="search for option (type 'auto-complete' to demo)">
+        <!-- ajax auto-complete results, height is limited -->
+      </div>
+    </div>
+  </div>
 </div>
 
 <script type="text/template" id="<?= CHtml::modelName($element).'_entry_template' ?>" class="hidden">
