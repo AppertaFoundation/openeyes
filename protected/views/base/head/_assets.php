@@ -36,7 +36,6 @@
 <?php $assetManager->registerScriptFile('components/jt.timepicker/jquery.timepicker.js');?>
 <?php $assetManager->registerScriptFile('js/bootstrap-tour-standalone.min.js');?>
 <?php $assetManager->registerScriptFile('js/oelauncher.js');?>
-<?php $assetManager->registerScriptFile('js/idg-oe.min.js', 'application.assets.newblue');?>
 <?php $assetManager->registerScriptFile('js/sortable/Sortable.min.js', 'application.assets.newblue');?>
 <?php
 $display_theme = SettingMetadata::model()->getSetting('display_theme');
