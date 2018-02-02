@@ -16,6 +16,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields">
+<div class="element-fields flex-layout full-width">
 	<?php echo $form->textArea($element, 'comments', array('class' => 'autosize', 'rows'=>1), false, array('placeholder' => 'Enter comments'), array('label' => 3, 'field' => 9))?>
 </div>

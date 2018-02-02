@@ -18,7 +18,7 @@
 ?>
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('FamilyHistory.js') ?>"></script>
-<div class="element-fields">
+<div class="element-fields flex-layout full-width">
   <?php $model_name = CHtml::modelName($element); ?>
     <div class="field-row row<?= count($element->entries) ? ' hidden' : ''?>" id="<?=$model_name?>_no_family_history_wrapper">
         <div class="large-3 column">

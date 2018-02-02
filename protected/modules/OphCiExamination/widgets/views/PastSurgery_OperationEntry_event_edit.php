@@ -72,7 +72,6 @@ if (isset($values['date']) && strtotime($values['date'])) {
             <?php echo CHtml::textField($field_prefix . '[operation]', $values['operation'], $html_options); ?>
 
         <?php endif; ?>
-
     </td>
 
     <td id="<?= $model_name ?>_operations_<?=$row_count?>" class="past-surgery-entry has-operation">
@@ -91,38 +90,37 @@ if (isset($values['date']) && strtotime($values['date'])) {
     </td>
 
     <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
-
         <?php if(!$removable) :?>
-            <?= $values['side'] ?>
+            <?php if($values['side']=='Right'||$values['side']=='Both'){ ?>
+            <i class="oe-i laterality R small pad"></i>
+            <?php } ?>
         <?php else:?>
          <input type="hidden" name="<?=$field_prefix?>[side_id]" value="<?=$values['side_id']; ?>" />
-
-            <label class="inline">
-                <input type="radio"
-                       name="<?="side_group_name_$row_count"; ?>"
-                       class="<?= $model_name ?>_previous_operation_side"
-                       <?php if(empty($values['side_id'])): ?> checked <?php endif; ?>
-                       value="" /> None
-            </label>
-            <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $i => $eye) {?>
-                <label class="inline">
-                    <input
-                        type="radio" name="<?="side_group_name_$row_count"; ?>"
-                        class="<?= $model_name ?>_previous_operation_side"
-                        value="<?php echo $eye->id?>"
-                        <?php if($eye->id == $values['side_id']){ echo "checked"; }?>
-                    />
-                    <?php echo $eye->name ?>
-                </label>
-            <?php }?>
+            <input type="radio" name="<?="side_group_name_$row_count"; ?>"
+                   class="js-toggle-radio-checked <?= $model_name ?>_previous_operation_side"
+                   value="R"
+            />
          <?php endif; ?>
     </td>
+  <td>
+      <?php if(!$removable) :?>
+          <?php if($values['side']=='Light'||$values['side']=='Both'){ ?>
+          <i class="oe-i laterality L small pad"></i>
+          <?php } ?>
+      <?php else:?>
+        <input type="hidden" name="<?=$field_prefix?>[side_id]" value="<?=$values['side_id']; ?>" />
+        <input type="radio" name="<?="side_group_name_$row_count"; ?>"
+               class="js-toggle-radio-checked <?= $model_name ?>_previous_operation_side"
+               value="L"
+        />
+      <?php endif; ?>
+  </td>
     <td>
         <?php if(!$removable) :?>
             <?=Helper::formatFuzzyDate($values['date']) ?>
         <?php else:?>
 
-            <input type="hidden" name="<?= $field_prefix ?>[date]" value="<?=$values['date'] ?>" />
+            <input class="datepicker1" style="width:90px" placeholder="dd/mm/yyyy"  name="<?= $field_prefix ?>[date]" value="<?=$values['date'] ?>" >
 
             <fieldset id="<?= $model_name ?>_fuzzy_date" class="row field-row fuzzy-date" style="padding:0">
                 <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $sel_day, 'sel_month' => $sel_month, 'sel_year' => $sel_year)) ?>
@@ -131,15 +129,15 @@ if (isset($values['date']) && strtotime($values['date'])) {
     </td>
 
     <?php if($removable && !$required) : ?>
-        <td class="edit-column">
-            <button class="button small warning remove">remove</button>
-        </td>
+        <td><i class="oe-i trash"></i></td>
     <?php elseif(!$required): ?>
-        <td>read only <span class="has-tooltip fa fa-info-circle"
-                            data-tooltip-content="This operation is recorded as an Operation Note event in OpenEyes and cannot be edited here"></span></td>
-    <?php elseif($required): ?>
-        <td>read only <span class="has-tooltip fa fa-info-circle"
-                            data-tooltip-content="<?=$values['operation'];?> is mandatory to collect."></span></td>
-    <?php endif; ?>
+        <td>read only <i class="oe-i info small pad"
+                         data-tooltip-content="This operation is recorded as an Operation Note event in OpenEyes and cannot be edited here"></i>
+        </td>
 
+    <?php elseif($required): ?>
+        <td>read only <i class="oe-i info small pad"
+                         data-tooltip-content="<?=$values['operation'];?> is mandatory to collect."></i>
+        </td>
+    <?php endif; ?>
 </tr>

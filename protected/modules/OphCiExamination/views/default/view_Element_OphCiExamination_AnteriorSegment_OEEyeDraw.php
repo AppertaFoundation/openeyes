@@ -43,7 +43,7 @@
 
 </div>
 
-<div class="element-fields column">
+<div class="element-fields flex-layout full-width column">
     <?php if ($report = $element->{$side.'_ed_report'}) {
         ?>
         <div class="row data-row description">

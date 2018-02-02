@@ -29,17 +29,19 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
     $required_diagnoses_ids = array_map(function($r) { return $r->id; }, $this->getRequiredSystemicDiagnoses());
 ?>
 
-<div class="element-fields" id="<?=CHtml::modelName($element);?>_element">
+<div class="element-fields flex-layout full-width" id="<?=CHtml::modelName($element);?>_element">
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-    <table id="<?= $model_name ?>_diagnoses_table">
+    <table class="cols-10" id="<?= $model_name ?>_diagnoses_table">
         <thead>
         <tr>
-            <th>Diagnosis</th>
-            <th>Status</th>
-            <th>Side</th>
-            <th>Date</th>
-            <th>Action</th>
+            <th></th>
+            <th>Right</th>
+            <th>Left</th>
+            <th>N/A</th>
+            <th>Date(optional)</th>
+            <th></th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -79,50 +81,65 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
         }
         ?>
         </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3"></td>
-                <td><button class="button small primary add-entry">Add</button></td>
-            </tr>
-        </tfoot>
     </table>
-
-
-    <script type="text/template" class="entry-template hidden">
-        <?php
-        $empty_entry = new \OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis();
-        $this->render(
-            'SystemicDiagnosesEntry_event_edit',
-            array(
-                //'diagnosis' => $empty_entry,
-                'form' => $form,
-                'model_name' => $model_name,
-                'field_prefix' => $model_name . '[entries][{{row_count}}]',
-                'row_count' => '{{row_count}}',
-                'removable' => true,
-                'posted_checked_status' => false,
-                'has_disorder' => false,
-                'values' => array(
-                    'id' => '',
-                    'disorder_id' => '{{disorder_id}}',
-                    'disorder_display' => '{{disorder_display}}',
-                    'side_id' => '{{side_id}}',
-                    'side_display' => '{{side_display}}',
-                    'date' => '{{date}}',
-                    'date_display' => '{{date_display}}',
-                    'row_count' => '{{row_count}}',
-                    'has_disorder' => SystemicDiagnoses_Diagnosis::$PRESENT,
-                )
-            )
-        );
-        ?>
-    </script>
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-            new OpenEyes.OphCiExamination.SystemicDiagnosesController({
-                element: $('#<?=$model_name?>_element')
-            });
-        });
-    </script>
+  <div class="flex-item-bottom">
+    <button class="button hint green js-add-select-search">
+      <i class="oe-i plus pro-theme"></i>
+    </button>
+    <div id="add-to-POH" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
+      <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
+      <div class="select-icon-btn"><i class="oe-i menu selected"></i></div>
+      <button class="button hint green add-icon-btn"><i class="oe-i plus pro-theme"></i></button>
+      <table class="select-options">
+        <tr>
+          <td>
+            <div class="flex-layout flex-top flex-left">
+              <ul class="add-options" data-multi="true" data-clickadd="false">
+              </ul>
+            </div>
+            <!-- flex layout -->
+          </td>
+        </tr>
+      </table>
+      <div class="search-icon-btn"><i class="oe-i search"></i></div>
+      <div class="search-options" style="display:none;">
+        <input type="text" class="cols-full js-search-autocomplete" placeholder="search for option (type 'auto-complete' to demo)">
+        <!-- ajax auto-complete results, height is limited -->
+      </div>
+    </div>
+  </div>
 </div>
+<script type="text/template" class="entry-template hidden">
+    <?php
+    $empty_entry = new \OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis();
+    $this->render(
+        'SystemicDiagnosesEntry_event_edit',
+        array(
+            //'diagnosis' => $empty_entry,
+            'form' => $form,
+            'model_name' => $model_name,
+            'field_prefix' => $model_name . '[entries][{{row_count}}]',
+            'row_count' => '{{row_count}}',
+            'removable' => true,
+
+            'values' => array(
+                'id' => '',
+                'disorder_id' => '{{disorder_id}}',
+                'disorder_display' => '{{disorder_display}}',
+                'side_id' => '{{side_id}}',
+                'side_display' => '{{side_display}}',
+                'date' => '{{date}}',
+                'date_display' => '{{date_display}}',
+                'row_count' => '{{row_count}}',
+            )
+        )
+    );
+    ?>
+</script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    new OpenEyes.OphCiExamination.SystemicDiagnosesController({
+      element: $('#<?=$model_name?>_element')
+    });
+  });
+</script>

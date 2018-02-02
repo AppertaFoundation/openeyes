@@ -22,17 +22,17 @@ use OEModule\OphCiExamination\models\PastSurgery_Operation;
 <?php
 $model_name = CHtml::modelName($element);
 ?>
-
-<div class="element-fields">
+<div class="element-fields flex-layout full-width">
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-    <table id="<?= $model_name ?>_operation_table" class="<?= $model_name ?>_Operation">
+    <table id="<?= $model_name ?>_operation_table" class="cols-10 <?= $model_name ?>_Operation">
         <thead>
         <tr>
             <th>Operation</th>
             <th>Checked status</th>
             <th>Side</th>
             <th>Date</th>
-            <th>Action</th>
+            <th>Notes</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -78,13 +78,49 @@ $model_name = CHtml::modelName($element);
         }
         ?>
         </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3"></td>
-                <td class="text-right"><button class="button small primary" id="<?= $model_name ?>_add_entry">Add</button></td>
-            </tr>
-        </tfoot>
     </table>
+  <div class="flex-item-bottom">
+    <button class="button hint green js-add-select-search">
+      <i class="oe-i plus pro-theme"></i>
+    </button>
+    <div id="add-to-POH" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
+      <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
+      <div class="select-icon-btn"><i class="oe-i menu selected"></i></div>
+      <button class="button hint green add-icon-btn"><i class="oe-i plus pro-theme"></i></button>
+      <table class="select-options">
+        <tr>
+          <td>
+            <div class="flex-layout flex-top flex-left">
+              <ul class="add-options" data-multi="true" data-clickadd="false">
+                  <?php
+                      $op_list = CommonPreviousOperation::model()->findAll(array('order' => 'display_order asc'));
+                      foreach ($op_list as $op_item) {
+                      ?>
+                          <li data-str="<?php echo $op_item->name; ?>">
+                            <span class="restrict-width"><?php echo $op_item->name; ?></span>
+                          </li>
+                      <?php } ?>
+              </ul>
+            </div>
+          <!-- flex layout -->
+          </td>
+          <td>
+            <div class="flex-layout flex-top flex-left">
+              <ul class="add-options" data-multi="true" data-clickadd="false">
+
+              </ul>
+            </div>
+            <!-- flex layout -->
+          </td>
+        </tr>
+      </table>
+      <div class="search-icon-btn"><i class="oe-i search"></i></div>
+      <div class="search-options" style="display:none;">
+        <input type="text" class="cols-full js-search-autocomplete" placeholder="search for option (type 'auto-complete' to demo)">
+        <!-- ajax auto-complete results, height is limited -->
+      </div>
+    </div>
+  </div>
 </div>
 <script type="text/template" id="<?= CHtml::modelName($element).'_operation_template' ?>" class="hidden">
     <?php

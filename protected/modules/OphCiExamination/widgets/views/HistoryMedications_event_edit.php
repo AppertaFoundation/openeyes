@@ -26,8 +26,7 @@ $element_errors = $element->getErrors();
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
-
-<div class="element-fields" id="<?= $model_name ?>_element">
+<div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <button class="button small show-stopped">show stopped</button> <button class="button small hide-stopped" style="display:none;">hide stopped</button>

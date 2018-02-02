@@ -38,7 +38,6 @@ if (!isset($values)) {
         $start_sel_year = date('Y');
         $values['date'] = $start_sel_year . '-00-00'; // default to the year displayed in the select dropdowns
     }
-
     $is_new_record = isset($diagnosis) && $diagnosis->isNewRecord ? true : false;
 
     $mandatory = !$removable;
@@ -51,7 +50,6 @@ if (!isset($values)) {
         <input type="text"
                class="diagnoses-search-autocomplete"
                id="diagnoses_search_autocomplete_<?=$row_count?>"
-
                <?php if(isset($diagnosis)):?>
                     data-saved-diagnoses='<?php echo json_encode(array(
                             'id' => $values['id'],
@@ -89,38 +87,40 @@ if (!isset($values)) {
                 <input type="radio" name="<?="{$model_name}_diagnosis_side_{$row_count}" ?>" value="" checked="checked" /> N/A
             </label>
 
-            <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) {?>
-                <label class="inline">
-                    <input type="radio"
-                           name="<?="{$model_name}_diagnosis_side_{$row_count}" ?>"
-                           value="<?php echo $eye->id?>"
-                            <?php if($eye->id == $values['side_id']){ echo "checked"; }?>
-                    />
-                    <?php echo $eye->name ?>
-                </label>
-            <?php }?></td>
-        </div>
-
-        <input type="hidden" name="<?= $model_name ?>[side_id][]" class="diagnosis-side-value" value="<?=$values['side_id']?>">
+  <td>
+      <?php if(!$removable) :?>
+          <?php if($values['side']=='Light'||$values['side']=='Both'){ ?>
+          <i class="oe-i laterality L small pad"></i>
+          <?php } ?>
+      <?php else:?>
+        <input type="hidden" name="<?=$field_prefix?>[side_id]" value="<?=$values['side_id']; ?>" />
+        <input type="radio" name="<?="side_group_name_$row_count"; ?>"
+               class="js-toggle-radio-checked <?= $model_name ?>_previous_operation_side"
+               value="L"
+        />
+      <?php endif; ?>
+  </td>
+  <td>
+    <input type="radio" name="<?="side_group_name_$row_count"; ?>"
+           class="js-toggle-radio-checked"
+           value="NA"
+    />
+  </td>
     <td>
-        <fieldset class="row field-row fuzzy-date">
-            <input type="hidden" name="<?= $model_name ?>[date][]" value="<?= $values['date'] ?>" />
-            <div class="large-12 column end">
-                <span class="start-date-wrapper" <?php if (!$values['date']) {?>style="display: none;"<?php } ?>">
-                    <?php $this->render('application.views.patient._fuzzy_date_fields', array(
-                            'sel_day' => $start_sel_day,
-                            'sel_month' => $start_sel_month,
-                            'sel_year' => $start_sel_year))
-                    ?>
-                </span>
-            </div>
-        </fieldset>
-    </td>
-    <td class="edit-column">
-        <?php if($removable) : ?>
-            <button class="button small warning remove">remove</button>
-        <?php else: ?>
-            read only
+        <?php if(!$removable) :?>
+            <?=Helper::formatFuzzyDate($values['date']) ?>
+        <?php else:?>
+          <input class="datepicker1" style="width:90px" placeholder="dd/mm/yyyy"  name="<?= $field_prefix ?>[date]" value="<?=$values['date'] ?>" >
         <?php endif; ?>
     </td>
+
+    <?php if($removable) : ?>
+      <td></td>
+      <td>
+        <i class="oe-i trash"></i>
+      </td>
+    <?php else: ?>
+      <td>read only <i class="oe-i info small pad"></i></td>
+      <td></td>
+    <?php endif; ?>
 </tr>

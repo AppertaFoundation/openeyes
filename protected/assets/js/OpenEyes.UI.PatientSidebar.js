@@ -157,7 +157,6 @@
 
     PatientSidebar.prototype.loadClickedItem = function($item, data, callback)
     {
-<<<<<<< HEAD
 
         var self = this;
 
@@ -170,16 +169,6 @@
 
                 if (!$parent.hasClass('selected')) {
                     $parent.addClass('selected');
-=======
-        var self = this;
-        if (!$item.hasClass('selected')) {
-          var $parent = $item.parent();
-          if (!$parent.hasClass('has-child')) {
-                // child element, need to ensure parent loaded first.
-            var $ancestor = $parent.parent().parent();
-                if (!$ancestor.find('a:first').hasClass('selected')) {
-                    $ancestor.find('a:first').addClass('selected');
->>>>>>> v3-examination, add element
                     // construct a callback to run this method with the original target,
                     // once the parent is loaded
                     var newCallback = function() {
@@ -217,7 +206,7 @@
         }
         addElement($parentLi.clone(true), true, !$parentLi.hasClass('has-child'), undefined, data, callback);
     };
-    
+
     /**
      * Called when an element is removed from the form to update the menu appropriately.
      */

@@ -17,7 +17,7 @@
 ?>
 
 <script type="text/javascript" src="<?=$this->getJsPublishedPath("SocialHistory.js")?>"></script>
-<div class="element-fields">
+<div class="element-fields flex-layout full-width">
     <?php
     echo $form->dropDownList($element, 'occupation_id',
         CHtml::listData($element->occupation_options, 'id', 'name'),

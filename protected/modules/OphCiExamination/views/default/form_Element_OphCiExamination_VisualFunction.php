@@ -17,7 +17,7 @@
  */
 ?>
 
-<div class="element-fields element-eyes ">
+<div class="element-fields flex-layout full-width element-eyes ">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 	<div class="element-eye right-eye left side <?php if (!$element->hasRight()) { ?> inactive <?php } ?> " data-side="right">
 		<div class="active-form field-row flex-layout">
