@@ -110,10 +110,9 @@ class BaseReportController extends BaseController
                 return;
             }
 
-            Audit::add('Reports', 'display', "<pre>" . print_r([
-                    'name' => $_POST['report-name'],
-                    $_POST
-                ], true) . "</pre>" );
+            $post = $_POST;
+            unset($post['YII_CSRF_TOKEN']);
+            Audit::add('Reports', 'display', "<pre>" . print_r($post, true) . "</pre>",null, ['model' => $report_class]);
 
             $report->run();
 
@@ -150,10 +149,9 @@ class BaseReportController extends BaseController
             return;
         }
 
-        Audit::add('Reports', 'download', "<pre>" . print_r([
-                'name' => $_POST['report-name'],
-                $_POST
-            ], true) . "</pre>", null, ['model' => $report_class] );
+        $post = $_POST;
+        unset($post['YII_CSRF_TOKEN']);
+        Audit::add('Reports', 'download', "<pre>" . print_r($post, true) . "</pre>", null, ['model' => $report_class] );
 
         if (!$report->validate()) {
             throw new Exception('Report errors: '.print_r($report->errors, true));
