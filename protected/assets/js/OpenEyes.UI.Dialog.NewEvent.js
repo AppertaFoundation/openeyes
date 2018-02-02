@@ -33,6 +33,7 @@
     NewEventDialog._defaultOptions = {
         destroyOnClose: false,
         title: 'Add a new event',
+        popupClass: 'oe-create-event-popup',
         modal: true,
         width: 1000,
         minHeight: 400,

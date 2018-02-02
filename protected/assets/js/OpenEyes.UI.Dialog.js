@@ -87,6 +87,7 @@
     iframe: null,
     autoOpen: false,
     title: null,
+    popupClass: 'oe-popup',
     modal: true,
     dialogClass: 'dialog',
     resizable: false,
@@ -106,11 +107,11 @@
    * @private
    */
   Dialog.prototype.create = function () {
-
+    
     // Create the dialog content div.
     this.content = $('<div />', {class: 'oe-popup-wrap'});
     var closeButton = '<div class="close-icon-btn"><i class="oe-i remove-circle"></i></div>';
-    var popup = $('<div class="oe-popup"><div class="title">' + this.options.title + '</div>' + closeButton + '<div class="oe-popup-content"></div></div>');
+    var popup = $('<div class="' + this.options.popupClass +'"><div class="title">' + this.options.title + '</div>' + closeButton + '<div class="oe-popup-content"></div></div>');
 
     this.content.append(popup);
     this.setClose($(this.content).find('.close-icon-btn'));

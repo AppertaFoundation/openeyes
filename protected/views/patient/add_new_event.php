@@ -61,7 +61,7 @@
                 </select>
 
                 <h6 style="margin-top:5px"><?= Firm::serviceLabel() ?></h6>
-                <div class="no-subspecialty">Select Subspecialty</div>
+                <div class="no-subspecialty"><h6>Select Subspecialty</h6></div>
                 <div class="fixed-service" style="display: none;"></div>
                 <select class="select-service" style="display: none;">
                 </select>
@@ -69,13 +69,13 @@
                 <button class="add-subspecialty-btn tiny" style="padding:3px 6px;" id="js-add-subspecialty-btn">+</button>
             </div>
         </td>
-        <td class="step-context" style="visibility: hidden;">
+        <td class="step-context oe-create-event-step-through " style="visibility: hidden;">
             <h3><?= Firm::contextLabel() ?></h3>
             <ul class="context-list">
             </ul>
         </td>
         <td class="step-event-types" style="visibility: hidden;">
-            <h3 class="no-arrow title">Select event to add:</h3>
+            <h3>Select event to add:</h3>
             <ul class="event-type-list">
                 <?php foreach ($eventTypes as $eventType) {
                     $args = $this->getCreateArgsForEventTypeOprn($eventType, array('episode'));
@@ -129,19 +129,15 @@
         var newEventDialog;
 
         $(document).on('click', '<?= $button_selector ?>', function() {
-            if (newEventDialog === undefined) {
-                newEventDialog = new OpenEyes.UI.Dialog.NewEvent({
-                    id: 'add-new-event-dialog',
-                    viewSubspecialtyId: <?= @$view_subspecialty ? $view_subspecialty->id : 'undefined' ?>,
-                    patientId: <?= $patient_id ?>,
-                    userSubspecialtyId: '<?= $context_firm->getSubspecialtyID() ? : 'SS'; ?>',
-                    userContext: <?= CJSON::encode(NewEventDialogHelper::structureFirm($context_firm)) ?>,
-                    currentSubspecialties: <?= CJSON::encode(NewEventDialogHelper::structureEpisodes($episodes)) ?>,
-                    subspecialties: <?= CJSON::encode(NewEventDialogHelper::structureAllSubspecialties()) ?>
-                });
-            }
-
-            newEventDialog.open();
+            newEventDialog = new OpenEyes.UI.Dialog.NewEvent({
+                id: 'add-new-event-dialog',
+                viewSubspecialtyId: <?= @$view_subspecialty ? $view_subspecialty->id : 'undefined' ?>,
+                patientId: <?= $patient_id ?>,
+                userSubspecialtyId: '<?= $context_firm->getSubspecialtyID() ? : 'SS'; ?>',
+                userContext: <?= CJSON::encode(NewEventDialogHelper::structureFirm($context_firm)) ?>,
+                currentSubspecialties: <?= CJSON::encode(NewEventDialogHelper::structureEpisodes($episodes)) ?>,
+                subspecialties: <?= CJSON::encode(NewEventDialogHelper::structureAllSubspecialties()) ?>
+            });
         });
     });
 
