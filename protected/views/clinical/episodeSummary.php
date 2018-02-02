@@ -16,63 +16,77 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 if (!empty($episode)) {
-    if ($episode->diagnosis) {
-        $eye = $episode->eye ? $episode->eye->name : 'None';
-        $diagnosis = $episode->diagnosis ? $episode->diagnosis->term : 'none';
-    } else {
-        $eye = 'No diagnosis';
-        $diagnosis = 'No diagnosis';
-    }
+if ($episode->diagnosis) {
+    $eye = $episode->eye ? $episode->eye->name : 'None';
+    $diagnosis = $episode->diagnosis ? $episode->diagnosis->term : 'none';
+} else {
+    $eye = 'No diagnosis';
+    $diagnosis = 'No diagnosis';
+}
 
-    $episode->audit('episode summary', 'view');
-    ?>
+$episode->audit('episode summary', 'view');
+?>
 
-    <div class="element-data">
-        <h2>Summary</h2>
-        <h3><?= $episode->getSubspecialtyText() ?></h3>
-    </div>
+<main class="main-event view event-types">
+
+  <h2 class="event-title">Summary: <?= $episode->getSubspecialtyText() ?></h2>
 
     <?php $this->renderPartial('//base/_messages'); ?>
 
-    <div class="row">
-        <div class="large-9 column">
-            <?php if (Yii::app()->hasModule('OphCiExamination')) { ?>
-                <section class="element element-data">
-                    <h3 class="data-title">Previous Management</h3>
-                    <div class="data-value">
-                        <div class="inline-previous-element"
-                             data-element-type-id="<?= ElementType::model()->findByAttributes(array('class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Management'))->id ?>"
-                             data-no-results-text="No previous management recorded"
-                             data-limit="1"
-                             data-template-id="previous-management-template">Loading previous management information ...</div>
-                    </div>
-                </section>
 
-                <script type="text/html" id="previous-management-template">
-                    <strong>{{subspecialty}} {{event_date}} ({{last_modified_user_display}} <span class="has-tooltip fa fa-info-circle" data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> {{comments_or_children}}
-                </script>
-                <?php Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js", null, -10); ?>
-
-            <?php } ?>
-            <section class="element element-data">
-                <h3 class="data-title">Principal diagnosis:</h3>
-                <div class="data-value highlight">
-                    <?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None' ?>
+  <div class="flex-layout flex-left flex-stretch">
+      <?php if (Yii::app()->hasModule('OphCiExamination')) { ?>
+        <section class="element tile">
+          <header class="element-header">
+            <h3 class="element-title">Previous Management</h3>
+          </header>
+          <div class="element-data full-width">
+            <div class="tile-data-overflow">
+              <div class="data-value">
+                <div class="inline-previous-element"
+                     data-element-type-id="<?= ElementType::model()->findByAttributes(array('class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_Management'))->id ?>"
+                     data-no-results-text="No previous management recorded"
+                     data-limit="1"
+                     data-template-id="previous-management-template">Loading previous management information ...
                 </div>
-            </section>
+              </div>
+            </div>
+          </div>
+        </section>
+        <script type="text/html" id="previous-management-template">
+          <strong>{{subspecialty}} {{event_date}} ({{last_modified_user_display}} <span
+                class="has-tooltip fa fa-info-circle"
+                data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> {{comments_or_children}}
+        </script>
+          <?php Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js", null, -10); ?>
 
-            <section class="element element-data">
-                <h3 class="data-title">Principal eye:</h3>
-                <div class="data-value highlight">
-                    <?php echo $episode->eye ? $episode->eye->name : 'None' ?>
-                </div>
-            </section>
+      <?php } ?>
+    <section class="element tile">
+      <header class="element-header">
+        <h3 class="element-title">Principal diagnosis:</h3>
+      </header>
+      <div class="element-data full-width">
+        <div class="data-value highlight">
+            <?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None' ?>
         </div>
-    </div>
+      </div>
+    </section>
+
+    <section class="element tile">
+      <header class="element-header">
+        <h3 class="element-title">Principal eye:</h3>
+      </header>
+      <div class="element-data full-width">
+        <div class="data-value highlight">
+            <?php echo $episode->eye ? $episode->eye->name : 'None' ?>
+        </div>
+      </div>
+    </section>
+  </div>
 
     <?php
     $summaryItems = array();
-    
+
     if ($episode->subspecialty) {
         $summaryItems = EpisodeSummaryItem::model()->enabled($episode->subspecialty->id)->findAll();
     }
@@ -82,143 +96,163 @@ if (!empty($episode)) {
     ?>
 
     <?php if (count($summaryItems)) { ?>
-        <div class="element element-data event-types">
-            <?php foreach ($summaryItems as $summaryItem) {
-                Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
-                $widget = $this->createWidget($summaryItem->getClassName(), array(
-                    'episode' => $episode,
-                    'event_type' => $summaryItem->event_type,
-                ));
-                $className = '';
-                if ($widget->collapsible) {
-                    $className .= 'collapsible';
-                    if ($widget->openOnPageLoad) {
-                        $className .= ' open';
-                    }
-                }
-                ?>
-                <div class="<?php echo $className; ?>">
-                    <h3 id="<?= $summaryItem->getClassName(); ?>" class="data-title">
-                        <?= $summaryItem->name; ?>
-                        <?php if ($widget->collapsible) {
-                            $text = $widget->openOnPageLoad ? 'hide' : 'show';
-                            $toggleClassName = $widget->openOnPageLoad ? 'toggle-hide' : 'toggle-show';
-                            ?>
-                            <a href="#" class="toggle-trigger toggle-<?php echo $toggleClassName; ?>">
-                                <span class="text"><?php echo $text; ?></span>
-                                <span class="icon-showhide">
-                                    Show/hide
-                                </span>
-                            </a>
-                        <?php } ?>
-                    </h3>
-                    <div class="summary-content">
-                        <?php $widget->run(); ?>
-                    </div>
+        <?php foreach ($summaryItems
+
+                       as $summaryItem) {
+        Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
+        $widget = $this->createWidget($summaryItem->getClassName(), array(
+            'episode' => $episode,
+            'event_type' => $summaryItem->event_type,
+        ));
+        $className = '';
+        if ($widget->collapsible) {
+            $className .= 'collapsible';
+            if ($widget->openOnPageLoad) {
+                $className .= ' open';
+            }
+        }
+        ?>
+      <div class="element full <?php echo $className; ?>">
+        <header class="element-header">
+          <h3 id="<?= $summaryItem->getClassName(); ?>" class="element-title">
+              <?= $summaryItem->name; ?>
+              <?php if ($widget->collapsible) { ?>
+
+              <?php } ?>
+          </h3>
+        </header>
+          <?php if ($widget->collapsible): ?>
+            <div class="element-data full-width">
+              <div class="data-row">
+                <div class="data-value flex-layout flex-top">
+                  <div class="cols-11"></div>
+                  <div>
+                    <i class="oe-i small pad toggle-trigger <?php echo $widget->openOnPageLoad ? 'collapse' : 'expand'; ?>"
+                       data-list="meds-current"></i>
+                  </div>
                 </div>
-            <?php } ?>
+              </div>
+            </div>
+          <?php endif; ?>
+        <div class="full-width summary-content">
+            <?php $widget->run(); ?>
         </div>
-        <script>
-            $(function () {
+      </div>
+    <?php } ?>
+      </div>
+      <script>
+        $(function () {
 
-                $('.event-types .collapsible').each(function () {
+          $('.event-types .collapsible').each(function () {
 
-                    var container = $(this);
-                    var content = container.find('.summary-content');
-                    var toggler = container.find('.toggle-trigger');
+            var container = $(this);
+            var content = container.find('.summary-content');
+            var toggler = container.find('.toggle-trigger');
 
-                    container
-                        .on('open.collapsible', function () {
-                            content.show();
-                            toggler.find('.text').html('hide');
-                            toggler.addClass('toggle-hide');
-                        })
-                        .on('close.collapsible', function () {
-                            content.hide();
-                            toggler.find('.text').html('show');
-                            toggler.addClass('toggle-show');
-                        })
-                        .on('click.collapsible', '.data-title', function (e) {
-                            e.preventDefault();
-                            toggler.removeClass('toggle-hide toggle-show');
-                            container.trigger(content.is(':visible') ? 'close' : 'open');
-                        });
+            container
+              .on('open.collapsible', function () {
+                content.show();
+                toggler.addClass('collapse');
+              })
+              .on('close.collapsible', function () {
+                content.hide();
+                toggler.addClass('expand');
+              })
+              .on('click.collapsible', '.toggle-trigger', function (e) {
+                e.preventDefault();
+                toggler.removeClass('expand collapse');
+                container.trigger(content.is(':visible') ? 'close' : 'open');
+              });
 
-                    if (!container.hasClass('open')) {
-                        container.trigger('close.collapsible');
-                    }
-                });
+            if (!container.hasClass('open')) {
+              container.trigger('close.collapsible');
+            }
+          });
 
-                // Open the container on page load if location hash matches id.
-                var hash = window.location.hash;
-                if (hash) {
-                    var elem = $(hash);
-                    var container = elem.closest('.collapsible');
-                    if (container.length) {
-                        container.trigger('open');
-                        window.location.hash = hash.replace(/#/, '');
-                    }
-                }
-            });
-        </script>
+          // Open the container on page load if location hash matches id.
+          var hash = window.location.hash;
+          if (hash) {
+            var elem = $(hash);
+            var container = elem.closest('.collapsible');
+            if (container.length) {
+              container.trigger('open');
+              window.location.hash = hash.replace(/#/, '');
+            }
+          }
+        });
+      </script>
     <?php } ?>
 
-    <section class="element element-data">
-        <div class="row">
-            <div class="large-6 column">
-                <h3 class="data-title">Start Date:</h3>
-                <div class="data-value">
-                    <?php echo $episode->NHSDate('start_date') ?>
-                </div>
-            </div>
-            <div class="large-6 column">
-                <h3 class="data-title">End date:</h3>
-                <div
-                    class="data-value"><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)' ?></div>
-            </div>
+  <div class="flex-layout flex-left flex-stretch">
+    <section class="element tile">
+      <header class="element-header">
+        <h3 class="element-title">Start Date</h3>
+      </header>
+      <div class="element-data full-width">
+        <div class="tile-data-overflow">
+          <div class="data-value">
+              <?php echo $episode->NHSDate('start_date') ?>
+          </div>
         </div>
+      </div>
     </section>
-
-    <section class="element element-data">
-        <div class="row">
-            <div class="large-6 column">
-                <h3 class="data-title">Subspecialty:</h3>
-                <div class="data-value">
-                    <?= $episode->getSubspecialtyText() ?>
-                </div>
-            </div>
-            <div class="large-6 column">
-                <h3 class="data-title">Consultant firm:</h3>
-                <div class="data-value"><?php echo $episode->firm ? $episode->firm->name : 'None' ?></div>
-            </div>
+    <section class="element tile">
+      <header class="element-header">
+        <h3 class="element-title">End Date</h3>
+      </header>
+      <div class="element-data full-width">
+        <div class="data-value">
+            <?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)' ?>
         </div>
+      </div>
     </section>
+  </div>
 
-    <div class="metadata">
-        <span class="info">
-            <?= $episode->getSubspecialtyText() ?>: created by <span
-                class="user"><?php echo $episode->user->fullName ?></span>
-            on <?php echo $episode->NHSDate('created_date') ?> at <?php echo substr($episode->created_date, 11, 5) ?>
-        </span>
-    </div>
-
-    <div class="row">
-        <div class="large-9 column">
-            <section class="element element-data">
-                <h3 class="data-title"><?= Episode::getEpisodeLabel() ?> Status:</h3>
-                <div class="data-value highlight">
-                    <?php echo $episode->status->name ?>
-                </div>
-            </section>
+  <div class="flex-layout flex-left flex-stretch">
+    <section class="element tile">
+      <header class="element-header">
+        <h3 class="element-title">Subspecialty:</h3>
+      </header>
+      <div class="element-data full-width">
+        <div class="data-value">
+            <?= $episode->getSubspecialtyText() ?>
         </div>
-    </div>
+      </div>
+    </section>
+    <section class="element tile">
+      <header class="element-header">
+        <h3 class="element-title">Consultant firm:</h3>
+      </header>
+      <div class="element-data full-width">
+        <div class="data-value"><?php echo $episode->firm ? $episode->firm->name : 'None' ?></div>
+      </div>
+    </section>
+  </div>
 
-    <div class="metadata">
+  <div class="metadata">
+    <span class="info">
+        <?= $episode->getSubspecialtyText() ?>: created by <span
+          class="user"><?php echo $episode->user->fullName ?></span>
+        on <?php echo $episode->NHSDate('created_date') ?> at <?php echo substr($episode->created_date, 11, 5) ?>
+    </span>
+  </div>
+
+  <div class="element full ">
+    <header class="element-header">
+      <h3 class="element-title"><?= Episode::getEpisodeLabel() ?> Status:</h3>
+    </header>
+    <div class="element-data full-width">
+      <div class="data-value"><?php echo $episode->status->name ?></div>
+    </div>
+  </div>
+
+  <div class="metadata">
         <span class="info">
             Status last changed by <span class="user"><?php echo $episode->usermodified->fullName ?></span>
             on <?php echo $episode->NHSDate('last_modified_date') ?> at <?php echo substr($episode->last_modified_date,
                 11, 5) ?>
         </span>
-    </div>
+  </div>
 
-<?php } ?>
+    <?php } ?>
+</main>
