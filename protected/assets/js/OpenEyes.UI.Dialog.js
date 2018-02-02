@@ -110,7 +110,7 @@
 
         // Create the dialog content div.
         this.content = $('<div />', {class: 'oe-popup-wrap'});
-        var closeButton = '<div class="close-icon-btn"><i class="oe-i remove-circle"></i></div>';
+        var closeButton = '<div class="close-icon-btn"><i class="oe-i remove-circle pro-theme"></i></div>';
         var popup = $('<div class="' + this.options.popupClass + '"><div class="title">' + this.options.title + '</div>' + closeButton + '<div class="oe-popup-content"></div></div>');
 
         this.content.append(popup);
