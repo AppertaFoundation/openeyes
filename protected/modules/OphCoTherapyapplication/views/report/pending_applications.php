@@ -1,3 +1,4 @@
+<?php $this->renderPartial('//base/_messages'); ?>
 <div class="box reports">
     <div class="report-fields">
         <h2>Pending Therapy Applications Report</h2>
@@ -10,3 +11,4 @@
         <?php endif;?>
     </div>
 </div>
+<?php  ?>
