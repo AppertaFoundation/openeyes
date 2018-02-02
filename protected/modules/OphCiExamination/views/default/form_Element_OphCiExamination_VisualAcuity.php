@@ -90,7 +90,7 @@ $this->endClip('element-title-additional');
             <button class="button js-add-comments" data-input="#pupils-right-comments" type="button">
               <i class="oe-i comments small-icon"></i>
             </button>
-            <button class="button hint green addReading" type="button">
+            <button class="button hint green addReading js-add-select-search" type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>
             <!-- popup to add to element is click -->
@@ -172,7 +172,7 @@ $this->endClip('element-title-additional');
             <button class="button js-add-comments" data-input="#pupils-right-comments" type="button">
               <i class="oe-i comments small-icon"></i>
             </button>
-            <button class="button hint green addReading" type="button">
+            <button class="button hint green addReading js-add-select-search" type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>
           </div>
