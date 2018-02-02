@@ -49,7 +49,7 @@
         <button class="button js-add-comments" data-input="#pupils-right-comments">
           <i class="oe-i comments small-icon"></i>
         </button>
-        <button class="button hint green js-add-select-search">
+        <button class="button hint green js-add-select-search" type="button">
           <i class="oe-i plus pro-theme"></i>
         </button>
       </div>
@@ -94,7 +94,7 @@
         <button class="button js-add-comments" data-input="#pupils-right-comments">
           <i class="oe-i comments small-icon"></i>
         </button>
-        <button class="button hint green js-add-select-search">
+        <button class="button hint green js-add-select-search" type="button">
           <i class="oe-i plus pro-theme"></i>
         </button>
       </div>

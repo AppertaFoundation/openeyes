@@ -81,7 +81,7 @@
       </tbody>
   </table>
   <div class="flex-item-bottom">
-    <button class="button hint green js-add-select-search"><i class="oe-i plus pro-theme"></i></button>
+    <button class="button hint green js-add-select-search" type="button"><i class="oe-i plus pro-theme"></i></button>
     <!-- popup to add to element is click -->
     <div id="add-to-allergies" class="oe-add-select-search" style="display: none;">
       <!-- icon btns -->

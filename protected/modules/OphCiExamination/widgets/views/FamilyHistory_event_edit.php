@@ -65,7 +65,7 @@
       </tbody>
   </table>
   <div class="flex-item-bottom">
-    <button class="button hint green js-add-select-search">
+    <button class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
     <div id="add-to-POH" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
