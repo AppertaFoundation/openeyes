@@ -57,7 +57,7 @@ class RisksAssignmentController extends \ModuleAdminController
      */
     public function actionCreate()
     {
-        $risk_set = new OphciExaminationRiskSet;
+        $risk_set = new OphCiExaminationRiskSet;
 
         if(isset($_POST['OEModule_OphCiExamination_models_OphciExaminationRiskSet']))
         {
