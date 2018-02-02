@@ -16,11 +16,19 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row data-row">
-	<div class="large-6 column">
-		<div class="data-value"><?= $iop ? $iop->getLetter_reading('right') : 'Not recorded' ?></div>
-	</div>
-	<div class="large-6 column">
-		<div class="data-value"><?= $iop ? $iop->getLetter_reading('left') : 'Not recorded' ?></div>
-	</div>
+<div class="element-data element-eyes">
+  <div class="element-eye right-eye">
+    <div class="data-row">
+      <div class="data-value">
+          <?= $iop ? $iop->getLetter_reading('right') : 'Not recorded' ?>
+      </div>
+    </div>
+  </div>
+  <div class="element-eye left-eye">
+    <div class="data-row">
+      <div class="data-value">
+          <?= $iop ? $iop->getLetter_reading('left') : 'Not recorded' ?>
+      </div>
+    </div>
+  </div>
 </div>

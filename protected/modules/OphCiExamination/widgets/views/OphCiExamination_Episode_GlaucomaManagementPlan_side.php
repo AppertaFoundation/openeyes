@@ -14,8 +14,6 @@
  */
 ?>
 <div class="row data-row">
-	<div class="data-label column large-3">Target IOP:</div>
-	<div class="data-value column large-9"><?= $plan->{"{$side}_target_iop"}->name ?> mmHg</div>
+  <div class="data-label column cols-3">Target IOP:</div>
+  <div class="data-value column cols-9"><?= $plan->{"{$side}_target_iop"}->name ?> mmHg</div>
 </div>
-
-
