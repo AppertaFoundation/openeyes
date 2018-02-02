@@ -86,14 +86,6 @@
       }
       ?>
       </tbody>
-      <tfoot>
-      <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td><button class="button small primary" id="<?= $model_name ?>_add_entry">Add</button></td>
-      </tr>
-      </tfoot>
   </table>
 </div>
 

@@ -75,12 +75,6 @@ $element_errors = $element->getErrors();
         }
         ?>
         </tbody>
-        <tfoot>
-        <tr>
-            <td colspan="3"></td>
-            <td><button class="button small primary add-entry">Add</button></td>
-        </tr>
-        </tfoot>
     </table>
     <script type="text/template" class="entry-template hidden">
         <?php
