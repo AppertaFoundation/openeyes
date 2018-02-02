@@ -37,26 +37,6 @@ if (!isset($values)) {
         <input type="hidden" name="<?= $field_prefix ?>[other]" value="<?=$values['other'] ?>" />
 
         <?php if ($removable): ?>
-        <?php
-            $allergies_opts = array(
-                'options' => array(),
-                'empty' => '- select -',
-                'class' => 'other'
-            );
-
-            foreach ($allergies as $allergy) {
-                $allergies_opts['options'][$allergy->id] = array(
-                        'data-other' => $allergy->isOther() ? '1' : '0',
-                );
-            }
-
-            echo CHtml::dropDownList($field_prefix . "[allergy_id]", $values['allergy_id'], CHtml::listData($allergies, 'id', 'name'), $allergies_opts);
-            $show_other = $values['allergy_id'] && array_key_exists($values['allergy_id'], $allergies_opts['options']) && ($allergies_opts['options'][$values['allergy_id']]['data-other'] === '1');
-        ?>
-        <span class="<?=  $show_other ? : 'hidden'?> <?= $model_name ?>_other_wrapper">
-            <?php echo CHtml::textField($field_prefix . '[other]', $values['other'], array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
-        </span>
-        <?php else: ?>
             <?=$values['allergy_display']; ?>
             <input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?=$values['allergy_id'] ?>" />
         <?php endif; ?>
@@ -76,14 +56,19 @@ if (!isset($values)) {
         </label>
     </td>
     <td>
-        <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+        <?php if ($removable): ?>
+            <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+        <?php else: ?>
+          <div class="cols-full ">
+            <button class="button  js-add-comments" data-input="next" style="display: none;">
+              <i class="oe-i comments  small-icon"></i>
+            </button>
+            <textarea placeholder="Comments" autocomplete="off" rows="1" class="cols-full" style="overflow-x: hidden; word-wrap: break-word;"></textarea>
+          </div>
+        <?php endif; ?>
     </td>
 
-    <td class="edit-column">
-        <?php if($removable) : ?>
-            <button class="button small warning remove">remove</button>
-            <?php else: ?>
-            read only
-        <?php endif; ?>
+    <td>
+      <i class="oe-i trash"></i>
     </td>
 </tr>

@@ -24,7 +24,7 @@
     $required_allergy_ids = array_map(function($r) { return $r->id; }, $this->getRequiredAllergies());
 ?>
 
-<div class="element-fields" id="<?= $model_name ?>_element">
+<div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
     <div class="field-row row<?=$this->isAllergiesSetYes($element) ? ' hidden' : ''?>" id="<?=$model_name?>_no_allergies_wrapper">
         <div class="large-3 column">
             <label for="<?=$model_name?>_no_allergies">Confirm patient has no allergies:</label>
@@ -36,15 +36,8 @@
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
-  <table id="<?= $model_name ?>_entry_table">
-      <thead>
-      <tr>
-          <th>Allergy</th>
-          <th>Status</th>
-          <th>Comments</th>
-          <th>Action(s)</th>
-      </tr>
-      </thead>
+  <table id="<?= $model_name ?>_entry_table" class="cols-7 <?=$element->no_allergies_date ? 'hidden' : ''?>">
+
       <tbody>
 
       <?php
@@ -87,6 +80,39 @@
       ?>
       </tbody>
   </table>
+  <div class="flex-item-bottom">
+    <button class="button hint green js-add-select-search"><i class="oe-i plus pro-theme"></i></button>
+    <!-- popup to add to element is click -->
+    <div id="add-to-allergies" class="oe-add-select-search" style="display: none;">
+      <!-- icon btns -->
+      <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
+      <div class="select-icon-btn"><i class="oe-i menu selected"></i></div>
+      <button class="button hint green add-icon-btn">
+        <i class="oe-i plus pro-theme"></i>
+      </button>
+      <!-- select (and search) options for element -->
+      <table class="select-options">
+        <tbody>
+        <tr>
+          <td>
+            <div class="flex-layout flex-top flex-left">
+              <ul class="add-options" data-multi="true" data-clickadd="false">
+                <?php $allergies = $element->getAllergyOptions();
+                    foreach ($allergies as $allergy){ ?>
+                      <li data-str = "<?php echo $allergy->name ?>">
+                        <span class="auto-width">
+                          <?php echo $allergy->name; ?>
+                        </span>
+                      </li>
+                    <?php } ?>
+              </ul></div>
+            <!-- flex-layout -->
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div><!-- oe-add-select-search -->
+  </div>
 </div>
 
 <script type="text/template" id="<?= CHtml::modelName($element).'_entry_template' ?>" class="hidden">
