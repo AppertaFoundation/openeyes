@@ -19,110 +19,118 @@
 <?php
 $based_on = array();
 if ($search_terms['last_name']) {
-    $based_on[] = 'LAST NAME: <strong>"' . $search_terms['last_name'] . '"</strong>';
+    $based_on[] = 'LAST NAME: <p>"' . $search_terms['last_name'] . '"</p>';
 }
 if ($search_terms['first_name']) {
-    $based_on[] = 'FIRST NAME: <strong>"' . $search_terms['first_name'] . '"</strong>';
+    $based_on[] = 'FIRST NAME: <p>"' . $search_terms['first_name'] . '"</p>';
 }
 if ($search_terms['hos_num']) {
-    $based_on[] = 'HOSPITAL NUMBER: <strong>' . $search_terms['hos_num'] . '</strong>';
+    $based_on[] = 'HOSPITAL NUMBER: <p>' . $search_terms['hos_num'] . '</p>';
 }
 $core_api = new CoreAPI();
 
 $based_on = implode(', ', $based_on);
 ?>
-<div class="main-event row">
-  <div class="cols-9 column event">
-    <p>
-      <strong><?php echo $total_items ?> patients found</strong>, based on
-        <?php echo $based_on ?>
-    </p>
+<?php
+$this->beginWidget('CActiveForm', array(
+    'id' => 'search-form',
+    'focus' => '#query',
+    'action' => Yii::app()->createUrl('site/search'),
+    'htmlOptions' => array(
+        'class' => 'form oe-find-patient search',
+    ),
+)); ?>
+<div class="oe-search-patient" id="oe-search-patient">
+  <div class="search-patient">
+      <?php echo CHtml::textField('query', '', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'search', 'placeholder' => 'Search')); ?>
+    <button type="submit" id="js-find-patient" class="blue hint">Find Patient</button>
+    <div class="find-by">Search by Hospital Number, NHS Number, Firstname Surname or Surname, Firstname</div>
+    <div class="text-center">
+      <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
+           alt="loading..."/>
+    </div>
+  </div>
+</div>
+<?php $this->endWidget(); ?>
+<div class="patient-search-results flex-layout flex-top">
+  <div class="search-details">
+    <div class="title">Results</div>
+    <div class="found"><?php echo $total_items ?> patients found</div>
+    <div class="search-critera">based on <?php echo $based_on ?></div>
+    <button id="js-clear-search-btn" class="blue hint cols-full clear-search">Clear search results</button>
+  </div>
+    <?php $this->renderPartial('//base/_messages');
+    $dataProvided = $data_provider->getData();
+    $items_per_page = $data_provider->getPagination()->getPageSize();
+    $page_num = $data_provider->getPagination()->getCurrentPage();
+    $from = ($page_num * $items_per_page) + 1;
+    $to = ($page_num + 1) * $items_per_page;
+    if ($to > $total_items) {
+        $to = $total_items;
+    }
+    ?>
 
-      <?php $this->renderPartial('//base/_messages'); ?>
-      <?php
-      $dataProvided = $data_provider->getData();
-      $items_per_page = $data_provider->getPagination()->getPageSize();
-      $page_num = $data_provider->getPagination()->getCurrentPage();
-      $from = ($page_num * $items_per_page) + 1;
-      $to = ($page_num + 1) * $items_per_page;
-      if ($to > $total_items) {
-          $to = $total_items;
-      }
-      ?>
-    <h2>
-      Results. You are viewing patients <?php echo $from ?> - <?php echo $to ?> of <?php echo $total_items ?>
-    </h2>
-
-    <div class="element">
-      <table id="patient-grid">
-        <thead>
-        <tr>
-            <?php foreach (array('Hospital Number', 'Title', 'First name', 'Last name', 'Date of birth', 'Gender', 'NHS number') as $i => $field) { ?>
-              <th id="patient-grid_c<?php echo $i; ?>">
-                  <?php
-                  $new_sort_dir = ($i == $sort_by) ? 1 - $sort_dir : 0;
-                  echo CHtml::link(
-                      $field,
-                      Yii::app()->createUrl('patient/search', array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num))
-                  );
-                  ?>
-              </th>
-            <?php } ?>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($dataProvided as $i => $result) { ?>
-          <tr id="r<?php echo $result->id ?>" class="clickable"
-              data-link="<?php echo $core_api->generateEpisodeLink($result); ?>"
+  <table class="search-results">
+    <thead>
+    <tr>
+        <?php foreach (array('Hospital Number', 'Title', 'First name', 'Last name', 'Born', 'Age', 'Gender', 'NHS number') as $i => $field) { ?>
+          <th id="patient-grid_c<?php echo $i; ?>">
               <?php
-              echo "data-hos_num='{$result->hos_num}'";
-              if ($result->isNewRecord) {
-                  echo " data-is_new_record='1'";
-              }
+              $new_sort_dir = ($i == $sort_by) ? 1 - $sort_dir : 0;
+              echo CHtml::link(
+                  $field,
+                  Yii::app()->createUrl('patient/search', array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num))
+              );
               ?>
-          >
-            <td><?php echo $result->hos_num ?></td>
-            <td><?php echo $result->title ?></td>
-            <td><?php echo $result->first_name ?></td>
-            <td><?php echo $result->last_name ?></td>
-            <td><?php echo $result->dob ? (date('d/m/Y', strtotime($result->dob))) : ''; ?></td>
-            <td><?php echo $result->gender ?></td>
-            <td><?php echo $result->nhsnum ?></td>
-          </tr>
+          </th>
         <?php } ?>
-        </tbody>
-        <tfoot class="pagination-container">
-        <tr>
-          <td colspan="7">
-              <?php
-              $this->widget('LinkPager', array(
-                  'pages' => $data_provider->getPagination(),
-                  'maxButtonCount' => 15,
-                  'cssFile' => false,
-                  'selectedPageCssClass' => 'current',
-                  'hiddenPageCssClass' => 'unavailable',
-                  'htmlOptions' => array(
-                      'class' => 'pagination',
-                  ),
-              ));
-              ?>
-          </td>
-        </tr>
-        </tfoot>
-      </table>
-    </div>
-  </div>
-
-  <div class="cols-3 column">
-    <div class="box generic">
-        <?php echo CHtml::link('Clear this search and <span class="highlight">start a new search.</span>', Yii::app()->baseUrl . '/') ?>
-    </div>
-  </div>
-
-</div><!-- /.row -->
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($dataProvided as $i => $result) { ?>
+      <tr id="r<?php echo $result->id ?>" class="clickable found-patient"
+          data-link="<?php echo $core_api->generateEpisodeLink($result); ?>"
+          <?php
+          echo "data-hos_num='{$result->hos_num}'";
+          if ($result->isNewRecord) {
+              echo " data-is_new_record='1'";
+          }
+          ?>
+      >
+        <td><?php echo $result->hos_num ?></td>
+        <td><?php echo $result->title ?></td>
+        <td><?php echo $result->first_name ?></td>
+        <td><?php echo $result->last_name ?></td>
+        <td><?php echo $result->dob ? (date('d/m/Y', strtotime($result->dob))) : ''; ?></td>
+        <td><?php echo $result->getAge(); ?></td>
+        <td><?php echo $result->gender ?></td>
+        <td><?php echo $result->nhsnum ?></td>
+      </tr>
+    <?php } ?>
+    </tbody>
+    <tfoot class="pagination-container">
+    <tr>
+      <td colspan="8">
+          <?php
+          $this->widget('LinkPager', array(
+              'pages' => $data_provider->getPagination(),
+              'maxButtonCount' => 15,
+              'cssFile' => false,
+              'selectedPageCssClass' => 'current',
+              'hiddenPageCssClass' => 'unavailable',
+              'htmlOptions' => array(
+                  'class' => 'pagination',
+              ),
+          ));
+          ?>
+      </td>
+    </tr>
+    </tfoot>
+  </table>
+</div>
 
 <script type="text/javascript">
-    $('#patient-grid').on('click', 'tr.clickable', function () {
+    $('.search-results').on('click', 'tr.clickable', function () {
         var url;
 
         if ($(this).data('is_new_record') === 1 && $(this).data('hos_num') !== undefined) {
@@ -134,4 +142,7 @@ $based_on = implode(', ', $based_on);
         return false;
     });
 
+    $('#js-clear-search-btn').click(function () {
+        window.location.assign('<?php echo Yii::app()->baseUrl . '/'; ?>');
+    });
 </script>

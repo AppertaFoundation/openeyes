@@ -56,8 +56,11 @@ class LinkPager extends CLinkPager
     {
         $this->registerClientScript();
         $buttons=$this->createPageButtons();
-        if(empty($buttons))
+        if(empty($buttons)) {
+            echo $this->header;
             return;
+        }
+
         echo $this->header;
         echo implode("\n",$buttons); // There will only ever be a maximum of two buttons when using this pager (next/previous).
         echo $this->footer;
