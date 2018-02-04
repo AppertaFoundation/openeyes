@@ -535,7 +535,7 @@ EOSQL;
     }
 
     private function saveHTMLToFile($html,$filename) {
-//      $file = Yii::getPathOfAlias('application') . '/widgets/views/IndexSearch_Examination.php';
+      $file = Yii::getPathOfAlias('application') . '/widgets/views/IndexSearch_Examination.php';
       $file_handle = fopen($file, 'w') or die('Cannot open file:  '.$file);
       fwrite($file_handle, $html);
       fclose($file_handle);
