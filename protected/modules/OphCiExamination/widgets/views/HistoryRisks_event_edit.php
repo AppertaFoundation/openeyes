@@ -48,8 +48,8 @@ $required_risk_ids = array_map(function($r) { return $r->id; }, $this->getRequir
                   <?php
                   foreach ($risks_options as $risk) {
                       ?>
-                    <li data-str="<?php echo $risk->name; ?>">
-                      <span class="restrict-width"><?php echo $risk->name; ?></span>
+                    <li data-str="<?php echo $risk; ?>">
+                      <span class="restrict-width"><?php echo $risk; ?></span>
                     </li>
                   <?php } ?>
               </ul>
@@ -62,8 +62,8 @@ $required_risk_ids = array_map(function($r) { return $r->id; }, $this->getRequir
                   <?php
                   foreach ($missing_req_risks as $risk) {
                       ?>
-                    <li data-str="<?php echo $risk->name; ?>">
-                      <span class="restrict-width"><?php echo $risk->name; ?></span>
+                    <li data-str="<?php echo $risk; ?>">
+                      <span class="restrict-width"><?php echo $risk; ?></span>
                     </li>
                   <?php } ?>
               </ul>

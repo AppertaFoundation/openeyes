@@ -1477,12 +1477,13 @@ class BaseEventTypeController extends BaseModuleController
     {
         if ($this->show_index_search && in_array($this->getActionType($this->action->id),
                 array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT), true)) {
-            $event_type_id = ($this->event->attributes["event_type_id"]);
-            $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
-            $event_name = $event_type->name;
-            if ($event_name == "Examination") {
-                $this->widget('application.widgets.IndexSearch', array('event_type' => $event_name));
-            }
+
+          $event_type_id = ($this->event->attributes["event_type_id"]);
+          $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
+          $event_name = $event_type->name;
+          if ($event_name == "Examination") {
+//            $this->widget('application.widgets.IndexSearch',array('event_type' => $event_name));
+          }
         }
 
     }
