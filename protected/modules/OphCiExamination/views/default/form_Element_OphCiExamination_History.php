@@ -73,7 +73,7 @@
         popup.hide();
         inputText.empty();
         popup.find('.selected').each(function () {
-            inputText.append($(this).attr('data-str'));
+            inputText.val(inputText.val()?inputText.val()+$(this).attr('data-str'):$(this).attr('data-str'));
         });
     });
 </script>
