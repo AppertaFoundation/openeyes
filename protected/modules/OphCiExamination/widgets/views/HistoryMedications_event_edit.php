@@ -29,14 +29,17 @@ $element_errors = $element->getErrors();
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-    <button class="button small show-stopped">show stopped</button> <button class="button small hide-stopped" style="display:none;">hide stopped</button>
     <table id="<?= $model_name ?>_entry_table" <?php echo $element_errors ? 'class="highlighted-error"' : '' ?>>
         <thead>
         <tr>
-            <th class="date-col">Dates</th>
-            <th>Medication</th>
-            <th>Administration</th>
-            <th>Action(s)</th>
+            <th>
+              <button class="button small" type="button">Hide stopped</button>
+            </th>
+            <th></th>
+            <th>Start</th>
+            <th>Stopped(Optional)</th>
+            <th>Reason</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -76,6 +79,43 @@ $element_errors = $element->getErrors();
         ?>
         </tbody>
     </table>
+
+  <div class="flex-item-bottom">
+    <button class="button hint green js-add-select-search" type="button">
+      <i class="oe-i plus pro-theme"></i>
+    </button>
+    <div id="add-to-meds-history" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
+      <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
+      <div class="select-icon-btn"><i class="oe-i menu selected"></i></div>
+      <button class="button hint green add-icon-btn"><i class="oe-i plus pro-theme"></i></button>
+      <table class="select-options">
+        <tr>
+          <td>
+            <div class="flex-layout flex-top flex-left">
+              <ul class="add-options" data-multi="true" data-clickadd="false">
+                  <?php $drug_list = array();
+                      $drug_list = $this->getFirm() ?  Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID()): '';
+                      if (sizeof($drug_list)){
+                  foreach ($drug_list as $drug_item) {
+                      ?>
+                    <li data-str="<?php echo $drug_item; ?>">
+                      <span class="restrict-width"><?php echo $drug_item; ?></span>
+                    </li>
+                  <?php } } ?>
+              </ul>
+            </div>
+            <!-- flex layout -->
+          </td>
+        </tr>
+      </table>
+      <div class="search-icon-btn"><i class="oe-i search"></i></div>
+      <div class="search-options" style="display:none;">
+        <input type="text" class="cols-full js-search-autocomplete" placeholder="search for option (type 'auto-complete' to demo)">
+        <!-- ajax auto-complete results, height is limited -->
+      </div>
+    </div>
+  </div>
+
     <script type="text/template" class="entry-template hidden">
         <?php
         $empty_entry = new \OEModule\OphCiExamination\models\HistoryMedicationsEntry();

@@ -46,7 +46,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
             </div>
             <div class="large-11 column end">
                 <span class="start-date-wrapper" <?php if (!$entry->start_date) {?>style="display: none;"<?php } ?>">
-                  <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $start_sel_day, 'sel_month' => $start_sel_month, 'sel_year' => $start_sel_year)) ?>
+                <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $start_sel_day, 'sel_month' => $start_sel_month, 'sel_year' => $start_sel_year)) ?>
                 </span>
             </div>
         </fieldset>
@@ -72,35 +72,35 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         <input type="hidden" name="<?= $field_prefix ?>[medication_name]" value="<?= $entry->medication_name ?>" />
 
         <?php
-            $select_options = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID(), true);
-            $html_options = ['empty' => '- Select -'];
-            $hide_search = strlen($entry->getMedicationDisplay()) > 0;
-            if($hide_search){
-                $html_options['style'] = 'display: none;';
-            }
+        $select_options = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID(), true);
+        $html_options = ['empty' => '- Select -'];
+        $hide_search = strlen($entry->getMedicationDisplay()) > 0;
+        if($hide_search){
+            $html_options['style'] = 'display: none;';
+        }
 
-            foreach($select_options as $select_option){
-                $html_options['options'][$select_option['id']] = [
-                        'data-tags' => implode(',', $select_option['tags']),
-                        'data-tallmanlabel' => $select_option['name'],
-                ];
-            }
+        foreach($select_options as $select_option){
+            $html_options['options'][$select_option['id']] = [
+                'data-tags' => implode(',', $select_option['tags']),
+                'data-tallmanlabel' => $select_option['name'],
+            ];
+        }
 
-            if($this->getFirm()){
-                echo CHtml::dropDownList($field_prefix . '[drug_select]', '', CHtml::listData($select_options, 'id', 'label'), $html_options);
-            }
+        if($this->getFirm()){
+            echo CHtml::dropDownList($field_prefix . '[drug_select]', '', CHtml::listData($select_options, 'id', 'label'), $html_options);
+        }
         ?>
         <input type="text" name="<?= $field_prefix ?>[medication_search]" value="<?= $entry->getMedicationDisplay() ?>" class="search" placeholder="Type to search" <?= $hide_search ? 'style="display: none;"': '' ?>/>
     </td>
     <td>
         <div class="row">
-          <div class="large-6 column">
-            <div class="row">
-              <div class="large-3 column"><label>Dose:</label></div>
-              <div class="large-9 column end">
-                  <input type="hidden" name="<?= $field_prefix ?>[units]" value="<?= $entry->units ?>" />
+            <div class="large-6 column">
+                <div class="row">
+                    <div class="large-3 column"><label>Dose:</label></div>
+                    <div class="large-9 column end">
+                        <input type="hidden" name="<?= $field_prefix ?>[units]" value="<?= $entry->units ?>" />
 
-                  <?php
+                        <?php
                         $attributes['placeholder'] = $entry->units;
                         $attributes['class'] = 'input-validate' . ($entry->units ? ' numbers-only' : '');
                         if($entry->units == 'mg'){
@@ -108,34 +108,34 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
                         }
 
                         echo CHtml::textField("{$field_prefix}[dose]", $entry->dose, $attributes);
-                  ?>
+                        ?>
 
-              </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="large-3 column"><label class="has-tooltip" data-tooltip-content="Frequency">Freq.:</label></div>
+                    <div class="large-9 column end">
+                        <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Select-')) ?>
+                    </div>
+                </div>
             </div>
-            <div class="row">
-              <div class="large-3 column"><label class="has-tooltip" data-tooltip-content="Frequency">Freq.:</label></div>
-              <div class="large-9 column end">
-                  <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Select-')) ?>
-              </div>
+            <div class="large-6 column end">
+                <div class="row">
+                    <div class="large-3 column"><label>Route:</label></div>
+                    <div class="large-9 column end">
+                        <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Select-')) ?>
+                    </div>
+                </div>
+                <div class="row admin-route-options" <?php if (!$entry->routeOptions()) {?>style="display:none;"<?php } ?>>
+                    <div class="large-3 column"><label class="has-tooltip" data-tooltip-content="Route Option">Opt.:</label></div>
+                    <div class="large-9 column end route-option-wrapper">
+                        <?= CHtml::dropDownList($field_prefix . '[option_id]',
+                            $entry->option_id,
+                            CHtml::listData($entry->routeOptions() ?: array(), 'id', 'name'),
+                            array('empty' => '-Select-')) ?>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="large-6 column end">
-            <div class="row">
-              <div class="large-3 column"><label>Route:</label></div>
-              <div class="large-9 column end">
-                  <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Select-')) ?>
-              </div>
-            </div>
-            <div class="row admin-route-options" <?php if (!$entry->routeOptions()) {?>style="display:none;"<?php } ?>>
-              <div class="large-3 column"><label class="has-tooltip" data-tooltip-content="Route Option">Opt.:</label></div>
-              <div class="large-9 column end route-option-wrapper">
-                  <?= CHtml::dropDownList($field_prefix . '[option_id]',
-                      $entry->option_id,
-                      CHtml::listData($entry->routeOptions() ?: array(), 'id', 'name'),
-                      array('empty' => '-Select-')) ?>
-              </div>
-            </div>
-          </div>
         </div>
     </td>
     <td class="edit-column">
