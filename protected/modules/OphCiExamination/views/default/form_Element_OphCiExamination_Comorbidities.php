@@ -39,7 +39,7 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
                   'name')
           ),
           array(),
-          array('empty' => '-- Add --', 'label' => 'Comorbidities', 'nowrapper' => true),
+          array('empty' => 'Add', 'label' => 'Comorbidities', 'nowrapper' => true),
           false,
           true,
           'No comorbidities',
@@ -48,7 +48,10 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
       ) ?>
   </div>
   <div class="field-row">
-      <?php echo $form->textArea($element, 'comments', array('rows' => '1', 'cols' => '80', 'class' => 'autosize', 'nowrapper' => true), false,
-          array('placeholder' => 'Enter comments here')) ?>
+    <button class="button js-add-comments" data-input="#comments-risks" type="button">
+      <i class="oe-i comments small-icon"></i>
+    </button>
+      <?php echo $form->textArea($element, 'comments', array('rows' => '1', 'class' => 'js-input-comments cols-6', 'id'=> 'comments-risks', 'nowrapper' => true), false,
+          array('placeholder' => 'Enter comments here', 'style'=>'display: none;')) ?>
   </div>
 </div>

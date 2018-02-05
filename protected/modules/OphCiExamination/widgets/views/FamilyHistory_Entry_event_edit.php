@@ -49,10 +49,10 @@ if (!isset($values)) {
             <?= $values['comments'] ?>
         <?php else: ?>
           <div class="cols-full ">
-            <button class="button  js-add-comments" data-input="next" style="display: none;">
+            <button class="button  js-add-comments" data-input="next" style="display: none;" type="button">
               <i class="oe-i comments  small-icon"></i>
             </button>
-              <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+              <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class'=>'js-input-comments'))?>
           </div>
         <?php endif;?>
     </td>

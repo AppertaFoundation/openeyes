@@ -396,5 +396,34 @@ $(document).ready(function () {
             addElement(this, true, true);
         }
         e.preventDefault();
-    });
+
+        $(e.target).parent().find('.oe-add-select-search').show();
+  });
+
+  $('.js-add-select-search').parent().find('.oe-add-select-search').find('.add-icon-btn').on('click', function(e){
+      e.preventDefault();
+      $(e.target).parent('.oe-add-select-search').hide();
+  });
+
+	//Set the option selecting function
+	$('.oe-add-select-search').find('.add-options').find('li').each(function () {
+		if ($(this).text() !== "") {
+			$(this).on('click', function () {
+				if ($(this).hasClass('selected')) {
+					$(this).removeClass('selected');
+				} else {
+					if($(this).parent('.add-options').attr('data-multi') === "false"){
+                        $(this).parent('.add-options').find('li').removeClass('selected');
+                    }
+					$(this).addClass('selected');
+				}
+			});
+		}
+	});
+
+	$('js-add-comments').on('click', function (e) {
+    e.preventDefault();
+    $(e.target).parent().find('js-input-comments').show();
+  });
+
 });

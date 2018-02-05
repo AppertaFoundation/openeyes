@@ -46,7 +46,7 @@
 			</div>
       <!-- Cols -->
       <div class="flex-item-bottom">
-        <button class="button js-add-comments" data-input="#pupils-right-comments">
+        <button class="button js-add-comments" data-input="#pupils-right-comments" type="button">
           <i class="oe-i comments small-icon"></i>
         </button>
         <button class="button hint green js-add-select-search" type="button">
@@ -91,7 +91,7 @@
 			</div>
       <!-- Cols -->
       <div class="flex-item-bottom">
-        <button class="button js-add-comments" data-input="#pupils-right-comments">
+        <button class="button js-add-comments" data-input="#pupils-right-comments" type="button">
           <i class="oe-i comments small-icon"></i>
         </button>
         <button class="button hint green js-add-select-search" type="button">

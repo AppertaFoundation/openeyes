@@ -87,7 +87,7 @@ $key = 0;
             </div>
           </div>
           <div class="flex-item-bottom">
-            <button class="button js-add-comments" data-input="#pupils-right-comments">
+            <button class="button js-add-comments" data-input="#pupils-right-comments" type="button">
               <i class="oe-i comments small-icon"></i>
             </button>
             <button class="button hint green addReading" type="button">
@@ -169,7 +169,7 @@ $key = 0;
           <!-- Cols -->
           </div>
           <div class="flex-item-bottom">
-            <button class="button js-add-comments" data-input="#pupils-right-comments">
+            <button class="button js-add-comments" data-input="#pupils-right-comments" type="button">
               <i class="oe-i comments small-icon"></i>
             </button>
             <button class="button hint green addReading" type="button">
