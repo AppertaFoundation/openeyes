@@ -59,9 +59,9 @@ $based_on = implode(', ', $based_on);
               <?php
               $new_sort_dir = 0;
                 if ($i == $sort_by) {
-                  $new_sort_dir = 1 - $sort_dir;
-                  echo ($sort_dir == 0) ? '<i class="oe-i arrow-up-bold small pad active"></i>' : '<i class="oe-i arrow-down-bold small pad active"></i>';
-                }
+                  $new_sort_dir = 1 - $sort_dir; ?>
+                  <i class="oe-i <?= ($sort_dir == 0) ? 'arrow-up-bold' : 'arrow-down-bold'; ?> small pad active"></i>
+                <?php }
               echo CHtml::link(
                   $field,
                   Yii::app()->createUrl('patient/search', array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num))
