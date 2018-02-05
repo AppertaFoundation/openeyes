@@ -32,7 +32,7 @@
   </div>
 
   <div class="flex-item-bottom">
-    <button class="button hint green js-add-select-search" type="button">
+    <button class="button hint green js-add-select-search" type="button" id="show-add-to-history">
       <i class="oe-i plus pro-theme"></i>
     </button>
     <!-- popup to add to element is click -->
@@ -43,5 +43,38 @@
 </div>
 <script type="text/html" id="previous-management-template">
     <strong>{{subspecialty}} {{event_date}} ({{last_modified_user_display}} <span class="has-tooltip fa fa-info-circle" data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> {{comments_or_children}}
+</script>
+<script type="text/javascript" id="history-add-to-dialog">
+    var popup = $('#add-to-history');
+    var options = popup.find('.select-options').find('.add-options').find('li');
+    var inputText = $('#js-history-input-demo');
+
+    //Show the adding dialog
+    $('#show-add-to-history').on('click', function () {
+        popup.show();
+    });
+
+    //Set the option selecting function
+    options.each(function () {
+        if ($(this).text() !== "") {
+            $(this).on('click', function () {
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+                } else {
+                    $(this).parent('.add-options').find('li').removeClass('selected');
+                    $(this).addClass('selected');
+                }
+            })
+        }
+    });
+
+    //Hide the adding dialog, print text to textArea
+    popup.find('.add-icon-btn').on('click', function () {
+        popup.hide();
+        inputText.empty();
+        popup.find('.selected').each(function () {
+            inputText.append($(this).attr('data-str'));
+        });
+    });
 </script>
 <?php Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js", null, -10); ?>

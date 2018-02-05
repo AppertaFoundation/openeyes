@@ -22,7 +22,7 @@
 <div class="select-icon-btn">
     <i class="oe-i menu selected"></i>
 </div>
-<button class="button hint green add-icon-btn">
+<button class="button hint green add-icon-btn" type="button">
   <i class="oe-i plus pro-theme"></i>
 </button>
 <table class="select-options">
