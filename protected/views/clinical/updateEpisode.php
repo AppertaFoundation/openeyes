@@ -38,10 +38,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 ));
 ?>
 
-<div class="element-data">
-    <h2>Summary</h2>
-    <h3><?php echo $episode->getSubspecialtyText() ?></h3>
-</div>
+<main class="main-event edit event-types">
+  <h2 class="event-title">Summary: <?php echo $episode->getSubspecialtyText() ?></h2>
 
 <?php if ($error) { ?>
     <div id="clinical-create_es_" class="alert-box alert with-icon">
@@ -53,21 +51,22 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         </ul>
     </div>
 <?php } ?>
-
-<section class="element element-data">
-    <h3 class="data-title">Principal diagnosis:</h3>
-    <div class="row">
-        <div class="large-5 column end">
-            <?php
-            $form->widget('application.widgets.DiagnosisSelection', array(
-                'field' => 'disorder_id',
-                'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-                'code' => 130,
-                'layout' => 'episodeSummary',
-            ));
-            ?>
-        </div>
+<section class="element full">
+  <header class="element-header">
+    <h3 class="element-title">Principal diagnosis:</h3>
+  </header>
+  <div class="element-fields flex-layout full-width">
+    <div class="element-data">
+        <?php
+        $form->widget('application.widgets.DiagnosisSelection', array(
+            'field' => 'disorder_id',
+            'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+            'code' => 130,
+            'layout' => 'episodeSummary',
+        ));
+        ?>
     </div>
+  </div>
 </section>
 
 <?php
@@ -77,7 +76,12 @@ if (!empty($_POST)) {
     $eye_id = $episode->eye_id;
 }
 ?>
-<section class="element element-data">
+<section class="element full">
+    <header class="element-header">
+      <h3 class="element-title">Principal eye:</h3>
+    </header>
+    <div class="element-fields flex-layout full-width">
+      <div class="element-data">
     <fieldset>
         <legend class="data-title">Principal eye:</legend>
         <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) { ?>
@@ -88,35 +92,52 @@ if (!empty($_POST)) {
             </label>
         <?php } ?>
     </fieldset>
-</section>
-
-<section class="element element-data">
-    <div class="row">
-        <div class="large-6 column">
-            <h3 class="data-title">Start Date</h3>
-            <div class="data-value"><?php echo $episode->NHSDate('start_date') ?></div>
-        </div>
-        <div class="large-6 column">
-            <h3 class="data-title">End date:</h3>
-            <div
-                class="data-value"><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)' ?></div>
-        </div>
+      </div>
     </div>
 </section>
 
-<section class="element element-data">
-    <div class="row">
-        <div class="large-6 column">
-            <h3 class="data-title">Subspecialty:</h3>
-            <div
-                class="data-value"><?php echo $episode->getSubspecialtyText() ?></div>
+  <div class="flex-layout flex-left flex-stretch">
+    <section class="element tile">
+      <header class="element-header">
+        <h3 class="element-title">Start Date</h3>
+      </header>
+      <div class="element-data full-width">
+        <div class="tile-data-overflow">
+          <div class="data-value"><?php echo $episode->NHSDate('start_date') ?></div>
         </div>
-        <div class="large-6 column">
-            <h3 class="data-title">Consultant firm:</h3>
-            <div class="data-value"><?php echo $episode->firm->name ?></div>
+      </div>
+    </section>
+    <section class="element tile">
+      <header class="element-header">
+        <h3 class="element-title">End Date</h3>
+      </header>
+      <div class="element-data full-width">
+        <div class="data-value"><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)' ?></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="flex-layout flex-left flex-stretch">
+    <section class="element tile">
+      <header class="element-header">
+        <h3 class="element-title">Subspecialty:</h3>
+      </header>
+      <div class="element-data full-width">
+        <div class="tile-data-overflow">
+          <div class="data-value"><?php echo $episode->getSubspecialtyText() ?></div>
         </div>
-    </div>
-</section>
+      </div>
+    </section>
+    <section class="element tile">
+      <header class="element-header">
+        <h3 class="element-title">Consultant firm:</h3>
+      </header>
+      <div class="element-data full-width">
+        <div class="data-value"><<?php echo $episode->firm->name ?></div>
+      </div>
+    </section>
+  </div>
+
 
 <?php
 try {
@@ -136,18 +157,28 @@ try {
 </div>
 
 <section class="element element-data">
-    <h3 class="data-title"><?= strtolower(Episode::getEpisodeLabel()) ?> Status:</h3>
+    <h3 class="data-title"></h3>
     <div class="row">
-        <div class="large-2 column">
-            <label for="episode_status_id"><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id')) ?>
-                :</label>
+
+    </div>
+</section>
+
+  <section class="element full">
+    <header class="element-header">
+      <h3 class="element-title"><?= strtolower(Episode::getEpisodeLabel()) ?> Status:</h3>
+    </header>
+    <div class="element-fields flex-layout full-width">
+      <div class="element-data">
+        <div class="cols-2 column">
+          <label for="episode_status_id"><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id')) ?>:</label>
         </div>
-        <div class="large-3 column end">
+        <div class="cols-3 column end">
             <?php echo CHtml::dropDownList('episode_status_id', $episode->episode_status_id,
                 EpisodeStatus::Model()->getList()) ?>
         </div>
+      </div>
     </div>
-</section>
+  </section>
 
 <div class="metadata">
         <span class="info">
@@ -254,3 +285,4 @@ try {
         });
     </script>
 <?php } ?>
+</main>
