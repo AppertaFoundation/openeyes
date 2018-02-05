@@ -110,7 +110,7 @@ $element_errors = $element->getErrors();
       </table>
       <div class="search-icon-btn"><i class="oe-i search"></i></div>
       <div class="search-options" style="display:none;">
-        <input type="text" class="cols-full js-search-autocomplete" placeholder="search for option">
+        <input type="text" class="cols-full js-search-autocomplete" placeholder="search for option (type 'auto-complete' to demo)">
         <!-- ajax auto-complete results, height is limited -->
       </div>
     </div>
