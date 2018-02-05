@@ -33,14 +33,16 @@
     </thead>
     <tbody>
       <tr>
+        <?php if (isset($element)) { ?>
         <td><?php echo $element->getDisplayOccupation(); ?></td>
         <td><?php echo $element->getDisplayDrivingStatuses(); ?></td>
-        <td><?php echo $element->smoking_status->name; ?></td>
-        <td><?php echo $element->accommodation->name; ?></td>
-        <td><?php echo $element->comments; ?></td>
-        <td><?php echo $element->carer->name; ?></td>
+        <td><?php echo $element->smoking_status? $element->smoking_status->name:''; ?></td>
+        <td><?php echo $element->accommodation ? $element->accommodation->name: '';  ?></td>
+        <td><?php echo $element->comments ? $element->comments:'';  ?></td>
+        <td><?php echo $element->carer? $element->carer->name:''; ?></td>
         <td><?php echo $element->getDisplayAlcoholIntake(); ?></td>
-        <td><?php echo $element->substance_misuse->name; ?></td>
+        <td><?php echo $element->substance_misuse ? $element->substance_misuse->name:''; ?></td>
+        <?php } ?>
       </tr>
     </tbody>
   </table>
