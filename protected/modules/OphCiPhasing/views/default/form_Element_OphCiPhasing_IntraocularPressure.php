@@ -27,7 +27,7 @@ $key = 0;
   <div class="element-eye right-eye column side left"
        data-side="right">
     <div class="active-form<?php if (!$element->hasRight()) { ?> hidden<?php } ?>">
-      <a href="#" class="remove-side"><i class="oe-i remove-circle small"></i></a>
+      <i class="oe-i remove-circle remove-side small"></i>
         <?php echo $form->dropDownList($element, 'right_instrument_id', 'OphCiPhasing_Instrument', array(), false, array('label' => 2, 'field' => 4)) ?>
         <?php echo $form->radioBoolean($element, 'right_dilated', array(), array('label' => 2, 'field' => 10)) ?>
       <fieldset class="row field-row">
@@ -90,7 +90,7 @@ $key = 0;
   <div class="element-eye left-eye column side right"
        data-side="left">
     <div class="active-form<?php if (!$element->hasLeft()) { ?> hidden<?php } ?>">
-      <a href="#" class="remove-side"><i class="oe-i remove-circle small"></i></a>
+      <i class="oe-i remove-circle remove-side small"></i>
         <?php echo $form->dropDownList($element, 'left_instrument_id', 'OphCiPhasing_Instrument', array(), false, array('label' => 2, 'field' => 4)) ?>
         <?php echo $form->radioBoolean($element, 'left_dilated', array(), array('label' => 2, 'field' => 10)) ?>
       <fieldset class="row field-row">
