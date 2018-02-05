@@ -110,6 +110,10 @@ class BaseReportController extends BaseController
                 return;
             }
 
+            $post = $_POST;
+            unset($post['YII_CSRF_TOKEN']);
+            Audit::add('Reports', 'display', "<pre>" . print_r($post, true) . "</pre>",null, ['model' => $report_class]);
+
             $report->run();
 
             echo json_encode(array(
@@ -144,6 +148,10 @@ class BaseReportController extends BaseController
 
             return;
         }
+
+        $post = $_POST;
+        unset($post['YII_CSRF_TOKEN']);
+        Audit::add('Reports', 'download', "<pre>" . print_r($post, true) . "</pre>", null, ['model' => $report_class] );
 
         if (!$report->validate()) {
             throw new Exception('Report errors: '.print_r($report->errors, true));
