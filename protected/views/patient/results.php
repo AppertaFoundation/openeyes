@@ -101,8 +101,8 @@ $based_on = implode(', ', $based_on);
               'pages' => $data_provider->getPagination(),
               'maxButtonCount' => 15,
               'cssFile' => false,
-              'selectedPageCssClass' => 'current',
-              'hiddenPageCssClass' => 'unavailable',
+              'nextPageCssClass' => 'oe-i arrow-right-bold medium pad',
+              'previousPageCssClass' => 'oe-i arrow-left-bold medium pad',
               'htmlOptions' => array(
                   'class' => 'pagination',
               ),
