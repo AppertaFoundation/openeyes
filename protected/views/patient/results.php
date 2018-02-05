@@ -57,7 +57,11 @@ $based_on = implode(', ', $based_on);
         <?php foreach (array('Hospital Number', 'Title', 'First name', 'Last name', 'Born', 'Age', 'Gender', 'NHS number') as $i => $field) { ?>
           <th id="patient-grid_c<?php echo $i; ?>">
               <?php
-              $new_sort_dir = ($i == $sort_by) ? 1 - $sort_dir : 0;
+              $new_sort_dir = 0;
+                if ($i == $sort_by) {
+                  $new_sort_dir = 1 - $sort_dir;
+                  echo ($sort_dir == 0) ? '<i class="oe-i arrow-up-bold small pad active"></i>' : '<i class="oe-i arrow-down-bold small pad active"></i>';
+                }
               echo CHtml::link(
                   $field,
                   Yii::app()->createUrl('patient/search', array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num))
