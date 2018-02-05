@@ -157,13 +157,6 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         </span>
   </div>
 
-  <section class="element element-data">
-    <h3 class="data-title"></h3>
-    <div class="row">
-
-    </div>
-  </section>
-
   <section class="element full">
     <header class="element-header">
       <h3 class="element-title"><?= Episode::getEpisodeLabel() ?> Status:</h3>
