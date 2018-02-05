@@ -25,9 +25,7 @@
     <?php } else {
      foreach ($operations as $operation) {?>
         <tr>
-          <td><?= array_key_exists('object', $operation) ? $operation['object']->operation : $operation['operation'];
-              array_key_exists('object', $operation) ? Yii::log("Operation side: ".$operation['object']->side): '';
-          ?></td>
+          <td><?= array_key_exists('object', $operation) ? $operation['object']->operation : $operation['operation']; ?></td>
           <td>
               <?php if (array_key_exists('link', $operation)) { ?>
                 <i class="oe-i eye pro-theme small pad js-has-tooltip" data-tooltip-content="View Element"></i>

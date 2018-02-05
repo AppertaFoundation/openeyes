@@ -172,7 +172,6 @@ function markElementChilds(element , element_remove_value) {
     });
 }
 
-<<<<<<< HEAD
 function removeElement(element, is_child) {
     if (typeof(is_child) == 'undefined') {
         is_child = false;
@@ -226,83 +225,6 @@ function removeElement(element, is_child) {
 
     $('.js-active-elements').trigger('ElementRemoved', [element_type_class]);
     if (typeof(getOEEyeDrawChecker) === 'function') {
-=======
-/**
- * Simple convenience wrapper to grab out the menu entry
- *
- * @param elementTypeClass
- * @returns {*}
- */
-function findMenuItemForElementClass(elementTypeName) {
-  var self = this;
-  var $menuLi;
-  $('#episodes-and-events').find('.collapse-group').each(function() {
-
-    if ($(this).data('element-type-name') == elementTypeName) {
-      $menuLi = $(this);
-    }
-  }
-  );
-  $('#episodes-and-events').find('li').each(function() {
-      if ($(this).data('element-type-name') == elementTypeName) {
-        $menuLi = $(this);
-      }
-    }
-  );
-  return $menuLi;
-}
-function removeElement(element) {
-	if (element.hasClass('has-children')) {
-		is_child = true;
-	}else {
-		is_child = false;
-	}
-
-	var element_type_class = $(element).data('element-type-class');
-	var element_type_id = $(element).data('element-type-id');
-	var element_type_name = $(element).data('element-type-name');
-	var display_order = $(element).data('element-display-order');
-
-  var $menuLi = findMenuItemForElementClass(element_type_name);
-
-  if ($menuLi) {
-    $menuLi.find('a').removeClass('selected').removeClass('error');
-  }
-	if (is_child) {
-		var container = $(element).closest('.sub-elements.active').parent().find('.sub-elements.inactive:last .sub-elements-list');
-	} else {
-		var container = $('.optional-elements-list');
-	}
-
-	$(element).remove();
-
-	var element = '<li data-element-type-class="'+element_type_class+'" data-element-type-id="'+element_type_id+'" data-element-type-name="'+element_type_name+'" data-element-display-order="'+display_order+'"><a href="#">'+element_type_name+'</a></li>';
-
-	var insert_before = $(container).find('li').first();
-
-	while (parseInt(insert_before.data('element-display-order')) < parseInt(display_order)) {
-		insert_before = insert_before.next();
-	}
-
-	if (insert_before.length) {
-		insert_before.before(element);
-	} else {
-		$(container).append(element);
-	}
-
-	showActiveChildElements();
-
-	// Update sticky elements to cope with change in page size
-	OpenEyes.UI.StickyElements.refresh();
-
-	// Update text macros (if defined)
-	if(typeof updateTextMacros == 'function') {
-		updateTextMacros();
-	}
-
-	$('.js-active-elements').trigger('ElementRemoved', [ element_type_class ]);
-  	if (typeof(getOEEyeDrawChecker) === 'function') {
->>>>>>> v3-examination, add element
         var checker = getOEEyeDrawChecker();
         checker.resync();
     }
