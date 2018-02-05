@@ -46,31 +46,10 @@
 </script>
 <script type="text/javascript" id="history-add-to-dialog">
     var popup = $('#add-to-history');
-    var options = popup.find('.select-options').find('.add-options').find('li');
     var inputText = $('#js-history-input-demo');
-
-    //Show the adding dialog
-    $('#show-add-to-history').on('click', function () {
-        popup.show();
-    });
-
-    //Set the option selecting function
-    options.each(function () {
-        if ($(this).text() !== "") {
-            $(this).on('click', function () {
-                if ($(this).hasClass('selected')) {
-                    $(this).removeClass('selected');
-                } else {
-                    $(this).parent('.add-options').find('li').removeClass('selected');
-                    $(this).addClass('selected');
-                }
-            })
-        }
-    });
 
     //Hide the adding dialog, print text to textArea
     popup.find('.add-icon-btn').on('click', function () {
-        popup.hide();
         inputText.empty();
         popup.find('.selected').each(function () {
             inputText.val(inputText.val()?inputText.val()+$(this).attr('data-str'):$(this).attr('data-str'));

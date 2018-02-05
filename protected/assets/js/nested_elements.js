@@ -231,6 +231,7 @@ function removeElement(element, is_child) {
 }
 
 function moveToElement(element) {
+
     var offTop = element.offset().top - 130;
     $('html, body').scrollTop(offTop);
     var $title = $('.element-title', element);
@@ -299,6 +300,7 @@ $(document).ready(function () {
 
         var dialog = new OpenEyes.UI.Dialog({
             url: baseUrl + '/' + moduleName + '/default/viewpreviouselements',
+
             data: {element_type_id: element.data('element-type-id'), patient_id: OE_patient_id},
             width: 1070,
             title: 'Previous ' + element.data('element-type-name') + ' Elements',
