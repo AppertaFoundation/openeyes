@@ -183,7 +183,9 @@ class AuditController extends BaseController
     public function actionUpdateList()
     {
         if (!$audit = Audit::model()->findByPk(@$_GET['last_id'])) {
-            throw new Exception('Log entry not found: '.@$_GET['last_id']);
+            echo "";
+            \OELog::log('Log entry not found: '.@$_GET['last_id']);
+            return;
         }
 
         $this->renderPartial('_list_update', array('data' => $this->getData(null, $audit->id)), false, true);

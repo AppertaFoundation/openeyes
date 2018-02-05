@@ -55,6 +55,7 @@ class ReportController extends BaseReportController
         $drugs = Element_OphDrPrescription_Details::model()->commonDrugs();
         $users = User::model()->findAll(array('order' => 'first_name asc,last_name asc'));
 
+        Audit::add('Reports', 'view', print_r(['report-name' => 'Prescribed Drugs'], true) );
         $this->render('prescribedDrugs', array('drugs' => $drugs, 'users' => $users));
     }
 

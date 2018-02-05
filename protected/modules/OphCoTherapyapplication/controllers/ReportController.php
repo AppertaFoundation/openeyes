@@ -90,6 +90,10 @@ class ReportController extends BaseReportController
             $this->sendCsvHeaders($filename);
 
             echo $this->array2Csv($results);
+
+            $get = array('report-name' => 'Therapy applications') + $_GET;
+            Audit::add('Reports', 'download', "<pre>" . print_r($get, true) . "</pre>" );
+
         } else {
             $subspecialty = Subspecialty::model()->find('ref_spec=:ref_spec', array(':ref_spec' => 'MR'));
 
@@ -98,6 +102,8 @@ class ReportController extends BaseReportController
                 'date_from' => $date_from,
                 'date_to' => $date_to,
             );
+
+            Audit::add('Reports', 'view', "<pre>" . print_r(['report-name' => 'Therapy applications'], true) . "</pre>" );
             $this->render('applications', $context);
         }
     }
@@ -343,10 +349,25 @@ class ReportController extends BaseReportController
     public function actionPendingApplications()
     {
         $sent = false;
+        $get = array('report-name' => 'Pending Therapy applications') + $_GET;
 
         if (Yii::app()->getRequest()->getQuery('report') === 'generate') {
             $pendingApplications = new PendingApplications();
-            $sent = $pendingApplications->emailCsvFile(Yii::app()->params['applications_alert_recipients']);
+
+            try{
+                $sent = $pendingApplications->emailCsvFile(Yii::app()->params['applications_alert_recipients']);
+                $get['success'] = ($sent ? 'Email sent to addresses defined in config "applications_alert_recipients"' : 'Email sending failed.');
+            }catch (Exception $e){
+                \Yii::app()->user->setFlash('error.error', "Failed to send report email.");
+                \OELog::log($e->getMessage());
+                $get['error'] = $e->getMessage();
+
+            } finally {
+                Audit::add('Reports', 'send', "<pre>" . print_r($get, true) . "</pre>" );
+            }
+
+        } else {
+            Audit::add('Reports', 'view', "<pre>" . print_r($get, true) . "</pre>" );
         }
 
         $this->render('pending_applications', array('sent' => $sent));

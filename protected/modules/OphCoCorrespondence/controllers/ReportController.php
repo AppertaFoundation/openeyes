@@ -32,6 +32,7 @@ class ReportController extends BaseReportController
 
     public function actionLetters()
     {
+        Audit::add('Reports', 'view', print_r(['report-name' => 'Correspondence Letters'], true) );
         $this->render('letters');
     }
 }
