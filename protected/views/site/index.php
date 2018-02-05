@@ -17,7 +17,11 @@
  */
 ?>
 
-<?php $this->renderPartial('//base/_search_bar'); ?>
+<?php $this->renderPartial('//base/_search_bar', array(
+    'callback' => Yii::app()->createUrl('site/search')
+)); ?>
+
+<?php $this->renderPartial('//base/_messages'); ?>
 
 <?php
 $dashboardHelper = new DashboardHelper();

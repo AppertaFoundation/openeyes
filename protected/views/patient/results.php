@@ -32,7 +32,9 @@ $core_api = new CoreAPI();
 $based_on = implode(', ', $based_on);
 ?>
 
-<?php $this->renderPartial('//base/_search_bar'); ?>
+<?php $this->renderPartial('//base/_search_bar', array(
+    'callback' => Yii::app()->createUrl('site/search')
+)); ?>
 <div class="patient-search-results flex-layout flex-top">
   <div class="search-details">
     <div class="title">Results</div>

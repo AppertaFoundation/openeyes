@@ -1,8 +1,11 @@
 <?php
+/**
+ * @var $callback string
+ */
 $this->beginWidget('CActiveForm', array(
     'id' => 'search-form',
     'focus' => '#query',
-    'action' => Yii::app()->createUrl('site/search'),
+    'action' => $callback,
     'htmlOptions' => array(
         'class' => 'form oe-find-patient search',
     ),

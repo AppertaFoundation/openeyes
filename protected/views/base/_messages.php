@@ -15,24 +15,23 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+$navIconUrl = Yii::app()->getAssetManager()->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
 ?>
 
 <?php if ($flash_messages = Yii::app()->user->getFlashes()) { ?>
-	<div class="row">
-		<div class="large-12 column">
 			<?php
             ksort($flash_messages);
     foreach ($flash_messages as $flash_key => $flash_message) {
         $parts = explode('.', $flash_key);
         $class = isset($parts[1]) ? $parts[0] : 'info';
+        $iconClass = ($class === 'warning') ? 'triangle' : $class;
         $id = isset($parts[1]) ? $parts[1] : $parts[0];
         ?>
-				<div id="flash-<?php echo $id; ?>" class="alert-box with-icon <?php echo $class?>">
+				<div id="flash-<?php echo $id; ?>" class="alert-box <?php echo $class?>">
+          <i class="oe-i <?php echo $iconClass; ?>"></i>
 					<?php echo $flash_message; ?>
 				</div>
 				<?php
     }
     ?>
-		</div>
-	</div>
 <?php }?>
