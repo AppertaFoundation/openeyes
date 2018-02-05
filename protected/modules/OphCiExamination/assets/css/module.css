@@ -480,11 +480,6 @@ a.stop-medication {
   color: #fff;
 }
 
-/* line 17, ../sass/components/_hints.scss */
-.hint {
-  padding: .5em 0 0 0;
-}
-
 /* line 19, ../sass/components/_tables.scss */
 table.bleb-assessment th, table.bleb-assessment td {
   text-align: center;
