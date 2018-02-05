@@ -54,7 +54,7 @@ $based_on = implode(', ', $based_on);
   <table class="search-results">
     <thead>
     <tr>
-        <?php foreach (array('Hospital Number', 'Title', 'First name', 'Last name', 'Born', 'Age', 'Gender', 'NHS number') as $i => $field) { ?>
+        <?php foreach (array('No.', 'Title', 'First name', 'Last name', 'Born', 'Age', 'Gender', 'NHS') as $i => $field) { ?>
           <th id="patient-grid_c<?php echo $i; ?>">
               <?php
               $new_sort_dir = 0;
