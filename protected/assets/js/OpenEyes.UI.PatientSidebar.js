@@ -101,10 +101,20 @@
       change();
     });
 
-    $header.click(function(){
-      change();
+    $header.click(function(e){
+      headerChange(e);
     });
 
+    function headerChange(e){
+      if(expanded){
+        e.preventDefault();
+        PatientSidebar.prototype.loadClickedParent($(e.target).parent());
+      } else {
+        $content.show();
+        $icon.toggleClass('minus plus');
+        expanded = !expanded;
+      }
+    }
     function change(){
       if(expanded){
         $content.hide();
@@ -125,15 +135,6 @@
     };
 
     /**
-     * Determines whether clicked item is a child or not, whether it or its parent are currently visible,
-     * and thereby what loading actions to call (including calling itself if necessary.
-     *
-     * @param item
-     * @param data
-     * @param callback
-     */
-
-    /**
      * Get sidebar items where elements are already created , but where the sidebar might not be selected
      * @param $item
      * @returns {Array}
@@ -149,6 +150,14 @@
         return existingItems;
     };
 
+    /**
+     * Determines whether clicked item is a child or not, whether it or its parent are currently visible,
+     * and thereby what loading actions to call (including calling itself if necessary.
+     *
+     * @param item
+     * @param data
+     * @param callback
+     */
     PatientSidebar.prototype.markSidebarItems = function(items){
        items.forEach(function(item){
            $(item).find('a').addClass('selected');
@@ -201,9 +210,6 @@
         if (data === undefined)
             data = {};
 
-        if (self.options['event_id'] !== undefined) {
-            data['event_id'] = self.options['event_id'];
-        }
         addElement($parentLi.clone(true), true, !$parentLi.hasClass('has-child'), undefined, data, callback);
     };
 
