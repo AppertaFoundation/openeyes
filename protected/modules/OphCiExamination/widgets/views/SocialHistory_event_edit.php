@@ -28,19 +28,19 @@
         <th>Comments</th>
         <th class="cols-1">Carer</th>
         <th>Alcohol Intake</th>
-        <th class="cols-1">Substance Misuse</th>
+        <th>Substance Misuse</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><?php echo $element->getDisplayOccupation(); ?></td>
+        <td><?php echo $element->getDisplayDrivingStatuses(); ?></td>
+        <td><?php echo $element->smoking_status->name; ?></td>
+        <td><?php echo $element->accommodation->name; ?></td>
+        <td><?php echo $element->comments; ?></td>
+        <td><?php echo $element->carer->name; ?></td>
+        <td><?php echo $element->getDisplayAlcoholIntake(); ?></td>
+        <td><?php echo $element->substance_misuse->name; ?></td>
       </tr>
     </tbody>
   </table>
@@ -150,41 +150,4 @@
       </div>
     </div>
   </div>
-<!--    --><?php
-//    echo $form->dropDownList($element, 'occupation_id',
-//        CHtml::listData($element->occupation_options, 'id', 'name'),
-//        array('empty' => '- Select -'), false, array('label' => 2, 'field' => 2));
-//
-//    echo $form->textField($element, 'type_of_job', array('hide' => true, 'autocomplete' => Yii::app()->params['html_autocomplete']), null, array('label' => 2, 'field' => 3));
-//
-//    echo $form->multiSelectList($element, CHtml::modelName($element) . '[driving_statuses]', 'driving_statuses', 'id',
-//        CHtml::listData($element->driving_statuses_options, 'id', 'name'),
-//        array(),
-//        array('empty' => '- Select -', 'label' => $element->getAttributeLabel('driving_statuses')),
-//        false, false, null, false, false, // various attributes we don't care about
-//        array('label' => 2, 'field' => 2));
-//
-//    echo $form->dropDownList($element, 'smoking_status_id',
-//        CHtml::listData($element->smoking_status_options, 'id', 'name'),
-//        array('empty' => '- Select -'), false, array('label' => 2, 'field' => 2));
-//
-//    echo $form->dropDownList($element, 'accommodation_id', CHtml::listData($element->accommodation_options, 'id', 'name'),
-//        array('empty' => '- Select -'), false, array('label' => 2, 'field' => 2));
-//
-//    echo $form->textArea($element, 'comments', array('rows' => '1', 'cols' => '80', 'class' => 'autosize'), false,
-//        array('placeholder' => 'Enter comments here'), array('label' => 2, 'field' => 6));
-//
-//    echo $form->dropDownList($element, 'carer_id', CHtml::listData($element->carer_options, 'id', 'name'),
-//        array('empty' => '- Select -'), false, array('label' => 2, 'field' => 2));
-//
-//    echo $form->textField($element, 'alcohol_intake',
-//        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => 'units/week'),
-//        null,
-//        array('label' => 2, 'field' => 2, 'append-text' => 2));
-//
-//    echo $form->dropDownList($element, 'substance_misuse_id',
-//        CHtml::listData($element->substance_misuse_options, 'id', 'name'),
-//        array('empty' => '- Select -'), false, array('label' => 2, 'field' => 2));
-//
-//    ?>
 </div>
