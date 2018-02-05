@@ -166,18 +166,13 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 
   <section class="element full">
     <header class="element-header">
-      <h3 class="element-title"><?= strtolower(Episode::getEpisodeLabel()) ?> Status:</h3>
+      <h3 class="element-title"><?= Episode::getEpisodeLabel() ?> Status:</h3>
     </header>
     <div class="element-fields flex-layout full-width">
       <div class="element-data">
-        <div class="cols-2 column">
-          <label for="episode_status_id"><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id')) ?>
-            :</label>
-        </div>
-        <div class="cols-3 column end">
+        <label for="episode_status_id"><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id')) ?>
             <?php echo CHtml::dropDownList('episode_status_id', $episode->episode_status_id,
                 EpisodeStatus::Model()->getList()) ?>
-        </div>
       </div>
     </div>
   </section>
