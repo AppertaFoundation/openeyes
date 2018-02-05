@@ -853,7 +853,7 @@ $(document).ready(function() {
     });
 
     $(this).delegate(
-        '.'+OE_MODEL_PREFIX+'Element_OphCiExamination_VisualAcuity .removeReading, .'+OE_MODEL_PREFIX+'Element_OphCiExamination_NearVisualAcuity .removeReading',
+        '.visualAcuityReading .removeReading',
         'click', function(e) {
         var activeForm = $(this).closest('.active-form');
 
