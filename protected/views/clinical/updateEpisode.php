@@ -41,60 +41,60 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 <main class="main-event edit event-types">
   <h2 class="event-title">Summary: <?php echo $episode->getSubspecialtyText() ?></h2>
 
-<?php if ($error) { ?>
-    <div id="clinical-create_es_" class="alert-box alert with-icon">
+    <?php if ($error) { ?>
+      <div id="clinical-create_es_" class="alert-box alert with-icon">
         <p>Please fix the following input errors:</p>
         <ul>
-            <li>
-                <?php echo $error ?>
-            </li>
+          <li>
+              <?php echo $error ?>
+          </li>
         </ul>
+      </div>
+    <?php } ?>
+  <section class="element full">
+    <header class="element-header">
+      <h3 class="element-title">Principal diagnosis:</h3>
+    </header>
+    <div class="element-fields flex-layout full-width">
+      <div class="element-data">
+          <?php
+          $form->widget('application.widgets.DiagnosisSelection', array(
+              'field' => 'disorder_id',
+              'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+              'code' => 130,
+              'layout' => 'episodeSummary',
+          ));
+          ?>
+      </div>
     </div>
-<?php } ?>
-<section class="element full">
-  <header class="element-header">
-    <h3 class="element-title">Principal diagnosis:</h3>
-  </header>
-  <div class="element-fields flex-layout full-width">
-    <div class="element-data">
-        <?php
-        $form->widget('application.widgets.DiagnosisSelection', array(
-            'field' => 'disorder_id',
-            'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-            'code' => 130,
-            'layout' => 'episodeSummary',
-        ));
-        ?>
-    </div>
-  </div>
-</section>
+  </section>
 
-<?php
-if (!empty($_POST)) {
-    $eye_id = @$_POST['eye_id'];
-} else {
-    $eye_id = $episode->eye_id;
-}
-?>
-<section class="element full">
+    <?php
+    if (!empty($_POST)) {
+        $eye_id = @$_POST['eye_id'];
+    } else {
+        $eye_id = $episode->eye_id;
+    }
+    ?>
+  <section class="element full">
     <header class="element-header">
       <h3 class="element-title">Principal eye:</h3>
     </header>
     <div class="element-fields flex-layout full-width">
       <div class="element-data">
-    <fieldset>
-        <legend class="data-title">Principal eye:</legend>
-        <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) { ?>
-            <label class="inline">
-                <?php echo CHtml::radioButton('eye_id', ($eye->id == $eye_id),
-                    array('value' => $eye->id, 'class' => 'episodeSummaryRadio')) ?>
-                <?php echo $eye->name ?>
-            </label>
-        <?php } ?>
-    </fieldset>
+        <fieldset>
+          <legend class="data-title">Principal eye:</legend>
+            <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) { ?>
+              <label class="inline">
+                  <?php echo CHtml::radioButton('eye_id', ($eye->id == $eye_id),
+                      array('value' => $eye->id, 'class' => 'episodeSummaryRadio')) ?>
+                  <?php echo $eye->name ?>
+              </label>
+            <?php } ?>
+        </fieldset>
       </div>
     </div>
-</section>
+  </section>
 
   <div class="flex-layout flex-left flex-stretch">
     <section class="element tile">
@@ -112,7 +112,8 @@ if (!empty($_POST)) {
         <h3 class="element-title">End Date</h3>
       </header>
       <div class="element-data full-width">
-        <div class="data-value"><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)' ?></div>
+        <div
+            class="data-value"><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)' ?></div>
       </div>
     </section>
   </div>
@@ -139,29 +140,29 @@ if (!empty($_POST)) {
   </div>
 
 
-<?php
-try {
-    echo $this->renderPartial('/clinical/episodeSummaries/' . $episode->getSubspecialtyID(),
-        array('episode' => $episode));
-} catch (Exception $e) {
-    // If there is no extra episode summary detail page for this subspecialty we don't care
-}
-?>
+    <?php
+    try {
+        echo $this->renderPartial('/clinical/episodeSummaries/' . $episode->getSubspecialtyID(),
+            array('episode' => $episode));
+    } catch (Exception $e) {
+        // If there is no extra episode summary detail page for this subspecialty we don't care
+    }
+    ?>
 
-<div class="metadata">
+  <div class="metadata">
         <span class="info">
             <?php echo $episode->getSubspecialtyText() ?>: created by <span
-                class="user"><?php echo $episode->user->fullName ?></span>
+              class="user"><?php echo $episode->user->fullName ?></span>
             on <?php echo $episode->NHSDate('created_date') ?> at <?php echo substr($episode->created_date, 11, 5) ?>
         </span>
-</div>
+  </div>
 
-<section class="element element-data">
+  <section class="element element-data">
     <h3 class="data-title"></h3>
     <div class="row">
 
     </div>
-</section>
+  </section>
 
   <section class="element full">
     <header class="element-header">
@@ -170,7 +171,8 @@ try {
     <div class="element-fields flex-layout full-width">
       <div class="element-data">
         <div class="cols-2 column">
-          <label for="episode_status_id"><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id')) ?>:</label>
+          <label for="episode_status_id"><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id')) ?>
+            :</label>
         </div>
         <div class="cols-3 column end">
             <?php echo CHtml::dropDownList('episode_status_id', $episode->episode_status_id,
@@ -180,109 +182,109 @@ try {
     </div>
   </section>
 
-<div class="metadata">
+  <div class="metadata">
         <span class="info">
             Status last changed by <span class="user"><?php echo $episode->usermodified->fullName ?></span>
             on <?php echo $episode->NHSDate('last_modified_date') ?> at <?php echo substr($episode->last_modified_date,
                 11, 5) ?>
         </span>
-</div>
+  </div>
 
-<?php if ($error) { ?>
-    <div id="clinical-create_es_" class="alert-box alert with-icon">
+    <?php if ($error) { ?>
+      <div id="clinical-create_es_" class="alert-box alert with-icon">
         <p>Please fix the following input errors:</p>
         <ul>
-            <li>
-                <?php echo $error ?>
-            </li>
+          <li>
+              <?php echo $error ?>
+          </li>
         </ul>
-    </div>
-<?php } ?>
+      </div>
+    <?php } ?>
 
-<?php $this->endWidget() ?>
+    <?php $this->endWidget() ?>
 
 
-<script type="text/javascript">
+  <script type="text/javascript">
     $('#closelink').click(function () {
-        $('#dialog-confirm').dialog({
-            resizable: false,
-            height: 140,
-            modal: false,
-            buttons: {
-                "Close specialty": function () {
-                    $.ajax({
-                        url: $('#closelink').attr('href'),
-                        type: 'GET',
-                        success: function (data) {
-                            $('#episodes_details').show();
-                            $('#episodes_details').html(data);
-                        }
-                    });
-                    $(this).dialog('close');
-                },
-                Cancel: function () {
-                    $(this).dialog('close');
-                }
-            },
-            open: function () {
-                $(this).parents('.ui-dialog-buttonpane button:eq(1)').focus();
-            }
-        });
-        return false;
+      $('#dialog-confirm').dialog({
+        resizable: false,
+        height: 140,
+        modal: false,
+        buttons: {
+          "Close specialty": function () {
+            $.ajax({
+              url: $('#closelink').attr('href'),
+              type: 'GET',
+              success: function (data) {
+                $('#episodes_details').show();
+                $('#episodes_details').html(data);
+              }
+            });
+            $(this).dialog('close');
+          },
+          Cancel: function () {
+            $(this).dialog('close');
+          }
+        },
+        open: function () {
+          $(this).parents('.ui-dialog-buttonpane button:eq(1)').focus();
+        }
+      });
+      return false;
     });
-</script>
+  </script>
 
-<?php if (empty($episode->end_date)) { ?>
-    <div style="text-align:right; position:relative;">
+    <?php if (empty($episode->end_date)) { ?>
+      <div style="text-align:right; position:relative;">
         <!--button id="close-episode" type="submit" value="submit" class="wBtn_close-episode ir">Close Episode</button-->
 
         <div id="close-episode-popup" class="popup red" style="display: none;">
-            <p style="text-align:left;">You are closing this <?= strtolower(Episode::getEpisodeLabel()) ?>. This can not
-                be undone.
-                Once a <?= strtolower(Episode::getEpisodeLabel()) ?> is closed it can not be re-opened.</p>
-            <p><strong>Are you sure?</strong></p>
-            <div class="action_options">
-                <span class="aBtn"><a id="yes-close-episode" href="#"><strong>Yes, I am</strong></a></span>
-                <span class="aBtn"><a id="no-close-episode" href="#"><strong>No, cancel this.</strong></a></span>
-            </div>
+          <p style="text-align:left;">You are closing this <?= strtolower(Episode::getEpisodeLabel()) ?>. This can not
+            be undone.
+            Once a <?= strtolower(Episode::getEpisodeLabel()) ?> is closed it can not be re-opened.</p>
+          <p><strong>Are you sure?</strong></p>
+          <div class="action_options">
+            <span class="aBtn"><a id="yes-close-episode" href="#"><strong>Yes, I am</strong></a></span>
+            <span class="aBtn"><a id="no-close-episode" href="#"><strong>No, cancel this.</strong></a></span>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <script type="text/javascript">
+      <script type="text/javascript">
         $('#close-episode').unbind('click').click(function (e) {
-            e.preventDefault();
-            $('#close-episode-popup').slideToggle(100);
-            return false;
+          e.preventDefault();
+          $('#close-episode-popup').slideToggle(100);
+          return false;
         });
 
         $('#no-close-episode').unbind('click').click(function (e) {
-            e.preventDefault();
-            $('#close-episode-popup').slideToggle(100);
-            return false;
+          e.preventDefault();
+          $('#close-episode-popup').slideToggle(100);
+          return false;
         });
 
         $('#yes-close-episode').unbind('click').click(function (e) {
-            e.preventDefault();
-            $('#close-episode-popup').slideToggle(100);
-            $.ajax({
-                url: '<?php echo Yii::app()->createUrl('clinical/closeepisode/' . $episode->id)?>',
-                success: function (data) {
-                    $('#event-content').html(data);
-                    return false;
-                }
-            });
+          e.preventDefault();
+          $('#close-episode-popup').slideToggle(100);
+          $.ajax({
+            url: '<?php echo Yii::app()->createUrl('clinical/closeepisode/' . $episode->id)?>',
+            success: function (data) {
+              $('#event-content').html(data);
+              return false;
+            }
+          });
 
-            return false;
+          return false;
         });
 
         handleButton($('#episode_cancel'), function (e) {
-            window.location.href = window.location.href.replace(/updateepisode/, 'episode');
-            e.preventDefault();
+          window.location.href = window.location.href.replace(/updateepisode/, 'episode');
+          e.preventDefault();
         });
 
         handleButton($('#et_save'), function (e) {
-            $('#update-episode').submit();
+          $('#update-episode').submit();
         });
-    </script>
-<?php } ?>
+      </script>
+    <?php } ?>
 </main>
