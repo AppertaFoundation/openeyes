@@ -94,7 +94,7 @@
 	<td>
 		<?php
             $method = 'textField';
-            if($item->dose === null || is_numeric($taper->dose)){
+            if($taper->dose === null || is_numeric($taper->dose)){
                 $method = 'numberField';
             }
             echo CHtml::$method('prescription_item['.$key.'][taper]['.$count.'][dose]', $taper->dose,
