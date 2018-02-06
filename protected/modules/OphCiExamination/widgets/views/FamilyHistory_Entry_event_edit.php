@@ -34,15 +34,22 @@ if (!isset($values)) {
 
 ?>
 <tr class="row-<?=$row_count;?><?php if($editable){ echo " read-only"; } ?>" data-key="<?=$row_count;?>">
-    <td>
-        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
-            <?= $values['relative_display'] ?>
+  <td>
+    <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
+    <input type="hidden" name="<?= $field_prefix ?>[relative_id]" value="<?=$values['relative_id'] ?>" />
+      <?= $values['relative_display'] ?>
+
+      <div class="<?php echo $is_other_selected ? '' : 'hidden';?> other_relative_wrapper">
+        <?php echo CHtml::textField($field_prefix . '[other_relative]', ( $is_other_selected ? $values['other_relative'] : ''), array('class' => 'other_relative_text other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
+      </div>
     </td>
     <td>
-        <?= $values['side_display'] ?>
+      <input type="hidden" name="<?= $field_prefix ?>[side_id]" value="<?=$values['side_id'] ?>" />
+      <?= $values['side_display'] ?>
     </td>
     <td>
-        <?= $values['condition_display'] ?>
+      <input type="hidden" name="<?= $field_prefix ?>[condition_id]" value="<?=$values['condition_id'] ?>" />
+      <?= $values['condition_display'] ?>
     </td>
     <td>
         <?php if(!$editable): ?>

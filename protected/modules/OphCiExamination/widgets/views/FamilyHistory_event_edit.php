@@ -45,6 +45,7 @@
           <?php
           $row_count = 0;
           foreach ($element->entries as $entry) {
+            Yii::log("Entry: ".var_export($entry, true));
               $this->render(
                   'FamilyHistory_Entry_event_edit',
                   array(
@@ -76,12 +77,12 @@
         <tr>
           <td>
             <div class="flex-layout flex-top flex-left">
-              <ul class="add-options" data-multi="true" data-clickadd="false">
+              <ul id='family-history-relative' class="add-options" data-multi="true" data-clickadd="false">
                   <?php
                   $relative_list = $element->getRelativeOptions();
                   foreach ($relative_list as $relative_item) {
                       ?>
-                    <li data-str="<?php echo $relative_item->name; ?>">
+                    <li data-str="<?php echo $relative_item->name; ?>" data-id="<?php echo $relative_item->id; ?>">
                       <span class="restrict-width"><?php echo $relative_item->name; ?></span>
                     </li>
                   <?php } ?>
@@ -91,12 +92,12 @@
           </td>
           <td>
             <div class="flex-layout flex-top flex-left">
-              <ul class="add-options" data-multi="true" data-clickadd="false">
+              <ul id='family-history-side' class="add-options" data-multi="true" data-clickadd="false">
                   <?php
                   $side_options = $element->getSideOptions();
                   foreach ($side_options as $side_item) {
                       ?>
-                    <li data-str="<?php echo $side_item->name; ?>">
+                    <li data-str="<?php echo $side_item->name; ?>" data-id="<?php echo $side_item->id; ?>">
                       <span class="restrict-width"><?php echo $side_item->name; ?></span>
                     </li>
                   <?php } ?>
@@ -106,12 +107,12 @@
           </td>
           <td>
             <div class="flex-layout flex-top flex-left">
-              <ul class="add-options" data-multi="true" data-clickadd="false">
+              <ul id='family-history-condition' class="add-options" data-multi="true" data-clickadd="false">
                   <?php
                   $condition_list =$element->getConditionOptions();
                   foreach ($condition_list as $condition_item) {
                       ?>
-                    <li data-str="<?php echo $condition_item->name; ?>">
+                    <li data-str="<?php echo $condition_item->name; ?>" data-id="<?php echo $condition_item->id; ?>">
                       <span class="restrict-width"><?php echo $condition_item->name; ?></span>
                     </li>
                   <?php } ?>
@@ -123,7 +124,7 @@
       </table>
       <div class="search-icon-btn"><i class="oe-i search"></i></div>
       <div class="search-options" style="display:none;">
-        <input type="text" class="cols-full js-search-autocomplete" placeholder="search for option (type 'auto-complete' to demo)">
+        <input type="text" class="cols-full js-search-autocomplete" placeholder="search for option">
         <!-- ajax auto-complete results, height is limited -->
       </div>
     </div>

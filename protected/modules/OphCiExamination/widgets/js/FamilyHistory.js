@@ -33,8 +33,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$commentFld = $('#' + this.options.modelName + '_comments');
         this.tableSelector = '#' + this.options.modelName + '_entry_table';
         this.$table = $(this.tableSelector);
+        this.$popupSelector = $('.flex-item-bottom');
         this.templateText = $('#' + this.options.modelName + '_entry_template').text();
-
         this.initialiseTriggers();
 
     }
@@ -70,12 +70,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             }
         });
 
-        this.$table.on('click', '#' + this.options.modelName + '_add_entry', function(e) {
+        this.$popupSelector.on('click', '.add-icon-btn', function(e) {
             e.preventDefault();
             controller.addEntry();
         });
 
-        this.$table.on('click', 'button.remove', function(e) {
+        this.$table.on('click', 'i.trash', function(e) {
             e.preventDefault();
             $(this).closest('tr').remove();
             controller.showNoHistory();
@@ -102,10 +102,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             data = {};
 
         data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
+        data['relative_id'] = $('#family-history-relative').find('.selected').data('id');
+        data['relative_display'] = $('#family-history-relative').find('.selected').data('str');
+        data['side_id'] = $('#family-history-side').find('.selected').data('id');
+        data['side_display'] = $('#family-history-side').find('.selected').data('str');
+        data['condition_id'] = $('#family-history-condition').find('.selected').data('id');
+        data['condition_display'] = $('#family-history-condition').find('.selected').data('str');
         return Mustache.render(
           template = this.templateText,
           data
         );
+
     };
 
     /**
@@ -137,6 +144,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         this.hideNoHistory();
         this.$table.find('tbody').append(this.createRow());
+        $('.flex-item-bottom').find('.selected').removeClass('selected');
     };
 
     exports.FamilyHistoryController = FamilyHistoryController;
