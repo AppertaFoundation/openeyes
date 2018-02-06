@@ -15,60 +15,96 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 use OEModule\OphCiExamination\models;
 
 ?>
-	<table id="<?= CHtml::modelName($element).'_readings_'.$side ?>"<?php if (!$element->{"{$side}_values"}) {
-    echo ' class="hidden"';
-} ?>>
-		<thead>
-			<tr>
-				<th width="76">Time</th>
-				<th width="64">mm Hg</th>
-				<?php if ($element->getSetting('show_instruments')): ?>
-					 <th>Instrument</th>
-				<?php endif ?>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php
-                foreach ($element->{"{$side}_values"} as $index => $value) {
-                    $this->renderPartial(
-                        "{$element->form_view}_reading",
-                        array(
-                            'element' => $element,
-                            'form' => $form,
-                            'side' => $side,
-                            'index' => $index,
-                            'time' => substr($value->reading_time, 0, 5),
-                            'value' => $value,
-                        )
-                    );
-                }
-            ?>
-		</tbody>
-	</table>
-	<div class="field-row">
-		<button type="button" id="<?= CHtml::modelName($element).'_add_'.$side ?>" class="button small secondary">Add</button>
-	</div>
-	<div class="field-row">
-		<?= $form->textArea($element, "{$side}_comments", array('nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'Comments')) ?>
-	</div>
-	<script type="text/template" id="<?= CHtml::modelName($element).'_reading_template_'.$side ?>" class="hidden">
-		<?php
-            $this->renderPartial(
-                "{$element->form_view}_reading",
-                array(
-                    'element' => $element,
-                    'form' => $form,
-                    'side' => $side,
-                    'index' => '{{index}}',
-                    'time' => '{{time}}',
-                    'value' => new models\OphCiExamination_IntraocularPressure_Value(),
-                )
-            );
-        ?>
-	</script>
+<div class="cols-9">
+  <table id="<?= CHtml::modelName($element) . '_readings_' . $side ?>"
+         class="cols-full<?php if (!$element->{"{$side}_values"}) {
+             echo 'hidden "';
+         } ?>">
+    <thead>
+    <tr>
+      <th class="cols-3">Time</th>
+      <th width="64px">mm Hg</th>
+        <?php if ($element->getSetting('show_instruments')): ?>
+          <th>Instrument</th>
+        <?php endif ?>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+    foreach ($element->{"{$side}_values"} as $index => $value) {
+        $this->renderPartial(
+            "{$element->form_view}_reading",
+            array(
+                'element' => $element,
+                'form' => $form,
+                'side' => $side,
+                'index' => $index,
+                'time' => substr($value->reading_time, 0, 5),
+                'value' => $value,
+            )
+        );
+    }
+    ?>
+    </tbody>
+  </table>
+  <div id="iop-<?php echo $side; ?>-comments" class="field-row-pad-top" style="display: none;">
+      <?= $form->textArea($element, "{$side}_comments", array('nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'Comments', 'style' => 'overflow-x: hidden; word-wrap: break-word;')) ?>
+  </div>
+</div>
+<div class="flex-item-bottom">
+  <button type="button" class="button js-add-comments" data-input="#iop-<?php echo $side; ?>-comments">
+    <i class="oe-i comments small-icon"></i>
+  </button>
+  <button type="button" class="button hint green js-add-select-search">
+    <i class="oe-i plus pro-theme"></i>
+  </button>
+  <div id="add-to-IOP" class="oe-add-select-search" style="display: none;">
+    <div class="close-icon-btn">
+      <i class="oe-i remove-circle medium"></i>
+    </div>
+    <div class="select-icon-btn">
+      <i class="oe-i menu selected"></i>
+    </div>
+    <table class="select-options">
+      <tbody>
+      <tr>
+        <td>
+          <div class="flex-layout flex-top flex-left">
+            <ul class="add-options" data-multi="false" data-clickadd="true">
+                <?php foreach (CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]), 'id', 'name') as $id => $instrument): ?>
+                  <li data-str="<?php echo $id; ?>">
+                    <span class="auto-width"><?php echo $instrument; ?></span>
+                  </li>
+                <?php endforeach; ?>
+            </ul>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script type="text/template" id="<?= CHtml::modelName($element) . '_reading_template_' . $side ?>" class="hidden">
+    <?php
+    $this->renderPartial(
+        "{$element->form_view}_reading",
+        array(
+            'element' => $element,
+            'form' => $form,
+            'side' => $side,
+            'index' => '{{index}}',
+            'time' => '{{time}}',
+            'instrument' => '{{instrument}}',
+            'value' => new models\OphCiExamination_IntraocularPressure_Value(),
+        )
+    );
+    ?>
+</script>
 
 

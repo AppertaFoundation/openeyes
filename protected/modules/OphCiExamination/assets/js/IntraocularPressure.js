@@ -16,7 +16,8 @@ $(document).ready(function () {
 	function addReading(e) {
 		var side = e.data.side,
 		    table = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_" + side),
-			indices = table.find('tr').map(function () { return $(this).data('index'); });
+			indices = table.find('tr').map(function () { return $(this).data('index'); }),
+			instrument = $(e.target).closest('li').attr('data-str');
 
 		table.find("tbody").append(
 			Mustache.render(
@@ -27,6 +28,10 @@ $(document).ready(function () {
 				}
 			)
 		);
+
+		table.find('tr:last td.instrument').find('option[value="' + instrument + '"]').attr('selected', true);
+
+        $(e.target).closest('.flex-item-bottom').find('#add-to-IOP').hide();
 
 		table.show();
 	}
@@ -46,12 +51,27 @@ $(document).ready(function () {
 		return false;
 	}
 
-	$("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_add_right").click({side: "right"}, addReading);
-	$("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_add_left").click({side: "left"}, addReading);
+	function displayAdder(e) {
+		$(e.target).siblings('#add-to-IOP').show();
+	}
 
+	$(".edit-Intraocular .js-add-select-search").click(displayAdder);
+    $(".right-eye #add-to-IOP .add-options li").click({side: 'right'}, addReading);
+    $(".left-eye #add-to-IOP .add-options li").click({side: 'left'}, addReading);
 
-	$("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_right").on("click", "a.delete", null, deleteReading);
-	$("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_left").on("click", "a.delete", null, deleteReading);
+	$("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_right").on("click", "i.trash", null, deleteReading);
+	$("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_left").on("click", "i.trash", null, deleteReading);
+
+	$(".edit-Intraocular .close-icon-btn").click(function(e) {
+		$(e.target).parent().hide();
+	});
+
+    $(".edit-Intraocular .js-add-comments").click(function(e) {
+    	var elem = $(e.target).attr('data-input');
+
+    	$(elem).show();
+    	$(e.target).hide();
+	});
 
 	$('select.IOPinstrument').die('change').live('change',function(e) {
 		e.preventDefault();
