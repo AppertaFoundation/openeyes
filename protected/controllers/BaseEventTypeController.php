@@ -279,12 +279,20 @@ class BaseEventTypeController extends BaseModuleController
     public function getElements()
     {
         $elements = array();
+        $element_name = array();
         if (is_array($this->open_elements)) {
             foreach ($this->open_elements as $element) {
                 if ($element->getElementType()) {
                     $elements[] = $element;
+                    $element_name[] = $element->getElementType()->name;
                 }
             }
+            foreach ($this->open_elements as $element) {
+                if ($element->getElementType()->isChild()&&!in_array($element->getElementType()->parent_element_type->name, $element_name)) {
+                    $elements[] = $element;
+                }
+            }
+
         }
 
         return $elements;
