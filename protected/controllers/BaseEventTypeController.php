@@ -1481,9 +1481,6 @@ class BaseEventTypeController extends BaseModuleController
           $event_type_id = ($this->event->attributes["event_type_id"]);
           $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
           $event_name = $event_type->name;
-          if ($event_name == "Examination") {
-//            $this->widget('application.widgets.IndexSearch',array('event_type' => $event_name));
-          }
         }
 
     }
