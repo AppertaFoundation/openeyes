@@ -27,7 +27,7 @@ foreach ($dilation_drugs as $d_drug) {
     $dilation_drugs_order[$d_drug['id']] = $d_drug['display_order'];
 }
 ?>
-<div class="element-fields flex-layout full-width">
+<div class="element-fields element-eyes">
 	<input type="hidden" name="dilation_treatments_valid" value="1" />
 	<?php echo $form->hiddenField($element, 'eye_id', array('class' => 'sideField'))?>
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {

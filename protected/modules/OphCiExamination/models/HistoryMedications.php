@@ -184,8 +184,8 @@ class HistoryMedications extends \BaseEventTypeElement
 
     public function __toString()
     {
-        return 'Current: ' . implode(' <br> ', $this->currentOrderedEntries) .
-            ' Stopped: ' . implode(' <br> ', $this->stoppedOrderedEntries);
+        return 'Current: ' . implode(' <br /> ', $this->currentOrderedEntries) .
+            ' Stopped: ' . implode(' <br /> ', $this->stoppedOrderedEntries);
     }
 
     /**

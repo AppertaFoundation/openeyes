@@ -68,7 +68,7 @@
     <button class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
-    <div id="add-to-POH" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
+    <div id="add-to-family-history" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
       <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
       <div class="select-icon-btn"><i class="oe-i menu selected"></i></div>
       <button class="button hint green add-icon-btn"><i class="oe-i plus pro-theme"></i></button>

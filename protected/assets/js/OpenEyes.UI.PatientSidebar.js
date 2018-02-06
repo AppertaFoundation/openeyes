@@ -106,10 +106,9 @@
     });
 
     function headerChange(e){
-      if(expanded){
+      PatientSidebar.prototype.loadClickedParent($(e.target).parent());
+      if(!expanded){
         e.preventDefault();
-        PatientSidebar.prototype.loadClickedParent($(e.target).parent());
-      } else {
         $content.show();
         $icon.toggleClass('minus plus');
         expanded = !expanded;
@@ -341,8 +340,6 @@
             }
             item.append(subList);
             item.addClass('has-children');
-        }
-        else {
         }
         return item;
     };

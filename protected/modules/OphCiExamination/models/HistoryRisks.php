@@ -178,7 +178,7 @@ class HistoryRisks extends \BaseEventTypeElement
         foreach (array('present', 'not_checked', 'not_present') as $cat) {
             $result[] = $this->getAttributeLabel($cat) . ': ' . implode(', ', $this->$cat);
         }
-        return implode(' <br> ', $result);
+        return implode(' <br /> ', $result);
     }
 
     /**

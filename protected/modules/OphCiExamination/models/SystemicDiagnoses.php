@@ -174,7 +174,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
      */
     public function __toString()
     {
-        return implode(' <br> ', $this->orderedDiagnoses);
+        return implode(' <br /> ', $this->orderedDiagnoses);
     }
 
     public $cached_tip_status = null;

@@ -288,6 +288,7 @@ $(document).ready(function () {
     /**
      * View previous elements
      */
+
     $('.js-active-elements').delegate('.viewPrevious', 'click', function (e) {
         e.preventDefault();
         if ($(this).hasClass('subElement')) {
@@ -400,7 +401,7 @@ $(document).ready(function () {
         $(e.target).parent().find('.oe-add-select-search').show();
   });
 
-  $('.js-add-select-search').parent().find('.oe-add-select-search').find('.add-icon-btn').on('click', function(e){
+  $('.oe-add-select-search').find('.add-icon-btn').on('click', function(e){
       e.preventDefault();
       $(e.target).parent('.oe-add-select-search').hide();
   });

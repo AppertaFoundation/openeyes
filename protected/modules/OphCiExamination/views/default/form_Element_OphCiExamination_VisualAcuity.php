@@ -23,20 +23,20 @@ $key = 0;
 ?>
 
 <?php
-//$this->beginClip('element-title-additional');
-//if ($element->isNewRecord) {
-//    ?>
-<!--    --><?php //echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id, CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')), 'id', 'name'), array('class' => 'inline'));
-//    ?>
-<?php //
-//} ?>
-<?php //if ($element->unit->information) {
-//    ?>
-<!--    <div class="info"><small><em>--><?php //echo $element->unit->information ?><!--</em></small></div>-->
-<?php //
-//}
-//$this->endClip('element-title-additional');
-//?>
+$this->beginClip('element-title-additional');
+if ($element->isNewRecord) {
+    ?>
+    <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id, CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')), 'id', 'name'), array('class' => 'inline'));
+    ?>
+<?php
+} ?>
+<?php if ($element->unit->information) {
+    ?>
+    <div class="info"><small><em><?php echo $element->unit->information ?></em></small></div>
+<?php
+}
+$this->endClip('element-title-additional');
+?>
 <?php
     // CVI alert
     $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');

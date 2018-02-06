@@ -1324,8 +1324,8 @@ class DefaultController extends \BaseEventTypeController
      * Render the open child elements for the given parent element type;
      * @param \BaseEventTypeElement $parent_element
      * @param string $action
-     * @param null $form
-     * @param null $data
+     * @param BaseCActiveBaseEventTypeCActiveForm $form
+     * @param Array $data
      */
     public function renderSingleChildOpenElements($element, $action, $form = null, $data = null)
     {

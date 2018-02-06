@@ -71,7 +71,7 @@ $targetIOPS =
         </div>
     </div>
 </div>
-<div class="element-fields flex-layout full-width">
+<div class="element-fields element-eyes">
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
     ?> inactive<?php 
 }?>" data-side="right">
