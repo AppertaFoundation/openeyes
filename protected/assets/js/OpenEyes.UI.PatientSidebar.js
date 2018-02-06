@@ -346,8 +346,6 @@
             item.addClass('has-children');
             item.addClass('has-children');
         }
-        else {
-        }
         return item;
     };
 
