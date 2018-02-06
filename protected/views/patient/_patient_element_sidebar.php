@@ -23,17 +23,13 @@
     <li class="icon-btn"><a href="#" class="inactive">AD</a></li>
     <li class="icon-btn"><a href="#" class="inactive">CO</a></li>
     <li class="icon-btn"><a href="#" class="inactive">CA</a></li>
-    <li class="icon-btn"><a href="/v3.0/oescape-glaucoma" class="active">GL</a></li>
+    <li class="icon-btn"><a href="#" class="active">GL</a></li>
     <li class="icon-btn"><a href="#" class="inactive">SB</a></li>
-    <li class="icon-btn"><a href="/v3.0/oescape-medical-retina" class="active">MR</a></li>
+    <li class="icon-btn"><a href="#" class="active">MR</a></li>
     <li class="icon-btn"><a href="#" class="inactive">VR</a></li>
     <li class="icon-btn"><a href="#" class="inactive">UV</a></li>
     <li class="icon-btn"><a href="#" class="inactive">RF</a></li>
-    <li class="icon-btn"><a href="/v3.0/lightning-letter-viewer" class="lightning-viewer-icon active">
-        <svg viewBox="0 0 30 30" width="15" height="15">
-<!--          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="../newblue/svg/oe-nav-icons.svg#lightning-viewer-icon"></use>-->
-        </svg>
-      </a></li>
+    <li class="icon-btn"><a href="#" class="lightning-viewer-icon active"></li>
   </ul>
   <!-- oescape -->
 
