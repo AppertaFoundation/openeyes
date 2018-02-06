@@ -50,7 +50,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         singleTemplate :
             "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='fa fa-times-circle' aria-hidden='true' title='Change diagnosis'></i></a> " +
             "<span class='diagnosis-name'></span></span>" +
-            // "<select class='commonly-used-diagnosis'></select>"
+            "<select class='commonly-used-diagnosis'></select>" +
             "{{{input_field}}}" +
             "<input type='hidden' name='{{field_prefix}}[id][]' class='savedDiagnosisId' value=''>" +
             "<input type='hidden' name='{{field_prefix}}[disorder_id][]' class='savedDiagnosis' value=''>",
