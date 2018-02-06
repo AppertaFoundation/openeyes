@@ -35,7 +35,7 @@
 	<td class="prescriptionItemDose">
 		<?php
             $method = 'textField';
-            if($item->isNewRecord || is_numeric($item->dose)){
+            if($item->dose === null || is_numeric($item->dose)){
                 $method = 'numberField';
             }
             echo CHtml::$method('prescription_item['.$key.'][dose]', $item->dose, array(
@@ -94,7 +94,7 @@
 	<td>
 		<?php
             $method = 'textField';
-            if($item->isNewRecord || is_numeric($taper->dose)){
+            if($item->dose === null || is_numeric($taper->dose)){
                 $method = 'numberField';
             }
             echo CHtml::$method('prescription_item['.$key.'][taper]['.$count.'][dose]', $taper->dose,
