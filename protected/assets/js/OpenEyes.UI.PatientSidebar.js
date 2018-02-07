@@ -253,10 +253,12 @@
     PatientSidebar.prototype.openElements = function() {
         var self = this;
 
-        self.patient_open_elements = $('.element, .sub-element')
+        self.patient_open_elements = $('.element')
           .map(function() {
               return $(this).data('element-type-class');
           }).get();
+
+        console.log(self.patient_open_elements);
     };
 
     /**
@@ -327,6 +329,7 @@
              var subList = $('<ul>').addClass('oe-element-list collapse-group-content');
 
             $.each(itemData.children, function () {
+
               var id_name = this.name.replace(/\s+/g,'-');
               var subListItem = $("<li>")
                 .data('container-selector','section[data-element-type-id="'+itemData.id+'"]')
@@ -335,7 +338,11 @@
                 .data('element-display-order', this.display_order)
                 .data('element-type-name', this.name)
                 .attr('id','side-element-'+id_name ).addClass('element');
-              subListItem.append('<a href="#">'+this.name+'</a>');
+              var childClass = '';
+              if ($.inArray(this.class_name, self.patient_open_elements)!== -1){
+                childClass='selected';
+              }
+              subListItem.append('<a href="#" class= "'+childClass+'" >'+this.name+'</a>');
               subList.append(subListItem);
             });
 
