@@ -282,7 +282,7 @@ class BaseEventTypeController extends BaseModuleController
         $element_name = array();
         if (is_array($this->open_elements)) {
             foreach ($this->open_elements as $element) {
-                if ($element->getElementType()) {
+                if ($element->getElementType() && !$element->getElementType()->isChild()) {
                     $elements[] = $element;
                     $element_name[] = $element->getElementType()->name;
                 }
@@ -1598,6 +1598,7 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         foreach ($this->getElements() as $element) {
+            Yii::log("element: ".$element->elementType->name);
             $this->renderElement($element, $action, $form, $data);
         }
     }
