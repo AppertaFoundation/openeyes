@@ -68,7 +68,7 @@
           <select class="select-service" style="display: none;">
           </select>
 
-          <button class="add-subspecialty-btn tiny" style="padding:3px 6px;" id="js-add-subspecialty-btn">+</button>
+          <button class="add-subspecialty-btn button hint green" id="js-add-subspecialty-btn"><i class="oe-i plus"></i></button>
         </div>
       </td>
       <td class="step-context oe-create-event-step-through " style="visibility: hidden;">
@@ -77,7 +77,7 @@
         </ul>
       </td>
       <td class="step-event-types" style="visibility: hidden;">
-        <h3>Select event to add:</h3>
+        <h3>Select New Event</h3>
         <ul class="event-type-list">
             <?php foreach ($eventTypes as $eventType) {
                 $args = $this->getCreateArgsForEventTypeOprn($eventType, array('episode'));
@@ -86,14 +86,14 @@
                   <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3"
                       data-eventType-id="<?= $eventType->id ?>"
                       data-support-services="<?= $eventType->support_services ?>">
-                    <img src="<?= $eventType->getEventIcon() ?>"
-                         title="<?= $eventType->name ?> icon"/><?= $eventType->name ?>
+                    <i class="oe-i-e <?= $eventType->getEventIconCssClass() ?>"
+                       title="<?= $eventType->name ?> icon"></i><?= $eventType->name ?>
                   </li>
                 <?php } else { ?>
                   <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3 add_event_disabled"
                       title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add ' . $eventType->name ?>">
-                    <img src="<?= $eventType->getEventIcon() ?>"
-                         title="<?= $eventType->name ?> icon"/><?= $eventType->name ?>
+                    <i class="oe-i-e <?= $eventType->getEventIconCssClass() ?>"
+                       title="<?= $eventType->name ?> icon"></i><?= $eventType->name ?>
                   </li>
                 <?php } ?>
             <?php } ?>
