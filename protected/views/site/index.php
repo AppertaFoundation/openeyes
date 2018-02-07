@@ -20,12 +20,7 @@
 <?php $this->renderPartial('//base/_search_bar', array(
     'callback' => Yii::app()->createUrl('site/search')
 )); ?>
-<div class="oe-search-patient" id="oe-search-patient">
-  <div class="search-patient">
-      <?php echo CHtml::textField('query', '', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'search', 'placeholder' => 'Search')); ?>
-    <i class="spinner" style="display: none;" title="Loading..."></i>
-    <button type="submit" id="js-find-patient" class="blue hint">Find Patient</button>
-    <div class="find-by">Search by Hospital Number, NHS Number, Firstname Surname or Surname, Firstname</div>
+
 <?php $this->renderPartial('//base/_messages'); ?>
 
 <?php
