@@ -23,6 +23,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.options = $.extend(true, {}, HistoryMedicationsController._defaultOptions, options);
     this.$element = this.options.element;
     this.$table = this.$element.find('table');
+    this.$popup = this.$element.find('.flex-item-bottom');
     this.templateText = this.$element.find('.entry-template').text();
     this.drugsByRisk = {};
     this.initialiseFilters();
@@ -32,7 +33,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   HistoryMedicationsController._defaultOptions = {
     modelName: 'OEModule_OphCiExamination_models_HistoryMedications',
     element: undefined,
-    addButtonSelector: '.add-entry',
+    addButtonSelector: '.js-add-select-search',
+    removeButtonSelector: 'i.trash',
     searchSource: '/medication/finddrug',
     routeOptionSource: '/medication/retrieveDrugRouteOptions',
     searchAsTypedPrefix: 'As typed: ',
@@ -57,6 +59,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   */
   HistoryMedicationsController.prototype.initialiseFilters = function()
   {
+
     // if there aren't any stopped medications, then the filter is irrelevant
     if (!this.$table.find('tr.originally-stopped').length) {
       this.$element.find('.show-stopped').hide();
@@ -71,7 +74,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     var controller = this;
 
     // removal button for table entries
-    controller.$table.on('click', '.button.remove', function(e) {
+    controller.$table.on('click', controller.options.removeButtonSelector, function(e) {
       e.preventDefault();
       $(e.target).parents('tr').remove();
     });
@@ -82,7 +85,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     });
 
     // adding entries
-    controller.$element.on('click', controller.options.addButtonSelector, function(e) {
+    controller.$popup.on('click', controller.options.addButtonSelector, function(e) {
       e.preventDefault();
       controller.addEntry();
     });
