@@ -63,7 +63,7 @@ $(document).ready(function () {
 	$("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_left").on("click", "i.trash", null, deleteReading);
 
 	$(".edit-Intraocular .close-icon-btn").click(function(e) {
-		$(e.target).parent().hide();
+		$(e.target).closest('#add-to-IOP').hide();
 	});
 
     $(".edit-Intraocular .js-add-comments").click(function(e) {
