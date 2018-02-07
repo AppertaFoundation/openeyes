@@ -18,7 +18,16 @@
 ?>
 <div class="element-fields flex-layout full-width ">
   <div class="cols-11 flex-layout">
-    <textarea id="js-history-input-demo" autocomplete="off" rows="1" class="cols-6" placeholder="History" style="overflow: hidden; word-wrap: break-word; height: 24px;"></textarea>
+    <div class="field-row">
+        <?php
+        echo $form->textArea($element,
+            'description',
+            array('rows' => '1', 'cols' => '80', 'class' => 'autosize', 'nowrapper' => true),
+            false,
+            array('placeholder' => 'Enter comments here')
+        )
+        ?>
+    </div>
     <div class="cols-5">
       <div class="data-label">Previous Management</div>
       <div class="data-value">
@@ -46,7 +55,9 @@
 </script>
 <script type="text/javascript" id="history-add-to-dialog">
     var popup = $('#add-to-history');
-    var inputText = $('#js-history-input-demo');
+    var inputText = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_History_description');
+
+
 
     //Hide the adding dialog, print text to textArea
     popup.find('.add-icon-btn').on('click', function () {
@@ -56,4 +67,4 @@
         });
     });
 </script>
-<?php Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js", null, -10); ?>
+

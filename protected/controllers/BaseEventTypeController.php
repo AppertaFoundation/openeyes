@@ -438,6 +438,7 @@ class BaseEventTypeController extends BaseModuleController
                 //TODO: possibly put this into standard js library for events
                 Yii::app()->getClientScript()->registerScript('nestedElementJS', 'var moduleName = "' . $this->getModule()->name . '";', CClientScript::POS_HEAD);
                 Yii::app()->assetManager->registerScriptFile('js/nested_elements.js');
+                Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js");
             }
         }
 
