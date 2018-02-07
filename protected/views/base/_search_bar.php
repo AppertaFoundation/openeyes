@@ -15,10 +15,7 @@ $this->beginWidget('CActiveForm', array(
         <?php echo CHtml::textField('query', '', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'search', 'placeholder' => 'Search')); ?>
         <button type="submit" id="js-find-patient" class="blue hint">Find Patient</button>
         <div class="find-by">Search by Hospital Number, NHS Number, Firstname Surname or Surname, Firstname</div>
-        <div class="text-center">
-            <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
-                 alt="loading..."/>
-        </div>
+      <i class="spinner" style="display: none;" title="Loading..."></i>
     </div>
 </div>
 <?php $this->endWidget(); ?>
