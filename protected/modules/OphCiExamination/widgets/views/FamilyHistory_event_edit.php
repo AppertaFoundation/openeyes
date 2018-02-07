@@ -45,7 +45,6 @@
           <?php
           $row_count = 0;
           foreach ($element->entries as $entry) {
-            Yii::log("Entry: ".var_export($entry, true));
               $this->render(
                   'FamilyHistory_Entry_event_edit',
                   array(

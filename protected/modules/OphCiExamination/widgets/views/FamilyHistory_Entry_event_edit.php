@@ -33,36 +33,63 @@ if (!isset($values)) {
 }
 
 ?>
-<tr class="row-<?=$row_count;?><?php if($editable){ echo " read-only"; } ?>" data-key="<?=$row_count;?>">
+<tr class="row-<?= $row_count; ?><?php if ($editable) {
+    echo " read-only";
+} ?>" data-key="<?= $row_count; ?>">
   <td>
-    <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
-    <input type="hidden" name="<?= $field_prefix ?>[relative_id]" value="<?=$values['relative_id'] ?>" />
+    <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
+    <input type="hidden" name="<?= $field_prefix ?>[relative_id]" value="<?= $values['relative_id'] ?>"/>
       <?= $values['relative_display'] ?>
-
-      <div class="<?php echo $is_other_selected ? '' : 'hidden';?> other_relative_wrapper">
-        <?php echo CHtml::textField($field_prefix . '[other_relative]', ( $is_other_selected ? $values['other_relative'] : ''), array('class' => 'other_relative_text other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
-      </div>
-    </td>
-    <td>
-      <input type="hidden" name="<?= $field_prefix ?>[side_id]" value="<?=$values['side_id'] ?>" />
+    <div class="
+    <?php
+      $is_other_selected = false;
+      if ($values['relative_display'] == 'Other') {
+          $is_other_selected = true;
+      }
+      echo $is_other_selected ? '' : 'hidden';
+    ?> other_relative_wrapper">
+        <?php echo CHtml::textField($field_prefix . '[other_relative]',
+            ($is_other_selected ? $values['other_relative'] : ''), array(
+                'class' => 'other_relative_text other-type-input',
+                'autocomplete' => Yii::app()->params['html_autocomplete'],
+            )) ?>
+    </div>
+  </td>
+  <td>
+    <input type="hidden" name="<?= $field_prefix ?>[side_id]" value="<?= $values['side_id'] ?>"/>
       <?= $values['side_display'] ?>
-    </td>
-    <td>
-      <input type="hidden" name="<?= $field_prefix ?>[condition_id]" value="<?=$values['condition_id'] ?>" />
+  </td>
+  <td>
+    <input type="hidden" name="<?= $field_prefix ?>[condition_id]" value="<?= $values['condition_id'] ?>"/>
       <?= $values['condition_display'] ?>
-    </td>
-    <td>
-        <?php if(!$editable): ?>
-            <?= $values['comments'] ?>
-        <?php else: ?>
-          <div class="cols-full ">
-            <button class="button  js-add-comments" data-input="next" style="display: none;" type="button">
-              <i class="oe-i comments  small-icon"></i>
-            </button>
-              <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class'=>'js-input-comments'))?>
-          </div>
-        <?php endif;?>
-    </td>
+    <div class="
+      <?php
+        $is_other_selected = false;
+        if ($values['condition_display'] == 'Other') {
+            $is_other_selected = true;
+        }
+        echo $is_other_selected ? '' : 'hidden';
+      ?> other_condition_wrapper">
+        <?php echo CHtml::textField($field_prefix . '[other_condition]',
+            ($is_other_selected ? $values['other_condition'] : ''), array(
+                'class' => 'other_condition_text other-type-input',
+                'autocomplete' => Yii::app()->params['html_autocomplete'],
+            )) ?>
+    </div>
+  </td>
+  <td>
+      <?php if (!$editable): ?>
+          <?= $values['comments'] ?>
+      <?php else: ?>
+        <div class="cols-full ">
+          <button class="button  js-add-comments" data-input="next" style="display: none;" type="button">
+            <i class="oe-i comments  small-icon"></i>
+          </button>
+            <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'],
+                array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'js-input-comments')) ?>
+        </div>
+      <?php endif; ?>
+  </td>
 
     <?php if ($editable) : ?>
       <td>
