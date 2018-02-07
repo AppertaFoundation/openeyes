@@ -28,10 +28,65 @@ $required_risk_ids = array_map(function($r) { return $r->id; }, $this->getRequir
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
-  <div class="cols-7">
-    <textarea id="js-risks-input-demo" autocomplete="off" rows="1" class="cols-full" placeholder="Risks" style="overflow: hidden; word-wrap: break-word; height: 24px;"></textarea>
-  </div>
 
+    <div class="field-row row<?= (count($element->entries)+count($missing_req_risks)) ? ' hidden' : ''?> <?=$model_name?>_no_risks_wrapper">
+        <div class="large-3 column">
+            <label for="<?=$model_name?>_no_risks">Confirm patient has no risks:</label>
+        </div>
+        <div class="large-1 column end">
+            <?php echo CHtml::checkBox($model_name .'[no_risks]', $element->no_risks_date ? true : false, array('class' => $model_name .'_no_risks')); ?>
+        </div>
+    </div>
+
+    <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
+
+    <table class="<?= $model_name ?>_entry_table">
+        <thead>
+        <tr>
+            <th>Risk</th>
+            <th>Checked Status</th>
+            <th>Comments</th>
+            <th>Action(s)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        $row_count = 0;
+        foreach ($missing_req_risks as $entry) {
+            $this->render(
+                'HistoryRisksEntry_event_edit',
+                array(
+                    'entry' => $entry,
+                    'form' => $form,
+                    'model_name' => $model_name,
+                    'field_prefix' => $model_name . '[entries][' . $row_count . ']',
+                    'row_count' => $row_count,
+                    'removable' => false,
+                    'posted_not_checked' => $element->widget->postedNotChecked($row_count)
+                )
+            );
+            $row_count++;
+        } ?>
+        <?php
+        foreach ($element->entries as $entry) {
+            $this->render(
+                'HistoryRisksEntry_event_edit',
+                array(
+                    'entry' => $entry,
+                    'form' => $form,
+                    'model_name' => $model_name,
+                    'field_prefix' => $model_name . '[entries][' . $row_count . ']',
+                    'row_count' => $row_count,
+                    'removable' => !in_array($entry->risk_id, $required_risk_ids),
+                    'risks' => $risks_options,
+                    'posted_not_checked' => $element->widget->postedNotChecked($row_count)
+                )
+            );
+            $row_count++;
+        }
+        ?>
+        </tbody>
+    </table>
   <div class="flex-item-bottom">
     <button class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
@@ -40,38 +95,6 @@ $required_risk_ids = array_map(function($r) { return $r->id; }, $this->getRequir
       <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
       <div class="select-icon-btn"><i class="oe-i menu selected"></i></div>
       <button class="button hint green add-icon-btn"><i class="oe-i plus pro-theme"></i></button>
-      <table class="select-options">
-        <tr>
-          <td>
-            <div class="flex-layout flex-top flex-left">
-              <ul class="add-options" data-multi="true" data-clickadd="false">
-                  <?php
-                  foreach ($risks_options as $risk) {
-                      ?>
-                    <li data-str="<?php echo $risk; ?>">
-                      <span class="restrict-width"><?php echo $risk; ?></span>
-                    </li>
-                  <?php } ?>
-              </ul>
-            </div>
-            <!-- flex layout -->
-          </td>
-          <td>
-            <div class="flex-layout flex-top flex-left">
-              <ul class="add-options" data-multi="true" data-clickadd="false">
-                  <?php
-                  foreach ($missing_req_risks as $risk) {
-                      ?>
-                    <li data-str="<?php echo $risk; ?>">
-                      <span class="restrict-width"><?php echo $risk; ?></span>
-                    </li>
-                  <?php } ?>
-              </ul>
-            </div>
-            <!-- flex layout -->
-          </td>
-        </tr>
-      </table>
       <div class="search-icon-btn"><i class="oe-i search"></i></div>
       <div class="search-options" style="display:none;">
         <input type="text" class="cols-full js-search-autocomplete" placeholder="search for option (type 'auto-complete' to demo)">

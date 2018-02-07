@@ -77,6 +77,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$noRisksWrapper = this.$element.find('.' + this.options.modelName + '_no_risks_wrapper');
         this.$noRisksFld = this.$element.find('.' + this.options.modelName + '_no_risks');
         this.tableSelector = '.' + this.options.modelName + '_entry_table';
+        this.$popupSelector = $('.flex-item-bottom');
         this.$table = this.$element.find(this.tableSelector);
         this.templateText = this.$element.find('.' + this.options.modelName + '_entry_template').text();
         this.riskIdMap = undefined;
@@ -124,12 +125,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             controller.dedupeRiskSelectors();
         });
 
-        controller.$element.on('click', '.' + controller.options.modelName + '_add_entry', function(e) {
+        this.$popupSelector.on('click', '.js-add-select-search', function(e) {
             e.preventDefault();
             controller.addEntry();
         });
-
-      controller.$table.on('click', '.button.remove', function(e) {
+      controller.$table.on('click', 'i.trash', function(e) {
             e.preventDefault();
             $(e.target).parents('tr').remove();
             controller.updateNoRisksState();
@@ -143,7 +143,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             else {
                 controller.$table.show();
             }
-        })
+        });
     };
     HistoryRisksController.prototype.setPcrRisk = function(container, text)
     {
@@ -183,7 +183,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             data = {};
 
         data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
-        return Mustache.render(
+      return Mustache.render(
             this.templateText,
             data
         );
@@ -198,6 +198,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$table.find('tbody').append(row);
         this.dedupeRiskSelectors();
         this.updateNoRisksState();
+        $('.flex-item-bottom').find('.selected').removeClass('selected');
     };
 
     /**

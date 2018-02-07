@@ -71,17 +71,21 @@ if (!isset($values)) {
         </label>
         <label class="inline highlight">
             <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === (string) HistoryRisksEntry::$PRESENT, array('value' => HistoryRisksEntry::$PRESENT)); ?>
-            yes
+            Yes
         </label>
         <label class="inline highlight">
             <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === (string) HistoryRisksEntry::$NOT_PRESENT, array('value' => HistoryRisksEntry::$NOT_PRESENT)); ?>
-            no
+            No
         </label>
     </td>
     <td>
         <input type="text" name="<?= $field_prefix ?>[comments]" value="<?=$values['comments'] ?>" />
     </td>
-    <td class="edit-column">
-        <button class="button small warning remove" <?php if (!$removable) {?>style="display: none;"<?php } ?>>remove</button>
-    </td>
+    <?php if($removable) : ?>
+      <td>
+        <i class="oe-i trash"></i>
+      </td>
+    <?php else: ?>
+      <td>read only <i class="oe-i info small pad"></i></td>
+    <?php endif; ?>
 </tr>
