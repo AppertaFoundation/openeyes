@@ -48,10 +48,25 @@ class OphTrOperationbooking_ScheduleOperation_PatientUnavailable extends BaseAct
             array('start_date', 'validateEarlierOrEqualDate', 'later_date' => 'end_date'),
             array('reason_id', 'validateReasonIsEnabled',
                     'model' => 'OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason', 'on' => 'insert', ),
+            array('start_date, end_date', 'dateFormatValidator'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, start_date, end_date, reason', 'safe', 'on' => 'search'),
         );
+    }
+
+    //@TODO: move this to some Helper calss
+    public function dateFormatValidator($attribute, $params)
+    {
+        $format_check = preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $this->$attribute);
+        $date_format = DateTime::createFromFormat('Y-m-d', $this->$attribute);
+
+        if( ($date_format && ($date_format->format('Y-m-d') !== $this->$attribute)) || !$format_check){
+
+            if(!$this->hasErrors($attribute)){
+                $this->addError($attribute, $this->getAttributeLabel($attribute) . ': Wrong date format.');
+            }
+        }
     }
 
     /**
