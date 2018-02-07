@@ -18,18 +18,30 @@
 ?>
 
 <div class="element-fields flex-layout full-width element-eyes ">
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-	<div class="element-eye right-eye left side <?php if (!$element->hasRight()) { ?> inactive <?php } ?> " data-side="right">
-		<div class="active-form field-row flex-layout">
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-      <div class="cols-9">
-				<div class="cols-full">
-					<?php echo $form->radioButtons($element, 'right_rapd', array(
+	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'));
+	foreach(['left' => 'right', 'right' => 'left'] as $side => $eye){
+	  $hasEyeFunc = 'has'.ucfirst($eye);
+	?>
+    <div class="element-eye <?=$eye?>-eye <?=$side?> side <?php if (!$element->$hasEyeFunc()) { ?> inactive <?php } ?> " data-side="<?= $eye?>">
+      <div class="active-form field-row flex-layout">
+        <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+        <div class="cols-12">
+          <div class="cols-full">
+            <table class="cols-full">
+              <tbody>
+              <tr>
+                <td>
+                    <?php
+                    $eye_rapd = $eye.'_rapd';
+                    echo $form->radioButtons(
+                        $element,
+                        $eye.'_rapd',
+                        array(
                             0 => 'Not Checked',
                             1 => 'Yes',
                             2 => 'No',
                         ),
-                        ($element->right_rapd !== null) ? $element->right_rapd : 0,
+                        ($element->right_rapd !== null) ? $element->$eye_rapd : 0,
                         false,
                         false,
                         false,
@@ -37,75 +49,68 @@
                         array(
                             'text-align' => 'right',
                             'nowrapper' => false,
-                        ));
-                    ?>
-				</div>
-        <div class="field-row-pad-top" style="display: none;">
-            <?php echo $form->textArea($element, 'right_comments', array('rows' => 1, 'nowrapper' => true), false, array('placeholder' => $element->getAttributeLabel('right_comments'))) ?>
-        </div>
-			</div>
-      <!-- Cols -->
-      <div class="flex-item-bottom">
-        <button class="button js-add-comments" data-input="#pupils-right-comments" type="button">
-          <i class="oe-i comments small-icon"></i>
-        </button>
-        <button class="button hint green js-add-select-search" type="button">
-          <i class="oe-i plus pro-theme"></i>
-        </button>
-      </div>
-      <!--flex bottom-->
-		</div>
-    <!-- active form-->
-		<div class="inactive-form" style="display: none">
-			<div class="add-side">
-				<a href="#">
-					Add right side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-	<div class="element-eye left-eye right side <?php if (!$element->hasLeft()) { ?> inactive <?php } ?>" data-side="left">
-		<div class="active-form field-row flex-layout">
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-      <div class="cols-9">
-				<div class="cols-full">
-					<?php echo $form->radioButtons($element, 'left_rapd', array(
-                            0 => 'Not Checked',
-                            1 => 'Yes',
-                            2 => 'No',
                         ),
-                        ($element->left_rapd !== null) ? $element->left_rapd : 0,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array(
-                            'text-align' => 'right',
-                            'nowrapper' => false,
-                        ));
+                        array('label' => 2)
+                    );
                     ?>
-				</div>
-        <div class="field-row-pad-top" style="display:none">
-            <?php echo $form->textArea($element, 'left_comments', array('rows' => 1, 'nowrapper' => true), false, array('placeholder' => $element->getAttributeLabel('left_comments')) ); ?>
+                </td>
+                <td class="top">
+                  <button class="button js-add-comments" data-input="#pupils-<?=$eye?>-comments" type="button">
+                    <i class="oe-i comments small-icon"></i>
+                  </button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <div id="<?=$eye?>-eye-comments" class="field-row-pad-top cols-12" style="display: none;">
+                <?php
+                echo $form->textArea(
+                    $element,
+                    $eye.'_comments',
+                    array('rows' => 2, 'nowrapper' => true),
+                    false,
+                    array('placeholder' => $element->getAttributeLabel($eye.'_comments')),
+                    array('field' => 12)
+                )
+                ?>
+            </div>
+          </div>
         </div>
-			</div>
-      <!-- Cols -->
-      <div class="flex-item-bottom">
-        <button class="button js-add-comments" data-input="#pupils-right-comments" type="button">
-          <i class="oe-i comments small-icon"></i>
-        </button>
-        <button class="button hint green js-add-select-search" type="button">
-          <i class="oe-i plus pro-theme"></i>
-        </button>
       </div>
-      <!--flex bottom-->
-		</div>
-		<div class="inactive-form" style="display: none">
-			<div class="add-side">
-				<a href="#">
-					Add left side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
+      <!-- active form-->
+      <div class="inactive-form" style="display: none">
+        <div class="add-side">
+          <a href="#">
+            Add right side <span class="icon-add-side"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  <?php
+	}
+	?>
 </div>
+<script type="text/javascript">
+    var visual_function = $('.edit-Visual.Function');
+
+    var left_eye = visual_function.find('.left-eye');
+    var left_eye_comments = left_eye.find('#left-eye-comments');
+    if (left_eye_comments.text().trim().length){
+        left_eye_comments.show();
+    }else{
+        left_eye.find('.js-add-comments').on('click', function () {
+            left_eye_comments.show();
+        });
+    }
+
+    var right_eye = visual_function.find('.right-eye');
+    var right_eye_comments = right_eye.find('#right-eye-comments');
+    console.log(right_eye_comments.text().trim().length);
+    if(right_eye_comments.text().trim().length){
+        right_eye_comments.show();
+    }else{
+        right_eye.find('.js-add-comments').on('click', function () {
+            right_eye_comments.show();
+        });
+    }
+</script>
