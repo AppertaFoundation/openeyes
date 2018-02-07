@@ -15,11 +15,11 @@
 $base_name = CHtml::modelName($value) . "[{$side}_values][{$index}]";
 ?>
 <tr data-index="<?= $index ?>" data-side="<?php echo $side ?>" data-index="<?php echo $index ?>">
-  <td><?= CHtml::textField("{$base_name}[reading_time]", $time, array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+  <td><?= CHtml::textField("{$base_name}[reading_time]", $time, array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-11')) ?>
   <td<?php if ($value->instrument && $value->instrument->scale) {
       ?> style="display: none"<?php
   } ?>>
-      <?= $form->dropDownList($value, 'reading_id', 'OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Reading', array('nowrapper' => true, 'data-base-name' => $base_name, 'name' => "{$base_name}[reading_id]", 'prompt' => '--')) ?>
+      <?= $form->dropDownList($value, 'reading_id', 'OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Reading', array('nowrapper' => true, 'data-base-name' => $base_name, 'name' => "{$base_name}[reading_id]", 'class' => 'cols-11', 'prompt' => '--')) ?>
   </td>
   <td class="scale_values"<?php if (!$value->instrument || !$value->instrument->scale) {
       ?> style="display: none"<?php
