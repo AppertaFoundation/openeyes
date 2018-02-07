@@ -18,6 +18,8 @@
 
 use OEModule\OphCiExamination\models;
 
+$comments = $side . '_comments';
+
 ?>
 <div class="cols-9">
   <table id="<?= CHtml::modelName($element) . '_readings_' . $side ?>"
@@ -52,12 +54,12 @@ use OEModule\OphCiExamination\models;
     ?>
     </tbody>
   </table>
-  <div id="iop-<?php echo $side; ?>-comments" class="field-row-pad-top" style="display: none;">
+  <div id="iop-<?php echo $side; ?>-comments" class="field-row-pad-top" <?= (!$element->$comments) ? 'style="display: none;"' : ''; ?>>
       <?= $form->textArea($element, "{$side}_comments", array('nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'Comments', 'style' => 'overflow-x: hidden; word-wrap: break-word;')) ?>
   </div>
 </div>
 <div class="flex-item-bottom">
-  <button type="button" class="button js-add-comments" data-input="#iop-<?php echo $side; ?>-comments">
+  <button type="button" class="button js-add-comments" data-input="#iop-<?php echo $side; ?>-comments" <?= $element->$comments ? 'style="display: none;"' : ''; ?>>
     <i class="oe-i comments small-icon"></i>
   </button>
   <button type="button" class="button hint green js-add-select-search">
