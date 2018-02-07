@@ -108,7 +108,7 @@ class HistoryMedicationsEntry extends \BaseElement
      */
     protected function updateStateProperties()
     {
-        if ($this->end_date !== null) {
+        if ($this->end_date !== null && $this->end_date < date('Y-m-d')) {
             $this->originallyStopped = true;
         }
         if ($this->prescription_item_id) {
