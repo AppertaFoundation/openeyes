@@ -29,13 +29,13 @@ $numHash = crc32($element->getElementTypeName());
 ?>
 
 <section
-    class="sub-element <?php echo $element->elementType->class_name ?> on-demand<?php if (@$ondemand) { ?> hidden<?php } ?><?php if ($this->action->id == 'update' && !$element->event_id) { ?> missing<?php } ?>"
+    class="element <?php echo $element->elementType->class_name ?> on-demand<?php if (@$ondemand) { ?> hidden<?php } ?><?php if ($this->action->id == 'update' && !$element->event_id) { ?> missing<?php } ?>"
     data-element-type-id="<?php echo $element->elementType->id ?>"
     data-element-type-class="<?php echo $element->elementType->class_name ?>"
     data-element-type-name="<?php echo $element->elementType->name ?>"
     data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
-  <header class="sub-element-header">
+  <header class="element-header">
     <h4 class="sub-element-title"><?php echo $element->getElementTypeName() ?></h4>
   </header>
 

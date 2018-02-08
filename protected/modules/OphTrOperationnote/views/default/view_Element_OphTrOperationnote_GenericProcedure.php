@@ -17,12 +17,12 @@
  */
 ?>
 
-<section class="sub-element">
-  <header class="sub-element-header">
-    <h3 class="sub-element-title"><?php echo $element->getElementTypeName() ?></h3>
+<section class="element">
+  <header class="element-header">
+    <h3 class="element-title"><?php echo $element->getElementTypeName() ?></h3>
   </header>
 
-  <div class="sub-element-data">
+  <div class="-element-data">
     <div class="row">
       <div class="cols-12 column">
         <div class="data-value<?php if (!$element->procedure) { ?> none<?php } ?>">

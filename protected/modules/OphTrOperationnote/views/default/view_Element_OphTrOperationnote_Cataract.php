@@ -168,38 +168,78 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="cols-4 column">
-        <h3 class="data-label">Cataract report</h3>
-        <div class="data-value highlight">
-            <?= nl2br(CHtml::encode($element->report)); ?>
-        </div>
-      </div>
-      <div class="cols-4 column">
-        <h3 class="data-label">Agent(s)</h3>
-        <div class="data-value highlight">
-            <?php if (!$element->operative_devices) { ?>
-              None
-            <?php } else { ?>
-                <?php foreach ($element->operative_devices as $device) { ?>
-                    <?php echo $device->name ?><br/>
-                <?php } ?>
-            <?php } ?>
-        </div>
-      </div>
-      <div class="cols-3 column left">
-        <h3 class="data-label">Cataract complications</h3>
-        <div class="data-value highlight">
-            <?php if (!$element->complications && !$element->complication_notes) { ?>
-              None
-            <?php } else { ?>
-                <?php foreach ($element->complications as $complication) { ?>
-                    <?php echo $complication->name ?><br/>
-                <?php } ?>
-                <?php echo CHtml::encode($element->complication_notes) ?>
-            <?php } ?>
+  </section>
+</section>
+
+
+<div class="flex-layout flex-left flex-stretch">
+  <section class="element view tile priority">
+    <header class="element-header">
+      <h3 class="element-title">Cataract report</h3>
+    </header>
+    <div class="element-data full-width">
+      <div class="data-row">
+        <div class="data-value">
+          <div class="tile-data-overflow">
+              <?= nl2br(CHtml::encode($element->report)); ?>
+          </div>
         </div>
       </div>
     </div>
   </section>
-</section>
+
+  <section class="element view tile priority view-agents">
+    <header class="element-header">
+      <h3 class="element-title">Agent(s)</h3>
+    </header>
+    <div class="element-data full-width">
+      <div class="data-row">
+        <div class="data-value">
+          <div class="tile-data-overflow">
+              <?php if (!$element->operative_devices) { ?>
+                None
+              <?php } else { ?>
+                <table class="large last-left">
+                  <tbody>
+                  <?php foreach ($element->operative_devices as $device) { ?>
+                    <tr>
+                      <td><?php echo $device->name ?></td>
+                    </tr>
+                  <?php } ?>
+                  </tbody>
+                </table>
+              <?php } ?>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="element view tile priority view-cataract-complications">
+    <header class="element-header">
+      <h3 class="element-title">Cataract complications</h3>
+    </header>
+    <div class="element-data full-width">
+      <div class="data-row">
+        <div class="data-value">
+          <div class="tile-data-overflow">
+              <?php if (!$element->complications && !$element->complication_notes) { ?>
+                None
+              <?php } else { ?>
+                <table class="large last-left">
+                  <tbody>
+                  <?php foreach ($element->complications as $complication) { ?>
+                    <tr>
+                      <td><?php echo $complication->name ?></td>
+                    </tr>
+                  <?php } ?>
+                  </tbody>
+                </table>
+                  <?php echo CHtml::encode($element->complication_notes) ?>
+              <?php } ?>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
