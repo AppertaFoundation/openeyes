@@ -17,27 +17,72 @@
  */
 ?>
 
-
-<section class="element">
+<section class="element view full">
   <header class="element-header">
-    <h3 class="element-title">Other information</h3>
+    <h3 class="element-title">Personnel</h3>
   </header>
-  <section class="element-fields full-width">
-    <div class="row">
-      <div class="cols-2 column">
-        <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('surgeon_id')) ?></h4>
-        <div class="data-value"><?php echo $element->surgeon->fullNameAndTitle ?></div>
-      </div>
-      <div class="cols-2 column">
-        <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('assistant_id')) ?></h4>
-        <div
-            class="data-value<?php if (!$element->assistant) { ?> none<?php } ?>"><?php echo $element->assistant ? $element->assistant->fullNameAndTitle : 'None' ?></div>
-      </div>
-      <div class="cols-2 column">
-        <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('supervising_surgeon_id')) ?></h4>
-        <div
-            class="data-value<?php if (!$element->supervising_surgeon) { ?> none<?php } ?>"><?php echo $element->supervising_surgeon ? $element->supervising_surgeon->fullNameAndTitle : 'None' ?></div>
+  <div class="element-data full-width">
+
+    <div class="data-row">
+      <div class="data-value flex-layout flex-top">
+        <div class="cols-11">
+
+          <div class="cols-11" id="js-listview-info-pro" style="">
+            <ul class="dslash-list large-text">
+              <li><?php echo $element->surgeon->fullNameAndTitle ?></li>
+              <li>
+                <span class="fade">
+                    <?php echo CHtml::encode($element->getAttributeLabel('assistant_id')) ?>
+                  : <?php echo $element->assistant ? $element->assistant->fullNameAndTitle : 'None' ?>
+                </span>
+              </li>
+              <li>
+                <span class="fade">
+                    <?php echo CHtml::encode($element->getAttributeLabel('supervising_surgeon_id')) ?>
+                  : <?php echo $element->supervising_surgeon ? $element->supervising_surgeon->fullNameAndTitle : 'None' ?>
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="col-6" id="js-listview-info-full" style="display: none">
+            <table class="last-left">
+              <thead>
+              <tr>
+                <th class="cols-4"><?php echo CHtml::encode($element->getAttributeLabel('surgeon_id')) ?></th>
+                <th class="cols-4"><?php echo CHtml::encode($element->getAttributeLabel('assistant_id')) ?></th>
+                <th class="cols-4"><?php echo CHtml::encode($element->getAttributeLabel('supervising_surgeon_id')) ?></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>
+                  <span class="large-text">
+                      <?php echo $element->surgeon->fullNameAndTitle ?>
+                  </span>
+                </td>
+                <td>
+                  <span class="large-text">
+                        <?php echo $element->assistant ? $element->assistant->fullNameAndTitle : 'None' ?>
+                  </span>
+                </td>
+                <td>
+                  <span class="large-text">
+                      <?php echo $element->supervising_surgeon ? $element->supervising_surgeon->fullNameAndTitle : 'None' ?>
+                  </span>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+        <div>
+          <i class="oe-i small expand js-listview-expand-btn" data-list="info"></i>
+        </div>
+
       </div>
     </div>
-  </section>
+  </div>
 </section>
