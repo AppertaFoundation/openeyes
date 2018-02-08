@@ -60,12 +60,12 @@ $widgetOptionsJson = json_encode(array(
 <?php if (!@$htmlOptions['nowrapper']) { ?>
 <div id="<?php echo $div_id ?>"
      class="<?php echo $div_class ?> row field-row widget" <?php if ($hidden) { ?>hidden<?php } ?>>
-  <div class="large-<?php echo $layoutColumns['label']; ?> column">
+  <div class="cols-<?php echo $layoutColumns['label']; ?> column">
     <label for="<?php echo $field ?>">
         <?php echo @$htmlOptions['label'] ?>:
     </label>
   </div>
-  <div class="large-<?php echo $layoutColumns['field']; ?> column end">
+  <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
       <?php } ?>
     <div class="multi-select<?php if (!$inline) {
         echo ' multi-select-list';

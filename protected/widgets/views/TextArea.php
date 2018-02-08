@@ -18,7 +18,7 @@
 ?>
 <?php if (!$nowrapper) {?>
 	<div id="div_<?php echo CHtml::modelName($element)?>_<?php echo $field?>" class="row field-row"<?php if ($hidden) echo 'style="display: none"'; ?>>
-		<div class="cols-<?php echo $layoutColumns['label']?>">
+		<div class="cols-<?php echo $layoutColumns['label']?> column">
 			<label for="<?php echo CHtml::modelName($element)."_$field"?>"><?php if ($label) echo CHtml::encode($element->getAttributeLabel($field)).':'?></label>
 		</div>
 		<div class="cols-<?php echo $layoutColumns['field']?> column">
