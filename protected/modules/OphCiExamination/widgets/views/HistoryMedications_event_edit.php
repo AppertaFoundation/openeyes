@@ -33,7 +33,8 @@ $element_errors = $element->getErrors();
         <thead>
         <tr>
             <th>
-              <button class="button small" type="button">Hide stopped</button>
+              <button class="button small show-stopped" type="button">show stopped</button>
+              <button class="button small hide-stopped" style="display: none;" type="button">Hide stopped</button>
             </th>
             <th></th>
             <th>Start</th>
