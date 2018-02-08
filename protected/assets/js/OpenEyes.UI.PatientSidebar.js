@@ -257,9 +257,7 @@
           .map(function() {
               return $(this).data('element-type-class');
           }).get();
-
-        console.log(self.patient_open_elements);
-    };
+        };
 
     /**
      *  Build the array of elements that have errors using the open elements as a loop
