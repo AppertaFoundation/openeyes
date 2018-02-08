@@ -81,7 +81,7 @@
       <div class="inactive-form" style="display: none">
         <div class="add-side">
           <a href="#">
-            Add right side <span class="icon-add-side"></span>
+            Add <?=$side?> side <span class="icon-add-side"></span>
           </a>
         </div>
       </div>
