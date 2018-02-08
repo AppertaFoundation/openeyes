@@ -141,3 +141,12 @@ if (isset($values['date']) && strtotime($values['date'])) {
         </td>
     <?php endif; ?>
 </tr>
+
+<script>
+  $(document).ready(function(){
+    pickmeup('.datepicker1', {
+      format: 'd-m-Y',
+      hide_on_select: true
+    })
+  });
+</script>

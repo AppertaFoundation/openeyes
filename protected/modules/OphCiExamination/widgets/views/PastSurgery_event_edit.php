@@ -83,6 +83,7 @@ $model_name = CHtml::modelName($element);
     <button class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
+
     <div  class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
       <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
       <div class="select-icon-btn"><i class="oe-i menu selected"></i></div>
@@ -91,7 +92,7 @@ $model_name = CHtml::modelName($element);
         <tr>
           <td>
             <div class="flex-layout flex-top flex-left">
-              <ul class="add-options" data-multi="true" data-clickadd="false">
+              <ul id="past-surgery-option" class="add-options" data-multi="true" data-clickadd="false">
                   <?php
                       $op_list = CommonPreviousOperation::model()->findAll(array('order' => 'display_order asc'));
                       foreach ($op_list as $op_item) {
@@ -106,8 +107,11 @@ $model_name = CHtml::modelName($element);
           </td>
           <td>
             <div class="flex-layout flex-top flex-left">
-              <ul class="add-options" data-multi="true" data-clickadd="false">
-
+              <ul id="past-surgery-side-options" class="add-options" data-multi="true" data-clickadd="false">
+                <li data-str="Left" data-id=""><span class="restrict-width">Left</span></li>
+                <li data-str="Right" data-id=""><span class="restrict-width">Right</span></li>
+                <li data-str="Both" data-id=""><span class="restrict-width">Both</span></li>
+                <li data-str="N/A" data-id=""><span class="restrict-width">N/A</span></li>
               </ul>
             </div>
             <!-- flex layout -->

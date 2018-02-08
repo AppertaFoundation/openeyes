@@ -81,7 +81,7 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
             data = {};
 
         data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
-
+        data['operation'] = $('#past-surgery-option').find('.selected').data('str');
         return Mustache.render(
             template = this.templateText,
             data
@@ -95,6 +95,7 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
     {
         var row = this.createRow();
         this.$table.find('tbody').append(row);
+        this.$popupSelector.find('.selected').removeClass('selected');
     };
 
     /**
