@@ -21,6 +21,10 @@
 
 if (isset($entry->start_date) && strtotime($entry->start_date)) {
     list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $entry->start_date);
+}else {
+    $start_sel_day = $start_sel_month = null;
+    $start_sel_year = date('Y');
+//    $entry->start_date = $start_sel_year . '-00-00'; // default to the year displayed in the select dropdowns
 }
 if (isset($entry->end_date) && strtotime($entry->end_date)) {
     list($end_sel_year, $end_sel_month, $end_sel_day) = explode('-', $entry->end_date);
@@ -106,23 +110,23 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
                   array('empty' => '-Select-', 'class'=>'cols-3 admin-route-options', 'style'=>$entry->routeOptions()?'':'none' ));  ?>
 
     </td>
-    <td class="nowrap">
+    <td>
+      <fieldset class="row field-row fuzzy-date">
       <?php if (!$entry->start_date) { ?>
-        <input class="datepicker1" style="width:90px" placeholder="dd/mm/yyyy">
+         <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $start_sel_day, 'sel_month' => $start_sel_month, 'sel_year' => $start_sel_year)) ?>
       <?php } else { ?>
         <i class="oe-i start small pad"></i>
           <?=Helper::formatFuzzyDate($entry->start_date) ?>
       <?php } ?>
     <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
     <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?=$entry->originallyStopped ?>" />
-    <fieldset class="row field-row fuzzy-date">
       <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" />
     </fieldset>
     </td>
   <td>
     <fieldset class="row field-row fuzzy-date">
         <?php if (!$entry->end_date) { ?>
-          <input class="datepicker2" style="width:90px" placeholder="dd/mm/yyyy">
+          <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
         <?php } else { ?>
           <i class="oe-i start small pad"></i>
             <?=Helper::formatFuzzyDate($entry->end_date) ?>
