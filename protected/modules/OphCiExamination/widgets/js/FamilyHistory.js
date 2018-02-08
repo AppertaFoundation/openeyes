@@ -33,7 +33,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$commentFld = $('#' + this.options.modelName + '_comments');
         this.tableSelector = '#' + this.options.modelName + '_entry_table';
         this.$table = $(this.tableSelector);
-        this.$popupSelector = $('.flex-item-bottom');
+        this.$popupSelector = $('#family-history-popup');
         this.templateText = $('#' + this.options.modelName + '_entry_template').text();
         this.initialiseTriggers();
 
