@@ -119,6 +119,11 @@ class BaseEventTypeController extends BaseModuleController
     public $attachment_print_title = null;
 
     /**
+     * @var int $element_tiles_wide The number of tiles that can be rendered in a single row
+     */
+    protected $element_tiles_wide = 3;
+
+    /**
      * Set to false if the event list should remain on the sidebar when creating/editing the event
      *
      * @var bool
@@ -1597,9 +1602,28 @@ class BaseEventTypeController extends BaseModuleController
             $this->renderPartial('//patient/event_date', array('form' => $form));
         }
 
-        foreach ($this->getElements() as $element) {
-            Yii::log("element: ".$element->elementType->name);
-            $this->renderElement($element, $action, $form, $data);
+        $elements = $this->getElements();
+        $element_count = count($elements);
+
+        for ($element_index = 0; $element_index < $element_count;) {
+            $element = $elements[$element_index];
+
+            if ($element->getElementType()->tile_size) {
+                $this->beginWidget('TiledEventElementWidget');
+                for ($tile_index = 0;
+                     $element_index < $element_count
+                     && $elements[$element_index]->getElementType()->tile_size
+                     && $tile_index + $elements[$element_index]->getElementType()->tile_size <= $this->element_tiles_wide;
+                     $tile_index += $elements[$element_index]->getElementType()->tile_size, ++$element_index) {
+                    $element = $elements[$element_index];
+                    $this->renderElement($element, $action, $form, $data);
+
+                }
+                $this->endWidget();
+            } else {
+                $this->renderElement($element, $action, $form, $data);
+                ++$element_index;
+            }
         }
     }
 

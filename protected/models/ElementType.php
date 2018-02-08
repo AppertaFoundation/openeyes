@@ -25,6 +25,7 @@
  * @property string $name
  * @property string $class_name
  * @property int $parent_element_type_id
+ * @property int $tile_size
  *
  * The followings are the available model relations:
  * @property ElementType $parent_element_type
@@ -63,7 +64,7 @@ class ElementType extends BaseActiveRecordVersioned
             array('name, class_name', 'length', 'max' => 255),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, class_name, parent_element_type_id', 'safe', 'on' => 'search'),
+            array('id, name, class_name, parent_element_type_id, tile_size', 'safe', 'on' => 'search'),
         );
     }
 
