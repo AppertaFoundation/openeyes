@@ -348,13 +348,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       if (value != "") {
           $.getJSON(this.options.routeOptionSource, {route_id: value}, function(data) {
               if (data.length) {
-                  var $select = $routeOptionWrapper.find('select');
+                  var $select = $routeOptionWrapper;
                   $.each(data, function(i, item) {
-                      $select.append('<option value="' + item.id +'">' + item.name + '</option>');
+                    $select.append('<option value="' + item.id +'">' + item.name + '</option>');
                   });
                   $routeOptionWrapper.show();
               }
-          })
+          });
       }
   };
 
