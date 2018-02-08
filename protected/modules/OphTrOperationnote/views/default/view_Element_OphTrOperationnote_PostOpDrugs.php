@@ -17,29 +17,31 @@
  */
 ?>
 
-
-<section class="element">
+<section class="element view tile  view-per-operative-drugs">
   <header class="element-header">
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
-  <section class="element-fields full-width">
+  <div class="element-data full-width">
+
     <div class="data-row">
       <div class="data-value <?php if (!$element->drugs) { ?> none<?php } ?>">
-          <?php if (!$element->drugs) { ?>
-            None
-          <?php } else { ?>
-            <table>
-              <tbody>
-              <?php foreach ($element->drugs as $drug) { ?>
-                <tr>
-                  <td><?php echo $drug->name ?></td>
-                  <td></td>
-                </tr>
-              <?php } ?>
-              </tbody>
-            </table>
-          <?php } ?>
+        <div class="tile-data-overflow">
+            <?php if (!$element->drugs) { ?>
+              None
+            <?php } else { ?>
+              <table class="large last-left">
+                <tbody>
+                <?php foreach ($element->drugs as $drug) { ?>
+                  <tr>
+                    <td><?php echo $drug->name ?></td>
+                  </tr>
+                <?php } ?>
+                </tbody>
+              </table>
+            <?php } ?>
+        </div>
       </div>
     </div>
-  </section>
+
+  </div>
 </section>

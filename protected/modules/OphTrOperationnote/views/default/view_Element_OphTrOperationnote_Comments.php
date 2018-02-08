@@ -17,30 +17,35 @@
  */
 ?>
 
-<section class="element">
-  <section class="element-fields full-width">
-    <div class="row">
-      <div class="cols-4 column">
-        <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('postop_instructions')) ?></h4>
-        <div
-            class="data-value<?php if (!$element->postop_instructions) { ?> none<?php } ?>"><?php echo CHtml::encode($element->postop_instructions) ? Yii::app()->format->Ntext($element->postop_instructions) : 'None' ?></div>
+
+<section class="element view tile">
+  <header class="element-header">
+    <h3 class="element-title"><?php echo CHtml::encode($element->getAttributeLabel('postop_instructions')) ?></h3>
+  </header>
+  <div class="element-data full-width">
+    <div class="data-row">
+      <div class="data-value<?php if (!$element->postop_instructions) { ?> none<?php } ?>">
+          <?php echo CHtml::encode($element->postop_instructions) ? Yii::app()->format->Ntext($element->postop_instructions) : 'None' ?>
       </div>
-      <div class="cols-8 column end">
-        <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('comments')) ?></h4>
-        <div class="data-value<?php if (!$element->comments) { ?> none<?php } ?>">
-            <?php echo CHtml::encode($element->comments) ? Yii::app()->format->Ntext($element->comments) : 'None' ?>
-        </div>
+    </div>
+    <div class="data-row">
+      <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('comments')) ?></h4>
+      <div class="data-value<?php if (!$element->comments) { ?> none<?php } ?>">
+          <?php echo CHtml::encode($element->comments) ? Yii::app()->format->Ntext($element->comments) : 'None' ?>
       </div>
     </div>
   </div>
-  <div class="element-data">
-    <div class="row">
-      <div class="cols-4 column">
-        <h4 class="data-label">Site</h4>
-        <div
-            class="data-value<?php if (!$site = $this->findBookingSite()) { ?> none<?php } ?>"><?php echo $site ? $site->name : 'N/A (Emergency)' ?></div>
+</section>
+
+<section class="element view tile">
+  <header class="element-header">
+    <h3 class="element-title">Site</h3>
+  </header>
+  <div class="element-data full-width">
+    <div class="data-row">
+      <div class="data-value<?php if (!$site = $this->findBookingSite()) { ?> none<?php } ?>">
+          <?php echo $site ? $site->name : 'N/A (Emergency)' ?>
       </div>
     </div>
   </div>
-  </section>
 </section>
