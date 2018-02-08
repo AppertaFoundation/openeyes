@@ -23,7 +23,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.options = $.extend(true, {}, HistoryMedicationsController._defaultOptions, options);
     this.$element = this.options.element;
     this.$table = this.$element.find('table');
-    this.$popup = this.$element.find('.flex-item-bottom');
+    this.$popup = this.$element.find('#medication-history-popup');
     this.templateText = this.$element.find('.entry-template').text();
     this.drugsByRisk = {};
     this.initialiseFilters();
