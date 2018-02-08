@@ -79,11 +79,11 @@ $model_name = CHtml::modelName($element);
         ?>
         </tbody>
     </table>
-  <div class="flex-item-bottom">
+  <div class="flex-item-bottom" id="add-to-past-surgery" >
     <button class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
-    <div id="add-to-past-surgery" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
+    <div  class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
       <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
       <div class="select-icon-btn"><i class="oe-i menu selected"></i></div>
       <button class="button hint green add-icon-btn"><i class="oe-i plus pro-theme"></i></button>

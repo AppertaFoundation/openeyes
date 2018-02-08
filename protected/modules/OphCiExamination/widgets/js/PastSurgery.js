@@ -29,7 +29,7 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         this.tableSelector = '#' + this.options.modelName + '_operation_table';
         this.$table = $('#' + this.options.modelName + '_operation_table');
         this.fuzyDateWrapperSelector = this.options.modelName + '_fuzzy_date';
-
+        this.$popupSelector = $('#add-to-past-surgery');
         this.templateText = $("#OEModule_OphCiExamination_models_PastSurgery_operation_template").text();
 
         this.initialiseTriggers();
@@ -43,12 +43,12 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
     PreviousSurgeryController.prototype.initialiseTriggers = function(){
 
         var controller = this;
-        $('#' + controller.options.modelName + '_add_entry').on('click', function(e) {
+        controller.$popupSelector.on('click','.add-icon-btn', function(e) {
             e.preventDefault();
             controller.addEntry();
         });
 
-        controller.$table.on('click', 'button.remove', function(e) {
+        controller.$table.on('click', 'td.trash', function(e) {
             e.preventDefault();
             $(e.target).parents('tr').remove();
         });
