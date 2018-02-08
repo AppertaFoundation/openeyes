@@ -101,18 +101,6 @@ $element_Type = $element->getElementType();
     removeElement(parent);
   });
 
-  $('.remove-side').on('click',function (e) {
-    e.preventDefault();
-    var parent = $(this).parent().parent();
-    removeElement(parent);
-  });
-
-  $('.remove-circle').on('click', function(e){
-    e.preventDefault();
-    var parent = $(this).parent().parent();
-    parent.hide();
-  });
-
   $('.js-add-select-search').on('click',function (e) {
     e.preventDefault();
     $(e.target).parent().find('.oe-add-select-search').show();
@@ -139,8 +127,14 @@ $element_Type = $element->getElementType();
     }
   });
 
-  $('js-add-comments').on('click', function (e) {
+  $(".oe-add-select-search .close-icon-btn").click(function(e) {
+      $(e.target).closest('#add-to-IOP').hide();
+  });
+
+  $('.js-add-comments').on('click', function (e) {
     e.preventDefault();
-    $(e.target).parent().find('js-input-comments').show();
+    var container = $(e.target).attr('data-input');
+    $(container).show();
+    $(e.target).hide();
   });
 </script>

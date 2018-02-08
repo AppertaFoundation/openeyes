@@ -137,6 +137,7 @@
         $(document).on('click', '<?= $button_selector ?>', function () {
             newEventDialog = new OpenEyes.UI.Dialog.NewEvent({
                 id: 'add-new-event-dialog',
+                    class: 'oe-create-event-popup',
                 viewSubspecialtyId: <?= @$view_subspecialty ? $view_subspecialty->id : 'undefined' ?>,
                 patientId: <?= $patient_id ?>,
                 userSubspecialtyId: '<?= $context_firm->getSubspecialtyID() ?: 'SS'; ?>',

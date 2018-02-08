@@ -51,27 +51,11 @@ $(document).ready(function () {
 		return false;
 	}
 
-	function displayAdder(e) {
-		$(e.target).siblings('#add-to-IOP').show();
-	}
-
-	$(".edit-Intraocular .js-add-select-search").click(displayAdder);
     $(".right-eye #add-to-IOP .add-options li").click({side: 'right'}, addReading);
     $(".left-eye #add-to-IOP .add-options li").click({side: 'left'}, addReading);
 
 	$("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_right").on("click", "i.trash", null, deleteReading);
 	$("#OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_readings_left").on("click", "i.trash", null, deleteReading);
-
-	$(".edit-Intraocular .close-icon-btn").click(function(e) {
-		$(e.target).closest('#add-to-IOP').hide();
-	});
-
-    $(".edit-Intraocular .js-add-comments").click(function(e) {
-    	var elem = $(e.target).attr('data-input');
-
-    	$(elem).show();
-    	$(e.target).hide();
-	});
 
 	$('select.IOPinstrument').die('change').live('change',function(e) {
 		e.preventDefault();

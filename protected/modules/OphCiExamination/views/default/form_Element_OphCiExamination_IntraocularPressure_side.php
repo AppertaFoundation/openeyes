@@ -54,7 +54,7 @@ $comments = $side . '_comments';
     ?>
     </tbody>
   </table>
-  <div id="iop-<?php echo $side; ?>-comments" class="field-row-pad-top" <?= (!$element->$comments) ? 'style="display: none;"' : ''; ?>>
+  <div id="iop-<?php echo $side; ?>-comments" class="js-input-comments field-row-pad-top" <?= (!$element->$comments) ? 'style="display: none;"' : ''; ?>>
       <?= $form->textArea($element, "{$side}_comments", array('nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'Comments', 'style' => 'overflow-x: hidden; word-wrap: break-word;')) ?>
   </div>
 </div>
