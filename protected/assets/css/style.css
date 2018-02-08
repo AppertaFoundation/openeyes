@@ -3232,6 +3232,9 @@ table.grid tr:last-child {
 table.grid th, table.grid td {
   border-right: 1px solid #CCD;
 }
+table.grid.comfortable tr td {
+  padding:10px;
+}
 /* line 364, ../sass/openeyes/components/_tables.scss */
 table.grid th:last-child,
 table.grid td:last-child {
