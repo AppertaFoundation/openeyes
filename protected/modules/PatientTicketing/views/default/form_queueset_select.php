@@ -26,6 +26,7 @@
                         'class' => 'row',
                 ),
                 'enableAjaxValidation' => false,
+                'method' => 'post'
         ));
 ?>
 
@@ -33,9 +34,6 @@
 	<div class="panel">
 		<div id="queueset-select-toggle-wrapper"<?php if (!$queueset) {?> style="display: none;"<?php }?>><button class="secondary small" id="queueset-select-toggle">Change <?=$category->name?></button></div>
 		<div id="queueset-form" class="row field-row"<?php if ($queueset) {?> style="display: none;"<?php }?>>
-			<?php if (!$queueset) {?>
-			<input hidden name="select_queue_set" value="1">
-			<?php } ?>
 			<div class="large-2 column">Select <?= $category->name ?>:</div>
 			<div class="large-3 column"><?php echo CHtml::dropDownList('queueset_id', ($queueset ? $queueset->getId() : null), $queueset_list, array('empty' => '- Please Select -'))?></div>
 			<div class="large-2 column end">
