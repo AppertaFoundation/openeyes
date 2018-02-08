@@ -128,7 +128,7 @@ $element_Type = $element->getElementType();
   });
 
   $(".oe-add-select-search .close-icon-btn").click(function(e) {
-      $(e.target).closest('#add-to-IOP').hide();
+      $(e.target).closest('.oe-add-select-search').hide();
   });
 
   $('.js-add-comments').on('click', function (e) {
