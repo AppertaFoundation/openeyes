@@ -31,7 +31,7 @@
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
-  <table id="<?= $model_name ?>_entry_table" class="cols-10 <?=$element->no_family_history_date ? 'hidden' :''?>">
+  <table id="<?= $model_name ?>_entry_table" class="cols-10 <?= !count($element->entries) ? 'hidden' :''?>">
       <thead>
       <tr>
           <th>Relative</th>

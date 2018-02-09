@@ -72,6 +72,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         this.$popupSelector.on('click', '.add-icon-btn', function(e) {
             e.preventDefault();
+            if (controller.$table.hasClass('hidden')){
+                controller.$table.removeClass('hidden');
+                controller.$table.show();
+
+            }
             controller.addEntry();
         });
 
@@ -86,7 +91,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 controller.$table.hide();
             }
             else {
-                controller.$table.show();
             }
         });
     };
@@ -132,6 +136,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         if (this.$table.find('tbody tr').length === 0) {
             this.$noHistoryWrapper.show();
+            this.$table.hide();
         } else {
             this.hideNoHistory();
         }
