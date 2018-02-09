@@ -87,6 +87,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     // adding entries
     controller.$popup.on('click', controller.options.addButtonSelector, function(e) {
       e.preventDefault();
+      controller.$table.find('thead').show();
       controller.addEntry();
     });
 

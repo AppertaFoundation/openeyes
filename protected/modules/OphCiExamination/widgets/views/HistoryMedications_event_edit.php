@@ -30,17 +30,17 @@ $element_errors = $element->getErrors();
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <table id="<?= $model_name ?>_entry_table" <?php echo $element_errors ? 'class="highlighted-error"' : '' ?>>
-        <thead>
+        <thead class="row" style= <?php echo !sizeof($element->entries)?  'display:none': ''; ?> >
         <tr>
-            <th>
+            <th class="cols-2">
               <button class="button small show-stopped" type="button">show stopped</button>
-              <button class="button small hide-stopped" style="display: none;" type="button">Hide stopped</button>
+              <button class="button small hide-stopped" type="button" style="display: none;">Hide stopped</button>
             </th>
-            <th></th>
-            <th>Start</th>
-            <th>Stopped(Optional)</th>
-            <th>Reason</th>
-            <th></th>
+            <th class="cols-2"></th>
+            <th class="cols-3">Start</th>
+            <th class="cols-3">Stopped(Optional)</th>
+            <th class="cols-2">Reason</th>
+            <th class="cols-2"></th>
         </tr>
         </thead>
         <tbody>
@@ -80,7 +80,6 @@ $element_errors = $element->getErrors();
         ?>
         </tbody>
     </table>
-
   <div class="flex-item-bottom" id="medication-history-popup">
     <button class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
