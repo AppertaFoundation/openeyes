@@ -25,7 +25,7 @@
     <div class="element-eye <?=$eye?>-eye <?=$side?> side <?php if (!$element->$hasEyeFunc()) { ?> inactive <?php } ?> " data-side="<?= $eye?>">
       <div class="active-form field-row flex-layout">
         <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-        <div class="cols-12">
+        <div class="cols-full">
           <div class="cols-full">
             <table class="cols-full">
               <tbody>
@@ -62,7 +62,7 @@
               </tr>
               </tbody>
             </table>
-            <div id="<?=$eye?>-eye-comments" class="field-row-pad-top cols-12" style="display: none;">
+            <div id="<?=$eye?>-eye-comments" class="field-row-pad-top cols-full" style="display: none;">
                 <?php
                 echo $form->textArea(
                     $element,
