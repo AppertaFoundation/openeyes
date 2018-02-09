@@ -39,8 +39,23 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         modelName: 'OEModule_OphCiExamination_models_PastSurgery',
         monthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     };
+  /**
+   * Setup Datepicker
+   */
+  PreviousSurgeryController.prototype.initialiseDatepicker = function () {
+      var row_count =  OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key')-1 ;
+      var datepicker_name = '#past-surgery-datepicker-'+row_count;
+      var datepicker= $(this.tableSelector).find(datepicker_name);
+      if (datepicker.length!=0){
+      pickmeup('#past-surgery-datepicker-'+row_count, {
+        format: 'Y-m-d',
+        hide_on_select: true,
+        default_date: false
+      });
+      }
+  };
 
-    PreviousSurgeryController.prototype.initialiseTriggers = function(){
+  PreviousSurgeryController.prototype.initialiseTriggers = function(){
 
         var controller = this;
         controller.$popupSelector.on('click','.add-icon-btn', function(e) {
@@ -96,6 +111,7 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         var row = this.createRow();
         this.$table.find('tbody').append(row);
         this.$popupSelector.find('.selected').removeClass('selected');
+        this.initialiseDatepicker();
     };
 
     /**
