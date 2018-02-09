@@ -49,7 +49,8 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
                   $field_prefix . '[drug_select]',
                   '',
                   Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID()),
-                  array('empty' => '- Select -'));
+                  array('empty' => '- Select -', 'class' => 'cols-12')
+               );
           ?>
           <input type="text" name="<?= $field_prefix ?>[medication_search]"
                  value="<?= $entry->getMedicationDisplay() ?>"
@@ -100,7 +101,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
     </td>
     <td>
       <input type="hidden" name="<?= $field_prefix ?>[units]" value="<?= $entry->units ?>" />
-      <input class="cols-1" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
+      <input class="cols-4" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
         <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Select-', 'class'=>'cols-2')) ?>
         <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Select-', 'class'=>'cols-2')) ?>
         <?= CHtml::dropDownList($field_prefix . '[option_id]',

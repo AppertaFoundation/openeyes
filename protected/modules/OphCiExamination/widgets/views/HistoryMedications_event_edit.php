@@ -32,11 +32,11 @@ $element_errors = $element->getErrors();
     <table id="<?= $model_name ?>_entry_table" <?php echo $element_errors ? 'class="highlighted-error"' : '' ?>>
         <thead class="row" style= <?php echo !sizeof($element->entries)?  'display:none': ''; ?> >
         <tr>
-            <th >
+            <th class="cols-2">
               <button class="button small show-stopped" type="button">show stopped</button>
               <button class="button small hide-stopped" type="button" style="display: none;">Hide stopped</button>
             </th>
-            <th></th>
+            <th class="cols-4"></th>
             <th>Start</th>
             <th>Stopped(Optional)</th>
             <th>Reason</th>
