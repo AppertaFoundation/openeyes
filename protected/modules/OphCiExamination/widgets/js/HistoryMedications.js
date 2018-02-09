@@ -28,6 +28,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.drugsByRisk = {};
     this.initialiseFilters();
     this.initialiseTriggers();
+    this.initialiseDatepicker();
   }
 
   HistoryMedicationsController._defaultOptions = {
@@ -52,6 +53,21 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     cancelStopDateButtonSelector: '.stop-medication.cancel',
     routeFieldSelector: 'select[name$="[route_id]"]',
     routeOptionWrapperSelector: '.admin-route-options'
+  };
+
+  /**
+   * Setup datepicker
+   */
+  HistoryMedicationsController.prototype.initialiseDatepicker = function () {
+    row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key')-1;
+    pickmeup('#datepicker_1_'+row_count, {
+      format: 'Y-m-d',
+      hide_on_select: true
+    });
+    pickmeup('#datepicker_2_'+row_count, {
+      format: 'Y-m-d',
+      hide_on_select: true
+    });
   };
 
   /**
@@ -124,26 +140,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           controller.resetSearchRow($row, true);
       });
 
-      $row.on('click', controller.options.startDateButtonSelector, function(e) {
-        e.preventDefault();
-        controller.showDate($row, 'start');
-      });
-
-    $row.on('click', controller.options.cancelStartDateButtonSelector, function(e) {
-      e.preventDefault();
-      controller.cancelDate($row, 'start');
-    });
-
-      $row.on('click', controller.options.stopDateButtonSelector, function(e) {
-          e.preventDefault();
-          controller.showDate($row, 'stop');
-      });
-
-      $row.on('click', controller.options.cancelStopDateButtonSelector, function(e) {
-          e.preventDefault();
-          controller.cancelDate($row, 'stop');
-      });
-
       $row.on('change', controller.options.routeFieldSelector, function(e) {
           controller.updateRowRouteOptions($row);
       });
@@ -153,6 +149,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           var date = controller.dateFromFuzzyFieldSet($fuzzyFieldset);
           $fuzzyFieldset.find('input[type="hidden"]').val(date);
       });
+
+      controller.initialiseDatepicker();
 
       if (!$row.find(controller.options.medicationNameSelector).text().length) {
         controller.resetSearchRow($row, true);

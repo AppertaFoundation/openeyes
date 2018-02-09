@@ -112,25 +112,27 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
     <td>
       <fieldset class="row field-row fuzzy-date">
       <?php if (!$entry->start_date) { ?>
-         <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $start_sel_day, 'sel_month' => $start_sel_month, 'sel_year' => $start_sel_year)) ?>
+        <input id="datepicker_1_<?=$row_count?>" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" style="width:90px" placeholder="dd/mm/yyyy">
       <?php } else { ?>
         <i class="oe-i start small pad"></i>
           <?=Helper::formatFuzzyDate($entry->start_date) ?>
+        <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" />
+
       <?php } ?>
     <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$entry->id ?>" />
     <input type="hidden" name="<?= $field_prefix ?>[originallyStopped]" value="<?=$entry->originallyStopped ?>" />
-      <input type="hidden" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" />
     </fieldset>
     </td>
   <td>
     <fieldset class="row field-row fuzzy-date">
         <?php if (!$entry->end_date) { ?>
-          <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $end_sel_day, 'sel_month' => $end_sel_month, 'sel_year' => $end_sel_year)) ?>
+          <input id="datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:90px" placeholder="dd/mm/yyyy">
         <?php } else { ?>
           <i class="oe-i start small pad"></i>
             <?=Helper::formatFuzzyDate($entry->end_date) ?>
+          <input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
+
         <?php } ?>
-      <input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
     </fieldset>
   </td>
 
