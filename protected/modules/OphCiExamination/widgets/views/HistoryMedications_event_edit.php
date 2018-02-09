@@ -26,10 +26,10 @@ $element_errors = $element->getErrors();
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
-<div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
-
+<div class="element-fields full-width" id="<?= $model_name ?>_element">
+  <div class="field-row flex-layout">
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-    <table id="<?= $model_name ?>_entry_table" <?php echo $element_errors ? 'class="highlighted-error"' : '' ?>>
+    <table id="<?= $model_name ?>_entry_table" class=" cols-full <?php echo $element_errors ? 'highlighted-error' : '' ?>">
         <thead class="row" style= <?php echo !sizeof($element->entries)?  'display:none': ''; ?> >
         <tr>
             <th class="cols-2">
@@ -80,12 +80,14 @@ $element_errors = $element->getErrors();
         ?>
         </tbody>
     </table>
-  <div class="flex-item-bottom" id="medication-history-popup">
-    <button class="button hint green js-add-select-search" type="button">
-      <i class="oe-i plus pro-theme"></i>
-    </button>
   </div>
-
+  <div class="flex-layout flex-right">
+    <div class="flex-item-bottom" id="medication-history-popup">
+      <button class="button hint green js-add-select-search" type="button">
+        <i class="oe-i plus pro-theme"></i>
+      </button>
+    </div>
+  </div>
     <script type="text/template" class="entry-template hidden">
         <?php
         $empty_entry = new \OEModule\OphCiExamination\models\HistoryMedicationsEntry();
