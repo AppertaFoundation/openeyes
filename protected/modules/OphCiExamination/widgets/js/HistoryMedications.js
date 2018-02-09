@@ -62,11 +62,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key')-1;
     pickmeup('#datepicker_1_'+row_count, {
       format: 'Y-m-d',
-      hide_on_select: true
+      hide_on_select: true,
+      default_date: false
     });
     pickmeup('#datepicker_2_'+row_count, {
       format: 'Y-m-d',
-      hide_on_select: true
+      hide_on_select: true,
+      default_date: false
     });
   };
 
