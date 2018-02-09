@@ -183,8 +183,9 @@ function removeElement(element, is_child) {
     var display_order = $(element).data('element-display-order');
 
     if (is_child) {
-        var container = $(element).closest('.sub-elements.active').parent().find('.sub-elements.inactive:last .sub-elements-list');
+        var container = $(element).closest('.elements.active').parent().find('.elements.inactive:last .elements-list');
     } else {
+
         var container = $('.optional-elements-list');
         markElementChilds(element , 1);
     }
@@ -204,13 +205,13 @@ function removeElement(element, is_child) {
     var insert_before = $(container).find('li').first();
 
     while (parseInt(insert_before.data('element-display-order')) < parseInt(display_order)) {
-        insert_before = insert_before.next();
+      insert_before = insert_before.next();
     }
 
     if (insert_before.length) {
-        insert_before.before(element);
+      insert_before.before(element);
     } else {
-        $(container).append(element);
+      $(container).append(element);
     }
 
     showActiveChildElements();
@@ -225,10 +226,10 @@ function removeElement(element, is_child) {
 
     $('.js-active-elements').trigger('ElementRemoved', [element_type_class]);
     if (typeof(getOEEyeDrawChecker) === 'function') {
-        var checker = getOEEyeDrawChecker();
-        checker.resync();
+      var checker = getOEEyeDrawChecker();
+      checker.resync();
     }
-}
+  }
 
 function moveToElement(element) {
 
@@ -241,7 +242,8 @@ function moveToElement(element) {
     $title.effect('pulsate', {
         times: 2
     }, 600);
-}
+  }
+
 
 $(document).ready(function () {
 
