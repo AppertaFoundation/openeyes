@@ -24,7 +24,7 @@
 				<tr>
 					<th><input type="checkbox" id="checkall" class="erod_rules" /></th>
 					<th>Subspecialty</th>
-					<th>Firms</th>
+					<th><?php echo Firm::contextLabel() ?>s</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -63,4 +63,3 @@
 		This provides the added convenience of allowing EROD to be calculated outside of the episode subspecialty by pointing at other subspecialties via the appropriate firms.
 	</p>
 </div>
-

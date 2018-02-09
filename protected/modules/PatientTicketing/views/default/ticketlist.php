@@ -58,7 +58,7 @@ $can_process = $queueset && $qs_svc->isQueueSetPermissionedForUser($queueset, Yi
 									<th class="large-3">Subspecialty:</th>
 								<?php }?>
 								<?php if ($queueset->filter_firm) {?>
-									<th class="large-3">Firm:</th>
+									<th class="large-3"><?php echo Firm::contextLabel() ?></th>
 								<?php }?>
 								<?php if ($queueset->filter_closed_tickets) {?>
 									<th nowrap>Show Completed:</th>
@@ -101,7 +101,7 @@ $can_process = $queueset && $qs_svc->isQueueSetPermissionedForUser($queueset, Yi
 								<?php if ($queueset->filter_firm) {?>
 								<td>
 									<?php if (!@$_POST['subspecialty-id']) {?>
-										<?php echo CHtml::dropDownList('firm-id', '', array(), array('empty' => 'All firms', 'disabled' => 'disabled'))?>
+										<?php echo CHtml::dropDownList('firm-id', '', array(), array('empty' => 'All '. Firm::contextLabel() . 's', 'disabled' => 'disabled'))?>
 									<?php } else {?>
 										<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], Firm::model()->getList(@$_POST['subspecialty-id']), array('empty' => 'All firms', 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : '')))?>
 									<?php }?>

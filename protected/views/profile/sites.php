@@ -52,7 +52,7 @@
 	</div>
 </div>
 <div class="box admin">
-	<p>Note: you can also set the firms you work at, <?php echo CHtml::link('click here', Yii::app()->createUrl('/profile/firms'))?> to do so.</p>
+	<p>Note: you can also set the <?php echo strtolower(Firm::contextLabel())?>s you work at, <?php echo CHtml::link('click here', Yii::app()->createUrl('/profile/firms'))?> to do so.</p>
 </div>
 
 <script type="text/javascript">

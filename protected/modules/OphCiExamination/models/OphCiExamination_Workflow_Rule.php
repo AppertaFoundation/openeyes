@@ -170,7 +170,7 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'subspecialty_id' => 'Subspecialty',
-            'firm_id' => 'Firm',
+            'firm_id' => \Firm::contextLabel(),
             'episode_status_id' => 'Episode status',
             'workflow_id' => 'Workflow',
         );

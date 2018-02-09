@@ -369,11 +369,29 @@ class Event extends BaseActiveRecordVersioned
             if ($transaction) {
                 $transaction->commit();
             }
+
+            $this->afterSoftDelete();
+
         } catch (Exception $e) {
             if ($transaction) {
                 $transaction->rollback();
             }
             throw $e;
+        }
+    }
+
+    /**
+     * AfterSoftDelete event
+     * Checks if the event type's API has a handler for this event
+     * if so, calls it
+     */
+
+    protected function afterSoftDelete()
+    {
+        if($api = $this->eventType->getApi()) {
+            if(method_exists($api, 'afterSoftDeleteEvent')) {
+                $api->afterSoftDeleteEvent($this);
+            }
         }
     }
 

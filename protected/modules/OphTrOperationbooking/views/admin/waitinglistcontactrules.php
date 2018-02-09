@@ -36,7 +36,7 @@
 				<?php echo CHtml::dropDownList('lcr_service_id', '', CHtml::listData(Service::model()->findAll(array('order' => 'name asc')), 'id', 'name'), array('empty' => '- Service -'))?>
 			</div>
 			<div class="large-2 column">
-				<?php echo CHtml::dropDownList('lcr_firm_id', '', array(), array('empty' => '- Firm -'))?>
+				<?php echo CHtml::dropDownList('lcr_firm_id', '', array(), array('empty' => '- ' . Firm::contextLabel() . ' -'))?>
 			</div>
 			<div class="large-2 column end">
 				<?php echo CHtml::dropDownList('lcr_is_child', '', array('' => '- Child/adult -', '1' => 'Child', '0' => 'Adult'))?>
@@ -53,5 +53,3 @@
         ))?>
 	</form>
 </div>
-
-

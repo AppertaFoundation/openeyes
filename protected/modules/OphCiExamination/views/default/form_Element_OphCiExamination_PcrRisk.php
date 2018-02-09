@@ -2,11 +2,14 @@
 $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/PCRCalculation.js', false, -1);
 ?>
 <script type="text/javascript">
-    $.getScript('<?=$jsPath?>', function(){
+
+    function pcr_init(){
         //Map the elements
         mapExaminationToPcr();
         //Make the initial calculations
         var $pcrRiskEl = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk');
+        //this needs when the PcrRisk is open and the AntSeg opened later, called when eyedraw is ready
+        loadFromHiddenFieds($pcrRiskEl);
         pcrCalculate($pcrRiskEl.find('.left-eye'), 'left');
         pcrCalculate($pcrRiskEl.find('.right-eye'), 'right');
 
@@ -37,8 +40,9 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
             var $pcrAlphaLeft = $("#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_left_alpha_receptor_blocker").prop('selectedIndex');
             $("select#OEModule_OphCiExamination_models_Element_OphCiExamination_PcrRisk_right_alpha_receptor_blocker").prop('selectedIndex', $pcrAlphaLeft);
         });
+    }
 
-    });
+    $.getScript('<?=$jsPath?>', pcr_init);
 </script>
 <div class="element-eyes element-fields">
 <?php

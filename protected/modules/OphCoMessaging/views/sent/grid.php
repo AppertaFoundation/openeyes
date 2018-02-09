@@ -81,6 +81,7 @@ $cols = array(
             return strlen($data->message_text) > 50 ? \Yii::app()->format->Ntext(substr($data->message_text, 0, 50).' ...') : \Yii::app()->format->Ntext($data->message_text);
         },
         'type' => 'raw',
+        'htmlOptions' => array('class' => 'message'),
     ),
 );
 
@@ -89,7 +90,7 @@ $header_style = 'background: transparent url(' . $asset_path . 'img/small.png) l
 
 
 $this->widget('zii.widgets.grid.CGridView', array(
-    'itemsCssClass' => 'grid',
+    'itemsCssClass' => 'grid message-table',
     'dataProvider' => $dataProvider,
     'htmlOptions' => array('id' => 'sent-table'),
     'summaryText' => '<h3 style="' . $header_style .'">Sent Messages<small> {start}-{end} of {count} </small></h3>',

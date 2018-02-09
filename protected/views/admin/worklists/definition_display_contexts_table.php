@@ -22,7 +22,7 @@
         <tr>
             <th>Site</th>
             <th>Subspecialty</th>
-            <th>Firm</th>
+            <th><?php echo Firm::contextLabel() ?></th>
             <th>Actions</th>
         </tr>
         </thead>

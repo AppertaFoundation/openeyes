@@ -30,8 +30,8 @@
     ));
 
     ?>
-	<?php echo $form->dropDownList($default, 'firm_id', Firm::model()->getListWithSpecialties(), array('empty' => 'Select Firm')) ?>
+	<?php echo $form->dropDownList($default, 'firm_id', Firm::model()->getListWithSpecialties(), array('empty' => 'Select ' . Firm::contextLabel())) ?>
 	<?php echo $form->textField($default, 'value') ?>
-	<?php echo $form->formActions(array('cancel-uri' => '/admin/viewIncisionLengthDefaults')) ?>
+	<?php echo $form->formActions(array('cancel-uri' => '/OphTrOperationnote/admin/viewIncisionLengthDefaults')) ?>
 	<?php $this->endWidget() ?>
 </div>

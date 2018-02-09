@@ -25,7 +25,7 @@
 			Patient: <?php echo $patient->getDisplayName()?> (<?php echo $patient->hos_num?>)
 		</div>
 		<div id="operation">
-			<input type="hidden" id="booking" value="<?php echo $operation->booking->id; ?>" />
+			<input type="hidden" id="booking" value="<?php echo isset($operation->booking) ? $operation->booking->id : ''; ?>" />
 			<h1>Re-schedule operation</h1><br />
 			<?php
             if (Yii::app()->user->hasFlash('info')) { ?>
@@ -38,25 +38,28 @@
 			<?php $this->renderPartial('_session', array('operation' => $operation)); ?><br />
 			<?php
             echo CHtml::form(array('booking/rescheduleLater/'.$operation->event_id), 'post', array('id' => 'cancelForm'));
-            echo CHtml::hiddenField('booking_id', $operation->booking->id); ?>
+            echo CHtml::hiddenField('booking_id', isset($operation->booking) ? $operation->booking->id : null); ?>
 			<div class="row field-row">
 				<div class="large-2 column">
 					<?php
                     echo CHtml::label('Re-schedule reason: ', 'cancellation_reason');
                     ?>
 				</div>
-				<div class="large-4 column end">
-					<?php
-                    if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
-                        $listIndex = 3;
-                    } else {
-                        $listIndex = 2;
-                    }
-                    echo CHtml::dropDownList('cancellation_reason', @$_POST['cancellation_reason'],
-                        OphTrOperationbooking_Operation_Cancellation_Reason::getReasonsByListNumber($listIndex),
-                        array('empty' => 'Select a reason')
-                    )?>
-				</div>
+                    <div class="large-4 column end">
+                        <?php
+                            $listIndex = 2;
+                            if(isset($operation->booking)){
+                                if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
+                                    $listIndex = 3;
+                                }
+                            }
+
+                            echo CHtml::dropDownList('cancellation_reason', @$_POST['cancellation_reason'],
+                                OphTrOperationbooking_Operation_Cancellation_Reason::getReasonsByListNumber($listIndex),
+                                array('empty' => 'Select a reason')
+                            );
+                        ?>
+                    </div>
 			</div>
 
 			<?php

@@ -22,7 +22,7 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
         // will receive user inputs.
         return array(
             //array('single_document_id', 'required'),
-            array('event_id, single_document_id, left_document_id, right_document_id, event_sub_type', 'safe'),
+            array('event_id, single_document_id, left_document_id, right_document_id, event_sub_type, comment', 'safe'),
         );
     }
 
@@ -51,7 +51,8 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
     {
         return array(
             'id' => 'ID',
-            'document_id' => 'Document'
+            'document_id' => 'Document',
+            'comment' => 'Comments'
         );
     }
 

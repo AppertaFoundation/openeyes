@@ -25,6 +25,11 @@ class SiteAndFirmWidget extends CWidget
     public $patient;
     public $returnUrl;
 
+    /*
+     * 'popup' or 'static'
+     */
+    public $mode = 'popup';
+
     public function init()
     {
         $this->title = $this->title ? : 'Please confirm Site and ' . Firm::contextLabel();
@@ -124,6 +129,7 @@ class SiteAndFirmWidget extends CWidget
             'model' => $model,
             'firms' => $firms,
             'sites' => CHtml::listData($sites, 'id', 'short_name'),
+            'mode' => $this->mode
         ));
     }
 }

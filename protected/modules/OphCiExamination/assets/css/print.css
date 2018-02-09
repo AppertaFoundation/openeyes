@@ -99,3 +99,16 @@
   font-size: 9pt !important;
   display: block !important;
 }
+
+/*  Hides CVI may be applicable warning in print pdf */
+.cvi-alert {
+  display: none;
+}
+/* Prevents blue background on dilation section*/
+.element-table, .element-table th {
+  background-color: transparent;
+}
+/* Prevents blue background on dilation section*/
+.element-table tr:nth-of-type(even) {
+    background-color: transparent;
+}

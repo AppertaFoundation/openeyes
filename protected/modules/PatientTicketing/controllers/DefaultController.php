@@ -142,7 +142,7 @@ class DefaultController extends \BaseModuleController
             }
         }
 
-        $criteria->order = 't.created_date desc';
+        $criteria->order = 't.created_date asc';
 
         return array($criteria, $patient_filter);
     }
@@ -156,19 +156,10 @@ class DefaultController extends \BaseModuleController
         AutoSaveTicket::clear();
 
         $cat_id = Yii::app()->request->getParam('cat_id', null);
-        $queueset_id = Yii::app()->request->getParam('queueset_id', null);
-        $select_queue_set = Yii::app()->request->getParam('select_queue_set', null);
+        $qs_id = Yii::app()->request->getParam('queueset_id', null);
 
         if (!$cat_id) {
             throw new \CHttpException(404, 'Category ID required');
-        }
-
-        if ($qs_id = $queueset_id && $select_queue_set) {
-            $this->redirect(array("/PatientTicketing/default/?queueset_id=$qs_id&cat_id=".$cat_id));
-        }
-
-        if ($queueset_id) {
-            $qs_id = $queueset_id;
         }
 
         $qsc_svc = Yii::app()->service->getService(self::$QUEUESETCATEGORY_SERVICE);

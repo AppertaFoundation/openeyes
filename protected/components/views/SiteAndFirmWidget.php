@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -20,7 +20,8 @@
 
 <?php
 $form = $this->beginWidget('CActiveForm', array(
-    'id' => 'site-and-firm-form',
+    'id' => ($this->mode === 'static' ? 'static-' : '') . 'site-and-firm-form',
+    'htmlOptions' => array( 'class' => $this->mode . '-site-and-firm-form'),
     'action' => Yii::app()->createUrl('/site/changesiteandfirm'),
 ));
 ?>
@@ -32,7 +33,7 @@ $form = $this->beginWidget('CActiveForm', array(
 		<p>
 			To add an event to this episode you must switch to a <?php echo $this->subspecialty->name?> firm.
 		</p>
-	<?php 
+	<?php
 }?>
 
 	<?php if ($this->support_services) {
@@ -41,13 +42,13 @@ $form = $this->beginWidget('CActiveForm', array(
 		<p>
 			To add an event to this episode you must switch to a support services firm.
 		</p>
-	<?php 
+	<?php
 }?>
 
 	<?php if ($this->patient) {
     ?>
 		<?php echo CHtml::hiddenField('patient_id', $this->patient->id)?>
-	<?php 
+	<?php
 }?>
 
 	<?php
@@ -58,7 +59,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
 	<div class="field-row row">
 		<div class="large-3 column text-right">
-			<?php echo $form->labelEx($model, 'site_id'); ?>
+			<?php echo $form->label($model, 'site_id'); ?>
 		</div>
 		<div class="large-9 column">
 			<?php echo $form->dropDownList($model, 'site_id', $sites); ?>
@@ -67,18 +68,20 @@ $form = $this->beginWidget('CActiveForm', array(
 
 	<div class="field-row row">
 		<div class="large-3 column text-right">
-			<?php echo $form->labelEx($model, 'firm_id'); ?>
+			<?php echo $form->label($model, 'firm_id'); ?>
 		</div>
 		<div class="large-9 column">
 			<?php echo $form->dropDownList($model, 'firm_id', $firms); ?>
 		</div>
 	</div>
 
-	<div class="field-row row">
-		<div class="large-9 large-offset-3 column">
-			<?php echo CHtml::submitButton('Confirm', array('class' => 'secondary small')); ?>
-		</div>
-	</div>
+    <?php if($this->mode === "popup"): ?>
+        <div class="field-row row">
+            <div class="large-9 large-offset-3 column">
+                <?php echo CHtml::submitButton('Confirm', array('class' => 'secondary small')); ?>
+            </div>
+        </div>
+    <?php endif;?>
 
 <?php
 if (Yii::app()->components['user']->loginRequiredAjaxResponse) {
@@ -95,3 +98,11 @@ if (Yii::app()->components['user']->loginRequiredAjaxResponse) {
 ?>
 
 <?php $this->endWidget(); ?>
+
+<script>
+    $(document).ready(function(){
+        $('.static-site-and-firm-form').on('change', 'select', function(){
+            $(this).closest('form').submit();
+        });
+    });
+</script>

@@ -392,6 +392,28 @@ $patient = Patient::model()->findByPk($patient_id);
             </div>
         </div>
         <?php
-    }
-    ?>
+    } ?>
+    <div id="attachments_content_container">
+        <?php
+
+
+        $associated_content = EventAssociatedContent::model()
+            ->with('initAssociatedContent')
+            ->findAllByAttributes(
+                array('parent_event_id' => $element->event_id),
+                array('order' => 't.display_order asc')
+            );
+
+        $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+        if($associated_content == null){
+            $associated_content = MacroInitAssociatedContent::model()->findAllByAttributes(array('macro_id' => $macro_id), array('order' => 'display_order asc'));
+        }
+
+        $this->renderPartial('event_associated_content', array(
+            'associated_content' => $associated_content,
+            'api'   => Yii::app()->moduleAPI->get('OphCoCorrespondence')
+        ));
+        ?>
+    </div>
+
 </div>

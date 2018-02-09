@@ -92,7 +92,7 @@
                         </div>
                     </div>
                     <div class="large-1 column end">
-                        <img class="autocomplete-loader" style="display: none;" src="/assets/9504fa83/img/ajax-loader.gif" alt="loading...">
+                        <img class="autocomplete-loader" style="display: none;" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading...">
                     </div>
                 </div>
 
@@ -202,6 +202,6 @@
 
    
 
-    <div class="reportSummary report curvybox white blueborder" style="display: none;">
+    <div class="reportSummary report curvybox white blueborder" style="display: none; overflow: auto">
     </div>
 </div>

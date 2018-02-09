@@ -68,7 +68,7 @@ class LeafletSubspecialtyFirmController extends BaseAdminController
             'leaflet.name',
         ));
         $admin->setCustomSaveURL('/oeadmin/LeafletSubspecialtyFirm/add');
-        $admin->setModelDisplayName('Leaflet-Subspecialty-Firm Assignment');
+        $admin->setModelDisplayName('Leaflet Subspecialty ' . Firm::contextLabel() . ' Assignment');
         if ($subspecialtyId > 0) {
             $defaultSubspecialty = $subspecialtyId;
         } else {
@@ -87,7 +87,7 @@ class LeafletSubspecialtyFirmController extends BaseAdminController
                     'excludeSearch' => $excludeSubspecialty,
                 ),
                 array(
-                    'label' => 'Firm',
+                    'label' => Firm::contextLabel(),
                     'dropDownName' => 'firm_id',
                     'defaultValue' => null,
                     'listModel' => Firm::model(),

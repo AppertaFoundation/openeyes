@@ -394,4 +394,21 @@ class EventType extends BaseActiveRecordVersioned
 
         return '';
     }
+
+    /**
+     * @return array
+     */
+    public function getNonPrintableEventTypes()
+    {
+        $result = array();
+        $criteria=new CDbCriteria;
+        $criteria->select = array('id');
+        $criteria->condition='is_printable = 0';
+        $data = self::model()->findAll($criteria);
+        foreach($data as $row)
+        {
+            $result[] = $row->id;
+        }
+        return $result;
+    }
 }

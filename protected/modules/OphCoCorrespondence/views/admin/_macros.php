@@ -26,7 +26,7 @@ if (!empty($macros)) {
                 } elseif ($macro->subspecialty) {
                     echo 'Subspecialty: '.$macro->subspecialty->name;
                 } else {
-                    echo 'Firm: '.$macro->firm->getNameAndSubspecialty();
+                    echo Firm::ContextLabel() . ': '.$macro->firm->getNameAndSubspecialty();
                 }?>
 			</td>
 			<td><?php echo $macro->name?></td>

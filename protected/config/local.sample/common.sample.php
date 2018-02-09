@@ -97,12 +97,12 @@ $config = array(
         'OphCiExamination' => array('class' => '\OEModule\OphCiExamination\OphCiExaminationModule'),
         'OphCoCorrespondence',
         'OphCiPhasing',
+        'OphTrIntravitrealinjection',
         'OphCoTherapyapplication',
         'OphDrPrescription',
         'OphTrConsent',
         'OphTrOperationnote',
         'OphTrOperationbooking',
-        'OphTrIntravitrealinjection',
         'OphTrLaser',
         'PatientTicketing' => array('class' => '\OEModule\PatientTicketing\PatientTicketingModule'),
         'OphInVisualfields',
@@ -151,7 +151,7 @@ $config = array(
         // number of days in the future to retrieve worklists for the automatic dashboard render
         //'worklist_dashboard_future_days' => int,
         // days of the week to be ignored when determining which worklists to render - Mon, Tue etc
-        //'worklist_dashboard_skip_days' => array()
+        'worklist_dashboard_skip_days' => array('NONE'),
         //how far in advance worklists should be generated for matching
         //'worklist_default_generation_limit' => interval string (e.g. 3 months)
         // override edit checks on definitions so they can always be edited (use at own peril)
@@ -164,6 +164,7 @@ $config = array(
         //'worklist_ignore_date => 'Y-m-d',
         'portal' => array(
             'uri' => 'http://api.localhost:8000',
+            'frontend_url' => 'https://localhost:8000/', #url for the optom portal (read by patient shourtcode [pul])
             'endpoints' => array(
                 'auth' => '/oauth/access',
                 'examinations' => '/examinations/searches',

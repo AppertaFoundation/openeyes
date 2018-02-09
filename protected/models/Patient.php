@@ -144,6 +144,7 @@ class Patient extends BaseActiveRecordVersioned
             'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
                 'condition' => '(patient_episode.legacy=0 or patient_episode.legacy is null) and (patient_episode.change_tracker=0 or patient_episode.change_tracker is null)',
                 'alias' => 'patient_episode',
+                'order' => 'patient_episode.start_date',
             ),
             'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
             'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
@@ -355,7 +356,7 @@ class Patient extends BaseActiveRecordVersioned
         //FIXME : this should be done with application.behaviors.OeDateFormat
         foreach (array('dob', 'date_of_death') as $date_column) {
             $date = $this->{$date_column};
-            if (strtotime($date)) {
+            if (strtotime($date) !== false) {
                 $this->{$date_column} = date('Y-m-d', strtotime($date));
             } else {
                 $this->{$date_column} = null;
