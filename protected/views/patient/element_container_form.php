@@ -103,6 +103,7 @@ $element_Type = $element->getElementType();
 
   $('.js-add-select-search').on('click',function (e) {
     e.preventDefault();
+    $('.oe-add-select-search').hide();
     $(e.target).parent().find('.oe-add-select-search').show();
   });
 
