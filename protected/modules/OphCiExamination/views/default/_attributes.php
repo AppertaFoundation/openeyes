@@ -17,31 +17,31 @@
  */
 ?>
 <div class="close-icon-btn">
-    <i class="oe-i remove-circle medium"></i>
+  <i class="oe-i remove-circle medium"></i>
 </div>
 <div class="select-icon-btn">
-    <i class="oe-i menu selected"></i>
+  <i class="oe-i menu selected"></i>
 </div>
 <button class="button hint green add-icon-btn" type="button">
   <i class="oe-i plus pro-theme"></i>
 </button>
 <table class="select-options">
-    <tbody>
-        <tr>
-<?php
-    foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) { ?>
-            <td>
-              <div class="flex-layout flex-top flex-left">
-                <ul class="add-options" data-multi="false" data-clickadd="false">
-            <?php foreach ($attribute->getAttributeOptions() as $option) {?>
-                  <li data-str="<?php echo (string)$option->slug ;?>">
-                    <span class="restrict-width"><?php echo (string)$option->slug ; ?></span>
-                  </li>
-              <?php }
+  <tbody>
+  <tr>
+      <?php
+      foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) { ?>
+    <td>
+      <div class="flex-layout flex-top flex-left">
+        <ul class="add-options" data-multi="false" data-clickadd="false">
+            <?php foreach ($attribute->getAttributeOptions() as $option) { ?>
+              <li data-str="<?php echo (string)$option->slug; ?>">
+                <span class="restrict-width"><?php echo (string)$option->slug; ?></span>
+              </li>
+            <?php }
             } ?>
-                </ul>
-              </div>
-            </td>
-        </tr>
-    </tbody>
+        </ul>
+      </div>
+    </td>
+  </tr>
+  </tbody>
 </table>
