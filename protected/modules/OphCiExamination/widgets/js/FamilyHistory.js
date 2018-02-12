@@ -70,7 +70,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             }
         });
 
-        this.$popupSelector.on('click', '.add-icon-btn', function(e) {
+        this.$popupSelector.on('click', '.js-add-select-search', function(e) {
             e.preventDefault();
             if (controller.$table.hasClass('hidden')){
                 controller.$table.removeClass('hidden');

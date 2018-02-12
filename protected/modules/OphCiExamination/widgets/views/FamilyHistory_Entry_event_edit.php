@@ -38,44 +38,59 @@ if (!isset($values)) {
 } ?>" data-key="<?= $row_count; ?>">
   <td>
     <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
-    <input type="hidden" name="<?= $field_prefix ?>[relative_id]" value="<?= $values['relative_id'] ?>"/>
-      <?= $values['relative_display'] ?>
-    <div class="
-    <?php
-      $is_other_selected = false;
-      if ($values['relative_display'] == 'Other') {
-          $is_other_selected = true;
-      }
-      echo $is_other_selected ? '' : 'hidden';
-    ?> other_relative_wrapper">
-        <?php echo CHtml::textField($field_prefix . '[other_relative]',
-            ($is_other_selected ? $values['other_relative'] : ''), array(
-                'class' => 'other_relative_text other-type-input',
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
-            )) ?>
-    </div>
+      <?php if(!$editable): ?>
+          <?= $values['relative_display'] ?>
+      <?php else: ?>
+          <?php
+          $relatives_opts = array(
+              'options' => array(),
+              'empty' => '- select -',
+              'class' => 'relatives'
+          );
+          $is_other_selected = false;
+          foreach ($relative_options as $rel) {
+            $relatives_opts['options'][$rel->id] = array('data-other' => $rel->is_other ? '1' : '0');
+            if ($rel->id == $values['relative_id'] && $rel->is_other){
+              $is_other_selected = true;
+              }
+          }
+          echo CHtml::dropDownList($field_prefix . '[relative_id]', $values['relative_id'], CHtml::listData($relative_options, 'id', 'name'), $relatives_opts);
+          ?>
+        <div class="<?php echo $is_other_selected ? '' : 'hidden';?> other_relative_wrapper">
+            <?php echo CHtml::textField($field_prefix . '[other_relative]', ( $is_other_selected ? $values['other_relative'] : ''), array('class' => 'other_relative_text other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
+        </div>
+      <?php endif;?>
   </td>
   <td>
-    <input type="hidden" name="<?= $field_prefix ?>[side_id]" value="<?= $values['side_id'] ?>"/>
-      <?= $values['side_display'] ?>
+      <?php if(!$editable): ?>
+          <?= $values['side_display'] ?>
+      <?php else: ?>
+          <?php echo CHtml::dropDownList($field_prefix . '[side_id]', $values['side_id'], CHtml::listData($side_options, 'id', 'name'))?>
+      <?php endif;?>
   </td>
   <td>
     <input type="hidden" name="<?= $field_prefix ?>[condition_id]" value="<?= $values['condition_id'] ?>"/>
-      <?= $values['condition_display'] ?>
-    <div class="
-      <?php
-        $is_other_selected = false;
-        if ($values['condition_display'] == 'Other') {
-            $is_other_selected = true;
-        }
-        echo $is_other_selected ? '' : 'hidden';
-      ?> other_condition_wrapper">
-        <?php echo CHtml::textField($field_prefix . '[other_condition]',
-            ($is_other_selected ? $values['other_condition'] : ''), array(
-                'class' => 'other_condition_text other-type-input',
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
-            )) ?>
-    </div>
+      <?php if(!$editable): ?>
+          <?= $values['condition_display'] ?>
+      <?php else: ?>
+          <?php
+          $conditions_opts = array(
+              'options' => array(),
+              'empty' => '- select -',
+              'class' => 'conditions',
+          );
+          $is_other_selected = false;
+          foreach ($condition_options as $con) {
+            $conditions_opts['options'][$con->id] = array('data-other' => $con->is_other ? '1' : '0');
+            if ($con->id == $values['condition_id'] && $con->is_other){
+              $is_other_selected = true;
+              }
+          }
+          echo CHtml::dropDownList($field_prefix . '[condition_id]', $values['condition_id'], CHtml::listData($condition_options, 'id', 'name'), $conditions_opts); ?>
+        <div class="<?php echo $is_other_selected ? '' : 'hidden';?> other_condition_wrapper">
+            <?php echo CHtml::textField($field_prefix . '[other_condition]', ( $is_other_selected ? $values['other_condition']: ''), array('class'=>'other_condition_text', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
+        </div>
+      <?php endif;?>
   </td>
   <td>
       <?php if (!$editable): ?>
