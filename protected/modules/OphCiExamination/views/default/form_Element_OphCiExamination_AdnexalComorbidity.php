@@ -33,7 +33,7 @@
         </div>
       </div>
 		</div>
-		<div class="inactive-form" style="display: none;">
+		<div class="inactive-form" <?php if ($element->hasRight()) {?>style="display: none;"<?php }?>>
 			<div class="add-side">
 				<a href="#">
 					Add right side <span class="icon-add-side"></span>
@@ -56,7 +56,7 @@
         </div>
 			</div>
 		</div>
-		<div class="inactive-form" style="display: none;">
+		<div class="inactive-form" <?php if ($element->hasLeft()) {?>style="display: none;"<?php }?>>
 			<div class="add-side">
 				<a href="#">
 					Add left side <span class="icon-add-side"></span>
