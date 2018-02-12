@@ -38,6 +38,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
             <th></th>
             <th>Right</th>
             <th>Left</th>
+            <th>Both</th>
             <th>N/A</th>
             <th>Date(optional)</th>
             <th></th>
@@ -82,40 +83,19 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
         ?>
         </tbody>
     </table>
-  <div class="flex-item-bottom">
-    <button class="button hint green js-add-select-search" type="button">
+  <div class="flex-item-bottom" id="systemic-diagnoses-popup">
+    <button class="button hint green js-add-select-search" type="button" id="add-history-systemic-diagnoses">
       <i class="oe-i plus pro-theme"></i>
     </button>
-    <div id="add-to-POH" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
-      <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
-      <div class="select-icon-btn"><i class="oe-i menu selected"></i></div>
-      <button class="button hint green add-icon-btn"><i class="oe-i plus pro-theme"></i></button>
-      <table class="select-options">
-        <tr>
-          <td>
-            <div class="flex-layout flex-top flex-left">
-              <ul class="add-options" data-multi="true" data-clickadd="false">
-              </ul>
-            </div>
-            <!-- flex layout -->
-          </td>
-        </tr>
-      </table>
-      <div class="search-icon-btn"><i class="oe-i search"></i></div>
-      <div class="search-options" style="display:none;">
-        <input type="text" class="cols-full js-search-autocomplete" placeholder="search for option (type 'auto-complete' to demo)">
-        <!-- ajax auto-complete results, height is limited -->
-      </div>
-    </div>
   </div>
 </div>
-<script type="text/template" class="entry-template hidden">
+<script type="text/template" class="entry-template hidden" id="<?= CHtml::modelName($element).'_template'?>">
     <?php
     $empty_entry = new \OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis();
     $this->render(
         'SystemicDiagnosesEntry_event_edit',
         array(
-            //'diagnosis' => $empty_entry,
+            'diagnosis' => $empty_entry,
             'form' => $form,
             'model_name' => $model_name,
             'field_prefix' => $model_name . '[entries][{{row_count}}]',

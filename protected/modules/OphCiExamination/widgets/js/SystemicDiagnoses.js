@@ -25,17 +25,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         this.$element = this.options.element;
         this.$table = this.$element.find('table');
-        this.templateText = this.$element.find('.entry-template').text();
-
+        this.templateText = $('#OEModule_OphCiExamination_models_SystemicDiagnoses_template').text();
+        this.$popupSelector = $('#systemic-diagnoses-popup');
         this.initialiseTriggers();
     }
 
     SystemicDiagnosesController._defaultOptions = {
         modelName: 'OEModule_OphCiExamination_models_SystemicDiagnoses',
         element: undefined,
-        addButtonSelector: '.add-entry',
+        addButtonSelector: '#add-history-systemic-diagnoses',
         searchSource: '/medication/finddrug'
-    }
+    };
 
     SystemicDiagnosesController.prototype.initialiseTriggers = function()
     {
@@ -51,9 +51,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         controller.$table.find('tbody tr').each(function() {
             controller.initialiseRow($(this));
         });
-
         // adding entries
-        controller.$element.on('click', controller.options.addButtonSelector, function(e) {
+        controller.$popupSelector.on('click',$('#add-history-systemic-diagnoses'), function(e) {
             e.preventDefault();
             controller.addEntry();
         });
@@ -98,7 +97,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     {
         if (data === undefined)
             data = {};
-
         data['row_count'] = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
         return Mustache.render(
             this.templateText,
