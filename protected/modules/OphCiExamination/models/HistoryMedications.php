@@ -85,12 +85,12 @@ class HistoryMedications extends \BaseEventTypeElement
             'currentOrderedEntries' => array(self::HAS_MANY,
                 'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
                 'element_id',
-                'on' => 'end_date is NULL AND stop_reason_id is NULL',
+                'on' => '(end_date > NOW() OR end_date is NULL)',
                 'order' => 'currentOrderedEntries.start_date desc, currentOrderedEntries.end_date desc, currentOrderedEntries.last_modified_date'),
             'stoppedOrderedEntries' => array(self::HAS_MANY,
                 'OEModule\OphCiExamination\models\HistoryMedicationsEntry',
                 'element_id',
-                'on' => 'end_date is NOT NULL OR stop_reason_id is NOT NULL',
+                'on' => '(end_date < NOW() AND end_date is NOT NULL)',
                 'order' => 'stoppedOrderedEntries.start_date desc, stoppedOrderedEntries.end_date desc, stoppedOrderedEntries.last_modified_date'),
         );
     }
