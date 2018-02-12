@@ -570,6 +570,11 @@ class AdminController extends BaseAdminController
         ));
     }
 
+    /**
+     * Flags selected users as inactive
+     * @throws Exception
+     */
+
     public function actionDeleteUsers()
     {
         $result = 1;
@@ -577,7 +582,8 @@ class AdminController extends BaseAdminController
         if (!empty($_POST['users'])) {
             foreach (User::model()->findAllByPk($_POST['users']) as $user) {
                 try {
-                    if (!$user->delete()) {
+                    $user->active = 0;
+                    if (!$user->save(false)) {
                         $result = 0;
                     }
                 } catch (Exception $e) {
@@ -585,7 +591,7 @@ class AdminController extends BaseAdminController
                 }
 
                 if ($result) {
-                    Audit::add('admin-User', 'delete');
+                    Audit::add('admin-User', 'deactivate');
                 }
             }
         }
