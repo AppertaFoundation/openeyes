@@ -382,6 +382,13 @@ table {
 				border-bottom: 1px solid #CCD;
 			}
 		}
+		&.comfortable {
+			tr {
+				td {
+					padding: 10px;
+				}
+			}
+		}
 	}
 }
 
