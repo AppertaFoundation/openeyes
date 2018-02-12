@@ -44,34 +44,17 @@ if (isset($values['date']) && strtotime($values['date'])) {
 <tr class="row-<?=$row_count;?><?php if($removable){ echo " read-only"; } ?>"
     <?php if($removable){ echo "data-key='{$row_count}'"; } ?>
 >
-    <td>
-
-        <?php if(!$removable) :?>
-            <?= $values['operation'] ?>
-        <?php else:?>
-
-            <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
-
-            <?php if(!$required): ?>
-                <?php echo CHtml::dropDownList(null, '',
-                    CHtml::listData(CommonPreviousOperation::model()->findAll(
-                        array('order' => 'display_order asc')), 'id', 'name'),
-                    array('empty' => '- Select -', 'class' => $model_name . '_operations'))?>
-                <br />
-            <?php endif; ?>
-
-            <?php $html_options = array(
-                    'placeholder' => 'Select from above or type',
-                    'autocomplete' => Yii::app()->params['html_autocomplete'],
-                    'class' => 'common-operation',
-                );
-                if($required){
-                    $html_options['readonly'] = true;
-                }
-            ?>
-            <?php echo CHtml::textField($field_prefix . '[operation]', $values['operation'], $html_options); ?>
-
-        <?php endif; ?>
+  <td>
+      <?php if (!$removable): ?>
+        <?= $values['operation'] ?>
+      <?php else: ?>
+        <?php echo CHtml::textField($field_prefix . '[operation]', $values['operation'], array(
+              'placeholder' => 'Select from above or type',
+              'autocomplete' => Yii::app()->params['html_autocomplete'],
+              'class' => 'common-operation',
+          )); ?>
+      <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
+      <?php endif; ?>
     </td>
 
     <td id="<?= $model_name ?>_operations_<?=$row_count?>" class="past-surgery-entry has-operation">
@@ -89,32 +72,41 @@ if (isset($values['date']) && strtotime($values['date'])) {
         </label>
     </td>
 
-    <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
-        <?php if(!$removable) :?>
-            <?php if($values['side']=='Right'||$values['side']=='Both'){ ?>
-            <i class="oe-i laterality R small pad"></i>
-            <?php } ?>
-        <?php else:?>
-         <input type="hidden" name="<?=$field_prefix?>[side_id]" value="<?=$values['side_id']; ?>" />
-            <input type="radio" name="<?="side_group_name_$row_count"; ?>"
-                   class="js-toggle-radio-checked <?= $model_name ?>_previous_operation_side"
-                   value="R"
-            />
-         <?php endif; ?>
-    </td>
-  <td>
-      <?php if(!$removable) :?>
-          <?php if($values['side']=='Light'||$values['side']=='Both'){ ?>
-          <i class="oe-i laterality L small pad"></i>
-          <?php } ?>
-      <?php else:?>
-        <input type="hidden" name="<?=$field_prefix?>[side_id]" value="<?=$values['side_id']; ?>" />
-        <input type="radio" name="<?="side_group_name_$row_count"; ?>"
-               class="js-toggle-radio-checked <?= $model_name ?>_previous_operation_side"
-               value="L"
-        />
-      <?php endif; ?>
+  <?php if(!$removable) : ?>
+  <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
+      <?php if($values['side']=='Right'||$values['side']=='Both'){ ?>
+        <i class="oe-i laterality R small pad"></i>
+      <?php } ?>
   </td>
+
+    <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
+        <?php if($values['side']=='Left'||$values['side']=='Both'){ ?>
+          <i class="oe-i laterality L small pad"></i>
+        <?php } ?>
+    </td>
+  <td></td>
+  <td></td>
+  <?php else:?>
+    <input type="hidden" name="<?=$field_prefix?>[side_id]" value="<?=$values['side_id']; ?>" />
+    <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $i => $eye) {?>
+  <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
+    <input
+        type="radio" name="<?="side_group_name_$row_count"; ?>"
+        class="<?= $model_name ?>_previous_operation_side"
+        value="<?php echo $eye->id?>"
+        <?php if($eye->id == $values['side_id']){ echo "checked"; }?>
+    />
+  </td>
+    <?php } ?>
+    <td>
+      <input type="radio"
+             name="<?="side_group_name_$row_count"; ?>"
+             class="<?= $model_name ?>_previous_operation_side"
+          <?php if(empty($values['side_id'])): ?> checked <?php endif; ?>
+             value="" />
+    </td>
+  <?php endif; ?>
+
     <td>
         <?php if(!$removable) :?>
             <?=Helper::formatFuzzyDate($values['date']) ?>
@@ -128,7 +120,6 @@ if (isset($values['date']) && strtotime($values['date'])) {
 
         <?php endif; ?>
     </td>
-
     <?php if($removable && !$required) : ?>
         <td><i class="oe-i trash"></i></td>
     <?php elseif(!$required): ?>

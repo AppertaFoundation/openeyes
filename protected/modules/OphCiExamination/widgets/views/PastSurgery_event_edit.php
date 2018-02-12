@@ -27,9 +27,12 @@ $model_name = CHtml::modelName($element);
     <table id="<?= $model_name ?>_operation_table" class="cols-10 <?= $model_name ?>_Operation">
         <thead>
         <tr>
-            <th>Operation</th>
-            <th>Checked status</th>
-            <th>Side</th>
+            <th class="cols-3">Procedures</th>
+            <th class="cols-3">Diagnoses</th>
+            <th class="cols-1">Right</th>
+            <th class="cols-1">Left</th>
+            <th class="cols-1">Both</th>
+            <th class="cols-1">None</th>
             <th>Date</th>
             <th>Notes</th>
             <th></th>
@@ -97,24 +100,13 @@ $model_name = CHtml::modelName($element);
                       $op_list = CommonPreviousOperation::model()->findAll(array('order' => 'display_order asc'));
                       foreach ($op_list as $op_item) {
                       ?>
-                          <li data-str="<?php echo $op_item->name; ?>">
+                          <li data-str="<?php echo $op_item->name; ?>" data-id="<?php echo $op_item->id; ?>">
                             <span class="restrict-width"><?php echo $op_item->name; ?></span>
                           </li>
                       <?php } ?>
               </ul>
             </div>
           <!-- flex layout -->
-          </td>
-          <td>
-            <div class="flex-layout flex-top flex-left">
-              <ul id="past-surgery-side-options" class="add-options" data-multi="true" data-clickadd="false">
-                <li data-str="Left" data-id=""><span class="restrict-width">Left</span></li>
-                <li data-str="Right" data-id=""><span class="restrict-width">Right</span></li>
-                <li data-str="Both" data-id=""><span class="restrict-width">Both</span></li>
-                <li data-str="N/A" data-id=""><span class="restrict-width">N/A</span></li>
-              </ul>
-            </div>
-            <!-- flex layout -->
           </td>
         </tr>
       </table>
