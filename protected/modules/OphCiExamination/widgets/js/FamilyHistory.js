@@ -74,10 +74,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             e.preventDefault();
             if (controller.$table.hasClass('hidden')){
                 controller.$table.removeClass('hidden');
-                controller.$table.show();
-
             }
-            controller.addEntry();
+          controller.$table.show();
+          controller.addEntry();
         });
 
         this.$table.on('click', 'i.trash', function(e) {
