@@ -17,76 +17,68 @@
  */
 ?>
 <div class="element-data element-eyes row">
-	<div class="element-eye right-eye column">
-		<div class="data-row">
-			<?php if ($element->hasRight()) {
-    ?>
-				<table class="element-table">
-					<thead>
-						<tr>
-							<th>Time</th>
-							<th>Drug</th>
-							<th>Drops</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php foreach ($element->right_treatments as $treatment) {
-    ?>
-							<tr>
-								<td><?php echo date('H:i', strtotime($treatment->treatment_time))?></td>
-								<td><?php echo $treatment->drug->name?></td>
-								<td><?php echo $treatment->drops?> drop<?php if ($treatment->drops != 1) {
-    ?>s<?php 
-}
-    ?></td>
-							</tr>
-						<?php 
-}
-    ?>
-					</tbody>
-				</table>
-			<?php 
-} else {
-    ?>
-				<div class="data-value">None given</div>
-			<?php 
-}?>
-		</div>
-	</div>
-	<div class="element-eye left-eye column">
-		<div class="data-row">
-			<?php if ($element->hasLeft()) {
-    ?>
-				<table class="element-table">
-					<thead>
-						<tr>
-							<th>Time</th>
-							<th>Drug</th>
-							<th>Drops</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php foreach ($element->left_treatments as $treatment) {
-    ?>
-							<tr>
-								<td><?php echo date('H:i', strtotime($treatment->treatment_time))?></td>
-								<td><?php echo $treatment->drug->name?></td>
-								<td><?php echo $treatment->drops?> drop<?php if ($treatment->drops != 1) {
-    ?>s<?php 
-}
-    ?></td>
-							</tr>
-						<?php 
-}
-    ?>
-					</tbody>
-				</table>
-			<?php 
-} else {
-    ?>
-				<div class="data-value">None given</div>
-			<?php 
-}?>
-		</div>
-	</div>
+  <div class="right-eye">
+      <?php if ($element->hasRight()) {
+          ?>
+        <table class="element-table large">
+          <tbody>
+          <?php foreach ($element->right_treatments as $treatment) {
+              ?>
+            <tr>
+              <td><?php echo $treatment->drug->name ?></td>
+              <td>
+                <i class="oe-i time small no-click pad"></i>
+                  <?php echo date('H:i', strtotime($treatment->treatment_time)) ?>
+              </td>
+              <td><?php echo $treatment->drops ?> drop<?php if ($treatment->drops != 1) {
+                      ?>s<?php
+                  }
+                  ?></td>
+            </tr>
+              <?php
+          }
+          ?>
+          </tbody>
+        </table>
+          <?php
+      } else {
+          ?>
+        <div class="data-value">
+          <span class="large-text">None given</span>
+        </div>
+          <?php
+      } ?>
+  </div>
+  <div class="left-eye">
+      <?php if ($element->hasLeft()) {
+          ?>
+        <table class="element-table large">
+          <tbody>
+          <?php foreach ($element->left_treatments as $treatment) {
+              ?>
+            <tr>
+              <td><?php echo $treatment->drug->name ?></td>
+              <td>
+                <i class="oe-i time small no-click pad"></i>
+                  <?php echo date('H:i', strtotime($treatment->treatment_time)) ?>
+              </td>
+              <td><?php echo $treatment->drops ?> drop<?php if ($treatment->drops != 1) {
+                      ?>s<?php
+                  }
+                  ?></td>
+            </tr>
+              <?php
+          }
+          ?>
+          </tbody>
+        </table>
+          <?php
+      } else {
+          ?>
+        <div class="data-value">
+          <span class="large-text">None given</span>
+        </div>
+          <?php
+      } ?>
+  </div>
 </div>

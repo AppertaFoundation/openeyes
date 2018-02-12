@@ -42,6 +42,8 @@
 		</select>
 	</td>
 	<td class="treatmentActions">
-		<a href="#" class="removeTreatment">Remove</a>
+		<a href="#" class="removeTreatment">
+      <i class="oe-i trash"></i>
+    </a>
 	</td>
 </tr>

@@ -19,7 +19,7 @@
 <section class=" element
 	<?php
     $eye_divider_list = ['Visual Acuity','Anterior Segment','Intraocular Pressure',
-        'Refraction','Gonioscopy','Adnexal','Pupillary Abnormalities', 'CCT','Keratoconus Monitoring',
+        'Refraction','Gonioscopy','Adnexal', 'Dilation', 'Pupillary Abnormalities', 'CCT','Keratoconus Monitoring',
         'Posterior Pole'];
   if ($element->elementType->name=='Medications'||$element->elementType->name=='Risks'){
     echo 'full';
