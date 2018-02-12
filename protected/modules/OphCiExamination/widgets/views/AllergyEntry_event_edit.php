@@ -35,9 +35,8 @@ if (!isset($values)) {
     <td>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[other]" value="<?=$values['other'] ?>" />
-
+        <?=$values['allergy_display']; ?>
         <?php if ($removable): ?>
-            <?=$values['allergy_display']; ?>
             <input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?=$values['allergy_id'] ?>" />
         <?php endif; ?>
     </td>
@@ -69,6 +68,10 @@ if (!isset($values)) {
     </td>
 
     <td>
-      <i class="oe-i trash"></i>
+      <?php if ($removable): ?>
+        <i class="oe-i trash"></i>
+      <?php else: ?>
+        read only <i class="oe-i info small pad"></i>
+      <?php endif; ?>
     </td>
 </tr>

@@ -36,7 +36,14 @@
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
-  <table id="<?= $model_name ?>_entry_table" class="cols-7 <?=$element->no_allergies_date ? 'hidden' : ''?>">
+  <table id="<?= $model_name ?>_entry_table" class="cols-7 <?= !count($element->entries) ? 'hidden' : ''?>">
+    <thead>
+    <tr>
+      <th>Allergy</th>
+      <th>Comments</th>
+      <th>Action(s)</th>
+    </tr>
+    </thead>
 
       <tbody>
 
@@ -80,7 +87,7 @@
       ?>
       </tbody>
   </table>
-  <div class="flex-item-bottom">
+  <div class="flex-item-bottom" id="history-allergy-popup">
     <button class="button hint green js-add-select-search" type="button"><i class="oe-i plus pro-theme"></i></button>
     <!-- popup to add to element is click -->
     <div id="add-to-allergies" class="oe-add-select-search" style="display: none;">
@@ -96,10 +103,10 @@
         <tr>
           <td>
             <div class="flex-layout flex-top flex-left">
-              <ul class="add-options" data-multi="true" data-clickadd="false">
+              <ul class="add-options" data-multi="true" data-clickadd="false" id="history-allergy-option">
                 <?php $allergies = $element->getAllergyOptions();
                     foreach ($allergies as $allergy){ ?>
-                      <li data-str = "<?php echo $allergy->name ?>">
+                      <li data-str = "<?php echo $allergy->name ?>" data-id="<?php echo $allergy->id ?>">
                         <span class="auto-width">
                           <?php echo $allergy->name; ?>
                         </span>

@@ -27,6 +27,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.allergySelector = '[name$="[allergy_id]"]';
         this.$other = $('#' + this.options.modelName + '_other');
         this.otherWrapperSelector = '.' + this.options.modelName + '_other_wrapper';
+        this.$popupSelector = $('#history-allergy-popup');
         this.tableSelector = '#' + this.options.modelName + '_entry_table';
         this.$table = $(this.tableSelector);
         this.templateText = $('#' + this.options.modelName + '_entry_template').text();
@@ -67,12 +68,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             controller.dedupeAllergySelectors();
         });
 
-        $('#' + controller.options.modelName + '_add_entry').on('click', function (e) {
+        this.$popupSelector.on('click','.add-icon-btn', function(e) {
             e.preventDefault();
+            if (controller.$table.hasClass('hidden')){
+                controller.$table.removeClass('hidden');
+            }
+            controller.$table.show();
             controller.addEntry();
         });
 
-        this.$table.on('click', 'button.remove', function (e) {
+        this.$table.on('click', 'i.trash', function(e) {
+
             e.preventDefault();
             $(this).closest('tr').remove();
             controller.updateNoAllergiesState();
@@ -81,9 +87,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         this.$noAllergiesFld.on('click', function () {
             if (controller.$noAllergiesFld.prop('checked')) {
-                controller.setRadioButtonsToNo();
-            } else {
-                controller.$table.show();
+                controller.$table.hide();
             }
         });
     };
@@ -101,7 +105,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         } else {
             return false;
         }
-    }
+    };
 
     AllergiesController.prototype.setRadioButtonsToNo = function () {
         this.$table.find('input[type=radio]').each(function (i) {
@@ -109,7 +113,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 $(this).prop('checked', 'checked');
             }
         });
-    }
+    };
     /**
      *
      * @param data
@@ -118,15 +122,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     AllergiesController.prototype.createRow = function (data) {
         if (data === undefined)
             data = {};
-
-        data['row_count'] = OpenEyes.Util.getNextDataKey(this.tableSelector + ' tbody tr', 'key');
+        data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
+        data['allergy_id'] = $('#history-allergy-option').find('.selected').data('id');
+        data['allergy_display'] = $('#history-allergy-option').find('.selected').data('str');
 
         return Mustache.render(
             this.templateText,
             data
         );
     };
-
+    
     /**
      * If the no allergy box is checked and any of the allergies are checked
      * into not checked then uncheck the 'No allergies' box
@@ -144,13 +149,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         } else {
             this.$noAllergiesWrapper.show();
         }
-    }
+    };
 
     /**
      * Add a family history section if its valid.
      */
     AllergiesController.prototype.addEntry = function () {
         this.$table.find('tbody').append(this.createRow());
+        $('.flex-item-bottom').find('.selected').removeClass('selected');
         this.dedupeAllergySelectors();
         this.updateNoAllergiesState();
     };
