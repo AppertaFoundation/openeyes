@@ -24,12 +24,14 @@
 		<?php 
 }?>
 		<?php echo CHtml::dropDownList($name_stub.'['.$key.'][value]', @$reading->value, $values, array('empty' => '--', 'class' => 'va-selector', 'options' => $val_options))?>
-		<span class="va-info-icon"><img src="<?php echo $this->assetPath ?>/img/icon_info.png" style="height:20px" /></span>
 	</td>
+  <td class="cols-1">
+    <i class="oe-i info small pad js-has-tooltip" data-tooltip-content="Tool tip"></i>
+  </td>
 	<td>
 		<?php echo CHtml::dropDownList($name_stub.'['.$key.'][method_id]', @$reading->method_id, $methods, array('class' => 'method_id'))?>
 	</td>
 	<td class="readingActions">
-		<a class="removeReading" href="#">Remove</a>
-	</td>
+    <i class="oe-i trash removeReading"></i>
+  </td>
 </tr>

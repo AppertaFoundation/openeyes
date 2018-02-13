@@ -870,6 +870,24 @@ $(document).ready(function() {
         e.preventDefault();
     });
 
+  $(this).delegate(
+    '.nearvisualAcuityReading .removeReading',
+    'click', function(e) {
+      var activeForm = $(this).closest('.active-form');
+
+      $(this).closest('tr').remove();
+      if ($('tbody', activeForm).children('tr').length == 0) {
+        $('.noReadings', activeForm).show();
+        $('table', activeForm).hide();
+      }
+      else {
+        // VA can affect DR
+        var side = getSplitElementSide($(this));
+        OphCiExamination_DRGrading_update(side);
+      }
+      e.preventDefault();
+    });
+
     $(this).delegate('.addReading, .addNearReading', 'click', function(e) {
         var side = $(this).closest('.side').attr('data-side');
         if($(this).hasClass('addNearReading')){

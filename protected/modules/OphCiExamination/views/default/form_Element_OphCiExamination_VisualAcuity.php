@@ -174,8 +174,7 @@ $this->endClip('element-title-additional');
         </div>
       <div class="inactive-form" style="display: none">
         <div class="add-side">
-          <a href="#"> Add left side <span class="icon-add-side"></span>
-          </a>
+          <a href="#"> Add left side <span class="icon-add-side"></span></a>
         </div>
       </div>
     </div>

@@ -46,7 +46,6 @@ if ($element->isNewRecord) {
 $this->endClip('element-title-additional');
 ?>
 
-
 <div class="element-fields element-eyes">
 	<input type="hidden" name="nearvisualacuity_readings_valid" value="1" />
 	<?php echo $form->hiddenInput($element, 'unit_id', false); ?>
@@ -54,7 +53,7 @@ $this->endClip('element-title-additional');
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
     ?> inactive<?php 
 }?>" data-side="right">
-		<div class="active-form">
+		<div class="active-form field-row flex-layout">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<table class="blank va_readings"<?php if (!$element->right_readings) {
     ?> style="display: none;" <?php 
@@ -88,24 +87,23 @@ $this->endClip('element-title-additional');
 					<?php echo $form->checkBox($element, 'right_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
 				</div>
 			</div>
-			<div class="field-row">
-				<button class="button small secondary addNearReading">
-					Add
+			<div class="flex-item-bottom">
+				<button class="button hint green addNearReading" type="button">
+          <i class="oe-i plus pro-theme"></i>
 				</button>
 			</div>
 		</div>
-		<div class="inactive-form">
+		<div class="inactive-form" style="display: none; ">
 			<div class="add-side">
-				<a href="#">
-					Add right side <span class="icon-add-side"></span>
-				</a>
+				<a href="#">Add right side <span class="icon-add-side"></span></a>
 			</div>
 		</div>
 	</div>
+
 	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {
     ?> inactive<?php 
 }?>" data-side="left">
-		<div class="active-form">
+		<div class="active-form field-row flex-layout">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 			<table class="blank va_readings"<?php if (!$element->left_readings) {
     ?> style="display: none;" <?php 
@@ -128,9 +126,7 @@ $this->endClip('element-title-additional');
 }?>
 				</tbody>
 			</table>
-			<div class="field-row row noReadings"<?php if ($element->left_readings) {
-    ?> style="display: none;" <?php 
-} ?>>
+			<div class="field-row row noReadings"<?php if ($element->left_readings) { ?> style="display: none;" <?php } ?>>
 				<div class="large-4 column">
 					<div class="field-info">Not recorded</div>
 				</div>
@@ -139,13 +135,13 @@ $this->endClip('element-title-additional');
 					<?php echo $form->checkBox($element, 'left_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
 				</div>
 			</div>
-			<div class="field-row">
-				<button class="button small secondary addNearReading">
-					Add
-				</button>
+			<div class="flex-item-bottom">
+				<button class="button hint green addNearReading" type="button">
+          <i class="oe-i plus pro-theme"></i>
+        </button>
 			</div>
 		</div>
-		<div class="inactive-form">
+		<div class="inactive-form" style="display: none;">
 			<div class="add-side">
 				<a href="#">
 					Add left side <span class="icon-add-side"></span>
