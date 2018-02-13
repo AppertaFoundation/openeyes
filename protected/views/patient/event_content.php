@@ -22,48 +22,4 @@
         $this->renderEventMetadata();
     } ?>
 </main>
-<script>
-    $('.js-remove-element').on('click', function (e) {
-        e.preventDefault();
-        var parent = $(this).parent().parent();
-        removeElement(parent);
-    });
-
-    $('.js-add-select-search').on('click', function (e) {
-        e.preventDefault();
-        $(e.target).parent().find('.oe-add-select-search').show();
-    });
-
-    $('.oe-add-select-search').find('.add-icon-btn').on('click', function (e) {
-        e.preventDefault();
-        $(e.target).parent('.oe-add-select-search').hide();
-    });
-
-    //Set the option selecting function
-    $('.oe-add-select-search').find('.add-options').find('li').each(function () {
-        if ($(this).text() !== "") {
-            $(this).on('click', function () {
-                if ($(this).hasClass('selected')) {
-                    $(this).removeClass('selected');
-                } else {
-                    if ($(this).parent('.add-options').attr('data-multi') === "false") {
-                        $(this).parent('.add-options').find('li').removeClass('selected');
-                    }
-                    $(this).addClass('selected');
-                }
-            });
-        }
-    });
-
-    $(".oe-add-select-search .close-icon-btn").click(function (e) {
-        $(e.target).closest('.oe-add-select-search').hide();
-    });
-
-    $('.js-add-comments').on('click', function (e) {
-        e.preventDefault();
-        var container = $(e.target).attr('data-input');
-        $(container).show();
-        $(e.target).hide();
-    });
-</script>
 
