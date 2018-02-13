@@ -17,10 +17,25 @@
  */
 ?>
 <div class="element-fields flex-layout full-width ">
-	<div class="field-row textMacros">
-		<?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'description', 'form' => $form))?>
-	</div>
-	<div class="field-row">
-		<?php echo $form->textArea($element, 'description', array('rows' => 1, 'nowrapper' => true), false, array('placeholder' => 'Description'))?>
-	</div>
+  <div class="cols-7">
+      <?php echo $form->textArea($element, 'description', array('class' => 'cols-full', 'nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'description', 'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;'))?>
+  </div>
+  <div class="flex-item-bottom">
+    <button class="button hint green js-add-select-search" type="button">
+      <i class="oe-i plus pro-theme"></i>
+    </button>
+    <div id="add-to-investigation" class="oe-add-select-search auto-width" style="display: none;">
+        <?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'description', 'form' => $form))?>
+    </div>
+  </div>
 </div>
+
+<script type="text/javascript">
+    // Hide the adding dialog, print text to textArea
+    $('.oe-add-select-search .add-icon-btn').on('click', function () {
+        var inputText = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation_description');
+        var popup = $('#add-to-investigation');
+
+        inputText.val(inputText.val() ? inputText.val() + popup.find('li.selected').attr('data-str') : popup.find('li.selected').attr('data-str'));
+    });
+</script>
