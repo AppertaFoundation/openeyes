@@ -22,6 +22,7 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
 }
 ?>
 <div class="element-fields flex-layout full-width ">
+
     <?php echo CHtml::hiddenField('comorbidities_items_valid', 1, array('id' => 'comorbidities_items_valid')) ?>
   <div class="field-row comorbidities-multi-select">
       <?php echo $form->multiSelectList(
@@ -46,12 +47,12 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
           true,
           true
       ) ?>
+      <?php echo $form->textArea($element, 'comments', array( 'nowrapper' => true), false, array('placeholder' => 'Enter comments here', 'style'=>'display: none;')) ?>
   </div>
-  <div class="field-row">
-    <button class="button js-add-comments" data-input="#comments-risks" type="button">
-      <i class="oe-i comments small-icon"></i>
-    </button>
-      <?php echo $form->textArea($element, 'comments', array('rows' => '1', 'class' => 'js-input-comments cols-6', 'id'=> 'comments-risks', 'nowrapper' => true), false,
-          array('placeholder' => 'Enter comments here', 'style'=>'display: none;')) ?>
-  </div>
+  <button class="button js-add-comments" data-input="#<?= CHtml::modelName($element).'_comments'; ?>" type="button">
+    <i class="oe-i comments small-icon"></i>
+  </button>
+
 </div>
+
+
