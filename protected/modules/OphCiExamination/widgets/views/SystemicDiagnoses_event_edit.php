@@ -35,14 +35,14 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
     <table class="cols-10" id="<?= $model_name ?>_diagnoses_table">
         <thead>
         <tr>
-            <th></th>
-            <th>Right</th>
-            <th>Left</th>
-            <th>Both</th>
-            <th>N/A</th>
-            <th>Date(optional)</th>
-            <th></th>
-            <th></th>
+          <th></th>
+          <th>Right</th>
+          <th>Both</th>
+          <th>Left</th>
+          <th>N/A</th>
+          <th>Date(optional)</th>
+          <th></th>
+          <th></th>
         </tr>
         </thead>
         <tbody>
