@@ -111,8 +111,9 @@ class OphTrOperationnote_CXL_UV_Pulse_Duration extends BaseActiveRecordVersioned
         return $defaultId->id;
     }
 
-    //@TODO: ok, so this method should be removed
-    //@TODO: The useage in the code is :
+    //@TODO: ok, so all of the getName() methods should be removed (after relations are fixed). Regexp:  /(CXL).*(getName\()/
+
+    //@TODO: The usage in the code is :
     //@TODO: OphTrOperationnote_CXL_UV_Pulse_Duration::model()->getName($element->uv_pulse_duration_id)
     //@TODO: instead of this the relation should be used, as it is fixed now:
     //@TODO: $element->uv_pulse_duration->name
