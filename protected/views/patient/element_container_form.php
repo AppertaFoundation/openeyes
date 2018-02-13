@@ -17,8 +17,11 @@
  */
 ?>
 <?php
-$section_classes = array('element full edit');
-$section_classes[] = CHtml::modelName($element->elementType->class_name);
+  $eye_divider_list = ['Visual Function','Visual Acuity', 'Colour Vision','Anterior Segment','Intraocular Pressure',
+      'Refraction','Gonioscopy','Adnexal','Pupillary Abnormalities', 'CCT','Keratoconus Monitoring',
+      'Posterior Pole'];
+$section_classes = array('edit-'.CHtml::modelName($element->elementType->name));
+$section_classes[] =  'element full';
 if ($this->isRequired($element)) {
     $section_classes[] = 'required';
 }
@@ -35,7 +38,7 @@ $element_Type = $element->getElementType();
 <?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
 
 <section
-	class="<?php echo implode(' ', $section_classes);?>"
+	class="<?php echo implode(' ', $section_classes); ?> <?php echo CHtml::modelName($element->elementType->class_name) ?> "
 	data-element-type-id="<?php echo $element->elementType->id?>"
   data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
   data-element-type-name="<?php echo $element->elementType->name?>"

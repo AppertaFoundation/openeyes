@@ -32,5 +32,6 @@
       <?php echo CHtml::dropDownList($name_stub.'['.$key.'][method_id]', @$reading->method_id, $methods, array('class' => 'method_id'))?>
 	</td>
 	<td class="cols-2 readingActions">
-    <i class="oe-i trash removeReading"></i>	</td>
+    <i class="oe-i trash removeReading"></i>
+  </td>
 </tr>

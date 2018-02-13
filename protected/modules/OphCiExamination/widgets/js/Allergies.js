@@ -131,7 +131,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             data
         );
     };
-    
+
     /**
      * If the no allergy box is checked and any of the allergies are checked
      * into not checked then uncheck the 'No allergies' box

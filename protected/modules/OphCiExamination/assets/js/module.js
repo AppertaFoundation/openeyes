@@ -930,9 +930,9 @@ $(document).ready(function() {
         e.preventDefault();
     });
 
-    $(this).delegate('#event-content .'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision .clearCV', 'click', function(e) {
+    $(this).delegate('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision .clearCV', 'click', function(e) {
         var side = $(this).closest('.side').attr('data-side');
-        $(this).closest('.side').find('tr.colourvisionReading a.removeCVReading').click();
+        $(this).closest('.side').find('tr.colourvisionReading i.removeCVReading').click();
         $(this).addClass('hidden');
         e.preventDefault();
     });
@@ -1376,11 +1376,11 @@ function OphCiExamination_ColourVision_addReading(element, side) {
         var form = Mustache.render(template, data);
 
         // Show clear button
-        $('#event-content .'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision [data-side="' + side +'"] .clearCV').removeClass("hidden");
+        $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision [data-side="' + side +'"] .clearCV').removeClass("hidden");
 
         // Show table
-        var table = $('#event-content .'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision [data-side="' + side +'"] .colourvision_table');
-        table.show();
+        var table = $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision [data-side="' + side +'"] .colourvision_table');
+      table.show();
         $('tbody', table).append(form);
     }
 }
