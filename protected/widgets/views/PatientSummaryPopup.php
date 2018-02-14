@@ -17,12 +17,12 @@
  */
 ?>
 <!-- Show full patient Demographies -->
-<div class="oe-patient-popup" id="patient-popup-demographics" style="display: none;">
+<div class="oe-patient-popup" id="patient-popup-demographics" style="display:none;">
   <div class="flex-layout flex-top">
     <div class="cols-left">
       <div class="popup-overflow">
         <div class="subtitle">Demographics</div>
-        <table class="patient-demographics">
+        <table class="patient-demographics" style="position: relative; right: 0px;">
           <tbody>
           <tr>
             <td>Born</td>
@@ -38,14 +38,15 @@
             <td><?php echo !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown'?></td>
           </tr><tr>
             <td>Mobile</td>
-            <td>07771123456</td>
+            <td>Unknown</td>
           </tr><tr>
             <td>Email</td>
-            <td>channing65@hotmail.co.uk</td>
+            <td><?php echo !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown'?></td>
           </tr><tr>
             <td>Next of kin</td>
-            <td>Spouse</td>
-          </tr>					</tbody>
+            <td>Unknown</td>
+          </tr>
+          </tbody>
         </table>
       </div><!-- .popup-overflow -->
     </div><!-- .cols-left -->
@@ -56,7 +57,7 @@
 
         <div class="subtitle">&nbsp;</div>
 
-        <table class="patient-demographics">
+        <table class="patient-demographics" style="position: relative; right: 0px;">
           <tbody>
           <tr>
             <td>General Practitioner</td>
@@ -73,9 +74,7 @@
           </tr>
           </tbody>
         </table>
-
       </div><!-- .popup-overflow -->
-
     </div><!-- .cols-right -->
   </div><!-- flex -->
 </div>
@@ -86,81 +85,113 @@
 <div class="oe-patient-popup" id="patient-summary-quicklook" style="display: none;">
     <div class="flex-layout flex-top">
       <!-- oe-popup-overflow handles scrolling if data overflow height -->
-      <div class="cols-4 oe-popup-overflow pad">
-        <!-- Warnings -->
-          <?php
-          if ($this->warnings) { ?>
-            <div class="alert-box patient">
-                  <?php echo implode(', ', array_unique(array_map(function ($warning) {
-                    return $warning['short_msg'];
-                    }, $this->warnings))); ?>
+      <div class="oe-popup-overflow quicklook-data-groups">
+        <div class="group">
+          <div class="label">Eye diagnoses</div>
+          <div class="data">
+              <?php $this->widget('OEModule\OphCiExamination\widgets\PastSurgery', array(
+                  'patient' => $this->patient,
+                  'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
+              )); ?>
           </div>
-          <?php } ?>
-        <!-- Data -->
-        <div class="summary-data">
-          <div class="row">
-            <div class="label">Ophthalmic Diagnoses</div>
-            <div class="data">
-                <?php $this->widget('OEModule\OphCiExamination\widgets\PastSurgery', array(
-                    'patient' => $this->patient,
-                    'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
-                )); ?>
-            </div><!-- data -->
-          </div><!-- row -->
-        </div><!-- summary-data -->
-      </div><!-- popup-overflow -->
-
-      <!-- oe-popup-overflow handles scrolling if data overflow height -->
-      <div class="cols-4 oe-popup-overflow pad">
-
-        <!-- Data -->
-        <div class="summary-data">
-
-          <div class="row">
-            <div class="label">Systemic Diagnoses</div>
-            <div class="data">
-              <table>
-                <tbody>
-                <?php if (sizeof($this->patient->systemicDiagnoses)==0){ ?>
-                    <p>No systemic diagnoses recorded.</p>
-                <?php }
-                foreach ($this->patient->systemicDiagnoses as $diagnosis) {
+        </div>
+        <!-- group-->
+        <div class="group">
+          <div class="label">Systemic Diagnoses</div>
+          <div class="data">
+            <table>
+              <tbody>
+              <?php if (sizeof($this->patient->systemicDiagnoses)==0){ ?>
+                <p>No systemic diagnoses recorded.</p>
+              <?php }
+              foreach ($this->patient->systemicDiagnoses as $diagnosis) {
                   ?>
-                  <tr>
-                    <td> <?php echo $diagnosis->disorder->term?></td>
-                    <td>
-                      <i class="oe-i laterality <?php echo $diagnosis->eye && ($diagnosis->eye->adjective=='Right'||$diagnosis->eye->adjective=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
-                      <i class="oe-i laterality <?php echo $diagnosis->eye && ($diagnosis->eye->adjective=='Left'||$diagnosis->eye->adjective=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
-                    </td>
-                    <td><?php echo $diagnosis->dateText?></td>
-                  </tr>
-                <?php }?>
-                </tbody>
-              </table>
+                <tr>
+                  <td> <?php echo $diagnosis->disorder->term?></td>
+                  <td>
+                    <i class="oe-i laterality <?php echo $diagnosis->eye && ($diagnosis->eye->adjective=='Right'||$diagnosis->eye->adjective=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
+                    <i class="oe-i laterality <?php echo $diagnosis->eye && ($diagnosis->eye->adjective=='Left'||$diagnosis->eye->adjective=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
+                  </td>
+                  <td><?php echo $diagnosis->dateText?></td>
+                </tr>
+              <?php }?>
+              </tbody>
+            </table>
 
-            </div><!-- data -->
-          </div><!-- row -->
-        </div><!-- summary-data -->
+          </div><!-- data -->
+        </div>
+        <!-- group -->
+        <div class="group">
+          <div class="label">CVI Status</div>
+          <div class="data">
+            <table>
+                <?php echo $this->cviStatus; ?>
+            </table>
+          </div>
+        </div>
+        <!-- group-->
       </div><!-- popup-overflow -->
 
-
       <!-- oe-popup-overflow handles scrolling if data overflow height -->
-      <div class="cols-4 oe-popup-overflow pad">
-
+      <div class="oe-popup-overflow quicklook-data-groups">
         <!-- Data -->
-        <div class="summary-data">
-
-          <div class="row">
-            <div class="label">Medications</div>
-            <div class="data">
+        <div class="group">
+          <div class="label">Eye procedures</div>
+          <div class="data">
+            <table>
+            </table>
+          </div>
+        </div>
+        <!-- group-->
+        <div class="group">
+          <div class="label">Systemic Medications</div>
+          <div class="data">
+            <table>
                 <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
                     'patient' => $this->patient,
                     'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
                 )); ?>
-            </div><!-- .data -->
-          </div><!-- .row -->
+            </table>
+          </div>
+        </div>
+        <!-- group-->
+      </div><!-- popup-overflow -->
 
-        </div><!-- .summary-data -->
+      <!-- oe-popup-overflow handles scrolling if data overflow height -->
+      <div class="oe-popup-overflow quicklook-data-groups">
+        <div class="group">
+          <div class="label">Eye medications</div>
+          <div class="data">
+            <table></table>
+          </div>
+        </div>
+        <!-- group-->
+
+        <div class="group">
+          <div class="label">Family</div>
+          <div class="data">
+            <table>
+                <?php $this->widget('OEModule\OphCiExamination\widgets\FamilyHistory', array(
+                    'patient' => $this->patient,
+                    'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
+                )); ?>
+            </table>
+          </div>
+        </div>
+        <!-- group-->
+
+        <div class="group">
+          <div class="label">Social</div>
+          <div class="data">
+            <table>
+                <?php $this->widget('OEModule\OphCiExamination\widgets\SocialHistory', array(
+                    'patient' => $this->patient,
+                    'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
+                )); ?>
+            </table>
+          </div>
+        </div>
+      <!-- group-->
       </div><!-- 	.oe-popup-overflow -->
 
     </div><!-- .flex-layout -->

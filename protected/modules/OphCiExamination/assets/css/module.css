@@ -264,14 +264,10 @@ a.stop-medication {
 .laterality.R {
   background-color: #9fec6d;
   color: #747782;
-  margin-left: 0px;
-  margin-right: 4ch;
 }
 /* line 51, ../sass/components/elements/_history-medications.scss */
 .laterality.L {
   background-color: #fe6767;
-  margin-left: 4ch;
-  margin-right: 0px;
 }
 /* line 56, ../sass/components/elements/_history-medications.scss */
 .laterality.B {
