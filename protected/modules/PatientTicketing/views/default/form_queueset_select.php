@@ -18,6 +18,7 @@
 ?>
 
 <?php
+    $queueset_id = $queueset ? $queueset->getId() : null;
     $qsc_svc = Yii::app()->service->getService($this::$QUEUESETCATEGORY_SERVICE);
     $queueset_list = $qsc_svc->getCategoryQueueSetsList($category, Yii::app()->user->id);
     $form = $this->beginWidget('CActiveForm', array(
@@ -26,7 +27,10 @@
                         'class' => 'row',
                 ),
                 'enableAjaxValidation' => false,
-                'method' => 'post'
+                'method' => 'get',
+                'action' => ["/{$this->module->id}/default/"]
+
+
         ));
 ?>
 
@@ -37,6 +41,7 @@
 			<div class="large-2 column">Select <?= $category->name ?>:</div>
 			<div class="large-3 column"><?php echo CHtml::dropDownList('queueset_id', ($queueset ? $queueset->getId() : null), $queueset_list, array('empty' => '- Please Select -'))?></div>
 			<div class="large-2 column end">
+				<input type="hidden" name="cat_id" value="<?=$cat_id;?>" />
 				<input type="submit" class="secondary small" value="Select" />
 				<?php if ($queueset) {?>
 					<button class="small warning" id="queueset-select-cancel">Cancel</button>

@@ -68,7 +68,7 @@
 
             $buttons = '<div class="buttons text-right">
                             <button class="secondary small ok" type="button" data-queue="'.$this->ticket->current_queue->id.'">OK</button>
-                            <button class="warning small cancel" type="button" data-queue="'.$this->ticket->current_queue->id.'" data-category="'.$this->ticket->current_queue->queueset->category_id.'">Cancel</button>
+                            <button class="warning small cancel" type="button" data-queue="'.$this->ticket->current_queue->queueset->id.'" data-category="'.$this->ticket->current_queue->queueset->category_id.'">Cancel</button>
                         </div>';
 
             $buttons_drawn = false;

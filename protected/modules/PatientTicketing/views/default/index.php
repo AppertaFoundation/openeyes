@@ -44,9 +44,9 @@ $qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
         ?>
 <?php
     $this->renderPartial('form_queueset_select', array(
-        'qs_svc' => $qs_svc,
         'category' => $category,
         'queueset' => $queueset,
+        'cat_id' => $cat_id,
     ));
 
     if ($queueset) {
