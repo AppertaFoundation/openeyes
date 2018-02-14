@@ -185,7 +185,7 @@ if (@$_POST['Element_OphTrIntravitrealinjection_Treatment']) {
     </label>
   </div>
   <div class="<?php echo $form->columns('field'); ?>">
-    <div class="row collapse">
+    <div class="row collapse in">
       <div class="large-3 column">
           <?php echo $form->textField($element, $side . '_number', array('size' => '10', 'nowrapper' => true)) ?>
       </div>

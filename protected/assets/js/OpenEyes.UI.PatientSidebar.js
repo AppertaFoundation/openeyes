@@ -305,7 +305,7 @@
             itemClass = 'has-children';
             itemClass += open ? ' expanded' : ' collapsed';
             hrefClass = 'has-icon';
-            span = '<span class="icon ' + (open ? 'collapse' : 'expand') + '"></span>';
+            span = '<span class="icon ' + (open ? 'collapse in' : 'expand') + '"></span>';
 
         } else if (child) {
             itemClass = 'child';
