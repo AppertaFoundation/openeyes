@@ -16,8 +16,74 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<!-- Show full patient Demographies -->
+<div class="oe-patient-popup" id="patient-popup-demographics" style="display: none;">
+  <div class="flex-layout flex-top">
+    <div class="cols-left">
+      <div class="popup-overflow">
+        <div class="subtitle">Demographics</div>
+        <table class="patient-demographics">
+          <tbody>
+          <tr>
+            <td>Born</td>
+            <td><b><?php echo ($this->patient->dob) ? $this->patient->NHSDate('dob') : 'Unknown' ?></b> (52y)</td>
+          </tr><tr>
+            <td>Address</td>
+            <td><?php echo $this->patient->getSummaryAddress()?></td>
+          </tr><tr>
+            <td>Ethnic Group</td>
+            <td><?php echo $this->patient->getEthnicGroupString() ?></td>
+          </tr><tr>
+            <td>Telephone</td>
+            <td><?php echo !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown'?></td>
+          </tr><tr>
+            <td>Mobile</td>
+            <td>07771123456</td>
+          </tr><tr>
+            <td>Email</td>
+            <td>channing65@hotmail.co.uk</td>
+          </tr><tr>
+            <td>Next of kin</td>
+            <td>Spouse</td>
+          </tr>					</tbody>
+        </table>
+      </div><!-- .popup-overflow -->
+    </div><!-- .cols-left -->
+
+    <div class="cols-right">
+
+      <div class="popup-overflow">
+
+        <div class="subtitle">&nbsp;</div>
+
+        <table class="patient-demographics">
+          <tbody>
+          <tr>
+            <td>General Practitioner</td>
+            <td><?php echo ($this->patient->gp) ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
+          </tr><tr>
+            <td>GP Address</td>
+            <td><?php echo ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></td>
+          </tr><tr>
+            <td>GP Telephone</td>
+            <td><?php echo ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
+          </tr><tr>
+            <td>Optician</td>
+            <td>Mr Pink</td>
+          </tr>
+          </tbody>
+        </table>
+
+      </div><!-- .popup-overflow -->
+
+    </div><!-- .cols-right -->
+  </div><!-- flex -->
+</div>
+
+
+
 <!-- Patient Quickloog popup. Show Risks, Medical Data, Management Summary and Problem and Plans -->
-<div class="patient-popup-quicklook" id="patient-summary-quicklook" style="display: none;">
+<div class="oe-patient-popup" id="patient-summary-quicklook" style="display: none;">
     <div class="flex-layout flex-top">
       <!-- oe-popup-overflow handles scrolling if data overflow height -->
       <div class="cols-4 oe-popup-overflow pad">
@@ -102,73 +168,40 @@
 <!-- .row -->
 <!-- .patient-popup-quicklook -->
 
-<!-- Show full patient Demographies -->
-<div class="patient-popup-demographics" id="patient-popup-demographics" style="display: none;">
-  <div class="row">
-    <div class="col-left">
-      <!-- oe-popup-overflow handles scrolling if data overflow height -->
-      <div class="oe-popup-overflow">
-        <!-- demographics (NHS CUI) -->
-        <div class="demographics">
-          <div class="subtitle">Demographics</div>
-          <table class="patient-summary">
-            <tbody>
-            <tr>
-              <td>Born</td>
-              <td><b><?php echo ($this->patient->dob) ? $this->patient->NHSDate('dob') : 'Unknown' ?></b> (52y)</td>
-            </tr><tr>
-              <td>Address</td>
-              <td><?php echo $this->patient->getSummaryAddress()?></td>
-            </tr><tr>
-              <td>Ethnic Group</td>
-              <td><?php echo $this->patient->getEthnicGroupString() ?></td>
-            </tr><tr>
-              <td>Telephone</td>
-              <td><?php echo !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown'?></td>
-            </tr><tr>
-              <td>General Practitioner</td>
-              <td><?php echo ($this->patient->gp) ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
-            </tr><tr>
-              <td>GP Address</td>
-              <td><?php echo ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></td>
-            </tr><tr>
-              <td>GP Telephone</td>
-              <td><?php echo ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
-            </tr>
-            </tbody>
-          </table>
-        </div><!-- .demographics -->
-      </div><!-- .oe-popup-overflow -->
+<div class="oe-patient-popup" id="patient-popup-management" style="display: none;">
 
-    </div><!-- .col-left -->
+  <div class="flex-layout flex-top">
 
-    <div class="col-right">
+    <div class="cols-left">
 
-      <!-- oe-popup-overflow handles scrolling if data overflow height -->
-      <div class="oe-popup-overflow">
+      <div class="popup-overflow">
 
-        <div class="popup-management-summaries collapse-group" data-collapse="expanded">
-          <div class="collapse-group-icon"><i class="oe-i minus pro-theme"></i></div>
-          <div class="collapse-group-header subtitle">Management Summaries</div>
-          <div class="collapse-group-content">
+        <div class="subtitle">Management Summaries</div>
 
-            <ul class="management-summaries">
-            </ul>
+        <ul class="management-summaries">
 
-          </div><!-- .collapse-group-content -->
-        </div> <!-- .popup-management-summaries -->
+        </ul>
+
+      </div><!-- .popup-overflow -->
+
+    </div><!-- left -->
+
+    <div class="cols-right">
+
+      <div class="popup-overflow">
 
         <div class="problems-plans">
 
           <div class="subtitle">Problems &amp; Plans</div>
 
           <ul class="problems-plans-sortable" id="problems-plans-sortable">
+
           </ul>
           <div class="create-new-problem-plan">
-            <input id="create-problem-plan" type="text">
+            <input id="create-problem-plan" type="text" placeholder="Add Problem or Plan">
             <div class="add-problem-plan-btn tiny" id="js-add-pp-btn"><i class="oe-i plus pro-theme"></i></div>
           </div>
-
+            
         </div>
       </div>
       <!-- .oe-popup-overflow -->
@@ -276,6 +309,6 @@
                   </div>
                 <?php } ?>
 
-    </div><!-- .col-right -->
-  </div><!-- .row -->
+    </div><!-- .cols-right -->
+  </div><!-- flex -->
 </div>

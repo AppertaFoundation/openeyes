@@ -16,11 +16,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<script type="text/javascript" src="../js/PatientPanelPopup.js"></script>
+
 <?php
 //$clinical = $this->checkAccess('OprnViewClinical');
 $warnings = $this->patient->getWarnings($allow_clinical);
 Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
-Yii::app()->assetManager->registerScriptFile('js/PatientPanelPopup.js');
 $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
 
 ?>
@@ -90,3 +91,13 @@ $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('ap
         </ul>
   </div>
 </div>
+<?php
+$assetManager = Yii::app()->getAssetManager();
+$widgetPath = $assetManager->publish('protected/widgets/js');
+Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopup.js');
+?>
+<script type="text/javascript">
+  $(document).ready(function () {
+    PatientPanel.patientPopups.init();
+  });
+</script>
