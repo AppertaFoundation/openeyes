@@ -26,27 +26,73 @@ function showActiveChildElements() {
 }
 
 function addElement(element, animate, is_child, previous_id, params, callback) {
-    if (typeof (animate) === 'undefined')
-        animate = true;
-    if (typeof (is_child) === 'undefined')
-        is_child = false;
-    if (typeof (previous_id) === 'undefined')
-        previous_id = 0;
-    if (typeof (params) === 'undefined')
-        params = {};
+  if (typeof (animate) === 'undefined')
+    animate = true;
+  if (typeof (is_child) === 'undefined')
+    is_child = false;
+  if (typeof (previous_id) === 'undefined')
+    previous_id = 0;
+  if (typeof (params) === 'undefined')
+    params = {};
 
-    var element_type_id = $(element).data('element-type-id');
-    var element_type_class = $(element).data('element-type-class');
-    var display_order = $(element).data('element-display-order');
-    // If the element has a flag element removed show it instead
-    // of creating a new one and set the flag's value to 0
-    if ($('input[name="' + element_type_class + "[element_removed]" + '"]').length) {
-        $("." + element_type_class).show();
-        var names = element_type_class + "[element_removed]";
-        $('input[name="' + names + '"]').val(0);
-        markElementChilds(element_type_class , 0);
-        if (callback) {
-            callback();
+  var element_type_id = $(element).data('element-type-id');
+  var element_type_class = $(element).data('element-type-class');
+  var display_order = $(element).data('element-display-order');
+
+  var core_params = {
+    id: element_type_id,
+    patient_id: OE_patient_id,
+    previous_id: previous_id
+  };
+
+  $.extend(params, core_params);
+  $.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function (data) {
+    var new_element = $(data);
+    var elClass = $(element).data('element-type-class');
+
+    if ($(element).prop('tagName') !== 'LI') {
+      new_element.find(".sub-elements.active").replaceWith($(element).find(".sub-elements.active"));
+      new_element.find(".sub-elements.inactive").replaceWith($(element).find(".sub-elements.inactive"));
+    }
+
+    var container = $('.js-active-elements');
+    $(element).remove();
+
+    // Add the new element at the end, then sort the whole list to ensure correct order
+    container.append(new_element).last('section');
+    container.children('section').sort(function (a, b) {
+      // If both elements are children, sort by their display order
+      if (a.dataset.elementParentId != '' && b.dataset.elementParentId != '' && a.dataset.elementParentId == b.dataset.elementParentId) {
+        return parseInt(a.dataset.elementDisplayOrder) > parseInt(b.dataset.elementDisplayOrder);
+      } else {
+        // Otherwise find their parent display orders and sort by that
+        // (parent elements are ordered by their own display orders, and children by their parent's display orders)
+        var parentDisplayOrder_a = a.dataset.elementParentId == '' ?
+          a.dataset.elementDisplayOrder :
+          container.find('section[data-element-type-id="' + a.dataset.elementParentId + '"]').data('elementDisplayOrder');
+
+        var parentDisplayOrder_b = b.dataset.elementParentId == '' ?
+          b.dataset.elementDisplayOrder :
+          container.find('section[data-element-type-id="' + b.dataset.elementParentId + '"]').data('elementDisplayOrder');
+
+        return parseInt(parentDisplayOrder_a) > parseInt(parentDisplayOrder_b);
+      }
+    }).appendTo(container);
+
+    if (is_child) {
+      // check if this is sided
+      // and match the parent active sides if it is
+      var cel = $(container).find('.' + element_type_class);
+      var pel = $(container).parents('.element');
+      var sideField = $(cel).find('input.sideField');
+      if ($(sideField).length && $(pel).find('.element-fields input.sideField').length) {
+        $(sideField).val($(pel).find('.element-fields input.sideField').val());
+
+        if ($(sideField).val() == '1') {
+          $(cel).find('.side.left').addClass('inactive');
+        }
+        else if ($(sideField).val() == '2') {
+          $(cel).find('.side.right').addClass('inactive');
         }
     } else if (!$('.' + element_type_class).length) {
 
