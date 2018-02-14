@@ -79,8 +79,6 @@
   </div><!-- flex -->
 </div>
 
-
-
 <!-- Patient Quickloog popup. Show Risks, Medical Data, Management Summary and Problem and Plans -->
 <div class="oe-patient-popup" id="patient-summary-quicklook" style="display: none;">
     <div class="flex-layout flex-top">
@@ -340,4 +338,31 @@
 
     </div><!-- .cols-right -->
   </div><!-- flex -->
+
+</div>
+
+<div class="oe-patient-popup" id="patient-popup-allergies-risks" style="display: none;">
+  <div class="flex-layout flex-top">
+    <div class="cols-left">
+
+      <!-- Warnings: Allergies -->
+      <div class="popup-overflow">
+
+            <?php $this->widget('OEModule\OphCiExamination\widgets\Allergies', array(
+                'patient' => $this->patient,
+                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
+            )); ?>
+      </div><!-- .popup-overflow -->
+
+    </div><!-- cols-left -->
+    <div class="cols-right">
+      <!-- Warnings: Risks -->
+      <div class="popup-overflow">
+          <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryRisks', array(
+              'patient' => $this->patient,
+              'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
+          )); ?>
+      </div><!-- .popup-overflow -->
+    </div><!-- .col-right -->
+  </div><!-- .flex -->
 </div>

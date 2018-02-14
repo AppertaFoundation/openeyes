@@ -19,21 +19,19 @@
  */
 $model_name = CHtml::modelName($element);
 ?>
-
 <?php if (!$element) { ?>
     <p class="risk-status-unknown">Patient risk status is unknown</p>
 <?php } else { ?>
     <p class="risk-status-none" <?php if (!$element->no_risks_date) { echo 'style="display: none;"'; }?>>Patient has no known risks</p>
-
-
-    <table class="plain patient-data" id="<?= $model_name ?>_entry_table" <?php if (empty($element->entries)) { echo 'style="display: none;"'; }?>>
-        <thead>
-        <tr>
-            <th>Risk</th>
-            <th>Status</th>
-            <th>Comments</th>
-        </tr>
-        </thead>
+    <div class="alert-box patient">
+    <strong>Risks</strong> - <?php $risk = "";
+        foreach($element->entries as $entry) { $risk = $risk.$entry->getDisplayRisk().', '; }
+        echo substr($risk,0, -2); ?><br>
+    </div>
+  <table class="risks">
+  <colgroup>
+    <col class="cols-5">
+  </colgroup>
         <tbody>
         <?php
         foreach ($element->entries as $entry) {
@@ -47,5 +45,5 @@ $model_name = CHtml::modelName($element);
         }
         ?>
         </tbody>
-    </table>
+  </table>
 <?php } ?>
