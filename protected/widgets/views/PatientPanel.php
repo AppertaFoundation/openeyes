@@ -20,6 +20,7 @@
 //$clinical = $this->checkAccess('OprnViewClinical');
 $warnings = $this->patient->getWarnings($allow_clinical);
 Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
+Yii::app()->assetManager->registerScriptFile('js/PatientPanelPopup.js');
 $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
 
 ?>
@@ -67,17 +68,17 @@ $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('ap
   </div>
   <div class="patient-demographics" id="js-demographics-btn">
     <svg viewBox="0 0 60 60" class="icon">
+      <use xlink:href="<?php echo $navIconsUrl; ?>#info-icon"></use>
+    </svg>
+  </div>
+  <div class="patient-management" id="js-management-btn">
+    <svg viewBox="0 0 30 30" class="icon">
       <use xlink:href="<?php echo $navIconsUrl; ?>#patient-icon"></use>
     </svg>
   </div>
   <div class="patient-quicklook" id="js-quicklook-btn">
     <svg viewBox="0 0 30 30" class="icon">
       <use xlink:href="<?php echo $navIconsUrl; ?>#quicklook-icon"></use>
-    </svg>
-  </div>
-  <div class="patient-lightening-viewer" id="js-lightening-viewer-btn">
-    <svg viewBox="0 0 30 30" class="icon">
-      <use xlink:href="<?php echo $navIconsUrl; ?>#lightening-viewer-icon"></use>
     </svg>
   </div>
 

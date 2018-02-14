@@ -158,7 +158,7 @@
 
     function refresh(patientId) {
         if (!patientId) {
-            throw new Error('Patient id is required')
+            throw new Error('Patient id is required');
         }
         $.ajax({
             type: 'GET',
