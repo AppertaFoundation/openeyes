@@ -18,14 +18,17 @@
 $model_name = CHtml::modelName($element);
 ?>
 
-<?php if (!$element) { ?>
+<?php if (!$element ) { ?>
     <p class="allergy-status-unknown">Patient allergy status is unknown</p>
-<?php } else { ?>
+<?php } elseif(!sizeof($element->entries)){ ?>
+  <div class="alert-box patient">
+  <h2>Allergies</h2>
+    <p>Patient has no allergy status.</p>
+  </div>
+<?php } else{ ?>
     <p class="allergy-status-none" <?php if (!$element->no_allergies_date) { echo 'style="display: none;"'; }?>>Patient has no known allergies</p>
     <div class="alert-box patient">
-      <strong>Allergies</strong>  - <?php $allergies = "";
-        foreach($element->entries as $entry) { $allergies = $allergies.$entry->getDisplayAllergy().', '; }
-        echo substr($allergies, 0, -2); ?><br>
+      <strong>Allergies</strong> <?php echo '-'.implode(', ', array_map(function($entry) { return $entry->getDisplayAllergy(); }, $element->entries)); ?><br>
     </div>
   <table class="risks">
     <colgroup>
