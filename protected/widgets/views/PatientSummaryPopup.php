@@ -124,9 +124,7 @@
         <div class="group">
           <div class="label">CVI Status</div>
           <div class="data">
-            <table>
-                <?php echo $this->cviStatus; ?>
-            </table>
+              <?php echo $this->cviStatus; ?>
           </div>
         </div>
         <!-- group-->
