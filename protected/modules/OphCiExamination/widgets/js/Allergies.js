@@ -88,6 +88,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$noAllergiesFld.on('click', function () {
             if (controller.$noAllergiesFld.prop('checked')) {
                 controller.$table.hide();
+                controller.$popupSelector.hide();
+            }
+            else {
+              controller.$popupSelector.show();
             }
         });
     };

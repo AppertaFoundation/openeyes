@@ -87,7 +87,7 @@
       ?>
       </tbody>
   </table>
-  <div class="flex-item-bottom" id="history-allergy-popup">
+  <div class="flex-item-bottom" id="history-allergy-popup" style="display: <?php echo $element->no_allergies_date?'none':''; ?>">
     <button class="button hint green js-add-select-search" type="button"><i class="oe-i plus pro-theme"></i></button>
     <!-- popup to add to element is click -->
     <div id="add-to-allergies" class="oe-add-select-search" style="display: none;">
