@@ -1342,7 +1342,7 @@ function enableTextMacro(select, index, option) {
 }
 
 function OphCiExamination_ColourVision_getNextKey(side) {
-    var keys = $('#event-content .'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision [data-side="' + side +'"] .colourvisionReading').map(function(index, el) {
+    var keys = $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision [data-side="' + side +'"] .colourvisionReading').map(function(index, el) {
         return parseInt($(el).attr('data-key'));
     }).get();
     if(keys.length) {
