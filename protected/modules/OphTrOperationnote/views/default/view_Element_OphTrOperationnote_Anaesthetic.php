@@ -74,11 +74,7 @@ if ($element->anaesthetic_complications) {
           <div class="col-6" id="js-listview-anaesthetic-full" style="display: none;">
             <table class="last-left large">
               <colgroup>
-                <col class="cols-fifth">
-                <col class="cols-fifth">
-                <col class="cols-fifth">
-                <col class="cols-fifth">
-                <col class="cols-fifth">
+                <col class="cols-fifth" span="5">
               </colgroup>
               <thead>
               <tr>
