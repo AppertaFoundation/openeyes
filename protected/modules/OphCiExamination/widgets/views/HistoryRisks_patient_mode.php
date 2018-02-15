@@ -22,7 +22,7 @@ $model_name = CHtml::modelName($element);
 <?php if (!$element) { ?>
     <p class="risk-status-unknown">Patient risk status is unknown</p>
 <?php }
-elseif(!sizeof($element->entries)){ ?>
+elseif(!count($element->entries)){ ?>
   <div class="alert-box patient">
     <h2>Risks</h2>
     <p>Patient has no risk status.</p>
