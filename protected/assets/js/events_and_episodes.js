@@ -61,6 +61,11 @@ $(document).ready(function(){
 		}
 	});
 
+    $(this).delegate('#js-event-audit-trail-btn', 'click', function () {
+        $("#js-event-audit-trail").toggle();
+        $(this).toggleClass("active");
+    });
+
 	// Handle form fields that have linked fields to show/hide
 	$(this).on('change', 'select.linked-fields', function() {
 
