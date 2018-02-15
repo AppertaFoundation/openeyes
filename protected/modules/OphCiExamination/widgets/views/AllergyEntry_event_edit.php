@@ -55,14 +55,14 @@ if (!isset($values)) {
         </label>
     </td>
     <td>
-        <?php if ($removable): ?>
+        <?php if (!$removable): ?>
             <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
         <?php else: ?>
           <div class="cols-full ">
-            <button class="button  js-add-comments" data-input="next" style="display: none;" type="button">
+            <button class="button  js-add-comments" data-input=".js-input-comments" type="button">
               <i class="oe-i comments  small-icon"></i>
             </button>
-            <textarea placeholder="Comments" autocomplete="off" rows="1" class="cols-full js-input-comments" style="overflow-x: hidden; word-wrap: break-word;"></textarea>
+              <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete'], 'style'=>'display:none;', 'class'=>'cols-full js-input-comments'))?>
           </div>
         <?php endif; ?>
     </td>

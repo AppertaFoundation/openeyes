@@ -137,7 +137,7 @@ $element_Type = $element->getElementType();
 
   $('.js-add-comments').on('click', function (e) {
     e.preventDefault();
-    var container = $(e.target).attr('data-input');
+    var container = $(e.target).siblings($(e.target).attr('data-input'));
     $(container).show();
     $(e.target).hide();
   });
