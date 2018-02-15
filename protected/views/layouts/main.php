@@ -39,6 +39,5 @@
 			<?php echo $content; ?>
 		</main><!-- /.content.container -->
 
-	</div><!-- /.main.container -->
 </body>
 </html>
