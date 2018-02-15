@@ -18,7 +18,7 @@
 <div class="eyedraw-fields">
     <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
     <div class="field-row">
-        <div class="row collapse">
+        <div class="row collapse in">
             <div class="large-12 column end autoreport-display">
                 <span id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>" class="data-value"> </span>
             </div>

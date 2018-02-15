@@ -371,7 +371,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                     ?>
                     <?php foreach ($_POST['EnclosureItems'] as $key => $value) {
                         ?>
-                        <div class="field-row row collapse enclosureItem">
+                        <div class="field-row row collapse in enclosureItem">
                             <div class="large-8 column">
                                 <?php echo CHtml::textField("EnclosureItems[$key]", $value, array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60)) ?>
                             </div>
