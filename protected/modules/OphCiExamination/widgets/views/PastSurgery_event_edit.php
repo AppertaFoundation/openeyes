@@ -29,10 +29,10 @@ $model_name = CHtml::modelName($element);
         <tr>
             <th class="cols-3">Procedures</th>
             <th class="cols-3">Diagnoses</th>
-            <th class="cols-1">Right</th>
-            <th class="cols-1">Left</th>
-            <th class="cols-1">Both</th>
-            <th class="cols-1">None</th>
+            <th>Right</th>
+            <th>Left</th>
+            <th>Both</th>
+            <th>None</th>
             <th>Date</th>
             <th>Notes</th>
             <th></th>

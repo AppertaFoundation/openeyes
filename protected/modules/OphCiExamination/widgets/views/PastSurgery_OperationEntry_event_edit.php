@@ -108,7 +108,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
   <?php endif; ?>
 
     <td>
-        <?php if(!$removable) :?>
+        <?php if (!$removable) :?>
             <?=Helper::formatFuzzyDate($values['date']) ?>
         <?php else:?>
 
