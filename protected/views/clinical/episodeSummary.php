@@ -29,7 +29,9 @@ $episode->audit('episode summary', 'view');
 
 <main class="main-event view event-types">
 
-  <h2 class="event-title">Summary: <?= $episode->getSubspecialtyText() ?></h2>
+  <h2 class="event-title">Summary: <?= $episode->getSubspecialtyText() ?>
+    <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i></h2>
+
 
     <?php $this->renderPartial('//base/_messages'); ?>
 
@@ -139,47 +141,46 @@ $episode->audit('episode summary', 'view');
         </div>
       </div>
     <?php } ?>
-      </div>
       <script>
-        $(function () {
+          $(function () {
 
-          $('.event-types .collapsible').each(function () {
+              $('.event-types .collapsible').each(function () {
 
-            var container = $(this);
-            var content = container.find('.summary-content');
-            var toggler = container.find('.toggle-trigger');
+                  var container = $(this);
+                  var content = container.find('.summary-content');
+                  var toggler = container.find('.toggle-trigger');
 
-            container
-              .on('open.collapsible', function () {
-                content.show();
-                toggler.addClass('collapse');
-              })
-              .on('close.collapsible', function () {
-                content.hide();
-                toggler.addClass('expand');
-              })
-              .on('click.collapsible', '.toggle-trigger', function (e) {
-                e.preventDefault();
-                toggler.removeClass('expand collapse');
-                container.trigger(content.is(':visible') ? 'close' : 'open');
+                  container
+                      .on('open.collapsible', function () {
+                          content.show();
+                          toggler.addClass('collapse');
+                      })
+                      .on('close.collapsible', function () {
+                          content.hide();
+                          toggler.addClass('expand');
+                      })
+                      .on('click.collapsible', '.toggle-trigger', function (e) {
+                          e.preventDefault();
+                          toggler.removeClass('expand collapse');
+                          container.trigger(content.is(':visible') ? 'close' : 'open');
+                      });
+
+                  if (!container.hasClass('open')) {
+                      container.trigger('close.collapsible');
+                  }
               });
 
-            if (!container.hasClass('open')) {
-              container.trigger('close.collapsible');
-            }
+              // Open the container on page load if location hash matches id.
+              var hash = window.location.hash;
+              if (hash) {
+                  var elem = $(hash);
+                  var container = elem.closest('.collapsible');
+                  if (container.length) {
+                      container.trigger('open');
+                      window.location.hash = hash.replace(/#/, '');
+                  }
+              }
           });
-
-          // Open the container on page load if location hash matches id.
-          var hash = window.location.hash;
-          if (hash) {
-            var elem = $(hash);
-            var container = elem.closest('.collapsible');
-            if (container.length) {
-              container.trigger('open');
-              window.location.hash = hash.replace(/#/, '');
-            }
-          }
-        });
       </script>
     <?php } ?>
 
@@ -229,12 +230,32 @@ $episode->audit('episode summary', 'view');
     </section>
   </div>
 
-  <div class="metadata">
-    <span class="info">
-        <?= $episode->getSubspecialtyText() ?>: created by <span
-          class="user"><?php echo $episode->user->fullName ?></span>
-        on <?php echo $episode->NHSDate('created_date') ?> at <?php echo substr($episode->created_date, 11, 5) ?>
-    </span>
+  <div id="js-event-audit-trail" class="oe-popup-event-audit-trail" style="display: none;">
+    <table>
+      <tbody>
+      <tr>
+        <td class="title">Created by</td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><?php echo $episode->user->fullName ?></td>
+        <td><?php echo $episode->NHSDate('created_date') ?></td>
+        <td><?php echo substr($episode->created_date, 11, 5) ?></td>
+      </tr>
+      <tr>
+        <td class="title">Last Modified by</td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><?php echo $episode->usermodified->fullName ?></td>
+        <td><?php echo $episode->NHSDate('last_modified_date') ?></td>
+        <td><?php echo substr($episode->last_modified_date,
+                11, 5) ?></td>
+      </tr>
+      </tbody>
+    </table>
   </div>
 
   <div class="element full ">
@@ -244,14 +265,6 @@ $episode->audit('episode summary', 'view');
     <div class="element-data full-width">
       <div class="data-value"><?php echo $episode->status->name ?></div>
     </div>
-  </div>
-
-  <div class="metadata">
-        <span class="info">
-            Status last changed by <span class="user"><?php echo $episode->usermodified->fullName ?></span>
-            on <?php echo $episode->NHSDate('last_modified_date') ?> at <?php echo substr($episode->last_modified_date,
-                11, 5) ?>
-        </span>
   </div>
 
     <?php } ?>
