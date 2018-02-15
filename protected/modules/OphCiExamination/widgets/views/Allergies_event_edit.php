@@ -37,14 +37,6 @@
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
   <table id="<?= $model_name ?>_entry_table" class="cols-7 <?= !count($element->entries) ? 'hidden' : ''?>">
-    <thead>
-    <tr>
-      <th>Allergy</th>
-      <th>Comments</th>
-      <th>Action(s)</th>
-    </tr>
-    </thead>
-
       <tbody>
 
       <?php
