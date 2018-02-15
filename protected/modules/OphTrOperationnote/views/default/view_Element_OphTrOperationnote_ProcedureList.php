@@ -19,7 +19,7 @@
 
 <section class="element">
   <header class="element-header">
-    <h3 class="element-title">Procedure</h3>
+    <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
   <div class="element-fields full-width">
     <ul class="data-value highlight important">
