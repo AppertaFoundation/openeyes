@@ -17,41 +17,6 @@
 $user = Yii::app()->session['user'];
 $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $module_class . '.assets')) . '/';
 ?>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#grid_header_form .datepicker').datepicker({'showAnim':'fold','dateFormat':'d M yy'});
-
-        $('#display-inbox').click(function(e) {
-            e.preventDefault();
-            $('#inbox').removeClass('hidden');
-            $('#display-inbox').addClass('selected');
-            $('#sent').addClass('hidden');
-            $('#display-sent').removeClass('selected');
-            $('#urgent').addClass('hidden');
-            $('#display-urgent').removeClass('selected');
-        });
-
-        $('#display-urgent').click(function(e) {
-            e.preventDefault();
-            $('#urgent').removeClass('hidden');
-            $('#display-urgent').addClass('selected');
-            $('#sent').addClass('hidden');
-            $('#display-sent').removeClass('selected');
-            $('#inbox').addClass('hidden');
-            $('#display-inbox').removeClass('selected');
-        });
-
-        $('#display-sent').click(function(e) {
-            e.preventDefault();
-            $('#inbox').addClass('hidden');
-            $('#display-inbox').removeClass('selected');
-            $('#sent').removeClass('hidden');
-            $('#display-sent').addClass('selected');
-            $('#urgent').addClass('hidden');
-            $('#display-urgent').removeClass('selected');
-        });
-    });
-</script>
 <div class="home-messages flex-layout flex-top">
   <div class="message-actions">
     <div class="user"><?= ($user->title ? $user->title . ' ' : '') . $user->first_name . ' ' . $user->last_name; ?></div>
@@ -107,3 +72,63 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
   ));
   ?>
 </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#grid_header_form .datepicker').datepicker({'showAnim':'fold','dateFormat':'d M yy'});
+
+        $('#display-inbox').click(function(e) {
+            e.preventDefault();
+            $('#inbox').show();
+            $('#display-inbox').addClass('selected');
+            $('#sent').hide();
+            $('#display-sent').removeClass('selected');
+            $('#urgent').hide();
+            $('#display-urgent').removeClass('selected');
+        });
+
+        $('#display-urgent').click(function(e) {
+            e.preventDefault();
+            $('#urgent').show();
+            $('#display-urgent').addClass('selected');
+            $('#sent').hide();
+            $('#display-sent').removeClass('selected');
+            $('#inbox').hide();
+            $('#display-inbox').removeClass('selected');
+        });
+
+        $('#display-sent').click(function(e) {
+            e.preventDefault();
+            $('#inbox').hide();
+            $('#display-inbox').removeClass('selected');
+            $('#sent').show();
+            $('#display-sent').addClass('selected');
+            $('#urgent').hide();
+            $('#display-urgent').removeClass('selected');
+        });
+    });
+
+    $('.js-expand-message').each(function(){
+
+        var message = $(this).parent().parent().find('.message');
+        var expander = new Expander( $(this),
+            message );
+    });
+    function Expander( $icon, $message){
+        var expanded = false;
+
+        $icon.click( change );
+
+        function change(){
+
+            $icon.toggleClass('expand collapse');
+
+            if(expanded){
+                $message.removeClass('expand');
+            } else {
+                $message.addClass('expand');
+            }
+
+            expanded = !expanded;
+        }
+    }
+</script>
