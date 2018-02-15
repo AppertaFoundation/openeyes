@@ -340,7 +340,7 @@ $patient = Patient::model()->findByPk($patient_id);
             <div id="enclosureItems" class="field-row<?php echo !is_array(@$_POST['EnclosureItems']) && empty($element->enclosures) ? ' hide' : ''; ?>">
                 <?php if (is_array(@$_POST['EnclosureItems'])) { ?>
                     <?php foreach ($_POST['EnclosureItems'] as $key => $value) { ?>
-                        <div class="field-row row collapse enclosureItem">
+                        <div class="field-row row collapse in enclosureItem">
                             <div class="large-8 column">
                                 <?php echo CHtml::textField("EnclosureItems[$key]", $value, array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
                             </div>
@@ -351,7 +351,7 @@ $patient = Patient::model()->findByPk($patient_id);
                     <?php } ?>
                 <?php } else { ?>
                     <?php foreach ($element->enclosures as $i => $item) { ?>
-                        <div class="field-row row collapse enclosureItem">
+                        <div class="field-row row collapse in enclosureItem">
                             <div class="large-8 column">
                                 <?php echo CHtml::textField("EnclosureItems[enclosure$i]", $item->content, array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
                             </div>

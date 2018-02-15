@@ -53,7 +53,7 @@
         }?>
 		</div>
         <?php if(!empty($htmlOptions['append-text']) && !empty($layoutColumns['append-text'])){?>
-            <div class="large-<?php echo $layoutColumns['append-text'];?> column collapse end">
+            <div class="large-<?php echo $layoutColumns['append-text'];?> column collapse in end">
                 <span class="field-info"><?php echo $htmlOptions['append-text'];?></span>
             </div>
         <?php }?>

@@ -24,7 +24,7 @@
 }?>" data-side="right">
 		<div class="active-form">
 			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<div class="row collapse field-row">
+			<div class="row collapse in field-row">
 				<div class="large-2 column">
 					<?php echo $form->textField($element, 'right_value', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'nowrapper' => true, 'class' => 'cct_value')) ?>
 				</div>
@@ -48,7 +48,7 @@
 }?>" data-side="left">
 		<div class="active-form">
 			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<div class="row collapse field-row">
+			<div class="row collapse in field-row">
 				<div class="large-2 column">
 					<?php echo $form->textField($element, 'left_value', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'nowrapper' => true, 'class' => 'cct_value')) ?>
 				</div>
