@@ -81,6 +81,14 @@ $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('ap
     </svg>
   </div>
 
+    <?php if ($this->patient->isEditable()): ?>
+      <div class="patient-local-edit" id="js-patient-local-edit-btn">
+        <svg viewBox="0 0 30 30" class="icon">
+          <use xlink:href="<?php echo $navIconsUrl; ?>#local-edit-icon"></use>
+        </svg>
+      </div>
+    <?php endif; ?>
+
      <!-- Widgets (extra icons, links etc) -->
   <ul class="patient-widgets">
       <?php foreach ($this->widgets as $widget) {
@@ -95,7 +103,14 @@ $widgetPath = $assetManager->publish('protected/widgets/js');
 Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopup.js');
 ?>
 <script type="text/javascript">
-  $(document).ready(function () {
+  $(function () {
+
     PatientPanel.patientPopups.init();
+
+    $('#js-patient-local-edit-btn').click(function (e) {
+      e.preventDefault();
+      location.href = "<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>";
+      return false;
+    });
   });
 </script>
