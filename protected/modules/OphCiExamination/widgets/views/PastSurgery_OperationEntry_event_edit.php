@@ -34,10 +34,7 @@ if (!isset($values)) {
 $required = isset($required) ? $required : false;
 
 if (isset($values['date']) && strtotime($values['date'])) {
-    $date_array = explode('-', $values['date']);
-    $sel_year = @$date_array[0];
-    $sel_month = @$date_array[1];
-    $sel_day = @$date_array[2];
+    list($sel_year, $sel_month, $sel_day) = array_pad(explode('-', $values['date']), 3,0);
 } else {
     $sel_day = $sel_month = null;
     $sel_year = date('Y');
