@@ -34,7 +34,10 @@ if (!isset($values)) {
 $required = isset($required) ? $required : false;
 
 if (isset($values['date']) && strtotime($values['date'])) {
-    list($sel_year, $sel_month, $sel_day) = explode('-', $values['date']);
+    $date_array = explode('-', $values['date']);
+    $sel_year = @$date_array[0];
+    $sel_month = @$date_array[1];
+    $sel_day = @$date_array[2];
 } else {
     $sel_day = $sel_month = null;
     $sel_year = date('Y');
@@ -111,12 +114,12 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <?php if (!$removable) :?>
             <?=Helper::formatFuzzyDate($values['date']) ?>
         <?php else:?>
-
             <input id="past-surgery-datepicker-<?= $row_count ?>" style="width:90px" placeholder="dd/mm/yyyy"  name="<?= $field_prefix ?>[date]" value="<?=$values['date'] ?>" >
 
             <fieldset id="<?= $model_name ?>_fuzzy_date" class="row field-row fuzzy-date" style="padding:0">
                 <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $sel_day, 'sel_month' => $sel_month, 'sel_year' => $sel_year)) ?>
             </fieldset>
+            <i class="has-tooltip oe-i info small pad right" data-tooltip-content="This field is optional."></i>
 
         <?php endif; ?>
     </td>
