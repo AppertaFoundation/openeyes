@@ -125,6 +125,47 @@ $(document).ready(function(){
 			}
 		}
 	});
+
+    $(this).on('click', '.js-remove-element', function (e) {
+        e.preventDefault();
+        var parent = $(this).parent().parent();
+        removeElement(parent);
+    });
+
+    $(this).on('click', '.js-add-select-search', function (e) {
+        e.preventDefault();
+        $(this).parent().find('.oe-add-select-search').show();
+    });
+
+    $(this).on('click', '.oe-add-select-search .add-icon-btn', function (e) {
+        e.preventDefault();
+        $(this).parent('.oe-add-select-search').hide();
+    });
+
+    //Set the option selecting function
+    $(this).on('click', '.oe-add-select-search .add-options li', function () {
+        if ($(this).html().length > 0 || $(this).text().length > 0) {
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+            } else {
+                if ($(this).parent('.add-options').attr('data-multi') === "false") {
+                    $(this).parent('.add-options').find('li').removeClass('selected');
+                }
+                $(this).addClass('selected');
+            }
+        }
+    });
+
+    $(this).on('click', ".oe-add-select-search .close-icon-btn", function () {
+        $(this).closest('.oe-add-select-search').hide();
+    });
+
+    $(this).on('click', '.js-add-comments', function (e) {
+        e.preventDefault();
+        var container = $(this).attr('data-input');
+        $(container).show();
+        $(this).hide();
+    });
 });
 
 function WidgetSlider() {if (this.init) this.init.apply(this, arguments); }
