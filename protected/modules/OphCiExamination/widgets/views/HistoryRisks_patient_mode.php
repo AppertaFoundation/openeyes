@@ -22,13 +22,12 @@ $model_name = CHtml::modelName($element);
 <?php if (!$element) { ?>
     <p class="risk-status-unknown">Patient risk status is unknown</p>
 <?php }
-elseif(!count($element->entries)){ ?>
-  <div class="patient">
+elseif(!count($element->entries) || $element->no_risks_date ){ ?>
+  <div class="risk-status-none">
     <h2>Risks</h2>
-    <p>Patient has no risk status.</p>
+    <p>Patient has no known risks.</p>
   </div>
 <?php } else { ?>
-    <p class="risk-status-none" <?php if (!$element->no_risks_date) { echo 'style="display: none;"'; }?>>Patient has no known risks</p>
     <div class="alert-box patient">
     <strong>Risks</strong> - <?php echo implode(', ', array_map(function($entry) { return $entry->getDisplayRisk(); }, $element->entries)); ?><br>
     </div>
