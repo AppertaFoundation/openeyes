@@ -746,7 +746,7 @@ $(document).ready(function() {
 		id += 1;
 
 		var html = [
-			'<div class="field-row row collapse enclosureItem">',
+			'<div class="field-row row collapse in enclosureItem">',
 			'		<div class="large-8 column">',
 			'			<input type="text" value="" autocomplete="' + window.OE_html_complete + '" name="EnclosureItems[enclosure'+id+']">',
 			'		</div>',

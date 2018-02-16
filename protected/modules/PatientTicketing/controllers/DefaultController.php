@@ -184,6 +184,10 @@ class DefaultController extends \BaseModuleController
                         }
                     }
                 }
+                else {
+                    //multiple queueset, but none of them selected, let's load the first one
+                    $queueset = $queuesets[0];
+                }
             } else {
                 $queueset = $queuesets[0];
             }

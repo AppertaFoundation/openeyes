@@ -46,7 +46,7 @@
 		<label for="<?php echo CHtml::modelName($element).'_'.$side.'_diameter';?>">
 			<?php echo $element->getAttributeLabel($side.'_diameter')?>:
 		</label>
-		<div class="row collapse">
+		<div class="row collapse in">
 			<div class="large-3 column">
 				<?php echo CHtml::activeTextField($element, $side.'_diameter', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'diameter')) ?>
 			</div>

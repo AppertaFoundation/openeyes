@@ -25,7 +25,7 @@
 		</div>
 	<?php }?>
 	<div class="large-<?php if ($label) { echo $layoutColumns['field']; }else{?>12<?php }?> column end">
-		<div class="row collapse">
+		<div class="row collapse in">
 			<div class="large-10 column">
 				<div class="dropdown-row">
 					<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => '- Please Select -') : $dropdownOptions) : ''?>

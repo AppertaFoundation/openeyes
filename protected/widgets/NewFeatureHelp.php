@@ -11,6 +11,12 @@ class NewFeatureHelp extends BaseCWidget
     public $download_links = array();
 
     /**
+     * Prevent starting tours even if 'auto' flag is true in the protected/tour/(common|local).php
+     * @var bool
+     */
+    public $auto_start = true;
+
+    /**
      * Resolves loading of the configuration
      *
      * NB does not support module based tours at the moment, given that all modules are a
@@ -26,6 +32,11 @@ class NewFeatureHelp extends BaseCWidget
             if (file_exists($path)) {
                 $config = array_merge($config, require $path);
             }
+        }
+
+        $disable_auto_feature_tours = isset(\Yii::app()->params['disable_auto_feature_tours']) ? \Yii::app()->params['disable_auto_feature_tours'] : "off";
+        if( $disable_auto_feature_tours === "on" || $disable_auto_feature_tours === true){
+            $this->auto_start = false;
         }
 
         $this->mapConfigToTours($config);

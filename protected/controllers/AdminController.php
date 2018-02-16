@@ -570,6 +570,11 @@ class AdminController extends BaseAdminController
         ));
     }
 
+    /**
+     * Flags selected users as inactive
+     * @throws Exception
+     */
+
     public function actionDeleteUsers()
     {
         $result = 1;
@@ -577,7 +582,8 @@ class AdminController extends BaseAdminController
         if (!empty($_POST['users'])) {
             foreach (User::model()->findAllByPk($_POST['users']) as $user) {
                 try {
-                    if (!$user->delete()) {
+                    $user->active = 0;
+                    if (!$user->save(false)) {
                         $result = 0;
                     }
                 } catch (Exception $e) {
@@ -585,7 +591,7 @@ class AdminController extends BaseAdminController
                 }
 
                 if ($result) {
-                    Audit::add('admin-User', 'delete');
+                    Audit::add('admin-User', 'deactivate');
                 }
             }
         }
@@ -2064,47 +2070,6 @@ class AdminController extends BaseAdminController
 
     public function actionPatientShortcodes()
     {
-        $this->genericAdmin('Edit Shortcodes', 'PatientShortcode', array(
-            'description' => 'You may alter the shortcode for this installation below. Otherwise this screen is purely for information',
-            'cannot_add' => true,
-            'cannot_delete' => true,
-            'label_field' => 'code',
-            'extra_fields' => array(
-                array(
-                    'field' => 'default_code',
-                    'type' => 'text',
-                    'htmlOptions' => array(
-                        'disabled' => true,
-                        'size' => 4
-                    )
-                ),
-                array(
-                    'field' => 'description',
-                    'type' => 'textarea'
-                ),
-                array(
-                    'field' => 'event_type_id',
-                    'type' => 'lookup',
-                    'model' => 'EventType',
-                    'htmlOptions' => array(
-                        'disabled' => true
-                    )
-                ),
-                array(
-                    'field' => 'method',
-                    'type' => 'text',
-                    'htmlOptions' => array(
-                        'disabled' => true,
-                    )
-                ),
-                array(
-                    'field' => 'codedoc',
-                    'type' => 'textdisplay',
-                    'htmlOptions' => array(
-                        'disabled' => true,
-                    )
-                )
-            )
-        ));
+        $this->render('patient_shortcodes',['short_codes' => PatientShortcode::model()->findAll()]);
     }
 }

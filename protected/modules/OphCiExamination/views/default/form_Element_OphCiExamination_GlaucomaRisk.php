@@ -17,7 +17,7 @@
  */
 ?>
 <div class="sub-element-fields">
-	<div class="field-row row collapse">
+	<div class="field-row row collapse in">
 		<div class="large-2 column">
 			<div class="field-highlight<?php if ($element->risk) {
     ?> <?php echo $element->risk->class?><?php 

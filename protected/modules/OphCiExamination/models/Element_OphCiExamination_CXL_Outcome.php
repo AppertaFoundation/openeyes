@@ -82,6 +82,7 @@ class Element_OphCiExamination_CXL_Outcome extends \SplitEventTypeElement
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'outcome_diagnosis' => array(self::BELONGS_TO, 'OphCiExamination_CXL_Outcome_Diagnosis', 'diagnosis_id'),
         );
     }
 

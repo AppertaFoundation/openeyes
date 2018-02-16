@@ -64,6 +64,9 @@ return array(
                 'uri' => '/OphCiExamination/OptomFeedback/list',
                 'restricted' => array(array('Optom co-ordinator', 'user_id')),
             )
-        )
+        ),
+        'reports' => array(
+            'Ready for second eye (unbooked)' => '/OphCiExamination/report/readyForSecondEyeUnbooked',
+        ),
     )
 );

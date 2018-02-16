@@ -48,7 +48,7 @@ if (@$_POST[CHtml::modelName($element)]) {
 	<div class="large-3 column">
 		<?php echo $form->textField($element, $side.'_sft', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'nowrapper' => true)) ?>
 	</div>
-	<div class="large-4 column end collapse">
+	<div class="large-4 column end collapse in">
 		<span class="field-info">&micro;m&nbsp;&nbsp;</span>
 		<?php if ($past_sft = $exam_api->getOCTSFTHistoryForSide($this->patient, $side, $event_date)) {
     ?>
