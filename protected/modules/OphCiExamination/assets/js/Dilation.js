@@ -15,6 +15,7 @@ $(document).ready(function () {
         var data_order = $(element).attr('data-order');
         if (drug_id) {
             var drug_name = $(element).text();
+            $(element).remove();
             var template = $('#dilation_treatment_template').html();
             var data = {
                 "key": OphCiExamination_Dilation_getNextKey(),
@@ -56,8 +57,12 @@ $(document).ready(function () {
     $(this).delegate('.edit-Dilation .removeTreatment', 'click', function (e) {
         var wrapper = $(this).closest('.side');
         var row = $(this).closest('tr');
+        var id = $(this).closest('tr').find('.drugId').val();
+        var text = $(this).closest('tr').find('.drugName').text();
+        var order = $(this).closest('tr').data('order');
+        $('.edit-Dilation ul.add-options').append('<li data-str="' + id + '" data-order="' + order + '">' + text + '</li>');
         row.remove();
-        if ($('.dilation_table tbody tr', wrapper).length == 0) {
+        if ($('.dilation_table tbody tr', wrapper).length === 0) {
             $('.dilation_table', wrapper).hide();
             $('.timeDiv', wrapper).hide();
         }
