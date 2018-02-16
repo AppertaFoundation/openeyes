@@ -67,9 +67,7 @@ $widgetOptionsJson = json_encode(array(
   </div>
   <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
       <?php } ?>
-    <div class="multi-select<?php if (!$inline) {
-        echo ' multi-select-list';
-    } ?>"
+    <div class="multi-select<?php if (!$inline) { echo ' multi-select-list'; } ?>"
          data-options='<?php echo $widgetOptionsJson; ?>'
          <?php if ($through): ?>data-statuses='<?= json_encode($through['options']) ?>' <?php endif; ?>
     >
@@ -77,7 +75,7 @@ $widgetOptionsJson = json_encode(array(
              class="multi-select-list-name"/>
       <div class="multi-select-dropdown-container">
         <select id="<?php echo CHtml::getIdByName($field) ?>"
-                class="MultiSelectList<?php if ($showRemoveAllLink) { ?> inline<?php } ?><?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"
+                class="MultiSelectList<?php if ($showRemoveAllLink) { ?> inline <?php } ?><?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"
                 name=""
             <?php if (isset($htmlOptions['data-linked-fields'])) { ?>
               data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"
@@ -103,12 +101,12 @@ $widgetOptionsJson = json_encode(array(
             } ?>
         </select>
           <?php if ($showRemoveAllLink) { ?>
-            <a href="#" class="remove-all<?php echo !$found ? ' hide' : ''; ?>">Remove all</a>
+            <a href="#" class="remove-all" style="display:  <?php echo !$found ? ' none' : 'inline'; ?>">Remove all</a>
           <?php } ?>
       </div>
         <?php if ($noSelectionsMessage) { ?>
           <div
-              class="no-selections-msg pill<?php if ($found) { ?> hide<?php } ?>"><?php echo $noSelectionsMessage; ?></div>
+              class="no-selections-msg pill" style="display: <?php echo $found ? ' none' : 'inline';  ?>"><?php echo $noSelectionsMessage; ?></div>
         <?php } ?>
 
         <?php if (Yii::app()->request->isPostRequest && empty($selected_ids)): ?>
@@ -132,7 +130,7 @@ $widgetOptionsJson = json_encode(array(
                 <?php endif; ?>
 
                   <span data-text="<?php echo $options[$id] ?>"
-                      class="multi-select-remove <?php if (isset($htmlOptions['class'])) { ?><?php echo $htmlOptions['class'] ?><?php } ?>"
+                      class="multi-select-remove remove-one <?php if (isset($htmlOptions['class'])) { ?><?php echo $htmlOptions['class'] ?><?php } ?>"
                       <?php if (isset($htmlOptions['data-linked-fields'])) { ?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"<?php } ?>
                       <?php if (isset($htmlOptions['data-linked-values'])) { ?> data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"<?php } ?>>
                     <i class="oe-i remove-circle small"></i>
