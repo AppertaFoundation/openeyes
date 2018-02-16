@@ -9,12 +9,24 @@
  * @param downloadLinks
  * @constructor
  */
-function NewFeatureHelpController(splashScreen, tours, downloadLinks) {
-  this.tourDefinitions = {};
-  this.autoTours = [];
-  this.splashScreenElements = [];
+function NewFeatureHelpController(splashScreen, tours, downloadLinks, options) {
+
+  this.options = $.extend(true, {}, NewFeatureHelpController._defaultOptions, options);
+
+  this.tourDefinitions = this.options.tourDefinitions;
+  this.autoTours = this.options.autoTours;
+  this.splashScreenElements = this.options.splashScreenElements;
+  this.sleepPeriod = this.options.sleepPeriod;
+
+    /**
+     * The purpose of this flag is that the auto start of the tour can be turned off from admin screen
+     * autoStart false won't let start the tour even if 'auto' flag is true in the protected/tour/config
+     * @type {*|boolean}
+     */
+  this.autoStart = this.options.autoStart;
+
   this.downloadLinks = downloadLinks ? downloadLinks : [];
-  this.sleepPeriod = undefined;
+
   this._initTours(tours);
   this._initSplashScreen(splashScreen);
   if (Object.keys(this.tourDefinitions).length
@@ -22,19 +34,31 @@ function NewFeatureHelpController(splashScreen, tours, downloadLinks) {
       || this.splashScreenElements.length) {
     // we have some help to show
     this._addListeners();
-    this._autoStart();
+
+    if(this.autoStart === true){
+        this._autoStart();
+    }
+
   } else {
     $('.help-trigger-btn').hide();
   }
 
 }
 
+NewFeatureHelpController._defaultOptions = {
+    tourDefinitions: {},
+    autoTours: [],
+    splashScreenElements: [],
+    sleepPeriod: undefined,
+    autoStart: true
+};
+
 NewFeatureHelpController.prototype._addListeners = function() {
   $('.help-trigger-btn').on('click',this.togglePopup.bind(this));
   $('#help-splash-screen-btn').on('click',this.toggleSplashScreen.bind(this));
   $('.help-action-tour').on('click',this._toggleTour.bind(this));
   $('.help-close').on('click',this.togglePopup.bind(this));
-}
+};
 
 NewFeatureHelpController.prototype._autoStart = function() {
   if (this.autoTours.length) {

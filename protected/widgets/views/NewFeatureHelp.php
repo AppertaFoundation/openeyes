@@ -28,6 +28,9 @@
         $('header:first').append('<div id="help-header-overlay" hidden="true"></div>');
         new NewFeatureHelpController(
             <?= json_encode($this->splash_screen) ?>,
-            <?= json_encode($this->tours) ?>);
+            <?= json_encode($this->tours) ?>,
+            null,
+            {autoStart: <?=($this->auto_start === true ? 'true' : 'false');?>}
+        );
     });
 </script>
