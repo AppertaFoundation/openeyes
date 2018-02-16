@@ -23,7 +23,7 @@ $model_name = CHtml::modelName($element);
     <p class="risk-status-unknown">Patient risk status is unknown</p>
 <?php }
 elseif(!count($element->entries)){ ?>
-  <div class="alert-box patient">
+  <div class="patient">
     <h2>Risks</h2>
     <p>Patient has no risk status.</p>
   </div>

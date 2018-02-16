@@ -21,7 +21,7 @@ $model_name = CHtml::modelName($element);
 <?php if (!$element ) { ?>
     <p class="allergy-status-unknown">Patient allergy status is unknown</p>
 <?php } elseif(!count($element->entries)){ ?>
-  <div class="alert-box patient">
+  <div class="patient">
   <h2>Allergies</h2>
     <p>Patient has no allergy status.</p>
   </div>
