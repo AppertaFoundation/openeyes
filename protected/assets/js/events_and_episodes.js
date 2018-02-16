@@ -166,6 +166,18 @@ $(document).ready(function(){
         $(container).show();
         $(this).hide();
     });
+
+	$(this).on('mouseout', '.js-has-tooltip', function (e) {
+    $('body').find( ".oe-tooltip" ).remove();
+  });
+  $(this).on('mouseover', '.js-has-tooltip', function (e) {
+    var text = $(this).data('tooltip-content');
+    var offset = $(this).offset();
+    var html = '<div class="oe-tooltip" style="position:fixed; left:'+(offset.left + 20)+'px; top:'+(offset.top + - 10)+'px;">'+ text +'</div>';
+    $(this).data( "tooltip", html );
+    $('body').append(html);
+  });
+
 });
 
 function WidgetSlider() {if (this.init) this.init.apply(this, arguments); }

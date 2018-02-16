@@ -807,11 +807,11 @@ $(document).ready(function() {
         eyedraw.setParameterForDoodleOfClass('AntSeg', 'pxe', $(this).is(':checked'));
     });
 
-    $(this).delegate('#event-content .' + OE_MODEL_PREFIX + 'Element_OphCiExamination_Refraction .refractionType', 'change', function() {
+    $(this).delegate('.' + OE_MODEL_PREFIX + 'Element_OphCiExamination_Refraction .refractionType', 'change', function() {
         OphCiExamination_Refraction_updateType(this);
     });
 
-    $(this).delegate('#event-content .' + OE_MODEL_PREFIX + 'Element_OphCiExamination_Gonioscopy .gonioscopy-mode', 'change', function() {
+    $(this).delegate('.' + OE_MODEL_PREFIX + 'Element_OphCiExamination_Gonioscopy .gonioscopy-mode', 'change', function() {
         OphCiExamination_Gonioscopy_update(this);
     });
 
@@ -1398,7 +1398,7 @@ function OphCiExamination_ColourVision_addReading(element, side) {
 
         // Show table
         var table = $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_ColourVision [data-side="' + side +'"] .colourvision_table');
-      table.show();
+        table.show();
         $('tbody', table).append(form);
     }
 }
@@ -1540,10 +1540,17 @@ function OphCiExamination_VisualAcuity_ReadingTooltip(row) {
     });
 }
 
-function OphCiExamination_VisualAcuity_getNextKey() {
-    var keys = $('.visualAcuityReading').map(function(index, el) {
+function OphCiExamination_VisualAcuity_getNextKey(suffix) {
+    if(typeof suffix === 'VisualAcuity'){
+      var keys = $('.visualAcuityReading').map(function(index, el) {
         return parseInt($(el).attr('data-key'));
-    }).get();
+      }).get();
+    } else {
+      var keys = $('.nearvisualAcuityReading').map(function(index, el) {
+        return parseInt($(el).attr('data-key'));
+      }).get();
+    }
+
     if(keys.length) {
         return Math.max.apply(null, keys) + 1;
     } else {
@@ -1563,9 +1570,10 @@ function OphCiExamination_VisualAcuity_addReading(side, template, suffix) {
         suffix = 'VisualAcuity';
     }
     var data = {
-        "key" : OphCiExamination_VisualAcuity_getNextKey(),
+        "key" : OphCiExamination_VisualAcuity_getNextKey(suffix),
         "side" : side
     };
+    console.log(data);
     var form = Mustache.render(template, data);
 
     $('section[data-element-type-class="'+OE_MODEL_PREFIX+'Element_OphCiExamination_'+suffix+'"] .element-eye.'+side+'-eye .noReadings').hide().find('input:checkbox').each(function() {
@@ -1589,7 +1597,7 @@ function OphCiExamination_VisualAcuity_addReading(side, template, suffix) {
  */
 function OphCiExamination_VisualAcuity_getNextMethodId(side, suffix) {
     var method_ids = OphCiExamination_VisualAcuity_method_ids;
-    $('#event-content .'+OE_MODEL_PREFIX+'Element_OphCiExamination_'+suffix+' [data-side="' + side + '"] .method_id').each(function() {
+    $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_'+suffix+' [data-side="' + side + '"] .method_id').each(function() {
         var method_id = $(this).val();
         method_ids = $.grep(method_ids, function(value) {
             return value != method_id;
@@ -1599,7 +1607,7 @@ function OphCiExamination_VisualAcuity_getNextMethodId(side, suffix) {
 }
 
 function OphCiExamination_VisualAcuity_bestForSide(side) {
-    var table = $('#event-content .'+OE_MODEL_PREFIX+'Element_OphCiExamination_VisualAcuity [data-side="' + side + '"] table');
+    var table = $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_VisualAcuity [data-side="' + side + '"] table');
     if (table.is(':visible')) {
         var best = 0;
         table.find('tr .va-selector').each(function() {
@@ -1614,7 +1622,7 @@ function OphCiExamination_VisualAcuity_bestForSide(side) {
 
 function OphCiExamination_VisualAcuity_init() {
     // ensure tooltip works when loading for an edit
-    $('#event-content .'+OE_MODEL_PREFIX+'Element_OphCiExamination_VisualAcuity .side').each(function() {
+    $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_VisualAcuity .side').each(function() {
         $(this).find('tr.visualAcuityReading').each(function() {
             OphCiExamination_VisualAcuity_ReadingTooltip($(this));
         });
@@ -1623,7 +1631,7 @@ function OphCiExamination_VisualAcuity_init() {
 
 function OphCiExamination_NearVisualAcuity_init() {
     // ensure tooltip works when loading for an edit
-    $('#event-content .'+OE_MODEL_PREFIX+'Element_OphCiExamination_NearVisualAcuity .side').each(function() {
+    $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_NearVisualAcuity .side').each(function() {
         $(this).find('tr.nearvisualAcuityReading').each(function() {
             OphCiExamination_VisualAcuity_ReadingTooltip($(this));
         });
