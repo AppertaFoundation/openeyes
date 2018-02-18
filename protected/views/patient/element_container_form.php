@@ -46,7 +46,9 @@ $element_Type = $element->getElementType();
   data-element-parent-id = "<?php $et = $element->getElementType();
   if ($et->isChild()){
     echo $et->parent_element_type_id;
-  } ?>">
+  } ?>"
+  style="min-height: 80px;"
+>
 
       <?php if (!property_exists($element, 'hide_form_header') || !$element->hide_form_header) { ?>
         <header class="element-header">
