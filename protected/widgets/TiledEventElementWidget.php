@@ -21,7 +21,7 @@ class TiledEventElementWidget extends BaseCWidget
     public function init()
     {
         ?>
-      <div class="flex-layout flex-left flex-stretch">
+      <div class="element-tile-group">
         <?php
     }
 
