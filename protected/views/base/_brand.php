@@ -24,28 +24,56 @@ $commitDate = exec("git show -s --format=%cD $commit");
     <use xlink:href="<?= $logoUrl . '#openeyes-logo'; ?>"></use>
   </svg>
 </div>
+
 <div class="oe-product-info" id="js-openeyes-info">
-  <h3>OpenEyes</h3>
-  <p class="gap">Release Date: <?php echo Helper::convertDate2NHS($commitDate); ?></p>
+  <h3>OpenEyes 3.0</h3>
+
     <?php if (!Yii::app()->user->isGuest): ?>
-      <p class="gap">
-          <?php echo CHtml::link('Dark theme (recommended)', Yii::app()->createUrl('/profile/changeDisplayTheme',
-              array('user_id' => Yii::app()->user->id, 'display_theme' => 'dark')),
-              array('style' => 'display: inline-block; margin-bottom: 4px;')); ?>
-        <br/>
-          <?php echo CHtml::link('Light theme (default)', Yii::app()->createUrl('/profile/changeDisplayTheme',
-              array('user_id' => Yii::app()->user->id, 'display_theme' => 'light')),
-              array('id' => 'js-theme-light')); ?>
-      </p>
+      <div class="group">
+        <h4>Theme</h4>
+
+        <p>
+            <?php echo CHtml::link('Dark theme (recommended)', Yii::app()->createUrl('/profile/changeDisplayTheme',
+                array('user_id' => Yii::app()->user->id, 'display_theme' => 'dark')),
+                array('style' => 'display: block; margin-bottom: 4px;')); ?>
+
+            <?php echo CHtml::link('Light theme (default)', Yii::app()->createUrl('/profile/changeDisplayTheme',
+                array('user_id' => Yii::app()->user->id, 'display_theme' => 'light'))); ?>
+        </p>
+      </div>
     <?php endif; ?>
-  <p class="gap">OpenEyes is released under the AGPL3 license and is free to download and use.</p>
-  <p class="gap">
-    OpenEyes is maintained by the <a href="https://openeyes.org.uk/" target="_blank">OpenEyes Foundation</a>.
-  </p>
-  <p class="gap">
-    Technical support is provided by <a href="https://abehr.com/" target="_blank">ABEHRdigital</a>.
-  </p>
-  <p class="gap">
-    Send <a href="#">feedback or suggestions.</a>
-  </p>
+
+  <div class="group">
+    <h4>Tour &amp; Feedback</h4>
+
+    <p>Learn about OpenEyes 3.0 - take the <a href="#">OE Feature Tour</a></p>
+    <p>Send us <a href="#">feedback or suggestions.</a></p>
+  </div>
+
+  <div class="group">
+    <h4>Legal</h4>
+
+    <p>OpenEyes is released under the AGPL3 license and is free to download and use.</p>
+    <p>OpenEyes is maintained by the <a href="https://openeyes.org.uk/" target="_blank">OpenEyes Foundation</a>.</p>
+    <p>Technical support is provided by <a href="https://www.abehr.com/" target="_blank">ABEHRdigital</a>.</p>
+  </div>
+
+  <div class="group">
+    <h4>Support</h4>
+    <p>
+      <span class="large-text"> Need Help?
+          <?php if (Yii::app()->params['helpdesk_email']) { ?>
+            <p><?php echo Yii::app()->params['helpdesk_email'] ?></p>
+          <?php } ?>
+          <?php if (Yii::app()->params['helpdesk_phone']) { ?>
+            <p><?php echo Yii::app()->params['helpdesk_phone'] ?></p>
+          <?php } ?>
+      </span>
+    </p>
+  </div>
+  <div class="group">
+    <h4>&copy; OpenEyes <?php
+        echo date('Y', $time = strtotime($commitDate)); ?></h4>
+  </div>
+
 </div>
