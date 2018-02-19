@@ -10,7 +10,7 @@ if (!Yii::app()->request->isPostRequest) {
       $value = date('j M Y');
     }
 } else {
-  $value = $this->getPostValue(CHtml::modelName($this->event) . '[event_date]');
+  $value = $this->event->event_date;
 }
 ?>
 <section class="element edit full edit-date">
