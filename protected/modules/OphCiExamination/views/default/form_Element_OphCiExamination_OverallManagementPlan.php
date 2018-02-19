@@ -57,8 +57,6 @@ $targetIOPS =
 ?>
 
 <div class="element-fields full-width">
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-
   <table class="cols-8 element-fields">
     <tbody class="cols-full element-fields">
       <tr>
@@ -77,12 +75,13 @@ $targetIOPS =
     <?php echo $form->textArea($element, 'comments', array('nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'Comments'), array('field' => 12))?>
   </div>
 </div>
-<div class="element-fields element-eyes">
+<div class="element-fields element-eyes sub-element">
+<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):
     $hasEyeFunc = 'has'.ucfirst($eye);
     ?>
   <div class="element-eye <?=$eye?>-eye column <?=$side?> side <?= !$element->$hasEyeFunc() ? "inactive" : ""?>" data-side="<?=$eye?>">
-    <div class="active-form">
+    <div class="active-form" style="<?= !$element->$hasEyeFunc() ? "display: none;" : ""?>">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
       <div class="row field-row">
         <div class="large-3 column">
@@ -94,7 +93,7 @@ $targetIOPS =
         </div>
       </div>
     </div>
-    <div class="inactive-form side" style="<?= $element->$hasEyeFunc() ? "display: none" : ""?>">
+    <div class="inactive-form side" style="<?= $element->$hasEyeFunc() ? "display: none;" : ""?>">
       <div class="add-side">
         <a href="#">
           Add <?=$eye?> eye <span class="icon-add-side"></span>
@@ -102,7 +101,7 @@ $targetIOPS =
       </div>
     </div>
   </div>
-  <?php endforeach; ?>
+<?php endforeach; ?>
 
 <script type="text/javascript">
 	if (typeof setCurrentManagementIOP == 'function') {
