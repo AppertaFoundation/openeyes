@@ -55,12 +55,12 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
       case 'urgent':
           $messages = $urgent;
           break;
-      case 'inbox':
-          $messages = $inbox;
+      case 'sent':
+          $messages = $sent;
           break;
       case 'inbox':
       default:
-          $messages = $sent;
+          $messages = $inbox;
           break;
   }
 
