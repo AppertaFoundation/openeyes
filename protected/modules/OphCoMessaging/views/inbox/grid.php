@@ -75,6 +75,7 @@ $cols = array(
         'cssClassExpression' => '"nowrap sender"',
     ),
     array(
+        'id' => 'message',
         'name' => 'Message',
         'value' => function ($data) {
             return '<div class="message">' . Yii::app()->format->Ntext($data->message_text) . '</div>';
@@ -85,12 +86,6 @@ $cols = array(
         'name' => 'expand',
         'header' => '',
         'value' => '\'<i class="oe-i small js-expand-message expand"></i>\'',
-        'type' => 'raw',
-    ),
-    array(
-        'name' => 'reply',
-        'header' => '',
-        'value' => '\'<a href="#">reply</a>\'',
         'type' => 'raw',
     ),
 );
@@ -140,7 +135,7 @@ $this->widget('application.modules.OphCoMessaging.widgets.MessageGridView', arra
     'rowCssClassExpression' => '$data->marked_as_read ? "read" : "unread"',
     'summaryText' => '',
     'columns' => $cols,
-    'message_type' => $message_type,
     'enableHistory' => true,
+    'enablePagination' => false,
 ));
 ?>
