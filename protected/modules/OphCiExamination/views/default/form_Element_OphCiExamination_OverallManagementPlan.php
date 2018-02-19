@@ -56,61 +56,54 @@ $targetIOPS =
 
 ?>
 
-<div class="element-fields flex-layout full-width">
+<div class="element-fields full-width">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
-	<?php echo $form->dropDownList($element, 'clinic_interval_id', $overallPeriods, array(), false, array('label' => 4, 'field' => 3))?>
-	<?php echo $form->dropDownList($element, 'photo_id', $overallPeriods, array(), false, array('label' => 4, 'field' => 3))?>
-	<?php echo $form->dropDownList($element, 'oct_id', $overallPeriods, array(), false, array('label' => 4, 'field' => 3))?>
-	<?php echo $form->dropDownList($element, 'hfa_id', $overallPeriods, array(), false, array('label' => 4, 'field' => 3))?>
-	<?php echo $form->dropDownList($element, 'gonio_id', $intervalVisits, array(), false, array('label' => 4, 'field' => 3)) ?>
-	<?php echo $form->dropDownList($element, 'hrt_id', $overallPeriods, array(), false, array('label' => 4, 'field' => 3))?>
-	<div class="row field-row">
-        <div class="large-7 column end">
-        <?php echo $form->textArea($element, 'comments', array('nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'Comments'), array('field' => 7))?>
-        </div>
-    </div>
+  <table class="cols-8 element-fields">
+    <tbody class="cols-full element-fields">
+      <tr>
+        <td><?= $form->dropDownList($element, 'clinic_interval_id', $overallPeriods, array(), false, array('label' => 4, 'field' => 3))?></td>
+        <td><?= $form->dropDownList($element, 'photo_id', $overallPeriods, array(), false, array('label' => 4, 'field' => 3))?></td>
+        <td><?= $form->dropDownList($element, 'oct_id', $overallPeriods, array(), false, array('label' => 4, 'field' => 3))?></td>
+      </tr>
+      <tr>
+        <td><?= $form->dropDownList($element, 'hfa_id', $overallPeriods, array(), false, array('label' => 4, 'field' => 3))?></td>
+        <td><?= $form->dropDownList($element, 'gonio_id', $intervalVisits, array(), false, array('label' => 4, 'field' => 3))?></td>
+        <td><?= $form->dropDownList($element, 'hrt_id', $overallPeriods, array(), false, array('label' => 4, 'field' => 3))?></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="cols-8">
+    <?php echo $form->textArea($element, 'comments', array('nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'Comments'), array('field' => 12))?>
+  </div>
 </div>
 <div class="element-fields element-eyes">
-	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
-    ?> inactive<?php 
-}?>" data-side="right">
-		<div class="active-form">
+<?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):
+    $hasEyeFunc = 'has'.ucfirst($eye);
+    ?>
+  <div class="element-eye <?=$eye?>-eye column <?=$side?> side <?= !$element->$hasEyeFunc() ? "inactive" : ""?>" data-side="<?=$eye?>">
+    <div class="active-form">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-			<div class="row field-row">
-				<div class="large-3 column"><label for="<?= CHtml::modelName($element).'[right_target_iop_id]' ?>">Target IOP:</label></div>
-				<div class="large-3 column"><?= $form->dropDownList($element, 'right_target_iop_id', $targetIOPS, array('nowrapper' => true, 'empty' => '- Select -')) ?></div>
-				<p class="large-1 column end">mmHg</p>
-			</div>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add right side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {
-    ?> inactive<?php 
-}?>" data-side="left">
-		<div class="active-form">
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-			<div class="row field-row">
-				<div class="large-3 column"><label for="<?= CHtml::modelName($element).'[left_target_iop_id]' ?>">Target IOP:</label></div>
-				<div class="large-3 column"><?= $form->dropDownList($element, 'left_target_iop_id', $targetIOPS, array('nowrapper' => true, 'empty' => '- Select -')) ?></div>
-				<p class="large-1 column end">mmHg</p>
-			</div>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add left side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-</div>
+      <div class="row field-row">
+        <div class="large-3 column">
+          <label for="<?= CHtml::modelName($element).'['.$eye.'_target_iop_id]' ?>">
+            Target IOP:
+          </label>
+          <?= $form->dropDownList($element, $eye.'_target_iop_id', $targetIOPS, array('nowrapper' => true, 'empty' => '- Select -')) ?>
+          mmHg
+        </div>
+      </div>
+    </div>
+    <div class="inactive-form side" style="<?= $element->$hasEyeFunc() ? "display: none" : ""?>">
+      <div class="add-side">
+        <a href="#">
+          Add <?=$eye?> eye <span class="icon-add-side"></span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <?php endforeach; ?>
+
 <script type="text/javascript">
 	if (typeof setCurrentManagementIOP == 'function') {
 		setCurrentManagementIOP('left');
