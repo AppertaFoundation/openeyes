@@ -416,7 +416,7 @@ function calculateORValue(inputValues) {
   OR.brunescentwhitecataract = {'Y': 2.99, 'N': 1, 'NK': 1};
   OR.pxf = {'Y': 2.92, 'N': 1, 'NK': 1};
   OR.pupilsize = {'Small': 1.45, 'Medium': 1.14, 'Large': 1, 'NK': 1};
-  OR.axiallength = {'1': 1, '2': 1.47};
+  OR.axiallength = {'0': 1, '1': 1, '2': 1.47};
   OR.alphareceptorblocker = {'Y': 1.51, 'N': 1, 'NK': 1};
   OR.abletolieflat = {'Y': 1, 'N': 1.27};
   OR.doctorgrade = {};
