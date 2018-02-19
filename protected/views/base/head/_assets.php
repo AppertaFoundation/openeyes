@@ -9,6 +9,7 @@
 <?php $assetManager->registerScriptFile('js/jquery.autosize.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.cookie.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.getUrlParam.js')?>
+<?php $assetManager->registerScriptFile('js/jquery.query-object.min.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.waypoints.min.js')?>
 <?php $assetManager->registerScriptFile('js/sticky.min.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.getUrlParam.js')?>

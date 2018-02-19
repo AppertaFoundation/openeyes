@@ -23,25 +23,20 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
     <button class="green hint cols-full send-message">Send New Message</button>
     <ul class="filter-messages">
       <li>
-        <?php if ($inbox_unread > 0) {
-          echo CHtml::link("Inbox ($inbox_unread)", '#', array('id' => 'display-inbox', 'class' => 'selected'));
-        } else {
-            echo CHtml::link('Inbox', '#', array('id' => 'display-inbox', 'class' => 'selected'));
-        } ?>
+        <?php echo CHtml::link(
+            $inbox_unread > 0 ? "Inbox ($inbox_unread)" : 'Inbox',
+            '#', array('id' => 'display-inbox', 'class' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'inbox' ? 'selected' : '')); ?>
       </li>
       <li>
-          <?php if ($urgent_unread > 0) {
-              echo CHtml::link("Urgent ($urgent_unread)", '#', array('id' => 'display-urgent'));
-          } else {
-              echo CHtml::link('Urgent', '#', array('id' => 'display-urgent'));
-          } ?>
+        <?php echo CHtml::link(
+            $urgent_unread > 0 ? "Urgent ($urgent_unread)" : 'Urgent',
+            '#',
+            array('id' => 'display-urgent', 'class' => @$_GET['messages'] === 'urgent' ? 'selected' : '')); ?>
       </li>
       <li>
-          <?php if ($sent_unread > 0) {
-          echo CHtml::link("Sent ($sent_unread)", '#', array('id' => 'display-sent'));
-        } else {
-            echo CHtml::link('Sent', '#', array('id' => 'display-sent'));
-        } ?>
+        <?php echo CHtml::link(
+            $sent_unread > 0 ? "Sent ($sent_unread)" : 'Sent',
+            '#', array('id' => 'display-sent', 'class' => @$_GET['messages'] === 'sent' ? 'selected' : '')); ?>
       </li>
     </ul>
     <div class="search-messages">
@@ -55,21 +50,35 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
     </div>
   </div>
   <?php
+
+  switch (@$_GET['messages']) {
+      case 'urgent':
+          $messages = $urgent;
+          break;
+      case 'inbox':
+          $messages = $inbox;
+          break;
+      case 'inbox':
+      default:
+          $messages = $sent;
+          break;
+  }
+
   $this->renderPartial('OphCoMessaging.views.dashboard.message_list', array(
-      'dp' => $inbox,
-      'type' => 'inbox',
-      'display' => true
+      'dp' => $messages,
+      'type' =>  @$_GET['messages'] ?: 'index',
+      'display' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'inbox',
   ));
-  $this->renderPartial('OphCoMessaging.views.dashboard.message_list', array(
+ /* $this->renderPartial('OphCoMessaging.views.dashboard.message_list', array(
       'dp' => $urgent,
       'type' => 'urgent',
-      'display' => false
+      'display' => @$_GET['messages'] === 'urgent',
   ));
   $this->renderPartial('OphCoMessaging.views.dashboard.message_list', array(
       'dp' => $sent,
       'type' => 'sent',
-      'display' => false
-  ));
+      'display' => @$_GET['messages'] === 'sent',
+  ));*/
   ?>
 </div>
 <script type="text/javascript">
@@ -78,32 +87,17 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
 
         $('#display-inbox').click(function(e) {
             e.preventDefault();
-            $('#inbox').show();
-            $('#display-inbox').addClass('selected');
-            $('#sent').hide();
-            $('#display-sent').removeClass('selected');
-            $('#urgent').hide();
-            $('#display-urgent').removeClass('selected');
+            window.location.href = jQuery.query.set('messages', 'inbox')
         });
 
         $('#display-urgent').click(function(e) {
             e.preventDefault();
-            $('#urgent').show();
-            $('#display-urgent').addClass('selected');
-            $('#sent').hide();
-            $('#display-sent').removeClass('selected');
-            $('#inbox').hide();
-            $('#display-inbox').removeClass('selected');
+            window.location.href = jQuery.query.set('messages', 'urgent')
         });
 
         $('#display-sent').click(function(e) {
             e.preventDefault();
-            $('#inbox').hide();
-            $('#display-inbox').removeClass('selected');
-            $('#sent').show();
-            $('#display-sent').addClass('selected');
-            $('#urgent').hide();
-            $('#display-urgent').removeClass('selected');
+            window.location.href = jQuery.query.set('messages', 'sent')
         });
     });
 

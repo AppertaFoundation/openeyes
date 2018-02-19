@@ -102,10 +102,12 @@ class OphCoMessaging_API extends \BaseAPI
                                     'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc', ),
             'hos_num' => array('asc' => 'patient.hos_num asc',
                                 'desc' => 'patient.hos_num desc', ),
-            'dob' => array('asc' => 'patient.dob asc',
-                            'desc' => 'patient.dob desc', ),
+            'age' => array('asc' => 'patient.dob desc',
+                            'desc' => 'patient.dob asc', ),
             'user' => array('asc' => 'lower(for_the_attention_of_user.last_name) asc, lower(for_the_attention_of_user.first_name) asc',
                             'desc' => 'lower(for_the_attention_of_user.last_name) desc, lower(for_the_attention_of_user.first_name) desc', ),
+            'gender' => array('asc' => 'patient.gender asc',
+                                'desc' => 'patient.gender desc', ),
         );
 
         $sort->defaultOrder = 'event_date desc';

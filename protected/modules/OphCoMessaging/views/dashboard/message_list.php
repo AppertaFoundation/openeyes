@@ -17,7 +17,19 @@
 
 ?>
 
-<table id="<?php echo $type; ?>" class="messages <?php echo !$display ? 'hidden' : ''; ?>">
+<?php
+echo \Yii::app()->controller->renderPartial('OphCoMessaging.views.inbox.grid', array(
+    'module_class' => 'OphCoMessaging',
+    'messages' => $dp->getData(),
+    'dp' => $dp,
+    'read_check' => true,
+    'message_type' => $type,
+    'is_hidden' => !$display,
+), true);
+return;
+?>
+
+<table id="<?php echo $type; ?>" class="messages" <?php echo !$display ? 'style="display: none;"' : ''; ?>>
   <colgroup>
     <col style="width: 80px;">
     <col style="width: 70px;">
@@ -51,7 +63,8 @@
   <?php foreach ($dp->getData() as $message): ?>
     <tr class="<?php echo $message->marked_as_read ? 'read' : 'unread'; ?>">
       <td>
-          <?php echo CHtml::link(CHtml::encode($message->event->episode->patient->hos_num), Yii::app()->createUrl('/OphCoMessaging/default/view', array('id' => $message->event->id))); ?>
+          <?php echo CHtml::link(CHtml::encode($message->event->episode->patient->hos_num),
+              Yii::app()->createUrl('/OphCoMessaging/default/view', array('id' => $message->event->id))); ?>
       </td>
       <td>
           <?php echo CHtml::encode($message->event->episode->patient->gender); ?>
@@ -60,7 +73,8 @@
           <?php echo CHtml::encode(Helper::getAge($message->event->episode->patient->dob)); ?>
       </td>
       <td class="nowrap patient">
-          <?php echo CHtml::link(CHtml::encode($message->event->episode->patient->getHSCICName()), Yii::app()->createUrl('/OphCoMessaging/default/view', array('id' => $message->event->id))); ?>
+          <?php echo CHtml::link(CHtml::encode($message->event->episode->patient->getHSCICName()),
+              Yii::app()->createUrl('/OphCoMessaging/default/view', array('id' => $message->event->id))); ?>
       </td>
       <td>
           <?php if ($message->urgent): ?>
