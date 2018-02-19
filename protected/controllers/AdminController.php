@@ -486,6 +486,7 @@ class AdminController extends BaseAdminController
         $this->render('/admin/adduser', array(
             'user' => $user,
             'errors' => @$errors,
+            'is_ldap' => \Yii::app()->params['auth_source'] == 'LDAP',
         ));
     }
 
@@ -567,6 +568,7 @@ class AdminController extends BaseAdminController
         $this->render('/admin/edituser', array(
             'user' => $user,
             'errors' => @$errors,
+            'is_ldap' => \Yii::app()->params['auth_source'] == 'LDAP',
         ));
     }
 
