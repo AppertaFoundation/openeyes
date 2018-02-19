@@ -24,7 +24,7 @@
     ?>
 				<div class="data-row">
 					<div class="data-value">
-						<?php echo $element->unit->name?>
+						<?php echo $element->unit->name?> <?php echo $this->renderPartial('_visual_acuity_tooltip', array('element' => $element, 'side'=>'right')); ?>
 					</div>
 				</div>
 				<div class="data-row">
@@ -74,7 +74,7 @@
     ?>
 				<div class="data-row">
 					<div class="data-value">
-						<?php echo $element->unit->name?>
+						<?php echo $element->unit->name?> <?php echo $this->renderPartial('_visual_acuity_tooltip', array('element' => $element, 'side'=>'left')); ?>
 					</div>
 				</div>
 				<div class="data-row">
