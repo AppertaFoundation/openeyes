@@ -68,8 +68,10 @@ $cols = array(
     ),
     array(
         'id' => 'user',
-        'header' => $dp->getSort()->link('user', 'From', array('class' => 'sort-link')),
-        'value' => '\User::model()->findByPk($data->created_user_id)->getFullNameAndTitle()',
+        'header' => $dp->getSort()->link('user', $message_type === 'sent' ? 'To' : 'From', array('class' => 'sort-link')),
+        'value' => $message_type === 'sent' ?
+            '\User::model()->findByPk($data->for_the_attention_of_user_id)->getFullNameAndTitle()' :
+            '\User::model()->findByPk($data->created_user_id)->getFullNameAndTitle()',
         'cssClassExpression' => '"nowrap sender"',
     ),
     array(
