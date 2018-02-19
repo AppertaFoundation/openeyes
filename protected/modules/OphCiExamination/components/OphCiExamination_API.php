@@ -2415,4 +2415,33 @@ class OphCiExamination_API extends \BaseAPI
         }
         return $result;
     }
+
+    /**
+     * Handler for EIT shortcode
+     *
+     * @param Patient $patient
+     * @param bool $use_context
+     * @returns string
+     */
+
+    public function getReasonForNoTreatmentFromLastExamination(\Patient $patient, $use_context = false)
+    {
+        $result = "";
+
+        if($el = $this->getLatestElement('models\Element_OphCiExamination_InjectionManagementComplex', $patient, $use_context)) {
+            /** @var models\Element_OphCiExamination_InjectionManagementComplex $el */
+
+            if($el->left_no_treatment) {
+                $left_reason_text = $el->left_no_treatment_reason->other ? $el->left_no_treatment_reason_other : $el->left_no_treatment_reason->name;
+                $result.="Left Eye: $left_reason_text\n";
+            }
+
+            if($el->right_no_treatment) {
+                $right_reason_text = $el->right_no_treatment_reason->other ? $el->right_no_treatment_reason_other : $el->right_no_treatment_reason->name;
+                $result.="Right Eye: $right_reason_text\n";
+            }
+        }
+
+        return $result;
+    }
 }
