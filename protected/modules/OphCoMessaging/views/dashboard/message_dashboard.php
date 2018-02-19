@@ -64,21 +64,13 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
           break;
   }
 
-  $this->renderPartial('OphCoMessaging.views.dashboard.message_list', array(
-      'dp' => $messages,
-      'type' =>  @$_GET['messages'] ?: 'index',
-      'display' => !array_key_exists('messages', $_GET) || @$_GET['messages'] === 'inbox',
-  ));
- /* $this->renderPartial('OphCoMessaging.views.dashboard.message_list', array(
-      'dp' => $urgent,
-      'type' => 'urgent',
-      'display' => @$_GET['messages'] === 'urgent',
-  ));
-  $this->renderPartial('OphCoMessaging.views.dashboard.message_list', array(
-      'dp' => $sent,
-      'type' => 'sent',
-      'display' => @$_GET['messages'] === 'sent',
-  ));*/
+  echo $this->renderPartial('OphCoMessaging.views.inbox.grid', array(
+    'module_class' => 'OphCoMessaging',
+    'messages' => $messages->getData(),
+    'dp' => $messages,
+    'read_check' => true,
+    'message_type' => @$_GET['messages'] ?: 'index',
+), true);
   ?>
 </div>
 <script type="text/javascript">
