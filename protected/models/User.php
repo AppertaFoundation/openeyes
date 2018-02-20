@@ -465,8 +465,28 @@ class User extends BaseActiveRecordVersioned
         return $this->fullName;
     }
 
+    public function getIs_local()
+    {
+        return in_array($this->username, \Yii::app()->params['local_users']);
+    }
+
+    public function generateRandomPassword()
+    {
+        $pwd = bin2hex(openssl_random_pseudo_bytes(15));
+        $pwd[rand(0, strlen($pwd))] = "_";
+
+        return $pwd;
+    }
+
     public function beforeValidate()
     {
+        //When LDAP is enabled and the user is not a local user than we generate a random password
+        if($this->isNewRecord && \Yii::app()->params['auth_source'] == 'LDAP' && !$this->is_local){
+            $password = $this->generateRandomPassword();
+            $this->password = $password;
+            $this->password_repeat = $password;
+        }
+
         if (!preg_match('/^[0-9a-f]{32}$/', $this->password)) {
             if ($this->password != $this->password_repeat) {
                 $this->addError('password', 'Password confirmation must match exactly');
