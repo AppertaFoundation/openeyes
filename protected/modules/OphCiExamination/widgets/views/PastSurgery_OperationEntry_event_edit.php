@@ -49,7 +49,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <?= $values['operation'] ?>
       <?php else: ?>
         <?php echo CHtml::textField($field_prefix . '[operation]', $values['operation'], array(
-              'placeholder' => 'Select from above or type',
+              'placeholder' => 'Click the green plus or type',
               'autocomplete' => Yii::app()->params['html_autocomplete'],
               'class' => 'common-operation',
           )); ?>
@@ -116,8 +116,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
             <fieldset id="<?= $model_name ?>_fuzzy_date" class="row field-row fuzzy-date" style="padding:0">
                 <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $sel_day, 'sel_month' => $sel_month, 'sel_year' => $sel_year)) ?>
             </fieldset>
-            <i class="has-tooltip oe-i info small pad right" data-tooltip-content="This field is optional."></i>
-
+            <i class="has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
         <?php endif; ?>
     </td>
     <?php if($removable && !$required) : ?>
