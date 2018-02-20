@@ -420,8 +420,8 @@ class ExaminationCreator
         $iop->event_id = $examinationEvent->id;
         $iop->created_user_id = $iop->last_modified_user_id = $userId;
         $iop->eye_id = $this->examinationEyeId;
-        $iop->left_comments = 'Portal Add';
-        $iop->right_comments = 'Portal Add';
+        $iop->left_comments = '';
+        $iop->right_comments = '';
         if (!$iop->save(true, null, true)) {
             throw new \CDbException('iop failed: ' . print_r($iop->getErrors(), true));
         }
