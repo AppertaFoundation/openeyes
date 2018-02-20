@@ -36,7 +36,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$popupSelector = $('#family-history-popup');
         this.templateText = $('#' + this.options.modelName + '_entry_template').text();
         this.initialiseTriggers();
-
     }
 
     FamilyHistoryController._defaultOptions = {
@@ -70,7 +69,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             }
         });
 
-        this.$popupSelector.on('click', '.js-add-select-search', function(e) {
+        this.$popupSelector.on('click', '.js-add-new-row', function(e) {
             e.preventDefault();
             if (controller.$table.hasClass('hidden')){
                 controller.$table.removeClass('hidden');
@@ -88,8 +87,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$noHistoryFld.on('click', function() {
             if (controller.$noHistoryFld.prop('checked')) {
                 controller.$table.hide();
+                controller.$popupSelector.hide();
             }
             else {
+              controller.$popupSelector.show();
             }
         });
     };
@@ -105,12 +106,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             data = {};
 
         data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
-        data['relative_id'] = $('#family-history-relative').find('.selected').data('id');
-        data['relative_display'] = $('#family-history-relative').find('.selected').data('str');
-        data['side_id'] = $('#family-history-side').find('.selected').data('id');
-        data['side_display'] = $('#family-history-side').find('.selected').data('str');
-        data['condition_id'] = $('#family-history-condition').find('.selected').data('id');
-        data['condition_display'] = $('#family-history-condition').find('.selected').data('str');
         return Mustache.render(
           template = this.templateText,
           data

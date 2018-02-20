@@ -64,8 +64,8 @@
           ?>
       </tbody>
   </table>
-  <div class="flex-item-bottom" id="family-history-popup">
-    <button class="button hint green js-add-select-search" type="button">
+  <div class="flex-item-bottom" id="family-history-popup" style="display: <?= $element->no_family_history_date ? 'none' : 'block' ?>">
+    <button class="button hint green js-add-new-row" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
   </div>

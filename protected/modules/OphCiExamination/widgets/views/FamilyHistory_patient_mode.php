@@ -33,7 +33,7 @@ if (!$element) { ?>
 
     <p class="family-history-status-none" <?php if (!$element->no_family_history_date) { echo 'style="display: none;"'; }?>>Patient has no known family history</p>
 
-    <table id="<?=$model_name ?>_entry_table" class="plain patient-data" <?php if (empty($element->entries)) { echo 'style="display: none;"'; }?>>
+    <table id="<?=$model_name ?>_patient_mode_table" class="plain patient-data" <?php if (empty($element->entries)) { echo 'style="display: none;"'; }?>>
         <thead>
         <tr>
             <th>Relative</th>
