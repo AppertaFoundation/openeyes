@@ -27,11 +27,22 @@ class DocManDeliveryCommand extends CConsoleCommand
 
     private $event;
 
-    private $csv_format = 'OEGPLetterReport_%s.csv';
-
     private $generate_xml = false;
 
     private $generate_csv = false;
+    private $csv_file_options = [
+        'file_name' => null,
+        'format' => 'OEGPLetterReport_%s.csv',
+        'header' => [
+            'hos_num',
+            'clinician_name',
+            'letter_type',
+            'letter_finalised_date',
+            'letter_created_date',
+            'last_significant_event_date',
+            'letter_sent_date',
+        ]
+    ];
 
     /**
      * Whether Internal referral tags generated into the xml, also processes XML for only Internal referrals as well
@@ -50,12 +61,38 @@ class DocManDeliveryCommand extends CConsoleCommand
         $this->path = $this->export_path ? $this->export_path : Yii::app()->params['docman_export_dir'];
 
         $this->generate_xml = !isset(Yii::app()->params['docman_xml_format']) || Yii::app()->params['docman_xml_format'] !== 'none';
-        $this->generate_csv = Yii::app()->params['docman_generate_csv'];
         $this->with_internal_referral = !isset(Yii::app()->params['docman_with_internal_referral']) || Yii::app()->params['docman_with_internal_referral'] !== false;
 
         $this->checkPath($this->path);
 
+        if($this->generate_csv = Yii::app()->params['docman_generate_csv']){
+            $this->csv_file_options['file_name'] = implode(DIRECTORY_SEPARATOR, array($this->path, sprintf($this->csv_file_options['format'], date('Ymd'))));
+            $this->createCSVFile();
+        }
+
         parent::__construct(null, null);
+    }
+
+    private function createCSVFile()
+    {
+        //if file doesn't exists we create one and put the header
+        if(!file_exists($this->csv_file_options['file_name'])){
+            try{
+                $fp = fopen($this->csv_file_options['file_name'], 'ab');
+                fputcsv($fp, $this->csv_file_options['header']);
+                fclose($fp);
+            }catch (\Exception $exception){
+                \OELog::log($exception->getMessage());
+            }
+
+        }
+    }
+
+    private function writeCSVFile($data)
+    {
+        $fp = fopen($this->csv_file_options['file_name'], 'ab');
+        fputcsv($fp, $data);
+        fclose($fp);
     }
 
     /**
@@ -421,15 +458,7 @@ class DocManDeliveryCommand extends CConsoleCommand
             $doc_log->attributes = $data;
             $doc_log->save();
 
-            $csv_filename = implode(DIRECTORY_SEPARATOR, array($this->path, sprintf($this->csv_format, date('Ymd'))));
-            $put_header = !file_exists($csv_filename);
-
-            $fp = fopen($csv_filename, 'ab');
-            if($put_header){
-                fputcsv($fp, array_keys($data));
-            }
-            fputcsv($fp, $data);
-            fclose($fp);
+            $this->writeCSVFile($data);
         }
     }
 
