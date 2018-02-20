@@ -16,64 +16,38 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data">
-    <div class="row data-row">
-        <div class="large-2 column">
-            <div class="data-label">
-                <?= $element->getAttributeLabel('status') ?>:
-            </div>
-        </div>
-        <div class="large-10 column end">
-            <div class="data-value">
+<div class="element-data full-width">
+    <div class="data-row">
+      <?= $element->getAttributeLabel('status') ?>:
                 <?php echo $element->status?>
-                <?php if ($element->status && $element->status->followup) {
-        ?>
+                <?php if ($element->status && $element->status->followup) { ?>
                     in
                     <?php echo $element->getFollowUp()?>
                     with
                     <?php echo $element->role->name?>
-                    <?php if ($element->role_comments) {
-        ?>
+                    <?php if ($element->role_comments) { ?>
                         (<?= Yii::app()->format->Ntext($element->role_comments) ?>)
-                    <?php
-    }
-        ?>
+                    <?php } ?>
                 <?php if ($element->community_patient) {
-        ?>(Community patient)<?php
-    }
-        ?>
-                <?php
-    }?>
-            </div>
-        </div>
-	</div>
+        ?>(Community patient)<?php } ?>
+                <?php } ?>
 	<?php if ($api = Yii::app()->moduleAPI->get('PatientTicketing')) {
     if ($element->status && $element->status->patientticket &&
             $ticket = $api->getTicketForEvent($this->event)
             ) {
         ?>
-			<div class="data-row">
-				<div class="data-value">
-					<?php
-                        $this->widget($api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket));
-        ?>
+				<div>
+					<?php $this->widget($api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
 				</div>
-			</div>
-	<?php 
+	<?php
     }
 }?>
+    </div>
     <?php if ($element->description) { ?>
-        <div class="row data-row">
-            <div class="large-2 column">
-                <div class="data-label">
-                    <?= $element->getAttributeLabel('description') ?>:
-                </div>
-            </div>
-            <div class="large-8 column end">
-                <div class="data-value">
-                    <?= Yii::app()->format->Ntext($element->description); ?>
-                </div>
-            </div>
+        <div class="data-row">
+            <?= $element->getAttributeLabel('description') ?>:
+              <?= Yii::app()->format->Ntext($element->description); ?>
         </div>
     <?php } ?>
+
 </div>
