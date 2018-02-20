@@ -18,6 +18,7 @@
 ?>
 <div class="element-data">
 	<div class="data-row">
+    Comments:
 		<div class="data-value">
 			<?= Yii::app()->format->Ntext($element->comments) ?>
 		</div>
