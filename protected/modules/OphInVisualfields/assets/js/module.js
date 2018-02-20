@@ -26,4 +26,6 @@ $(document).ready(function() {
 			modal: false
 		});
 	});
+
+    handleButton($('#et_deleteevent'));
 });
