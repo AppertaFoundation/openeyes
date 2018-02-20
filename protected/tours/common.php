@@ -51,12 +51,12 @@ return array(
                 'content' => 'Use this box to change which clinic list(s) are displayed, depending on where you are (site) and which working \'context\' you are interested in',
                 //'showParent' => 'true',
             ),
-            array(
-                'element' => '.oe-user-info',
-                'title' => 'Current context and profile',
-                'content' => 'Use the \'profile\' link to edit your profile.<br/><br/>This panel also reminds you who you\'re logged in as, what site you are working at and your current working context.',
-                'backdropElement' => "div.panel.user",
-            ),
+            // array(
+            //     'element' => '.oe-user-info',
+            //     'title' => 'Current context and profile',
+            //     'content' => 'Use the \'profile\' link to edit your profile.<br/><br/>This panel also reminds you who you\'re logged in as, what site you are working at and your current working context.',
+            //     'backdropElement' => "div.panel.user",
+            // ),
             array(
                 'element' => '.oe-user-home',
                 'title' => 'Home Button',
@@ -78,15 +78,6 @@ return array(
                 'backdropElement' => "div.panel.user",
                 'placement' => 'left',
             ),
-        )
-    ),
-    array(
-        'name' => 'Uservoice Intro',
-        'id' => 'openeyes-uservoice',
-        'url_pattern' => '/^\/{0,1}$/',
-        'position' => 10,
-        'auto' => true,
-        'steps' => array(
             array(
                 'element' => '.uv-bottom-right',
                 'title' => 'Got an idea?',
@@ -103,12 +94,12 @@ return array(
         'url_pattern' => '~^(/patient/episode/)|(/Oph.*/default/view/)~i',
         'position' => 33,
         'steps' => array(
-            array(
-                'element' => '.patient.panel',
-                'title' => 'Patient Panel',
-                'content' => 'This panel shows you the current active patient. It will be shown at the top of all screens when you are in a patient record.',
-                'placement' => 'bottom',
-            ),
+            // array(
+            //     'element' => '.patient.panel',
+            //     'title' => 'Patient Panel',
+            //     'content' => 'This panel shows you the current active patient. It will be shown at the top of all screens when you are in a patient record.',
+            //     'placement' => 'bottom',
+            // ),
             array(
                 'element' => 'button.toggle-patient-summary-popup.icon-alert-quicklook',
                 'title' => 'Summary pop-up',
@@ -162,37 +153,38 @@ return array(
             ),
         ),
     ),
-    array(
-        'name' => 'Create Event Intro',
-        'id' => 'create-event-intro',
-        'auto' => true,
-        'url_pattern' => '~^/patient/episode[s]?/~i',
-        'position' => 90,
-        'steps' => array(
-            array(
-                'element' => 'td.step-subspecialties',
-                'backdropElement' => ".oe-create-event-popup",
-                'title' => 'Choose subspecialty',
-                'content' => "First, you must select which subspecialty the new event belongs to.<br>Please select at least one subspecialty before clicking Next>><br><br><b>Tip:</b>When adding a new subspecialty, remember to click the blue [+] icon.",
-                'delay' => 600,
-                'placement' => 'top',
-            ),
-            array(
-                'element' => 'td.step-context',
-                'backdropElement' => ".oe-create-event-popup",
-                'title' => 'Choose Context',
-                'content' => "Now, pick the context you are currently working in - This will affect which workflow/pathway is used and what default options are selected<br><br>(This is particularly important when creating an Examaination Event)",
-                'placement' => 'top',
-            ),
-            array(
-                'element' => 'td.step-event-types',
-                'backdropElement' => ".oe-create-event-popup",
-                'title' => 'Choose Event Type',
-                'content' => "Lastly, choose which type of event you want to create from the list.<br><br><b>Note:</b> If an event type is greyed-out, it means you do not have permission to use it",
-                'placement' => 'top',
-            ),
-        ),
-    ),
+    // Disabled - requires JS to force open the create dialog
+    // array(
+    //     'name' => 'Create Event Intro',
+    //     'id' => 'create-event-intro',
+    //     'auto' => true,
+    //     'url_pattern' => '~^/patient/episode[s]?/~i',
+    //     'position' => 90,
+    //     'steps' => array(
+    //         array(
+    //             'element' => 'td.step-subspecialties',
+    //             'backdropElement' => ".oe-create-event-popup",
+    //             'title' => 'Choose subspecialty',
+    //             'content' => "First, you must select which subspecialty the new event belongs to.<br>Please select at least one subspecialty before clicking Next>><br><br><b>Tip:</b>When adding a new subspecialty, remember to click the blue [+] icon.",
+    //             'delay' => 600,
+    //             'placement' => 'top',
+    //         ),
+    //         array(
+    //             'element' => 'td.step-context',
+    //             'backdropElement' => ".oe-create-event-popup",
+    //             'title' => 'Choose Context',
+    //             'content' => "Now, pick the context you are currently working in - This will affect which workflow/pathway is used and what default options are selected<br><br>(This is particularly important when creating an Examaination Event)",
+    //             'placement' => 'top',
+    //         ),
+    //         array(
+    //             'element' => 'td.step-event-types',
+    //             'backdropElement' => ".oe-create-event-popup",
+    //             'title' => 'Choose Event Type',
+    //             'content' => "Lastly, choose which type of event you want to create from the list.<br><br><b>Note:</b> If an event type is greyed-out, it means you do not have permission to use it",
+    //             'placement' => 'top',
+    //         ),
+    //     ),
+    // ),
 
     ######################################################################
     # Examination Event
@@ -282,7 +274,7 @@ return array(
     array(
         'name' => 'Making your lens choice',
         'id' => 'biometry-lens-choice',
-        'auto' => true,
+        'auto' => false,
         'url_pattern' => '|^/OphInBiometry/default/update/|i',
         'position' => 10,
         'steps' => array(
