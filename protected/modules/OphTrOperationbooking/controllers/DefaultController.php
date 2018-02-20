@@ -147,8 +147,13 @@ class DefaultController extends OphTrOperationbookingEventController
     public function getExaminationEventCount()
     {
         $event_type = EventType::model()->find('name = "Examination"');
-        $events = $this->event->episode->getAllEventsByType($event_type->id);
-        return count($events);
+
+        $criteria = new CDbCriteria();
+        $criteria->join = "JOIN episode ON t.episode_id = episode.id";
+        $criteria->compare('event_type_id', $event_type->id);
+        $criteria->compare('episode.patient_id', $this->patient->id);
+
+        return Event::model()->count($criteria);
     }
 
      /**
