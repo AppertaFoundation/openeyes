@@ -66,52 +66,42 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CurrentManag
 ?>
 <div class="element-fields element-eyes">
 	<script type="text/javascript">
-		var previous_iop = <?php echo json_encode($iop)?>;
+		var previous_iop = <?= json_encode($iop)?>;
 	</script>
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
-    ?> inactive<?php 
-}?>" data-side="right">
-		<div class="active-form">
+	<?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+	<?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye):
+    $hasEyeFunc = "has".ucfirst($eye);
+	?>
+	<div class="element-eye <?=$eye?>-eye column <?=$side?> side<?= !$element->$hasEyeFunc()? "inactive" : ""?>"
+       data-side="<?=$eye?>">
+		<div class="active-form" style="<?=$element->$hasEyeFunc() ? "" : "display: none;"?>">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-			<div id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_right_iop_id" class="row field-row">
-				<div class="large-3 column"><label>IOP:</label></div>
-				<div class="large-8 column end" id="OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_right_iop"><?php echo ($iop == null) ? 'N/A' : $iop['rightIOP'].' mmHg'?></div>
-			</div>
-			<?php echo $form->dropDownList($element, 'right_glaucoma_status_id', $glaucomaStatus, array('empty' => '- Please Select -'), false, array('label' => 3, 'field' => 8))?>
-			<?php echo $form->dropDownList($element, 'right_drop-related_prob_id', $dropRelatProblem, array(), false, array('label' => 3, 'field' => 8))?>
-			<?php echo $form->dropDownList($element, 'right_drops_id', $dropsIds, array('empty' => '- Please select -'), false, array('label' => 3, 'field' => 8))?>
-			<?php echo $form->dropDownList($element, 'right_surgery_id', $surgeryIds, array('empty' => 'N/A'), false, array('label' => 3, 'field' => 8))?>
+      <div class="row "
+           id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_<?=$eye?>_iop_id"
+          >
+        <div class="cols-3 column"><label>IOP:</label></div>
+        <div class="cols-8 column end"
+             id="OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_<?=$eye?>_iop">
+            <?php echo ($iop == null) ? 'N/A' : $iop['rightIOP'].' mmHg'?>
+        </div>
+      </div>
+      <?= $form->dropDownList($element, $eye.'_glaucoma_status_id',
+          $glaucomaStatus, array('empty' => '- Please Select -'), false, array('label' => 4, 'field' => 8))?>
+			<?= $form->dropDownList($element, $eye.'_drop-related_prob_id',
+          $dropRelatProblem, array(), false, array('label' => 4, 'field' => 8))?>
+			<?= $form->dropDownList($element, $eye.'_drops_id',
+          $dropsIds, array('empty' => '- Please select -'), false, array('label' => 4, 'field' => 8))?>
+			<?= $form->dropDownList($element, $eye.'_surgery_id',
+          $surgeryIds, array('empty' => 'N/A'), false, array('label' => 4, 'field' => 8))?>
 		</div>
-		<div class="inactive-form">
+		<div class="inactive-form" style="<?=!$element->$hasEyeFunc() ? "" : "display: none;"?>">
 			<div class="add-side">
 				<a href="#">
-					Add right side <span class="icon-add-side"></span>
+					Add <?=$eye?> side <span class="icon-add-side"></span>
 				</a>
 			</div>
 		</div>
 	</div>
-	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {
-    ?> inactive<?php 
-}?>" data-side="left">
-		<div class="active-form">
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-			<div id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_left_iop_id" class="row field-row">
-				<div class="large-3 column"><label>IOP:</label></div>
-				<div class="large-8 column end" id="OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_left_iop"><?php echo ($iop == null) ? 'N/A' : $iop['leftIOP'].' mmHg'?></div>
-			</div>
-			<?php echo $form->dropDownList($element, 'left_glaucoma_status_id', $glaucomaStatus, array('empty' => '- Please Select -'), false, array('label' => 3, 'field' => 8))?>
-			<?php echo $form->dropDownList($element, 'left_drop-related_prob_id', $dropRelatProblem, array(), false, array('label' => 3, 'field' => 8))?>
-			<?php echo $form->dropDownList($element, 'left_drops_id', $dropsIds, array('empty' => '- Please select -'), false, array('label' => 3, 'field' => 8))?>
-			<?php echo $form->dropDownList($element, 'left_surgery_id', $surgeryIds, array('empty' => 'N/A'), false, array('label' => 3, 'field' => 8))?>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add left side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
+  <?php endforeach;?>
 </div>
 
