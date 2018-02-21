@@ -119,7 +119,9 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
     <div class="flex-layout">
         <?php echo $form->textArea($element, 'description', array('class' => 'autosize', 'nowrapper' => true), false, array('placeholder' => $element->getAttributeLabel('description')))?>
     </div>
-
+  <div class="field-row textMacros">
+      <?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'description', 'form' => $form))?>
+  </div>
 	<script type="text/javascript">
 			var Element_OphCiExamination_ClinicOutcome_templates = {
 			<?php foreach (\OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Template::model()->findAll() as $template) {

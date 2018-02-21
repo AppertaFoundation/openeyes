@@ -29,6 +29,18 @@
   <tbody>
   <tr>
       <?php
+      $firms = Firm::model()->findAll();
+      $firm_name = array();
+      $firm_sub_id = array();
+      foreach ($firms as $firm){
+        array_push($firm_name, $firm->name);
+        array_push($firm_sub_id, $firm->serviceSubspecialtyAssignment->subspecialty_id);
+          $attributes = $this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id);
+          Yii::log("Attributes: ".sizeof($attributes));
+      }
+//      Yii::log("Firms: ".sizeof($firm_name).var_export($firm_name, true));
+//      Yii::log("Firms Sub id: ".sizeof($firm_sub_id).var_export(array_unique($firm_sub_id), true));
+
       foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) { ?>
     <td>
       <div class="flex-layout flex-top flex-left">
