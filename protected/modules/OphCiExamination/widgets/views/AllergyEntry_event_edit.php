@@ -56,13 +56,11 @@ if (!isset($values)) {
     </td>
     <td>
         <?php if (!$removable): ?>
-            <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+          <input type="hidden" name="<?= $field_prefix ?>[comments]" value="<?=$values['comments'] ?>" />
+          <?= $values['comments'] ?>
         <?php else: ?>
-          <div class="cols-full ">
-            <button class="button  js-add-comments" data-input=".js-input-comments" type="button">
-              <i class="oe-i comments  small-icon"></i>
-            </button>
-              <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete'], 'style'=>'display:none;', 'class'=>'cols-full js-input-comments'))?>
+          <div class="cols-full">
+            <?php $form->comment($field_prefix . '[comments]', $values['comments']); ?>
           </div>
         <?php endif; ?>
     </td>
