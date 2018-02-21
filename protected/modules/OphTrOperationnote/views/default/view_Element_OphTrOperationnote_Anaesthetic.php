@@ -19,28 +19,9 @@
 
 <?php
 
-$anaesthetic_agents = null;
-if ($element->anaesthetic_agents) {
-    foreach ($element->anaesthetic_agents as $agent) {
-        $anaesthetic_agents .= $agent->name . '<br/>';
-    }
-}
-
-$anaesthetic_delivery = '';
-
-foreach ($element->anaesthetic_delivery as $anaesthetic_delivery) {
-    if (!empty($text)) {
-        $text .= ', ';
-    }
-    $text .= $anaesthetic_delivery->name;
-}
-
-$complications = '';
-if ($element->anaesthetic_complications) {
-    foreach ($element->anaesthetic_complications as $complication) {
-        $complications .= $complication->name . '<br/>';
-    }
-}
+$anaesthetic_agents = implode('<br />', array_map(function($agent) { return $agent->name; }, $element->anaesthetic_agents));
+$anaesthetic_deliveries = implode(', ', array_map(function($delivery){ return $delivery->name; }, $element->anaesthetic_delivery));
+$anaesthetic_complications = implode('<br />', array_map(function($complication) { return $complication->name; }, $element->anaesthetic_complications));
 
 ?>
 <section class="element view full  view-anaesthetic">
@@ -55,7 +36,7 @@ if ($element->anaesthetic_complications) {
           <div class="cols-11" id="js-listview-anaesthetic-pro">
             <ul class="dslash-list large-text">
               <li><?= $element->getAnaestheticTypeDisplay() ?></li>
-              <li><?php echo $anaesthetic_delivery ?: 'None' ?></li>
+              <li><?php echo $anaesthetic_deliveries ?: 'None' ?></li>
               <li><?php echo CHtml::encode($element->getAttributeLabel('agents')) ?>:
                 <span <?php if (!$element->anaesthetic_agents){ ?>class="none"<?php } ?>>
                    <?php echo $anaesthetic_agents ?>
@@ -66,7 +47,7 @@ if ($element->anaesthetic_complications) {
               </li>
               <li>
                   <?php echo CHtml::encode($element->getAttributeLabel('complications')) ?>:
-                  <?php echo $complications ?: 'None' ?>
+                  <?php echo $anaesthetic_complications ?: 'None' ?>
               </li>
             </ul>
           </div>
@@ -88,7 +69,7 @@ if ($element->anaesthetic_complications) {
               <tbody>
               <tr>
                 <td><?= $element->getAnaestheticTypeDisplay() ?></td>
-                <td>Topical</td>
+                <td><?php echo $anaesthetic_deliveries ?: 'None' ?></td>
                 <td>
                   <span <?php if (!$element->anaesthetic_agents){ ?>class="none"<?php } ?>>
                    <?php echo $anaesthetic_agents ?: 'None' ?>
@@ -97,7 +78,7 @@ if ($element->anaesthetic_complications) {
                 <td><?php echo $element->anaesthetist ? $element->anaesthetist->name : 'None' ?>
                 </td>
                 <td>
-                    <?php echo $complications ?: 'None' ?>
+                    <?php echo $anaesthetic_complications ?: 'None' ?>
                 </td>
               </tr>
               </tbody>
