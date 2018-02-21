@@ -60,22 +60,29 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
 
     // Add the new element at the end, then sort the whole list to ensure correct order
     container.append(new_element).last('section');
-    container.children('section').sort(function (a, b) {
-      // If both elements are children, sort by their display order
-      if (a.dataset.elementParentId != '' && b.dataset.elementParentId != '' && a.dataset.elementParentId == b.dataset.elementParentId) {
-        return parseInt(a.dataset.elementDisplayOrder) > parseInt(b.dataset.elementDisplayOrder);
+    // Only select elements with a data type (to exclude elements like the event date)
+    container.children('section[data-element-type-name]').sort(function (a, b) {
+      // If both elements are parents or are children to the same parent, then sort by their display order
+      if (a.dataset.elementParentId === b.dataset.elementParentId) {
+        return parseInt(a.dataset.elementDisplayOrder) - parseInt(b.dataset.elementDisplayOrder);
+      } else if (b.dataset.elementParentId === a.dataset.elementTypeId) {
+        // put a before b if a is the parent of b
+        return -1;
+      } else if (a.dataset.elementParentId === b.dataset.elementTypeId) {
+        // put b before a if b is the parent of a
+        return 1;
       } else {
-        // Otherwise find their parent display orders and sort by that
-        // (parent elements are ordered by their own display orders, and children by their parent's display orders)
-        var parentDisplayOrder_a = a.dataset.elementParentId == '' ?
-          a.dataset.elementDisplayOrder :
-          container.find('section[data-element-type-id="' + a.dataset.elementParentId + '"]').data('elementDisplayOrder');
+        // otherwise both elements are children to different parents
+        // so sort by their parent display order
+        var parentDisplayOrder_a = a.dataset.elementParentId
+          ? container.find('section[data-element-type-id="' + a.dataset.elementParentId + '"]').data('elementDisplayOrder')
+          : a.dataset.elementDisplayOrder;
 
-        var parentDisplayOrder_b = b.dataset.elementParentId == '' ?
-          b.dataset.elementDisplayOrder :
-          container.find('section[data-element-type-id="' + b.dataset.elementParentId + '"]').data('elementDisplayOrder');
+        var parentDisplayOrder_b = b.dataset.elementParentId
+          ? container.find('section[data-element-type-id="' + b.dataset.elementParentId + '"]').data('elementDisplayOrder')
+          : b.dataset.elementDisplayOrder;
 
-        return parseInt(parentDisplayOrder_a) > parseInt(parentDisplayOrder_b);
+        return parseInt(parentDisplayOrder_a) - parseInt(parentDisplayOrder_b);
       }
     }).appendTo(container);
 
