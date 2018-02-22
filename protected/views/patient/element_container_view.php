@@ -20,7 +20,7 @@
 	<?php
     $eye_divider_list = ['Visual Acuity','Anterior Segment','Intraocular Pressure',
         'Refraction','Gonioscopy','Adnexal', 'Dilation', 'Pupillary Abnormalities', 'CCT','Keratoconus Monitoring',
-        'Posterior Pole'];
+        'Posterior Pole', 'OCT'];
   if ($element->elementType->name=='Medications'||$element->elementType->name=='Risks'){
     echo 'full';
   }elseif (in_array($element->elementType->name, $eye_divider_list)){

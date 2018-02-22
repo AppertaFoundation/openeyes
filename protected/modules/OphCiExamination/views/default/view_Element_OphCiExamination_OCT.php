@@ -16,12 +16,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="sub-element-data sub-element-eyes row">
+<div class="element-data element-eyes row">
 	<div class="element-eye right-eye column">
 		<?php if ($element->hasRight()) {
     $this->renderPartial($element->view_view.'_fields', array('side' => 'right', 'element' => $element));
-} else {
-    ?>
+} else { ?>
 			<div class="data-row">
 				<div class="data-value">Not recorded</div>
 			</div>
