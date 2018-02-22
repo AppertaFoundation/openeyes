@@ -20,7 +20,7 @@
 <?php
 
 if (isset($entry->start_date) && strtotime($entry->start_date)) {
-    list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $entry->start_date);
+    list($start_sel_year, $start_sel_month, $start_sel_day) = array_pad(explode('-', $entry->start_date), 3,0);
 }else {
     $start_sel_day = $start_sel_month = null;
     $start_sel_year = date('Y');
@@ -35,11 +35,11 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
 
 <tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row <?= $entry->originallyStopped ? 'originally-stopped' : ''?>">
     <td>
-    <span class="medication-display">
-      <span class="medication-name">
+      <span class="medication-display">
+        <span class="medication-name">
           <?= $entry->getMedicationDisplay() ?>
+        </span>
       </span>
-    </span>
       <?php if ($entry->originallyStopped) { ?>
         <i class="oe-i stop small pad"></i>
       <?php } ?>
@@ -132,7 +132,6 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
           <i class="oe-i start small pad"></i>
             <?=Helper::formatFuzzyDate($entry->end_date) ?>
           <input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
-
         <?php } ?>
     </fieldset>
   </td>
