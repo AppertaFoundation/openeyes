@@ -19,15 +19,16 @@
 <?php if (@$htmlOptions['nowrapper']) {?>
 	<?php echo CHtml::textField($name, $value, $htmlOptions)?>
 <?php } else {?>
-    <div id="div_<?php echo CHtml::modelName($element) ?>_<?php echo $field ?>"
-         class="row field-row"<?php if (@$htmlOptions['hide']) { ?> style="display: none;"<?php } ?>>
-		<div class="cols-<?php echo $layoutColumns['label'];?> column">
-			<?php
-            $labelText = empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label'];
-    $labelText .= ':';
-    echo Chtml::label($labelText, Chtml::getIdByName($name));
-    ?>
-		</div>
+    <div id="div_<?php echo CHtml::modelName($element) ?>_<?= $field ?>"
+         class="row field-row flex-layout flex-left"<?php if (@$htmlOptions['hide']) { ?> style="display: none;"<?php } ?>
+    >
+      <div class="cols-<?php echo $layoutColumns['label'];?> column">
+        <?php
+              $labelText = empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label'];
+      $labelText .= ':';
+      echo Chtml::label($labelText, Chtml::getIdByName($name));
+      ?>
+      </div>
         <div
             class="cols-<?php echo $layoutColumns['field']; ?> column">
             <?php
@@ -51,11 +52,11 @@
                 echo '<span class="field-info">'.CHtml::link($link['title'], $link['href'], array('id' => $link['id'])).'</span>';
             }
         }?>
-		</div>
+		    </div>
         <?php if(!empty($htmlOptions['append-text']) && !empty($layoutColumns['append-text'])){?>
-            <div class="cols-<?php echo $layoutColumns['append-text'];?> column collapse">
-                <span class="field-info"><?php echo $htmlOptions['append-text'];?></span>
-            </div>
+        <div class="cols-<?php echo $layoutColumns['append-text'];?> column collapse">
+            <span class="field-info"><?php echo $htmlOptions['append-text'];?></span>
+        </div>
         <?php }?>
-	</div>
+	  </div>
 <?php }?>
