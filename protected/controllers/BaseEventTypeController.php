@@ -1602,28 +1602,65 @@ class BaseEventTypeController extends BaseModuleController
             $this->renderPartial('//patient/event_date', array('form' => $form));
         }
 
-        $elements = $this->getElements();
-        $element_count = count($elements);
+        $this->renderTiledElements($this->getElements(), $action, $form, $data);
+    }
 
-        for ($element_index = 0; $element_index < $element_count;) {
+    /**
+     * @param $elements
+     * @param $action
+     * @param null $form
+     * @param null $data
+     * @throws CException
+     * @throws Exception
+     */
+    public function renderTiledElements($elements, $action, $form = null, $data = null)
+    {
+        $element_count = count($elements);
+        if($element_count < 1)return;
+        $rows = array(array());
+
+        //Find the groupings
+        for ($element_index = 0, $tile_index = 0, $row_index = 0;
+             $element_index < $element_count;
+             $element_index++)
+        {
             $element = $elements[$element_index];
 
-            if ($element->getElementType()->tile_size) {
-                $this->beginWidget('TiledEventElementWidget');
-                for ($tile_index = 0;
-                     $element_index < $element_count
-                     && $elements[$element_index]->getElementType()->tile_size
-                     && $tile_index + $elements[$element_index]->getElementType()->tile_size <= $this->element_tiles_wide;
-                     $tile_index += $elements[$element_index]->getElementType()->tile_size, ++$element_index) {
-                    $element = $elements[$element_index];
-                    $this->renderElement($element, $action, $form, $data);
+            //if the tile size can't be determined assume a full row
+            $sizeOfTile = $element->getTileSize() ?: $this->element_tiles_wide;
 
-                }
+            if($tile_index + $sizeOfTile > $this->element_tiles_wide){
+                $tile_index = 0;
+                $rows[++$row_index] = array();
+            }
+            $rows[$row_index][] = $element;
+            $tile_index += $sizeOfTile;
+        }
+
+        foreach ($rows as $row){
+            if(count($row) > 1){
+                $this->beginWidget('TiledEventElementWidget');
+                $this->renderElements($row, $action, $form, $data);
                 $this->endWidget();
             } else {
-                $this->renderElement($element, $action, $form, $data);
-                ++$element_index;
+                $this->renderElements($row, $action, $form, $data);
             }
+        }
+
+    }
+
+    /**
+     * @param $elements
+     * @param $action
+     * @param null $form
+     * @param null $data
+     * @throws Exception
+     */
+    public function renderElements($elements, $action, $form = null, $data = null)
+    {
+        if(count($elements) < 1){return;}
+        foreach ($elements as $element){
+            $this->renderElement($element, $action, $form, $data);
         }
     }
 

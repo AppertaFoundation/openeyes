@@ -128,6 +128,15 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
+     * Return the width of this element in tiles for viewing
+     * @return null
+     */
+    public function getTileSize()
+    {
+        return null;
+    }
+
+    /**
      * Is this element required in the UI? (Prevents the user from being able
      * to remove the element.).
      *

@@ -150,4 +150,9 @@ class Element_OphTrOperationnote_Comments extends Element_OpNote
         return CHtml::listData(OphTrOperationnote_PostopInstruction::model()
             ->findAll($criteria), 'id', 'content');
     }
+
+    public function getTileSize()
+    {
+        return 2;
+    }
 }

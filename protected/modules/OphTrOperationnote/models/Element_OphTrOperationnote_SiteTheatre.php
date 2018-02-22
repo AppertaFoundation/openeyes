@@ -122,4 +122,9 @@ class Element_OphTrOperationnote_SiteTheatre extends Element_OpNote
             }
         }
     }
+
+    public function getTileSize()
+    {
+        return 1;
+    }
 }

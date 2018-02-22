@@ -18,15 +18,15 @@
 ?>
 <section class=" element
 	<?php
-    $eye_divider_list = ['Visual Acuity','Anterior Segment','Intraocular Pressure',
-        'Refraction','Gonioscopy','Adnexal', 'Dilation', 'Pupillary Abnormalities', 'CCT','Keratoconus Monitoring',
-        'Posterior Pole', 'OCT'];
+    $eye_divider_list = ['Anterior Segment','Intraocular Pressure',
+        'Refraction','Glaucoma Current Management plan', 'Gonioscopy','Adnexal', 'Dilation', 'Pupillary Abnormalities', 'CCT','Keratoconus Monitoring',
+        'Posterior Pole', 'Visual Acuity'];
   if ($element->elementType->name=='Medications'||$element->elementType->name=='Risks'){
     echo 'full';
   }elseif (in_array($element->elementType->name, $eye_divider_list)){
     echo 'full priority eye-divider view-visual-acuity';
   }
-  elseif (@$child) {  echo 'tile'; } else { echo 'full priority';} ?>
+  elseif ($element->getTileSize() === 1) {  echo 'tile'; } else { echo 'full priority';} ?>
 	view-<?php echo $element->elementType->name?>"
          data-element-type-id="<?php echo $element->elementType->id?>"
          data-element-type-class="<?php echo $element->elementType->class_name?>"
@@ -41,41 +41,5 @@
 
 </section>
 
-<?php $child_elements = $this->getChildElements($element->getElementType());
-      $new_elements = array();
-      if (sizeof($child_elements)!=0) {
-        foreach ($child_elements as $child_element) {
-        if ($child_element->elementType->name == 'Medications') {
-            $med_element = $child_element;
-        }
-        elseif ($child_element->elementType->name == 'Risks') {
-            $risk_element = $child_element;
-        }
-        elseif ($child_element->elementType->name == 'Visual Acuity'){
-            $visual_acuity_element = $child_element;
-        }
-        else{
-          array_push($new_elements,$child_element);
-        }
-    }
-          if (isset($visual_acuity_element)) {
-              $this->renderSingleChildOpenElements($visual_acuity_element, 'view', @$form, @$data);
-          }
-        for ($i=0; $i<sizeof($new_elements); $i++) {
-          if ($i %3== 0) { ?>
-            <div class="flex-layout flex-left flex-stretch">
-          <?php }
-          $this->renderSingleChildOpenElements($new_elements[$i], 'view', @$form, @$data);
-          if ($i %3 == 2 || $i == sizeof($new_elements)-1) {
-              ?></div>
-          <?php }
-        }
-        if (isset($med_element)) {
-          $this->renderSingleChildOpenElements($med_element, 'view', @$form, @$data);
-        }
-        if (isset($risk_element)) {
-          $this->renderSingleChildOpenElements($risk_element, 'view', @$form, @$data);
-        }
 
-}
-  ?>
+<?php $this->renderTiledElements($this->getChildElements($element->getElementType()), 'view');?>

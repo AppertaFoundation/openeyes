@@ -206,4 +206,9 @@ class Element_OphCiExamination_CurrentManagementPlan  extends  \SplitEventTypeEl
         }
         return implode(', ', $result);
     }
+
+    public function getTileSize()
+    {
+        return 3;
+    }
 }

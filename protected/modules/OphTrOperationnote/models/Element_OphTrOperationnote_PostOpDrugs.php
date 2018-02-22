@@ -150,4 +150,9 @@ class Element_OphTrOperationnote_PostOpDrugs extends Element_OpNote
             }
         }
     }
+
+    public function getTileSize()
+    {
+        return 1;
+    }
 }
