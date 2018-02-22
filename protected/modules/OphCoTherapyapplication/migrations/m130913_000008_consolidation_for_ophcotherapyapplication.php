@@ -251,10 +251,10 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '3',
-			  `left_diagnosis1_id` int(10) unsigned DEFAULT NULL,
-			  `left_diagnosis2_id` int(10) unsigned DEFAULT NULL,
-			  `right_diagnosis1_id` int(10) unsigned DEFAULT NULL,
-			  `right_diagnosis2_id` int(10) unsigned DEFAULT NULL,
+			  `left_diagnosis1_id` BIGINT unsigned DEFAULT NULL,
+			  `left_diagnosis2_id` BIGINT unsigned DEFAULT NULL,
+			  `right_diagnosis1_id` BIGINT unsigned DEFAULT NULL,
+			  `right_diagnosis2_id` BIGINT unsigned DEFAULT NULL,
 			  `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 			  `last_modified_date` datetime NOT NULL DEFAULT '1901-01-01 00:00:00',
 			  `created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -643,7 +643,7 @@ class m130913_000008_consolidation_for_ophcotherapyapplication extends OEMigrati
 
         $this->execute("CREATE TABLE `ophcotherapya_therapydisorder` (
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-			  `disorder_id` int(10) unsigned NOT NULL,
+			  `disorder_id` BIGINT unsigned NOT NULL,
 			  `parent_id` int(10) unsigned DEFAULT NULL,
 			  `display_order` int(10) NOT NULL,
 			  `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',

@@ -37,7 +37,7 @@ class m170704_081859_patient_level_systemic_diagnoses extends OEMigration
             'id' => 'pk',
             'element_id' => 'int(11) NOT NULL',
             'side_id' => 'int(10) unsigned',
-            'disorder_id' => 'int(10) unsigned NOT NULL',
+            'disorder_id' => 'BIGINT unsigned NOT NULL',
             'date' => 'varchar(10)',
             'secondary_diagnosis_id' => 'int(10) unsigned'
         ), true);

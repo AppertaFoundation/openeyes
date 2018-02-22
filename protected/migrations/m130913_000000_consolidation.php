@@ -750,7 +750,7 @@ class m130913_000000_consolidation extends OEMigration
         $this->execute(
             "CREATE TABLE `common_ophthalmic_disorder` (
 							 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-							 `disorder_id` int(10) unsigned NOT NULL,
+							 `disorder_id` BIGINT unsigned NOT NULL,
 							 `subspecialty_id` int(10) unsigned NOT NULL,
 							 `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 							 `last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -790,7 +790,7 @@ class m130913_000000_consolidation extends OEMigration
         $this->execute(
             "CREATE TABLE `common_systemic_disorder` (
 							 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-							 `disorder_id` int(10) unsigned NOT NULL,
+							 `disorder_id` BIGINT unsigned NOT NULL,
 							 `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 							 `last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 							 `created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -970,7 +970,7 @@ class m130913_000000_consolidation extends OEMigration
 
         $this->execute(
             "CREATE TABLE `disorder` (
-							 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+							 `id` BIGINT unsigned NOT NULL AUTO_INCREMENT,
 							 `fully_specified_name` varchar(255) NOT NULL,
 							 `term` varchar(255) NOT NULL,
 							 `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -1421,7 +1421,7 @@ class m130913_000000_consolidation extends OEMigration
 							 `legacy` tinyint(1) unsigned DEFAULT '0',
 							 `deleted` int(10) unsigned NOT NULL DEFAULT '0',
 							 `eye_id` int(10) unsigned DEFAULT NULL,
-							 `disorder_id` int(10) unsigned DEFAULT NULL,
+							 `disorder_id` BIGINT unsigned DEFAULT NULL,
 							 `support_services` tinyint(1) unsigned NOT NULL DEFAULT '0',
 							 PRIMARY KEY (`id`),
 							 KEY `episode_1` (`patient_id`),
@@ -2554,7 +2554,7 @@ class m130913_000000_consolidation extends OEMigration
         $this->execute(
             "CREATE TABLE `secondary_diagnosis` (
 							 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-							 `disorder_id` int(10) unsigned NOT NULL,
+							 `disorder_id` BIGINT unsigned NOT NULL,
 							 `eye_id` int(10) unsigned DEFAULT NULL,
 							 `patient_id` int(10) unsigned NOT NULL,
 							 `date` varchar(10) NOT NULL,

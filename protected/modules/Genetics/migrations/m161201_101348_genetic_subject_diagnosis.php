@@ -6,7 +6,7 @@ class m161201_101348_genetic_subject_diagnosis extends OEMigration
     {
         $this->createOETable('genetics_patient_diagnosis', array(
             'id' => 'pk',
-            'disorder_id' => 'int(10) unsigned',
+            'disorder_id' => 'BIGINT unsigned',
             'patient_id' => 'int(11)',
         ));
 

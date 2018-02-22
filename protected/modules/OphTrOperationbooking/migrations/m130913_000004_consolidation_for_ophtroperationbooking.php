@@ -85,7 +85,7 @@ class m130913_000004_consolidation_for_ophtroperationbooking extends OEMigration
 			  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `event_id` int(10) unsigned NOT NULL,
 			  `eye_id` int(10) unsigned NOT NULL DEFAULT '1',
-			  `disorder_id` int(10) unsigned NOT NULL,
+			  `disorder_id` BIGINT unsigned NOT NULL,
 			  `last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 			  `last_modified_date` datetime NOT NULL DEFAULT '1901-01-01 00:00:00',
 			  `created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
