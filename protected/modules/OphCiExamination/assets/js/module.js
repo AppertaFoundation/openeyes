@@ -782,17 +782,15 @@ $(document).ready(function() {
     // investigation
 
     // OCT
-
-    $('.event.ophciexamination').delegate('input[name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT[right_dry]"], ' +
-        'input[name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT[left_dry]"]'
-        , 'change', function(e) {
+    $('section .element-fields').delegate('input[name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT[right_dry]"], ' +
+        'input[name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT[left_dry]"]', 'change', function(e) {
             // need to check the value - if it's 0 we should the fluid for the side. otherwise hide it.
             var side = getSplitElementSide($(this));
             if ($(this)[0].value == '0') {
                 unmaskFields($('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT_' + side + '_fluid_fields'),null);
             }
             else {
-                maskFields($('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT_' + side + '_fluid_fields'),null);
+              maskFields($('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT_' + side + '_fluid_fields'),null);
             }
     });
 

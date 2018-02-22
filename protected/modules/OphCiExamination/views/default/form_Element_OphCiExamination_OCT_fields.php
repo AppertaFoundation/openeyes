@@ -34,49 +34,39 @@ if (@$_POST[CHtml::modelName($element)]) {
     }
 }
 ?>
-<table>
-  <tbody>
 
 <?php echo $form->dropDownList($element, $side.'_method_id', '\OEModule\OphCiExamination\models\OphCiExamination_OCT_Method', array(), false, array('label' => 4, 'field' => 3)) ?>
 
-  <tr>
-      <?php echo $form->textField($element, $side.'_crt',
-          array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '&micro;m'),
-          null, array('label' => 4, 'field' => '3', 'append-text' => '1')) ?>
-  </tr>
-  <tr>
-	<td>
+<?php echo $form->textField($element, $side.'_crt', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '&micro;m'), null, array('label' => 4, 'field' => '3', 'append-text' => '1')) ?>
+
+<div class="data-row row">
+	<div class="large-4 column">
 		<label for="<?php echo CHtml::modelName($element).'_'.$side.'_sft';?>">
 			<?php echo $element->getAttributeLabel($side.'_sft') ?>:
 		</label>
-	</td>
-	<td>
+	</div>
+	<div class="large-3 column">
 		<?php echo $form->textField($element, $side.'_sft', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'nowrapper' => true)) ?>
-	</td>
-	<td>
+	</div>
+	<div class="large-4 column end collapse">
 		<span class="field-info">&micro;m&nbsp;&nbsp;</span>
 		<?php if ($past_sft = $exam_api->getOCTSFTHistoryForSide($this->patient, $side, $event_date)) {
     ?>
 			<span id="<?php echo $side; ?>_sft_history_icon" class="sft-history-icon">
-				<img src="<?php echo $this->assetPath ?>/img/icon_info.png" style="height:20px" />
-			</span>
-			<div class="quicklook sft-history" style="display: none;">
-				<?php echo '<b>Previous SFT Measurements</b><br />';
-				echo '<dl style="margin-top: 0px; margin-bottom: 2px;">';
-				foreach ($past_sft as $previous) {
-				  echo '<dt>'.Helper::convertDate2NHS($previous['date']).' - '.$previous['sft'].'&micro;m</dt>';
-				}
-				echo '</dl>'; ?>
-			</div>
-		<?php 
-} ?>
-	</td>
-</tr>
+        <i class="oe-i info small-icon js-has-tooltip" data-tooltip-content="Previous SFT Measurements:
+        <?php echo '<br />';
+        foreach ($past_sft as $previous) {
+            echo Helper::convertDate2NHS($previous['date']).' - '.$previous['sft'].'<br /> ';
+        } ?>"></i>
+      </span>
+		<?php } ?>
+	</div>
+</div>
 
 <?php echo $form->radioBoolean($element, $side.'_thickness_increase', array(), array('label' => 4, 'field' => 8))?>
 <?php echo $form->radioBoolean($element, $side.'_dry', array(), array('label' => 4, 'field' => 8)) ?>
 
-<tr class="field-row" id="<?php echo CHtml::modelName($element).'_'.$side; ?>_fluid_fields"
+<div class="field-row" id="<?php echo CHtml::modelName($element).'_'.$side; ?>_fluid_fields"
     <?php if ($hide_fluid) { echo ' style="display: none;"'; }?>>
 	<?php
     $html_options = array(
@@ -101,14 +91,10 @@ if (@$_POST[CHtml::modelName($element)]) {
 			<?php echo $form->dropDownList($element, $side.'_fluidstatus_id', '\OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidStatus', array('nowrapper' => true, 'empty' => ' - Please Select - ')) ?>
 		</div>
 	</div>
-</tr>
-<tr>
-  <td>
-    Comments:
-  </td>
-    <td>
+</div>
+<div class="field-row row">
+    <div class="column large-9 end">
         <?php echo $form->textArea($element, $side.'_comments', array('nowrapper' => true), false, array('rows' => 1, 'placeholder' => $element->getAttributeLabel($side . '_comments')))?>
-    </td>
-</tr>
-  </tbody>
-</table>
+    </div>
+</div>
+
