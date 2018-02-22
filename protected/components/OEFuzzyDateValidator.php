@@ -39,7 +39,6 @@ class OEFuzzyDateValidator extends CValidator
     public function validateAttribute($object, $attribute)
     {
         $dt = $object->$attribute;
-        Yii::log("Date: ".$dt);
         list($this->year, $this->month, $this->day) = array_pad(explode('-', explode(' ', $dt)[0]), 3,0);
         if ($this->year<13&&$this->day==0){
             $this->day = $this->month;
@@ -84,8 +83,7 @@ class OEFuzzyDateValidator extends CValidator
 
     protected function validateFuzzyYear()
     {
-        Yii::log("Error year: ".$this->year);
-        if ($this->year < 1000) {
+        if ($this->yea > 0 && $this->year < 1000) {
             $this->addError($this->object, $this->attribute, 'Invalid year format');
         }
     }
