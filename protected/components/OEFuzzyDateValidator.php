@@ -83,8 +83,8 @@ class OEFuzzyDateValidator extends CValidator
 
     protected function validateFuzzyYear()
     {
-        if ($this->yea > 0 && $this->year < 1000) {
-            $this->addError($this->object, $this->attribute, 'Invalid year format');
+        if ($this->year > 0 && $this->year < 1000) {
+            $this->addError($this->object, $this->attribute, 'Invalid year format. You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy.');
         }
     }
 }

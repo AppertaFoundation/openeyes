@@ -87,7 +87,8 @@ if (!isset($values)) {
         <?php if(!$removable) :?>
             <?=Helper::formatFuzzyDate($values['date']) ?>
         <?php else:?>
-          <input id="systemic-diagnoses-datepicker-<?= $row_count; ?>" style="width:90px" placeholder="dd/mm/yyyy"  name="<?= $model_name ?>[date][]" value="<?=$values['date'] ?>" >
+          <input id="systemic-diagnoses-datepicker-<?= $row_count; ?>" style="width:90px" placeholder="yyyy-mm-dd"  name="<?= $model_name ?>[date][]" value="<?=$values['date'] ?>" >
+          <i class="has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
         <?php endif; ?>
     </td>
 

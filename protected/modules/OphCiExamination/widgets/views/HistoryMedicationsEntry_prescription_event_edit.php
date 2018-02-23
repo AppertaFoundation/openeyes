@@ -70,7 +70,8 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
             <input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
             <div class="large-11 column end">
                 <?php if (!$entry->end_date) { ?>
-                  <input id="datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:90px" placeholder="dd/mm/yyyy">
+                  <input id="datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:90px" placeholder="yyyy-mm-dd">
+                  <i class="has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
                 <?php } else { ?>
                   <i class="oe-i start small pad"></i>
                     <?=Helper::formatFuzzyDate($entry->end_date) ?>

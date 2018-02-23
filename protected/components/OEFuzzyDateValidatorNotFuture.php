@@ -32,8 +32,8 @@ class OEFuzzyDateValidatorNotFuture extends OEFuzzyDateValidator
 
     protected function validateFuzzyYear()
     {
-        if ($this->year>0 && $this->year < 1000) {
-            $this->addError($this->object, $this->attribute, 'Invalid year format');
+        if ($this->year > 0 && $this->year < 1000) {
+            $this->addError($this->object, $this->attribute, 'Invalid year format. You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy');
         }
         if ($this->year > date('Y')) {
             $this->addError($this->object, $this->attribute, 'The date cannot be in the future');
