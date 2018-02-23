@@ -32,6 +32,8 @@ class PatientSummaryPopup extends BaseCWidget
     protected $medications;
     protected $allergies;
     protected $operations;
+    protected $family_history;
+    protected $social_history;
 
     public function init()
     {
@@ -61,6 +63,12 @@ class PatientSummaryPopup extends BaseCWidget
             self::$LIST_SEPARATOR,
             $this->patient->allergiesSummary
         );
+
+        $family_history_model = new \OEModule\OphCiExamination\models\FamilyHistory();
+        $this->family_history = $family_history_model->getMostRecentForPatient($this->patient);
+
+        $social_history_model = new \OEModule\OphCiExamination\models\SocialHistory();
+        $this->social_history = $social_history_model->getMostRecentForPatient($this->patient);
 
         $widget = $this->createWidget('OEModule\OphCiExamination\widgets\PastSurgery', array(
             'patient' => $this->patient,
