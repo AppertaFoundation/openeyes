@@ -108,6 +108,10 @@ class ExaminationCreator
                 $this->addComplication($userId, $eyeIds, $opNoteEventId, $eye, $complications, $eyeLabel);
             }
 
+            $iop->left_comments = '';
+            $iop->right_comments = '';
+            $iop->save(false);
+
             $refraction->eye_id = $this->examinationEyeId;
 
             if (!$refraction->save(true, null, true)) {
