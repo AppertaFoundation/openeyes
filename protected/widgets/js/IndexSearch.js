@@ -26,8 +26,7 @@
         $results.detach();
         $results.find('#did_you_mean_suggestion').remove();
         search_term = ($(this).val() + "").toLowerCase();
-        let last_level,$this,$element,highlighted_string,alias,selector,match_pos
-        ,plain_text,no_match_text,match_text,$alias,highlighted_aliases;
+        let last_level,$this,$element,highlighted_string,alias,selector,match_pos, plain_text,no_match_text,match_text,$alias,highlighted_aliases;
         for (selector of opts.selectors) {
           //determines whether the index selecor is for the last level i.e  the index has no children
           last_level = opts.selectors[0] == selector;

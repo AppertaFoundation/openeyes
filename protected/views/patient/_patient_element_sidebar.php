@@ -1,8 +1,7 @@
 <!-- event-header -->
 <!-- examination event has a search facility for Left and Right Eye in edit mode -->
 <nav class="sidebar-header">
-  <input id="js-element-search-right" class="search right cols-6" type="text">
-  <input id="js-element-search-left" class="search left cols-6" type="text">
+    <?php $this->widget('application.widgets.IndexSearch',array('event_type' => 'examination')); ?>
 </nav>
 
 <nav class="sidebar " id="episodes-and-events">
