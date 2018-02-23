@@ -108,6 +108,10 @@ class ExaminationCreator
                 $this->addComplication($userId, $eyeIds, $opNoteEventId, $eye, $complications, $eyeLabel);
             }
 
+            $iop->left_comments = '';
+            $iop->right_comments = '';
+            $iop->save(false);
+
             $refraction->eye_id = $this->examinationEyeId;
 
             if (!$refraction->save(true, null, true)) {
@@ -420,8 +424,8 @@ class ExaminationCreator
         $iop->event_id = $examinationEvent->id;
         $iop->created_user_id = $iop->last_modified_user_id = $userId;
         $iop->eye_id = $this->examinationEyeId;
-        $iop->left_comments = '';
-        $iop->right_comments = '';
+        $iop->left_comments = 'Portal Add';
+        $iop->right_comments = 'Portal Add';
         if (!$iop->save(true, null, true)) {
             throw new \CDbException('iop failed: ' . print_r($iop->getErrors(), true));
         }
