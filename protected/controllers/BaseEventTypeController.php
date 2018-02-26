@@ -1943,40 +1943,46 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         if (!empty($_POST)) {
-            $transaction = Yii::app()->db->beginTransaction();
-            try {
-                $this->event->softDelete();
 
-                $this->event->audit('event', 'delete', false);
+            if (Yii::app()->request->getPost('delete_reason', '') === '') {
+                $errors = array('Reason for deletion' => array('Please enter a reason for deleting this event'));
+            }
+            else {
+                $transaction = Yii::app()->db->beginTransaction();
+                try {
+                    $this->event->softDelete(Yii::app()->request->getPost('delete_reason', ''));
 
-                if (Event::model()->count('episode_id=?', array($this->event->episode_id)) == 0) {
-                    $this->event->episode->deleted = 1;
-                    if (!$this->event->episode->save()) {
-                        throw new Exception('Unable to save episode: '.print_r($this->event->episode->getErrors(), true));
+                    $this->event->audit('event', 'delete', false);
+
+                    if (Event::model()->count('episode_id=?', array($this->event->episode_id)) == 0) {
+                        $this->event->episode->deleted = 1;
+                        if (!$this->event->episode->save()) {
+                            throw new Exception('Unable to save episode: '.print_r($this->event->episode->getErrors(), true));
+                        }
+
+                        $this->event->episode->audit('episode', 'delete', false);
+
+                        $transaction->commit();
+
+                        if (!$this->dont_redirect) {
+                            $this->redirect(array('/patient/episodes/'.$this->event->episode->patient->id));
+                        } else {
+                            return true;
+                        }
                     }
 
-                    $this->event->episode->audit('episode', 'delete', false);
-
+                    Yii::app()->user->setFlash('success', 'An event was deleted, please ensure the episode status is still correct.');
                     $transaction->commit();
 
                     if (!$this->dont_redirect) {
-                        $this->redirect(array('/patient/episodes/'.$this->event->episode->patient->id));
-                    } else {
-                        return true;
+                        $this->redirect(array('/patient/episode/'.$this->event->episode_id));
                     }
+
+                    return true;
+                } catch (Exception $e) {
+                    $transaction->rollback();
+                    throw $e;
                 }
-
-                Yii::app()->user->setFlash('success', 'An event was deleted, please ensure the episode status is still correct.');
-                $transaction->commit();
-
-                if (!$this->dont_redirect) {
-                    $this->redirect(array('/patient/episode/'.$this->event->episode_id));
-                }
-
-                return true;
-            } catch (Exception $e) {
-                $transaction->rollback();
-                throw $e;
             }
         }
 
@@ -2000,6 +2006,7 @@ class BaseEventTypeController extends BaseModuleController
         $episodes = $this->getEpisodes();
         $viewData = array_merge(array(
             'eventId' => $id,
+            'errors' => isset($errors) ? $errors : null
         ), $episodes);
 
         $this->render('delete', $viewData);
