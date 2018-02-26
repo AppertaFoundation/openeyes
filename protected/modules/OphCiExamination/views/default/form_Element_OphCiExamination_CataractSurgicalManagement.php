@@ -58,20 +58,24 @@
             'slide' => 'js:function(event,ui){$("#OEModule_OphCiExamination_models_Element_OphCiExamination_CataractSurgicalManagement_target_postop_refraction").val(ui.value);}',
         ),
         'htmlOptions' => array(
-            'style' => 'height:10px; width:400px;margin-top:-10px;margin-bottom:20px;margin-left:250px;',
+            'style' => 'height:10px; width:400px;margin-top: 0px;margin-bottom:20px;margin-left:250px;',
         ),
     ));
     ?>
     <?php echo $form->radioBoolean($element, 'correction_discussed', array(), array('label' => 3, 'field' => 9)) ?>
-    <div class="row field-row">
-        <div class="large-3 column">
+    <div class="row field-row flex-layout flex-left">
+        <div class="cols-3 column">
             <label for="<?php echo get_class($element) . '_suitable_for_surgeon_id'; ?>">
                 <?php echo $element->getAttributeLabel('suitable_for_surgeon_id') ?>:
             </label>
         </div>
-        <div class="large-9 column">
-            <?php echo $form->dropDownList($element, 'suitable_for_surgeon_id', '\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_SuitableForSurgeon',
-                array('class' => 'inline', 'empty' => '- Please select -', 'nowrapper' => true)) ?>
+        <div class="cols-9 column">
+            <?php echo $form->dropDownList(
+                $element,
+                'suitable_for_surgeon_id',
+                '\OEModule\OphCiExamination\models\OphCiExamination_CataractSurgicalManagement_SuitableForSurgeon',
+                array('class' => 'inline', 'empty' => '- Please select -', 'nowrapper' => true)
+            ) ?>
             <label class="inline">
                 <?php echo $form->checkbox($element, 'supervised', array('nowrapper' => true, 'no-label' => true)) ?>
                 <?php echo $element->getAttributeLabel('supervised') ?>
@@ -80,13 +84,13 @@
     </div>
     <?php echo $form->radioBoolean($element, 'previous_refractive_surgery', array(), array('label' => 3, 'field' => 9)) ?>
     <?php echo $form->radioBoolean($element, 'vitrectomised_eye', array(), array('label' => 3, 'field' => 9)) ?>
-    <div class="row field-row">
-        <div class="large-3 column">
+    <div class="row field-row flex-layout flex-left flex-top">
+        <div class="cols-3 column">
             <label for="<?php echo get_class($element) . 'reasonForSurgery'; ?>">
                 <?php echo $element->getAttributeLabel('reasonForSurgery') ?>:
             </label>
         </div>
-        <div class="large-6 column">
+        <div class="cols-6 column">
             <?php
             echo $form->multiSelectList(
                 $element,
@@ -109,7 +113,7 @@
             );
             ?>
         </div>
-        <div class="large-3 column"></div>
+        <div class="cols-3 column"></div>
     </div>
 </div>
 <?php if(Yii::app()->params['clinical_management_pcr']): ?>
