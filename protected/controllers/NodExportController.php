@@ -3087,6 +3087,8 @@ CREATE TABLE tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} (
 , AssistantId varchar(10) DEFAULT NULL
 , AssistantGradeId varchar(10) DEFAULT NULL
 , ConsultantId varchar(10) DEFAULT NULL
+, SiteName varchar(255) DEFAULT NULL
+, SiteODS varchar(10) DEFAULT NULL
 , PRIMARY KEY (oe_event_id)
 , UNIQUE KEY OperationId (OperationId)
 );
@@ -3111,6 +3113,8 @@ INSERT INTO tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} (
 , AssistantId
 , AssistantGradeId
 , ConsultantId
+, SiteName
+, SiteODS
 )
 SELECT
   c.oe_event_id
@@ -3124,6 +3128,8 @@ SELECT
 , s.assistant_id AS AssistantId
 , au.doctor_grade_id AS AssistantGradeId
 , s.supervising_surgeon_id AS ConsultantId /* TODO (not required for minimal data set) but mapping not fully implemented */
+, s2.name
+, s2.remote_id
 /* Restriction: Start with control events */
 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 /* Join: Look up Operation Note SURGEON information */
@@ -3133,6 +3139,8 @@ LEFT OUTER JOIN et_ophtroperationnote_surgeon s ON s.event_id = c.oe_event_id
 LEFT OUTER JOIN user su ON s.surgeon_id = su.id
 /* Join: Look up ASSISTANT user information (LOJ used to return nulls if data problems (as opposed to loosing parent rows) */
 LEFT OUTER JOIN user au ON s.assistant_id = au.id
+LEFT OUTER JOIN et_ophtroperationnote_site_theatre ost ON ost.event_id = c.oe_event_id
+LEFT OUTER JOIN site s2 ON s2.id = ost.site_id
 /* Restrict: Only OPERATION NOTE type events */
 WHERE c.oe_event_type_name = 'Operation Note';    
               
@@ -3146,14 +3154,15 @@ EOL;
         $query = <<<EOL
             SELECT  op.OperationId, c.nod_episode_id as EpisodeId, op.Description, op.IsHypertensive, op.ListedDate, op.SurgeonId, IFNULL(op.SurgeonGradeId, "") as SurgeonGradeId, 
                     IFNULL(op.AssistantId, "") as AssistantId,
-                    IFNULL(op.AssistantGradeId, "") as AssistantGradeId, IFNULL(op.ConsultantId, "") as ConsultantId
+                    IFNULL(op.AssistantGradeId, "") as AssistantGradeId, IFNULL(op.ConsultantId, "") as ConsultantId,
+                    IFNULL(op.SiteName, "") as SiteName, IFNULL(op.SiteODS, "") as SiteODS
             FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
             JOIN tmp_rco_nod_EpisodeOperation_{$this->extractIdentifier} op ON c.oe_event_id = op.oe_event_id
             
 EOL;
         $dataQuery = array(
             'query' => $query,
-            'header' => array('OperationId', 'EpisodeId', 'Description', 'IsHypertensive', 'ListedDate', 'SurgeonId', 'SurgeonGradeId', 'AssistantId', 'AssistantGradeId','ConsultantId'),
+            'header' => array('OperationId', 'EpisodeId', 'Description', 'IsHypertensive', 'ListedDate', 'SurgeonId', 'SurgeonGradeId', 'AssistantId', 'AssistantGradeId', 'ConsultantId', 'SiteName', 'SiteODS'),
         );
         return $this->saveCSVfile($dataQuery, 'EpisodeOperation');
 
