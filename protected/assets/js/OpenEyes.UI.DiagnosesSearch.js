@@ -83,7 +83,6 @@ OpenEyes.UI = OpenEyes.UI || {};
                     $select.append( $('<option>',{'text': 'Select a commonly used diagnosis'}));
                     $.each(data, function(i, item){
                         $select.append( $('<option>',{'value': item.id, 'text': item.label, 'data-item': JSON.stringify(item)}));
-                        $select.show();
                     });
 
                     controller.$inputField.before($select);
