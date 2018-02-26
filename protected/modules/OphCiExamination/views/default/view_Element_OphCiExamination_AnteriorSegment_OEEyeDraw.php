@@ -43,71 +43,71 @@
 
 </div>
 
-<div class="element-fields flex-layout full-width column">
+<table class="element-fields full-width column">
     <?php if ($report = $element->{$side.'_ed_report'}) {
         ?>
-        <div class="row data-row description">
-            <div class="large-2 column">
-                <div class="data-label"><?php echo $element->getAttributeLabel($side.'_ed_report')?>:</div>
-            </div>
-            <div class="large-10 column">
+        <tr class="row data-row description">
+            <td class="cols-2 column flex-top flex-layout">
+                <div class="data-label flex-top"><?php echo $element->getAttributeLabel($side.'_ed_report')?>:</div>
+            </td>
+            <td class="cols-10 column">
                 <div class="data-value">
                     <?php echo nl2br($report)?>
                 </div>
-            </div>
-        </div>
+            </td>
+        </tr>
         <?php
     } ?>
 
     <?php if ($description = $element->{$side.'_description'}) {
     ?>
-        <div class="row data-row">
-            <div class="large-2 column">
+        <tr class="row data-row">
+            <td class="cols-2 column flex-top flex-layout">
                 <div class="data-label"><?php echo $element->getAttributeLabel($side.'_description')?>:</div>
-            </div>
-            <div class="large-10 column">
+            </td>
+            <td class="cols-10 column">
                 <div class="data-value">
                     <?php echo CHtml::encode($description)?>
                 </div>
-            </div>
-        </div>
+            </td>
+        </tr>
     <?php
     } ?>
     <?php /* See OE-4283 */ ?>
     <?php if ($element->{$side.'_pupil'}) {
     ?>
-        <div class="row data-row">
-            <div class="large-4 column">
+        <tr class="row data-row">
+            <td class="cols-4 column flex-top flex-layout">
                 <div class="data-label"><?php echo $element->getAttributeLabel($side.'_pupil_id')?>:</div>
-            </div>
-            <div class="large-8 column">
+            </td>
+            <td class="cols-8 column">
                 <div class="data-value"><?php echo $element->{$side.'_pupil'}->name?></div>
-            </div>
-        </div>
+            </td>
+        </tr>
     <?php
 } ?>
     <?php if ($element->{$side . '_nuclear'}) {
         ?>
-        <div class="row data-row hidden">
-            <div class="large-4 column">
+        <tr class="row data-row hidden">
+            <td class="cols-4 column flex-top flex-layout">
                 <div class="data-label"><?php echo $element->getAttributeLabel($side . '_nuclear_id') ?>:</div>
-            </div>
-            <div class="large-8 column">
+            </td>
+            <td class="cols-8 column">
                 <div class="data-value"><?php echo $element->{$side . '_nuclear'}->name ?></div>
-            </div>
-        </div>
+            </td>
+        </tr>
         <?php
     }
     if ($element->{$side . '_cortical'}) {
         ?>
-    <div class="row data-row hidden">
-        <div class="large-4 column">
+    <tr class="row data-row hidden">
+        <td class="cols-4 column flex-top flex-layout">
             <div class="data-label"><?php echo $element->getAttributeLabel($side.'_cortical_id')?>:</div>
-        </div>
-        <div class="large-8 column">
+        </td>
+        <td class="cols-8 column">
             <div class="data-value"><?php echo $element->{$side.'_cortical'}->name?></div>
-        </div>
-    </div>
+        </td>
+    </tr>
     <?php
     }
 
@@ -125,14 +125,14 @@
 	if ($element->{$side . '_phako'}) {
 	?>
 
-    <div class="row data-row">
-        <div class="large-4 column">
+    <tr class="row data-row">
+        <td class="cols-4 column flex-top flex-layout">
             <div class="data-label"><?php echo $element->getAttributeLabel($side.'_phako')?>:</div>
-        </div>
-        <div class="large-8 column">
+        </td>
+        <td class="cols-8 column">
             <div class="data-value"><?php echo $element->{$side.'_phako'} ? 'Yes' : 'No'?></div>
-        </div>
-    </div>
+        </td>
+    </tr>
 	<?php
 	} ?>
-</div>
+</table>
