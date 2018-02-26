@@ -35,12 +35,12 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
         $html_options = array('empty' => '- Please select -', 'nowrapper' => true, 'options' => array());
         $authRoles = Yii::app()->authManager->getRoles(Yii::app()->user->id);
         foreach ($outcomes as $opt) {
-          $options = array('data-followup' => $opt->followup, 'data-ticket' => $opt->patientticket);
-          if ($opt->patientticket && (!count($queues) || !isset($authRoles['Patient Tickets']))) {
-            $options['disabled'] = true;
+            $options = array('data-followup' => $opt->followup, 'data-ticket' => $opt->patientticket);
+            if ($opt->patientticket && (!count($queues) || !isset($authRoles['Patient Tickets']))) {
+                $options['disabled'] = true;
             }
-            $html_options['options'][(string) $opt->id] = $options;
-          }
+            $html_options['options'][(string)$opt->id] = $options;
+        }
           echo $form->dropDownList($element, 'status_id', \CHtml::listData($outcomes, 'id', 'name'), $html_options)?>
       </div>
 		</div>

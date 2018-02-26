@@ -15,6 +15,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+if ($element->elementType->name!="Clinic Outcome"):
 ?>
 <div class="close-icon-btn">
   <i class="oe-i remove-circle medium"></i>
@@ -25,6 +26,7 @@
 <button class="button hint green add-icon-btn" type="button">
   <i class="oe-i plus pro-theme"></i>
 </button>
+<?php endif; ?>
 <table class="select-options">
   <tbody>
   <tr>
@@ -36,11 +38,7 @@
         array_push($firm_name, $firm->name);
         array_push($firm_sub_id, $firm->serviceSubspecialtyAssignment->subspecialty_id);
           $attributes = $this->getAttributes($element, $firm->serviceSubspecialtyAssignment->subspecialty_id);
-          Yii::log("Attributes: ".sizeof($attributes));
       }
-//      Yii::log("Firms: ".sizeof($firm_name).var_export($firm_name, true));
-//      Yii::log("Firms Sub id: ".sizeof($firm_sub_id).var_export(array_unique($firm_sub_id), true));
-
       foreach ($this->getAttributes($element, $this->firm->serviceSubspecialtyAssignment->subspecialty_id) as $attribute) { ?>
     <td>
       <div class="flex-layout flex-top flex-left">
