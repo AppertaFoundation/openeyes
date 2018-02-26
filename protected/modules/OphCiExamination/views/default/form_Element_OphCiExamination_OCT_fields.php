@@ -40,27 +40,14 @@ if (@$_POST[CHtml::modelName($element)]) {
 <?php echo $form->textField($element, $side.'_crt', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '&micro;m'), null, array('label' => 4, 'field' => '3', 'append-text' => '1')) ?>
 
 <div class="data-row row">
-	<div class="large-4 column">
-		<label for="<?php echo CHtml::modelName($element).'_'.$side.'_sft';?>">
-			<?php echo $element->getAttributeLabel($side.'_sft') ?>:
-		</label>
-	</div>
-	<div class="large-3 column">
-		<?php echo $form->textField($element, $side.'_sft', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'nowrapper' => true)) ?>
-	</div>
-	<div class="large-4 column end collapse">
-		<span class="field-info">&micro;m&nbsp;&nbsp;</span>
-		<?php if ($past_sft = $exam_api->getOCTSFTHistoryForSide($this->patient, $side, $event_date)) {
-    ?>
-			<span id="<?php echo $side; ?>_sft_history_icon" class="sft-history-icon">
+		<?php echo $form->textField($element, $side.'_sft', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '&micro;m'), null, array('label' => 4, 'field' => '3', 'append-text' => '1')) ?>
+		<?php if ($past_sft = $exam_api->getOCTSFTHistoryForSide($this->patient, $side, $event_date)) { ?>
         <i class="oe-i info small-icon js-has-tooltip" data-tooltip-content="Previous SFT Measurements:
         <?php echo '<br />';
         foreach ($past_sft as $previous) {
             echo Helper::convertDate2NHS($previous['date']).' - '.$previous['sft'].'<br /> ';
         } ?>"></i>
-      </span>
 		<?php } ?>
-	</div>
 </div>
 
 <?php echo $form->radioBoolean($element, $side.'_thickness_increase', array(), array('label' => 4, 'field' => 8))?>
