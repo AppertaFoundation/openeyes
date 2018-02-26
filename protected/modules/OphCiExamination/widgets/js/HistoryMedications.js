@@ -59,17 +59,28 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
    * Setup datepicker
    */
   HistoryMedicationsController.prototype.initialiseDatepicker = function () {
+    row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
+    for (var i=0; i < row_count; i++){
+      this.constructDatepicker('#datepicker_1_'+i);
+      this.constructDatepicker('#datepicker_2_'+i);
+    }
+  };
+
+  HistoryMedicationsController.prototype.setDatepicker = function () {
     row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key')-1;
-    pickmeup('#datepicker_1_'+row_count, {
-      format: 'Y-m-d',
-      hide_on_select: true,
-      default_date: false
-    });
-    pickmeup('#datepicker_2_'+row_count, {
-      format: 'Y-m-d',
-      hide_on_select: true,
-      default_date: false
-    });
+    this.constructDatepicker('#datepicker_1_'+row_count);
+    this.constructDatepicker('#datepicker_2_'+row_count);
+  };
+
+  HistoryMedicationsController.prototype.constructDatepicker = function (name) {
+    var datepicker= $(this.$table).find(name);
+    if (datepicker.length!=0){
+      pickmeup(name, {
+        format: 'Y-m-d',
+        hide_on_select: true,
+        default_date: false
+      });
+    }
   };
 
   /**
@@ -152,7 +163,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           $fuzzyFieldset.find('input[type="hidden"]').val(date);
       });
 
-      controller.initialiseDatepicker();
+      controller.setDatepicker();
 
       if (!$row.find(controller.options.medicationNameSelector).text().length) {
         controller.resetSearchRow($row, true);

@@ -67,7 +67,6 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
   </td>
   <td>
         <fieldset class="row field-row fuzzy-date">
-            <input type="hidden" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" />
             <div class="large-11 column end">
                 <?php if (!$entry->end_date) { ?>
                   <input id="datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:90px" placeholder="yyyy-mm-dd">

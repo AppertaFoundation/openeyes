@@ -26,7 +26,7 @@ if (isset($entry->start_date) && strtotime($entry->start_date)) {
     $start_sel_year = date('Y');
 }
 if (isset($entry->end_date) && strtotime($entry->end_date)) {
-    list($end_sel_year, $end_sel_month, $end_sel_day) = explode('-', $entry->end_date);
+    list($end_sel_year, $end_sel_month, $end_sel_day) = array_pad(explode('-', $entry->end_date), 3,0);
 } else {
     $end_sel_day = $end_sel_month = null;
     $end_sel_year = date('Y');
