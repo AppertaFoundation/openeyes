@@ -35,8 +35,16 @@
         'data-eyedraw-default' => $default ? $default->id : ''));
     ?>
     <div class="large-12 column end">
-        <?php echo CHtml::activeTextArea($element, $side . '_description',
-            array('rows' => '1', 'placeholder' => $element->getAttributeLabel($side . '_description'), 'nowrapper' => true)) ?>
+        <?php echo CHtml::activeTextArea(
+            $element,
+            $side . '_description',
+            array(
+                'rows' => '1',
+                'class' => 'cols-12',
+                'placeholder' => $element->getAttributeLabel($side . '_description'),
+                'nowrapper' => true
+            )
+        ) ?>
     </div>
 </div>
 
