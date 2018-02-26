@@ -20,7 +20,7 @@ class m180220_143709_disorder_id_bigint extends CDbMigration
         $this->alterColumn('secondary_diagnosis','disorder_id','BIGINT UNSIGNED NOT NULL');
         $this->alterColumn('secondaryto_common_oph_disorder','disorder_id','BIGINT UNSIGNED NULL');
 
-        if(\Yii::app()->getModule('OphCiExamination')){
+        if(\Yii::app()->db->schema->getTable('ophciexamination_diagnosis',true) !== null ){
             $this->alterColumn('et_ophciexamination_injectionmanagementcomplex','left_diagnosis1_id','BIGINT UNSIGNED NULL');
             $this->alterColumn('et_ophciexamination_injectionmanagementcomplex','left_diagnosis2_id','BIGINT UNSIGNED NULL');
             $this->alterColumn('et_ophciexamination_injectionmanagementcomplex','right_diagnosis1_id','BIGINT UNSIGNED NULL');
@@ -30,7 +30,7 @@ class m180220_143709_disorder_id_bigint extends CDbMigration
             $this->alterColumn('ophciexamination_systemic_diagnoses_diagnosis','disorder_id','BIGINT UNSIGNED NOT NULL');
         }
 
-        if(\Yii::app()->getModule('OphCoTherapyapplication')){
+        if(\Yii::app()->db->schema->getTable('et_ophcotherapya_therapydiag',true) !== null ){
             $this->alterColumn('et_ophcotherapya_therapydiag','left_diagnosis1_id','BIGINT UNSIGNED NULL');
             $this->alterColumn('et_ophcotherapya_therapydiag','left_diagnosis2_id','BIGINT UNSIGNED NULL');
             $this->alterColumn('et_ophcotherapya_therapydiag','right_diagnosis1_id','BIGINT UNSIGNED NULL');
@@ -38,22 +38,18 @@ class m180220_143709_disorder_id_bigint extends CDbMigration
             $this->alterColumn('ophcotherapya_therapydisorder','disorder_id','BIGINT UNSIGNED NOT NULL');
         }
 
-        if(\Yii::app()->getModule('OphTrOperationbooking')) {
+        if(\Yii::app()->db->schema->getTable('et_ophtroperationbooking_diagnosis',true) !== null ) {
             $this->alterColumn('et_ophtroperationbooking_diagnosis', 'disorder_id', 'BIGINT UNSIGNED NOT NULL');
         }
-
-        if(\Yii::app()->getModule('Genetics')){
-
-            if (\Yii::app()->db->schema->getTable('pedigree',true) !== null) {
-                $this->alterColumn('pedigree','disorder_id','BIGINT UNSIGNED NULL');
-            }
-
-            if (\Yii::app()->db->schema->getTable('genetics_patient_diagnosis',true) !== null) {
-                $this->alterColumn('genetics_patient_diagnosis','disorder_id','BIGINT UNSIGNED NULL');
-            }
+        if (\Yii::app()->db->schema->getTable('pedigree',true) !== null) {
+            $this->alterColumn('pedigree','disorder_id','BIGINT UNSIGNED NULL');
         }
 
-        if(\Yii::app()->getModule('OphCoCvi')) {
+        if (\Yii::app()->db->schema->getTable('genetics_patient_diagnosis',true) !== null) {
+            $this->alterColumn('genetics_patient_diagnosis','disorder_id','BIGINT UNSIGNED NULL');
+        }
+
+        if(\Yii::app()->db->schema->getTable('ophcocvi_clinicinfo_disorder',true) !== null) {
             $this->alterColumn('ophcocvi_clinicinfo_disorder', 'disorder_id', 'BIGINT UNSIGNED NULL');
         }
 
@@ -76,7 +72,7 @@ class m180220_143709_disorder_id_bigint extends CDbMigration
         $this->alterColumn('secondary_diagnosis','disorder_id','INT(10) UNSIGNED NOT NULL');
         $this->alterColumn('secondaryto_common_oph_disorder','disorder_id','INT(10) UNSIGNED NULL');
 
-        if(\Yii::app()->getModule('OphCiExamination')) {
+        if(\Yii::app()->db->schema->getTable('ophciexamination_diagnosis',true) !== null ){
             $this->alterColumn('et_ophciexamination_injectionmanagementcomplex', 'left_diagnosis1_id', 'INT(10) UNSIGNED NULL');
             $this->alterColumn('et_ophciexamination_injectionmanagementcomplex', 'left_diagnosis2_id', 'INT(10) UNSIGNED NULL');
             $this->alterColumn('et_ophciexamination_injectionmanagementcomplex', 'right_diagnosis1_id', 'INT(10) UNSIGNED NULL');
@@ -86,7 +82,7 @@ class m180220_143709_disorder_id_bigint extends CDbMigration
             $this->alterColumn('ophciexamination_systemic_diagnoses_diagnosis','disorder_id','INT(10) UNSIGNED NOT NULL');
         }
 
-        if(\Yii::app()->getModule('OphCoTherapyapplication')) {
+        if(\Yii::app()->db->schema->getTable('et_ophcotherapya_therapydiag',true) !== null ){
             $this->alterColumn('et_ophcotherapya_therapydiag', 'left_diagnosis1_id', 'INT(10) UNSIGNED NULL');
             $this->alterColumn('et_ophcotherapya_therapydiag', 'left_diagnosis2_id', 'INT(10) UNSIGNED NULL');
             $this->alterColumn('et_ophcotherapya_therapydiag', 'right_diagnosis1_id', 'INT(10) UNSIGNED NULL');
@@ -94,21 +90,19 @@ class m180220_143709_disorder_id_bigint extends CDbMigration
             $this->alterColumn('ophcotherapya_therapydisorder','disorder_id','INT(10) UNSIGNED NOT NULL');
         }
 
-        if(\Yii::app()->getModule('OphTrOperationbooking')) {
+        if(\Yii::app()->db->schema->getTable('et_ophtroperationbooking_diagnosis',true) !== null ) {
             $this->alterColumn('et_ophtroperationbooking_diagnosis', 'disorder_id', 'INT(10) UNSIGNED NOT NULL');
         }
 
-        if(\Yii::app()->getModule('Genetics')) {
-
-            if (\Yii::app()->db->schema->getTable('pedigree',true) !== null) {
-                $this->alterColumn('pedigree', 'disorder_id', 'INT(10) UNSIGNED NULL');
-            }
-            if (\Yii::app()->db->schema->getTable('genetics_patient_diagnosis',true) !== null) {
-                $this->alterColumn('genetics_patient_diagnosis', 'disorder_id', 'INT(10) UNSIGNED NULL');
-            }
+        if (\Yii::app()->db->schema->getTable('pedigree',true) !== null) {
+            $this->alterColumn('pedigree', 'disorder_id', 'INT(10) UNSIGNED NULL');
         }
 
-        if(\Yii::app()->getModule('OphCoCvi')) {
+        if (\Yii::app()->db->schema->getTable('genetics_patient_diagnosis',true) !== null) {
+            $this->alterColumn('genetics_patient_diagnosis', 'disorder_id', 'INT(10) UNSIGNED NULL');
+        }
+
+        if(\Yii::app()->db->schema->getTable('ophcocvi_clinicinfo_disorder',true) !== null) {
             $this->alterColumn('ophcocvi_clinicinfo_disorder', 'disorder_id', 'INT(10) UNSIGNED NULL');
         }
 
@@ -122,63 +116,34 @@ class m180220_143709_disorder_id_bigint extends CDbMigration
     {
         // drop all FKs point to disorder table
 
-        $this->dropForeignKey('common_ophthalmic_disorder_ibfk_1','common_ophthalmic_disorder');
-        $this->dropForeignKey('common_ophthalmic_disorder_ibfk_3','common_ophthalmic_disorder');
-        $this->dropForeignKey('common_systemic_disorder_ibfk_1','common_systemic_disorder');
-        $this->dropForeignKey('episode_disorder_id_fk','episode');
-        $this->dropForeignKey('secondary_diagnosis_disorder_id_fk','secondary_diagnosis');
-        $this->dropForeignKey('secondaryto_common_oph_disorder_did_fk','secondaryto_common_oph_disorder');
+        $this->dropForeignKeyIfExist('common_ophthalmic_disorder');
+        $this->dropForeignKeyIfExist('common_ophthalmic_disorder');
 
-        $sql = "SELECT TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME
-                            FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-                            WHERE REFERENCED_TABLE_SCHEMA = (SELECT DATABASE()) AND
-                            REFERENCED_TABLE_NAME = 'disorder' AND
-                            TABLE_NAME = 'disorder_tree'";
+        $this->dropForeignKeyIfExist('common_systemic_disorder');
+        $this->dropForeignKeyIfExist('episode');
+        $this->dropForeignKeyIfExist('secondary_diagnosis');
+        $this->dropForeignKeyIfExist('secondaryto_common_oph_disorder');
+        $this->dropForeignKeyIfExist('disorder_tree');
 
-        $foreign_key = $this->dbConnection->createCommand($sql)->queryRow();
+        $this->dropForeignKeyIfExist('et_ophciexamination_injectionmanagementcomplex');
+        $this->dropForeignKeyIfExist('et_ophciexamination_injectionmanagementcomplex');
+        $this->dropForeignKeyIfExist('et_ophciexamination_injectionmanagementcomplex');
+        $this->dropForeignKeyIfExist('et_ophciexamination_injectionmanagementcomplex');
+        $this->dropForeignKeyIfExist('ophciexamination_diagnosis');
+        $this->dropForeignKeyIfExist('ophciexamination_injectmanagecomplex_question');
+        $this->dropForeignKeyIfExist('ophciexamination_systemic_diagnoses_diagnosis');
 
-        if($foreign_key){
-            $this->dropForeignKey($foreign_key['CONSTRAINT_NAME'],$foreign_key['TABLE_NAME']);
-        }
+        $this->dropForeignKeyIfExist('et_ophcotherapya_therapydiag'); //et_ophcotherapya_therapydiag_ldiagnosis1_id_fk
+        $this->dropForeignKeyIfExist('et_ophcotherapya_therapydiag'); //et_ophcotherapya_therapydiag_ldiagnosis2_id_fk
+        $this->dropForeignKeyIfExist('et_ophcotherapya_therapydiag'); //et_ophcotherapya_therapydiag_rdiagnosis1_id_fk
+        $this->dropForeignKeyIfExist('et_ophcotherapya_therapydiag'); //et_ophcotherapya_therapydiag_rdiagnosis2_id_fk
+        $this->dropForeignKeyIfExist('ophcotherapya_therapydisorder');
 
-        if(\Yii::app()->getModule('OphCiExamination')) {
-            $this->dropForeignKey('et_ophciexamination_injectionmanagementcomplex_ldiag1_fk', 'et_ophciexamination_injectionmanagementcomplex');
-            $this->dropForeignKey('et_ophciexamination_injectionmanagementcomplex_ldiag2_fk', 'et_ophciexamination_injectionmanagementcomplex');
-            $this->dropForeignKey('et_ophciexamination_injectionmanagementcomplex_rdiag1_fk', 'et_ophciexamination_injectionmanagementcomplex');
-            $this->dropForeignKey('et_ophciexamination_injectionmanagementcomplex_rdiag2_fk', 'et_ophciexamination_injectionmanagementcomplex');
-            $this->dropForeignKey('ophciexamination_diagnosis_disorder_id_fk','ophciexamination_diagnosis');
-            $this->dropForeignKey('ophciexamination_injectmanagecomplex_question_disorder_fk','ophciexamination_injectmanagecomplex_question');
-            $this->dropForeignKey('ophciexamination_sysdiag_dia_dis_fk','ophciexamination_systemic_diagnoses_diagnosis');
-        }
+        $this->dropForeignKeyIfExist('pedigree');
+        $this->dropForeignKeyIfExist('genetics_patient_diagnosis');
+        $this->dropForeignKeyIfExist('ophcocvi_clinicinfo_disorder');
+        $this->dropForeignKeyIfExist('et_ophtroperationbooking_diagnosis');
 
-        if(\Yii::app()->getModule('OphCoTherapyapplication')) {
-            $this->dropForeignKey('et_ophcotherapya_therapydiag_ldiagnosis1_id_fk', 'et_ophcotherapya_therapydiag');
-            $this->dropForeignKey('et_ophcotherapya_therapydiag_ldiagnosis2_id_fk', 'et_ophcotherapya_therapydiag');
-            $this->dropForeignKey('et_ophcotherapya_therapydiag_rdiagnosis1_id_fk', 'et_ophcotherapya_therapydiag');
-            $this->dropForeignKey('et_ophcotherapya_therapydiag_rdiagnosis2_id_fk', 'et_ophcotherapya_therapydiag');
-            $this->dropForeignKey('ophcotherapya_therapydisorder_di_fk', 'ophcotherapya_therapydisorder');
-        }
-
-        if(\Yii::app()->getModule('Genetics')) {
-
-            if($foreign_key = $this->getFK('pedigree')){
-                $this->dropForeignKey($foreign_key['CONSTRAINT_NAME'],$foreign_key['TABLE_NAME']);
-            }
-
-            if($foreign_key = $this->getFK('genetics_patient_diagnosis')){
-                $this->dropForeignKey($foreign_key['CONSTRAINT_NAME'],$foreign_key['TABLE_NAME']);
-            }
-        }
-
-        if(\Yii::app()->getModule('OphCoCvi')) {
-            $this->dropForeignKey('ophcocvi_clinicinfo_disorder_disorder_fk', 'ophcocvi_clinicinfo_disorder');
-        }
-
-        if(\Yii::app()->getModule('OphTrOperationbooking')) {
-            if($foreign_key = $this->getFK('et_ophtroperationbooking_diagnosis')){
-                $this->dropForeignKey($foreign_key['CONSTRAINT_NAME'],$foreign_key['TABLE_NAME']);
-            }
-        }
     }
 
     /**
@@ -194,7 +159,7 @@ class m180220_143709_disorder_id_bigint extends CDbMigration
         $this->addForeignKey('secondary_diagnosis_disorder_id_fk','secondary_diagnosis','disorder_id','disorder','id');
         $this->addForeignKey('secondaryto_common_oph_disorder_did_fk','secondaryto_common_oph_disorder','disorder_id','disorder','id');
 
-        if(\Yii::app()->getModule('OphCiExamination')) {
+        if(\Yii::app()->db->schema->getTable('ophciexamination_diagnosis',true) !== null ){
             $this->addForeignKey('et_ophciexamination_injectionmanagementcomplex_ldiag1_fk', 'et_ophciexamination_injectionmanagementcomplex', 'left_diagnosis1_id', 'disorder', 'id');
             $this->addForeignKey('et_ophciexamination_injectionmanagementcomplex_ldiag2_fk', 'et_ophciexamination_injectionmanagementcomplex', 'left_diagnosis2_id', 'disorder', 'id');
             $this->addForeignKey('et_ophciexamination_injectionmanagementcomplex_rdiag1_fk', 'et_ophciexamination_injectionmanagementcomplex', 'right_diagnosis1_id', 'disorder', 'id');
@@ -204,7 +169,7 @@ class m180220_143709_disorder_id_bigint extends CDbMigration
             $this->addForeignKey('ophciexamination_sysdiag_dia_dis_fk', 'ophciexamination_systemic_diagnoses_diagnosis', 'disorder_id', 'disorder', 'id');
         }
 
-        if(\Yii::app()->getModule('OphCoTherapyapplication')) {
+        if(\Yii::app()->db->schema->getTable('et_ophcotherapya_therapydiag',true) !== null ){
             $this->addForeignKey('et_ophcotherapya_therapydiag_ldiagnosis1_id_fk', 'et_ophcotherapya_therapydiag', 'left_diagnosis1_id', 'disorder', 'id');
             $this->addForeignKey('et_ophcotherapya_therapydiag_ldiagnosis2_id_fk', 'et_ophcotherapya_therapydiag', 'left_diagnosis2_id', 'disorder', 'id');
             $this->addForeignKey('et_ophcotherapya_therapydiag_rdiagnosis1_id_fk', 'et_ophcotherapya_therapydiag', 'right_diagnosis1_id', 'disorder', 'id');
@@ -212,17 +177,15 @@ class m180220_143709_disorder_id_bigint extends CDbMigration
             $this->addForeignKey('ophcotherapya_therapydisorder_di_fk','ophcotherapya_therapydisorder','disorder_id','disorder','id');
         }
 
-        if(\Yii::app()->getModule('OphTrOperationbooking')) {
+        if(\Yii::app()->db->schema->getTable('et_ophtroperationbooking_diagnosis',true) !== null ) {
             $this->addForeignKey('et_ophtroperationbooking_diagnosis_disorder','et_ophtroperationbooking_diagnosis','disorder_id','disorder','id');
         }
 
-        if(\Yii::app()->getModule('Genetics')) {
-            if (\Yii::app()->db->schema->getTable('pedigree',true) !== null) {
-                $this->addForeignKey('pedigree_disorder_id_fk','pedigree','disorder_id','disorder','id');
-            }
-            if (\Yii::app()->db->schema->getTable('genetics_patient_diagnosis',true) !== null) {
-                $this->addForeignKey('genetics_patient_diagnosis_disorder', 'genetics_patient_diagnosis', 'disorder_id', 'disorder', 'id');
-            }
+        if (\Yii::app()->db->schema->getTable('pedigree',true) !== null) {
+            $this->addForeignKey('pedigree_disorder_id_fk','pedigree','disorder_id','disorder','id');
+        }
+        if (\Yii::app()->db->schema->getTable('genetics_patient_diagnosis',true) !== null) {
+            $this->addForeignKey('genetics_patient_diagnosis_disorder', 'genetics_patient_diagnosis', 'disorder_id', 'disorder', 'id');
         }
 
         if(\Yii::app()->getModule('OphCoCvi')) {
@@ -239,6 +202,16 @@ class m180220_143709_disorder_id_bigint extends CDbMigration
                             TABLE_NAME = '$table'";
 
         return $this->dbConnection->createCommand($sql)->queryRow();
+    }
+
+    private function dropForeignKeyIfExist($table)
+    {
+        if($foreign_key = $this->getFK($table)) {
+            return $this->dropForeignKey($foreign_key['CONSTRAINT_NAME'],$foreign_key['TABLE_NAME']);
+
+        }
+
+        return 0;
     }
 
 }
