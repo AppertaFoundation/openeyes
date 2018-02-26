@@ -148,27 +148,20 @@
   * for the IndexSearch Widget
   */
   $(document).ready(function(){
-    $("#search_bar_right").search();
-    $("#search_bar_left").search();
-    $("#search_bar_right").focus(function(){
-      $('#search_bar_left').val('');
-      last_search_pos = "right";
-      $('#search_bar_right').trigger("keyup");
-      $('#search_bar_right').css('opacity','1');
-      $('#search_button_right').css('opacity','1');
-      $('#search_bar_left').css('opacity','0.6');
-      $('#search_button_left').css('opacity','0.6');
-      show_results();
+    var el = document.getElementById('elements-search-results');
+    if(el === null) return;
+
+    // inputs
+    $('#js-element-search-right').focus(function(){
+      showPopup();
+    }).focusout(function(){
+      $(this).val('');
     });
-    $("#search_bar_left").focus(function(){
-      $('#search_bar_right').val('');
-      last_search_pos = "left";
-      $('#search_bar_left').trigger("keyup");
-      $('#search_bar_left').css('opacity','1');
-      $('#search_button_left').css('opacity','1');
-      $('#search_bar_right').css('opacity','0.6');
-      $('#search_button_right').css('opacity','0.6');
-      show_results();
+
+    $('#js-element-search-left').focus(function(){
+      showPopup();
+    }).focusout(function(){
+      $(this).val('');
     });
 
     $('.result_item, .result_item_with_icon').click(function(event){
@@ -256,7 +249,16 @@
 });
 /* End of Initialisation */
 
+  function showPopup(){
+    $('#elements-search-results').show();
 
+    $('.lvl1').click(function(){
+      $('#elements-search-results').hide();
+    });
+    $('.close-icon-btn').click(function(){
+      $('#elements-search-results').hide();
+    });
+  }
 /*
 * Auxilary Functions:
 * Frequently used code
@@ -322,7 +324,6 @@ function show_results(){
     //can revese order have different length chains etc
     //Chains can be made conditional based on content of parameters
     //Guarantees funcion execution order (even for asyncrounous functions)
-
     let done = function() {
       $('#is_loading').hide();
       clearTimeout(is_loading_timeout);
@@ -388,11 +389,11 @@ function show_results(){
 
   function click_element(parameters){
     //get side bar item
-    let $item = $(`.oe-event-sidebar-edit a:contains(${parameters['element_name']})`).filter(function(){
+    let $item = $(`#episodes-and-events ul li a:contains(${parameters['element_name']})`).filter(function(){
       return $(this).text() == parameters['element_name'];
     });
     if (parameters['element_name'] == 'Risks'){
-      $item = $(`.oe-event-sidebar-edit a:contains(${parameters['element_name']}):first`); //temp fix while there is two risks on side bar
+      $item = $(`#episodes-and-events ul li a:contains(${parameters['element_name']}):first`); //temp fix while there is two risks on side bar
     }
     return click_sidebar_element($item).then(function (){
       return new Promise(function(resolve, reject) {
@@ -601,7 +602,7 @@ function show_results(){
       if(e.shiftKey)	modifiers.shift.pressed = true;
       if(e.altKey)	modifiers.alt.pressed = true;
       if(e.metaKey)   modifiers.meta.pressed = true;
-
+       var k;
       for(var i=0; k=keys[i],i<keys.length; i++) {
         //Modifiers
         if(k == 'ctrl' || k == 'control') {

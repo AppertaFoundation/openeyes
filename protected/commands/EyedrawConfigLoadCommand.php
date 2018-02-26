@@ -506,8 +506,8 @@ EOSQL;
     private function getIndexSearchHeader() {
       return
       "<?php \$this->render('IndexSearch_header'); ?>"
-      ."<div id=\"results\">"
-      ."<a href=\"#\" id=\"big_cross\"></a>"
+      ."<div id=\"elements-search-results\" class=\"elements-search-results\" style=\"display:none;\">"
+      ."<div class=\"close-icon-btn\"><i class=\"oe-i remove-circle\"></i></div>"
       ."<ul class='results_list'>";
     }
 

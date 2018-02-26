@@ -1,13 +1,11 @@
 <!-- event-header -->
 <!-- examination event has a search facility for Left and Right Eye in edit mode -->
-<nav class="sidebar-header">
     <?php $this->widget('application.widgets.IndexSearch',array('event_type' => 'examination')); ?>
-</nav>
+
 
 <nav class="sidebar " id="episodes-and-events">
 
 </nav>
-
 
 <script type="text/javascript">
   new OpenEyes.UI.Sidebar(
