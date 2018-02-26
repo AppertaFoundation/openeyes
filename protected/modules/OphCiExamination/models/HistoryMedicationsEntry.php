@@ -77,8 +77,8 @@ class HistoryMedicationsEntry extends \BaseElement
         return array(
             array('element_id, medication_drug_id, drug_id, medication_name, route_id, option_id, dose, units, '
                 .'frequency_id, start_date, end_date, stop_reason_id, prescription_item_id', 'safe'),
-            array('start_date, end_date', 'date'),
             array('start_date', 'OEFuzzyDateValidatorNotFuture'),
+            array('end_date', 'OEFuzzyDateValidator'),
             array('option_id', 'validateOptionId'),
             array('prescription_item_id', 'validatePrescriptionItem'),
             array('start_date, end_date', 'default', 'setOnEmpty' => true, 'value' => null)
