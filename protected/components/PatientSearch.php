@@ -22,8 +22,10 @@ class PatientSearch
     const NHS_NUMBER_REGEX_1 = '/^(N|NHS)\s*[:;]\s*([0-9\- ]+)$/i';
     const NHS_NUMBER_REGEX_2 = '/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i';
 
+    const HOSPITAL_NUMBER_SEARCH_PREFIX = '(H|Hosnum)\s*[:;]\s*';
+
     // Hospital number (assume a < 10 digit number is a hosnum)
-    const HOSPITAL_NUMBER_REGEX = '/^(H|Hosnum)\s*[:;]\s*([0-9\-]+)$/i';
+    const HOSPITAL_NUMBER_REGEX = '/^'.self::HOSPITAL_NUMBER_SEARCH_PREFIX.'([0-9\-]+)$/i';
 
     // Patient name
     const PATIENT_NAME_REGEX = '/^(?:P(?:atient)?[:;\s]+)?([\a-zA-Z-]+[ ,]?[\a-zA-Z-]*)$/';
@@ -178,7 +180,10 @@ class PatientSearch
     public function getHospitalNumber($term)
     {
         $result = null;
-        if (preg_match(self::HOSPITAL_NUMBER_REGEX, $term, $matches) || preg_match(Yii::app()->params['hos_num_regex'], $term, $matches)) {
+
+        $unprefixed_term = strtoupper(preg_replace('/'.self::HOSPITAL_NUMBER_SEARCH_PREFIX.'/i', '', $term));
+
+        if (preg_match(self::HOSPITAL_NUMBER_REGEX, $term, $matches) || preg_match(Yii::app()->params['hos_num_regex'], $unprefixed_term, $matches)) {
             $hosnum = (isset($matches[2])) ? $matches[2] : $matches[1];
             $result = sprintf(Yii::app()->params['pad_hos_num'], $hosnum);
         }
