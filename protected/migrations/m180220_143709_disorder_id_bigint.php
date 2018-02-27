@@ -9,37 +9,37 @@ class m180220_143709_disorder_id_bigint extends CDbMigration
 	    $this->dropFKs();
 
         //alter columns
-        $this->alterColumn('disorder','id','BIGINT UNSIGNED NOT NULL');
+        $this->alterColumnWithVersion('disorder','id','BIGINT UNSIGNED NOT NULL');
 
-        $this->alterColumn('common_ophthalmic_disorder','disorder_id','BIGINT UNSIGNED NULL');
-        $this->alterColumn('common_ophthalmic_disorder','alternate_disorder_id','BIGINT UNSIGNED NULL');
-        $this->alterColumn('common_systemic_disorder','disorder_id','BIGINT UNSIGNED NOT NULL');
-        $this->alterColumn('disorder_tree','disorder_id','BIGINT UNSIGNED NOT NULL');
-        $this->alterColumn('episode','disorder_id','BIGINT UNSIGNED NULL');
+        $this->alterColumnWithVersion('common_ophthalmic_disorder','disorder_id','BIGINT UNSIGNED NULL');
+        $this->alterColumnWithVersion('common_ophthalmic_disorder','alternate_disorder_id','BIGINT UNSIGNED NULL');
+        $this->alterColumnWithVersion('common_systemic_disorder','disorder_id','BIGINT UNSIGNED NOT NULL');
+        $this->alterColumnWithVersion('disorder_tree','disorder_id','BIGINT UNSIGNED NOT NULL');
+        $this->alterColumnWithVersion('episode','disorder_id','BIGINT UNSIGNED NULL');
 
-        $this->alterColumn('secondary_diagnosis','disorder_id','BIGINT UNSIGNED NOT NULL');
-        $this->alterColumn('secondaryto_common_oph_disorder','disorder_id','BIGINT UNSIGNED NULL');
+        $this->alterColumnWithVersion('secondary_diagnosis','disorder_id','BIGINT UNSIGNED NOT NULL');
+        $this->alterColumnWithVersion('secondaryto_common_oph_disorder','disorder_id','BIGINT UNSIGNED NULL');
 
         if(\Yii::app()->db->schema->getTable('ophciexamination_diagnosis',true) !== null ){
-            $this->alterColumn('et_ophciexamination_injectionmanagementcomplex','left_diagnosis1_id','BIGINT UNSIGNED NULL');
-            $this->alterColumn('et_ophciexamination_injectionmanagementcomplex','left_diagnosis2_id','BIGINT UNSIGNED NULL');
-            $this->alterColumn('et_ophciexamination_injectionmanagementcomplex','right_diagnosis1_id','BIGINT UNSIGNED NULL');
-            $this->alterColumn('et_ophciexamination_injectionmanagementcomplex','right_diagnosis2_id','BIGINT UNSIGNED NULL');
-            $this->alterColumn('ophciexamination_diagnosis','disorder_id','BIGINT UNSIGNED NOT NULL');
-            $this->alterColumn('ophciexamination_injectmanagecomplex_question','disorder_id','BIGINT UNSIGNED NOT NULL');
-            $this->alterColumn('ophciexamination_systemic_diagnoses_diagnosis','disorder_id','BIGINT UNSIGNED NOT NULL');
+            $this->alterColumnWithVersion('et_ophciexamination_injectionmanagementcomplex','left_diagnosis1_id','BIGINT UNSIGNED NULL');
+            $this->alterColumnWithVersion('et_ophciexamination_injectionmanagementcomplex','left_diagnosis2_id','BIGINT UNSIGNED NULL');
+            $this->alterColumnWithVersion('et_ophciexamination_injectionmanagementcomplex','right_diagnosis1_id','BIGINT UNSIGNED NULL');
+            $this->alterColumnWithVersion('et_ophciexamination_injectionmanagementcomplex','right_diagnosis2_id','BIGINT UNSIGNED NULL');
+            $this->alterColumnWithVersion('ophciexamination_diagnosis','disorder_id','BIGINT UNSIGNED NOT NULL');
+            $this->alterColumnWithVersion('ophciexamination_injectmanagecomplex_question','disorder_id','BIGINT UNSIGNED NOT NULL');
+            $this->alterColumnWithVersion('ophciexamination_systemic_diagnoses_diagnosis','disorder_id','BIGINT UNSIGNED NOT NULL');
         }
 
         if(\Yii::app()->db->schema->getTable('et_ophcotherapya_therapydiag',true) !== null ){
-            $this->alterColumn('et_ophcotherapya_therapydiag','left_diagnosis1_id','BIGINT UNSIGNED NULL');
-            $this->alterColumn('et_ophcotherapya_therapydiag','left_diagnosis2_id','BIGINT UNSIGNED NULL');
-            $this->alterColumn('et_ophcotherapya_therapydiag','right_diagnosis1_id','BIGINT UNSIGNED NULL');
-            $this->alterColumn('et_ophcotherapya_therapydiag','right_diagnosis2_id','BIGINT UNSIGNED NULL');
-            $this->alterColumn('ophcotherapya_therapydisorder','disorder_id','BIGINT UNSIGNED NOT NULL');
+            $this->alterColumnWithVersion('et_ophcotherapya_therapydiag','left_diagnosis1_id','BIGINT UNSIGNED NULL');
+            $this->alterColumnWithVersion('et_ophcotherapya_therapydiag','left_diagnosis2_id','BIGINT UNSIGNED NULL');
+            $this->alterColumnWithVersion('et_ophcotherapya_therapydiag','right_diagnosis1_id','BIGINT UNSIGNED NULL');
+            $this->alterColumnWithVersion('et_ophcotherapya_therapydiag','right_diagnosis2_id','BIGINT UNSIGNED NULL');
+            $this->alterColumnWithVersion('ophcotherapya_therapydisorder','disorder_id','BIGINT UNSIGNED NOT NULL');
         }
 
         if(\Yii::app()->db->schema->getTable('et_ophtroperationbooking_diagnosis',true) !== null ) {
-            $this->alterColumn('et_ophtroperationbooking_diagnosis', 'disorder_id', 'BIGINT UNSIGNED NOT NULL');
+            $this->alterColumnWithVersion('et_ophtroperationbooking_diagnosis', 'disorder_id', 'BIGINT UNSIGNED NOT NULL');
         }
         if (\Yii::app()->db->schema->getTable('pedigree',true) !== null) {
             $this->alterColumn('pedigree','disorder_id','BIGINT UNSIGNED NULL');
@@ -50,52 +50,52 @@ class m180220_143709_disorder_id_bigint extends CDbMigration
         }
 
         if(\Yii::app()->db->schema->getTable('ophcocvi_clinicinfo_disorder',true) !== null) {
-            $this->alterColumn('ophcocvi_clinicinfo_disorder', 'disorder_id', 'BIGINT UNSIGNED NULL');
+            $this->alterColumnWithVersion('ophcocvi_clinicinfo_disorder', 'disorder_id', 'BIGINT UNSIGNED NULL');
         }
 
         $this->addFKs();
-	}
+    }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         $this->dropFKs();
 
         //alter columns
 
-        $this->alterColumn('disorder','id','INT(10) UNSIGNED NOT NULL');
+        $this->alterColumnWithVersion('disorder','id','INT(10) UNSIGNED NOT NULL');
 
-        $this->alterColumn('common_ophthalmic_disorder','disorder_id','INT(10) UNSIGNED NULL');
-        $this->alterColumn('common_ophthalmic_disorder','alternate_disorder_id','INT(10) UNSIGNED NULL');
-        $this->alterColumn('common_systemic_disorder','disorder_id','INT(10) UNSIGNED NOT NULL');
-        $this->alterColumn('disorder_tree','disorder_id','INT(10) UNSIGNED NOT NULL');
-        $this->alterColumn('episode','disorder_id','INT(10) UNSIGNED NULL');
-        $this->alterColumn('secondary_diagnosis','disorder_id','INT(10) UNSIGNED NOT NULL');
-        $this->alterColumn('secondaryto_common_oph_disorder','disorder_id','INT(10) UNSIGNED NULL');
+        $this->alterColumnWithVersion('common_ophthalmic_disorder','disorder_id','INT(10) UNSIGNED NULL');
+        $this->alterColumnWithVersion('common_ophthalmic_disorder','alternate_disorder_id','INT(10) UNSIGNED NULL');
+        $this->alterColumnWithVersion('common_systemic_disorder','disorder_id','INT(10) UNSIGNED NOT NULL');
+        $this->alterColumnWithVersion('disorder_tree','disorder_id','INT(10) UNSIGNED NOT NULL');
+        $this->alterColumnWithVersion('episode','disorder_id','INT(10) UNSIGNED NULL');
+        $this->alterColumnWithVersion('secondary_diagnosis','disorder_id','INT(10) UNSIGNED NOT NULL');
+        $this->alterColumnWithVersion('secondaryto_common_oph_disorder','disorder_id','INT(10) UNSIGNED NULL');
 
         if(\Yii::app()->db->schema->getTable('ophciexamination_diagnosis',true) !== null ){
-            $this->alterColumn('et_ophciexamination_injectionmanagementcomplex', 'left_diagnosis1_id', 'INT(10) UNSIGNED NULL');
-            $this->alterColumn('et_ophciexamination_injectionmanagementcomplex', 'left_diagnosis2_id', 'INT(10) UNSIGNED NULL');
-            $this->alterColumn('et_ophciexamination_injectionmanagementcomplex', 'right_diagnosis1_id', 'INT(10) UNSIGNED NULL');
-            $this->alterColumn('et_ophciexamination_injectionmanagementcomplex', 'right_diagnosis2_id', 'INT(10) UNSIGNED NULL');
-            $this->alterColumn('ophciexamination_diagnosis','disorder_id','INT(10) UNSIGNED NOT NULL');
-            $this->alterColumn('ophciexamination_injectmanagecomplex_question','disorder_id','INT(10) UNSIGNED NOT NULL');
-            $this->alterColumn('ophciexamination_systemic_diagnoses_diagnosis','disorder_id','INT(10) UNSIGNED NOT NULL');
+            $this->alterColumnWithVersion('et_ophciexamination_injectionmanagementcomplex', 'left_diagnosis1_id', 'INT(10) UNSIGNED NULL');
+            $this->alterColumnWithVersion('et_ophciexamination_injectionmanagementcomplex', 'left_diagnosis2_id', 'INT(10) UNSIGNED NULL');
+            $this->alterColumnWithVersion('et_ophciexamination_injectionmanagementcomplex', 'right_diagnosis1_id', 'INT(10) UNSIGNED NULL');
+            $this->alterColumnWithVersion('et_ophciexamination_injectionmanagementcomplex', 'right_diagnosis2_id', 'INT(10) UNSIGNED NULL');
+            $this->alterColumnWithVersion('ophciexamination_diagnosis','disorder_id','INT(10) UNSIGNED NOT NULL');
+            $this->alterColumnWithVersion('ophciexamination_injectmanagecomplex_question','disorder_id','INT(10) UNSIGNED NOT NULL');
+            $this->alterColumnWithVersion('ophciexamination_systemic_diagnoses_diagnosis','disorder_id','INT(10) UNSIGNED NOT NULL');
         }
 
         if(\Yii::app()->db->schema->getTable('et_ophcotherapya_therapydiag',true) !== null ){
-            $this->alterColumn('et_ophcotherapya_therapydiag', 'left_diagnosis1_id', 'INT(10) UNSIGNED NULL');
-            $this->alterColumn('et_ophcotherapya_therapydiag', 'left_diagnosis2_id', 'INT(10) UNSIGNED NULL');
-            $this->alterColumn('et_ophcotherapya_therapydiag', 'right_diagnosis1_id', 'INT(10) UNSIGNED NULL');
-            $this->alterColumn('et_ophcotherapya_therapydiag', 'right_diagnosis2_id', 'INT(10) UNSIGNED NULL');
-            $this->alterColumn('ophcotherapya_therapydisorder','disorder_id','INT(10) UNSIGNED NOT NULL');
+            $this->alterColumnWithVersion('et_ophcotherapya_therapydiag', 'left_diagnosis1_id', 'INT(10) UNSIGNED NULL');
+            $this->alterColumnWithVersion('et_ophcotherapya_therapydiag', 'left_diagnosis2_id', 'INT(10) UNSIGNED NULL');
+            $this->alterColumnWithVersion('et_ophcotherapya_therapydiag', 'right_diagnosis1_id', 'INT(10) UNSIGNED NULL');
+            $this->alterColumnWithVersion('et_ophcotherapya_therapydiag', 'right_diagnosis2_id', 'INT(10) UNSIGNED NULL');
+            $this->alterColumnWithVersion('ophcotherapya_therapydisorder','disorder_id','INT(10) UNSIGNED NOT NULL');
         }
 
         if(\Yii::app()->db->schema->getTable('et_ophtroperationbooking_diagnosis',true) !== null ) {
-            $this->alterColumn('et_ophtroperationbooking_diagnosis', 'disorder_id', 'INT(10) UNSIGNED NOT NULL');
+            $this->alterColumnWithVersion('et_ophtroperationbooking_diagnosis', 'disorder_id', 'INT(10) UNSIGNED NOT NULL');
         }
 
         if (\Yii::app()->db->schema->getTable('pedigree',true) !== null) {
-            $this->alterColumn('pedigree', 'disorder_id', 'INT(10) UNSIGNED NULL');
+            $this->alterColumnWithVersion('pedigree', 'disorder_id', 'INT(10) UNSIGNED NULL');
         }
 
         if (\Yii::app()->db->schema->getTable('genetics_patient_diagnosis',true) !== null) {
@@ -103,16 +103,16 @@ class m180220_143709_disorder_id_bigint extends CDbMigration
         }
 
         if(\Yii::app()->db->schema->getTable('ophcocvi_clinicinfo_disorder',true) !== null) {
-            $this->alterColumn('ophcocvi_clinicinfo_disorder', 'disorder_id', 'INT(10) UNSIGNED NULL');
+            $this->alterColumnWithVersion('ophcocvi_clinicinfo_disorder', 'disorder_id', 'INT(10) UNSIGNED NULL');
         }
 
         $this->addFKs();
-	}
+    }
 
     /**
      * Drop FKs that referencing to disorder table
      */
-	private function dropFKs()
+    private function dropFKs()
     {
         // drop all FKs point to disorder table
 
@@ -212,6 +212,12 @@ class m180220_143709_disorder_id_bigint extends CDbMigration
         }
 
         return 0;
+    }
+
+    private function alterColumnWithVersion($table, $column, $type)
+    {
+        $this->alterColumn($table, $column, $type);
+        $this->alterColumn("{$table}_version", $column, $type);
     }
 
 }
