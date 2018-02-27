@@ -80,8 +80,12 @@ class PastSurgery extends \BaseEventElementWidget
                 }
                 $op_entry->operation = $operation['operation'];
                 $op_entry->side_id = $operation['side_id'];
-                $op_entry->date = $operation['date'];
                 $op_entry->had_operation = array_key_exists('had_operation', $operation) ? $operation['had_operation'] : null;
+                if ($operation['date']){
+                    list($year, $month, $day) = array_pad(explode('-', $operation['date']), 3,0);
+                    $op_entry->date = \Helper::padFuzzyDate($year, $month, $day);
+                }
+
                 $operations[] = $op_entry;
             }
             $element->operations = $operations;

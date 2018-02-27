@@ -147,8 +147,11 @@ class SystemicDiagnoses extends \BaseEventElementWidget
                 }
                 $diagnosis_entry->disorder_id = $disorder_id;
                 $diagnosis_entry->side_id = $data['side_id'][$i];
-                $diagnosis_entry->date = $data['date'][$i];
                 $diagnosis_entry->has_disorder = $data['has_disorder'][$i];
+                if ($data['date'][$i]){
+                    list($year, $month, $day) = array_pad(explode('-', $data['date'][$i]), 3,0);
+                    $diagnosis_entry->date = \Helper::padFuzzyDate($year, $month, $day);
+                }
                 $diagnoses[] = $diagnosis_entry;
             }
             $element->diagnoses = $diagnoses;
