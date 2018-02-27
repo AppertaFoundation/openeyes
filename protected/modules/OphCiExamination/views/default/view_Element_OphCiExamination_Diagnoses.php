@@ -39,7 +39,7 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
         } foreach($right_principals as $disorder) { ?>
             <div class="data-row">
                 <div class="data-value">
-                        <?= $disorder[0]->term ?> <span class="has-tooltip fa fa-info-circle" data-tooltip-content="Principal diagnosis for <?= $disorder[1] ?>"></span>
+                        <?= $disorder[0]->term ?> <span class="js-has-tooltip fa fa-info-circle" data-tooltip-content="Principal diagnosis for <?= $disorder[1] ?>"></span>
                 </div>
             </div>
         <?php
@@ -75,7 +75,7 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
         foreach($left_principals as $disorder) { ?>
             <div class="data-row">
                 <div class="data-value">
-                    <?= $disorder[0]->term ?> <span class="has-tooltip fa fa-info-circle" data-tooltip-content="Principal diagnosis for <?= $disorder[1] ?>"></span>
+                    <?= $disorder[0]->term ?> <span class="js-has-tooltip fa fa-info-circle" data-tooltip-content="Principal diagnosis for <?= $disorder[1] ?>"></span>
                 </div>
             </div>
             <?php

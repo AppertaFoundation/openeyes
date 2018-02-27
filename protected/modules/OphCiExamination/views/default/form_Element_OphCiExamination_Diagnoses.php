@@ -17,9 +17,33 @@
  */
 ?>
 
-<?php
-    $js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js', false, -1);
-    Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Diagnoses.js", CClientScript::POS_HEAD);
+	<table class="plain grid">
+		<thead>
+			<tr>
+				<th>Diagnosis</th>
+				<th>Eye</th>
+				<th>Principal</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody class="js-diagnoses" id="OphCiExamination_diagnoses">
+            <?php foreach ($this->patient->episodes as $episode) {
+                if ($episode->id != $this->episode->id && $episode->diagnosis) { ?>
+                    <tr class="read-only">
+                        <td><?= $episode->diagnosis->term ?></td>
+                        <td><?= $episode->eye ? : 'Not Specified' ?></td>
+                        <td><?= $episode->getSubspecialtyText() ?></td>
+                        <td><span class="js-has-tooltip fa fa-info-circle" data-tooltip-content="You must switch to the <?= $episode->getSubspecialtyText() ?> subspecialty to alter this diagnosis"></span></td>
+                    </tr>
+                <?php }
+            } ?>
+			<?php foreach ($element->diagnoses as $i => $diagnosis) {
+    ?>
+                <?php
+                    // Ok, so adding 'highlighted-error' should be enough -and added btw- but the 'plain' and 'grid' classes overwrite the error style
+                    // table.plain td and table.grid td
+                    $style = $diagnosis->hasErrors() ? 'border: 2px solid red' : '';
+                ?>
 
     $firm = Firm::model()->with(array(
             'serviceSubspecialtyAssignment' => array('subspecialty')

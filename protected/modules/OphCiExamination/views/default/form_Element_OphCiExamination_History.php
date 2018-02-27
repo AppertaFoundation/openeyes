@@ -51,7 +51,7 @@
   </div>
 </div>
 <script type="text/html" id="previous-management-template">
-    <strong>{{subspecialty}} {{event_date}} ({{last_modified_user_display}} <span class="has-tooltip fa fa-info-circle" data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> {{comments_or_children}}
+    <strong>{{subspecialty}} {{event_date}} ({{last_modified_user_display}} <span class="js-has-tooltip fa fa-info-circle" data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> {{comments_or_children}}
 </script>
 <script type="text/javascript" id="history-add-to-dialog">
     var popup = $('#add-to-history');

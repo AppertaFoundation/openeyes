@@ -19,5 +19,5 @@
 $element_name = $element->getElementTypeName();
 ?>
 <p class="alert-box warning" style="margin-bottom: 0px;">Changes will not affect latest <?= $element_name ?> state for patient
-  <span class="has-tooltip fa fa-info-circle"
+  <span class="js-has-tooltip fa fa-info-circle"
         data-tooltip-content="A newer examination exists for this patient - <?= $element_name ?> can only be changed from the latest Examination Event. To make changes to <?= $element_name ?>, please go to the latest Examination, or create a new Examination"></span></p>

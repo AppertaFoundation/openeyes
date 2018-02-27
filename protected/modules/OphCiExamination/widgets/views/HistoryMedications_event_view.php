@@ -25,7 +25,7 @@
         <i class="oe-i history medium pad" id="js-stopped-meds-btn"></i>
       </div>
       <div class="cols-10">
-        <div id="js-listview-meds-current-pro" style="display:none;">
+        <div id="js-listview-meds-current-pro" style>
             <?php if ($element->currentOrderedEntries) { ?>
             <ul class="dslash-list">
                 <?php foreach ($element->currentOrderedEntries as $entry) { ?>
@@ -36,7 +36,7 @@
                 No current medications.
             <?php } ?>
         </div>
-        <div class id="js-listview-meds-current-full" style>
+        <div class id="js-listview-meds-current-full" style="display:none;">
           <table>
             <colgroup>
               <col class="cols-4">
@@ -59,24 +59,21 @@
           </table>
         </div>
     </div>
-      <i class="oe-i small pad js-listview-expand-btn collapse" data-list="meds-current"></i>
+      <i class="oe-i small pad js-listview-expand-btn expand" data-list="meds-current"></i>
   </div>
     <!-- flex-layout -->
     <div class="divider"></div>
     <div class="flex-layout flex-top" id="js-meds-stopped">
-        <div class="cols-1"> Stopped
-<!--                --><?php //if ($element->stoppedOrderedEntries) { ?><!--<a href="#" class="detail-toggle" data-kind="stopped"><i class="fa fa-icon fa-expand" aria-hidden="true"></i></a>--><?php //} ?>
-<!--                <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a>-->
-        </div>
+        <div class="cols-1"> Stopped </div>
         <div class="cols-10">
-            <div class="js-listview-meds-stopped-pro" style="display: none;">
+            <div id="js-listview-meds-stopped-pro" style>
                 <ul class="dslash-list">
                     <?php foreach ($element->stoppedOrderedEntries as $entry) { ?>
                         <li><?= $entry->getMedicationDisplay() ?><i class="oe-i triangle small pad"></i></li>
                     <?php } ?>
                 </ul>
             </div>
-          <div class id="js-listview-meds-stopped-full" style>
+          <div class id="js-listview-meds-stopped-full" style="display: none;">
             <table>
               <colgroup>
                 <col class="cols-4">
@@ -97,7 +94,7 @@
             </table>
           </div>
         </div>
-      <i class="oe-i small pad js-listview-expand-btn collapse" data-list="meds-stopped"></i>
+      <i class="oe-i small pad js-listview-expand-btn expand" data-list="meds-stopped"></i>
     </div>
     <!-- flex-layout -->
 </div>
