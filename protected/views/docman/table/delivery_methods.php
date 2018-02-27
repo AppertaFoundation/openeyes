@@ -18,10 +18,11 @@
 
 <?php
     $pre_output_key = 0;
-    // check if the it is a GP and if the GP has a Docman or Print
+    // check if it is a GP and if the GP has a Docman or Print
     $document_output = null;
     $internalreferral_output = null;
     $print_output = null;
+    $is_new_record = isset($target) && $target->isNewRecord ? true : false;
     if( isset($target->document_output)){
         foreach($target->document_output as $output_key => $doc_output){
             if($doc_output->output_type == 'Docman'){
@@ -79,13 +80,13 @@
 
     <label>
         <?php 
-            $is_checked = 'checked';
+            $is_checked = $print_output || $is_new_record ? 'checked' : '';
             
             $is_post_checked = isset($_POST['DocumentTarget'][$row_index]['DocumentOutput'][$pre_output_key]['output_type']);
             if( $contact_type == 'GP' || $contact_type == 'INTERNALREFERRAL'){
-                $is_checked = $is_post_checked ? 'checked' : '';
+                $is_checked = $is_post_checked ? 'checked' : ($print_output ? 'checked' : '');
             } else {
-                $is_checked = (Yii::app()->request->isPostRequest && !$is_post_checked) ? '' : 'checked';
+                $is_checked = (Yii::app()->request->isPostRequest && !$is_post_checked) ? '' : $is_checked;
             }
         ?>
         <?php 
