@@ -2307,3 +2307,30 @@ var eyedraw_added_diagnoses = [];
 $(document).ready(function() {
     $('textarea').autosize();
 });
+
+/*
+ * If any text is entered into the Comments field, then "No Abnormality" is removed from the automatic report.
+ */
+
+$(document).on("keyup", ".eyedraw-fields textarea[id$='_description']", function(event){
+    var $textarea = $(event.target);
+    var $report_input = $("#"+$textarea.attr("id").replace(/_description$/, "_ed_report"));
+    var $report_html  = $("#"+$textarea.attr("id").replace(/_description$/, "_ed_report_display"));
+
+    var report_text = $report_input.val();
+
+    if(report_text !== '' && report_text !== "No abnormality") {
+        return;
+    }
+
+    var txt = $textarea.val();
+
+    if(txt !== '') {
+        $report_input.val("");
+        $report_html.text("");
+    }
+    else if(report_text === '') {
+        $report_input.val("No abnormality");
+        $report_html.text("No abnormality");
+    }
+});
