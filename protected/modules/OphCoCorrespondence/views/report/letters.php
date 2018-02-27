@@ -170,7 +170,19 @@
 				<?php echo CHtml::dropDownList('OphCoCorrespondence_ReportLetters[site_id]', '', Site::model()->getListForCurrentInstitution(), array('empty' => '--- Please select ---'))?>
 			</div>
 		</div>
-
+        <div class="row field-row">
+            <div class="large-2 column">
+				<label for="site_id">Status</label>
+			</div>
+			<div class="large-6 column end">
+                <?php
+                    $htmlOptions['template'] = '<span style="margin-right:15px;">{input} {label}</span>';
+                    $htmlOptions['separator'] = '';
+                    $htmlOptions['style'] = 'vertical-align: middle';
+                    echo CHtml::checkBoxList('OphCoCorrespondence_ReportLetters[statuses]',null,
+                        ['DRAFT' => 'Draft', 'PENDING' => 'Pending', 'COMPLETE' => 'Complete', 'FAILED' => 'Failed'], $htmlOptions); ?>
+			</div>
+		</div>
 		<?php $this->endWidget()?>
 	</div>
 
