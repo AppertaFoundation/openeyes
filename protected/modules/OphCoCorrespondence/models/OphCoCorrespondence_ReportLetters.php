@@ -26,6 +26,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
     public $author_id;
     public $letters;
     public $site_id;
+    public $statuses;
 
     public function attributeNames()
     {
@@ -38,6 +39,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
             'end_date',
             'author_id',
             'site_id',
+            'statuses'
         );
     }
 
@@ -52,13 +54,14 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
             'start_end' => 'Date end',
             'author_id' => 'Author',
             'site_id' => 'Site',
+            'statuses' => 'Status'
         );
     }
 
     public function rules()
     {
         return array(
-            array('match_correspondence, match_legacy_letters, phrases, condition_type, start_date, end_date, site_id, author_id', 'safe'),
+            array('match_correspondence, match_legacy_letters, phrases, condition_type, start_date, end_date, site_id,statuses, author_id', 'safe'),
             array('condition_type', 'required'),
         );
     }
@@ -86,14 +89,14 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
 
 	public function run()
 	{
-		$params = array();
-
 		$where_clauses = array();
 		$where_params = array();
-		$type_clauses = array();
         $where_operator = ' '.($this->condition_type == 'and' ? 'and' : 'or').' ';
 
-        $select = array('c.first_name', 'c.last_name', 'p.dob', 'p.gender', 'p.hos_num', 'cons.first_name as cons_first_name', 'cons.last_name as cons_last_name', 'e.created_date', 'ep.patient_id');
+        $select = array(
+            'c.first_name', 'c.last_name', 'p.dob', 'p.gender', 'p.hos_num', 'cons.first_name as cons_first_name',
+            'cons.last_name as cons_last_name', 'e.created_date', 'ep.patient_id',
+            'IF(output_status IS NULL,IF(l.draft=0," - ","Draft"), LOWER(output_status)) as status');
 
         $data = $this->getDbCommand();
 
@@ -126,6 +129,20 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
                 $data->andWhere('site.id = :site_id', array(':site_id' => $this->site_id));
             }
         }
+
+        $data->leftJoin("document_instance", "document_instance.correspondence_event_id = l.event_id");
+        $data->leftJoin("document_target", "document_instance.id = document_target.document_instance_id");
+        $data->leftJoin("document_output", "document_target.id = document_output.document_target_id");
+
+        if($this->statuses) {
+
+            if( in_array('DRAFT', $this->statuses) ){
+                $data->andWhere(['or', 'l.draft = 1', ['in', 'document_output.output_status', $this->statuses] ]);
+            } else {
+                $data->andWhere(['in', 'document_output.output_status', $this->statuses]);
+            }
+        }
+
         $data->select(implode(',', $select));
         $data->andWhere('e.deleted = 0');
 
@@ -293,7 +310,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         $output .= Patient::model()->getAttributeLabel('hos_num').','.Patient::model()->getAttributeLabel('dob').','.Patient::model()->getAttributeLabel('first_name').','.Patient::model()->getAttributeLabel('last_name').','.Patient::model()->getAttributeLabel('gender').",Consultant's name,Site,Date,Type,Link\n";
 
         foreach ($this->letters as $letter) {
-            $output .= "\"{$letter['hos_num']}\",\"".($letter['dob'] ? date('j M Y', strtotime($letter['dob'])) : 'Unknown')."\",\"{$letter['first_name']}\",\"{$letter['last_name']}\",\"{$letter['gender']}\",\"{$letter['cons_first_name']} {$letter['cons_last_name']}\",\"".(isset($letter['name']) ? $letter['name'] : 'N/A').'","'.date('j M Y', strtotime($letter['created_date'])).'","'.$letter['type'].'","'.$letter['link']."\"\n";
+            $output .= "\"{$letter['hos_num']}\",\"".($letter['dob'] ? date('j M Y', strtotime($letter['dob'])) : 'Unknown')."\",\"{$letter['first_name']}\",\"{$letter['last_name']}\",\"{$letter['gender']}\",\"{$letter['cons_first_name']} {$letter['cons_last_name']}\",\"".(isset($letter['name']) ? $letter['name'] : 'N/A').'","'.date('j M Y', strtotime($letter['created_date'])).'","'.$letter['type'].'","'.ucfirst($letter['status']).'","'.$letter['link']."\"\n";
         }
 
         return $output;

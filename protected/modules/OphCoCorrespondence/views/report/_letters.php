@@ -28,6 +28,7 @@
 			<th>Consultant's name</th>
 			<th>Date</th>
 			<th>Type</th>
+			<th>Status</th>
 			<th>Link</th>
 		</tr>
 	<tbody>
@@ -49,6 +50,7 @@
                     <td><?php echo $letter['cons_first_name'] ." ". $letter['cons_last_name']; ?></td>
 					<td><?php echo date('j M Y',strtotime($letter['created_date']))?> <?php echo substr($letter['created_date'],11,5)?></td>
 					<td><?php echo $letter['type']?></td>
+					<td><?php echo ucfirst($letter['status']);?></td>
 					<td><a href="<?php echo $letter['link']?>">view</a></td>
 				</tr>
 			<?php }?>
