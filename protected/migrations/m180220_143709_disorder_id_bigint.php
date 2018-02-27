@@ -42,7 +42,7 @@ class m180220_143709_disorder_id_bigint extends CDbMigration
             $this->alterColumnWithVersion('et_ophtroperationbooking_diagnosis', 'disorder_id', 'BIGINT UNSIGNED NOT NULL');
         }
         if (\Yii::app()->db->schema->getTable('pedigree',true) !== null) {
-            $this->alterColumn('pedigree','disorder_id','BIGINT UNSIGNED NULL');
+            $this->alterColumnWithVersion('pedigree','disorder_id','BIGINT UNSIGNED NULL');
         }
 
         if (\Yii::app()->db->schema->getTable('genetics_patient_diagnosis',true) !== null) {
