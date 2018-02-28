@@ -16,34 +16,42 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php if (!$nowrapper) {?>
-	<div id="div_<?php echo CHtml::modelName($element)?>_<?php echo $field?>" class="row field-row"<?php if ($hidden) echo 'style="display: none"'; ?>>
-		<div class="cols-<?php echo $layoutColumns['label']?> column">
-			<label for="<?php echo CHtml::modelName($element)."_$field"?>"><?php if ($label) echo CHtml::encode($element->getAttributeLabel($field)).':'?></label>
+<?php if (!$nowrapper) :?>
+	<div id="div_<?= CHtml::modelName($element)?>_<?= $field?>"
+       class="row field-row flex-layout flex-left"
+       style="<?=($hidden) ? 'display: none':''?>"
+  >
+		<div class="cols-<?=$layoutColumns['label']?> column">
+			<label for="<?=CHtml::modelName($element)."_$field"?>">
+          <?=($label)?CHtml::encode($element->getAttributeLabel($field)).':':''?>
+      </label>
 		</div>
 		<div class="cols-<?php echo $layoutColumns['field']?> column">
-	<?php }?>
-	<?php
-    $attr = array(
-        'id' => CHtml::modelName($element).'_'.$field,
-        'name' => CHtml::modelName($element).'['.$field.']',
-        'placeholder' => @$htmlOptions['placeholder'],
-    );
-    if ($rows) {
-        $attr['rows'] = $rows;
-    }
-    if ($cols) {
-        $attr['cols'] = $cols;
-    }
-    ?>
- 	<textarea class="cols-<?php echo $layoutColumns['field']?> column"
-			<?php echo CHtml::renderAttributes(array_merge($htmlOptions, $attr));?>><?php echo CHtml::encode($value)?></textarea>
-		<?php if (!$nowrapper) {?>
-			<?php if ($button) {?>
-				<button type="submit" class="<?php echo $button['colour']?> <?php echo $button['size']?>" id="<?php echo CHtml::modelName($element)?>_<?php echo $button['id']?>" name="<?php echo CHtml::modelName($element)?>_<?php echo $button['id']?>">
-					<?php echo $button['label']?>
+<?php endif;
+$attr = array(
+    'id' => CHtml::modelName($element).'_'.$field,
+    'name' => CHtml::modelName($element).'['.$field.']',
+    'placeholder' => @$htmlOptions['placeholder'],
+);
+if ($rows) {
+    $attr['rows'] = $rows;
+}
+if ($cols) {
+    $attr['cols'] = $cols;
+}
+?>
+<textarea class="cols-full column"
+    <?= CHtml::renderAttributes(array_merge($htmlOptions, $attr));?>
+><?=CHtml::encode($value)?>
+</textarea>
+		<?php if (!$nowrapper) :
+		  if ($button):?>
+				<button type="submit" class="<?=$button['colour']?> <?=$button['size']?>"
+                id="<?= CHtml::modelName($element)?>_<?= $button['id']?>"
+                name="<?= CHtml::modelName($element)?>_<?= $button['id']?>">
+					<?= $button['label']?>
 				</button>
-			<?php }?>
+      <?php endif;?>
 		</div>
 	</div>
-<?php }?>
+<?php endif;?>

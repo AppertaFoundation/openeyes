@@ -37,44 +37,36 @@ foreach ($lasertypes as $lt) {
 }
 ?>
 
-<div class="element-eyes sub-element-fields jsTreatmentFields" id="div_<?php echo CHtml::modelName($element)?>_treatment_fields">
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
-	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
-    ?> inactive<?php 
-}?>" data-side="right">
-		<div class="active-form flex-layout">
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-			<?php $this->renderPartial($element->form_view.'_fields',
-                array('side' => 'right', 'element' => $element, 'form' => $form,
-                    'statuses' => $statuses, 'status_options' => $status_options,
-                    'deferrals' => $deferrals, 'deferral_options' => $deferral_options,
-                    'lasertypes' => $lasertypes, 'lasertype_options' => $lasertype_options, )); ?>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add right side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {
-    ?> inactive<?php 
-}?>" data-side="left">
+<div
+    id="div_<?php echo CHtml::modelName($element)?>_treatment_fields"
+    class="element-eyes sub-element-fields jsTreatmentFields"
+>
+	<?= $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
+  <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):?>
+	<div
+      class="element-eye <?=$eye?>-eye column <?=$side?> side <?= (!$element->{'has'.ucfirst($eye)}()) ? 'inactive': ''?>"
+      data-side="<?=$eye?>"
+  >
 		<div class="active-form">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-			<?php $this->renderPartial($element->form_view.'_fields',
-                array('side' => 'left', 'element' => $element, 'form' => $form,
-                    'statuses' => $statuses, 'status_options' => $status_options,
-                    'deferrals' => $deferrals, 'deferral_options' => $deferral_options,
-                    'lasertypes' => $lasertypes, 'lasertype_options' => $lasertype_options, )); ?>
+			<?php
+      $this->renderPartial(
+			    $element->form_view.'_fields',
+          array(
+              'eye' => $eye, 'element' => $element, 'form' => $form,
+              'statuses' => $statuses, 'status_options' => $status_options,
+              'deferrals' => $deferrals, 'deferral_options' => $deferral_options,
+              'lasertypes' => $lasertypes, 'lasertype_options' => $lasertype_options,
+          )
+      ); ?>
 		</div>
-		<div class="inactive-form">
+		<div class="inactive-form" style="<?=($element->{'has'.ucfirst($eye)}()) ? 'display: none': ''?>">
 			<div class="add-side">
 				<a href="#">
-					Add left side <span class="icon-add-side"></span>
+					Add <?=$eye?> side <span class="icon-add-side"></span>
 				</a>
 			</div>
 		</div>
 	</div>
+  <?php endforeach;?>
 </div>

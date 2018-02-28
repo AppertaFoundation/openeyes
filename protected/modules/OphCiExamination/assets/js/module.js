@@ -738,10 +738,10 @@ $(document).ready(function() {
         });
 
         if (showOther) {
-            $(this).parents('.side').find('.lasertype_other').removeClass('hidden');
+            $(this).parents('.side').find('.lasertype_other').show();
         }
         else {
-            $(this).parents('.side').find('.lasertype_other').addClass('hidden');
+            $(this).parents('.side').find('.lasertype_other').hide();
         }
     });
 
