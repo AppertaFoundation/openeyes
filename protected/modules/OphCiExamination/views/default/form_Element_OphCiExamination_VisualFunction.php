@@ -105,7 +105,6 @@
 
     var right_eye = visual_function.find('.right-eye');
     var right_eye_comments = right_eye.find('#right-eye-comments');
-    console.log(right_eye_comments.text().trim().length);
     if(right_eye_comments.text().trim().length){
         right_eye_comments.show();
     }else{

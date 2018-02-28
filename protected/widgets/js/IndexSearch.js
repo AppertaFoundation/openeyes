@@ -18,7 +18,7 @@
     let search_term;
     $.fn.search = function(options) {
       opts = $.extend({}, $.fn.search.defaults, options);
-      let $results = $("#results");
+      let $results = $("#elements-search-results");
       let $parent = $results.parent();
       this.keyup(function(e, i) {
         // TODO:  efficiency let visibleOrHidden = (e.keyCode == 8) ? ':hidden' : ':visible';
@@ -131,7 +131,7 @@
 
     function add_did_you_mean_listerner($results){
       $('.sugguested_term_link').click(function(){
-        let search_bar = `#search_bar_${last_search_pos}`;
+        let search_bar = `#js-element-search-${last_search_pos}`;
         $(search_bar).val($(this).text());
         $(search_bar).trigger('keyup');
         $(search_bar).trigger('focus');
@@ -181,7 +181,7 @@
   $('body').append('<div id="dim_rest" class="ui-widget-overlay" style="position:fixed;display : none; width: 100%; height: 100%; z-index: 180;"></div>');
   $('body').append("<div id=\"is_loading\"style=\"display : none; position: fixed; background-color: black; width: 100%; height: 100%; z-index: 1000; opacity: 0.8; top:0px; \"><img class=\"is_loading\" style=\" position: fixed; z-index: 1000; height: 64px; width: 64px; top: 33%; left: 50%;\"></div>");
   $('#description_toggle').change(function(){
-    let current_search_bar = "#search_bar_"+last_search_pos;
+    let current_search_bar = "#js-element-search-"+last_search_pos;
     if (this.checked) {
       $('.description_icon,.description_note').show();
       show_and_search_descriptions = true;
@@ -195,8 +195,8 @@
     }
     event.stopPropagation();
   });
-  $('#children_toggle').change(function(){
-    let current_search_bar = "#search_bar_"+last_search_pos;
+  $('#children_toggle').change(function(event){
+    let current_search_bar = "#js-element-search-"+last_search_pos;
     if (this.checked) {
       $(current_search_bar).trigger('focus');
       $(current_search_bar).trigger('keyup');
@@ -216,13 +216,13 @@
     hide_results();
   });
 
-  $('.switch,#results,#search_bar_right,#search_bar_left').click(function(){
+  $('.switch,#elements-search-results,#js-element-search-right,#js-element-search-left').click(function(event){
     event.stopPropagation();
   });
 
   //prevents body mousedown event being triggered
   //as this would cause the doodle popup to hide
-  $('#results').mousedown(function(){
+  $('#elements-search-results').mousedown(function(event){
     event.stopPropagation();
   });
   if ($('.event-actions li:contains(Create)').length > 0) {
@@ -232,19 +232,19 @@
     let sidebar_left = $('#episodes-and-events').offset().left;
     let sidebar_width = $('#episodes-and-events').width();
     let result_box_left = sidebar_left+sidebar_width;
-    $('#results').css('left','result_box_left'+'px');
+    $('#elements-search-results').css('left','result_box_left'+'px');
   };
   set_result_box_left();
   $(window).resize(function() {
     set_result_box_left();
   });
   $('#search_button_right').click(function(event){
-    $('#search_bar_right').trigger('focus');
+    $('#js-element-search-right').trigger('focus');
     event.stopPropagation();
   });
-  $('#search_button_left').click(function(event){
+  $('#js-element-search-left').click(function(event){
     event.stopPropagation();
-    $('#search_bar_left').trigger('focus');
+    $('#js-element-search-left').trigger('focus');
   });
 });
 /* End of Initialisation */
@@ -290,15 +290,13 @@ function show_results(){
   }
 
   function hide_results(){
-    $('#search_bar_right').css('opacity','1');
-    $('#search_button_right').css('opacity','1');
-    $('#search_bar_left').css('opacity','1');
-    $('#search_button_left').css('opacity','1');
-    $('#search_bar_right,#search_bar_left').val('');
-    $('#results').scrollTop(0);
+    $('#js-element-search-right').css('opacity','1');
+    $('#js-element-search-left').css('opacity','1');
+    $('#js-element-search-right,#js-element-search-left').val('');
+    $('#elements-search-results').scrollTop(0);
     $('#dim_rest').hide();
     $("body").css("overflow","auto");
-    $("#results").hide();
+    $("#elements-search-results").hide();
     $(".switch").hide();
     $("#children_toggle_container,#description_toogle_container").css("display","none");
     $('#search_options_container').css('background-color','transparent');
@@ -392,6 +390,11 @@ function show_results(){
     let $item = $(`#episodes-and-events ul li a:contains(${parameters['element_name']})`).filter(function(){
       return $(this).text() == parameters['element_name'];
     });
+    if (!$item.length){
+       $item = $(`#episodes-and-events h3:contains(${parameters['element_name']})`).filter(function(){
+        return $(this).text() == parameters['element_name'];
+      });
+    }
     if (parameters['element_name'] == 'Risks'){
       $item = $(`#episodes-and-events ul li a:contains(${parameters['element_name']}):first`); //temp fix while there is two risks on side bar
     }
@@ -445,7 +448,12 @@ function show_results(){
   //wrapper for old-style callback
   function click_sidebar_element($item) {
     return new Promise(function(resolve, reject) {
-      event_sidebar.loadClickedItem($item,{},resolve);
+      if ($item.hasClass('child')){
+        event_sidebar.loadClickedItem($item,{},resolve);
+      }
+      if($item.hasClass('collapse-group-header')){
+        event_sidebar.loadClickedParent($item.parent(),{},resolve);
+      }
     });
   }
 
@@ -685,13 +693,13 @@ function show_results(){
   }
 
   shortcut.add("Ctrl+Alt+R",function() {
-    $("#search_bar_right").trigger("focus");
+    $("#js-element-search-right").trigger("focus");
   });
   shortcut.add("Ctrl+Alt+L",function() {
-    $("#search_bar_left").trigger("focus");
+    $("#js-element-search-left").trigger("focus");
   });
   shortcut.add("Esc",function() {
-    $("#search_bar_right,#search_bar_left").trigger("blur");
+    $("#js-element-search-right,#js-element-search-left").trigger("blur");
     hide_results();
   });
   /* End of Shortcut code */

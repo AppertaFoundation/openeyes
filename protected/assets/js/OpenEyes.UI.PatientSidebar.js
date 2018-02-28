@@ -185,11 +185,11 @@
                     return;
                 }
             }
-            // either has no parent or parent is already loaded.
-            $item.addClass('selected');
-            self.loadElement($parent, data, callback);
+          self.loadElement($parent, data, callback);
+          $item.addClass('selected');
         } else {
-            self.moveTo($item);
+          // either has no parent or parent is already loaded.
+          self.moveTo($item);
             if (callback)
               callback();
         }
@@ -203,12 +203,11 @@
      *
      */
     PatientSidebar.prototype.loadElement = function(item, data, callback) {
-        var self = this;
         var $parentLi = $(item);
         if (data === undefined)
             data = {};
 
-        addElement($parentLi.clone(true), true, !$parentLi.hasClass('has-child'), undefined, data, callback);
+        addElement($parentLi.clone(true), true, !$parentLi.hasClass('has-children'), undefined, data, callback);
     };
 
     /**
@@ -316,7 +315,7 @@
           .addClass(itemClass);
 
       item.append('<a href="#" class="' + hrefClass + '"></a>');
-      item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme plus"></i></div> <h3 class="collapse-group-header">'+itemData.name+'</h3>');
+      item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme plus"></i></div> <h3 class="collapse-group-header '+ hrefClass +'">'+itemData.name+'</h3>');
         //children
         if (itemData.children && itemData.children.length) {
              var subList = $('<ul>').addClass('oe-element-list collapse-group-content');
@@ -336,9 +335,9 @@
                 .data('element-display-order', this.display_order)
                 .data('element-type-name', this.name)
                 .attr('id','side-element-'+id_name ).addClass('element');
-              var childClass = '';
+              var childClass = 'child';
               if ($.inArray(this.class_name, self.patient_open_elements)!== -1){
-                childClass='selected';
+                childClass+=' selected';
               }
               subListItem.append('<a href="#" class= "'+childClass+'" >'+this.name+'</a>');
               subList.append(subListItem);
