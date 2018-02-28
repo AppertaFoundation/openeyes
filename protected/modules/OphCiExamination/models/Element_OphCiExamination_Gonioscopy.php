@@ -95,7 +95,7 @@ class Element_OphCiExamination_Gonioscopy extends \SplitEventTypeElement
 						right_van_herick_id, left_description, right_description, left_eyedraw, right_eyedraw,
 						left_ed_report, right_ed_report', 'safe'),
                 array('left_eyedraw, left_ed_report', 'requiredIfSide', 'side' => 'left'),
-                array('right_eyedraw, right_ed_report', '', 'side' => 'right'),
+                array('right_eyedraw, right_ed_report', 'requiredIfSide', 'side' => 'right'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
                 array('eye_id, event_id, left_description, right_description, left_eyedraw, right_eyedraw',
