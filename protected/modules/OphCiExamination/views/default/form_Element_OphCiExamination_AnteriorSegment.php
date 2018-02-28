@@ -22,7 +22,7 @@
 
     <?php foreach (array('right' => 'left', 'left' => 'right') as $eye => $side): ?>
       <div class="element-eye column <?= $eye ?>-eye <?= $side ?> side
-    <?php if (!$element->hasEye($side)) { ?> inactive<?php } ?>" data-side="<?= $eye ?>">
+    <?php if (!$element->hasEye($eye)) { ?> inactive<?php } ?>" data-side="<?= $eye ?>">
 
         <div class="active-form" style="<?= !$element->hasEye($eye) ? 'display: none;' : '' ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
