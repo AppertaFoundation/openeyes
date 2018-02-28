@@ -4,6 +4,7 @@
  * @var $active_episodes
  * @var $ordered_episodes
  * @var $active_episodes
+ * @var Episode[] $specialty_episodes
  **/
 
 // Note, we are ignoring the possibility of additional specialties here and only supporting the first,
@@ -90,6 +91,8 @@ if (is_array($ordered_episodes)):
               $subspecialty_name = $episode->getSubspecialtyText();
               ?>
               <?php foreach ($episode->events as $event):
+                  /* @var Event $event */
+
                   $highlight = false;
 
                   if (isset($this->event) && $this->event->id == $event->id) {
@@ -100,7 +103,6 @@ if (is_array($ordered_episodes)):
                   $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
 
                   $event_name = $event->getEventName();
-                  $icon_class = $event->eventType->getEventIconCssClass();
                   ?>
 
               <li id="js-sideEvent<?php echo $event->id ?>"
@@ -123,7 +125,7 @@ if (is_array($ordered_episodes)):
                 <a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
                     <span
                         class="event-type js-event-a <?= ($event->hasIssue()) ? ($event->hasIssue('ready') ? 'ready' : 'alert') : '' ?>">
-                    <i class="oe-i-e <?php echo $icon_class; ?>"></i>
+                        <?= $event->getEventIcon() ?>
                   </span>
 
                   <span class="event-date <?php echo ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">

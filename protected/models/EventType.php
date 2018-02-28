@@ -370,30 +370,21 @@ class EventType extends BaseActiveRecordVersioned
     }
 
     /**
-     * @param string $type
-     * @param Event $event
-     * @return string
+     * Generate an icon element suited to this event type
+     *
+     * @param string $type The size of the icon
+     * @param Event $event The event to generate the icon for
+     * @return string The HTML of the rendered icon
      */
     public function getEventIcon($type = 'small', Event $event = null)
     {
-        $asset_manager = Yii::app()->getAssetManager();
-        $module_path = Yii::getPathOfAlias('application.modules.' . $this->class_name . '.assets.img');
-
-        $possible_images = array();
-        if ($event && $event->is_automated) {
-            $possible_images[] = $type . '-auto.png';
-        }
-        $possible_images[] = $type . '.png';
-
-        // module specific
-        foreach ($possible_images as $possible) {
-            $file = $module_path . '/' . $possible;
-            if (file_exists($file)) {
-                return $asset_manager->publish($file);
-            }
+        // 'medium' PNGs are the equivalent size as 'large' SVG backgrounds
+        if ($type === 'medium') {
+            $type = 'large';
         }
 
-        return '';
+        return "<i class=\"oe-i-e {$type} {$this->getEventIconCssClass()}\"
+                       title=\"{$this->name} icon\"></i>";
     }
 
     /**
@@ -430,12 +421,12 @@ class EventType extends BaseActiveRecordVersioned
             'OphCiPreassess' => 'i-CiExamination',
             'OphCiRefraction' => 'i-CiRefraction',
             'OphCoAmdapplication' => 'i-CoIVTApplication',
-            'OphCoCorrespondence ' => 'i-CoCorrespondence',
-            'OphCoCorrespondence' => 'i-CoTelephoneCall',
+            'OphCoCorrespondence' => 'i-CoLetterOut',
+            'OphCoCvi' => 'i-CoCertificate',
             'OphCoDocument' => 'i-CoDocument',
             'OphCoLetterin' => 'i-CoLetterIn',
             'OphCoLetterout' => 'i-CoLetterOut',
-            'OphCoMessaging' => 'i-CoTelephoneCall',
+            'OphCoMessaging' => 'i-Messaging',
             'OphCoTherapyapplication' => 'i-CoIVTApplication',
             'OphDrInjection' => 'i-TrIntravitrealInjection',
             'OphDrPrescription' => 'i-DrPrescription',
@@ -458,7 +449,7 @@ class EventType extends BaseActiveRecordVersioned
             'OphTrIntravitrealinjection' => 'i-TrIntravitrealInjection',
             'OphTrLaser' => 'i-TrLaser',
             'OphTrOperation' => 'i-TrOperationProcedure',
-            'OphTrOperationbooking' => 'i-TrOperationProcedure',
+            'OphTrOperationbooking' => 'i-TrOperation',
             'OphTrOperationnote' => 'i-TrOperationNotes',
         );
 

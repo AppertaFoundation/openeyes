@@ -19,31 +19,34 @@
 class OphCoDocument_API extends BaseAPI
 {
     /**
-     * @param $type
-     * @param $event
-     * @return string
+     * @param string $type The size of the icon
+     * @param Event $event The event to get the icon for
+     * @return string The icon HTML element
      */
-    public function getEventIcon($type, $event)
+    public function getEventIcon($type, Event $event)
     {
         $asset_manager = Yii::app()->getAssetManager();
         $module_path = Yii::getPathOfAlias('application.modules.OphCoDocument.assets.img');
 
         $element = Element_OphCoDocument_Document::model()->findByAttributes(array('event_id' => $event->id));
-        if(!$element)
-        {
-            return $asset_manager->publish($module_path."/".$type.".png");
+        if (!$element) {
+            $path = $asset_manager->publish($module_path . '/' . $type . '.png');
+        } else {
+            $file = $module_path . '/' . $type . str_replace(' ', '_', $element->sub_type->name) . '.png';
+            if (file_exists($file)) {
+                $path = $asset_manager->publish($file);
+            } else {
+                $path = $asset_manager->publish($module_path . '/' . $type . '.png');
+            }
         }
-        $file = $module_path."/".$type.str_replace(' ', '_', $element->sub_type->name).".png";
-        if (file_exists($file))
-        {
-            return $asset_manager->publish($file);
-        }
-        return $asset_manager->publish($module_path."/".$type.".png");
+
+        return "<img src=\"$path\" alt=\"op\"/>";
     }
 
     public function getEventName($event)
     {
         $element = Element_OphCoDocument_Document::model()->findByAttributes(array('event_id' => $event->id));
+
         return $element->sub_type->name;
     }
 

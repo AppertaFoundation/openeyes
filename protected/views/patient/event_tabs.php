@@ -18,7 +18,7 @@
 ?>
 
 <?php if ($this->event): ?>
-  <i class="oe-i-e large <?php echo $this->event->eventType->getEventIconCssClass(); ?>"></i>
+  <?php echo $this->event->getEventIcon('medium'); ?>
 <?php endif; ?>
 <?php foreach ($this->event_tabs as $tab) { ?>
     <a href="<?php echo @$tab['href'] ? $tab['href'] : '#'?>" class="button header-tab <?php if (@$tab['active']) { ?>selected<?php } ?>">

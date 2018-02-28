@@ -16,6 +16,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php
+/**
+ * @var EventType[] $eventTypes
+ */
+?>
+
 <?php Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js') ?>
 <?php Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.NewEvent.js', null, -10) ?>
 
@@ -86,14 +92,12 @@
                   <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3"
                       data-eventType-id="<?= $eventType->id ?>"
                       data-support-services="<?= $eventType->support_services ?>">
-                    <i class="oe-i-e <?= $eventType->getEventIconCssClass() ?>"
-                       title="<?= $eventType->name ?> icon"></i><?= $eventType->name ?>
+                    <?= $eventType->getEventIcon() ?><?= $eventType->name ?>
                   </li>
                 <?php } else { ?>
                   <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3 add_event_disabled"
                       title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add ' . $eventType->name ?>">
-                    <i class="oe-i-e <?= $eventType->getEventIconCssClass() ?>"
-                       title="<?= $eventType->name ?> icon"></i><?= $eventType->name ?>
+                      <?= $eventType->getEventIcon() ?><?= $eventType->name ?>
                   </li>
                 <?php } ?>
             <?php } ?>
