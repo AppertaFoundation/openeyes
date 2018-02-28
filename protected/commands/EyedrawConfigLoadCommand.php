@@ -547,7 +547,7 @@ EOSQL;
         //appends HTML for the index and all of its descendants
         $results .= $this->generateIndexHTML($index,$event_name);
       }
-      $results .= "</ul></div>";
+      $results .= "</ul></div></div>";
       return $results;
     }
 

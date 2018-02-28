@@ -292,7 +292,33 @@ $(document).ready(function() {
     if(!$('#OphCiExamination_allergy').find('tr').length) {
       $('.allergies_confirm_no').show();
     }
+    $(this).delegate('#js-search-in-event', 'click', function (e) {
+      showSearch();
+      $('#js-search-in-event').addClass('selected');
+    });
 
+  // popup
+  function showSearch(){
+    $('#js-search-in-event-popup').show();
+
+    $('.close-icon-btn').click(function(){
+      $('#js-search-in-event-popup').hide();
+      $('#js-search-in-event').removeClass('selected');
+      $('#js-search-event-input-right').val('');
+      $("#js-search-event-input-left").val('');
+      $('#js-search-event-results').hide();
+    });
+
+    $('#js-search-event-input-right, #js-search-event-input-left').keyup(function(){
+        console.log($(this).val());
+      if(!$(this).val() == ''){
+        $('#elements-search-results').show();
+      } else {
+        $('#js-search-event-results').hide();
+      }
+    });
+
+  }
     /**
      * Save event
      */

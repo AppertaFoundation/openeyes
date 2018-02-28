@@ -25,4 +25,6 @@
         <?php echo $tab['label'] ?>
     </a>
 <?php } ?>
-
+<button class="button header-tab icon" name="exam-search" id="js-search-in-event">
+  <i class="oe-i search"></i>
+</button>
