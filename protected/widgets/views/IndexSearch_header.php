@@ -11,10 +11,10 @@
     <div class="options">
       <fieldset>
         <label class="inline highlight ">
-          <input value="Descriptions" name="search-options" checked="" type="checkbox"> Descriptions
+          <input id="description_toggle" value="Descriptions" name="search-options" checked="" type="checkbox"> Descriptions
         </label>
         <label class="inline highlight ">
-          <input value="Children" name="search-options" checked="" type="checkbox"> Children
+          <input id="children_toggle" value="Children" name="search-options" checked="" type="checkbox"> Children
         </label>
       </fieldset>
     </div>

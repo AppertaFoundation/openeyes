@@ -131,7 +131,7 @@
 
     function add_did_you_mean_listerner($results){
       $('.sugguested_term_link').click(function(){
-        let search_bar = `#js-element-search-${last_search_pos}`;
+        let search_bar = `#js-search-event-input-${last_search_pos}`;
         $(search_bar).val($(this).text());
         $(search_bar).trigger('keyup');
         $(search_bar).trigger('focus');
@@ -148,18 +148,28 @@
   * for the IndexSearch Widget
   */
   $(document).ready(function(){
-    var el = document.getElementById('elements-search-results');
-    if(el === null) return;
+    $('#js-search-event-input-right').search();
+    $('#js-search-event-input-left').search();
 
     // inputs
-    $('#js-element-search-right').focus(function(){
-      showPopup();
+    $('#js-search-event-input-right').focus(function(){
+      $('#js-search-event-input-right').val('');
+      last_search_pos = "right";
+      $('#js-search-event-input-right').trigger("keyup");
+      $('#js-search-event-input-right').css('opacity','1');
+      $('#js-search-event-input-left').css('opacity','0.6');
+      show_results();
     }).focusout(function(){
       $(this).val('');
     });
 
-    $('#js-element-search-left').focus(function(){
-      showPopup();
+    $('#js-search-event-input-left').focus(function(){
+      $('#js-search-event-input-left').val('');
+      last_search_pos = "right";
+      $('#js-search-event-input-left').trigger("keyup");
+      $('#js-search-event-input-left').css('opacity','1');
+      $('#js-search-event-input-right').css('opacity','0.6');
+      show_results();
     }).focusout(function(){
       $(this).val('');
     });
@@ -181,7 +191,7 @@
   $('body').append('<div id="dim_rest" class="ui-widget-overlay" style="position:fixed;display : none; width: 100%; height: 100%; z-index: 180;"></div>');
   $('body').append("<div id=\"is_loading\"style=\"display : none; position: fixed; background-color: black; width: 100%; height: 100%; z-index: 1000; opacity: 0.8; top:0px; \"><img class=\"is_loading\" style=\" position: fixed; z-index: 1000; height: 64px; width: 64px; top: 33%; left: 50%;\"></div>");
   $('#description_toggle').change(function(){
-    let current_search_bar = "#js-element-search-"+last_search_pos;
+    let current_search_bar = "#js-search-event-input-"+last_search_pos;
     if (this.checked) {
       $('.description_icon,.description_note').show();
       show_and_search_descriptions = true;
@@ -196,7 +206,7 @@
     event.stopPropagation();
   });
   $('#children_toggle').change(function(event){
-    let current_search_bar = "#js-element-search-"+last_search_pos;
+    let current_search_bar = "#js-search-event-input-"+last_search_pos;
     if (this.checked) {
       $(current_search_bar).trigger('focus');
       $(current_search_bar).trigger('keyup');
@@ -216,7 +226,7 @@
     hide_results();
   });
 
-  $('.switch,#elements-search-results,#js-element-search-right,#js-element-search-left').click(function(event){
+  $('.switch,#elements-search-results,#js-search-event-input-right,#js-search-event-input-left').click(function(event){
     event.stopPropagation();
   });
 
@@ -238,27 +248,17 @@
   $(window).resize(function() {
     set_result_box_left();
   });
-  $('#search_button_right').click(function(event){
-    $('#js-element-search-right').trigger('focus');
+  $('#js-search-event-input-right').click(function(event){
+    $('#js-search-event-input-right').trigger('focus');
     event.stopPropagation();
   });
-  $('#js-element-search-left').click(function(event){
+  $('#js-search-event-input-left').click(function(event){
+    $('#js-search-event-input-left').trigger('focus');
     event.stopPropagation();
-    $('#js-element-search-left').trigger('focus');
   });
 });
 /* End of Initialisation */
 
-  function showPopup(){
-    $('#elements-search-results').show();
-
-    $('.lvl1').click(function(){
-      $('#elements-search-results').hide();
-    });
-    $('.close-icon-btn').click(function(){
-      $('#elements-search-results').hide();
-    });
-  }
 /*
 * Auxilary Functions:
 * Frequently used code
@@ -274,12 +274,6 @@ function get_doodle_button(elementId, doodleClassName, position) {
 }
 
 function show_results(){
-  var body = document.body,
-  html = document.documentElement;
-  var height = Math.max( body.scrollHeight, body.offsetHeight,
-    html.clientHeight, html.scrollHeight, html.offsetHeight );
-    $('#dim_rest').css("height", height);
-    $('#dim_rest').show();
     $("body").css("overflow","hidden");
     var $eventHeader = $('.event-header');
     $("#results").css({top: $eventHeader.offset().top + $eventHeader.height() - $(window).scrollTop()});
@@ -290,11 +284,10 @@ function show_results(){
   }
 
   function hide_results(){
-    $('#js-element-search-right').css('opacity','1');
-    $('#js-element-search-left').css('opacity','1');
-    $('#js-element-search-right,#js-element-search-left').val('');
+    $('#js-search-event-input-right').css('opacity','1');
+    $('#js-search-event-input-left').css('opacity','1');
+    $('#js-search-event-input-right,#js-search-event-input-left').val('');
     $('#elements-search-results').scrollTop(0);
-    $('#dim_rest').hide();
     $("body").css("overflow","auto");
     $("#elements-search-results").hide();
     $(".switch").hide();
@@ -693,13 +686,13 @@ function show_results(){
   }
 
   shortcut.add("Ctrl+Alt+R",function() {
-    $("#js-element-search-right").trigger("focus");
+    $("#js-search-event-input-right").trigger("focus");
   });
   shortcut.add("Ctrl+Alt+L",function() {
-    $("#js-element-search-left").trigger("focus");
+    $("#js-search-event-input-left").trigger("focus");
   });
   shortcut.add("Esc",function() {
-    $("#js-element-search-right,#js-element-search-left").trigger("blur");
+    $("#js-search-event-input-right,#js-search-event-input-left").trigger("blur");
     hide_results();
   });
   /* End of Shortcut code */

@@ -309,15 +309,6 @@ $(document).ready(function() {
       $('#js-search-event-results').hide();
     });
 
-    $('#js-search-event-input-right, #js-search-event-input-left').keyup(function(){
-        console.log($(this).val());
-      if(!$(this).val() == ''){
-        $('#elements-search-results').show();
-      } else {
-        $('#js-search-event-results').hide();
-      }
-    });
-
   }
     /**
      * Save event
