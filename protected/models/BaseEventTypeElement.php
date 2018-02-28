@@ -362,6 +362,30 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
+     * @param $attribute
+     * @param $params
+     *
+     * requiredIfNoComments validator function
+     * Checks if side matches and comments are non-empty
+     */
+
+    public function requiredIfNoComments($attribute, $params)
+    {
+        $comments_attribute = $params['side'].'_'.$params['comments_attribute'];
+
+        if (($params['side'] === 'left' && $this->eye_id != 2) || ($params['side'] === 'right' && $this->eye_id != 1)) {
+            if ( (($this->$attribute === '' || is_null($this->$attribute)) && ($this->$comments_attribute === '' || is_null($this->$comments_attribute))) ) {
+                if (!@$params['message']) {
+                    $params['message'] = ucfirst($params['side']).' {attribute} cannot be blank.';
+                }
+                $params['{attribute}'] = $this->getAttributeLabel($attribute);
+
+                $this->addError($attribute, strtr($params['message'], $params));
+            }
+        }
+    }
+
+    /**
      * stub method to allow elements to carry out actions related to being a part of a soft deleted event.
      */
     public function softDelete()

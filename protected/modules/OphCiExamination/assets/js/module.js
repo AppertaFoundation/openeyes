@@ -2312,10 +2312,10 @@ $(document).ready(function() {
  * If any text is entered into the Comments field, then "No Abnormality" is removed from the automatic report.
  */
 
-$(document).on("keyup", ".eyedraw-fields textarea[id$='_description']", function(event){
+$(document).on("keyup", ".eyedraw-fields textarea[id$='_description'], .eyedraw-fields textarea[id$='_comments']", function(event){
     var $textarea = $(event.target);
-    var $report_input = $("#"+$textarea.attr("id").replace(/_description$/, "_ed_report"));
-    var $report_html  = $("#"+$textarea.attr("id").replace(/_description$/, "_ed_report_display"));
+    var $report_input = $("#"+$textarea.attr("id").replace(/(_description|_comments)$/, "_ed_report"));
+    var $report_html  = $("#"+$textarea.attr("id").replace(/(_description|_comments)$/, "_ed_report_display"));
 
     var report_text = $report_input.val();
 
