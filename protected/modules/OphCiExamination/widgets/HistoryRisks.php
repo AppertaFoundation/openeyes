@@ -23,7 +23,7 @@ namespace OEModule\OphCiExamination\widgets;
 use OEModule\OphCiExamination\models\HistoryRisks as HistoryRisksElement;
 use OEModule\OphCiExamination\models\HistoryRisksEntry;
 use OEModule\OphCiExamination\models\OphCiExaminationRisk;
-use OEModule\OphCiExamination\models\OphciExaminationRiskSet;
+use OEModule\OphCiExamination\models\OphCiExaminationRiskSet;
 
 class HistoryRisks extends \BaseEventElementWidget
 {
@@ -59,7 +59,7 @@ class HistoryRisks extends \BaseEventElementWidget
         $criteria->params['age'] = $this->patient->age;
         $criteria->params['gender'] = $this->patient->gender;
 
-        $sets = OphciExaminationRiskSet::model()->findAll($criteria);
+        $sets = OphCiExaminationRiskSet::model()->findAll($criteria);
 
         $required = array();
         if($sets){
