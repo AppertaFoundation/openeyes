@@ -17,9 +17,6 @@
  */
 ?>
 <?php
-  $eye_divider_list = ['Visual Function','Visual Acuity','Near Visual Acuity', 'Colour Vision', 'Anterior Segment','Intraocular Pressure',
-      'Refraction','Gonioscopy','Adnexal','Dilation', 'Pupillary Abnormalities', 'CCT','Keratoconus Monitoring', 'Posterior Pole',
-      'OCT'];
 $section_classes = array('edit-'.CHtml::modelName($element->elementType->name));
 $section_classes[] =  'element full';
 if ($this->isRequired($element)) {

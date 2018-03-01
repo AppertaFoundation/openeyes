@@ -17,16 +17,16 @@
  */
 ?>
 <section class=" element
-	<?php
-    $eye_divider_list = ['Anterior Segment','Intraocular Pressure',
-        'Refraction','Glaucoma Current Management plan', 'Gonioscopy','Adnexal', 'Dilation', 'Pupillary Abnormalities', 'CCT','Keratoconus Monitoring',
-        'Posterior Pole', 'Visual Acuity', 'Lids Medical'];
-  if ($element->elementType->name=='Medications'||$element->elementType->name=='Risks'){
+<?php
+if ($element->elementType->name == 'Medications' || $element->elementType->name == 'Risks') {
     echo 'full';
-  }elseif (in_array($element->elementType->name, $eye_divider_list)){
+} elseif (is_subclass_of($element, 'SplitEventTypeElement')) {
     echo 'full priority eye-divider view-visual-acuity';
-  }
-  elseif ($element->getTileSize() === 1) {  echo 'tile'; } else { echo 'full priority';} ?>
+} elseif ($element->getTileSize() === 1) {
+    echo 'tile';
+} else {
+    echo 'full priority';
+} ?>
 	view-<?php echo $element->elementType->name?>"
          data-element-type-id="<?php echo $element->elementType->id?>"
          data-element-type-class="<?php echo $element->elementType->class_name?>"
