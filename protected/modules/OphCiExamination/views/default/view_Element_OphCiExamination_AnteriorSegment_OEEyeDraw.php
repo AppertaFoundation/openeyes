@@ -16,101 +16,61 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="field-row">
+<div class="eyedraw-canvas">
     <?php
     $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-        'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
-        'side' => ($side == 'right') ? 'R' : 'L',
+        'idSuffix' => $side . '_' . $element->elementType->id . '_' . $element->id,
+        'side' => ($side === 'right') ? 'R' : 'L',
         'mode' => 'view',
         'width' => 200,
         'height' => 200,
         'model' => $element,
-        'attribute' => $side.'_eyedraw',
+        'attribute' => $side . '_eyedraw',
         'toggleScale' => 0.72,
     )); ?>
     <?php
     $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-        'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id . '_side',
-        'side' => ($side == 'right') ? 'R' : 'L',
+        'idSuffix' => $side . '_' . $element->elementType->id . '_' . $element->id . '_side',
+        'side' => ($side === 'right') ? 'R' : 'L',
         'mode' => 'view',
         'width' => 132,
         'height' => 200,
         'model' => $element,
-        'attribute' => $side.'_eyedraw2',
+        'attribute' => $side . '_eyedraw2',
         'toggleScale' => 0.72,
-        ));
+    ));
     ?>
 
 </div>
 
-<table class="element-fields full-width column">
-    <?php if ($report = $element->{$side.'_ed_report'}) {
-        ?>
-        <tr class="row data-row description">
-            <td class="cols-2 column flex-top flex-layout">
-                <div class="data-label flex-top"><?php echo $element->getAttributeLabel($side.'_ed_report')?>:</div>
-            </td>
-            <td class="cols-10 column">
-                <div class="data-value">
-                    <?php echo nl2br($report)?>
-                </div>
-            </td>
-        </tr>
-        <?php
-    } ?>
+<div class="eyedraw-data stack">
+    <?php if ($report = $element->{$side . '_ed_report'}): ?>
+      <div class="data-label"><?php echo $element->getAttributeLabel($side . '_ed_report') ?>:</div>
+      <div class="data-value"><?php echo nl2br($report) ?></div>
+    <?php endif; ?>
 
-    <?php if ($description = $element->{$side.'_description'}) {
-    ?>
-        <tr class="row data-row">
-            <td class="cols-2 column flex-top flex-layout">
-                <div class="data-label"><?php echo $element->getAttributeLabel($side.'_description')?>:</div>
-            </td>
-            <td class="cols-10 column">
-                <div class="data-value">
-                    <?php echo CHtml::encode($description)?>
-                </div>
-            </td>
-        </tr>
-    <?php
-    } ?>
+    <?php if ($description = $element->{$side . '_description'}): ?>
+      <div class="data-label"><?php echo $element->getAttributeLabel($side . '_description') ?>:</div>
+      <div class="data-value"><?php echo CHtml::encode($description) ?></div>
+    <?php endif; ?>
+
     <?php /* See OE-4283 */ ?>
-    <?php if ($element->{$side.'_pupil'}) {
-    ?>
-        <tr class="row data-row">
-            <td class="cols-4 column flex-top flex-layout">
-                <div class="data-label"><?php echo $element->getAttributeLabel($side.'_pupil_id')?>:</div>
-            </td>
-            <td class="cols-8 column">
-                <div class="data-value"><?php echo $element->{$side.'_pupil'}->name?></div>
-            </td>
-        </tr>
-    <?php
-} ?>
-    <?php if ($element->{$side . '_nuclear'}) {
-        ?>
-        <tr class="row data-row hidden">
-            <td class="cols-4 column flex-top flex-layout">
-                <div class="data-label"><?php echo $element->getAttributeLabel($side . '_nuclear_id') ?>:</div>
-            </td>
-            <td class="cols-8 column">
-                <div class="data-value"><?php echo $element->{$side . '_nuclear'}->name ?></div>
-            </td>
-        </tr>
-        <?php
-    }
-    if ($element->{$side . '_cortical'}) {
-        ?>
-    <tr class="row data-row hidden">
-        <td class="cols-4 column flex-top flex-layout">
-            <div class="data-label"><?php echo $element->getAttributeLabel($side.'_cortical_id')?>:</div>
-        </td>
-        <td class="cols-8 column">
-            <div class="data-value"><?php echo $element->{$side.'_cortical'}->name?></div>
-        </td>
-    </tr>
-    <?php
-    }
+    <?php if ($element->{$side . '_pupil'}): ?>
+      <div class="data-label"><?php echo $element->getAttributeLabel($side . '_pupil_id') ?>:</div>
+      <div class="data-value"><?php echo $element->{$side . '_pupil'}->name ?></div>
+    <?php endif; ?>
 
+    <?php if ($element->{$side . '_nuclear'}): ?>
+      <div class="data-label"><?php echo $element->getAttributeLabel($side . '_nuclear_id') ?>:</div>
+      <div class="data-value"><?php echo $element->{$side . '_nuclear'}->name ?></div>
+    <?php endif; ?>
+
+    <?php if ($element->{$side . '_cortical'}): ?>
+      <div class="data-label"><?php echo $element->getAttributeLabel($side . '_cortical_id') ?>:</div>
+      <div class="data-value"><?php echo $element->{$side . '_cortical'}->name ?></div>
+    <?php endif; ?>
+
+    <?php
     /* See OE-4283 */
     /*
     <div class="row data-row">
@@ -121,18 +81,10 @@
             <div class="data-value"><?php echo $element->{$side.'_pxe'} ? 'Yes' : 'No'?></div>
         </div>
     </div>
-    */
-	if ($element->{$side . '_phako'}) {
-	?>
+    */ ?>
 
-    <tr class="row data-row">
-        <td class="cols-4 column flex-top flex-layout">
-            <div class="data-label"><?php echo $element->getAttributeLabel($side.'_phako')?>:</div>
-        </td>
-        <td class="cols-8 column">
-            <div class="data-value"><?php echo $element->{$side.'_phako'} ? 'Yes' : 'No'?></div>
-        </td>
-    </tr>
-	<?php
-	} ?>
-</table>
+    <?php if ($element->{$side . '_phako'}): ?>
+      <div class="data-label"><?php echo $element->getAttributeLabel($side . '_phako') ?>:</div>
+      <div class="data-value"><?php echo $element->{$side . '_phako'} ? 'Yes' : 'No' ?></div>
+    <?php endif; ?>
+</div>
