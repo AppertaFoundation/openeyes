@@ -39,40 +39,8 @@ class HistoryRisks extends \BaseEventElementWidget
 
     public function getRequiredRisks()
     {
-        $firm = \Firm::model()->findByPk(\Yii::app()->session['selected_firm_id']);
-        $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
-
-        $criteria = new \CDbCriteria();
-        $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
-        $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
-        $criteria->with = array(
-            'ophciexamination_risks_entry' => array(
-                'condition' =>
-                    '((age_min <= :age OR age_min IS NULL) AND' .
-                    '(age_max >= :age OR age_max IS NULL)) AND' .
-                    '(gender = :gender OR gender IS NULL)'
-            ),
-        );
-
-        $criteria->params['subspecialty_id'] = $subspecialty_id;
-        $criteria->params['firm_id'] = $firm->id;
-        $criteria->params['age'] = $this->patient->age;
-        $criteria->params['gender'] = $this->patient->gender;
-
-        $sets = OphCiExaminationRiskSet::model()->findAll($criteria);
-
-        $required = array();
-        if($sets){
-            foreach($sets as $set){
-                if($set->ophciexamination_risks_entry){
-                    foreach($set->ophciexamination_risks_entry as $ophciexamination_risks){
-                        $required[] = $ophciexamination_risks->ophciexamination_risk;
-                    }
-                }
-            }
-        }
-
-        return $required;
+        $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        return $exam_api->getRequiredRisks($this->patient);
     }
 
     public function getRiskOptions()

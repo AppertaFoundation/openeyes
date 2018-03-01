@@ -1136,6 +1136,21 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
+        $posted_risk = [];
+        if(isset($data['OEModule_OphCiExamination_models_HistoryRisks']['entries'])){
+            $posted_risk = array_map(function($r){ return $r['risk_id'];}, $data['OEModule_OphCiExamination_models_HistoryRisks']['entries']);
+        }
+
+        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+
+        array_map(function($risk) use ($posted_risk){
+            if( !in_array($risk->id, $posted_risk) ){
+                $errors['OEModule_OphCiExamination_models_HistoryRisks']['entries'][$risk->name] = 'Missing required risks: ' . $risk->name;
+            }
+        }, $exam_api->getRequiredRisks($this->patient));
+
+
+
         if (isset($data['patientticket_queue']) && $api = Yii::app()->moduleAPI->get('PatientTicketing')) {
             $co_sid = @$data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];
             $status = models\OphCiExamination_ClinicOutcome_Status::model()->findByPk($co_sid);
