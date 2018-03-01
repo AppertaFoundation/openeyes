@@ -315,45 +315,39 @@
           .addClass(itemClass);
 
       item.append('<a href="#" class="' + hrefClass + '"></a>');
-      item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme plus"></i></div> <h3 class="collapse-group-header '+ hrefClass +'">'+itemData.name+'</h3>');
-        //children
-        if (itemData.children && itemData.children.length) {
-             var subList = $('<ul>').addClass('oe-element-list collapse-group-content');
+      item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme plus"></i></div> <h3 class="collapse-group-header">'+itemData.name+'</h3>');
+      //children
+      if (itemData.children && itemData.children.length) {
+        var subList = $('<ul>').addClass('oe-element-list collapse-group-content');
 
-        item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme minus"></i></div> <h3 class="collapse-group-header">'+itemData.name+'</h3>');
-        //children
-        if (itemData.children && itemData.children.length) {
-             var subList = $('<ul>').addClass('oe-element-list collapse-group-content');
+        $.each(itemData.children, function () {
 
-            $.each(itemData.children, function () {
+          var id_name = this.name.replace(/\s+/g,'-');
+          var subListItem = $("<li>")
+            .data('container-selector','section[data-element-type-id="'+itemData.id+'"]')
+            .data('element-type-class', this.class_name)
+            .data('element-type-id', this.id)
+            .data('element-display-order', this.display_order)
+            .data('element-type-name', this.name)
+            .attr('id','side-element-'+id_name ).addClass('element');
+          var childClass = '';
+          if ($.inArray(this.class_name, self.patient_open_elements)!== -1){
+            childClass='selected';
+          }
+          subListItem.append('<a href="#" class= "'+childClass+'" >'+this.name+'</a>');
+          subList.append(subListItem);
+        });
 
-              var id_name = this.name.replace(/\s+/g,'-');
-              var subListItem = $("<li>")
-                .data('container-selector','section[data-element-type-id="'+itemData.id+'"]')
-                .data('element-type-class', this.class_name)
-                .data('element-type-id', this.id)
-                .data('element-display-order', this.display_order)
-                .data('element-type-name', this.name)
-                .attr('id','side-element-'+id_name ).addClass('element');
-              var childClass = 'child';
-              if ($.inArray(this.class_name, self.patient_open_elements)!== -1){
-                childClass+=' selected';
-              }
-              subListItem.append('<a href="#" class= "'+childClass+'" >'+this.name+'</a>');
-              subList.append(subListItem);
-            });
-
-            if (!open) {
-                subList.hide();
-            }
-            item.append(subList);
-            item.addClass('has-children');
-            item.addClass('has-children');
+        if (!open) {
+          subList.hide();
         }
-        return item;
+        item.append(subList);
+        item.addClass('has-children');
+      }
+      return item;
     };
 
-    /**
+  /**
      *  Convert the JSON into an array
      *
      */
