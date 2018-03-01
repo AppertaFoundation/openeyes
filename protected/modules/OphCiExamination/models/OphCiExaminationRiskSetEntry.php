@@ -19,7 +19,7 @@
 namespace OEModule\OphCiExamination\models;
 
 use OEModule\OphCiExamination\models\OphCiExaminationRisk;
-use OEModule\OphCiExamination\models\OphciExaminationRiskEntry;
+use OEModule\OphCiExamination\models\OphCiExaminationRiskEntry;
 
 /**
  * This is the model class for table "ophciexamination_risk_set_entry".
@@ -36,12 +36,12 @@ use OEModule\OphCiExamination\models\OphciExaminationRiskEntry;
  * @property string $created_date
  *
  * The followings are the available model relations:
- * @property OphciexaminationRiskSetAssignment[] $ophciexaminationRiskSetAssignments
- * @property OphciexaminationRisk $ophciexaminationRisk
+ * @property OphCiExaminationRiskSetAssignment[] $ophciexaminationRiskSetAssignments
+ * @property OphCiExaminationRisk $ophciexaminationRisk
  * @property User $createdUser
  * @property User $lastModifiedUser
  */
-class OphciExaminationRiskSetEntry extends \BaseActiveRecordVersioned
+class OphCiExaminationRiskSetEntry extends \BaseActiveRecordVersioned
 {
 	/**
 	 * @return string the associated database table name
@@ -92,7 +92,7 @@ class OphciExaminationRiskSetEntry extends \BaseActiveRecordVersioned
 	{
 		return array(
 			'id' => 'ID',
-			'ophciexamination_risk_id' => 'Ophciexamination Risk',
+			'ophciexamination_risk_id' => 'OphCiExamination Risk',
 			'gender' => 'Gender',
 			'age_min' => 'Age Min',
 			'age_max' => 'Age Max',
@@ -157,7 +157,7 @@ class OphciExaminationRiskSetEntry extends \BaseActiveRecordVersioned
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return OphciExaminationRiskSetEntry the static model class
+	 * @return OphCiExaminationRiskSetEntry the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

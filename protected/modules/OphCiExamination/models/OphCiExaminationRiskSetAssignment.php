@@ -33,12 +33,12 @@ namespace OEModule\OphCiExamination\models;
  * @property string $created_date
  *
  * The followings are the available model relations:
- * @property OphciExaminationRiskSet $riskSet
+ * @property OphCiExaminationRiskSet $riskSet
  * @property User $createdUser
  * @property User $lastModifiedUser
- * @property OphciexaminationRisk $ophciexaminationRisk
+ * @property OphCiexaminationRisk $ophciexaminationRisk
  */
-class OphciExaminationRiskSetAssignment extends \BaseActiveRecordVersioned
+class OphCiExaminationRiskSetAssignment extends \BaseActiveRecordVersioned
 {
     /**
      * @return string the associated database table name
@@ -73,10 +73,10 @@ class OphciExaminationRiskSetAssignment extends \BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'riskSet' => array(self::BELONGS_TO, 'OphciexaminationRiskSet', 'risk_set_id'),
+            'riskSet' => array(self::BELONGS_TO, 'OphCiExaminationRiskSet', 'risk_set_id'),
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'ophciexaminationRiskEntry' => array(self::BELONGS_TO, 'OphciexaminationRiskSetEntry', 'ophciexamination_risk_entry_id'),
+            'ophciexaminationRiskEntry' => array(self::BELONGS_TO, 'OphCiExaminationRiskSetEntry', 'ophciexamination_risk_entry_id'),
         );
     }
 
@@ -87,7 +87,7 @@ class OphciExaminationRiskSetAssignment extends \BaseActiveRecordVersioned
     {
         return array(
             'id' => 'ID',
-            'ophciexamination_risk_entry_id' => 'Ophciexamination Risk',
+            'ophciexamination_risk_entry_id' => 'OphCiExamination Risk',
             'risk_set_id' => 'Risk Set',
             'last_modified_user_id' => 'Last Modified User',
             'last_modified_date' => 'Last Modified Date',
@@ -131,7 +131,7 @@ class OphciExaminationRiskSetAssignment extends \BaseActiveRecordVersioned
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!
      * @param string $className active record class name.
-     * @return OphciExaminationRiskSetAssignment the static model class
+     * @return OphCiExaminationRiskSetAssignment the static model class
      */
     public static function model($className=__CLASS__)
     {
