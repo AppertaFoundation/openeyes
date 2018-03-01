@@ -21,12 +21,6 @@
 namespace OEModule\OphCiExamination\controllers;
 
 use OEModule\OphCiExamination\models;
-/*
-use OEModule\OphCiExamination\models\OphCiExaminationRisk;
-use OEModule\OphCiExamination\models\OphCiExaminationRiskSet;
-use OEModule\OphCiExamination\models\OphCiExaminationRiskSetAssignment;
-use OEModule\OphCiExamination\models\OphCiExaminationRiskSetEntry;
-use WebDriver\Exception;*/
 
 class RisksAssignmentController extends \ModuleAdminController
 {
@@ -59,7 +53,7 @@ class RisksAssignmentController extends \ModuleAdminController
      */
     public function actionCreate()
     {
-        $risk_set = new OphCiExaminationRiskSet;
+        $risk_set = new models\OphCiExaminationRiskSet;
 
         if(isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationRiskSet']))
         {
@@ -73,7 +67,7 @@ class RisksAssignmentController extends \ModuleAdminController
 
                     $risks = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry', array());
                     foreach($risks as $risk){
-                        $risk_model = new OphCiExaminationRiskSetEntry;
+                        $risk_model = new models\OphCiExaminationRiskSetEntry;
 
                         $risk_model->gender = $risk['gender'];
                         $risk_model->age_min = $risk['age_min'];
@@ -133,9 +127,9 @@ class RisksAssignmentController extends \ModuleAdminController
                     foreach($risks as $risk){
 
                         if(isset($risk['id'])){
-                            $risk_model = OphCiExaminationRiskSetEntry::model()->findByPk($risk['id']);
+                            $risk_model = models\OphCiExaminationRiskSetEntry::model()->findByPk($risk['id']);
                         } else {
-                            $risk_model = new OphCiExaminationRiskSetEntry;
+                            $risk_model = new models\OphCiExaminationRiskSetEntry;
                         }
 
                         $risk_model->gender = $risk['gender'];
@@ -155,12 +149,12 @@ class RisksAssignmentController extends \ModuleAdminController
                     $criteria->addNotInCondition('ophciexamination_risk_entry_id', $posted_entry_ids);
                     $criteria->params[':risk_set_id'] = $risk_set->id;
                     
-                    $assignments = OphCiExaminationRiskSetAssignment::model()->findAll($criteria);
+                    $assignments = models\OphCiExaminationRiskSetAssignment::model()->findAll($criteria);
                     foreach($assignments as $assignment){
                         $entry_id = $assignment->ophciexamination_risk_entry_id;
 
                          if($assignment->delete()){
-                             OphCiExaminationRiskSetEntry::model()->findByPk($entry_id)->delete();
+                             models\OphCiExaminationRiskSetEntry::model()->findByPk($entry_id)->delete();
                          }
                     }
                 }
@@ -189,10 +183,10 @@ class RisksAssignmentController extends \ModuleAdminController
         $criteria->params[':set_id'] = $risk_set->id;
         $criteria->params[':ophciexamination_risk_entry_id'] = $risk_model->id;
 
-        $assignment = OphCiExaminationRiskSetAssignment::model()->find($criteria);
+        $assignment = models\OphCiExaminationRiskSetAssignment::model()->find($criteria);
 
         if(!$assignment){
-            $assignment = new OphCiExaminationRiskSetAssignment;
+            $assignment = new models\OphCiExaminationRiskSetAssignment;
             $assignment->ophciexamination_risk_entry_id = $risk_model->id;
             $assignment->risk_set_id = $risk_set->id;
 
@@ -236,7 +230,7 @@ class RisksAssignmentController extends \ModuleAdminController
      */
     public function loadModel($id)
     {
-        $model=OphCiExaminationRiskSet::model()->findByPk($id);
+        $model = models\OphCiExaminationRiskSet::model()->findByPk($id);
         if($model===null)
             throw new CHttpException(404,'The requested page does not exist.');
         return $model;
