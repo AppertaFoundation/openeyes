@@ -311,9 +311,6 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         if (!$this->stop_medication) {
             $this->stop_medication_details = null;
         }
-        if (!$this->fast_track) {
-            $this->fast_track_discussed_with_patient = null;
-        }
         if (!$this->special_equipment) {
             $this->special_equipment_details = null;
         }
