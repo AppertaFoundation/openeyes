@@ -16,7 +16,7 @@
      * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
      */
 
-    $all_units = $element->getUnits($element->unit->id, false);
+    $all_units = $element->getUnits($element->unit->id, $is_near);
     $va_tooltip = '';
     foreach($all_units as $unit) {
         $va_tooltip.='<b>'.$unit->name.'</b>:<br/> '.$element->getCombined($side, $unit->id).'<br/>';
