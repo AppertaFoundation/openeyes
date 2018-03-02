@@ -26,7 +26,7 @@
         </div>
         <div class="large-3 column end">
             <?php
-            $risks = $element->getRiskOptions();
+            $risks = $this->getRiskOptions();
             $risks_opts = array(
                 'options' => array(),
                 'empty' => '- select -',

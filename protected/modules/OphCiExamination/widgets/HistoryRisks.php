@@ -22,6 +22,8 @@ namespace OEModule\OphCiExamination\widgets;
 
 use OEModule\OphCiExamination\models\HistoryRisks as HistoryRisksElement;
 use OEModule\OphCiExamination\models\HistoryRisksEntry;
+use OEModule\OphCiExamination\models\OphCiExaminationRisk;
+use OEModule\OphCiExamination\models\OphCiExaminationRiskSet;
 
 class HistoryRisks extends \BaseEventElementWidget
 {
@@ -33,6 +35,43 @@ class HistoryRisks extends \BaseEventElementWidget
     protected function getNewElement()
     {
         return new HistoryRisksElement();
+    }
+
+    public function getRequiredRisks()
+    {
+        $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        return $exam_api->getRequiredRisks($this->patient);
+    }
+
+    public function getRiskOptions()
+    {
+        $force = array();
+        foreach ($this->element->entries as $entry) {
+            $force[] = $entry->risk_id;
+        }
+
+        $ignore = array_map(function($r) { return $r->id; }, $this->getRequiredRisks());
+
+        $criteria = new \CDbCriteria();
+        $criteria->addNotInCondition('id', $ignore);
+
+        return OphCiExaminationRisk::model()->activeOrPk($force)->findAll($criteria);
+    }
+
+    public function getMissingRequiredRisks()
+    {
+
+        $current_ids = array_map(function ($e) { return $e->risk_id; }, $this->element->entries);
+        $missing = array();
+        foreach ($this->getRequiredRisks() as $required) {
+            if (!in_array($required->id, $current_ids)) {
+                $entry = new HistoryRisksEntry();
+                $entry->risk_id = $required->id;
+                $missing[] = $entry;
+            }
+        }
+        return $missing;
+
     }
 
     /**

@@ -1168,6 +1168,29 @@ class DefaultController extends \BaseEventTypeController
             }
         }
 
+        $posted_risk = [];
+        if(isset($data['OEModule_OphCiExamination_models_HistoryRisks']['entries'])){
+            $posted_risk = array_map(function($r){ return $r['risk_id'];}, $data['OEModule_OphCiExamination_models_HistoryRisks']['entries']);
+        }
+
+        // Element was open, we check the required risks
+        if(isset($data['OEModule_OphCiExamination_models_HistoryRisks'])){
+            $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+
+            $missing_risks = [];
+            foreach ($exam_api->getRequiredRisks($this->patient) as $required_risk) {
+                if( !in_array($required_risk->id, $posted_risk) ){
+                    $missing_risks[] = $required_risk;
+                }
+            }
+
+            foreach ($missing_risks as $missing_risk) {
+                $et_name = models\HistoryRisks::model()->getElementTypeName();
+                $errors[$et_name][$missing_risk->name] = 'Missing required risks: ' . $missing_risk->name;
+            }
+        }
+
+
         if (isset($data['patientticket_queue']) && $api = Yii::app()->moduleAPI->get('PatientTicketing')) {
             $co_sid = @$data[\CHtml::modelName(models\Element_OphCiExamination_ClinicOutcome::model())]['status_id'];
             $status = models\OphCiExamination_ClinicOutcome_Status::model()->findByPk($co_sid);
