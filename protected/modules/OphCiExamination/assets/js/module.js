@@ -2329,8 +2329,30 @@ $(document).on("keyup", ".eyedraw-fields textarea[id$='_description'], .eyedraw-
         $report_input.val("");
         $report_html.text("");
     }
-    else if(report_text === '') {
-        $report_input.val("No abnormality");
-        $report_html.text("No abnormality");
+    else {
+        // Get eyedraw report
+
+        var element
+        element = $(this).closest('.sub-element');
+        if(element.length === 0) {
+            element = $(this).closest('.element');
+        }
+
+        var side = null;
+        if ($(this).closest('[data-side]').length) {
+            side = $(this).closest('[data-side]').attr('data-side');
+        }
+
+        var eyedraw = element.attr('data-element-type-id');
+        if (side) {
+            eyedraw = side + '_' + eyedraw;
+        }
+        eyedraw = ED.getInstance('ed_drawing_edit_' + eyedraw);
+
+        var text = eyedraw.report();
+        text = text.replace(/, +$/, '');
+
+        $report_input.val(text);
+        $report_html.text(text);
     }
 });
