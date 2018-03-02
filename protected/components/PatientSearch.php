@@ -24,7 +24,7 @@ class PatientSearch
 
     const HOSPITAL_NUMBER_SEARCH_PREFIX = '(H|Hosnum)\s*[:;]\s*';
 
-    // Hospital number (assume a < 10 digit number is a hosnum)
+    // Hospital number (assume a < 10 digit number is a hosnum)0
     const HOSPITAL_NUMBER_REGEX = '/^(H|Hosnum)\s*[:;]\s*([0-9\-]+)$/i';
 
     // Patient name
