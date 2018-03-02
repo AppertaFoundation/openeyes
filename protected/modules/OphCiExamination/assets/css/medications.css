@@ -17,22 +17,28 @@
   min-width: 300px;
 }
 
-/* line 20, ../sass/components/elements/_history-medications.scss */
+/* Fix bottom spacing, there may be more widgets under medications */
+/* line 21, ../sass/components/elements/_history-medications.scss */
+#OEModule_OphCiExamination_models_HistoryMedications_popup {
+  margin-bottom: 3px;
+}
+
+/* line 25, ../sass/components/elements/_history-medications.scss */
 a.start-medication {
   color: #43a844;
 }
 
-/* line 24, ../sass/components/elements/_history-medications.scss */
+/* line 29, ../sass/components/elements/_history-medications.scss */
 a.stop-medication {
   color: #cf0d27;
 }
 
-/* line 28, ../sass/components/elements/_history-medications.scss */
+/* line 33, ../sass/components/elements/_history-medications.scss */
 .not-synced {
   color: #cf0d27;
 }
 
-/* line 32, ../sass/components/elements/_history-medications.scss */
+/* line 37, ../sass/components/elements/_history-medications.scss */
 .laterality {
   background-color: transparent;
   color: #fff;
@@ -42,20 +48,20 @@ a.stop-medication {
   -moz-border-radius: 50%;
   border-radius: 50%;
 }
-/* line 40, ../sass/components/elements/_history-medications.scss */
+/* line 45, ../sass/components/elements/_history-medications.scss */
 .laterality.R {
   background-color: #9fec6d;
   color: #747782;
   margin-left: 0px;
   margin-right: 4ch;
 }
-/* line 46, ../sass/components/elements/_history-medications.scss */
+/* line 51, ../sass/components/elements/_history-medications.scss */
 .laterality.L {
   background-color: #fe6767;
   margin-left: 4ch;
   margin-right: 0px;
 }
-/* line 51, ../sass/components/elements/_history-medications.scss */
+/* line 56, ../sass/components/elements/_history-medications.scss */
 .laterality.B {
   margin-right: 2ch;
   margin-left: 2ch;
