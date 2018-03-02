@@ -1141,14 +1141,22 @@ class DefaultController extends \BaseEventTypeController
             $posted_risk = array_map(function($r){ return $r['risk_id'];}, $data['OEModule_OphCiExamination_models_HistoryRisks']['entries']);
         }
 
-        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+        // Element was open, we check the required risks
+        if(isset($data['OEModule_OphCiExamination_models_HistoryRisks'])){
+            $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 
-        array_map(function($risk) use ($posted_risk){
-            if( !in_array($risk->id, $posted_risk) ){
-                $errors['OEModule_OphCiExamination_models_HistoryRisks']['entries'][$risk->name] = 'Missing required risks: ' . $risk->name;
+            $missing_risks = [];
+            foreach ($exam_api->getRequiredRisks($this->patient) as $required_risk) {
+                if( !in_array($required_risk->id, $posted_risk) ){
+                    $missing_risks[] = $required_risk;
+                }
             }
-        }, $exam_api->getRequiredRisks($this->patient));
 
+            foreach ($missing_risks as $missing_risk) {
+                $et_name = models\HistoryRisks::model()->getElementTypeName();
+                $errors[$et_name][$missing_risk->name] = 'Missing required risks: ' . $missing_risk->name;
+            }
+        }
 
 
         if (isset($data['patientticket_queue']) && $api = Yii::app()->moduleAPI->get('PatientTicketing')) {

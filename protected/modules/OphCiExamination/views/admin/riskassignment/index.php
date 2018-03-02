@@ -43,37 +43,13 @@
             },
         ),
         array(
-            'header' => 'Firm',
+            'header' => \Firm::contextLabel(),
             'name' => 'firm_id',
             'type' => 'raw',
             'value' => function($data, $row){
                 return $data->firm ? $data->firm->name : null;
             }
         ),
-        /*array(
-            'header' => 'Sex Specific',
-            'name' => 'gender',
-            'type' => 'raw',
-            'value' => function($data, $row){
-
-                if($data->gender){
-                    return \Patient::model()->getGenderString($data->gender);
-                }
-                return null;
-            }
-        ),
-        array(
-            'header' => 'Age Specific (Min - Max)',
-            'name' => 'age_min',
-            'type' => 'raw',
-            'value' => function($data, $row){
-                if( !$data->age_min && !$data->age_max) {
-                    return null;
-                };
-                return $data->age_min . ' - ' . $data->age_max;
-            }
-        ),*/
-
     );
 
     $dataProvider = $model->search();
