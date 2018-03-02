@@ -334,6 +334,11 @@
           if ($.inArray(this.class_name, self.patient_open_elements)!== -1){
             childClass='selected';
           }
+
+          if ($.inArray(this.class_name, self.patient_error_elements) !== -1) {
+            childClass += ' error';
+          }
+
           subListItem.append('<a href="#" class= "'+childClass+'" >'+this.name+'</a>');
           subList.append(subListItem);
         });
