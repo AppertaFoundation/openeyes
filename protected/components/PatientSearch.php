@@ -25,7 +25,7 @@ class PatientSearch
     const HOSPITAL_NUMBER_SEARCH_PREFIX = '(H|Hosnum)\s*[:;]\s*';
 
     // Hospital number (assume a < 10 digit number is a hosnum)
-    const HOSPITAL_NUMBER_REGEX = '/^'.self::HOSPITAL_NUMBER_SEARCH_PREFIX.'([0-9\-]+)$/i';
+    const HOSPITAL_NUMBER_REGEX = '/^(H|Hosnum)\s*[:;]\s*([0-9\-]+)$/i';
 
     // Patient name
     const PATIENT_NAME_REGEX = '/^(?:P(?:atient)?[:;\s]+)?([\a-zA-Z-]+[ ,]?[\a-zA-Z-]*)$/';
