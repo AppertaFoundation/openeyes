@@ -93,9 +93,7 @@
     var $icon = icon,
       $header = header,
       $content = content,
-      expanded = initialState == 'expanded' ? true : false;
-
-    if(expanded == false) $content.removeClass('hidden').hide();
+      expanded = initialState !== 'collapsed';
 
     $icon.click(function(){
       change();
@@ -114,6 +112,7 @@
         expanded = !expanded;
       }
     }
+
     function change(){
       if(expanded){
         $content.hide();
@@ -310,12 +309,16 @@
           .data('element-type-id', itemData.id)
           .data('element-display-order', itemData.display_order)
           .data('element-type-name', itemData.name)
-          .attr('data-collapse', 'collapsed')
           .attr('id','side-element-'+itemData.name.replace(/\s+/g,'-'))
           .addClass(itemClass);
 
+      if (!open) {
+        item.attr('data-collapse', 'collapsed');
+      }
+
       item.append('<a href="#" class="' + hrefClass + '"></a>');
-      item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme plus"></i></div> <h3 class="collapse-group-header">'+itemData.name+'</h3>');
+      item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme ' + (open ? 'minus' : 'plus') + '"></i></div> <h3 class="collapse-group-header">' + itemData.name + '</h3>');
+
       //children
       if (itemData.children && itemData.children.length) {
         var subList = $('<ul>').addClass('oe-element-list collapse-group-content');
@@ -330,7 +333,8 @@
             .data('element-display-order', this.display_order)
             .data('element-type-name', this.name)
             .attr('id','side-element-'+id_name ).addClass('element');
-          var childClass = '';
+
+          var childClass = 'child';
           if ($.inArray(this.class_name, self.patient_open_elements)!== -1){
             childClass='selected';
           }
