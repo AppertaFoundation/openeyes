@@ -212,6 +212,21 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     }
 
     /**
+     * @param $excluded_unit_id
+     * @param bool $is_near
+     * @return \CActiveRecord[]
+     */
+
+    public function getUnits($excluded_unit_id, $is_near)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->condition = 'id <> :unit_id AND active = 1 AND is_near = :is_near';
+        $criteria->params = array(':unit_id' => $excluded_unit_id, 'is_near' => $is_near);
+        $criteria->order = 'name';
+        return OphCiExamination_VisualAcuityUnit::model()->findAll($criteria);
+    }
+
+    /**
      * @param int|null $unit_id
      * @param bool     $is_near
      *
@@ -227,11 +242,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
 
         $unit_values = $unit->selectableValues;
 
-        $criteria = new \CDbCriteria();
-        $criteria->condition = 'id <> :unit_id AND active = 1 AND is_near = :is_near';
-        $criteria->params = array(':unit_id' => $unit->id, 'is_near' => $is_near);
-        $criteria->order = 'name';
-        $tooltip_units = OphCiExamination_VisualAcuityUnit::model()->findAll($criteria);
+        $tooltip_units = $this->getUnits($unit->id, $is_near);
 
         $options = array();
 
