@@ -28,20 +28,16 @@ $commitDate = exec("git show -s --format=%cD $commit");
 <div class="oe-product-info" id="js-openeyes-info">
   <h3>OpenEyes 3.0</h3>
 
-    <?php if (!Yii::app()->user->isGuest): ?>
-      <div class="group">
-        <h4>Theme</h4>
 
-        <p>
-            <?php echo CHtml::link('Dark theme (recommended)', Yii::app()->createUrl('/profile/changeDisplayTheme',
-                array('user_id' => Yii::app()->user->id, 'display_theme' => 'dark')),
-                array('style' => 'display: block; margin-bottom: 4px;')); ?>
+  <div class="group">
+    <h4>Theme</h4>
 
-            <?php echo CHtml::link('Light theme (default)', Yii::app()->createUrl('/profile/changeDisplayTheme',
-                array('user_id' => Yii::app()->user->id, 'display_theme' => 'light'))); ?>
-        </p>
-      </div>
-    <?php endif; ?>
+    <p>
+      <a href="#" id="js-theme-dark" class="theme-picker" data-theme="dark"
+         style="display: inline-block; margin-bottom: 4px;">Dark theme (recommended)</a>
+      <a href="#" id="js-theme-light" class="theme-picker" data-theme="light">Light theme (default)</a>
+    </p>
+  </div>
 
   <div class="group">
     <h4>Tour &amp; Feedback</h4>
@@ -63,12 +59,12 @@ $commitDate = exec("git show -s --format=%cD $commit");
     <p>
       <span class="large-text"> Need Help?
           <?php if (Yii::app()->params['helpdesk_email']) { ?>
-            <p><?php echo Yii::app()->params['helpdesk_email'] ?></p>
-          <?php } ?>
-          <?php if (Yii::app()->params['helpdesk_phone']) { ?>
-            <p><?php echo Yii::app()->params['helpdesk_phone'] ?></p>
-          <?php } ?>
-      </span>
+    <p><?php echo Yii::app()->params['helpdesk_email'] ?></p>
+      <?php } ?>
+      <?php if (Yii::app()->params['helpdesk_phone']) { ?>
+        <p><?php echo Yii::app()->params['helpdesk_phone'] ?></p>
+      <?php } ?>
+    </span>
     </p>
   </div>
   <div class="group">
@@ -77,3 +73,23 @@ $commitDate = exec("git show -s --format=%cD $commit");
   </div>
 
 </div>
+<script>
+
+  $(function () {
+    $('.theme-picker').click(function () {
+      var theme = $(this).data('theme');
+      var old_css_path = theme === 'dark' ? lightThemeFilePath : darkThemeFilePath;
+      var new_css_path = theme === 'dark' ? darkThemeFilePath : lightThemeFilePath;
+
+      $('link[href*="' + old_css_path + '"]').attr('href', new_css_path);
+
+        <?php if (!Yii::app()->user->isGuest): ?>
+      $.ajax({
+        'type': 'GET',
+        'url': "<?= Yii::app()->createUrl('/profile/changeDisplayTheme') ?>",
+        'data': {'display_theme': theme}
+      });
+        <?php endif; ?>
+    });
+  });
+</script>

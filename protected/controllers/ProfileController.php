@@ -342,7 +342,6 @@ class ProfileController extends BaseController
     public function actionChangeDisplayTheme($display_theme)
     {
         $this->changeDisplayTheme(Yii::app()->user->id, $display_theme);
-        $this->redirect(Yii::app()->request->urlReferrer ?: Yii::app()->homeUrl);
     }
 
     /**

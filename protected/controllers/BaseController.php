@@ -128,6 +128,9 @@ class BaseController extends Controller
         $newBlue = $assetManager->publish(Yii::getPathOfAlias('application.assets.newblue'));
         $this->jsVars['newblueBaseUrl'] = $newBlue;
 
+        $this->jsVars['lightThemeFilePath'] = $newBlue . '/css/style_oe3.0_classic.min.css';
+        $this->jsVars['darkThemeFilePath'] = $newBlue . '/css/style_oe3.0.min.css';
+
         // Prevent certain assets from being outputted in certain conditions.
         $assetManager->adjustScriptMapping();
     }
