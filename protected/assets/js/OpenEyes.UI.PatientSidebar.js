@@ -81,6 +81,17 @@
           $(this).data('collapse'));
       });
 
+      self.$elementContainer = $(document).find(self.options.element_container_selector);
+
+      // couple of hooks to keep the menu in sync with the elements on the page.
+      self.$elementContainer.on('click', '.js-remove-element', function(e) {
+        self.removeElement(e.target);
+      });
+
+      self.$elementContainer.on('click', '.js-remove-child-element', function(e) {
+        self.removeElement(e.target);
+      });
+
         // if the clicked element is a child, ensures parent loaded first. if the element is already
         // loaded, then just move the view port appropriately.
         self.$element.on('click', '.element', function(e) {
@@ -224,6 +235,20 @@
     };
 
     /**
+     * Called when an element is removed from the form to update the menu appropriately.
+     */
+    PatientSidebar.prototype.removeElement = function(element) {
+      var self = this;
+      var elementTypeClass = $(element).parents('section:first').data('element-type-class');
+
+      var $menuLi = self.findMenuItemForElementClass(elementTypeClass);
+
+      if ($menuLi) {
+        $menuLi.find('a').removeClass('selected').removeClass('error');
+      }
+    };
+
+    /**
      * Method to call externally to trigger a load of an element.
      *
      * @param elementTypeClass
@@ -244,6 +269,25 @@
 
     };
 
+    /**
+     * Simple convenience wrapper to grab out the menu entry
+     *
+     * @param elementTypeClass
+     * @returns {*}
+     */
+    PatientSidebar.prototype.findMenuItemForElementClass = function(elementTypeClass)
+    {
+      var self = this;
+
+      var $menuLi;
+      self.$element.find('li').each(function() {
+        if ($(this).data('element-type-class') === elementTypeClass) {
+          $menuLi = $(this);
+        }
+      });
+
+      return $menuLi;
+    };
 
     /**
      *  Builds the array of open elements on the page
