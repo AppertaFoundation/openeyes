@@ -29,8 +29,7 @@
       echo Chtml::label($labelText, Chtml::getIdByName($name));
       ?>
       </div>
-        <div
-            class="cols-<?php echo $layoutColumns['field']; ?> column">
+       <div class="cols-<?php echo $layoutColumns['field']; ?> column">
             <?php
             switch ($htmlOptions['type']) {
                 case 'password':
@@ -58,5 +57,8 @@
             <span class="field-info"><?php echo $htmlOptions['append-text'];?></span>
         </div>
         <?php }?>
+      <?php if (!empty($htmlOptions['tooltip-text'])){ ?>
+        <i class="oe-i info small-icon js-has-tooltip" data-tooltip-content="<?php echo $htmlOptions['tooltip-text']; ?>"></i>
+      <?php } ?>
 	  </div>
 <?php }?>
