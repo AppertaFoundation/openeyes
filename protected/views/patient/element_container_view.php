@@ -34,7 +34,7 @@
          data-element-display-order="<?php echo $element->elementType->display_order?>">
 	<?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
 		<header class=" element-header">
-			<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+			<h3 class="element-title"><?php echo $element->getViewTitle() ?></h3>
 		</header>
 	<?php } ?>
 	<?php echo $content;?>
