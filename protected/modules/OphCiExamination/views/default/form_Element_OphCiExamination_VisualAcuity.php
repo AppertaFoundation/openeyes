@@ -51,17 +51,18 @@ $this->endClip('element-title-additional');
     <?php echo $form->hiddenInput($element, 'unit_id', false); ?>
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
-    <div class="element-eye right-eye column left side<?php if (!$element->hasRight()) { ?> inactive <?php } ?>" data-side="right">
+  <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
+    <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side?> side<?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>" data-side="<?= $eye_side ?>">
         <div class="active-form field-row flex-layout">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">
-            <table class="cols-full blank va_readings"<?php if (!$element->right_readings) { ?> style="display: none;" <?php } ?> >
+            <table class="cols-full blank va_readings"<?php if (!$element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?> >
                 <tbody>
-                    <?php foreach ($element->right_readings as $reading) {
+                    <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
                     // Adjust currently element readings to match unit steps
                         $reading->loadClosest($element->unit->id);
                         $this->renderPartial('form_Element_OphCiExamination_VisualAcuity_Reading', array(
-                            'name_stub' => CHtml::modelName($element).'[right_readings]',
+                            'name_stub' => CHtml::modelName($element).'[' . $eye_side . '_readings]',
                             'key' => $key,
                             'reading' => $reading,
                             'side' => $reading->side,
@@ -73,16 +74,16 @@ $this->endClip('element-title-additional');
                         ++$key; }?>
                 </tbody>
             </table>
-            <div id="refraction-left-comments" class="field-row-pad-top" style="display:none;">
+            <div id="refraction-<?= $page_side ?>-comments" class="field-row-pad-top" style="display:none;">
               <textarea placeholder="Comments" autocomplete="off" rows="1" class="js-input-comments cols-full" style="overflow: hidden; word-wrap: break-word; height: 24px;"></textarea>
             </div>
-            <div class="field-row row noReadings"<?php if ($element->right_readings) { ?> style="display: none;" <?php } ?>>
+            <div class="field-row row noReadings"<?php if ($element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?>>
                 <div class="large-4 column">
                     <div class="field-info">Not recorded</div>
                 </div>
                 <div class="large-8 column end">
-                    <?php echo $form->checkBox($element, 'right_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true))?>
-                    <?php echo $form->checkBox($element, 'right_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
+                    <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true))?>
+                    <?php echo $form->checkBox($element, $eye_side . '_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
                 </div>
             </div>
           </div>
@@ -90,31 +91,6 @@ $this->endClip('element-title-additional');
             <button class="button hint green addReading" type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>
-            <!-- popup to add to element is click -->
-            <div id="add-to-visual-acuity-left" class="oe-add-select-search auto-width" style="display: none;">
-              <!-- icon btns -->
-              <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
-              <div class="select-icon-btn"><i class="oe-i menu selected"></i></div>
-              <button class="button hint green add-icon-btn">
-                <i class="oe-i plus pro-theme"></i>
-              </button>
-              <!-- select (and search) options for element -->
-              <table class="select-options">
-                <tbody>
-                <tr>
-                  <td>
-                    <div class="flex-layout flex-top flex-left">
-                      <ul class="add-options" data-multi="true" data-clickadd="false">
-                        <?php foreach ($methods as $method) { ?>
-                        <li data-str="<?php echo $method; ?>"><span class="restrict-width"><?php echo $method; ?></span></li>
-                        <?php } ?>
-                      </ul>
-                    </div> <!-- flex-layout -->
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
             <!-- oe-add-select-search -->
           </div>
           <!--flex bottom-->
@@ -123,61 +99,12 @@ $this->endClip('element-title-additional');
       <div class="inactive-form" style="display: none">
         <div class="add-side">
           <a href="#">
-            Add right side <span class="icon-add-side"></span>
+            Add <?= $eye_side ?> side <span class="icon-add-side"></span>
           </a>
         </div>
       </div>
     </div>
-    <div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) { ?> inactive<?php }?>" data-side="left">
-        <div class="active-form field-row flex-layout">
-          <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-          <div class="cols-9">
-            <table class="cols-full blank va_readings"<?php if (!$element->left_readings) { ?> style="display: none;" <?php } ?>>
-                <tbody>
-                    <?php foreach ($element->left_readings as $reading) {
-                        // Adjust currently element readings to match unit steps
-                        $reading->loadClosest($element->unit->id);
-                        $this->renderPartial('form_Element_OphCiExamination_VisualAcuity_Reading', array(
-                            'name_stub' => CHtml::modelName($element).'[left_readings]',
-                            'key' => $key,
-                            'reading' => $reading,
-                            'side' => $reading->side,
-                            'values' => $values,
-                            'val_options' => $val_options,
-                            'methods' => $methods,
-                            'asset_path' => $this->getAssetPathForElement($element),
-                    ));
-                        ++$key;
-                    }?>
-                </tbody>
-            </table>
-            <div id="refraction-left-comments" class="field-row-pad-top" style="display:none;">
-              <textarea placeholder="Comments" autocomplete="off" rows="1" class="js-input-comments cols-full" style="overflow: hidden; word-wrap: break-word; height: 24px;"></textarea>
-            </div>
-            <div class="field-row row noReadings"<?php if ($element->left_readings) { ?> style="display: none;" <?php } ?>>
-                <div class="large-4 column">
-                    <div class="field-info">Not recorded</div>
-                </div>
-                <div class="large-8 column">
-                    <?php echo $form->checkBox($element, 'left_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true))?>
-                    <?php echo $form->checkBox($element, 'left_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
-                </div>
-            </div>
-          <!-- Cols -->
-          </div>
-          <div class="flex-item-bottom">
-            <button class="button hint green addReading js-add-select-search" type="button">
-              <i class="oe-i plus pro-theme"></i>
-            </button>
-          </div>
-          <!--flex bottom-->
-        </div>
-      <div class="inactive-form" style="display: none">
-        <div class="add-side">
-          <a href="#"> Add left side <span class="icon-add-side"></span></a>
-        </div>
-      </div>
-    </div>
+  <?php endforeach; ?>
 </div>
 <script id="visualacuity_reading_template" type="text/html">
     <?php
