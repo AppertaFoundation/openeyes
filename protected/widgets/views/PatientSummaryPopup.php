@@ -128,11 +128,28 @@
                     </div>
                   </div>
                 <?php } ?>
+
                 <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
                     'patient' => $this->patient,
                     'mode' => BaseEventElementWidget::$PATIENT_POPUP_MODE
                 )); ?>
 
+                <?php if(!empty($this->family_history->entries)): ?>
+                    <div class="row">
+                        <div class="large-2 column label">Family History</div>
+                        <div class="large-10 column data">
+                            <?php echo $this->family_history; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                <?php if((string)$this->social_history !== ''): ?>
+                    <div class="row">
+                        <div class="large-2 column label">Social History</div>
+                        <div class="large-10 column data">
+                            <?php echo $this->social_history; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
