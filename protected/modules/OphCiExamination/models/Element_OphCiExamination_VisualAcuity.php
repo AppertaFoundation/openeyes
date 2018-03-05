@@ -479,4 +479,9 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
     {
         return true;
     }
+
+    public function getViewTitle()
+    {
+        return $this->getElementTypeName() . ' <small>' . $this->unit->name . '</small>';
+    }
 }
