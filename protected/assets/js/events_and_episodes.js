@@ -175,11 +175,13 @@ $(document).ready(function(){
 	$(this).on('mouseout', '.js-has-tooltip', function (e) {
     $('body').find( ".oe-tooltip" ).remove();
   });
+
   $(this).on('mouseover', '.js-has-tooltip', function (e) {
     var text = $(this).data('tooltip-content');
-    var offset = $(this).offset();
-    var html = '<div class="oe-tooltip" style="position:fixed; left:'+(offset.left + 20)+'px; top:'+(offset.top + - 10)+'px;">'+ text +'</div>';
-    $('body').append(html);
+    var $tooltip = $('<span class="oe-tooltip" style="text-align: center; display: block; position: relative;">' + text + '</span>');
+    var $selector = $tooltip.appendTo($(this));
+    $selector.css('left', -$selector.width() / 2);
+    $selector.css('top', -$selector.height() - 20);
   });
 
 });
