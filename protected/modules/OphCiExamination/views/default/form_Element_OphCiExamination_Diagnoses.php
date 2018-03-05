@@ -18,9 +18,6 @@
 ?>
 <div class="element-fields" id="<?php echo CHtml::modelName($element);?>_diagnoses">
 	<input type="hidden" name="<?php echo CHtml::modelName($element);?>[force_validation]" />
-	<?php echo $form->radioButtons(new \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis(), 'eye_id', 'Eye',
-        ($this->episode && $this->episode->eye_id) ? $this->episode->eye_id : 2, false, false, false, false, array(),
-        array('label' => 2, 'field' => 10)) ?>
 	<?php
     $conditions = $element->getCommonOphthalmicDisorders($this->selectedFirmId);
     $this->widget('application.widgets.DiagnosisSelection', array(
@@ -59,12 +56,23 @@
             } ?>
 			<?php foreach ($element->diagnoses as $i => $diagnosis) {
     ?>
-				<tr>
+                <?php
+                    // Ok, so adding 'highlighted-error' should be enough -and added btw- but the 'plain' and 'grid' classes overwrite the error style
+                    // table.plain td and table.grid td
+                    $style = $diagnosis->hasErrors() ? 'border: 2px solid red' : '';
+                ?>
+
+                <?php
+                    /*id is added here to tr because the JS error highlighting script wraps the radiobox in div
+                      and this breaks the diagnoses dropdown - prevents to add more items
+                    */
+                 ?>
+				<tr id="<?php echo CHtml::modelName($element) ."_eye_id_$i";?>">
 					<td>
 						<input type="hidden" name="selected_diagnoses[]" value="<?php echo $diagnosis->disorder->id?>" />
 						<?php echo $diagnosis->disorder->term?>
 					</td>
-					<td class="eye">
+					<td class="eye" style="<?=$style;?>">
 						<?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) {
     ?>
 							<label class="inline">
