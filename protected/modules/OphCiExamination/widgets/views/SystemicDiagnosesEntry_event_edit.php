@@ -41,7 +41,7 @@ if (!isset($values)) {
         <input type="hidden" name="<?= $field_prefix ?>[id][]" value="<?=$values['id'] ?>" />
 
         <input type="text" class="diagnoses-search-autocomplete"
-               id="diagnoses_search_autocomplete_<?=$row_count?>" style="display: none"
+               id="diagnoses_search_autocomplete_<?=$row_count?>"
                <?php if(isset($diagnosis)):?>
                     data-saved-diagnoses='<?php echo json_encode(array(
                             'id' => $values['id'],

@@ -106,7 +106,29 @@ OpenEyes.UI = OpenEyes.UI || {};
         if(savedDiagnoses && savedDiagnoses.disorder_id){
             controller.addDiagnosis(savedDiagnoses.id, {label: savedDiagnoses.name, id: savedDiagnoses.disorder_id} );
         }
-    };
+      );
+
+      $parent.html(html);
+      controller.$inputField = controller.$row.find('.diagnoses-search-inputfield');
+
+      if (controller.renderCommonlyUsedDiagnoses === true) {
+        $.getJSON(url, function (data) {
+          var $select = $parent.find('.commonly-used-diagnosis');
+
+          $select.append($('<option>', {'text': 'Select a commonly used diagnosis'}));
+          $.each(data, function (i, item) {
+            $select.append($('<option>', {'value': item.id, 'text': item.label, 'data-item': JSON.stringify(item)}));
+            $select.show();
+          });
+          controller.$inputField.before($select);
+          savedDiagnoses = controller.$inputField.data('saved-diagnoses');
+          if (savedDiagnoses.id||savedDiagnoses.name ) {
+            controller.addDiagnosis(savedDiagnoses.id, {label: savedDiagnoses.name, id: savedDiagnoses.disorder_id});
+          }
+        });
+      }
+    }
+  };
 
     /**
      * Diagnosis selected for the row
@@ -244,6 +266,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         controller.$row.on('click', '.diagnosis-rename', function(){
             if(controller.renderCommonlyUsedDiagnoses){
                 controller.$row.find('.commonly-used-diagnosis').show();
+
             }
             controller.$row.find('.diagnoses-search-inputfield').show();
             $(this).closest('.medication-display').hide();
@@ -256,7 +279,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
 
         controller.$row.on('change', 'select.commonly-used-diagnosis', function(){
-            controller.addDiagnosis(null, $(this).find('option:selected').data('item') );
+          controller.addDiagnosis(null, $(this).find('option:selected').data('item') );
             $(this).val('');
         });
     };

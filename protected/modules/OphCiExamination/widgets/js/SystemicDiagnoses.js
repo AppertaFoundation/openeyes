@@ -54,11 +54,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         });
       // adding entries
-        controller.$popupSelector.on('click',$('#add-history-systemic-diagnoses'), function(e) {
+        controller.$popupSelector.on('click',$(controller.addButtonSelector), function(e) {
             e.preventDefault();
             controller.addEntry();
-            controller.$table.find('tbody tr:last .diagnoses-search-autocomplete').show();
-            controller.$table.find('tbody tr:last .medication-display').hide();
         });
     };
     SystemicDiagnosesController.prototype.initialiseDatepicker = function () {
@@ -90,7 +88,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     SystemicDiagnosesController.prototype.initialiseRow = function($row)
     {
         var controller = this;
-        var DiagnosesSearchController = null;
         var $radioButtons = $row.find('input[type=radio]');
 
         $row.on('change', '.fuzzy-date select', function(e) {
@@ -98,8 +95,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             var date = controller.dateFromFuzzyFieldSet($fuzzyFieldset);
             $fuzzyFieldset.find('input[type="hidden"]').val(date);
         });
-
-        DiagnosesSearchController = new OpenEyes.UI.DiagnosesSearchController({
+        var DiagnosesSearchController = new OpenEyes.UI.DiagnosesSearchController({
             'inputField': $row.find('.diagnoses-search-autocomplete'),
             'fieldPrefix': $row.closest('section').data('element-type-class')
         });
