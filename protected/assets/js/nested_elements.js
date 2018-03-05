@@ -284,14 +284,14 @@ function removeElement(element, is_child) {
     }
   }
 
-function moveToElement(element) {
+  function moveToElement($element) {
 
-    var offTop = element.offset().top - 130;
-    $('html, body').scrollTop(offTop);
-    var $title = $('.element-title', element);
-    if (!$title.length) {
-        $title = $('.sub-element-title', element);
-    }
+    var $container = $('main.main-event');
+    $container.scrollTop(
+      $element.offset().top - $container.offset().top + $container.scrollTop() - 130
+    );
+
+    var $title = $('.element-title', $element);
     $title.effect('pulsate', {
         times: 2
     }, 600);

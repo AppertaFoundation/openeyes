@@ -139,7 +139,7 @@
      * Calls the function that will set the view port to the given element for the menu item.
      */
     PatientSidebar.prototype.moveTo = function($item) {
-        var elementTypeClass = $item.parents('li:first').data('element-type-class');
+        var elementTypeClass = $item.data('element-type-class') || $item.parent().data('element-type-class');
         moveToElement($('section[data-element-type-class="' + elementTypeClass + '"]'));
     };
 
