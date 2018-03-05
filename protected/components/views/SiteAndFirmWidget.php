@@ -21,7 +21,7 @@
 <?php
 $form = $this->beginWidget('CActiveForm', array(
     'id' => ($this->mode === 'static' ? 'static-' : '') . 'site-and-firm-form',
-    'htmlOptions' => array( 'class' => $this->mode . '-site-and-firm-form'),
+    'htmlOptions' => array('class' => $this->mode . '-site-and-firm-form'),
     'action' => Yii::app()->createUrl('/site/changesiteandfirm'),
 ));
 ?>
@@ -73,39 +73,16 @@ if ($errors = $form->errorSummary($model)) {
         <?php echo $form->dropDownList($model, 'firm_id', $firms); ?>
     </td>
   </tr>
-  <tr>
-    <td colspan="2" class="align-right">
-        <?php echo CHtml::submitButton('Confirm change', array('class' => 'green hint')); ?>
-    </td>
-  </tr>
+
+  <?php if ($this->mode === "popup"): ?>
+    <tr>
+      <td colspan="2" class="align-right">
+          <?php echo CHtml::submitButton('Confirm change', array('class' => 'green hint')); ?>
+      </td>
+    </tr>
+  <?php endif; ?>
   </tbody>
 </table>
-
-	<div class="field-row row">
-		<div class="large-3 column text-right">
-			<?php echo $form->label($model, 'site_id'); ?>
-		</div>
-		<div class="large-9 column">
-			<?php echo $form->dropDownList($model, 'site_id', $sites); ?>
-		</div>
-	</div>
-
-	<div class="field-row row">
-		<div class="large-3 column text-right">
-			<?php echo $form->label($model, 'firm_id'); ?>
-		</div>
-		<div class="large-9 column">
-			<?php echo $form->dropDownList($model, 'firm_id', $firms); ?>
-		</div>
-	</div>
-
-    <?php if($this->mode === "popup"): ?>
-        <div class="field-row row">
-            <div class="large-9 large-offset-3 column">
-                <?php echo CHtml::submitButton('Confirm', array('class' => 'secondary small')); ?>
-            </div>
-        </div>
-    <?php endif;?>
 
 <?php
 if (Yii::app()->components['user']->loginRequiredAjaxResponse) {
@@ -124,9 +101,9 @@ if (Yii::app()->components['user']->loginRequiredAjaxResponse) {
 <?php $this->endWidget(); ?>
 
 <script>
-    $(document).ready(function(){
-        $('.static-site-and-firm-form').on('change', 'select', function(){
-            $(this).closest('form').submit();
-        });
+  $(document).ready(function () {
+    $('.static-site-and-firm-form').on('change', 'select', function () {
+      $(this).closest('form').submit();
     });
+  });
 </script>
