@@ -139,28 +139,16 @@
           </div>
         </div>
         <!-- group-->
-        <div class="group">
-          <div class="label">Systemic Medications</div>
-          <div class="data">
-            <table>
-                <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
-                    'patient' => $this->patient,
-                    'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
-                )); ?>
-            </table>
-          </div>
-        </div>
+          <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
+              'patient' => $this->patient,
+                    'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+          )); ?>
+
         <!-- group-->
       </div><!-- popup-overflow -->
 
       <!-- oe-popup-overflow handles scrolling if data overflow height -->
       <div class="oe-popup-overflow quicklook-data-groups">
-        <div class="group">
-          <div class="label">Eye medications</div>
-          <div class="data">
-            <table></table>
-          </div>
-        </div>
         <!-- group-->
 
         <div class="group">

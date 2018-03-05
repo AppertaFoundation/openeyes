@@ -112,5 +112,11 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopup.j
       location.href = "<?php echo $this->controller->createUrl('/patient/update/' . $this->patient->id); ?>";
       return false;
     });
+    $('.js-patient-expand-btn').each(function () {
+      $(this).click(function () {
+        $(this).toggleClass('collapse expand');
+        $(this).parents('table').find('tbody').toggle();
+      });
+    });
   });
 </script>

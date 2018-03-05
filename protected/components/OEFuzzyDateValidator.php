@@ -45,8 +45,6 @@ class OEFuzzyDateValidator extends CValidator
             $this->month = $this->year;
             $this->year = 0;
         }
-        Yii::log("Year-Month-Day: ".$this->year.' '.$this->month.' '.$this->day);
-
         $this->object = $object;
         $this->attribute = $attribute;
 
