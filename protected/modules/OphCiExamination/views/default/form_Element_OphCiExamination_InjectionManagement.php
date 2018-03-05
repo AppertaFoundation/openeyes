@@ -17,57 +17,70 @@
  */
 ?>
 
-<div class="element-fields flex-layout full-width " id="div_<?php echo CHtml::modelName($element)?>_injection">
-	<div class="row field-row">
-		<div class="large-3 column">
-			<label>
-				<?php echo $element->getAttributeLabel('injection_status_id')?>:
-			</label>
-		</div>
-		<div class="large-9 column">
-			<?php
-            $options = \OEModule\OphCiExamination\models\OphCiExamination_Management_Status::model()->activeOrPk($element->injection_status_id)->findAll();
-            $html_options = array('empty' => '- Please select -', 'options' => array());
-            foreach ($options as $opt) {
-                $html_options['options'][(string) $opt->id] = array('data-deferred' => $opt->deferred, 'data-book' => $opt->book, 'data-event' => $opt->event);
-            }
-            echo CHtml::activeDropDownList($element, 'injection_status_id', CHtml::listData($options, 'id', 'name'), $html_options)?>
-		</div>
-	</div>
+<div class="element-fields flex-layout full-width " id="div_<?php echo CHtml::modelName($element) ?>_injection">
+  <div class="row field-row">
+    <div class="large-3 column">
+      <label>
+          <?php echo $element->getAttributeLabel('injection_status_id') ?>:
+      </label>
+    </div>
+    <div class="large-9 column">
+        <?php
+        $options = \OEModule\OphCiExamination\models\OphCiExamination_Management_Status::model()
+            ->activeOrPk($element->injection_status_id)
+            ->findAll();
+        $html_options = array('empty' => '- Please select -', 'options' => array());
+        foreach ($options as $opt) {
+            $html_options['options'][(string)$opt->id] = array(
+                'data-deferred' => $opt->deferred,
+                'data-book' => $opt->book,
+                'data-event' => $opt->event
+            );
+        }
+        echo CHtml::activeDropDownList(
+            $element,
+            'injection_status_id',
+            CHtml::listData($options, 'id', 'name'),
+            $html_options
+        ) ?>
+    </div>
+  </div>
 </div>
 
-<div class="element-fields flex-layout full-width " id="div_<?php echo CHtml::modelName($element)?>_injection_deferralreason"<?php if (!($element->injection_status && $element->injection_status->deferred)) {
-    ?> style="display: none;"<?php 
-}?>>
-	<div class="row field-row">
-		<div class="large-3 column">
-			<label>
-				<?php echo $element->getAttributeLabel('injection_deferralreason_id')?>:
-			</label>
-		</div>
-		<div class="large-4 column ">
-			<?php
-            $options = \OEModule\OphCiExamination\models\OphCiExamination_Management_DeferralReason::model()->activeOrPk($element->injection_deferralreason_id)->findAll();
-            $html_options = array('empty' => '- Please select -', 'options' => array());
-            foreach ($options as $opt) {
-                $html_options['options'][(string) $opt->id] = array('data-other' => $opt->other);
-            }
-            echo CHtml::activeDropDownList($element, 'injection_deferralreason_id', CHtml::listData($options, 'id', 'name'), $html_options)?>
-		</div>
-	</div>
+<div class="element-fields flex-layout full-width "
+     id="div_<?=CHtml::modelName($element) ?>_injection_deferralreason"
+     style="<?=(!($element->injection_status && $element->injection_status->deferred))? "display: none;":''?>"
+>
+  <div class="row field-row">
+    <div class="large-3 column">
+      <label>
+          <?=$element->getAttributeLabel('injection_deferralreason_id')?>:
+      </label>
+    </div>
+    <div class="large-4 column ">
+        <?php
+        $options = \OEModule\OphCiExamination\models\OphCiExamination_Management_DeferralReason::model()->activeOrPk($element->injection_deferralreason_id)->findAll();
+        $html_options = array('empty' => '- Please select -', 'options' => array());
+        foreach ($options as $opt) {
+            $html_options['options'][(string)$opt->id] = array('data-other' => $opt->other);
+        }
+        echo CHtml::activeDropDownList($element, 'injection_deferralreason_id', CHtml::listData($options, 'id', 'name'), $html_options) ?>
+    </div>
+  </div>
 </div>
 
-<div class="element-fields flex-layout full-width " id="div_<?php echo CHtml::modelName($element)?>_injection_deferralreason_other"<?php if (!($element->injection_deferralreason && $element->injection_deferralreason->other)) {
-    ?> style="display: none;"<?php 
-}?>>
-	<div class="row field-row">
-		<div class="large-3 column">
-			<label>
-				&nbsp;
-			</label>
-		</div>
-		<div class="large-9 column">
-			<?php echo $form->textArea($element, 'injection_deferralreason_other', array('class' => 'autosize', 'nowrapper' => true))?>
-		</div>
-	</div>
+<div class="element-fields flex-layout full-width "
+     id="div_<?php echo CHtml::modelName($element) ?>_injection_deferralreason_other"<?php if (!($element->injection_deferralreason && $element->injection_deferralreason->other)) {
+    ?> style="display: none;"<?php
+} ?>>
+  <div class="row field-row">
+    <div class="large-3 column">
+      <label>
+        &nbsp;
+      </label>
+    </div>
+    <div class="large-9 column">
+        <?php echo $form->textArea($element, 'injection_deferralreason_other', array('class' => 'autosize', 'nowrapper' => true)) ?>
+    </div>
+  </div>
 </div>

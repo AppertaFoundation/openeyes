@@ -49,52 +49,35 @@ foreach ($l1_disorders as $disorder) {
 ?>
 <div class="element-fields element-eyes">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
-    ?> inactive<?php 
-}?>" data-side="right">
-		<div class="active-form">
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-			<?php $this->renderPartial($element->form_view.'_fields', array(
-                'side' => 'right',
-                'element' => $element,
-                'form' => $form,
-                'no_treatment_reasons' => $no_treatment_reasons,
-                'no_treatment_reasons_opts' => $no_treatment_reasons_opts,
-                'l1_disorders' => $l1_disorders,
-                'l1_opts' => $l1_options,
-                'l2_disorders' => $l2_disorders,
-            ))?>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add right side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {
-    ?> inactive<?php 
-}?>" data-side="left">
-		<div class="active-form">
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-			<?php $this->renderPartial($element->form_view.'_fields', array(
-                'side' => 'left',
-                'element' => $element,
-                'form' => $form,
-                'no_treatment_reasons' => $no_treatment_reasons,
-                'no_treatment_reasons_opts' => $no_treatment_reasons_opts,
-                'l1_disorders' => $l1_disorders,
-                'l1_opts' => $l1_options,
-                'l2_disorders' => $l2_disorders,
-            ))?>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add left side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
+  <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye):?>
+    <div class="element-eye <?=$eye?>-eye column <?=$side?> side<?=(!$element->{'has'.ucfirst($eye)}())? "inactive":""?>"
+         data-side="<?=$eye?>"
+    >
+      <div class="active-form" style="<?=(!$element->{'has'.ucfirst($eye)}())?"display: none;":""?>">
+        <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+        <?php $this->renderPartial($element->form_view.'_fields', array(
+                  'eye' => $eye,
+                  'element' => $element,
+                  'form' => $form,
+                  'no_treatment_reasons' => $no_treatment_reasons,
+                  'no_treatment_reasons_opts' => $no_treatment_reasons_opts,
+                  'l1_disorders' => $l1_disorders,
+                  'l1_opts' => $l1_options,
+                  'l2_disorders' => $l2_disorders,
+              ))?>
+      </div>
+      <div class="inactive-form" style="<?=($element->{'has'.ucfirst($eye)}())?"display: none;":""?>">
+        <div class="add-side">
+          <a href="#">
+            Add <?=ucfirst($eye)?> Eye <span class="icon-add-side"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  <?php endforeach;?>
 </div>
+<script type="text/javascript">
+  $('Document').ready(function(){
+      OphCiExamination_InjectionManagementComplex_init();
+  });
+</script>

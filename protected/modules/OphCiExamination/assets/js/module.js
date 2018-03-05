@@ -1989,13 +1989,25 @@ function OphCiExamination_InjectionManagementComplex_loadQuestions(side) {
         'success': function(html) {
             // ensure we maintain any answers for questions that still remain after load (e.g. only level 2 has changed)
             var answers = {};
-            $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_' + side + '_Questions').find('input:radio:checked').each(function() {
+            var model_side_id = '#'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_' + side;
+            var questions = $(model_side_id + '_Questions');
+            questions.find('input:radio:checked').each(function() {
                 answers[$(this).attr('id')] = $(this).val();
             });
-            $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_' + side + '_Questions').replaceWith(html);
+            questions.replaceWith(html);
             for (var ans in answers) {
                 if (answers.hasOwnProperty(ans)) {
                     $('#'+ans+'[value='+answers[ans]+']').attr('checked', 'checked');
+                }
+            }
+
+
+            var parent = $(model_side_id + '_Questions_Parent');
+            if(parent){
+                if ($(html).text().trim().length === 0) {
+                    parent.hide();
+                } else {
+                    parent.show();
                 }
             }
         }

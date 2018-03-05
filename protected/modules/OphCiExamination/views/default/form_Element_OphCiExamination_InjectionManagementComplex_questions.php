@@ -17,34 +17,33 @@
  */
 ?>
 
-<div id="<?php echo CHtml::modelName($element)?>_<?php echo $side?>_Questions">
-	<?php
-    $name_stub = CHtml::modelName($element).'['.$side.'_Answer]';
-    foreach ($questions as $question) {
-        ?>
-		<fieldset class="row field-row">
-			<legend class="large-3 column">
-				<?php echo $question->question?>
-			</legend>
-			<?php
-            $name = $name_stub.'['.$question->id.']';
-        $value = $element->getQuestionAnswer($side, $question->id);
-            // update with POST values if available
-            if (isset($_POST[CHtml::modelName($element)][$side.'_Answer'][$question->id])) {
-                $value = $_POST[CHtml::modelName($element)][$side.'_Answer'][$question->id];
-            }
-        ?>
-			<div class="large-9 column">
-				<label class="inline highlight">
-					<?php echo CHtml::radioButton($name, $value, array('id' => CHtml::modelName($element).'_'.$side.'_Answer_'.$question->id.'_1', 'value' => 1))?>
-					Yes
-				</label>
-				<label class="inline highlight">
-					<?php echo CHtml::radioButton($name, (!is_null($value) && !$value), array('id' => CHtml::modelName($element).'_'.$side.'_Answer_'.$question->id.'_0', 'value' => 0))?>
-					No
-				</label>
-			</div>
-		</fieldset>
-	<?php 
-    }?>
+<div id="<?php echo CHtml::modelName($element) ?>_<?php echo $side ?>_Questions">
+    <?php
+    $name_stub = CHtml::modelName($element) . '[' . $side . '_Answer]';
+    foreach ($questions as $question) {?>
+      <fieldset class="flex-layout">
+        <label class="cols-3 column">
+            <?php echo $question->question ?>
+        </label>
+          <?php
+          $name = $name_stub . '[' . $question->id . ']';
+          $value = $element->getQuestionAnswer($side, $question->id);
+          // update with POST values if available
+          if (isset($_POST[CHtml::modelName($element)][$side . '_Answer'][$question->id])) {
+              $value = $_POST[CHtml::modelName($element)][$side . '_Answer'][$question->id];
+          }
+          ?>
+        <div class="large-9 column">
+          <label class="inline highlight">
+              <?php echo CHtml::radioButton($name, $value, array('id' => CHtml::modelName($element) . '_' . $side . '_Answer_' . $question->id . '_1', 'value' => 1)) ?>
+            Yes
+          </label>
+          <label class="inline highlight">
+              <?php echo CHtml::radioButton($name, (!is_null($value) && !$value), array('id' => CHtml::modelName($element) . '_' . $side . '_Answer_' . $question->id . '_0', 'value' => 0)) ?>
+            No
+          </label>
+        </div>
+      </fieldset>
+        <?php
+    } ?>
 </div>

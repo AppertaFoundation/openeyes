@@ -77,6 +77,7 @@ $widgetOptionsJson = json_encode(array(
         <select id="<?php echo CHtml::getIdByName($field) ?>"
                 class="MultiSelectList<?php if ($showRemoveAllLink) { ?> inline <?php } ?><?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"
                 name=""
+                style="width: 100%;"
             <?php if (isset($htmlOptions['data-linked-fields'])) { ?>
               data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"
             <?php } ?>
