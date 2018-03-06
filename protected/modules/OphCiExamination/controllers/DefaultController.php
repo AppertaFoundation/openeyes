@@ -737,7 +737,7 @@ class DefaultController extends \BaseEventTypeController
         if (is_array(@$data['selected_diagnoses'])) {
             foreach ($data['selected_diagnoses'] as $i => $disorder_id) {
                 $diagnosis = new models\OphCiExamination_Diagnosis();
-                $diagnosis->eye_id = $diagnosis_eyes[$i];
+                $diagnosis->eye_id = isset($diagnosis_eyes[$i]) ? $diagnosis_eyes[$i] : null;
                 $diagnosis->disorder_id = $disorder_id;
                 $diagnosis->principal = (@$data['principal_diagnosis'] == $disorder_id);
                 $diagnoses[] = $diagnosis;
