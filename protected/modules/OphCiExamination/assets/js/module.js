@@ -2134,9 +2134,6 @@ function OphCiExamination_AddDiagnosis(disorderId, name, eyeId, isDiabetic, isGl
 
     eyeId = eyeId || $('input[name="'+OE_MODEL_PREFIX+'OphCiExamination_Diagnosis[eye_id]"]:checked').val();
 
-    var checked_right = (eyeId == 2 ? 'checked="checked" ' : '');
-    var checked_both = (eyeId == 3 ? 'checked="checked" ' : '');
-    var checked_left = (eyeId == 1 ? 'checked="checked" ' : '');
     var checked_principal = (count == 0 ? 'checked="checked" ' : '');
 
     var row = '<tr' + (external ? ' class="external"' : '') + '>' +
@@ -2146,13 +2143,13 @@ function OphCiExamination_AddDiagnosis(disorderId, name, eyeId, isDiabetic, isGl
         '<input type="hidden" name="selected_diagnoses[]" value="'+disorderId+'" /> '+name+' </td>'+
         '<td class="eye">'+
             '<label class="inline">'+
-                '<input type="radio" name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_Diagnoses[eye_id_'+id+']" value="2" '+checked_right+'/> Right'+
+                '<input type="radio" name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_Diagnoses[eye_id_'+id+']" value="2" /> Right'+
             '</label> '+
             '<label class="inline">'+
-                '<input type="radio" name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_Diagnoses[eye_id_'+id+']" value="3" '+checked_both+'/> Both'+
+                '<input type="radio" name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_Diagnoses[eye_id_'+id+']" value="3" /> Both'+
             '</label> '+
             '<label class="inline">'+
-                '<input type="radio" name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_Diagnoses[eye_id_'+id+']" value="1" '+checked_left+'/> Left'+
+                '<input type="radio" name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_Diagnoses[eye_id_'+id+']" value="1" /> Left'+
             '</label> '+
         '</td>'+
         '<td>'+

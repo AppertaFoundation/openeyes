@@ -368,6 +368,15 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 if ($diagnosis->principal) {
                     $principal = true;
                 }
+                if(!$diagnosis->eye_id){
+                    // without this OE tries to perform a save / or at least run the saveComplexAttributes_Element_OphCiExamination_Diagnoses()
+                    // where we need to have an eye_id - probably this need further investigation and refactor
+                    $this->addError('diagnoses', $diagnosis->disorder->term . ': Eye is required');
+
+                    //this sets the error for the actual model, and checked manually in 'form_Element_OphCiExamination_Diagnoses.php'
+                    // to set the proper error highlighting
+                    $diagnosis->addError('diagnoses', $diagnosis->disorder->term . ': Eye is required');
+                }
             }
 
             if (!$principal) {
@@ -380,8 +389,6 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
         if ($controller instanceof \BaseEventTypeController) {
             $et_diagnoses = \ElementType::model()->find('class_name=?', array('OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses'));
-
-            $children = $controller->getChildElements($et_diagnoses);
 
             $have_further_findings = false;
 
