@@ -19,10 +19,10 @@
 
 <div class="element-fields flex-layout full-width element-eyes ">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'));
-	foreach(['left' => 'right', 'right' => 'left'] as $side => $eye){
-	  $hasEyeFunc = 'has'.ucfirst($eye);
+	foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){
+	  $hasEyeFunc = 'has'.ucfirst($eye_side);
 	?>
-    <div class="element-eye <?=$eye?>-eye <?=$side?> side <?php if (!$element->$hasEyeFunc()) { ?> inactive <?php } ?> " data-side="<?= $eye?>">
+    <div class="element-eye <?=$eye_side?>-eye <?=$page_side?> side <?php if (!$element->$hasEyeFunc()) { ?> inactive <?php } ?> " data-side="<?= $eye_side?>">
       <div class="active-form field-row flex-layout">
         <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
         <div class="cols-full">
@@ -32,16 +32,15 @@
               <tr>
                 <td>
                     <?php
-                    $eye_rapd = $eye.'_rapd';
                     echo $form->radioButtons(
                         $element,
-                        $eye.'_rapd',
+                        $eye_side . '_rapd',
                         array(
                             0 => 'Not Checked',
                             1 => 'Yes',
                             2 => 'No',
                         ),
-                        ($element->right_rapd !== null) ? $element->$eye_rapd : 0,
+                        ($element->{$eye_side .'_rapd'} !== null) ? $element->{$eye_side . '_rapd'} : 0,
                         false,
                         false,
                         false,
@@ -55,21 +54,21 @@
                     ?>
                 </td>
                 <td class="top">
-                  <button class="button js-add-comments" data-input="#pupils-<?=$eye?>-comments" type="button">
+                  <button class="button js-add-comments" data-input="#pupils-<?=$eye_side?>-comments" type="button">
                     <i class="oe-i comments small-icon"></i>
                   </button>
                 </td>
               </tr>
               </tbody>
             </table>
-            <div id="<?=$eye?>-eye-comments" class="field-row-pad-top cols-full" style="display: none;">
+            <div id="<?=$eye_side?>-eye-comments" class="field-row-pad-top cols-full" style="display: none;">
                 <?php
                 echo $form->textArea(
                     $element,
-                    $eye.'_comments',
+                    $eye_side . '_comments',
                     array('rows' => 2, 'nowrapper' => true),
                     false,
-                    array('placeholder' => $element->getAttributeLabel($eye.'_comments')),
+                    array('placeholder' => $element->getAttributeLabel($eye_side.'_comments')),
                     array('field' => 12)
                 )
                 ?>
@@ -81,7 +80,7 @@
       <div class="inactive-form" style="display: none">
         <div class="add-side">
           <a href="#">
-            Add <?=$side?> side <span class="icon-add-side"></span>
+            Add <?=$eye_side?> side <span class="icon-add-side"></span>
           </a>
         </div>
       </div>
