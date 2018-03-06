@@ -34,7 +34,7 @@ $commitDate = exec("git show -s --format=%cD $commit");
 
     <p>
       <a href="#" id="js-theme-dark" class="theme-picker" data-theme="dark"
-         style="display: inline-block; margin-bottom: 4px;">Dark theme (recommended)</a>
+         style="display: block; margin-bottom: 4px;">Dark theme (recommended)</a>
       <a href="#" id="js-theme-light" class="theme-picker" data-theme="light">Light theme (default)</a>
     </p>
   </div>
