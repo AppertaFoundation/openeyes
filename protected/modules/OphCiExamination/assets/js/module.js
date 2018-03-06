@@ -2001,14 +2001,10 @@ function OphCiExamination_InjectionManagementComplex_loadQuestions(side) {
                 }
             }
 
-
+            //show/hide the parent object if there are no questions (useful for tables)
             var parent = $(model_side_id + '_Questions_Parent');
             if(parent){
-                if ($(html).text().trim().length === 0) {
-                    parent.hide();
-                } else {
-                    parent.show();
-                }
+                parent.toggle($(html).text().trim().length === 0);
             }
         }
     });
