@@ -1552,12 +1552,13 @@ function OphCiExamination_VisualAcuity_ReadingTooltip(row) {
 }
 
 function OphCiExamination_VisualAcuity_getNextKey(suffix) {
-    if(typeof suffix === 'VisualAcuity'){
-      var keys = $('.visualAcuityReading').map(function(index, el) {
+    var keys;
+    if(suffix === 'VisualAcuity'){
+      keys = $('.visualAcuityReading').map(function(index, el) {
         return parseInt($(el).attr('data-key'));
       }).get();
     } else {
-      var keys = $('.nearvisualAcuityReading').map(function(index, el) {
+      keys = $('.nearvisualAcuityReading').map(function(index, el) {
         return parseInt($(el).attr('data-key'));
       }).get();
     }
