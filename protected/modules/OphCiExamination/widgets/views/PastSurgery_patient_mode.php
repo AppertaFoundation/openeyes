@@ -18,6 +18,10 @@
 ?>
 <table class="plain patient-data">
     <thead>
+      <tr>
+        <th class="cols-6"></th>
+
+      </tr>
     </thead>
     <tbody>
     <?php if (!$operations || sizeof($operations)==0) { ?>

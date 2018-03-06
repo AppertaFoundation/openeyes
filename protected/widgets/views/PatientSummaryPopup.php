@@ -87,10 +87,8 @@
         <div class="group">
           <div class="label">Eye diagnoses</div>
           <div class="data">
-              <?php $this->widget('OEModule\OphCiExamination\widgets\PastSurgery', array(
-                  'patient' => $this->patient,
-                  'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
-              )); ?>
+<!--            --><?php //$this->render('OphCiExamination.views.default.view_Element_OphCiExamination_Diagnoses', array(
+//            )); ?>
           </div>
         </div>
         <!-- group-->
@@ -134,8 +132,10 @@
         <div class="group">
           <div class="label">Eye procedures</div>
           <div class="data">
-            <table>
-            </table>
+              <?php $this->widget('OEModule\OphCiExamination\widgets\PastSurgery', array(
+                  'patient' => $this->patient,
+                  'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
+              )); ?>
           </div>
         </div>
         <!-- group-->
