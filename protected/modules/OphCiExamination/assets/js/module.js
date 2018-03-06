@@ -841,14 +841,14 @@ $(document).ready(function() {
         if(near === 'near'){
             suffix = 'NearVisualAcuity';
         }
-        removeElement($(target).closest('.sub-element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]'), true);
+        removeElement($(target).closest('.element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]'), true);
         var el = $('.event-content').find('ul.sub-elements-list li[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]');
         if (el.length) {
             el.addClass('clicked');
             addElement(el, true, true, false, {unit_id: $(target).val()});
         } else {
             // use a different selector
-            var sidebar = $('aside.episodes-and-events').data('patient-sidebar');
+            var sidebar = $('#episodes-and-events').data('patient-sidebar');
             if (sidebar) {
                 sidebar.addElementByTypeClass(OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix, {unit_id: $(target).val()});
             } else {
@@ -1569,6 +1569,7 @@ function OphCiExamination_VisualAcuity_getNextKey(suffix) {
         return 0;
     }
 }
+
 function OphCiExamination_NearVisualAcuity_addReading(side){
     var template = $('#nearvisualacuity_reading_template').html();
     OphCiExamination_VisualAcuity_addReading(side, template, 'NearVisualAcuity')
@@ -1585,7 +1586,6 @@ function OphCiExamination_VisualAcuity_addReading(side, template, suffix) {
         "key" : OphCiExamination_VisualAcuity_getNextKey(suffix),
         "side" : side
     };
-    console.log(data);
     var form = Mustache.render(template, data);
 
     $('section[data-element-type-class="'+OE_MODEL_PREFIX+'Element_OphCiExamination_'+suffix+'"] .element-eye.'+side+'-eye .noReadings').hide().find('input:checkbox').each(function() {
