@@ -60,6 +60,12 @@ class WhiteboardController extends BaseDashboardController
         if($whiteboard){
             $this->setWhiteboard($whiteboard);
         }
+
+        foreach (OphTrOperationbooking_Whiteboard_Settings_Data::model()->findAll() as $metadata) {
+            if (!isset(Yii::app()->params['whiteboard'][$metadata->key])) {
+                Yii::app()->params[$metadata->key] = $metadata->value;
+            }
+        }
     }
 
     /**
@@ -87,6 +93,25 @@ class WhiteboardController extends BaseDashboardController
         Yii::app()->clientScript->registerCssFile($assetPath.'/css/whiteboard.css');
 
         return $before;
+    }
+
+    public function isRefreshable()
+    {
+        $whiteboard = $this->getWhiteboard();
+
+        echo get_class($whiteboard->booking); die;
+
+
+        if( (is_object($whiteboard->booking) && $whiteboard->booking->isEditable() && !$whiteboard->is_confirmed) ||
+            ($whiteboard->booking->status->name === 'Completed' && $this->extendedEditablePeriod())
+        ){
+            return true;
+        }
+    }
+
+    public function extendedEditablePeriod()
+    {
+        $hours = \Yii::app()->params['refresh_after_opbooking_completed'];
     }
 
     /**

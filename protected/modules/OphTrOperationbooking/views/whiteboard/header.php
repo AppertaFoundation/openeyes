@@ -16,7 +16,7 @@
                 Exit
                 <i class="material-icons right">close</i>
             </button>
-            <?php if (is_object($this->getWhiteboard()->booking) && $this->getWhiteboard()->booking->isEditable() && !$this->getWhiteboard()->is_confirmed):?>
+            <?php if ($this->isRefreshable() ):?>
                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"
                     id="refresh-button"
                     formaction="/OphTrOperationbooking/whiteboard/reload/<?=$this->getWhiteboard()->event_id?>"

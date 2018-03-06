@@ -76,5 +76,11 @@ return array(
         //'ophtroperationbooking_referral_link' => true,
         // boolean to require a referral on an operation booking for scheduling or not
         //'ophtroperationbooking_schedulerequiresreferral' => true
+
+        'whiteboard' => array(
+            // whiteboard will be refresh-able after operation booking is completed
+            // overrides admin > Opbooking > whiteboard settings
+            //'refresh_after_opbooking_completed' => 24, //hours or false
+        ),
     ),
 );
