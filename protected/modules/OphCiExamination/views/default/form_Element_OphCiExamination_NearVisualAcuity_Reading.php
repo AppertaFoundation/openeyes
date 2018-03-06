@@ -26,7 +26,7 @@
 		<?php echo CHtml::dropDownList($name_stub.'['.$key.'][value]', @$reading->value, $values, array('empty' => '--', 'class' => 'va-selector', 'options' => $val_options))?>
 	</td>
   <td class="cols-1">
-    <i class="oe-i info small pad js-has-tooltip" data-tooltip-content="Please select a VA value"></i>
+    <i class="oe-i info small pad js-has-tooltip va-info-icon" data-tooltip-content="Please select a VA value"></i>
   </td>
 	<td>
 		<?php echo CHtml::dropDownList($name_stub.'['.$key.'][method_id]', @$reading->method_id, $methods, array('class' => 'method_id'))?>

@@ -1094,12 +1094,18 @@ $(document).ready(function() {
 
 
     // perform the inits for the elements
-    // $('.js-active-elements .element,.js-active-elements .sub-element').each(function() {
-    //     var initFunctionName = $(this).attr('data-element-type-class').replace(OE_MODEL_PREFIX + 'Element_', '') + '_init';
-    //     if(typeof(window[initFunctionName]) == 'function') {
-    //         window[initFunctionName]();
-    //     }
-    // });
+    $('.js-active-elements .element').each(function(index, element) {
+
+        // Ignore elements without an element type (such as the event date)
+        if (!$(this).data('element-type-class')) {
+            return;
+        }
+
+        var initFunctionName = $(this).data('element-type-class').replace(OE_MODEL_PREFIX + 'Element_', '') + '_init';
+        if(typeof(window[initFunctionName]) === 'function') {
+            window[initFunctionName]();
+        }
+    });
 
     updateTextMacros();
 
@@ -1508,19 +1514,19 @@ function OphCiExamination_VisualAcuity_ReadingTooltip(row) {
     var iconHover = row.find('.va-info-icon:last');
 
     iconHover.hover(function(e) {
-        var sel = $(this).parent().parent().find('select.va-selector');
+        var sel = $(this).closest('tr').find('select.va-selector');
         var val = sel.val();
         var tooltip_text = '';
         if (val) {
             var conversions = [];
 
             sel.find('option').each(function() {
-                if ($(this).val() == val) {
+                if ($(this).val() === val) {
                     conversions = $(this).data('tooltip');
                     return true;
                 }
             });
-
+            
             var approx = false;
             for (var i = 0; i < conversions.length; i++) {
                 tooltip_text += conversions[i].name + ": " + conversions[i].value;
@@ -1538,17 +1544,7 @@ function OphCiExamination_VisualAcuity_ReadingTooltip(row) {
             tooltip_text = 'Please select a VA value';
         }
 
-        var infoWrap = $('<div class="quicklook">' + tooltip_text + '</div>');
-        infoWrap.appendTo('body');
-        var offsetPos = $(this).offset();
-        var top = offsetPos.top;
-        var left = offsetPos.left + 25;
-
-        top = top - (infoWrap.height()/2) + 8;
-
-        if (left + infoWrap.width() > 1150) left = left - infoWrap.width() - 40;
-        infoWrap.css({'position': 'absolute', 'top': top + "px", 'left': left + "px"});
-        infoWrap.fadeIn('fast');
+        $(this).data('tooltip-content', tooltip_text);
 
     }, function(e) {
         $('body > div:last').remove();
