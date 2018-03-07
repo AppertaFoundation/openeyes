@@ -99,9 +99,6 @@ class WhiteboardController extends BaseDashboardController
     {
         $whiteboard = $this->getWhiteboard();
 
-        echo get_class($whiteboard->booking); die;
-
-
         if( (is_object($whiteboard->booking) && $whiteboard->booking->isEditable() && !$whiteboard->is_confirmed) ||
             ($whiteboard->booking->status->name === 'Completed' && $this->extendedEditablePeriod())
         ){
@@ -111,7 +108,27 @@ class WhiteboardController extends BaseDashboardController
 
     public function extendedEditablePeriod()
     {
-        $hours = \Yii::app()->params['refresh_after_opbooking_completed'];
+        $whiteboard = $this->getWhiteboard();
+
+        $window = 0;
+        if (isset(\Yii::app()->params['refresh_after_opbooking_completed'])){
+            $window = \Yii::app()->params['refresh_after_opbooking_completed'] ? \Yii::app()->params['refresh_after_opbooking_completed'] : 0;
+        }
+
+        // $window is user input so check as much as possible
+        if(!$window || ($window <= 0) || !is_numeric($window)){
+            return false;
+        }
+
+        $now = new \DateTime();
+        $op_booking_date = new \DateTime($whiteboard->booking->operation_completion_date);
+
+        $diff = $op_booking_date->diff($now);
+        $hours = $diff->h;
+        //well, many parts of the world a year has one 23-hour day and one 25-hour day
+        $hours = $hours + ($diff->days*24);
+
+        return $hours <= $window;
     }
 
     /**
@@ -158,7 +175,7 @@ class WhiteboardController extends BaseDashboardController
             throw new CHttpException(400, 'No whiteboard found for reload with id '.$id);
         }
 
-        if (!$whiteboard->booking->isEditable()) {
+        if (!$whiteboard->booking->isEditable() && !$this->isRefreshable()) {
             throw new CHttpException(400, 'Whiteboard is not editable '.$id);
         }
 

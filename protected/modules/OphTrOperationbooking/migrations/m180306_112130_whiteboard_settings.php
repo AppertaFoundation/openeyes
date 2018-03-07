@@ -22,19 +22,22 @@ class m180306_112130_whiteboard_settings extends OEMigration
             'id' => 'pk',
             'element_type_id' => 'int(10) unsigned DEFAULT NULL',
             'key' =>  'varchar(64) NOT NULL',
-            'value' => 'varchar(255) COLLATE utf8_bin NOT NULL',
+            'value' => 'varchar(255) COLLATE utf8_bin NULL',
         ), $versioned = true);
 
         $this->insert('ophtroperationbooking_whiteboard_settings',array(
             'field_type_id' => 4,
             'key' => 'refresh_after_opbooking_completed',
-            'name' => 'Allow refresh after Op booking is completed'
+            'name' => 'Allow whiteboard to refresh after Booking is completed (hours)'
         ));
 
         $refresh_setting = new OphTrOperationbooking_Whiteboard_Settings_Data();
         $refresh_setting->key = 'refresh_after_opbooking_completed';
-        $refresh_setting->value = 24; //hour
+        $refresh_setting->value = 0; //hour
         $refresh_setting->save();
+
+        $this->addColumn('et_ophtroperationbooking_operation', 'operation_completion_date', 'datetime NULL');
+        $this->addColumn('et_ophtroperationbooking_operation_version', 'operation_completion_date', 'datetime NULL');
     }
 
     public function down()
@@ -45,5 +48,8 @@ class m180306_112130_whiteboard_settings extends OEMigration
 
         $this->dropOETable('ophtroperationbooking_whiteboard_settings', $versioned = true);
         $this->dropOETable('ophtroperationbooking_whiteboard_settings_data', $versioned = true);
+
+        $this->dropColumn('et_ophtroperationbooking_operation', 'operation_completion_date');
+        $this->dropColumn('et_ophtroperationbooking_operation_version', 'operation_completion_date');
     }
 }

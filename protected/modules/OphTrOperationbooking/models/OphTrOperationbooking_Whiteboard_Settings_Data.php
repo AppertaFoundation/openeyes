@@ -31,7 +31,7 @@ class OphTrOperationbooking_Whiteboard_Settings_Data extends \CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('key, value', 'required'),
+            array('key', 'required'),
             array('element_type_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
             array('key', 'length', 'max'=>64),
             array('value', 'length', 'max'=>255),

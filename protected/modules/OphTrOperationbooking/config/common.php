@@ -61,6 +61,7 @@ return array(
             'Waiting list contact rules' => '/OphTrOperationbooking/admin/viewWaitingListContactRules',
             'Patient unavailable reasons' => '/OphTrOperationbooking/admin/viewPatientUnavailableReasons',
             'Session unavailable reasons' => array('uri'=>'/OphTrOperationbooking/admin/viewSessionUnavailableReasons', 'requires_setting' => array('setting_key'=>'disable_theatre_diary', 'required_value'=>'off')),
+            'Whiteboard' => '/OphTrOperationbooking/oeadmin/WhiteboardSettings/settings',
         ),
         // Default anaesthetic settings
         //'ophtroperationbooking_default_anaesthetic_child' => 'GA',

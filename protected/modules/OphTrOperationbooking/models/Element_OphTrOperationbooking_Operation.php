@@ -305,7 +305,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
        }
 
         if (!$this->status_id) {
-            $this->status_id = 1;
+            $this->status_id = 1; //@TODO: change hardcoded id to a query
         }
 
         if (!$this->stop_medication) {
@@ -1133,7 +1133,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             return array(array('Attempted to book operation into incompatible session: '.$session->unbookableReason($this)));
         }
 
-        $reschedule = in_array($this->status_id, array(2, 3, 4));
+        $reschedule = in_array($this->status_id, array(2, 3, 4)); //@TODO: change hardcoded id to a query
 
         if (preg_match('/(^[0-9]{1,2}).*?([0-9]{2})$/', $booking->admission_time, $m)) {
             $booking->admission_time = $m[1].':'.$m[2];
