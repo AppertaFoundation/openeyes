@@ -317,6 +317,7 @@ class PatientController extends BaseController
 
         $episodes = $this->patient->episodes;
         $legacyepisodes = $this->patient->legacyepisodes;
+        $supportserviceepisodes = $this->patient->supportserviceepisodes;
         $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
         if (!$current_episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
@@ -346,6 +347,12 @@ class PatientController extends BaseController
             $current_episode = null;
         }
 
+        $no_episodes = count($episodes) < 1 && count($supportserviceepisodes) < 1 && count($legacyepisodes) < 1;
+
+        if ($no_episodes) {
+            $this->layout = '//layouts/events_and_episodes_no_header';
+        }
+
         $this->current_episode = $current_episode;
         $this->title = 'Episode summary';
 
@@ -354,6 +361,7 @@ class PatientController extends BaseController
             'episodes' => $episodes,
             'site' => $site,
             'cssClass' => 'episodes-list',
+            'noEpisodes' => $no_episodes,
         ));
     }
 
@@ -396,6 +404,7 @@ class PatientController extends BaseController
             'title' => empty($episodes) ? '' : 'Episode summary',
             'episodes' => $episodes,
             'site' => $site,
+            'noEpisodes' => false,
         ));
     }
 
@@ -474,6 +483,7 @@ class PatientController extends BaseController
             'site' => $site,
             'current_episode' => $this->episode,
             'error' => @$error,
+            'noEpisodes' => false,
         ));
     }
 

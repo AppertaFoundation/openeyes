@@ -19,24 +19,18 @@
 <?php
 extract($this->getEpisodes());
 $current_episode = isset($current_episode) ? $current_episode : @$this->current_episode;
-$noEpisodes = (count($episodes) < 1 && count($supportserviceepisodes) < 1 && count($legacyepisodes) < 1);
 ?>
 
 <?php if($noEpisodes && $this->checkAccess('OprnCreateEpisode')) { ?>
-	<div class="row">
-		<div class="large-8 large-centered column">
-			<div class="box content">
-				<div class="oe-no-episodes">
-					<div class="alert-box alert">
-						There are currently no events for this patient, please click the button below to begin recording events.
-					</div>
-					<button class="add-event tiny" id="add-event">
-						Add Event
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="oe-sem-no-events">
+    <h3>No Events</h3>
+    <div class="alert-box alert">
+      There are currently no events for this patient.<br>Click the "Add Event" button to begin recording events.
+    </div>
+    <nav class="sidebar-header">
+      <button id="add-event" class="button green add-event" type="button">Add Event</button>
+    </nav>
+  </div>
     <?php $this->renderPartial('//patient/add_new_event',array(
         'button_selector' => '#add-event',
         'episodes' => array(),
