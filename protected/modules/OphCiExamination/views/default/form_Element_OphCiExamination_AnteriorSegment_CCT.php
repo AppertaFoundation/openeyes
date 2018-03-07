@@ -19,23 +19,18 @@
 <?php $methods = CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_CCT_Method::model()->activeOrPk(array($element->right_method_id, $element->left_method_id))->findAll(array('order' => 'display_order')), 'id', 'name') ?>
 <div class="element-eyes sub-element-fields">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
-	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
-    ?> inactive<?php 
-}?>" data-side="right">
-		<div class="active-form">
+	<div class="element-eye right-eye column left side" data-side="right">
+		<div class="active-form" <?php if (!$element->hasRight()) {
+    ?> style="display: none;" <?php
+}?>>
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-			<div class="row collapse field-row">
-				<div class="large-2 column">
+			<div class="cols-full">
 					<?php echo $form->textField($element, 'right_value', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'nowrapper' => true, 'class' => 'cct_value')) ?>
-				</div>
-				<div class="large-10 column">
-					<div class="postfix align field-info">
 						&micro;m, using <?php echo $form->dropDownList($element, 'right_method_id', $methods, array('nowrapper' => true, 'class' => 'inline')) ?>
-					</div>
-				</div>
 			</div>
 		</div>
-		<div class="inactive-form">
+		<div class="inactive-form"  <?php if ($element->hasRight()) {
+    ?> style="display: none;" <?php } ?>>
 			<div class="add-side">
 				<a href="#">
 					Add right side <span class="icon-add-side"></span>
@@ -43,25 +38,18 @@
 			</div>
 		</div>
 	</div>
-	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {
-    ?> inactive<?php 
-}?>" data-side="left">
-		<div class="active-form">
-
+	<div class="element-eye left-eye column right side" data-side="left">
+		<div class="active-form" <?php if (!$element->hasLeft()) {
+        ?> style="display: none;" <?php
+    }?>>
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-			<div class="row collapse field-row">
-
-				<div class="large-2 column">
+			<div class="cols-full">
 					<?php echo $form->textField($element, 'left_value', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'nowrapper' => true, 'class' => 'cct_value')) ?>
-				</div>
-				<div class="large-10 column">
-					<div class="postfix align field-info">
 						&micro;m, using <?php echo $form->dropDownList($element, 'left_method_id', $methods, array('nowrapper' => true, 'class' => 'inline')) ?>
-					</div>
-				</div>
 			</div>
 		</div>
-		<div class="inactive-form">
+		<div class="inactive-form"  <?php if ($element->hasLeft()) {
+    ?> style="display: none;" <?php } ?>>
 			<div class="add-side">
 				<a href="#">
 					Add left side <span class="icon-add-side"></span>
