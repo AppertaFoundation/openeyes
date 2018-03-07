@@ -74,15 +74,13 @@ $el_model_name = CHtml::modelName($element);
   </tbody>
 </table>
 <table class="cols-full">
-  <tbody>
-  <tr id="div_<?php echo $el_model_name . '_' . $eye ?>_treatment_fields diagnosis_id"
-
-  >
+  <tbody id="div_<?php echo $el_model_name . '_' . $eye ?>_treatment_fields">
+  <tr>
     <td class="flex-top flex-layout" style="height: auto">
       <div >
         <label>Diagnosis:</label>
       </div>
-      <div >
+      <div class="diagnosis_id">
           <?php
           $form->widget(
               'application.widgets.DiagnosisSelection',
@@ -145,6 +143,7 @@ $el_model_name = CHtml::modelName($element);
           array(
               'side' => $eye,
               'element' => $element,
+              'bottom_pad' => true,
               'form' => $form,
               'questions' => $questions
           )

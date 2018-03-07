@@ -16,13 +16,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
+<?php $bottom_pad = isset($bottom_pad)?$bottom_pad:false;?>
 <div id="<?php echo CHtml::modelName($element) ?>_<?php echo $side ?>_Questions">
     <?php
     $name_stub = CHtml::modelName($element) . '[' . $side . '_Answer]';
     foreach ($questions as $question) {?>
-      <fieldset class="flex-layout">
-        <label class="cols-3 column">
+      <fieldset class="flex-layout"
+                style="<?= $bottom_pad && $question !== end($questions) ?"padding-bottom: 1px":""?>">
+        <label class="cols-9 column">
             <?php echo $question->question ?>
         </label>
           <?php
@@ -33,7 +34,7 @@
               $value = $_POST[CHtml::modelName($element)][$side . '_Answer'][$question->id];
           }
           ?>
-        <div class="large-9 column">
+        <div class="cols-3 column">
           <label class="inline highlight">
               <?php echo CHtml::radioButton($name, $value, array('id' => CHtml::modelName($element) . '_' . $side . '_Answer_' . $question->id . '_1', 'value' => 1)) ?>
             Yes

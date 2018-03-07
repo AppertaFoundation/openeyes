@@ -1941,21 +1941,23 @@ function unmaskFields(element, ignore) {
 }
 
 function OphCiExamination_InjectionManagementComplex_check(side) {
-    if ($('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_'+side+'_no_treatment').length >0) {
-        val = $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_'+side+'_no_treatment')[0].checked;
+    var model_side = OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_'+side;
+    var no_treatment = $('#'+model_side+'_no_treatment');
+    if (no_treatment.length >0) {//truthiness
+        val = no_treatment[0].checked;
     } else {
         val = false;
     }
 
     if (val) {
-        unmaskFields($('#div_'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_'+side+'_no_treatment_reason_id'));
-        maskFields($('#div_'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_'+side+'_treatment_fields'),'[id$="eye_id"]');
-
+        var no_treatment_reason = $('#div_'+model_side+'_no_treatment_reason_id');
+        unmaskFields(no_treatment_reason);
+        maskFields($('#div_'+model_side+'_treatment_fields'),'[id$="eye_id"]');
         // if we have an other selection on no treatment, need to display the text field
-        var selVal = $('#div_'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_'+side+'_no_treatment_reason_id').find('select').val();
+        var selVal = no_treatment_reason.find('select').val();
         var other = false;
 
-        $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_right_no_treatment_reason_id').find('option').each(function() {
+        $('#'+model_side+'_no_treatment_reason_id').find('option').each(function() {
             if ($(this).val() == selVal) {
                 if ($(this).data('other') == '1') {
                     other = true;
@@ -1964,14 +1966,14 @@ function OphCiExamination_InjectionManagementComplex_check(side) {
             }
         });
         if (other) {
-            unmaskFields($('#div_'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_'+side+'_no_treatment_reason_other'));
+            unmaskFields($('#div_'+model_side+'_no_treatment_reason_other'));
         } else {
-            maskFields($('#div_'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_'+side+'_no_treatment_reason_other'));
+            maskFields($('#div_'+model_side+'_no_treatment_reason_other'));
         }
     } else {
-        maskFields($('#div_'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_'+side+'_no_treatment_reason_id'));
-        maskFields($('#div_'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_'+side+'_no_treatment_reason_other'));
-        unmaskFields($('#div_'+OE_MODEL_PREFIX+'Element_OphCiExamination_InjectionManagementComplex_'+side+'_treatment_fields'),'[id$="eye_id"]');
+        maskFields($('#div_'+model_side+'_no_treatment_reason_id'));
+        maskFields($('#div_'+model_side+'_no_treatment_reason_other'));
+        unmaskFields($('#div_'+model_side+'_treatment_fields'),'[id$="eye_id"]');
     }
 }
 
@@ -2004,7 +2006,7 @@ function OphCiExamination_InjectionManagementComplex_loadQuestions(side) {
             //show/hide the parent object if there are no questions (useful for tables)
             var parent = $(model_side_id + '_Questions_Parent');
             if(parent){
-                parent.toggle($(html).text().trim().length === 0);
+                parent.toggle($(html).text().trim().length !== 0);
             }
         }
     });
