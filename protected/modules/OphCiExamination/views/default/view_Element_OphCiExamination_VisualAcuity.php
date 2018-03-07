@@ -45,12 +45,12 @@ if ($cvi_api) {
                   ?>
               <div class="data-row">
                 <div class="data-value">
-                      <span class="priority-text">
-                        <?php echo $element->getCombined($eye_side) ?>
-                      </span>
-                  <i class="oe-i info small pad"></i>
+                  <span class="priority-text">
+                    <?php echo $element->getCombined($eye_side) ?>
+                  </span>
                 </div>
               </div>
+
                   <?php
               } else {
                   ?>
