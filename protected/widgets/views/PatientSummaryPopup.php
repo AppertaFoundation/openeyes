@@ -91,8 +91,6 @@
               <tbody>
             <?php
              $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
-             Yii::log("diagnoses");
-             Yii::log(var_export($ophthalmic_diagnoses, true));
              foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
                list($side, $name) = explode(" ", $ophthalmic_diagnosis, 2); ?>
                  <tr>
@@ -161,10 +159,7 @@
           )); ?>
 
         <!-- group-->
-      </div><!-- popup-overflow -->
 
-      <!-- oe-popup-overflow handles scrolling if data overflow height -->
-      <div class="oe-popup-overflow quicklook-data-groups">
         <!-- group-->
 
         <div class="group">

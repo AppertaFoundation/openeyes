@@ -16,86 +16,23 @@
  */
 $model_name = CHtml::modelName($element);
 ?>
-  <div class="group">
-  <div class="label">Systemic Medications</div>
-  <div class="data">
-<?php if (!$current && !$stopped) { ?>
-    <p>No medications recorded.</p>
-<?php } else { ?>
-
-    <table id="<?= $model_name ?>_entry_table">
-        <tbody>
-        <?php if ($current) { ?>
-          <tr>
-            <th class="cols-7">Current Medications</th>
-          </tr>
-            <?php foreach ($current as $entry) {
-                if ($entry['route_id'] != 1) { ?>
-                  <tr>
-                    <td><?= $entry->getMedicationDisplay() ?></td>
-                    <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                      <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
-                      <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
-                    </td>
-                    <td><?= $entry->getDatesDisplay() ?></td>
-
-                  </tr>
-                <?php }
-            }
-        }?>
-        </tbody>
-    </table>
-    <table>
-      <thead>
-        <tr>
-          <th class="cols-7">Stopped Medications</th>
-          <th>
-            <i class="oe-i small js-patient-expand-btn pad expand"></i>
-          </th>
-      </tr>
-      </thead>
-      <tbody style="display: none;">
-        <?php if ($stopped) { ?>
-            <?php foreach ($stopped as $entry) {
-                if ($entry['route_id'] != 1) { ?>
-                  <tr>
-                    <td><?= $entry->getMedicationDisplay() ?></td>
-                    <td><?= $entry->getDatesDisplay() ?></td>
-                    <td><?php if ($entry->prescription_item) { ?>
-                        <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="js-has-tooltip fa fa-eye"
-                                                                                  data-tooltip-content="View prescription"></span></a>
-                        <?php } ?></td>
-                  </tr>
-                <?php }
-            }
-        } ?>
-        </tbody>
-    </table>
-<?php } ?>
-  </div>
-  </div>
-
 <div class="group">
-  <div class="label">Eye medications</div>
+  <div class="label">Systemic Medications</div>
   <div class="data">
       <?php if (!$current && !$stopped) { ?>
         <p>No medications recorded.</p>
       <?php } else { ?>
         <table id="<?= $model_name ?>_entry_table">
-          <thead>
-          <tr>
-            <th class="cols-7">Current Medications</th>
-          </tr>
-          </thead>
           <tbody>
           <?php if ($current) { ?>
-              <?php
-              foreach ($current as $entry) {
-                  if ($entry['route_id'] == 1) { ?>
+            <tr>
+              <th class="cols-7">Current Medications</th>
+            </tr>
+              <?php foreach ($current as $entry) {
+                  if ($entry['route_id'] != 1) { ?>
                     <tr>
                       <td><?= $entry->getMedicationDisplay() ?></td>
-                      <td>
-                          <?php $laterality = $entry->getLateralityDisplay(); ?>
+                      <td><?php $laterality = $entry->getLateralityDisplay(); ?>
                         <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
                         <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
                       </td>
@@ -111,15 +48,14 @@ $model_name = CHtml::modelName($element);
           <tr>
             <th class="cols-7">Stopped Medications</th>
             <th>
-              <i class="oe-i small pad js-patient-expand-btn expand"></i>
+              <i class="oe-i small js-patient-expand-btn pad expand"></i>
             </th>
           </tr>
           </thead>
+          <tbody style="display: none;">
           <?php if ($stopped) { ?>
-            <tbody style="display: none;">
-              <?php
-              foreach ($stopped as $entry) {
-                  if ($entry['route_id'] == 1) { ?>
+              <?php foreach ($stopped as $entry) {
+                  if ($entry['route_id'] != 1) { ?>
                     <tr>
                       <td><?= $entry->getMedicationDisplay() ?></td>
                       <td><?= $entry->getDatesDisplay() ?></td>
@@ -136,3 +72,69 @@ $model_name = CHtml::modelName($element);
       <?php } ?>
   </div>
 </div>
+</div><!-- popup-overflow -->
+
+<!-- oe-popup-overflow handles scrolling if data overflow height -->
+<div class="oe-popup-overflow quicklook-data-groups">
+
+  <div class="group">
+    <div class="label">Eye medications</div>
+    <div class="data">
+        <?php if (!$current && !$stopped) { ?>
+          <p>No medications recorded.</p>
+        <?php } else { ?>
+          <table id="<?= $model_name ?>_entry_table">
+            <thead>
+            <tr>
+              <th class="cols-7">Current Medications</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php if ($current) { ?>
+                <?php foreach ($current as $entry) {
+                    if ($entry['route_id'] == 1) { ?>
+                      <tr>
+                        <td><?= $entry->getMedicationDisplay() ?></td>
+                        <td>
+                            <?php $laterality = $entry->getLateralityDisplay(); ?>
+                          <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
+                          <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                        </td>
+                        <td><?= $entry->getDatesDisplay() ?></td>
+                      </tr>
+                    <?php }
+                }
+            } ?>
+            </tbody>
+          </table>
+          <table>
+            <thead>
+            <tr>
+              <th class="cols-7">Stopped Medications</th>
+              <th>
+                <i class="oe-i small pad js-patient-expand-btn expand"></i>
+              </th>
+            </tr>
+            </thead>
+              <?php if ($stopped) { ?>
+            <tbody style="display: none;">
+            <?php foreach ($stopped as $entry) {
+                if ($entry['route_id'] == 1) { ?>
+                  <tr>
+                    <td><?= $entry->getMedicationDisplay() ?></td>
+                    <td><?= $entry->getDatesDisplay() ?></td>
+                    <td><?php if ($entry->prescription_item) { ?>
+                        <a href="<?= $this->getPrescriptionLink($entry) ?>">
+                          <span class="js-has-tooltip fa fa-eye" data-tooltip-content="View prescription"></span>
+                        </a>
+                        <?php } ?>
+                    </td>
+                  </tr>
+                <?php }
+            }
+              } ?>
+            </tbody>
+          </table>
+        <?php } ?>
+    </div>
+  </div>
