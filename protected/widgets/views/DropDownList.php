@@ -68,4 +68,5 @@ else:
       echo CHtml::activeDropDownList($element, $field, $data, $htmlOptions) ?>
   <?php endif; ?>
 </div>
-<?php endif;
+</div>
+<?php endif; ?>
