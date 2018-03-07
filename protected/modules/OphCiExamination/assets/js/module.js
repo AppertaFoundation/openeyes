@@ -805,9 +805,12 @@ $(document).ready(function() {
             var side = getSplitElementSide($(this));
             if ($(this)[0].value == '0') {
                 unmaskFields($('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT_' + side + '_fluid_fields'),null);
+              unmaskFields($('#tr_Element_OphCiExamination_OCT_' + side + '_fluidstatus_id'),null);
+
             }
             else {
               maskFields($('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT_' + side + '_fluid_fields'),null);
+              maskFields($('#tr_Element_OphCiExamination_OCT_' + side + '_fluidstatus_id'),null);
             }
     });
 

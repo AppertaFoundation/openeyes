@@ -43,7 +43,7 @@ if (@$_POST[CHtml::modelName($element)]) {
               $side.'_method_id', '\OEModule\OphCiExamination\models\OphCiExamination_OCT_Method',
               array(),
               false,
-              array('label' => 4, 'field' => 3)
+              array('label' => 9, 'field' => 3)
           ) ?>
       </td>
       <td></td>
@@ -55,7 +55,7 @@ if (@$_POST[CHtml::modelName($element)]) {
               $side.'_crt',
               array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '&micro;m'),
               null,
-              array('label' => 4, 'field' => '3', 'append-text' => '1')
+              array('label' => 8, 'field' => '4', 'append-text' => '1')
           ) ?>
       </td>
       <td></td>
@@ -67,7 +67,7 @@ if (@$_POST[CHtml::modelName($element)]) {
             $side.'_sft',
             array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '&micro;m'),
             null,
-            array('label' => 4, 'field' => '3', 'append-text' => '1')
+            array('label' => 8, 'field' => '4', 'append-text' => '1')
         ) ?>
         <?php if ($past_sft = $exam_api->getOCTSFTHistoryForSide($this->patient, $side, $event_date)) { ?>
           <i class="oe-i info small-icon js-has-tooltip" data-tooltip-content="Previous SFT Measurements:
@@ -81,34 +81,56 @@ if (@$_POST[CHtml::modelName($element)]) {
     </tr>
     <tr>
       <td>
-          <?php echo $form->radioBoolean($element, $side.'_thickness_increase', array(), array('label' => 4, 'field' => 8))?>
+          <?php echo $form->radioBoolean($element, $side.'_thickness_increase', array(), array('label' => 9, 'field' => 3))?>
       </td>
       <td></td>
     </tr>
     <tr>
       <td>
-          <?php echo $form->radioBoolean($element, $side.'_dry', array(), array('label' => 4, 'field' => 8)) ?>
+          <?php echo $form->radioBoolean($element, $side.'_dry', array(), array('label' => 9, 'field' => 3)) ?>
       </td>
       <td></td>
     </tr>
 
-    <tr>
-      <td class="field-row" id="<?php echo CHtml::modelName($element).'_'.$side; ?>_fluid_fields"
-          <?php if ($hide_fluid) { echo ' style="display: none;"'; }?>>
-          <?php
+    <tr class="field-row" id="<?php echo CHtml::modelName($element).'_'.$side; ?>_fluid_fields"
+        <?php if ($hide_fluid) { echo ' style="display: none;"'; }?>>
+      <td class="flex-layout flex-top" style="height: auto;">
+          <label>Findings:</label>
+        <?php
           $html_options = array(
               'style' => 'margin-bottom: 10px; width: 240px;',
               'options' => array(),
               'empty' => '- Please select -',
               'div_id' => CHtml::modelName($element).'_'.$side.'_fluidtypes',
-              'label' => 'Findings', );
+              'label' => 'Findings',
+              'nowrapper'=>true,
+          );
           $fts = \OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidType::model()->activeOrPk($element->fluidTypeValues)->findAll();
           foreach ($fts as $ft) {
               $html_options['options'][(string) $ft->id] = array('data-order' => $ft->display_order);
           }
-          echo $form->multiSelectList($element, CHtml::modelName($element).'['.$side.'_fluidtypes]', $side.'_fluidtypes', 'id', CHtml::listData($fts, 'id', 'name'), array(), $html_options, false, false, null, false, false, array('label' => 4, 'field' => 3));
+          echo $form->multiSelectList(
+              $element,
+              CHtml::modelName($element).'['.$side.'_fluidtypes]', $side.'_fluidtypes', 'id',
+              CHtml::listData($fts, 'id', 'name'),
+              array(),
+              $html_options, false, false, null, false, false,
+              array()
+          );
           ?>
-          <?php echo $form->dropDownList($element, $side.'_fluidstatus_id', '\OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidStatus', array( 'empty' => ' - Please Select - '),false, array('label' => 4, 'field' => 3)) ?>
+      </td>
+      <td></td>
+    </tr>
+    <tr id="tr_Element_OphCiExamination_OCT_<?= $side ?>_fluidstatus_id" <?php if ($hide_fluid) { echo ' style="display: none;"'; }?> >
+      <td>
+    <?php echo $form->dropDownList(
+        $element,
+        $side.'_fluidstatus_id',
+        '\OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidStatus',
+        array( 'empty' => ' - Please Select - '),
+        false,
+        array('label' => 9, 'field' => 3)
+    ); ?>
       </td>
       <td></td>
     </tr>
