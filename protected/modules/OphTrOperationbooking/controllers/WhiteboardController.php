@@ -115,8 +115,8 @@ class WhiteboardController extends BaseDashboardController
             $window = \Yii::app()->params['refresh_after_opbooking_completed'] ? \Yii::app()->params['refresh_after_opbooking_completed'] : 0;
         }
 
-        // $window is user input so check as much as possible
-        if(!$window || ($window <= 0) || !is_numeric($window)){
+        // Older bookings have no operation_completion_date, those will not be refreshable
+        if(!$window || ($window <= 0) || !is_numeric($window) || !$whiteboard->booking->operation_completion_date){
             return false;
         }
 
