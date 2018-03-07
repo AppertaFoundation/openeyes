@@ -12,7 +12,7 @@ $this->pageTitle = Yii::app()->name . ' - Login';
             'enableAjaxValidation' => false,
         )); ?>
 
-        <?php echo $form->error($model, 'password', array('class' => 'alert-box alert')); ?>
+        <?php echo $form->error($model, 'password', array('class' => 'alert-box error')); ?>
         <?php echo $form->textField($model, 'username', array(
             'autocomplete' => Yii::app()->params['html_autocomplete'],
             'placeholder' => 'Username',
@@ -21,12 +21,9 @@ $this->pageTitle = Yii::app()->name . ' - Login';
         <?php echo $form->passwordField($model, 'password',
             array('autocomplete' => 'off', 'placeholder' => 'Password')); ?>
 
-      <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
-           alt="loading..." style="display:none"/>
+      <img class="spinner" style="display:none"/>
 
-      <button type="submit" id="login_button" class="green hint">
-        Login
-      </button>
+      <button type="submit" id="login_button" class="green hint">Login</button>
 
         <?php $this->endWidget(); ?>
       <!-- user -->
