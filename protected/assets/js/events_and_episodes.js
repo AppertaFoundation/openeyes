@@ -178,12 +178,24 @@ $(document).ready(function(){
 
   $(this).on('mouseover', '.js-has-tooltip', function (e) {
     var text = $(this).data('tooltip-content');
-    var $tooltip = $('<span class="oe-tooltip" style="text-align: center; display: block; position: relative;">' + text + '</span>');
-    var $selector = $tooltip.appendTo($(this));
-    $selector.css('left', -$selector.width() / 2);
-    $selector.css('top', -$selector.height() - 20);
-  });
+    var offset = $(this).offset();
+    var leftPos = offset.left - 94; // tooltip is 200px (and center on the icon)
 
+    // add, calculate height then show (remove 'hidden')
+    var tip = $("<div></div>", {
+      "class": "oe-tooltip",
+      "style": "position:fixed; left:" + leftPos + "px; top:0;"
+    });
+
+    // add the tip:
+    tip.html(text);
+    $('body').append(tip);
+    var tooltip = $('.oe-tooltip');
+    // update position and show
+    var top = offset.top - tooltip.height() - 20;
+    tooltip.css({"top": top + "px"});
+
+  });
 });
 
 function WidgetSlider() {if (this.init) this.init.apply(this, arguments); }
