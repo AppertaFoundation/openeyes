@@ -127,6 +127,12 @@ OpenEyes.UI = OpenEyes.UI || {};
           }
         });
       }
+      else {
+        savedDiagnoses = controller.$inputField.data('saved-diagnoses');
+        if (savedDiagnoses.id||savedDiagnoses.name ) {
+          controller.addDiagnosis(savedDiagnoses.id, {label: savedDiagnoses.name, id: savedDiagnoses.disorder_id});
+        }
+      }
     }
   };
 
