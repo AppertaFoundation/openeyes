@@ -538,7 +538,7 @@ class WaitingListController extends BaseModuleController
         $transaction = \Yii::app()->db->beginTransaction();
 
         try{
-            $element->status_id = 2;
+            $element->status_id = 2; //@TODO: change hardcoded id to a query
             $element->save();
             $message = '';
 

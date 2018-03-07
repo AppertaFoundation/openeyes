@@ -60,6 +60,12 @@ class WhiteboardController extends BaseDashboardController
         if($whiteboard){
             $this->setWhiteboard($whiteboard);
         }
+
+        foreach (OphTrOperationbooking_Whiteboard_Settings_Data::model()->findAll() as $metadata) {
+            if (!isset(Yii::app()->params['whiteboard'][$metadata->key])) {
+                Yii::app()->params[$metadata->key] = $metadata->value;
+            }
+        }
     }
 
     /**
@@ -87,6 +93,42 @@ class WhiteboardController extends BaseDashboardController
         Yii::app()->clientScript->registerCssFile($assetPath.'/css/whiteboard.css');
 
         return $before;
+    }
+
+    public function isRefreshable()
+    {
+        $whiteboard = $this->getWhiteboard();
+
+        if( (is_object($whiteboard->booking) && $whiteboard->booking->isEditable() && !$whiteboard->is_confirmed) ||
+            ($whiteboard->booking->status->name === 'Completed' && $this->extendedEditablePeriod())
+        ){
+            return true;
+        }
+    }
+
+    public function extendedEditablePeriod()
+    {
+        $whiteboard = $this->getWhiteboard();
+
+        $window = 0;
+        if (isset(\Yii::app()->params['refresh_after_opbooking_completed'])){
+            $window = \Yii::app()->params['refresh_after_opbooking_completed'] ? \Yii::app()->params['refresh_after_opbooking_completed'] : 0;
+        }
+
+        // Older bookings have no operation_completion_date, those will not be refreshable
+        if(!$window || ($window <= 0) || !is_numeric($window) || !$whiteboard->booking->operation_completion_date){
+            return false;
+        }
+
+        $now = new \DateTime();
+        $op_booking_date = new \DateTime($whiteboard->booking->operation_completion_date);
+
+        $diff = $op_booking_date->diff($now);
+        $hours = $diff->h;
+        //well, many parts of the world a year has one 23-hour day and one 25-hour day
+        $hours = $hours + ($diff->days*24);
+
+        return $hours <= $window;
     }
 
     /**
@@ -133,7 +175,7 @@ class WhiteboardController extends BaseDashboardController
             throw new CHttpException(400, 'No whiteboard found for reload with id '.$id);
         }
 
-        if (!$whiteboard->booking->isEditable()) {
+        if (!$whiteboard->booking->isEditable() && !$this->isRefreshable()) {
             throw new CHttpException(400, 'Whiteboard is not editable '.$id);
         }
 
