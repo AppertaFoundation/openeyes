@@ -87,8 +87,24 @@
         <div class="group">
           <div class="label">Eye diagnoses</div>
           <div class="data">
-<!--            --><?php //$this->render('OphCiExamination.views.default.view_Element_OphCiExamination_Diagnoses', array(
-//            )); ?>
+            <table>
+              <tbody>
+            <?php
+             $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
+             Yii::log("diagnoses");
+             Yii::log(var_export($ophthalmic_diagnoses, true));
+             foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
+               list($side, $name) = explode(" ", $ophthalmic_diagnosis, 2); ?>
+                 <tr>
+                   <td><?= $name ?></td>
+                   <td>
+                     <i class="oe-i laterality <?php echo $side && ($side=='Right'||$side=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
+                     <i class="oe-i laterality <?php echo $side && ($side=='Left'||$side=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
+                   </td>
+                 </tr>
+            <?php } ?>
+              </tbody>
+            </table>
           </div>
         </div>
         <!-- group-->
