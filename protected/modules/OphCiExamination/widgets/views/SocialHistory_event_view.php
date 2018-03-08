@@ -16,8 +16,28 @@
  */
 ?>
 
-<div class="element-data full-width">
+<div class="element-data">
     <div class="data-row">
-        <?= $element ?>
+      <table class="cols-full">
+        <tbody>
+          <?php foreach (array(
+                             'occupation_id' => 'displayoccupation',
+                             'driving_statuses' => 'displaydrivingstatuses',
+                             'smoking_status_id' => 'smoking_status',
+                             'accommodation_id' => 'accommodation',
+                             'comments' => 'comments',
+                             'carer_id' => 'carer',
+                             'alcohol_intake' => 'displayalcoholintake',
+                             'substance_misuse_id' => 'substance_misuse'
+                         ) as $id => $source):?>
+            <?php if($element->$source):?>
+              <tr>
+                <td><?=$element->getAttributeLabel($id)?></td>
+                <td><?=$element->$source?></td>
+              </tr>
+            <?php endif;?>
+          <?php endforeach;?>
+          </tbody>
+      </table>
     </div>
 </div>

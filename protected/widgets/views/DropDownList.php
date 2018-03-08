@@ -16,11 +16,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php if (@$htmlOptions['nowrapper']):
+<?php
+if (@$htmlOptions['nowrapper']):
     echo CHtml::activeDropDownList($element, $field, $data, $htmlOptions);
 else:
-    $stretch = @$layoutColumns['stretch'];
+    $stretch = @$layoutColumns['stretch']; //whether or not to fill the container
     $stretch = $stretch?:false;
+    $full_dropdown = @$layoutColumns['full_dropdown'];
+    $full_dropdown = $full_dropdown?:false;
 ?>
 <div id="div_<?=CHtml::modelName($element)?>_<?=$field?>"
      class="row cols-full <?php
@@ -57,6 +60,23 @@ else:
         </optgroup>
       <?php endforeach; ?>
     </select>
+  <?php elseif ($full_dropdown):?>
+    <select name="<?= CHtml::modelName($element) . '[' . $field . ']' ?>"
+            id="<?= CHtml::modelName($element) . "_" . $field ?>"
+            style="width: 100%"
+    >
+        <?php if (isset($htmlOptions['empty'])): ?>
+          <option value=""><?= $htmlOptions['empty'] ?></option>
+        <?php endif;
+        foreach ($data as $id => $option): ?>
+          <option
+              value="<?= $id ?>"
+              <?= $id == $value ? "selected=\"selected\"" : "" ?>
+          >
+              <?= CHtml::encode($option) ?>
+          </option>
+        <?php endforeach; ?>
+    </select>
   <?php else:
       if (@$htmlOptions['textAttribute']) {
           $html_options = array();
@@ -67,6 +87,7 @@ else:
       }
       echo CHtml::activeDropDownList($element, $field, $data, $htmlOptions) ?>
   <?php endif; ?>
+  </div>
 </div>
 </div>
 <?php endif; ?>

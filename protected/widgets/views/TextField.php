@@ -20,7 +20,7 @@
 	<?php echo CHtml::textField($name, $value, $htmlOptions)?>
 <?php } else {?>
     <div id="div_<?php echo CHtml::modelName($element) ?>_<?= $field ?>"
-         class="row field-row flex-layout flex-left"<?php if (@$htmlOptions['hide']) { ?> style="display: none;"<?php } ?>
+         class="row field-row flex-layout flex-left cols-full"<?php if (@$htmlOptions['hide'] == true) { ?> style="display: none;"<?php } ?>
     >
       <div class="cols-<?php echo $layoutColumns['label'];?> column">
         <?php

@@ -65,7 +65,7 @@ $widgetOptionsJson = json_encode(array(
         <?php echo @$htmlOptions['label'] ?>:
     </label>
   </div>
-  <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
+  <div class="cols-<?= $layoutColumns['field']; ?> column end">
       <?php } ?>
     <div class="multi-select<?php if (!$inline) { echo ' multi-select-list'; } ?>"
          data-options='<?php echo $widgetOptionsJson; ?>'
@@ -75,7 +75,10 @@ $widgetOptionsJson = json_encode(array(
              class="multi-select-list-name"/>
       <div class="multi-select-dropdown-container">
         <select id="<?php echo CHtml::getIdByName($field) ?>"
-                class="MultiSelectList<?php if ($showRemoveAllLink) { ?> inline <?php } ?><?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"
+                class="MultiSelectList
+                  <?=($showRemoveAllLink)?' inline':''?>
+                  <?= isset($htmlOptions['class'])?$htmlOptions['class']:''?>
+                "
                 name=""
                 style="width: 100%;"
             <?php if (isset($htmlOptions['data-linked-fields'])) { ?>
@@ -113,9 +116,7 @@ $widgetOptionsJson = json_encode(array(
         <?php if (Yii::app()->request->isPostRequest && empty($selected_ids)): ?>
           <input type="hidden" name="<?php echo $field ?>">
         <?php endif; ?>
-      <ul class="MultiSelectList multi-select-selections<?php if (!$found) {
-          echo ' hide';
-      } ?><?php if ($sortable) { ?> sortable<?php } ?>">
+      <ul class="MultiSelectList multi-select-selections <?= !$found?' hide':''?><?= $sortable?' sortable':''?>">
           <?php foreach ($selected_ids as $id) {
               if (isset($options[$id])) { ?>
                 <li>

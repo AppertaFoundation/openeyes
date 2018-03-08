@@ -232,4 +232,9 @@ class SocialHistory extends \BaseEventTypeElement
         }
         return implode(' <br /> ', $res);
     }
+
+    public function getTileSize()
+    {
+        return 1;
+    }
 }
