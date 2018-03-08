@@ -441,12 +441,7 @@ function show_results(){
   //wrapper for old-style callback
   function click_sidebar_element($item) {
     return new Promise(function(resolve, reject) {
-      if ($item.hasClass('child')){
         event_sidebar.loadClickedItem($item,{},resolve);
-      }
-      if($item.hasClass('collapse-group-header')){
-        event_sidebar.loadClickedParent($item.parent(),{},resolve);
-      }
     });
   }
 

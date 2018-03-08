@@ -115,7 +115,6 @@
     });
 
     function headerChange(e){
-      PatientSidebar.prototype.loadClickedParent($(e.target).parent());
       if(!expanded){
         e.preventDefault();
         $content.show();
@@ -362,6 +361,8 @@
 
       item.append('<a href="#" class="' + hrefClass + '"></a>');
       item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme ' + (open ? 'minus' : 'plus') + '"></i></div> <h3 class="collapse-group-header">' + itemData.name + '</h3>');
+
+      itemData.children.unshift(itemData);
 
       //children
       if (itemData.children && itemData.children.length) {
