@@ -40,7 +40,7 @@ class OphCoDocument_API extends BaseAPI
             }
         }
 
-        return "<img src=\"$path\" alt=\"op\"/>";
+        return "<img src=\"$path\"/>";
     }
 
     public function getEventName($event)

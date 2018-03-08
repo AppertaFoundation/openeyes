@@ -383,8 +383,7 @@ class EventType extends BaseActiveRecordVersioned
             $type = 'large';
         }
 
-        return "<i class=\"oe-i-e {$type} {$this->getEventIconCssClass()}\"
-                       title=\"{$this->name} icon\"></i>";
+        return "<i class=\"oe-i-e {$type} {$this->getEventIconCssClass()}\"></i>";
     }
 
     /**
