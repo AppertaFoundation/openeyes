@@ -124,279 +124,142 @@
 </div>
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-    <div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
-        ?> inactive<?php
-    }?>" data-side="right">
-        <div class="active-form">
+
+    <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):
+    $hasEyeFunc = 'has'.ucfirst($eye); ?>
+      <div class="element-eye <?=$eye?>-eye column side <?=$side?>" data-side="<?=$eye?>">
+        <div class="active-form" style="<?= !$element->$hasEyeFunc() ? "display: none;" : ""?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-            <div class="row field-row">
-                <div class="large-5 column">
-                    <label><?php echo $element->getAttributeLabel('right_previous_cxl_value')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php $form->radioButtons(
-                        $element,
-                        'right_previous_cxl_value',
-                        array(
-                            0 => 'No',
-                            1 => 'Yes',
-                        ),
-                        ($element->right_previous_cxl_value !== null) ? $element->right_previous_cxl_value : 0,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array(
-                            'text-align' => 'right',
-                            'nowrapper' => true,
-                        ),
-                        array(
-                            'label' => 4,
-                            'field' => 8,
-                        ));
-                    ?>
-                </div>
-                <div class="large-3 column">
-                </div>
+          <div class="row field-row">
+            <div class="large-5 column">
+              <label><?php echo $element->getAttributeLabel($eye.'_previous_cxl_value')?>:</label>
             </div>
-
-            <div class="row field-row">
-                <div class="large-5 column">
-                    <label><?php echo $element->getAttributeLabel('right_previous_refractive_value')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php $form->radioButtons(
-                        $element,
-                        'right_previous_refractive_value',
-                        array(
-                            0 => 'No',
-                            1 => 'Yes',
-                        ),
-                        ($element->right_previous_refractive_value !== null) ? $element->right_previous_refractive_value : 0,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array(
-                            'text-align' => 'right',
-                            'nowrapper' => true,
-                        ),
-                        array(
-                            'label' => 4,
-                            'field' => 8,
-                        ));
-                    ?>
-                </div>
-                <div class="large-3 column">
-                </div>
+            <div class="large-4 column">
+                <?php $form->radioButtons(
+                    $element,
+                    $eye.'_previous_cxl_value',
+                    array(
+                        0 => 'No',
+                        1 => 'Yes',
+                    ),
+                    ($element->right_previous_cxl_value !== null) ? $element->right_previous_cxl_value : 0,
+                    false,
+                    false,
+                    false,
+                    false,
+                    array(
+                        'text-align' => 'right',
+                        'nowrapper' => true,
+                    ),
+                    array(
+                        'label' => 4,
+                        'field' => 8,
+                    ));
+                ?>
             </div>
-            <div class="row field-row">
-                <div class="large-5 column">
-                    <label><?php echo $element->getAttributeLabel('right_intacs_kera_ring_value')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php $form->radioButtons(
-                        $element,
-                        'right_intacs_kera_ring_value',
-                        array(
-                            0 => 'No',
-                            1 => 'Yes',
-                        ),
-                        ($element->right_intacs_kera_ring_value !== null) ? $element->right_intacs_kera_ring_value : 0,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array(
-                            'text-align' => 'right',
-                            'nowrapper' => true,
-                        ),
-                        array(
-                            'label' => 4,
-                            'field' => 8,
-                        ));
-                    ?>
-                </div>
-                <div class="large-3 column">
-                </div>
+            <div class="large-3 column">
             </div>
+          </div>
 
-            <div class="row field-row">
-                <div class="large-5 column">
-                    <label><?php echo $element->getAttributeLabel('right_previous_hsk_keratitis_value')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php $form->radioButtons(
-                        $element,
-                        'right_previous_hsk_keratitis_value',
-                        array(
-                            0 => 'No',
-                            1 => 'Yes',
-                        ),
-                        ($element->right_previous_hsk_keratitis_value !== null) ? $element->right_previous_hsk_keratitis_value : 0,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array(
-                            'text-align' => 'right',
-                            'nowrapper' => true,
-                        ),
-                        array(
-                            'label' => 4,
-                            'field' => 8,
-                        ));
-                    ?>
-                </div>
-                <div class="large-3 column">
-                </div>
+          <div class="row field-row">
+            <div class="large-5 column">
+              <label><?php echo $element->getAttributeLabel($eye.'_previous_refractive_value')?>:</label>
             </div>
+            <div class="large-4 column">
+                <?php $form->radioButtons(
+                    $element,
+                    $eye.'_previous_refractive_value',
+                    array(
+                        0 => 'No',
+                        1 => 'Yes',
+                    ),
+                    ($element->right_previous_refractive_value !== null) ? $element->right_previous_refractive_value : 0,
+                    false,
+                    false,
+                    false,
+                    false,
+                    array(
+                        'text-align' => 'right',
+                        'nowrapper' => true,
+                    ),
+                    array(
+                        'label' => 4,
+                        'field' => 8,
+                    ));
+                ?>
+            </div>
+            <div class="large-3 column">
+            </div>
+          </div>
+          <div class="row field-row">
+            <div class="large-5 column">
+              <label><?php echo $element->getAttributeLabel($eye.'_intacs_kera_ring_value')?>:</label>
+            </div>
+            <div class="large-4 column">
+                <?php $form->radioButtons(
+                    $element,
+                    $eye.'_intacs_kera_ring_value',
+                    array(
+                        0 => 'No',
+                        1 => 'Yes',
+                    ),
+                    ($element->right_intacs_kera_ring_value !== null) ? $element->right_intacs_kera_ring_value : 0,
+                    false,
+                    false,
+                    false,
+                    false,
+                    array(
+                        'text-align' => 'right',
+                        'nowrapper' => true,
+                    ),
+                    array(
+                        'label' => 4,
+                        'field' => 8,
+                    ));
+                ?>
+            </div>
+            <div class="large-3 column">
+            </div>
+          </div>
 
-
-
+          <div class="row field-row">
+            <div class="large-5 column">
+              <label><?php echo $element->getAttributeLabel($eye.'_previous_hsk_keratitis_value')?>:</label>
+            </div>
+            <div class="large-4 column">
+                <?php $form->radioButtons(
+                    $element,
+                    $eye.'_previous_hsk_keratitis_value',
+                    array(
+                        0 => 'No',
+                        1 => 'Yes',
+                    ),
+                    ($element->right_previous_hsk_keratitis_value !== null) ? $element->right_previous_hsk_keratitis_value : 0,
+                    false,
+                    false,
+                    false,
+                    false,
+                    array(
+                        'text-align' => 'right',
+                        'nowrapper' => true,
+                    ),
+                    array(
+                        'label' => 4,
+                        'field' => 8,
+                    ));
+                ?>
+            </div>
+            <div class="large-3 column">
+            </div>
+          </div>
         </div>
-        <div class="inactive-form">
-            <div class="add-side">
-                <a href="#">
-                    Add right side <span class="icon-add-side"></span>
-                </a>
-            </div>
-        </div>
-    </div>
-    <div class="element-eye left-eye column right side <?php if (!$element->hasLeft()) {
-        ?> inactive<?php
-    }?>" data-side="left">
-        <div class="active-form">
-          <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-            <div class="row field-row">
-                <div class="large-5 column">
-                    <label><?php echo $element->getAttributeLabel('left_previous_cxl_value')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php $form->radioButtons(
-                        $element,
-                        'left_previous_cxl_value',
-                        array(
-                            0 => 'No',
-                            1 => 'Yes',
-                        ),
-                        ($element->left_previous_cxl_value !== null) ? $element->left_previous_cxl_value : 0,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array(
-                            'text-align' => 'right',
-                            'nowrapper' => true,
-                        ),
-                        array(
-                            'label' => 4,
-                            'field' => 8,
-                        ));
-                    ?>
-                </div>
-                <div class="large-3 column">
-                </div>
-            </div>
-
-            <div class="row field-row">
-                <div class="large-5 column">
-                    <label><?php echo $element->getAttributeLabel('left_previous_refractive_value')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php $form->radioButtons(
-                        $element,
-                        'left_previous_refractive_value',
-                        array(
-                            0 => 'No',
-                            1 => 'Yes',
-                        ),
-                        ($element->left_previous_refractive_value !== null) ? $element->left_previous_refractive_value : 0,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array(
-                            'text-align' => 'right',
-                            'nowrapper' => true,
-                        ),
-                        array(
-                            'label' => 4,
-                            'field' => 8,
-                        ));
-                    ?>
-                </div>
-                <div class="large-3 column">
-                </div>
-            </div>
-            <div class="row field-row">
-                <div class="large-5 column">
-                    <label><?php echo $element->getAttributeLabel('left_intacs_kera_ring_value')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php $form->radioButtons(
-                        $element,
-                        'left_intacs_kera_ring_value',
-                        array(
-                            0 => 'No',
-                            1 => 'Yes',
-                        ),
-                        ($element->left_intacs_kera_ring_value !== null) ? $element->left_intacs_kera_ring_value : 0,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array(
-                            'text-align' => 'right',
-                            'nowrapper' => true,
-                        ),
-                        array(
-                            'label' => 4,
-                            'field' => 8,
-                        ));
-                    ?>
-                </div>
-                <div class="large-3 column">
-                </div>
-            </div>
-
-            <div class="row field-row">
-                <div class="large-5 column">
-                    <label><?php echo $element->getAttributeLabel('left_previous_hsk_keratitis_value')?>:</label>
-                </div>
-                <div class="large-4 column">
-                    <?php $form->radioButtons(
-                        $element,
-                        'left_previous_hsk_keratitis_value',
-                        array(
-                            0 => 'No',
-                            1 => 'Yes',
-                        ),
-                        ($element->left_previous_hsk_keratitis_value !== null) ? $element->left_previous_hsk_keratitis_value : 0,
-                        false,
-                        false,
-                        false,
-                        false,
-                        array(
-                            'text-align' => 'right',
-                            'nowrapper' => true,
-                        ),
-                        array(
-                            'label' => 4,
-                            'field' => 8,
-                        ));
-                    ?>                </div>
-                <div class="large-3 column">
-                </div>
-            </div>
-
-        </div>
-    <div class="inactive-form">
-        <div class="add-side">
+        <div class="inactive-form side" style="<?= $element->$hasEyeFunc() ? "display: none;" : ""?>">
+          <div class="add-side">
             <a href="#">
-                Add left side <span class="icon-add-side"></span>
+              Add <?=$eye?> eye <span class="icon-add-side"></span>
             </a>
+          </div>
         </div>
-    </div>
-</div>
+      </div>
+    <?php endforeach;?>
 </div>
