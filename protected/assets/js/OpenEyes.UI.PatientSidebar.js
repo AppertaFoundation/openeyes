@@ -81,6 +81,17 @@
           $(this).data('collapse'));
       });
 
+      self.$elementContainer = $(document).find(self.options.element_container_selector);
+
+      // couple of hooks to keep the menu in sync with the elements on the page.
+      self.$elementContainer.on('click', '.js-remove-element', function(e) {
+        self.removeElement(e.target);
+      });
+
+      self.$elementContainer.on('click', '.js-remove-child-element', function(e) {
+        self.removeElement(e.target);
+      });
+
         // if the clicked element is a child, ensures parent loaded first. if the element is already
         // loaded, then just move the view port appropriately.
         self.$element.on('click', '.element', function(e) {
@@ -93,9 +104,7 @@
     var $icon = icon,
       $header = header,
       $content = content,
-      expanded = initialState == 'expanded' ? true : false;
-
-    if(expanded == false) $content.removeClass('hidden').hide();
+      expanded = initialState !== 'collapsed';
 
     $icon.click(function(){
       change();
@@ -114,6 +123,7 @@
         expanded = !expanded;
       }
     }
+
     function change(){
       if(expanded){
         $content.hide();
@@ -129,7 +139,7 @@
      * Calls the function that will set the view port to the given element for the menu item.
      */
     PatientSidebar.prototype.moveTo = function($item) {
-        var elementTypeClass = $item.parents('li:first').data('element-type-class');
+        var elementTypeClass = $item.data('element-type-class') || $item.parent().data('element-type-class');
         moveToElement($('section[data-element-type-class="' + elementTypeClass + '"]'));
     };
 
@@ -225,6 +235,20 @@
     };
 
     /**
+     * Called when an element is removed from the form to update the menu appropriately.
+     */
+    PatientSidebar.prototype.removeElement = function(element) {
+      var self = this;
+      var elementTypeClass = $(element).parents('section:first').data('element-type-class');
+
+      var $menuLi = self.findMenuItemForElementClass(elementTypeClass);
+
+      if ($menuLi) {
+        $menuLi.find('a').removeClass('selected').removeClass('error');
+      }
+    };
+
+    /**
      * Method to call externally to trigger a load of an element.
      *
      * @param elementTypeClass
@@ -245,6 +269,25 @@
 
     };
 
+    /**
+     * Simple convenience wrapper to grab out the menu entry
+     *
+     * @param elementTypeClass
+     * @returns {*}
+     */
+    PatientSidebar.prototype.findMenuItemForElementClass = function(elementTypeClass)
+    {
+      var self = this;
+
+      var $menuLi;
+      self.$element.find('li').each(function() {
+        if ($(this).data('element-type-class') === elementTypeClass) {
+          $menuLi = $(this);
+        }
+      });
+
+      return $menuLi;
+    };
 
     /**
      *  Builds the array of open elements on the page
@@ -310,12 +353,16 @@
           .data('element-type-id', itemData.id)
           .data('element-display-order', itemData.display_order)
           .data('element-type-name', itemData.name)
-          .attr('data-collapse', 'collapsed')
           .attr('id','side-element-'+itemData.name.replace(/\s+/g,'-'))
           .addClass(itemClass);
 
+      if (!open) {
+        item.attr('data-collapse', 'collapsed');
+      }
+
       item.append('<a href="#" class="' + hrefClass + '"></a>');
-      item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme plus"></i></div> <h3 class="collapse-group-header">'+itemData.name+'</h3>');
+      item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme ' + (open ? 'minus' : 'plus') + '"></i></div> <h3 class="collapse-group-header">' + itemData.name + '</h3>');
+
       //children
       if (itemData.children && itemData.children.length) {
         var subList = $('<ul>').addClass('oe-element-list collapse-group-content');
@@ -330,10 +377,16 @@
             .data('element-display-order', this.display_order)
             .data('element-type-name', this.name)
             .attr('id','side-element-'+id_name ).addClass('element');
+
           var childClass = 'child';
           if ($.inArray(this.class_name, self.patient_open_elements)!== -1){
             childClass+=' selected';
           }
+
+          if ($.inArray(this.class_name, self.patient_error_elements) !== -1) {
+            childClass += ' error';
+          }
+
           subListItem.append('<a href="#" class= "'+childClass+'" >'+this.name+'</a>');
           subList.append(subListItem);
         });
