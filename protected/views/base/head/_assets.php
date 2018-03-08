@@ -39,7 +39,7 @@
 <?php $assetManager->registerScriptFile('js/bootstrap-tour-standalone.min.js');?>
 <?php $assetManager->registerScriptFile('js/oelauncher.js');?>
 <?php $assetManager->registerScriptFile('js/sortable/Sortable.min.js', 'application.assets.newblue');?>
-<?php $assetManager->registerScriptFile('js/pickmeup/pickmeup.min.js', 'application.assets.newblue');?>
+<?php $assetManager->registerScriptFile('js/pickmeup/pickmeup.js', 'application.assets.newblue');?>
 <?php
 $display_theme = SettingMetadata::model()->getSetting('display_theme');
 $cssFileName = $display_theme === 'dark' ? '/css/style_oe3.0.min.css' : '/css/style_oe3.0_classic.min.css' ;
