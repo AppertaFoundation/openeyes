@@ -799,7 +799,7 @@ $(document).ready(function() {
     // investigation
 
     // OCT
-    $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT').delegate('input[name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT[right_dry]"], ' +
+    $(this).delegate('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT input[name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT[right_dry]"], ' +
         'input[name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT[left_dry]"]', 'change', function(e) {
             // need to check the value - if it's 0 we should the fluid for the side. otherwise hide it.
             var side = getSplitElementSide($(this));
