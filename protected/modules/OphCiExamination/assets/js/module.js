@@ -799,14 +799,13 @@ $(document).ready(function() {
     // investigation
 
     // OCT
-    $('section .element-fields').delegate('input[name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT[right_dry]"], ' +
+    $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT').delegate('input[name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT[right_dry]"], ' +
         'input[name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT[left_dry]"]', 'change', function(e) {
             // need to check the value - if it's 0 we should the fluid for the side. otherwise hide it.
             var side = getSplitElementSide($(this));
             if ($(this)[0].value == '0') {
                 unmaskFields($('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT_' + side + '_fluid_fields'),null);
-              unmaskFields($('#tr_Element_OphCiExamination_OCT_' + side + '_fluidstatus_id'),null);
-
+                unmaskFields($('#tr_Element_OphCiExamination_OCT_' + side + '_fluidstatus_id'),null);
             }
             else {
               maskFields($('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_OCT_' + side + '_fluid_fields'),null);
