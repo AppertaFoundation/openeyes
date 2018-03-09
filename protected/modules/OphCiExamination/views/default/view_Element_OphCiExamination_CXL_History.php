@@ -51,52 +51,47 @@ function yesOrNo($item)
   </tbody>
 </table>
 <div class="element-data element-eyes row">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye):
-        $hasEyeFunc = 'has' . ucfirst($eye);
-        $previousCXLEle = $eye . '_previous_cxl_value';
-        $previousRefractive = $eye . '_previous_refractive_value';
-        $intacsKeraRing = $eye . '_intacs_kera_ring_value';
-        $previousHskKeratitis = $eye . '_previous_hsk_keratitis_value';
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):
         ?>
-      <div class="element-eye <?= $eye ?>-eye column">
-          <?php if ($element->$hasEyeFunc()) { ?>
+      <div class="element-eye <?= $eye_side ?>-eye column">
+          <?php if ($element->hasEye($eye_side)) { ?>
             <table>
               <tbody>
               <tr>
                 <td>
-                    <?php echo $element->getAttributeLabel($eye . '_previous_cxl_value') ?>:
+                    <?php echo $element->getAttributeLabel($eye_side . '_previous_cxl_value') ?>:
                 </td>
                 <td>
-                    <?php echo yesOrNo($element->$previousCXLEle); ?>
+                    <?php echo yesOrNo($element->{$eye_side . '_previous_cxl_value'}); ?>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <?php echo $element->getAttributeLabel($eye . '_previous_refractive_value') ?>:
+                    <?php echo $element->getAttributeLabel($eye_side . '_previous_refractive_value') ?>:
                 </td>
                 <td>
                     <?php
-                    echo yesOrNo($element->$previousRefractive);
+                    echo yesOrNo($element->{$eye_side . '_previous_refractive_value'});
                     ?>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <?php echo $element->getAttributeLabel('right_intacs_kera_ring_value') ?>:
+                    <?php echo $element->getAttributeLabel($eye_side . '_intacs_kera_ring_value') ?>:
                 </td>
                 <td>
                     <?php
-                    echo yesOrNo($element->$intacsKeraRing);
+                    echo yesOrNo($element->{$eye_side . '_intacs_kera_ring_value'});
                     ?>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <?php echo $element->getAttributeLabel('right_previous_hsk_keratitis_value') ?>:
+                    <?php echo $element->getAttributeLabel($eye_side . '_previous_hsk_keratitis_value') ?>:
                 </td>
                 <td>
                     <?php
-                    echo yesOrNo($element->$previousHskKeratitis);
+                    echo yesOrNo($element->{$eye_side . '_previous_hsk_keratitis_value'});
                     ?>
                 </td>
               </tr>

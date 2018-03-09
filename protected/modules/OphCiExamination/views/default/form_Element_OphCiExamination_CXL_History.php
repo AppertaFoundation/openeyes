@@ -125,31 +125,26 @@
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye):
-        $hasEyeFunc = 'has' . ucfirst($eye);
-        $previousCXLEle = $eye . '_previous_cxl_value';
-        $previousRefractive = $eye . '_previous_refractive_value';
-        $intacsKeraRing = $eye . '_intacs_kera_ring_value';
-        $previousHskKeratitis = $eye . '_previous_hsk_keratitis_value';
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):
         ?>
-      <div class="element-eye <?= $eye ?>-eye column side <?= $side ?>" data-side="<?= $eye ?>">
-        <div class="active-form" style="<?= !$element->$hasEyeFunc() ? "display: none;" : "" ?>">
+      <div class="element-eye <?= $eye_side ?>-eye column side <?= $page_side ?>" data-side="<?= $eye_side ?>">
+        <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <table>
             <tbody>
             <tr>
               <td>
-                <label><?php echo $element->getAttributeLabel($eye . '_previous_cxl_value') ?>:</label>
+                <label><?php echo $element->getAttributeLabel($eye_side . '_previous_cxl_value') ?>:</label>
               </td>
               <td>
                   <?php $form->radioButtons(
                       $element,
-                      $eye . '_previous_cxl_value',
+                      $eye_side . '_previous_cxl_value',
                       array(
                           0 => 'No',
                           1 => 'Yes',
                       ),
-                      ($element->$previousCXLEle !== null) ? $element->$previousCXLEle : 0,
+                      ($element->{$eye_side . '_previous_cxl_value'} !== null) ? $element->{$eye_side . '_previous_cxl_value'} : 0,
                       false,
                       false,
                       false,
@@ -167,17 +162,17 @@
             </tr>
             <tr>
               <td>
-                <label><?php echo $element->getAttributeLabel($eye . '_previous_refractive_value') ?>:</label>
+                <label><?php echo $element->getAttributeLabel($eye_side . '_previous_refractive_value') ?>:</label>
               </td>
               <td>
                   <?php $form->radioButtons(
                       $element,
-                      $eye . '_previous_refractive_value',
+                      $eye_side . '_previous_refractive_value',
                       array(
                           0 => 'No',
                           1 => 'Yes',
                       ),
-                      ($element->$previousRefractive !== null) ? $element->$previousRefractive : 0,
+                      ($element->{$eye_side . '_previous_refractive_value'} !== null) ? $element->{$eye_side . '_previous_refractive_value'} : 0,
                       false,
                       false,
                       false,
@@ -195,17 +190,17 @@
             </tr>
             <tr>
               <td>
-                <label><?php echo $element->getAttributeLabel($eye . '_intacs_kera_ring_value') ?>:</label>
+                <label><?php echo $element->getAttributeLabel($eye_side . '_intacs_kera_ring_value') ?>:</label>
               </td>
               <td>
                   <?php $form->radioButtons(
                       $element,
-                      $eye . '_intacs_kera_ring_value',
+                      $eye_side . '_intacs_kera_ring_value',
                       array(
                           0 => 'No',
                           1 => 'Yes',
                       ),
-                      ($element->$intacsKeraRing !== null) ? $element->$intacsKeraRing : 0,
+                      ($element->{$eye_side . '_intacs_kera_ring_value'} !== null) ? $element->{$eye_side . '_intacs_kera_ring_value'} : 0,
                       false,
                       false,
                       false,
@@ -223,17 +218,17 @@
             </tr>
             <tr>
               <td>
-                <label><?php echo $element->getAttributeLabel($eye . '_previous_hsk_keratitis_value') ?>:</label>
+                <label><?php echo $element->getAttributeLabel($eye_side . '_previous_hsk_keratitis_value') ?>:</label>
               </td>
               <td>
                   <?php $form->radioButtons(
                       $element,
-                      $eye . '_previous_hsk_keratitis_value',
+                      $eye_side . '_previous_hsk_keratitis_value',
                       array(
                           0 => 'No',
                           1 => 'Yes',
                       ),
-                      ($element->$previousHskKeratitis !== null) ? $element->$previousHskKeratitis : 0,
+                      ($element->{$eye_side . '_previous_hsk_keratitis_value'} !== null) ? $element->{$eye_side . '_previous_hsk_keratitis_value'} : 0,
                       false,
                       false,
                       false,
@@ -252,10 +247,10 @@
             </tbody>
           </table>
         </div>
-        <div class="inactive-form side" style="<?= $element->$hasEyeFunc() ? "display: none;" : "" ?>">
+        <div class="inactive-form side" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
           <div class="add-side">
             <a href="#">
-              Add <?= $eye ?> eye <span class="icon-add-side"></span>
+              Add <?= $eye_side ?> eye <span class="icon-add-side"></span>
             </a>
           </div>
         </div>

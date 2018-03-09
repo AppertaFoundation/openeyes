@@ -25,121 +25,108 @@
 </div>
 
 <div class="element-data element-eyes row">
-    <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye):
-        $hasEyeFunc = 'has' . ucfirst($eye);
-        $anteriorK1 = $eye . '_anterior_k1_value';
-        $anteriorK2 = $eye . '_anterior_k2_value';
-        $qualityFront = $eye . '_quality_front';
-        $axisAnteriorK1 = $eye . '_axis_anterior_k1_value';
-        $axisAnteriorK2 = $eye . '_axis_anterior_k2_value';
-        $qualityBack = $eye . '_quality_back';
-        $kmaxValue = $eye . '_kmax_value';
-        $thinnestPointPachymetry = $eye . '_thinnest_point_pachymetry_value';
-        $baIndexValue = $eye . '_ba_index_value';
-        $flouresceinValue = $eye . '_flourescein_value';
-        $clRemoved = $eye . '_cl_removed';
-        ?>
-      <div class="element-eye <?= $eye ?>-eye column">
-          <?php if ($element->$hasEyeFunc()) { ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+      <div class="element-eye <?= $eye_side ?>-eye column">
+          <?php if ($element->hasEye($eye_side)) { ?>
             <table>
               <tbody>
               <tr>
                 <td>
-                    <?php echo $element->getAttributeLabel($eye . '_anterior_k1_value') ?>:
+                    <?php echo $element->getAttributeLabel($eye_side . '_anterior_k1_value') ?>:
                 </td>
                 <td>
-                    <?php echo $element->$anteriorK1; ?>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <?php echo $element->getAttributeLabel($eye . '_anterior_k2_value') ?>:
-                </td>
-                <td>
-                    <?php echo $element->$anteriorK2; ?>
+                    <?php echo $element->{$eye_side . '_anterior_k1_value'}; ?>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <?php echo $element->getAttributeLabel($eye . '_quality_front') ?>:
+                    <?php echo $element->getAttributeLabel($eye_side . '_anterior_k2_value') ?>:
+                </td>
+                <td>
+                    <?php echo $element->{$eye_side . '_anterior_k2_value'}; ?>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_quality_front') ?>:
                 </td>
                 <td>
                     <?php
-                    if ($element->$qualityFront) {
-                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->$qualityFront);
+                    if ($element->{$eye_side . '_quality_front'}) {
+                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->{$eye_side . '_quality_front'});
                     }
                     ?>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <?php echo $element->getAttributeLabel($eye . '_axis_anterior_k1_value') ?>:
+                    <?php echo $element->getAttributeLabel($eye_side . '_axis_anterior_k1_value') ?>:
                 </td>
                 <td>
-                    <?php echo $element->$axisAnteriorK1; ?>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <?php echo $element->getAttributeLabel('right_axis_anterior_k2_value') ?>:
-                </td>
-                <td>
-                    <?php echo $element->$axisAnteriorK2; ?>
+                    <?php echo $element->{$eye_side . '_axis_anterior_k1_value'}; ?>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <?php echo $element->getAttributeLabel('right_quality_back') ?>:
+                    <?php echo $element->getAttributeLabel($eye_side . '_axis_anterior_k2_value') ?>:
+                </td>
+                <td>
+                    <?php echo $element->{$eye_side . '_axis_anterior_k2_value'}; ?>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_quality_back') ?>:
                 </td>
                 <td>
                     <?php
-                    if ($element->$qualityBack) {
-                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->$qualityBack);
+                    if ($element->{$eye_side . '_quality_back'}) {
+                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->getName($element->{$eye_side . '_quality_back'});
                     }
                     ?>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <?php echo $element->getAttributeLabel($eye . '_kmax_value') ?>:
+                    <?php echo $element->getAttributeLabel($eye_side . '_kmax_value') ?>:
                 </td>
                 <td>
-                    <?php echo $element->$kmaxValue; ?>
+                    <?php echo $element->{$eye_side . '_kmax_value'}; ?>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <?php echo $element->getAttributeLabel($eye . '_thinnest_point_pachymetry_value') ?>:
+                    <?php echo $element->getAttributeLabel($eye_side . '_thinnest_point_pachymetry_value') ?>:
                 </td>
                 <td>
                     <?php
-                    echo $element->$thinnestPointPachymetry
+                    echo $element->{$eye_side . '_thinnest_point_pachymetry_value'}
                     ?>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <?php echo $element->getAttributeLabel($eye . '_ba_index_value') ?>:
+                    <?php echo $element->getAttributeLabel($eye_side . '_ba_index_value') ?>:
                 </td>
                 <td>
-                    <?php echo $element->$baIndexValue; ?>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <?php echo $element->getAttributeLabel($eye . '_flourescein_value') ?>:
-                </td>
-                <td>
-                    <?php echo yesOrNo($element->$flouresceinValue); ?>
+                    <?php echo $element->{$eye_side . '_ba_index_value'}; ?>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <?php echo $element->getAttributeLabel($eye . '_cl_removed') ?>:
+                    <?php echo $element->getAttributeLabel($eye_side . '_flourescein_value') ?>:
                 </td>
                 <td>
-                    <?php if ($element->right_cl_removed) {
-                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_CL_Removed::model()->getName($element->$clRemoved);
+                    <?php echo yesOrNo($element->{$eye_side . '_flourescein_value'}); ?>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <?php echo $element->getAttributeLabel($eye_side . '_cl_removed') ?>:
+                </td>
+                <td>
+                    <?php if ($element->{$eye_side . '_cl_removed'}) {
+                        echo OEModule\OphCiExamination\models\OphCiExamination_CXL_CL_Removed::model()->getName($element->{$eye_side . '_cl_removed'});
                     } ?>
                 </td>
               </tr>
