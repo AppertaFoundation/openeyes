@@ -21,156 +21,168 @@
 //var_dump($element);
 ?>
 <div class="element-fields flex-layout full-width">
-	<div>
-		<label><?php echo $element->getAttributeLabel('tomographer_id')?>:</label>
-		<?php
-		$allTomographerDevice = \OEModule\OphCiExamination\models\OphCiExamination_Tomographer_Device::model()->findAll(array('order' => 'display_order'));
-		echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[tomographer_id]',
-			$element->tomographer_id,
-			CHtml::listData($allTomographerDevice, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
-	</div>
-	<div class="large-2 column"> </div>
+  <div>
+    <label><?php echo $element->getAttributeLabel('tomographer_id') ?>:</label>
+      <?php
+      $allTomographerDevice = \OEModule\OphCiExamination\models\OphCiExamination_Tomographer_Device::model()->findAll(array('order' => 'display_order'));
+      echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[tomographer_id]',
+          $element->tomographer_id,
+          CHtml::listData($allTomographerDevice, 'id', 'name'), array('class' => 'MultiSelectList')); ?>
+  </div>
+  <div class="large-2 column"></div>
 </div>
 
 <div class="element-fields element-eyes">
-<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
-    <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):
-        $hasEyeFunc = 'has'.ucfirst($eye); ?>
-      <div class="element-eye <?=$eye?>-eye column side <?=$side?>" data-side="<?=$eye?>">
-        <div class="active-form" style="<?= !$element->$hasEyeFunc() ? "display: none;" : ""?>">
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye):
+        $hasEyeFunc = 'has' . ucfirst($eye);
+        $qualityFront = $eye . '_quality_front';
+        $qualityBack = $eye . '_quality_back';
+        $flouresceinValue = $eye . '_flourescein_value';
+        $clRemoved = $eye . '_cl_removed';
+        ?>
+      <div class="element-eye <?= $eye ?>-eye column side <?= $side ?>" data-side="<?= $eye ?>">
+        <div class="active-form" style="<?= !$element->$hasEyeFunc() ? "display: none;" : "" ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <table>
             <tbody>
-          <tr>
-            <td>
-              <label><?php echo $element->getAttributeLabel($eye.'_anterior_k1_value')?>:</label>
-            </td>
-            <td >
-                <?= $form->textField($element, $eye."_anterior_k1_value", array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label><?php echo $element->getAttributeLabel($eye.'_anterior_k2_value')?>:</label>
-            </td>
-            <td>
-                <?= $form->textField($element, $eye."_anterior_k2_value", array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label><?php echo $element->getAttributeLabel($eye.'_quality_front')?>:</label>
-            </td>
-            <td>
-                <?php
-                $allQualScore = \OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->findAll(array('order' => 'display_order'));
-                echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry['.$eye.'_quality_front]',
-                    $element->right_quality_front,
-                    CHtml::listData($allQualScore, 'id', 'name')); ?>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label><?php echo $element->getAttributeLabel($eye.'_axis_anterior_k1_value')?>:</label>
-            </td>
-            <td>
-                <?= $form->textField($element, $eye."_axis_anterior_k1_value", array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label><?php echo $element->getAttributeLabel($eye.'_axis_anterior_k2_value')?>:</label>
-            </td>
-            <td>
-                <?= $form->textField($element, $eye."_axis_anterior_k2_value", array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label><?php echo $element->getAttributeLabel($eye.'_quality_back')?>:</label>
-            </td>
-            <td>
-                <?php
-                echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry['.$eye.'_quality_back]',
-                    $element->right_quality_back,
-                    CHtml::listData($allQualScore, 'id', 'name')); ?>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label><?php echo $element->getAttributeLabel($eye.'_kmax_value')?>:</label>
-            </td>
-            <td>
-                <?= $form->textField($element, $eye."_kmax_value", array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label><?php echo $element->getAttributeLabel($eye.'_thinnest_point_pachymetry_value')?>:</label>
-            </td>
-            <td>
-                <?= $form->textField($element, $eye."_thinnest_point_pachymetry_value", array('nowrapper' => true, 'size' => 3, 'maxlength' => 3)) ?>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label><?php echo $element->getAttributeLabel($eye.'_ba_index_value')?>:</label>
-            </td>
-            <td>
-                <?= $form->textField($element, $eye."_ba_index_value", array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label><?php echo $element->getAttributeLabel($eye.'_flourescein_value')?>:</label>
-            </td>
-            <td>
-                <?php $form->radioButtons(
-                    $element,
-                    $eye.'_flourescein_value',
-                    array(
-                        0 => 'No',
-                        1 => 'Yes',
-                    ),
-                    ($element->right_flourescein_value !== null) ? $element->right_flourescein_value : 0,
-                    false,
-                    false,
-                    false,
-                    false,
-                    array(
-                        'text-align' => $eye,
-                        'nowrapper' => true,
-                    ),
-                    array(
-                        'label' => 4,
-                        'field' => 8,
-                    ));
-                ?>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label><?php echo $element->getAttributeLabel($eye.'_cl_removed')?>:</label>
-            </td>
-            <td>
-                <?php
-                $allCLRemoved = \OEModule\OphCiExamination\models\OphCiExamination_CXL_CL_Removed::model()->findAll(array('order' => 'display_order'));
-                echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry['.$eye.'_cl_removed]',
-                    $element->right_cl_removed,
-                    CHtml::listData($allCLRemoved, 'id', 'name')); ?>
-            </td>
-          </tr>
+            <tr>
+              <td>
+                <label><?php echo $element->getAttributeLabel($eye . '_anterior_k1_value') ?>:</label>
+              </td>
+              <td>
+                  <?= $form->textField($element, $eye . "_anterior_k1_value",
+                      array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label><?php echo $element->getAttributeLabel($eye . '_anterior_k2_value') ?>:</label>
+              </td>
+              <td>
+                  <?= $form->textField($element, $eye . "_anterior_k2_value",
+                      array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label><?php echo $element->getAttributeLabel($eye . '_quality_front') ?>:</label>
+              </td>
+              <td>
+                  <?php
+                  $allQualScore = \OEModule\OphCiExamination\models\OphCiExamination_CXL_Quality_Score::model()->findAll(array('order' => 'display_order'));
+                  echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[' . $eye . '_quality_front]',
+                      $element->$qualityFront,
+                      CHtml::listData($allQualScore, 'id', 'name')); ?>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label><?php echo $element->getAttributeLabel($eye . '_axis_anterior_k1_value') ?>:</label>
+              </td>
+              <td>
+                  <?= $form->textField($element, $eye . "_axis_anterior_k1_value",
+                      array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label><?php echo $element->getAttributeLabel($eye . '_axis_anterior_k2_value') ?>:</label>
+              </td>
+              <td>
+                  <?= $form->textField($element, $eye . "_axis_anterior_k2_value",
+                      array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label><?php echo $element->getAttributeLabel($eye . '_quality_back') ?>:</label>
+              </td>
+              <td>
+                  <?php
+                  echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[' . $eye . '_quality_back]',
+                      $element->$qualityBack,
+                      CHtml::listData($allQualScore, 'id', 'name')); ?>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label><?php echo $element->getAttributeLabel($eye . '_kmax_value') ?>:</label>
+              </td>
+              <td>
+                  <?= $form->textField($element, $eye . "_kmax_value",
+                      array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label><?php echo $element->getAttributeLabel($eye . '_thinnest_point_pachymetry_value') ?>:</label>
+              </td>
+              <td>
+                  <?= $form->textField($element, $eye . "_thinnest_point_pachymetry_value",
+                      array('nowrapper' => true, 'size' => 3, 'maxlength' => 3)) ?>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label><?php echo $element->getAttributeLabel($eye . '_ba_index_value') ?>:</label>
+              </td>
+              <td>
+                  <?= $form->textField($element, $eye . "_ba_index_value",
+                      array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label><?php echo $element->getAttributeLabel($eye . '_flourescein_value') ?>:</label>
+              </td>
+              <td>
+                  <?php $form->radioButtons(
+                      $element,
+                      $eye . '_flourescein_value',
+                      array(
+                          0 => 'No',
+                          1 => 'Yes',
+                      ),
+                      ($element->$flouresceinValue !== null) ? $element->$flouresceinValue : 0,
+                      false,
+                      false,
+                      false,
+                      false,
+                      array(
+                          'text-align' => $eye,
+                          'nowrapper' => true,
+                      ),
+                      array(
+                          'label' => 4,
+                          'field' => 8,
+                      ));
+                  ?>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label><?php echo $element->getAttributeLabel($eye . '_cl_removed') ?>:</label>
+              </td>
+              <td>
+                  <?php
+                  $allCLRemoved = \OEModule\OphCiExamination\models\OphCiExamination_CXL_CL_Removed::model()->findAll(array('order' => 'display_order'));
+                  echo CHtml::dropDownList('OEModule_OphCiExamination_models_Element_OphCiExamination_Keratometry[' . $eye . '_cl_removed]',
+                      $element->$clRemoved,
+                      CHtml::listData($allCLRemoved, 'id', 'name')); ?>
+              </td>
+            </tr>
             </tbody>
           </table>
         </div>
-        <div class="inactive-form side" style="<?= $element->$hasEyeFunc() ? "display: none;" : ""?>">
+        <div class="inactive-form side" style="<?= $element->$hasEyeFunc() ? "display: none;" : "" ?>">
           <div class="add-side">
             <a href="#">
-              Add <?=$eye?> eye <span class="icon-add-side"></span>
+              Add <?= $eye ?> eye <span class="icon-add-side"></span>
             </a>
           </div>
         </div>
       </div>
-    <?php endforeach;?>
+    <?php endforeach; ?>
 </div>
