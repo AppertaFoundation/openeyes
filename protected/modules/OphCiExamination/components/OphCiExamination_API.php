@@ -252,9 +252,9 @@ class OphCiExamination_API extends \BaseAPI
      * @param boolean $use_context - defaults to false
      * @return string|null
      */
-    public function getLetterIOPReadingBothLast3weeks(\Patient $patient, $use_context = false)
+    public function getLetterIOPReadingBothLast6weeks(\Patient $patient, $use_context = false)
     {
-        $iop = $this->getIntraocularPressureElement($patient, false, '-3 weeks');
+        $iop = $this->getIntraocularPressureElement($patient, false, '-6 weeks');
         if($iop){
             return $iop->getLetter_reading('right') . ' on the right, and ' . $iop->getLetter_reading('left') . ' on the left' .
                    ' (recorded on ' . \Helper::convertMySQL2NHS($iop->event->event_date) . ')';
@@ -273,9 +273,9 @@ class OphCiExamination_API extends \BaseAPI
      * @param boolean $use_context - defaults to false
      * @return string
      */
-    public function getLetterIOPReadingBothFirstLast3weeks(\Patient $patient, $use_context = false)
+    public function getLetterIOPReadingBothFirstLast6weeks(\Patient $patient, $use_context = false)
     {
-        $iop = $this->getIntraocularPressureElement($patient, false, '-3 weeks');
+        $iop = $this->getIntraocularPressureElement($patient, false, '-6 weeks');
 
         if ($iop) {
             return $iop->getLetter_reading_first('right') . ' on the right, and ' . $iop->getLetter_reading_first('left') . ' on the left' .
@@ -293,9 +293,9 @@ class OphCiExamination_API extends \BaseAPI
      * @param boolean $use_context - defaults to false
      * @return mixed
      */
-    public function getLetterIOPReadingLeftLast3weeks(\Patient $patient, $use_context = false)
+    public function getLetterIOPReadingLeftLast6weeks(\Patient $patient, $use_context = false)
     {
-        $iop = $this->getIntraocularPressureElement($patient, false, '-3 weeks');
+        $iop = $this->getIntraocularPressureElement($patient, false, '-6 weeks');
         if($iop){
             return $iop->getLetter_reading('left') . ' (recorded on ' . \Helper::convertMySQL2NHS($iop->event->event_date) . ')';
         }
@@ -313,9 +313,9 @@ class OphCiExamination_API extends \BaseAPI
      * @param boolean $use_context - defaults to false
      * @return mixed
      */
-    public function getLetterIOPReadingRightLast3weeks(\Patient $patient, $use_context = false)
+    public function getLetterIOPReadingRightLast6weeks(\Patient $patient, $use_context = false)
     {
-        $iop = $this->getIntraocularPressureElement($patient, false, '-3 weeks');
+        $iop = $this->getIntraocularPressureElement($patient, false, '-6 weeks');
 
         if($iop){
             return $iop->getLetter_reading('right') .
@@ -334,9 +334,9 @@ class OphCiExamination_API extends \BaseAPI
      * @param boolean $use_context - defaults to false
      * @return string|null
      */
-    public function getLetterIOPReadingAbbrLast3weeks(\Patient $patient, $use_context = false)
+    public function getLetterIOPReadingAbbrLast6weeks(\Patient $patient, $use_context = false)
     {
-        $iop = $this->getIntraocularPressureElement($patient, false, '-3 weeks');
+        $iop = $this->getIntraocularPressureElement($patient, false, '-6 weeks');
 
         if ($iop ) {
             $readings = array();
@@ -447,10 +447,10 @@ class OphCiExamination_API extends \BaseAPI
      * @return mixed
      * @throws \CException
      */
-    public function getLetterIOPReadingPrincipalLast3weeks(\Patient $patient, $use_context = false)
+    public function getLetterIOPReadingPrincipalLast6weeks(\Patient $patient, $use_context = false)
     {
         $principal_eye = $this->getPrincipalEye($patient, true);
-        $method = "getLetterIOPReading{$principal_eye}Last3weeks";
+        $method = "getLetterIOPReading{$principal_eye}Last6weeks";
 
         if(method_exists($this, $method)){
             return $this->{$method}($patient, $use_context);
@@ -2049,9 +2049,9 @@ class OphCiExamination_API extends \BaseAPI
      * @param $patient
      * @param $use_context
      */
-    public function getLetterIOPReadingLeftNoUnitsLast3weeks($patient, $use_context = false)
+    public function getLetterIOPReadingLeftNoUnitsLast6weeks($patient, $use_context = false)
     {
-        $iop = $this->getIntraocularPressureElement($patient, false, '-3 weeks');
+        $iop = $this->getIntraocularPressureElement($patient, false, '-6 weeks');
 
         if ($iop){
             if ($reading = $iop->getReading('left')) {
@@ -2066,9 +2066,9 @@ class OphCiExamination_API extends \BaseAPI
      * @param $patient
      * @param $use_context
      */
-    public function getLetterIOPReadingRightNoUnitsLast3weeks($patient, $use_context = false)
+    public function getLetterIOPReadingRightNoUnitsLast6weeks($patient, $use_context = false)
     {
-        $iop = $this->getIntraocularPressureElement($patient, false, '-3 weeks');
+        $iop = $this->getIntraocularPressureElement($patient, false, '-6 weeks');
 
         if ($iop){
             if ($reading = $iop->getReading('right')) {
