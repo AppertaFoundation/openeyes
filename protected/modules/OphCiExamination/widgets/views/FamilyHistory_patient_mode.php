@@ -40,7 +40,6 @@ if (!$element) { ?>
             <th>Side</th>
             <th>Condition</th>
             <th>Comments</th>
-            <th style="display: none;" class="edit-column">Actions</th>
         </tr>
         </thead>
         <tbody>

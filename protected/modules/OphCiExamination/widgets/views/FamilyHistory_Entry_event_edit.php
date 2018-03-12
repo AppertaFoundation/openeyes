@@ -110,7 +110,5 @@ if (!isset($values)) {
       <td>
         <i class="oe-i trash"></i>
       </td>
-    <?php else: ?>
-      <td>read only <i class="oe-i info small pad"></i></td>
     <?php endif; ?>
 </tr>
