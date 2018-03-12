@@ -17,6 +17,10 @@
  */
 ?>
 
+<?php
+$input_id = CHtml::modelName($element) . '_' . $field . '_0';
+?>
+
 <?php if (!@$htmlOptions['nowrapper']) { ?>
 <div class="row field-row"<?php if (@$htmlOptions['hidden']) { ?> style="display: none;"<?php } ?>>
     <?php unset($htmlOptions['hidden']) ?>
@@ -28,20 +32,23 @@
     </div>
     <div class="large-<?php echo $layoutColumns['field']; ?> column end">
 <?php } ?>
-
-    <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-        'name' => $name,
-        'id' => CHtml::modelName($element) . '_' . $field . '_0',
-        // additional javascript options for the date picker plugin
-        'options' => array_merge($options, array(
-            'showAnim' => 'fold',
-            'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-        )),
-        'value' => (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $value) ? Helper::convertMySQL2NHS($value) : $value),
-        'htmlOptions' => $htmlOptions,
-    )); ?>
+      <input id="<?= $input_id ?>" style="width:90px" placeholder="yyyy-mm-dd" name="<?= $name ?>" value="<?= $value ?>" >
 
 <?php if (!@$htmlOptions['nowrapper']) { ?>
     </div>
 </div>
 <?php } ?>
+<script>
+  $(function () {
+    var datepicker = $('#<?= $input_id ?>');
+
+    if (datepicker.length !== 0) {
+      pickmeup('#<?= $input_id ?>', {
+        format: '<?= @$htmlOptions['dateFormat'] ?: 'Y-m-d' ?>',
+        hide_on_select: true,
+        default_date: false,
+        max: '<?= @$options['maxDate'] ?>'
+      });
+    }
+  });
+</script>
