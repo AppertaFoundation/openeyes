@@ -44,18 +44,20 @@
             <tr>
               <td>
                 <label><?php echo $element->getAttributeLabel($eye_side . '_endothelial_cell_density_value') ?>:</label>
-                  <?= $form->textField($element, $eye_side . "_endothelial_cell_density_value",
-                      array('nowrapper' => true, 'size' => 6, 'maxlength' => 4)) ?>
               </td>
-              <td></td>
+              <td>
+                  <?= $form->textField($element, $eye_side . "_endothelial_cell_density_value",
+                      array('nowrapper' => true, 'size' => 12, 'maxlength' => 4)) ?>
+              </td>
             </tr>
             <tr>
               <td>
                 <label><?php echo $element->getAttributeLabel($eye_side . '_coefficient_variation_value') ?>:</label>
-                  <?= $form->textField($element, $eye_side . "_coefficient_variation_value",
-                      array('nowrapper' => true, 'size' => 6, 'maxlength' => 6)) ?>
               </td>
-              <td></td>
+              <td>
+                  <?= $form->textField($element, $eye_side . "_coefficient_variation_value",
+                      array('nowrapper' => true, 'size' => 12, 'maxlength' => 6)) ?>
+              </td>
             </tr>
             </tbody>
           </table>
