@@ -172,29 +172,29 @@
        });
     };
 
-    PatientSidebar.prototype.loadClickedItem = function($item, data, callback)
-    {
-        var self = this;
+    PatientSidebar.prototype.loadClickedItem = function ($item, data, callback) {
+      var self = this;
+      if (!$item.hasClass('selected')) {
+          self.markSidebarItems(self.getSidebarItemsForExistingElements($item));
+        // The <li> that contains $item (can be selected or not)
+        var $container = $item.parent();
 
-        if (!$item.hasClass('selected')) {
-            self.markSidebarItems(self.getSidebarItemsForExistingElements($item));
+        // The parent element of $container
+        // If $container _is_ a parent element, then the $parent will be set to $container
+        // (because it would be firstr in the list of siblings)
+        var $parent = $container.siblings().addBack().first();
 
-            if ($item.parent().hasClass('child')) {
-                // child element, need to ensure parent loaded first.
-                var $parent = $item.parents('li:last').find('a:first');
-
-                if (!$parent.hasClass('selected')) {
-                    $parent.addClass('selected');
-                    // construct a callback to run this method with the original target,
-                    // once the parent is loaded
-                    var newCallback = function() {
-                        self.loadClickedItem($item, data, callback);
-                    }.bind($item, data, callback);
-                    self.loadElement($ancestor, {}, newCallback);
-                    return;
-                }
-            }
-          self.loadElement($parent, data, callback);
+        // If the element isn't a parent, and isn't selected, then the parent needs to be loaded first
+        if (!$parent.is($container) && !$parent.find('a:first').hasClass('selected')) {
+          $parent.find('a:first').addClass('selected');
+          // construct a callback to run this method with the original target,
+          // once the parent is loaded
+          var newCallback = function () {
+            self.loadClickedItem($item, data, callback);
+          }.bind($item, data, callback);
+          self.loadElement($parent, {}, newCallback);
+        } else {
+          self.loadElement($container, data, callback);
           $item.addClass('selected');
         } else {
           // either has no parent or parent is already loaded.
@@ -202,6 +202,8 @@
             if (callback)
               callback();
         }
+
+      }
     };
 
     /**
@@ -362,6 +364,7 @@
       item.append('<a href="#" class="' + hrefClass + '"></a>');
       item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme ' + (open ? 'minus' : 'plus') + '"></i></div> <h3 class="collapse-group-header">' + itemData.name + '</h3>');
 
+      // The parent element should also be the first child element
       itemData.children.unshift(itemData);
 
       //children
