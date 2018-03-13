@@ -17,7 +17,7 @@
 ?>
 
 <div class="cvi-alert alert-box alert flex-layout" data-alert="CVI may be applicable"
-     data-threshold="<?= $threshold ?>" <?php if ($visible): ?>style="display: none"<?php endif; ?>>
+     data-threshold="<?= $threshold ?>" <?php if (!$visible): ?>style="display: none"<?php endif; ?>>
   This patient may be eligible for a Certificate of Visual Impairment
   <span class="right">
       <?php if ($show_create): ?>
