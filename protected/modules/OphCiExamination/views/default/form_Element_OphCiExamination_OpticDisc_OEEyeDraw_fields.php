@@ -17,58 +17,67 @@
  */
 ?>
 <div class="eyedraw-fields">
-	<div class="field-row">
-		<label for="<?php echo $side.'_opticdisc_mode';?>">
-			Mode:
-		</label>
-		<?php echo CHtml::dropDownList($side.'_opticdisc_mode', 'Basic', array('Basic' => 'Basic', 'Expert' => 'Expert'), array(
-            'class' => 'opticdisc-mode',
-            'options' => array(
-                'Basic' => array('data-value' => 'Basic'),
-                'Expert' => array('data-value' => 'Expert'),
-            ),
-        ))?>
-	</div>
-	<div class="field-row">
-		<label for="<?php echo CHtml::modelName($element).'_'.$side.'_cd_ratio_id';?>">
-			<?php echo $element->getAttributeLabel($side.'_cd_ratio_id')?>:
-		</label>
-		<?php
-        $options = \OEModule\OphCiExamination\models\OphCiExamination_OpticDisc_CDRatio::model()->findAll();
-        $cd_ratio_html_options = array('class' => 'cd-ratio', 'options' => array());
-        foreach ($options as $ratio) {
-            $cd_ratio_html_options['options'][(string) $ratio->id] = array('data-value' => $ratio->name);
-        }
-        ?>
-		<?php echo CHtml::activeDropDownList($element, $side.'_cd_ratio_id', CHtml::listData($options, 'id', 'name'), $cd_ratio_html_options)?>
-	</div>
-	<div class="field-row">
-		<label for="<?php echo CHtml::modelName($element).'_'.$side.'_diameter';?>">
-			<?php echo $element->getAttributeLabel($side.'_diameter')?>:
-		</label>
-		<div class="row collapse in">
-			<div class="large-3 column">
-				<?php echo CHtml::activeTextField($element, $side.'_diameter', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'diameter')) ?>
-			</div>
-			<div class="large-9 column">
-				<div class="field-info postfix align">
-					mm (lens <?= $form->dropDownList($element, $side.'_lens_id', '\OEModule\OphCiExamination\models\OphCiExamination_OpticDisc_Lens', array('empty' => '--', 'class' => 'inline', 'nowrapper' => true)) ?>)
-				</div>
-			</div>
-		</div>
-	</div>
-    <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
-    <div class="row">
-        <div class="large-6 column end">
-            <label>
-                <?php echo $element->getAttributeLabel($side . '_ed_report') ?>:
-            </label>
+  <div class="field-row">
+    <label for="<?php echo $side . '_opticdisc_mode'; ?>">
+      Mode:
+    </label>
+      <?php echo CHtml::dropDownList($side . '_opticdisc_mode', 'Basic',
+          array('Basic' => 'Basic', 'Expert' => 'Expert'), array(
+              'class' => 'opticdisc-mode',
+              'options' => array(
+                  'Basic' => array('data-value' => 'Basic'),
+                  'Expert' => array('data-value' => 'Expert'),
+              ),
+          )) ?>
+  </div>
+  <div class="field-row">
+    <label for="<?php echo CHtml::modelName($element) . '_' . $side . '_cd_ratio_id'; ?>">
+        <?php echo $element->getAttributeLabel($side . '_cd_ratio_id') ?>:
+    </label>
+      <?php
+      $options = \OEModule\OphCiExamination\models\OphCiExamination_OpticDisc_CDRatio::model()->findAll();
+      $cd_ratio_html_options = array('class' => 'cd-ratio', 'options' => array());
+      foreach ($options as $ratio) {
+          $cd_ratio_html_options['options'][(string)$ratio->id] = array('data-value' => $ratio->name);
+      }
+      ?>
+      <?php echo CHtml::activeDropDownList($element, $side . '_cd_ratio_id', CHtml::listData($options, 'id', 'name'),
+          $cd_ratio_html_options) ?>
+  </div>
+  <div class="field-row">
+    <label for="<?php echo CHtml::modelName($element) . '_' . $side . '_diameter'; ?>">
+        <?php echo $element->getAttributeLabel($side . '_diameter') ?>:
+    </label>
+    <div class="row collapse in">
+      <div class="cols-3 column">
+          <?php echo CHtml::activeTextField($element, $side . '_diameter',
+              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'diameter')) ?>
+      </div>
+      <div class="cols-9 column">
+        <div class="field-info postfix align">
+          mm (lens <?= $form->dropDownList($element, $side . '_lens_id',
+                '\OEModule\OphCiExamination\models\OphCiExamination_OpticDisc_Lens',
+                array('empty' => '--', 'class' => 'inline', 'nowrapper' => true)) ?>)
         </div>
-        <div class="large-10 column end autoreport-display">
-            <span class="data-value" id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display' ?>"></span>
-        </div>
+      </div>
     </div>
-	<div class="field-row">
-		<?php echo CHtml::activeTextArea($element, $side.'_description', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'rows' => 1, 'placeholder' =>  $element->getAttributeLabel($side.'_description'))) ?>
-	</div>
+  </div>
+    <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
+  <div class="row">
+    <div class="cols-6 column end">
+      <label>
+          <?php echo $element->getAttributeLabel($side . '_ed_report') ?>:
+      </label>
+    </div>
+    <div class="cols-10 column end autoreport-display">
+      <span class="data-value" id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display' ?>"></span>
+    </div>
+  </div>
+  <div class="field-row">
+      <?php echo CHtml::activeTextArea($element, $side . '_description', array(
+          'autocomplete' => Yii::app()->params['html_autocomplete'],
+          'rows' => 1,
+          'placeholder' => $element->getAttributeLabel($side . '_description'),
+      )) ?>
+  </div>
 </div>
