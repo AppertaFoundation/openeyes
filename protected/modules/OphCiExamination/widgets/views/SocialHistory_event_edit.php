@@ -139,7 +139,6 @@
                       array('label' => 4, 'field' => 8)
                   );
           ?>
-      </div>
     </div>
   </div>
 </div>

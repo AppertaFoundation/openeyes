@@ -89,5 +89,4 @@ else:
   <?php endif; ?>
   </div>
 </div>
-</div>
 <?php endif; ?>
