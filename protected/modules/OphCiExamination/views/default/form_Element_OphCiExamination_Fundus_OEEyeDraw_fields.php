@@ -27,12 +27,12 @@
 
     <?php echo CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
     <div class="row">
-        <div class="large-6 column end">
+        <div class="cols-6 column end">
             <label>
                 <?php echo $element->getAttributeLabel($side . '_ed_report') ?>:
             </label>
         </div>
-        <div class="large-10 column end autoreport-display">
+        <div class="cols-10 column end autoreport-display">
             <span class="data-value" id="<?= CHtml::modelName($element) . '_' . $side . '_ed_report_display'?>"></span>
         </div>
     </div>
