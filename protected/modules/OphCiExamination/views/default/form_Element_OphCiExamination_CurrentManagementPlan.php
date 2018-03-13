@@ -73,26 +73,52 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/CurrentManag
     $hasEyeFunc = "has".ucfirst($eye);
 	?>
 	<div class="element-eye <?=$eye?>-eye column <?=$side?> side <?= !$element->$hasEyeFunc()? "inactive" : ""?>"
-       data-side="<?=$eye?>">
+       data-side="<?=$eye?>"
+  >
 		<div class="active-form" style="<?=$element->$hasEyeFunc() ? "" : "display: none;"?>">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-      <div class="row "
-           id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_<?=$eye?>_iop_id"
-          >
-        <div class="cols-3 column"><label>IOP:</label></div>
-        <div class="cols-8 column end"
-             id="OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_<?=$eye?>_iop">
-            <?php echo ($iop == null) ? 'N/A' : $iop['rightIOP'].' mmHg'?>
-        </div>
-      </div>
-      <?= $form->dropDownList($element, $eye.'_glaucoma_status_id',
-          $glaucomaStatus, array('empty' => '- Please Select -'), false, array('label' => 4, 'field' => 8))?>
-			<?= $form->dropDownList($element, $eye.'_drop-related_prob_id',
-          $dropRelatProblem, array(), false, array('label' => 4, 'field' => 8))?>
-			<?= $form->dropDownList($element, $eye.'_drops_id',
-          $dropsIds, array('empty' => '- Please select -'), false, array('label' => 4, 'field' => 8))?>
-			<?= $form->dropDownList($element, $eye.'_surgery_id',
-          $surgeryIds, array('empty' => 'N/A'), false, array('label' => 4, 'field' => 8))?>
+      <table class="cols-full">
+        <tbody>
+          <tr >
+            <td class="flex-layout"
+                id="div_OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_<?=$eye?>_iop_id"
+            >
+              <label>IOP:</label>
+              <div class=""
+                   id="OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_<?=$eye?>_iop">
+                  <?php echo ($iop == null) ? 'N/A' : $iop['rightIOP'].' mmHg'?>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+                <?= $form->dropDownList($element, $eye.'_glaucoma_status_id', $glaucomaStatus,
+                    array('empty' => '- Please Select -'), false, array('label' => 4, 'field' => 8, 'stretch' => true))?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+                <?= $form->dropDownList($element, $eye.'_drop-related_prob_id',
+                    $dropRelatProblem, array(), false, array('label' => 4, 'field' => 8, 'stretch' => true))?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+                <?= $form->dropDownList($element, $eye.'_drops_id',
+                    $dropsIds, array('empty' => '- Please select -'), false, array('label' => 4, 'field' => 8, 'stretch' => true))?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+                <?= $form->dropDownList($element, $eye.'_surgery_id',
+                    $surgeryIds, array('empty' => 'N/A'), false, array('label' => 4, 'field' => 8, 'stretch' => true))?>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+
+
 		</div>
 		<div class="inactive-form" style="<?=!$element->$hasEyeFunc() ? "" : "display: none;"?>">
 			<div class="add-side">
