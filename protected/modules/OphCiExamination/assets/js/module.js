@@ -1854,21 +1854,18 @@ function OphCiExamination_DRGrading_init() {
         var iconHover = $(this).parent().find('.grade-info-icon');
 
         iconHover.hover(function(e){
-            var infoWrap = $('<div class="quicklook"></div>');
-            infoWrap.appendTo('body');
+          var infoWrap = $('<span class="oe-tooltip" style="text-align: center; position: fixed;"></span>');
             infoWrap.html(quick.html());
+            var offset = $(this).offset();
+            var leftPos = offset.left - 94; // tooltip is 200px (and center on the icon)
 
-            var offsetPos = $(this).offset();
-            var top = offsetPos.top;
-            var left = offsetPos.left + 25;
-
-            top = top - (infoWrap.height()/2) + 8;
-
-            if (left + infoWrap.width() > 1150) left = left - infoWrap.width() - 40;
-            infoWrap.css({'position': 'absolute', 'top': top + "px", 'left': left + "px", 'z-index': 110});
-            infoWrap.fadeIn('fast');
+          var $selector = infoWrap.appendTo('body');
+          var tooltip = $('.oe-tooltip');
+            $selector.css('left', leftPos );
+            $selector.css('top', offset.top - tooltip.height() - 20);
+            $selector.fadeIn('fast');
         },function(e){
-            $('body > div:last').remove();
+          $('body').find( ".oe-tooltip" ).remove();
         });
     });
 
