@@ -16,79 +16,58 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label">
-			<?php echo $element->getAttributeLabel($side.'_clinicalret_id')?>:
-		</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value">
-			<?php echo $element->{$side.'_clinicalret'}->name?>
-		</div>
-	</div>
-</div>
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label">
-			<?php echo $element->getAttributeLabel($side.'_nscretinopathy_id')?>:
-		</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value">
-			<?php echo $element->{$side.'_nscretinopathy'}->name?>
-		</div>
-	</div>
-</div>
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label">
-			<?php echo $element->getAttributeLabel($side.'_nscretinopathy_photocoagulation')?>:
-		</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value">
-			<?php echo $element->{$side.'_nscretinopathy_photocoagulation'} ? 'Yes' : 'No'?>
-		</div>
-	</div>
-</div>
-<?php if ($element->{$side.'_clinicalmac'}) {
-    ?>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label">
-				<?php echo $element->getAttributeLabel($side.'_clinicalmac_id')?>:
-			</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value">
-				<?php echo $element->{$side.'_clinicalmac'}->name?>
-			</div>
-		</div>
-	</div>
-<?php 
-}?>
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label">
-			<?php echo $element->getAttributeLabel($side.'_nscmaculopathy_id')?>:
-		</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value">
-			<?php echo $element->{$side.'_nscmaculopathy'}->name?>
-		</div>
-	</div>
-</div>
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label">
-			<?php echo $element->getAttributeLabel($side.'_nscmaculopathy_photocoagulation')?>:
-		</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value">
-			<?php echo $element->{$side.'_nscmaculopathy_photocoagulation'} ? 'Yes' : 'No'?>
-		</div>
-	</div>
-</div>
+<table>
+  <tbody>
+  <tr>
+    <td>
+        <?php echo $element->getAttributeLabel($side . '_clinicalret_id') ?>:
+    </td>
+    <td>
+        <?php echo $element->{$side . '_clinicalret'}->name ?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo $element->getAttributeLabel($side . '_nscretinopathy_id') ?>:
+    </td>
+    <td>
+        <?php echo $element->{$side . '_nscretinopathy'}->name ?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo $element->getAttributeLabel($side . '_nscretinopathy_photocoagulation') ?>:
+    </td>
+    <td>
+        <?php echo $element->{$side . '_nscretinopathy_photocoagulation'} ? 'Yes' : 'No' ?>
+    </td>
+  </tr>
+  <?php if ($element->{$side . '_clinicalmac'}) { ?>
+    <tr>
+      <td>
+          <?php echo $element->getAttributeLabel($side . '_clinicalmac_id') ?>:
+      </td>
+      <td>
+          <?php echo $element->{$side . '_clinicalmac'}->name ?>
+      </td>
+    </tr>
+  <?php } ?>
+  <tr>
+    <td>
+        <?php echo $element->getAttributeLabel($side . '_nscmaculopathy_id') ?>:
+    </td>
+    <td>
+        <?php echo $element->{$side . '_nscmaculopathy'}->name ?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo $element->getAttributeLabel($side . '_nscmaculopathy_photocoagulation') ?>:
+    </td>
+    <td>
+        <?php echo $element->{$side . '_nscmaculopathy_photocoagulation'} ? 'Yes' : 'No' ?>
+    </td>
+  </tr>
+  </tbody>
+</table>
+

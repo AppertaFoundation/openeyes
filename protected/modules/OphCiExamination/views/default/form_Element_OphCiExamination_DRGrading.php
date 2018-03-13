@@ -38,55 +38,31 @@
 <div class="element-fields flex-layout full-width ">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
 	<fieldset class="field-row row">
-		<legend class="large-2 column">
 				<?php echo $element->getAttributeLabel('secondarydiagnosis_disorder_id')?>:
-		</legend>
-		<div class="large-10 column">
 			<?php
-                if ($diabetes = $this->patient->getDiabetesType()) {
-                    echo '<span class="data-value">'.$diabetes->term.'</span>';
-                } else {
-                    $form->radioButtons($element, 'secondarydiagnosis_disorder_id', $element->getDiabetesTypes(), null, false, false, false, false, array('nowrapper' => true));
-                }
-            ?>
-		</div>
+      if ($diabetes = $this->patient->getDiabetesType()) {
+        echo '<span class="data-value">'.$diabetes->term.'</span>';
+        } else {
+        $form->radioButtons($element, 'secondarydiagnosis_disorder_id', $element->getDiabetesTypes(), null, false, false, false, false, array('nowrapper' => true));
+        } ?>
 	</fieldset>
 </div>
 <div class="element-fields element-eyes">
-	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {
-    ?> inactive<?php 
-}?><?php if ($element->id || !empty($_POST)) {
-    ?> uninitialised<?php 
-}?>" data-side="right">
-		<div class="active-form">
+  <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+  <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side <?php if ($element->id || !empty($_POST)) {
+      ?> uninitialised<?php }?>" data-side="<?= $eye_side ?>">
+    <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-			<?php $this->renderPartial($element->form_view.'_fields', array('side' => 'right', 'element' => $element, 'form' => $form))?>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add right DR Grading
-					<span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {
-    ?> inactive<?php 
-}?><?php if ($element->id || !empty($_POST)) {
-    ?> uninitialised<?php 
-}?>" data-side="left">
-		<div class="active-form">
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-			<?php $this->renderPartial($element->form_view.'_fields', array('side' => 'left', 'element' => $element, 'form' => $form))?>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add left DR Grading
-					<span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
+        <?php $this->renderPartial($element->form_view.'_fields', array('side' =>$eye_side, 'element' => $element, 'form' => $form))?>
+    </div>
+    <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
+      <div class="add-side">
+        <a href="#">
+          Add <?= $eye_side ?> DR Grading
+          <span class="icon-add-side"></span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <?php endforeach; ?>
 </div>
