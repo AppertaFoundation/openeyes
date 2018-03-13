@@ -128,7 +128,7 @@ $(document).ready(function() {
 			$(this).val(3); // Both eyes
 		});
 
-        element.find('.side .active-form[style="display: none;"]').parent().find('.inactive-form').hide();
+		element.find('.side .active-form[style="display: none;"]').parent().find('.inactive-form').hide();
 		element.find('.side .active-form[style="display: none;"]').show();
 
 		e.preventDefault();

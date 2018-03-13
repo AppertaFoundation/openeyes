@@ -445,7 +445,8 @@ function calculatePcrValue(ORValue) {
   var averageRiskConst,
     pcrRisk,
     excessRisk,
-    pcrColour;
+    pcrColour,
+    textColour;
 
   if (ORValue) {
     pcrRisk = ORValue * (0.00736 / (1 - 0.00736)) / (1 + (ORValue * 0.00736 / (1 - 0.00736))) * 100;
@@ -456,21 +457,26 @@ function calculatePcrValue(ORValue) {
 
     if (pcrRisk <= 1) {
       pcrColour = 'green';
+      textColour = 'white';
     } else if (pcrRisk > 1 && pcrRisk <= 5) {
       pcrColour = 'orange';
+      textColour = 'black';
     } else {
       pcrColour = 'red';
+      textColour = 'white';
     }
   } else {
     pcrRisk = "N/A";
     excessRisk = "N/A";
     pcrColour = 'blue';
+    textColour = 'white';
   }
 
   return {
     pcrRisk: pcrRisk,
     excessRisk: excessRisk,
-    pcrColour: pcrColour
+    pcrColour: pcrColour,
+    textColour: textColour
   };
 }
 
@@ -489,6 +495,7 @@ function pcrCalculate($eyeSide, side) {
   pcrData = calculatePcrValue(ORValue);
 
   $eyeSide.find('#pcr-risk-div, .pcr-risk-div label').css('background', pcrData.pcrColour);
+  $eyeSide.find('#pcr-risk-div, .pcr-risk-div label').css('color', pcrData.textColour);
   $eyeSide.find('.pcr-span').html(pcrData.pcrRisk);
   $eyeSide.find('.pcr-erisk').html(pcrData.excessRisk);
   if(pcrData.pcrRisk !== 'N/A'){
