@@ -190,7 +190,6 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
           </div>
         </div>
       </div>
-
     <?php endforeach; ?>
 </div>
 <div class="large-6 column pcr-link">
