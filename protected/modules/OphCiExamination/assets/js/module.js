@@ -299,7 +299,7 @@ $(document).ready(function() {
 
   // popup
   function showSearch(){
-    $('#js-search-in-event-popup').show();
+    $('#js-search-in-event-popup').show().css('z-index', '110');
 
     $('.close-icon-btn').click(function(){
       $('#js-search-in-event-popup').hide();
