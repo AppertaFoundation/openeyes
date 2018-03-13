@@ -229,4 +229,36 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    /**
+     * @inheritdoc
+     */
+
+    public function actionPDFPrint($id)
+    {
+        $this->initWithEventId($id);
+
+        // TODO check if there are multiple documents and merge them
+        foreach ($this->event->getElements() as $element) {
+            foreach (array("single_document", "left_document", "right_document") as $property) {
+                if(isset($element->$property)) {
+                    switch ($this->getTemplateForMimeType($element->$property->mimetype)) {
+                        case "image":
+
+                            break;
+
+                        case "object":
+
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+
+        }
+
+        return parent::actionPDFPrint($id);
+    }
+
 }
