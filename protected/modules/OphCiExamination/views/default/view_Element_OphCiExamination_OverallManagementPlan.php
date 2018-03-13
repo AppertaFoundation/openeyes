@@ -19,41 +19,40 @@
 <div class="element-data tile">
   <table>
     <tbody>
-    <tr>
-      <td>
-        <div class="cols-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('clinic_interval_id'))?></div></div>
-        <div class="cols-7 column end"><div class="data-value"><?php echo $element->clinic_interval ? : 'None'?></div></div>
+    <tr class="flex-layout flex-top">
+      <td class="flex-layout cols-4">
+        <div class="cols-5 data-label"><?php echo CHtml::encode($element->getAttributeLabel('clinic_interval_id'))?></div>
+        <div class="cols-7 data-value"><?php echo $element->clinic_interval ? : 'None'?></div>
       </td>
-      <td>
-        <div class="cols-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('photo_id'))?></div></div>
-        <div class="cols-7 column end"><div class="data-value"><?php echo $element->photo ? $element->photo->name : 'None'?></div></div>
+      <td class="flex-layout cols-4">
+        <div class="cols-5 data-label"><?php echo CHtml::encode($element->getAttributeLabel('photo_id'))?></div>
+        <div class="cols-7"><div class="data-value"><?php echo $element->photo ? $element->photo->name : 'None'?></div>
       </td>
-      <td>
-        <div class="cols-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('oct_id'))?></div></div>
-        <div class="cols-7 column end"><div class="data-value"><?php echo $element->oct ? $element->oct->name : 'None'?></div></div>
+      <td class="flex-layout cols-4">
+        <div class="cols-5 data-label"><?php echo CHtml::encode($element->getAttributeLabel('oct_id'))?></div>
+        <div class="cols-7 data-value"><?php echo $element->oct ? $element->oct->name : 'None'?></div>
       </td>
     </tr>
-    <tr>
-      <td>
-        <div class="cols-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('hfa_id'))?></div></div>
-        <div class="cols-7 column end"><div class="data-value"><?php echo $element->hfa ? $element->hfa->name : 'None'?></div></div>
+    <tr class="flex-layout flex-top">
+      <td class="flex-layout cols-4">
+        <div class="cols-5 data-label"><?php echo CHtml::encode($element->getAttributeLabel('hfa_id'))?></div>
+        <div class="cols-7 data-value"><?php echo $element->hfa ? $element->hfa->name : 'None'?></div>
       </td>
-      <td>
-
-        <div class="cols-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('gonio_id'))?></div></div>
-        <div class="cols-7 column end"><div class="data-value"><?php echo $element->gonio ? $element->gonio->name : 'None'?></div></div>
+      <td class="flex-layout cols-4">
+        <div class="cols-5 data-label"><?php echo CHtml::encode($element->getAttributeLabel('gonio_id'))?></div>
+        <div class="cols-7 data-value"><?php echo $element->gonio ? $element->gonio->name : 'None'?></div>
       </td>
-      <td>
-        <div class="cols-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('hrt_id'))?></div></div>
-        <div class="cols-7 column end"><div class="data-value"><?php echo $element->hrt ? $element->hrt->name : 'None'?></div></div>
+      <td class="flex-layout cols-4">
+        <div class="cols-5 data-label"><?php echo CHtml::encode($element->getAttributeLabel('hrt_id'))?></div>
+        <div class="cols-7 data-value"><?php echo $element->hrt ? $element->hrt->name : 'None'?></div>
       </td>
     </tr>
 
     </tbody>
   </table>
   <br/>
-  <div class="cols-5 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('comments'))?></div></div>
-  <div class="cols-full column end"><div class="data-value"><?php echo $element->textWithLineBreaks('comments')?></div></div>
+  <div class="cols-5 data-label"><?php echo CHtml::encode($element->getAttributeLabel('comments'))?></div>
+  <div class="cols-full data-value"><?php echo $element->textWithLineBreaks('comments')?></div>
   <br/>
 </div>
 <div class="element-data element-eyes row">
