@@ -1317,7 +1317,7 @@ $(document).ready(function() {
         });
         $hidden_input.data('display_order', display_order);
 
-        var $td_action = $('<td>',{class:'right'}).html( "<a class='postop-complication-remove-btn' href='javascript:void(0)'>Remove</a>" );
+        var $td_action = $('<td>',{class:'right'}).html( "<a class='postop-complication-remove-btn' href='javascript:void(0)'><i class='oe-i trash'></i></a>" );
         $td_action.append($hidden_input);
 
         $tr.append($td_name);
