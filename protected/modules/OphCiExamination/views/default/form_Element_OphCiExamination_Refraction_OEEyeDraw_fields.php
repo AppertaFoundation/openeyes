@@ -17,57 +17,72 @@
  */
 ?>
 <fieldset class="row field-row">
-	<legend class="large-3 column">
-		<?php echo $element->getAttributeLabel($side.'_sphere')?>:
-	</legend>
-	<div class="large-9 column">
-		<?php Yii::app()->getController()->renderPartial('_segmented_field', array('element' => $element, 'side' => $side, 'field' => 'sphere', 'model' => 'OphCiExamination_Refraction_Sphere_Integer'), false, false)?>
-	</div>
+  <legend class="cols-3 column">
+      <?php echo $element->getAttributeLabel($side . '_sphere') ?>:
+  </legend>
+  <div class="cols-9 column">
+      <?php Yii::app()->getController()->renderPartial('_segmented_field', array(
+          'element' => $element,
+          'side' => $side,
+          'field' => 'sphere',
+          'model' => 'OphCiExamination_Refraction_Sphere_Integer',
+      ), false, false) ?>
+  </div>
 </fieldset>
 <fieldset class="row field-row">
-	<legend class="large-3 column">
-		<?php echo $element->getAttributeLabel($side.'_cylinder')?>:
-	</legend>
-	<div class="large-9 column">
-		<?php Yii::app()->getController()->renderPartial('_segmented_field', array('element' => $element, 'side' => $side, 'field' => 'cylinder', 'model' => 'OphCiExamination_Refraction_Cylinder_Integer'), false, false)?>
-	</div>
+  <legend class="cols-3 column">
+      <?php echo $element->getAttributeLabel($side . '_cylinder') ?>:
+  </legend>
+  <div class="cols-9 column">
+      <?php Yii::app()->getController()->renderPartial('_segmented_field', array(
+          'element' => $element,
+          'side' => $side,
+          'field' => 'cylinder',
+          'model' => 'OphCiExamination_Refraction_Cylinder_Integer',
+      ), false, false) ?>
+  </div>
 </fieldset>
 <div class="row field-row">
-	<div class="large-3 column">
-		<label for="<?php echo get_class($element).'_'.$side.'_axis';?>">
-			<?php echo $element->getAttributeLabel($side.'_axis')?>:
-		</label>
-	</div>
-	<div class="large-6 column end">
-		<?php echo CHtml::activeTextField($element, $side.'_axis', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'axis'))?>
-	</div>
+  <div class="cols-3 column">
+    <label for="<?php echo get_class($element) . '_' . $side . '_axis'; ?>">
+        <?php echo $element->getAttributeLabel($side . '_axis') ?>:
+    </label>
+  </div>
+  <div class="cols-6 column end">
+      <?php echo CHtml::activeTextField($element, $side . '_axis',
+          array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'axis')) ?>
+  </div>
 </div>
 <div class="refraction-type-container">
-	<div class="row field-row">
-		<div class="large-3 column">
-			<label for="<?php echo get_class($element).'_'.$side.'_type_id';?>">
-				<?php echo $element->getAttributeLabel($side.'_type_id')?>:
-			</label>
-		</div>
-		<div class="large-6 column end">
-			<div>
-				<?php echo CHtml::activeDropDownList($element, $side.'_type_id', OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->getOptions(), array('class' => 'refractionType'))?>
-			</div>
-		</div>
-	</div>
-	<div class="row field-row refraction-type-other" <?php if ($element->{$side.'_type'} && $element->{$side.'_type'}->name != 'Other') {
-    echo 'style="display:none"';
-}?>">
-		<div class="large-3 column">
-			<label>Other:</label>
-		</div>
-		<div class="large-6 column end">
-			<?php echo CHtml::activeTextField($element, $side.'_type_other', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'refraction-type-other-field'))?>
-		</div>
-	</div>
-	<div class="row field-row">
-		<div class="large-9 column end">
-			<?php echo CHtml::activeTextArea($element, $side.'_notes', array('rows' => 1, 'placeholder' => $element->getAttributeLabel($side.'_notes')))?>
-		</div>
-	</div>
+  <div class="row field-row">
+    <div class="cols-3 column">
+      <label for="<?php echo get_class($element) . '_' . $side . '_type_id'; ?>">
+          <?php echo $element->getAttributeLabel($side . '_type_id') ?>:
+      </label>
+    </div>
+    <div class="cols-6 column end">
+      <div>
+          <?php echo CHtml::activeDropDownList($element, $side . '_type_id',
+              OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->getOptions(),
+              array('class' => 'refractionType')) ?>
+      </div>
+    </div>
+  </div>
+  <div
+      class="row field-row refraction-type-other" <?php if ($element->{$side . '_type'} && $element->{$side . '_type'}->name != 'Other') {
+        echo 'style="display:none"';
+    } ?>">
+  <div class="cols-3 column">
+    <label>Other:</label>
+  </div>
+  <div class="cols-6 column end">
+      <?php echo CHtml::activeTextField($element, $side . '_type_other',
+          array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'refraction-type-other-field')) ?>
+  </div>
+</div>
+<div class="row field-row">
+  <div class="cols-9 column end">
+      <?php echo CHtml::activeTextArea($element, $side . '_notes',
+          array('rows' => 1, 'placeholder' => $element->getAttributeLabel($side . '_notes'))) ?>
+  </div>
 </div>
