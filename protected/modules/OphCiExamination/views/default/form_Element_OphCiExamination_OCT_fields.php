@@ -55,27 +55,27 @@ if (@$_POST[CHtml::modelName($element)]) {
               $side.'_crt',
               array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '&micro;m'),
               null,
-              array('label' => 8, 'field' => '4', 'append-text' => '1')
+              array('label' => 8, 'field' => '3', 'append-text' => '1')
           ) ?>
       </td>
       <td></td>
     </tr>
     <tr>
       <td class="data-row row">
-        <?php echo $form->textField(
-            $element,
-            $side.'_sft',
-            array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '&micro;m'),
-            null,
-            array('label' => 8, 'field' => '4', 'append-text' => '1')
-        ) ?>
-        <?php if ($past_sft = $exam_api->getOCTSFTHistoryForSide($this->patient, $side, $event_date)) { ?>
-          <i class="oe-i info small-icon js-has-tooltip" data-tooltip-content="Previous SFT Measurements:
-        <?php echo '<br />';
-          foreach ($past_sft as $previous) {
-              echo Helper::convertDate2NHS($previous['date']).' - '.$previous['sft'].'<br /> ';
-          } ?>"></i>
-        <?php } ?>
+          <?php $tooltip_content = null;
+          if ($past_sft = $exam_api->getOCTSFTHistoryForSide($this->patient, $side, $event_date)) {
+              $tooltip_content = "Previous SFT Measurements: <br />";
+              foreach ($past_sft as $previous) {
+                  $tooltip_content.= Helper::convertDate2NHS($previous['date']).' - '.$previous['sft'].'<br /> ';
+              }
+          }
+          echo $form->textField(
+              $element,
+              $side.'_sft',
+              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '&micro;m',
+                  'tooltip-text'=>$tooltip_content),
+              null,
+              array('label' => 8, 'field' => '3', 'append-text' => '1')) ?>
       </td>
       <td></td>
     </tr>
