@@ -23,74 +23,49 @@ use OEModule\OphCiExamination\components\ExaminationHelper;
 list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipalDiagnoses($this->episode);
  ?>
 <div class="element-data element-eyes row">
-    <div class="element-eye right-eye column">
-        <?php
-        $principal = OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()->find('element_diagnoses_id=? and principal=1 and eye_id in (2,3)', array($element->id));
-        if ($principal) {
-        ?>
-        <div class="data-row">
-            <div class="data-value">
-                <strong>
-                    <?php echo $principal->getDisplayDate() . ' ' . $principal->disorder->term ?>
-                </strong>
-            </div>
-        </div>
-        <?php
-        } foreach($right_principals as $disorder) { ?>
-            <div class="data-row">
-                <div class="data-value">
-                        <?= $disorder[0]->term ?> <span class="js-has-tooltip fa fa-info-circle" data-tooltip-content="Principal diagnosis for <?= $disorder[1] ?>"></span>
-                </div>
-            </div>
-        <?php
-        }
+  <?php foreach(['right' => '2,3', 'left' => '1,3'] as $eye_side => $eye_ids):?>
+    <div class="element-eye <?=$eye_side?>-eye column">
+      <table>
+        <tbody>
+          <?php
+          $principal = OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
+              ->find('element_diagnoses_id=? and principal=1 and eye_id in ('.$eye_ids.')', array($element->id));
+          if ($principal) {
+          ?>
+          <tr class="data-row">
+              <td class="data-value">
+                  <strong>
+                      <?php echo $principal->disorder->term ?>
+                  </strong>
+              </td><td></td>
+          </tr>
+          <?php
+          } foreach(${$eye_side.'_principals'} as $disorder) { ?>
+              <tr class="data-row">
+                  <td class="data-value">
+                    <?= $disorder[0]->term ?>
+                    <span class="js-has-tooltip fa fa-info-circle"
+                          data-tooltip-content="Principal diagnosis for <?= $disorder[1] ?>"
+                    ><i class="oe-i info"></i></span>
+                  </td><td></td>
+              </tr>
+          <?php
+          }
 
-        $diagnoses = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
-            ->findAll('element_diagnoses_id=? and principal=0 and eye_id in (2,3)', array($element->id));
-        foreach ($diagnoses as $diagnosis) {
-            ?>
-            <div class="data-row">
-                <div class="data-value">
-                    <?php echo $diagnosis->getDisplayDate() . ' ' . $diagnosis->disorder->term ?>
-                </div>
-            </div>
-            <?php
-        } ?>
+          $diagnoses = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
+              ->findAll('element_diagnoses_id=? and principal=0 and eye_id in ('.$eye_ids.')', array($element->id));
+          foreach ($diagnoses as $diagnosis) {
+              ?>
+              <tr class="data-row">
+                  <td class="data-value">
+                      <?php echo $diagnosis->disorder->term ?>
+                  </td><td></td>
+              </tr>
+              <?php
+          } ?>
+        </tbody>
+      </table>
     </div>
-    <div class="element-eye left-eye column">
-        <?php
-        $principal = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
-            ->find('element_diagnoses_id=? and principal=1 and eye_id in (1,3)', array($element->id));
-        if ($principal) {
-            ?>
-            <div class="data-row">
-                <div class="data-value">
-                    <strong>
-                        <?php echo $principal->getDisplayDate() . ' ' . $principal->disorder->term ?>
-                    </strong>
-                </div>
-            </div>
-            <?php
-        }
-        foreach($left_principals as $disorder) { ?>
-            <div class="data-row">
-                <div class="data-value">
-                    <?= $disorder[0]->term ?> <span class="js-has-tooltip fa fa-info-circle" data-tooltip-content="Principal diagnosis for <?= $disorder[1] ?>"></span>
-                </div>
-            </div>
-            <?php
-        }
-        $diagnoses = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
-            ->findAll('element_diagnoses_id=? and principal=0 and eye_id in (1,3)', array($element->id));
-        foreach ($diagnoses as $diagnosis) {
-            ?>
-            <div class="data-row">
-                <div class="data-value">
-                    <?php echo $diagnosis->getDisplayDate() . ' ' . $diagnosis->disorder->term ?>
-                </div>
-            </div>
-            <?php
-        } ?>
-    </div>
+  <?php endforeach;?>
 </div>
 

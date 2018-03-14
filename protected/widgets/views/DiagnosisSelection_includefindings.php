@@ -18,97 +18,104 @@
 ?>
 <?php $class_field = "{$class}_{$field}"; ?>
 
-<?php if (!$nowrapper) {?>
-<div class="row field-row diagnosis-selection">
-	<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
+<?php
+$list_options = array('empty' => 'Select a commonly used diagnosis');
+if (!$nowrapper) {?>
+<div class="flex-layout flex-left diagnosis-selection">
+	<div class="cols-<?php echo $layoutColumns['label'];?> column <?=!$showLabel?"hidden":""?>">
 		<label for="<?php echo $class_field;?>">Diagnosis:</label>
 	</div>
-	<div class="large-<?php echo $layoutColumns['field'];?> column end">
-		<?php }?>
-		<?php
-        $list_options = array('empty' => 'Select a commonly used diagnosis');
-        echo CHtml::dropDownList("{$class}[$field]", '', array(), $list_options);
-        if (!$nowrapper) {?>
+	<div class="cols-<?php echo $layoutColumns['field'];?> column end">
+    <?= CHtml::dropDownList("{$class}[$field]", '', array(), $list_options)?>
 	</div>
+</div>
+<?php } else {
+  echo CHtml::dropDownList("{$class}[$field]", '', array(), array_merge($list_options, array('class' => 'diagnosis-selection')));
+}?>
+
+<?php if (!$nowrapper) {?>
+  <div id="div_<?php echo "{$class_field}_secondary_to"?>" class="row field-row hidden">
+			<div class="cols-<?php echo $layoutColumns['label'];?> column"
+           style="<?=!$showLabel?"display: none;":""?>"
+      >
+				<label for="<?php echo "{$class_field}_secondary_to";?>">Associated diagnosis:</label>
+			</div>
+		<div class="cols-<?php echo $layoutColumns['field'];?> column end">
+      <?= CHtml::dropDownList("{$class}[{$field}_secondary_to]", '', array(), array())?>
+		</div>
+  </div>
+<?php }else{?>
+<div id="div_<?php echo "{$class_field}_secondary_to"?>" class="row field-row hidden">
+  <?= CHtml::dropDownList("{$class}[{$field}_secondary_to]", '', array(), array('style' => 'display: none;'));?>
 </div>
 <?php }?>
 
-	<?php if (!$nowrapper) {?>
-		<div id="div_<?php echo "{$class_field}_secondary_to"?>" class="row field-row hidden">
-		<?php if (!$nowrapper) {?>
-			<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
-				<label for="<?php echo "{$class_field}_secondary_to";?>">Associated diagnosis:</label>
-			</div>
-		<?php }?>
-		<div class="large-<?php echo $layoutColumns['field'];?> column end">
-	<?php }?>
-	<?php echo CHtml::dropDownList("{$class}[{$field}_secondary_to]", '', array(), array())?>
-	<?php if (!$nowrapper) {?>
-		</div>
-		</div>
-	<?php }?>
+
 
 <?php if (!$nowrapper) {?>
 <div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
+		<div class="cols-<?php echo $layoutColumns['label'];?> column<?php if (!$showLabel) {?> hidden<?php }?>">
 			<label></label>
 		</div>
-	<div class="large-<?php echo $layoutColumns['field'];?> column end">
+	<div class="cols-<?php echo $layoutColumns['field'];?> column end">
 <?php }?>
 		<div class="autocomplete-row" id="div_<?php echo "{$class}_{$field}_autocomplete_row"?>">
 			<?php
-            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                    'name' => "{$class}[$field]",
-                    'id' => "{$class_field}_0",
-                    'value' => '',
-                    'source' => "js:function(request, response) {
-						$.ajax({
-							'url': '".Yii::app()->createUrl('/disorder/autocomplete')."',
-							'type':'GET',
-							'data':{'term': request.term, 'code': '$code'},
-							'success':function(data) {
-								data = $.parseJSON(data);
-
-								var result = [];
-
-								for (var i = 0; i < data.length; i++) {
-									var ok = true;
-									$('#selected_diagnoses').children('input').map(function() {
-										if ($(this).val() == data[i]['id']) {
-											ok = false;
-										}
-									});
-									if (ok) {
-										result.push(data[i]);
-									}
-								}
-
-								response(result);
-							}
-						});
-					}",
-                    'options' => array(
-                        'minLength' => '3',
-                        'select' => 'js:function(event, ui) {
-							currFirst = getSelectedObj(firstSelection);
-							DiagnosisSelection_addCondition(currFirst);
-							'.($callback ? $callback."('disorder', ui.item.id, ui.item.value, ui.item.is_diabetes, ui.item.is_glaucoma);" : '')."
-							$('#{$class_field}_0').val('');
-							$('#{$class_field}').children('option').map(function() {
-								if ($(this).val() == ui.item.id) {
-									$(this).remove();
-								}
-							});
-							return false;
-						}",
-                    ),
-                    'htmlOptions' => array(
-                        'placeholder' => $placeholder,
-                    ),
-                ));
-            ?>
+      $this->widget(
+          'zii.widgets.jui.CJuiAutoComplete',
+          array(
+              'name' => "{$class}[$field]",
+              'id' => "{$class_field}_0",
+              'value' => '',
+              'source' => "js:function(request, response) {
+                $.ajax({
+                  'url': '".Yii::app()->createUrl('/disorder/autocomplete')."',
+                  'type':'GET',
+                  'data':{'term': request.term, 'code': '$code'},
+                  'success':function(data) {
+                    data = $.parseJSON(data);
+    
+                    var result = [];
+    
+                    for (var i = 0; i < data.length; i++) {
+                      var ok = true;
+                      $('#selected_diagnoses').children('input').map(function() {
+                        if ($(this).val() == data[i]['id']) {
+                          ok = false;
+                        }
+                      });
+                      if (ok) {
+                        result.push(data[i]);
+                      }
+                    }
+    
+                    response(result);
+                  }
+                });
+              }",
+              'options' => array(
+                  'minLength' => '3',
+                  'select' => 'js:function(event, ui) {
+                    currFirst = getSelectedObj(firstSelection);
+                    DiagnosisSelection_addCondition(currFirst);
+                    '.($callback ? $callback."('disorder', ui.item.id, ui.item.value, ui.item.is_diabetes, ui.item.is_glaucoma);" : '')."
+                    $('#{$class_field}_0').val('');
+                    $('#{$class_field}').children('option').map(function() {
+                      if ($(this).val() == ui.item.id) {
+                        $(this).remove();
+                      }
+                    });
+                    return false;
+                  }",
+              ),
+              'htmlOptions' => array(
+                  'placeholder' => $placeholder,
+              ),
+          )
+      );
+      ?>
 		</div>
-		<?php if (!$nowrapper) {?>
+<?php if (!$nowrapper) {?>
 	</div>
 </div>
 <?php }?>
@@ -117,7 +124,6 @@
 	var firstSelection = $('#<?= $class_field ?>');
 	var secondarySelection = $('#<?= "{$class_field}_secondary_to"?>');
 	var firstEmpty = 'Select a commonly used diagnosis';
-
 	/**
 	 * Generates an object from the given jquery selector for a select list
 	 *
@@ -231,7 +237,6 @@
 				currentGroup = group;
 			}
 		}
-
 		firstSelection.html(html);
 	}
 
@@ -315,10 +320,10 @@
 	{
 		if (condition.id) {
 			<?php if (@$callback) {
-    echo $callback.'(condition.type, condition.id, condition.label);';
-} else {
-    echo "console.log('NO CALLBACK SPECIFIED');";
-}?>
+        echo $callback.'(condition.type, condition.id, condition.label);';
+      } else {
+        echo "console.log('NO CALLBACK SPECIFIED');";
+      }?>
 		}
 	}
 

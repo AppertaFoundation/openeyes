@@ -22,6 +22,7 @@ class DiagnosisSelection extends BaseFieldWidget
     public $class;
     public $form;
     public $label;
+    public $showLabel = true;
     public $restrict;
     //specialty code to restrict diagnosis list by
     public $code;
