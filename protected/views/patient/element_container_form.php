@@ -17,7 +17,7 @@
  */
 ?>
 <?php
-$section_classes = array('edit-'.CHtml::modelName($element->elementType->name));
+$section_classes = array('edit-'.CHtml::modelName($element->elementType->class_name));
 $section_classes[] =  'element full';
 if ($this->isRequired($element)) {
     $section_classes[] = 'required';
