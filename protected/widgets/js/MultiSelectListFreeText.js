@@ -67,8 +67,8 @@ $(document).ready(function() {
 
 			var remote_data = {
 				'href': '#',
-				'class': 'MultiSelectFreeTextRemove remove-one '+selected.val(),
-				'text': 'Remove',
+				'class': 'oe-i small remove-circle MultiSelectFreeTextRemove remove-one '+selected.val(),
+				'text': '',
 				'data-name': fieldName+'[]',
 				'data-text': selected.text()
 			};
@@ -79,21 +79,21 @@ $(document).ready(function() {
 				remote_data['data-linked-values'] = $(this).data('linked-values');
 			}
 
-			var remove = $('<a />', remote_data);
+			var remove = $('<i />', remote_data);
 
 			var item = $('<li><span class="text">'+selected.text()+'</span></li>');
 			item.append(remove);
 			item.append(input);
 
-			selections.append(item).removeClass('hide');
+			selections.append(item).show();
 
-			noSelectionsMsg.addClass('hide');
-			removeAll.removeClass('hide');
+			noSelectionsMsg.hide();
+			removeAll.show();
 
 			if (selected.data('requires-description')) {
 				descriptions.append(
 					'<div class="row data-row" data-option="' + selected.text() + '">' +
-						'<div class="large-2 column">' +
+						'<div class="cols-2 column">' +
 							'<div class="data-label">' +
 								selected.text() + ':' +
 							'</div>' +
@@ -122,7 +122,7 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$(this).on('click', 'a.MultiSelectFreeTextRemove', 'click',function(e) {
+	$(this).on('click', 'i.MultiSelectFreeTextRemove', 'click',function(e) {
 		e.preventDefault();
 		var anchor = $(this);
 		var container = anchor.closest('.multi-select-free-text');
@@ -155,8 +155,8 @@ $(document).ready(function() {
 		descriptions.find('div[data-option="' + text + '"]').remove();
 
 		if (!selections.children().length) {
-			selections.add(removeAll).addClass('hide');
-			noSelectionsMsg.removeClass('hide');
+			selections.add(removeAll).hide();
+			noSelectionsMsg.show();
 		}
 
 		if ($(this).hasClass('linked-fields')) {

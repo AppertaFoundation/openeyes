@@ -54,12 +54,12 @@ $widgetOptionsJson = json_encode(array(
 <?php if (!@$htmlOptions['nowrapper']) { ?>
 <div id="<?php echo $div_id ?>"
      class="<?php echo $div_class ?> row field-row widget" <?php if ($hidden) { ?>hidden<?php } ?>>
-  <div class="large-<?php echo $layoutColumns['label']; ?> column">
+  <div class="cols-<?php echo $layoutColumns['label']; ?> column">
     <label for="<?php echo $field ?>">
         <?php echo @$htmlOptions['label'] ?>:
     </label>
   </div>
-  <div class="large-<?php echo $layoutColumns['field']; ?> column end">
+  <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
       <?php } ?>
     <div class="multi-select-free-text<?php if (!$inline) {
         echo ' multi-select-free-text-list';
@@ -84,17 +84,19 @@ $widgetOptionsJson = json_encode(array(
             } ?>
         </select>
           <?php if ($showRemoveAllLink) { ?>
-            <a href="#" class="remove-all<?php echo !$found ? ' hide' : ''; ?>">Remove all</a>
+            <a href="#" class="remove-all" style="display: <?php echo !$found ? ' none' : 'inline'; ?>">Remove all</a>
           <?php } ?>
       </div>
         <?php if ($noSelectionsMessage) { ?>
           <div
-              class="no-selections-msg pill<?php if ($found) { ?> hide<?php } ?>"><?php echo $noSelectionsMessage; ?></div>
+              class="no-selections-msg pill"
+              style="display: <?php if ($found) { ?> none<?php } ?>"><?php echo $noSelectionsMessage; ?></div>
         <?php } ?>
-      <ul class="MultiSelectFreeTextList multi-select-free-text-selections<?php if (!$found) {
-          echo ' hide';
-      } ?>">
-        <input type="hidden" name="<?php echo $field ?>"/>
+      <input type="hidden" name="<?php echo $field ?>"/>
+      <ul class="MultiSelectFreeTextList multi-select-free-text-selections"
+          style="display: <?php if (!$found) {
+              echo ' none';
+          } ?>">
           <?php foreach ($selected_ids as $i => $id) {
               if (isset($options[$id])) { ?>
                 <li>
@@ -102,7 +104,14 @@ $widgetOptionsJson = json_encode(array(
 								<?php echo htmlspecialchars($options[$id], ENT_QUOTES, Yii::app()->charset, false) ?>
 							</span>
                   <i data-text="<?php echo $options[$id] ?>"
-                     class="oe-i remove-circle small MultiSelectFreeTextRemove <?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"<?php if (isset($htmlOptions['data-linked-fields'])) { ?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"<?php } ?><?php if (isset($htmlOptions['data-linked-values'])) { ?> data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"<?php } ?>>Remove</i>
+                     class="oe-i remove-circle small MultiSelectFreeTextRemove remove-one
+                     <?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"
+                      <?php if (isset($htmlOptions['data-linked-fields'])) { ?>
+                        data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"
+                      <?php } ?>
+                      <?php if (isset($htmlOptions['data-linked-values'])) { ?>
+                        data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"
+                      <?php } ?>></i>
                   <input type="hidden" name="<?php echo $field ?>[<?php echo $i ?>][id]" data-i="<?php echo $i ?>"
                          value="<?php echo $id ?>"
                       <?php if (isset($opts[$id])) {
@@ -119,12 +128,12 @@ $widgetOptionsJson = json_encode(array(
           <?php foreach ($selected_ids as $i => $id) {
               if (isset($descriptions[$id])) { ?>
                 <div class="row data-row" data-option="<?php echo $options[$id] ?>">
-                  <div class="large-2 column">
+                  <div class="cols-2 column">
                     <div class="data-label">
                         <?php echo $options[$id] ?>
                     </div>
                   </div>
-                  <div class="large-4 column end">
+                  <div class="cols-4 column end">
                     <div class="data-value">
                         <?php echo CHtml::textArea($field . "[$i][description]", $descriptions[$id]) ?>
                     </div>
