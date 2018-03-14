@@ -14,6 +14,8 @@
  * @copyright Copyright (c) 2016, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+require_once './vendor/setasign/fpdi/pdf_parser.php';
+
 class DefaultController extends BaseEventTypeController
 {
     protected $show_element_sidebar = false;
@@ -30,6 +32,8 @@ class DefaultController extends BaseEventTypeController
         'fileUpload' => self::ACTION_TYPE_FORM,
         'fileRemove' => self::ACTION_TYPE_FORM,
     );
+
+    protected $pdf_output;
 
     public function init()
     {
@@ -233,32 +237,80 @@ class DefaultController extends BaseEventTypeController
      * @inheritdoc
      */
 
-    public function actionPDFPrint($id)
+    public function actionPDFPrint($id, $return_pdf_path = false)
     {
         $this->initWithEventId($id);
 
-        // TODO check if there are multiple documents and merge them
+        $document_count = 0;
+        $document_types = array();
+
         foreach ($this->event->getElements() as $element) {
             foreach (array("single_document", "left_document", "right_document") as $property) {
                 if(isset($element->$property)) {
-                    switch ($this->getTemplateForMimeType($element->$property->mimetype)) {
-                        case "image":
-
-                            break;
-
-                        case "object":
-
-                            break;
-
-                        default:
-                            break;
+                    $document_count++;
+                    $mimetype = $element->$property->mimetype;
+                    if(strpos($mimetype, "image/") === 0) {
+                        $document_types[]='image';
+                    }
+                    elseif($mimetype = 'application/pdf') {
+                        $document_types[]='pdf';
+                    }
+                    else {
+                        // other files cannot be printed
+                        return Yii::app()->end();
                     }
                 }
             }
-
         }
 
-        return parent::actionPDFPrint($id);
+        // Image(s) only
+        if(array_values(array_unique($document_types)) === array('image')) {
+            return parent::actionPDFPrint($id);
+        }
+
+        // Pdf(s) only - or - pdf(s) and image(s) mixed
+        else {
+            $this->pdf_output = new PDF_JavaScript();
+            foreach ($this->event->getElements() as $element) {
+                foreach (array("single_document", "left_document", "right_document") as $property) {
+                    if (isset($element->$property)) {
+                        if(strpos($element->$property->mimetype, "image/") === 0) {
+                            $this->addPDFToOutput(parent::actionPDFPrint($id, true));
+                        }
+                        else {
+                            $this->addPDFToOutput($element->$property->getPath());
+                        }
+                    }
+                }
+            }
+            $script = 'print(true);';
+            $this->pdf_output->IncludeJS($script);
+
+            $pdf_path = $this->event->imageDirectory.'/event_print.pdf';
+            $this->pdf_output->Output("F",   $pdf_path);
+
+            header('Content-Type: application/pdf');
+            header('Content-Length: '.filesize($pdf_path));
+
+            readfile($pdf_path);
+            return Yii::app()->end();
+        }
+    }
+
+    /**
+     * Merges a PDF file to the end of the output
+     *
+     * @param $pdf_path
+     */
+
+    private function addPDFToOutput($pdf_path)
+    {
+        $pagecount = $this->pdf_output->setSourceFile($pdf_path);
+        for ($i = 1; $i <= $pagecount; $i++) {
+            $this->pdf_output->AddPage('P');
+            $tplidx = $this->pdf_output->ImportPage($i);
+            $this->pdf_output->useTemplate($tplidx);
+        }
     }
 
 }

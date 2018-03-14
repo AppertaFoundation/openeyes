@@ -1849,9 +1849,10 @@ class BaseEventTypeController extends BaseModuleController
 
     /**
      * @param $id
+     * @param bool $return_pdf_path  Whether to return the pdf path instead of displaying
      * @return mixed
      */
-    public function actionPDFPrint($id)
+    public function actionPDFPrint($id, $return_pdf_path = false)
     {
         $auto_print = Yii::app()->request->getParam('auto_print', true);
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
@@ -1862,6 +1863,10 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         $pdf = $this->event->getPDF($pdf_route);
+
+        if($return_pdf_path) {
+            return $pdf;
+        }
 
         header('Content-Type: application/pdf');
         header('Content-Length: '.filesize($pdf));
