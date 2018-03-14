@@ -131,11 +131,11 @@ class OphCoMessaging_API extends \BaseAPI
         $criteria->together = true;
         if ($from) {
             $criteria->addCondition('DATE(t.created_date) >= :from');
-            $params[':from'] = \Helper::convertNHS2MySQL($from);
+            $params[':from'] = $from;
         }
         if ($to) {
             $criteria->addCondition('DATE(t.created_date) <= :to');
-            $params[':to'] = \Helper::convertNHS2MySQL($to);
+            $params[':to'] = $to;
         }
 
         $criteria->addCondition('event.deleted = 0');
@@ -203,8 +203,8 @@ class OphCoMessaging_API extends \BaseAPI
 
         $sort->defaultOrder = 'event_date desc';
 
-        $from = \Yii::app()->request->getQuery('OphCoMessaging_sent_from', '');
-        $to = \Yii::app()->request->getQuery('OphCoMessaging_sent_to', '');
+        $from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
+        $to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
         $params = array(':uid' => $user->id);
 
         $criteria = new \CDbCriteria();
@@ -216,11 +216,11 @@ class OphCoMessaging_API extends \BaseAPI
         $criteria->together = true;
         if ($from) {
             $criteria->addCondition('DATE(t.created_date) >= :from');
-            $params[':from'] = \Helper::convertNHS2MySQL($from);
+            $params[':from'] = $from;
         }
         if ($to) {
             $criteria->addCondition('DATE(t.created_date) <= :to');
-            $params[':to'] = \Helper::convertNHS2MySQL($to);
+            $params[':to'] = $to;
         }
 
         $criteria->addCondition('event.deleted = 0');

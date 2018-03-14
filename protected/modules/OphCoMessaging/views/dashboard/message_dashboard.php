@@ -91,7 +91,28 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
             e.preventDefault();
             window.location.href = jQuery.query.set('messages', 'sent')
         });
+
+    $('#OphCoMessaging_to').add('#OphCoMessaging_from').each(function () {
+      pickmeup('#' + $(this).attr('id'), {
+        format: 'Y-m-d',
+        hide_on_select: true,
+        default_date: false
+      });
+    }).on('blur', function () {
+      updateDateRange()
+    }).on('keypress', function (e) {
+      if (e.which === 13) {
+        updateDateRange();
+      }
     });
+    });
+
+  function updateDateRange() {
+    window.location.href = jQuery.query
+      .set('OphCoMessaging_from', $('#OphCoMessaging_from').val())
+      .set('OphCoMessaging_to', $('#OphCoMessaging_to').val());
+  }
+
 
     $('.js-expand-message').each(function(){
 
@@ -99,6 +120,7 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
         var expander = new Expander( $(this),
             message );
     });
+
     function Expander( $icon, $message){
         var expanded = false;
 
