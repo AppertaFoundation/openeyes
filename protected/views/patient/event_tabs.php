@@ -25,6 +25,10 @@
         <?php echo $tab['label'] ?>
     </a>
 <?php } ?>
-<button class="button header-tab icon" name="exam-search" id="js-search-in-event">
-  <i class="oe-i search"></i>
-</button>
+
+<?php if ($this->action->id === 'create' || $this->action->id === 'update'): ?>
+  <button class="button header-tab icon" name="exam-search" id="js-search-in-event">
+    <i class="oe-i search"></i>
+  </button>
+<?php endif; ?>
+
