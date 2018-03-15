@@ -18,7 +18,7 @@
 ?>
 
 
-
+<!--
 <footer class="footer row">
 	<div class="large-3 medium-3 columns">
 		<div class="info">
@@ -98,6 +98,7 @@
 	}
 	</script>
 </footer>
+-->
 
 <script type="text/javascript">
 $(document).ready(function () {

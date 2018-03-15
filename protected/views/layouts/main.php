@@ -39,5 +39,6 @@
 			<?php echo $content; ?>
 		</main><!-- /.content.container -->
 
+		<?php $this->renderPartial('//base/_footer'); ?>
 </body>
 </html>

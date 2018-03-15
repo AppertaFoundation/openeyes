@@ -40,6 +40,7 @@
 				</div>
 			</div>
 		</div>
+		<?php $this->renderPartial('//base/_footer'); ?>
 	</div>
 </body>
 </html>
