@@ -277,7 +277,7 @@ $(document).ready(function(){
 					returnUrl: returnUrl,
 					patient_id: window.OE_patient_id || null
 				}
-			}));
+			})).open();
 		});
 	}());
 

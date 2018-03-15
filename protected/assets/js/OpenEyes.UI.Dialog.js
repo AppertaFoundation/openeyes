@@ -120,8 +120,6 @@
         if (!this.options.url) {
             this.setContent(this.options.content);
         }
-
-        $('body').prepend(this.content);
     };
 
     /**
@@ -252,6 +250,94 @@
     };
 
     /**
+   * Calculates the dialog dimensions. If OpenEyes.UI.Dialog#options.constrainToViewport is
+   * set, then the dimensions will be calculated so that the dialog will not be
+   * displayed outside of the browser viewport.
+   * @name OpenEyes.UI.Dialog#getDimensions
+   * @method
+   * @private
+   */
+  Dialog.prototype.getDimensions = function () {
+
+    var dimensions = {
+      width: this.options.width,
+      height: this.options.height
+    };
+
+    // We're just ensuring the maximum height of the dialog does not exceed either
+    // the specified height (set in the options), or the height of the viewport. We're
+    // not 'fitting' to the viewport.
+    if (this.options.constrainToViewport) {
+      var actualDimensions = this.getActualDimensions();
+      var offset = 40;
+      dimensions.width = Math.min(actualDimensions.width, $(window).width() - offset);
+      dimensions.height = Math.min(actualDimensions.height, $(window).height() - offset);
+    }
+
+    return dimensions;
+  };
+
+  /**
+   * Gets the actual dimensions of the dialog. We need to ensure the dialog
+   * is open to calculate the dimensions.
+   * @return {object} An object containing the width and height dimensions.
+   */
+  Dialog.prototype.getActualDimensions = function () {
+
+    var isOpen = this.instance.isOpen();
+    var destroyOnClose = this.options.destroyOnClose;
+
+    if (!isOpen) {
+      this.options.destroyOnClose = false;
+      this.instance.open();
+    }
+
+    var dimensions = {
+      width: parseInt(this.options.width, 10) || this.instance.uiDialog.outerWidth(),
+      height: parseInt(this.options.height, 10) || this.instance.uiDialog.outerHeight()
+    };
+
+    if (!isOpen) {
+      this.instance.close();
+      this.options.destroyOnClose = destroyOnClose;
+    }
+
+    return dimensions;
+  };
+
+  /**
+   * Calculates and sets the dialog dimensions.
+   * @name OpenEyes.UI.Dialog#setDimensions
+   * @method
+   * @private
+   */
+  Dialog.prototype.setDimensions = function () {
+    var dimensions = this.getDimensions();
+    this.instance.option('width', dimensions.width);
+    this.instance.option('height', dimensions.height);
+  };
+
+  /**
+   * Opens (shows) the dialog.
+   * @name OpenEyes.UI.Dialog#open
+   * @method
+   * @public
+   */
+  Dialog.prototype.open = function () {
+    $('body').prepend(this.content);
+  };
+
+  /**
+   * Closes (hides) the dialog.
+   * @name OpenEyes.UI.Dialog#close
+   * @method
+   * @public
+   */
+  Dialog.prototype.close = function () {
+    $('.oe-popup-wrap').remove();
+  };
+
+  /**
      * Destroys the dialog. Removes all elements from the DOM and detaches all
      * event handlers.
      * @name OpenEyes.UI.Dialog#destroy
