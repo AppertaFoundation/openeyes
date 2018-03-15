@@ -75,6 +75,44 @@ class m180312_125830_iop_shortcodes_to_6weeks extends CDbMigration
             $condition = 'code = :code',
             $params = array(':code' => 'iof')
         );
+
+        // VA shortcodes
+
+        $this->update('patient_shortcode',
+            $set = array(
+                'method' => 'getLetterVisualAcuityBothLast6weeks',
+                'description' => 'Best visual acuity in both eyes with date (Latest recorded within the last 6 weeks)'
+            ),
+            $condition = 'code = :code',
+            $params = array(':code' => 'bvd')
+        );
+
+        $this->update('patient_shortcode',
+            $set = array(
+                'method' => 'getLetterVisualAcuityLeftLast6weeks',
+                'description' => 'Best visual acuity in the left eye with date (Latest recorded within the last 6 weeks)'
+            ),
+            $condition = 'code = :code',
+            $params = array(':code' => 'lvd')
+        );
+
+        $this->update('patient_shortcode',
+            $set = array(
+                'method' => 'getLetterVisualAcuityPrincipalLast6weeks',
+                'description' => 'Best visual acuity in the principle eye with date (Latest recorded within the last 6 weeks)'
+            ),
+            $condition = 'code = :code',
+            $params = array(':code' => 'pvd')
+        );
+
+        $this->update('patient_shortcode',
+            $set = array(
+                'method' => 'getLetterVisualAcuityRightLast6weeks',
+                'description' => 'Best visual acuity in the right eye with date (Latest recorded within the last 6 weeks)'
+            ),
+            $condition = 'code = :code',
+            $params = array(':code' => 'rvd')
+        );
 	}
 
 	public function down()
@@ -149,6 +187,44 @@ class m180312_125830_iop_shortcodes_to_6weeks extends CDbMigration
             ),
             $condition = 'code = :code',
             $params = array(':code' => 'iof')
+        );
+
+        // VA shortcodes
+
+        $this->update('patient_shortcode',
+            $set = array(
+                'method' => 'getLetterVisualAcuityBothLast3weeks',
+                'description' => 'Best visual acuity in both eyes with date (Latest recorded within the last 3 weeks)'
+            ),
+            $condition = 'code = :code',
+            $params = array(':code' => 'bvd')
+        );
+
+        $this->update('patient_shortcode',
+            $set = array(
+                'method' => 'getLetterVisualAcuityLeftLast3weeks',
+                'description' => 'Best visual acuity in the left eye with date (Latest recorded within the last 3 weeks)'
+            ),
+            $condition = 'code = :code',
+            $params = array(':code' => 'lvd')
+        );
+
+        $this->update('patient_shortcode',
+            $set = array(
+                'method' => 'getLetterVisualAcuityPrincipalLast3weeks',
+                'description' => 'Best visual acuity in the principle eye with date (Latest recorded within the last 3 weeks)'
+            ),
+            $condition = 'code = :code',
+            $params = array(':code' => 'pvd')
+        );
+
+        $this->update('patient_shortcode',
+            $set = array(
+                'method' => 'getLetterVisualAcuityRightLast3weeks',
+                'description' => 'Best visual acuity in the right eye with date (Latest recorded within the last 3 weeks)'
+            ),
+            $condition = 'code = :code',
+            $params = array(':code' => 'rvd')
         );
 	}
 }
