@@ -37,30 +37,37 @@ if (@$_POST[CHtml::modelName($element)]) {
 <table class="cols-full">
   <tbody>
     <tr>
+      <td class="flex-layout flex-top" style="height: auto;">
+        <label><?php echo $element->getAttributeLabel($side.'_method_id'); ?>:</label>
+      </td>
       <td>
           <?php echo $form->dropDownList(
               $element,
               $side.'_method_id', '\OEModule\OphCiExamination\models\OphCiExamination_OCT_Method',
-              array(),
+              array('nowrapper'=> true),
               false,
               array('label' => 9, 'field' => 3)
           ) ?>
       </td>
-      <td></td>
     </tr>
     <tr>
+      <td class="flex-layout flex-top" style="height: auto;">
+        <label><?php echo $element->getAttributeLabel($side.'_crt'); ?>:</label>
+      </td>
       <td>
           <?php echo $form->textField(
               $element,
               $side.'_crt',
-              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '&micro;m'),
+              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '&micro;m', 'nowrapper'=>true),
               null,
               array('label' => 8, 'field' => '3', 'append-text' => '1')
           ) ?>
       </td>
-      <td></td>
     </tr>
     <tr>
+      <td class="flex-layout flex-top" style="height: auto;">
+        <label><?php echo $element->getAttributeLabel($side.'_sft'); ?>:</label>
+      </td>
       <td class="data-row row">
           <?php $tooltip_content = null;
           if ($past_sft = $exam_api->getOCTSFTHistoryForSide($this->patient, $side, $event_date)) {
@@ -73,29 +80,34 @@ if (@$_POST[CHtml::modelName($element)]) {
               $element,
               $side.'_sft',
               array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '&micro;m',
-                  'tooltip-text'=>$tooltip_content),
+                  'tooltip-text'=>$tooltip_content,'nowrapper'=> true ),
               null,
               array('label' => 8, 'field' => '3', 'append-text' => '1')) ?>
       </td>
-      <td></td>
     </tr>
     <tr>
-      <td>
-          <?php echo $form->radioBoolean($element, $side.'_thickness_increase', array(), array('label' => 9, 'field' => 3))?>
+      <td class="flex-layout flex-top" style="height: auto;">
+        <label><?php echo $element->getAttributeLabel($side.'_thickness_increase'); ?>:</label>
       </td>
-      <td></td>
+      <td>
+          <?php echo $form->radioBoolean($element, $side.'_thickness_increase', array('nowrapper'=> true), array('label' => 9, 'field' => 3))?>
+      </td>
     </tr>
     <tr>
-      <td>
-          <?php echo $form->radioBoolean($element, $side.'_dry', array(), array('label' => 9, 'field' => 3)) ?>
+      <td class="flex-layout flex-top" style="height: auto;">
+        <label><?php echo $element->getAttributeLabel($side.'_dry'); ?>:</label>
       </td>
-      <td></td>
+      <td>
+          <?php echo $form->radioBoolean($element, $side.'_dry', array('nowrapper'=>true), array('label' => 9, 'field' => 3)) ?>
+      </td>
     </tr>
 
     <tr class="field-row" id="<?php echo CHtml::modelName($element).'_'.$side; ?>_fluid_fields"
         <?php if ($hide_fluid) { echo ' style="display: none;"'; }?>>
       <td class="flex-layout flex-top" style="height: auto;">
-          <label>Findings:</label>
+          <label><?php echo $element->getAttributeLabel($side.'_fluidtypes'); ?>:</label>
+      </td>
+      <td>
         <?php
           $html_options = array(
               'style' => 'margin-bottom: 10px; width: 240px;',
@@ -115,28 +127,37 @@ if (@$_POST[CHtml::modelName($element)]) {
               CHtml::listData($fts, 'id', 'name'),
               array(),
               $html_options, false, false, null, false, false,
-              array()
+              array('label' => 9, 'field' => 3)
           );
           ?>
       </td>
-      <td></td>
     </tr>
     <tr id="tr_Element_OphCiExamination_OCT_<?= $side ?>_fluidstatus_id" <?php if ($hide_fluid) { echo ' style="display: none;"'; }?> >
-      <td>
-    <?php echo $form->dropDownList(
-        $element,
-        $side.'_fluidstatus_id',
-        '\OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidStatus',
-        array( 'empty' => ' - Please Select - '),
-        false,
-        array('label' => 9, 'field' => 3)
-    ); ?>
+      <td class="flex-layout flex-top" style="height: auto;">
+        <label><?php echo $element->getAttributeLabel($side.'_fluidstatus_id'); ?>:</label>
       </td>
-      <td></td>
+      <td>
+            <?php echo $form->dropDownList(
+                $element,
+                $side.'_fluidstatus_id',
+                '\OEModule\OphCiExamination\models\OphCiExamination_OCT_FluidStatus',
+                array( 'empty' => ' - Please Select - ', 'nowrapper'=>true,),
+                false,
+                array('label' => 9, 'field' => 3)
+            ); ?>
+      </td>
     </tr>
     <tr class="field-row row">
         <td class="column large-9 end">
-            <?php echo $form->textArea($element, $side.'_comments', array('nowrapper' => true), false, array('rows' => 1, 'placeholder' => $element->getAttributeLabel($side . '_comments')))?>
+            <?php echo $form->textArea(
+                $element, $side.'_comments',
+                array('nowrapper' => true),
+                false,
+                array(
+                    'rows' => 1,
+                    'placeholder' => $element->getAttributeLabel($side . '_comments')
+                )
+            )?>
         </td>
       <td></td>
     </tr>
