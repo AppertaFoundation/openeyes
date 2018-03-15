@@ -1480,7 +1480,10 @@ class BaseEventTypeController extends BaseModuleController
     {
         if ($this->show_element_sidebar && in_array($this->getActionType($this->action->id),
                 array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT), true)) {
-            $this->renderPartial('//patient/_patient_element_sidebar');
+            $event_type_id = ($this->event->attributes["event_type_id"]);
+            $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
+            $event_name =  preg_replace('/\s+/', '_', $event_type->name);
+            $this->renderPartial('//patient/_patient_element_sidebar', array('event_name'=>$event_name));
         } else {
             parent::renderSidebar($default_view);
         }

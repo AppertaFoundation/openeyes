@@ -1,6 +1,6 @@
 <!-- event-header -->
 <!-- examination event has a search facility for Left and Right Eye in edit mode -->
-<?php $this->widget('application.widgets.IndexSearch',array('event_type' => 'examination')); ?>
+<?php $this->widget('application.widgets.IndexSearch',array('event_type' => $event_name)); ?>
 
 
 <nav class="sidebar " id="episodes-and-events">

@@ -307,7 +307,6 @@ function markElementChilds(element , element_remove_value) {
   }
 
   function moveToElement($element) {
-
     var $container = $('main.main-event');
     $container.scrollTop(
       $element.offset().top - $container.offset().top + $container.scrollTop() - 130
