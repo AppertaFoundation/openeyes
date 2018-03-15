@@ -245,7 +245,7 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * Get the most recent Intraocular Pressure reading for both eyes from the Examination event within the last 3 weeks
+     * Get the most recent Intraocular Pressure reading for both eyes from the Examination event within the last 6 weeks
      * Limited to current data context by default.
      * Will return the average for multiple readings on either eye.
      * @param Patient $patient
@@ -284,10 +284,10 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * Get the most recent Intraocular Pressure reading for the left eyes from the Examination event within the last 3 weeks
+     * Get the most recent Intraocular Pressure reading for the left eyes from the Examination event within the last 6 weeks
      * Limited to current data context by default.
      * Will return the average for multiple readings.
-     * Returns nothing if the Examination from the last 3 weeks does not contain IOP.
+     * Returns nothing if the Examination from the last 6 weeks does not contain IOP.
      *
      * @param \Patient $patient
      * @param boolean $use_context - defaults to false
@@ -439,8 +439,8 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * Get the Intraocular Pressure reading for the principal eye from the Examination event within the last 3 weeks.
-     * Returns nothing if the Examination withing last 3 weeks does not contain IOP.
+     * Get the Intraocular Pressure reading for the principal eye from the Examination event within the last 6 weeks.
+     * Returns nothing if the Examination withing last 6 weeks does not contain IOP.
      *
      * @param \Patient $patient
      * @param boolean $use_context - defaults to false
@@ -816,15 +816,15 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * Abstraction for getting VA from last 3 weeks used for several letter string methods
+     * Abstraction for getting VA from last 6 weeks used for several letter string methods
      *
      * @param $patient
      * @param $use_context
      * @return \BaseEventTypeElement[]
      */
-    protected function getVisualAcuityLast3Weeks($patient, $use_context)
+    protected function getVisualAcuityLast6Weeks($patient, $use_context)
     {
-        $after = date('Y-m-d 00:00:00', strtotime('-3 weeks'));
+        $after = date('Y-m-d 00:00:00', strtotime('-6 weeks'));
         $criteria = new \CDbCriteria();
         $criteria->compare('event.event_date', '>='.$after);
 
@@ -837,15 +837,16 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * Get the latest VA for the Left eye form examination event, if the VA is not recorded, take the value from the latest available event within a period of 3 weeks.
+     * Get the latest VA for the Left eye form examination event,
+     * if the VA is not recorded, take the value from the latest available event within a period of 6 weeks.
      *
      * @param $patient
      * @param bool $use_context
      * @return string
      */
-    public function getLetterVisualAcuityLeftLast3weeks($patient, $use_context = false)
+    public function getLetterVisualAcuityLeftLast6weeks($patient, $use_context = false)
     {
-        foreach ($this->getVisualAcuityLast3Weeks($patient, $use_context) as $element) {
+        foreach ($this->getVisualAcuityLast6Weeks($patient, $use_context) as $element) {
             if ($best_reading = $element->getBestReading('left')) {
                 return $best_reading->convertTo($best_reading->value, $this->getSnellenUnitId()) . " (recorded on " . \Helper::convertMySQL2NHS($element->event->event_date) . ")";
             }
@@ -859,15 +860,16 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * Get the latest VA for the Right eye form examination event, if the VA is not recorded, take the value from the latest available event within a period of 3 weeks.
+     * Get the latest VA for the Right eye form examination event,
+     * if the VA is not recorded, take the value from the latest available event within a period of 6 weeks.
      *
      * @param $patient
      * @param bool $use_context
      * @return string - 6/24 (recorded on 7 Jun 2017)
      */
-    public function getLetterVisualAcuityRightLast3weeks($patient, $use_context = false)
+    public function getLetterVisualAcuityRightLast6weeks($patient, $use_context = false)
     {
-        foreach ($this->getVisualAcuityLast3Weeks($patient, $use_context) as $element) {
+        foreach ($this->getVisualAcuityLast6Weeks($patient, $use_context) as $element) {
             if ($best_reading = $element->getBestReading('right')) {
                 return $best_reading->convertTo($best_reading->value, $this->getSnellenUnitId()) . " (recorded on " . \Helper::convertMySQL2NHS($element->event->event_date) . ")";
             }
@@ -892,19 +894,19 @@ class OphCiExamination_API extends \BaseAPI
 
     /**
      * Get the latest VA for both eyes from examination event, if the VA is not recorded,
-     * take the value from the latest available event within a period of 3 weeks.
+     * take the value from the latest available event within a period of 6 weeks.
      *
      * @param $patient
      * @param bool $use_context
      * @return string - 6/24 (at 7 Jun 2017)
      */
-    public function getLetterVisualAcuityBothLast3weeks($patient, $use_context = false)
+    public function getLetterVisualAcuityBothLast6weeks($patient, $use_context = false)
     {
         $left = null;
         $right = null;
 
-        $right = $this->getLetterVisualAcuityRightLast3weeks($patient, $use_context) ? : 'not recorded';
-        $left = $this->getLetterVisualAcuityLeftLast3weeks($patient, $use_context) ? : 'not recorded';
+        $right = $this->getLetterVisualAcuityRightLast6weeks($patient, $use_context) ? : 'not recorded';
+        $left = $this->getLetterVisualAcuityLeftLast6weeks($patient, $use_context) ? : 'not recorded';
         return $right . ' on the right and ' . $left . ' on the left';
     }
 
@@ -921,16 +923,17 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
-     * Get the latest VA for Principal eye form examination event, if the VA is not recorded, take the value from the latest available event within a period of 3 weeks.
-     *
+     * Get the latest VA for Principal eye form examination event,
+     * if the VA is not recorded, take the value from the latest available event within a period of 6 weeks.
      * @param $patient
-     * @param $use_context
+     * @param bool $use_context
      * @return string - 6/24 (at 7 Jun 2017)
+     * @throws \CException
      */
-    public function getLetterVisualAcuityPrincipalLast3weeks($patient, $use_context = false)
+    public function getLetterVisualAcuityPrincipalLast6weeks($patient, $use_context = false)
     {
         if ($principal_eye = $this->getPrincipalEye($patient, true)) {
-            $method = 'getLetterVisualAcuity' . $principal_eye->name . 'Last3weeks';
+            $method = 'getLetterVisualAcuity' . $principal_eye->name . 'Last6weeks';
             return $this->{$method}($patient, $use_context);
         }
     }
