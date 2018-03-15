@@ -102,6 +102,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
                     'options' => array(
                         'select' => "js:function(event, ui) {
 										addPostOpComplicationTr(ui.item.label,'" . $eye_side . "-complication-list', ui.item.value, 0  );
+										setPostOpComplicationTableText();
 										return false;
 									}",
                     ),
@@ -122,15 +123,15 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
                    style="display: <?php echo ${$eye_side . '_values'} ? '' : 'none' ?>"
                    data-sideletter="<?= $eye_abbr ?>">
               <thead>
-              <tr>
-                <th>Recorded Complications</th>
-                <th>Actions</th>
-              </tr>
+                <tr>
+                  <th>Recorded Complications</th>
+                  <th>Actions</th>
+                </tr>
               </thead>
               <tbody>
               <?php foreach (${$eye_side . '_values'} as $key => $value): ?>
                 <tr>
-                  <td class=postop-complication-name>
+                  <td class="postop-complication-name">
                       <?php echo $value['name']; ?>
                       <?php echo \CHtml::hiddenField("complication_items[$eye_abbr][$key]", $value['id'],
                           array('id' => "complication_items_" . $eye_abbr . "_$key")); ?>

@@ -1140,7 +1140,6 @@ $(document).ready(function() {
             }
 
             $.getJSON( baseUrl + '/OphCiExamination/default/getPostOpComplicationList' + element_string + '/operation_note_id/' + operation_note_id, function( data ) {
-
                 var $right_table = $('#right-complication-list');
                 var $left_table = $('#left-complication-list');
 
@@ -1282,22 +1281,25 @@ $(document).ready(function() {
         var $left_table = $('#left-complication-list');
 
         var $active_form = $right_table.closest('.active-form');
-
-        if( $right_table.find('tr').length === 0  ){
+        if( $right_table.find('tbody').find('tr').length === 0  ){
             $active_form.find('h5.recorded').hide();
             $active_form.find('h5.no-recorded').show();
+            $right_table.hide();
         } else {
             $active_form.find('h5.recorded').show();
             $active_form.find('h5.no-recorded').hide();
+            $right_table.show();
         }
 
         $active_form = $left_table.closest('.active-form');
-        if( $left_table.find('tr').length === 0  ){
+        if( $left_table.find('tbody').find('tr').length === 0  ){
             $active_form.find('h5.recorded').hide();
             $active_form.find('h5.no-recorded').show();
+            $left_table.hide();
         } else {
             $active_form.find('h5.recorded').show();
             $active_form.find('h5.no-recorded').hide();
+            $left_table.show();
         }
     }
 
@@ -1305,7 +1307,6 @@ $(document).ready(function() {
     {
 
         var $table = $('#' + table_id);
-
         var $tr = $('<tr>');
         var $td_name = $('<td>', {class: "postop-complication-name"}).text(selected_text);
 
