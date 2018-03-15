@@ -58,10 +58,12 @@ if (@$_POST[CHtml::modelName($element)]) {
           <?php echo $form->textField(
               $element,
               $side.'_crt',
-              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '&micro;m', 'nowrapper'=>true),
+              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'nowrapper'=>true),
               null,
-              array('label' => 8, 'field' => '3', 'append-text' => '1')
+              array()
           ) ?>
+        <span class="field-info">&micro;m</span>
+        <i class="oe-i small-icon"></i>
       </td>
     </tr>
     <tr>
@@ -70,19 +72,22 @@ if (@$_POST[CHtml::modelName($element)]) {
       </td>
       <td class="data-row row">
           <?php $tooltip_content = null;
-          if ($past_sft = $exam_api->getOCTSFTHistoryForSide($this->patient, $side, $event_date)) {
-              $tooltip_content = "Previous SFT Measurements: <br />";
-              foreach ($past_sft as $previous) {
-                  $tooltip_content.= Helper::convertDate2NHS($previous['date']).' - '.$previous['sft'].'<br /> ';
-              }
-          }
-          echo $form->textField(
-              $element,
-              $side.'_sft',
-              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'append-text' => '&micro;m',
-                  'tooltip-text'=>$tooltip_content,'nowrapper'=> true ),
-              null,
-              array('label' => 8, 'field' => '3', 'append-text' => '1')) ?>
+            if ($past_sft = $exam_api->getOCTSFTHistoryForSide($this->patient, $side, $event_date)) {
+                $tooltip_content = "Previous SFT Measurements: <br />";
+                foreach ($past_sft as $previous) {
+                    $tooltip_content.= Helper::convertDate2NHS($previous['date']).' - '.$previous['sft'].'<br /> ';
+                }
+            }
+            echo $form->textField(
+                $element,
+                $side.'_sft',
+                array('autocomplete' => Yii::app()->params['html_autocomplete'],'nowrapper'=> true ),
+                null,
+                array()) ?>
+          <span class="field-info">&micro;m</span>
+        <i class="oe-i info small-icon js-has-tooltip"
+           data-tooltip-content="<?php echo $tooltip_content; ?>">
+        </i>
       </td>
     </tr>
     <tr>
