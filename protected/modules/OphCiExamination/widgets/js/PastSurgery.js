@@ -180,7 +180,3 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
 
     return PreviousSurgeryController;
 })();
-
-$(document).ready(function() {
-    new OpenEyes.OphCiExamination.PreviousSurgeryController();
-});

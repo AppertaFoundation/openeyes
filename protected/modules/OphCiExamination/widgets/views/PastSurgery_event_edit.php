@@ -83,13 +83,12 @@ $model_name = CHtml::modelName($element);
         </tbody>
     </table>
   <div class="flex-item-bottom" id="add-to-past-surgery" >
-    <button class="button hint green js-add-select-search" type="button">
+    <button id="show-add-popup" class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
 
-    <div  class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
-      <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
-      <div class="select-icon-btn"><i class="oe-i menu selected"></i></div>
+    <div id="add-prev-surgery" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
+      <div id="close-btn" class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
       <button class="button hint green add-icon-btn"><i class="oe-i plus pro-theme"></i></button>
       <table class="select-options">
         <tr>
@@ -106,15 +105,9 @@ $model_name = CHtml::modelName($element);
                       <?php } ?>
               </ul>
             </div>
-          <!-- flex layout -->
           </td>
         </tr>
       </table>
-      <div class="search-icon-btn"><i class="oe-i search"></i></div>
-      <div class="search-options" style="display:none;">
-        <input type="text" class="cols-full js-search-autocomplete" placeholder="search for option (type 'auto-complete' to demo)">
-        <!-- ajax auto-complete results, height is limited -->
-      </div>
     </div>
   </div>
 </div>
@@ -144,4 +137,27 @@ $model_name = CHtml::modelName($element);
         )
     );
     ?>
+</script>
+<script type="text/javascript">
+    var controller;
+    $(document).ready(function() {
+        controller = new OpenEyes.OphCiExamination.PreviousSurgeryController();
+    });
+
+
+    var adder = $('#add-to-past-surgery');
+    var popup = adder.find('.oe-add-select-search');
+
+    function addSurgery(selection){
+        controller.addEntry();
+    }
+
+    setUpAdder(
+        popup,
+        'return',
+        addSurgery,
+        adder.find('#show-add-popup'),
+        null,
+        adder.find('#close-btn')
+    );
 </script>
