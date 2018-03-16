@@ -225,15 +225,37 @@ function markElementChilds(element , element_remove_value) {
     });
 }
 
-function removeElement(element, is_child) {
-    if (typeof(is_child) == 'undefined') {
-        is_child = false;
+  /**
+   * Simple convenience wrapper to grab out the menu entry
+   *
+   * @param elementTypeClass
+   * @returns {*}
+   */
+  function findMenuItemForElementClass(elementTypeClass) {
+    return $('#episodes-and-events').find('.collapse-group .element').filter(
+      function () {
+        return $(this).data('elementTypeClass') === elementTypeClass;
+      }
+    ).first();
+  }
+
+  function removeElement(element) {
+    if (element.hasClass('has-children')) {
+      is_child = true;
+    } else {
+      is_child = false;
     }
 
     var element_type_class = $(element).data('element-type-class');
     var element_type_id = $(element).data('element-type-id');
     var element_type_name = $(element).data('element-type-name');
     var display_order = $(element).data('element-display-order');
+
+    var $menuLi = findMenuItemForElementClass(element_type_class);
+
+    if ($menuLi) {
+      $menuLi.find('a').removeClass('selected').removeClass('error');
+    }
 
     if (is_child) {
         var container = $(element).closest('.elements.active').parent().find('.elements.inactive:last .elements-list');
