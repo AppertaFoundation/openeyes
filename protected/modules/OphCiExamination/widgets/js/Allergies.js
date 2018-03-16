@@ -128,10 +128,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     AllergiesController.prototype.createRow = function (data) {
         if (data === undefined)
             data = {};
+        var selected_option = $('#history-allergy-option').find('.selected');
         data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
-        data['allergy_id'] = $('#history-allergy-option').find('.selected').data('id');
-        data['allergy_display'] = $('#history-allergy-option').find('.selected').data('str');
-
+        data['allergy_id'] = selected_option.data('id');
+        data['allergy_display'] = selected_option.data('str');
         return Mustache.render(
             this.templateText,
             data

@@ -137,34 +137,6 @@ $(document).ready(function(){
         }
     });
 
-    $(this).on('click', '.js-add-select-search', function (e) {
-        e.preventDefault();
-        $(this).parent().find('.oe-add-select-search').show();
-    });
-
-    $(this).on('click', '.oe-add-select-search .add-icon-btn', function (e) {
-        e.preventDefault();
-        $(this).parent('.oe-add-select-search').hide();
-    });
-
-    //Set the option selecting function
-    $(this).on('click', '.oe-add-select-search .add-options li', function () {
-        if ($(this).html().length > 0 || $(this).text().length > 0) {
-            if ($(this).hasClass('selected')) {
-                $(this).removeClass('selected');
-            } else {
-                if ($(this).parent('.add-options').attr('data-multi') === "false") {
-                    $(this).parent('.add-options').find('li').removeClass('selected');
-                }
-                $(this).addClass('selected');
-            }
-        }
-    });
-
-    $(this).on('click', ".oe-add-select-search .close-icon-btn", function () {
-        $(this).closest('.oe-add-select-search').hide();
-    });
-
     $(this).on('click', '.js-add-comments', function (e) {
         e.preventDefault();
         var container = $(this).attr('data-input');
@@ -338,4 +310,62 @@ function scrollToElement(element) {
     $('html, body').animate({
         scrollTop: parseInt(element.offset().top - 100)
     }, 1);
+}
+
+/**
+ * Sets ups all the event listeners for adders
+ * @param adderDiv div(or any other element) that is the adder
+ * @param selectMode can more than one item be selected per list
+ * 	- multi: Multiple elements in a list can be selected simultaneously
+ * 	- single: When a second item in a list is selected the rest are deselected (in that one list)
+ * 	- return: Immediately return and call the callback with selected item
+ * @param callback function to call when the adder exits
+ * @param openButtons divs that on click will open the adderDiv
+ * @param addButtons divs that on click will close the adder and call the callback
+ * @param closeButtons divs that on click will close the adderDiv without callback
+ */
+function setUpAdder(adderDiv = null, selectMode = 'single', callback = null, openButtons = null, addButtons = null, closeButtons = null){
+    if (adderDiv === null){
+        console.log('no div sent to setUpAdder');
+        return;
+    }
+
+    if (openButtons !== null){
+        openButtons.click(function showAdder() {
+            adderDiv.show();
+        });
+    }
+
+    if(addButtons !== null){
+        addButtons.click(function closeAndAdd(){
+            adderDiv.hide();
+            callback();
+        });
+    }
+
+    if(closeButtons !== null){
+        closeButtons.click(function closeAdder() {
+            adderDiv.hide();
+        });
+    }
+
+    //set up select class on clicks
+    if(selectMode === 'return'){
+    	adderDiv.find('li').click(function () {
+			$(this).addClass('selected');
+			adderDiv.hide();
+			callback($(this));
+        });
+	} else {
+        adderDiv.find('li').click(function () {
+            if(!$(this).hasClass('selected')){
+                if(selectMode !== 'multi'){
+                    $(this).parent('ul').find('li').removeClass('selected');
+                }
+                $(this).addClass('selected');
+            }else {
+                $(this).removeClass('selected');
+            }
+        });
+	}
 }

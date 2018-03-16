@@ -80,7 +80,7 @@
       </tbody>
   </table>
   <div class="flex-item-bottom" id="history-allergy-popup" style="display: <?php echo $element->no_allergies_date?'none':''; ?>">
-    <button class="button hint green js-add-select-search" type="button"><i class="oe-i plus pro-theme"></i></button>
+    <button class="button hint green js-add-select-search" id="add-allergy-btn" type="button"><i class="oe-i plus pro-theme"></i></button>
     <!-- popup to add to element is click -->
     <div id="add-to-allergies" class="oe-add-select-search" style="display: none;">
       <!-- icon btns -->
@@ -141,9 +141,24 @@
     ?>
 </script>
 <script type="text/javascript">
+    var allergyController;
     $(document).ready(function() {
-        new OpenEyes.OphCiExamination.AllergiesController({
+        allergyController = new OpenEyes.OphCiExamination.AllergiesController({
             element: $('#<?=$model_name?>_element')
         });
     });
+
+    var popup = $('#add-to-allergies');
+
+    function addAllergy(){
+        //this just gets it's own data
+        allergyController.addEntry();
+    }
+
+    setUpAdder(
+        popup,
+        'return',
+        addAllergy,
+        $('#add-allergy-btn')
+    );
 </script>

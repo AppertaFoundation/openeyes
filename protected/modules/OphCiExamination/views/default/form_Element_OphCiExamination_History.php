@@ -57,14 +57,22 @@
     var popup = $('#add-to-history');
     var inputText = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_History_description');
 
-
-
-    //Hide the adding dialog, print text to textArea
-    popup.find('.add-icon-btn').on('click', function () {
-        inputText.empty();
+    function setText(){
         popup.find('.selected').each(function () {
-            inputText.val(inputText.val()?inputText.val()+$(this).attr('data-str'):$(this).attr('data-str'));
+            inputText.val(inputText.val() ?
+                inputText.val()+$(this).attr('data-str') : $(this).attr('data-str')
+            );
         });
-    });
+        popup.find('.selected').removeClass('selected');
+    }
+
+    setUpAdder(
+        popup,
+        'single',
+        setText,
+        $('#show-add-to-history'),
+        popup.find('.add-icon-btn'),
+        popup.find('.close-icon-btn')
+    );
 </script>
 
