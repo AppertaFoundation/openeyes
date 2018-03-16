@@ -61,13 +61,13 @@
     <?php endif; ?>
 
     <?php if ($element->{$side . '_nuclear'}): ?>
-      <div class="data-label"><?php echo $element->getAttributeLabel($side . '_nuclear_id') ?>:</div>
-      <div class="data-value"><?php echo $element->{$side . '_nuclear'}->name ?></div>
+      <div class="data-label hidden"><?php echo $element->getAttributeLabel($side . '_nuclear_id') ?>:</div>
+      <div class="data-value hidden"><?php echo $element->{$side . '_nuclear'}->name ?></div>
     <?php endif; ?>
 
     <?php if ($element->{$side . '_cortical'}): ?>
-      <div class="data-label"><?php echo $element->getAttributeLabel($side . '_cortical_id') ?>:</div>
-      <div class="data-value"><?php echo $element->{$side . '_cortical'}->name ?></div>
+      <div class="data-label hidden"><?php echo $element->getAttributeLabel($side . '_cortical_id') ?>:</div>
+      <div class="data-value hidden"><?php echo $element->{$side . '_cortical'}->name ?></div>
     <?php endif; ?>
 
     <?php
