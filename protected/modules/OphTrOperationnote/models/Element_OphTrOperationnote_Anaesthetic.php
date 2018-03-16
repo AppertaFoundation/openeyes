@@ -26,7 +26,6 @@
  * @property int $anaesthetist_id
  * @property string $anaesthetic_comment
  * @property int $display_order
- * @property int $anaesthetic_witness_id
  *
  * The followings are the available model relations:
  * @property Event $event
@@ -44,7 +43,6 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
 {
     public $service;
     public $surgeonlist;
-    public $witness_enabled = false;
     public $anaesthetic_types = array();
 
     /**
@@ -79,12 +77,12 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, anaesthetist_id, anaesthetic_comment, anaesthetic_witness_id', 'safe'),
+            array('event_id, anaesthetist_id, anaesthetic_comment', 'safe'),
             // to not to implement the validation logic 2 times the anaesthetist_id is validated in afterValidate method
 
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, anaesthetist_id, anaesthetic_comment, anaesthetic_witness_id', 'safe', 'on' => 'search'),
+            array('id, event_id, anaesthetist_id, anaesthetic_comment', 'safe', 'on' => 'search'),
         );
     }
 
@@ -114,7 +112,6 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
             'anaesthetic_complication_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_AnaestheticComplication', 'et_ophtroperationnote_anaesthetic_id'),
             'anaesthetic_complications' => array(self::HAS_MANY, 'OphTrOperationnote_AnaestheticComplications', 'anaesthetic_complication_id',
                 'through' => 'anaesthetic_complication_assignments', ),
-            'witness' => array(self::BELONGS_TO, 'User', 'anaesthetic_witness_id'),
         );
     }
 
@@ -127,7 +124,6 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
             'id' => 'ID',
             'event_id' => 'Event',
             'agents' => 'Agents',
-            'anaesthetic_witness_id' => 'Witness',
             'anaesthetist_id' => 'Given by',
             'anaesthetic_comment' => 'Comments',
             'anaesthetic_type_id' => 'Anaesthetic Type',
@@ -171,16 +167,6 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         }
 
         return false;
-    }
-
-    /**
-     * Don't need a witness for anaesthetic unless it is administered by a nurse.
-     *
-     * @return bool
-     */
-    public function getWitness_hidden()
-    {
-        return !$this->witness_enabled && ($this->anaesthetist_id != 3);
     }
 
     /**
@@ -363,24 +349,6 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         }
 
         return $this->surgeonlist;
-    }
-
-    /**
-     * Validate the witness field if it's turned on.
-     *
-     * @return bool
-     */
-    public function beforeValidate()
-    {
-        if ($this->witness_enabled) {
-            if ($this->anaesthetist_id == 3) {
-                if (!$this->anaesthetic_witness_id) {
-                    $this->addError('anaesthetic_witness_id', 'Please select a witness');
-                }
-            }
-        }
-
-        return parent::beforeValidate();
     }
 
     /**

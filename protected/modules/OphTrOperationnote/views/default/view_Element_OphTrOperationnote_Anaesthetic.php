@@ -70,14 +70,6 @@
                         ?>
                     </div>
                 </div>
-                <?php if ($element->getSetting('fife')) {?>
-                    <div class="large-3 column">
-                        <h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_witness_id'))?></h4>
-                        <div class="data-value<?php if (!$element->witness) {?> none<?php }?>">
-                            <?php echo $element->witness ? $element->witness->fullName : 'None'?>
-                        </div>
-                    </div>
-                <?php }?>
 		    <?php }?>
 		</div>
 		<div class="row data-row">

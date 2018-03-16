@@ -17,7 +17,7 @@
  */
 ?>
 
-<?php if ($element->getSetting('fife')) {?>
+WHAAAAAAAAAAAAAAAAAt
 	<div class="element-fields">
 		<?php echo $form->dropDownListRow(
             $element,
@@ -39,4 +39,4 @@
         )?>
 		<?php echo $form->dropDownList($element, 'operating_department_practitioner_id', CHtml::listData($element->operating_department_practitioners, 'id', 'FullName'), array('empty' => '- Please select -'), $element->operating_department_practitioner_id)?>
 	</div>
-<?php }?>
+

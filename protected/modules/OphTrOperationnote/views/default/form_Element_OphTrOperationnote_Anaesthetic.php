@@ -36,12 +36,6 @@
             array('fieldset-class' => ($is_hidden() ? 'hidden' : '')) );
     ?>
 
-    <?php if ($element->getSetting('fife')) { ?>
-        <?php echo $form->dropDownList($element, 'anaesthetic_witness_id', CHtml::listData($element->surgeons, 'id', 'FullName'), array('empty' => '- Please select -'),
-            $element->witness_hidden, array('field' => 3)); ?>
-    <?php } ?>
-
-
     <div class="row">
         <div class="large-6 column">
             <div id="<?php echo 'div_' . CHtml::modelName($element); ?>" class="row field-row widget">
