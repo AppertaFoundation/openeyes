@@ -49,7 +49,7 @@
 					<th>Title</th>
 					<th>First name</th>
 					<th>Last name</th>
-					<th>Doctor</th>
+					<th>Surgeon</th>
 					<th>Roles</th>
 					<th>Active</th>
 				</tr>
@@ -64,7 +64,7 @@
 						<td><?php echo $user->title?></td>
 						<td><?php echo $user->first_name?></td>
 						<td><?php echo $user->last_name?></td>
-						<td><?php echo $user->is_doctor ? 'Yes' : 'No'?></td>
+						<td><?php echo $user->is_surgeon ? 'Yes' : 'No'?></td>
 						<td><?php
                             $roles = CHtml::listData($user->roles, 'name', 'name');
                     if ($roles) {

@@ -77,7 +77,7 @@ class User extends BaseActiveRecordVersioned
             array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
             array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on' => 'search'),
             array(
-                'username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon,
+                'username, first_name, last_name, email, active, global_firm_rights, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon,
                  has_selected_firms,doctor_grade_id, registration_code, signature_file_id',
                 'safe',
             ),
@@ -193,6 +193,15 @@ class User extends BaseActiveRecordVersioned
         );
     }
 
+
+    /**
+     * @return mixed|null
+     * @deprecated - since v2.2
+     */
+    public function getIs_doctor(){
+        return $this->is_surgeon;
+    }
+
     public function changeFirm($firm_id)
     {
         $this->last_firm_id = $firm_id;
@@ -235,7 +244,6 @@ class User extends BaseActiveRecordVersioned
             'password_new' => 'New password',
             'password_confirm' => 'Confirm password',
             'global_firm_rights' => 'Global firm rights',
-            'is_doctor' => 'Doctor',
             'is_consultant' => 'Consultant',
             'is_clinical' => 'Clinically trained',
             'is_surgeon' => 'Surgeon',

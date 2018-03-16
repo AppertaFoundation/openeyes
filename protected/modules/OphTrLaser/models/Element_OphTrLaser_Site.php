@@ -142,9 +142,9 @@ class Element_OphTrLaser_Site extends BaseEventTypeElement
         if (Yii::app()->getController()->getAction()->id == 'create') {
             $user = Yii::app()->session['user'];
 
-            if ($user->is_doctor) {
-                $this->operator_id = $user->id;
-            }
+            //it will be ignored in the drop down if it was not a valid option
+            // and in a future we want to remove the 'Laser Operators' list
+            $this->operator_id = $user->id;
         }
     }
 
