@@ -81,12 +81,11 @@ $(document).ready(function() {
 
 			var remove = $('<i />', remote_data);
 
-			var item = $('<li><span class="text">'+selected.text()+'</span></li>');
+			var item = $('<li style="padding: 4px;"><span class="text">'+selected.text()+'</span></li>');
 			item.append(remove);
 			item.append(input);
 
-			selections.append(item).show();
-
+			selections.append(item).css('display','inline-flex');
 			noSelectionsMsg.hide();
 			removeAll.show();
 

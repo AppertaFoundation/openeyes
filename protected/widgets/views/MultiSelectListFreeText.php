@@ -94,13 +94,19 @@ $widgetOptionsJson = json_encode(array(
         <?php } ?>
       <input type="hidden" name="<?php echo $field ?>"/>
       <ul class="MultiSelectFreeTextList multi-select-free-text-selections"
-          style="display: <?php if (!$found) {
-              echo ' none';
-          } ?>">
+          style="background-color: white; display: <?php echo $found? 'inline-flex': 'none'; ?>">
           <?php foreach ($selected_ids as $i => $id) {
               if (isset($options[$id])) { ?>
-                <li>
-							<span class="text">
+                <li style="padding: 4px;">
+                  <input type="hidden" name="<?php echo $field ?>[<?php echo $i ?>][id]" data-i="<?php echo $i ?>"
+                         value="<?php echo $id ?>"
+                      <?php if (isset($opts[$id])) {
+                          foreach ($opts[$id] as $key => $val) {
+                              echo ' ' . $key . '="' . $val . '"';
+                          }
+                      } ?>
+                  />
+                  <span class="text">
 								<?php echo htmlspecialchars($options[$id], ENT_QUOTES, Yii::app()->charset, false) ?>
 							</span>
                   <i data-text="<?php echo $options[$id] ?>"
@@ -112,14 +118,7 @@ $widgetOptionsJson = json_encode(array(
                       <?php if (isset($htmlOptions['data-linked-values'])) { ?>
                         data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"
                       <?php } ?>></i>
-                  <input type="hidden" name="<?php echo $field ?>[<?php echo $i ?>][id]" data-i="<?php echo $i ?>"
-                         value="<?php echo $id ?>"
-                      <?php if (isset($opts[$id])) {
-                          foreach ($opts[$id] as $key => $val) {
-                              echo ' ' . $key . '="' . $val . '"';
-                          }
-                      } ?>
-                  />
+
                 </li>
               <?php } ?>
           <?php } ?>
