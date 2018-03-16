@@ -33,3 +33,18 @@
     } ?>
 </main>
 
+<?php if ($this->action->id === 'view'): ?>
+  <script type="text/javascript">
+    $(function () {
+      // For every eyedraw element
+      $('.eyedraw').each(function () {
+        // find it's "twin" element
+        var $other = $(this).closest('.element').find('.eyedraw').not(this);
+        // and scale up this eyedraw element if it is smaller than the twin
+        if ($(this).height() < $other.height()) {
+          $(this).css('height', $other.height());
+        }
+      })
+    });
+  </script>
+<?php endif; ?>
