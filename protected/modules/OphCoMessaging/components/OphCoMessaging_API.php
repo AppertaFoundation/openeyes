@@ -55,8 +55,6 @@ class OphCoMessaging_API extends \BaseAPI
         $sent_messages = $this->getSentMessages($user);
         $urgent_messages = $this->getInboxMessages($user, true);
 
-        \Yii::app()->getAssetManager()->registerCssFile('module.css', 'application.modules.OphCoMessaging.assets.css');
-
         // Generate the dashboard widget HTML.
         $dashboard_view = \Yii::app()->controller->renderPartial('OphCoMessaging.views.dashboard.message_dashboard', array(
                 'inbox' => $inbox_messages['list'],

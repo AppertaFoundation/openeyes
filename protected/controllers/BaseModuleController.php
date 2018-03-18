@@ -133,10 +133,6 @@ class BaseModuleController extends BaseController
                 if (file_exists(Yii::getPathOfAlias($asset_path_alias.'.js').'/'.$controller_name.'.js')) {
                     $assetManager->registerScriptFile('js/'.$controller_name.'.js', $asset_path_alias, 10, AssetManager::OUTPUT_SCREEN);
                 }
-                // Register module css
-                if (file_exists(Yii::getPathOfAlias($asset_path_alias.'.css').'/module.css')) {
-                    $assetManager->registerCssFile('css/module.css', $asset_path_alias, 10, AssetManager::OUTPUT_ALL);
-                }
             }
         }
     }
