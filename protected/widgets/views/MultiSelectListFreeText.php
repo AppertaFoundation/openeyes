@@ -94,7 +94,7 @@ $widgetOptionsJson = json_encode(array(
         <?php } ?>
       <input type="hidden" name="<?php echo $field ?>"/>
       <ul class="MultiSelectFreeTextList multi-select-free-text-selections"
-          style="background-color: white; display: <?php echo $found? 'inline-flex': 'none'; ?>">
+          style="display: <?php echo $found? 'inline-flex': 'none'; ?>">
           <?php foreach ($selected_ids as $i => $id) {
               if (isset($options[$id])) { ?>
                 <li style="padding: 4px;">
