@@ -148,7 +148,7 @@
                 userContext: <?= CJSON::encode(NewEventDialogHelper::structureFirm($context_firm)) ?>,
                 currentSubspecialties: <?= CJSON::encode(NewEventDialogHelper::structureEpisodes($episodes)) ?>,
                 subspecialties: <?= CJSON::encode(NewEventDialogHelper::structureAllSubspecialties()) ?>
-            });
+            }).open();
         });
     });
 
