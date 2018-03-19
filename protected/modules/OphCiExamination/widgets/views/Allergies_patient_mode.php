@@ -16,6 +16,7 @@
  */
 
 $model_name = CHtml::modelName($element);
+Yii::log("Model Name: ".$model_name);
 ?>
 
 <?php if (!$element ) { ?>

@@ -39,6 +39,8 @@
  * @property int $created_user_id
  * @property int $last_modified_user_id
  * @property datetime $no_allergies_date
+ * @property datetime $no_risks_date
+
  * @property tinyint $deleted
  * @property int $ethnic_group_id
  *
@@ -628,6 +630,19 @@ class Patient extends BaseActiveRecordVersioned
     {
         if ($api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
             return $api->getNoAllergiesDate($this);
+        }
+        return null;
+    }
+
+    /**
+     * Wrapper function that relies on magic method behaviour to intercept calls for the no_risks_date property
+
+     * @return null|datetime
+     */
+    public function get_no_risks_date()
+    {
+        if ($api = $this->getApp()->moduleAPI->get('OphCiExamination')) {
+            return $api->getNoRisksDate($this);
         }
         return null;
     }

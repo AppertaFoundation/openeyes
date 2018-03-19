@@ -2182,6 +2182,19 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * @param Patient $patient
+     * @param bool $use_context
+     * @return mixed|null
+     */
+    public function getNoRisksDate(\Patient $patient, $use_context = false)
+    {
+        if ($element = $this->getLatestElement('models\HistoryRisks', $patient, $use_context)) {
+            return $element->no_risks_date;
+        }
+        return null;
+    }
+
+    /**
      * Return list of allergies belonging to a patient.
      *
      * @param \Patient $patient
