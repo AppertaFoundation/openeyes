@@ -21,7 +21,7 @@ $this->pageTitle = Yii::app()->name . ' - Login';
         <?php echo $form->passwordField($model, 'password',
             array('autocomplete' => 'off', 'placeholder' => 'Password')); ?>
 
-      <img class="spinner" style="display:none"/>
+      <i class="spinner" style="display:none"></i>
 
       <button type="submit" id="login_button" class="green hint">Login</button>
 
