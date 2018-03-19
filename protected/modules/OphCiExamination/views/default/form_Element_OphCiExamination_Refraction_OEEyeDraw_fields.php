@@ -68,21 +68,26 @@
       </div>
     </div>
   </div>
-  <div
-      class="row field-row refraction-type-other" <?php if ($element->{$side . '_type'} && $element->{$side . '_type'}->name != 'Other') {
-        echo 'style="display:none"';
-    } ?>">
-  <div class="cols-3 column">
-    <label>Other:</label>
+  <div class="row field-row refraction-type-other"
+      <?php if ($element->{$side . '_type'} && $element->{$side . '_type'}->name != 'Other'): ?>
+        style="display:none"
+      <?php endif ?>
+  >
+    <div class="cols-3 column">
+      <label>Other:</label>
+    </div>
+    <div class="cols-6 column end">
+        <?php echo CHtml::activeTextField($element, $side . '_type_other',
+            array(
+                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                'class' => 'refraction-type-other-field',
+            )) ?>
+    </div>
   </div>
-  <div class="cols-6 column end">
-      <?php echo CHtml::activeTextField($element, $side . '_type_other',
-          array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'refraction-type-other-field')) ?>
-  </div>
-</div>
-<div class="row field-row">
-  <div class="cols-9 column end">
-      <?php echo CHtml::activeTextArea($element, $side . '_notes',
-          array('rows' => 1, 'placeholder' => $element->getAttributeLabel($side . '_notes'))) ?>
+  <div class="row field-row">
+    <div class="cols-9 column end">
+        <?php echo CHtml::activeTextArea($element, $side . '_notes',
+            array('rows' => 1, 'placeholder' => $element->getAttributeLabel($side . '_notes'))) ?>
+    </div>
   </div>
 </div>
