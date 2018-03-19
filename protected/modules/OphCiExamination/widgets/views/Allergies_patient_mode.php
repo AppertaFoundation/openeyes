@@ -27,9 +27,9 @@ $model_name = CHtml::modelName($element);
   </div>
 <?php } else{ ?>
     <div class="alert-box patient">
-      <strong>Allergies</strong> - <?php echo implode(', ', array_map(function($entry) { return $entry->getDisplayAllergy(); }, $element->entries)); ?><br>
+      <strong>Allergies</strong><br>
     </div>
-  <table class="risks">
+  <table class="risks alert-box patient">
     <colgroup>
       <col class="cols-5">
     </colgroup>
@@ -39,6 +39,7 @@ $model_name = CHtml::modelName($element);
           <tr>
             <td><?= $entry->getDisplayAllergy() ?></td>
             <td><?= $entry->comments ?></td>
+            <td></td>
           </tr>
         <?php } ?>
         </tbody>

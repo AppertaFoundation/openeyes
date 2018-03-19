@@ -20,7 +20,8 @@
 ?>
 
 <tr>
-    <td><?= $entry->getDisplayRisk() ?></td>
-    <td><?= $entry->getDisplayHasRisk() ?></td>
-    <td><?= $entry->comments ?></td>
+  <td><?= $entry->getDisplayRisk() ?></td>
+  <td><?= $entry->getDisplayHasRisk() ?></td>
+  <td><?= $entry->comments ?></td>
+  <td></td>
 </tr>

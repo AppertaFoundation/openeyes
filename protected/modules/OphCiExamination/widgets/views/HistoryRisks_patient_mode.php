@@ -29,9 +29,9 @@ elseif(!count($element->entries) || $element->no_risks_date ){ ?>
   </div>
 <?php } else { ?>
     <div class="alert-box patient">
-    <strong>Risks</strong> - <?php echo implode(', ', array_map(function($entry) { return $entry->getDisplayRisk(); }, $element->entries)); ?><br>
+    <strong>Risks</strong><br>
     </div>
-  <table class="risks">
+  <table class="risks alert-box patient">
   <colgroup>
     <col class="cols-5">
   </colgroup>
