@@ -30,6 +30,20 @@ OpenEyes.OphCiExamination.AutoReportHandler = (function () {
         var markup = this.$edReportField.val().replace(/\n/g,'<br />');
         markup = markup.replace('^<br />', ''); // remove first <br>
 
+        // if there is a non-empty comment field,
+        // "No abnormality" text should be removed
+
+        var id = this.$edReportField.attr("id");
+        var $textarea = $("#"+id.replace(/_ed_report$/, "_description"));
+        if($textarea.length < 1) {
+            $textarea = $("#"+id.replace(/_ed_report$/, "_comments"));
+        }
+
+        if(markup === "No abnormality" && $textarea.val() !== '') {
+            markup = '';
+            this.$edReportField.val(markup);
+        }
+
         this.$edReportDisplay.html(markup);
 
         var diagnoses = this.drawing.diagnosis();
