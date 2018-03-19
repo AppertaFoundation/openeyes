@@ -76,20 +76,46 @@ $commitDate = exec("git show -s --format=%cD $commit");
 <script>
 
   $(function () {
+    // When the user picks a different theme, fade out, swap the stylesheet, then fade back in with the new stylesheet
     $('.theme-picker').click(function () {
       var theme = $(this).data('theme');
       var old_css_path = theme === 'dark' ? lightThemeFilePath : darkThemeFilePath;
       var new_css_path = theme === 'dark' ? darkThemeFilePath : lightThemeFilePath;
 
-      $('link[href*="' + old_css_path + '"]').attr('href', new_css_path);
+      if ($('link[href*="' + old_css_path + '"]').length === 0) {
+        return;
+      }
 
-        <?php if (!Yii::app()->user->isGuest): ?>
-      $.ajax({
-        'type': 'GET',
-        'url': "<?= Yii::app()->createUrl('/profile/changeDisplayTheme') ?>",
-        'data': {'display_theme': theme}
+      // Time taken to fade in and out
+      var fadeTime = 125;
+      // Time to wait while browser swaps out CSS
+      var delayTime = 100;
+      var $mask = $('<div>')
+      $mask.css({
+        background: '#141e2b',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        display: 'none'
       });
-        <?php endif; ?>
+      $mask.appendTo($('body'));
+
+      $mask.fadeIn(fadeTime, function () {
+        $('link[href*="' + old_css_path + '"]').attr('href', new_css_path);
+
+          <?php if (!Yii::app()->user->isGuest): ?>
+        // Change the user's theme setting if they are logged in
+        $.ajax({
+          'type': 'GET',
+          'url': "<?= Yii::app()->createUrl('/profile/changeDisplayTheme') ?>",
+          'data': {'display_theme': theme}
+        });
+          <?php endif; ?>
+      }).delay(delayTime).fadeOut(fadeTime, function () {
+        $mask.remove();
+      });
     });
   });
 </script>
