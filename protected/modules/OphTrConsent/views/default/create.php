@@ -29,7 +29,8 @@
         ?>
 
 		<?php  $this->displayErrors($errors)?>
-        <?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
+		<?php  $this->renderOpenElements($this->action->id, $form); ?>
+		<?php  $this->renderOptionalElements($this->action->id, $form); ?>
 		<?php  $this->displayErrors($errors, true)?>
 
 	<?php  $this->endWidget(); ?>

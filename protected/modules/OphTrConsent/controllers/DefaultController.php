@@ -169,7 +169,7 @@ class DefaultController extends BaseEventTypeController
     public function renderSidebar($default_view)
     {
         if (!$this->booking_event && !$this->unbooked) {
-            $this->show_element_sidebar = true;
+            $this->show_element_sidebar = false;
         }
         parent::renderSidebar($default_view);
     }
