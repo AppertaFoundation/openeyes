@@ -52,7 +52,7 @@ $this->moduleNameCssClass .= ' edit';
     </div>
 
     <div class="cols-8">
-      <table class="cols-full last-left large-text clickable-rows">
+      <table class="cols-full last-left large-text">
         <tbody>
         <?php if ($bookings) {
             foreach ($bookings as $operation) { ?>
