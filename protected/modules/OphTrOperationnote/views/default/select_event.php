@@ -36,11 +36,8 @@ $warnings = $this->patient->getWarnings($clinical);
             'id' => 'operation-note-select',
             'enableAjaxValidation' => false,
         ));
-
-        // Event actions
-        $this->event_actions[] = EventAction::button('Create Operation Note', 'save', array('level' => 'secondary'),
-            array('form' => 'operation-note-select', 'class' => 'button small'));
         ?>
+
         <?php $this->displayErrors($errors) ?>
 
         <?php if ($warnings) { ?>
@@ -60,79 +57,76 @@ $warnings = $this->patient->getWarnings($clinical);
         <h3 class="element-title">Create Operation Note</h3>
       </header>
 
-      <div class="element-fields full-width">
+      <input type="hidden" name="SelectBooking"/>
 
-        <div class="field-row">
-          <div class="field-info">
-              <?php if (count($operations) > 0) { ?>
-                Please indicate whether this operation note relates to a booking or an unbooked emergency:
-              <?php } else { ?>
-                There are no open bookings in the current episode so only an emergency operation note can be created.
-              <?php } ?>
+      <div class="field-row">
+        <div class="data-row cols-7">
+          <div class="data-value flex-layout">
+            <p>
+              Please choose which operation you wish to perform from the available list of booked operations for this
+              patient.
+              If the procedure does not have a booking, then select the Emergency / Unbooked option.
+            </p>
+          </div>
+          <br/>
+          <div class="data-value" style="padding-left: 100px">
+            <table class="cols-10 last-left">
+              <thead>
+              <tr>
+                <th>Booked Date</th>
+                <th>Procedure</th>
+                <th>Comments</th>
+              </tr>
+              </thead>
+              <tbody>
+
+              <?php foreach ($operations as $operation): ?>
+                <tr>
+                  <td>
+                    <span class="cols-3 column <?php echo $theatre_diary_disabled ? 'hide' : '' ?>">
+                    <?php if (!$theatre_diary_disabled) {
+                        echo $operation->booking->session->NHSDate('date');
+                    } ?>
+                    </span>
+                  </td>
+                  <td>
+                    <a href="#" class="booking-select" data-booking="booking<?= $operation->event_id ?>">
+                        <?php
+                        echo implode('<br />', array_map(function ($procedure) use ($operation) {
+                            return $operation->eye->name . ' ' . $procedure->term;
+                        }, $operation->procedures));
+                        ?>
+                    </a>
+                  </td>
+                  <td>
+                      <?= $operation->comments; ?>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+              <tr>
+                <td>N/A</td>
+                <td>
+                  <a href="#" class="booking-select" data-booking="emergency">Emergency / Unbooked<a>
+                </td>
+                <td></td>
+              </tr>
+              </tbody>
+            </table>
+
           </div>
         </div>
-
-        <fieldset class="row field-row">
-          <legend class="cols-2 column">Select:</legend>
-          <div class="cols-6 column end">
-              <?php foreach ($operations as $operation) { ?>
-                <label>
-										<span class="row">
-											<span class="cols-1 column">
-												<input type="radio" value="booking<?= $operation->event_id ?>" name="SelectBooking"/>
-											</span>
-											<span class="cols-1 column">
-												<img src="<?php echo Yii::app()->assetManager->createUrl('img/small.png', $assetAliasPath) ?>"
-                             alt="op" style="height:15px"/>
-											</span>
-											<span class="cols-3 column <?php echo $theatre_diary_disabled ? 'hide' : '' ?>">
-												<?php if (!$theatre_diary_disabled) {
-                            echo $operation->booking->session->NHSDate('date');
-                        } ?>
-											</span>
-
-											<span class="cols-3 column">
-												Operation
-											</span>
-                                            <span class="cols-3 column">
-                                              <?= $operation->comments; ?>
-											</span>
-											<span class="cols-4 column">
-												<?php
-
-                        $procedures = $operation->procedures;
-                        $eye = $operation->eye;
-
-                        foreach ($procedures as $i => $procedure) {
-                            if ($i > 0) {
-                                echo '<br/>';
-                            }
-                            echo $eye->name . ' ' . $procedure->term;
-                        }
-                        ?>
-											</span>
-										</span>
-                </label>
-              <?php } ?>
-            <label>
-									<span class="row">
-										<span class="cols-1 column">
-											<input type="radio" value="emergency" name="SelectBooking"
-                             <?php if (count($operations) == 0) { ?>checked="checked" <?php } ?>/>
-										</span>
-										<span class="cols-11 column">
-											Emergency
-										</span>
-									</span>
-            </label>
-          </div>
-        </fieldset>
-      </div>
-
-        <?php $this->displayErrors($errors, true) ?>
-        <?php $this->endWidget(); ?>
+          <?php $this->displayErrors($errors, true) ?>
+          <?php $this->endWidget(); ?>
     </section>
   </div>
 </div>
-
+<script type="text/javascript">
+  $(function () {
+    $('.booking-select').on('click', function () {
+      $('[name="SelectBooking"]').val($(this).data('booking'));
+      $('#operation-note-select').submit();
+    });
+  });
+</script>
 <?php $this->endContent(); ?>
+
