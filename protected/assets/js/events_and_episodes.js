@@ -326,7 +326,7 @@ function scrollToElement(element) {
  */
 function setUpAdder(adderDiv = null, selectMode = 'single', callback = null, openButtons = null, addButtons = null, closeButtons = null){
     if (adderDiv === null){
-        console.log('no div sent to setUpAdder');
+        console.warn('no div sent to setUpAdder');
         return;
     }
 
