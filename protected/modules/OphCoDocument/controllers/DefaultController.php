@@ -275,7 +275,13 @@ class DefaultController extends BaseEventTypeController
                 foreach (array("single_document", "left_document", "right_document") as $property) {
                     if (isset($element->$property)) {
                         if(strpos($element->$property->mimetype, "image/") === 0) {
-                            $this->addPDFToOutput(parent::actionPDFPrint($id, true));
+                            $auto_print = Yii::app()->request->getParam('auto_print', true);
+                            $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
+
+                            $pdf_route = $this->setPDFprintData( $id , $inject_autoprint_js );
+
+                            $pdf = $this->event->getPDF($pdf_route);
+                            $this->addPDFToOutput($pdf);
                         }
                         else {
                             $this->addPDFToOutput($element->$property->getPath());
