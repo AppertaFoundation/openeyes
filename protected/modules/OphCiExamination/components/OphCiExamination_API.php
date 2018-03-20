@@ -2169,6 +2169,7 @@ class OphCiExamination_API extends \BaseAPI
     }
 
     /**
+     * Return no_risks_date of last HistoryRisk of a Patient
      * @param Patient $patient
      * @param bool $use_context
      * @return mixed|null
