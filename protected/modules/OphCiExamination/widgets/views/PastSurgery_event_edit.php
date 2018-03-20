@@ -139,25 +139,28 @@ $model_name = CHtml::modelName($element);
     ?>
 </script>
 <script type="text/javascript">
-    var controller;
-    $(document).ready(function() {
-        controller = new OpenEyes.OphCiExamination.PreviousSurgeryController();
+    $(function () {
+        var controller;
+        $(document).ready(function() {
+            controller = new OpenEyes.OphCiExamination.PreviousSurgeryController();
+        });
+
+
+        var adder = $('#add-to-past-surgery');
+        var popup = adder.find('.oe-add-select-search');
+
+        function addSurgery(selection){
+            controller.addEntry();
+        }
+
+        setUpAdder(
+            popup,
+            'return',
+            addSurgery,
+            adder.find('#show-add-popup'),
+            null,
+            adder.find('#close-btn')
+        );
     });
 
-
-    var adder = $('#add-to-past-surgery');
-    var popup = adder.find('.oe-add-select-search');
-
-    function addSurgery(selection){
-        controller.addEntry();
-    }
-
-    setUpAdder(
-        popup,
-        'return',
-        addSurgery,
-        adder.find('#show-add-popup'),
-        null,
-        adder.find('#close-btn')
-    );
 </script>

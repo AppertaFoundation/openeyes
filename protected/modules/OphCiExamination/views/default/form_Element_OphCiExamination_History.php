@@ -54,25 +54,28 @@
     <strong>{{subspecialty}} {{event_date}} ({{last_modified_user_display}} <span class="js-has-tooltip fa fa-info-circle" data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> {{comments_or_children}}
 </script>
 <script type="text/javascript" id="history-add-to-dialog">
-    var popup = $('#add-to-history');
-    var inputText = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_History_description');
+    $(function () {
+        var popup = $('#add-to-history');
+        var inputText = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_History_description');
 
-    function setText(){
-        popup.find('.selected').each(function () {
-            inputText.val(inputText.val() ?
-                inputText.val()+$(this).attr('data-str') : $(this).attr('data-str')
-            );
-        });
-        popup.find('.selected').removeClass('selected');
-    }
+        function setText(){
+            popup.find('.selected').each(function () {
+                inputText.val(inputText.val() ?
+                    inputText.val()+$(this).attr('data-str') : $(this).attr('data-str')
+                );
+            });
+            popup.find('.selected').removeClass('selected');
+        }
 
-    setUpAdder(
-        popup,
-        'single',
-        setText,
-        $('#show-add-to-history'),
-        popup.find('.add-icon-btn'),
-        popup.find('.close-icon-btn')
-    );
+        setUpAdder(
+            popup,
+            'single',
+            setText,
+            $('#show-add-to-history'),
+            popup.find('.add-icon-btn'),
+            popup.find('.close-icon-btn')
+        );
+    });
+
 </script>
 
