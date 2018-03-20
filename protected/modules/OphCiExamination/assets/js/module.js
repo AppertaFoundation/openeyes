@@ -2151,7 +2151,7 @@ function OphCiExamination_AddDiagnosis(disorderId, name, eyeId, isDiabetic, isGl
             '<input type="radio" name="principal_diagnosis" value="'+disorderId+'" '+checked_principal+'/>'+
         '</td>'+
         '<td>'+
-            '<a href="#" class="removeDiagnosis" rel="'+disorderId+'">Remove</a>'+
+            '<a href="#" class="removeDiagnosis" rel="'+disorderId+'"><i class="oe-i trash"></i></a>'+
         '</td>'+
     '</tr>';
 

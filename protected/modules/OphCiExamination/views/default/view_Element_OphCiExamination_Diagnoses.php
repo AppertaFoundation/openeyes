@@ -40,13 +40,14 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
               </td><td></td>
           </tr>
           <?php
-          } foreach(${$eye_side.'_principals'} as $disorder) { ?>
+          }
+          foreach(${$eye_side.'_principals'} as $disorder) { ?>
               <tr class="data-row">
                   <td class="data-value">
                     <?= $disorder[0]->term ?>
-                    <span class="js-has-tooltip fa fa-info-circle"
+                    <span class="js-has-tooltip oe-i info"
                           data-tooltip-content="Principal diagnosis for <?= $disorder[1] ?>"
-                    ><i class="oe-i info"></i></span>
+                    ></span>
                   </td><td></td>
               </tr>
           <?php
