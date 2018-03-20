@@ -16,11 +16,27 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
  ?>
-<div class="element-fields">
+<table class="element-fields">
 
 	<?php echo $form->hiddenField($element, 'booking_event_id')?>
 
-	<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'))?>
+	<?php echo $form->radioButtons(
+	    $element,
+      'eye_id',
+      CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')),
+          'id',
+          'name')
+  )?>
+  <?php echo $form->checkBoxes(
+      $element,
+      'AnaestheticType',
+      'anaesthetic_type',
+      'Anaesthetic Type',
+      false, false, false, false,
+      array(
+          'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error' : ''
+      )
+  ); ?>
 	<?php $form->widget('application.widgets.ProcedureSelection', array(
         'element' => $element,
         'durations' => false,
@@ -30,12 +46,7 @@
         'restrict_common' => 'unbooked',
     ))?>
 
-    <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', 'Anaesthetic Type',
-        false, false, false, false,
-        array(
-            'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error' : ''
-        )
-    ); ?>
+
 
 	<?php $form->widget('application.widgets.ProcedureSelection', array(
         'element' => $element,
@@ -45,4 +56,4 @@
         'identifier' => 'additional',
         'headertext' => 'Any extra procedures which may become necessary during the procedure.',
     ))?>
-</div>
+</table>
