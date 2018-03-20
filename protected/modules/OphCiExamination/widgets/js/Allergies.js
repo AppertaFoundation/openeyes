@@ -172,30 +172,36 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     /**
+     * Show the table. (useful for when adding a row to an empty and thus hidden table)
+     */
+    AllergiesController.prototype.showTable = function () {
+      this.$table.show();
+    };
+
+    /**
      * Run through each Allergies drop down and ensure selected options are not
      * available in other rows.
      */
     AllergiesController.prototype.dedupeAllergySelectors = function () {
         var self = this;
         var selectedAllergies = [];
-        self.$element.find(self.allergySelector).each(function () {
-            var $selected = $(this).find('option:selected');
-            if ($selected.val() && !$selected.data('other')) {
-                selectedAllergies.push($selected.val());
+
+        self.$element.find(self.allergySelector).each(function() {
+            var value = this.getAttribute('value');
+            if (value && !(value == 17)) {
+                selectedAllergies.push(value);
             }
         });
 
-        self.$element.find(self.allergySelector).each(function () {
-            $(this).find('option').each(function () {
-                if (!$(this).is(':selected') && ($.inArray($(this).val(), selectedAllergies) > -1)) {
-                    $(this).hide();
-                } else {
-                    $(this).show();
-                }
-            });
+        self.$element.find('li').each(function () {
+            if(inArray(this.getAttribute('data-id'), selectedAllergies)){
+                $(this).hide();
+                console.log(inArray(this.getAttribute('data-id'), selectedAllergies));
+            } else {
+                $(this).show();
+            }
         });
-    }
-
+    };
     exports.AllergiesController = AllergiesController;
 
 })(OpenEyes.OphCiExamination);

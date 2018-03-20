@@ -84,9 +84,9 @@
     <!-- popup to add to element is click -->
     <div id="add-to-allergies" class="oe-add-select-search" style="display: none;">
       <!-- icon btns -->
-      <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
-      <div class="select-icon-btn"><i class="oe-i menu selected"></i></div>
-      <button class="button hint green add-icon-btn">
+      <div class="close-icon-btn" type="button"><i class="oe-i remove-circle medium"></i></div>
+      <div class="select-icon-btn" type="button"><i class="oe-i menu selected"></i></div>
+      <button class="button hint green add-icon-btn" type="button">
         <i class="oe-i plus pro-theme"></i>
       </button>
       <!-- select (and search) options for element -->
@@ -154,13 +154,16 @@
         function addAllergy(){
             //this just gets it's own data
             allergyController.addEntry();
+            allergyController.showTable();
         }
 
         setUpAdder(
             popup,
             'return',
             addAllergy,
-            $('#add-allergy-btn')
+            $('#add-allergy-btn'),
+            null,
+            $('.close-icon-btn, .add-icon-btn')
         );
     });
 
