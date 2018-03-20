@@ -103,6 +103,17 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
+     * Return the title of the element to be displayed in edit mode
+     * Should be overridden by subclasses to customise the title
+     *
+     * @return string The title to be displayed
+     */
+    public function getFormTitle()
+    {
+        return $this->getElementTypeName();
+    }
+
+    /**
      * Can this element be copied (cloned/duplicated)
      * Override to return true if you want an element to be copyable.
      *
