@@ -73,7 +73,7 @@ $element_Type = $element->getElementType();
       <!-- remove MUST be last element -->
           <span class="<?= ($this->isRequiredInUI($element)) ? 'disabled' : 'js-remove-element' ?>"
                 title="<?= ($this->isRequiredInUI($element)) ? 'Mandatory Field' : '' ?>">
-            <i class="oe-i trash-blue"></i>
+                <i class="oe-i remove-circle"></i>
           </span>
         </div>
       <?php } ?>
