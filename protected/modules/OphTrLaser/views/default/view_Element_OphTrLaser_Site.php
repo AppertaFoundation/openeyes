@@ -16,29 +16,48 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label"><?php echo $element->getAttributeLabel('site_id')?></div>
-			</div>
-			<div class="large-10 column">
-				<div class="data-value"><?php echo $element->site ? $element->site->name : 'None'?></div>
-			</div>
-		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label"><?php echo $element->getAttributeLabel('laser_id')?></div>
-			</div>
-			<div class="large-10 column">
-				<div class="data-value"><?php echo $element->laser ? $element->laser->name : 'None'?></div>
-			</div>
-		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label"><?php echo $element->getAttributeLabel('operator_id')?></div>
-			</div>
-			<div class="large-10 column">
-				<div class="data-value"><?php echo $element->surgeon ? $element->surgeon->ReversedFullName : 'None'?></div>
-			</div>
-		</div>
-	</div>
+
+<div class="element-data full-width">
+
+  <div class="data-row">
+    <div class="data-value flex-layout flex-top">
+      <div class="cols-11">
+
+        <div class="cols-11" id="js-listview-info-pro" style="">
+          <ul class="dslash-list large-text">
+            <li><?php echo $element->site ? $element->site->name : 'None' ?></li>
+            <li><?php echo $element->laser ? $element->laser->name : 'None' ?></li>
+            <li><?php echo $element->surgeon ? $element->surgeon->ReversedFullName : 'None' ?></li>
+          </ul>
+        </div>
+
+        <div class="col-6" id="js-listview-info-full" style="display: none;">
+
+          <table class="last-left">
+            <thead>
+            <tr>
+              <th class="cols-4"><?php echo $element->getAttributeLabel('site_id') ?></th>
+              <th class="cols-4"><?php echo $element->getAttributeLabel('laser_id') ?></th>
+              <th class="cols-4"><?php echo $element->getAttributeLabel('operator_id') ?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="large-text"><?php echo $element->site ? $element->site->name : 'None' ?></td>
+              <td class="large-text"><?php echo $element->laser ? $element->laser->name : 'None' ?></td>
+              <td class="large-text"><?php echo $element->surgeon ? $element->surgeon->ReversedFullName : 'None' ?></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <div>
+        <i class="oe-i small js-listview-expand-btn expand" data-list="info"></i>
+      </div>
+
+    </div>
+  </div>
+
+</div>

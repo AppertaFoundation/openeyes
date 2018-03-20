@@ -170,4 +170,9 @@ class Element_OphTrLaser_Site extends BaseEventTypeElement
             $this->addError($attribute, 'Selected laser must be on the selected site');
         }
     }
+
+    public function getViewTitle()
+    {
+        return 'Laser Information';
+    }
 }
