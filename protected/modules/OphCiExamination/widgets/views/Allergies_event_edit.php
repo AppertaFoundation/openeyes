@@ -141,24 +141,27 @@
     ?>
 </script>
 <script type="text/javascript">
-    var allergyController;
-    $(document).ready(function() {
-        allergyController = new OpenEyes.OphCiExamination.AllergiesController({
-            element: $('#<?=$model_name?>_element')
+    $(function () {
+        var allergyController;
+        $(document).ready(function() {
+            allergyController = new OpenEyes.OphCiExamination.AllergiesController({
+                element: $('#<?=$model_name?>_element')
+            });
         });
+
+        var popup = $('#add-to-allergies');
+
+        function addAllergy(){
+            //this just gets it's own data
+            allergyController.addEntry();
+        }
+
+        setUpAdder(
+            popup,
+            'return',
+            addAllergy,
+            $('#add-allergy-btn')
+        );
     });
 
-    var popup = $('#add-to-allergies');
-
-    function addAllergy(){
-        //this just gets it's own data
-        allergyController.addEntry();
-    }
-
-    setUpAdder(
-        popup,
-        'return',
-        addAllergy,
-        $('#add-allergy-btn')
-    );
 </script>
