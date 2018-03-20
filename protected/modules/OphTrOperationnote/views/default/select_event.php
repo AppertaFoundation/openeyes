@@ -60,15 +60,19 @@ $warnings = $this->patient->getWarnings($clinical);
       <input type="hidden" name="SelectBooking"/>
 
       <div class="field-row">
-        <div class="data-row cols-7">
+        <div class="data-row">
           <div class="data-value flex-layout">
             <p>
-              Please choose which operation you wish to perform from the available list of booked operations for this
-              patient.
-              If the procedure does not have a booking, then select the Emergency / Unbooked option.
+                <?php if (count($operations) > 0): ?>
+                  Please indicate whether this operation note relates to a booking or an unbooked emergency:
+                <?php else: ?>
+                  There are no open bookings in the current episode so only an emergency operation note can be created.
+                <?php endif; ?>
             </p>
           </div>
           <br/>
+        </div>
+        <div class="data-row cols-8">
           <div class="data-value" style="padding-left: 100px">
             <table class="cols-10 last-left">
               <thead>
