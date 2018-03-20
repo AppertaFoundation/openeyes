@@ -54,7 +54,7 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
     {
         return array(
                 array('element_diagnoses_id,disorder_id,eye_id', 'required'),
-                array('element_diagnoses_id,disorder_id,eye_id,principal', 'safe'),
+                array('element_diagnoses_id,disorder_id,eye_id,principal,date', 'safe'),
                 array('id, name', 'safe', 'on' => 'search'),
         );
     }
@@ -63,6 +63,7 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
     {
         return array(
             'eye_id' => 'Eye',
+            'date' => 'Date',
         );
     }
 

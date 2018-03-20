@@ -1122,8 +1122,6 @@ $(document).ready(function() {
         return false;
     });
 
-    OphCiExamination_GetCurrentConditions();
-
     $('.signField').die('change').live('change',function(e) {
         var sign_id = $(this).val() >0 ? 1 : 2;
         var type = $(this).data('type');
@@ -2068,16 +2066,6 @@ function OphCiExamination_InjectionManagementComplex_init() {
 
 // END InjectionManagementComplex
 
-function OphCiExamination_GetCurrentConditions() {
-    var disorders = $("input[name='selected_diagnoses[]']").map(function() {
-        return {'type': 'disorder', 'id': $(this).val()};
-    });
-    var findings = $(".OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings .multi-select-free-text-selections li input").map(function() {
-        return {'type': 'finding', 'id': $(this).val()};
-    });
-    return {disorders: disorders, findings: findings};
-}
-
 /**
  * Add disorder or finding to exam
  * @param string type
@@ -2085,15 +2073,6 @@ function OphCiExamination_GetCurrentConditions() {
  * @param string label
  * @constructor
  */
-function OphCiExamination_AddDisorderOrFinding(type, conditionId, label, isDiabetic, isGlaucoma) {
-    if(type == 'disorder') {
-        OphCiExamination_AddDiagnosis(conditionId, label, null, isDiabetic, isGlaucoma);
-    } else if(type == 'finding') {
-        OphCiExamination_AddFinding(conditionId, label);
-    } else {
-        console.log("Error: Unknown type: "+type);
-    }
-}
 
 function OphCiExamination_AddFinding(finding_id, label) {
     var updateFindings = function() {

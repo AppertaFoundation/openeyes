@@ -81,6 +81,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                     var $select = $parent.find('.commonly-used-diagnosis');
 
                     $select.append( $('<option>',{'text': 'Select a commonly used diagnosis'}));
+                    $select.append( $('<option>',{'text': '----------', 'disabled':'disabled'}));
                     $.each(data, function(i, item){
                         $select.append( $('<option>',{'value': item.id, 'text': item.label, 'data-item': JSON.stringify(item)}));
                     });
@@ -92,7 +93,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         savedDiagnoses = controller.$inputField.data('saved-diagnoses');
 
-        if(savedDiagnoses){
+        if(savedDiagnoses && savedDiagnoses.disorder_id){
             controller.addDiagnosis(savedDiagnoses.id, {label: savedDiagnoses.name, id: savedDiagnoses.disorder_id} );
         }
     }
@@ -123,6 +124,10 @@ OpenEyes.UI = OpenEyes.UI || {};
         controller.$row.find('.commonly-used-diagnosis').hide();
         controller.$row.find('.diagnoses-search-inputfield').hide();
         controller.$row.find('.medication-display').show();
+
+        if(typeof controller.options.afterSelect === 'function'){
+            controller.options.afterSelect();
+        }
     };
 
     /**

@@ -91,6 +91,8 @@ class DisorderController extends BaseController
             foreach (CommonSystemicDisorder::getDisorders() as $disorder) {
                 $return[] = $this->disorderStructure($disorder);
             };
+        } else {
+            $return = $this->actionGetCommonOphthalmicDisorders( Yii::app()->session['selected_firm_id'] );
         }
 
         echo CJSON::encode($return);
@@ -118,6 +120,25 @@ class DisorderController extends BaseController
 
         if ($cd = CommonOphthalmicDisorder::model()->find('disorder_id=? and subspecialty_id=?', array($id, $firm->serviceSubspecialtyAssignment->subspecialty_id))) {
             echo "<option value=\"$cd->disorder_id\" data-order=\"{$cd->display_order}\">".$cd->disorder->term.'</option>';
+        }
+    }
+
+    /**
+     * Gets the common ophthalmic disorders for the given firm.
+     *
+     * @param int $firm_id
+     *
+     * @return array
+     * @throws \CException
+     */
+    public function actionGetCommonOphthalmicDisorders($firm_id)
+    {
+        if (empty($firm_id)) {
+            throw new \CException('Firm is required');
+        }
+        $firm = \Firm::model()->findByPk($firm_id);
+        if ($firm) {
+            return \CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($firm);
         }
     }
 }

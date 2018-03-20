@@ -151,14 +151,16 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 $curr = new OphCiExamination_Diagnosis();
                 $curr->element_diagnoses_id = $this->id;
                 $curr->disorder_id = $u_disorder['disorder_id'];
+                $curr->date = $u_disorder['date'];
             } else {
                 unset($curr_by_disorder_id[$u_disorder['disorder_id']]);
             }
             if ($curr->eye_id != $u_disorder['eye_id']
-                || $curr->principal != $u_disorder['principal']) {
+                || $curr->principal != $u_disorder['principal'] || $curr->date != $u_disorder['date']) {
                 // need to update & save
                 $curr->eye_id = $u_disorder['eye_id'];
                 $curr->principal = $u_disorder['principal'];
+                $curr->date = $u_disorder['date'];
                 if (!$curr->save()) {
                     throw new \Exception('save failed'.print_r($curr->getErrors(), true));
                 };
@@ -191,25 +193,6 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                     $this->event->episode->patient->removeDiagnosis($sd->id);
                 }
             }
-        }
-    }
-
-    /**
-     * Gets the common ophthalmic disorders for the given firm.
-     *
-     * @param int $firm_id
-     *
-     * @return array
-     * @throws \CException
-     */
-    public function getCommonOphthalmicDisorders($firm_id)
-    {
-        if (empty($firm_id)) {
-            throw new \CException('Firm is required');
-        }
-        $firm = \Firm::model()->findByPk($firm_id);
-        if ($firm) {
-            return \CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($firm);
         }
     }
 
@@ -364,18 +347,21 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         if (count($this->diagnoses)) {
             $principal = false;
 
-            foreach ($this->diagnoses as $diagnosis) {
+            foreach ($this->diagnoses as $k => $diagnosis) {
                 if ($diagnosis->principal) {
                     $principal = true;
                 }
                 if(!$diagnosis->eye_id){
+                    $key = $k+1;
+                    $term = isset($diagnosis->disorder)  ? $diagnosis->disorder->term : "($key)";
+
                     // without this OE tries to perform a save / or at least run the saveComplexAttributes_Element_OphCiExamination_Diagnoses()
                     // where we need to have an eye_id - probably this need further investigation and refactor
-                    $this->addError('diagnoses', $diagnosis->disorder->term . ': Eye is required');
+                    $this->addError('diagnoses', $term . ': Eye is required');
 
                     //this sets the error for the actual model, and checked manually in 'form_Element_OphCiExamination_Diagnoses.php'
                     // to set the proper error highlighting
-                    $diagnosis->addError('diagnoses', $diagnosis->disorder->term . ': Eye is required');
+                    $diagnosis->addError('diagnoses', $term . ': Eye is required');
                 }
             }
 

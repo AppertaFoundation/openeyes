@@ -16,91 +16,87 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields" id="<?php echo CHtml::modelName($element);?>_diagnoses">
-	<input type="hidden" name="<?php echo CHtml::modelName($element);?>[force_validation]" />
-	<?php
-    $conditions = $element->getCommonOphthalmicDisorders($this->selectedFirmId);
-    $this->widget('application.widgets.DiagnosisSelection', array(
-        'field' => 'condition',
-        'options' => $conditions,
-        'code' => '130', // Ophthamology
-        'callback' => 'OphCiExamination_AddDisorderOrFinding',
-        'filterCallback' => 'OphCiExamination_GetCurrentConditions',
-        'layout' => 'includefindings',
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 5,
-        ),
-        'label' => true,
-    ))?>
 
-	<table class="plain grid">
-		<thead>
-			<tr>
-				<th>Diagnosis</th>
-				<th>Eye</th>
-				<th>Principal</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
-		<tbody class="js-diagnoses" id="OphCiExamination_diagnoses">
-            <?php foreach ($this->patient->episodes as $episode) {
-                if ($episode->id != $this->episode->id && $episode->diagnosis) { ?>
-                    <tr class="read-only">
-                        <td><?= $episode->diagnosis->term ?></td>
-                        <td><?= $episode->eye ? : 'Not Specified' ?></td>
-                        <td><?= $episode->getSubspecialtyText() ?></td>
-                        <td><span class="has-tooltip fa fa-info-circle" data-tooltip-content="You must switch to the <?= $episode->getSubspecialtyText() ?> subspecialty to alter this diagnosis"></span></td>
-                    </tr>
-                <?php }
-            } ?>
-			<?php foreach ($element->diagnoses as $i => $diagnosis) {
-    ?>
-                <?php
-                    // Ok, so adding 'highlighted-error' should be enough -and added btw- but the 'plain' and 'grid' classes overwrite the error style
-                    // table.plain td and table.grid td
-                    $style = $diagnosis->hasErrors() ? 'border: 2px solid red' : '';
-                ?>
-
-                <?php
-                    /*id is added here to tr because the JS error highlighting script wraps the radiobox in div
-                      and this breaks the diagnoses dropdown - prevents to add more items
-                    */
-                 ?>
-				<tr id="<?php echo CHtml::modelName($element) ."_eye_id_$i";?>">
-					<td>
-						<input type="hidden" name="selected_diagnoses[]" value="<?php echo $diagnosis->disorder->id?>" />
-						<?php echo $diagnosis->disorder->term?>
-					</td>
-					<td class="eye" style="<?=$style;?>">
-						<?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) {
-    ?>
-							<label class="inline">
-								<input type="radio" name="<?php echo CHtml::modelName($element)?>[eye_id_<?php echo $i?>]" value="<?php echo $eye->id?>" <?php if ($diagnosis->eye_id == $eye->id) {
-    ?>checked="checked" <?php 
-}
-    ?>/> <?php echo $eye->name?>
-							</label>
-						<?php 
-}
-    ?>
-					</td>
-					<td>
-						<input type="radio" name="principal_diagnosis" value="<?php echo $diagnosis['disorder']->id?>" <?php if ($diagnosis->principal) {
-    ?>checked="checked" <?php 
-}
-    ?>/>
-					</td>
-					<td>
-						<a href="#" class="removeDiagnosis" rel="<?php echo $diagnosis->disorder->id?>">
-							Remove
-						</a>
-					</td>
-				</tr>
-			<?php 
-}?>
-		</tbody>
-	</table>
-</div>
-
+<?php $js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js', false, -1);?>
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Diagnoses.js", CClientScript::POS_HEAD); ?>
+
+<script type="text/javascript" src="<?=$js_path;?>"></script>
+
+<?php $model_name = CHtml::modelName($element); ?>
+
+<div class="element-fields" id="<?=CHtml::modelName($element);?>_element">
+    <input type="hidden" name="<?php echo CHtml::modelName($element);?>[force_validation]" />
+
+    <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
+
+    <table id="<?= $model_name ?>_diagnoses_table">
+        <thead>
+        <tr>
+            <th>Diagnosis</th>
+            <th>Side</th>
+            <th>Principal</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+
+        foreach ($element->diagnoses as $row_count => $diagnosis) {
+            $this->renderPartial(
+                'DiagnosesEntry_event_edit',
+                array(
+                    'diagnosis' => $diagnosis,
+                    'event_date' => isset($element->event) ? $element->event->event_date : null,
+                    'model_name' => CHtml::modelName($element),
+                    'row_count' => $row_count,
+                    'field_prefix' => $model_name . "[entries][$row_count]",
+                    'removable' => true
+                )
+            );
+        }
+        ?>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="3"></td>
+            <td><button class="button small primary add-entry">Add</button></td>
+        </tr>
+        </tfoot>
+    </table>
+
+    <script type="text/template" class="entry-template hidden">
+        <?php
+        $empty_entry = new \OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses();
+        echo $this->renderPartial(
+            'DiagnosesEntry_event_edit',
+            array(
+                'model_name' => $model_name,
+                'field_prefix' => $model_name . '[entries][{{row_count}}]',
+                'row_count' => '{{row_count}}',
+                'removable' => true,
+
+                'values' => array(
+                    'id' => '',
+                    'disorder_id' => '{{disorder_id}}',
+                    'disorder_display' => '{{disorder_display}}',
+                    'eye_id' => '{{eye_id}}',
+                    'event_date' => '{{event_date}}',
+                    'date' => '{{date}}',
+                    'date_display' => '{{date_display}}',
+                    'row_count' => '{{row_count}}',
+                    'is_principal' => '{{is_principal}}'
+                )
+            )
+        );
+        ?>
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            new OpenEyes.OphCiExamination.DiagnosesController({
+                element: $('#<?=$model_name?>_element')
+            });
+        });
+    </script>
+
