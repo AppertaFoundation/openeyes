@@ -351,7 +351,7 @@ function setUpAdder(adderDiv = null, selectMode = 'single', callback = null, ope
 
     //set up select class on clicks
     if(selectMode === 'return'){
-    	adderDiv.find('li').click(function () {
+        adderDiv.find('li').click(function () {
 			$(this).addClass('selected');
 			adderDiv.hide();
 			callback($(this));
