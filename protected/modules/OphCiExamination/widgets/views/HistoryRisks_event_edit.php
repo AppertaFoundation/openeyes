@@ -40,7 +40,7 @@ $required_risk_ids = array_map(function($r) { return $r->id; }, $this->getRequir
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
-    <table class="<?= $model_name ?>_entry_table">
+    <table class="<?= $model_name ?>_entry_table  <?= !count($element->entries) ? 'hidden' : ''?>">
         <thead>
         <tr>
             <th>Risk</th>
@@ -87,7 +87,7 @@ $required_risk_ids = array_map(function($r) { return $r->id; }, $this->getRequir
         ?>
         </tbody>
     </table>
-  <div class="flex-item-bottom" id="history-risk-popup">
+  <div class="flex-item-bottom" id="history-risk-popup" style="display: <?php echo $element->no_risks_date?'none':''; ?>">
     <button class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
