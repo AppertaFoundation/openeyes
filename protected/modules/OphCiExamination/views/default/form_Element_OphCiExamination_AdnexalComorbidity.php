@@ -18,60 +18,55 @@
 ?>
 <div class="element-fields element-eyes">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
-	<div class="element-eye right-eye column left side" <?php if (!$element->hasRight()) {?>style="display: none;"<?php }?> data-side="right">
-		<div class="active-form field-row flex-layout">
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-      <div class="cols-11 flex-layout">
-          <?php echo $form->textArea($element, 'right_description', array('nowrapper' => true, 'class' => 'cols-6', 'rows' => 1));?>
-      </div>
-      <div class="flex-item-bottom">
-        <button class="button hint green js-add-select-search" type="button">
-          <i class="oe-i plus pro-theme"></i>
-        </button>
-        <div id="add-to-adnexal" class="oe-add-select-search" style="display: none;">
-            <?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'right_description', 'form' => $form))?>
+    <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):?>
+        <div class="element-eye <?=$eye_side?>-eye column <?=$page_side?> side"
+             data-side="<?=$eye_side?>"
+        >
+            <div class="active-form field-row flex-layout"
+                 style="<?=!$element->hasEye($eye_side)?"display: none;":""?>">
+              <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+              <div class="cols-11 flex-layout">
+                  <?php echo $form->textArea($element, $eye_side.'_description', array('nowrapper' => true, 'class' => 'cols-6', 'rows' => 1));?>
+              </div>
+              <div class="flex-item-bottom">
+                <button class="button hint green js-add-select-search" type="button">
+                  <i class="oe-i plus pro-theme"></i>
+                </button>
+                <div id="add-to-adnexal" class="oe-add-select-search" style="display: none;">
+                    <?php $this->renderPartial('_attributes', array('element' => $element, 'field' => $eye_side.'_description', 'form' => $form))?>
+                </div>
+              </div>
+            </div>
+            <div class="inactive-form" style="<?=$element->hasEye($eye_side)?"display: none;":""?>">
+                <div class="add-side">
+                    <a href="#">
+                        Add <?=ucfirst($eye_side)?> side <span class="icon-add-side"></span>
+                    </a>
+                </div>
+            </div>
         </div>
-      </div>
-		</div>
-		<div class="inactive-form" <?php if ($element->hasRight()) {?>style="display: none;"<?php }?>>
-			<div class="add-side">
-				<a href="#">
-					Add right side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-	<div class="element-eye left-eye column right side" <?php if (!$element->hasLeft()) {?>style="display: none;"<?php }?> data-side="left">
-		<div class="active-form field-row flex-layout">
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-      <div class="cols-11 flex-layout">
-          <?php echo $form->textArea($element, 'left_description', array('nowrapper' => true, 'class' => 'cols-6', 'rows' => 1))?>
-      </div>
-			<div class="flex-item-bottom">
-        <button class="button hint green js-add-select-search" type="button">
-          <i class="oe-i plus pro-theme"></i>
-        </button>
-        <div id="add-to-adnexal" class="oe-add-select-search" style="display: none;">
-            <?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'left_description', 'form' => $form))?>
-        </div>
-			</div>
-		</div>
-		<div class="inactive-form" <?php if ($element->hasLeft()) {?>style="display: none;"<?php }?>>
-			<div class="add-side">
-				<a href="#">
-					Add left side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-</div>
-<script type="text/javascript">
-    // Hide the adding dialog, print text to textArea
-    $('.oe-add-select-search .add-icon-btn').on('click', function () {
-        var eye = $(this).closest('.side').attr('data-side');
-        var inputText = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_AdnexalComorbidity_' + eye + '_description');
-        var popup = $('.' + eye + '-eye #add-to-adnexal');
+        <script type="text/javascript">
+            $(function () {
+               var side = $('.edit-<?=CHtml::modelName($element)?> .<?=$eye_side?>-eye');
+               var popup = side.find('#add-to-adnexal');
+               var adnexText = side.find('#<?=CHtml::modelName($element)?>_<?=$eye_side?>_description');
 
-        inputText.val(inputText.val() ? inputText.val() + popup.find('li.selected').attr('data-str') : popup.find('li.selected').attr('data-str'));
-    });
-</script>
+               function setAdnexText(selected) {
+                   adnexText.val(adnexText.val() ?
+                       adnexText.val() + selected.attr('data-str') : selected.attr('data-str')
+                   );
+                   popup.find('.selected').removeClass('selected');
+               }
+
+               setUpAdder(
+                   popup,
+                   'return',
+                   setAdnexText,
+                   side.find('.js-add-select-search'),
+                   null,
+                   popup.find('.icon-close-btn .icon-add-btn')
+               );
+            });
+        </script>
+    <?php endforeach;?>
+</div>
