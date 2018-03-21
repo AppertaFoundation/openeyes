@@ -21,61 +21,61 @@ $this->beginContent('//patient/event_container');
 $assetAliasPath = 'application.modules.OphTrOperationbooking.assets';
 $this->moduleNameCssClass .= ' edit';
 ?>
-<section class="element edit full edit-create-consent-form">
+<section class="element">
 
     <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'consent-form',
         'enableAjaxValidation' => false,
-        // 'focus'=>'#procedure_id'
     ));
-    // Event actions
-    $this->event_actions[] = EventAction::button('Create Consent Form', 'save', array('level' => 'secondary'),
-        array('class' => 'small', 'form' => 'consent-form'));
     ?>
     <?php $this->displayErrors($errors) ?>
 
   <header class="element-header">
     <h3 class="element-title">Create Consent Form</h3>
   </header>
-  <div class="element-actions">
-          <span class="js-remove-element">
-            <i class="oe-i remove-circle"></i>
-          </span>
-  </div>
-  <div class="element-fields flex-layout flex-top col-gap full-width">
-    <div class="cols-3">
+  <input type="hidden" name="SelectBooking"/>
+
+  <div class="field-row">
+    <div class="data-row">
+      <div class="data-value flex-layout">
+        <p>
         <?php if (count($bookings) > 0) { ?>
           Please indicate whether this Consent Form is for an existing booking or for unbooked procedures:
         <?php } else { ?>
           There are no open bookings in the current episode so you can only create a consent form for unbooked procedures.
         <?php } ?>
+        </p>
+    </div>
+      <br />
     </div>
 
-    <div class="cols-8">
-      <table class="cols-full last-left large-text">
+    <div class=" data-row cols-8">
+      <div class="data-value" style="padding-left: 100px">
+        <table class="cols-full last-left">
+        <thead>
+          <tr>
+            <th>Booked Date</th>
+            <th>Procedure</th>
+            <th>Comments</th>
+          </tr>
+        </thead>
         <tbody>
         <?php if ($bookings) {
             foreach ($bookings as $operation) { ?>
               <tr>
                 <td>
-                  <input type="radio" value="booking<?php echo $operation->event_id ?>" name="SelectBooking"/>
-                </td>
-                <td>
-                  <i class="oe-i-e i-TrOperation"></i>
-                </td>
-                <td>
                     <?php echo $operation->booking ? $operation->booking->session->NHSDate('date') : 'UNSCHEDULED' ?>
                 </td>
                 <td>
-                  Operation
-                </td>
-                <td>
-                    <?php foreach ($operation->procedures as $i => $procedure) {
-                        if ($i > 0) {
-                            echo '<br/>';
-                        }
+                  <a href="#" class="booking-select" data-booking="booking<?= $operation->event_id ?>">
+                  <?php foreach ($operation->procedures as $i => $procedure) {
+                        if ($i > 0) { echo '<br/>'; }
                         echo $operation->eye->name . ' ' . $procedure->term;
                     } ?>
+                  </a>
+                </td>
+                <td>
+                  <?= $operation->comments; ?>
                 </td>
               </tr>
                 <?php if (Element_OphTrConsent_Procedure::model()->find('booking_event_id=?',
@@ -87,20 +87,24 @@ $this->moduleNameCssClass .= ' edit';
             <?php }
         } ?>
         <tr>
+          <td>N/A</td>
           <td>
-            <input type="radio" value="unbooked" name="SelectBooking"
-                   <?php if (count($bookings) == 0) { ?>checked="checked" <?php } ?>/>
-          </td>
-          <td></td>
-          <td>
-            Unbooked procedures
+            <a href="#" class="booking-select" data-booking="unbooked"> Unbooked procedures </a>
           </td>
         </tr>
         </tbody>
       </table>
+      </div>
     </div>
-  </div>
     <?php $this->displayErrors($errors, true) ?>
     <?php $this->endWidget(); ?>
 </section>
+<script type="text/javascript">
+  $(function () {
+    $('.booking-select').on('click', function () {
+      $('[name="SelectBooking"]').val($(this).data('booking'));
+      $('#consent-form').submit();
+    });
+  });
+</script>
 <?php $this->endContent(); ?>
