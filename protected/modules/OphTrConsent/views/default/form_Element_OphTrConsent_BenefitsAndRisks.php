@@ -15,8 +15,37 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
-<div class="element-fields">
-	<?php echo $form->textArea($element, 'benefits', array('rows' => 4, 'cols' => 80))?>
-	<?php echo $form->textArea($element, 'risks', array('rows' => 4, 'cols' => 80))?>
+?>
+<div class="element-fields full-width">
+  <table class="cols-11">
+    <colgroup>
+      <col class="cols-3">
+    </colgroup>
+    <tbody>
+    <tr>
+      <td>
+          <?= CHtml::encode($element->getAttributeLabel('benefits')) ?>
+      </td>
+      <td>
+          <?php echo $form->textArea(
+              $element,
+              'benefits',
+              array('rows' => 4, 'cols' => 80, 'nowrapper' => true)
+          ) ?>
+      </td>
+    </tr>
+    <tr>
+      <td>
+          <?= CHtml::encode($element->getAttributeLabel('risks')) ?>
+      </td>
+      <td>
+          <?php echo $form->textArea(
+              $element,
+              'risks',
+              array('rows' => 4, 'cols' => 80, 'nowrapper' => true)
+          ) ?>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 </div>
