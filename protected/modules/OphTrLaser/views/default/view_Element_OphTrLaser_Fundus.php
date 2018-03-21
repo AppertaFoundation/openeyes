@@ -16,39 +16,29 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-	<div class="element-data element-eyes row">
-		<div class="element-eye right-eye column">
-			<div class="eyedraw-row">
-				<?php if ($element->hasRight()) {
-    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-                        'idSuffix' => 'right_'.$element->elementType->id,
-                        'side' => 'R',
+<div class="element-data element-eyes row">
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+      <div class="element-eye <?= $eye_side ?>-eye column">
+        <div class="data-row">
+            <?php if ($element->hasEye($eye_side)): ?>
+              <div class="eyedraw flex-layout flex-top flex-left anterior-segment">
+                <div class="eyedraw-canvas">
+                    <?php
+                    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+                        'idSuffix' => $eye_side . '_' . $element->elementType->id,
+                        'side' => ($eye_side === 'right') ? 'R' : 'L',
                         'mode' => 'view',
                         'width' => 200,
                         'height' => 200,
                         'model' => $element,
-                        'attribute' => 'right_eyedraw',
-                    ));
-                } else {?>
-					<div class="data-value">Not recorded</div>
-				<?php }?>
-			</div>
-		</div>
-		<div class="element-eye left-eye column">
-			<div class="eyedraw-row">
-				<?php if ($element->hasLeft()) {
-    $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-                        'idSuffix' => 'left_'.$element->elementType->id,
-                        'side' => 'R',
-                        'mode' => 'view',
-                        'width' => 200,
-                        'height' => 200,
-                        'model' => $element,
-                        'attribute' => 'left_eyedraw',
-                    ));
-                } else {?>
-					<div class="data-value">Not recorded</div>
-				<?php }?>
-			</div>
-		</div>
-	</div>
+                        'attribute' => $eye_side . '_eyedraw',
+                    )); ?>
+                </div>
+              </div>
+            <?php else: ?>
+              <div class="data-value">Not recorded</div>
+            <?php endif; ?>
+        </div>
+      </div>
+    <?php endforeach; ?>
+</div>
