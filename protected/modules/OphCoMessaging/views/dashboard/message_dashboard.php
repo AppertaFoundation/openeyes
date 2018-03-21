@@ -20,7 +20,6 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
 <div class="home-messages flex-layout flex-top">
   <div class="message-actions">
     <div class="user"><?= ($user->title ? $user->title . ' ' : '') . $user->first_name . ' ' . $user->last_name; ?></div>
-    <button class="green hint cols-full send-message">Send New Message</button>
     <ul class="filter-messages">
       <li>
         <?php echo CHtml::link(
