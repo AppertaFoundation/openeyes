@@ -16,8 +16,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-logo.svg';
-$commit = preg_replace('/[\s\t].*$/s', '', @file_get_contents(Yii::app()->basePath . '/../.git/FETCH_HEAD'));
-$commitDate = exec("git show -s --format=%cD $commit");
 ?>
 <div class="oe-logo" id="js-openeyes-btn">
   <svg viewBox="0 0 300.06 55.35" class="oe-openeyes">
@@ -25,9 +23,8 @@ $commitDate = exec("git show -s --format=%cD $commit");
   </svg>
 </div>
 
-<div class="oe-product-info" id="js-openeyes-info">
+<div class="oe-product-info" id="js-openeyes-info" style="display: none;">
   <h3>OpenEyes 3.0</h3>
-
 
   <div class="group">
     <h4>Theme</h4>
@@ -57,22 +54,24 @@ $commitDate = exec("git show -s --format=%cD $commit");
   <div class="group">
     <h4>Support</h4>
     <p>
-      <span class="large-text"> Need Help?
-          <?php if (Yii::app()->params['helpdesk_email']) { ?>
-    <p><?php echo Yii::app()->params['helpdesk_email'] ?></p>
-      <?php } ?>
-      <?php if (Yii::app()->params['helpdesk_phone']) { ?>
-        <p><?php echo Yii::app()->params['helpdesk_phone'] ?></p>
-      <?php } ?>
-    </span>
+        <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']): ?>
+          <span class="large-text"> Need Help?
+              <?php if (Yii::app()->params['helpdesk_phone']): ?>
+                Ext: <?php echo Yii::app()->params['helpdesk_phone'] ?>
+              <?php endif; ?>
+              <?php if (Yii::app()->params['helpdesk_email']): ?>
+                  <?php echo Yii::app()->params['helpdesk_email'] ?>
+              <?php endif; ?>
+          </span>
+        <?php endif; ?>
     </p>
   </div>
   <div class="group">
-    <h4>&copy; OpenEyes <?php
-        echo date('Y', $time = strtotime($commitDate)); ?></h4>
+    <h4>&copy; OpenEyes <?= date('Y') ?></h4>
   </div>
 
 </div>
+
 <script>
 
   $(function () {
