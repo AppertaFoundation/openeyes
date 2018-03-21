@@ -196,7 +196,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         self.$element.find('li').each(function () {
             if(inArray(this.getAttribute('data-id'), selectedAllergies)){
                 $(this).hide();
-                console.log(inArray(this.getAttribute('data-id'), selectedAllergies));
             } else {
                 $(this).show();
             }
