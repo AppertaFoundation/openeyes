@@ -16,14 +16,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
  ?>
-<div class="element-data">
+<div class="element-data full-width">
 	<div class="row data-row">
-		<div class="large-3 column">
-			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('images_id'))?>:</div>
-		</div>
-		<div class="large-9 column">
-			<div class="data-value"><?php echo $element->images ? $element->images->name : 'None'?>
-			</div>
+    <div class="data-value">
+        <?php echo $element->images ? $element->images->name : 'None'?>
+      <i class="oe-i info small pad js-has-tooltip"
+         data-tooltip-content="<?php echo CHtml::encode($element->getAttributeLabel('images_id'))?>"></i>
 		</div>
 	</div>
 </div>
