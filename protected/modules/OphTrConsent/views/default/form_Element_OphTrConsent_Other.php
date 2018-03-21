@@ -33,7 +33,7 @@
                     'minLength' => '3',
                     'select' => "js:function(event, ui) {
 								$('#Element_OphTrConsent_Other_consultant_id').val(ui.item.id);
-								$('#consultant').val(ui.item.fullname);
+								$('#Consultant').val(ui.item.fullname);
 								$('#OphTrConsent_consultantAutoComplete').val('');
 								return false;
 							}",
