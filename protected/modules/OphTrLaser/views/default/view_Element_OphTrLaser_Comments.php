@@ -16,17 +16,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<div class="data-label">
-					<?php echo $element->getAttributeLabel('comments')?>:
-				</div>
-			</div>
-			<div class="large-10 column">
-				<div class="data-value">
-					<?php echo $element->textWithLineBreaks('comments')?>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="element-data full-width">
+  <div class="data-row">
+    <div class="data-value">
+      <?php if($element->comments !== ''): ?>
+        <span><?php echo $element->textWithLineBreaks('comments') ?></span>
+      <?php else: ?>
+        <span class="none">None</span>
+      <?php endif; ?>
+    </div>
+  </div>
+</div>
