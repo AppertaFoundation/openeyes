@@ -196,4 +196,14 @@ class Element_OphTrLaser_Treatment extends SplitEventTypeElement
     {
         $this->updateProcedures($data, self::LEFT_EYE_ID);
     }
+
+    public function getViewTitle()
+    {
+        return 'Procedures';
+    }
+
+    public function getFormTitle()
+    {
+        return 'Procedures';
+    }
 }
