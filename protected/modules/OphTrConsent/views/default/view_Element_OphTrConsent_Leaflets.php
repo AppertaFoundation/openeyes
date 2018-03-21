@@ -15,21 +15,21 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
-<div class="element-data">
-	<div class="row data-row">
-		<div class="large-3 column">
-			<div class="data-label">Leaflets provided:</div>
-		</div>
-		<div class="large-9 column">
-			<div class="data-value"><?php if (empty($element->leaflets)) {?>
-					None
-				<?php } else {?>
-					<?php foreach ($element->leaflets as $leaflet) {?>
-						<?php echo $leaflet->leaflet->name?><br/>
-					<?php }?>
-				<?php }?>
-			</div>
-		</div>
-	</div>
+?>
+<div class="element-data full-width">
+  <div class="data-row">
+    <div class="data-value">
+      <ul class="dslash-list">
+          <?php if (empty($element->leaflets)) { ?>
+            <li>None</li>
+          <?php } else { ?>
+              <?php foreach ($element->leaflets as $leaflet) { ?>
+              <li>
+                  <?php echo $leaflet->leaflet->name ?>
+              </li>
+              <?php } ?>
+          <?php } ?>
+      </ul>
+    </div>
+  </div>
 </div>
