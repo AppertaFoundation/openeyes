@@ -18,23 +18,19 @@
 ?>
 
 
-
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_anaesthetictype_id') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value">
-			<?php echo $element->{$side.'_anaesthetictype'}->name . ($element->{$side.'_anaestheticdelivery'} ? ' - ' . $element->{$side.'_anaestheticdelivery'}->name : '') ?>
-			</div>
-		</div>
-	</div>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_anaestheticagent_id') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo $element->{$side.'_anaestheticagent'}->name ?></div>
-		</div>
-	</div>
-
+<table>
+  <tbody>
+  <tr>
+    <td>
+        <?php echo $element->getAttributeLabel($side . '_anaesthetictype_id') ?>:
+    </td>
+    <td>
+        <?php echo $element->{$side . '_anaesthetictype'}->name . ($element->{$side . '_anaestheticdelivery'} ? ' - ' . $element->{$side . '_anaestheticdelivery'}->name : '') ?>
+    </td>
+  </tr>
+  <tr>
+    <td><?php echo $element->getAttributeLabel($side . '_anaestheticagent_id') ?>:</td>
+    <td><?php echo $element->{$side . '_anaestheticagent'}->name ?></td>
+  </tr>
+  </tbody>
+</table>
