@@ -15,22 +15,54 @@
 $base_name = CHtml::modelName($value) . "[{$side}_values][{$index}]";
 ?>
 <tr data-index="<?= $index ?>" data-side="<?php echo $side ?>" data-index="<?php echo $index ?>">
-  <td><?= CHtml::textField("{$base_name}[reading_time]", $time, array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-11')) ?>
-  <td<?php if ($value->instrument && $value->instrument->scale) {
-      ?> style="display: none"<?php
-  } ?>>
-      <?= $form->dropDownList($value, 'reading_id', 'OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Reading', array('nowrapper' => true, 'data-base-name' => $base_name, 'name' => "{$base_name}[reading_id]", 'class' => 'cols-11', 'prompt' => '--')) ?>
+  <td>
+      <?= CHtml::textField(
+              "{$base_name}[reading_time]",
+              $time,
+              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-11')
+      ) ?>
   </td>
-  <td class="scale_values"<?php if (!$value->instrument || !$value->instrument->scale) {
-      ?> style="display: none"<?php
-  } ?>>
+  <td style="<?=($value->instrument && $value->instrument->scale) ? "display: none":"" ?>">
+      <?= $form->dropDownList(
+              $value,
+              'reading_id',
+              'OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Reading',
+              array(
+                  'nowrapper' => true,
+                  'data-base-name' => $base_name,
+                  'name' => "{$base_name}[reading_id]",
+                  'class' => 'cols-11',
+                  'prompt' => '--'
+              )
+      ) ?>
+  </td>
+  <td class="scale_values" style="<?= (!$value->instrument || !$value->instrument->scale) ? "display: none":""?>">
       <?php if ($value->instrument && $value->instrument->scale) {
-          echo $this->renderPartial('_qualitative_scale', array('value' => $value, 'side' => $side, 'index' => $index, 'scale' => $value->instrument->scale));
+          echo $this->renderPartial(
+                  '_qualitative_scale',
+                  array(
+                      'value' => $value,
+                      'side' => $side,
+                      'index' => $index,
+                      'scale' => $value->instrument->scale
+                  )
+          );
       } ?>
   </td>
     <?php if ($element->getSetting('show_instruments')): ?>
       <td class="cols-5 instrument">
-          <?= $form->dropDownList($value, 'instrument_id', CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['visible' => 1]), 'id', 'name'), array('nowrapper' => true, 'class' => 'IOPinstrument cols-11', 'name' => "{$base_name}[instrument_id]")) ?></td>
+          <?= $form->dropDownList(
+                  $value,
+                  'instrument_id',
+                  CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->
+                    findAllByAttributes(['visible' => 1]), 'id', 'name'),
+                  array(
+                      'nowrapper' => true,
+                      'class' => 'IOPinstrument cols-11',
+                      'name' => "{$base_name}[instrument_id]"
+                  )
+          )?>
+      </td>
     <?php endif ?>
   <td class="cols-2"><?= CHtml::hiddenField("{$base_name}[eye_id]", ($side == 'left') ? Eye::LEFT : Eye::RIGHT) ?><i
         class="oe-i trash"></i></td>

@@ -108,5 +108,25 @@ $comments = $side . '_comments';
     );
     ?>
 </script>
+<script type="text/javascript">
+    $(function () {
+        var side = $('.edit-<?=CHtml::modelName($element)?> .<?=$side?>-eye');
+        var popup = side.find('#add-to-IOP');
+
+        function addIOPReading(selected){
+            selected.removeClass('selected');
+            console.log(selected);
+        }
+
+        setUpAdder(
+            popup,
+            'return',
+            addIOPReading,
+            side.find('.js-add-select-search'),
+            null,
+            popup.find('.select-icon-btn, .close-icon-btn')
+        );
+    });
+</script>
 
 

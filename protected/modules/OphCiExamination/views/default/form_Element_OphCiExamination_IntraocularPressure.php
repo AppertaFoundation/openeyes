@@ -22,42 +22,24 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/IntraocularP
 
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-  <div class="element-eye right-eye left side" data-side="right">
-    <div class="active-form field-row flex-layout" <?php if (!$element->hasRight()) {
-        ?> style="display: none;"<?php
-    } ?>>
-      <a class="remove-side">
-        <i class="oe-i remove-circle small"></i>
-      </a>
-        <?php $this->renderPartial($element->form_view . '_side', array('side' => 'right', 'element' => $element, 'form' => $form)) ?>
-    </div>
-    <div class="inactive-form" <?php if ($element->hasRight()) {
-        ?> style="display: none;"<?php
-      } ?>>
-      <div class="add-side">
-        <a href="#">
-          Add right side
-        </a>
+    <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):?>
+      <div class="element-eye <?=$eye_side?>-eye <?=$page_side?> side" data-side="<?=$eye_side?>">
+        <div class="active-form field-row flex-layout" style="<?=!$element->hasEye($eye_side)?"display: none;":""?>">
+          <a class="remove-side">
+            <i class="oe-i remove-circle small"></i>
+          </a>
+            <?php $this->renderPartial(
+                    $element->form_view . '_side',
+                    array('side' => $eye_side, 'element' => $element, 'form' => $form)
+            )?>
+        </div>
+        <div class="inactive-form" style="<?=$element->hasEye($eye_side) ? "display: none;":""?>">
+          <div class="add-side">
+            <a href="#">
+              Add <?=ucfirst($eye_side)?> eye
+            </a>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="element-eye left-eye right side" data-side="left">
-    <div class="active-form field-row flex-layout" <?php if (!$element->hasLeft()) {
-        ?> style="display: none;"<?php
-    } ?>>
-      <a class="remove-side">
-        <i class="oe-i remove-circle small"></i>
-      </a>
-        <?php $this->renderPartial($element->form_view . '_side', array('side' => 'left', 'element' => $element, 'form' => $form)) ?>
-    </div>
-    <div class="inactive-form" <?php if ($element->hasLeft()) {
-        ?> style="display: none;"<?php
-    } ?>">
-      <div class="add-side">
-        <a href="#">
-          Add left side
-        </a>
-      </div>
-    </div>
-  </div>
+    <?php endforeach;?>
 </div>

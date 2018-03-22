@@ -29,9 +29,7 @@ $(document).ready(function () {
 			)
 		);
 
-		table.find('tr:last td.instrument').find('option[value="' + instrument + '"]').attr('selected', true);
-
-        $(e.target).closest('.flex-item-bottom').find('#add-to-IOP').hide();
+		table.find('tr:last td.instrument').find('option[value="' + instrument + '"]').attr('selected', true);;
 
 		table.show();
 	}
