@@ -16,44 +16,48 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row procedure-selection eventDetail<?php if ($last) { ?> eventDetailLast<?php } ?>"
+<div class="flex-layout procedure-selection eventDetail<?php if ($last) { ?> eventDetailLast<?php } ?>"
      id="typeProcedure"<?php if ($hidden) { ?> style="display: none;"<?php } ?>>
-  <div class="cols-2 column">
+    <?php if ($label && sizeof($label)) { ?>
+  <div class="cols-2">
     <label for="select_procedure_id_<?php echo $identifier; ?>">
-        <?php echo $label ?>:
+        <?php echo $label ?>
     </label>
   </div>
-  <div class="cols-4 column">
-    <fieldset>
-      <legend><em>Add a procedure:</em></legend>
-        <?php if ($headertext) { ?>
-          <p><em><?php echo $headertext ?></em></p>
+  <div class="cols-4">
+      <?php } else { ?>
+    <div class="cols-6">
         <?php } ?>
-        <?php
-        if (!empty($subsections) || !empty($procedures)) {
-            if (!empty($subsections)) { ?>
-              <div class="field-row">
-                  <?php echo CHtml::dropDownList('subsection_id_' . $identifier, '', $subsections,
-                      array('empty' => 'Select a subsection')); ?>
-              </div>
-              <div class="field-row hide">
-                  <?php echo CHtml::dropDownList('select_procedure_id_' . $identifier, '', array(),
-                      array('empty' => 'Select a commonly used procedure')); ?>
-              </div>
-            <?php } else { ?>
-              <div class="field-row">
-                  <?php echo CHtml::dropDownList('select_procedure_id_' . $identifier, '', $procedures,
-                      array('empty' => 'Select a commonly used procedure')); ?>
-              </div>
-            <?php }
-        }
-        ?>
-      <div class="row">
+    <fieldset>
+        <legend><em>Add a procedure:</em></legend>
+          <?php if ($headertext) { ?>
+            <p><em><?php echo $headertext ?></em></p>
+          <?php } ?>
           <?php
-          $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-              'name' => 'procedure_id_' . $identifier,
-              'id' => 'autocomplete_procedure_id_' . $identifier,
-              'source' => "js:function(request, response) {
+          if (!empty($subsections) || !empty($procedures)) {
+              if (!empty($subsections)) { ?>
+                <div class="field-row">
+                    <?php echo CHtml::dropDownList('subsection_id_' . $identifier, '', $subsections,
+                        array('empty' => 'Select a subsection')); ?>
+                </div>
+                <div class="field-row hide">
+                    <?php echo CHtml::dropDownList('select_procedure_id_' . $identifier, '', array(),
+                        array('empty' => 'Select a commonly used procedure')); ?>
+                </div>
+              <?php } else { ?>
+                <div class="field-row">
+                    <?php echo CHtml::dropDownList('select_procedure_id_' . $identifier, '', $procedures,
+                        array('empty' => 'Select a commonly used procedure')); ?>
+                </div>
+              <?php }
+          }
+          ?>
+        <div class="field-row">
+            <?php
+            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                'name' => 'procedure_id_' . $identifier,
+                'id' => 'autocomplete_procedure_id_' . $identifier,
+                'source' => "js:function(request, response) {
 
 						var existingProcedures = $('#procedureList_$identifier .procedure .value')
 							.map(function() { return $(this).text(); })
@@ -79,9 +83,9 @@
 							}
 						});
 					}",
-              'options' => array(
-                  'minLength' => '2',
-                  'select' => "js:function(event, ui) {
+                'options' => array(
+                    'minLength' => '2',
+                    'select' => "js:function(event, ui) {
 							if (typeof(window.callbackVerifyAddProcedure) == 'function') {
 								window.callbackVerifyAddProcedure(ui.item.value," . ($durations ? '1' : '0') . ",function(result) {
 									if (result != true) {
@@ -94,17 +98,13 @@
 								ProcedureSelectionSelectByName(ui.item.value,true,'$identifier');
 							}
 						}",
-              ),
-              'htmlOptions' => array('placeholder' => 'or enter procedure here'),
-          )); ?>
-      </div>
-    </fieldset>
-  </div>
-
-    <?php
-    $totalDuration = 0;
-    ?>
-  <div class="cols-6 column">
+                ),
+                'htmlOptions' => array('placeholder' => 'or enter procedure here', 'class' => 'cols-9'),
+            )); ?>
+        </div>
+      </fieldset>
+    </div><?php $totalDuration = 0; ?>
+  <div class="cols-6">
     <div id="procedureList_<?php echo $identifier ?>" class="panel procedures"
          style="<?php if (empty($selected_procedures)) { ?> display: none;<?php } ?>">
       <table class="plain">
