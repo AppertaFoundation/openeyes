@@ -25,6 +25,14 @@ class PatientTicketing_AuthRules
 {
     public function canProcessQueueSet($user_id, services\PatientTicketing_QueueSet $queueset)
     {
+        /*
+         * Hardcoded "true" means everyone can select any virtual clinic in Examination follow-up element
+         * which is nice, but because of this, setting permissions in Admin > PatientTicketing > Queue Sets
+         * is unnecessary (and missleading?)
+         */
+        //@TODO:think this through and refactor
+        return true;
+
         if (Yii::app()->authManager->checkAccess('admin', $user_id)) {
             return true;
         }
