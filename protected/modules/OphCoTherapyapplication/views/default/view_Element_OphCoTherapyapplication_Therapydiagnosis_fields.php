@@ -16,23 +16,26 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<table>
+  <tbody>
+  <tr>
+    <td>
+      <?php echo $element->getAttributeLabel($side . '_diagnosis1_id') ?>:
+    </td>
+    <td>
+      <?php echo $element->{$side . '_diagnosis1'} ? $element->{$side . '_diagnosis1'}->term : 'None'; ?>
+    </td>
+  </tr>
 
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label"><?php echo $element->getAttributeLabel($side.'_diagnosis1_id') ?>:</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value"><?php echo $element->{$side.'_diagnosis1'} ? $element->{$side.'_diagnosis1'}->term : 'None'; ?></div>
-	</div>
-</div>
-
-<?php if ($element->{$side.'_diagnosis2_id'}) {?>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_diagnosis2_id') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo $element->{$side.'_diagnosis2'}->term; ?></div>
-		</div>
-	</div>
-<?php } ?>
+  <?php if ($element->{$side . '_diagnosis2_id'}) { ?>
+    <tr>
+      <td>
+        <?php echo $element->getAttributeLabel($side . '_diagnosis2_id') ?>:
+      </td>
+      <td>
+        <?php echo $element->{$side . '_diagnosis2'}->term; ?>
+      </td>
+    </tr>
+  <?php } ?>
+  </tbody>
+</table>

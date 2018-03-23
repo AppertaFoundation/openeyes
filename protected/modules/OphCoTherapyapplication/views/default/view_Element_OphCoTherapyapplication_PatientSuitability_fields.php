@@ -16,29 +16,32 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<table>
+  <tbody>
+  <tr>
+    <td>
+        <?php echo $element->getAttributeLabel($side . '_treatment_id') ?>:
+    </td>
+    <td>
+        <?php echo $element[$side . '_treatment']->name ?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo $element->getAttributeLabel($side . '_angiogram_baseline_date') ?>:
+    </td>
+    <td>
+        <?php echo CHtml::encode($element->NHSDate($side . '_angiogram_baseline_date')) ?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo $element->getAttributeLabel($side . '_nice_compliance') ?>:
+    </td>
+    <td>
+        <?php echo $element->{$side . '_nice_compliance'} ? 'Yes' : 'No' ?>
+    </td>
+  </tr>
+  </tbody>
+</table>
 
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label"><?php echo $element->getAttributeLabel($side.'_treatment_id') ?>:</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value"><?php echo $element[$side.'_treatment']->name ?></div>
-	</div>
-</div>
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label"><?php echo $element->getAttributeLabel($side.'_angiogram_baseline_date') ?>:</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value"><?php echo CHtml::encode($element->NHSDate($side.'_angiogram_baseline_date'))?></div>
-	</div>
-</div>
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label"><?php echo $element->getAttributeLabel($side.'_nice_compliance') ?>:</div>
-	</div>
-
-	<div class="large-8 column">
-		<div class="data-value"><?php echo $element->{$side.'_nice_compliance'} ? 'Yes' : 'No'?></div>
-	</div>
-</div>

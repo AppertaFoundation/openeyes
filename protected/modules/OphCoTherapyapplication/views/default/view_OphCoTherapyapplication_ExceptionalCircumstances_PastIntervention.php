@@ -17,102 +17,77 @@
  */
 ?>
 
+<table>
+  <tbody class="pastintervention-view panel previous-interventions">
+  <tr>
+    <td>
+        <?php echo $pastintervention->getAttributeLabel('start_date'); ?>:
+    </td>
+    <td>
+        <?php echo Helper::convertMySQL2NHS($pastintervention->start_date) ?>
+    </td>
+  </tr>
 
-<div class="pastintervention-view panel previous-interventions">
-	<div class="row data-row">
-		<div class="large-6 column">
-			<div class="data-label">
-				<?php echo $pastintervention->getAttributeLabel('start_date'); ?>:
-			</div>
-		</div>
-		<div class="large-6 column">
-			<div class="data-value">
-				<?php echo Helper::convertMySQL2NHS($pastintervention->start_date) ?>
-			</div>
-		</div>
-	</div>
+  <tr>
+    <td>
+        <?php echo $pastintervention->getAttributeLabel('end_date'); ?>:
+    </td>
+    <td>
+        <?php echo Helper::convertMySQL2NHS($pastintervention->end_date) ?>
+    </td>
+  </tr>
 
-	<div class="row data-row">
-		<div class="large-6 column">
-			<div class="data-label">
-				<?php echo $pastintervention->getAttributeLabel('end_date'); ?>:
-			</div>
-		</div>
-		<div class="large-6 column">
-			<div class="data-value">
-				<?php echo Helper::convertMySQL2NHS($pastintervention->end_date) ?>
-			</div>
-		</div>
-	</div>
+  <tr>
+    <td>
+        <?php echo $pastintervention->getAttributeLabel('treatment_id'); ?>:
+    </td>
+    <td>
+        <?php echo $pastintervention->getTreatmentName() ?>
+    </td>
+  </tr>
 
-	<div class="row data-row">
-		<div class="large-6 column">
-			<div class="data-label">
-				<?php echo $pastintervention->getAttributeLabel('treatment_id'); ?>:
-			</div>
-		</div>
-		<div class="large-6 column">
-			<div class="data-value">
-				<?php echo $pastintervention->getTreatmentName() ?>
-			</div>
-		</div>
-	</div>
+  <tr>
+    <td>
+        <?php echo $pastintervention->getAttributeLabel('start_va'); ?>:
+    </td>
+    <td>
+        <?php echo $pastintervention->start_va ?>
+    </td>
+  </tr>
 
-	<div class="row data-row">
-		<div class="large-6 column">
-			<div class="data-label">
-				<?php echo $pastintervention->getAttributeLabel('start_va'); ?>:
-			</div>
-		</div>
-		<div class="large-6 column">
-			<div class="data-value">
-				<?php echo $pastintervention->start_va ?>
-			</div>
-		</div>
-	</div>
+  <tr>
+    <td>
+        <?php echo $pastintervention->getAttributeLabel('end_va'); ?>:
+    </td>
+    <td>
+        <?php echo $pastintervention->end_va ?>
+    </td>
+  </tr>
 
-	<div class="row data-row">
-		<div class="large-6 column">
-			<div class="data-label">
-				<?php echo $pastintervention->getAttributeLabel('end_va'); ?>:
-			</div>
-		</div>
-		<div class="large-6 column">
-			<div class="data-value">
-				<?php echo $pastintervention->end_va ?>
-			</div>
-		</div>
-	</div>
+  <tr>
+    <td>
+        <?php echo $pastintervention->getAttributeLabel('stopreason_id'); ?>:
+    </td>
+    <td>
+        <?php if ($pastintervention->stopreason_other) {
+            echo Yii::app()->format->Ntext($pastintervention->stopreason_other);
+        } else {
+            echo $pastintervention->stopreason->name;
+        } ?>
+    </td>
+  </tr>
 
-	<div class="row data-row">
-		<div class="large-6 column">
-			<div class="data-label">
-				<?php echo $pastintervention->getAttributeLabel('stopreason_id'); ?>:
-			</div>
-		</div>
-		<div class="large-6 column">
-			<div class="data-value">
-				<?php if ($pastintervention->stopreason_other) {
-                    echo Yii::app()->format->Ntext($pastintervention->stopreason_other);
-                } else {
-                    echo $pastintervention->stopreason->name;
-                } ?>
-			</div>
-		</div>
-	</div>
-
-	<div class="row data-row">
-		<div class="large-12 column">
-			<div class="data-label data-row">
-				<?php echo $pastintervention->getAttributeLabel('comments'); ?>:
-			</div>
-			<div class="data-value comments">
-				<?php if ($pastintervention->comments) {
-                    echo Yii::app()->format->Ntext($pastintervention->comments);
-                } else {
-                    echo 'None';
-                }?>
-			</div>
-		</div>
-	</div>
-</div>
+  <tr>
+    <td>
+        <?php echo $pastintervention->getAttributeLabel('comments'); ?>:
+    </td>
+    <td>
+        <?php if ($pastintervention->comments) {
+            echo Yii::app()->format->Ntext($pastintervention->comments);
+        } else {
+            echo 'None';
+        } ?>
+    </td>
+  </tr>
+  </tbody>
+</table>
