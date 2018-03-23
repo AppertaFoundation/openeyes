@@ -31,11 +31,32 @@
 </div>
 
 <script type="text/javascript">
-    // Hide the adding dialog, print text to textArea
-    $('.oe-add-select-search .add-icon-btn').on('click', function () {
-        var inputText = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation_description');
-        var popup = $('#add-to-investigation');
+  $(function () {
+    var investigationDiv =
+      $('section[data-element-type-class=\'OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation\']');
+    var popup = investigationDiv.find('#add-to-investigation');
 
-        inputText.val(inputText.val() ? inputText.val() + popup.find('li.selected').attr('data-str') : popup.find('li.selected').attr('data-str'));
-    });
+    function setInvestigationText() {
+      var inputText = investigationDiv.find(
+        '#OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation_description'
+      );
+
+      popup.find('.selected').each(function (e) {
+        var selectedStr = $(this).attr('data-str');
+        if (selectedStr == null)return;
+        inputText.val(inputText.val() ? inputText.val() + selectedStr : selectedStr);
+        $(this).removeClass('selected');
+      });
+
+    }
+
+    setUpAdder(
+      popup,
+      'multi',
+      setInvestigationText,
+      investigationDiv.find('.js-add-select-search'),
+      popup.find('.add-icon-btn'),
+      popup.find('.close-icon-btn')
+    )
+  });
 </script>
