@@ -332,6 +332,7 @@ function setUpAdder(adderDiv = null, selectMode = 'single', callback = null, ope
     if (openButtons !== null){
         openButtons.click(function showAdder() {
             adderDiv.show();
+            return false;
         });
     }
 
@@ -339,12 +340,14 @@ function setUpAdder(adderDiv = null, selectMode = 'single', callback = null, ope
         addButtons.click(function closeAndAdd(){
             adderDiv.hide();
             callback();
+            return false;
         });
     }
 
     if(closeButtons !== null){
         closeButtons.click(function closeAdder() {
             adderDiv.hide();
+            return false;
         });
     }
 

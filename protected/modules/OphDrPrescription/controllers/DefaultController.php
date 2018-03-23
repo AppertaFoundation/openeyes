@@ -256,6 +256,7 @@ class DefaultController extends BaseEventTypeController
     {
         if (Yii::app()->request->isAjaxRequest) {
             $criteria = new CDbCriteria();
+            $params = [];
             if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
                 $criteria->addCondition(array('LOWER(name) LIKE :term', 'LOWER(aliases) LIKE :term'), 'OR');
                 $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';

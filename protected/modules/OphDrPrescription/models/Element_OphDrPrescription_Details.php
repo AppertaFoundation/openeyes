@@ -89,7 +89,7 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
     {
         return array();
     }
-    
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
@@ -220,15 +220,13 @@ class Element_OphDrPrescription_Details extends BaseEventTypeElement
      *
      * @TODO: Should this be a static method on the DrugType model, rather than here?
      *
-     * @return CHtml::listData
+     * @return DrugType[]
      */
     public function drugTypes()
     {
-        $drugTypes = CHtml::listData(DrugType::model()->active()->findAll(array(
-                            'order' => 'name',
-                        )), 'id', 'name');
-
-        natcasesort($drugTypes);
+        $drugTypes = DrugType::model()->active()->findAll(array(
+            'order' => 'name',
+        ));
 
         return $drugTypes;
     }
