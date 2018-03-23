@@ -53,267 +53,348 @@ foreach ($skin_drugs as $drug) {
     $skin_drugs_opts['options'][(string)$drug->id] = $opts;
 }
 ?>
-
-<div id="div_<?php echo get_class($element) ?>_<?php echo $side ?>_pre_antisept_drug_id"
-     class="row field-row">
-  <div class="<?php echo $form->columns('label'); ?>">
-    <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_pre_antisept_drug_id">
-        <?php echo $element->getAttributeLabel($side . '_pre_antisept_drug_id') ?>:
-    </label>
-  </div>
-  <div class="large-6 column end">
-    <div class="wrapper<?php if ($antiseptic_allergic) {
+<table>
+  <tbody>
+  <tr id="div_<?php echo get_class($element) ?>_<?php echo $side ?>_pre_antisept_drug_id"
+      class="row field-row">
+    <td>
+      <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_pre_antisept_drug_id">
+          <?php echo $element->getAttributeLabel($side . '_pre_antisept_drug_id') ?>:
+      </label>
+    </td>
+    <td class="wrapper<?php if ($antiseptic_allergic) {
         echo ' allergyWarning';
     } ?>">
-        <?php
-        echo $form->dropDownList($element, $side . '_pre_antisept_drug_id', CHtml::listData($antiseptic_drugs, 'id', 'name'), $antiseptic_drugs_opts);
-        ?>
-    </div>
-  </div>
-</div>
-
-<div id="div_<?php echo get_class($element) ?>_<?php echo $side ?>_pre_skin_drug_id"
-     class="row field-row">
-  <div class="<?php echo $form->columns('label'); ?>">
-    <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_pre_skin_drug_id">
-        <?php echo $element->getAttributeLabel($side . '_pre_skin_drug_id') ?>:
-    </label>
-  </div>
-  <div class="large-6 column end">
-    <div class="wrapper<?php if ($skin_allergic) {
+        <?php echo $form->dropDownList($element, $side . '_pre_antisept_drug_id',
+            CHtml::listData($antiseptic_drugs, 'id', 'name'), $antiseptic_drugs_opts); ?>
+    </td>
+  </tr>
+  <tr id="div_<?php echo get_class($element) ?>_<?php echo $side ?>_pre_skin_drug_id"
+      class="row field-row">
+    <td>
+      <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_pre_skin_drug_id">
+          <?php echo $element->getAttributeLabel($side . '_pre_skin_drug_id') ?>:
+      </label>
+    </td>
+    <td class="wrapper<?php if ($skin_allergic) {
         echo ' allergyWarning';
     } ?>">
+        <?php echo $form->dropDownList($element, $side . '_pre_skin_drug_id',
+            CHtml::listData($skin_drugs, 'id', 'name'), $skin_drugs_opts); ?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_pre_ioplowering_required">
+          <?php echo $element->getAttributeLabel($side . '_pre_ioplowering_required') ?>:
+      </label>
+    </td>
+    <td>
+        <?php echo $form->checkbox($element, $side . '_pre_ioplowering_required',
+            array('nowrapper' => true, 'no-label' => true)); ?>
+    </td>
+  </tr>
+  <?php
+  $show = $element->{$side . '_pre_ioplowering_required'};
+  if (isset($_POST[get_class($element)])) {
+      $show = $_POST[get_class($element)][$side . '_pre_ioplowering_required'];
+  }
+  $div_class = 'eventDetail';
+  if (!$show) {
+      $div_class .= ' hidden';
+  }
+  $div_id = 'div_' . CHtml::modelName($element) . '_' . $side . '_pre_ioploweringdrugs';
+  ?>
+  <tr id="<?= $div_id ?>"
+      class="<?php echo $div_class ?> row field-row widget">
+    <td>
+      <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_pre_ioploweringdrugs">
+          <?php echo $element->getAttributeLabel($side . '_pre_ioploweringdrugs') ?>:
+      </label>
+    </td>
+    <td>
         <?php
-        echo $form->dropDownList($element, $side . '_pre_skin_drug_id', CHtml::listData($skin_drugs, 'id', 'name'), $skin_drugs_opts);
+        $html_options = array(
+            'options' => array(),
+            'empty' => '- Please select -',
+            'div_id' => 'div_' . get_class($element) . '_' . $side . '_pre_ioploweringdrugs',
+            'label' => '',
+            'div_class' => $div_class,
+            'nowrapper' => true,
+        );
+        $ioplowering_drugs = OphTrIntravitrealinjection_IOPLoweringDrug::model()->activeOrPk($element->iopLoweringDrugValues)->findAll(array('order' => 'display_order asc'));
+        foreach ($ioplowering_drugs as $drug) {
+            $html_options['options'][(string)$drug->id] = array('data-order' => $drug->display_order);
+        }
+
+        echo $form->multiSelectList(
+            $element,
+            get_class($element) . '[' . $side . '_pre_ioploweringdrugs]',
+            $side . '_pre_ioploweringdrugs',
+            'id',
+            CHtml::listData($ioplowering_drugs, 'id', 'name'),
+            array(),
+            $html_options,
+            false,
+            false,
+            null,
+            false,
+            false,
+            array()
+        );
         ?>
-    </div>
-  </div>
-</div>
+    </td>
+  </tr>
+  <?php
+  $drugs = OphTrIntravitrealinjection_Treatment_Drug::model()->activeOrPk($element->{$side . '_drug_id'})->findAll();
 
-<?php
-echo $form->checkbox($element, $side . '_pre_ioplowering_required');
-?>
+  $html_options = array(
+      'empty' => '- Please select -',
+      'nowrapper' => true,
+      'options' => array(),
+  );
+  // get the previous injection counts for each of the drug options for this eye
+  $drug_history = array();
 
-<?php
-$show = $element->{$side . '_pre_ioplowering_required'};
-if (isset($_POST[get_class($element)])) {
-    $show = $_POST[get_class($element)][$side . '_pre_ioplowering_required'];
-}
-?>
+  foreach ($drugs as $drug) {
+      if ($element->event_id) {
+          $previous = $injection_api->previousInjectionsByEvent($element->event_id, $side, $drug);
+      } else {
+          $previous = $injection_api->previousInjections($this->patient, $episode, $side, $drug);
+      }
+      $count = 0;
+      if (count($previous)) {
+          $count = $previous[count($previous) - 1][$side . '_number'];
+      }
+      $drug_history[$drug->id] = $previous;
 
+      $html_options['options'][$drug->id] = array(
+          'data-previous' => $count,
+      );
 
-<?php
-$div_class = 'eventDetail';
-if (!$show) {
-    $div_class .= ' hidden';
-}
+      // if this is an edit, we want to know what the original count was so that we don't replace it
+      if ($element->{$side . '_drug_id'} && $element->{$side . '_drug_id'} == $drug->id) {
+          $html_options['options'][$drug->id]['data-original-count'] = $element->{$side . '_number'};
+      }
+  }
+  ?>
+  <tr>
+    <td>
+      <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_drug_id">
+          <?php echo $element->getAttributeLabel($side . '_drug_id') ?>:
+      </label>
+    </td>
+    <td>
+        <?php echo $form->dropDownList(
+            $element,
+            $side . '_drug_id',
+            CHtml::listData($drugs, 'id', 'name'),
+            $html_options,
+            false,
+            array()); ?>
+    </td>
+  </tr>
 
-$html_options = array(
-    'options' => array(),
-    'empty' => '- Please select -',
-    'div_id' => 'div_' . get_class($element) . '_' . $side . '_pre_ioploweringdrugs',
-    'label' => $element->getAttributeLabel($side . '_pre_ioploweringdrugs'),
-    'div_class' => $div_class,
-);
-$ioplowering_drugs = OphTrIntravitrealinjection_IOPLoweringDrug::model()->activeOrPk($element->iopLoweringDrugValues)->findAll(array('order' => 'display_order asc'));
-foreach ($ioplowering_drugs as $drug) {
-    $html_options['options'][(string)$drug->id] = array('data-order' => $drug->display_order);
-}
-
-echo $form->multiSelectList(
-    $element,
-    get_class($element) . '[' . $side . '_pre_ioploweringdrugs]',
-    $side . '_pre_ioploweringdrugs',
-    'id',
-    CHtml::listData($ioplowering_drugs, 'id', 'name'),
-    array(),
-    $html_options,
-    false,
-    false,
-    null,
-    false,
-    false,
-    array('field' => 6)
-);
-
-$drugs = OphTrIntravitrealinjection_Treatment_Drug::model()->activeOrPk($element->{$side . '_drug_id'})->findAll();
-
-$html_options = array(
-    'empty' => '- Please select -',
-    'options' => array(),
-);
-// get the previous injection counts for each of the drug options for this eye
-$drug_history = array();
-
-foreach ($drugs as $drug) {
-    if ($element->event_id) {
-        $previous = $injection_api->previousInjectionsByEvent($element->event_id, $side, $drug);
-    } else {
-        $previous = $injection_api->previousInjections($this->patient, $episode, $side, $drug);
-    }
-    $count = 0;
-    if (count($previous)) {
-        $count = $previous[count($previous) - 1][$side . '_number'];
-    }
-    $drug_history[$drug->id] = $previous;
-
-    $html_options['options'][$drug->id] = array(
-        'data-previous' => $count,
-    );
-
-    // if this is an edit, we want to know what the original count was so that we don't replace it
-    if ($element->{$side . '_drug_id'} && $element->{$side . '_drug_id'} == $drug->id) {
-        $html_options['options'][$drug->id]['data-original-count'] = $element->{$side . '_number'};
-    }
-}
-
-echo $form->dropDownList($element, $side . '_drug_id', CHtml::listData($drugs, 'id', 'name'), $html_options, false, array('field' => 6));
-
-$selected_drug = null;
-if (@$_POST['Element_OphTrIntravitrealinjection_Treatment']) {
-    $selected_drug = $_POST['Element_OphTrIntravitrealinjection_Treatment'][$side . '_drug_id'];
-} else {
-    $selected_drug = $element->{$side . '_drug_id'};
-}
-
-?>
-
-<div id="div_<?php echo get_class($element); ?>_<?php echo $side ?>_number" class="row field-row">
-  <div class="<?php echo $form->columns('label'); ?>">
-    <label for="<?php echo get_class($element); ?>_<?php echo $side ?>_number">
-        <?php echo $element->getAttributeLabel($side . '_number'); ?>:
-    </label>
-  </div>
-  <div class="<?php echo $form->columns('field'); ?>">
-    <div class="row collapse in">
-      <div class="large-3 column">
-          <?php echo $form->textField($element, $side . '_number', array('size' => '10', 'nowrapper' => true)) ?>
-      </div>
-      <div class="large-9 column">
-      <span id="<?php echo $side; ?>_number_history_icon" class="postfix number-history-icon<?php if (!$selected_drug) {echo ' hidden';} ?>">
-        <img src="<?php echo $this->assetPath ?>/img/icon_info.png" style="height:20px"/>
-      </span>
-        <div class="quicklook number-history" style="display: none;">
-            <?php
-            foreach ($drugs as $drug) {
-                echo '<div class="number-history-item';
-                if ($drug->id != $selected_drug) {
+  <?php
+  $selected_drug = null;
+  if (@$_POST['Element_OphTrIntravitrealinjection_Treatment']) {
+      $selected_drug = $_POST['Element_OphTrIntravitrealinjection_Treatment'][$side . '_drug_id'];
+  } else {
+      $selected_drug = $element->{$side . '_drug_id'};
+  }
+  ?>
+  <tr id="div_<?php echo get_class($element); ?>_<?php echo $side ?>_number" class="row field-row">
+    <td class="<?php echo $form->columns('label'); ?>">
+      <label for="<?php echo get_class($element); ?>_<?php echo $side ?>_number">
+          <?php echo $element->getAttributeLabel($side . '_number'); ?>:
+      </label>
+    </td>
+    <td class="<?php echo $form->columns('field'); ?>">
+      <div class="row collapse in">
+        <div>
+            <?php echo $form->textField($element, $side . '_number', array('size' => '10', 'nowrapper' => true)) ?>
+          <span id="<?php echo $side; ?>_number_history_icon"
+                class="postfix number-history-icon<?php if (!$selected_drug) {
                     echo ' hidden';
-                }
-                echo '" id="div_' . get_class($element) . '_' . $side . '_history_' . $drug->id . '">';
-                if (count($drug_history[$drug->id])) {
-                    echo '<b>Previous ' . $drug->name . ' treatments</b><br />';
-                    echo '<dl style="margin-top: 0px; margin-bottom: 2px;">';
-                    foreach ($drug_history[$drug->id] as $previous) {
-                        echo '<dt>' . Helper::convertDate2NHS($previous['date']) . ' (' . $previous[$side . '_number'] . ')</dt>';
-                    }
-                    echo '</dl>';
-                } else {
-                    echo 'No previous ' . $drug->name . ' treatments';
-                }
-                echo '</div>';
-            } ?>
+                } ?>">
+        <i class="oe-i info small pad va-info-icon"></i>
+      </span>
+          <div class="quicklook number-history" style="display: none;">
+              <?php
+              foreach ($drugs as $drug) {
+                  echo '<div class="number-history-item';
+                  if ($drug->id != $selected_drug) {
+                      echo ' hidden';
+                  }
+                  echo '" id="div_' . get_class($element) . '_' . $side . '_history_' . $drug->id . '">';
+                  if (count($drug_history[$drug->id])) {
+                      echo '<b>Previous ' . $drug->name . ' treatments</b><br />';
+                      echo '<dl style="margin-top: 0px; margin-bottom: 2px;">';
+                      foreach ($drug_history[$drug->id] as $previous) {
+                          echo '<dt>' . Helper::convertDate2NHS($previous['date']) . ' (' . $previous[$side . '_number'] . ')</dt>';
+                      }
+                      echo '</dl>';
+                  } else {
+                      echo 'No previous ' . $drug->name . ' treatments';
+                  }
+                  echo '</div>';
+              } ?>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
+    </td>
+  </tr>
 
-<?php echo $form->textField($element, $side . '_batch_number', array(), array(), array('field' => 6)) ?>
+  <tr>
+    <td>
+      <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_batch_number">
+          <?php echo $element->getAttributeLabel($side . '_batch_number') ?>:
+      </label>
+    </td>
+    <td>
+        <?php echo $form->textField(
+            $element,
+            $side . '_batch_number',
+            array('nowrapper' => true),
+            array(),
+            array('field' => 6)) ?>
+    </td>
+  </tr>
+  <?php
+  if (!$element->getIsNewRecord()) {
+      $expiry_date_params = array('minDate' => Helper::convertDate2NHS($element->created_date));
+  } else {
+      $expiry_date_params = array('minDate' => 'yesterday');
+  }
+  ?>
+  <tr>
+    <td>
+      <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_batch_number">
+          <?php echo $element->getAttributeLabel($side . '_batch_number') ?>:
+      </label>
+    </td>
+    <td>
+        <?php echo $form->datePicker(
+            $element,
+            $side . '_batch_expiry_date',
+            $expiry_date_params,
+            array('nowrapper' => true),
+            array(
+                'label' => $form->layoutColumns['label'],
+                'field' => 3,
+            )) ?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_injection_given_by_id">
+          <?php echo $element->getAttributeLabel($side . '_injection_given_by_id') ?>:
+      </label>
+    </td>
+    <td>
+        <?php echo $form->dropDownList(
+            $element,
+            $side . '_injection_given_by_id',
+            CHtml::listData(OphTrIntravitrealinjection_InjectionUser::model()->getUsers(), 'id',
+                'ReversedFullNameAndUserName'),
+            array('empty' => '- Please select -', 'nowrapper' => true),
+            false,
+            array('field' => 6))
+        ?>
+    </td>
+  </tr>
+  <tr id="div_<?php echo get_class($element) ?>_<?php echo $side ?>_injection_time"
+      class="row field-row">
+    <td class="<?php echo $form->columns('label'); ?>">
+      <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_injection_time">
+          <?php echo $element->getAttributeLabel($side . '_injection_time') ?>:
+      </label>
+    </td>
+    <td class="<?php echo $form->columns(3, true); ?>">
+        <?php
+        if ($element->{$side . '_injection_time'} != null) {
+            $val = date('H:i', strtotime($element->{$side . '_injection_time'}));
+        } else {
+            $val = date('H:i');
+        }
 
-<?php
-if (!$element->getIsNewRecord()) {
-    $expiry_date_params = array('minDate' => Helper::convertDate2NHS($element->created_date));
-} else {
-    $expiry_date_params = array('minDate' => 'yesterday');
-}
-?>
+        if (isset($_POST[get_class($element)])) {
+            $val = $_POST[get_class($element)][$side . '_injection_time'];
+        }
+        echo CHtml::textField(get_class($element) . '[' . $side . '_injection_time]', $val,
+            array('autocomplete' => Yii::app()->params['html_autocomplete']));
+        ?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_post_ioplowering_required">
+          <?php echo $element->getAttributeLabel($side . '_post_ioplowering_required') ?>:
+      </label>
+    </td>
+    <td>
+        <?php echo $form->checkbox(
+            $element,
+            $side . '_post_ioplowering_required',
+            array('nowrapper' => true, 'no-label' => true)
+        ); ?>
+    </td>
+  </tr>
+  <?php
+  $div_class = 'eventDetail';
+  $show = $element->{$side . '_post_ioplowering_required'};
 
-<?php echo $form->datePicker($element, $side . '_batch_expiry_date', $expiry_date_params, array(), array(
-    'label' => $form->layoutColumns['label'],
-    'field' => 3,
-)) ?>
+  if (isset($_POST[get_class($element)])) {
+      $show = $_POST[get_class($element)][$side . '_post_ioplowering_required'];
+  }
 
-<?php echo $form->dropDownList($element, $side . '_injection_given_by_id',
-    CHtml::listData(OphTrIntravitrealinjection_InjectionUser::model()->getUsers(), 'id', 'ReversedFullNameAndUserName'), array('empty' => '- Please select -'), false,
-    array('field' => 6)) ?>
+  if (!$show) {
+      $div_class .= ' hidden';
+  }
+  $div_id = 'div_' . CHtml::modelName($element) . '_' . $side . '_post_ioploweringdrugs';
 
-<div id="div_<?php echo get_class($element) ?>_<?php echo $side ?>_injection_time"
-     class="row field-row">
-  <div class="<?php echo $form->columns('label'); ?>">
-    <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_injection_time">
-        <?php echo $element->getAttributeLabel($side . '_injection_time') ?>:
-    </label>
-  </div>
-  <div class="<?php echo $form->columns(3, true); ?>">
-      <?php
-      if ($element->{$side . '_injection_time'} != null) {
-          $val = date('H:i', strtotime($element->{$side . '_injection_time'}));
-      } else {
-          $val = date('H:i');
-      }
+  ?>
+  <tr id="<?= $div_id ?>"
+      class="<?php echo $div_class ?> row field-row widget">
+    <td>
+      <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_post_ioploweringdrugs">
+          <?php echo $element->getAttributeLabel($side . '_post_ioploweringdrugs') ?>:
+      </label>
+    </td>
+    <td>
+        <?php
+        $html_options = array(
+            'options' => array(),
+            'empty' => '- Please select -',
+            'div_id' => 'div_' . get_class($element) . '_' . $side . '_post_ioploweringdrugs',
+            'label' => $element->getAttributeLabel($side . '_post_ioploweringdrugs'),
+            'div_class' => $div_class,
+            'nowrapper' => true,
+        );
+        $ioplowering_drugs = OphTrIntravitrealinjection_IOPLoweringDrug::model()->activeOrPk($element->iopLoweringDrugValues)->findAll(array('order' => 'display_order asc'));
+        foreach ($ioplowering_drugs as $drug) {
+            $html_options['options'][(string)$drug->id] = array('data-order' => $drug->display_order);
+        }
+        echo $form->multiSelectList(
+            $element,
+            get_class($element) . '[' . $side . '_post_ioploweringdrugs]',
+            $side . '_post_ioploweringdrugs',
+            'id',
+            CHtml::listData($ioplowering_drugs, 'id', 'name'),
+            array(),
+            $html_options,
+            false,
+            false,
+            null,
+            false,
+            false,
+            array()
+        );
+        ?>
+    </td>
+  </tr>
+  </tbody>
+</table>
 
-      if (isset($_POST[get_class($element)])) {
-          $val = $_POST[get_class($element)][$side . '_injection_time'];
-      }
-      echo CHtml::textField(get_class($element) . '[' . $side . '_injection_time]', $val, array('autocomplete' => Yii::app()->params['html_autocomplete']));
-      ?>
-  </div>
-</div>
 
-<?php
-echo $form->checkbox($element, $side . '_post_ioplowering_required');
-?>
 
-<?php /*
-<div id="div_<?php echo get_class($element)?>_<?php echo $side ?>_post_ioplowering_required"
-    class="row field-row">
-    <div class="large-4 column">
-        <label for="">
-        <?php echo $element->getAttributeLabel($side . '_post_ioplowering_required') ?>:
-        </label>
-    </div>
-    <div class="large-8 column">
-
-    </div>
-</div>
-*/ ?>
-<?php
-$div_class = 'eventDetail';
-$show = $element->{$side . '_post_ioplowering_required'};
-
-if (isset($_POST[get_class($element)])) {
-    $show = $_POST[get_class($element)][$side . '_post_ioplowering_required'];
-}
-
-if (!$show) {
-    $div_class .= ' hidden';
-}
-
-$html_options = array(
-    'options' => array(),
-    'empty' => '- Please select -',
-    'div_id' => 'div_' . get_class($element) . '_' . $side . '_post_ioploweringdrugs',
-    'label' => $element->getAttributeLabel($side . '_post_ioploweringdrugs'),
-    'div_class' => $div_class,
-);
-$ioplowering_drugs = OphTrIntravitrealinjection_IOPLoweringDrug::model()->activeOrPk($element->iopLoweringDrugValues)->findAll(array('order' => 'display_order asc'));
-foreach ($ioplowering_drugs as $drug) {
-    $html_options['options'][(string)$drug->id] = array('data-order' => $drug->display_order);
-}
-echo $form->multiSelectList(
-    $element,
-    get_class($element) . '[' . $side . '_post_ioploweringdrugs]',
-    $side . '_post_ioploweringdrugs',
-    'id',
-    CHtml::listData($ioplowering_drugs, 'id', 'name'),
-    array(),
-    $html_options,
-    false,
-    false,
-    null,
-    false,
-    false,
-    array('field' => 6)
-);
-?>
