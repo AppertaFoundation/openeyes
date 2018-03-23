@@ -18,24 +18,56 @@
 ?>
 <div class="element-fields flex-layout full-width ">
   <div class="cols-7">
-      <?php echo $form->textArea($element, 'comments', array('class' => 'cols-full', 'nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'Management', 'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;'))?>
+      <?php echo $form->textArea(
+          $element,
+          'comments',
+          array('class' => 'cols-full', 'nowrapper' => true),
+          false,
+          array(
+              'rows' => 1,
+              'placeholder' => 'Management',
+              'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;',
+          )
+      ) ?>
   </div>
-	<div class="flex-item-bottom">
+  <div class="flex-item-bottom">
     <button class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
     <div id="add-to-management" class="oe-add-select-search auto-width" style="display: none;">
-        <?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'comments', 'form' => $form))?>
+        <?php $this->renderPartial('_attributes',
+            array('element' => $element, 'field' => 'comments', 'form' => $form)) ?>
     </div>
-	</div>
+  </div>
 </div>
 
 <script type="text/javascript">
-    // Hide the adding dialog, print text to textArea
-    $('.oe-add-select-search .add-icon-btn').on('click', function () {
-        var inputText = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Management_comments');
-        var popup = $('#add-to-management');
+  $(function () {
+    var managementDiv =
+      $('section[data-element-type-class=\'OEModule_OphCiExamination_models_Element_OphCiExamination_Management\']');
+    var popup = managementDiv.find('#add-to-management');
 
-        inputText.val(inputText.val() ? inputText.val() + popup.find('li.selected').attr('data-str') : popup.find('li.selected').attr('data-str'));
-    });
+    function setManagementText() {
+      var inputText = managementDiv.find(
+        '#OEModule_OphCiExamination_models_Element_OphCiExamination_Management_comments'
+      );
+
+      popup.find('.selected').each(function (e) {
+        var selectedStr = $(this).attr('data-str');
+        if (selectedStr == null)return;
+        inputText.val(inputText.val() ? inputText.val() + selectedStr : selectedStr);
+        $(this).removeClass('selected');
+      });
+
+    }
+
+    setUpAdder(
+      popup,
+      'multi',
+      setManagementText,
+      managementDiv.find('.js-add-select-search'),
+      popup.find('.add-icon-btn'),
+      popup.find('.close-icon-btn')
+    )
+  });
 </script>
