@@ -16,45 +16,40 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<table>
+  <tr>
+    <td>
+        <?php echo $element->getAttributeLabel($side . '_finger_count') ?>:
+    </td>
+    <td>
+        <?php echo $element->{$side . '_finger_count'} ? 'Yes' : 'No' ?>
+    </td>
+  </tr>
 
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label"><?php echo $element->getAttributeLabel($side.'_finger_count') ?>:</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value"><?php echo $element->{$side.'_finger_count'} ? 'Yes' : 'No'?>		</div>
-	</div>
-</div>
+  <tr>
+    <td>IOP:</td>
+    <td>
+        <?php if ($element->{$side . '_iop_check'}) { ?>
+          IOP should be checked
+            <?php if (Yii::app()->hasModule('OphCiPhasing')) { ?>
+            - Please add a Phasing event.
+            <?php } ?>
+        <?php } else { ?>
+          IOP does not need to be checked.
+        <?php } ?>
+    </td>
+  </tr>
 
-
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label">IOP:</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value">
-	<?php if ($element->{$side.'_iop_check'}) {?>
-		IOP should be checked
-		<?php if (Yii::app()->hasModule('OphCiPhasing')) { ?>
-		- Please add a Phasing event.
-		<?php } ?>
-	<?php } else {?>
-		IOP does not need to be checked.
-	<?php } ?>
-		</div>
-	</div>
-</div>
-
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label"><?php echo $element->getAttributeLabel($side.'_drops_id') ?>:</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value"><?php if ($element->{$side.'_drops'}) {
-    echo $element->{$side.'_drops'}->name;
-    } else { ?>
-		Not Recorded
-	<?php }?>
-		</div>
-	</div>
-</div>
+  <tr>
+    <td>
+        <?php echo $element->getAttributeLabel($side . '_drops_id') ?>:
+    </td>
+    <td>
+        <?php if ($element->{$side . '_drops'}) {
+            echo $element->{$side . '_drops'}->name;
+        } else { ?>
+          Not Recorded
+        <?php } ?>
+    </td>
+  </tr>
+</table>
