@@ -1,83 +1,87 @@
-$(document).ready(function () {
-    function OphCiExamination_Dilation_getNextKey() {
-        var keys = $('.main-event .edit-Dilation .dilationTreatment').map(function (index, el) {
-            return parseInt($(el).attr('data-key'));
-        }).get();
-        if (keys.length) {
-            return Math.max.apply(null, keys) + 1;
-        } else {
-            return 0;
-        }
+var OpenEyes = OpenEyes || {};
+
+OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
+
+OpenEyes.OphCiExamination.DilationController = (function () {
+
+  function DilationController(options, table, adder){
+    this.$table = table;
+    this.$addList = adder.find('ul');
+
+    this.initialiseTriggers();
+  }
+
+  DilationController.prototype.OphCiExamination_Dilation_getNextKey = function() {
+    var keys = $('.main-event .edit-Dilation .dilationTreatment').map(function (index, el) {
+      return parseInt($(el).attr('data-key'));
+    }).get();
+    if (keys.length) {
+      return Math.max.apply(null, keys) + 1;
+    } else {
+      return 0;
     }
+  };
 
-    function OphCiExamination_Dilation_addTreatment(element, side) {
-        var drug_id = $(element).attr('data-str');
-        var data_order = $(element).attr('data-order');
-        if (drug_id) {
-            var drug_name = $(element).text();
-            $(element).remove();
-            var template = $('#dilation_treatment_template').html();
-            var data = {
-                "key": OphCiExamination_Dilation_getNextKey(),
-                "side": side,
-                "drug_name": drug_name,
-                "drug_id": drug_id,
-                "data_order": data_order,
-                "treatment_time": (new Date).toTimeString().substr(0, 5)
-            };
-            var form = Mustache.render(template, data);
-            var table = $('.main-event .edit-Dilation .element-eye[data-side="' + side + '"] .dilation_table');
-            table.show();
-            $(element).closest('.side').find('.timeDiv').show();
-            $('tbody', table).append(form);
-        }
+  DilationController.prototype.OphCiExamination_Dilation_addTreatment = function(element, side) {
+
+    var drug_id = $(element).attr('data-str');
+    var data_order = $(element).attr('data-order');
+    if (drug_id) {
+      var drug_name = $(element).text();
+      $(element).hide();
+      var template = $('#dilation_treatment_template').html();
+      var data = {
+        "key": this.OphCiExamination_Dilation_getNextKey(),
+        "side": side,
+        "drug_name": drug_name,
+        "drug_id": drug_id,
+        "data_order": data_order,
+        "treatment_time": (new Date).toTimeString().substr(0, 5)
+      };
+      var form = Mustache.render(template, data);
+      this.$table.show();
+      $(element).closest('.side').find('.timeDiv').show();
+      $('tbody', this.$table).append(form);
     }
+  };
 
-    $('#' + OE_MODEL_PREFIX + 'Element_OphCiExamination_Dilation_time_right').die('keypress').live('keypress', function (e) {
-        if (e.keyCode == 13) {
-            return false;
-        }
-        return true;
-    });
+  DilationController.prototype.initialiseTriggers = function(){
+    var addList = this.$addList;
 
-    $('#' + OE_MODEL_PREFIX + 'Element_OphCiExamination_Dilation_time_left').die('keypress').live('keypress', function (e) {
-        if (e.keyCode == 13) {
-            return false;
-        }
-        return true;
+    this.$table.delegate('.removeTreatment', 'click', function (e) {
+      var wrapper = $(this).closest('.side');
+      var row = $(this).closest('tr');
+      var id = row.find('.drugId').val();
+      addList.find('li[data-str=\'' + id + '\']').show();
+      row.remove();
+      if ($('.dilation_table tbody tr', wrapper).length === 0) {
+        $('.dilation_table', wrapper).hide();
+        $('.timeDiv', wrapper).hide();
+      }
+      e.preventDefault();
     });
+  };
 
-    $('.dilation_drug').keypress(function (e) {
-        if (e.keyCode == 13) {
-            var side = $(this).closest('.side').attr('data-side');
-            OphCiExamination_Dilation_addTreatment(this, side);
-        }
-    });
+  $('.dilation_drug').keypress(function (e) {
+    if (e.keyCode == 13) {
+      var side = $(this).closest('.side').attr('data-side');
+      OphCiExamination_Dilation_addTreatment(this, side);
+    }
+  });
 
-    $(this).delegate('.edit-Dilation .removeTreatment', 'click', function (e) {
-        var wrapper = $(this).closest('.side');
-        var row = $(this).closest('tr');
-        var id = $(this).closest('tr').find('.drugId').val();
-        var text = $(this).closest('tr').find('.drugName').text();
-        var order = $(this).closest('tr').data('order');
-        $('.edit-Dilation ul.add-options').append('<li data-str="' + id + '" data-order="' + order + '">' + text + '</li>');
-        row.remove();
-        if ($('.dilation_table tbody tr', wrapper).length === 0) {
-            $('.dilation_table', wrapper).hide();
-            $('.timeDiv', wrapper).hide();
-        }
-        e.preventDefault();
-    });
 
-    $('.main-event .edit-Dilation .add-icon-btn').click(function(e) {
-        var side = $(this).closest('.side').attr('data-side');
-        var element = $(this).closest('.flex-item-bottom').find('li.selected');
-        OphCiExamination_Dilation_addTreatment(element, side);
-        e.preventDefault();
-    });
 
-    $(this).delegate('.main-event .edit-Dilation .clearDilation', 'click', function (e) {
-        $(this).closest('.side').find('tr.dilationTreatment a.removeTreatment').click();
-        e.preventDefault();
-    });
-});
+  $('.main-event .edit-Dilation .add-icon-btn').click(function (e) {
+    var side = $(this).closest('.side').attr('data-side');
+    var element = $(this).closest('.flex-item-bottom').find('li.selected');
+    OphCiExamination_Dilation_addTreatment(element, side);
+    e.preventDefault();
+  });
+
+  $(this).delegate('.main-event .edit-Dilation .clearDilation', 'click', function (e) {
+    $(this).closest('.side').find('tr.dilationTreatment a.removeTreatment').click();
+    e.preventDefault();
+  });
+
+  return DilationController;
+})();
