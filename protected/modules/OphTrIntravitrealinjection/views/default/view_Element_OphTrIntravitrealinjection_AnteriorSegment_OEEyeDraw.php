@@ -33,14 +33,8 @@
 	</div>
     <?php if($element->{$side.'_lens_status'}): ?>
         <div class="fluid column">
-            <div class="row data-row">
-                <div class="large-5 column">
-                    <div class="data-label"><?php echo $element->getAttributeLabel($side.'_lens_status_id') ?>:</div>
-                </div>
-                <div class="large-7 column">
-                    <div class="data-value"><?php echo $element->{$side.'_lens_status'}->name ?></div>
-                </div>
-            </div>
+            <?php echo $element->getAttributeLabel($side.'_lens_status_id') ?>:
+            <?php echo $element->{$side.'_lens_status'}->name ?>
         </div>
     <?php endif; ?>
 </div>
