@@ -23,7 +23,7 @@
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <?php $this->renderPartial($element->form_view . '_OEEyeDraw',
-                array('side' => 'right', 'element' => $element, 'form' => $form));
+                array('side' => $eye_side, 'element' => $element, 'form' => $form));
             ?>
         </div>
         <div class="inactive-form side" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
