@@ -36,7 +36,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/IntraocularP
         <div class="inactive-form" style="<?=$element->hasEye($eye_side) ? "display: none;":""?>">
           <div class="add-side">
             <a href="#">
-              Add <?=ucfirst($eye_side)?> eye
+              Add <?=$eye_side?> eye
             </a>
           </div>
         </div>

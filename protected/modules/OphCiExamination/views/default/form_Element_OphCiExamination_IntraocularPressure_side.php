@@ -115,7 +115,6 @@ $comments = $side . '_comments';
 
         function addIOPReading(selected){
             selected.removeClass('selected');
-            console.log(selected);
         }
 
         setUpAdder(
