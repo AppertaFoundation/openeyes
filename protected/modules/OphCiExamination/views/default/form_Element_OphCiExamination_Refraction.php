@@ -24,12 +24,80 @@
            data-side="<?= $eye_side ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-          <div class="eyedraw-row refraction">
-              <?php $this->renderPartial($element->form_view . '_OEEyeDraw', array(
-                  'form' => $form,
-                  'side' => $eye_side,
-                  'element' => $element,
-              )) ?>
+
+          <fieldset class="row field-row">
+            <legend class="cols-3 column">
+                <?php echo $element->getAttributeLabel($eye_side . '_sphere') ?>:
+            </legend>
+            <div class="cols-9 column">
+                <?php Yii::app()->getController()->renderPartial('_segmented_field', array(
+                    'element' => $element,
+                    'side' => $eye_side,
+                    'field' => 'sphere',
+                    'model' => 'OphCiExamination_Refraction_Sphere_Integer',
+                ), false, false) ?>
+            </div>
+          </fieldset>
+          <fieldset class="row field-row">
+            <legend class="cols-3 column">
+                <?php echo $element->getAttributeLabel($eye_side . '_cylinder') ?>:
+            </legend>
+            <div class="cols-9 column">
+                <?php Yii::app()->getController()->renderPartial('_segmented_field', array(
+                    'element' => $element,
+                    'side' => $eye_side,
+                    'field' => 'cylinder',
+                    'model' => 'OphCiExamination_Refraction_Cylinder_Integer',
+                ), false, false) ?>
+            </div>
+          </fieldset>
+          <div class="row field-row">
+            <div class="cols-3 column">
+              <label for="<?php echo get_class($element) . '_' . $eye_side . '_axis'; ?>">
+                  <?php echo $element->getAttributeLabel($eye_side . '_axis') ?>:
+              </label>
+            </div>
+            <div class="cols-6 column end">
+                <?php echo CHtml::activeTextField($element, $eye_side . '_axis',
+                    array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'axis')) ?>
+            </div>
+          </div>
+          <div class="refraction-type-container">
+            <div class="row field-row">
+              <div class="cols-3 column">
+                <label for="<?php echo get_class($element) . '_' . $eye_side . '_type_id'; ?>">
+                    <?php echo $element->getAttributeLabel($eye_side . '_type_id') ?>:
+                </label>
+              </div>
+              <div class="cols-6 column end">
+                <div>
+                    <?php echo CHtml::activeDropDownList($element, $eye_side . '_type_id',
+                        OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->getOptions(),
+                        array('class' => 'refractionType')) ?>
+                </div>
+              </div>
+            </div>
+            <div class="row field-row refraction-type-other"
+                <?php if ($element->{$eye_side . '_type'} && $element->{$eye_side . '_type'}->name != 'Other'): ?>
+                  style="display:none"
+                <?php endif ?>>
+              <div class="cols-3 column">
+                <label>Other:</label>
+              </div>
+              <div class="cols-6 column end">
+                  <?php echo CHtml::activeTextField($element, $eye_side . '_type_other',
+                      array(
+                          'autocomplete' => Yii::app()->params['html_autocomplete'],
+                          'class' => 'refraction-type-other-field',
+                      )) ?>
+              </div>
+            </div>
+            <div class="row field-row">
+              <div class="cols-9 column end">
+                  <?php echo CHtml::activeTextArea($element, $eye_side . '_notes',
+                      array('rows' => 1, 'placeholder' => $element->getAttributeLabel($eye_side . '_notes'))) ?>
+              </div>
+            </div>
           </div>
         </div>
         <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">
