@@ -531,7 +531,7 @@ $(document).ready(function() {
 	});
 
 	// handle treatment selection when editing
-	$('.event').delegate('#Element_OphCoTherapyapplication_PatientSuitability_left_treatment_id, ' +
+	$('#event-content').delegate('#Element_OphCoTherapyapplication_PatientSuitability_left_treatment_id, ' +
 			'#Element_OphCoTherapyapplication_PatientSuitability_right_treatment_id', 'change', function() {
 		var selected = $(this).val();
 		var side = getSplitElementSide($(this));
@@ -736,7 +736,7 @@ $(document).ready(function() {
 
 
 	// extend the removal behaviour for diagnosis to affect the dependent elements
-	$(this).delegate('.event .side .active-form a.remove-side', 'click', function(e) {
+	$(this).delegate('.element-fields .side .active-form a.remove-side', 'click', function(e) {
 		side = getSplitElementSide($(this));
 		var other_side = 'left';
 		if (side == 'left') {
@@ -751,7 +751,7 @@ $(document).ready(function() {
 	});
 
 	// extend the adding behaviour for diagnosis to affect dependent elements
-	$(this).delegate('.event .side .inactive-form a', 'click', function(e) {
+	$(this).delegate('.element-fields .side .inactive-form a', 'click', function(e) {
 		side = getSplitElementSide($(this));
 		OphCoTherapyapplication_PatientSuitability_check(side);
 		OphCoTherapyapplication_ContraIndications_check();

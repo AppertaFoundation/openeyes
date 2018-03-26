@@ -44,8 +44,8 @@ function showSplitElementSide(cls, side) {
 	var display_side = other_side;
 	$('.' + cls).find('.side.' + display_side + ' .active-form').show();
   $('.' + cls).find('.side.' + display_side + ' .inactive-form').hide();
-  // side for data is the opposite side for display ...
-	if ($('.' + cls).find('.side.' + side + ' .active-form').is(":hidden")) {
+	// side for data is the opposite side for display ...
+	if ($('.' + cls).find('.side.' + side + ' .active-form').is(':hidden')) {
 		// the other side is not visible, so can set the input value to that of the side being shown
 		$('.' + cls).find('input.sideField').each(function() {
 			$(this).val(side_val);
@@ -76,10 +76,11 @@ function hideSplitElementSide(cls, side) {
 		other_side_val = 2; // Right in db
 	}
 	var display_side = other_side;
-  $('.' + cls).find('.side.' +  display_side + ' .active-form').hide();
+
+	$('.' + cls).find('.side.' +  display_side + ' .active-form').hide();
   $('.' + cls).find('.side.' +  display_side + ' .inactive-form').show();
   // side for data is the opposite side for display ...
-	if ($('.' + cls).find('.side.' + side + ' .active-form').is(":hidden")) {
+	if ($('.' + cls).find('.side.' + side + ' .active-form').is(':hidden')) {
 		// the other side is not visible, so need to set the eye value to null
 		$('.' + cls).find('input.sideField').each(function() {
 			$(this).val('');
