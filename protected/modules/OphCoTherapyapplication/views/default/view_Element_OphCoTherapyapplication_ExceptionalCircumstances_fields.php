@@ -16,11 +16,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<table>
+<table class="label-value">
   <tbody>
   <tr>
     <td>
-        <?php echo $element->getAttributeLabel($side . '_standard_intervention_exists') ?>:
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_standard_intervention_exists') ?>:
+      </div>
     </td>
     <td>
         <?php echo $element->{$side . '_standard_intervention_exists'} ? 'Yes' : 'No' ?>
@@ -30,7 +32,9 @@
   <?php if ($element->{$side . '_standard_intervention_exists'}) { ?>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel($side . '_standard_intervention_id') ?>:
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_standard_intervention_id') ?>:
+        </div>
       </td>
       <td>
           <?php echo $element->{$side . '_standard_intervention'}->name ?>
@@ -39,7 +43,9 @@
 
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel($side . '_standard_previous') ?>:
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_standard_previous') ?>:
+        </div>
       </td>
       <td>
           <?php echo $element->{$side . '_standard_previous'} ? 'Yes' : 'No' ?>
@@ -48,7 +54,9 @@
 
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel($side . '_intervention_id') ?>:
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_intervention_id') ?>:
+        </div>
       </td>
       <td>
           <?php echo $element->{$side . '_intervention'}->name ?>
@@ -57,7 +65,9 @@
 
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel($side . '_description') ?>:
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_description') ?>:
+        </div>
       </td>
       <td>
           <?php echo Yii::app()->format->Ntext($element->{$side . '_description'}) ?>
@@ -67,7 +77,9 @@
       <?php if ($element->needDeviationReasonForSide($side)) { ?>
       <tr>
         <td>
-            <?php echo $element->getAttributeLabel($side . '_deviationreasons') ?>:
+          <div class="data-label">
+              <?php echo $element->getAttributeLabel($side . '_deviationreasons') ?>:
+          </div>
         </td>
         <td>
           <ul>
@@ -81,7 +93,9 @@
   <?php } else { ?>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel($side . '_condition_rare') ?>:
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_condition_rare') ?>:
+        </div>
       </td>
       <td>
           <?php echo $element->{$side . '_condition_rare'} ? 'Yes' : 'No' ?>
@@ -90,7 +104,9 @@
 
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel($side . '_incidence') ?>:
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_incidence') ?>:
+        </div>
       </td>
       <td>
           <?php echo Yii::app()->format->Ntext($element->{$side . '_incidence'}) ?>
@@ -100,7 +116,9 @@
 
   <tr>
     <td>
-        <?php echo $element->getAttributeLabel($side . '_patient_different') ?>:
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_patient_different') ?>:
+      </div>
     </td>
     <td>
         <?php echo Yii::app()->format->Ntext($element->{$side . '_patient_different'}) ?>
@@ -109,7 +127,9 @@
 
   <tr>
     <td>
-        <?php echo $element->getAttributeLabel($side . '_patient_gain') ?>:
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_patient_gain') ?>:
+      </div>
     </td>
     <td>
         <?php echo Yii::app()->format->Ntext($element->{$side . '_patient_gain'}) ?>
@@ -119,7 +139,9 @@
   <?php if ($element->{$side . '_previnterventions'}) { ?>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel($side . '_previnterventions') ?>:
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_previnterventions') ?>:
+        </div>
       </td>
       <td>
           <?php foreach ($element->{$side . '_previnterventions'} as $previntervention) {
@@ -135,7 +157,9 @@
   <?php if ($element->{$side . '_relevantinterventions'}) { ?>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel($side . '_relevantinterventions') ?>:
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_relevantinterventions') ?>:
+        </div>
       </td>
       <td>
           <?php
@@ -151,7 +175,9 @@
 
   <tr>
     <td>
-        <?php echo $element->getAttributeLabel($side . '_patient_factors') ?>:
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_patient_factors') ?>:
+      </div>
     </td>
     <td>
         <?php echo $element->{$side . '_patient_factors'} ? 'Yes' : 'No' ?>
@@ -161,7 +187,9 @@
   <?php if ($element->{$side . '_patient_factors'}) { ?>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel($side . '_patient_factor_details') ?>:
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_patient_factor_details') ?>:
+        </div>
       </td>
       <td>
           <?php echo Yii::app()->format->Ntext($element->{$side . '_patient_factor_details'}) ?>
@@ -171,7 +199,9 @@
 
   <tr>
     <td>
-        <?php echo $element->getAttributeLabel($side . '_patient_expectations') ?>:
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_patient_expectations') ?>:
+      </div>
     </td>
     <td>
         <?php echo Yii::app()->format->Ntext($element->{$side . '_patient_expectations'}) ?>
@@ -180,7 +210,9 @@
 
   <tr>
     <td>
-        <?php echo $element->getAttributeLabel($side . '_start_period_id') ?>:
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_start_period_id') ?>:
+      </div>
     </td>
     <td>
         <?php echo $element->{$side . '_start_period'}->name ?>
@@ -190,7 +222,9 @@
   <?php if ($element->{$side . '_start_period'}->urgent) { ?>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel($side . '_urgency_reason') ?>:
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_urgency_reason') ?>:
+        </div>
       </td>
       <td>
           <?php echo Yii::app()->format->Ntext($element->{$side . '_urgency_reason'}) ?>
@@ -201,7 +235,9 @@
   <?php if ($element->{$side . '_filecollections'} && (isset($status) && ($status != OphCoTherapyapplication_Processor::STATUS_SENT))) { ?>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel($side . '_filecollections') ?>:
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_filecollections') ?>:
+        </div>
       </td>
       <td>
         <ul style="display: inline-block">

@@ -17,11 +17,13 @@
  */
 ?>
 
-<table>
+<table class="label-value">
   <tbody class="pastintervention-view panel previous-interventions">
   <tr>
     <td>
-        <?php echo $pastintervention->getAttributeLabel('start_date'); ?>:
+      <div class="data-label">
+          <?php echo $pastintervention->getAttributeLabel('start_date'); ?>:
+      </div>
     </td>
     <td>
         <?php echo Helper::convertMySQL2NHS($pastintervention->start_date) ?>
@@ -30,7 +32,9 @@
 
   <tr>
     <td>
+      <div class="data-label">
         <?php echo $pastintervention->getAttributeLabel('end_date'); ?>:
+      </div>
     </td>
     <td>
         <?php echo Helper::convertMySQL2NHS($pastintervention->end_date) ?>
@@ -39,7 +43,9 @@
 
   <tr>
     <td>
-        <?php echo $pastintervention->getAttributeLabel('treatment_id'); ?>:
+      <div class="data-label">
+          <?php echo $pastintervention->getAttributeLabel('treatment_id'); ?>:
+      </div>
     </td>
     <td>
         <?php echo $pastintervention->getTreatmentName() ?>
@@ -48,7 +54,9 @@
 
   <tr>
     <td>
-        <?php echo $pastintervention->getAttributeLabel('start_va'); ?>:
+      <div class="data-label">
+          <?php echo $pastintervention->getAttributeLabel('start_va'); ?>:
+      </div>
     </td>
     <td>
         <?php echo $pastintervention->start_va ?>
@@ -57,7 +65,9 @@
 
   <tr>
     <td>
-        <?php echo $pastintervention->getAttributeLabel('end_va'); ?>:
+      <div class="data-label">
+          <?php echo $pastintervention->getAttributeLabel('end_va'); ?>:
+      </div>
     </td>
     <td>
         <?php echo $pastintervention->end_va ?>
@@ -66,7 +76,9 @@
 
   <tr>
     <td>
-        <?php echo $pastintervention->getAttributeLabel('stopreason_id'); ?>:
+      <div class="data-label">
+          <?php echo $pastintervention->getAttributeLabel('stopreason_id'); ?>:
+      </div>
     </td>
     <td>
         <?php if ($pastintervention->stopreason_other) {
@@ -79,7 +91,9 @@
 
   <tr>
     <td>
-        <?php echo $pastintervention->getAttributeLabel('comments'); ?>:
+      <div class="data-label">
+          <?php echo $pastintervention->getAttributeLabel('comments'); ?>:
+      </div>
     </td>
     <td>
         <?php if ($pastintervention->comments) {

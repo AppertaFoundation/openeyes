@@ -16,11 +16,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<table>
+<table class="label-value">
   <tbody>
   <tr>
     <td>
-        <?php echo $element->getAttributeLabel($side . '_treatment_id') ?>:
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_treatment_id') ?>:
+      </div>
     </td>
     <td>
         <?php echo $element[$side . '_treatment']->name ?>
@@ -28,7 +30,9 @@
   </tr>
   <tr>
     <td>
-        <?php echo $element->getAttributeLabel($side . '_angiogram_baseline_date') ?>:
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_angiogram_baseline_date') ?>:
+      </div>
     </td>
     <td>
         <?php echo CHtml::encode($element->NHSDate($side . '_angiogram_baseline_date')) ?>
@@ -36,7 +40,9 @@
   </tr>
   <tr>
     <td>
-        <?php echo $element->getAttributeLabel($side . '_nice_compliance') ?>:
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_nice_compliance') ?>:
+      </div>
     </td>
     <td>
         <?php echo $element->{$side . '_nice_compliance'} ? 'Yes' : 'No' ?>

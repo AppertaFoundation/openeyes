@@ -17,11 +17,13 @@
  */
 ?>
 
-<table class="cols-8">
+<table class="cols-8 label-value">
   <tbody>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('cerebrovascular_accident')) ?>:
+      <div class="data-label">
+          <?php echo CHtml::encode($element->getAttributeLabel('cerebrovascular_accident')) ?>:
+      </div>
     </td>
     <td>
         <?php echo $element->cerebrovascular_accident ? 'Yes' : 'No' ?>
@@ -29,7 +31,9 @@
   </tr>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('ischaemic_attack')) ?>:
+      <div class="data-label">
+          <?php echo CHtml::encode($element->getAttributeLabel('ischaemic_attack')) ?>:
+      </div>
     </td>
     <td>
         <?php echo $element->ischaemic_attack ? 'Yes' : 'No' ?>
@@ -37,7 +41,9 @@
   </tr>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('myocardial_infarction')) ?>:
+      <div class="data-label">
+          <?php echo CHtml::encode($element->getAttributeLabel('myocardial_infarction')) ?>:
+      </div>
     </td>
     <td>
         <?php echo $element->myocardial_infarction ? 'Yes' : 'No' ?>

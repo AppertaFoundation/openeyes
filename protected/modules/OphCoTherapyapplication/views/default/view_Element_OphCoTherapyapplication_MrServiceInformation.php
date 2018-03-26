@@ -16,11 +16,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<table>
+<table class="label-value">
   <tbody>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('consultant_id')) ?>
+      <div class="data-label">
+          <?php echo CHtml::encode($element->getAttributeLabel('consultant_id')) ?>
+      </div>
     </td>
     <td>
         <?php echo $element->consultant ? $element->consultant->name : 'None' ?>
@@ -29,7 +31,9 @@
   <?php if ($site = $element->site) { ?>
     <tr>
       <td>
-          <?php echo CHtml::encode($element->getAttributeLabel('site_id')) ?>:
+        <div class="data-label">
+            <?php echo CHtml::encode($element->getAttributeLabel('site_id')) ?>:
+        </div>
       </td>
       <td>
           <?php echo $site->name ?>
@@ -38,7 +42,9 @@
   <?php } ?>
   <tr>
     <td>
-        <?php echo CHtml::encode($element->getAttributeLabel('patient_sharedata_consent')) ?>:
+      <div class="data-label">
+          <?php echo CHtml::encode($element->getAttributeLabel('patient_sharedata_consent')) ?>:
+      </div>
     </td>
     <td>
         <?php echo is_null($element->patient_sharedata_consent) ? 'Not recorded' : ($element->patient_sharedata_consent ? 'Yes' : 'No') ?>
