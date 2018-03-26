@@ -16,7 +16,10 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<table class="label-value">
+<table class="label-value no-left">
+  <colgroup>
+    <col class="cols-5">
+  </colgroup>
   <tbody>
   <tr>
     <td>

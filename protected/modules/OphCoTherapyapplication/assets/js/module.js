@@ -640,18 +640,18 @@ $(document).ready(function() {
 	});
 
 	// Manage previous interventions in exceptional circumstances element
-	$(this).delegate('.event .Element_OphCoTherapyapplication_ExceptionalCircumstances .removePastintervention', 'click', function(e) {
+	$(this).delegate('#event-content .Element_OphCoTherapyapplication_ExceptionalCircumstances .removePastintervention', 'click', function(e) {
 		$(this).closest('.pastintervention').remove();
 		e.preventDefault();
 	});
 
-	$(this).delegate('.event .Element_OphCoTherapyapplication_ExceptionalCircumstances .addPrevintervention', 'click', function(e) {
+	$(this).delegate('#event-content .Element_OphCoTherapyapplication_ExceptionalCircumstances .addPrevintervention', 'click', function(e) {
 		var side = getSplitElementSide($(this));
 		OphCoTherapyapplication_addPrevintervention(side);
 		e.preventDefault();
 	});
 
-	$(this).delegate('.event .Element_OphCoTherapyapplication_ExceptionalCircumstances .addRelevantintervention', 'click', function(e) {
+	$(this).delegate('#event-content .Element_OphCoTherapyapplication_ExceptionalCircumstances .addRelevantintervention', 'click', function(e) {
 		var side = getSplitElementSide($(this));
 		OphCoTherapyapplication_addRelevantintervention(side);
 		e.preventDefault();
