@@ -69,9 +69,6 @@ $comments = $side . '_comments';
     <div class="close-icon-btn">
       <i class="oe-i remove-circle medium"></i>
     </div>
-    <div class="select-icon-btn">
-      <i class="oe-i menu selected"></i>
-    </div>
     <table class="select-options">
       <tbody>
       <tr>
