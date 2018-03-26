@@ -90,7 +90,7 @@ $(' #prescription_items').delegate('select.dispenseCondition', 'change', functio
   return false;
 });
 
-$('#add-prescription-drugs').delegate('li', 'click', function () {
+$('#add-prescription-drugs, #prescription-search-results').delegate('li', 'click', function () {
   var item_id = $(this).data('itemId');
   var label = $(this).data('label');
   addItem(label, item_id);
@@ -239,10 +239,6 @@ function showPrescriptioNSearchResults(data, $container) {
   });
 }
 
-function addPrescriptionCallback() {
-
-}
-
 function addStandardSet() {
   var $selectedSet = $('#add-standard-set').find('li[class="selected"]');
   $selectedSet.removeClass('selected');
@@ -266,7 +262,8 @@ $(function () {
   setUpAdder(
     $('#add-to-prescription'),
     null,
-    addPrescriptionCallback,
+    function () {
+    },
     $('#add-prescription-btn'),
     null,
     $('#add-to-prescription').find('.close-icon-btn, .add-icon-btn')

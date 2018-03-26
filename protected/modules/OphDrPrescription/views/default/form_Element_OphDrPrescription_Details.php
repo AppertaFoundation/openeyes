@@ -134,9 +134,9 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
           <div class="search-options" style="display: none;">
             <input id="prescription-search-field"
                    class="cols-full"
-                   placeholder="search for option (type 'auto-complete' to demo)"
+                   placeholder="search for prescription"
                    type="text">
-            <ul class="add-options" data-multi="true">
+            <ul id="prescription-search-results" class="add-options" data-multi="true">
             </ul>
           </div>
           <label class="inline highlight">
