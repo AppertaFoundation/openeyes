@@ -26,26 +26,24 @@
 	<?php }?>
 	<div class="cols-<?php if ($label) { echo $layoutColumns['field']; }else{?>12<?php }?> column end">
 		<div class="row collapse in flex-layout flex-top">
-			<div class="large-10 column">
+			<div class="cols-10 column">
 				<div class="dropdown-row">
 					<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => '- Please Select -') : $dropdownOptions) : ''?>
 				</div>
-				<div class="autocomplete-row" style="display: none">
-					<?php
-                    $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                            'name' => "ignore_{$class}[$field]",
-                            'id' => "{$class}_{$field}_searchbox",
-                            'value' => '',
-                            'source' => "js:function(request, response) {
+        <div class="autocomplete-row" style="display: none">
+            <?php
+            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+                'name' => "ignore_{$class}[$field]",
+                'id' => "{$class}_{$field}_searchbox",
+                'value' => '',
+                'source' => "js:function(request, response) {
 								$.ajax({
-									'url': '".Yii::app()->createUrl('/disorder/autocomplete')."',
+									'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
 									'type':'GET',
-									'data':{'term': request.term, 'code': '".$code."'},
+									'data':{'term': request.term, 'code': '" . $code . "'},
 									'success':function(data) {
 										data = $.parseJSON(data);
-
 										var result = [];
-
 										for (var i = 0; i < data.length; i++) {
 											var ok = true;
 											$('#selected_diagnoses').children('input').map(function() {
@@ -62,34 +60,33 @@
 									}
 								});
 							}",
-                            'options' => array(
-                                    'minLength' => '3',
-                                    'select' => 'js:function(event, ui) {
-										'.($callback ? $callback.'(ui.item.id, ui.item.value);' : '')."
-										$('#".$class.'_'.$field."_searchbox').val('').parent().addClass('hide');
+                'options' => array(
+                    'minLength' => '3',
+                    'select' => 'js:function(event, ui) { ' . ($callback ? $callback . '(ui.item.id, ui.item.value);' : '') . "
+										$('#" . $class . '_' . $field . "_searchbox').val('').parent().addClass('hide');
 										var matched = false;
-										$('#".$class.'_'.$field."').children('option').map(function() {
+										$('#" . $class . '_' . $field . "').children('option').map(function() {
 											if ($(this).val() == ui.item.id) {
 												matched = true;
 											}
 										});
 										if (!matched) {
-											$('#".$class.'_'.$field."').append('<option value=\"' + ui.item.id + '\">'+ui.item.value+'</option>');
+											$('#" . $class . '_' . $field . "').append('<option value=\"' + ui.item.id + '\">'+ui.item.value+'</option>');
 										}
-										$('#".$class.'_'.$field."').val(ui.item.id).trigger('change');
+										$('#" . $class . '_' . $field . "').val(ui.item.id).trigger('change');
 										return false;
 									}",
-                            ),
-                            'htmlOptions' => array(
-                                'placeholder' => 'search for diagnosis',
-                            ),
-                    ));
-                    ?>
-				</div>
+                ),
+                'htmlOptions' => array(
+                    'placeholder' => 'search for diagnosis',
+                ),
+            ));
+            ?>
+        </div>
 			</div>
-			<div class="large-2 column">
+			<div class="cols-2 column">
 				<div class="postfix">
-					<button class="oe-i search" id="<?php echo $class.'_'.$field.'_search'?>" style="height: 28px; width: 28px;">
+					<button class="oe-i search" id="<?php echo $class.'_'.$field.'_search'?>" style="height: 28px; width: 28px;" type="button">
 						<span class="icon-button-small-search" ></span>
 						<span style="display: none">Search</span>
 					</button>
@@ -103,7 +100,6 @@
 
 		var searchButton = $('#<?php echo $class.'_'.$field.'_search'?>');
 		var searchBox = $('#<?php echo $class.'_'.$field.'_searchbox'?>');
-
 		searchButton.on('click', function(e) {
 			e.preventDefault();
 			searchBox.parent().toggle();

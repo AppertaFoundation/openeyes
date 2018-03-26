@@ -38,64 +38,28 @@ foreach ($l1_disorders as $disorder) {
 <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
 <div class="element-fields element-eyes row">
-	<div class="element-eye right-eye column side left eventDetail sideHeaders">
-		<h4>Right side</h4>
-	</div>
-	<div class="element-eye left-eye column side right eventDetail sideHeaders">
-		<h4>Left side</h4>
-	</div>
-</div>
-
-<div class="element-fields element-eyes row">
-	<div class="element-eye right-eye column side left eventDetail<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
-		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-				<?php $this->renderPartial($element->form_view.'_fields',
-                    array(
-                        'side' => 'right',
-                        'element' => $element,
-                        'form' => $form,
-                        'l1_disorders' => $l1_disorders,
-                        'l1_opts' => $l1_options,
-                        'l2_disorders' => $l2_disorders,
-                        'data' => $data,
-                    )
-                );?>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add right side
-					<span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-
-	<div
-		class="element-eye left-eye column side right eventDetail<?php if (!$element->hasLeft()) {?> inactive<?php }?>"
-		data-side="left">
-		<div class="active-form">
-			<a href="#" class="icon-remove-side remove-side">Remove side</a>
-			<?php $this->renderPartial($element->form_view.'_fields',
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+      <div class="element-eye <?= $eye_side ?>-eye column side <?= $page_side ?>" data-side="<?= $eye_side ?>">
+        <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
+          <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+          <?php $this->renderPartial($element->form_view.'_fields',
                 array(
-                    'side' => 'left',
+                    'side' =>  $eye_side,
                     'element' => $element,
                     'form' => $form,
                     'l1_disorders' => $l1_disorders,
                     'l1_opts' => $l1_options,
                     'l2_disorders' => $l2_disorders,
-                    'data' => $data,
-                )
-            ); ?>
-		</div>
-		<div class="inactive-form">
-			<div class="add-side">
-				<a href="#">
-					Add left side
-					<span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
+                    'data' => $data)); ?>
+        </div>
+        <div class="inactive-form side" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
+          <div class="add-side">
+            <a href="#">
+              Add right side
+              <span class="icon-add-side"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    <?php endforeach; ?>
 </div>

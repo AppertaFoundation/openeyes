@@ -19,18 +19,15 @@
 <div class="row field-row">
     <div
         class="cols-<?php echo $layoutColumns['label']; ?> column"
-        style="<?=!($label)?"display: none;":""?>"
-    >
+        style="<?=!($label)?"display: none;":""?>" >
         <label for="<?php echo "{$class}_{$field}"; ?>">Diagnosis:</label>
     </div>
     <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
 
         <!-- Here we show the selected diagnosis -->
-        <div
-            class="panel diagnosis<?php if (!$label) { ?> hide<?php } ?>"
+        <div class="panel diagnosis<?php if (!$label) { ?> hide<?php } ?>"
             id="enteredDiagnosisText"
-            style="<?=!($label)?"display: none;":""?>"
-        >
+            style="<?=!($label)?"display: none;":""?>">
             <?php echo $label ?>
             <?php
             $clear_diagnosis = '';
@@ -44,8 +41,7 @@
             <?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis')) ?>
         </div>
         <div class="field-row">
-            <?php
-            $this->controller->renderPartial('//disorder/disorderAutoComplete', array(
+            <?php $this->controller->renderPartial('//disorder/disorderAutoComplete', array(
                 'class' => $class,
                 'name' => $field,
                 'code' => $code,
