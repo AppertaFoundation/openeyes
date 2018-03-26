@@ -16,20 +16,24 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
-
-<table>
+<table class="label-value">
   <tbody>
   <tr>
     <td>
-        <?php echo $element->getAttributeLabel($side . '_anaesthetictype_id') ?>:
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_anaesthetictype_id') ?>:
+      </div>
     </td>
     <td>
         <?php echo $element->{$side . '_anaesthetictype'}->name . ($element->{$side . '_anaestheticdelivery'} ? ' - ' . $element->{$side . '_anaestheticdelivery'}->name : '') ?>
     </td>
   </tr>
   <tr>
-    <td><?php echo $element->getAttributeLabel($side . '_anaestheticagent_id') ?>:</td>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_anaestheticagent_id') ?>:
+      </div>
+    </td>
     <td><?php echo $element->{$side . '_anaestheticagent'}->name ?></td>
   </tr>
   </tbody>

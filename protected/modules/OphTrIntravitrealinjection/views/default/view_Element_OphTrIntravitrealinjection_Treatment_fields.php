@@ -16,23 +16,39 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<table>
+<table class="label-value">
   <tbody>
   <tr>
-    <td><?php echo $element->getAttributeLabel($side . '_pre_antisept_drug_id') ?>:</td>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_pre_antisept_drug_id') ?>:
+      </div>
+    </td>
     <td><?php echo $element->{$side . '_pre_antisept_drug'}->name ?></td>
   </tr>
   <tr>
-    <td><?php echo $element->getAttributeLabel($side . '_pre_skin_drug_id') ?>:</td>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_pre_skin_drug_id') ?>:<div class="data-label">
+        </div>
+    </td>
     <td><?php echo $element->{$side . '_pre_skin_drug'}->name ?></td>
   </tr>
   <tr>
-    <td><?php echo $element->getAttributeLabel($side . '_pre_ioplowering_required') ?>:</td>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_pre_ioplowering_required') ?>:
+      </div>
+    </td>
     <td><?php echo $element->{$side . '_pre_ioplowering_required'} ? 'Yes' : 'No' ?></td>
   </tr>
   <?php if ($element->{$side . '_pre_ioploweringdrugs'}) { ?>
     <tr>
-      <td><?php echo $element->getAttributeLabel($side . '_pre_ioploweringdrugs') ?>:</td>
+      <td>
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_pre_ioploweringdrugs') ?>:
+        </div>
+      </td>
       <td>
           <?php
           foreach ($element->{$side . '_pre_ioploweringdrugs'} as $item) {
@@ -43,36 +59,68 @@
     </tr>
   <?php } ?>
   <tr>
-    <td><?php echo $element->getAttributeLabel($side . '_drug_id') ?>:</td>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_drug_id') ?>:
+      </div>
+    </td>
     <td><?php echo $element->{$side . '_drug'}->name ?>    </td>
   </tr>
   <tr>
-    <td><?php echo $element->getAttributeLabel($side . '_number') ?>:</td>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_number') ?>:
+      </div>
+    </td>
     <td><?php echo CHtml::encode($element->{$side . '_number'}) ?></td>
   </tr>
   <tr>
-    <td><?php echo $element->getAttributeLabel($side . '_batch_number') ?>:</td>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_batch_number') ?>:
+      </div>
+    </td>
     <td><?php echo CHtml::encode($element->{$side . '_batch_number'}) ?></td>
   </tr>
   <tr>
-    <td><?php echo $element->getAttributeLabel($side . '_batch_expiry_date') ?>:</td>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_batch_expiry_date') ?>:
+      </div>
+    </td>
     <td><?php echo $element->NHSDate($side . '_batch_expiry_date') ?></td>
   </tr>
   <tr>
-    <td><?php echo $element->getAttributeLabel($side . '_injection_given_by_id') ?>:</td>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_injection_given_by_id') ?>:
+      </div>
+    </td>
     <td><?php echo $element->{$side . '_injection_given_by'}->ReversedFullName ?></td>
   </tr>
   <tr>
-    <td><?php echo $element->getAttributeLabel($side . '_injection_time') ?>:</td>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_injection_time') ?>:
+      </div>
+    </td>
     <td><?php echo date('H:i', strtotime($element->{$side . '_injection_time'})); ?></td>
   </tr>
   <tr>
-    <td><?php echo $element->getAttributeLabel($side . '_post_ioplowering_required') ?>:</td>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_post_ioplowering_required') ?>:
+      </div>
+    </td>
     <td><?php echo $element->{$side . '_post_ioplowering_required'} ? 'Yes' : 'No' ?></td>
   </tr>
   <?php if ($element->{$side . '_post_ioploweringdrugs'}) { ?>
     <tr>
-      <td><?php echo $element->getAttributeLabel($side . '_post_ioploweringdrugs') ?>:</td>
+      <td>
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_post_ioploweringdrugs') ?>:
+        </div>
+      </td>
       <td>
           <?php
           foreach ($element->{$side . '_post_ioploweringdrugs'} as $item) {

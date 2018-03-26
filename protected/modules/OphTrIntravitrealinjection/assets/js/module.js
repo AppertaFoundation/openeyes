@@ -315,7 +315,7 @@ $(document).ready(function() {
 	});
 
 	// extend the removal behaviour for treatment element to affect the dependent elements
-	$(this).undelegate('.event-content .remove-side', 'click').delegate('.event-content .remove-side', 'click', function(e) {
+	$(this).undelegate('#event-content .remove-side', 'click').delegate('#event-content .remove-side', 'click', function(e) {
 		e.preventDefault();
 		side = getSplitElementSide($(this));
 

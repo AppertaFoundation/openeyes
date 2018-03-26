@@ -217,29 +217,19 @@ foreach ($skin_drugs as $drug) {
                 class="postfix number-history-icon<?php if (!$selected_drug) {
                     echo ' hidden';
                 } ?>">
-        <i class="oe-i info small pad va-info-icon"></i>
+              <?php $tooltip_info = "";
+            foreach ($drugs as $drug) {
+              if (count($drug_history[$drug->id])) {
+                    $tooltip_info = $tooltip_info.'<b>Previous ' . $drug->name . ' treatments</b><br />';
+                    foreach ($drug_history[$drug->id] as $previous) {
+                        $tooltip_info = $tooltip_info . Helper::convertDate2NHS($previous['date']) . ' (' . $previous[$side . '_number'] . ')<br />';
+                    }
+                }
+            } ?>
+        <i class="oe-i info small-icon js-has-tooltip"
+           data-tooltip-content="<?php echo $tooltip_info; ?>">
+        </i>
       </span>
-          <div class="quicklook number-history" style="display: none;">
-              <?php
-              foreach ($drugs as $drug) {
-                  echo '<div class="number-history-item';
-                  if ($drug->id != $selected_drug) {
-                      echo ' hidden';
-                  }
-                  echo '" id="div_' . get_class($element) . '_' . $side . '_history_' . $drug->id . '">';
-                  if (count($drug_history[$drug->id])) {
-                      echo '<b>Previous ' . $drug->name . ' treatments</b><br />';
-                      echo '<dl style="margin-top: 0px; margin-bottom: 2px;">';
-                      foreach ($drug_history[$drug->id] as $previous) {
-                          echo '<dt>' . Helper::convertDate2NHS($previous['date']) . ' (' . $previous[$side . '_number'] . ')</dt>';
-                      }
-                      echo '</dl>';
-                  } else {
-                      echo 'No previous ' . $drug->name . ' treatments';
-                  }
-                  echo '</div>';
-              } ?>
-          </div>
         </div>
       </div>
     </td>
@@ -269,8 +259,8 @@ foreach ($skin_drugs as $drug) {
   ?>
   <tr>
     <td>
-      <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_batch_number">
-          <?php echo $element->getAttributeLabel($side . '_batch_number') ?>:
+      <label for="<?php echo get_class($element) ?>_<?php echo $side ?>_batch_expiry_date">
+          <?php echo $element->getAttributeLabel($side . '_batch_expiry_date') ?>:
       </label>
     </td>
     <td>

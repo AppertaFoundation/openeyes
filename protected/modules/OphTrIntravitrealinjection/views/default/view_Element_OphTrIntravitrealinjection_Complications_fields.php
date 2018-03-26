@@ -17,13 +17,15 @@
  */
 ?>
 
-<table>
+<table class="label-value">
   <tbody>
-  <tr class="row data-row">
-    <td class="large-4 column">
-        <?php echo $element->getAttributeLabel($side . '_complications') ?>:
+  <tr>
+    <td>
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_complications') ?>:
+      </div>
     </td>
-    <td class="large-8 column">
+    <td>
         <?php
         if (!$element->{$side . '_complications'}) {
             echo 'None';
@@ -36,11 +38,13 @@
   </tr>
 
   <?php if ($element->{$side . '_oth_descrip'}) { ?>
-    <tr class="row data-row">
-      <td class="large-4 column">
-          <?php echo $element->getAttributeLabel($side . '_oth_descrip') ?>:
+    <tr>
+      <td>
+        <div class="data-label">
+            <?php echo $element->getAttributeLabel($side . '_oth_descrip') ?>:
+        </div>
       </td>
-      <td class="large-8 column">
+      <td>
           <?php echo Yii::app()->format->Ntext($element->{$side . '_oth_descrip'}) ?>
       </td>
     </tr>

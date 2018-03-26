@@ -16,10 +16,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<table>
+<table class="label-value">
   <tr>
     <td>
-        <?php echo $element->getAttributeLabel($side . '_finger_count') ?>:
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_finger_count') ?>:
+      </div>
     </td>
     <td>
         <?php echo $element->{$side . '_finger_count'} ? 'Yes' : 'No' ?>
@@ -27,7 +29,11 @@
   </tr>
 
   <tr>
-    <td>IOP:</td>
+    <td>
+      <div class="data-label">
+           IOP:
+      </div>
+    </td>
     <td>
         <?php if ($element->{$side . '_iop_check'}) { ?>
           IOP should be checked
@@ -42,7 +48,9 @@
 
   <tr>
     <td>
-        <?php echo $element->getAttributeLabel($side . '_drops_id') ?>:
+      <div class="data-label">
+          <?php echo $element->getAttributeLabel($side . '_drops_id') ?>:
+      </div>
     </td>
     <td>
         <?php if ($element->{$side . '_drops'}) {

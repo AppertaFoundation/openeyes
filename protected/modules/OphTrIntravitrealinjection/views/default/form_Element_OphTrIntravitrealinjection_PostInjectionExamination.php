@@ -21,15 +21,12 @@
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
   <div class="element-eye <?= $eye_side ?>-eye column side <?= $page_side ?>" data-side="<?= $eye_side ?>">
     <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
         <?php $this->renderPartial($element->form_view.'_fields',
             array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data)); ?>
     </div>
     <div class="inactive-form side" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
       <div class="add-side">
-        <a href="#">
           Set <?= $eye_side ?> side treatment drug <span class="icon-add-side"></span>
-        </a>
       </div>
     </div>
   </div>
