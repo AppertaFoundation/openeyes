@@ -17,7 +17,7 @@
  */
 ?>
 <?php
-Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Dilation.js", CClientScript::POS_END);
+Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Dilation.js");
 
 $key = 0;
 $dilation_drugs = \OEModule\OphCiExamination\models\OphCiExamination_Dilation_Drugs::model()->findAll();
@@ -119,7 +119,7 @@ foreach ($dilation_drugs as $d_drug) {
             side.find('.js-add-select-search'),
             null,
             popup.find('.close-icon-btn, .add-icon-btn')
-          );
+           );
         })
       </script>
     <?php endforeach; ?>
