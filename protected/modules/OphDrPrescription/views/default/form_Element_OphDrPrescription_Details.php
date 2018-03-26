@@ -82,7 +82,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
 
       <div>
 
-        <button id="add-standard-set-btn" class="button hint green">Add standard set</button>
+        <button id="add-standard-set-btn" class="button hint green" type="button">Add standard set</button>
 
         <div id="add-standard-set" class="oe-add-select-search auto-width" style="display: none;">
           <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
@@ -95,12 +95,12 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
           </ul>
         </div>
 
-        <button class="button hint green" id="add-prescription-btn"><i class="oe-i plus pro-theme"></i></button>
+        <button class="button hint green" id="add-prescription-btn" type="button"><i class="oe-i plus pro-theme"></i></button>
 
         <div id="add-to-prescription" class="oe-add-select-search auto-width" style="display: none;">
           <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
           <div class="select-icon-btn"><i id="prescription-select-btn" class="oe-i menu selected"></i></div>
-          <button class="button hint green add-icon-btn"><i class="oe-i plus pro-theme"></i></button>
+          <button class="button hint green add-icon-btn" type="button"><i class="oe-i plus pro-theme"></i></button>
           <table class="select-options">
             <thead>
             <tr>
