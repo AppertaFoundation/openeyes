@@ -19,84 +19,174 @@
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-      <div class="element-eye <?= $eye_side ?>-eye column side <?= $page_side ?>
-        <?php if (!$element->hasEye($eye_side)): ?>inactive<?php endif; ?>"
+
+      <div class="element-eye <?= $eye_side ?>-eye <?= $page_side ?> side
+          <?php if (!$element->hasEye($eye_side)): ?>inactive<?php endif; ?>"
            data-side="<?= $eye_side ?>">
-        <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
+        <div class="active-form field-row flex-layout"
+             style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 
-          <fieldset class="row field-row">
-            <legend class="cols-3 column">
-                <?php echo $element->getAttributeLabel($eye_side . '_sphere') ?>:
-            </legend>
-            <div class="cols-9 column">
-                <?php Yii::app()->getController()->renderPartial('_segmented_field', array(
-                    'element' => $element,
-                    'side' => $eye_side,
-                    'field' => 'sphere',
-                    'model' => 'OphCiExamination_Refraction_Sphere_Integer',
-                ), false, false) ?>
-            </div>
-          </fieldset>
-          <fieldset class="row field-row">
-            <legend class="cols-3 column">
-                <?php echo $element->getAttributeLabel($eye_side . '_cylinder') ?>:
-            </legend>
-            <div class="cols-9 column">
-                <?php Yii::app()->getController()->renderPartial('_segmented_field', array(
-                    'element' => $element,
-                    'side' => $eye_side,
-                    'field' => 'cylinder',
-                    'model' => 'OphCiExamination_Refraction_Cylinder_Integer',
-                ), false, false) ?>
-            </div>
-          </fieldset>
-          <div class="row field-row">
-            <div class="cols-3 column">
-              <label for="<?php echo get_class($element) . '_' . $eye_side . '_axis'; ?>">
-                  <?php echo $element->getAttributeLabel($eye_side . '_axis') ?>:
-              </label>
-            </div>
-            <div class="cols-6 column end">
-                <?php echo CHtml::activeTextField($element, $eye_side . '_axis',
-                    array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'axis')) ?>
-            </div>
-          </div>
-          <div class="refraction-type-container">
-            <div class="row field-row">
-              <div class="cols-3 column">
-                <label for="<?php echo get_class($element) . '_' . $eye_side . '_type_id'; ?>">
-                    <?php echo $element->getAttributeLabel($eye_side . '_type_id') ?>:
-                </label>
-              </div>
-              <div class="cols-6 column end">
-                <div>
+          <div class="cols-9">
+            <table class="cols-full">
+              <thead>
+              <tr>
+                <th><?php echo $element->getAttributeLabel($eye_side . '_sphere') ?></th>
+                <th>
+                    <?php echo $element->getAttributeLabel($eye_side . '_cylinder') ?>
+                </th>
+                <th>
+                    <?php echo $element->getAttributeLabel($eye_side . '_axis') ?>
+                </th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="cols-2">
+                    <?= CHtml::activeTextField($element, $eye_side . '_sphere', array('class' => 'cols-11')) ?>
+                </td>
+                <td class="cols-2">
+                    <?= CHtml::activeTextField($element, $eye_side . '_cylinder', array('class' => 'cols-11')) ?>
+                </td>
+                <td class="cols-2">
+                    <?php echo CHtml::activeTextField($element, $eye_side . '_axis',
+                        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'axis')) ?>
+                </td>
+                <td class="cols-4">
                     <?php echo CHtml::activeDropDownList($element, $eye_side . '_type_id',
                         OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->getOptions(),
-                        array('class' => 'refractionType')) ?>
-                </div>
-              </div>
-            </div>
-            <div class="row field-row refraction-type-other"
-                <?php if ($element->{$eye_side . '_type'} && $element->{$eye_side . '_type'}->name != 'Other'): ?>
+                        array('class' => 'refractionType cols-full')) ?>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+
+            <div class="refraction-type-other field-row-pad-top"
+                <?php if ($element->{$eye_side . '_type'} && $element->{$eye_side . '_type'}->name !== 'Other'): ?>
                   style="display:none"
                 <?php endif ?>>
-              <div class="cols-3 column">
-                <label>Other:</label>
-              </div>
-              <div class="cols-6 column end">
-                  <?php echo CHtml::activeTextField($element, $eye_side . '_type_other',
-                      array(
-                          'autocomplete' => Yii::app()->params['html_autocomplete'],
-                          'class' => 'refraction-type-other-field',
-                      )) ?>
-              </div>
+                <?php echo CHtml::activeTextField($element, $eye_side . '_type_other',
+                    array(
+                        'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        'placeholder' => 'Other',
+                        'class' => 'refraction-type-other-field cols-full',
+                    )) ?>
             </div>
-            <div class="row field-row">
-              <div class="cols-9 column end">
-                  <?php echo CHtml::activeTextArea($element, $eye_side . '_notes',
-                      array('rows' => 1, 'placeholder' => $element->getAttributeLabel($eye_side . '_notes'))) ?>
-              </div>
+
+            <div id="refraction-<?= $eye_side ?>-comments" class="field-row-pad-top"
+                 style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>">
+                <?php echo CHtml::activeTextArea($element, $eye_side . '_notes',
+                    array(
+                        'rows' => 1,
+                        'placeholder' => $element->getAttributeLabel($eye_side . '_notes'),
+                        'class' => 'cols-full',
+                        'style' => 'overflow-wrap: break-word; height: 24px;',
+                    )) ?>
+            </div>
+          </div>
+
+          <div class="flex-item-bottom">
+
+            <button class="button js-add-comments" data-input="#refraction-<?= $eye_side ?>-comments" type="button"
+              style="<?= $element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>">
+              <i class="oe-i comments small-icon"></i>
+            </button>
+
+            <button class="button hint green" type="button" id="add-to-refraction-btn-<?= $eye_side ?>">
+              <i class="oe-i plus pro-theme"></i>
+            </button>
+            <div id="add-to-refraction-<?= $eye_side ?>" class="oe-add-select-search auto-width" style="display: none;">
+              <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
+              <button class="button hint green add-icon-btn" type="button">
+                <i class="oe-i plus pro-theme"></i>
+              </button>
+              <table class="select-options">
+                <thead>
+                <tr>
+                  <th><?php echo $element->getAttributeLabel($eye_side . '_sphere') ?></th>
+                  <th><?php echo $element->getAttributeLabel($eye_side . 'cylinder') ?></th>
+                  <th><?php echo $element->getAttributeLabel($eye_side . '_axis') ?></th>
+                  <th><?php echo $element->getAttributeLabel($eye_side . '_type') ?></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>
+                    <div class="flex-layout flex-top flex-left">
+                      <ul class="add-options sphere-sign">
+                        <li data-str="+">
+                          <span class="auto-width"><i class="oe-i plus active"></i></span>
+                        </li>
+                        <li data-str="-">
+                          <span class="auto-width"><i class="oe-i minus active"></i></span>
+                        </li>
+                      </ul>
+
+                      <ul class="add-options sphere-integer">
+                          <?php
+                          $sign_id = ($element->{$eye_side . '_sphere'} > 0) ? 1 : 2;
+                          foreach (\OEModule\OphCiExamination\models\OphCiExamination_Refraction_Sphere_Integer::model()->findAll('sign_id=' . $sign_id) as $integer): ?>
+                            <li data-str="<?= $integer->value ?>"><?= $integer->value ?></li>
+                          <?php endforeach; ?>
+                      </ul>
+                      <ul class="add-options sphere-fraction">
+                          <?php foreach (OEModule\OphCiExamination\models\OphCiExamination_Refraction_Fraction::model()->findAll() as $fraction): ?>
+                            <li data-str="<?= $fraction->value ?>">
+                              <span class="auto-width"><?= $fraction->value ?></span>
+                            </li>
+                          <?php endforeach; ?>
+                      </ul>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="flex-layout flex-top flex-left">
+                      <ul class="add-options cylinder-sign">
+                        <li data-str="+">
+                          <span class="auto-width"><i class="oe-i plus active"></i></span>
+                        </li>
+                        <li data-str="-" class="">
+                          <span class="auto-width"><i class="oe-i minus active"></i></span>
+                        </li>
+                      </ul>
+                      <ul class="add-options cylinder-integer">
+                          <?php
+                          $sign_id = ($element->{$eye_side . '_cylinder'} > 0) ? 1 : 2;
+                          foreach (\OEModule\OphCiExamination\models\OphCiExamination_Refraction_Cylinder_Integer::model()->findAll('sign_id=' . $sign_id) as $integer): ?>
+                            <li data-str="<?= $integer->value ?>"><?= $integer->value ?></li>
+                          <?php endforeach; ?>
+                      </ul>
+                      <ul class="add-options cylinder-fraction">
+                          <?php foreach (OEModule\OphCiExamination\models\OphCiExamination_Refraction_Fraction::model()->findAll() as $fraction): ?>
+                            <li data-str="<?= $fraction->value ?>">
+                              <span class="auto-width"><?= $fraction->value ?></span>
+                            </li>
+                          <?php endforeach; ?>
+                      </ul>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="flex-layout flex-top flex-left">
+                      <ul class="add-options axis">
+                          <?php foreach (range(1, 180) as $axis): ?>
+                            <li data-str="<?= $axis ?>"><?= $axis ?></li>
+                          <?php endforeach; ?>
+                      </ul>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="flex-layout flex-top flex-left">
+                      <ul class="add-options refraction-type" data-multi="false" data-clickadd="false">
+                          <?php foreach (OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type::model()->findAll(array('order' => 'display_order')) as $type): ?>
+                            <li data-str="<?= $type->id ?>"><span class="restrict-width"><?= $type->name ?></span>
+                            </li>
+                          <?php endforeach; ?>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -108,5 +198,55 @@
           </div>
         </div>
       </div>
+      <script type="text/javascript">
+        function applyRefractionSettings<?= $eye_side ?>() {
+          var $popup = $('#add-to-refraction-<?= $eye_side ?>');
+
+          applySegmentedFieldSettings(
+            $popup,
+            'sphere',
+            $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_<?= $eye_side ?>_sphere')
+          );
+
+          applySegmentedFieldSettings(
+            $popup,
+            'cylinder',
+            $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_<?= $eye_side ?>_cylinder')
+          );
+
+          var axis = $popup.find('.add-options.axis').find('li.selected').data('str');
+          if (axis !== null) {
+            $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_<?= $eye_side ?>_axis').val(axis);
+          }
+
+          var refraction_type = $popup.find('.add-options.refraction-type').find('li.selected').data('str');
+          if (refraction_type !== null) {
+            $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_<?= $eye_side ?>_type_id').val(refraction_type);
+          }
+        }
+
+        $(function () {
+          setUpAdder(
+            $('#add-to-refraction-<?= $eye_side ?>'),
+            'single',
+            applyRefractionSettings<?= $eye_side ?>,
+            $('#add-to-refraction-btn-<?= $eye_side ?>'),
+            $('#add-to-refraction-<?= $eye_side ?>').find('.add-icon-btn'),
+            $('#add-to-refraction-<?= $eye_side ?>').find('.close-icon-btn, .add-icon-btn'),
+          );
+        });
+      </script>
     <?php endforeach; ?>
 </div>
+
+<script type="text/javascript">
+  function applySegmentedFieldSettings($popup, type, result_field) {
+    var sign = $popup.find('.add-options.' + type + '-sign').find('li.selected').data('str');
+    var integer = $popup.find('.add-options.' + type + '-integer').find('li.selected').data('str');
+    var fraction = $popup.find('.add-options.' + type + '-fraction').find('li.selected').data('str');
+
+    if (sign != null && integer != null && fraction != null) {
+      result_field.val(sign + integer + fraction);
+    }
+  }
+</script>

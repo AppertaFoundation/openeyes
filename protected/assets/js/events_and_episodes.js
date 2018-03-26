@@ -137,12 +137,11 @@ $(document).ready(function(){
         }
     });
 
-    $(this).on('click', '.js-add-comments', function (e) {
-        e.preventDefault();
-        var container = $(this).attr('data-input');
-        $(container).show();
-        $(this).hide();
-    });
+  $(this).on('click', '.js-add-comments', function (e) {
+    e.preventDefault();
+    $($(this).data('input')).show();
+    $(this).hide();
+  });
 
 	$(this).on('mouseout', '.js-has-tooltip', function (e) {
     $('body').find( ".oe-tooltip" ).remove();
