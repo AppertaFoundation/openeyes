@@ -63,9 +63,15 @@
     <?php echo $form->radioBoolean($user, 'is_clinical') ?>
     <?php echo $form->radioBoolean($user, 'is_consultant') ?>
     <?php echo $form->radioBoolean($user, 'is_surgeon') ?>
-    <?php echo $form->passwordField($user, 'password', array('autocomplete' => Yii::app()->params['html_autocomplete']),
-        array('empty' => '', array('empty' => '- None -'))) ?>
-    <?php echo $form->passwordChangeField($user, 'Confirm', 'User[password_repeat]') ?>
+
+    <?php if(!$is_ldap || $user->is_local):?>
+
+        <?php echo $form->passwordField($user, 'password', array('autocomplete' => Yii::app()->params['html_autocomplete']),
+            array('empty' => '', array('empty' => '- None -'))) ?>
+        <?php echo $form->passwordChangeField($user, 'Confirm', 'User[password_repeat]') ?>
+
+    <?php endif; ?>
+
     <?php echo $form->multiSelectList($user,
         'User[roles]',
         'roles',

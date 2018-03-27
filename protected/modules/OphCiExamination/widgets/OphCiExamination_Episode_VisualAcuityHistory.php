@@ -46,7 +46,16 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
             if ($value->base_value < 10 || ($this->va_unit->name == 'ETDRS Letters' && $value->value % 10)) {
                 continue;
             }
-            $va_ticks[] = array($value->base_value, $value->value);
+
+            /*
+                OE-7011
+                Replacing the charts completely with highcharts will come in OE3.x (with OEScape)
+                until that we need to fix this overlapping labels
+                FlotChart's tickFormatter function won't apply as "'ticks' => $va_ticks" are provided
+            */
+            $label = ($value->value == '6/9.5') ? '' : $value->value;
+
+            $va_ticks[] = array($value->base_value, $label);
         }
 
         $this->va_axis = "Visual Acuity ({$this->va_unit->name})";

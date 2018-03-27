@@ -170,7 +170,7 @@ class OphDrPrescription_Item extends BaseActiveRecordVersioned
             $this->duration_id = $this->drug->default_duration_id;
             $this->frequency_id = $this->drug->default_frequency_id;
             $this->route_id = $this->drug->default_route_id;
-            $this->dose = trim($this->drug->default_dose.' '.$this->drug->dose_unit);
+            $this->dose = trim($this->drug->default_dose);
         }
     }
 

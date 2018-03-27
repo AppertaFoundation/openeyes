@@ -136,7 +136,7 @@ class DefaultController extends BaseEventTypeController
             $message = 'Only the following file types can be uploaded: ' . ( implode(', ', $this->getAllowedFileTypes()) ) . '.';
             $message .= "\n\nFor reference, the type of the file you tried to upload is: <i>$extension</i>, which is mime type: <i>$file_mime</i>";
 		}
-        
+
         return $message;
     }
 
@@ -207,9 +207,11 @@ class DefaultController extends BaseEventTypeController
      */
     public function getTemplateForMimeType($mimetype)
     {
-        if(strpos($mimetype, "image/") !== false){
+        if (strpos($mimetype, "image/") !== false) {
             return 'image';
-        }else{
+        } elseif (strpos($mimetype, "video/") !== false) {
+                return 'video';
+        } else {
             return 'object';
         }
     }

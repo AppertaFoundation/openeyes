@@ -638,10 +638,10 @@ class m130913_000001_consolidation_for_ophciexamination extends OEMigration
 				`eye_id` int(10) unsigned DEFAULT '3',
 				`no_treatment` tinyint(1) NOT NULL DEFAULT '0',
 				`no_treatment_reason_id` int(10) unsigned DEFAULT NULL,
-				`left_diagnosis1_id` int(10) unsigned DEFAULT NULL,
-				`right_diagnosis1_id` int(10) unsigned DEFAULT NULL,
-				`left_diagnosis2_id` int(10) unsigned DEFAULT NULL,
-				`right_diagnosis2_id` int(10) unsigned DEFAULT NULL,
+				`left_diagnosis1_id` BIGINT unsigned DEFAULT NULL,
+				`right_diagnosis1_id` BIGINT unsigned DEFAULT NULL,
+				`left_diagnosis2_id` BIGINT unsigned DEFAULT NULL,
+				`right_diagnosis2_id` BIGINT unsigned DEFAULT NULL,
 				`left_comments` text,
 				`right_comments` text,
 				`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -1245,7 +1245,7 @@ class m130913_000001_consolidation_for_ophciexamination extends OEMigration
         $this->execute("CREATE TABLE `ophciexamination_diagnosis` (
 				`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 				`element_diagnoses_id` int(10) unsigned NOT NULL,
-				`disorder_id` int(10) unsigned NOT NULL,
+				`disorder_id` BIGINT unsigned NOT NULL,
 				`eye_id` int(10) unsigned NOT NULL,
 				`principal` tinyint(1) unsigned NOT NULL DEFAULT '0',
 				`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -1544,7 +1544,7 @@ class m130913_000001_consolidation_for_ophciexamination extends OEMigration
 
         $this->execute("CREATE TABLE `ophciexamination_injectmanagecomplex_question` (
 				`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-				`disorder_id` int(10) unsigned NOT NULL,
+				`disorder_id` BIGINT unsigned NOT NULL,
 				`question` varchar(128) NOT NULL,
 				`display_order` int(10) unsigned NOT NULL DEFAULT '1',
 				`enabled` tinyint(1) NOT NULL DEFAULT '1',

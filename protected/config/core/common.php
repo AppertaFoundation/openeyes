@@ -78,7 +78,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201709130855',
+            'time' => '201803191435',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -473,6 +473,18 @@ return array(
          * Enables the admin->Settings->Logo screen */
         'letter_logo_upload' => true,
         /* ID of the Tag that indicates "preservative free" */
-        'preservative_free_tag_id' => 1
+        'preservative_free_tag_id' => 1,
+
+        /**
+         * If 'disable_auto_feature_tours' is true than no tour will be start on page load
+         * (this overrides the setting in admin > system > settings)
+         */
+        //'disable_auto_feature_tours' => true,
+
+        'whiteboard' => array(
+            // whiteboard will be refresh-able after operation booking is completed
+            // overrides admin > Opbooking > whiteboard settings
+            //'refresh_after_opbooking_completed' => 24, //hours or false
+        ),
     ),
 );

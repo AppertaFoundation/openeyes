@@ -46,7 +46,7 @@ function AlertDialogIfExaminationEventIsMissing(){
     }
     
 	if(examination_events_count < 1 && require_exam_before_booking) {
-        var warning_message = "You didn't create examination yet.";
+        var warning_message = "You have not yet created an examination event.";
         
         var p = $('#event-content');
         var position = p.position();
@@ -285,6 +285,8 @@ function OphTrOperationbooking_PatientUnavailable_add() {
 	$('.unavailables').find('[id$="date"]').each(function() {
 		$(this).datepicker({
 			'showAnim': 'fold',
-			'dateFormat': nhs_date_format});
+			'dateFormat': nhs_date_format,
+            'minDate': 0
+		});
 	});
 }

@@ -17,6 +17,11 @@
   }
 }
 
+/* Fix bottom spacing, there may be more widgets under medications */
+#OEModule_OphCiExamination_models_HistoryMedications_popup{
+  margin-bottom: 3px;
+}
+
 a.start-medication {
   color: #43a844;
 }

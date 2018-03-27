@@ -233,8 +233,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       $.getJSON('/medication/drugdefaults', { drug_id: item.value }, function (res) {
           for (var name in res) {
               if (name === 'dose') {
-                  $row.find('[name$="[' + name +']"]').attr('placeholder', res[name]);
-                  $row.find('[name$="[units]"]').val(res[name]);
+                  $row.find('[name$="[' + name +']"]').attr('placeholder', res['dose_unit']);
+                  $row.find('[name$="[units]"]').val(res['dose_unit']);
               } else {
                   $row.find('[name$="[' + name +']"]').val(res[name]).change();
               }
@@ -273,7 +273,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
               risksMap.push({id: risks[i], comments: [drugName]})
           }
       }
-      exports.HistoryRisks.addRisksForSource(risksMap, 'Medications');
+
+      //checking the risksMap.length because HistoryRisksCore (js class) will automatically open the element if it isn't there
+      if(risksMap.length){
+          exports.HistoryRisks.addRisksForSource(risksMap, 'Medications');
+      }
+
   };
 
   HistoryMedicationsController.prototype.resetSearchRow = function($container, showSearch)

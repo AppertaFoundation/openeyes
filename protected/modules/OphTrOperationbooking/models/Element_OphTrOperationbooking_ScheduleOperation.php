@@ -269,11 +269,14 @@ class Element_OphTrOperationbooking_ScheduleOperation extends BaseEventTypeEleme
         if (!$this->_unavailable_dates) {
             $this->_unavailable_dates = array();
             // cache the patient unavailable dates as we don't want to do this every time
-            foreach ($this->patient_unavailables as $unavailable) {
-                $dt = strtotime($unavailable->start_date);
-                while ($dt <= strtotime($unavailable->end_date)) {
-                    $this->_unavailable_dates[] = date('Y-m-d', $dt);
-                    $dt += 86400;
+            foreach ($this->patient_unavailables as $step => $unavailable) {
+
+                if( $unavailable->validate() ){
+                    $dt = strtotime($unavailable->start_date);
+                    while ($dt <= strtotime($unavailable->end_date)) {
+                        $this->_unavailable_dates[] = date('Y-m-d', $dt);
+                        $dt += 86400;
+                    }
                 }
             }
         }

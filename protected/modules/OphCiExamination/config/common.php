@@ -51,6 +51,7 @@ return array(
             'Invoice Statuses' => '/OphCiExamination/admin/InvoiceStatusList',
             'Allergies' => '/OphCiExamination/admin/Allergies',
             'Risks' => '/OphCiExamination/admin/Risks',
+            'Required Risk Assignment' => '/OphCiExamination/oeadmin/RisksAssignment',
             'Social History' => '/OphCiExamination/admin/SocialHistory',
             'Family History' => '/OphCiExamination/admin/FamilyHistory',
             'Medication Stop Reasons' => '/OphCiExamination/admin/HistoryMedicationsStopReason'
@@ -64,6 +65,9 @@ return array(
                 'uri' => '/OphCiExamination/OptomFeedback/list',
                 'restricted' => array(array('Optom co-ordinator', 'user_id')),
             )
-        )
+        ),
+        'reports' => array(
+            'Ready for second eye (unbooked)' => '/OphCiExamination/report/readyForSecondEyeUnbooked',
+        ),
     )
 );

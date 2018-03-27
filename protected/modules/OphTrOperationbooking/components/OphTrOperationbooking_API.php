@@ -167,15 +167,21 @@ class OphTrOperationbooking_API extends BaseAPI
         }
 
         if ($operation->status_id != $status->id) {
-            $operation->status_id = $status->id;
-            if (!$operation->save()) {
-                throw new Exception('Unable to save operation: ' . print_r($operation->getErrors(), true));
-            }
 
             $completed_status_id = Yii::app()->db->createCommand()
                 ->select('id')
                 ->from('ophtroperationbooking_operation_status')->where('name=:name', array(':name' => 'Completed'))
                 ->queryScalar();
+
+            $operation->status_id = $status->id;
+
+            if($completed_status_id == $status->id){
+                $operation->operation_completion_date = date('Y:m:d H:i:s');
+            }
+
+            if (!$operation->save()) {
+                throw new Exception('Unable to save operation: ' . print_r($operation->getErrors(), true));
+            }
 
             //When a booking has a status of completed, it should no longer show notices that it requires scheduling.
             $operation->refresh();

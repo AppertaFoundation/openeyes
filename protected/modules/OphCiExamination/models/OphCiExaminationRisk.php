@@ -70,9 +70,7 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, tags', 'safe'),
-            // The following rule is used by search().
-            // Please remove those attributes that should not be searched.
+            array('name, tags, gender, age_min, age_max', 'safe'),
             array('id, name', 'safe', 'on' => 'search'),
         );
     }
@@ -80,7 +78,10 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
     public function relations()
     {
         return array(
-            'tags' => array(self::MANY_MANY, 'Tag', 'ophciexamination_risk_tag(risk_id, tag_id)')
+            'tags' => array(self::MANY_MANY, 'Tag', 'ophciexamination_risk_tag(risk_id, tag_id)'),
+            'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
+            'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
+            'episodeStatus' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
         );
     }
 
@@ -105,12 +106,12 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new CDbCriteria();
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
     }

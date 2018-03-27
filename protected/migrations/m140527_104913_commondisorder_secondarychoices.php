@@ -6,7 +6,7 @@ class m140527_104913_commondisorder_secondarychoices extends OEMigration
     {
         $this->createOETable('secondaryto_common_oph_disorder', array(
                         'id' => 'pk',
-                        'disorder_id' => 'int(10) unsigned NOT NULL',
+                        'disorder_id' => 'BIGINT unsigned NOT NULL',
                         'parent_id' => 'int(10) unsigned NOT NULL',
                 ), true);
 

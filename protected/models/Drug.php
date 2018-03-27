@@ -185,6 +185,8 @@ class Drug extends BaseActiveRecordVersioned
             'dose' => "{$this->default_dose} {$this->dose_unit}",
             'route_id' => $this->default_route_id,
             'frequency_id' => $this->default_frequency_id,
+            'dose_unit' => $this->dose_unit,
+            'default_dose' => $this->default_dose,
         );
     }
 

@@ -526,21 +526,46 @@ class WaitingListController extends BaseModuleController
 
     public function actionSetBooked($event_id)
     {
+        header('Content-type: application/json');
+        $success = true;
+
         if(!$element = Element_OphTrOperationbooking_Operation::model()->find("event_id = :event_id", array(":event_id" => $event_id)))
         {
-            header('Content-type: application/json');
             echo CJSON::encode(array('success'=>false, 'This event could not be found.'));
             exit;
         }
 
-        $element->status_id = 2;
-        $element->save();
+        $transaction = \Yii::app()->db->beginTransaction();
 
-        $event = Event::model()->find("id = :event_id", array(":event_id"=>$event_id));
-        $event->deleteIssue("Operation requires scheduling");
+        try{
+            $element->status_id = 2; //@TODO: change hardcoded id to a query
+            $element->save();
+            $message = '';
 
-        header('Content-type: application/json');
-        echo CJSON::encode(array('success'=>true));
+            $event = Event::model()->find("id = :event_id", array(":event_id"=>$event_id));
+            $event->deleteIssue("Operation requires scheduling");
+
+            $listed_episode_status_id = Yii::app()->db->createCommand()
+                ->select('id')
+                ->from('episode_status')->where('name=:name', array(':name' => 'Listed/booked'))
+                ->queryScalar();
+
+            $event->episode->episode_status_id = $listed_episode_status_id;
+
+            $event->episode->save();
+
+            $transaction->commit();
+
+        }catch (\Exception $e){
+            $message = $e->getMessage();
+
+            \OELog::log($message);
+            $transaction->rollback();
+            $success = false;
+
+        }
+
+        echo CJSON::encode(array('success' => $success, 'message' => $message));
         exit;
     }
 }

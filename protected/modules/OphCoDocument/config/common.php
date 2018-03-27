@@ -25,6 +25,11 @@ return array(
                 'jpg'   => 'image/jpeg',
                 'jpeg'  => 'image/jpeg',
                 'png'   => 'image/png',
+                'gif'   => 'image/gif',
+                'mp4'   => 'video/mp4',
+                'mpeg4' => 'video/mp4',
+                'ogg'   => 'video/ogg',
+		'mov'	=> 'video/quicktime',
             )
         )
     )

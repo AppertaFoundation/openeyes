@@ -87,7 +87,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 				<tr
 					class="prescriptionItem<?php if ($this->patient->hasDrugAllergy($item->drug_id)) { ?> allergyWarning<?php } ?>">
 					<td class="prescriptionLabel"><?php echo $item->drug->label; ?></td>
-					<td><?php echo $item->dose ?></td>
+                    <td><?php echo is_numeric($item->dose) ? ($item->dose . " " . $item->drug->dose_unit) : $item->dose ?></td>
 					<td><?php echo $item->route->name ?><?php if ($item->route_option) {
 							echo ' (' . $item->route_option->name . ')';
 						} ?></td>
@@ -102,7 +102,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 				<?php foreach ($item->tapers as $taper) { ?>
 					<tr class="prescriptionTaper">
 						<td class="prescriptionLabel">then</td>
-						<td><?php echo $taper->dose ?></td>
+                        <td><?php echo is_numeric($taper->dose) ? ($taper->dose . " " . $item->drug->dose_unit) : $taper->dose ?></td>
 						<td>-</td>
 						<td><?php if ($data['copy'] == 'patient') {
 								echo $taper->frequency->long_name;

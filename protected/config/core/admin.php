@@ -40,9 +40,6 @@ return array(
                 'Custom episode summaries' => '/admin/episodeSummaries',
                 'Previous Ophthalmic Surgery' => '/admin/editpreviousoperation',
                 'Findings' => '/admin/managefindings',
-                'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
-                'Anaesthetic Agent Mapping' => '/oeadmin/AnaestheticAgentMapping/list',
-                'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list',
                 'Unique Codes' => '/oeadmin/uniqueCodes/list',
                 'Examination Event Logs' => '/oeadmin/eventLog/list',
                 'Patient Shortcodes' => '/admin/patientshortcodes'
@@ -67,6 +64,9 @@ return array(
                 'Prescription Edit Options' => array('module'=> 'OphDrPrescription', 'uri' => '/OphDrPrescription/Admin/PrescriptionEditOptions'),
                 'Tags' => '/TagsAdmin/list',
                 'Drug types' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/Admin/drugType'),
+                'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
+                'Anaesthetic Agent Mapping' => '/oeadmin/AnaestheticAgentMapping/list',
+                'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list',
             ),
             'Disorders' => array(
                 'Common Ophthalmic Disorder Groups' => '/admin/editcommonophthalmicdisordergroups',

@@ -77,7 +77,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
             $drug = new OphTrIntravitrealinjection_Treatment_Drug();
         }
 
-        $injections = $this->injectionsSinceByEpisodeSideAndDrug($episode, $side, $drug, $since);
+        $injections = $this->injectionsSinceBySideAndDrug($patient, $side, $drug, $since);
 
         foreach ($injections as $injection) {
             $res[] = array(
@@ -102,7 +102,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      *
      * @throws Exception
      */
-    protected function injectionsSinceByEpisodeSideAndDrug(Episode $episode, $side, OphTrIntravitrealinjection_Treatment_Drug $drug, $since = 'now')
+    protected function injectionsSinceBySideAndDrug(Patient $patient, $side, OphTrIntravitrealinjection_Treatment_Drug $drug, $since = 'now')
     {
 
         switch ($side) {
@@ -121,26 +121,32 @@ class OphTrIntravitrealinjection_API extends BaseAPI
 
         $criteria = new CDbCriteria();
         $criteria->alias = 'treatment';
+        $criteria->join = 'JOIN event ON treatment.event_id = event.id ';
+        $criteria->join .= 'JOIN episode ON event.episode_id = episode.id ';
+        $criteria->join .= 'JOIN patient ON episode.patient_id = patient.id';
+
         $criteria->addCondition(array(
-            'event.episode_id = :episode_id',
-            'event.deleted = 0',
-            'treatment.eye_id in (:eye_id,'.SplitEventTypeElement::BOTH.')',
-            'event_date <= :since',
-            'event.deleted = 0',
+                'event.deleted = 0',
+                'treatment.eye_id in (:eye_id,'.SplitEventTypeElement::BOTH.')',
+                'event_date <= :since',
+                'event.deleted = 0',
+                'patient.id = :patient_id',
             )
         );
-        $criteria->join = 'JOIN event ON treatment.event_id = event.id';
-        $criteria->order = 'event.event_date ASC';
+
         $criteria->params = array(
-            'episode_id' => $episode->id,
             'eye_id' => $eye_id,
             'since' => $sinceDate->format('Y-m-d'),
+            'patient_id' => $patient->id,
         );
 
         if ($drug->id) {
             $criteria->addCondition('treatment.' . $side . '_drug_id = :drug_id');
             $criteria->params['drug_id'] = $drug->id;
         }
+
+        $criteria->order = 'event.event_date ASC';
+
 
         return Element_OphTrIntravitrealinjection_Treatment::model()->findAll($criteria);
     }
