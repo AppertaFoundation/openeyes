@@ -256,9 +256,10 @@ class DefaultController extends \BaseModuleController
         $qs_svc = Yii::app()->service->getService(self::$QUEUESET_SERVICE);
         $queueset = $qs_svc->getQueueSetForQueue($q->id);
 
-        if (!$this->checkQueueSetProcessAccess($queueset)) {
+        //anyone can process 
+        /*if (!$this->checkQueueSetProcessAccess($queueset)) {
             throw new \CHttpException(403, 'Not authorised to take ticket');
-        }
+        }*/
 
         $template_vars = array('queue_id' => $id, 'patient_id' => null);
         $p = new \CHtmlPurifier();
