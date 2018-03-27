@@ -7,9 +7,14 @@
           <?php $this->renderPartial('//patient/event_automated'); ?>
         </span>
       <?php } ?>
-    <?php if ($this->action->id === 'view') { ?>
-      <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i>
-    <?php } ?>
+      <?php if ($this->action->id === 'view') { ?>
+        <i id="js-event-audit-trail-btn" class="oe-i audit-trail small pad"></i>
+      <?php } ?>
+      <?php if ($this->hasExtraTitleInfo()): ?>
+        <div class="event-title-extra-info">
+            <?= $this->getExtraTitleInfo(); ?>
+        </div>
+      <?php endif; ?>
   </h2>
     <?php $this->renderPartial('//base/_messages'); ?>
 

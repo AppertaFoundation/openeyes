@@ -2334,4 +2334,30 @@ class BaseEventTypeController extends BaseModuleController
             $pcrRisk->persist($side, $this->patient, $sideData);
         }
     }
+
+
+
+    /**
+     * Gets a value indicating whether this event has any extra information to display in the title
+     * This function will always return false, but can be overridden to return true
+     * iF it is, then getExtraTitleInfo() should also be overridden.
+     *
+     * @return bool
+     */
+    public function hasExtraTitleInfo()
+    {
+        return false;
+    }
+
+    /**
+     * Gets the extra info to be displayed in the title of this event
+     * Should only be overridden if hasExtraTitleInfo() has also been overridden
+     *
+     * @return string HTML to display next to the title
+     * @throws BadMethodCallException thrown if the method hasn't been overridden
+     */
+    public function getExtraTitleInfo()
+    {
+        throw new BadMethodCallException('getExtraTitleInfo() should have been overridden by ' . get_class($this));
+    }
 }

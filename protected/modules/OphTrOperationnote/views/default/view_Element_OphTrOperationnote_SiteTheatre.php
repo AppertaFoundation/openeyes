@@ -16,25 +16,3 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
-<section class="element">
-  <header class="element-header">
-    <h3 class="element-title">Location</h3>
-  </header>
-  <section class="element-fields full-width">
-
-    <div class="row">
-      <div class="cols-4 column">
-        <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('site_id')) ?></h4>
-        <div class="data-value"><?php echo $element->site->name ?></div>
-      </div>
-      <div class="cols-4 column">
-        <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('theatre_id')) ?></h4>
-          <?php $hasModule = Yii::app()->hasModule('OphTrOperationbooking'); ?>
-        <div class="data-value <?php echo $hasModule ? '' : 'none' ?>">
-            <?php echo $hasModule && $element->theatre ? $element->theatre->name : 'None' ?>
-        </div>
-      </div>
-    </div>
-  </section>
-</section>

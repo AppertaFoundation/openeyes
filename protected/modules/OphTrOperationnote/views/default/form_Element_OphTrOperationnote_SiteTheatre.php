@@ -16,44 +16,85 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-fields full-width">
-  <div class="element-data">
-      <?php
-      echo $form->dropDownList(
-          $element,
-          'site_id',
-          CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id), 'id',
-              'short_name'),
-          array('empty' => '- None -'),
-          false);
-      ?>
-      <?php
-      if (array_key_exists('OphTrOperationbooking',
-              Yii::app()->modules) && in_array('ophtroperationbooking_operation_theatre',
-              Yii::app()->db->getSchema()->getTableNames())) {
-          $siteId = ($element->site_id) ? $element->site_id : Yii::app()->session['selected_site_id'];
-          $getTheatreData = OphTrOperationbooking_Operation_Theatre::model()->findAll(array(
-              'condition' => 'active=1 and site_id=' . $siteId,
-              'order' => 'name',
-          ));
+<?php $render_date = $form && (($this->action->id === strtolower($this::ACTION_TYPE_CREATE)) || $this->checkAdminAccess()) ?>
 
-          if (count($getTheatreData) == 1) {
-              echo $form->dropDownList(
-                  $element,
-                  'theatre_id',
-                  CHtml::listData($getTheatreData, 'id', 'name'),
-                  false);
-          } else {
-              echo $form->dropDownList(
-                  $element,
-                  'theatre_id',
-                  CHtml::listData($getTheatreData, 'id', 'name'),
-                  array('empty' => '- None -'),
-                  false);
+<div class="element-fields full-width">
+  <table class="cols-10 last-left">
+    <colgroup>
+      <col class="cols-5">
+      <col class="cols-5">
+    </colgroup>
+    <thead>
+    <tr>
+      <th><?php echo CHtml::encode($element->getAttributeLabel('selected_site_id')) ?></th>
+      <th><?php echo CHtml::encode($element->getAttributeLabel('theatre_id')) ?></th>
+        <?php if ($render_date): ?>
+          <th>Date</th><?php endif; ?>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="col-gap">
+      <td>
+          <?php
+          echo $form->dropDownList(
+              $element,
+              'site_id',
+              CHtml::listData(OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id), 'id',
+                  'short_name'),
+              array('nowrapper' => true, 'empty' => '- None -', 'class' => 'cols-full'),
+              false);
+          ?>
+      </td>
+      <td>
+          <?php
+          if (array_key_exists('OphTrOperationbooking',
+                  Yii::app()->modules) && in_array('ophtroperationbooking_operation_theatre',
+                  Yii::app()->db->getSchema()->getTableNames())) {
+              $siteId = ($element->site_id) ? $element->site_id : Yii::app()->session['selected_site_id'];
+              $getTheatreData = OphTrOperationbooking_Operation_Theatre::model()->findAll(array(
+                  'condition' => 'active=1 and site_id=' . $siteId,
+                  'order' => 'name',
+              ));
+
+              if (count($getTheatreData) == 1) {
+                  echo $form->dropDownList(
+                      $element,
+                      'theatre_id',
+                      CHtml::listData($getTheatreData, 'id', 'name'),
+                      array('nowrapper' => true, 'class' => 'cols-full'),
+                      false);
+              } else {
+                  echo $form->dropDownList(
+                      $element,
+                      'theatre_id',
+                      CHtml::listData($getTheatreData, 'id', 'name'),
+                      array('nowrapper' => true, 'empty' => '- None -', 'class' => 'cols-full'),
+                      false);
+              }
           }
-      }
-      ?>
-  </div>
+          ?>
+      </td>
+
+        <?php if ($render_date): ?>
+          <td>
+              <?php
+              echo $form->datePicker($this->event, 'event_date',
+                  array('maxDate' => 'today'),
+                  array(
+                      'style' => 'margin-left:8px',
+                      'nowrapper' => true,
+                  ),
+                  array(
+                      'label' => 2,
+                      'field' => 2,
+                  )
+              );
+              ?>
+          </td>
+        <?php endif; ?>
+    </tr>
+    </tbody>
+  </table>
 </div>
 <script type="text/javascript">
   $(document).ready(function () {

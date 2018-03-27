@@ -434,13 +434,22 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    /*
+     * Overloads BaseEventTypeController::renderOpenElements() to not render the event date as a separate element
+     * The event date element is instead rendered as part of the Location element
+     */
+    public function renderOpenElements($action, $form = null, $data = null)
+    {
+        $this->renderTiledElements($this->getElements(), $action, $form, $data);
+    }
+
     /**
      * Overrides for procedure list to render the elements in the order they are selected.
      *
-     * @param BaseEventTypeElement                $parent_element
-     * @param string                              $action
+     * @param BaseEventTypeElement $parent_element
+     * @param string $action
      * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array                               $data
+     * @param array $data
      *
      * @throws Exception
      *
@@ -1147,5 +1156,21 @@ class DefaultController extends BaseEventTypeController
         }
 
         return $errors;
+    }
+
+    public function hasExtraTitleInfo()
+    {
+        return $this->getAction()->id === 'view';
+    }
+
+    public function getExtraTitleInfo()
+    {
+        /* @var Element_OphTrOperationnote_SiteTheatre */
+        $element = $this->event->getElementByClass('Element_OphTrOperationnote_SiteTheatre');
+
+        return '<span class="extra-info">' .
+            '<span class="fade">Site:</span>' . $element->site->name . ', ' . $element->theatre->name . '</span>' .
+            '</span>' .
+            '<span class="extra-info">' . Helper::convertDate2NHS($this->event->event_date) . '</span>';
     }
 }

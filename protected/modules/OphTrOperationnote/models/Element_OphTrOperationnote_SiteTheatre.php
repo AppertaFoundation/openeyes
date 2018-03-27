@@ -127,4 +127,9 @@ class Element_OphTrOperationnote_SiteTheatre extends Element_OpNote
     {
         return 1;
     }
+
+    public function getFormTItle()
+    {
+        return 'Date and Location';
+    }
 }
