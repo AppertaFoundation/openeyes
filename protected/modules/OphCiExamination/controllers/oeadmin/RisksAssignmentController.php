@@ -236,4 +236,16 @@ class RisksAssignmentController extends \ModuleAdminController
         return $model;
     }
 
+    /**
+     * Returns the consultants by subspecialty
+     * @param null $subspecialty_id
+     */
+    public function actionGetFirmsBySubspecialty($subspecialty_id = null)
+    {
+        $firms = \Firm::model()->getList($subspecialty_id);
+        echo \CJSON::encode($firms);
+
+        \Yii::app()->end();
+    }
+
 }
