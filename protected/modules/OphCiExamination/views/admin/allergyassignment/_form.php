@@ -30,12 +30,12 @@
     if($model->subspecialty_id){
         $firms = \Firm::model()->getList($model->subspecialty_id);
     }
-    ?>
+?>
 
-    <div id="div_OEModule_OphCiExamination_models_OphCiExaminationRiskSet_firm_id" class="row field-row">
+    <div id="div_OEModule_OphCiExamination_models_OphCiExaminationAllergySet_firm_id" class="row field-row">
 
         <div class="large-2 column">
-            <label for="OEModule_OphCiExamination_models_OphCiExaminationRiskSet_firm_id">Context:</label>
+            <label for="OEModule_OphCiExamination_models_OphCiExaminationAllergySet_firm_id">Context:</label>
         </div>
 
         <div class="large-5 column">
@@ -54,24 +54,24 @@
     <?php
     echo "<br>";
 
-    $examination_risk_listdata = CHtml::listData(OEModule\OphCiExamination\models\OphCiExaminationRisk::model()->findAll(), 'id', 'name');
+    $examination_allergy_listdata = CHtml::listData(OEModule\OphCiExamination\models\OphCiExaminationAllergy::model()->findAll(), 'id', 'name');
     $gender_models = Gender::model()->findAll();
     $gender_options = CHtml::listData($gender_models, function ($gender_model) {
         return CHtml::encode($gender_model->name)[0];
     }, 'name');
 ?>
 
-<div id="risks" class="field-row">
+<div id="allergy" class="field-row">
         <?php
         $columns = array(
             array(
-                'header' => 'Risk Name',
-                'name' => 'Risk Name',
+                'header' => 'Allergy Name',
+                'name' => 'Allergy Name',
                 'type' => 'raw',
-                'value' => function($data, $row) use ($examination_risk_listdata){
+                'value' => function($data, $row) use ($examination_allergy_listdata){
                     return
-                        CHtml::hiddenField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][id]", $data->id) .
-                        CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][ophciexamination_risk_id]", $data->ophciexamination_risk_id, $examination_risk_listdata, array('empty' => '- select --'));
+                        CHtml::hiddenField("OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[$row][id]", $data->id) .
+                        CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[$row][ophciexamination_allergy_id]", $data->ophciexamination_allergy_id, $examination_allergy_listdata, array('empty' => '- select --'));
                 }
             ),
             array(
@@ -79,7 +79,7 @@
                 'name' => 'gender',
                 'type' => 'raw',
                 'value' => function($data, $row) use ($gender_options){
-                    echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][gender]", $data->gender, $gender_options, array('empty' => '-- select --'));
+                    echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[$row][gender]", $data->gender, $gender_options, array('empty' => '-- select --'));
                 }
             ),
             array(
@@ -87,7 +87,7 @@
                 'name' => 'age_min',
                 'type' => 'raw',
                 'value' => function($data, $row){
-                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_min]", $data->age_min, array("style"=>"width:55px;"));
+                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[$row][age_min]", $data->age_min, array("style"=>"width:55px;"));
                 }
             ),
             array(
@@ -95,20 +95,21 @@
                 'name' => 'age_max',
                 'type' => 'raw',
                 'value' => function($data, $row){
-                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_max]", $data->age_max, array("style"=>"width:55px;"));
+                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[$row][age_max]", $data->age_max, array("style"=>"width:55px;"));
                 }
             ),
             array(
                 'header' => '',
                 'type' => 'raw',
                 'value' => function($data, $row){
-                    return CHtml::link('remove', '#', array('class' => 'remove_risk_entry'));
+                    return CHtml::link('remove', '#', array('class' => 'remove_allergy_entry'));
                 }
             ),
 
         );
-        $dataProvider = new \CActiveDataProvider('OEModule\OphCiExamination\models\OphCiExaminationRiskSetEntry');
-        $dataProvider->setData($model->ophciexamination_risks_entry);
+        $dataProvider = new \CActiveDataProvider('OEModule\OphCiExamination\models\OphCiExaminationAllergySetEntry');
+        $dataProvider->setData($model->ophciexamination_allergy_entry);
+
         $this->widget('zii.widgets.grid.CGridView', array(
             'dataProvider' => $dataProvider,
             'itemsCssClass' => 'generic-admin grid',
@@ -122,32 +123,32 @@
             'rowHtmlOptionsExpression' => 'array("data-row" => $row)',
         ));
         ?>
-        <button id="add_new_risk" type="button" class="small primary right">Add</button>
+        <button id="add_new_allergy" type="button" class="small primary right">Add</button>
 
 </div>
 
 
-<script type="text/template" id="new_risk_entry" class="hidden">
+<script type="text/template" id="new_allergy_entry" class="hidden">
     <tr data-row="{{row}}">
         <td>
             <?php
-                echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][ophciexamination_risk_id]",
-                                        null, $examination_risk_listdata, array("empty" => '-- select --'));
+                echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[{{row}}][ophciexamination_allergy_id]",
+                                        null, $examination_allergy_listdata, array("empty" => '-- select --'));
             ?>
         </td>
         <td>
             <?php
-                echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][gender]", null, $gender_options, array('empty' => '-- select --'));
+                echo CHtml::dropDownList("OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[{{row}}][gender]", null, $gender_options, array('empty' => '-- select --'));
             ?>
         </td>
         <td>
-            <input style="width:55px;" type="number" name="OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][age_min]" id="OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry_{{row}}_age_min">
+            <input style="width:55px;" type="number" name="OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[{{row}}][age_min]" id="OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry_{{row}}_age_min">
         </td>
         <td>
-            <input style="width:55px;" type="number" name="OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[{{row}}][age_max]" id="OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry_{{row}}_age_max">
+            <input style="width:55px;" type="number" name="OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry[{{row}}][age_max]" id="OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry_{{row}}_age_max">
         </td>
         <td>
-            <a href="javascript:void(0)" class="remove_risk_entry">remove</a>
+            <a href="javascript:void(0)" class="remove_allergy_entry">remove</a>
         </td>
     </tr>
 </script>
@@ -158,21 +159,20 @@
 
         var $table = $('table.generic-admin');
 
-        $('#add_new_risk').on('click',function(e){
+        $('#add_new_allergy').on('click',function(e){
             var data = {}, $row
             $table = $('table.generic-admin');
 
             data['row'] = OpenEyes.Util.getNextDataKey( $table.find('tbody tr'), 'row');
             $row = Mustache.render(
-                $('#new_risk_entry').text(),
+                $('#new_allergy_entry').text(),
                 data
             );
             $table.find('tbody').append($row);
             $table.find('td.empty').closest('tr').hide();
-
         });
 
-        $($table).on('click','.remove_risk_entry', function(e){
+        $($table).on('click','.remove_allergy_entry', function(e){
             $(this).closest('tr').remove();
             if($table.find('tbody tr').length <= 1){
                 $table.find('td.empty').closest('tr').show();
@@ -181,22 +181,22 @@
 
         $('select.subspecialty').on('change', function() {
 
-            var subspecialty_id = $('#OEModule_OphCiExamination_models_OphCiExaminationRiskSet_subspecialty_id').val();
+            var subspecialty_id = $('#OEModule_OphCiExamination_models_OphCiExaminationAllergySet_subspecialty_id').val();
 
             if(subspecialty_id){
                 jQuery.ajax({
-                    url: baseUrl + "/OphCiExamination/oeadmin/RisksAssignment/getFirmsBySubspecialty",
+                    url: baseUrl + "/OphCiExamination/oeadmin/AllergyAssignment/getFirmsBySubspecialty",
                     data: {"subspecialty_id": subspecialty_id},
                     dataType: "json",
                     beforeSend: function () {
                         $('.loader').show();
-                        $('#OEModule_OphCiExamination_models_OphCiExaminationRiskSet_firm_id').prop('disabled', true).css({'background-color':'lightgray'});
+                        $('#OEModule_OphCiExamination_models_OphCiExaminationAllergySet_firm_id').prop('disabled', true).css({'background-color':'lightgray'});
                     },
                     success: function (data) {
                         var options = [];
 
                         //remove old options
-                        $('#OEModule_OphCiExamination_models_OphCiExaminationRiskSet_firm_id option:gt(0)').remove();
+                        $('#OEModule_OphCiExamination_models_OphCiExaminationAllergySet_firm_id option:gt(0)').remove();
 
                         //create js array from obj to sort
                         for (item in data) {
@@ -212,18 +212,18 @@
 
                         //append new option to the dropdown
                         $.each(options, function (key, value) {
-                            $('#OEModule_OphCiExamination_models_OphCiExaminationRiskSet_firm_id').append($("<option></option>")
+                            $('#OEModule_OphCiExamination_models_OphCiExaminationAllergySet_firm_id').append($("<option></option>")
                                 .attr("value", value[0]).text(value[1]));
                         });
 
-                        $('#OEModule_OphCiExamination_models_OphCiExaminationRiskSet_firm_id').prop('disabled', false).css({'background-color':'#ffffff'});
+                        $('#OEModule_OphCiExamination_models_OphCiExaminationAllergySet_firm_id').prop('disabled', false).css({'background-color':'#ffffff'});
                     },
                     complete: function () {
                         $('.loader').hide();
                     }
                 });
             } else {
-                $('#OEModule_OphCiExamination_models_OphCiExaminationRiskSet_firm_id').prop('disabled', true).css({'background-color':'lightgray'});
+                $('#OEModule_OphCiExamination_models_OphCiExaminationAllergySet_firm_id').prop('disabled', true).css({'background-color':'lightgray'});
             }
         });
 

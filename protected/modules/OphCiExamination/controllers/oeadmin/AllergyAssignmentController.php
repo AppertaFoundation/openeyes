@@ -22,7 +22,7 @@ namespace OEModule\OphCiExamination\controllers;
 
 use OEModule\OphCiExamination\models;
 
-class RisksAssignmentController extends \ModuleAdminController
+class AllergyAssignmentController extends \ModuleAdminController
 {
     public function accessRules()
     {
@@ -36,13 +36,12 @@ class RisksAssignmentController extends \ModuleAdminController
      */
     public function actionIndex()
     {
-
-        $model= new models\OphCiExaminationRiskSet();
+        $model= new models\OphCiExaminationAllergySet();
         $model->unsetAttributes();
-        if(isset($_GET['OphCiExaminationRisk']))
-            $model->attributes=$_GET['OphCiExaminationRisk'];
+        if(isset($_GET['OphCiExaminationAllergy']))
+            $model->attributes=$_GET['OphCiExaminationAllergy'];
 
-        $this->render('/admin/riskassignment/index',array(
+        $this->render('/admin/allergyassignment/index',array(
             'model' => $model,
         ));
     }
@@ -53,29 +52,29 @@ class RisksAssignmentController extends \ModuleAdminController
      */
     public function actionCreate()
     {
-        $risk_set = new models\OphCiExaminationRiskSet;
+        $allergy_set = new models\OphCiExaminationAllergySet;
 
-        if(isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationRiskSet']))
+        if(isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet']))
         {
-            $risk_set->attributes=$_POST['OEModule_OphCiExamination_models_OphCiExaminationRiskSet'];
+            $allergy_set->attributes=$_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet'];
 
             $transaction = \Yii::app()->db->beginTransaction();
 
             try {
 
-                if($risk_set->save()){
+                if($allergy_set->save()){
 
-                    $risks = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry', array());
-                    foreach($risks as $risk){
-                        $risk_model = new models\OphCiExaminationRiskSetEntry;
+                    $allergies = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry', array());
+                    foreach($allergies as $allergy){
+                        $allergy_model = new models\OphCiExaminationAllergySetEntry;
 
-                        $risk_model->gender = $risk['gender'];
-                        $risk_model->age_min = $risk['age_min'];
-                        $risk_model->age_max = $risk['age_max'];
-                        $risk_model->ophciexamination_risk_id = $risk['ophciexamination_risk_id'];
+                        $allergy_model->gender = $allergy['gender'];
+                        $allergy_model->age_min = $allergy['age_min'];
+                        $allergy_model->age_max = $allergy['age_max'];
+                        $allergy_model->ophciexamination_allergy_id = $allergy['ophciexamination_allergy_id'];
 
-                        if($risk_model->save()){
-                            $this->saveAssignment($risk_set, $risk_model);
+                        if($allergy_model->save()){
+                            $this->saveAssignment($allergy_set, $allergy_model);
                         }
                     }
 
@@ -90,8 +89,8 @@ class RisksAssignmentController extends \ModuleAdminController
 
         }
 
-        $this->render('/admin/riskassignment/create',array(
-            'model' => $risk_set
+        $this->render('/admin/allergyassignment/create',array(
+            'model' => $allergy_set
         ));
     }
 
@@ -103,57 +102,57 @@ class RisksAssignmentController extends \ModuleAdminController
      */
     public function actionUpdate($id)
     {
-        $risk_set = $this->loadModel($id);
+        $allergy_set = $this->loadModel($id);
 
-        if(isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationRiskSet']))
+        if(isset($_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet']))
         {
-            $risk_set->attributes=$_POST['OEModule_OphCiExamination_models_OphCiExaminationRiskSet'];
-            $risks = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry', array());
+            $allergy_set->attributes=$_POST['OEModule_OphCiExamination_models_OphCiExaminationAllergySet'];
+            $allergies = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry', array());
 
             $transaction = \Yii::app()->db->beginTransaction();
 
             try {
 
                 $posted_entry_ids = array();
-                foreach($risks as $risk){
-                    if(isset($risk['id'])){
-                        $posted_entry_ids[] = $risk['id'];
+                foreach($allergies as $allergy){
+                    if(isset($allergy['id'])){
+                        $posted_entry_ids[] = $allergy['id'];
                     }
                 }
 
-                if($risk_set->save()){
+                if($allergy_set->save()){
 
-                    foreach($risks as $risk){
+                    foreach($allergies as $allergy){
 
-                        if(isset($risk['id'])){
-                            $risk_model = models\OphCiExaminationRiskSetEntry::model()->findByPk($risk['id']);
+                        if(isset($allergy['id'])){
+                            $allergy_model = models\OphCiExaminationAllergySetEntry::model()->findByPk($allergy['id']);
                         } else {
-                            $risk_model = new models\OphCiExaminationRiskSetEntry;
+                            $allergy_model = new models\OphCiExaminationAllergySetEntry;
                         }
 
-                        $risk_model->gender = $risk['gender'];
-                        $risk_model->age_min = $risk['age_min'];
-                        $risk_model->age_max = $risk['age_max'];
-                        $risk_model->ophciexamination_risk_id = $risk['ophciexamination_risk_id'];
+                        $allergy_model->gender = $allergy['gender'];
+                        $allergy_model->age_min = $allergy['age_min'];
+                        $allergy_model->age_max = $allergy['age_max'];
+                        $allergy_model->ophciexamination_allergy_id = $allergy['ophciexamination_allergy_id'];
 
-                        if($risk_model->save()){
-                           $this->saveAssignment($risk_set, $risk_model);
-                            $posted_entry_ids[] = $risk_model->id;
+                        if($allergy_model->save()){
+                           $this->saveAssignment($allergy_set, $allergy_model);
+                            $posted_entry_ids[] = $allergy_model->id;
                         }
                     }
 
                     // Removed items
                     $criteria = new \CDbCriteria();
-                    $criteria->addCondition('risk_set_id =:risk_set_id');
-                    $criteria->addNotInCondition('ophciexamination_risk_entry_id', $posted_entry_ids);
-                    $criteria->params[':risk_set_id'] = $risk_set->id;
+                    $criteria->addCondition('allergy_set_id =:allergy_set_id');
+                    $criteria->addNotInCondition('ophciexamination_allergy_entry_id', $posted_entry_ids);
+                    $criteria->params[':allergy_set_id'] = $allergy_set->id;
                     
-                    $assignments = models\OphCiExaminationRiskSetAssignment::model()->findAll($criteria);
+                    $assignments = models\OphCiExaminationAllergySetAssignment::model()->findAll($criteria);
                     foreach($assignments as $assignment){
-                        $entry_id = $assignment->ophciexamination_risk_entry_id;
+                        $entry_id = $assignment->ophciexamination_allergy_entry_id;
 
                          if($assignment->delete()){
-                             models\OphCiExaminationRiskSetEntry::model()->findByPk($entry_id)->delete();
+                             models\OphCiExaminationAllergySetEntry::model()->findByPk($entry_id)->delete();
                          }
                     }
                 }
@@ -169,28 +168,28 @@ class RisksAssignmentController extends \ModuleAdminController
             }
         }
 
-        $this->render('/admin/riskassignment/update',array(
-            'model' => $risk_set,
+        $this->render('/admin/allergyassignment/update',array(
+            'model' => $allergy_set,
         ));
     }
 
-    private function saveAssignment($risk_set, $risk_model)
+    private function saveAssignment($allergy_set, $allergy_model)
     {
         $criteria = new \CDbCriteria();
-        $criteria->addCondition('risk_set_id = :set_id');
-        $criteria->addCondition('ophciexamination_risk_entry_id = :ophciexamination_risk_entry_id');
-        $criteria->params[':set_id'] = $risk_set->id;
-        $criteria->params[':ophciexamination_risk_entry_id'] = $risk_model->id;
+        $criteria->addCondition('allergy_set_id = :set_id');
+        $criteria->addCondition('ophciexamination_allergy_entry_id = :ophciexamination_allergy_entry_id');
+        $criteria->params[':set_id'] = $allergy_set->id;
+        $criteria->params[':ophciexamination_allergy_entry_id'] = $allergy_model->id;
 
-        $assignment = models\OphCiExaminationRiskSetAssignment::model()->find($criteria);
+        $assignment = models\OphCiExaminationAllergySetAssignment::model()->find($criteria);
 
         if(!$assignment){
-            $assignment = new models\OphCiExaminationRiskSetAssignment;
-            $assignment->ophciexamination_risk_entry_id = $risk_model->id;
-            $assignment->risk_set_id = $risk_set->id;
+            $assignment = new models\OphCiExaminationAllergySetAssignment;
+            $assignment->ophciexamination_allergy_entry_id = $allergy_model->id;
+            $assignment->allergy_set_id = $allergy_set->id;
 
             if(!$assignment->save()){
-                throw new \Exception('OphCiExaminationRisk assignment cannot be saved.');
+                throw new \Exception('OphCiExaminationAllergy assignment cannot be saved.');
             }
         }
     }
@@ -202,12 +201,12 @@ class RisksAssignmentController extends \ModuleAdminController
      */
     public function actionDelete()
     {
-        $model_ids = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRiskSet', array());
+        $model_ids = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationAllergySet', array());
 
         foreach($model_ids as $model_id){
 
             $model = $this->loadModel($model_id);
-            if(!$model->ophciexamination_risks_entry){
+            if(!$model->ophciexamination_allergy_entry){
                 $model->delete();
             } else {
                 echo "0";
@@ -224,12 +223,12 @@ class RisksAssignmentController extends \ModuleAdminController
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
      * @param integer $id the ID of the model to be loaded
-     * @return OphCiExaminationRisk the loaded model
+     * @return OphCiExaminationAllergy the loaded model
      * @throws CHttpException
      */
     public function loadModel($id)
     {
-        $model = models\OphCiExaminationRiskSet::model()->findByPk($id);
+        $model = models\OphCiExaminationAllergySet::model()->findByPk($id);
         if($model===null)
             throw new CHttpException(404,'The requested page does not exist.');
         return $model;

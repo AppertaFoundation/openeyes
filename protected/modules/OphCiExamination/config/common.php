@@ -52,6 +52,7 @@ return array(
             'Allergies' => '/OphCiExamination/admin/Allergies',
             'Risks' => '/OphCiExamination/admin/Risks',
             'Required Risk Assignment' => '/OphCiExamination/oeadmin/RisksAssignment',
+            'Required Allergy Assignment' => '/OphCiExamination/oeadmin/AllergyAssignment',
             'Social History' => '/OphCiExamination/admin/SocialHistory',
             'Family History' => '/OphCiExamination/admin/FamilyHistory',
             'Medication Stop Reasons' => '/OphCiExamination/admin/HistoryMedicationsStopReason'
