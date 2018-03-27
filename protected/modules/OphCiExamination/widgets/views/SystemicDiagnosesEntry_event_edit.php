@@ -15,6 +15,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
 ?>
 
 <?php
@@ -23,6 +24,7 @@ if (!isset($values)) {
         'id' => $diagnosis->id,
         'disorder_id' => $diagnosis->disorder_id,
         'disorder_display' => $diagnosis->disorder ? $diagnosis->disorder->term : '',
+        'has_disorder' => $diagnosis->has_disorder,
         'side_id' => $diagnosis->side_id,
         'side_display' => $diagnosis->side ? $diagnosis->side->adjective : 'None',
         'date' => $diagnosis->date,
@@ -37,11 +39,11 @@ if (!isset($values)) {
         $values['date'] = $start_sel_year . '-00-00'; // default to the year displayed in the select dropdowns
     }
 
+    $is_new_record = isset($diagnosis) && $diagnosis->isNewRecord ? true : false;
 ?>
 
-<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row" style="height:50px;">
-    <td style="width:290px;">
-
+<tr data-key="<?=$row_count?>" class="<?=$model_name ?>_row" style="height:50px;">
+    <td style="width:270px;">
         <input type="hidden" name="<?= $field_prefix ?>[id][]" value="<?=$values['id'] ?>" />
 
         <input type="text"
@@ -57,6 +59,17 @@ if (!isset($values)) {
                <?php endif; ?>
         >
         <input type="hidden" name="<?= $field_prefix ?>[disorder_id][]" value="">
+    </td>
+
+    <td id="<?="{$model_name}_{$row_count}_checked_status"?>">
+        <?php
+            $selected = $posted_checked_status ? $posted_checked_status : ($is_new_record ? null : $values['has_disorder']);
+
+            echo CHtml::dropDownList($model_name . '[has_disorder][]', $selected, [
+                SystemicDiagnoses_Diagnosis::$NOT_CHECKED => 'Not Checked',
+                SystemicDiagnoses_Diagnosis::$PRESENT => 'Yes',
+                SystemicDiagnoses_Diagnosis::$NOT_PRESENT => 'No',
+            ],['empty' => '- Select -']); ?>
     </td>
 
     <td>

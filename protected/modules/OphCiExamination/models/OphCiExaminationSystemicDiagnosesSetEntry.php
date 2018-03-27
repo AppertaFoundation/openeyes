@@ -103,6 +103,23 @@ class OphCiExaminationSystemicDiagnosesSetEntry extends \BaseActiveRecordVersion
 		);
 	}
 
+    public function beforeSave()
+    {
+        if(!$this->age_min || $this->age_min === 0){
+            $this->age_min = null;
+        }
+
+        if(!$this->age_max || $this->age_max === 0){
+            $this->age_max = null;
+        }
+
+        if(!$this->gender){
+            $this->gender = null;
+        }
+
+        return parent::beforeSave();
+    }
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 *

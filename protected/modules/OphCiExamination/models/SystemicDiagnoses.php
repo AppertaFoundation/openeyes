@@ -99,7 +99,26 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             'orderedDiagnoses' => array(self::HAS_MANY,
                 'OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis',
                 'element_id',
-                'order' => 'orderedDiagnoses.date desc, orderedDiagnoses.last_modified_date'),
+                'order' => 'orderedDiagnoses.date desc, orderedDiagnoses.last_modified_date'
+            ),
+            'not_checked' => array(
+                self::HAS_MANY,
+                'OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis',
+                'element_id',
+                'condition' => 'has_disorder = -9'
+            ),
+            'present' => array(
+                self::HAS_MANY,
+                'OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis',
+                'element_id',
+                'condition' => 'has_disorder = 1'
+            ),
+            'not_present' => array(
+                self::HAS_MANY,
+                'OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis',
+                'element_id',
+                'condition' => 'has_disorder = 0'
+            )
         );
     }
 
@@ -229,5 +248,17 @@ class SystemicDiagnoses extends \BaseEventTypeElement
                 }
             }
         }
+    }
+
+    /**
+     * @param string $category
+     * @return string
+     */
+    public function getEntriesDisplay($category = 'entries')
+    {
+        if (!in_array($category, array('present', 'not_checked', 'not_present'))) {
+            $category  = 'entries';
+        }
+        return implode(', ', array_map(function($e) { return $e->getDisplay(); }, $this->$category));
     }
 }

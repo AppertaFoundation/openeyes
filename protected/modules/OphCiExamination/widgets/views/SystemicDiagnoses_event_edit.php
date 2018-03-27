@@ -15,6 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
 ?>
 
 <script type="text/javascript" src="<?=$this->getJsPublishedPath('SystemicDiagnoses.js')?>"></script>
@@ -22,6 +23,8 @@
 
 <?php
     $model_name = CHtml::modelName($element);
+    $missing_req_diagnoses = $this->getMissingRequiredSystemicDiagnoses();
+    $required_diagnoses_ids = array_map(function($r) { return $r->id; }, $this->getRequiredSystemicDiagnoses());
 ?>
 
 <div class="element-fields" id="<?=CHtml::modelName($element);?>_element">
@@ -31,12 +34,31 @@
         <thead>
         <tr>
             <th>Diagnosis</th>
+            <th>Checked Status</th>
             <th>Side</th>
             <th>Date</th>
             <th>Action</th>
         </tr>
         </thead>
         <tbody>
+        <?php
+        $row_count = 0;
+        foreach ($missing_req_diagnoses as $diagnosis) {
+            $this->render(
+                'SystemicDiagnosesEntry_event_edit',
+                array(
+                    'diagnosis' => $diagnosis,
+                    'form' => $form,
+                    'model_name' => CHtml::modelName($element),
+                    'row_count' => $row_count,
+                    'field_prefix' => $model_name . "[entries][$row_count]",
+                    'removable' => false,
+                    'posted_checked_status' => $element->widget->getPostedCheckedStatus($row_count),
+                )
+            );
+            $row_count++;
+        } ?>
+
         <?php
         foreach ($element->diagnoses as $row_count => $diagnosis) {
             $this->render(
@@ -47,7 +69,8 @@
                     'model_name' => CHtml::modelName($element),
                     'row_count' => $row_count,
                     'field_prefix' => $model_name . "[entries][$row_count]",
-                    'removable' => true
+                    'removable' => !in_array($diagnosis->disorder_id, $required_diagnoses_ids),
+                    'posted_checked_status' => $element->widget->getPostedCheckedStatus($row_count)
                 )
             );
         }
@@ -74,7 +97,8 @@
                 'field_prefix' => $model_name . '[entries][{{row_count}}]',
                 'row_count' => '{{row_count}}',
                 'removable' => true,
-
+                'posted_checked_status' => false,
+                'has_disorder' => false,
                 'values' => array(
                     'id' => '',
                     'disorder_id' => '{{disorder_id}}',
@@ -84,6 +108,7 @@
                     'date' => '{{date}}',
                     'date_display' => '{{date_display}}',
                     'row_count' => '{{row_count}}',
+                    'has_disorder' => SystemicDiagnoses_Diagnosis::$PRESENT,
                 )
             )
         );
