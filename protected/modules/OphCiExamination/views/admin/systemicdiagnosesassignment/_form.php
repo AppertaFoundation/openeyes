@@ -24,9 +24,36 @@
     echo "<br>";
 
     $options = CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name');
-    echo $form->dropDownList($model, "subspecialty_id", $options, array('empty' => '-- select --'));
+    echo $form->dropDownList($model, "subspecialty_id", $options, array('empty' => '-- select --', 'class' => 'subspecialty'));
     $options = CHtml::listData(\Firm::model()->findAll(), 'id', 'name');
-    echo $form->dropDownList($model, "firm_id", $options, array('empty' => '-- select --'));
+
+    $firms = [];
+    if($model->subspecialty_id){
+        $firms = \Firm::model()->getList($model->subspecialty_id);
+    }
+    ?>
+
+    <div id="div_OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id" class="row field-row">
+
+        <div class="large-2 column">
+            <label for="OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id">Context:</label>
+        </div>
+
+        <div class="large-5 column">
+            <?php
+            $is_disabled = !(bool)$model->subspecialty_id;
+            echo CHtml::activeDropDownList($model, "firm_id", $firms, [
+                'empty' => '-- select --',
+                'disabled' => $is_disabled,
+                'style' => ($is_disabled ? 'background-color:lightgray;':''), // oh where is the visual effect chrome, please ? @TODO:move to css input[diabled] {}
+
+            ]);
+            ?>
+        </div>
+        <div class="large-1 column end" style="padding-left:0"><img class="loader" style="margin-top:0px;width:20%;display:none" src="<?php echo \Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." /></div>
+    </div>
+
+    <?php
     echo "<br>";
 
     $disorder = CHtml::listData([0 => \Disorder::model()->findByPk(103)], 'id', 'term');
@@ -96,14 +123,13 @@
         $this->widget('zii.widgets.grid.CGridView', array(
             'dataProvider' => $dataProvider,
             'itemsCssClass' => 'generic-admin grid',
-            //'template' => '{items}',
             "emptyTagName" => 'span',
             'summaryText' => false,
-            'rowHtmlOptionsExpression'=>'array("data-row"=>$row)',
+            'rowHtmlOptionsExpression'=>'array("data-row" => $row)',
             'enableSorting' => false,
             'enablePagination' => false,
             'columns' => $columns,
-            'rowHtmlOptionsExpression' => 'array("data-row" => $row)',
+
         ));
         ?>
         <button id="add_new_risk" type="button" class="small primary right">Add</button>
@@ -183,6 +209,53 @@
         $.each($table.find('tr'), function(i, tr){
             var $tr = $(tr);
             initDiagnosesSearchController($tr);
+        });
+
+        $('select.subspecialty').on('change', function() {
+
+            var subspecialty_id = $('#OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_subspecialty_id').val();
+
+            if(subspecialty_id){
+                jQuery.ajax({
+                    url: baseUrl + "/OphCiExamination/oeadmin/RisksAssignment/getFirmsBySubspecialty",
+                    data: {"subspecialty_id": subspecialty_id},
+                    dataType: "json",
+                    beforeSend: function () {
+                        $('.loader').show();
+                        $('#OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id').prop('disabled', true).css({'background-color':'lightgray'});
+                    },
+                    success: function (data) {
+                        var options = [];
+
+                        //remove old options
+                        $('#OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id option:gt(0)').remove();
+                        //create js array from obj to sort
+                        for (item in data) {
+                            options.push([item, data[item]]);
+                        }
+
+                        options.sort(function (a, b) {
+                            if (a[1] > b[1]) return -1;
+                            else if (a[1] < b[1]) return 1;
+                            else return 0;
+                        });
+                        options.reverse();
+
+                        //append new option to the dropdown
+                        $.each(options, function (key, value) {
+                            $('#OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id').append($("<option></option>")
+                                .attr("value", value[0]).text(value[1]));
+                        });
+
+                        $('#OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id').prop('disabled', false).css({'background-color':'#ffffff'});
+                    },
+                    complete: function () {
+                        $('.loader').hide();
+                    }
+                });
+            } else {
+                $('#OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSet_firm_id').prop('disabled', true).css({'background-color':'lightgray'});
+            }
         });
 
     });
