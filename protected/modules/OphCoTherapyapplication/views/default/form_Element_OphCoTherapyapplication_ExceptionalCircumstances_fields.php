@@ -121,10 +121,8 @@ if (@$_POST[get_class($element)]) {
     </td>
     <td></td>
   </tr>
-  <tr style="height:auto; <?php if (!$need_reason) {
-      echo 'display: none;';
-  } ?>">
-    <td class="flex-layout flex-left">
+  <tr style="<?php if (!$intervention_id) { echo 'display: none;'; } ?>">
+    <td class="flex-layout flex-left" style="height:auto;">
       <div class="cols-<?php echo $layoutColumns['label']; ?>">
         <label for="<?php echo get_class($element) . '_' . $side . '_description'; ?>">
             <?php if ($intervention_id) {
@@ -134,16 +132,15 @@ if (@$_POST[get_class($element)]) {
             } ?>
         </label>
       </div>
-      <div class="cols-<?php echo $layoutColumns['field']; ?>">
+      <div class="cols-<?php echo $layoutColumns['field']; ?>" >
           <?php echo $form->textArea($element, $side . '_description', array('nowrapper' => true)) ?>
       </div>
     </td>
     <td></td>
   </tr>
-  <tr style=" <?php if (!$need_reason) {
-      echo 'display: none;';
-  } ?>">
-    <td class="flex-layout flex-left" id="<?php echo get_class($element) . '_' . $side; ?>_deviation_fields"
+  <tr id="<?php echo get_class($element) . '_' . $side; ?>_deviation_fields"
+      style=" <?php if (!$need_reason) {echo 'display: none;';} ?>">
+    <td class="flex-layout flex-left"
         style="height:auto;">
       <div class="cols-<?php echo $layoutColumns['label']; ?>">
         <div class="field-label">

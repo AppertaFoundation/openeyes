@@ -630,12 +630,12 @@ $(document).ready(function() {
 
 		if ($(this).val()) {
 			if ($(this).data('description-label')) {
-				$('#Element_OphCoTherapyapplication_ExceptionalCircumstances_'+side+'_description').closest('.field-row').find('label').text($(this).data('description-label'));
+				$('#Element_OphCoTherapyapplication_ExceptionalCircumstances_'+side+'_description').closest('tr').find('label').text($(this).data('description-label'));
 			}
-			$('#Element_OphCoTherapyapplication_ExceptionalCircumstances_'+side+'_description').closest('.field-row').show();
+			$('#Element_OphCoTherapyapplication_ExceptionalCircumstances_'+side+'_description').closest('tr').show();
 		}
 		else {
-			$('#Element_OphCoTherapyapplication_ExceptionalCircumstances_'+side+'_description').closest('.field-row').hide();
+			$('#Element_OphCoTherapyapplication_ExceptionalCircumstances_'+side+'_description').closest('tr').hide();
 		}
 	});
 
