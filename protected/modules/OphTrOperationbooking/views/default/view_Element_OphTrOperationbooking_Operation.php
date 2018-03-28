@@ -233,10 +233,10 @@
               <div class="data-value panel comments">
                   <?= Yii::app()->format->nText($element->special_equipment_details) ?>
               </div>
-            <?php endif ?>
+            <?php endif; ?>
         </td>
       </tr>
-    <?php endif ?>
+    <?php endif; ?>
     </tbody>
   </table>
 </section>
@@ -297,9 +297,14 @@
             <?php if ($element->is_golden_patient && Yii::app()->params['disable_theatre_diary'] == 'off'): ?>
                 <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('is_golden_patient')) ?></h3>
                 <div class="data-value"><?= $element->is_golden_patient ? 'Yes' : 'No' ?></div>
-            <?php endif ?>
+            <?php endif; ?>
         </div>
-    </div>
+      </td>
+    </tr>
+    <?php endif; ?>
+    </tbody>
+  </table>
+</div>
 </section>
 
 <?php if ($element->booking && !$this->module->isTheatreDiaryDisabled()) { ?>
