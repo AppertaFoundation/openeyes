@@ -48,9 +48,7 @@ if (!$reschedule) {
 			<td><?php echo $booking->admission_time?></td>
 			<td><?php echo CHtml::encode($booking->operation->comments)?></td>
 		</tr>
-<?php
-        ++$counter;
-    } ?>
+<?php ++$counter; } ?>
 	</tbody>
 		<tfoot>
 			<tr>
@@ -75,11 +73,11 @@ if (!$reschedule) {
 
 <?php if ($bookable) {?>
 	<div class="eventDetail clearfix">
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="flex-layout">
+			<div class="cols-2">
 				<label for="Booking_admission_time"><strong>Ward:</strong></label>
 			</div>
-			<div class="large-2 column end">
+			<div class="cols-10">
 				<?php echo CHtml::dropDownList('Booking[ward_id]', @$_POST['Booking']['ward_id'], $operation->getWardOptions($session))?>
 				<span id="Booking_ward_id_error"></span>
 			</div>
@@ -87,11 +85,11 @@ if (!$reschedule) {
 	</div>
 
 	<div class="eventDetail clearfix">
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="flex-layout">
+			<div class="cols-2">
 				<label for="Booking_admission_time"><strong>Admission Time:</strong></label>
 			</div>
-			<div class="large-2 column end">
+			<div class="cols-10">
 				<input type="text" id="Booking_admission_time" name="Booking[admission_time]" autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>" value="<?php echo CHtml::encode($_POST['Booking']['admission_time'])?>" size="6" />
 				<span id="Booking_admission_time_error"></span>
 			</div>
@@ -99,12 +97,12 @@ if (!$reschedule) {
 	</div>
 
 	<div class="eventDetail">
-		<div class="row field-row" style="position:relative;">
-			<div class="large-2 column">
+		<div class="flex-layout" style="position:relative;">
+			<div class="cols-2">
 				<label for="Session_comments"><strong>Session Comments:</strong></label>
 				<!-- <img src="<?php echo Yii::app()->assetManager->createUrl('img/_elements/icons/alerts/comment.png')?>" alt="comment" width="17" height="17" style="position:absolute; bottom:10px; left:10px;" /> -->
 			</div>
-			<div class="large-5 column end">
+			<div class="cols-10">
 				<div class="sessionComments">
 					<textarea id="Session_comments" name="Session[comments]" rows="2"><?php echo CHtml::encode($_POST['Session']['comments'])?></textarea>
 				</div>
@@ -126,11 +124,11 @@ if (!$reschedule) {
 	<?php if ($reschedule) { ?>
 		<h3>Reason for Reschedule</h3>
 		<div class="eventDetail">
-			<div class="row field-row">
-				<div class="large-2 column">
+			<div class="flex-layout">
+				<div class="cols-2">
 					<?php echo CHtml::label('<strong>Reschedule Reason:</strong> ', 'cancellation_reason'); ?>
 				</div>
-				<div class="large-5 column end">
+				<div class="cols-10">
 					<?php if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
                         $listIndex = 3;
                     } else {
@@ -142,11 +140,11 @@ if (!$reschedule) {
                     ); ?>
 				</div>
 			</div>
-			<div class="row field-row">
-				<div class="large-2 column">
+			<div class="flex-layout">
+				<div class="cols-2">
 					<?php echo CHtml::label('<strong>Reschedule Comments:</strong> ', 'cancellation_comment'); ?>
 				</div>
-				<div class="large-5 column end">
+				<div class="cols-10">
 					<textarea name="cancellation_comment" rows=3 cols=50><?php echo CHtml::encode(@$_POST['cancellation_comment'])?></textarea>
 				</div>
 			</div>
@@ -154,22 +152,22 @@ if (!$reschedule) {
 	<?php }?>
 
 	<div class="eventDetail">
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="flex-layout">
+			<div class="cols-2">
 				<?php echo CHtml::label('<strong>Operation Comments:</strong>', 'operation_comments'); ?>
 			</div>
-			<div class="large-5 column end">
+			<div class="cols-10">
 				<textarea id="operation_comments" name="Operation[comments]" rows=3 cols=50><?php echo CHtml::encode($_POST['Operation']['comments'])?></textarea>
 			</div>
 		</div>
 	</div>
 
 	<div class="eventDetail">
-		<div class="row field-row">
-			<div class="large-2 column">
+		<div class="flex-layout">
+			<div class="cols-2">
 				<?php echo CHtml::label('<strong>RTT Comments:</strong>', 'rtt_comments'); ?>
 			</div>
-			<div class="large-5 column end">
+			<div class="cols-10">
 				<textarea id="operation_comments" name="Operation[comments_rtt]" rows=3 cols=50><?php echo CHtml::encode($_POST['Operation']['comments_rtt'])?></textarea>
 			</div>
 		</div>

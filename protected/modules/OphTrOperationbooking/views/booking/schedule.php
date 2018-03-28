@@ -17,6 +17,8 @@
  */
 ?>
 <?php $this->beginContent('//patient/event_container'); ?>
+<section class="element">
+  <section class="element-fields full-width">
 <?php
 $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 
@@ -27,7 +29,7 @@ $warnings = $this->patient->getWarnings($clinical);
 
     <?php $this->title = ($operation->booking ? 'Re-schedule' : 'Schedule') . ' Operation'; ?>
 
-    <div class="alert-box alert with-icon<?php if (!is_array($errors)) { ?> hide<?php } ?>">
+    <div class="alert-box alert with-icon" style="display: <?php if (!is_array($errors)) { echo 'none'; } ?>">
         <p>Please fix the following input errors:</p>
         <ul>
             <?php if (is_array($errors)) {
@@ -35,17 +37,17 @@ $warnings = $this->patient->getWarnings($clinical);
                     foreach ($errors2 as $error) { ?>
                         <li><?php echo $error ?></li>
                     <?php }
-                }
-            } else { ?>
+                } ?>
+                </ul>
+            <?php } else { ?>
             <li>&nbsp;</li>
-        </ul>
+          </ul>
         <?php } ?>
-        </ul>
     </div>
 
     <?php if ($warnings) { ?>
         <div class="row">
-            <div class="large-12 column">
+            <div class="cols-12">
                 <div class="alert-box patient with-icon">
                     <?php foreach ($warnings as $warn) {?>
                         <strong><?php echo $warn['long_msg']; ?></strong>
@@ -56,15 +58,13 @@ $warnings = $this->patient->getWarnings($clinical);
         </div>
     <?php }?>
 
+  <div class="flex-layout">
+        <span class="patient-name">
+            <?php echo $this->patient->getDisplayName() ?>
+          (<?php echo $this->patient->hos_num ?>)</span>
+  </div>
 
-    <div class="panel">
-        <span class="patient"><?php echo $this->patient->getDisplayName() ?> (<?php echo $this->patient->hos_num ?>
-            )</span>
-    </div>
-
-
-    <?php
-    if ($event->episode->firm_id != $firm->id) {
+    <?php if ($event->episode->firm_id != $firm->id) {
         if ($firm->name == 'Emergency List') {
             $class = 'alert-box alert';
             $message = 'You are booking into the Emergency List.';
@@ -97,14 +97,14 @@ $warnings = $this->patient->getWarnings($clinical);
         ?>
         <div class="eventDetail">
             <div class="row field-row">
-                <div class="large-2 column">
+                <div class="cols-2 column">
                     <?php echo CHtml::label('<strong>' . $operation->getAttributeLabel('referral_id') . ':</strong>',
                         'referral_id'); ?>
                 </div>
                 <?php
                 if ($operation->canChangeReferral()) {
                     ?>
-                    <div class="large-4 column ">
+                    <div class="cols-4 column ">
                         <?php
                         $html_options = array(
                             'options' => array(),
@@ -127,7 +127,7 @@ $warnings = $this->patient->getWarnings($clinical);
                             array('field' => 2));
                         ?>
                     </div>
-                    <div class="large-4 column end">
+                    <div class="cols-4 column end">
                         <span id="rtt-info" class="rtt-info" style="display: none">Clock start - <span
                                 id="rtt-clock-start"></span> Breach - <span id="rtt-breach"></span></span>
                     </div>
@@ -135,7 +135,7 @@ $warnings = $this->patient->getWarnings($clinical);
 
                 } else {
                     ?>
-                    <div class="large-4 column end">
+                    <div class="cols-4 column end">
                         <?php
                         if ($operation->referral) {
                             echo $operation->referral->getDescription();
@@ -147,9 +147,7 @@ $warnings = $this->patient->getWarnings($clinical);
                 <?php } ?>
             </div>
         </div>
-        <?php
-    }
-    ?>
+        <?php } ?>
     <?php
     $initial_erod = ($operation->firstBooking) ? $operation->firstBooking->erod : null;
     $erod = $operation->calculateEROD($firm);
@@ -157,15 +155,15 @@ $warnings = $this->patient->getWarnings($clinical);
     if ($initial_erod || $erod) { ?>
         <div class="eventDetail">
             <div class="row field-row">
-                <div class="large-2 column label">
+                <div class="cols-2 label">
                     <strong><?= CHtml::encode($schedule_options->getAttributeLabel('schedule_options_id')) ?>:</strong>
                 </div>
                 <div
-                    class="large-5 column end data"><?= CHtml::encode($schedule_options->schedule_options->name) ?></div>
+                    class="cols-5 column end data"><?= CHtml::encode($schedule_options->schedule_options->name) ?></div>
             </div>
             <div class="row field-row">
-                <div class="large-2 column label"><strong>EROD:</strong></div>
-                <div class="large-5 column end data">
+                <div class="cols-2 label"><strong>EROD:</strong></div>
+                <div class="cols-5 data">
                     <?php if ($erod) {
                         echo $erod->getDescription();
                     } else {
@@ -198,7 +196,6 @@ $warnings = $this->patient->getWarnings($clinical);
 
     <div id="operation">
         <h3>Select theatre slot</h3>
-
         <?php if (Yii::app()->user->hasFlash('info')) { ?>
             <div class="alert-box">
                 <?php echo Yii::app()->user->getFlash('info'); ?>
@@ -247,5 +244,6 @@ $warnings = $this->patient->getWarnings($clinical);
         </div>
     </div>
 </div>
-
+  </section>
+</section>
 <?php $this->endContent(); ?>

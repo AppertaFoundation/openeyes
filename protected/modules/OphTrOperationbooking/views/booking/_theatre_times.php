@@ -24,17 +24,16 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
 <h4>Select a session time:</h4>
 <div id="theatre-times">
 
-	<?php
-        $i = 0;
-        foreach ($theatres as $i => $theatre) {
-            ?>
+	<?php $i = 0;
+	foreach ($theatres as $i => $theatre) { ?>
 
 	<h5><?php echo $theatre->name ?>
 		<?php if ($theatre->site) { 
 			echo ' ('.$theatre->site->name.')'; 
 		}?>
 	</h5>
-	<div id="theatre-times_tab_<?php echo $i ?>" class="sessionTimes">
+
+	<div id="theatre-times_tab_<?php echo $i ?>" class="sessionTimes element tile">
 
 		<?php foreach ($theatre->sessions as $j => $session) {
             if ($session->id != @$selectedSession->id) {?>
@@ -87,10 +86,7 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
 		</div>
 	<?php }?>
 
-	<?php
-        ++$i;
-        }
-    ?>
+	<?php ++$i; } ?>
 
 	<?php if ($i == 0) {?>
 		<h5>Sorry, this firm has no sessions on the selected day.</h5>

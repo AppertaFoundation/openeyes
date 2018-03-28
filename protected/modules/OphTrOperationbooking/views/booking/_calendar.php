@@ -21,35 +21,36 @@ $nextMonth = mktime(0, 0, 0, date('m', $date) + 1, 1, date('Y', $date));
 $nextYear = mktime(0, 0, 0, date('m'), 1, date('Y') + 1);
 ?>
 <div id="dates" class="clearfix">
-	<div id="current_month" class="column"><?php echo date('F Y', $date)?></div>
-	<div class="left" id="month_back">
-		<div class="primary" id="previous_month">
-			<?php echo CHtml::link('&#x25C0;&nbsp;&nbsp;previous month',
-                array('booking/'.($operation->booking ? 're' : '').'schedule/'.$operation->event_id.'?firm_id='.($firm->id ? $firm->id : 'EMG').'&date='.date('Ym', $lastMonth)),
-                array('class' => 'button primary')
-            )?>
-		</div>
-	</div>
-	<div class="right" id="month_forward">
-		<div id="next_month">
-			<?php if ($nextMonth > $nextYear) {
-    echo '<a href="#" class="button primary disabled" id="next_month">next month&nbsp;&nbsp;&#x25B6;</a>';
-            } else {?>
-				<?php echo CHtml::link('<span class="button-span button-span-blue">next month&nbsp;&nbsp;&#x25B6;</span>',
-                    array('booking/'.($operation->booking ? 're' : '').'schedule/'.$operation->event_id.'?firm_id='.($firm->id ? $firm->id : 'EMG').'&date='.date('Ym', $nextMonth)),
-                    array('class' => 'button primary')
-                )?>
-			<?php }?>
-		</div>
-	</div>
+	<div id="current_month" style="text-align: center;"><?php echo date('F Y', $date)?></div>
+  <div class="cols-full flex-layout">
+    <div class="left cols-6" id="month_back">
+      <div class="primary" id="previous_month">
+          <?php echo CHtml::link('&#x25C0;&nbsp;&nbsp;previous month',
+              array('booking/'.($operation->booking ? 're' : '').'schedule/'.$operation->event_id.'?firm_id='.($firm->id ? $firm->id : 'EMG').'&date='.date('Ym', $lastMonth)),
+              array('class' => 'button primary')
+          )?>
+      </div>
+    </div>
+    <div class="right cols-6" style="text-align: right;" id="month_forward">
+      <div id="next_month">
+          <?php if ($nextMonth > $nextYear) {
+              echo '<a href="#" class="button primary disabled" id="next_month">next month&nbsp;&nbsp;&#x25B6;</a>';
+          } else {?>
+              <?php echo CHtml::link('<span class="button-span button-span-blue">next month&nbsp;&nbsp;&#x25B6;</span>',
+                  array('booking/'.($operation->booking ? 're' : '').'schedule/'.$operation->event_id.'?firm_id='.($firm->id ? $firm->id : 'EMG').'&date='.date('Ym', $nextMonth)),
+                  array('class' => 'button primary')
+              )?>
+          <?php }?>
+      </div>
+    </div>
+  </div>
 </div>
-<table id="calendar">
+<table id="calendar" class="cols-full">
 	<tbody>
 		<?php
         foreach ($sessions as $weekday => $list) {?>
 			<tr>
 				<th><?php echo $weekday?></th>
-
 				<?php foreach ($list as $date => $session) {?>
 					<?php if ($session['status'] == 'blank') {?>
 						<td></td>
@@ -66,7 +67,7 @@ $nextYear = mktime(0, 0, 0, date('m'), 1, date('Y') + 1);
 		<tr>
 			<td colspan="8">
 				<div id="key">
-				<span>Key:</span>
+				<label>Key:</label>
 					<div class="container" id="day"><div class="color_box"></div><div class="label">Day of the week</div></div>
 					<div class="container" id="available"><div class="color_box"></div><div class="label">Slots Available</div></div>
 					<div class="container" id="limited"><div class="color_box"></div><div class="label">Limited Slots</div></div>
@@ -79,6 +80,7 @@ $nextYear = mktime(0, 0, 0, date('m'), 1, date('Y') + 1);
 					<div class="container" id="patient-unavailable"><div class="color_box"></div><div class="label">Patient Unavailable</div></div>
 				</div>
 			</td>
+      <td></td>
 		</tr>
 	</tfoot>
 </table>
