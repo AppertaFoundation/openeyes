@@ -16,14 +16,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element <?php echo $element->elementType->class_name ?>"
+<section class="element edit-full edit-procedures  <?php echo $element->elementType->class_name ?>"
          data-element-type-id="<?php echo $element->elementType->id ?>"
          data-element-type-class="<?php echo $element->elementType->class_name ?>"
          data-element-type-name="<?php echo $element->elementType->name ?>"
          data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
   <header class="element-header">
-    <h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
+    <h3 class="element-title">Procedures</h3>
   </header>
 
   <div class="element-fields full-width">
@@ -41,7 +41,7 @@
       ));
       ?>
   </div>
-  <div class="sub-elements active">
-      <?php $this->renderChildOpenElements($element, $this->action->id, $form, $data) ?>
-  </div>
 </section>
+<div class="sub-elements active">
+    <?php $this->renderChildOpenElements($element, $this->action->id, $form, $data) ?>
+</div>
