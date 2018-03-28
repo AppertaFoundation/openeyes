@@ -153,4 +153,14 @@ class Element_OphTrOperationnote_Surgeon extends Element_OpNote
 
         return $this->surgeonlist;
     }
+
+    public function getViewTitle()
+    {
+        return 'Personnel';
+    }
+
+    public function getFOrmTitle()
+    {
+        return 'Personnel';
+    }
 }
