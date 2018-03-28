@@ -327,7 +327,6 @@
                     <?php } ?>
                 </div>
               </td>
-              <td></td>
             </tr>
             <tr>
               <td>
@@ -336,7 +335,6 @@
               <td>
                 <div class="data-value"><?php echo $session->TheatreName ?></div>
               </td>
-              <td></td>
             </tr>
             </tbody>
           </table>
@@ -345,7 +343,7 @@
 
     <section class="element element-data flex-layout">
       <h3 class="data-title cols-2">Admission Time</h3>
-      <div class="data-value cols-10">
+      <div class="data-value">
           <?php echo substr($element->booking->admission_time, 0, 5) ?>
       </div>
     </section>

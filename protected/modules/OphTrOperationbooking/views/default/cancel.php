@@ -24,7 +24,7 @@ $this->beginContent('//patient/event_container'); ?>
     echo CHtml::form(Yii::app()->createUrl('/'.$operation->event->eventType->class_name.'/default/cancel'), 'post', array('id' => 'cancelForm', 'class' => 'edit cancel'));
     echo CHtml::hiddenField('operation_id', $operation->id); ?>
 
-	<div class="alert-box alert with-icon hide">
+	<div class="alert-box alert with-icon" style="display: none;">
 		<p>Please fix the following input errors:</p>
 	</div>
 
