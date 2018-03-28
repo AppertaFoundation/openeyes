@@ -18,38 +18,102 @@
 
 <?php
 $plate_positions = OphTrOperationnote_GlaucomaTube_PlatePosition::model()->activeOrPk($element->plate_position_id)->findAll();
-$html_options = array('label' => $element->getAttributeLabel('plate_position_id'), 'options' => array());
+$html_options = array(
+    'label' => $element->getAttributeLabel('plate_position_id'),
+    'options' => array(),
+    'nowrapper' => true,
+);
 foreach ($plate_positions as $pp) {
     $html_options['options'][$pp->id] = array('data-value' => $pp->eyedraw_value);
 }
-echo $form->dropDownList($element, 'plate_position_id', CHtml::listData($plate_positions, 'id', 'name'), $html_options,
-    false, array('field' => 3)) ?>
-<div id="div_Element_OphTrOperationnote_GlaucomaTube_plate_limbus" class="row">
-  <div class="cols-3 column">
-    <label
-        for="Element_OphTrOperationnote_GlaucomaTube_plate_limbus"><?= $element->getAttributeLabel('plate_limbus'); ?></label>
-  </div>
-  <div class="cols-2 column">
-      <?php echo CHtml::activeTextField($element, 'plate_limbus',
-          array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'clearWithEyedraw')); ?>
-  </div>
-  <div class="cols-1 column end field-info postfix align">
-    mm
-  </div>
-</div>
+?>
 
-<?php echo $form->dropDownList($element, 'tube_position_id',
-    CHtml::listData(OphTrOperationnote_GlaucomaTube_TubePosition::model()->activeOrPk($element->tube_position_id)->findAll(),
-        'id', 'name'), array('empty' => '- Please select -'), false, array('field' => 3)) ?>
-<?php echo $form->checkbox($element, 'stent', array('class' => 'clearWithEyedraw')) ?>
-<?php echo $form->checkbox($element, 'slit', array('class' => 'clearWithEyedraw')) ?>
-<?php echo $form->checkbox($element, 'visco_in_ac', array('class' => 'clearWithEyedraw')) ?>
-<?php echo $form->checkbox($element, 'flow_tested', array('class' => 'clearWithEyedraw')) ?>
-<?php echo $form->textArea($element, 'description', array('rows' => 4, 'cols' => 40, 'class' => 'autosize clearWithEyedraw')) ?>
-<div class="row">
-  <div class="cols-3 column">&nbsp;</div>
-  <div class="cols-4 column end">
-    <button id="btn-glaucomatube-report" class="ed_report secondary small">Report</button>
-    <button class="ed_clear secondary small">Clear</button>
+<div class="cols-full">
+  <table class="cols-8">
+    <colgroup>
+      <col class="cols-6">
+    </colgroup>
+    <tbody>
+    <tr>
+      <td>
+          <?php echo $element->getAttributeLabel('plate_position_id'); ?>
+      </td>
+      <td>
+          <?php echo $form->dropDownList($element, 'plate_position_id', CHtml::listData($plate_positions, 'id', 'name'),
+              $html_options,
+              false, array('field' => 3)); ?>
+      </td>
+    </tr>
+    <tr>
+      <td>
+          <?= $element->getAttributeLabel('plate_limbus'); ?>
+      </td>
+      <td class="flex-layout flex-right">
+          <?php echo CHtml::activeTextField($element, 'plate_limbus',
+              array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'clearWithEyedraw')); ?>
+        <span class="field-info postfix align">
+          mm
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <td>
+          <?= $element->getAttributeLabel('tube_position_id'); ?>
+      </td>
+      <td>
+          <?php echo $form->dropDownList($element, 'tube_position_id',
+              CHtml::listData(OphTrOperationnote_GlaucomaTube_TubePosition::model()->activeOrPk($element->tube_position_id)->findAll(),
+                  'id', 'name'), array('empty' => '- Please select -', 'nowrapper' => true), false,
+              array('field' => 3)) ?>
+      </td>
+    </tr>
+    <tr>
+      <td>
+          <?= $element->getAttributeLabel('stent'); ?>
+      </td>
+      <td>
+          <?php echo $form->checkbox($element, 'stent', array('class' => 'clearWithEyedraw', 'nowrapper' => true)) ?>
+      </td>
+    </tr>
+    <tr>
+      <td>
+          <?= $element->getAttributeLabel('slit'); ?>
+      </td>
+      <td>
+          <?php echo $form->checkbox($element, 'slit', array('class' => 'clearWithEyedraw', 'nowrapper' => true)) ?>
+      </td>
+    </tr>
+    <tr>
+      <td>
+          <?= $element->getAttributeLabel('visco_in_ac'); ?>
+      </td>
+      <td>
+          <?php echo $form->checkbox($element, 'visco_in_ac',
+              array('class' => 'clearWithEyedraw', 'nowrapper' => true)) ?>
+      </td>
+    </tr>
+    <tr>
+      <td>
+          <?= $element->getAttributeLabel('flow_tested'); ?>
+      </td>
+      <td>
+          <?php echo $form->checkbox($element, 'flow_tested',
+              array('class' => 'clearWithEyedraw', 'nowrapper' => true)) ?>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <br/>
+  <div class="row">
+      <?php echo $form->textArea($element, 'description',
+          array('rows' => 4, 'cols' => 40, 'class' => 'autosize clearWithEyedraw', 'nowrapper' => true), false,
+          array('placeholder' => 'Description')) ?>
+  </div>
+  <div class="row">
+    <div class="cols-3 column">&nbsp;</div>
+    <div class="cols-4 column end">
+      <button id="btn-glaucomatube-report" class="ed_report secondary small">Report</button>
+      <button class="ed_clear secondary small">Clear</button>
+    </div>
   </div>
 </div>
