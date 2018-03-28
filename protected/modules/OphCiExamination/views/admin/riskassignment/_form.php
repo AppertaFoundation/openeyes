@@ -22,35 +22,13 @@
 <?php
     echo $form->textField($model, "name");
     echo "<br>";
+?>
 
-    $options = CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name');
-    echo $form->dropDownList($model, "subspecialty_id", $options, array('empty' => '-- select --', 'class' => 'subspecialty'));
-
-    $firms = [];
-    if($model->subspecialty_id){
-        $firms = \Firm::model()->getList($model->subspecialty_id);
-    }
-    ?>
-
-    <div id="div_OEModule_OphCiExamination_models_OphCiExaminationRiskSet_firm_id" class="row field-row">
-
-        <div class="large-2 column">
-            <label for="OEModule_OphCiExamination_models_OphCiExaminationRiskSet_firm_id">Context:</label>
-        </div>
-
-        <div class="large-5 column">
-            <?php
-                $is_disabled = !(bool)$model->subspecialty_id;
-                echo CHtml::activeDropDownList($model, "firm_id", $firms, [
-                    'empty' => '-- select --',
-                    'disabled' => $is_disabled,
-                    'style' => ($is_disabled ? 'background-color:lightgray;':''), // oh where is the visual effect chrome, please ? @TODO:move to css input[diabled] {}
-
-                ]);
-            ?>
-        </div>
-        <div class="large-1 column end" style="padding-left:0"><img class="loader" style="margin-top:0px;width:20%;display:none" src="<?php echo \Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." /></div>
-    </div>
+<?php
+$this->widget('application.widgets.SubspecialtyFirmPicker', [
+    'model' => $model
+]);
+?>
     <?php
     echo "<br>";
 

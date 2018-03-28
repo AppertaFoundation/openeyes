@@ -60,7 +60,7 @@ class OphCiExaminationAllergySet extends \BaseEventTypeElement
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
             'allergy_set_assignments' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExaminationAllergySetAssignment', 'allergy_set_id'),
-            'ophciexamination_allergy_entry' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExaminationAllergySetEntry', 'ophciexamination_allergy_entry_id', 'through' => 'allergy_set_assignments'),
+            'allergy_set_entries' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExaminationAllergySetEntry', 'ophciexamination_allergy_entry_id', 'through' => 'allergy_set_assignments'),
 		);
 	}
 

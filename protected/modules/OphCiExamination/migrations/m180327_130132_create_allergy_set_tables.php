@@ -30,6 +30,9 @@ class m180327_130132_create_allergy_set_tables extends \OEMigration
             ),true
         );
 
+        $this->addColumn('ophciexamination_allergy_entry', 'has_allergy', 'tinyint(1) NOT NULL DEFAULT -9 AFTER allergy_id');
+        $this->addColumn('ophciexamination_allergy_entry_version', 'has_allergy', 'tinyint(1) NOT NULL DEFAULT -9 AFTER allergy_id');
+
         $this->addForeignKey('ophciexamination_allergy_set_subspecialty', 'ophciexamination_allergy_set', 'subspecialty_id', 'subspecialty', 'id');
         $this->addForeignKey('ophciexamination_allergy_set_firm', 'ophciexamination_allergy_set', 'firm_id', 'firm', 'id');
         $this->addForeignKey('ophciexamination_allergy_set_assignment_allergy_e', 'ophciexamination_allergy_set_assignment', 'ophciexamination_allergy_entry_id', 'ophciexamination_allergy_set_entry', 'id');
@@ -48,5 +51,8 @@ class m180327_130132_create_allergy_set_tables extends \OEMigration
         $this->dropOETable('ophciexamination_allergy_set_entry', true);
         $this->dropOETable('ophciexamination_allergy_set_assignment', true);
         $this->dropOETable('ophciexamination_allergy_set', true);
+
+        $this->dropColumn('ophciexamination_allergy_entry', 'has_allergy');
+        $this->dropColumn('ophciexamination_allergy_entry_version', 'has_allergy');
 	}
 }

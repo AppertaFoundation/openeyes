@@ -206,7 +206,7 @@ class AllergyAssignmentController extends \ModuleAdminController
         foreach($model_ids as $model_id){
 
             $model = $this->loadModel($model_id);
-            if(!$model->ophciexamination_allergy_entry){
+            if(!$model->allergy_set_entries){
                 $model->delete();
             } else {
                 echo "0";
@@ -233,17 +233,4 @@ class AllergyAssignmentController extends \ModuleAdminController
             throw new CHttpException(404,'The requested page does not exist.');
         return $model;
     }
-
-    /**
-     * Returns the consultants by subspecialty
-     * @param null $subspecialty_id
-     */
-    public function actionGetFirmsBySubspecialty($subspecialty_id = null)
-    {
-        $firms = \Firm::model()->getList($subspecialty_id);
-        echo \CJSON::encode($firms);
-
-        \Yii::app()->end();
-    }
-
 }
