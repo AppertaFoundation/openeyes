@@ -48,10 +48,12 @@
         // When using radio or checkboxes if no value is selected then nothing is posted
         // not triggereing server side validation.
         ?>
-        <label class="cols-<?php echo $layoutColumns['label'];?> column">
-            <?php if ($field_value) {?><?php echo CHtml::encode($label); ?>
-            <?php }elseif (!$label_above) {?><?php echo CHtml::encode($label); ?>:<?php }?>
-        </label>
+        <?php if($label): ?>
+          <label class="cols-<?php echo $layoutColumns['label'];?> column">
+              <?php if ($field_value) {?><?php echo CHtml::encode($label); ?>
+              <?php }elseif (!$label_above) {?><?php echo CHtml::encode($label); ?>:<?php }?>
+          </label>
+        <?php endif; ?>
         <?php if (!$no_element && $field) {?>
             <input type="hidden" value="" name="<?php echo CHtml::modelName($element)?>[<?php echo $field?>]">
         <?php }?>
