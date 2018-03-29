@@ -27,7 +27,7 @@ $(document).ready(function () {
         var lis = $($selection).find('li');
 
         if( lis.length === 1 && $( lis[0]).find('a').data('text') === 'None'){
-            $multi_select.find('select').prop('disabled', true).css({'background-color':'lightgrey'});
+            $multi_select.find('select').prop('disabled', true);
         }
     });
 
@@ -140,9 +140,6 @@ $(document).ready(function () {
     if(selected_text === 'None'){
         $(this).prop('disabled', true);
 
-          // to ensure visual feedback
-          $(this).css({'background-color':'lightgrey'});
-
           //remove other options
           $.each(selections.find('li'), function( index, $item ) {
             var $anchor = $($item).find('.multi-select-remove');
@@ -186,7 +183,7 @@ $(document).ready(function () {
     if (!select.data('searchable')) {
       select.append('<option' + attr_str + '>' + text + '</option>');
       if(text.trim() === 'None'){
-          select.css({'background-color':'white'}).prop('disabled', false);
+          select.prop('disabled', false);
       }
 
       sort_selectbox(select);
