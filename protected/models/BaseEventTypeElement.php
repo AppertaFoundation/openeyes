@@ -153,7 +153,7 @@ class BaseEventTypeElement extends BaseElement
      * Return the width of this element in tiles for viewing
      * @return null
      */
-    public function getTileSize()
+    public function getTileSize($action)
     {
         return null;
     }

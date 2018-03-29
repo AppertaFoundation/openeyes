@@ -22,7 +22,7 @@ if ($element->elementType->name == 'Medications' || $element->elementType->name 
     echo 'full';
 } elseif (is_subclass_of($element, 'SplitEventTypeElement')) {
     echo 'full priority eye-divider view-visual-acuity';
-} elseif ($element->getTileSize() === 1) {
+} elseif ($element->getTileSize($this->action->id) === 1) {
     echo 'tile';
 } else {
     echo 'full priority';

@@ -151,8 +151,8 @@ class Element_OphTrOperationnote_Comments extends Element_OpNote
             ->findAll($criteria), 'id', 'content');
     }
 
-    public function getTileSize()
+    public function getTileSize($action)
     {
-        return 2;
+        return $action === 'view' ? 2 : null;
     }
 }

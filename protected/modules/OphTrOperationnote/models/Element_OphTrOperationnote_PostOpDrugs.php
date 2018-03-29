@@ -151,8 +151,8 @@ class Element_OphTrOperationnote_PostOpDrugs extends Element_OpNote
         }
     }
 
-    public function getTileSize()
+    public function getTileSize($action)
     {
-        return 1;
+        return $action === 'view' ? 1 : null;
     }
 }

@@ -123,7 +123,7 @@ class Element_OphTrOperationnote_SiteTheatre extends Element_OpNote
         }
     }
 
-    public function getTileSize()
+    public function getTileSize($action)
     {
         return 1;
     }

@@ -1630,7 +1630,7 @@ class BaseEventTypeController extends BaseModuleController
             $element = $elements[$element_index];
 
             //if the tile size can't be determined assume a full row
-            $sizeOfTile = $element->getTileSize() ?: $this->element_tiles_wide;
+            $sizeOfTile = $element->getTileSize($action) ?: $this->element_tiles_wide;
 
             if($tile_index + $sizeOfTile > $this->element_tiles_wide){
                 $tile_index = 0;
