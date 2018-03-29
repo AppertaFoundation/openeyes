@@ -23,6 +23,6 @@
     }
 
 ?>
-<span class="va-info-icon-viewmode has-tooltip" data-tooltip-content="<?php echo $va_tooltip; ?>">
+<span class="va-info-icon-viewmode" data-tooltip-content="<?php echo $va_tooltip; ?>">
     <img src="<?php echo $this->assetPath ?>/img/icon_info.png" style="height: 20px" />
 </span>
