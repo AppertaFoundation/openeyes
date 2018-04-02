@@ -22,7 +22,7 @@ $layoutColumns = $form->layoutColumns;
 $form->layoutColumns = array('label' => 3, 'field' => 9);
 ?>
 <div class="element-fields full-width">
-  <div class="cols-11 flex-layout col-gap" data-is-new="<?= $element->isNewRecord ? 'true' : 'false' ?>">
+  <div class="eyedraw-row cataract cols-11 flex-layout col-gap" data-is-new="<?= $element->isNewRecord ? 'true' : 'false' ?>">
     <div class="cols-6">
         <?php $this->renderPartial($element->form_view . '_OEEyeDraw', array(
             'element' => $element,

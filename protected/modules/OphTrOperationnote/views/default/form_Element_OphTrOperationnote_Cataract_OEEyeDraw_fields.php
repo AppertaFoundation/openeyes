@@ -17,7 +17,7 @@
  */
 ?>
 <div class="cols-full">
-  <table class="cols-full">
+  <table class="cols-full last-left">
     <colgroup>
       <col class="cols-6">
     </colgroup>
@@ -28,7 +28,7 @@
       </td>
       <td>
           <?php echo $form->dropDownList($element, 'incision_site_id', 'OphTrOperationnote_IncisionSite',
-              array('empty' => '- Please select -', 'textAttribute' => 'data-value', 'nowrapper' => true), false,
+              array('empty' => '- Please select -', 'textAttribute' => 'data-value', 'nolabel' => true), false,
               array('field' => 4)) ?>
       </td>
     </tr>
@@ -56,7 +56,7 @@
       </td>
       <td>
           <?php echo $form->dropDownList($element, 'incision_type_id', 'OphTrOperationnote_IncisionType',
-              array('empty' => '- Please select -', 'textAttribute' => 'data-value', 'nowrapper' => true), false,
+              array('empty' => '- Please select -', 'textAttribute' => 'data-value', 'nolabel' => true), false,
               array('field' => 4)) ?>
       </td>
     </tr>
@@ -80,7 +80,7 @@
                       'condition' => ($element->iol_type_id > 0) ? 'active=1 or id=' . $element->iol_type_id : 'active=1',
                       'order' => 'display_name',
                   )), 'id', 'display_name'),
-                  array('empty' => '- Please select -', 'nowrapper' => true), $element->iol_hidden,
+                  array('empty' => '- Please select -', 'nolabel' => true), $element->iol_hidden,
                   array('field' => 4)); ?>
           <?php else: ?>
               <?php echo $form->dropDownList($element, 'iol_type_id', array(
@@ -93,7 +93,7 @@
                       'order' => 'display_order',
                   )), 'id', 'name'),
               ),
-                  array('empty' => '- Please select -', 'divided' => true, 'nowrapper' => true), $element->iol_hidden,
+                  array('empty' => '- Please select -', 'divided' => true, 'nolabel' => true), $element->iol_hidden,
                   array('field' => 4)) ?>
           <?php endif; ?>
       </td>
@@ -129,7 +129,7 @@
                   'options' => array(
                       8 => array('disabled' => 'disabled'),
                   ),
-                  'nowrapper' => true,
+                  'nolabel' => true,
               ),
               $element->iol_hidden, array('field' => 4)
           ) ?>
@@ -174,11 +174,10 @@
     </tr>
     <tr>
       <td colspan="2">
-          <?php echo $form->textArea($element, 'complication_notes', array('nowrapper' => true,), false,
+          <?php echo $form->textArea($element, 'complication_notes', array('nowrapper' => true), false,
               array(
                   'rows' => 6,
                   'cols' => 40,
-
                   'placeholder' => $element->getAttributeLabel('complication_notes'),
               )) ?>
       </td>
