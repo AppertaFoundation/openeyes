@@ -79,7 +79,7 @@ table {
 		td {
 			font-size: $oe-table-cell-font-size;
 
-			&.clamp10{
+			div.clamp10{
 				display: -webkit-box;
 				-webkit-line-clamp: 10;
 				-webkit-box-orient: vertical;
