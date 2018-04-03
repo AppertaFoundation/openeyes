@@ -31,8 +31,12 @@
 	<td><?= Helper::convertDate2NHS($ticket->created_date)?></td>
 	<td><?= $ticket->getTicketFirm() ?></td>
 	<td><?= $ticket->user->getFullName() ?></td>
-	<td><?= $ticket->report ? $ticket->report : '-'; ?></td>
-	<td class="forceNoWrap"><?= nl2br($ticket->getNotes()) ?></td>
+	<td>
+        <div class="clamp10"><?= $ticket->report ? $ticket->report : '-'; ?></div>
+    </td>
+	<td class="forceNoWrap">
+        <div class="clamp10"><?= nl2br($ticket->getNotes()) ?></div>
+    </td>
 	<!-- Ownership functionality not required at the moment.
 	<td><?= $ticket->assignee ? $ticket->assignee->getFullName() : '-'?></td>
 	 -->

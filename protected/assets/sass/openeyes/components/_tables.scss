@@ -78,6 +78,20 @@ table {
 		}
 		td {
 			font-size: $oe-table-cell-font-size;
+
+			div.clamp10{
+				display: -webkit-box;
+				-webkit-line-clamp: 10;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				max-height: 10.5em;
+
+				&:hover{
+					overflow-y: scroll;
+					display: block;
+				}
+			}
 		}
 		&.odd {
 			background: $table-bg;

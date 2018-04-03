@@ -21,11 +21,11 @@
 }
 /* line 19, ../sass/components/_event.scss */
 .event .event-content {
-  background-image: url('../img/watermark.png?1516964525');
+  background-image: url('../img/watermark.png?1522738227');
 }
 /* line 22, ../sass/components/_event.scss */
 .event .event-title {
-  background-image: url('../img/medium.png?1516964525');
+  background-image: url('../img/medium.png?1522738227');
 }
 
 /* line 29, ../sass/components/_event.scss */
@@ -75,7 +75,7 @@ table.prescriptions tr.prescription-tapier .prescription-label {
 }
 /* line 44, ../sass/components/_prescriptions_table.scss */
 table.prescriptions tr.prescription-tapier .prescription-label span {
-  background: url('../img/icons/taper.png?1516964525') -10px 100% no-repeat;
+  background: url('../img/icons/taper.png?1522738227') -10px 100% no-repeat;
   padding-left: 20px;
 }
 
