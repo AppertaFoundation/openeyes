@@ -167,6 +167,41 @@ $(document).ready(function(){
     tooltip.css({"top": top + "px"});
 
   });
+
+  // Tile Data Overflow
+  $('.element.tile').each(function () {
+    var h = $(this).find('.data-value').height();
+
+    // CSS is set to max-height:180px;
+    if (h > 179) {
+      // it's scrolling, so flag it
+      var flag = $('<div/>', {class: "tile-more-data-flag"});
+      var icon = $('<i/>', {class: "oe-i arrow-down-bold medium selected"});
+      flag.append(icon);
+      $(this).prepend(flag);
+
+      var tileOverflow = $('.tile-data-overflow', this);
+
+      flag.click(function () {
+        tileOverflow.animate({
+          scrollTop: tileOverflow.height()
+        }, 1000);
+      });
+
+      tileOverflow.on('scroll', function () {
+        flag.fadeOut();
+      });
+
+      // Assuming it's a table!...
+      var trCount = $(this).find('tbody').get(0).childElementCount;
+      // and then set the title to show total data count
+
+      var title = $('.element-title', this);
+      title.html(title.text() + ' <small>(' + trCount + ')</small>');
+
+    }
+  });
+
 });
 
 function WidgetSlider() {if (this.init) this.init.apply(this, arguments); }
