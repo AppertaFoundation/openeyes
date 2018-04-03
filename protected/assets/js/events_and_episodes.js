@@ -192,13 +192,14 @@ $(document).ready(function(){
         flag.fadeOut();
       });
 
-      // Assuming it's a table!...
-      var trCount = $(this).find('tbody').get(0).childElementCount;
-      // and then set the title to show total data count
+      if ($(this).find('tbody').length > 0) {
+        // Assuming it's a table!...
+        var trCount = $(this).find('tbody').get(0).childElementCount;
+        // and then set the title to show total data count
 
-      var title = $('.element-title', this);
-      title.html(title.text() + ' <small>(' + trCount + ')</small>');
-
+        var title = $('.element-title', this);
+        title.html(title.text() + ' <small>(' + trCount + ')</small>');
+      }
     }
   });
 
