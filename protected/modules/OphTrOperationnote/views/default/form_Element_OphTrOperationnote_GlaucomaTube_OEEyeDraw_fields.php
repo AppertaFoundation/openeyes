@@ -21,7 +21,7 @@ $plate_positions = OphTrOperationnote_GlaucomaTube_PlatePosition::model()->activ
 $html_options = array(
     'label' => $element->getAttributeLabel('plate_position_id'),
     'options' => array(),
-    'nolabel' => true,
+    'nowrapper' => true,
 );
 foreach ($plate_positions as $pp) {
     $html_options['options'][$pp->id] = array('data-value' => $pp->eyedraw_value);
@@ -63,7 +63,7 @@ foreach ($plate_positions as $pp) {
       <td>
           <?php echo $form->dropDownList($element, 'tube_position_id',
               CHtml::listData(OphTrOperationnote_GlaucomaTube_TubePosition::model()->activeOrPk($element->tube_position_id)->findAll(),
-                  'id', 'name'), array('empty' => '- Please select -', 'nolabel' => true), false,
+                  'id', 'name'), array('empty' => '- Please select -', 'nowrapper' => true), false,
               array('field' => 3)) ?>
       </td>
     </tr>
