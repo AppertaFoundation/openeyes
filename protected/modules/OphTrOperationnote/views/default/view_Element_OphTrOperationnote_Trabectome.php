@@ -17,75 +17,14 @@
  */
 ?>
 
-<section class="element">
+<section class="element view full">
   <header class="element-header">
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
   <section class="element-fields full-width">
-    <div class="row">
-      <div class="cols-6 column">
-        <div class="row">
-          <div class="cols-4 column">
-            <div class="data-label">
-                <?php echo CHtml::encode($element->getAttributeLabel('power_id')) ?>
-            </div>
-          </div>
-          <div class="cols-8 column">
-            <div class="data-value">
-                <?php echo $element->power->name ?>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="cols-4 column">
-            <div class="data-label">
-                <?php echo CHtml::encode($element->getAttributeLabel('blood_reflux')) ?>
-            </div>
-          </div>
-          <div class="cols-8 column">
-            <div class="data-value">
-                <?php echo $element->blood_reflux ? 'Yes' : 'No'; ?>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="cols-4 column">
-            <div class="data-label">
-                <?php echo CHtml::encode($element->getAttributeLabel('hpmc')) ?>
-            </div>
-          </div>
-          <div class="cols-8 column">
-            <div class="data-value">
-                <?php echo $element->hpmc ? 'Yes' : 'No'; ?>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="cols-4 column">
-            <div class="data-label">
-                <?php echo CHtml::encode($element->getAttributeLabel('description')) ?>
-            </div>
-          </div>
-          <div class="cols-8 column">
-            <div class="data-value">
-                <?php echo Yii::app()->format->Ntext($element->description) ?>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="cols-4 column">
-            <div class="data-label">
-                <?php echo CHtml::encode($element->getAttributeLabel('complications')) ?>
-            </div>
-          </div>
-          <div class="cols-8 column">
-            <div class="data-value">
-                <?= $element->getComplicationsString(); ?>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="cols-6 column">
+
+    <div class="eyedraw flex-layout flex-top flex-left">
+      <div class="eyedraw-canvas">
           <?php
           $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
               'mode' => 'view',
@@ -97,6 +36,78 @@
               'idSuffix' => 'Trabectome',
           ));
           ?>
+      </div>
+      <div class="eyedraw-data cols-5">
+        <table class="label-value no-lines last-left">
+          <colgroup>
+            <col class="cols-5">
+          </colgroup>
+          <tbody>
+          <tr>
+            <td>
+              <div class="data-label">
+                  <?php echo CHtml::encode($element->getAttributeLabel('power_id')) ?>
+              </div>
+            </td>
+            <td>
+              <div class="data-value">
+                  <?php echo $element->power->name ?>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="data-label">
+                  <?php echo CHtml::encode($element->getAttributeLabel('blood_reflux')) ?>
+              </div>
+            </td>
+            <td>
+              <div class="data-value">
+                  <?php echo $element->blood_reflux ? 'Yes' : 'No'; ?>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="data-label">
+                  <?php echo CHtml::encode($element->getAttributeLabel('hpmc')) ?>
+              </div>
+            </td>
+            <td>
+              <div class="data-value">
+                  <?php echo $element->hpmc ? 'Yes' : 'No'; ?>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="data-label">
+                  <?php echo CHtml::encode($element->getAttributeLabel('description')) ?>
+              </div>
+            </td>
+            <td>
+              <div class="data-value">
+                  <?php echo Yii::app()->format->Ntext($element->description) ?>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="data-label">
+                  <?php echo CHtml::encode($element->getAttributeLabel('complications')) ?>
+              </div>
+            </td>
+            <td>
+              <div class="data-value">
+                  <?= $element->getComplicationsString(); ?>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
