@@ -24,14 +24,20 @@
   </header>
   <div class="element-data full-width">
     <div class="data-row">
-      <div class="data-value<?php if (!$element->postop_instructions) { ?> none<?php } ?>">
-          <?php echo CHtml::encode($element->postop_instructions) ? Yii::app()->format->Ntext($element->postop_instructions) : 'None' ?>
-      </div>
-    </div>
-    <div class="data-row">
-      <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('comments')) ?></h4>
-      <div class="data-value<?php if (!$element->comments) { ?> none<?php } ?>">
-          <?php echo CHtml::encode($element->comments) ? Yii::app()->format->Ntext($element->comments) : 'None' ?>
+      <div class="data-value">
+        <div class="tile-data-overflow">
+          <div class="data-row">
+            <div class="data-value<?php if (!$element->postop_instructions) { ?> none<?php } ?>">
+                <?php echo CHtml::encode($element->postop_instructions) ? Yii::app()->format->Ntext($element->postop_instructions) : 'None' ?>
+            </div>
+          </div>
+          <div class="data-row">
+            <h4 class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('comments')) ?></h4>
+            <div class="data-value<?php if (!$element->comments) { ?> none<?php } ?>">
+                <?php echo CHtml::encode($element->comments) ? Yii::app()->format->Ntext($element->comments) : 'None' ?>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
