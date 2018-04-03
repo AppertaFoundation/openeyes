@@ -2329,7 +2329,7 @@ $(document).on("keyup", ".eyedraw-fields textarea[id$='_description'], .eyedraw-
     else {
         // Get eyedraw report
 
-        var element
+        var element;
         element = $(this).closest('.sub-element');
         if(element.length === 0) {
             element = $(this).closest('.element');
