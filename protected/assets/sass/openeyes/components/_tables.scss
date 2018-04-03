@@ -85,9 +85,11 @@ table {
 				-webkit-box-orient: vertical;
 				overflow: hidden;
 				text-overflow: ellipsis;
+				max-height: 10.5em;
 
 				&:hover{
 					overflow-y: scroll;
+					display: block;
 				}
 			}
 		}
