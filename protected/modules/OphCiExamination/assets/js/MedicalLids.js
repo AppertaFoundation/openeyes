@@ -20,7 +20,16 @@ OpenEyes.OphCiExamination.MedicalLidsController = (function () {
 
   MedicalLidsController.prototype.updateReport = function()
   {
-    this.$edReportDisplay.html(this.$edReportField.val().replace(/\n/g,'<br />'));
+    var markup = this.$edReportField.val().replace(/\n/g,'<br />');
+    var id = this.$edReportField.attr("id");
+    var $textarea = $("#"+id.replace(/_ed_report$/, "_comments"));
+
+    if(markup === "No abnormality" && $textarea.val() !== '') {
+      markup = '';
+      this.$edReportField.val(markup);
+    }
+
+    this.$edReportDisplay.html(markup);
   };
   
   MedicalLidsController.prototype.drawingNotifications = function(msgArray)
