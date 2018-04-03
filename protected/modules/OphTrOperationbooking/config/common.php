@@ -61,6 +61,7 @@ return array(
             'Waiting list contact rules' => '/OphTrOperationbooking/admin/viewWaitingListContactRules',
             'Patient unavailable reasons' => '/OphTrOperationbooking/admin/viewPatientUnavailableReasons',
             'Session unavailable reasons' => array('uri'=>'/OphTrOperationbooking/admin/viewSessionUnavailableReasons', 'requires_setting' => array('setting_key'=>'disable_theatre_diary', 'required_value'=>'off')),
+            'Whiteboard' => '/OphTrOperationbooking/oeadmin/WhiteboardSettings/settings',
         ),
         // Default anaesthetic settings
         //'ophtroperationbooking_default_anaesthetic_child' => 'GA',
@@ -76,5 +77,11 @@ return array(
         //'ophtroperationbooking_referral_link' => true,
         // boolean to require a referral on an operation booking for scheduling or not
         //'ophtroperationbooking_schedulerequiresreferral' => true
+
+        'whiteboard' => array(
+            // whiteboard will be refresh-able after operation booking is completed
+            // overrides admin > Opbooking > whiteboard settings
+            //'refresh_after_opbooking_completed' => 24, //hours or false
+        ),
     ),
 );

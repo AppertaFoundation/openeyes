@@ -78,7 +78,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201803290954',
+            'time' => '201804030936',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -480,5 +480,11 @@ return array(
          * (this overrides the setting in admin > system > settings)
          */
         //'disable_auto_feature_tours' => true,
+
+        'whiteboard' => array(
+            // whiteboard will be refresh-able after operation booking is completed
+            // overrides admin > Opbooking > whiteboard settings
+            //'refresh_after_opbooking_completed' => 24, //hours or false
+        ),
     ),
 );

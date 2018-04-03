@@ -273,7 +273,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
               risksMap.push({id: risks[i], comments: [drugName]})
           }
       }
-      exports.HistoryRisks.addRisksForSource(risksMap, 'Medications');
+
+      //checking the risksMap.length because HistoryRisksCore (js class) will automatically open the element if it isn't there
+      if(risksMap.length){
+          exports.HistoryRisks.addRisksForSource(risksMap, 'Medications');
+      }
+
   };
 
   HistoryMedicationsController.prototype.resetSearchRow = function($container, showSearch)

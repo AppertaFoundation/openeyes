@@ -2134,9 +2134,6 @@ function OphCiExamination_AddDiagnosis(disorderId, name, eyeId, isDiabetic, isGl
 
     eyeId = eyeId || $('input[name="'+OE_MODEL_PREFIX+'OphCiExamination_Diagnosis[eye_id]"]:checked').val();
 
-    var checked_right = (eyeId == 2 ? 'checked="checked" ' : '');
-    var checked_both = (eyeId == 3 ? 'checked="checked" ' : '');
-    var checked_left = (eyeId == 1 ? 'checked="checked" ' : '');
     var checked_principal = (count == 0 ? 'checked="checked" ' : '');
 
     var row = '<tr' + (external ? ' class="external"' : '') + '>' +
@@ -2146,13 +2143,13 @@ function OphCiExamination_AddDiagnosis(disorderId, name, eyeId, isDiabetic, isGl
         '<input type="hidden" name="selected_diagnoses[]" value="'+disorderId+'" /> '+name+' </td>'+
         '<td class="eye">'+
             '<label class="inline">'+
-                '<input type="radio" name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_Diagnoses[eye_id_'+id+']" value="2" '+checked_right+'/> Right'+
+                '<input type="radio" name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_Diagnoses[eye_id_'+id+']" value="2" /> Right'+
             '</label> '+
             '<label class="inline">'+
-                '<input type="radio" name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_Diagnoses[eye_id_'+id+']" value="3" '+checked_both+'/> Both'+
+                '<input type="radio" name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_Diagnoses[eye_id_'+id+']" value="3" /> Both'+
             '</label> '+
             '<label class="inline">'+
-                '<input type="radio" name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_Diagnoses[eye_id_'+id+']" value="1" '+checked_left+'/> Left'+
+                '<input type="radio" name="'+OE_MODEL_PREFIX+'Element_OphCiExamination_Diagnoses[eye_id_'+id+']" value="1" /> Left'+
             '</label> '+
         '</td>'+
         '<td>'+
@@ -2306,4 +2303,53 @@ var eyedraw_added_diagnoses = [];
 
 $(document).ready(function() {
     $('textarea').autosize();
+});
+
+/*
+ * If any text is entered into the Comments field, then "No Abnormality" is removed from the automatic report.
+ */
+
+$(document).on("keyup", ".eyedraw-fields textarea[id$='_description'], .eyedraw-fields textarea[id$='_comments']", function(event){
+    var $textarea = $(event.target);
+    var $report_input = $("#"+$textarea.attr("id").replace(/(_description|_comments)$/, "_ed_report"));
+    var $report_html  = $("#"+$textarea.attr("id").replace(/(_description|_comments)$/, "_ed_report_display"));
+
+    var report_text = $report_input.val();
+
+    if(report_text !== '' && report_text !== "No abnormality") {
+        return;
+    }
+
+    var txt = $textarea.val();
+
+    if(txt !== '') {
+        $report_input.val("");
+        $report_html.text("");
+    }
+    else {
+        // Get eyedraw report
+
+        var element;
+        element = $(this).closest('.sub-element');
+        if(element.length === 0) {
+            element = $(this).closest('.element');
+        }
+
+        var side = null;
+        if ($(this).closest('[data-side]').length) {
+            side = $(this).closest('[data-side]').attr('data-side');
+        }
+
+        var eyedraw = element.attr('data-element-type-id');
+        if (side) {
+            eyedraw = side + '_' + eyedraw;
+        }
+        eyedraw = ED.getInstance('ed_drawing_edit_' + eyedraw);
+
+        var text = eyedraw.report();
+        text = text.replace(/, +$/, '');
+
+        $report_input.val(text);
+        $report_html.text(text);
+    }
 });
