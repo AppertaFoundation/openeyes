@@ -16,7 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element">
+
+<section class="element view full">
   <header class="element-header">
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
