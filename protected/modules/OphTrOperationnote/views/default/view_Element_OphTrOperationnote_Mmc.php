@@ -17,72 +17,46 @@
  */
 ?>
 
-<section class="element">
+<section class="element view full">
   <header class="element-header">
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
-  <section class="element-fields full-width">
-    <div class="row highlight-container">
-      <div class="cols-6 column data-value highlight">
-        <div class="row">
-          <div class="cols-5 column">
-            <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('application_type_id')) ?>:</div>
-          </div>
-          <div class="cols-7 column">
-            <div class="data-value"><?= $element->application_type->name ?></div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="cols-5 column">
-            <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('concentration_id')) ?>:</div>
-          </div>
-          <div class="cols-7 column">
-            <div class="data-value"><?= $element->concentration->value ?></div>
-          </div>
-        </div>
-          <?php if ($element->application_type_id == OphTrOperationnote_Antimetabolite_Application_Type::SPONGE): ?>
-            <div class="row">
-              <div class="cols-5 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('duration')) ?>:</div>
-              </div>
-              <div class="cols-7 column">
-                <div class="data-value"><?= $element->duration ?></div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="cols-5 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('number')) ?>:</div>
-              </div>
-              <div class="cols-7 column">
-                <div class="data-value"><?= $element->number ?></div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="cols-5 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('washed')) ?>:</div>
-              </div>
-              <div class="cols-7 column">
-                <div class="data-value"><?= $element->washed ? 'Yes' : 'No' ?></div>
-              </div>
-            </div>
-          <?php else: ?>
-            <div class="row">
-              <div class="cols-5 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('volume_id')) ?>:</div>
-              </div>
-              <div class="cols-7 column">
-                <div class="data-value"><?= $element->volume->value ?></div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="cols-5 column">
-                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('dose')) ?>:</div>
-              </div>
-              <div class="cols-7 column">
-                <div class="data-value"><?= $element->dose ?></div>
-              </div>
-            </div>
-          <?php endif ?>
+  <section class="element-data full-width">
+    <div class="data-row">
+      <div class="data-value flex-layout flex-top">
+        <table class="last-left large">
+          <colgroup>
+            <col class="cols-fifth" span="4">
+          </colgroup>
+          <thead>
+          <tr>
+            <th><?= CHtml::encode($element->getAttributeLabel('application_type_id')) ?></th>
+            <th><?= CHtml::encode($element->getAttributeLabel('concentration_id')) ?></th>
+              <?php if ($element->application_type_id == OphTrOperationnote_Antimetabolite_Application_Type::SPONGE): ?>
+                <th><?= CHtml::encode($element->getAttributeLabel('duration')) ?></th>
+                <th><?= CHtml::encode($element->getAttributeLabel('number')) ?></th>
+              <th><?= CHtml::encode($element->getAttributeLabel('washed')) ?></th>
+              <?php else: ?>
+              <th><?= CHtml::encode($element->getAttributeLabel('volume_id')) ?></th>
+              <th><?= CHtml::encode($element->getAttributeLabel('dose')) ?></th>
+              <?php endif; ?>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><?= $element->application_type->name ?></td>
+            <td><?= $element->concentration->value ?></td>
+              <?php if ($element->application_type_id == OphTrOperationnote_Antimetabolite_Application_Type::SPONGE): ?>
+                <td><?= $element->duration ?></td>
+                <td><?= $element->number ?></td>
+                <td><?= $element->washed ? 'Yes' : 'No' ?></td>
+              <?php else: ?>
+                <td><?= $element->volume->value ?></td>
+                <td><?= $element->dose ?></td>
+              <?php endif; ?>
+          </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
