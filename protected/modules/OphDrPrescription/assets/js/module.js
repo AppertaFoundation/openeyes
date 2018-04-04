@@ -32,27 +32,28 @@ $(document).ready(function () {
 
   $('#Element_OphDrPrescription_Details_comments').autosize();
 
-  handleButton($('#et_save_print'), function (e) {
+  $(document).on('click', '#et_save_print', function (e) {
     $('#Element_OphDrPrescription_Details_draft').val(0);
-    if(!checkPrescriptionLength()){
-      e.preventDefault();
-    }
-  });
-    handleButton($('#et_save'), function (e) {
-        $('#Element_OphDrPrescription_Details_draft').val(0);
-        if(!checkPrescriptionLength()){
-            e.preventDefault();
-        }
-    });
-  
-  handleButton($('#et_save_draft'), function (e) {
-    $('#Element_OphDrPrescription_Details_draft').val(1);
-    if(!checkPrescriptionLength()){
+    if (!checkPrescriptionLength()) {
       e.preventDefault();
     }
   });
 
-  handleButton($('#et_print'), function (e) {
+  $(document).on('click', '#et_save', function (e) {
+    $('#Element_OphDrPrescription_Details_draft').val(0);
+    if (!checkPrescriptionLength()) {
+      e.preventDefault();
+    }
+  });
+
+  $(document).on('click', '#et_save_draft', function (e) {
+    $('#Element_OphDrPrescription_Details_draft').val(1);
+    if (!checkPrescriptionLength()) {
+      e.preventDefault();
+    }
+  });
+
+  $(document).on('click', '#et_print', function (e) {
     if ($('#et_ophdrprescription_draft').val() == 1) {
       $.ajax({
         'type': 'GET',
