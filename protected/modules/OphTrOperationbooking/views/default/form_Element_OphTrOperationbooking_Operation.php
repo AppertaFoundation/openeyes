@@ -29,7 +29,7 @@
 			<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(Eye::model()->findAll(array('condition' => 'name != "Both"', 'order' => 'display_order asc')), 'id', 'name'))?>
 	<?php
 		} else {
-	?>
+	?>getRe
 			<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'))?>
 	<?php
 	}
@@ -50,11 +50,9 @@
         )
     ); ?>
 
-	<?php $form->radioBoolean($element, 'anaesthetist_preop_assessment') ?>
 	<?php $form->radioButtons($element, 'anaesthetic_choice_id', 'OphTrOperationbooking_Anaesthetic_Choice') ?>
 	<?php $form->radioBoolean($element, 'stop_medication') ?>
 	<?php $form->textArea($element, 'stop_medication_details', array('rows' => 4), true, array(), array_merge($form->layoutColumns, array('field' => 4))) ?>
-	<?php echo $form->radioBoolean($element, 'overnight_stay')?>
     <?php
 
         $options = array(
@@ -116,10 +114,10 @@
 	<?php } ?>
 
 	<?php echo $form->datePicker($element, 'decision_date', array('maxDate' => 'today'), array(), array_merge($form->layoutColumns, array('field' => 2)))?>
-	<?php $form->radioBoolean($element, 'fast_track') ?>
-	<?php $form->radioButtons($element, 'fast_track_discussed_with_patient', array(1 => 'Yes', 0 => 'No'), null, false)?>
 	<?php $form->radioBoolean($element, 'special_equipment') ?>
 	<?php $form->textArea($element, 'special_equipment_details', array(), true, array(), array_merge($form->layoutColumns, array('field' => 4))) ?>
+    <?php echo $form->radioBoolean($element, 'preassessment_booking_required'); ?>
+    <?php echo $form->radioButtons($element, 'overnight_stay_required_id', 'OphTrOperationbooking_Overnight_Stay_Required'); ?>
 	<?php echo $form->textArea($element, 'comments', array('rows' => 4), false, array(), array_merge($form->layoutColumns, array('field' => 4)))?>
 	<?php echo $form->textArea($element, 'comments_rtt', array('rows' => 4), false, array(), array_merge($form->layoutColumns, array('field' => 4)))?>
 	<div class="row field-row">
