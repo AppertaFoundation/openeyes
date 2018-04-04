@@ -138,6 +138,7 @@ if ($this->checkClinicalEditAccess()) { ?>
                           array('size' => 5, 'nowrapper' => true)); ?>
                   </td>
                 </tr>
+                <?php if ($eye_side=='right'){ ?>
                 <tr>
                   <td>
                     <i class="oe-i laterality R small pad"></i>
@@ -153,6 +154,7 @@ if ($this->checkClinicalEditAccess()) { ?>
                           array()) ?>
                   </td>
                 </tr>
+                <?php } ?>
                 </tbody>
               </table>
             </div>
