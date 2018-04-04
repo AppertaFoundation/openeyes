@@ -284,10 +284,10 @@ function OphTrOperationbooking_PatientUnavailable_add() {
 	$('.unavailables').parent().show();
 	$('.unavailables').append(form);
 	$('.unavailables').find('[id$="date"]').each(function() {
-		$(this).datepicker({
-			'showAnim': 'fold',
-			'dateFormat': nhs_date_format,
-            'minDate': 0
-		});
+    pickmeup('#'+this.getAttribute('id'), {
+      format: 'Y-m-d',
+      hide_on_select: true,
+      default_date: false
+    });
 	});
 }

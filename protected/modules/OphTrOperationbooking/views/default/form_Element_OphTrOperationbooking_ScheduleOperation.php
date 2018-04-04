@@ -42,28 +42,27 @@
                   'element_name' => get_class($element),
               ));
               ++$key;
-              }
-              }
+              }}
               ?>
 					</tbody>
 					<tfoot>
 					</tfoot>
 				</table>
-        <button class="secondary small addUnavailable">Add</button>
+        <button class="secondary small addUnavailable" type="button">Add</button>
 			</div>
 		</div>
 	</fieldset>
-<?php
-    $template_unavailable = new OphTrOperationbooking_ScheduleOperation_PatientUnavailable();
-?>
+
 <script id="intraocularpressure_reading_template" type="text/html">
-	<?php
+    <?php
+    $template_unavailable = new OphTrOperationbooking_ScheduleOperation_PatientUnavailable();
+
     $this->renderPartial('form_OphTrOperationbooking_ScheduleOperation_PatientUnavailable', array(
             'key' => '{{key}}',
             'unavailable' => $template_unavailable,
             'form' => $form,
             'element_name' => get_class($element),
-            'dateFieldWidget' => 'TextField',
+            'dateFieldWidget' => 'TextField'
     ));
     ?>
 </script>

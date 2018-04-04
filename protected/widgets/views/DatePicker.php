@@ -18,7 +18,11 @@
 ?>
 
 <?php
-$input_id = CHtml::modelName($element) . '_' . $field . '_0';
+if (@$htmlOptions['id']){
+  $input_id = @$htmlOptions['id'];
+} else {
+  $input_id = CHtml::modelName($element) . '_' . $field . '_0';
+}
 ?>
 <?php if (!@$htmlOptions['nowrapper']) { ?>
 <div class="flex-layout flex-left"<?php if (@$htmlOptions['hidden']) { ?> style="display: none;"<?php } ?>>
