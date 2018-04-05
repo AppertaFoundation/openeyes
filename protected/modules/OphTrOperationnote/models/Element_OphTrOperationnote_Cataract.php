@@ -86,7 +86,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, incision_site_id, length, meridian, incision_type_id, iol_position_id, iol_type_id, iol_power, eyedraw, report, complication_notes, eyedraw2, report2, predicted_refraction, pcr_risk', 'safe'),
+            array('event_id, incision_site_id, length, meridian, incision_type_id, iol_position_id, iol_type_id, iol_power, eyedraw, report, complication_notes, eyedraw2, report2, predicted_refraction, pcr_risk, phaco_cde', 'safe'),
             array('incision_site_id, length, meridian, incision_type_id, iol_position_id, eyedraw, report, eyedraw2', 'required'),
             array('length', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9](\.[0-9])?$/', 'message' => 'Length must be 0 - 9.9 in increments of 0.1'),
             array('meridian', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9]{1,3}(\.[0-9])?$/', 'min' => 000, 'max' => 360, 'message' => 'Meridian must be 000.5 - 360.0 degrees'),
@@ -216,6 +216,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
             'report2' => 'Details',
             'predicted_refraction' => 'Predicted refraction',
             'pcr_risk' => 'PCR Risk',
+            'phaco_cde' => 'Phaco CDE'
         );
     }
 

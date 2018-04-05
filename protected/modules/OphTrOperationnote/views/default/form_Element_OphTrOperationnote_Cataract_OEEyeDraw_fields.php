@@ -77,9 +77,22 @@
     ),
     $element->iol_hidden, array('field' => 4)
     ) ?>
-<?php echo $form->multiSelectList($element, 'OphTrOperationnote_CataractOperativeDevices', 'operative_devices', 'id',
-    $this->getOperativeDeviceList($element), $this->getOperativeDeviceDefaults(),
-    array('empty' => '- Agents -', 'label' => 'Agents'), false, false, null, false, false, array('field' => 4)) ?>
+<?php
+    echo $form->multiSelectList($element, 'OphTrOperationnote_CataractOperativeDevices', 'operative_devices', 'id',
+        $this->getOperativeDeviceList($element), $this->getOperativeDeviceDefaults(),
+        array('empty' => '- Agents -', 'label' => 'Agents'), false, false, null, false, false, array('field' => 4)); ?>
+
+<div id="div_Element_OphTrOperationnote_Cataract_phaco_cde" class="row field-row">
+    <div class="large-3 column">
+        <label for="Element_OphTrOperationnote_Cataract_phaco_cde">Phaco CDE:</label>		</div>
+    <div class="large-2 column">
+        <input autocomplete="off" type="text" name="Element_OphTrOperationnote_Cataract[phaco_cde]" id="Element_OphTrOperationnote_Cataract_phaco_cde" value="<?php echo $element->phaco_cde?>" placeholder="00.00">
+    </div>
+    <div class="large-1 column end">
+        <span class="has-tooltip fa fa-info-circle" data-tooltip-content="Cumulative Dissipated Energy, in 'seconds'"></span>
+    </div>
+</div>
+
 <?php echo $form->multiSelectList($element, 'OphTrOperationnote_CataractComplications', 'complications', 'id',
     CHtml::listData(OphTrOperationnote_CataractComplications::model()->activeOrPk($element->cataractComplicationValues)->findAll(array('order' => 'display_order asc')),
         'id', 'name'), null, array('empty' => '- Complications -', 'label' => 'Complications'), false, false, null,
