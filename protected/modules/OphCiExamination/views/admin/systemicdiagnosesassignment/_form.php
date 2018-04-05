@@ -125,10 +125,11 @@
             'itemsCssClass' => 'generic-admin grid',
             "emptyTagName" => 'span',
             'summaryText' => false,
-            'rowHtmlOptionsExpression'=>'array("data-row" => $row)',
+            'rowHtmlOptionsExpression'=>'array("data-row" => $row, "data-key" => $row)',
             'enableSorting' => false,
             'enablePagination' => false,
             'columns' => $columns,
+            'id'=>'OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry_diagnoses_table'
 
         ));
         ?>
@@ -140,7 +141,7 @@
 <script type="text/javascript" src="<?=$js_path;?>"></script>
 
 <script type="text/template" id="new_risk_entry" class="hidden">
-    <tr data-row="{{row}}">
+    <tr data-row="{{row}}" data-key="{{row}}">
         <td>
             <?php
                 echo CHtml::textField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[{{row}}][disorder_id]",null,['class' => 'diagnoses-search-autocomplete']);
@@ -174,8 +175,8 @@
                 "<span class='diagnosis-name'></span></span>" +
                 "<select class='commonly-used-diagnosis'></select>" +
                 "{{{input_field}}}" +
-                "<input type='hidden' name='{{field_prefix}}[{{row_count}}][id]' class='savedDiagnosisId' value=''>" +
-                "<input type='hidden' name='{{field_prefix}}[{{row_count}}][disorder_id]' class='savedDiagnosis' value=''>"
+                "<input type='hidden' name='{{field_prefix}}[" + $row.attr("data-row") + "][id]' class='savedDiagnosisId' value=''>" +
+                "<input type='hidden' name='{{field_prefix}}[" + $row.attr("data-row") + "][disorder_id]' class='savedDiagnosis' value=''>"
         });
         $row.find('.diagnoses-search-autocomplete').data('diagnosesSearchController', diagnosesSearchController );
     }
