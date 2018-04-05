@@ -62,6 +62,20 @@ $logoHelper = new LogoHelper();
 			<th>DOB</th>
 			<td><?php echo $patient->NHSDate('dob')?></td>
 		</tr>
+		<tr>
+			<th>
+				Who will collect the patient<br> after surgery?
+			</th>
+            <td>
+				Name: <?php echo $contact_details->collector_name; ?> <br>Contact Number: <?php echo $contact_details->collector_contact_number; ?>
+			</td>
+			<th>
+				Contact number of patient <br>(for bookings questions)
+			</th>
+			<td>
+				<?php echo $contact_details->patient_booking_contact_number; ?>
+			</td>
+		</tr>
 
 	</table>
 
