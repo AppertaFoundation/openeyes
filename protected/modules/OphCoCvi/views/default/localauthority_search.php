@@ -17,7 +17,7 @@
 ?>
 
 <div id="local_authority_search_wrapper" class="row field-row<?= $hidden ? ' hidden':''?>">
-    <div class="large-8 column large-push-2 end">
+    <div class="large-push-2 end">
     <?php
         $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
             'id' => 'la_auto_complete',
@@ -57,6 +57,7 @@
             ),
             'htmlOptions' => array(
                 'placeholder' => 'Type to search for local authority',
+                'class' => isset($class) ? $class : ''
             ),
         ));
     ?>

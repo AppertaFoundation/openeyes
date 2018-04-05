@@ -46,10 +46,11 @@ if ($this->checkClericalEditAccess()) {
                 <?php if ($factor->require_comments) { ?>
                   <td>
                     <div class="cols-full ">
-                      <button class="button  js-add-comments" data-input="#<?= CHtml::modelName($element).'_patient_factors_'.$factor->id.'_comments'; ?>">
+                      <button class="button  js-add-comments" style="display: <?php if($comments){ echo 'none';} ?>"
+                              data-input="#<?= CHtml::modelName($element).'_patient_factors_'.$factor->id.'_comments'; ?>">
                         <i class="oe-i comments  small-icon"></i>
                       </button>
-                        <?php echo CHtml::textArea("{$field_base_name}[comments]", $comments, array('rows' => 2, 'style'=>'display:none', 'placeholder'=>'Comments')); ?>
+                        <?php echo CHtml::textArea("{$field_base_name}[comments]", $comments, array('rows' => 2, 'style'=>'display:'.(($comments)? '':'none'), 'placeholder'=>'Comments')); ?>
                     </div>
                   </td>
                 <?php } else { ?>
@@ -69,7 +70,6 @@ if ($this->checkClericalEditAccess()) {
                   Unknown
                 </label>
               </td>
-
             </tr>
           <?php } ?>
           </tbody>
