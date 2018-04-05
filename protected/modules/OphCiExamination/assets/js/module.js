@@ -1269,6 +1269,23 @@ $(document).ready(function() {
         });
 
         /* End of Visual Acuity readings event binding */
+
+    $('.va-info-icon-viewmode').hover(function(){
+
+        var infoWrap = $('<div class="quicklook quicklook-viewmode">' + $(this).data('tooltip-content') + '</div>');
+        infoWrap.appendTo('body');
+
+        var offsetPos = $(this).offset();
+        var top = offsetPos.top;
+        var left = offsetPos.left + 25;
+
+        top = top - (infoWrap.height()/2) + 8;
+
+        infoWrap.css({'position': 'absolute', 'top': top + "px", 'left': left + "px"});
+        infoWrap.fadeIn('fast');
+    }, function(e) {
+        $('.quicklook-viewmode').remove();
+    });
 });
 
     /** Post Operative Complication function **/
