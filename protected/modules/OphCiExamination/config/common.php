@@ -54,7 +54,8 @@ return array(
             'Required Risk Assignment' => '/OphCiExamination/oeadmin/RisksAssignment',
             'Social History' => '/OphCiExamination/admin/SocialHistory',
             'Family History' => '/OphCiExamination/admin/FamilyHistory',
-            'Medication Stop Reasons' => '/OphCiExamination/admin/HistoryMedicationsStopReason'
+            'Medication Stop Reasons' => '/OphCiExamination/admin/HistoryMedicationsStopReason',
+            'Past Surgery' => array('OphCiExamination' => '/admin/editpreviousoperation'),
         ),
         'ophciexamination_drgrading_type_required' => false,
         'ophciexamination_visualacuity_correspondence_unit' => 'Snellen Metre',
