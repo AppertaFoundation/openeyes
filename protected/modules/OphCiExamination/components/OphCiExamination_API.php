@@ -2451,7 +2451,7 @@ class OphCiExamination_API extends \BaseAPI
         foreach($sets as $set){
             if($set->allergy_set_entries){
                 foreach($set->allergy_set_entries as $allergy_entry){
-                    $required[] = $allergy_entry->allergy;
+                    $required[] = $allergy_entry->ophciexaminationAllergy;
                 }
             }
         }

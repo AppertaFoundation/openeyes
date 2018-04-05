@@ -97,7 +97,7 @@ class Allergies extends \BaseEventElementWidget
         foreach ($this->getRequiredAllergies() as $required) {
             if (!in_array($required->id, $current_ids)) {
                 $entry = new AllergyEntry();
-                $entry->ophciexamination_allergy_id = $required->id;
+                $entry->allergy_id = $required->id;
                 $missing[] = $entry;
             }
         }

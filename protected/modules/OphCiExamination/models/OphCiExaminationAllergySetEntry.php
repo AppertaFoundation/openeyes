@@ -79,7 +79,7 @@ class OphCiExaminationAllergySetEntry extends \BaseActiveRecordVersioned
 		// class name for the relations automatically generated below.
 		return array(
 			'ophciexaminationAllergySetAssignments' => array(self::HAS_MANY, 'OphciexaminationAllergySetAssignment', 'ophciexamination_allergy_entry_id'),
-			'ophciexaminationAllergy' => array(self::BELONGS_TO, 'OphciexaminationAllergy', 'ophciexamination_allergy_id'),
+			'ophciexaminationAllergy' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExaminationAllergy', 'ophciexamination_allergy_id'),
 			'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 		);

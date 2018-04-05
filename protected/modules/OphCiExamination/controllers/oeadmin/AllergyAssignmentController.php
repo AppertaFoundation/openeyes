@@ -65,12 +65,13 @@ class AllergyAssignmentController extends \ModuleAdminController
                 if($allergy_set->save()){
 
                     $allergies = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationAllergySetEntry', array());
+
                     foreach($allergies as $allergy){
                         $allergy_model = new models\OphCiExaminationAllergySetEntry;
 
                         $allergy_model->gender = $allergy['gender'];
-                        $allergy_model->age_min = $allergy['age_min'];
-                        $allergy_model->age_max = $allergy['age_max'];
+                        $allergy_model->age_min = $allergy['age_min'] === "" ? null : $allergy['age_min'];
+                        $allergy_model->age_max = $allergy['age_max'] === "" ? null : $allergy['age_max'];
                         $allergy_model->ophciexamination_allergy_id = $allergy['ophciexamination_allergy_id'];
 
                         if($allergy_model->save()){
@@ -131,8 +132,8 @@ class AllergyAssignmentController extends \ModuleAdminController
                         }
 
                         $allergy_model->gender = $allergy['gender'];
-                        $allergy_model->age_min = $allergy['age_min'];
-                        $allergy_model->age_max = $allergy['age_max'];
+                        $allergy_model->age_min = $allergy['age_min'] === "" ? null : $allergy['age_min'];
+                        $allergy_model->age_max = $allergy['age_max'] === "" ? null : $allergy['age_max'];
                         $allergy_model->ophciexamination_allergy_id = $allergy['ophciexamination_allergy_id'];
 
                         if($allergy_model->save()){
