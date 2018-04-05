@@ -246,24 +246,33 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-	$(this).delegate('.unavailable-start-date', 'change', function(e) {
-		var end = $(this).closest('tr').find('.unavailable-end-date');
-		if ($(this).datepicker('getDate') > end.datepicker('getDate')) {
-			end.val($(this).val());
-		}
-	});
+  $('.unavailables').find('.unavailable-start-date').each(function () {
+    datepicker_start(this);
+  });
+  $('.unavailables').find('.unavailable-end-date').each(function () {
+    datepicker_end(this);
+  });
 
-	$(this).delegate('.unavailable-end-date', 'change', function(e) {
-		var start = $(this).closest('tr').find('.unavailable-start-date');
-		if ($(this).datepicker('getDate') < start.datepicker('getDate')) {
-			start.val($(this).val());
-		}
-	});
-	
 	AlertDialogIfExaminationEventIsMissing();
 	
 });
+function datepicker_start(element){
+  element.addEventListener('pickmeup-fill', function (e) {
+    var end = $(element).closest('tr').find('.unavailable-end-date')[0];
+    if ($(end).val()===''||pickmeup(element).get_date() > new Date($(end).val())){
+      $(end).val($(element).val());
+    }
+  });
+}
 
+function datepicker_end(element) {
+  element.addEventListener('pickmeup-fill', function (e) {
+    var start = $(element).closest('tr').find('.unavailable-start-date')[0];
+    if ($(start).val()===''||pickmeup(element).get_date() < new Date($(start).val())){
+      $(start).val($(element).val());
+    }
+  });
+}
 function OphTrOperationbooking_PatientUnavailable_getNextKey() {
 	var keys = $('#event-content .Element_OphTrOperationbooking_ScheduleOperation .patient-unavailable').map(function(index, el) {
 		return parseInt($(el).attr('data-key'));
@@ -287,7 +296,14 @@ function OphTrOperationbooking_PatientUnavailable_add() {
     pickmeup('#'+this.getAttribute('id'), {
       format: 'Y-m-d',
       hide_on_select: true,
-      default_date: false
+      default_date: false,
+			min: new Date()
     });
 	});
+  $('.unavailables').find('.unavailable-start-date').each(function () {
+  	datepicker_start(this);
+  });
+  $('.unavailables').find('.unavailable-end-date').each(function () {
+    datepicker_end(this);
+  });
 }

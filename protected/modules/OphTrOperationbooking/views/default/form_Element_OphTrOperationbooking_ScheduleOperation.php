@@ -40,6 +40,7 @@
                   'unavailable' => $unavailable,
                   'form' => $form,
                   'element_name' => get_class($element),
+                  'dateFieldWidget' => 'TextField'
               ));
               ++$key;
               }}
@@ -52,7 +53,17 @@
 			</div>
 		</div>
 	</fieldset>
-
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('.unavailables').find('[id$="date"]').each(function() {
+      pickmeup('#'+this.getAttribute('id'), {
+        format: 'Y-m-d',
+        hide_on_select: true,
+        default_date: false
+      });
+    });
+  });
+</script>
 <script id="intraocularpressure_reading_template" type="text/html">
     <?php
     $template_unavailable = new OphTrOperationbooking_ScheduleOperation_PatientUnavailable();
