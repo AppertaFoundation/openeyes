@@ -68,8 +68,8 @@
         <?php
         $columns = array(
             array(
-                'header' => 'Risk Name',
-                'name' => 'Risk Name',
+                'header' => 'Diagnosis',
+                'name' => 'Diagnosis',
                 'type' => 'raw',
                 'value' => function($data, $row) use ($disorder){
                     return CHtml::textField("OEModule_OphCiExamination_models_OphCiExaminationSystemicDiagnosesSetEntry[$row][disorder_id]",null,
