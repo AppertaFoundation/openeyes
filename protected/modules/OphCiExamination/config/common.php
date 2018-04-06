@@ -55,7 +55,7 @@ return array(
             'Social History' => '/OphCiExamination/admin/SocialHistory',
             'Family History' => '/OphCiExamination/admin/FamilyHistory',
             'Medication Stop Reasons' => '/OphCiExamination/admin/HistoryMedicationsStopReason',
-            'Past Surgery' => array('OphCiExamination' => '/admin/editpreviousoperation'),
+            'Surgical History' => array('OphCiExamination' => '/admin/editpreviousoperation'),
         ),
         'ophciexamination_drgrading_type_required' => false,
         'ophciexamination_visualacuity_correspondence_unit' => 'Snellen Metre',
