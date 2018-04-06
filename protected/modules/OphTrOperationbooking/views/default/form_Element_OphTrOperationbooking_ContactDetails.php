@@ -32,8 +32,11 @@
         <div class="large-6 column">
             <div class="large-4 column">
                 <?php
+                if($element->patient_booking_contact_number == "")
+                {
                     $element->patient_booking_contact_number = $this->patient->primary_phone;
-                    $form->textField($element, 'patient_booking_contact_number', array("placeholder"=>"Contact number", 'nowrapper' => true), array(),  array_merge($form->layoutColumns, array('label'=>0,'field' => 4)));
+                }
+                $form->textField($element, 'patient_booking_contact_number', array("placeholder"=>"Contact number", 'nowrapper' => true), array(),  array_merge($form->layoutColumns, array('label'=>0,'field' => 4)));
                 ?>
             </div>
         </div>
