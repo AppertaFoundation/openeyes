@@ -20,11 +20,7 @@
 
 <div class="element-data full-width" id="<?=$el_id?>">
   <div class="data-row">
-    <div class="flex-layout flex-top">
-      <div class="cols-1">Current &nbsp;
-        <i class="oe-i history medium pad" id="js-stopped-meds-btn"></i>
-      </div>
-      <div class="cols-10">
+      <div class="cols-full">
         <div id="js-listview-meds-current-pro" style>
             <?php if ($element->currentOrderedEntries) { ?>
             <ul class="dslash-list">
@@ -64,14 +60,20 @@
     <!-- flex-layout -->
     <div class="divider"></div>
     <div class="flex-layout flex-top" id="js-meds-stopped">
-        <div class="cols-1"> Stopped </div>
-        <div class="cols-10">
+        <div class="cols-full">
             <div id="js-listview-meds-stopped-pro" style>
-                <ul class="dslash-list">
-                    <?php foreach ($element->stoppedOrderedEntries as $entry) { ?>
-                        <li><?= $entry->getMedicationDisplay() ?><i class="oe-i triangle small pad"></i></li>
-                    <?php } ?>
-                </ul>
+              <table class="dslash-list">
+                <tbody>
+                <?php foreach ($element->stoppedOrderedEntries as $entry) { ?>
+                  <tr>
+                    <td>
+                        <?= $entry->getMedicationDisplay() ?>
+                    </td>
+                    <td></td>
+                  </tr>
+                <?php } ?>
+                </tbody>
+              </table>
             </div>
           <div class id="js-listview-meds-stopped-full" style="display: none;">
             <table>

@@ -401,4 +401,9 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     {
         return "Eye Diagnoses";
     }
+
+    public function getTileSize()
+    {
+        return 1;
+    }
 }

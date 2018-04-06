@@ -19,6 +19,28 @@ $widget = $this;
 
 <div class="element-data">
     <div class="data-value">
-        <?= $element ?>
+      <table>
+        <colgroup>
+          <col>
+          <col width="55px">
+          <col width="85px">
+        </colgroup>
+        <tbody>
+          <?php foreach ($element->orderedDiagnoses as $diag){ ?>
+              <tr>
+                <td>
+                    <?= $diag->disorder; ?>
+                </td>
+                <td>
+                  <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective=='Right'||$diag->side->adjective=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
+                  <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective=='Left'||$diag->side->adjective=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
+                </td>
+                <td>
+                    <?= $diag->getDisplayDate(); ?>
+                </td>
+              </tr>
+          <?php } ?>
+        </tbody>
+      </table>
     </div>
 </div>
