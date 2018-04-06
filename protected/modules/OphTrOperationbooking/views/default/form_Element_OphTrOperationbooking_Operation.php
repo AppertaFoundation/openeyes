@@ -29,7 +29,7 @@
 			<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(Eye::model()->findAll(array('condition' => 'name != "Both"', 'order' => 'display_order asc')), 'id', 'name'))?>
 	<?php
 		} else {
-	?>getRe
+	?>
 			<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'))?>
 	<?php
 	}
