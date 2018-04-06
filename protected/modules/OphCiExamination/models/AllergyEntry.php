@@ -33,6 +33,10 @@ namespace OEModule\OphCiExamination\models;
  */
 class AllergyEntry extends \BaseElement
 {
+    public static $PRESENT = 1;
+    public static $NOT_PRESENT = 0;
+    public static $NOT_CHECKED = -9;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -57,11 +61,11 @@ class AllergyEntry extends \BaseElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('element_id, allergy_id, other, comments', 'safe'),
-            array('allergy_id', 'required'),
+            array('element_id, allergy_id, other, comments, has_allergy', 'safe'),
+            array('allergy_id, has_allergy', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, element_id, allergy_id, other, comments', 'safe', 'on' => 'search'),
+            array('id, element_id, allergy_id, other, comments, has_allergy', 'safe', 'on' => 'search'),
         );
     }
     /**
@@ -99,6 +103,7 @@ class AllergyEntry extends \BaseElement
         $criteria->compare('allergy_id', $this->allergy_id, true);
         $criteria->compare('other', $this->other, true);
         $criteria->compare('comments', $this->comments, true);
+        $criteria->compare('has_allergy', $this->comments, true);
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
@@ -110,6 +115,19 @@ class AllergyEntry extends \BaseElement
             $this->element->addAudit('edited-allergies');
         }
         return parent::beforeSave();
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisplayHasAllergy()
+    {
+        if ($this->has_allergy === (string) static::$PRESENT) {
+            return 'Present';
+        } elseif ($this->has_allergy === (string) static::$NOT_PRESENT) {
+            return 'Not present';
+        }
+        return 'Not checked';
     }
 
     /**
@@ -128,7 +146,7 @@ class AllergyEntry extends \BaseElement
      */
     public function __toString()
     {
-        $res = $this->getDisplayAllergy();
+        $res = '<strong>' . $this->getDisplayHasAllergy() . ':</strong> ' . $this->getDisplayAllergy();
         if ($this->comments) {
             $res .= ' (' . $this->comments . ')';
         }

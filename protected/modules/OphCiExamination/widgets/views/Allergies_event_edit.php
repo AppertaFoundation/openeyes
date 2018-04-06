@@ -19,6 +19,9 @@
 <script type="text/javascript" src="<?=$this->getJsPublishedPath('Allergies.js')?>"></script>
 <?php
     $model_name = CHtml::modelName($element);
+
+    $missing_req_allergies = $this->getMissingRequiredAllergies();
+    $required_allergy_ids = array_map(function($r) { return $r->id; }, $this->getRequiredAllergies());
 ?>
 
 <div class="element-fields" id="<?= $model_name ?>_element">
@@ -37,11 +40,33 @@
       <thead>
       <tr>
           <th>Allergy</th>
+          <th>Checked Status</th>
           <th>Comments</th>
           <th>Action(s)</th>
       </tr>
       </thead>
       <tbody>
+
+      <?php
+      $row_count = 0;
+      foreach ($missing_req_allergies as $entry) {
+          $this->render(
+              'AllergyEntry_event_edit',
+              array(
+                  'entry' => $entry,
+                  'form' => $form,
+                  'model_name' => $model_name,
+                  'removable' => false,
+                  'allergies' => $element->getAllergyOptions(),
+                  'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
+                  'row_count' => $row_count,
+                  'posted_not_checked' => $element->widget->postedNotChecked($row_count),
+                  'has_allergy' => $entry->has_allergy,
+              )
+          );
+          $row_count++;
+      } ?>
+
       <?php
       $row_count = 0;
       foreach ($element->entries as $i => $entry) {
@@ -54,7 +79,9 @@
                   'removable' => true,
                   'allergies' => $element->getAllergyOptions(),
                   'field_prefix' => $model_name . '[entries][' . ($row_count) . ']',
-                  'row_count' => $row_count
+                  'row_count' => $row_count,
+                  'posted_not_checked' => $element->widget->postedNotChecked($row_count),
+                  'has_allergy' => $entry->has_allergy,
               )
           );
           $row_count++;
@@ -63,8 +90,10 @@
       </tbody>
       <tfoot>
       <tr>
-          <td colspan="2"></td>
-          <td class="text-right"><button class="button small primary" id="<?= $model_name ?>_add_entry">Add</button></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><button class="button small primary" id="<?= $model_name ?>_add_entry">Add</button></td>
       </tr>
       </tfoot>
   </table>
@@ -83,12 +112,14 @@
             'allergies' => $element->getAllergyOptions(),
             'field_prefix' => $model_name . '[entries][{{row_count}}]',
             'row_count' => '{{row_count}}',
+            'posted_not_checked' => false,
             'values' => array(
                 'id' => '',
                 'allergy_id' => '{{allergy_id}}',
                 'allergy_display' => '{{allergy_display}}',
                 'other' => '{{other}}',
                 'comments' => '{{comments}}',
+                'has_allergy' => true,
             )
         )
     );
