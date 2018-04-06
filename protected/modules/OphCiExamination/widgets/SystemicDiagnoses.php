@@ -48,6 +48,35 @@ class SystemicDiagnoses extends \BaseEventElementWidget
     }
 
     /**
+     * Returns the required Disorders (Systemic Diagnoses)
+     * @return array of Disorders
+     */
+    public function getRequiredSystemicDiagnoses()
+    {
+        $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        return $exam_api->getRequiredSystemicDiagnoses($this->patient);
+    }
+
+    /**
+     * Gets the required and missing Disorders(Systemic Diagnoses)
+     * @return array of SystemicDiagnoses_Diagnosis
+     */
+    public function getMissingRequiredSystemicDiagnoses()
+    {
+        $current_ids = array_map(function ($e) { return $e->disorder_id; }, $this->element->diagnoses);
+        $missing = array();
+
+        foreach ($this->getRequiredSystemicDiagnoses() as $required) {
+            if (!in_array($required->id, $current_ids)) {
+                $entry = new SystemicDiagnoses_Diagnosis();
+                $entry->disorder_id = $required->id;
+                $missing[] = $entry;
+            }
+        }
+        return $missing;
+    }
+
+    /**
      * @param SystemicDiagnosesElement $element
      * @param $data
      * @throws \CException
@@ -79,12 +108,24 @@ class SystemicDiagnoses extends \BaseEventElementWidget
                 $diagnosis_entry->disorder_id = $disorder_id;
                 $diagnosis_entry->side_id = $data['side_id'][$i];
                 $diagnosis_entry->date = $data['date'][$i];
+                $diagnosis_entry->has_disorder = $data['has_disorder'][$i];
                 $diagnoses[] = $diagnosis_entry;
             }
             $element->diagnoses = $diagnoses;
         } else {
             $element->diagnoses = array();
         }
+    }
+
+    /**
+     * Checks if there was a posted has_disoder value
+     * @param $row
+     * @return 0|1|-9 if posted oterwise NULL
+     */
+    public function getPostedCheckedStatus($row)
+    {
+        $value = \Helper::elementFinder(\CHtml::modelName($this->element) . ".has_disorder.$row", $_POST);
+        return ( is_numeric($value) ? $value : null);
     }
 
 }

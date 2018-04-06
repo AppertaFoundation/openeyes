@@ -2416,6 +2416,51 @@ class OphCiExamination_API extends \BaseAPI
         return $required;
     }
 
+    /**
+     * Returns the required Disorders (Systemic Diagnoses)
+     *
+     * @param Patient $patient
+     * @param null $firm_id
+     * @return array of Disorders
+     */
+    public function getRequiredSystemicDiagnoses(\Patient $patient, $firm_id = null)
+    {
+        $firm_id = $firm_id ? $firm_id : \Yii::app()->session['selected_firm_id'];
+        $firm = \Firm::model()->findByPk($firm_id);
+        $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
+        $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
+        $criteria->with = array(
+            'entries' => array(
+                'condition' =>
+                    '((age_min <= :age OR age_min IS NULL) AND' .
+                    '(age_max >= :age OR age_max IS NULL)) AND' .
+                    '(gender = :gender OR gender IS NULL)'
+            ),
+        );
+
+        $criteria->params['subspecialty_id'] = $subspecialty_id;
+        $criteria->params['firm_id'] = $firm->id;
+        $criteria->params['age'] = $patient->age;
+        $criteria->params['gender'] = $patient->gender;
+
+        $sets = models\OphCiExaminationSystemicDiagnosesSet::model()->findAll($criteria);
+
+        $required = array();
+        foreach($sets as $set){
+            if($set->entries){
+                foreach($set->entries as $entry){
+                    $required[] = $entry->disorder;
+                }
+            }
+        }
+
+        return $required;
+    }
+
+
     /*
      * Glaucoma Overall Management Plan from latest Examination
      * @param $patient
