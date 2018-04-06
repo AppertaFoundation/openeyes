@@ -396,4 +396,9 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     {
         return 'print_'.$this->getDefaultView();
     }
+
+    public function getViewTitle()
+    {
+        return "Eye Diagnoses";
+    }
 }

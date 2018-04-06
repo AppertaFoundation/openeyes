@@ -318,4 +318,9 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         }
         return implode(', ', array_map(function($e) { return $e->getDisplay(); }, $this->$category));
     }
+
+    public function getTileSize()
+    {
+        return 1;
+    }
 }

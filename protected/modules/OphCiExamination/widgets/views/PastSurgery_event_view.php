@@ -16,13 +16,36 @@
  */
 $widget = $this;
 ?>
+<div class="tile-more-data-flag"><i class="oe-i arrow-down-bold medium selected"></i></div>
 
-<div class="element-data">
+<div class="element-data full-width">
     <div class="data-row">
-        <div class="data-value"><?=
-        implode(' <br /> ', array_map(function($op) use ($widget) {
-            return array_key_exists('object', $op) ? (string) $op['object'] : $widget->formatExternalOperation($op);
-        }, $operations))
-            ?></div>
+        <div class="data-value">
+          <div class="tile-data-overflow">
+            <table>
+              <colgroup>
+                <col>
+                <col width="55px">
+                <col width="85px">
+              </colgroup>
+              <tbody>
+              <?php if (!$operations || sizeof($operations)==0) { ?>
+                <p>No ophthalmic diagnoses recorded.</p>
+              <?php } else {
+                  foreach ($operations as $operation) {?>
+                    <tr>
+                      <td><?= array_key_exists('object', $operation) ? $operation['object']->operation : $operation['operation']; ?></td>
+                      <td>
+                          <?php $side = array_key_exists('side', $operation) ? $operation['side']: (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
+                        <i class="oe-i laterality <?php echo  $side=='Right'||$side=='Both'||$side=='Bilateral'? 'R':'NA' ?> small pad"></i>
+                        <i class="oe-i laterality <?php echo $side=='Left'||$side=='Both'||$side=='Bilateral'? 'L':'NA' ?> small pad"></i>
+                      </td>
+                      <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date']); ?></td>
+                    </tr>
+                  <?php } }?>
+              </tbody>
+            </table>
+          </div>
+        </div>
     </div>
 </div>

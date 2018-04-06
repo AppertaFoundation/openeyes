@@ -151,4 +151,14 @@ class PastSurgery extends \BaseEventTypeElement
     {
         return implode(' <br /> ', $this->operations);
     }
+
+    public function getTileSize()
+    {
+        return 1;
+    }
+
+    public function getViewTitle()
+    {
+        return "Eye Procedures";
+    }
 }

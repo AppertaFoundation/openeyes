@@ -18,5 +18,7 @@ $widget = $this;
 ?>
 
 <div class="element-data">
-    <div class="data-value"><?= $this->getDiagnosesViewMode() ?></div>
+    <div class="data-value">
+        <?= $element ?>
+    </div>
 </div>

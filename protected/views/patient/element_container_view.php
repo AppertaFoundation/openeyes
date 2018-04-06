@@ -17,10 +17,7 @@
  */
 ?>
 <section class=" element
-<?php
-if ($element->elementType->name == 'Medications' || $element->elementType->name == 'Risks') {
-    echo 'full';
-} elseif (is_subclass_of($element, 'SplitEventTypeElement')) {
+<?php if (is_subclass_of($element, 'SplitEventTypeElement')) {
     echo 'full priority eye-divider view-visual-acuity';
 } elseif ($element->getTileSize($this->action->id) === 1) {
     echo 'tile';
@@ -33,6 +30,7 @@ if ($element->elementType->name == 'Medications' || $element->elementType->name 
          data-element-type-name="<?php echo $element->elementType->name?>"
          data-element-display-order="<?php echo $element->elementType->display_order?>">
 	<?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
+
 		<header class=" element-header">
 			<h3 class="element-title"><?php echo $element->getViewTitle() ?></h3>
 		</header>

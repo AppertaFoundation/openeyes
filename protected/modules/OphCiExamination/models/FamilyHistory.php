@@ -183,4 +183,9 @@ class FamilyHistory extends \BaseEventTypeElement
             return implode(' <br /> ', $this->entries);
         }
     }
+
+    public function getTileSize()
+    {
+        return 1;
+    }
 }
