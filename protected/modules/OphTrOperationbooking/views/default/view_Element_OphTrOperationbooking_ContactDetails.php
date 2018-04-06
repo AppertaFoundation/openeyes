@@ -18,10 +18,15 @@
 
 <section class="element element-data">
     <div class="row">
-        <div class="large-6 column">
-            Who will collect the patient after surgery? <br>Name: <?php echo $element->collector_name; ?> <br>Contact Number: <?php echo $element->collector_contact_number; ?>
-        </div>
-        <div class="large-6 column">
-            Contact number of patient (for bookings questions): <?php echo $element->patient_booking_contact_number; ?>
-        </div>
+        <?php if( $element->patient_booking_contact_number != "" ){ ?>
+            <div class="large-6 column">
+                Patient: <?php echo $element->patient_booking_contact_number; ?>
+            </div>
+        <?php } ?>
+        <?php if( $element->collector_name != "" || $element->collector_contact_number != "" ){ ?>
+            <div class="large-6 column">
+                Person collecting: <?php echo $element->collector_name; ?> - <?php echo $element->collector_contact_number; ?>
+            </div>
+        <?php } ?>
     </div>
+</section>

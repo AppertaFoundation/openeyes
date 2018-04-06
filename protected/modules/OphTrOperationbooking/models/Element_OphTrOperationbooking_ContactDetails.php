@@ -75,9 +75,9 @@ class Element_OphTrOperationbooking_ContactDetails extends BaseEventTypeElement
         return array(
             'id' => 'ID',
             'event_id' => 'Event',
-            'collector_name' => 'Name',
-            'collector_contact_number' => 'Contact number',
-            'patient_booking_contact_number'=>'Contact number'
+            'collector_name' => '',
+            'collector_contact_number' => '',
+            'patient_booking_contact_number'=>''
         );
     }
 

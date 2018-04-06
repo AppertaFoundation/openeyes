@@ -64,13 +64,13 @@ $logoHelper = new LogoHelper();
 		</tr>
 		<tr>
 			<th>
-				Who will collect the patient<br> after surgery?
+				Person collecting:
 			</th>
             <td>
-				Name: <?php echo $contact_details->collector_name; ?> <br>Contact Number: <?php echo $contact_details->collector_contact_number; ?>
+				<?php echo $contact_details->collector_name; ?> - <?php echo $contact_details->collector_contact_number; ?>
 			</td>
 			<th>
-				Contact number of patient <br>(for bookings questions)
+				Patient telephone number:
 			</th>
 			<td>
 				<?php echo $contact_details->patient_booking_contact_number; ?>

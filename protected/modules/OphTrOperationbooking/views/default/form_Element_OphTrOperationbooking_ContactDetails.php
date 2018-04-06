@@ -17,18 +17,34 @@
 ?>
 <fieldset class="element-fields">
     <div class="row field-row">
-        <div class="large-4 column end">
-            <label>Who will collect the patient after surgery?</label>
+        <div class="large-6 column">
+            <div class="large-12 column">
+                <label><b>Patient telephone number (for bookings questions):</b></label>
+            </div>
+        </div>
+        <div class="large-6 column end">
+            <div class="large-12 column">
+                <label><b>Who will collect the patient after surgery?</b></label>
+            </div>
         </div>
     </div>
-    <?php $form->textField($element, 'collector_name', array(), array(),  array_merge($form->layoutColumns, array('field' => 4)))?>
-    <?php $form->textField($element, 'collector_contact_number', array(), array(),  array_merge($form->layoutColumns, array('field' => 2)))?>
     <div class="row field-row">
-        <div class="large-4 column end">
-            <label>Contact number of patient (for bookings questions)</label>
+        <div class="large-6 column">
+            <div class="large-4 column">
+                <?php
+                    $element->patient_booking_contact_number = $this->patient->primary_phone;
+                    $form->textField($element, 'patient_booking_contact_number', array("placeholder"=>"Contact number", 'nowrapper' => true), array(),  array_merge($form->layoutColumns, array('label'=>0,'field' => 4)));
+                ?>
+            </div>
+        </div>
+        <div class="large-6 column">
+            <div class="large-6 column end">
+                <?php $form->textField($element, 'collector_name', array("placeholder"=>"Name", 'nowrapper' => true), array(),  array_merge($form->layoutColumns, array('label'=>0,'field' => 6)))?>
+            </div>
+            <div class="large-4 column end">
+                <?php $form->textField($element, 'collector_contact_number', array("placeholder"=>"Contact number", 'nowrapper' => true), array(),  array_merge($form->layoutColumns, array('label'=>0,'field' => 4)))?>
+            </div>
         </div>
     </div>
-    <?php
-        $element->patient_booking_contact_number = $this->patient->primary_phone;
-        $form->textField($element, 'patient_booking_contact_number', array(), array(),  array_merge($form->layoutColumns, array('field' => 2)));?>
+
 </fieldset>
