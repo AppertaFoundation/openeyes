@@ -30,7 +30,7 @@ $warnings = $this->patient->getWarnings($clinical);
 
 <?php if ($warnings) { ?>
 	<div class="row">
-		<div class="large-12 column">
+		<div class="cols-12">
 			<div class="alert-box patient with-icon">
 				<?php foreach ($warnings as $warn) {?>
 					<strong><?php echo $warn['long_msg']; ?></strong>

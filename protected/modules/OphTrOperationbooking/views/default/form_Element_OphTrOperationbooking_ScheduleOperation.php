@@ -17,12 +17,12 @@
  ?>
 	<fieldset class="element-fields">
 		<?php echo $form->radioButtons($element, 'schedule_options_id', 'OphTrOperationbooking_ScheduleOperation_Options'); ?>
-		<div class="row field-row">
-			<legend class="large-2 column">
+		<div class="flex-layout flex-left">
+			<label class="cols-2">
 				<?php echo $element->getAttributeLabel('patient_unavailables'); ?>:
-			</legend>
-			<div class="large-10 column">
-				<table class="blank">
+			</label>
+			<div class="cols-10">
+				<table class="blank" style="display: <?php echo $element->patient_unavailables? '': 'none' ?>">
 					<thead>
 					<tr>
 						<th>Start Date</th>
@@ -33,25 +33,23 @@
 					</thead>
 					<tbody class="unavailables">
 					<?php
-                    if ($element->patient_unavailables) {
-                        foreach ($element->patient_unavailables as $key => $unavailable) {
-                            $this->renderPartial('form_OphTrOperationbooking_ScheduleOperation_PatientUnavailable', array(
-                                            'key' => $key,
-                                            'unavailable' => $unavailable,
-                                            'form' => $form,
-                                            'element_name' => get_class($element),
-                                    ));
-                            ++$key;
-                        }
-                    }
-                    ?>
+          if ($element->patient_unavailables) {
+            foreach ($element->patient_unavailables as $key => $unavailable) {
+              $this->renderPartial('form_OphTrOperationbooking_ScheduleOperation_PatientUnavailable', array(
+                  'key' => $key,
+                  'unavailable' => $unavailable,
+                  'form' => $form,
+                  'element_name' => get_class($element),
+              ));
+              ++$key;
+              }
+              }
+              ?>
 					</tbody>
 					<tfoot>
-					<tr>
-						<td colspan="4"><button class="secondary small addUnavailable">Add</button></td>
-					</tr>
 					</tfoot>
 				</table>
+        <button class="secondary small addUnavailable">Add</button>
 			</div>
 		</div>
 	</fieldset>

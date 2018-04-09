@@ -14,17 +14,18 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
+?>
 
 <fieldset class="element-fields" id="editDiagnosis">
-	<?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'))?>
-	<?php $form->widget('application.widgets.DiagnosisSelection', array(
+    <?php echo $form->radioButtons($element, 'eye_id',
+        CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name')) ?>
+    <?php $form->widget('application.widgets.DiagnosisSelection', array(
         'field' => 'disorder_id',
         'element' => $element,
         'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
         'layoutColumns' => array(
             'label' => $form->layoutColumns['label'],
-            'field' => 4,
+            'field' => 10,
         ),
     ));
     ?>

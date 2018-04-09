@@ -20,11 +20,9 @@
 <?php
 $input_id = CHtml::modelName($element) . '_' . $field . '_0';
 ?>
-
 <?php if (!@$htmlOptions['nowrapper']) { ?>
-<div class="row field-row" <?php if (@$htmlOptions['hidden']) { ?> style="display: none;"<?php } ?>>
+<div class="flex-layout flex-left"<?php if (@$htmlOptions['hidden']) { ?> style="display: none;"<?php } ?>>
     <?php unset($htmlOptions['hidden']) ?>
-
     <div class="cols-<?php echo $layoutColumns['label']; ?> column">
         <label for="<?php echo CHtml::modelName($element) . '_' . $field . '_0'; ?>">
             <?php echo CHtml::encode($element->getAttributeLabel($field)) ?>:
@@ -33,7 +31,6 @@ $input_id = CHtml::modelName($element) . '_' . $field . '_0';
     <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
 <?php } ?>
       <input class="<?= @$htmlOptions['class'] ?>" id="<?= $input_id ?>" placeholder="yyyy-mm-dd" name="<?= $name ?>" value="<?= $value ?>" >
-
 <?php if (!@$htmlOptions['nowrapper']) { ?>
     </div>
 </div>

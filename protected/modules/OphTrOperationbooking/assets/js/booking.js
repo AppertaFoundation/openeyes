@@ -281,6 +281,7 @@ function OphTrOperationbooking_PatientUnavailable_add() {
 		"key" : OphTrOperationbooking_PatientUnavailable_getNextKey()
 	};
 	var form = Mustache.render(template, data);
+	$('.unavailables').parent().show();
 	$('.unavailables').append(form);
 	$('.unavailables').find('[id$="date"]').each(function() {
 		$(this).datepicker({

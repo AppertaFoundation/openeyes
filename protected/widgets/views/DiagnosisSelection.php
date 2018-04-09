@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="row field-row">
+<div class="flex-layout flex-left">
     <div
         class="cols-<?php echo $layoutColumns['label']; ?> column"
         style="<?=!($label)?"display: none;":""?>" >

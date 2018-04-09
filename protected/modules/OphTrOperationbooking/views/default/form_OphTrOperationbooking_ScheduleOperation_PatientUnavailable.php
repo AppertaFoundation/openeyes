@@ -24,35 +24,37 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
 			<input type="hidden" name="<?php echo $element_name; ?>[patient_unavailables][<?php echo $key ?>][id]" value="<?php echo $unavailable->id?>" />
 		<?php } ?>
 		<?php $form->widget("application.widgets.{$dateFieldWidget}", array(
-                        'element' => $unavailable,
-                        'name' => $element_name.'[patient_unavailables]['.$key.'][start_date]',
-                        'field' => 'start_date',
-                        'htmlOptions' => array(
-                                'id' => 'Element_OphTrOperationbooking_ScheduleOperation_patient_unavailables_'.$key.'_start_date',
-                                'nowrapper' => true,
-                                'class' => 'unavailable-start-date',
-                        ), ));
-        ?>
+		    'element' => $unavailable,
+        'name' => $element_name.'[patient_unavailables]['.$key.'][start_date]',
+        'field' => 'start_date',
+        'htmlOptions' => array(
+            'id' => 'patient_unavailables_'.$key.'_start_date',
+            'nowrapper' => true,
+            'class' => 'unavailable-start-date',
+        ), ));
+		?>
 	</td>
 	<td>
 		<?php $form->widget("application.widgets.{$dateFieldWidget}", array(
-                        'element' => $unavailable,
-                        'name' => $element_name.'[patient_unavailables]['.$key.'][end_date]',
-                        'field' => 'end_date',
-                        'htmlOptions' => array(
-                                'id' => 'Element_OphTrOperationbooking_ScheduleOperation_patient_unavailables_'.$key.'_end_date',
-                                'nowrapper' => true,
-                                'class' => 'unavailable-end-date',
-                        ), ));
-        ?>
+		    'element' => $unavailable,
+        'name' => $element_name.'[patient_unavailables]['.$key.'][end_date]',
+        'field' => 'end_date',
+        'htmlOptions' => array(
+            'id' => 'patient_unavailables_'.$key.'_end_date',
+            'nowrapper' => true,
+            'class' => 'unavailable-end-date',
+        ), ));
+		?>
 	</td>
 	<td>
 		<?php echo CHtml::dropDownList($element_name.'[patient_unavailables]['.$key.'][reason_id]',
-                $unavailable->reason_id,
-                CHtml::listData($unavailable->getPatientUnavailbleReasons(), 'id', 'name'),
-                array('class' => 'small', 'empty' => '- Please select -'))?>
+        $unavailable->reason_id,
+        CHtml::listData($unavailable->getPatientUnavailbleReasons(), 'id', 'name'),
+        array('class' => 'small', 'empty' => '- Please select -'))?>
 	</td>
 	<td class="patient-unavailable-actions">
-			<a class="remove-unavailable" href="#">Remove</a>
+			<a class="remove-unavailable" href="#">
+        <i class="oe-i trash"></i>
+      </a>
 	</td>
 </tr>

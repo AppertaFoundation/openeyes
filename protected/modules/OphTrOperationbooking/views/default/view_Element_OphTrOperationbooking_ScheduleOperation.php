@@ -21,7 +21,7 @@
 	<h3 class="data-title"><?= $element->elementType->name; ?></h3>
 	<div class="data-value"><?= $element->schedule_options->name; ?></div>
 	<div class="row">
-		<div class="large-6 column">
+		<div class="cols-6 column">
 			<h3 class="data-title"><?php echo $element->getAttributeLabel('patient_unavailables') ?></h3>
 			<div class="data-value">
 				<?php if ($element->patient_unavailables) {
@@ -30,7 +30,7 @@
 							<?php echo Helper::convertDate2NHS($unavailable->start_date); ?> to <?php echo Helper::convertDate2NHS($unavailable->end_date); ?> (<?php echo $unavailable->reason->name ?>).
 						</div>
 					<?php }
-                } else { ?>
+				} else { ?>
 					No known availability restrictions.
 				<?php } ?>
 			</div>

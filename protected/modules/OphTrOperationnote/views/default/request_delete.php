@@ -36,8 +36,7 @@
       <p>
         <strong>Are you sure you want to proceed?</strong>
       </p>
-        <?php
-        echo CHtml::hiddenField('event_id', $this->event->id); ?>
+        <?php echo CHtml::hiddenField('event_id', $this->event->id); ?>
       <button type="submit" class="warning" id="et_deleteevent" name="et_deleteevent">
         Request deletion
       </button>

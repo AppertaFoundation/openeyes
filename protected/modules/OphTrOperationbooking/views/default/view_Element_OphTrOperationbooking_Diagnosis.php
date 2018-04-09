@@ -16,9 +16,9 @@
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 ?>
-<section class="element element-data">
-	<h3 class="data-title"><?php  echo $element->elementType->name ?></h3>
-		<div class="data-value highlight">
+<section class="element element-data flex-layout">
+	<h3 class="data-title cols-2"><?php  echo $element->elementType->name ?></h3>
+		<div class="data-value highlight cols-10">
 			<?php $disorder = $element->disorder?>
 			<?php echo !empty($disorder) ? $element->eye->adjective : 'Unknown' ?> <?php echo !empty($disorder) ? $element->disorder->term : 'Unknown' ?>
 		</div>
