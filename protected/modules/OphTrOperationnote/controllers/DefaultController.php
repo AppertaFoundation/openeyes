@@ -1168,6 +1168,10 @@ class DefaultController extends BaseEventTypeController
         /* @var Element_OphTrOperationnote_SiteTheatre */
         $element = $this->event->getElementByClass('Element_OphTrOperationnote_SiteTheatre');
 
+        if (!$element) {
+            return null;
+        }
+
         return '<span class="extra-info">' .
             '<span class="fade">Site:</span>' .
             $element->site->name . ', ' . ($element->theatre ? $element->theatre->name : 'None') . '</span>' .
