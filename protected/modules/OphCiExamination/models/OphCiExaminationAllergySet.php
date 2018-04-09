@@ -64,6 +64,15 @@ class OphCiExaminationAllergySet extends \BaseEventTypeElement
 		);
 	}
 
+    /**
+     * @return \Firm|null
+     */
+
+    public function getFirm()
+    {
+        return is_null($this->firm_id) ? null : \Firm::model()->findByPk($this->firm_id);
+	}
+
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
