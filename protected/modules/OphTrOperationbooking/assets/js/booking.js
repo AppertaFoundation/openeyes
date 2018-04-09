@@ -256,6 +256,11 @@ $(document).ready(function() {
 	AlertDialogIfExaminationEventIsMissing();
 	
 });
+
+/**
+ * After set the unavailable start date, if end date is empty or before start date, reset end date value
+ * @param element: the datepicker element
+ */
 function datepicker_start(element){
   element.addEventListener('pickmeup-fill', function (e) {
     var end = $(element).closest('tr').find('.unavailable-end-date')[0];
@@ -264,7 +269,10 @@ function datepicker_start(element){
     }
   });
 }
-
+/**
+ * After set the unavailable end date, if start date is empty or after start date, reset start date value
+ * @param element: the datepicker element
+ */
 function datepicker_end(element) {
   element.addEventListener('pickmeup-fill', function (e) {
     var start = $(element).closest('tr').find('.unavailable-start-date')[0];
