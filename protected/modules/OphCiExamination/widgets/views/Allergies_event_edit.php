@@ -65,10 +65,8 @@
               )
           );
           $row_count++;
-      } ?>
+      }
 
-      <?php
-      $row_count = 0;
       foreach ($element->entries as $i => $entry) {
           $this->render(
               'AllergyEntry_event_edit',
