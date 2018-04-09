@@ -25,9 +25,8 @@
             </label>
         </div>
         <div class="large-7 column">
-            <?= CHtml::activeTextField($element,'blood_pressure_systolic', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'style' => 'width:40px; display:inline-block;')); ?> /
-            <?= CHtml::activeTextField($element,'blood_pressure_diastolic', array('autocomplete' => Yii::app()->params['html_autocomplete'] , 'style' => 'width:40px; display:inline-block;')); ?> 
-            <label style="display:inline-block; font-size: 0.8125rem;">mmHg</label>
+            <?= CHtml::activeTextField($element,'blood_pressure_systolic', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'style' => 'width:50px; display:inline-block;', 'placeholder' => 'mmHg')); ?> /
+            <?= CHtml::activeTextField($element,'blood_pressure_diastolic', array('autocomplete' => Yii::app()->params['html_autocomplete'] , 'style' => 'width:50px; display:inline-block;', 'placeholder' => 'mmHg')); ?> 
         </div>
         
         <div class="large-5 column">
@@ -35,22 +34,19 @@
                 <?= $element->getAttributeLabel('blood_glucose')?>:
             </label>
         </div>
-        <div class="large-3 column">
-            <?= CHtml::activeTextField($element,'blood_glucose', array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
+        <div class="large-7 column">
+            <?= CHtml::activeTextField($element,'blood_glucose', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'mmol/l')); ?>
         </div>
-        <label class="large-3 column">mmol/l</label>
         
         <div class="large-5 column">
             <label for="<?= CHtml::modelName($element).'_weight';?>">
                 <?= $element->getAttributeLabel('weight')?>:
             </label>
         </div>
-        <div class="large-3 column bmi-keyup-event">
-            <?= CHtml::activeTextField($element,'weight', array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
+        <div class="large-7 column bmi-keyup-event">
+            <?= CHtml::activeTextField($element,'weight', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'kg')); ?>
         </div>
-        <label class="large-3 column">kg</label>
-        
-        
+               
     </div>
     
     <div class="large-4 column">
@@ -60,30 +56,27 @@
                 <?= $element->getAttributeLabel('o2_sat')?>:
             </label>
         </div>
-        <div class="large-3 column">
-            <?= CHtml::activeTextField($element,'o2_sat', array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
+        <div class="large-7 column">
+            <?= CHtml::activeTextField($element,'o2_sat', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => '%')); ?>
         </div>
-        <label class="large-3 column">%</label>
         
         <div class="large-5 column">
             <label for="<?= CHtml::modelName($element).'_hba1c';?>">
                 <?= $element->getAttributeLabel('hba1c')?>:
             </label>
         </div>
-        <div class="large-3 column">
-            <?= CHtml::activeTextField($element,'hba1c', array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
+        <div class="large-7 column">
+            <?= CHtml::activeTextField($element,'hba1c', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'mmol/mol')); ?>
         </div>
-        <label class="large-3 column">mmol/mol</label>
-        
+
         <div class="large-5 column">
             <label for="<?= CHtml::modelName($element).'_height';?>">
                 <?= $element->getAttributeLabel('height')?>:
             </label>
         </div>
-        <div class="large-3 column bmi-keyup-event">
-            <?= CHtml::activeTextField($element,'height', array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
+        <div class="large-7 column bmi-keyup-event">
+            <?= CHtml::activeTextField($element,'height', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'cm')); ?>
         </div>
-        <label class="large-3 column">cm</label>
         
     </div>
     
@@ -94,10 +87,9 @@
                 <?= $element->getAttributeLabel('pulse')?>:
             </label>
         </div>
-        <div class="large-3 column">
-            <?= CHtml::activeTextField($element,'pulse', array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
+        <div class="large-7 column">
+            <?= CHtml::activeTextField($element,'pulse', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'BPM')); ?>
         </div>
-        <label class="large-3 column">BPM</label>
         
         <div class="large-12 column">&nbsp;</div>
         
