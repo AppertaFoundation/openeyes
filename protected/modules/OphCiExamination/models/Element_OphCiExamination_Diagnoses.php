@@ -404,6 +404,6 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
     public function getTileSize()
     {
-        return 1;
+        return 3;
     }
 }
