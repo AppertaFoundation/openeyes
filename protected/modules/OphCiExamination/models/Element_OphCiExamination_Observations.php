@@ -50,14 +50,15 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
 			array('blood_glucose, hba1c', 'length', 'max'=>4),
 			array('height, weight', 'length', 'max'=>5),
 			array('last_modified_date, created_date', 'safe'),
-            array('blood_pressure_systolic', 'numerical', 'integerOnly' => true, 'min'=>0, 'max'=>400),
-            array('blood_pressure_diastolic', 'numerical', 'integerOnly' => true, 'min'=>0, 'max'=>400),
-            array('o2_sat', 'numerical', 'integerOnly' => true, 'min'=>0, 'max'=>100),
-            array('blood_glucose', 'numerical', 'integerOnly' => false, 'min'=>0.0, 'max'=>10.0),
-            array('hba1c', 'numerical', 'integerOnly' => true, 'min'=>0, 'max'=>1000),
-            array('height', 'numerical', 'integerOnly' => false, 'min'=>0.0, 'max'=>250.0),
-            array('weight', 'numerical', 'integerOnly' => false, 'min'=>0.0, 'max'=>250.0),
-            array('pulse', 'numerical', 'integerOnly' => true, 'min'=>0, 'max'=>200),
+            array('blood_pressure_systolic', 'numerical','min'=>0, 'max'=>400),
+            array('blood_pressure_diastolic', 'numerical','min'=>0, 'max'=>400),
+            array('o2_sat', 'numerical','min'=>0, 'max'=>100),
+            array('blood_glucose', 'numerical', 'min'=>0.0, 'max'=>10.0),
+            array('hba1c', 'numerical', 'min'=>0, 'max'=>1000),
+            array('height', 'numerical', 'min'=>0.0, 'max'=>250.0),
+            array('weight', 'numerical', 'min'=>0.0, 'max'=>250.0),
+            array('pulse', 'numerical', 'min'=>0, 'max'=>200),
+            array('blood_pressure_systolic,blood_pressure_diastolic,o2_sat,blood_glucose,hba1c,height,weight,pulse', 'default', 'setOnEmpty' => true, 'value' => null),
 			array('id, event_id, blood_pressure_systolic, blood_pressure_diastolic, o2_sat, blood_glucose, hba1c, height, weight, pulse, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
@@ -84,6 +85,7 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
 		return array(
 			'id' => 'ID',
 			'event_id' => 'Event',
+			'blood_pressure' => 'Blood pressure',
 			'blood_pressure_systolic' => 'Blood p. systolic',
 			'blood_pressure_diastolic' => 'Blood p. diastolic',
 			'o2_sat' => 'O2 Sat',
@@ -151,7 +153,7 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
     /*
      * Calculate BMI 
      * @params $weight weight in kg
-     * @params $height height in meters
+     * @params $height height in centimeters
      * @return float
      */
     public function bmiCalculator( $weight , $height)

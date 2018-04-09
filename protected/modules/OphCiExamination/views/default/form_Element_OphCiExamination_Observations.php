@@ -19,17 +19,18 @@
 <div class="element-fields">
     <div class="large-4 column">
         
-        <div class="large-6 column">
+        <div class="large-5 column">
             <label for="<?= CHtml::modelName($element).'_blood_pressure_systolic';?>">
-                <?= $element->getAttributeLabel('blood_pressure_systolic')?>:
+                <?= $element->getAttributeLabel('blood_pressure')?>:
             </label>
         </div>
-        <div class="large-3 column">
-            <?= CHtml::activeTextField($element,'blood_pressure_systolic', array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
+        <div class="large-7 column">
+            <?= CHtml::activeTextField($element,'blood_pressure_systolic', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'style' => 'width:40px; display:inline-block;')); ?> /
+            <?= CHtml::activeTextField($element,'blood_pressure_diastolic', array('autocomplete' => Yii::app()->params['html_autocomplete'] , 'style' => 'width:40px; display:inline-block;')); ?> 
+            <label style="display:inline-block; font-size: 0.8125rem;">mmHg</label>
         </div>
-        <label class="large-3 column">mmHg</label>
         
-        <div class="large-6 column">
+        <div class="large-5 column">
             <label for="<?= CHtml::modelName($element).'_blood_glucose';?>">
                 <?= $element->getAttributeLabel('blood_glucose')?>:
             </label>
@@ -39,7 +40,7 @@
         </div>
         <label class="large-3 column">mmol/l</label>
         
-        <div class="large-6 column">
+        <div class="large-5 column">
             <label for="<?= CHtml::modelName($element).'_weight';?>">
                 <?= $element->getAttributeLabel('weight')?>:
             </label>
@@ -54,41 +55,7 @@
     
     <div class="large-4 column">
         
-        <div class="large-6 column">
-            <label for="<?= CHtml::modelName($element).'_blood_pressure_diastolic';?>">
-                <?= $element->getAttributeLabel('blood_pressure_diastolic')?>:
-            </label>
-        </div>
-        <div class="large-3 column">
-            <?= CHtml::activeTextField($element,'blood_pressure_diastolic', array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
-        </div>
-        <label class="large-3 column">mmHg</label>
-        
-        
-        <div class="large-6 column">
-            <label for="<?= CHtml::modelName($element).'_hba1c';?>">
-                <?= $element->getAttributeLabel('hba1c')?>:
-            </label>
-        </div>
-        <div class="large-3 column">
-            <?= CHtml::activeTextField($element,'hba1c', array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
-        </div>
-        <label class="large-3 column">mmol/mol</label>
-        
-        <div class="large-6 column">
-            <label>
-                BMI:
-            </label>
-        </div>
-        <div class="large-3 column" id="bmi-container">
-            
-        </div>
-        <label class="large-3 column">&nbsp;</label>
-       
-    </div>
-    
-    <div class="large-4 column">
-        <div class="large-6 column">
+        <div class="large-5 column">
             <label for="<?= CHtml::modelName($element).'_o2_sat';?>">
                 <?= $element->getAttributeLabel('o2_sat')?>:
             </label>
@@ -98,7 +65,17 @@
         </div>
         <label class="large-3 column">%</label>
         
-        <div class="large-6 column">
+        <div class="large-5 column">
+            <label for="<?= CHtml::modelName($element).'_hba1c';?>">
+                <?= $element->getAttributeLabel('hba1c')?>:
+            </label>
+        </div>
+        <div class="large-3 column">
+            <?= CHtml::activeTextField($element,'hba1c', array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
+        </div>
+        <label class="large-3 column">mmol/mol</label>
+        
+        <div class="large-5 column">
             <label for="<?= CHtml::modelName($element).'_height';?>">
                 <?= $element->getAttributeLabel('height')?>:
             </label>
@@ -107,8 +84,12 @@
             <?= CHtml::activeTextField($element,'height', array('autocomplete' => Yii::app()->params['html_autocomplete'])); ?>
         </div>
         <label class="large-3 column">cm</label>
-       
-        <div class="large-6 column">
+        
+    </div>
+    
+    <div class="large-4 column">
+        
+        <div class="large-5 column">
             <label for="<?= CHtml::modelName($element).'_pulse';?>">
                 <?= $element->getAttributeLabel('pulse')?>:
             </label>
@@ -118,6 +99,18 @@
         </div>
         <label class="large-3 column">BPM</label>
         
+        <div class="large-12 column">&nbsp;</div>
+        
+        <div class="large-5 column">
+            <label>
+                BMI:
+            </label>
+        </div>
+        <div class="large-3 column" id="bmi-container">
+            
+        </div>
+        <label class="large-3 column">&nbsp;</label>
+       
     </div>
 </div>
 <script type="text/javascript">
@@ -137,11 +130,14 @@
         
         function getBMI(height , weight){
             bmi = 0;
-            if(height > 0){
+            if((height > 0) && (weight > 0)){
                 bmi = bmi_calculator( weight , height);
+                result = bmi.toFixed(2) || 'N/A';
+            } else {
+                result = 'N/A';
             }
-            bmi = bmi || 0;
-            $('#bmi-container').text( bmi.toFixed(2) || 0); 
+            
+            $('#bmi-container').text( result ); 
         }
       
     });
