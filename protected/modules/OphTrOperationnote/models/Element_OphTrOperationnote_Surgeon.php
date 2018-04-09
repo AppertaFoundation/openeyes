@@ -159,7 +159,7 @@ class Element_OphTrOperationnote_Surgeon extends Element_OpNote
         return 'Personnel';
     }
 
-    public function getFOrmTitle()
+    public function getFormTitle()
     {
         return 'Personnel';
     }
