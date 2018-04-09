@@ -80,7 +80,7 @@
 </div>
 
 <!-- Patient Quickloog popup. Show Risks, Medical Data, Management Summary and Problem and Plans -->
-<div class="oe-patient-popup" id="patient-summary-quicklook" style="display: none;">
+<div class="oe-patient-popup" id="patient-summary-quicklook" style="display:none">
     <div class="flex-layout flex-top">
       <!-- oe-popup-overflow handles scrolling if data overflow height -->
       <div class="oe-popup-overflow quicklook-data-groups">
@@ -165,12 +165,10 @@
         <div class="group">
           <div class="label">Family</div>
           <div class="data">
-            <table>
-                <?php $this->widget('OEModule\OphCiExamination\widgets\FamilyHistory', array(
-                    'patient' => $this->patient,
-                    'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
-                )); ?>
-            </table>
+              <?php $this->widget('OEModule\OphCiExamination\widgets\FamilyHistory', array(
+                  'patient' => $this->patient,
+                  'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
+              )); ?>
           </div>
         </div>
         <!-- group-->
@@ -178,12 +176,10 @@
         <div class="group">
           <div class="label">Social</div>
           <div class="data">
-            <table>
-                <?php $this->widget('OEModule\OphCiExamination\widgets\SocialHistory', array(
-                    'patient' => $this->patient,
-                    'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
-                )); ?>
-            </table>
+              <?php $this->widget('OEModule\OphCiExamination\widgets\SocialHistory', array(
+                  'patient' => $this->patient,
+                  'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
+              )); ?>
           </div>
         </div>
       <!-- group-->

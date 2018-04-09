@@ -26,8 +26,6 @@ if (!$element) { ?>
         'enableAjaxValidation' => false,
         'action' => array('changeEvent/save'),
         'layoutColumns' => array(
-            'label' => 3,
-            'field' => 9,
         ),
     ))?>
 

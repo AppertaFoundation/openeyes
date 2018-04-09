@@ -26,7 +26,7 @@ $model_name = CHtml::modelName($element);
           <tbody>
           <?php if ($current) { ?>
             <tr>
-              <th class="cols-7">Current Medications</th>
+              <th class="cols-7">Current</th>
             </tr>
               <?php foreach ($current as $entry) {
                   if ($entry['route_id'] != 1) { ?>
@@ -46,7 +46,7 @@ $model_name = CHtml::modelName($element);
         <table>
           <thead>
           <tr>
-            <th class="cols-7">Stopped Medications</th>
+            <th class="cols-7">Stopped</th>
             <th>
               <i class="oe-i small js-patient-expand-btn pad expand"></i>
             </th>
@@ -86,7 +86,7 @@ $model_name = CHtml::modelName($element);
           <table id="<?= $model_name ?>_entry_table">
             <thead>
             <tr>
-              <th class="cols-7">Current Medications</th>
+              <th class="cols-7">Current</th>
             </tr>
             </thead>
             <tbody>
@@ -110,7 +110,7 @@ $model_name = CHtml::modelName($element);
           <table>
             <thead>
             <tr>
-              <th class="cols-7">Stopped Medications</th>
+              <th class="cols-7">Stopped</th>
               <th>
                 <i class="oe-i small pad js-patient-expand-btn expand"></i>
               </th>

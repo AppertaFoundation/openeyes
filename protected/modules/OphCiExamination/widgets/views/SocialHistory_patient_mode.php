@@ -2,12 +2,6 @@
 <p>No Social History recorded.</p>
 <?php } else { ?>
     <table class="plain patient-data">
-        <thead>
-        <tr>
-            <th>Social History</th>
-            <th>Status</th>
-        </tr>
-        </thead>
         <tbody>
         <?php if ($element->occupation) { ?>
             <tr>
