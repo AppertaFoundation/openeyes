@@ -69,7 +69,7 @@ class AllergyAssignmentController extends \ModuleAdminController
                     foreach($allergies as $allergy){
                         $allergy_model = new models\OphCiExaminationAllergySetEntry;
 
-                        $allergy_model->gender = $allergy['gender'];
+                        $allergy_model->gender = $allergy['gender'] === "" ? null : $allergy['gender'];
                         $allergy_model->age_min = $allergy['age_min'] === "" ? null : $allergy['age_min'];
                         $allergy_model->age_max = $allergy['age_max'] === "" ? null : $allergy['age_max'];
                         $allergy_model->ophciexamination_allergy_id = $allergy['ophciexamination_allergy_id'];
@@ -131,7 +131,7 @@ class AllergyAssignmentController extends \ModuleAdminController
                             $allergy_model = new models\OphCiExaminationAllergySetEntry;
                         }
 
-                        $allergy_model->gender = $allergy['gender'];
+                        $allergy_model->gender = $allergy['gender'] === "" ? null : $allergy['gender'];
                         $allergy_model->age_min = $allergy['age_min'] === "" ? null : $allergy['age_min'];
                         $allergy_model->age_max = $allergy['age_max'] === "" ? null : $allergy['age_max'];
                         $allergy_model->ophciexamination_allergy_id = $allergy['ophciexamination_allergy_id'];

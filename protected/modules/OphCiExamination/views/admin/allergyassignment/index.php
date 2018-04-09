@@ -47,7 +47,7 @@
             'name' => 'firm_id',
             'type' => 'raw',
             'value' => function($data, $row){
-                return $data->firm ? $data->firm->name : null;
+                return $data->firm_id ? $data->getFirm()->name: null;
             }
         ),
     );
