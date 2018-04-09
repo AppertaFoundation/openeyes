@@ -140,6 +140,24 @@ class HistoryRisks extends \BaseEventTypeElement
     }
 
     /**
+     * @return bool
+     *
+     * If a risk is "not checked", do not store in db
+     */
+
+    public function beforeSave()
+    {
+        $entries = $this->entries;
+        foreach ($entries as $key=>$entry) {
+            if($entry->has_risk == HistoryRisksEntry::$NOT_CHECKED) {
+                unset($entries[$key]);
+            }
+        }
+        $this->entries = $entries;
+        return parent::beforeSave();
+    }
+
+    /**
      * Get list of available risks for this element (ignoring required risks)
      */
     public function getRiskOptions()

@@ -27,6 +27,7 @@ namespace OEModule\OphCiExamination\models;
  * @property int $allergy_id
  * @property string $other
  * @property string $comments
+ * @property int $has_allergy
  *
  * @property Allergy $allergy
  * @property Allergies $element

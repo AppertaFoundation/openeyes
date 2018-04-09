@@ -224,6 +224,24 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     }
 
     /**
+     * @return bool
+     *
+     * If a diagnose is "not checked", do not store in db
+     */
+
+    public function beforeSave()
+    {
+        $diags = $this->diagnoses;
+        foreach ($diags as $key=>$entry) {
+            if($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_CHECKED) {
+                unset($diags[$key]);
+            }
+        }
+        $this->diagnoses = $diags;
+        return parent::beforeSave();
+    }
+
+    /**
      * @inheritdoc
      */
     public function afterSave()

@@ -84,6 +84,25 @@ class Allergies extends \BaseEventTypeElement
     }
 
     /**
+     * @return bool
+     *
+     * If an allergy is "not checked", do not store in db
+     */
+
+    public function beforeSave()
+    {
+        $entries = $this->entries;
+        foreach ($entries as $key=>$entry) {
+            if($entry->has_allergy == AllergyEntry::$NOT_CHECKED) {
+                unset($entries[$key]);
+            }
+        }
+        $this->entries = $entries;
+        return parent::beforeSave();
+    }
+
+
+    /**
      * check either confirmation of no allergies or at least one allergy entry
      */
     public function afterValidate()
