@@ -2484,4 +2484,123 @@ class OphCiExamination_API extends \BaseAPI
 
         return $result;
     }
+    
+    /*
+     * Last Blood Pressure (returned as systolic / diastolic - e.g, 100/80)
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLastBloodPressure( \Patient $patient , $use_context = true )
+    {
+        if ($bp = $this->getLatestElement('models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context)
+        ) {
+            return $bp->blood_pressure_systolic.'/'.$bp->blood_pressure_diastolic;
+        }
+    }
+    
+    /*
+     * Last O2 Stat
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLastO2Stat( \Patient $patient , $use_context = true )
+    {
+        if ($bp = $this->getLatestElement('models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context)
+        ) {
+            return $bp->o2_sat;
+        }
+    }
+    
+    /*
+     * Last Blood Glucose
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLastBloodGlucose( \Patient $patient , $use_context = true )
+    {
+        if ($bp = $this->getLatestElement('models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context)
+        ) {
+            return $bp->blood_glucose;
+        }
+    }
+    
+    /*
+     * Last HbA1c
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLastHbA1c( \Patient $patient , $use_context = true )
+    {
+        if ($bp = $this->getLatestElement('models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context)
+        ) {
+            return $bp->hba1c;
+        }
+    }
+    
+    /*
+     * Last height
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLastHeight( \Patient $patient , $use_context = true )
+    {
+        if ($bp = $this->getLatestElement('models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context)
+        ) {
+            return $bp->height;
+        }
+    }
+    
+    /*
+     * Last weight
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLastWeight( \Patient $patient , $use_context = true )
+    {
+        if ($bp = $this->getLatestElement('models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context)
+        ) {
+            return $bp->weight;
+        }
+    }
+    
+    /*
+     * Last BMI
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLastBMI( \Patient $patient , $use_context = true )
+    {
+        if ($bp = $this->getLatestElement('models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context)
+        ) {
+            if(ceil($bp->weight) > 0 && ceil($bp->height) > 0){
+                $result = $bp->bmiCalculator( $bp->weight , $bp->height );
+                return $result;
+            } else {
+                return 'N/A';
+            }
+        }
+    }
+    
+    
 }
