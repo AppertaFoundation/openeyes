@@ -28,7 +28,6 @@ $model_name = CHtml::modelName($element);
         <thead>
         <tr>
             <th class="cols-3">Procedures</th>
-            <th class="cols-3">Diagnoses</th>
             <th>Right</th>
             <th>Left</th>
             <th>Both</th>
