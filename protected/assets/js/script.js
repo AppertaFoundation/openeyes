@@ -273,6 +273,7 @@ $(document).ready(function(){
 
 			new OpenEyes.UI.Dialog($.extend({}, options, {
 				url: baseUrl + '/site/changesiteandfirm',
+				width: 500,
 				data: {
 					returnUrl: returnUrl,
 					patient_id: window.OE_patient_id || null
