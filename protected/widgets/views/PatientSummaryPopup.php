@@ -155,7 +155,7 @@
         <!-- group-->
           <?php $this->widget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
               'patient' => $this->patient,
-                    'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
+              'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
           )); ?>
 
         <!-- group-->

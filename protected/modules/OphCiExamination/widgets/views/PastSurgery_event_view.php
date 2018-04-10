@@ -16,8 +16,6 @@
  */
 $widget = $this;
 ?>
-<div class="tile-more-data-flag"><i class="oe-i arrow-down-bold medium selected"></i></div>
-
 <div class="element-data full-width">
     <div class="data-row">
         <div class="data-value">

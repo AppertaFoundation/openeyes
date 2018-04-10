@@ -19,7 +19,8 @@ $widget = $this;
 
 <div class="element-data">
     <div class="data-value">
-      <table>
+      <div class="tile-data-overflow">
+        <table>
         <colgroup>
           <col>
           <col width="55px">
@@ -42,5 +43,6 @@ $widget = $this;
           <?php } ?>
         </tbody>
       </table>
+      </div>
     </div>
 </div>

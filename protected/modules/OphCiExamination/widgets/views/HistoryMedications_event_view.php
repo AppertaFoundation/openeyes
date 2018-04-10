@@ -16,97 +16,75 @@
  */
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
-<?php $el_id =  CHtml::modelName($element) . '_element'; ?>
+<?php $el_id = CHtml::modelName($element) . '_element'; ?>
 
-<div class="element-data full-width" id="<?=$el_id?>">
-  <div class="data-row">
-      <div class="cols-full">
-        <div id="js-listview-meds-current-pro" style>
-            <?php if ($element->currentOrderedEntries) { ?>
-            <ul class="dslash-list">
-                <?php foreach ($element->currentOrderedEntries as $entry) { ?>
-                  <li><?= $entry->getMedicationDisplay() ?></li>
-                <?php } ?>
-            </ul>
-            <?php } else { ?>
-                No current medications.
-            <?php } ?>
-        </div>
-        <div class id="js-listview-meds-current-full" style="display:none;">
-          <table>
-            <colgroup>
-              <col class="cols-4">
-              <col class="cols-3">
-            </colgroup>
-            <tbody>
-              <?php if ($element->currentOrderedEntries) {
-                  foreach ($element->currentOrderedEntries as $entry) {
-                    ?>
-                    <tr>
-                      <td><?= $entry->getMedicationDisplay() ?></td>
-                      <td> <?= $entry->getAdministrationDisplay() ?  $entry->getAdministrationDisplay() : ''?></td>
-                      <td class="nowrap"><i class="oe-i start small pad"></i><?= $entry->getStartDateDisplay() ? $entry->getStartDateDisplay() : ''?></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-              <?php }
-              } ?>
-            </tbody>
-          </table>
-        </div>
-    </div>
-      <i class="oe-i small pad js-listview-expand-btn expand" data-list="meds-current"></i>
-  </div>
-    <!-- flex-layout -->
-    <div class="divider"></div>
-    <div class="flex-layout flex-top" id="js-meds-stopped">
-        <div class="cols-full">
-            <div id="js-listview-meds-stopped-pro" style>
-              <table class="dslash-list">
-                <tbody>
-                <?php foreach ($element->stoppedOrderedEntries as $entry) { ?>
-                  <tr>
-                    <td>
-                        <?= $entry->getMedicationDisplay() ?>
-                    </td>
-                    <td></td>
-                  </tr>
-                <?php } ?>
-                </tbody>
-              </table>
-            </div>
-          <div class id="js-listview-meds-stopped-full" style="display: none;">
+<section class="element view-Eye-Medications tile "
+         data-element-type-id="<?php echo $element->elementType->id ?>"
+         data-element-type-class="<?php echo $element->elementType->class_name ?>"
+         data-element-type-name="Eye Medications"
+         data-element-display-order="<?php echo $element->elementType->display_order ?>">
+  <header class=" element-header">
+    <h3 class="element-title">Eye medications</h3>
+  </header>
+  <div class="element-data">
+    <div class="data-value">
+        <?php if (!$element->orderedEntries) { ?>
+          No current medications.
+        <?php } else { ?>
+          <div class="tile-data-overflow">
             <table>
-              <colgroup>
-                <col class="cols-4">
-                <col class="cols-3">
-              </colgroup>
-              <tbody>
-              <?php foreach ($element->stoppedOrderedEntries as $entry) {
-                      ?>
-                    <tr>
-                      <td><i class="oe-i stop small pad"></i><?= $entry->getMedicationDisplay() ?></td>
-                      <td> <?= $entry->getAdministrationDisplay() ?  $entry->getAdministrationDisplay() : ''?></td>
-                      <td class="nowrap"><i class="oe-i start small pad"></i><?= $entry->getStartDateDisplay() ? $entry->getStartDateDisplay() : ''?></td>
-                      <td class="nowrap"><i class="oe-i stop small pad"></i><?= $entry->getStopDateDisplay() ? $entry->getStopDateDisplay() : ''?></td>
-                      <td><?= $entry->getStopReasonDisplay() ? $entry->getStopReasonDisplay() : ''?></td>
-                    </tr>
-                  <?php } ?>
-              </tbody>
+                <?php foreach ($element->orderedEntries as $entry) {
+                    if ($entry['route_id'] == 1) { ?>
+                      <tr>
+                        <td><?= $entry->getMedicationDisplay() ?></td>
+                        <td><?php $laterality = $entry->getLateralityDisplay(); ?>
+                          <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
+                          <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                        </td>
+                        <td><?= $entry->getStartDateDisplay() ?></td>
+                      </tr>
+                    <?php }
+                } ?>
             </table>
           </div>
-        </div>
-      <i class="oe-i small pad js-listview-expand-btn expand" data-list="meds-stopped"></i>
+        <?php } ?>
     </div>
-    <!-- flex-layout -->
-</div>
-  <!-- data-row -->
-<script type="text/javascript">
-  $(document).ready(function() {
-    new OpenEyes.OphCiExamination.HistoryMedicationsViewController({
-      element: $('#<?= $el_id ?>')
-    });
-  });
-</script>
+  </div>
+</section>
+
+<section class=" element view-Systemic-Medications tile"
+         data-element-type-id="<?php echo $element->elementType->id ?>"
+         data-element-type-class="<?php echo $element->elementType->class_name ?>"
+         data-element-type-name="Systemic Medications"
+         data-element-display-order="<?php echo $element->elementType->display_order + 1 ?>">
+  <header class=" element-header">
+    <h3 class="element-title">Systemic Medications</h3>
+  </header>
+  <div class="element-data">
+    <div class="data-value">
+        <?php if (!$element->orderedEntries) { ?>
+          No current medications.
+        <?php } else { ?>
+          <div class="tile-data-overflow">
+            <table>
+
+                <?php foreach ($element->orderedEntries as $entry) {
+                    if ($entry['route_id'] != 1) { ?>
+                      <tr>
+                        <td><?= $entry->getMedicationDisplay() ?></td>
+                        <td><?php $laterality = $entry->getLateralityDisplay(); ?>
+                          <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
+                          <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                        </td>
+                        <td><?= $entry->getStartDateDisplay() ?></td>
+                      </tr>
+                    <?php }
+                } ?>
+            </table>
+          </div>
+        <?php } ?>
+    </div>
+  </div>
+</section>
 
 
