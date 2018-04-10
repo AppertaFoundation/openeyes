@@ -101,12 +101,36 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
 }
 
 ?>
+<section
+        data-element-type-id="<?php echo $element->elementType->id ?>"
+        data-element-type-class="<?php echo $element->elementType->class_name ?>"
+        data-element-type-name="<?php echo $element->elementType->name ?>"
+        data-element-display-order="<?php echo $element->elementType->display_order ?>">
+    <div class="element-fields element-eyes">
+        <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye):
+        $hasEyeFunc = 'has' . ucfirst($eye);
+        ?>
+        <div class="element-eye <?= $eye ?>-eye column <?= $side ?> side <?= !$element->$hasEyeFunc() ? "inactive" : "" ?>"
+             data-side="<?= $eye ?>">
+            <div class="active-form">
+                <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
 
-<div class="element-fields element-eyes row">
-    <div>&nbsp;
+                <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
+                    'eye' => $eye,
+                    'side' => $side,
+                    'element' => $element,
+                    'form' => $form,
+                    'data' => $data,
+                    'measurementInput' => $iolRefValues,
+                )); ?>
+
+            </div>
+        </div>
     </div>
-</div>
-<section>
+    <?php endforeach; ?>
+</section>
+</section>
+<section class="element edit full  eye-divider edit-visual-acuity">
     <header class="element-header">
         <h3 class="element-title">Visual Acuity <?php echo $VAdate; ?></h3>
     </header>
@@ -235,7 +259,7 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
 }
 ?>
 
-<section>
+<section class="element edit full  eye-divider edit-near-visual-acuity">
     <header class="element-header">
         <h3 class="element-title">Near Visual Acuity <?php echo $NearVAdate; ?></h3>
     </header>
@@ -331,7 +355,7 @@ for ($i = 0; $i < count($eventid); ++$i) {
 
 if ($refractfound) {
 ?>
-<section>
+<section class="element edit full  eye-divider edit-near-visual-acuity">
     <header class="element-header">
         <h3 class="element-title">Refraction - (exam date <?php echo date("d M Y",
                 strtotime($refract_event_date)); ?>)</h3>
@@ -374,9 +398,10 @@ if ($refractfound) {
             } ?>
         </div>
     </div>
+</section>
     <?php
     } else {?>
-    <section>
+    <section class="element edit full  eye-divider edit-near-visual-acuity">
     <header class="element-header">
         <h3 class="element-title">Refraction - (Not Recorded)</h3>
     </header>
@@ -401,68 +426,4 @@ if ($refractfound) {
     }
     ?>
     <br/>
-    <section class="element <?php echo $element->elementType->class_name ?>"
-             data-element-type-id="<?php echo $element->elementType->id ?>"
-             data-element-type-class="<?php echo $element->elementType->class_name ?>"
-             data-element-type-name="<?php echo $element->elementType->name ?>"
-             data-element-display-order="<?php echo $element->elementType->display_order ?>">
-        <div class="element-fields element-eyes row">
-            <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-            <div id="right-eye-lens"
-                 class="element-eye right-eye top-pad left side column  <?php if (!$element->hasRight()) {
-                     ?> inactive<?php
-                 } ?>" data-side="right">
-                <div class="centre">
-                    <h4><b>RIGHT</b></h4>
-                </div>
-                <div class="active-form">
-                    <a href="#" class="icon-remove-side remove-side">Remove side</a>
-                    <?php echo CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
-                </div>
-                <div class="inactive-form">
-                    <div class="add-side">
-                        <a href="#">
-                            Add Right side <span class="icon-add-side"></span>
-                        </a>
-                    </div>
-                </div>
-                <div class="active-form">
-                <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
-                    'side' => 'right',
-                    'element' => $element,
-                    'form' => $form,
-                    'data' => $data,
-                    'measurementInput' => $iolRefValues,
-                )); ?>
-                    </div>
-
-            </div>
-            <div id="left-eye-lens"
-                 class="element-eye left-eye top-pad right side column <?php if (!$element->hasLeft()) {
-                     ?> inactive<?php
-                 } ?>" data-side="left">
-                <div class="centre">
-                    <h4><b>LEFT</b></h4>
-                </div>
-                        <div class="active-form">
-                            <a href="#" class="icon-remove-side remove-side">Remove side</a>
-                        </div>
-                        <div class="inactive-form">
-                            <div class="add-side">
-                                <a href="#">
-                                    Add left side <span class="icon-add-side"></span>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="active-form">
-                        <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
-                            'side' => 'left',
-                            'element' => $element,
-                            'form' => $form,
-                            'data' => $data,
-                            'measurementInput' => $iolRefValues,
-                        )); ?></div>
-                </div>
-            </div>
-    </section>
 </section>

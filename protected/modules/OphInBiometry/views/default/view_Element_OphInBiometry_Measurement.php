@@ -25,27 +25,20 @@ if ($element->event->id > 0) {
 }
 ?>
 
-<section class="element">
-	<div class="element-data element-eyes row">
-		<div class="element-eye right-eye column">
-			<div class="element-header right-side">
-				<h4><b>RIGHT</b></h4>
-			</div>
-			<?php if ($element->hasRight()) {
-    $this->renderPartial('view_Element_OphInBiometry_Measurement_fields', array('side' => 'right', 'element' => $element, 'measurementInput' => $iolRefValues));
-            } else { ?>
-				<div class="data-value">Not recorded</div>
-			<?php } ?>
-		</div>
-		<div class="element-eye left-eye column">
-			<div class="element-header left-side">
-				<h4><b>LEFT</b></h4>
-			</div>
-			<?php if ($element->hasLeft()) {
-    $this->renderPartial('view_Element_OphInBiometry_Measurement_fields', array('side' => 'left', 'element' => $element, 'measurementInput' => $iolRefValues));
-            } else { ?>
-				<div class="data-value">Not recorded</div>
-			<?php } ?>
-		</div>
+<section>
+	<div class="element-data element-eyes">
+        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+            <div class="<?= $eye_side ?>-eye">
+                <div class="<?=$eye_side?>-color-text">
+                    <h3><?php echo CHtml::encode($element->getAttributeLabel($eye_side)) ?></h3>
+                </div>
+                <?php if ($element->hasEye($eye_side))  {
+                    $this->renderPartial('view_Element_OphInBiometry_Measurement_fields',
+                        array('side' => $eye_side, 'element' => $element));
+                } else { ?>
+                    <div class="data-value not-recorded">Not recorded</div>
+                <?php } ?>
+            </div>
+        <?php endforeach; ?>
 	</div>
 </section>
