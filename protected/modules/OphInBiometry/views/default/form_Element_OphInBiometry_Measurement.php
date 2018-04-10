@@ -107,12 +107,13 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
         data-element-type-name="<?php echo $element->elementType->name ?>"
         data-element-display-order="<?php echo $element->elementType->display_order ?>">
     <div class="element-fields element-eyes">
+        <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):
-        $element->hasEye($eye_side) ;
+        $element->hasEye($eye_side);
         ?>
         <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side <?= !$element->hasEye($eye_side) ? "inactive" : "" ?>"
              data-side="<?= $eye_side ?>">
-            <div class="active-form" style="<?= $element->hasEye($eye_side) ? '' : 'display: none;'?>">
+            <div class="active-form" style="<?= $element->hasEye($eye_side) ? '' : 'display: none;' ?>">
                 <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
                 <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
                     'side' => $eye_side,
@@ -131,8 +132,8 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
                 </div>
             </div>
         </div>
+        <?php endforeach; ?>
     </div>
-    <?php endforeach; ?>
 </section>
 </section>
 <section class="element edit full  eye-divider">

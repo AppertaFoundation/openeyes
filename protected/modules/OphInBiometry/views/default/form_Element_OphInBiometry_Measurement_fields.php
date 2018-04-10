@@ -58,183 +58,183 @@
                     <?php
                 }
                 ?>
-</div>
-</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-    <td>K1:</td>
-    <td>
-        <?php
-        if ($this->is_auto) {
-            echo '<span class="readonly-box">' . $element->{"k1_$side"} . '</span><span class="field-info">D</span>';
-        } else {
-            ?>
-            <input type="text" id="Element_OphInBiometry_Measurement_k1_<?php echo $side; ?>"
-                   name="Element_OphInBiometry_Measurement[k1_<?php echo $side; ?>]"
-                   placeholder='0.00' class="cols-6"
-                   value="<?php echo $element->{"k1_$side"} ?>">D</input>
-            <?php
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>K1:</td>
+            <td>
+                <?php
+                if ($this->is_auto) {
+                } else {
+                    ?>
+                    <input type="text" id="Element_OphInBiometry_Measurement_k1_<?php echo $side; ?>"
+                           name="Element_OphInBiometry_Measurement[k1_<?php echo $side; ?>]"
+                           placeholder='0.00' class="cols-6"
+                           value="<?php echo $element->{"k1_$side"} ?>">D</input>
+                    <?php
 
-        }
-        ?>
-        </div>
-    </td>
-    <td>
-        <?php
-        if (!$element->{"k_modified_$side"}) {
-            ?>
-            <span class="field-info">@</span>
-            <?php
-        } else { ?>
-            <span class="field-info"><b>*</b></span>
-            <?php
-        } ?>
-    </td>
-    <td>
-        <?php
-        if ($this->is_auto) {
-            if (!$element->{"k_modified_$side"}) {
-                echo '<span class="readonly-box">' . $element->{"axis_k1_$side"} . '</span>&nbsp;&deg;';
-            } else {
-                echo '&nbsp;';
-            }
-        } else {
-            ?>
-            <input type="text" id="Element_OphInBiometry_Measurement_axis_k1_<?php echo $side; ?>"
-                   name="Element_OphInBiometry_Measurement[axis_k1_<?php echo $side; ?>]"
-                   placeholder='0.00' class="cols-6"
-                   value="<?php echo $element->{"axis_k1_$side"} ?>">&deg;
-            <?php
+                }
+                ?>
 
-        }
-        ?>
-    </td>
-</tr>
-<tr>
-    <td>&Delta;K:</td>
-    <td>
-        <?php
-        if ($this->is_auto) {
-            echo '<span class="readonly-box">';
-            if (($element->{'delta_k_' . $side}) > 0) {
-                echo '+';
-            }
-            echo $element->{"delta_k_$side"} . '</span><span class="field-info">D</span>';
-        } else {
-            ?>
-            <input type="text" disabled id="input_Element_OphInBiometry_Measurement_delta_k_<?php echo $side; ?>"
-                   name="input_Element_OphInBiometry_Measurement[delta_k_<?php echo $side; ?>]"
-                   placeholder='0.00' class="cols-6"
-                   value="<?php echo $element->{"delta_k_$side"} ?>"><span class="field-info">D</span>
-            <input type="hidden" id="Element_OphInBiometry_Measurement_delta_k_<?php echo $side; ?>"
-                   name="Element_OphInBiometry_Measurement[delta_k_<?php echo $side; ?>]"
-                   placeholder='0.00' class="cols-6"
-                   value="<?php echo $element->{"delta_k_$side"} ?>">
-            <?php
+            </td>
+            <td>
+                <?php
+                if (!$element->{"k_modified_$side"}) {
+                    ?>
+                    <span class="field-info">@</span>
+                    <?php
+                } else { ?>
+                    <span class="field-info"><b>*</b></span>
+                    <?php
+                } ?>
+            </td>
+            <td>
+                <?php
+                if ($this->is_auto) {
+                    if (!$element->{"k_modified_$side"}) {
+                        echo '<span class="readonly-box">' . $element->{"axis_k1_$side"} . '</span>&nbsp;&deg;';
+                    } else {
+                        echo '&nbsp;';
+                    }
+                } else {
+                    ?>
+                    <input type="text" id="Element_OphInBiometry_Measurement_axis_k1_<?php echo $side; ?>"
+                           name="Element_OphInBiometry_Measurement[axis_k1_<?php echo $side; ?>]"
+                           placeholder='0.00' class="cols-6"
+                           value="<?php echo $element->{"axis_k1_$side"} ?>">&deg;
+                    <?php
 
-        }
-        ?>
-    </td>
-    <td>
-        <?php
-        if (!$element->{"k_modified_$side"}) {
-            ?>
-            <span class="field-info">@</span>
-            <?php
-        } else { ?>
-            <span class="field-info"><b>*</b></span>
-            <?php
-        } ?>
-    </td>
-    <td>
-        <?php
-        if ($this->is_auto) {
-            if (!$element->{"k_modified_$side"}) {
-                echo '<span class="readonly-box">' . $element->{"delta_k_axis_$side"} . '</span>&nbsp;&deg;';
-            } else {
-                echo '&nbsp;';
-            }
-        } else {
-            ?>
-            <input type="text" disabled id="input_Element_OphInBiometry_Measurement_delta_k_axis_<?php echo $side; ?>"
-                   name="input_Element_OphInBiometry_Measurement[delta_k_axis_<?php echo $side; ?>]"
-                   placeholder='0.00' class="cols-6"
-                   value="<?php echo $element->{"delta_k_axis_$side"} ?>">&deg;
-            <input type="hidden" id="Element_OphInBiometry_Measurement_delta_k_axis_<?php echo $side; ?>"
-                   name="Element_OphInBiometry_Measurement[delta_k_axis_<?php echo $side; ?>]"
-                   placeholder='0.00' class="cols-6"
-                   value="<?php echo $element->{"delta_k_axis_$side"} ?>">
-            <?php
-        }
-        ?>
-    </td>
-</tr>
-<tr>
-    <td>K2</td>
-    <td>
-        <?php
-        if ($this->is_auto) {
-            echo '<span class="readonly-box">' . $element->{"k2_$side"} . '</span><span class="field-info">D</span>';
-        } else { ?>
-            <input type="text" id="Element_OphInBiometry_Measurement_k2_<?php echo $side; ?>"
-                   name="Element_OphInBiometry_Measurement[k2_<?php echo $side; ?>]"
-                   placeholder='0.00' class="cols-6"
-                   value="<?php echo $element->{"k2_$side"} ?>"><span class="field-info">D</span>
-        <?php } ?>
-    </td>
-    <td>
-        <?php
-        if (!$element->{"k_modified_$side"}) {
-            ?>
-            <span class="field-info">@</span>
-            <?php
-        } else { ?>
-            <span class="field-info"><b>*</b></span>
-        <?php } ?>
-    </td>
-    <td>
-        <?php
-        if ($this->is_auto) {
-            if (!$element->{"k_modified_$side"}) {
-                echo '<span class="readonly-box">' . $element->{"k2_axis_$side"} . '</span>&nbsp;&deg;';
-            } else {
-                echo '&nbsp;';
-            }
-        } else {
-            ?>
-            <input type="text" id="Element_OphInBiometry_Measurement_k2_axis_<?php echo $side; ?>"
-                   name="Element_OphInBiometry_Measurement[k2_axis_<?php echo $side; ?>]"
-                   placeholder='0.00' class="cols-6"
-                   value="<?php echo $element->{"k2_axis_$side"} ?>">&deg;
-            <?php
-        }
-        ?>
-    </td>
-</tr>
-<tr>
-    <td>ACD:</td>
-    <td>
-        <?php
-        if ($this->is_auto) {
-            echo '<span class="readonly-box">' . $element->{"acd_$side"} . '</span><span class="field-info">&nbsp;mm</span>';
-        } else {
-            ?>
-            <input type="text" id="Element_OphInBiometry_Measurement_acd_<?php echo $side; ?>"
-                   name="Element_OphInBiometry_Measurement[acd_<?php echo $side; ?>]"
-                   placeholder='0.00' class="cols-6"
-                   value="<?php echo $element->{"acd_$side"} ?>"><span class="field-info">mm</span>
-            <?php
+                }
+                ?>
+            </td>
+        </tr>
+        <tr>
+            <td>&Delta;K:</td>
+            <td>
+                <?php
+                if ($this->is_auto) {
+                    echo '<span class="readonly-box">';
+                    if (($element->{'delta_k_' . $side}) > 0) {
+                        echo '+';
+                    }
+                    echo $element->{"delta_k_$side"} . '</span><span class="field-info">D</span>';
+                } else {
+                    ?>
+                    <input type="text" disabled
+                           id="input_Element_OphInBiometry_Measurement_delta_k_<?php echo $side; ?>"
+                           name="input_Element_OphInBiometry_Measurement[delta_k_<?php echo $side; ?>]"
+                           placeholder='0.00' class="cols-6"
+                           value="<?php echo $element->{"delta_k_$side"} ?>"><span class="field-info">D</span>
+                    <input type="hidden" id="Element_OphInBiometry_Measurement_delta_k_<?php echo $side; ?>"
+                           name="Element_OphInBiometry_Measurement[delta_k_<?php echo $side; ?>]"
+                           placeholder='0.00' class="cols-6"
+                           value="<?php echo $element->{"delta_k_$side"} ?>">
+                    <?php
 
-        }
-        ?>
-    </td>
-    <td></td>
-    <td></td>
-</tr>
-</tbody>
-</table>
+                }
+                ?>
+            </td>
+            <td>
+                <?php
+                if (!$element->{"k_modified_$side"}) {
+                    ?>
+                    <span class="field-info">@</span>
+                    <?php
+                } else { ?>
+                    <span class="field-info"><b>*</b></span>
+                    <?php
+                } ?>
+            </td>
+            <td>
+                <?php
+                if ($this->is_auto) {
+                    if (!$element->{"k_modified_$side"}) {
+                        echo '<span class="readonly-box">' . $element->{"delta_k_axis_$side"} . '</span>&nbsp;&deg;';
+                    } else {
+                        echo '&nbsp;';
+                    }
+                } else {
+                    ?>
+                    <input type="text" disabled
+                           id="input_Element_OphInBiometry_Measurement_delta_k_axis_<?php echo $side; ?>"
+                           name="input_Element_OphInBiometry_Measurement[delta_k_axis_<?php echo $side; ?>]"
+                           placeholder='0.00' class="cols-6"
+                           value="<?php echo $element->{"delta_k_axis_$side"} ?>">&deg;
+                    <input type="hidden" id="Element_OphInBiometry_Measurement_delta_k_axis_<?php echo $side; ?>"
+                           name="Element_OphInBiometry_Measurement[delta_k_axis_<?php echo $side; ?>]"
+                           placeholder='0.00' class="cols-6"
+                           value="<?php echo $element->{"delta_k_axis_$side"} ?>">
+                    <?php
+                }
+                ?>
+            </td>
+        </tr>
+        <tr>
+            <td>K2</td>
+            <td>
+                <?php
+                if ($this->is_auto) {
+                    echo '<span class="readonly-box">' . $element->{"k2_$side"} . '</span><span class="field-info">D</span>';
+                } else { ?>
+                    <input type="text" id="Element_OphInBiometry_Measurement_k2_<?php echo $side; ?>"
+                           name="Element_OphInBiometry_Measurement[k2_<?php echo $side; ?>]"
+                           placeholder='0.00' class="cols-6"
+                           value="<?php echo $element->{"k2_$side"} ?>"><span class="field-info">D</span>
+                <?php } ?>
+            </td>
+            <td>
+                <?php
+                if (!$element->{"k_modified_$side"}) {
+                    ?>
+                    <span class="field-info">@</span>
+                    <?php
+                } else { ?>
+                    <span class="field-info"><b>*</b></span>
+                <?php } ?>
+            </td>
+            <td>
+                <?php
+                if ($this->is_auto) {
+                    if (!$element->{"k_modified_$side"}) {
+                        echo '<span class="readonly-box">' . $element->{"k2_axis_$side"} . '</span>&nbsp;&deg;';
+                    } else {
+                        echo '&nbsp;';
+                    }
+                } else {
+                    ?>
+                    <input type="text" id="Element_OphInBiometry_Measurement_k2_axis_<?php echo $side; ?>"
+                           name="Element_OphInBiometry_Measurement[k2_axis_<?php echo $side; ?>]"
+                           placeholder='0.00' class="cols-6"
+                           value="<?php echo $element->{"k2_axis_$side"} ?>">&deg;
+                    <?php
+                }
+                ?>
+            </td>
+        </tr>
+        <tr>
+            <td>ACD:</td>
+            <td>
+                <?php
+                if ($this->is_auto) {
+                    echo '<span class="readonly-box">' . $element->{"acd_$side"} . '</span><span class="field-info">&nbsp;mm</span>';
+                } else {
+                    ?>
+                    <input type="text" id="Element_OphInBiometry_Measurement_acd_<?php echo $side; ?>"
+                           name="Element_OphInBiometry_Measurement[acd_<?php echo $side; ?>]"
+                           placeholder='0.00' class="cols-6"
+                           value="<?php echo $element->{"acd_$side"} ?>"><span class="field-info">mm</span>
+                    <?php
+
+                }
+                ?>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 <div class="field-row">
     <table class="cols-11 last-left">
@@ -258,10 +258,9 @@
                     array('options' => array($element->{"eye_status_$side"} => array('selected' => true))));
                 ?>
                 <?php
-
             }
             ?>
         </td>
         </tbody>
     </table>
-
+</div>
