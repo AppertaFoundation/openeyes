@@ -18,10 +18,10 @@
 ?>
 
 <section>
-    <div class="element-data element-eyes row">
+    <div class="element-data element-eyes">
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
             <div class="<?= $eye_side ?>-eye">
-                <?php if ($element->hasEye($eye_side))  {
+               <?php if ($element->hasEye($eye_side))  {
                     $this->renderPartial('view_Element_OphInBiometry_Calculation_fields',
                         array('side' => $eye_side, 'element' => $element));
                 } else { ?>
@@ -29,14 +29,12 @@
                 <?php } ?>
             </div>
         <?php endforeach; ?>
-
-        <div class="column" id="comments">
+    </div>
+</section>
+<div class="column" id="comments">
 			<span class="field-info">&nbsp;
                 <?php
                 echo '<b>Device Comments</b>:&nbsp;' . $element->{'comments'};
                 ?>
 			</span>
-        </div>
-    </div>
-
-</section>
+</div>

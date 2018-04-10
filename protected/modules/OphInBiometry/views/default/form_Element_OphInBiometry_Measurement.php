@@ -108,11 +108,11 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
         data-element-display-order="<?php echo $element->elementType->display_order ?>">
     <div class="element-fields element-eyes">
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):
-        $hasEyeFunc = 'has' . ucfirst($eye_side);
+        $element->hasEye($eye_side) ;
         ?>
-        <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side <?= !$element->$hasEyeFunc() ? "inactive" : "" ?>"
+        <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side <?= !$element->hasEye($eye_side) ? "inactive" : "" ?>"
              data-side="<?= $eye_side ?>">
-            <div class="active-form">
+            <div class="active-form" style="<?= $element->hasEye($eye_side) ? '' : 'display: none;'?>">
                 <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
                 <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
                     'side' => $eye_side,
@@ -122,6 +122,13 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
                     'measurementInput' => $iolRefValues,
                 )); ?>
 
+            </div>
+            <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">
+                <div class="add-side">
+                    <a href="#">
+                        Add <?= $eye_side ?> side <span class="icon-add-side"></span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
