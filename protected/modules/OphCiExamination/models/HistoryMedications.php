@@ -210,9 +210,8 @@ class HistoryMedications extends \BaseEventTypeElement
         if ($action === 'view') {
             return false;
         }
-        if ($action === 'edit') {
+        else {
             return true;
         }
-        return true;
     }
 }

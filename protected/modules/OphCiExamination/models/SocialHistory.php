@@ -237,4 +237,14 @@ class SocialHistory extends \BaseEventTypeElement
     {
         return 1;
     }
+
+    public function isIndividual($action)
+    {
+        if ($action === 'view') {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
 }

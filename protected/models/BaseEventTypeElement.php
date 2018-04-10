@@ -159,6 +159,14 @@ class BaseEventTypeElement extends BaseElement
     }
 
     /**
+     * For rendering purpose, if element is not individual, will render the page separate.
+     * @param $action
+     * @return bool
+     */
+    public function isIndividual($action){
+        return true;
+    }
+    /**
      * Is this element required in the UI? (Prevents the user from being able
      * to remove the element.).
      *

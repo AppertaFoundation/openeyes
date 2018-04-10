@@ -152,7 +152,7 @@ class PastSurgery extends \BaseEventTypeElement
         return implode(' <br /> ', $this->operations);
     }
 
-    public function getTileSize()
+    public function getTileSize($action)
     {
         return 1;
     }

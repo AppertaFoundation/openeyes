@@ -299,7 +299,6 @@ class BaseEventTypeController extends BaseModuleController
             }
 
         }
-
         return $elements;
     }
 

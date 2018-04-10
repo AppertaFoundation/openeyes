@@ -80,4 +80,17 @@ class FamilyHistory extends \BaseEventElementWidget
             $element->entries = array();
         }
     }
+
+    /**
+     * Determine the view file to use
+     */
+    protected function getView()
+    {
+        if ($this->mode === static::$EVENT_VIEW_MODE) {
+            // manually overridden/set
+            return 'FamilySocialHistory_event_view';
+        } else{
+            return parent::getView();
+        }
+    }
 }

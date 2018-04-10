@@ -184,8 +184,18 @@ class FamilyHistory extends \BaseEventTypeElement
         }
     }
 
-    public function getTileSize()
+    public function getTileSize($action)
     {
         return 1;
+    }
+
+    public function isIndividual($action)
+    {
+        if ($action === 'view') {
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 }
