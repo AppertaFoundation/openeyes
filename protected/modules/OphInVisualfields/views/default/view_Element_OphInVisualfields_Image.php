@@ -16,121 +16,61 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<table class="subtleWhite normalText">
-	<thead>
-		<tr>
-			<td>Right Eye</td>
-			<td>Left Eye</td>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<?php
-            if ($element->right_field_id) {
-                $right_test = $element->right_field;
-                $x = $element->right_field_id;
-                ?>
-				<td width="50%">
-					<a class="OphInVisualfields_field_image" data-image-id="<?= $right_test->image_id ?>" href="#">
-						<img src="<?php echo '/file/view/'.$right_test->cropped_image_id.'/400/img.gif'; ?>">
-					</a>
-				</td>
-				<?php
 
-            } else {
-                ?>
-				<td>&nbsp;</td>
-				<?php
+<div class="element-data element-eyes">
 
-            }
-            if ($element->left_field_id) {
-                $x = $element->left_field_id;
-                $left_test = $element->left_field;
-                ?>
-				<td width="50%">
-					<a class="OphInVisualfields_field_image" data-image-id="<?= $left_test->image_id ?>" href="#">
-						<img src="<?php echo '/file/view/'.$left_test->cropped_image_id.'/400/img.gif'; ?>">
-					</a>
-				</td>
-				<?php
-            } else {
-                ?>
-				<td>&nbsp;</td>
-				<?php
-            }
-            ?>
-		</tr>
-		<tr>
-			<?php
-            if ($element->right_field_id) {
-                ?>
-				<td width="50%">Date: <?php echo $right_test->study_datetime ?></td>
-				<?php
-            } else {
-                ?>
-				<td>&nbsp;</td>
-				<?php
-            }
-            ?>
-			<?php
-            if ($element->left_field_id) {
-                ?>
-				<td width="50%">Date: <?php echo $left_test->study_datetime ?></td>
-				<?php
-            } else {
-                ?>
-				<td>&nbsp;</td>
-				<?php
-            }
-            ?>
-		</tr>
-		<tr>
-			<?php
-            if ($element->right_field_id) {
-                ?>
-				<td width="50%">Strategy: <?php echo $right_test->strategy->name ?></td>
-				<?php
-            } else {
-                ?>
-				<td>&nbsp;</td>
-				<?php
-            }
-            ?>
-			<?php
-            if ($element->left_field_id) {
-                ?>
-				<td width="50%">Strategy: <?php echo $left_test->strategy->name ?></td>
-				<?php
-            } else {
-                ?>
-				<td>&nbsp;</td>
-				<?php
-            }
-            ?>
-		</tr>
-		<tr>
-			<?php
-            if ($element->right_field_id) {
-                ?>
-				<td width="50%">Test Name: <?php echo $right_test->pattern->name ?></td>
-				<?php
-            } else {
-                ?>
-				<td>&nbsp;</td>
-				<?php
-            }
-            ?>
-			<?php
-            if ($element->left_field_id) {
-                ?>
-				<td width="50%">Test Name: <?php echo $left_test->pattern->name ?></td>
-				<?php
-            } else {
-                ?>
-				<td>&nbsp;</td>
-				<?php
-            }
-            ?>
-		</tr>
-	</tbody>
-</table>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_isde => $eye_side): ?>
+
+      <div class="<?= $eye_side ?>-eye">
+
+          <?php if ($element->{$eye_side . '_field_id'}):
+              $eye_test = $element->{$eye_side . '_field'}; ?>
+            <a class="OphInVisualfields_field_image" data-image-id="<?= $eye_test->image_id ?>" href="#">
+              <img src="<?php echo '/file/view/' . $eye_test->cropped_image_id . '/400/img.gif'; ?>">
+            </a>
+
+          <?php endif; ?>
+
+        <table class="label-value cols-10">
+          <tbody>
+          <tr>
+            <td>
+              <div class="data-label">Date</div>
+            </td>
+            <td>
+                <?php if ($element->{$eye_side . '_field_id'}): ?>
+                  <div class="data-value">
+                      <?php echo $element->{$eye_side . '_field'}->study_datetime ?>
+                  </div>
+                <?php endif; ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="data-label">Strategy</div>
+            </td>
+            <td>
+                <?php if ($element->{$eye_side . '_field_id'}): ?>
+                  <div class="data-value">
+                      <?php echo $element->{$eye_side . '_field'}->strategy->name ?>
+                  </div>
+                <?php endif; ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="data-label">Test Name</div>
+            </td>
+            <td>
+                <?php if ($element->{$eye_side . '_field_id'}): ?>
+                  <div class="data-value">
+                      <?php echo $element->{$eye_side . '_field'}->pattern->name ?>
+                  </div>
+                <?php endif; ?>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    <?php endforeach; ?>
+</div>
