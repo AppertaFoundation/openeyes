@@ -16,16 +16,16 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element <?php echo $element->elementType->class_name ?>"
-		 data-element-type-id="<?php echo $element->elementType->id ?>"
-		 data-element-type-class="<?php echo $element->elementType->class_name ?>"
-		 data-element-type-name="<?php echo $element->elementType->name ?>"
-		 data-element-display-order="<?php echo $element->elementType->display_order ?>">
-	<div class="element-fields element-eyes row">
-	<?php
-        $this->renderPartial("{$element->form_view}_side", array('form' => $form, 'element' => $element, 'side' => 'right'));
-        $this->renderPartial("{$element->form_view}_side", array('form' => $form, 'element' => $element, 'side' => 'left'));
-    ?>
-	</div>
+<section class="<?php echo $element->elementType->class_name ?>"
+         data-element-type-id="<?php echo $element->elementType->id ?>"
+         data-element-type-class="<?php echo $element->elementType->class_name ?>"
+         data-element-type-name="<?php echo $element->elementType->name ?>"
+         data-element-display-order="<?php echo $element->elementType->display_order ?>">
+  <div class="element-fields element-eyes row">
+      <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+          <?php $this->renderPartial("{$element->form_view}_side",
+              array('form' => $form, 'element' => $element, 'side' => $eye_side)); ?>
+      <?php endforeach; ?>
+  </div>
 </section>
 

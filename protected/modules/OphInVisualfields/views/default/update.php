@@ -33,7 +33,7 @@ $this->beginContent('//patient/event_container', array('no_face'=>false));
     ?>
 		<?php $this->displayErrors($errors)?>
 		<?php $this->renderOpenElements($this->action->id, $form)?>
-		<?php $this->renderOptionalElements($this->action->id, $form)?>
+		<?php //$this->renderOptionalElements($this->action->id, $form)?>
 		<?php $this->displayErrors($errors, true)?>
 
 	<?php $this->endWidget()?>

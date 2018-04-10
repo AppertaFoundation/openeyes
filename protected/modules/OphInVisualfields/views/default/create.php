@@ -17,24 +17,25 @@
  */
 $this->beginContent('//patient/event_container', array('no_face'=>false));
 ?>
-	<?php
-        // Event actions
-        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'clinical-create'));
-    ?>
+<?php
+// Event actions
+$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'),
+    array('form' => 'clinical-create'));
+?>
 
-	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'clinical-create',
-        'enableAjaxValidation' => false,
-        'layoutColumns' => array(
-            'label' => 4,
-            'field' => 8,
-        ),
-    ));
-    ?>
-		<?php $this->displayErrors($errors)?>
-		<?php $this->renderOpenElements($this->action->id, $form)?>
-		<?php $this->renderOptionalElements($this->action->id, $form)?>
-		<?php $this->displayErrors($errors, true)?>
+<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'clinical-create',
+    'enableAjaxValidation' => false,
+    'layoutColumns' => array(
+        'label' => 4,
+        'field' => 8,
+    ),
+));
+?>
+<?php $this->displayErrors($errors) ?>
+<?php $this->renderOpenElements($this->action->id, $form) ?>
+<?php $this->renderOptionalElements($this->action->id, $form) ?>
+<?php $this->displayErrors($errors, true) ?>
 
-	<?php $this->endWidget()?>
-<?php $this->endContent();?>
+<?php $this->endWidget() ?>
+<?php $this->endContent(); ?>

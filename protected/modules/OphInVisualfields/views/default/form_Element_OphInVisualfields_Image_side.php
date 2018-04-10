@@ -23,8 +23,8 @@ $field_data = array();
 foreach ($fields as $field) {
     $field_data[$field->id] = array(
         'id' => $field->id,
-        'url' => Yii::app()->baseUrl."/file/view/{$field->cropped_image_id}/400/img.gif",
-        'date' => date(Helper::NHS_DATE_FORMAT.' H:i:s', strtotime($field->study_datetime)),
+        'url' => Yii::app()->baseUrl . "/file/view/{$field->cropped_image_id}/400/img.gif",
+        'date' => date(Helper::NHS_DATE_FORMAT . ' H:i:s', strtotime($field->study_datetime)),
         'strategy' => $field->strategy->name,
         'pattern' => $field->pattern->name,
         'image_id' => $field->image_id,
@@ -34,36 +34,51 @@ $current_field = $element->{"{$side}_field_id"} ? $field_data[$element->{"{$side
 
 Yii::app()->clientScript->registerScript(
     "OphInVisualfields_available_fields_{$side}",
-    "var OphInVisualfields_available_fields_{$side} = ".CJSON::encode($field_data),
+    "var OphInVisualfields_available_fields_{$side} = " . CJSON::encode($field_data),
     CClientScript::POS_END
 );
 
 ?>
 <div class="element-eye <?= $side ?>-eye column">
-	<?php if ($current_field): ?>
-		<div class="field-row row">
-			<div class="large-12 column"><?= ucfirst($side) ?> Eye</div>
-		</div>
-		<div class="field-row row">
-			<div class="large-5 column">
-				<?= $form->dropDownList($element, "{$side}_field_id", CHtml::listData($field_data, 'id', 'date'), array('nowrapper' => true)) ?>
-			</div>
-			<div class="large-7 column OphInVisualfields_field_image_wrapper">
-				<a id="Element_OphInVisualfields_Image_image_<?= $side ?>" class="OphInVisualfields_field_image" data-image-id="<?= $current_field['image_id'] ?>" href="#">
-					<img src="<?= CHtml::encode($current_field['url']) ?>">
-					<span>View full image</span>
-				</a>
-			</div>
-		</div>
-		<div class="field-row row">
-			<div class="large-5 column"><p>Strategy</p></div>
-			<div class="large-7 column"><p id="Element_OphInVisualfields_Image_strategy_<?= $side ?>"><?= CHtml::encode($current_field['strategy']) ?></p></div>
-		</div>
-		<div class="field-row row">
-			<div class="large-5 column"><p>Test Name</p></div>
-			<div class="large-7 column"><p id="Element_OphInVisualfields_Image_pattern_<?=$side ?>"><?= CHtml::encode($current_field['pattern']) ?></p></div>
-		</div>
-	<?php else: ?>
-		<p>There are no fields to view for the <?= $side ?> eye.</p>
-	<?php endif; ?>
+    <?php if ($current_field): ?>
+      <div class="field-row row">
+        <div class="cols-5 column">
+            <?= $form->dropDownList($element, "{$side}_field_id", CHtml::listData($field_data, 'id', 'date'),
+                array('nowrapper' => true)) ?>
+        </div>
+        <div class="cols-7 column OphInVisualfields_field_image_wrapper">
+          <a id="Element_OphInVisualfields_Image_image_<?= $side ?>" class="OphInVisualfields_field_image"
+             data-image-id="<?= $current_field['image_id'] ?>" href="#">
+            <img src="<?= CHtml::encode($current_field['url']) ?>">
+          </a>
+        </div>
+      </div>
+
+      <table class="label-value cols-10">
+        <tbody>
+        <tr>
+          <td>
+            <div class="data-label">Strategy</div>
+          </td>
+          <td>
+            <div class="data-value" id="Element_OphInVisualfields_Image_strategy_<?= $side ?>">
+                <?= CHtml::encode($current_field['strategy']) ?>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="data-label">Test Name</div>
+          </td>
+          <td>
+            <div class="data-value" id="Element_OphInVisualfields_Image_pattern_<?= $side ?>">
+                <?= CHtml::encode($current_field['pattern']) ?>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    <?php else: ?>
+      <p>There are no fields to view for the <?= $side ?> eye.</p>
+    <?php endif; ?>
 </div>
