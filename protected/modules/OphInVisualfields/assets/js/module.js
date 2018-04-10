@@ -19,12 +19,12 @@ $(document).ready(function() {
 		var imgUrl = baseUrl + '/file/view/' + $(this).data('image-id') + '/img.gif';
 
 		var dialog = new OpenEyes.UI.Dialog({
-			content: '<img src="' + imgUrl + '">',
+			content: '<img src="' + imgUrl + '" style="width: 100%;">',
 			width: 1100,
 			position: {my: "center top", at: "center top+10"},
 			autoOpen: true,
 			modal: false
-		});
+		}).open();
 	});
 
     handleButton($('#et_deleteevent'));
