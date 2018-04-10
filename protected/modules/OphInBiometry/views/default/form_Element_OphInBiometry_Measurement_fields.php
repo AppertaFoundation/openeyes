@@ -9,7 +9,7 @@
         <thead>
         <tr>
             <th colspan="4">
-                <?php echo $element->getAttributeLabel($eye . 'Eye') ?>
+                <?php echo $element->getAttributeLabel($side . 'Eye') ?>
             </th>
         </tr>
         </thead>

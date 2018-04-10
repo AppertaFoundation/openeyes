@@ -107,17 +107,15 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
         data-element-type-name="<?php echo $element->elementType->name ?>"
         data-element-display-order="<?php echo $element->elementType->display_order ?>">
     <div class="element-fields element-eyes">
-        <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye):
-        $hasEyeFunc = 'has' . ucfirst($eye);
+        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):
+        $hasEyeFunc = 'has' . ucfirst($eye_side);
         ?>
-        <div class="element-eye <?= $eye ?>-eye column <?= $side ?> side <?= !$element->$hasEyeFunc() ? "inactive" : "" ?>"
-             data-side="<?= $eye ?>">
+        <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side <?= !$element->$hasEyeFunc() ? "inactive" : "" ?>"
+             data-side="<?= $eye_side ?>">
             <div class="active-form">
                 <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-
                 <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
-                    'eye' => $eye,
-                    'side' => $side,
+                    'side' => $eye_side,
                     'element' => $element,
                     'form' => $form,
                     'data' => $data,
@@ -130,7 +128,7 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
     <?php endforeach; ?>
 </section>
 </section>
-<section class="element edit full  eye-divider edit-visual-acuity">
+<section class="element edit full  eye-divider">
     <header class="element-header">
         <h3 class="element-title">Visual Acuity <?php echo $VAdate; ?></h3>
     </header>
@@ -259,7 +257,7 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
 }
 ?>
 
-<section class="element edit full  eye-divider edit-near-visual-acuity">
+<section class="element edit full  eye-divider">
     <header class="element-header">
         <h3 class="element-title">Near Visual Acuity <?php echo $NearVAdate; ?></h3>
     </header>
@@ -355,7 +353,7 @@ for ($i = 0; $i < count($eventid); ++$i) {
 
 if ($refractfound) {
 ?>
-<section class="element edit full  eye-divider edit-near-visual-acuity">
+<section class="element edit full  eye-divider">
     <header class="element-header">
         <h3 class="element-title">Refraction - (exam date <?php echo date("d M Y",
                 strtotime($refract_event_date)); ?>)</h3>
@@ -401,7 +399,7 @@ if ($refractfound) {
 </section>
     <?php
     } else {?>
-    <section class="element edit full  eye-divider edit-near-visual-acuity">
+    <section class="element edit full  eye-divider">
     <header class="element-header">
         <h3 class="element-title">Refraction - (Not Recorded)</h3>
     </header>
