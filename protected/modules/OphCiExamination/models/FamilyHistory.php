@@ -198,4 +198,14 @@ class FamilyHistory extends \BaseEventTypeElement
             return true;
         }
     }
+
+    public function getDisplayOrder($action)
+    {
+        if ($action=='view'){
+            return 35;
+        }
+        else{
+            return parent::getDisplayOrder($action);
+        }
+    }
 }

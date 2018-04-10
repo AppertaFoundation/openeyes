@@ -365,6 +365,13 @@ class BaseEventTypeController extends BaseModuleController
                 }
             }
         }
+        usort($open_child_elements, function ($a, $b){
+            $a_order = $a->getDisplayOrder('view');
+            $b_order = $b->getDisplayOrder('view');
+            if($a_order==$b_order) return 0;
+            return ($a_order<$b_order) ? -1 : 1;
+        }
+        );
         return $open_child_elements;
     }
 

@@ -492,6 +492,9 @@ class BaseEventTypeElement extends BaseElement
         }
     }
 
+    public function getDisplayOrder($action){
+        return $this->getElementType()->display_order;
+    }
     /**
      * Stub method for audit checking before an element is saved.
      */
@@ -531,4 +534,5 @@ class BaseEventTypeElement extends BaseElement
             $this->audit = array();
         }
     }
+
 }

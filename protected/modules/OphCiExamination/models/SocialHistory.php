@@ -247,4 +247,14 @@ class SocialHistory extends \BaseEventTypeElement
             return true;
         }
     }
+
+    public function getDisplayOrder($action)
+    {
+        if ($action=='view'){
+            return 40;
+        }
+        else{
+            return parent::getDisplayOrder($action);
+        }
+    }
 }

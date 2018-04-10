@@ -323,4 +323,14 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     {
         return 1;
     }
+
+    public function getDisplayOrder($action)
+    {
+        if ($action=='view'){
+            return 20;
+        }
+        else{
+            return parent::getDisplayOrder($action);
+        }
+    }
 }

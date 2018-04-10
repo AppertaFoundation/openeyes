@@ -30,7 +30,7 @@ if ($element->isIndividual('view')) {
            data-element-type-id="<?php echo $element->elementType->id ?>"
            data-element-type-class="<?php echo $element->elementType->class_name ?>"
            data-element-type-name="<?php echo $element->elementType->name ?>"
-           data-element-display-order="<?php echo $element->elementType->display_order ?>">
+           data-element-display-order="<?php echo $element->getDisplayOrder('view') ?>">
       <?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
 
         <header class=" element-header">

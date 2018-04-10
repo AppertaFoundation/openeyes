@@ -214,4 +214,14 @@ class HistoryMedications extends \BaseEventTypeElement
             return true;
         }
     }
+
+    public function getDisplayOrder($action)
+    {
+        if ($action=='view'){
+            return 15;
+        }
+        else{
+            return parent::getDisplayOrder($action);
+        }
+    }
 }
