@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="eyedraw-canvas">
+<div class="eyedraw-canvas flex-layout">
     <?php
     $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'idSuffix' => $side . '_' . $element->elementType->id . '_' . $element->id,
