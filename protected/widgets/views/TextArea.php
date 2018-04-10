@@ -21,11 +21,13 @@
        class="row field-row flex-layout flex-left"
        style="<?=($hidden) ? 'display: none':''?>"
   >
-		<div class="cols-<?=$layoutColumns['label']?> column">
-			<label for="<?=CHtml::modelName($element)."_$field"?>">
-          <?=($label)?CHtml::encode($element->getAttributeLabel($field)).':':''?>
-      </label>
-		</div>
+      <?php if (!$no_label): ?>
+        <div class="cols-<?= $layoutColumns['label'] ?> column">
+          <label for="<?= CHtml::modelName($element) . "_$field" ?>">
+              <?= ($label) ? CHtml::encode($element->getAttributeLabel($field)) . ':' : '' ?>
+          </label>
+        </div>
+      <?php endif; ?>
 		<div class="cols-<?php echo $layoutColumns['field']?> column">
 <?php endif;
 $attr = array(
