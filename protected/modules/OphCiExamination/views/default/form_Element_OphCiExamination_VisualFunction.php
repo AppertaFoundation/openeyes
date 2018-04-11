@@ -54,14 +54,17 @@
                     ?>
                 </td>
                 <td class="top">
-                  <button class="button js-add-comments" data-input="#pupils-<?=$eye_side?>-comments" type="button">
+                  <button class="button js-add-comments"
+                          data-input="#visual-function-<?=$eye_side?>-comments"
+                          style="display: <?= !$element->{$eye_side.'_comments'}?:'none' ?>;"
+                          type="button">
                     <i class="oe-i comments small-icon"></i>
                   </button>
                 </td>
               </tr>
               </tbody>
             </table>
-            <div id="<?=$eye_side?>-eye-comments" class="field-row-pad-top cols-full" style="display: none;">
+            <div id="visual-function-<?=$eye_side?>-comments" class="field-row-pad-top cols-full" style="display: <?= $element->{$eye_side.'_comments'}?:'none' ?>;">
                 <?php
                 echo $form->textArea(
                     $element,
