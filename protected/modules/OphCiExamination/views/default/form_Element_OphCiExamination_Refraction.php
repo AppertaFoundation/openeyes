@@ -51,7 +51,7 @@
                 </td>
                 <td class="cols-2">
                     <?php echo CHtml::activeTextField($element, $eye_side . '_axis',
-                        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'axis')) ?>
+                        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'axis cols-11')) ?>
                 </td>
                 <td class="cols-4">
                     <?php echo CHtml::activeDropDownList($element, $eye_side . '_type_id',
