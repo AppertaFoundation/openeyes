@@ -48,39 +48,34 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 
   <div class="row field-row" id="div_Element_OphTrOperationnote_ProcedureList_id">
 
-    <div class="large-4 column">
-      <label for="Element_OphTrOperationnote_ProcedureList_id" class="right">Operation:</label>
-    </div>
-    <div class="large-5 column end">
+    <div class="cols-5 column end">
         <?php echo CHtml::dropDownList('OphCiExamination_postop_complication_operation_note_id', $operation_note_id,
             $operationNoteList,
             array(
                 'id' => 'OphCiExamination_postop_complication_operation_note_id-select',
                 'name' => 'OphCiExamination_postop_complication_operation_note_id',
+                'nolabel' => true,
             )
         ); ?>
     </div>
   </div>
-
+<hr />
   <div class="element-fields element-eyes">
       <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
       <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):
-          $eye_abbr = $eye_side == 'right' ? 'R' : 'L'; ?>
+          $eye_abbr = $eye_side === 'right' ? 'R' : 'L'; ?>
         <div class="element-eye <?= $eye_side ?>-eye column side <?= $page_side ?>" data-side="<?= $eye_side ?>">
-          <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
+          <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
             <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
             <div>
-              <label>
-                  <?= OphCiExamination_PostOpComplications::model()->getAttributeLabel('id') ?>:
-              </label>
                 <?php echo $form->dropDownList(
                     OphCiExamination_PostOpComplications::model(),
                     'name', ${$eye_side . '_eye_data'},
                     array(
-                        'empty' => array('-1' => '-- Select --'),
+                        'empty' => array('-1' => 'Select Common Complication'),
                         'id' => $eye_side . '-complication-select',
-                        'nowrapper' => true,
+                        'nolabel' => true,
                     ),
                     false,
                     array()
@@ -101,33 +96,28 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
                 }",
                     'options' => array(
                         'select' => "js:function(event, ui) {
-										addPostOpComplicationTr(ui.item.label,'" . $eye_side . "-complication-list', ui.item.value, 0  );
-										setPostOpComplicationTableText();
-										return false;
-									}",
+                    addPostOpComplicationTr(ui.item.label,'" . $eye_side . "-complication-list', ui.item.value, 0  );
+                    setPostOpComplicationTableText();
+                    return false;
+                  }",
                     ),
                     'htmlOptions' => array(
-                        'placeholder' => 'search for complications',
+                        'placeholder' => 'Search for Complication',
+                        'size' => 40,
                     ),
                 )); ?>
             </div>
           </div>
           <div class="active-form" style="<?= !$element->hasEye($eye_side) ? "display: none;" : "" ?>">
-            <h5 class="<?= $eye_side ?>-no-recorded-complication-text no-recorded"
+            <heading class="<?= $eye_side ?>-no-recorded-complication-text no-recorded"
                 style="display: <?php echo ${$eye_side . '_values'} ? 'none' : '' ?>">
-              No Recorded Complications</h5>
+              No Recorded Complications</heading>
               <?php echo $form->hiddenInput($element, 'id', false); ?>
 
             <table id="<?= $eye_side ?>-complication-list"
-                   class="recorded-postop-complications cols-full"
+                   class="recorded-postop-complications cols-8"
                    style="display: <?php echo ${$eye_side . '_values'} ? '' : 'none' ?>"
                    data-sideletter="<?= $eye_abbr ?>">
-              <thead>
-                <tr>
-                  <th>Recorded Complications</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
               <tbody>
               <?php foreach (${$eye_side . '_values'} as $key => $value): ?>
                 <tr>
@@ -160,7 +150,7 @@ $right_values = $element->getRecordedComplications(\Eye::RIGHT, $operation_note_
 
 <?php else: ?>
   <div class="row field-row" id="div_Element_OphTrOperationnote_ProcedureList_id">
-    <div class="large-12 column text-center">
+    <div class="cols-12 column text-center">
       There are no recorded operations for this patient
     </div>
   </div>

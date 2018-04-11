@@ -1158,12 +1158,12 @@ $(document).ready(function() {
                 $('#left-complication-select option').remove();
                 $('#right-complication-select option').remove();
 
-                $('#right-complication-select').append( $('<option>').text("-- Select --") );
+                $('#right-complication-select').append( $('<option>').text("Select Common Complication") );
                 $.each( data.right_select, function( key, val ) {
                     $('#right-complication-select').append( $('<option>', {value: val.id, 'data-display_order':val.display_order}).text(val.name) );
                 });
 
-                $('#left-complication-select').append( $('<option>').text("-- Select --") );
+                $('#left-complication-select').append( $('<option>').text("Select Common Complication") );
                 $.each( data.left_select, function( key, val ) {
                     $('#left-complication-select').append( $('<option>', {value: val.id, 'data-display_order':val.display_order}).text(val.name) );
                 });
@@ -1282,23 +1282,23 @@ $(document).ready(function() {
 
         var $active_form = $right_table.closest('.active-form');
         if( $right_table.find('tbody').find('tr').length === 0  ){
-            $active_form.find('h5.recorded').hide();
-            $active_form.find('h5.no-recorded').show();
+            $active_form.find('.recorded').hide();
+            $active_form.find('.no-recorded').show();
             $right_table.hide();
         } else {
-            $active_form.find('h5.recorded').show();
-            $active_form.find('h5.no-recorded').hide();
+            $active_form.find('.recorded').show();
+            $active_form.find('.no-recorded').hide();
             $right_table.show();
         }
 
         $active_form = $left_table.closest('.active-form');
         if( $left_table.find('tbody').find('tr').length === 0  ){
-            $active_form.find('h5.recorded').hide();
-            $active_form.find('h5.no-recorded').show();
+            $active_form.find('.recorded').hide();
+            $active_form.find('.no-recorded').show();
             $left_table.hide();
         } else {
-            $active_form.find('h5.recorded').show();
-            $active_form.find('h5.no-recorded').hide();
+            $active_form.find('.recorded').show();
+            $active_form.find('.no-recorded').hide();
             $left_table.show();
         }
     }
