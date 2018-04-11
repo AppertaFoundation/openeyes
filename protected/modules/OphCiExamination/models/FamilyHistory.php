@@ -191,12 +191,7 @@ class FamilyHistory extends \BaseEventTypeElement
 
     public function isIndividual($action)
     {
-        if ($action === 'view') {
-            return false;
-        }
-        else {
-            return true;
-        }
+        return $action!=='view';
     }
 
     public function getDisplayOrder($action)

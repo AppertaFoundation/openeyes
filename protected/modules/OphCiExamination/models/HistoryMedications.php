@@ -207,18 +207,13 @@ class HistoryMedications extends \BaseEventTypeElement
 
     public function isIndividual($action)
     {
-        if ($action === 'view') {
-            return false;
-        }
-        else {
-            return true;
-        }
+        return $action!=='view';
     }
 
     public function getDisplayOrder($action)
     {
         if ($action=='view'){
-            return 15;
+            return 25;
         }
         else{
             return parent::getDisplayOrder($action);

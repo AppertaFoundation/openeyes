@@ -492,8 +492,27 @@ class BaseEventTypeElement extends BaseElement
         }
     }
 
+
+    /**
+     * Return the display order of element, solve the problem elements has different order in different display mode.
+     * @param $action
+     * @return mixed
+     */
     public function getDisplayOrder($action){
         return $this->getElementType()->display_order;
+    }
+
+    /**
+     * Return the parent type of element, solve the problem elements has different parent in different display mode.
+     * @param $action
+     * @return mixed
+     */
+    public function getParentType($action){
+        return $this->getElementType()->parent_element_type->class_name;
+    }
+
+    public function isChild($action){
+        return $this->getElementType()->isChild();
     }
     /**
      * Stub method for audit checking before an element is saved.

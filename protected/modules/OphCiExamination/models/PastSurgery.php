@@ -165,7 +165,7 @@ class PastSurgery extends \BaseEventTypeElement
     public function getDisplayOrder($action)
     {
         if ($action=='view'){
-            return 5;
+            return 10;
         }
         else{
             return parent::getDisplayOrder($action);

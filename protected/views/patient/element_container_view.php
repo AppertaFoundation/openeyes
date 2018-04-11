@@ -43,4 +43,4 @@ if ($element->isIndividual('view')) {
     echo $content;
 } ?>
 
-<?php $this->renderTiledElements($this->getChildElements($element->getElementType()), 'view');?>
+<?php $this->renderTiledElements($this->getChildElements($element->getElementType(),'view'), 'view');?>

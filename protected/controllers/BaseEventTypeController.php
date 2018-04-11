@@ -281,23 +281,22 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @return array
      */
-    public function getElements()
+    public function getElements($action='edit')
     {
         $elements = array();
         $element_name = array();
         if (is_array($this->open_elements)) {
             foreach ($this->open_elements as $element) {
-                if ($element->getElementType() && !$element->getElementType()->isChild()) {
+                if ($element->getElementType() && !$element->isChild($action)) {
                     $elements[] = $element;
-                    $element_name[] = $element->getElementType()->name;
+                    $element_name[] = $element->getElementType()->class_name;
                 }
             }
             foreach ($this->open_elements as $element) {
-                if ($element->getElementType()->isChild()&&!in_array($element->getElementType()->parent_element_type->name, $element_name)) {
+                if ($element->isChild($action)&&!in_array($element->getParentType($action), $element_name)) {
                     $elements[] = $element;
                 }
             }
-
         }
         return $elements;
     }
@@ -354,24 +353,28 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @return \BaseEventTypeElement[] $open_elements
      */
-    public function getChildElements($parent_type)
+    public function getChildElements($parent_type, $action='edit')
     {
         $open_child_elements = array();
         if (is_array($this->open_elements)) {
             foreach ($this->open_elements as $open) {
                 $et = $open->getElementType();
-                if ($et && $et->isChild() && $et->parent_element_type->class_name == $parent_type->class_name) {
+                if ($et && $open->isChild($action) && $open->getParentType($action) == $parent_type->class_name) {
                     $open_child_elements[] = $open;
                 }
             }
         }
-        usort($open_child_elements, function ($a, $b){
-            $a_order = $a->getDisplayOrder('view');
-            $b_order = $b->getDisplayOrder('view');
-            if($a_order==$b_order) return 0;
-            return ($a_order<$b_order) ? -1 : 1;
+        if ($action == 'view') {
+            usort($open_child_elements, function ($a, $b) {
+                $a_order = $a->getDisplayOrder('view');
+                $b_order = $b->getDisplayOrder('view');
+                if ($a_order == $b_order) {
+                    return 0;
+                }
+                return ($a_order < $b_order) ? -1 : 1;
+            }
+            );
         }
-        );
         return $open_child_elements;
     }
 
@@ -1611,7 +1614,7 @@ class BaseEventTypeController extends BaseModuleController
             $this->renderPartial('//patient/event_date', array('form' => $form));
         }
 
-        $this->renderTiledElements($this->getElements(), $action, $form, $data);
+        $this->renderTiledElements($this->getElements($action), $action, $form, $data);
     }
 
     /**
@@ -1637,7 +1640,6 @@ class BaseEventTypeController extends BaseModuleController
 
             //if the tile size can't be determined assume a full row
             $sizeOfTile = $element->getTileSize($action) ?: $this->element_tiles_wide;
-
             if($tile_index + $sizeOfTile > $this->element_tiles_wide){
                 $tile_index = 0;
                 $rows[++$row_index] = array();
@@ -1647,7 +1649,7 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         foreach ($rows as $row){
-            if(count($row) > 1){
+            if(count($row) > 1||($action=='view'&&$row[0]->getTileSize($action))){
                 $this->beginWidget('TiledEventElementWidget');
                 $this->renderElements($row, $action, $form, $data);
                 $this->endWidget();

@@ -6,7 +6,11 @@ if ($element->getElementTypeName() == 'Family History'
         !$element->event->getElementByClass('OEModule\OphCiExamination\models\FamilyHistory')
     )) {
   ?>
-  <section class="element tile view-family-social-history">
+  <section class="element tile view-family-social-history"
+           data-element-type-id="<?php echo $element->elementType->id ?>"
+           data-element-type-class="<?php echo $element->elementType->class_name ?>"
+           data-element-type-name="<?php echo $element->elementType->name ?>"
+           data-element-display-order="<?php echo $element->getDisplayOrder('view') ?>">
     <header class="element-header">
       <h3 class="element-title">Family and Social</h3>
     </header>

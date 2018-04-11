@@ -394,8 +394,4 @@ class Element_OphCiExamination_LaserManagement extends \SplitEventTypeElement
         return implode(', ', $result);
     }
 
-    public function getTileSize($action)
-    {
-        return 3;
-    }
 }

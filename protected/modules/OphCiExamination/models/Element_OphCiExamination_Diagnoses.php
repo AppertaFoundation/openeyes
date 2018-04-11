@@ -402,8 +402,36 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         return "Eye Diagnoses";
     }
 
+    public function getDisplayOrder($action)
+    {
+        if ($action=='view'){
+            return 5;
+        }
+        else{
+            return parent::getDisplayOrder($action);
+        }
+    }
+
     public function getTileSize($action)
     {
-        return 3;
+        return 1;
+    }
+
+    public function getParentType($action){
+        if ($action=='view'){
+            return Element_OphCiExamination_History::class;
+        }
+        else{
+            return parent::getParentType($action);
+        }
+    }
+
+    public function isChild($action){
+        if ($action=='view'){
+            return true;
+        }
+        else{
+            return parent::isChild($action);
+        }
     }
 }
