@@ -168,18 +168,24 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
                 endif;
             endforeach;?>
           <div class="row field-row">
-            <div class="large-4 column pcr-risk-div">
+            <span class="pcr-risk-div">
               <label class="pro-theme">
                 PCR Risk <span class="pcr-span">&nbsp;</span> %
                   <?php $form->hiddenInput($element, $eye.'_pcr_risk', false, array('class' => 'pcr-input'));?>
               </label>
-            </div>
-            <div class="large-8 column end">
+            </span>
+            <span>
               <label>
                 Excess risk compared to average eye <span class="pcr-erisk">&nbsp;</span> times
-                  <?php $form->hiddenInput($element, $eye.'_excess_risk', false, array('class' => 'pcr-erisk-input'));?>
+                  <?php $form->hiddenInput($element, $eye . '_excess_risk', false,
+                      array('class' => 'pcr-erisk-input')); ?>
               </label>
-            </div>
+              <a href="https://www.nature.com/articles/6703049"
+                 target="_blank">
+              <i class="oe-i info small pad js-has-tooltip"
+                 data-tooltip-content="Calculation data derived from Narendran et al. The Cataract National Dataset electronic multicentre audit of 55,567 operations (click for more information)"></i>
+              </a>
+            </span>
           </div>
         </div>
         <div class="inactive-form" style="display: <?= ($element->{'has'.ucfirst($eye)}()) ? 'none' : 'block'; ?>;">
@@ -191,12 +197,4 @@ $jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applicatio
         </div>
       </div>
     <?php endforeach; ?>
-</div>
-<div class="large-6 column pcr-link">
-  Calculation data derived from
-  <br>
-  <a href="http://www.researchgate.net/publication/5525424_The_Cataract_National_Dataset_electronic_multicentre_audit_of_55_567_operations_Risk_stratification_for_posterior_capsule_rupture_and_vitreous_loss"
-     target="_blank">
-    Narendran et al. The Cataract National Dataset electronic multicentre audit of 55,567 operations
-  </a>
 </div>

@@ -253,18 +253,16 @@ $criteria = new CDbCriteria();
             PCR Risk <span class="pcr-span"> 6.1 </span> %
           </label>
         </span>
-        <div>
+        <span>
           <label>
             Excess risk compared to average eye <span class="pcr-erisk"><strong><span> 3  </span></strong></span> times
           </label>
-        </div>
-        <label>
-          Calculation data derived from
-          <a href="http://www.researchgate.net/publication/5525424_The_Cataract_National_Dataset_electronic_multicentre_audit_of_55_567_operations_Risk_stratification_for_posterior_capsule_rupture_and_vitreous_loss"
-             target="_blank">
-            Narendran et al. The Cataract National Dataset electronic multicentre audit of 55,567 operations
-          </a>
-        </label>
+        </span>
+        <a href="https://www.nature.com/articles/6703049"
+           target="_blank">
+          <i class="oe-i info small pad js-has-tooltip"
+             data-tooltip-content="Calculation data derived from Narendran et al. The Cataract National Dataset electronic multicentre audit of 55,567 operations (click for more information)"></i>
+        </a>
       </div>
     </div>
   </div>
