@@ -4,7 +4,7 @@
         // private
         var id = id,
             eventObj = $btn,
-            useMouseEvents = false,
+            useMouseEvents = true,
             isGrouped = false, 		// e.g. patient popups
             groupController = null,
             isFixed = false,
@@ -20,15 +20,7 @@
                 e.stopPropagation();
                 // use $btn class as boolean
                 changeContent($btn.hasClass(css.open));
-            })
-                .mouseenter(function () {
-                    $btn.addClass(css.active);
-                    if (useMouseEvents) show();
-                })
-                .mouseleave(function () {
-                    $btn.removeClass(css.active);
-                    if (useMouseEvents) hide();
-                });
+            });
         }
 
         /**
