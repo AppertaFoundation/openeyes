@@ -20,7 +20,7 @@ $model_name = CHtml::modelName($element);
   <div class="label">Systemic Medications</div>
   <div class="data">
       <?php if (!$current && !$stopped) { ?>
-        <p>No medications recorded.</p>
+        <div style="font-style: italic;">Nil recorded.</div>
       <?php } else { ?>
         <table id="<?= $model_name ?>_entry_table">
           <tbody>
@@ -81,7 +81,7 @@ $model_name = CHtml::modelName($element);
     <div class="label">Eye medications</div>
     <div class="data">
         <?php if (!$current && !$stopped) { ?>
-          <p>No medications recorded.</p>
+          <div style="font-style: italic;">Nil recorded.</div>
         <?php } else { ?>
           <table id="<?= $model_name ?>_entry_table">
             <thead>
@@ -132,7 +132,7 @@ $model_name = CHtml::modelName($element);
                   </tr>
                 <?php }
             }
-              } ?>
+            } ?>
             </tbody>
           </table>
         <?php } ?>

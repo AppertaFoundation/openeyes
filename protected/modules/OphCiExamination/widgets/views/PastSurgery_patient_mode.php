@@ -25,7 +25,7 @@
     </thead>
     <tbody>
     <?php if (!$operations || sizeof($operations)==0) { ?>
-      <p>No ophthalmic diagnoses recorded.</p>
+      <div style="font-style: italic;">Nil recorded.</div>
     <?php } else {
      foreach ($operations as $operation) {?>
         <tr>

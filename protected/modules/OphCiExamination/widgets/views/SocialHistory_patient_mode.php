@@ -1,5 +1,5 @@
 <?php if (!$element) { ?>
-<p>No Social History recorded.</p>
+  <div style="font-style: italic;">Nil recorded</div>
 <?php } else { ?>
     <table class="plain patient-data">
         <tbody>
