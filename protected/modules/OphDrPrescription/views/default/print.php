@@ -25,7 +25,7 @@
 		</div>
 	<?php }?>
 	<div class="banner clearfix">
-		<?= $logoHelper->render() ?>
+		<?= $logoHelper->render('//base/_logo', 50) ?>
 	</div>
 	<?php $this->renderPartial('_address', array('site' => $this->site))?>
 	<?php $this->renderOpenElements($this->action->id, null, array('copy' => @$copy)); ?>

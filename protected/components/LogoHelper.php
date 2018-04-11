@@ -15,12 +15,13 @@ class LogoHelper
      *
      * @return mixed
      */
-    public function render($template = '//base/_logo')
+    public function render($template = '//base/_logo', $size = 100)
     {
         return Yii::app()->controller->renderPartial(
             $template,
             array(
                 'logo' => $this->getLogo(),
+                'size' => $size
             ),
             true
         );
