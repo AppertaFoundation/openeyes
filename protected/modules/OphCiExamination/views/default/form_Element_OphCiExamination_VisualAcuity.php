@@ -74,9 +74,6 @@ $this->endClip('element-title-additional');
                         ++$key; }?>
                 </tbody>
             </table>
-            <div id="refraction-<?= $page_side ?>-comments" class="field-row-pad-top" style="display:none;">
-              <textarea placeholder="Comments" autocomplete="off" rows="1" class="js-input-comments cols-full" style="overflow: hidden; word-wrap: break-word; height: 24px;"></textarea>
-            </div>
             <div class="field-row row noReadings"<?php if ($element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?>>
                 <div class="large-4 column">
                     <div class="field-info">Not recorded</div>
