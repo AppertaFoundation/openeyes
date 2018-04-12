@@ -15,18 +15,4 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- $logoHelper = new LogoHelper();
-
 ?>
-<div class="print-form-div">
-	<?php if (@$copy) {?>
-		<div class="watermark">
-			<img src="<?= $this->assetPath.'/img/copy_for_'.$copy.'.png' ?>"/>
-		</div>
-	<?php }?>
-	<div class="banner clearfix">
-		<?= $logoHelper->render('//base/_logo', 50) ?>
-	</div>
-	<?php $this->renderPartial('_address', array('site' => $this->site))?>
-	<?php $this->renderOpenElements($this->action->id, null, array('copy' => @$copy)); ?>
-</div>

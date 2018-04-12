@@ -1,32 +1,32 @@
 <?php
 /**
- * OpenEyes.
+ * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- $logoHelper = new LogoHelper();
-
 ?>
-<div class="print-form-div">
-	<?php if (@$copy) {?>
-		<div class="watermark">
-			<img src="<?= $this->assetPath.'/img/copy_for_'.$copy.'.png' ?>"/>
-		</div>
-	<?php }?>
-	<div class="banner clearfix">
-		<?= $logoHelper->render('//base/_logo', 50) ?>
-	</div>
-	<?php $this->renderPartial('_address', array('site' => $this->site))?>
-	<?php $this->renderOpenElements($this->action->id, null, array('copy' => @$copy)); ?>
-</div>
+
+<section class="element element-data">
+    <div class="row">
+        <?php if( $element->patient_booking_contact_number != "" ){ ?>
+            <div class="large-6 column">
+                Patient: <?php echo $element->patient_booking_contact_number; ?>
+            </div>
+        <?php } ?>
+        <?php if( $element->collector_name != "" || $element->collector_contact_number != "" ){ ?>
+            <div class="large-6 column">
+                Person collecting: <?php echo $element->collector_name; ?> - <?php echo $element->collector_contact_number; ?>
+            </div>
+        <?php } ?>
+    </div>
+</section>

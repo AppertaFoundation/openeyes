@@ -395,6 +395,9 @@ class DefaultController extends BaseEventTypeController
 
     public function actionPrint($id)
     {
+        Yii::app()->params['wkhtmltopdf_left_margin'] = '8mm';
+        Yii::app()->params['wkhtmltopdf_right_margin'] = '8mm';
+
         $this->printInit($id);
         $this->layout = '//layouts/print';
 

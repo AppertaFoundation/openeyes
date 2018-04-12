@@ -19,94 +19,53 @@
 
 <div class="element-data">
 	<div class="large-4 column">
-        
-        <div class="large-7 column">
-            <label>
-                <?= $element->getAttributeLabel('blood_pressure')?>:
-            </label>
+        <div class="large-12 column">
+            <span class="data-label"><?= $element->getAttributeLabel('blood_pressure')?>:</span>&emsp;<span class="data-value"><?php echo (!empty($element->blood_pressure_systolic)) ? $element->blood_pressure_systolic.'/'. $element->blood_pressure_diastolic.' mmHg' :  '' ?><span>
         </div>
-        <div class="large-5 column">
-            <label><?= $element->blood_pressure_systolic .'/'. $element->blood_pressure_diastolic ?> mmHg</label>
+
+        <div class="large-12 column">
+            <span class="data-label"><?= $element->getAttributeLabel('blood_glucose')?>:</span>&emsp;<span class="data-value"><?php echo (!empty($element->blood_glucose)) ? $element->blood_glucose.' mmol/l': '' ?></span>
         </div>
-       
-        <div class="large-7 column">
-            <label>
-                <?= $element->getAttributeLabel('blood_glucose')?>:
-            </label>
-        </div>
-        <div class="large-5 column">
-            <label><?= $element->blood_glucose ?> mmol/l</label>
-        </div>
-        
-        <div class="large-7 column">
-            <label>
-                <?= $element->getAttributeLabel('weight')?>:
-            </label>
-        </div>
-        <div class="large-5 column">
-            <label><?= $element->weight ?> kg</label>
+
+        <div class="large-12 column">
+            <span class="data-label"><?= $element->getAttributeLabel('weight')?>:</span>&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;<span class="data-value"><?php echo (!empty($element->weight)) ? $element->weight.' kg': '' ?></span>
         </div>
     </div>
-    
+
     <div class="large-4 column">
-        
-        <div class="large-7 column">
-            <label>
-                <?= $element->getAttributeLabel('o2_sat')?>:
-            </label>
+
+        <div class="large-12 column">
+            <span class="data-label"><?= $element->getAttributeLabel('o2_sat')?>:</span>&emsp;<span class="data-value"><?php echo (!empty($element->o2_sat)) ? $element->o2_sat.' %' : '' ?></span>
         </div>
-        <div class="large-5 column">
-            <label><?= $element->o2_sat ?> %</label>
+
+        <div class="large-12 column">
+            <span class="data-label"><?= $element->getAttributeLabel('hba1c')?>:</span>&emsp;<span class="data-value"><?php echo (!empty($element->hba1c)) ? $element->hba1c.' mmol/mol' : '' ?></span>
         </div>
-        
-        
-        <div class="large-7 column">
-            <label>
-                <?= $element->getAttributeLabel('hba1c')?>:
-            </label>
-        </div>
-        <div class="large-5 column">
-            <label><?= $element->hba1c ?> mmol/mol</label>
-        </div>
-        
-        <div class="large-7 column" >
-            <label>
-                <?= $element->getAttributeLabel('height')?>:
-            </label>
-        </div>
-        <div class="large-5 column" id="bmi-height">
-            <label><?= $element->height ?> cm</label>
+
+        <div class="large-12 column" >
+            <span class="data-label"><?= $element->getAttributeLabel('height')?>:</span>&emsp;<span class="data-value"><?php echo (!empty($element->height)) ? $element->height.' cm' : '' ?></span>
         </div>
     </div>
-    
+
     <div class="large-4 column">
-        <div class="large-7 column">
-            <label>
-                <?= $element->getAttributeLabel('pulse')?>:
-            </label>
+        <div class="large-12 column">
+            <span class="data-label"><?= $element->getAttributeLabel('pulse')?>:</span>&emsp;<span class="data-value"><?php echo (!empty($element->pulse)) ? $element->pulse.' BPM' : ''; ?></span>
         </div>
-        <div class="large-5 column">
-            <label><?= $element->pulse ?> BPM</label>
-        </div>
-       
+
         <div class="large-12 column">&nbsp;</div>
-      
-        
-        <div class="large-7 column">
-            <label>
-                BMI:
-            </label>
-        </div>
-        <div class="large-5 column" id="bmi-container">
-            <label>
-                <?php 
+
+        <div class="large-12 column">
+            <span class="data-label">BMI:</span>&emsp;&nbsp;&nbsp;
+            <div id="bmi-container" class="data-value" style="display:inline-block;">
+                <?php
                     if(ceil($element->weight) > 0 && ceil($element->height) > 0){
                         echo $element->bmiCalculator( $element->weight, $element->height) ;
                     } else {
                         echo 'N/A';
                     }
                 ?>
-            </label>
-        </div>  
+            </div>
+        </div>
+
     </div>
 </div>

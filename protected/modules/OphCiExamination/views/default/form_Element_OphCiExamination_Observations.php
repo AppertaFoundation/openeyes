@@ -25,8 +25,8 @@
             </label>
         </div>
         <div class="large-7 column">
-            <?= CHtml::activeTextField($element,'blood_pressure_systolic', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'style' => 'width:50px; display:inline-block;', 'placeholder' => 'mmHg')); ?> /
-            <?= CHtml::activeTextField($element,'blood_pressure_diastolic', array('autocomplete' => Yii::app()->params['html_autocomplete'] , 'style' => 'width:50px; display:inline-block;', 'placeholder' => 'mmHg')); ?> 
+            <?= CHtml::activeTextField($element,'blood_pressure_systolic', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'style' => 'width:50px; display:inline-block;', 'placeholder' => 'mmHg', 'tabindex' => '1')); ?> /
+            <?= CHtml::activeTextField($element,'blood_pressure_diastolic', array('autocomplete' => Yii::app()->params['html_autocomplete'] , 'style' => 'width:50px; display:inline-block;', 'placeholder' => 'mmHg', 'tabindex' => '2')); ?> 
         </div>
         
         <div class="large-5 column">
@@ -35,7 +35,7 @@
             </label>
         </div>
         <div class="large-7 column">
-            <?= CHtml::activeTextField($element,'blood_glucose', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'mmol/l')); ?>
+            <?= CHtml::activeTextField($element,'blood_glucose', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'mmol/l', 'tabindex' => '5')); ?>
         </div>
         
         <div class="large-5 column">
@@ -44,7 +44,7 @@
             </label>
         </div>
         <div class="large-7 column bmi-keyup-event">
-            <?= CHtml::activeTextField($element,'weight', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'kg')); ?>
+            <?= CHtml::activeTextField($element,'weight', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'kg', 'tabindex' => '7')); ?>
         </div>
                
     </div>
@@ -57,7 +57,7 @@
             </label>
         </div>
         <div class="large-7 column">
-            <?= CHtml::activeTextField($element,'o2_sat', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => '%')); ?>
+            <?= CHtml::activeTextField($element,'o2_sat', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => '%', 'tabindex' => '3')); ?>
         </div>
         
         <div class="large-5 column">
@@ -66,7 +66,7 @@
             </label>
         </div>
         <div class="large-7 column">
-            <?= CHtml::activeTextField($element,'hba1c', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'mmol/mol')); ?>
+            <?= CHtml::activeTextField($element,'hba1c', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'mmol/mol', 'tabindex' => '6')); ?>
         </div>
 
         <div class="large-5 column">
@@ -75,7 +75,7 @@
             </label>
         </div>
         <div class="large-7 column bmi-keyup-event">
-            <?= CHtml::activeTextField($element,'height', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'cm')); ?>
+            <?= CHtml::activeTextField($element,'height', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'cm', 'tabindex' => '8')); ?>
         </div>
         
     </div>
@@ -88,7 +88,7 @@
             </label>
         </div>
         <div class="large-7 column">
-            <?= CHtml::activeTextField($element,'pulse', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'BPM')); ?>
+            <?= CHtml::activeTextField($element,'pulse', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => 'BPM', 'tabindex' => '4')); ?>
         </div>
         
         <div class="large-12 column">&nbsp;</div>
