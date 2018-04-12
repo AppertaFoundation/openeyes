@@ -50,7 +50,7 @@ $vascularities = CHtml::listData(
 $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_BlebAssessment_Vascularity::model()->getFieldImages();
 
 ?>
-<div class="element-fields flex-layout full-width">
+<div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
   <script type="text/javascript">
     var idToImagesArr = {
@@ -86,8 +86,7 @@ $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_B
     });
   </script>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-      <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side
-	<?php if (!$element->hasEye($eye_side)): ?> inactive<?php endif; ?>" data-side="<?= $eye_side ?>">
+      <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side" data-side="<?= $eye_side ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <table class="bleb-assessment">
