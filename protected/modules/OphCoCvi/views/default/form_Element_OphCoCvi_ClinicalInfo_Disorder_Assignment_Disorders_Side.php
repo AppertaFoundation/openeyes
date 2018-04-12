@@ -12,7 +12,7 @@
         <td>
           <label><?php echo $disorder->name; ?></label>
         </td>
-        <td>
+        <td class="cols-full">
           <label class="inline highlight">
               <?php echo CHtml::radioButton(
                   $field_base_name . "[affected]",
