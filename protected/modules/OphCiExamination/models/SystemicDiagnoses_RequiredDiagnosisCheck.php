@@ -36,6 +36,6 @@ class SystemicDiagnoses_RequiredDiagnosisCheck extends SystemicDiagnoses_Diagnos
      */
     public function tableName()
     {
-        return 'ophciexamination_systemic_diagnoses_required_diagnosis_check';
+        return 'ophciexamination_systemic_diagnoses_req_diag_check';
     }
 }

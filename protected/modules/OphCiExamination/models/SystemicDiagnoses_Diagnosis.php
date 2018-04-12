@@ -39,6 +39,24 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
     public static $NOT_PRESENT = 0;
     public static $NOT_CHECKED = -9;
 
+    public static function getStatusName($status_id)
+    {
+        switch ($status_id) {
+            case self::$PRESENT:
+                return 'Present';
+                break;
+            case self::$NOT_PRESENT:
+                return 'Not present';
+                break;
+            case self::$NOT_CHECKED:
+                return 'Not checked';
+                break;
+            default:
+                return 'Unknown';
+                break;
+        }
+    }
+
     /**
      * Returns the static model of the specified AR class.
      *

@@ -63,14 +63,22 @@ if (!isset($values)) {
 
     <td id="<?="{$model_name}_{$row_count}_checked_status"?>">
         <?php
+
             $is_not_checked = $values['has_disorder'] == SystemicDiagnoses_Diagnosis::$NOT_CHECKED;
             $selected = $posted_checked_status ? $posted_checked_status : ($is_not_checked ? null : $values['has_disorder']);
 
-            echo CHtml::dropDownList($model_name . '[has_disorder][]', $selected, [
-                SystemicDiagnoses_Diagnosis::$NOT_CHECKED => 'Not Checked',
-                SystemicDiagnoses_Diagnosis::$PRESENT => 'Yes',
-                SystemicDiagnoses_Diagnosis::$NOT_PRESENT => 'No',
-            ],['empty' => '- Select -']); ?>
+            if($removable) {
+                echo '<span>'.SystemicDiagnoses_Diagnosis::getStatusName($selected).'</span>';
+                echo CHtml::hiddenField($model_name . '[has_disorder][]', $selected);
+            }
+            else {
+                echo CHtml::dropDownList($model_name . '[has_disorder][]', $selected, [
+                    SystemicDiagnoses_Diagnosis::$NOT_CHECKED => SystemicDiagnoses_Diagnosis::getStatusName(SystemicDiagnoses_Diagnosis::$NOT_CHECKED),
+                    SystemicDiagnoses_Diagnosis::$PRESENT => SystemicDiagnoses_Diagnosis::getStatusName(SystemicDiagnoses_Diagnosis::$PRESENT),
+                    SystemicDiagnoses_Diagnosis::$NOT_PRESENT => SystemicDiagnoses_Diagnosis::getStatusName(SystemicDiagnoses_Diagnosis::$NOT_PRESENT),
+                ],['empty' => '- Select -']);
+            }
+        ?>
     </td>
 
     <td>

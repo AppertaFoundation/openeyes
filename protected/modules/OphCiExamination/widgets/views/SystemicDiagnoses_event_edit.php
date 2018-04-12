@@ -16,6 +16,8 @@
  */
 
 use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
+
+/** @var \OEModule\OphCiExamination\models\SystemicDiagnoses $element */
 ?>
 
 <script type="text/javascript" src="<?=$this->getJsPublishedPath('SystemicDiagnoses.js')?>"></script>
@@ -60,7 +62,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
         } ?>
 
         <?php
-        foreach ($element->diagnoses as $row_count => $diagnosis) {
+        foreach (array_merge($element->diagnoses, $this->getCheckedRequiredSystemicDiagnoses()) as $diagnosis) {
             $this->render(
                 'SystemicDiagnosesEntry_event_edit',
                 array(
@@ -73,6 +75,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
                     'posted_checked_status' => $element->widget->getPostedCheckedStatus($row_count)
                 )
             );
+            $row_count++;
         }
         ?>
         </tbody>

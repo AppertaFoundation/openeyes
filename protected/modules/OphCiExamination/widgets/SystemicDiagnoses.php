@@ -63,7 +63,7 @@ class SystemicDiagnoses extends \BaseEventElementWidget
      */
     public function getMissingRequiredSystemicDiagnoses()
     {
-        $current_ids = array_map(function ($e) { return $e->disorder_id; }, $this->element->diagnoses);
+        $current_ids = array_map(function ($e) { return $e->disorder_id; }, array_merge($this->element->diagnoses, $this->element->checked_required_diagnoses));
         $missing = array();
 
         foreach ($this->getRequiredSystemicDiagnoses() as $required) {
@@ -74,6 +74,28 @@ class SystemicDiagnoses extends \BaseEventElementWidget
             }
         }
         return $missing;
+    }
+
+    /**
+     * Returns all Systemic Diagnoses that were previously marked with "not" status
+     * @return SystemicDiagnoses_Diagnosis[]
+     */
+
+    public function getCheckedRequiredSystemicDiagnoses()
+    {
+        $current_disorder_ids = array_map(function ($e) { return $e->disorder_id; }, array_merge($this->element->diagnoses));
+        $checked = array();
+        foreach ($this->element->checked_required_diagnoses as $diag) {
+            if(!in_array($diag->disorder_id, $current_disorder_ids)) {
+                $row = new SystemicDiagnoses_Diagnosis();
+                $row->disorder_id = $diag->disorder_id;
+                $row->side_id = $diag->side_id;
+                $row->date = $diag->date;
+                $row->has_disorder = $diag->has_disorder;
+                $checked[] = $row;
+            }
+        }
+        return $checked;
     }
 
     /**
