@@ -51,19 +51,23 @@
                var popup = side.find('#add-to-adnexal');
                var adnexText = side.find('#<?=CHtml::modelName($element)?>_<?=$eye_side?>_description');
 
-               function setAdnexText(selected) {
-                   adnexText.val(adnexText.val() ?
-                       adnexText.val() + selected.attr('data-str') : selected.attr('data-str')
-                   );
+               function setAdnexText() {
+                   popup.find('.selected').each(function () {
+                     adnexText.val(adnexText.val() ?
+                       adnexText.val()+$(this).attr('data-str') : $(this).attr('data-str')
+                     );
+                   });
+
+                   adnexText.trigger('oninput');
                    popup.find('.selected').removeClass('selected');
                }
 
                setUpAdder(
                    popup,
-                   'return',
+                   'multi',
                    setAdnexText,
                    side.find('.js-add-select-search'),
-                   null,
+                   popup.find('.add-icon-btn'),
                    popup.find('.icon-close-btn .icon-add-btn')
                );
             });

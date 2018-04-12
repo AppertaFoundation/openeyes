@@ -64,6 +64,7 @@
                     inputText.val()+$(this).attr('data-str') : $(this).attr('data-str')
                 );
             });
+            inputText.trigger('oninput');
             popup.find('.selected').removeClass('selected');
         }
 

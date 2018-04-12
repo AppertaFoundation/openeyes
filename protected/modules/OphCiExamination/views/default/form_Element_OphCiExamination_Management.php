@@ -58,7 +58,7 @@
         inputText.val(inputText.val() ? inputText.val() + selectedStr : selectedStr);
         $(this).removeClass('selected');
       });
-
+      inputText.trigger('oninput');
     }
 
     setUpAdder(
