@@ -2602,5 +2602,22 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
     
+    /*
+     * Last Pulse Measurement
+     * @param $patient
+     * @param bool $use_context
+     * @return string
+     */
+    public function getLastPulseMeasurement( \Patient $patient , $use_context = true )
+    {
+        if ($bp = $this->getLatestElement('models\Element_OphCiExamination_Observations',
+            $patient,
+            $use_context)
+        ) {
+            return $bp->pulse;
+        }
+    }
+    
+    
     
 }
