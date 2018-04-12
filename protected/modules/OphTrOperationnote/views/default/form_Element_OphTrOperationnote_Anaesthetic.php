@@ -40,22 +40,26 @@ $is_hidden = function () use ($element) {
               <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type'); ?>
           </td>
         </tr>
-        <tr id="Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container">
+        <tr>
           <td>LA Delivery Methods</td>
           <td>
-              <?php echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', null,
-                  false, false, false, false, array('fieldset-class' => ($is_hidden() ? 'hidden' : ''))); ?>
+            <div id="Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container">
+                <?php echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', null,
+                    false, false, false, false, array('fieldset-class' => ($is_hidden() ? 'hidden' : ''))); ?>
+            </div>
           </td>
         </tr>
-        <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container">
+        <tr>
           <td>
             Given by:
           </td>
           <td>
-              <?php echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist', $element->anaesthetist_id,
-                  false, false,
-                  false, false,
-                  array('fieldset-class' => ($is_hidden() ? 'hidden' : ''), 'nowrapper' => true)); ?>
+            <div id="Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container">
+                <?php echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist', $element->anaesthetist_id,
+                    false, false,
+                    false, false,
+                    array('fieldset-class' => ($is_hidden() ? 'hidden' : ''), 'nowrapper' => true)); ?>
+            </div>
           </td>
         </tr>
         <?php if ($element->getSetting('fife')): ?>
