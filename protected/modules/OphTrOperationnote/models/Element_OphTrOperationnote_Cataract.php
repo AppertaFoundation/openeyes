@@ -531,4 +531,8 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
         parent::afterSave();
     }
 
+    public function getContainer_form_view()
+    {
+        return false;
+    }
 }

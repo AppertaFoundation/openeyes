@@ -101,6 +101,12 @@ function callbackRemoveProcedure(procedure_id) {
                 $('.' + val).slideToggle('fast', function () {
                     $('.' + val).remove();
                 });
+
+                if (val === 'Element_OphTrOperationnote_Cataract') {
+                  $('#ophTrOperationnotePCRRiskDiv').slideToggle('fast', function() {
+                      $(this).remove();
+                  })
+                }
             });
         }
     });

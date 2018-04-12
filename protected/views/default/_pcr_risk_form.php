@@ -69,7 +69,7 @@ $criteria = new CDbCriteria();
       <h4 class="element-title"> PCR Risk (<?php echo $side; ?>) </h4>
     </header>
   </div>
-  <div class="cols-11 flex-layout flex-top col-gap">
+  <div class="cols-full flex-layout flex-top col-gap">
 
       <?php
       $patientId = Yii::app()->request->getParam('patient_id');
@@ -87,10 +87,10 @@ $criteria = new CDbCriteria();
       echo CHtml::hiddenField('age', $pcr['age_group']);
       echo CHtml::hiddenField('gender', $pcr['gender']);
       ?>
-    <div id="left_eye_pcr">
-      <div class="cols-11 flex-layout flex-top col-gap">
+    <div id="left_eye_pcr" class="cols-full">
+      <div class="cols-full flex-layout flex-top col-gap">
         <div class="cols-6">
-          <table class="last-left">
+          <table class="last-left cols-full">
             <tbody>
             <tr>
               <td>Glaucoma</td>
@@ -98,7 +98,7 @@ $criteria = new CDbCriteria();
                   <?php
                   echo CHtml::dropDownList('PcrRisk[' . $side . '][glaucoma]', $pcr['glaucoma'],
                       array('NK' => 'Not Known', 'N' => 'No Glaucoma', 'Y' => 'Glaucoma present'),
-                      array('id' => 'pcrrisk_' . $side . '_glaucoma', 'class' => 'pcrrisk_glaucoma'));
+                      array('id' => 'pcrrisk_' . $side . '_glaucoma', 'class' => 'pcrrisk_glaucoma cols-full'));
                   ?>
               </td>
             </tr>
@@ -108,7 +108,7 @@ $criteria = new CDbCriteria();
                   <?php
                   echo CHtml::dropDownList('PcrRisk[' . $side . '][diabetic]', $pcr['diabetic'],
                       array('NK' => 'Not Known', 'N' => 'No Diabetes', 'Y' => 'Diabetes present'),
-                      array('id' => 'pcrrisk_' . $side . '_diabetic', 'class' => 'pcrrisk_diabetic')
+                      array('id' => 'pcrrisk_' . $side . '_diabetic', 'class' => 'pcrrisk_diabetic cols-full')
                   );
                   ?>
               </td>
@@ -119,7 +119,7 @@ $criteria = new CDbCriteria();
                   <?php
                   echo CHtml::dropDownList('PcrRisk[' . $side . '][no_fundal_view]', $pcr['noview'],
                       array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-                      array('id' => 'pcrrisk_' . $side . '_no_fundal_view', 'class' => 'pcrrisk_no_fundal_view'));
+                      array('id' => 'pcrrisk_' . $side . '_no_fundal_view', 'class' => 'pcrrisk_no_fundal_view cols-full'));
                   ?>
               </td>
             </tr>
@@ -136,7 +136,7 @@ $criteria = new CDbCriteria();
                       array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
                       array(
                           'id' => 'pcrrisk_' . $side . '_brunescent_white_cataract',
-                          'class' => 'pcrrisk_brunescent_white_cataract',
+                          'class' => 'pcrrisk_brunescent_white_cataract cols-full',
                       ));
                   ?>
               </td>
@@ -150,7 +150,7 @@ $criteria = new CDbCriteria();
               <td>
                   <?php $grades = DoctorGrade::model()->findAll($criteria->condition = 'has_pcr_risk',
                       array('order' => 'display_order')); ?>
-                <select id="<?= 'pcrrisk_' . $side . '_doctor_grade_id' ?>" class="pcr_doctor_grade"
+                <select id="<?= 'pcrrisk_' . $side . '_doctor_grade_id' ?>" class="pcr_doctor_grade cols-full"
                         name="PcrRisk[<?= $side ?>][pcr_doctor_grade]">
                     <?php if (is_array($grades)): ?>
                         <?php foreach ($grades as $grade): ?>
@@ -165,7 +165,7 @@ $criteria = new CDbCriteria();
           </table>
         </div>
         <div class="cols-6">
-          <table class="last-left">
+          <table class="last-left cols-full">
             <tbody>
             <tr>
               <td>
@@ -177,7 +177,7 @@ $criteria = new CDbCriteria();
                   <?php
                   echo CHtml::dropDownList('PcrRisk[' . $side . '][pxf_phako]', $pcr['anteriorsegment']['pxf_phako'],
                       array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-                      array('id' => 'pcrrisk_' . $side . '_pxf_phako', 'class' => 'pcrrisk_pxf_phako'));
+                      array('id' => 'pcrrisk_' . $side . '_pxf_phako', 'class' => 'pcrrisk_pxf_phako cols-full'));
                   ?>
               </td>
             </tr>
@@ -192,7 +192,7 @@ $criteria = new CDbCriteria();
                   }
                   echo CHtml::dropDownList('PcrRisk[' . $side . '][pupil_size]', $pcr['anteriorsegment']['pupil_size'],
                       array('Large' => 'Large', 'Medium' => 'Medium', 'Small' => 'Small'),
-                      array('id' => 'pcrrisk_' . $side . '_pupil_size', 'class' => 'pcrrisk_pupil_size'));
+                      array('id' => 'pcrrisk_' . $side . '_pupil_size', 'class' => 'pcrrisk_pupil_size cols-full'));
                   ?>
               </td>
             </tr>
@@ -206,7 +206,7 @@ $criteria = new CDbCriteria();
                   <?php
                   echo CHtml::dropDownList('PcrRisk[' . $side . '][axial_length]', $pcr['axial_length_group'],
                       array('NK' => 'Not Known', 1 => '< 26', 2 => '> or = 26'),
-                      array('id' => 'pcrrisk_' . $side . '_axial_length', 'class' => 'pcrrisk_axial_length'));
+                      array('id' => 'pcrrisk_' . $side . '_axial_length', 'class' => 'pcrrisk_axial_length cols-full'));
                   ?>
               </td>
             </tr>
@@ -220,7 +220,7 @@ $criteria = new CDbCriteria();
                   <?php
                   echo CHtml::dropDownList('PcrRisk[' . $side . '][arb]', $pcr['arb'],
                       array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-                      array('id' => 'pcrrisk_' . $side . '_arb', 'class' => 'pcrrisk_arb')
+                      array('id' => 'pcrrisk_' . $side . '_arb', 'class' => 'pcrrisk_arb cols-full')
                   );
                   ?>
               </td>
@@ -237,7 +237,7 @@ $criteria = new CDbCriteria();
                       array('N' => 'No', 'Y' => 'Yes'),
                       array(
                           'id' => 'pcrrisk_' . $side . '_abletolieflat',
-                          'class' => 'pcrrisk_lie_flat',
+                          'class' => 'pcrrisk_lie_flat cols-full',
                       ));
                   ?>
               </td>
@@ -266,6 +266,5 @@ $criteria = new CDbCriteria();
       </div>
     </div>
   </div>
-</div>
-<?php endif; ?>
+    <?php endif; ?>
 </div>
