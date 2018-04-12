@@ -55,7 +55,7 @@ $this->endClip('element-title-additional');
 }?>" data-side="right">
 		<div class="active-form field-row flex-layout">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-			<table class="blank va_readings"<?php if (!$element->right_readings) {
+			<table class="blank va_readings cols-9"<?php if (!$element->right_readings) {
     ?> style="display: none;" <?php 
 } ?>>
 				<tbody>
@@ -105,7 +105,7 @@ $this->endClip('element-title-additional');
 }?>" data-side="left">
 		<div class="active-form field-row flex-layout">
       <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-			<table class="blank va_readings"<?php if (!$element->left_readings) {
+			<table class="blank va_readings cols-9"<?php if (!$element->left_readings) {
     ?> style="display: none;" <?php 
 } ?>>
 				<tbody>
