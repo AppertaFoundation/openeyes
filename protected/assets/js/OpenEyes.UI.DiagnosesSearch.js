@@ -210,7 +210,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         // hidden fields that are universally searched for on the page, following the pattern established
         // by the original diagnoses element.
         if (item.is_diabetes) {
-            this.$row.append('<input type="hidden" name="diabetic_diagnoses[]" value="1" /> ');
+            this.$row.prepend('<input type="hidden" name="diabetic_diagnoses[]" value="1" /> ');
         } else {
             this.$row.find('input[name^="diabetic_diagnoses"]').remove();
         }

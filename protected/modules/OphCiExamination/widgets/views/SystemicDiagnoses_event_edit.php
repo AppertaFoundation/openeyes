@@ -42,7 +42,6 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
           <th>N/A</th>
           <th>Date(optional)</th>
           <th></th>
-          <th></th>
         </tr>
         </thead>
         <tbody>

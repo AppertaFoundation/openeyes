@@ -47,9 +47,7 @@ if (!isset($values)) {
                             'id' => $values['id'],
                             'name' => $values['disorder_display'],
                             'disorder_id' => $values['disorder_id']), JSON_HEX_APOS); ?>'
-
-               <?php endif; ?>
-        >
+               <?php endif; ?> >
         <input type="hidden" name="<?= $field_prefix ?>[disorder_id][]" value="">
     </td>
 
@@ -64,8 +62,6 @@ if (!isset($values)) {
         <i class="oe-i laterality L small pad"></i>
       <?php } ?>
   </td>
-  <td></td>
-  <td></td>
   <?php else: ?>
     <input type="hidden" name="<?= $model_name ?>[side_id][]" class="diagnosis-side-value" value="<?=$values['side_id']?>">
       <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) {?>
@@ -76,7 +72,7 @@ if (!isset($values)) {
             <?php if($eye->id == $values['side_id']){ echo "checked"; }?>/>
       </td>
       <?php }?>
-    <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
+      <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
       <input type="radio"
              name="<?="{$model_name}_diagnosis_side_{$row_count}" ?>"
           <?php if(empty($values['side_id'])): ?> checked <?php endif; ?>
@@ -93,12 +89,10 @@ if (!isset($values)) {
     </td>
 
     <?php if($removable) : ?>
-      <td></td>
       <td>
         <i class="oe-i trash"></i>
       </td>
     <?php else: ?>
       <td>read only <i class="oe-i info small pad"></i></td>
-      <td></td>
     <?php endif; ?>
 </tr>

@@ -18,7 +18,7 @@
 ?>
 <div class="element-fields flex-layout full-width ">
   <div class="field-row row">
-    <div class="large-12 column">
+    <div class="cols-12 column">
         <?php if ($this->checkAccess('OprnEditAllergy')) { ?>
           <input type="hidden" name="OEModule_OphCiExamination_models_Element_OphCiExamination_Allergy[allergy_loaded]" value="1">
           <div id="add_allergy">
@@ -65,7 +65,7 @@
               </div>
             </div>
 
-            <div class="buttons large-12 column">
+            <div class="buttons cols-12 column">
               <img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" class="add_allergy_loader" style="display: none;"/>
               <button type="button" class="secondary small btn_save_allergy right">Add</button>
             </div>
@@ -74,7 +74,7 @@
     </div>
   </div>
   <div class="field-row row">
-    <div class="large-12 column">
+    <div class="cols-12 column">
       <table>
         <thead>
         <tr>

@@ -30,17 +30,17 @@ $required_risk_ids = array_map(function($r) { return $r->id; }, $this->getRequir
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
 
     <div class="field-row row<?= (count($element->entries)+count($missing_req_risks)) ? ' hidden' : ''?> <?=$model_name?>_no_risks_wrapper">
-        <div class="large-3 column">
+        <div class="cols-3 ">
             <label for="<?=$model_name?>_no_risks">Confirm patient has no risks:</label>
         </div>
-        <div class="large-1 column end">
+        <div class="cols-1">
             <?php echo CHtml::checkBox($model_name .'[no_risks]', $element->no_risks_date ? true : false, array('class' => $model_name .'_no_risks')); ?>
         </div>
     </div>
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
-    <table class="<?= $model_name ?>_entry_table  <?= !count($element->entries) ? 'hidden' : ''?>">
+    <table class="<?= $model_name ?>_entry_table  cols-10 <?= !count($element->entries) ? 'hidden' : ''?>">
         <thead>
         <tr>
             <th>Risk</th>

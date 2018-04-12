@@ -36,7 +36,7 @@
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
-  <table id="<?= $model_name ?>_entry_table" class="cols-7 <?= !count($element->entries) ? 'hidden' : ''?>">
+  <table id="<?= $model_name ?>_entry_table" class="cols-10 <?= !count($element->entries) ? 'hidden' : ''?>">
       <tbody>
 
       <?php
@@ -133,7 +133,7 @@
                 'allergy_id' => '{{allergy_id}}',
                 'allergy_display' => '{{allergy_display}}',
                 'other' => '{{other}}',
-                'comments' => '{{comments}}',
+                'comments' => null,
                 'has_allergy' => (string)\OEModule\OphCiExamination\models\AllergyEntry::$PRESENT,
             )
         )

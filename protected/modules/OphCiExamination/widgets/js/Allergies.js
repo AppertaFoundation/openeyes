@@ -138,22 +138,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         );
     };
 
-    /**
-     * If the no allergy box is checked and any of the allergies are checked
-     * into not checked then uncheck the 'No allergies' box
-     * or
-     * If any of the allergy boxes is checked yes then hide the 'patient has no allergies' box
-     * else show the box
-     */
-    AllergiesController.prototype.updateNoAllergiesState = function () {
-        if (this.$noAllergiesFld.prop('checked') && this.isAllergiesChecked(this.allergyNotCheckedValue)) {
-            this.$noAllergiesFld.prop('checked', false);
-        }
-        if (this.isAllergiesChecked(this.allergyYesValue)) {
+    AllergiesController.prototype.updateNoAllergiesState = function()
+    {
+        if (this.$table.find('tbody tr').length === 0) {
+            this.$noAllergiesWrapper.show();
+            this.$table.hide();
+        } else {
+            this.$popupSelector.show();
             this.$noAllergiesWrapper.hide();
             this.$noAllergiesFld.prop('checked', false);
-        } else {
-            this.$noAllergiesWrapper.show();
         }
     };
 
