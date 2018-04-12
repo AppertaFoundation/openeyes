@@ -19,23 +19,34 @@
 <div class="element-data element-eyes row">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
       <div class="element-eye <?= $eye_side ?>-eye column">
-        <div class="data-row">
-            <?php if ($element->hasEye($eye_side)): ?>
-              <div class="data-value">
-                <?= Yii::app()->format->text($element->getCombined($eye_side)) ?><br/>
-                Spherical equivalent:
-                <?= number_format($element->{$eye_side . '_sphere'} + 0.5 * $element->{$eye_side . '_cylinder'}, 2) ?>
-              </div>
-                <?php if ($element->{$eye_side . '_notes'}): ?>
-                <div class="data-value">
-                    <?php echo $element->textWithLineBreaks($eye_side . '_notes') ?>
-                </div>
-                <?php endif; ?>
-
-            <?php else: ?>
-              <div class="data-value">Not recorded</div>
-            <?php endif; ?>
-        </div>
+        <table class="large">
+          <colgroup>
+            <col class="cols-4">
+            <col class="cols-3">
+          </colgroup>
+          <tbody>
+          <tr>
+              <?php if ($element->hasEye($eye_side)): ?>
+                <td>
+                    <?= Yii::app()->format->text($element->getCombined($eye_side)) ?>
+                </td>
+                <td>
+                  SE:
+                    <?= number_format($element->{$eye_side . '_sphere'} + 0.5 * $element->{$eye_side . '_cylinder'},
+                        2) ?>
+                </td>
+                <td><?= Yii::app()->format->text($element->getType($eye_side)) ?></td>
+                  <?php if ($element->{$eye_side . '_notes'}): ?>
+                  <td>
+                      <?php echo $element->textWithLineBreaks($eye_side . '_notes') ?>
+                  </td>
+                  <?php endif; ?>
+              <?php else: ?>
+                <td>Not recorded</td>
+              <?php endif; ?>
+          </tr>
+          </tbody>
+        </table>
       </div>
     <?php endforeach; ?>
 </div>

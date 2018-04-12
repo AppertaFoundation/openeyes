@@ -164,7 +164,7 @@ class Element_OphCiExamination_Refraction extends \SplitEventTypeElement
         return ($this->{$side . '_sphere'} > 0 ? '+' : '') .
             $this->{$side . '_sphere'} . '/' .
             $this->{$side . '_cylinder'} . ' X ' .
-            $this->{$side . '_axis'} . '° ' . $this->getType($side);
+            $this->{$side . '_axis'} . '° ';
     }
 
     public function getSplit($side)
