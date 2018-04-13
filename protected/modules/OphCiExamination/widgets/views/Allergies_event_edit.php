@@ -117,7 +117,7 @@
                 'allergy_display' => '{{allergy_display}}',
                 'other' => '{{other}}',
                 'comments' => '{{comments}}',
-                'has_allergy' => true,
+                'has_allergy' => (string)\OEModule\OphCiExamination\models\AllergyEntry::$PRESENT,
             )
         )
     );
