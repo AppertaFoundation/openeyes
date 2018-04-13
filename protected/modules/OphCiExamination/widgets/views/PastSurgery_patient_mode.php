@@ -16,11 +16,10 @@
  */
 
 ?>
-<table class="plain patient-data">
+<table>
     <thead>
       <tr>
-        <th class="cols-6"></th>
-
+        <th class="cols-6">&nbsp;</th>
       </tr>
     </thead>
     <tbody>

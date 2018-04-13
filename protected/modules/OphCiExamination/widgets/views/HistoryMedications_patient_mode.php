@@ -23,12 +23,14 @@ $model_name = CHtml::modelName($element);
         <div style="font-style: italic;">Nil recorded.</div>
       <?php } else { ?>
         <table id="<?= $model_name ?>_entry_table">
-          <tbody>
           <?php if ($current) { ?>
+          <thead>
             <tr>
               <th class="cols-7">Current</th>
             </tr>
-              <?php foreach ($current as $entry) {
+          </thead>
+          <tbody>
+          <?php foreach ($current as $entry) {
                   if ($entry['route_id'] != 1) { ?>
                     <tr>
                       <td><?= $entry->getMedicationDisplay() ?></td>
