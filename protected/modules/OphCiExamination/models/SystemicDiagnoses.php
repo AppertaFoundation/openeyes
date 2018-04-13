@@ -16,6 +16,7 @@
  */
 
 namespace OEModule\OphCiExamination\models;
+use OEModule\PASAPI\resources\Patient;
 
 /**
  * Class SystemicDiagnoses
@@ -154,9 +155,16 @@ class SystemicDiagnoses extends \BaseEventTypeElement
 
         if ($patient) {
             $diagnoses = array();
-            foreach ($patient->getSystemicDiagnoses() as $sd) {
-                $diagnoses[] = SystemicDiagnoses_Diagnosis::fromSecondaryDiagnosis($sd);
+
+            $both = array(true, false);
+            foreach ($both as $present) {
+                foreach ($patient->getSystemicDiagnoses($present) as $sd) {
+                    $diagnosis = SystemicDiagnoses_Diagnosis::fromSecondaryDiagnosis($sd);
+                    $diagnosis->has_disorder = $present ? SystemicDiagnoses_Diagnosis::$PRESENT : SystemicDiagnoses_Diagnosis::$NOT_PRESENT;
+                    $diagnoses[] = $diagnosis;
+                }
             }
+
             $this->diagnoses = $diagnoses;
         }
     }
@@ -267,8 +275,10 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             // extract event from the event id of the element - in afterSave the relation doesn't
             // work when the instance has only just been saved
             $event = \Event::model()->findByPk($this->event_id);
+            /** @var \Patient $patient */
             $patient = $event->getPatient();
             $sd_ids_to_keep = array();
+
             // update or create the secondary diagnoses for the diagnoses on this element
             foreach ($this->diagnoses as $diagnosis) {
                 $sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
@@ -277,6 +287,19 @@ class SystemicDiagnoses extends \BaseEventTypeElement
 
             // then delete any other secondary diagnoses still on the patient.
             foreach ($patient->getSystemicDiagnoses() as $sd) {
+                if (!in_array($sd->id, $sd_ids_to_keep)) {
+                    $sd->delete();
+                }
+            }
+
+            $sd_ids_to_keep = array();
+            // update or create not present secondary diagnoses
+            foreach ($this->checked_required_diagnoses as $diagnosis) {
+                $sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
+                $sd_ids_to_keep[] = $sd->id;
+            }
+
+            foreach ($patient->getSystemicDiagnoses(false) as $sd) {
                 if (!in_array($sd->id, $sd_ids_to_keep)) {
                     $sd->delete();
                 }

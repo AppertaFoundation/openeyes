@@ -98,6 +98,24 @@ class SystemicDiagnoses extends \BaseEventElementWidget
         return $checked;
     }
 
+    public function getDiagnosesViewMode()
+    {
+        $ret = array();
+        $present = $this->element->orderedDiagnoses;
+        $required_checked = $this->getCheckedRequiredSystemicDiagnoses();
+        $required_not_checked = $this->getMissingRequiredSystemicDiagnoses();
+
+        $ret[] = implode(" // ", $present);
+        if(!empty($required_checked)) {
+            $ret[] = implode(" // ", array_map(function($e){ return '<strong>Not present: </strong>'. $e->disorder->term; }, $required_checked));
+        }
+        if(!empty($required_not_checked)) {
+            $ret[] = implode(" // ", array_map(function($e){ return '<strong>Not checked: </strong>'. $e->disorder->term; }, $required_not_checked));
+        }
+
+        return implode(" // ", $ret);
+    }
+
     /**
      * @param SystemicDiagnosesElement $element
      * @param $data

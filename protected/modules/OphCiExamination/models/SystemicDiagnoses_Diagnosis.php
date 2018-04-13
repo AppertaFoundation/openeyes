@@ -39,23 +39,8 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
     public static $NOT_PRESENT = 0;
     public static $NOT_CHECKED = -9;
 
-    public static function getStatusName($status_id)
-    {
-        switch ($status_id) {
-            case self::$PRESENT:
-                return 'Present';
-                break;
-            case self::$NOT_PRESENT:
-                return 'Not present';
-                break;
-            case self::$NOT_CHECKED:
-                return 'Not checked';
-                break;
-            default:
-                return 'Unknown';
-                break;
-        }
-    }
+    protected static $sd_attribute_ignore = array('id', 'element_id', 'secondary_diagnosis_id', 'has_disorder');
+    protected static $sd_attribute_map = array('side_id' => 'eye_id');
 
     /**
      * Returns the static model of the specified AR class.
@@ -93,6 +78,11 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
         );
     }
 
+    protected function getSecondaryDiagnosisRelation()
+    {
+        return array(self::BELONGS_TO, 'SecondaryDiagnosis', 'secondary_diagnosis_id');
+    }
+
     /**
      * @return array relational rules.
      */
@@ -102,7 +92,7 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
             'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\SystemicDiagnoses', 'element_id'),
             'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
             'side' => array(self::BELONGS_TO, 'Eye', 'side_id'),
-            'secondary_diagnosis' => array(self::BELONGS_TO, 'SecondaryDiagnosis', 'secondary_diagnosis_id')
+            'secondary_diagnosis' => $this->getSecondaryDiagnosisRelation(),
         );
     }
 
@@ -204,8 +194,14 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
         return $diagnosis;
     }
 
-    protected static $sd_attribute_ignore = array('id', 'element_id', 'secondary_diagnosis_id', 'has_disorder');
-    protected static $sd_attribute_map = array('side_id' => 'eye_id');
+    /**
+     * @return \SecondaryDiagnosis
+     */
+
+    protected function getNewSecondaryDiagnosis()
+    {
+        return new \SecondaryDiagnosis();
+    }
 
     /**
      * @param \Patient $patient
@@ -215,7 +211,7 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
     public function updateAndGetSecondaryDiagnosis(\Patient $patient)
     {
         if (!$sd = $this->secondary_diagnosis) {
-            $sd = new \SecondaryDiagnosis();
+            $sd = $this->getNewSecondaryDiagnosis();
             $sd->patient_id = $patient->id;
         }
 
@@ -231,5 +227,28 @@ class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
         $this->save();
         return $sd;
 
+    }
+
+    /**
+     * @param $status_id
+     * @return string
+     */
+
+    public static function getStatusNameEditMode($status_id)
+    {
+        switch ($status_id) {
+            case self::$PRESENT:
+                return 'Yes';
+                break;
+            case self::$NOT_PRESENT:
+                return 'No';
+                break;
+            case self::$NOT_CHECKED:
+                return 'Not checked';
+                break;
+            default:
+                return 'Unknown';
+                break;
+        }
     }
 }
