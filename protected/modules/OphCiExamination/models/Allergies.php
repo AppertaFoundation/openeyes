@@ -173,7 +173,14 @@ class Allergies extends \BaseEventTypeElement
         if ($this->no_allergies_date) {
             return 'Patient has no known allergies';
         } else {
-            return implode(' // ', $this->entries);
+            $entries = $this->entries;
+            usort($entries, function ($a, $b){
+               if($a->has_allergy == $b->has_allergy) {
+                   return 0;
+               }
+               return $a->has_allergy < $b->has_allergy ? 1 : -1;
+            });
+            return implode(' // ', $entries);
         }
     }
 
