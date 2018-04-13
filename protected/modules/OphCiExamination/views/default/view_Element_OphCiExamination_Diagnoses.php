@@ -22,61 +22,69 @@ use OEModule\OphCiExamination\components\ExaminationHelper;
 $principals = $this->episode->patient->episodes;
  ?>
 <div class="element-data">
-  <div class="cols-10">
-    <table>
-      <tbody>
-      <?php
-      $principal = OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
-          ->find('element_diagnoses_id=? and principal=1', array($element->id));
-      if ($principal) {
-          ?>
-        <tr>
-          <td>
-            <strong>
-                <?php echo $principal->disorder->term ?>
-            </strong>
-          </td>
-          <td>
-            <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
-            <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
-          </td>
-          <td></td>
-        </tr>
-      <?php }
-      foreach ($principals as $principal) {
-          if ($principal->id != $this->episode->id && $principal->diagnosis ) {
-              ?>
-            <tr>
-              <td>
-                  <?= $principal->diagnosis->term ?>
-                <span class="js-has-tooltip oe-i info"
-                      data-tooltip-content="Principal diagnosis for <?= $principal->getSubspecialtyText(); ?>"></span>
-              </td>
-              <td>
-                <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
-                <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
-              </td>
-              <td>
-                  <?php echo $principal->NHSDate('start_date'); ?>
-              </td>
-            </tr>
-          <?php }
-      }
-      $diagnoses = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
-          ->findAll('element_diagnoses_id=? and principal=0 ', array($element->id));
-      foreach ($diagnoses as $diagnosis) { ?>
-        <tr>
-          <td>
-              <?php echo $diagnosis->disorder->term ?>
-          </td>
-          <td>
-            <i class="oe-i laterality <?php echo in_array($diagnosis->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
-            <i class="oe-i laterality <?php echo in_array($diagnosis->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
-          </td>
-        </tr>
-      <?php } ?>
-      </tbody>
-    </table>
+  <div class="data-value">
+    <div class="tile-data-overflow">
+      <table>
+        <colgroup>
+          <col>
+          <col width="55px">
+          <col width="85px">
+        </colgroup>
+        <tbody>
+        <?php
+        $principal = OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
+            ->find('element_diagnoses_id=? and principal=1', array($element->id));
+        if ($principal) {
+            ?>
+          <tr>
+            <td>
+              <strong>
+                  <?php echo $principal->disorder->term ?>
+              </strong>
+            </td>
+            <td>
+              <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
+              <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
+            </td>
+            <td></td>
+          </tr>
+        <?php }
+        foreach ($principals as $principal) {
+            if ($principal->id != $this->episode->id && $principal->diagnosis ) {
+                ?>
+              <tr>
+                <td>
+                    <?= $principal->diagnosis->term ?>
+                  <span class="js-has-tooltip oe-i info"
+                        data-tooltip-content="Principal diagnosis for <?= $principal->getSubspecialtyText(); ?>"></span>
+                </td>
+                <td>
+                  <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
+                  <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
+                </td>
+                <td>
+                    <?php echo $principal->NHSDate('start_date'); ?>
+                </td>
+              </tr>
+            <?php }
+        }
+        $diagnoses = \OEModule\OphCiExamination\models\OphCiExamination_Diagnosis::model()
+            ->findAll('element_diagnoses_id=? and principal=0 ', array($element->id));
+        foreach ($diagnoses as $diagnosis) { ?>
+          <tr>
+            <td>
+                <?php echo $diagnosis->disorder->term ?>
+            </td>
+            <td>
+              <i class="oe-i laterality <?php echo in_array($diagnosis->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
+              <i class="oe-i laterality <?php echo in_array($diagnosis->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
+            </td>
+            <td></td>
+          </tr>
+        <?php } ?>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 

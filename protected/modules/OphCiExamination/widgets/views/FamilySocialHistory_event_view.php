@@ -14,8 +14,7 @@ if ($element->getElementTypeName() == 'Family History'
     <header class="element-header">
       <h3 class="element-title">Family and Social</h3>
     </header>
-    <div class="element-data full-width">
-      <div class="data-row">
+    <div class="element-data">
         <div class="data-value">
           <div class="tile-data-overflow">
             <table class="last-left">
@@ -30,7 +29,6 @@ if ($element->getElementTypeName() == 'Family History'
             </table>
           </div> <!-- .tile-data-overflow -->
         </div>
-      </div>
     </div>
   </section>
 <?php } ?>

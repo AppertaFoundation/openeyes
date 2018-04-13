@@ -33,18 +33,25 @@
         <?php } else { ?>
           <div class="tile-data-overflow">
             <table>
-                <?php foreach ($element->orderedEntries as $entry) {
-                    if ($entry['route_id'] == 1) { ?>
-                      <tr>
-                        <td><?= $entry->getMedicationDisplay() ?></td>
-                        <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                          <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
-                          <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
-                        </td>
-                        <td><?= $entry->getStartDateDisplay() ?></td>
-                      </tr>
-                    <?php }
-                } ?>
+              <colgroup>
+                <col>
+                <col width="55px">
+                <col width="85px">
+              </colgroup>
+              <tbody>
+              <?php foreach ($element->orderedEntries as $entry) {
+                  if ($entry['route_id'] == 1) { ?>
+                    <tr>
+                      <td><?= $entry->getMedicationDisplay() ?></td>
+                      <td><?php $laterality = $entry->getLateralityDisplay(); ?>
+                        <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
+                        <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                      </td>
+                      <td><?= $entry->getStartDateDisplay() ?></td>
+                    </tr>
+                  <?php }
+              } ?>
+              </tbody>
             </table>
           </div>
         <?php } ?>
@@ -67,19 +74,25 @@
         <?php } else { ?>
           <div class="tile-data-overflow">
             <table>
-
-                <?php foreach ($element->orderedEntries as $entry) {
-                    if ($entry['route_id'] != 1) { ?>
-                      <tr>
-                        <td><?= $entry->getMedicationDisplay() ?></td>
-                        <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                          <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
-                          <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
-                        </td>
-                        <td><?= $entry->getStartDateDisplay() ?></td>
-                      </tr>
-                    <?php }
-                } ?>
+              <colgroup>
+                <col>
+                <col width="55px">
+                <col width="85px">
+              </colgroup>
+              <tbody>
+              <?php foreach ($element->orderedEntries as $entry) {
+                  if ($entry['route_id'] != 1) { ?>
+                    <tr>
+                      <td><?= $entry->getMedicationDisplay() ?></td>
+                      <td><?php $laterality = $entry->getLateralityDisplay(); ?>
+                        <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
+                        <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                      </td>
+                      <td><?= $entry->getStartDateDisplay() ?></td>
+                    </tr>
+                  <?php }
+              } ?>
+              </tbody>
             </table>
           </div>
         <?php } ?>
