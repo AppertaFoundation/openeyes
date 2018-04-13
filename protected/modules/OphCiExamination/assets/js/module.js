@@ -1051,15 +1051,18 @@ $(document).ready(function() {
         $('#div_'+OE_MODEL_PREFIX+'Element_OphCiExamination_ClinicOutcome_patientticket').slideUp();
     }
 
-    // show/hide the followup period fields
-    $(this).delegate('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_ClinicOutcome_status_id', 'change', function(e) {
-        var followup = isClinicOutcomeStatusFollowup();
+  $('#follow-up-outcome-options').delegate('li', 'click', function () {
+
+    var followup = !!$(this).data('followup');
+
+    $('.follow-up-options-follow-up-only').toggle(followup);
         if (followup) {
             showOutcomeStatusFollowup();
         }
         else {
             hideOutcomeStatusFollowup();
         }
+
         var referral = isClinicOutcomeStatusPatientTicket();
         if (referral) {
             showOutcomeStatusPatientTicket();
@@ -1067,7 +1070,81 @@ $(document).ready(function() {
         else {
             hideOutcomeStatusPatientTicket();
         }
+  });
+
+  $('#add-follow-up-btn').click(function () {
+    var selected_outcome = $('#follow-up-outcome-options').find('li.selected');
+    var selected_quantity = $('#follow-uo-quantity-options').find('li.selected');
+    var selected_period = $('#follow-up-period-options').find('li.selected');
+    var selected_role = $('#follow-up-role-options').find('li.selected');
+    if (!selected_outcome.length) {
+      return;
+    }
+
+    var is_follow_up = selected_outcome.data('followup') === 1;
+    if (is_follow_up && (!selected_quantity.length || !selected_period.length || !selected_role.length)) {
+      return;
+    }
+
+    var outcome = selected_outcome.data('outcomeId');
+    var quantity = is_follow_up ? selected_quantity.data('str') : null;
+    var period = is_follow_up ? selected_period.data('periodId') : null;
+    var role = is_follow_up ? selected_role.data('roleId') : null;
+    var role_comments = is_follow_up ? $('#follow_up_role_comments').val() : null;
+    var community_patient = is_follow_up ? $('#follow_up_community_patient').is(':checked') : 0;
+
+    var model_name = OE_MODEL_PREFIX + 'Element_OphCiExamination_ClinicOutcome';
+    $('#' + model_name + '_status_id').val(outcome);
+    $('#' + model_name + '_followup_quantity').val(quantity);
+    $('#' + model_name + '_followup_period_id').val(period);
+    $('#' + model_name + '_role_id').val(role);
+    $('#' + model_name + '_role_comments').val(role_comments);
+    $('#' + model_name + '_community_patient').val(community_patient ? 1 : 0);
+
+    updateFollowUpLabel();
+    $('#add-to-follow-up').hide();
     });
+
+  function updateFollowUpLabel() {
+
+    var model_name = OE_MODEL_PREFIX + 'Element_OphCiExamination_ClinicOutcome';
+
+    var outcome = $('#' + model_name + '_status_id').val();
+    var quantity = $('#' + model_name + '_followup_quantity').val();
+    var period = $('#' + model_name + '_followup_period_id').val();
+    var role = $('#' + model_name + '_role_id').val();
+    var role_comments = $('#' + model_name + '_role_comments').val();
+    var community_patient = $('#' + model_name + '_community_patient').val();
+    ('#' + model_name + '_community_patient');
+
+    var selected_outcome = $('#follow-up-outcome-options').find('li[data-outcome-id = "' + outcome + '"]');
+    //var selected_quantity = $('#follow-uo-quantity-options').find('li');
+    var selected_period = $('#follow-up-period-options').find('li[data-period-id="' + period + '"]');
+    var selected_role = $('#follow-up-role-options').find('li[data-role-id="' + role + '"]');
+    var is_follow_up = selected_outcome.data('followup') === 1;
+
+    var label_str = selected_outcome.data('str');
+
+    if (is_follow_up) {
+      label_str += ' in ' + quantity;
+      label_str += ' ' + selected_period.data('str');
+      label_str += ' with ' + selected_role.data('str');
+
+      if (role_comments) {
+        label_str += ' (' + role_comments + ')';
+      }
+
+      if (community_patient != 0) {
+        label_str += ' (Community patient)';
+      }
+    }
+
+    var dummy_text = $('#follow-up-dummy-input');
+    dummy_text.val(label_str);
+    dummy_text.trigger('oninput');
+  }
+
+  updateFollowUpLabel();
 
     $(this).on('change', '#patientticket_queue', function(e) {
         var id = $(e.target).val(),
@@ -2236,6 +2313,7 @@ function OphCiExamination_ClinicOutcome_LoadTemplate(template_id) {
         $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_ClinicOutcome_followup_period_id')
             .val(Element_OphCiExamination_ClinicOutcome_templates[template_id]['followup_period_id']);
 
+    updateFollowUpLabel();
     }
 }
 
