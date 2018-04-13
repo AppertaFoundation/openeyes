@@ -2,12 +2,11 @@
              ->findAll('`active` = ?', array(1)) as $disorder_section) {
     $comments = OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Section_Comments::model()
         ->getDisorderSectionComments($disorder_section->id, $element->id); ?>
-        <div class="element-data full-width">
+        <div class="element full priority eye-divider">
+          <header class="element-header">
             <h3><?php echo $disorder_section->name; ?></h3>
-        </div>
-        <div class="row data-row">
-            <div class="cols-12 column end">
-                <div class="element element-data element-eyes row">
+          </header>
+              <div class="element-data element-eyes row">
                     <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
                       <div class="element-eye <?= $eye_side; ?>-eye column">
                           <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side', array(
@@ -18,7 +17,6 @@
                       </div>
                     <?php } ?>
                 </div>
-            </div>
         </div>
         <?php
         if ($disorder_section->comments_allowed == 1) {

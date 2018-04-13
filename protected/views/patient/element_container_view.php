@@ -15,12 +15,11 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-if ($element->isIndividual('view')) {
-  ?>
+if ($element->isIndividual('view')) { ?>
 
   <section class=" element
 <?php if (is_subclass_of($element, 'SplitEventTypeElement')) {
-      echo 'full priority eye-divider view-visual-acuity';
+      echo 'full priority eye-divider';
   } elseif ($element->getTileSize($this->action->id) === 1) {
       echo 'tile';
   } else {
@@ -32,7 +31,6 @@ if ($element->isIndividual('view')) {
            data-element-type-name="<?php echo $element->elementType->name ?>"
            data-element-display-order="<?php echo $element->getDisplayOrder('view') ?>">
       <?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
-
         <header class=" element-header">
           <h3 class="element-title"><?php echo $element->getViewTitle() ?></h3>
         </header>

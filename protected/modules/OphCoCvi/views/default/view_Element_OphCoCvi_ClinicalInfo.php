@@ -16,77 +16,88 @@
  */
 
 ?>
+<section class="element full priority	view-<?php echo $element->elementType->name ?>"
+data-element-type-id="<?php echo $element->elementType->id ?>"
+data-element-type-class="<?php echo $element->elementType->class_name ?>"
+data-element-type-name="<?php echo $element->elementType->name ?>"
+data-element-display-order="<?php echo $element->getDisplayOrder('view') ?>">
 
-<div class="element element-data full-width flex-layout flex-top col-gap">
-  <div class="cols-3">
-    <table class="label-value">
-      <tbody>
-      <tr>
-        <td>
-          <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('consultant_id')) ?>:</div>
-        </td>
-        <td>
-          <div class="data-value"><?php echo $element->consultant ? $element->consultant->last_name : 'None' ?></div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('examination_date')) ?>:</div>
-        </td>
-        <td>
-          <div class="data-value"><?php echo CHtml::encode($element->NHSDate('examination_date')) ?></div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+<?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
+  <header class=" element-header">
+    <h3 class="element-title"><?php echo $element->getViewTitle() ?></h3>
+  </header>
+<?php } ?>
+  <div class="element-data full-width flex-layout flex-top col-gap">
+    <div class="cols-3">
+      <table class="label-value">
+        <tbody>
+        <tr>
+          <td>
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('consultant_id')) ?>:</div>
+          </td>
+          <td>
+            <div class="data-value"><?php echo $element->consultant ? $element->consultant->last_name : 'None' ?></div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('examination_date')) ?>:</div>
+          </td>
+          <td>
+            <div class="data-value"><?php echo CHtml::encode($element->NHSDate('examination_date')) ?></div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cols-4">
+      <table class="label-value">
+        <tbody>
+        <tr>
+          <td>
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_considered_blind')) ?>:
+            </div>
+          </td>
+          <td>
+            <div class="data-value"><?php echo $element->displayconsideredblind; ?></div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('sight_varies_by_light_levels')) ?>:</div>
+          </td>
+          <td>
+            <div class="data-value"><?php echo $element->displaylightlevels; ?></div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cols-5">
+      <table>
+        <tbody>
+        <tr>
+          <td>
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('low_vision_status_id')) ?>:</div>
+          </td>
+          <td>
+            <div class="data-value"><?php echo $element->low_vision_status ? $element->low_vision_status->name : 'None' ?></div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('field_of_vision_id')) ?>:</div>
+          </td>
+          <td>
+            <div class="data-value"><?php echo $element->field_of_vision ? $element->field_of_vision->name : 'None' ?></div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-  <div class="cols-4">
-    <table class="label-value">
-      <tbody>
-      <tr>
-        <td>
-          <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_considered_blind')) ?>:
-          </div>
-        </td>
-        <td>
-          <div class="data-value"><?php echo $element->displayconsideredblind; ?></div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('sight_varies_by_light_levels')) ?>:</div>
-        </td>
-        <td>
-          <div class="data-value"><?php echo $element->displaylightlevels; ?></div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="cols-5">
-    <table>
-      <tbody>
-      <tr>
-        <td>
-          <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('low_vision_status_id')) ?>:</div>
-        </td>
-        <td>
-          <div class="data-value"><?php echo $element->low_vision_status ? $element->low_vision_status->name : 'None' ?></div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('field_of_vision_id')) ?>:</div>
-        </td>
-        <td>
-          <div class="data-value"><?php echo $element->field_of_vision ? $element->field_of_vision->name : 'None' ?></div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-<section class="element">
+</section>
+<section class="element full priority eye-divider view-visual-acuity">
     <header class="element-header">
       <h3 class="element-title">Visual Acuity</h3>
     </header>
@@ -104,7 +115,7 @@
         <?php } ?>
     </div>
 </section>
-<section class="element">
+<section class="element full priority">
       <header class="element-header">
         <h3 class="element-title"><?php echo CHtml::encode($element->getAttributeLabel('disorders')) ?>:</h3>
       </header>
@@ -112,10 +123,10 @@
           'element' => $element,
       ))?>
     <div class="row data-row">
-      <div class="cols-4 column">
+      <div class="cols-4">
         <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('diagnoses_not_covered')) ?>:</div>
       </div>
-      <div class="cols-8 column end">
+      <div class="cols-8">
         <div class="data-value"><?php echo CHtml::encode($element->diagnoses_not_covered) ?></div>
       </div>
     </div>
