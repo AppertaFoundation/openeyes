@@ -92,7 +92,7 @@
             <?php
              $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
              if (sizeof($ophthalmic_diagnoses)==0) { ?>
-               <div style="font-style: italic;">Nil recorded</div>
+               <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded</div>
              <?php }
              foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
                list($side, $name) = explode(" ", $ophthalmic_diagnosis, 2); ?>
@@ -115,7 +115,7 @@
             <table>
               <tbody>
               <?php if (sizeof($this->patient->systemicDiagnoses)==0){ ?>
-                <div style="font-style: italic;">Nil recorded</div>
+                <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded</div>
               <?php }
               foreach ($this->patient->systemicDiagnoses as $diagnosis) { ?>
                 <tr>

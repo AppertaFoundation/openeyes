@@ -16,7 +16,10 @@
  */
 
 if (!$element) { ?>
-    <p class="family-history-status-unknown">Patient family history is unknown</p>
+    <div class="family-history-status-unknown"
+         style="font-style: italic; color: rgba(255,255,255,0.5);">
+      Patient family history is unknown
+    </div>
 <?php } else {
     Yii::app()->clientScript->registerScriptFile($this->getJsPublishedPath('FamilyHistory.js'), CClientScript::POS_BEGIN);
     $model_name = CHtml::modelName($element);
@@ -28,7 +31,11 @@ if (!$element) { ?>
         'layoutColumns' => array(
         ),
     ))?>
-    <p class="family-history-status-none" <?php if (!$element->no_family_history_date) { echo 'style="display: none;"'; }?>>Patient has no known family history</p>
+    <div class="family-history-status-none"
+         style="font-style: italic;
+         color: rgba(255,255,255,0.5);
+         display: <?php if (!$element->no_family_history_date) { echo 'none'; } ?>">
+      Patient has no known family history</div>
 
     <table id="<?=$model_name ?>_patient_mode_table" class="plain patient-data" <?php if (empty($element->entries)) { echo 'style="display: none;"'; }?>>
         <thead>
