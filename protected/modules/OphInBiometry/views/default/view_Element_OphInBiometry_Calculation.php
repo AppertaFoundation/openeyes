@@ -18,6 +18,9 @@
 ?>
 
 <section>
+    <header class="element-header">
+        <h3 class="element-title">Near Visual Acuity</h3>
+    </header>
     <div class="element-data element-eyes">
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
             <div class="<?= $eye_side ?>-eye">
