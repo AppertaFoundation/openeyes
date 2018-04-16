@@ -58,33 +58,51 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
     var container = $('.js-active-elements');
     $(element).remove();
 
-    // Add the new element at the end, then sort the whole list to ensure correct order
-    container.append(new_element).last('section');
-    // Only select elements with a data type (to exclude elements like the event date)
-    container.children('section[data-element-type-name]').sort(function (a, b) {
-      // If both elements are parents or are children to the same parent, then sort by their display order
-      if (a.dataset.elementParentId === b.dataset.elementParentId) {
-        return parseInt(a.dataset.elementDisplayOrder) - parseInt(b.dataset.elementDisplayOrder);
-      } else if (b.dataset.elementParentId === a.dataset.elementTypeId) {
-        // put a before b if a is the parent of b
-        return -1;
-      } else if (a.dataset.elementParentId === b.dataset.elementTypeId) {
-        // put b before a if b is the parent of a
-        return 1;
+    // If there aren't any elements, then insert the new element at the end (after the event date)
+    if (container.find('section[data-element-type-name]').length === 0) {
+      container.append(new_element);
+    } else if (!new_element.data('elementParentId')) {
+      // If the new element is a parent, then find the last parent element with a lower display order
+      var parentToInsertAfter = container.find('section[data-element-parent-id]').filter(function () {
+        return $(this).data('elementDisplayOrder') < new_element.data('elementDisplayOrder');
+      }).last();
+
+      // if there are no parents lower than the new element, then insert before the first element
+      if (parentToInsertAfter.length === 0) {
+        new_element.insertBefore(container.find('section[data-element-parent-id]').first());
       } else {
-        // otherwise both elements are children to different parents
-        // so sort by their parent display order
-        var parentDisplayOrder_a = a.dataset.elementParentId
-          ? container.find('section[data-element-type-id="' + a.dataset.elementParentId + '"]').data('elementDisplayOrder')
-          : a.dataset.elementDisplayOrder;
-
-        var parentDisplayOrder_b = b.dataset.elementParentId
-          ? container.find('section[data-element-type-id="' + b.dataset.elementParentId + '"]').data('elementDisplayOrder')
-          : b.dataset.elementDisplayOrder;
-
-        return parseInt(parentDisplayOrder_a) - parseInt(parentDisplayOrder_b);
+        // Ifa a parent element was found, then find its children
+        var children = parentToInsertAfter.nextAll('section[data-element-parent-id="' + parentToInsertAfter.data('elementParentId') + '"]');
+        if (children.length) {
+          // if it has children, then insert after the last child
+          new_element.insertAfter(children.last());
+        } else {
+          // Otherwise insert after the parent
+          new_element.insertAfter(parentToInsertAfter);
+        }
       }
-    }).appendTo(container);
+    } else { // If new element is a child
+      var parent = container.find('section[data-element-type-id="' + new_element.data('elementParentId') + '"]');
+      var otherChildren = container.find('section[data-element-parent-id="' + new_element.data('elementParentId') + '"]');
+
+      // If the parent element of the new element has no other children, then simply insert after it
+      if (otherChildren.length === 0) {
+        new_element.insertAfter(parent);
+      } else {
+        // Otherwise find the last child that has a lower display order than the new element and insert after it
+        var toInsertAfter = otherChildren.filter(function () {
+          return $(this).data('elementDisplayOrder') < new_element.data('elementDisplayOrder');
+        }).last();
+
+        // If none could be found (all other children are later in the list), then insert after the parent instead
+        if (toInsertAfter.length === 0) {
+          toInsertAfter = parent;
+        }
+
+        new_element.insertAfter(toInsertAfter);
+      }
+    }
+
 
     if (is_child) {
       // check if this is sided
