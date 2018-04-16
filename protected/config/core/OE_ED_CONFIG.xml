@@ -1728,20 +1728,6 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
         <INDEX>
           <PRIMARY_TERM>Examination Risks</PRIMARY_TERM>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryRisks</OPEN_ELEMENT_CLASS_NAME>
-          <INDEX_LIST>
-            <INDEX>
-              <PRIMARY_TERM>Alpha blockers</PRIMARY_TERM>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryRisks</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_TAG>tr</GOTO_TAG>
-              <GOTO_TEXT>Alpha blockers</GOTO_TEXT>
-            </INDEX>
-            <INDEX>
-              <PRIMARY_TERM>Anticoagulants</PRIMARY_TERM>
-              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\HistoryRisks</OPEN_ELEMENT_CLASS_NAME>
-              <GOTO_TAG>tr</GOTO_TAG>
-              <GOTO_TEXT>Anticoagulants</GOTO_TEXT>
-            </INDEX>
-          </INDEX_LIST>
         </INDEX>
         <INDEX>
           <PRIMARY_TERM>Medications</PRIMARY_TERM>
