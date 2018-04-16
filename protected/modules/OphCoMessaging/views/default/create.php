@@ -16,7 +16,7 @@
  */
 ?>
 
-<?php $this->beginContent('//patient/event_container'); ?>
+<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 <?php
 $this->event_actions[] = EventAction::button('Send', 'save', array('level' => 'save'), array('form' => 'messaging-create'));
 ?>

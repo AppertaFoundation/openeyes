@@ -17,7 +17,7 @@
  */
 ?>
 
-<?php $this->beginContent('//patient/event_container'); ?>
+<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 
   <div id="schedule">
     <br/>

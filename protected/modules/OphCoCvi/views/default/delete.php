@@ -18,7 +18,7 @@
 ?>
 
 <?php
-$this->beginContent('//patient/event_container'); ?>
+$this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
   <section class="element element-fields full-width">
     <div id="delete_event">
       <h3>Delete event</h3>

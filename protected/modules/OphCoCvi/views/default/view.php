@@ -30,7 +30,7 @@ if ($this->canIssue()) {
     $this->event_actions[] = EventAction::link('Issue', '/OphCoCvi/default/issue/' . $this->event->id, null, array('class' => 'small button secondary'));
 }
 
-$this->beginContent('//patient/event_container');
+$this->beginContent('//patient/event_container', array('no_face'=>false));
 ?>
 
 <?php if ($this->event->delete_pending) { ?>

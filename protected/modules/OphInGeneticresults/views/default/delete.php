@@ -18,7 +18,7 @@
 ?>
 
 <?php
-$this->beginContent('//patient/event_container'); ?>
+$this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 <?php echo CHtml::form(array('Default/delete/' . $this->event->id), 'post', array('id' => 'deleteForm')); ?>
     <div id="delete_event">
         <h3>Delete event</h3>

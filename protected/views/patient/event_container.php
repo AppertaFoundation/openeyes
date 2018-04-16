@@ -1,4 +1,4 @@
-<nav class="event-header">
+<nav class="event-header <?= @$no_face? 'no-face': '' ?>">
     <?php $this->renderPartial('//patient/event_tabs'); ?>
     <?php $this->renderIndexSearch(); ?>
     <?php $this->renderPartial('//patient/event_actions'); ?>

@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$this->beginContent('//patient/event_container');
+$this->beginContent('//patient/event_container', array('no_face'=>true));
 $this->moduleNameCssClass .= ' highlight-fields';
 
 $this->renderOpenElements($this->action->id);

@@ -20,7 +20,7 @@ if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::button('Print for visually impaired', 'print_va', array(), array('class' => 'button small'));
 }
 ?>
-<?php $this->beginContent('//patient/event_container');?>
+<?php $this->beginContent('//patient/event_container', array('no_face'=>true));?>
 
 	<?php if ($this->event->delete_pending) {?>
 		<div class="alert-box alert with-icon">

@@ -22,7 +22,7 @@ $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 $warnings = $this->patient->getWarnings($clinical);
 ?>
 
-<?php $this->beginContent('//patient/event_container'); ?>
+<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
 
 	<?php
     $this->moduleNameCssClass .= ' highlight-fields';

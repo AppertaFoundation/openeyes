@@ -65,7 +65,7 @@ if (!$warnings && !$this->event->isLocked()) {
     }
 }
 
-$this->beginContent('//patient/event_container');
+$this->beginContent('//patient/event_container', array('no_face'=>false));
 ?>
 
 	<?php $this->renderPartial('//base/_messages'); ?>

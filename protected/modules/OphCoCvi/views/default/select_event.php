@@ -17,7 +17,7 @@
  */
 ?>
 <?php
-$this->beginContent('//patient/event_container');
+$this->beginContent('//patient/event_container', array('no_face'=>false));
 $assetAliasPath = 'application.modules.OphCoCvi.assets';
 $this->moduleNameCssClass .= ' edit';
 ?>

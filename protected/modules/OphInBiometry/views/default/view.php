@@ -40,7 +40,7 @@ if ($this->checkEditAccess()){
     ));
 }
 
-$this->beginContent('//patient/event_container');
+$this->beginContent('//patient/event_container', array('no_face'=>false));
 $this->moduleNameCssClass .= ' highlight-fields';
 
 if ($this->is_auto) {

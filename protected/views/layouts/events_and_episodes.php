@@ -38,7 +38,7 @@
 <?php $this->renderPartial('//base/_header'); ?>
 
 
-<nav class="event-header">
+<nav class="event-header no-face">
     <i class="oe-i-e large i-CiExamination"></i>
     <?php $this->renderPartial('//patient/event_tabs'); ?>
      <!-- right hand side buttons-->

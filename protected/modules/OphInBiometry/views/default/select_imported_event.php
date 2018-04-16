@@ -17,7 +17,7 @@
  */
 ?>
 <?php
-    $this->beginContent('//patient/event_container');
+    $this->beginContent('//patient/event_container', array('no_face'=>false));
     $assetAliasPath = 'application.modules.OphInBiometry.assets';
     $this->moduleNameCssClass .= ' edit';
 ?>

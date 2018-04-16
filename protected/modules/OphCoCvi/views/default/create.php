@@ -18,7 +18,7 @@
 ?>
 
 <?php
-$this->beginContent('//patient/event_container'); ?>
+$this->beginContent('//patient/event_container', array('no_face'=>false)); ?>
 
 <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'id' => 'create-form',
