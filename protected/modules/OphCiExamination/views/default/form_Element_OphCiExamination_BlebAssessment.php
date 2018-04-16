@@ -86,55 +86,57 @@ $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_B
     });
   </script>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-      <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side" data-side="<?= $eye_side ?>">
+      <div class="element-eye <?= $eye_side ?>-eye <?= $page_side ?> side" data-side="<?= $eye_side ?>">
         <div class="active-form" style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-          <table class="bleb-assessment">
-            <thead>
-            <tr>
-              <th width="25%">Area (Central)</th>
-              <th width="25%">Area (Maximal)</th>
-              <th width="25%">Height</th>
-              <th width="25%">Vascularity</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <!-- Area (Central) -->
-              <td>
-                  <?php
-                  echo $form->dropDownList($element, $eye_side . '_central_area_id', $centralAreas,
-                      array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false,
-                      array('label' => 0, 'field' => 6)
-                  ); ?>
-              </td>
-              <!-- Area (Maximal) -->
-              <td>
-                  <?php
-                  echo $form->dropDownList($element, $eye_side . '_max_area_id', $maxAreas,
-                      array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false,
-                      array('label' => 0, 'field' => 6)
-                  ); ?>
-              </td>
-              <!-- Height -->
-              <td>
-                  <?php
-                  echo $form->dropDownList($element, $eye_side . '_height_id', $heights,
-                      array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false,
-                      array('label' => 0, 'field' => 6)
-                  ); ?>
-              </td>
-              <!-- Vascularity -->
-              <td>
-                  <?php
-                  echo $form->dropDownList($element, $eye_side . '_vasc_id', $vascularities,
-                      array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false,
-                      array('label' => 0, 'field' => 6)
-                  ); ?>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+          <div class="cols-9">
+            <table class="bleb-assessment last-left cols-full">
+              <thead>
+              <tr>
+                <th>Area (Central)</th>
+                <th >Area (Maximal)</th>
+                <th>Height</th>
+                <th>Vascularity</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <!-- Area (Central) -->
+                <td>
+                    <?php
+                    echo $form->dropDownList($element, $eye_side . '_central_area_id', $centralAreas,
+                        array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false,
+                        array()
+                    ); ?>
+                </td>
+                <!-- Area (Maximal) -->
+                <td>
+                    <?php
+                    echo $form->dropDownList($element, $eye_side . '_max_area_id', $maxAreas,
+                        array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false,
+                        array()
+                    ); ?>
+                </td>
+                <!-- Height -->
+                <td>
+                    <?php
+                    echo $form->dropDownList($element, $eye_side . '_height_id', $heights,
+                        array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false,
+                        array()
+                    ); ?>
+                </td>
+                <!-- Vascularity -->
+                <td>
+                    <?php
+                    echo $form->dropDownList($element, $eye_side . '_vasc_id', $vascularities,
+                        array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false,
+                        array()
+                    ); ?>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">
           <div class="add-side">
