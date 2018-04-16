@@ -1051,8 +1051,7 @@ $(document).ready(function() {
         $('#div_'+OE_MODEL_PREFIX+'Element_OphCiExamination_ClinicOutcome_patientticket').slideUp();
     }
 
-  $('#follow-up-outcome-options').delegate('li', 'click', function () {
-
+  $(this).delegate('#follow-up-outcome-options li', 'click', function () {
     var followup = !!$(this).data('followup');
 
     $('.follow-up-options-follow-up-only').toggle(followup);
@@ -1072,7 +1071,7 @@ $(document).ready(function() {
         }
   });
 
-  $('#add-follow-up-btn').click(function () {
+  $(this).delegate('#add-follow-up-btn', 'click', function () {
     var selected_outcome = $('#follow-up-outcome-options').find('li.selected');
     var selected_quantity = $('#follow-uo-quantity-options').find('li.selected');
     var selected_period = $('#follow-up-period-options').find('li.selected');
