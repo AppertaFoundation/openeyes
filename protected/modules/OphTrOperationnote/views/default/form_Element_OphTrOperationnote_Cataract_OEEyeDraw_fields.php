@@ -136,9 +136,7 @@
       </td>
     </tr>
     <tr>
-      <td>
-          <?php echo $element->getAttributeLabel('OphTrOperationnote_CataractOperativeDevices'); ?>
-      </td>
+      <td>Agents</td>
       <td>
           <?php echo $form->multiSelectList($element, 'OphTrOperationnote_CataractOperativeDevices',
               'operative_devices',
@@ -150,9 +148,7 @@
       </td>
     </tr>
     <tr>
-      <td>
-          <?php echo $element->getAttributeLabel('OphTrOperationnote_CataractComplications'); ?>
-      </td>
+      <td>Complications</td>
       <td>
           <?php echo $form->multiSelectList($element, 'OphTrOperationnote_CataractComplications', 'complications', 'id',
               CHtml::listData(OphTrOperationnote_CataractComplications::model()->activeOrPk($element->cataractComplicationValues)->findAll(
