@@ -40,6 +40,11 @@ class Allergies extends \BaseEventTypeElement
     public $widgetClass = 'OEModule\OphCiExamination\widgets\Allergies';
     protected $default_from_previous = true;
 
+    protected $errorExceptions = array(
+        'OEModule_OphCiExamination_models_Allergies_entries' => 'OEModule_OphCiExamination_models_Allergies_entry_table'
+
+    );
+
     public function tableName()
     {
         return 'et_ophciexamination_allergies';
@@ -113,6 +118,7 @@ class Allergies extends \BaseEventTypeElement
         return parent::afterValidate();
     }
 
+
     /**
      * Check for auditable changes
      *
@@ -163,6 +169,19 @@ class Allergies extends \BaseEventTypeElement
             $force[] = $entry->allergy_id;
         }
         return OphCiExaminationAllergy::model()->activeOrPk($force)->findAll();
+    }
+
+    protected function errorAttributeException($attribute, $message)
+    {
+        if ($attribute === \CHtml::modelName($this) . '_entries') {
+            if (preg_match('/^(\d+)\s\-\sChecked\sStatus/', $message, $match) === 1) {
+                return $attribute .'_' . ($match[1]-1) . '_allergy_has_allergy';
+            }
+            elseif (preg_match('/^(\d+)\s\-\sAllergy/', $message, $match) === 1) {
+                return $attribute .'_' . ($match[1]-1) . '_allergy_id';
+            }
+        }
+        return parent::errorAttributeException($attribute, $message);
     }
 
     /**

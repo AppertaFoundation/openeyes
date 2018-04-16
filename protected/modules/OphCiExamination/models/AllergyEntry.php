@@ -63,12 +63,14 @@ class AllergyEntry extends \BaseElement
         // will receive user inputs.
         return array(
             array('element_id, allergy_id, other, comments, has_allergy', 'safe'),
-            array('allergy_id, has_allergy', 'required'),
+            array('allergy_id', 'required'),
+            array('has_allergy', 'required', 'message'=>'Checked Status cannot be blank'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, element_id, allergy_id, other, comments, has_allergy', 'safe', 'on' => 'search'),
         );
     }
+
     /**
      * @return array relational rules.
      */
@@ -141,6 +143,7 @@ class AllergyEntry extends \BaseElement
         }
         return $this->allergy ? $this->allergy->name : '';
     }
+
 
     /**
      * @return string
