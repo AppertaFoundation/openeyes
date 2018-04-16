@@ -364,9 +364,6 @@
       item.append('<a href="#" class="' + hrefClass + '"></a>');
       item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme ' + (open ? 'minus' : 'plus') + '"></i></div> <h3 class="collapse-group-header">' + itemData.name + '</h3>');
 
-      // The parent element should also be the first child element
-      itemData.children.unshift(itemData);
-
       //children
       if (itemData.children && itemData.children.length) {
         var subList = $('<ul>').addClass('oe-element-list collapse-group-content');

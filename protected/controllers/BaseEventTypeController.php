@@ -321,11 +321,19 @@ class BaseEventTypeController extends BaseModuleController
                 continue;
             }
             $struct = array(
-                'name' => $et->name,
-                'class_name' => CHtml::modelName($et->class_name),
-                'id' => $et->id,
+                'name'          => $et->group_title,
+                'class_name'    => CHtml::modelName($et->class_name),
+                'id'            => $et->id,
                 'display_order' => $et->display_order,
                 'children' => array(),
+            );
+
+            // Add the parent as its first child with the display name instead of the group title
+            $struct['children'][] = array(
+                'name'          => $et->name,
+                'class_name'    => CHtml::modelName($et->class_name),
+                'id'            => $et->id,
+                'display_order' => $et->display_order,
             );
 
             foreach ($et->child_element_types as $child) {
