@@ -16,11 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section
-    class="edit element full on-demand sub-element
-      <?php echo $element->elementType->class_name ?>
-      <?php if (@$ondemand) { ?>hidden<?php } ?>
-      <?php if ($this->action->id == 'update' && !$element->event_id) { ?>missing<?php } ?>"
+<section class="element view full  eye-divider view-biometry"
     data-element-type-id="<?php echo $element->elementType->id ?>"
     data-element-type-class="<?php echo $element->elementType->class_name ?>"
     data-element-type-name="<?php echo $element->elementType->name ?>"
