@@ -58,8 +58,8 @@ function updateCorrespondence(macro_id)
                 obj.val('');
                 
                 //set letter type
-                $('#ElementLetter_letter_type_id').val(data.sel_letter_type_id);
                 $('.internal-referrer-wrapper').slideUp();
+                $('#ElementLetter_letter_type_id').val(data.sel_letter_type_id).trigger('change');
                 resetInternalReferralFields();
 
 				$('#attachments_content_container').html(data.associated_content);
