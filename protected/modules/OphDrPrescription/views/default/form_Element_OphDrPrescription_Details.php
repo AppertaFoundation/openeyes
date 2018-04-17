@@ -134,7 +134,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
           <div class="search-options" style="display: none;">
             <input id="prescription-search-field"
                    class="cols-full"
-                   placeholder="search for prescription"
+                   placeholder="Search for Drug"
                    type="text">
             <ul id="prescription-search-results" class="add-options" data-multi="true">
             </ul>
