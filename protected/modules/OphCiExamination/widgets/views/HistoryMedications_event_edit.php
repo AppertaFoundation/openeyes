@@ -36,10 +36,10 @@ $element_errors = $element->getErrors();
               <button class="button small show-stopped" type="button">show stopped</button>
               <button class="button small hide-stopped" type="button" style="display: none;">Hide stopped</button>
             </th>
-            <th class="cols-4"></th>
+            <th class="cols-5"></th>
             <th>Start</th>
             <th>Stopped(Optional)</th>
-            <th>Reason</th>
+            <th class="cols-1">Reason</th>
             <th></th>
         </tr>
         </thead>

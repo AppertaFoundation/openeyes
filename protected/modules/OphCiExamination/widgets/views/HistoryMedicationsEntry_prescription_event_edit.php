@@ -69,7 +69,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         <fieldset class="row field-row fuzzy-date">
             <div class="large-11 column end">
                 <?php if (!$entry->end_date) { ?>
-                  <input id="datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:90px" placeholder="yyyy-mm-dd">
+                  <input id="datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd">
                   <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
                 <?php } else { ?>
                   <i class="oe-i start small pad"></i>
@@ -80,7 +80,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         </fieldset>
     </td>
     <td>
-        <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'cols-6')) ?>
+        <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => '-?-', 'class'=>'cols-full')) ?>
     </td>
 
     <td class="text-center">

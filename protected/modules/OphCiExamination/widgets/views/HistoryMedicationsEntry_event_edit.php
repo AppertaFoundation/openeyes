@@ -101,19 +101,19 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
     </td>
     <td>
       <input type="hidden" name="<?= $field_prefix ?>[units]" value="<?= $entry->units ?>" />
-      <input class="cols-4" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
-        <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Select-', 'class'=>'cols-2')) ?>
-        <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Select-', 'class'=>'cols-2')) ?>
+      <input class="cols-2" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
+        <?= CHtml::dropDownList($field_prefix . '[frequency_id]', $entry->frequency_id, $frequency_options, array('empty' => '-Select-', 'class'=>'cols-3')) ?>
+        <?= CHtml::dropDownList($field_prefix . '[route_id]', $entry->route_id, $route_options, array('empty' => '-Select-', 'class'=>'cols-4')) ?>
         <?= CHtml::dropDownList($field_prefix . '[option_id]',
                   $entry->option_id,
                   CHtml::listData($entry->routeOptions() ?: array(), 'id', 'name'),
-                  array('empty' => '-Select-', 'class'=>'cols-3 admin-route-options', 'style'=>$entry->routeOptions()?'':'display:none' ));  ?>
+                  array('empty' => '-Select-', 'class'=>'cols-2 admin-route-options', 'style'=>$entry->routeOptions()?'':'display:none' ));  ?>
 
     </td>
     <td>
       <fieldset class="row field-row fuzzy-date">
       <?php if (!$entry->start_date||$removable) { ?>
-        <input id="datepicker_1_<?=$row_count?>" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" style="width:90px" placeholder="yyyy-mm-dd">
+        <input id="datepicker_1_<?=$row_count?>" name="<?= $field_prefix ?>[start_date]" value="<?= $entry->start_date ?>" style="width:80px" placeholder="yyyy-mm-dd">
         <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
       <?php } else { ?>
         <i class="oe-i start small pad"></i>
@@ -128,7 +128,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
   <td>
     <fieldset class="row field-row fuzzy-date">
         <?php if (!$entry->end_date||$removable) { ?>
-          <input id="datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:90px" placeholder="yyyy-mm-dd">
+          <input id="datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd">
           <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
         <?php } else { ?>
           <i class="oe-i start small pad"></i>
@@ -137,7 +137,6 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         <?php } ?>
     </fieldset>
   </td>
-
                         <?php
                         $attributes['placeholder'] = $entry->units;
                         $attributes['class'] = 'input-validate' . ($entry->units ? ' numbers-only' : '');
