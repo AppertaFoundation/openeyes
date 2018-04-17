@@ -93,7 +93,34 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                             array('empty' => '- Please select -', 'nowrapper' => true, 'class' => 'full-width')) ?>
                     </td>
                 </tr>
-                 <tr>
+                <!--                  Clinic Date  -->
+                <tr>
+                    <td>
+                        Clinic Date
+                    </td>
+                    <td>
+                        <?php echo $form->datePicker($element, 'clinic_date', array('maxDate' => 'today'), array('nowrapper' => true, 'null' => true)) ?>
+                    </td>
+                </tr>
+                <!--                    Direct Line-->
+                <tr>
+                    <td>
+                        Direct Line
+                    </td>
+                    <td>
+                        <?php echo $form->textField($element, '', array(), array(), array_merge($layoutColumns, array('field' => 2))) ?>
+                    </td>
+                </tr>
+                <!--                    Fax-->
+                <tr>
+                    <td>
+                        Fax
+                    </td>
+                    <td>
+                        <?php echo $form->textField($element, '', array(), array(), array_merge($layoutColumns, array('field' => 2))) ?>
+                    </td>
+                </tr>
+                <tr>
                      <?php if($element->getInternalReferralSettings('is_enabled')): ?>
 
                          <div class="row field-row internal-referrer-wrapper <?php echo $element->isInternalreferral() ? '' : 'hidden'; ?>">
@@ -201,25 +228,6 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                     ));
 
                     ?>
-                </tr>
-<!--                  Clinic Date  -->
-                <tr>
-                    <td>
-                        <label for="<?php echo get_class($element) . '_clinic_date_0'; ?>">
-                            <?php echo $element->getAttributeLabel('clinic_date') ?>:
-                        </label>
-                    </td>
-                    <td>
-                        <?php echo $form->datePicker($element, 'clinic_date', array('maxDate' => 'today'), array('nowrapper' => true, 'null' => true)) ?>
-                    </td>
-                </tr>
-<!--                    Direct Line-->
-                <tr>
-                    <?php echo $form->textField($element, 'direct_line', array(), array(), array_merge($layoutColumns, array('field' => 2))) ?>
-                </tr>
-<!--                    Fax-->
-                <tr>
-                    <?php echo $form->textField($element, 'fax', array(), array(), array_merge($layoutColumns, array('field' => 2))) ?>
                 </tr>
                 </tbody>
             </table>
@@ -414,6 +422,4 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
     }
     ?>
 </div>
-<script type="text/javascript">
-    // setDropDownWidth('macro_id');
-</script>
+
