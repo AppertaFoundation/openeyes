@@ -52,7 +52,7 @@ WHERE DATE(last_modified_date) != DATE(prev_date) OR last_modified_user_id != pr
         <td></td>
       </tr>
       <tr>
-        <td><?php echo $event->user->fullname; ?></td>
+        <td><?php echo $event->user->getFullNameAndTitle(); ?></td>
         <td><?php echo $event->NHSDate('created_date') ?></td>
         <td><?php echo date('H:i', strtotime($event->created_date)) ?></td>
       </tr>
@@ -66,7 +66,7 @@ WHERE DATE(last_modified_date) != DATE(prev_date) OR last_modified_user_id != pr
         <?php foreach ($modifications as $modification): ?>
             <?php $modified_user = \User::model()->findByPk($modification['last_modified_user_id']); ?>
         <tr>
-          <td><?php echo $modified_user->fullname; ?></td>
+          <td><?php echo $modified_user->getFullNameAndTitle(); ?></td>
           <td><?php echo Helper::convertMySQL2NHS($modification['last_modified_date']) ?></td>
           <td><?php echo date('H:i', strtotime($modification['last_modified_date'])) ?></td>
         </tr>
