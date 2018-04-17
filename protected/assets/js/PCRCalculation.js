@@ -494,8 +494,6 @@ function pcrCalculate($eyeSide, side) {
   side = capitalizeFirstLetter(side);
   pcrData = calculatePcrValue(ORValue);
 
-  $eyeSide.find('#pcr-risk-div, .pcr-risk-div label').css('background', pcrData.pcrColour);
-  $eyeSide.find('#pcr-risk-div, .pcr-risk-div label').css('color', pcrData.textColour);
   $eyeSide.find('.pcr-span').html(pcrData.pcrRisk);
   $eyeSide.find('.pcr-erisk').html(pcrData.excessRisk);
   if(pcrData.pcrRisk !== 'N/A'){

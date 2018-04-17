@@ -119,7 +119,10 @@ $criteria = new CDbCriteria();
                   <?php
                   echo CHtml::dropDownList('PcrRisk[' . $side . '][no_fundal_view]', $pcr['noview'],
                       array('NK' => 'Not Known', 'N' => 'No', 'Y' => 'Yes'),
-                      array('id' => 'pcrrisk_' . $side . '_no_fundal_view', 'class' => 'pcrrisk_no_fundal_view cols-full'));
+                      array(
+                          'id' => 'pcrrisk_' . $side . '_no_fundal_view',
+                          'class' => 'pcrrisk_no_fundal_view cols-full',
+                      ));
                   ?>
               </td>
             </tr>
@@ -246,23 +249,18 @@ $criteria = new CDbCriteria();
           </table>
         </div>
       </div>
-
-      <div class="cols-full">
-        <span id="pcr-risk-div">
-          <label>
+      <div class="field-row-pad-top flex-layout">
+        <div>
+            Excess risk compared to average eye <span class="pcr-erisk highlighter"><strong><span> 3  </span></strong></span> times
+          <a href="https://www.nature.com/articles/6703049"
+             target="_blank">
+            <i class="oe-i info small pad js-has-tooltip"
+               data-tooltip-content="Calculation data derived from Narendran et al. The Cataract National Dataset electronic multicentre audit of 55,567 operations (click for more information)"></i>
+          </a>
+        </div>
+        <div id="pcr-risk-div" class="highlighter large-text">
             PCR Risk <span class="pcr-span"> 6.1 </span> %
-          </label>
-        </span>
-        <span>
-          <label>
-            Excess risk compared to average eye <span class="pcr-erisk"><strong><span> 3  </span></strong></span> times
-          </label>
-        </span>
-        <a href="https://www.nature.com/articles/6703049"
-           target="_blank">
-          <i class="oe-i info small pad js-has-tooltip"
-             data-tooltip-content="Calculation data derived from Narendran et al. The Cataract National Dataset electronic multicentre audit of 55,567 operations (click for more information)"></i>
-        </a>
+        </div>
       </div>
     </div>
   </div>
