@@ -89,7 +89,7 @@
           <?php if($this->action->Id === 'view'): ?>
               <div class="button-bar right">
                   <span style="display: none"><i class="frmDnaTests_loader loadervfa fa-spinner fa-spin"></i></span>
-                  <span class="frmDnaTests_successmessage successmessage msg success" style="display: none; font-size: 12px;"><i class="fa fa-check"></i> Saved</span>
+                  <span class="frmDnaTests_successmessage successmessage msg success" style="display: none; font-size: 12px;"><i class="oe-i tick small"></i> Saved</span>
                   <div class="frmDnaTests_controls" class="frmDnaTests_controls" style="display: none;">
                       <button class="button warning small cancelTest">Cancel</button>
                       <button class="button small default submitTest">Save changes</button>

@@ -96,9 +96,9 @@ if (!isset($uniqueid)) {
                                     $attr_val = $admin->attributeValue($row, $listItem);
                                     if (gettype($attr_val) === 'boolean'):
                                         if ($admin->attributeValue($row, $listItem)):
-                                            ?><i class="fa fa-check"></i><?php
+                                            ?><i class="oe-i tick small"></i><?php
                                         else:
-                                            ?><i class="fa fa-times"></i><?php
+                                            ?><i class="oe-i remove small"></i><?php
                                         endif;
                                     elseif(gettype($attr_val) === 'array'):
                                         echo implode(',', $admin->attributeValue($row, $listItem));

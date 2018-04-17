@@ -108,7 +108,7 @@ class PastSurgery extends \BaseEventElementWidget
             $res[] = $operation['side'];
         }
         $res[] = $operation['operation'] .
-            ($operation['link'] ? ' <a href="' . $operation['link'] . '"><span class="js-has-tooltip fa fa-eye" data-tooltip-content="View operation note"></span></a>' : '');
+            ($operation['link'] ? ' <a href="' . $operation['link'] . '"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View operation note"></span></a>' : '');
         return implode(' ', $res);
     }
 

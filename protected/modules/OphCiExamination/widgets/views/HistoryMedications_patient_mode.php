@@ -62,7 +62,7 @@ $model_name = CHtml::modelName($element);
                       <td><?= $entry->getMedicationDisplay() ?></td>
                       <td><?= $entry->getDatesDisplay() ?></td>
                       <td><?php if ($entry->prescription_item) { ?>
-                          <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="js-has-tooltip fa fa-eye"
+                          <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="js-has-tooltip fa oe-i eye small"
                                                                                     data-tooltip-content="View prescription"></span></a>
                           <?php } ?></td>
                     </tr>
@@ -127,7 +127,7 @@ $model_name = CHtml::modelName($element);
                     <td><?= $entry->getDatesDisplay() ?></td>
                     <td><?php if ($entry->prescription_item) { ?>
                         <a href="<?= $this->getPrescriptionLink($entry) ?>">
-                          <span class="js-has-tooltip fa fa-eye" data-tooltip-content="View prescription"></span>
+                          <span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span>
                         </a>
                         <?php } ?>
                     </td>

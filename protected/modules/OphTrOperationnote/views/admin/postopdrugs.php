@@ -37,7 +37,7 @@
 					<tr class="clickable" data-id="<?php echo $drug->id?>" data-uri="OphTrOperationnote/admin/editPostOpDrug/<?php echo $drug->id?>">
 						<td><input type="checkbox" name="drugs[]" value="<?php echo $drug->id?>" /></td>
 						<td><?php echo ($drug->active) ? ($drug->name) : ('<s>'.$drug->name.'</s>');?></td>
-						<td><?php echo ($drug->active) ? ('<i class="fa fa-check"></i>') : ('<i class="fa fa-times"></i>');?></td>
+						<td><?php echo ($drug->active) ? ('<i class="oe-i tick small"></i>') : ('<i class="oe-i remove small"></i>');?></td>
 
 					</tr>
 				<?php }?>

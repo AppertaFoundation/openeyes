@@ -29,7 +29,7 @@
                 Medications
             </div>
             <div class="large-10 column data">
-                <i>Current:</i> <?php if ($stopped) {?><a href="#" class="kind-toggle show" data-kind="stopped"><i class="fa fa-icon fa-history" aria-hidden="true"></i></a><?php } ?>
+                <i>Current:</i> <?php if ($stopped) {?><a href="#" class="kind-toggle show" data-kind="stopped"><i class="oe-i history small" aria-hidden="true"></i></a><?php } ?>
                 <?php if (!$current) {?>No current medications.<?php } ?>
             </div>
 
@@ -39,7 +39,7 @@
                         <tr>
                             <td><strong><?= $entry->getMedicationDisplay() ?></strong>
                                 <?php if ($entry->prescription_item) { ?>
-                                    <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="js-has-tooltip fa fa-eye" data-tooltip-content="View prescription"></span></a>
+                                    <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
                             </td>
                             <td><span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span></td>
@@ -55,7 +55,7 @@
                         <tr class="stopped-kind" style="display: none;">
                             <td><strong><?= $entry->getMedicationDisplay() ?></strong>
                                 <?php if ($entry->prescription_item) { ?>
-                                    <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="js-has-tooltip fa fa-eye" data-tooltip-content="View prescription"></span></a>
+                                    <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span></a>
                                 <?php } ?>
                             </td>
                             <td><span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span></td>

@@ -94,16 +94,16 @@
                                     <?php
                                     if ($listItem == 'default') {
                                         if ($admin->attributeValue($row, $listItem)):
-                                            ?><i class="fa fa-check"></i><?php
+                                            ?><i class="oe-i tick small"></i><?php
                                         else:
-                                            ?><i class="fa fa-times"></i><?php
+                                            ?><i class="oe-i remove small"></i><?php
                                         endif;
                                     } else {
                                         if (gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
                                             if ($admin->attributeValue($row, $listItem)):
-                                                ?><i class="fa fa-check"></i><?php
+                                                ?><i class="oe-i tick small"></i><?php
                                             else:
-                                                ?><i class="fa fa-times"></i><?php
+                                                ?><i class="oe-i remove small"></i><?php
                                             endif;
                                         else:
                                             echo $admin->attributeValue($row, $listItem);

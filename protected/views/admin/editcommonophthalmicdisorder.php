@@ -89,7 +89,7 @@
                         );
 
                         $remove_a = CHtml::tag('a',array('href' => 'javascript:void(0)', 'class' => 'finding-rename'),
-                            Chtml::tag('i', array('class' => 'fa fa-times-circle', 'aria-hidden' => "true", 'title' => "Change finding"), null)
+                            Chtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change finding"), null)
                         );
 
                         $name_span = CHtml::tag('span',array('class' => 'finding-name name'), $finding_data['name']);
@@ -126,7 +126,7 @@
 
 
                         $remove_a = CHtml::tag('a',array('href' => 'javascript:void(0)', 'class' => 'alternate-disorder-rename'),
-                            Chtml::tag('i', array('class' => 'fa fa-times-circle', 'aria-hidden' => "true", 'title' => "Change disorder"), null)
+                            Chtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change disorder"), null)
                         );
 
                         $name_span = CHtml::tag('span',array('class' => 'alternate-disorder-name name'), $alternate_disorder_data['name']);
@@ -165,7 +165,7 @@
                         if(!$data->secondary_to){
                             return '<a href="javascript:void(0)" class="delete">delete</a>';
                         } else {
-                            return '<span title="This entry is a parent of a Secondary Common Ophtalmic Disorder" class="fa fa-info-circle tool-tip"></span>';
+                            return '<span title="This entry is a parent of a Secondary Common Ophtalmic Disorder" class="oe-i info small tool-tip"></span>';
                         }
                     }
                 ),
@@ -199,7 +199,7 @@
             'renderCommonlyUsedDiagnoses': false,
             'code': '',
             'singleTemplate' :
-            "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='fa fa-times-circle' aria-hidden='true' title='Change diagnosis'></i></a> " +
+            "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='oe-i remove-circle small' aria-hidden='true' title='Change diagnosis'></i></a> " +
             "<span class='diagnosis-name'></span></span>" +
             "<select class='commonly-used-diagnosis' style='display:none'></select>" +
             "{{{input_field}}}" +
@@ -308,7 +308,7 @@
         </td>
         <td width="200px">
             <span class="medication-display" style="display:none">
-                <a href="javascript:void(0)" class="diagnosis-rename"><i class="fa fa-times-circle" aria-hidden="true" title="Change diagnosis"></i></a>
+                <a href="javascript:void(0)" class="diagnosis-rename"><i class="oe-i remove-circle small" aria-hidden="true" title="Change diagnosis"></i></a>
                 <span class="diagnosis-name"></span>
             </span>
                 <input class="diagnoses-search-autocomplete diagnoses-search-inputfield ui-autocomplete-input"
@@ -327,7 +327,7 @@
         <td>
             <span class="finding-display display" style="display: none;">
                 <a href="javascript:void(0)" class="finding-rename">
-                    <i class="fa fa-times-circle" aria-hidden="true" title="Change finding"></i>
+                    <i class="oe-i remove-circle small" aria-hidden="true" title="Change finding"></i>
                 </a>
                 <span class="finding-name name"></span>
             </span>
@@ -339,7 +339,7 @@
         </td>
         <td>
             <span class="alternate-disorder-display display" style="display: none;">
-                <a href="javascript:void(0)" class="alternate-disorder-rename"><i class="fa fa-times-circle" aria-hidden="true" title="Change disorder"></i></a>
+                <a href="javascript:void(0)" class="alternate-disorder-rename"><i class="oe-i remove-circle small" aria-hidden="true" title="Change disorder"></i></a>
                 <span class="alternate-disorder-name name"></span>
             </span>
             <input class="alternate-disorder-search-autocomplete alternate-disorder-search-inputfield ui-autocomplete-input"

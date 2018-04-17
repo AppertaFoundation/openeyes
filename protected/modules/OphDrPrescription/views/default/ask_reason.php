@@ -57,9 +57,9 @@ $reasons = OphDrPrescriptionEditReasons::model()->findAll(array('order'=>'displa
         </div>
         <div class="column cols-6">
             <div id="other_reason_controls" style="display: none;">
-                <a href="javascript:void(-1);" id="submit_other" style="color: #3fa522;"><i class="fa fa-check fa-2x"></i></a>
+                <a href="javascript:void(-1);" id="submit_other" style="color: #3fa522;"><i class="oe-i tick small fa-2x"></i></a>
                 <br/>
-                <a href="javascript:void(-1);" id="cancel_other" style="color: #eb5911;"><i class="fa fa-times fa-2x"></i></a>
+                <a href="javascript:void(-1);" id="cancel_other" style="color: #eb5911;"><i class="oe-i remove small fa-2x"></i></a>
             </div>
         </div>
     </div>

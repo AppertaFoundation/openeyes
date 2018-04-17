@@ -19,7 +19,7 @@
 <div class="element-fields row">
 	<div class="element-fields">
         <div class="row field-row">
-            <div class="large-2 column"><label for="find-user">For the attention of:  <span class="has-tooltip fa fa-info-circle" data-tooltip="Cannot be changed after message creation."></span></label></div>
+            <div class="large-2 column"><label for="find-user">For the attention of:  <span class="has-tooltip fa oe-i info small" data-tooltip="Cannot be changed after message creation."></span></label></div>
 
             <?php if ($element->isNewRecord) { ?>
                 <div class="large-4 column autocomplete-row">

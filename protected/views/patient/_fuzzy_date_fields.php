@@ -45,7 +45,7 @@
         </select>
     </div>
     <div class="large-1 column end">
-                        <span class="js-has-tooltip fa fa-info-circle right" style="margin-top:3px"
+                        <span class="js-has-tooltip fa oe-i info small right" style="margin-top:3px"
                               data-tooltip-content="Day, Month and Year fields are optional."></span>
     </div>
 </div>
