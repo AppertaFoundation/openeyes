@@ -43,41 +43,41 @@
           </table>
             <?php if (!$element->is_patient) { ?>
               <div class="row data-row">
-                <div class="large-2 column">
+                <div class="cols-2">
                   <div
                       class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('representative_name')) ?></div>
                 </div>
-                <div class="large-10 column end">
+                <div class="cols-10">
                   <div class="data-value"><?php echo CHtml::encode($element->representative_name) ?></div>
                 </div>
               </div>
             <?php } ?>
           <div class="row data-row">
               <?php if ($element->checkSignature()) { ?>
-                <div class="large-2 column">
+                <div class="cols-2">
                   <div class="data-label">Captured Signature</div>
                 </div>
-                <div class="large-4 column">
-                  <img src="/OphCoCvi/default/displayConsentSignature/<?=$this->event->id?>" style="height: 60px" />
+                <div class="cols-4">
+                  <img src="/OphCoCvi/default/displayConsentSignature/<?= $this->event->id ?>" style="height: 60px"/>
                 </div>
                   <?php if ($this->checkEditAccess()) {
                       $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                           'id' => 'remove-consent-signature-form',
-                          'action' => $this->getApp()->createUrl($this->getModule()->name.'/default/removeConsentSignature/'.$this->event->id),
+                          'action' => $this->getApp()->createUrl($this->getModule()->name . '/default/removeConsentSignature/' . $this->event->id),
                           'enableAjaxValidation' => false,
                           'layoutColumns' => array(
                               'label' => 2,
-                              'field' => 10
-                          )
+                              'field' => 10,
+                          ),
                       ));
                       ?>
-                  <input type="hidden" name="signature_file_id" value="<?= $element->signature_file_id ?>" />
-                  <div class="large-4 column end">
+                  <input type="hidden" name="signature_file_id" value="<?= $element->signature_file_id ?>"/>
+                  <div class="cols-4">
                       <?php echo CHtml::button('Remove patient signature', array(
                           'type' => 'button',
                           'id' => 'remove-patient-signature',
                           'name' => 'capturePatientSignature',
-                          'class' => 'small button warning event-action'
+                          'class' => 'small button warning event-action',
                       )); ?>
                   </div>
                       <?php
@@ -85,16 +85,16 @@
                   } ?>
               <?php } else { ?>
                   <?php if ($this->checkEditAccess()) { ?>
-                  <div class="large-12 column end">
+                  <div class="cols-12">
                       <?php echo CHtml::button('Capture patient signature', array(
                           'type' => 'button',
                           'id' => 'capture-patient-signature',
                           'name' => 'capturePatientSignature',
-                          'class' => 'small button primary event-action'
+                          'class' => 'small button primary event-action',
                       )); ?>
                   </div>
                   <div id="capture-patient-signature-instructions" class="hidden">
-                    <div class="large-4 column">
+                    <div class="cols-full">
                       <ol>
                         <li>Click the button to print the first page of the CVI Certificate.</li>
                         <li>Obtain patient/patient representative signature on the print out.</li>
@@ -105,13 +105,13 @@
                         <li>Click the button retrieve the captured signature for this event.</li>
                       </ol>
                     </div>
-                    <div class="large-4 column end">
+                    <div class="cols-4">
                         <?php echo CHtml::button('Print first page', array(
                             'data-print-url' => '/OphCoCvi/default/consentSignature/' . $this->event->id,
                             'type' => 'button',
                             'id' => 'print-for-signature',
                             'name' => 'printForSignature',
-                            'class' => 'small button primary event-action'
+                            'class' => 'small button primary event-action',
                         )); ?> <br/><br/>
                         <?php echo CHtml::link('Retrieve Signature',
                             '/OphCoCvi/default/retrieveConsentSignature/' . $this->event->id,
@@ -124,13 +124,13 @@
         </div>
       </div>
       <div>
-        <i class="oe-i small js-listview-expand-btn collapse" data-list="info"></i>
+        <i class="oe-i small js-listview-expand-btn expand" data-list="info"></i>
       </div>
     </div>
   </div>
 </div>
 <div class="element-data">
-    <div class="row data-row">
+  <div class="row data-row">
 
-    </div>
+  </div>
 </div>
