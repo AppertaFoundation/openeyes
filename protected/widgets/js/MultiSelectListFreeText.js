@@ -67,7 +67,7 @@ $(document).ready(function() {
 
 			var remote_data = {
 				'href': '#',
-				'class': 'oe-i small remove-circle MultiSelectFreeTextRemove remove-one '+selected.val(),
+				'class': 'MultiSelectFreeTextRemove remove-one '+selected.val(),
 				'text': '',
 				'data-name': fieldName+'[]',
 				'data-text': selected.text()
@@ -79,25 +79,27 @@ $(document).ready(function() {
 				remote_data['data-linked-values'] = $(this).data('linked-values');
 			}
 
-			var remove = $('<i />', remote_data);
+			var remove = $('<span></span>', remote_data);
+			var remove_icon = $('<i class="oe-i remove-circle small"></i>');
+			remove.append(remove_icon);
 
-			var item = $('<li style="padding: 4px;"><span class="text">'+selected.text()+'</span></li>');
+			var item = $('<li><span class="text">'+selected.text()+'</span></li>');
 			item.append(remove);
 			item.append(input);
 
-			selections.append(item).css('display','inline-flex');
+			selections.append(item).show();
 			noSelectionsMsg.hide();
 			removeAll.show();
 
 			if (selected.data('requires-description')) {
 				descriptions.append(
 					'<div class="row data-row" data-option="' + selected.text() + '">' +
-						'<div class="cols-2 column">' +
+						'<div class="cols-2">' +
 							'<div class="data-label">' +
 								selected.text() + ':' +
 							'</div>' +
 						'</div>' +
-						'<div class="large-4 column end">' +
+						'<div class="cols-4">' +
 							'<div class="data-value">' +
 								'<textarea name="' + fieldName + '[' + i + '][description]" data-option="' + selected.text() + '"></textarea>' +
 							'</div>' +
@@ -121,7 +123,7 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$(this).on('click', 'i.MultiSelectFreeTextRemove', 'click',function(e) {
+	$(this).on('click', '.MultiSelectFreeTextRemove', 'click',function(e) {
 		e.preventDefault();
 		var anchor = $(this);
 		var container = anchor.closest('.multi-select-free-text');

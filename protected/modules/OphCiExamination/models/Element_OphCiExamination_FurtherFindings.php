@@ -128,4 +128,13 @@ class Element_OphCiExamination_FurtherFindings extends \BaseEventTypeElement
         }
         parent::afterValidate();
     }
+
+    public function isChild($action){
+        if ($action=='view'){
+            return false;
+        }
+        else{
+            return parent::isChild($action);
+        }
+    }
 }

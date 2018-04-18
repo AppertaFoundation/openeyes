@@ -88,37 +88,36 @@ $widgetOptionsJson = json_encode(array(
           <?php } ?>
       </div>
         <?php if ($noSelectionsMessage) { ?>
-          <div
-              class="no-selections-msg pill"
-              style="display: <?php if ($found) { ?> none<?php } ?>"><?php echo $noSelectionsMessage; ?></div>
+          <div class="no-selections-msg pill"
+              style="display: <?php if ($found) { ?> none<?php } ?>">
+              <?php echo $noSelectionsMessage; ?></div>
         <?php } ?>
       <input type="hidden" name="<?php echo $field ?>"/>
-      <ul class="MultiSelectFreeTextList multi-select-free-text-selections"
-          style="display: <?php echo $found? 'inline-flex': 'none'; ?>">
+      <ul class="MultiSelectFreeTextList multi-select-selections multi-select-free-text-selections">
           <?php foreach ($selected_ids as $i => $id) {
               if (isset($options[$id])) { ?>
-                <li style="padding: 4px;">
+                <li>
                   <input type="hidden" name="<?php echo $field ?>[<?php echo $i ?>][id]" data-i="<?php echo $i ?>"
                          value="<?php echo $id ?>"
                       <?php if (isset($opts[$id])) {
                           foreach ($opts[$id] as $key => $val) {
                               echo ' ' . $key . '="' . $val . '"';
                           }
-                      } ?>
-                  />
+                      } ?> />
                   <span class="text">
-								<?php echo htmlspecialchars($options[$id], ENT_QUOTES, Yii::app()->charset, false) ?>
-							</span>
-                  <i data-text="<?php echo $options[$id] ?>"
-                     class="oe-i remove-circle small MultiSelectFreeTextRemove remove-one
+                      <?php echo htmlspecialchars($options[$id], ENT_QUOTES, Yii::app()->charset, false) ?>
+                  </span>
+                  <span data-text="<?php echo $options[$id] ?>"
+                     class="MultiSelectFreeTextRemove remove-one
                      <?php if (isset($htmlOptions['class'])) { ?> <?php echo $htmlOptions['class'] ?><?php } ?>"
                       <?php if (isset($htmlOptions['data-linked-fields'])) { ?>
                         data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"
                       <?php } ?>
                       <?php if (isset($htmlOptions['data-linked-values'])) { ?>
                         data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"
-                      <?php } ?>></i>
-
+                      <?php } ?>>
+                    <i class="oe-i remove-circle small"></i>
+                  </span>
                 </li>
               <?php } ?>
           <?php } ?>
@@ -127,12 +126,12 @@ $widgetOptionsJson = json_encode(array(
           <?php foreach ($selected_ids as $i => $id) {
               if (isset($descriptions[$id])) { ?>
                 <div class="row data-row" data-option="<?php echo $options[$id] ?>">
-                  <div class="cols-2 column">
+                  <div class="cols-2">
                     <div class="data-label">
                         <?php echo $options[$id] ?>
                     </div>
                   </div>
-                  <div class="cols-4 column end">
+                  <div class="cols-4">
                     <div class="data-value">
                         <?php echo CHtml::textArea($field . "[$i][description]", $descriptions[$id]) ?>
                     </div>
