@@ -16,6 +16,11 @@
  */
 require_once './vendor/setasign/fpdi/pdf_parser.php';
 
+use Xthiago\PDFVersionConverter\Guesser\RegexGuesser;
+use Symfony\Component\Filesystem\Filesystem;
+use Xthiago\PDFVersionConverter\Converter\GhostscriptConverterCommand;
+use Xthiago\PDFVersionConverter\Converter\GhostscriptConverter;
+
 class DefaultController extends BaseEventTypeController
 {
     protected $show_element_sidebar = false;
@@ -295,6 +300,10 @@ class DefaultController extends BaseEventTypeController
             $pdf_path = $this->event->imageDirectory.'/event_print.pdf';
             $this->pdf_output->Output("F",   $pdf_path);
 
+            if($return_pdf_path) {
+                return $pdf_path;
+            }
+
             header('Content-Type: application/pdf');
             header('Content-Length: '.filesize($pdf_path));
 
@@ -311,12 +320,41 @@ class DefaultController extends BaseEventTypeController
 
     private function addPDFToOutput($pdf_path)
     {
+        if((float)$this->getPDFVersion($pdf_path) > 1.4) {
+            $this->convertPDF($pdf_path);
+        }
+
         $pagecount = $this->pdf_output->setSourceFile($pdf_path);
         for ($i = 1; $i <= $pagecount; $i++) {
             $this->pdf_output->AddPage('P');
             $tplidx = $this->pdf_output->ImportPage($i);
             $this->pdf_output->useTemplate($tplidx);
         }
+    }
+
+    /**
+     * @param string $pdf_path
+     * @return string
+     */
+
+    private function getPDFVersion($pdf_path)
+    {
+        $guesser = new RegexGuesser();
+        return $guesser->guess($pdf_path);
+    }
+
+    /**
+     * @param $pdf_path
+     * @param string $version
+     */
+
+    private function convertPDF($pdf_path, $version = '1.4')
+    {
+        $command = new GhostscriptConverterCommand();
+        $filesystem = new Filesystem();
+
+        $converter = new GhostscriptConverter($command, $filesystem);
+        $converter->convert($pdf_path, $version);
     }
 
 }
