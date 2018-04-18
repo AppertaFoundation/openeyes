@@ -22,7 +22,7 @@ $name = get_class($model);
 
                             <!-- this link is hidden for now -->
                             <a href="<?=$edit_status_url . $participation->id?>?return=<?=Yii::app()->request->requestUri?>" title="Edit Participation" class="hidden edit-study-participation">
-                              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                              <i class="oe-i pencil small" aria-hidden="true"></i>
                             </a>
 
                             <?php endif;?>

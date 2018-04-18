@@ -42,7 +42,7 @@ $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('ap
       <span>NHS</span>
         <?php echo $this->patient->nhsnum ?>
         <?php if ($this->patient->nhsNumberStatus && $this->patient->nhsNumberStatus->isAnnotatedStatus()): ?>
-          <i class="fa fa-asterisk" aria-hidden="true"></i><span
+          <i class="oe-i asterisk small" aria-hidden="true"></i><span
               class="messages"><?= $this->patient->nhsNumberStatus->description; ?></span>
         <?php endif; ?>
     </div>
