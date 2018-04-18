@@ -22,24 +22,20 @@
         <h3 class="element-title">Biometry</h3>
     </header>
   <div class="element-data element-eyes">
-    <div class="right-eye">
-        <?php if ($element->hasRight()) {
-            $this->renderPartial('form_Element_OphTrOperationnote_Biometry_Data_Fields',
-                array('side' => 'right', 'element' => $element));
-        } else { ?>
-            <div class="data-value">Not recorded</div>
-        <?php } ?>
-    </div>
+      <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+          <div class="<?= $eye_side ?>-eye">
+              <h3 class="<?= $eye_side ?>-color-text"><?php echo CHtml::encode($element->getAttributeLabel($eye_side)) ?></h3>
+              <?php if ($element->hasRight()) {
+                  $this->renderPartial('form_Element_OphTrOperationnote_Biometry_Data_Fields',
+                      array('side' => $eye_side, 'element' => $element));
+              } else { ?>
+                  <div class="data-value not-recorded">Not recorded</div>
+              <?php } ?>
+          </div>
+      <?php endforeach; ?>
 
 
 
-      <div class="left-eye">
-          <?php if ($element->hasLeft()) {
-              $this->renderPartial('form_Element_OphTrOperationnote_Biometry_Data_Fields',
-                  array('side' => 'left', 'element' => $element));
-          } else { ?>
-              <div class="data-value">Not recorded</div>
-          <?php } ?>
-      </div>
+
   </div>
 </section>

@@ -37,7 +37,7 @@ if ($element->patientId > 0) {
           <div class="alert-box">Biometry data last modified:
               <?php echo date('F j, Y, g:i a', strtotime($latestData->{'last_modified_date'})); ?></div>
             <?php
-            $this->renderPartial('form_Element_OphTrOperationnote_Biometry_Data', array(
+                $this->renderPartial('form_Element_OphTrOperationnote_Biometry_Data', array(
                 'element' => $latestData,
                 'form' => $form,
             ));
