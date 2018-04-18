@@ -17,9 +17,6 @@
 require_once './vendor/setasign/fpdi/pdf_parser.php';
 
 use Xthiago\PDFVersionConverter\Guesser\RegexGuesser;
-use Symfony\Component\Filesystem\Filesystem;
-use Xthiago\PDFVersionConverter\Converter\GhostscriptConverterCommand;
-use Xthiago\PDFVersionConverter\Converter\GhostscriptConverter;
 
 class DefaultController extends BaseEventTypeController
 {
@@ -321,7 +318,7 @@ class DefaultController extends BaseEventTypeController
     private function addPDFToOutput($pdf_path)
     {
         if((float)$this->getPDFVersion($pdf_path) > 1.4) {
-            $this->convertPDF($pdf_path);
+            $pdf_path = $this->convertPDF($pdf_path);
         }
 
         $pagecount = $this->pdf_output->setSourceFile($pdf_path);
@@ -346,15 +343,15 @@ class DefaultController extends BaseEventTypeController
     /**
      * @param $pdf_path
      * @param string $version
+     *
+     * @return string Filepath of the converted document
      */
 
     private function convertPDF($pdf_path, $version = '1.4')
     {
-        $command = new GhostscriptConverterCommand();
-        $filesystem = new Filesystem();
-
-        $converter = new GhostscriptConverter($command, $filesystem);
-        $converter->convert($pdf_path, $version);
+        $tmpfname = tempnam("/tmp", "OE");
+        exec('gs -sDEVICE=pdfwrite -dCompatibilityLevel='.$version.' -dNOPAUSE -dBATCH -sOutputFile='.$tmpfname.' '.$pdf_path);
+        return $tmpfname;
     }
 
 }
