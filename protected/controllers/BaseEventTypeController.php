@@ -1489,7 +1489,7 @@ class BaseEventTypeController extends BaseModuleController
      * @return string
      */
     public function renderPartial($view, $data = null, $return = false, $processOutput = false)
-    {   
+    {
         if ($this->getViewFile($view) === false) {
             foreach ($this->getModule()->getModuleInheritanceList() as $mod) {
                 // assuming that any inheritance maintains the controller name here.
@@ -1520,14 +1520,14 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function renderElement($element, $action, $form, $data, $view_data = array(), $return = false, $processOutput = false)
     {
-       
+
         if (strcasecmp($action, 'PDFPrint') == 0 || strcasecmp($action, 'saveCanvasImages') == 0) {
             $action = 'print';
         }
         if($action == 'savePDFprint'){
             $action = 'print';
         }
-       
+
         // Get the view names from the model.
         $view = isset($element->{$action.'_view'})
             ? $element->{$action.'_view'}
@@ -1904,7 +1904,7 @@ class BaseEventTypeController extends BaseModuleController
             'eventId' => $id
         ));
     }
-    
+
     public function printHTMLCopy($id, $elements, $template = 'print')
     {
         $this->layout = '//layouts/printCopy';
@@ -1912,7 +1912,7 @@ class BaseEventTypeController extends BaseModuleController
             'elements' => $elements,
             'eventId' => $id,
         ), true);
-        
+
         echo $result;
     }
 
@@ -2059,6 +2059,7 @@ class BaseEventTypeController extends BaseModuleController
     {
         if ($this->patient) {
             $this->jsVars['OE_patient_id'] = $this->patient->id;
+            $this->jsVars['OE_patient_hosnum'] = $this->patient->hos_num;
         }
         if ($this->event) {
             $this->jsVars['OE_event_id'] = $this->event->id;

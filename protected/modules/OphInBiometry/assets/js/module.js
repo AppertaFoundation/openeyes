@@ -359,8 +359,6 @@ function updateIolRefTable(side) {
 
 	var l_id = ($('#Element_OphInBiometry_Selection_lens_id_' + side + ' option:selected').val());
 	var f_id = ($('#Element_OphInBiometry_Selection_formula_id_' + side + ' option:selected').val());
-	console.log('hablabla');
-	console.log(f_id);
 
 	$('table[id^="'+side+'_"]').hide();
 	$('span[id^="emmetropia_'+side+'_"]').hide();
@@ -680,7 +678,7 @@ function SRKT (eyeMeasurements, iolConstants)
 
 	// Difference between natural lens and IOL to cornea
 	var diff = aconstant - 3.3357;
-	
+
 	// Axial length correction for high myopes
 	var axialLength;
 	if (eyeMeasurements.al > 24.2) {
@@ -694,7 +692,7 @@ function SRKT (eyeMeasurements, iolConstants)
 
 	// Corneal width
 	var cornealWidth = -5.40948 + 0.58412 * axialLength + 0.098 * dioptresCornea;
-	
+
 	// Corneal dome height (check for negative result here before taking square root)
 	if (averageRadius * averageRadius - cornealWidth * cornealWidth / 4 > 0) {
 		var cornealDomeHeight = averageRadius - Math.sqrt(averageRadius * averageRadius - cornealWidth * cornealWidth / 4);
@@ -706,10 +704,10 @@ function SRKT (eyeMeasurements, iolConstants)
 		cornealDomeHeight = 5.5;
 		//calculationComments += "Corneal dome height capped at 5.5</br>";
 	}
-	
+
 	// Post-op anterior chamber depth
 	var postopACDepth = cornealDomeHeight + diff;
-	
+
 	this.suggestedPower = function() {
 		var numerator = 1000 * na * (na * averageRadius - diffRI * opticalAxialLength - 0.001 * eyeMeasurements.tr * (vd * (na * averageRadius - diffRI * opticalAxialLength) + opticalAxialLength * averageRadius));
 		var denominator = (opticalAxialLength - postopACDepth) * (na * averageRadius - diffRI * postopACDepth - 0.001 * eyeMeasurements.tr * (vd * (na * averageRadius - diffRI * postopACDepth) + postopACDepth * averageRadius));
@@ -721,7 +719,7 @@ function SRKT (eyeMeasurements, iolConstants)
 		var numerator = 1000 * na * (na * averageRadius - diffRI * opticalAxialLength) - lensPower * (opticalAxialLength - postopACDepth) * (na * averageRadius - diffRI * postopACDepth);
 		var denominator = (na * (vd * (na * averageRadius - diffRI * opticalAxialLength) + opticalAxialLength * averageRadius) - 0.001 * lensPower * (opticalAxialLength - postopACDepth) * (vd * (na * averageRadius - diffRI * postopACDepth) + postopACDepth * averageRadius));
 
-		return numerator/denominator;				
+		return numerator/denominator;
 	}
 }
 
@@ -797,6 +795,3 @@ function SRKT2 (eyeMeasurements, iolConstants)
 		return returnPower;
 	}
 }
-
-
-

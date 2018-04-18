@@ -87,6 +87,7 @@ class OphInBiometry_Imported_Events extends BaseActiveRecord
             'event_id' => 'Event',
             'patient_id' => 'Patient',
             'study_id' => 'Study ID',
+            'sop_uid' => 'SOP UID',
             'device_id' => 'Device unique ID',
             'device_name' => 'Device name',
             'device_model' => 'Device model',

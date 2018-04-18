@@ -288,7 +288,7 @@ return array(
         'log_events' => true,
         'default_site_code' => '',
         'institution_code' => '',
-        'institution_specialty' => 130, 
+        'institution_specialty' => 130,
         'erod_lead_time_weeks' => 3,
         // specifies which specialties are available in patient summary for diagnoses etc (use specialty codes)
         'specialty_codes' => array(),
@@ -350,6 +350,12 @@ return array(
                     'uri' => 'patient/create',
                     'position' => 46,
                     'restricted' => array('TaskAddPatient'),
+                ),
+                'forum' => array(
+                    'title' => 'FORUM',
+                    'uri' => "javascript:oelauncher('forum');",
+                    'requires_setting' => array('setting_key'=>'enable_forum_integration', 'required_value'=>'on'),
+                    'position' => 90,
                 ),
 // temporarily disabled
 //			'worklist' => array(
