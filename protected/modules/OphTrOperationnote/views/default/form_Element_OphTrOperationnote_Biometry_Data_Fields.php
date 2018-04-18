@@ -38,7 +38,7 @@
                 <td colspan="2"></td>
                 <td>
                     <?php if ($side == "right") { ?>
-                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality R small pad"></i>
+                        <i class="oe-i laterality R small pad"></i><i class="oe-i laterality NA small pad"></i>
 
                     <?php } else { ?>
                         <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
@@ -83,7 +83,7 @@
                 <td colspan="2"></td>
                 <td>
                     <?php if ($side == "right") { ?>
-                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality R small pad"></i>
+                        <i class="oe-i laterality R small pad"></i><i class="oe-i laterality NA small pad"></i>
 
                     <?php } else { ?>
                         <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
@@ -100,7 +100,7 @@
                 <td colspan="2"></td>
                 <td>
                     <?php if ($side == "right") { ?>
-                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality R small pad"></i>
+                        <i class="oe-i laterality R small pad"></i><i class="oe-i laterality NA small pad"></i>
 
                     <?php } else { ?>
                         <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
@@ -118,7 +118,7 @@
                 <td><?php echo CHtml::encode($element->{'axis_k1_' . $side}) ?>&deg;</td>
                 <td>
                     <?php if ($side == "right") { ?>
-                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality R small pad"></i>
+                        <i class="oe-i laterality R small pad"></i><i class="oe-i laterality NA small pad"></i>
 
                     <?php } else { ?>
                         <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
@@ -139,7 +139,7 @@
                 <td><?php echo CHtml::encode($element->{'delta_k_axis_' . $side}) ?>&deg;</td>
                 <td>
                     <?php if ($side == "right") { ?>
-                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality R small pad"></i>
+                        <i class="oe-i laterality R small pad"></i><i class="oe-i laterality NA small pad"></i>
 
                     <?php } else { ?>
                         <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
@@ -161,7 +161,7 @@
                 </td>
                 <td>
                     <?php if ($side == "right") { ?>
-                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality R small pad"></i>
+                        <i class="oe-i laterality R small pad"></i><i class="oe-i laterality NA small pad"></i>
 
                     <?php } else { ?>
                         <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
@@ -179,7 +179,7 @@
                 <td></td>
                 <td>
                     <?php if ($side == "right") { ?>
-                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality R small pad"></i>
+                        <i class="oe-i laterality R small pad"></i><i class="oe-i laterality NA small pad"></i>
 
                     <?php } else { ?>
                         <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
