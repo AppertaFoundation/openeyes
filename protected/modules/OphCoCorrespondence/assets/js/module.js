@@ -36,8 +36,8 @@ function updateCorrespondence(macro_id)
     var obj = $(this);
 
     if ( macro_id != '') {
-        
-        setDropDownWidth('macro_id');
+        //Commented because it would make the dropdown extend for the full width of the screen after an option had been selected.
+        // setDropDownWidth('macro_id');
         
         $.ajax({
             'type': 'GET',

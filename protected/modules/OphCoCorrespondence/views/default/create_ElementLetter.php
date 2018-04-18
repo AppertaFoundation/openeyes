@@ -81,7 +81,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                         Macro
                     </td>
                     <td>
-                        <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'cols-5 resizeselect')); ?>
+                        <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'cols-5 resizeSelect')); ?>
                     </td>
                 </tr>
                 <tr>
@@ -108,7 +108,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                         Direct Line
                     </td>
                     <td>
-                        <?php echo $form->textField($element, '', array(), array(), array_merge($layoutColumns, array('field' => 2))) ?>
+                        <?php echo $form->textField($element, 'direct_line', array('nowrapper' => true), array(), array_merge($layoutColumns, array('field' => 2))) ?>
                     </td>
                 </tr>
                 <!--                    Fax-->
@@ -117,7 +117,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                         Fax
                     </td>
                     <td>
-                        <?php echo $form->textField($element, '', array(), array(), array_merge($layoutColumns, array('field' => 2))) ?>
+                        <?php echo $form->textField($element, 'fax', array('nowrapper' => true), array(), array_merge($layoutColumns, array('field' => 2))) ?>
                     </td>
                 </tr>
                 <tr>
@@ -422,4 +422,3 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
     }
     ?>
 </div>
-
