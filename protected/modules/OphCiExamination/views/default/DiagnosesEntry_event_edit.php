@@ -43,7 +43,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
 
 ?>
 <tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row" style="height:50px;">
-    <td style="width:290px;">
+    <td style="width:290px;padding-top:15px;padding-bottom:15px;">
 
         <input type="hidden" name="<?= $field_prefix ?>[id][]" value="<?=$values['id'] ?>" />
 

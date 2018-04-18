@@ -17,8 +17,13 @@
  */
 ?>
 
-<?php $js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js', false, -1);?>
-<?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Diagnoses.js", CClientScript::POS_HEAD); ?>
+<?php
+    $js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js', false, -1);
+    Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Diagnoses.js", CClientScript::POS_HEAD);
+    $firm = Firm::model()->with(array(
+            'serviceSubspecialtyAssignment' => array('subspecialty')
+    ))->findByPk(Yii::app()->session['selected_firm_id']);
+?>
 
 <script type="text/javascript" src="<?=$js_path;?>"></script>
 
@@ -95,7 +100,10 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#OphCiExamination_diagnoses').data('controller', new OpenEyes.OphCiExamination.DiagnosesController({element: $('#<?=$model_name?>_element') }));
+        $('#OphCiExamination_diagnoses').data('controller', new OpenEyes.OphCiExamination.DiagnosesController({
+            element: $('#<?=$model_name?>_element'),
+            subspecialtyRefSpec:'<?=$firm->subspecialty->ref_spec;?>'
+        }));
 
         // would be better to do this from within the controller via a signal, but this a quick solution
         OpenEyes.OphCiExamination.Diagnosis.sync();

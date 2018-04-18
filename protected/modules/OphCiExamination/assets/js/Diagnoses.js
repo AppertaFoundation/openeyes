@@ -32,6 +32,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.options = $.extend(true, {}, DiagnosesController._defaultOptions, options);
 
         this.$element = this.options.element;
+        this.subspecialtyRefSpec = this.options.subspecialtyRefSpec;
+
         this.$table = this.$element.find('table');
         this.templateText = this.$element.find('.entry-template').text();
         this.externalDiagnoses = {};
@@ -47,6 +49,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         'selector': '#OphCiExamination_diagnoses',
         addButtonSelector: '.add-entry',
         element: undefined,
+        subspecialtyRefSpec: null
     };
 
     DiagnosesController.prototype.initialiseTriggers = function()
@@ -69,6 +72,36 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             e.preventDefault();
             controller.addEntry();
         });
+
+        controller.$element.on('change', 'select.condition-secondary-to', function(){
+            var $option = $(this).find('option:selected'),
+                type = $option.data('type'),
+                row;
+
+            if(type && type === 'alternate'){
+                // select only the alternate
+                // and only that one - instead of the first/main selected
+                var $tr = $(this).closest('tr'),
+                    item = $tr.find('.commonly-used-diagnosis option:selected').data('item');
+
+                if(item && item['alternate']){
+                    row = controller.createRow({disorder_id: item['alternate'].id, disorder_display:item['alternate'].label});
+                    controller.$table.find('tbody').append(row);
+                    controller.initialiseRow(controller.$table.find('tbody tr:last'));
+                }
+            } else if(type && type === 'disorder'){
+                // just add the disorder as an extra row
+                row = controller.createRow({disorder_id: $(this).val(), disorder_display:$option.text()});
+                controller.$table.find('tbody').append(row);
+                controller.initialiseRow(controller.$table.find('tbody tr:last'));
+            } else if(type && type === 'finding') {
+                //Add Further Findings
+                OphCiExamination_AddFinding($(this).val(), $option.text());
+            }
+
+            $(this).closest('.condition-secondary-to-wrapper').hide();
+        });
+
     };
 
     DiagnosesController.prototype.initialiseRow = function($row)
@@ -91,7 +124,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 //Adding new element to array doesn't trigger change so do it manually
                 $(":input[name^='diabetic_diagnoses']").trigger('change');
                 $(":input[name^='glaucoma_diagnoses']").trigger('change');
-            }
+            },
+            'subspecialtyRefSpec': controller.subspecialtyRefSpec,
         });
         $row.find('.diagnoses-search-autocomplete').data('DiagnosesSearchController', DiagnosesSearchController );
 
@@ -118,8 +152,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             data = {};
 
         data['row_count'] = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
-
-console.log(data);
 
         return Mustache.render(
             this.templateText,
