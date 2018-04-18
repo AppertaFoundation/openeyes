@@ -239,17 +239,69 @@ class DefaultController extends BaseEventTypeController
      * @inheritdoc
      */
 
-    public function actionPDFPrint($id, $return_pdf_path = false)
+    public function actionSavePDFprint($id)
     {
         $this->initWithEventId($id);
 
-        $document_count = 0;
+        if($this->eventContainsImagesOnly()) {
+            return parent::actionSavePDFprint($id);
+        }
+
+        $auto_print = Yii::app()->request->getParam('auto_print', true);
+        $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
+
+        $pdfpath = $this->actionPDFPrint($id, true, $inject_autoprint_js);
+        $pf = ProtectedFile::createFromFile($pdfpath);
+        if ($pf->save()) {
+            $result = array(
+                'success'   => 1,
+                'file_id'   => $pf->id,
+            );
+
+            if( !isset( $_GET['ajax'])){
+                $result['name'] = $pf->name;
+                $result['mime'] = $pf->mimetype;
+                $result['path'] = $pf->getPath();
+
+                return $result;
+            }
+
+        } else {
+            $result = array(
+                'success'   => 0,
+                'message'   => "couldn't save file object".print_r($pf->getErrors(), true)
+            );
+        }
+
+        return $this->renderJSON($result);
+    }
+
+    /**
+     * @return bool
+     *
+     * Returns whether only images are uploaded to this event
+     */
+
+    private function eventContainsImagesOnly()
+    {
+        $document_types = $this->getDocumentTypes();
+        return array_values($document_types) === array('image');
+    }
+
+    /**
+     * @return array
+     *
+     * Returns an array of all different document types uploaded to this event
+     */
+
+    private function getDocumentTypes()
+    {
         $document_types = array();
 
         foreach ($this->event->getElements() as $element) {
             foreach (array("single_document", "left_document", "right_document") as $property) {
                 if(isset($element->$property)) {
-                    $document_count++;
+
                     $mimetype = $element->$property->mimetype;
                     if(strpos($mimetype, "image/") === 0) {
                         $document_types[]='image';
@@ -258,15 +310,30 @@ class DefaultController extends BaseEventTypeController
                         $document_types[]='pdf';
                     }
                     else {
-                        // other files cannot be printed
-                        return Yii::app()->end();
+                        $document_types[]='other';
                     }
                 }
             }
         }
 
+        return array_unique($document_types);
+    }
+
+    /**
+     * @inheritdoc
+     */
+
+    public function actionPDFPrint($id, $return_pdf_path = false, $inject_autoprint_js = true)
+    {
+        $this->initWithEventId($id);
+
+        if(in_array('other', $this->getDocumentTypes())) {
+            // Other documents cannot be printed
+            throw new Exception("Only images or PDF documents can be printed");
+        }
+
         // Image(s) only
-        if(array_values(array_unique($document_types)) === array('image')) {
+        if($this->eventContainsImagesOnly()) {
             return parent::actionPDFPrint($id);
         }
 
@@ -291,8 +358,12 @@ class DefaultController extends BaseEventTypeController
                     }
                 }
             }
-            $script = 'print(true);';
-            $this->pdf_output->IncludeJS($script);
+
+            if($inject_autoprint_js) {
+                $script = 'print(true);';
+                $this->pdf_output->IncludeJS($script);
+
+            }
 
             $pdf_path = $this->event->imageDirectory.'/event_print.pdf';
             $this->pdf_output->Output("F",   $pdf_path);
