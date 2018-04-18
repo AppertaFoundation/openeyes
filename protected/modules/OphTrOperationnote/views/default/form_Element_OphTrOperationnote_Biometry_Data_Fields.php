@@ -36,7 +36,14 @@
                     <input type="hidden" class="selected_lens" value="<?php echo $element->{'lens_id_' . $side} ?>">
                 </td>
                 <td colspan="2"></td>
-                <td><i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i></td>
+                <td>
+                    <?php if ($side == "right") { ?>
+                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality R small pad"></i>
+
+                    <?php } else { ?>
+                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
+                    <?php } ?>
+                </td>
             </tr>
             <tr>
                 <td>
@@ -74,7 +81,14 @@
                     <?php echo CHtml::encode($element->{'axial_length_' . $side}) ?>
                 </td>
                 <td colspan="2"></td>
-                <td><i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i></td>
+                <td>
+                    <?php if ($side == "right") { ?>
+                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality R small pad"></i>
+
+                    <?php } else { ?>
+                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
+                    <?php } ?>
+                </td>
             </tr>
             <tr>
                 <td>
@@ -84,7 +98,14 @@
                     <?php echo CHtml::encode($element->{'snr_' . $side}) ?>
                 </td>
                 <td colspan="2"></td>
-                <td><i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i></td>
+                <td>
+                    <?php if ($side == "right") { ?>
+                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality R small pad"></i>
+
+                    <?php } else { ?>
+                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
+                    <?php } ?>
+                </td>
             </tr>
             <tr>
                 <td>
@@ -95,7 +116,14 @@
                 </td>
                 <td>@</td>
                 <td><?php echo CHtml::encode($element->{'axis_k1_' . $side}) ?>&deg;</td>
-                <td><i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i></td>
+                <td>
+                    <?php if ($side == "right") { ?>
+                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality R small pad"></i>
+
+                    <?php } else { ?>
+                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
+                    <?php } ?>
+                </td>
             </tr>
             <tr>
                 <td>
@@ -109,7 +137,14 @@
                 </td>
                 <td>@</td>
                 <td><?php echo CHtml::encode($element->{'delta_k_axis_' . $side}) ?>&deg;</td>
-                <td><i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i></td>
+                <td>
+                    <?php if ($side == "right") { ?>
+                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality R small pad"></i>
+
+                    <?php } else { ?>
+                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
+                    <?php } ?>
+                </td>
             </tr>
             <tr>
                 <td>
@@ -124,7 +159,14 @@
                 <td>
                     <?php echo CHtml::encode($element->{'k2_axis_' . $side}) ?>&deg;
                 </td>
-                <td><i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i></td>
+                <td>
+                    <?php if ($side == "right") { ?>
+                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality R small pad"></i>
+
+                    <?php } else { ?>
+                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
+                    <?php } ?>
+                </td>
             </tr>
             <tr>
                 <td>
@@ -135,7 +177,14 @@
                 </td>
                 <td></td>
                 <td></td>
-                <td><i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i></td>
+                <td>
+                    <?php if ($side == "right") { ?>
+                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality R small pad"></i>
+
+                    <?php } else { ?>
+                        <i class="oe-i laterality NA small pad"></i><i class="oe-i laterality L small pad"></i>
+                    <?php } ?>
+                </td>
             </tr>
             </tbody>
         </table>
