@@ -17,7 +17,7 @@
  */
 ?>
 <!-- Show full patient Demographies -->
-<div class="oe-patient-popup" id="patient-popup-demographics" style="display:none;">
+<div class="oe-patient-popup" id="patient-popup-demographics" style="display:none; z-index:900;">
   <div class="flex-layout flex-top">
     <div class="cols-left">
       <div class="popup-overflow">
@@ -80,7 +80,7 @@
 </div>
 
 <!-- Patient Quickloog popup. Show Risks, Medical Data, Management Summary and Problem and Plans -->
-<div class="oe-patient-popup" id="patient-summary-quicklook" style="display:none">
+<div class="oe-patient-popup" id="patient-summary-quicklook" style="display:none; z-index:900;">
     <div class="flex-layout flex-top">
       <!-- oe-popup-overflow handles scrolling if data overflow height -->
       <div class="oe-popup-overflow quicklook-data-groups">
@@ -192,7 +192,7 @@
 <!-- .row -->
 <!-- .patient-popup-quicklook -->
 
-<div class="oe-patient-popup" id="patient-popup-management" style="display: none;">
+<div class="oe-patient-popup" id="patient-popup-management" style="display: none; z-index:900;">
 
   <div class="flex-layout flex-top">
 
@@ -338,7 +338,7 @@
 
 </div>
 
-<div class="oe-patient-popup" id="patient-popup-allergies-risks" style="display: none;">
+<div class="oe-patient-popup" id="patient-popup-allergies-risks" style="display: none; z-index:900;">
   <div class="flex-layout flex-top">
     <div class="cols-left">
 
