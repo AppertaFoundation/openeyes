@@ -123,4 +123,12 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
 
         return $term;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getDisplayDate()
+    {
+        return \Helper::formatFuzzyDate($this->date);
+    }
 }

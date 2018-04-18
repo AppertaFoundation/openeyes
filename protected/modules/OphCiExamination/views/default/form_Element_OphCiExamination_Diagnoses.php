@@ -39,7 +39,7 @@
             <th>Action</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody id="OphCiExamination_diagnoses">
         <?php
 
         foreach ($element->diagnoses as $row_count => $diagnosis) {
@@ -91,12 +91,14 @@
         );
         ?>
     </script>
+</div>
 
-    <script type="text/javascript">
-        $(document).ready(function() {
-            new OpenEyes.OphCiExamination.DiagnosesController({
-                element: $('#<?=$model_name?>_element')
-            });
-        });
-    </script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#OphCiExamination_diagnoses').data('controller', new OpenEyes.OphCiExamination.DiagnosesController({element: $('#<?=$model_name?>_element') }));
+
+        // would be better to do this from within the controller via a signal, but this a quick solution
+        OpenEyes.OphCiExamination.Diagnosis.sync();
+    });
+</script>
 

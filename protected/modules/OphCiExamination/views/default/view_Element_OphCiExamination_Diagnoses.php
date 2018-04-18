@@ -31,7 +31,7 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
         <div class="data-row">
             <div class="data-value">
                 <strong>
-                    <?php echo $principal->disorder->term ?>
+                    <?php echo $principal->getDisplayDate() . ' ' . $principal->disorder->term ?>
                 </strong>
             </div>
         </div>
@@ -51,7 +51,7 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
             ?>
             <div class="data-row">
                 <div class="data-value">
-                    <?php echo $diagnosis->disorder->term ?>
+                    <?php echo $diagnosis->getDisplayDate() . ' ' . $diagnosis->disorder->term ?>
                 </div>
             </div>
             <?php
@@ -66,7 +66,7 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
             <div class="data-row">
                 <div class="data-value">
                     <strong>
-                        <?php echo $principal->disorder->term ?>
+                        <?php echo $principal->getDisplayDate() . ' ' . $principal->disorder->term ?>
                     </strong>
                 </div>
             </div>
@@ -86,7 +86,7 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
             ?>
             <div class="data-row">
                 <div class="data-value">
-                    <?php echo $diagnosis->disorder->term ?>
+                    <?php echo $diagnosis->getDisplayDate() . ' ' . $diagnosis->disorder->term ?>
                 </div>
             </div>
             <?php

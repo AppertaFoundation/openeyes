@@ -50,15 +50,11 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <input type="text"
                class="diagnoses-search-autocomplete"
                id="diagnoses_search_autocomplete_<?=$row_count?>"
-
-            <?php if(isset($diagnosis)):?>
-                data-saved-diagnoses='<?php echo json_encode(array(
+               data-saved-diagnoses='<?php echo json_encode(array(
                     'id' => $values['id'],
                     'name' => $values['disorder_display'],
                     'disorder_id' => $values['disorder_id'])); ?>'
 
-            <?php endif; ?>
-        >
         <input type="hidden" name="<?= $field_prefix ?>[disorder_id][]" value="">
     </td>
 
