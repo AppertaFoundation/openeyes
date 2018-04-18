@@ -16,6 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 $this->beginContent('//patient/event_container');
+
+$this->event_actions[] = EventAction::printButton('Print', 'print', array(), array('onclick'=>'window.open("/OphCoDocument/default/pdfprint/'.$this->event->id.'");'));
+
 $this->moduleNameCssClass .= ' highlight-fields';
 
 $this->renderOpenElements($this->action->id);
