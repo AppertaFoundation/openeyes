@@ -37,21 +37,20 @@ foreach ($dilation_drugs as $d_drug) {
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">
             <table class="cols-full dilation_table"
-                   style="<?= (!$element->{$eye_side . '_treatments'}) ? "display: none;" : "" ?>"
-            >
+                   style="<?= (!$element->{$eye_side . '_treatments'}) ? 'display: none;' : '' ?>">
               <tbody class="plain" id="dilation_<?= $eye_side ?>">
               <?php foreach ($element->{$eye_side . '_treatments'} as $treatment) {
                   $this->renderPartial(
-                    'form_Element_OphCiExamination_Dilation_Treatment',
-                    array(
-                      'name_stub' => CHtml::modelName($element) . '[' . $eye_side . '_treatments]',
-                      'treatment' => $treatment,
-                      'key' => $key,
-                      'side' => $treatment->side,
-                      'drug_name' => $treatment->drug->name,
-                      'drug_id' => $treatment->drug_id,
-                      'data_order' => $treatment->drug->display_order,
-                    )
+                      'form_Element_OphCiExamination_Dilation_Treatment',
+                      array(
+                          'name_stub' => CHtml::modelName($element) . '[' . $eye_side . '_treatments]',
+                          'treatment' => $treatment,
+                          'key' => $key,
+                          'side' => $treatment->side,
+                          'drug_name' => $treatment->drug->name,
+                          'drug_id' => $treatment->drug_id,
+                          'data_order' => $treatment->drug->display_order,
+                      )
                   );
                   ++$key;
               } ?>
@@ -107,19 +106,21 @@ foreach ($dilation_drugs as $d_drug) {
             controller = new OpenEyes.OphCiExamination.DilationController(null, side.find('.dilation_table'), popup);
           });
 
-          function addDilationReading(selection) {
-            controller.OphCiExamination_Dilation_addTreatment(selection, '<?=$eye_side?>');
-            selection.removeClass('selected');
-          }
+          popup.find('.add-icon-btn').click(function () {
+            popup.find('li.selected').each(function () {
+              controller.OphCiExamination_Dilation_addTreatment($(this), '<?= $eye_side ?>');
+              $(this).removeClass('selected');
+            });
+          });
 
           setUpAdder(
             popup,
-            'return',
-            addDilationReading,
+            'multi',
+            null,
             side.find('.js-add-select-search'),
             null,
             popup.find('.close-icon-btn, .add-icon-btn')
-           );
+          );
         })
       </script>
     <?php endforeach; ?>

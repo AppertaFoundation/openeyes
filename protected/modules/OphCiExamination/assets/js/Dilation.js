@@ -69,15 +69,6 @@ OpenEyes.OphCiExamination.DilationController = (function () {
     }
   });
 
-
-
-  $('.main-event .edit-Dilation .add-icon-btn').click(function (e) {
-    var side = $(this).closest('.side').attr('data-side');
-    var element = $(this).closest('.flex-item-bottom').find('li.selected');
-    OphCiExamination_Dilation_addTreatment(element, side);
-    e.preventDefault();
-  });
-
   $(this).delegate('.main-event .edit-Dilation .clearDilation', 'click', function (e) {
     $(this).closest('.side').find('tr.dilationTreatment a.removeTreatment').click();
     e.preventDefault();
