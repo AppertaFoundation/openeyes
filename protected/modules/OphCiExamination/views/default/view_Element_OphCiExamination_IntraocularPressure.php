@@ -22,33 +22,16 @@ $leftIOP = $element->getReading('left');
 		var view_iop_right = <?php echo json_encode($rightIOP);?>;
 		var view_iop_left = <?php echo json_encode($leftIOP);?>;
 	</script>
-
 <div class="element-data element-eyes">
-	<div class="right-eye">
-		<?php if ($element->hasRight()) {
-    ?>
-				<?php $this->renderPartial("{$element->view_view}_side", array('element' => $element, 'side' => 'right'));
-    ?>
-		<?php 
-} else {
-    ?>
-			Not recorded
-		<?php 
-}?>
-	</div>
-	<div class="left-eye">
-		<div class="data-row">
-			<?php if ($element->hasLeft()) {
-    ?>
-				<?php $this->renderPartial("{$element->view_view}_side", array('element' => $element, 'side' => 'left'));
-    ?>
-			<?php 
-} else {
-    ?>
-				Not recorded
-			<?php 
-}?>
-		</div>
-	</div>
+    <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+  <div class="<?= $eye_side ?>-eye">
+      <?php if ($element->hasEye($eye_side)){
+        $this->renderPartial("{$element->view_view}_side", array('element' => $element, 'side' => $eye_side));
+      } else { ?>
+        Not recorded
+      <?php } ?>
+  </div>
+  <?php endforeach; ?>
 </div>
+
 

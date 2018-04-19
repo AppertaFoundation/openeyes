@@ -15,6 +15,9 @@
 ?>
 <?php if ($element->{"{$side}_values"}): ?>
   <table class="large">
+    <colgroup>
+      <col class="cols-4">
+    </colgroup>
     <tbody>
     <?php foreach ($element->{"{$side}_values"} as $value): ?>
       <tr>
