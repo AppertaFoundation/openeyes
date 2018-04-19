@@ -28,13 +28,11 @@
       <?php } else { ?>
     <div class="cols-6">
         <?php } ?>
-    <fieldset>
-        <legend><em>Add a procedure:</em></legend>
+      <fieldset>
           <?php if ($headertext) { ?>
             <p><em><?php echo $headertext ?></em></p>
           <?php } ?>
-          <?php
-          if (!empty($subsections) || !empty($procedures)) {
+          <?php if (!empty($subsections) || !empty($procedures)) {
               if (!empty($subsections)) { ?>
                 <div class="field-row">
                     <?php echo CHtml::dropDownList('subsection_id_' . $identifier, '', $subsections,
@@ -50,8 +48,7 @@
                         array('empty' => 'Select a commonly used procedure')); ?>
                 </div>
               <?php }
-          }
-          ?>
+          } ?>
         <div class="field-row">
             <?php
             $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
