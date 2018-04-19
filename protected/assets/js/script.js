@@ -17,7 +17,7 @@
 
 $(document).ready(function(){
 
-    var openeyes 	= new OpenEyes.UI.NavBtnPopup( 'logo', $('#js-openeyes-btn'), $('#js-openeyes-info') );
+    var openeyes 	= new OpenEyes.UI.NavBtnPopup( 'logo', $('#js-openeyes-btn'), $('#js-openeyes-info') ).useWrapper($('.openeyes-brand'));
     var shortcuts 	= new OpenEyes.UI.NavBtnPopup( 'shortcuts', $('#js-nav-shortcuts-btn'), $('#js-nav-shortcuts-subnav') ).useWrapper( $('#js-nav-shortcuts') );
     var activity 	= new OpenEyes.UI.NavBtnPopup( 'activity', $('#js-nav-activity-btn'), $('#js-activity-panel') );
     var toolTip = new OpenEyes.UI.Tooltip({
