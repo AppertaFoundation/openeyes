@@ -98,7 +98,7 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
         return array(
                 'id' => 'ID',
                 'event_id' => 'Event',
-                'description' => 'Outcome comments',
+                'description' => 'Comments',
                 'status_id' => 'Status',
                 'followup_quantity' => 'Follow-up',
                 'followup_period_id' => 'Follow-up period',

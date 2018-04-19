@@ -27,13 +27,10 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
 ?>
 
 <div class="element-fields flex-layout full-width">
-
     <?php if ($ticket_api) { ?>
-      <div
-          data-queue-ass-form-uri="<?= $ticket_api->getQueueAssignmentFormURI() ?>"
+      <div data-queue-ass-form-uri="<?= $ticket_api->getQueueAssignmentFormURI() ?>"
           id="div_<?= CHtml::modelName($element) ?>_patientticket"
-          style="<?= !($element->status && $element->status->patientticket) ? "display: none;" : "" ?>"
-      >
+          style="<?= !($element->status && $element->status->patientticket) ? "display: none;" : "" ?>" >
         <!-- TODO, this should be pulled from the ticketing module somehow -->
           <?php $ticket = $element->getPatientTicket();
           if ($ticket) { ?>
@@ -42,7 +39,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
           <?php } else { ?>
             <fieldset class="flex-layout">
               Virtual Clinic:
-              <div class="large-3 column">
+              <div class="cols-3">
                   <?php if (count($queues) == 0) { ?>
                     <span>No valid Virtual Clinics available</span>
                   <?php } elseif (count($queues) == 1) {
@@ -57,7 +54,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
                           array('empty' => '- Please select -', 'nowrapper' => true, 'options' => array()));
                   } ?>
               </div>
-              <div class="large-1 column end">
+              <div class="cols-1">
                 <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
                      alt="loading..." style="display: none;">
               </div>
@@ -106,16 +103,15 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
       <i class="oe-i comments small-icon"></i>
     </button>
 
-    <button class="button hint green js-add-select-search" id="show-follow-up-popup-btn" type="button"><i
-          class="oe-i plus pro-theme"></i></button>
+    <button class="button hint green js-add-select-search" id="show-follow-up-popup-btn" type="button">
+      <i class="oe-i plus pro-theme"></i>
+    </button>
 
     <div id="add-to-follow-up" class="oe-add-select-search auto-width" style="display: none;">
-
       <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
       <button class="button hint green add-icon-btn" id="add-follow-up-btn" type="button">
         <i class="oe-i plus pro-theme"></i>
       </button>
-
       <div class="flex-layout flex-left flex-top">
         <div>
           <table class="select-options">
