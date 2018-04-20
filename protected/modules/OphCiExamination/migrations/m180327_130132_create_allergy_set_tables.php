@@ -30,8 +30,8 @@ class m180327_130132_create_allergy_set_tables extends \OEMigration
             ),true
         );
 
-        $this->addColumn('ophciexamination_allergy_entry', 'has_allergy', 'tinyint(1) NOT NULL DEFAULT -9 AFTER allergy_id');
-        $this->addColumn('ophciexamination_allergy_entry_version', 'has_allergy', 'tinyint(1) NOT NULL DEFAULT -9 AFTER allergy_id');
+        $this->addColumn('ophciexamination_allergy_entry', 'has_allergy', 'tinyint(1) NOT NULL DEFAULT 1 AFTER allergy_id');
+        $this->addColumn('ophciexamination_allergy_entry_version', 'has_allergy', 'tinyint(1) NOT NULL DEFAULT 1 AFTER allergy_id');
 
         $this->addForeignKey('ophciexamination_allergy_set_subspecialty', 'ophciexamination_allergy_set', 'subspecialty_id', 'subspecialty', 'id');
         $this->addForeignKey('ophciexamination_allergy_set_firm', 'ophciexamination_allergy_set', 'firm_id', 'firm', 'id');
