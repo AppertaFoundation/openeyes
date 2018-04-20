@@ -132,7 +132,7 @@ class PatientController extends BaseController
 
             $this->redirect(array('/patient/view/' . $primary_patient->id));
         }
-        
+
         $tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
         $eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
 
@@ -1147,6 +1147,7 @@ class PatientController extends BaseController
     {
         if ($this->patient) {
             $this->jsVars['OE_patient_id'] = $this->patient->id;
+            $this->jsVars['OE_patient_hosnum'] = $this->patient->hos_num;
         }
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
@@ -1501,7 +1502,7 @@ class PatientController extends BaseController
             }
         }
     }
-    
+
     /**
      * Creates a new model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -1511,36 +1512,36 @@ class PatientController extends BaseController
         Yii::app()->assetManager->registerScriptFile('js/patient.js');
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
-       
+
         $patient = new Patient('manual');
         $patient->noPas();
         $contact = new Contact('manualAddPatient');
         $address = new Address();
 
         $this->performAjaxValidation(array($patient, $contact, $address));
-        
+
         if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
-        {   
+        {
             $contact->attributes = $_POST['Contact'];
             $patient->attributes = $_POST['Patient'];
             $address->attributes = $_POST['Address'];
 
             // not to be sync with PAS
             $patient->is_local = 1;
-            
+
             list($contact, $patient, $address) = $this->performPatientSave($contact, $patient, $address);
         }
-        
+
         $this->render('crud/create',array(
                         'patient' => $patient,
                         'contact' => $contact,
                         'address' => $address,
         ));
    }
-   
+
    /**
     * Saving the Contact, Patient and Address object
-    * 
+    *
     * @param Contact $contact
     * @param Patient $patient
     * @param Address $address
@@ -1594,10 +1595,10 @@ class PatientController extends BaseController
             OELog::logException($ex);
             $transaction->rollback();
         }
-        
+
         return array($contact, $patient, $address);
    }
-   
+
     /**
      * Updates a particular model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -1606,22 +1607,22 @@ class PatientController extends BaseController
     public function actionUpdate($id)
     {
         Yii::app()->assetManager->registerScriptFile('js/patient.js');
-        
+
         //Don't render patient summary box on top as we have no selected patient
         $this->renderPatientPanel = false;
 
         $patient = $this->loadModel($id);
         $patient->scenario = 'manual';
-        
+
         //only local patient can be edited
         if($patient->is_local == 0){
             Yii::app()->user->setFlash('warning.update-patient', 'Only local patients can be edited.');
             $this->redirect(array('view', 'id' => $patient->id));
         }
-        
+
         $contact = $patient->contact ? $patient->contact : new Contact();
         $address = $patient->contact->address ? $patient->contact->address : new Address();
-        
+
         $this->performAjaxValidation(array($patient, $contact, $address));
 
         if( isset($_POST['Contact'], $_POST['Address'], $_POST['Patient']) )
@@ -1642,7 +1643,7 @@ class PatientController extends BaseController
                         'address' => $address,
         ));
     }
-    
+
     /**
      * Deletes a particular model.
      * If deletion is successful, the browser will be redirected to the 'admin' page.
@@ -1653,13 +1654,13 @@ class PatientController extends BaseController
         $patient = $this->loadModel($id);
         $patient->deleted = 1;
         $patient->save();
-        
+
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
         if(!isset($_GET['ajax'])){
             $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('site'));
         }
     }
-    
+
     public function actionGpList($term)
     {
         $criteria = new CDbCriteria;
@@ -1667,12 +1668,12 @@ class PatientController extends BaseController
         $criteria->addSearchCondition('LOWER(first_name)', '', true, 'OR');
         $criteria->addSearchCondition('last_name', '', true, 'OR');
         $criteria->addSearchCondition('LOWER(last_name)', '', true, 'OR');
-        
+
         $criteria->addSearchCondition('concat(first_name, " ", last_name)', $term, true, 'OR');
         $criteria->addSearchCondition('LOWER(concat(first_name, " ", last_name))', $term, true, 'OR');
-        
+
         $gps = Gp::model()->with('contact')->findAll($criteria);
-        
+
         $output = array();
         foreach($gps as $gp){
             $output[] = array(
@@ -1680,25 +1681,25 @@ class PatientController extends BaseController
                 'value' => $gp->id
             );
         }
-        
+
         echo CJSON::encode($output);
-        
+
         Yii::app()->end();
     }
-    
+
     public function actionPracticeList($term)
     {
         $term = strtolower($term);
-        
+
         $criteria = new CDbCriteria;
         $criteria->join = 'JOIN contact on t.contact_id = contact.id';
         $criteria->join .= '  JOIN address on contact.id = address.contact_id';
         $criteria->addCondition('( (date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW()))');
-        
+
         $criteria->addSearchCondition('LOWER(CONCAT_WS(", ", address1, address2, city, county, postcode))', $term);
-        
+
         $practices = Practice::model()->findAll($criteria);
-        
+
         $output = array();
         foreach($practices as $practice){
             $output[] = array(
@@ -1706,9 +1707,9 @@ class PatientController extends BaseController
                 'value' => $practice->id
             );
         }
-        
+
         echo CJSON::encode($output);
-        
+
         Yii::app()->end();
     }
 

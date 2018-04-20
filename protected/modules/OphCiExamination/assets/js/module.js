@@ -2370,3 +2370,14 @@ $(document).on("keyup", ".eyedraw-fields textarea[id$='_description'], .eyedraw-
         $report_html.text(text);
     }
 });
+
+/*
+ * @params weight kg
+ * @params height meters
+ */
+function bmi_calculator( weight, height){
+    height_meter = height / 100;
+    result = weight / (height_meter * height_meter);
+    return result;
+    
+}

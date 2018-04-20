@@ -59,10 +59,7 @@
             </div>
         </div>
         <div class="large-6 column">
-            <?php if (!is_null($element->anaesthetist_preop_assessment)): ?>
-                <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('anaesthetist_preop_assessment')) ?></h3>
-                <div class="data-value"><?= $element->anaesthetist_preop_assessment ? 'Yes' : 'No' ?></div>
-            <?php endif ?>
+
         </div>
     </div>
     <div class="row">
@@ -87,10 +84,6 @@
 <section class="element element-data">
     <div class="row">
         <div class="large-6 column">
-            <h3 class="data-title">Post Operative Stay Required</h3>
-            <div class="data-value"><?php echo $element->overnight_stay ? 'Yes Stay' : 'No Stay' ?></div>
-        </div>
-        <div class="large-6 column">
             <h3 class="data-title">Decision Date</h3>
             <div class="data-value"><?php echo $element->NHSDate('decision_date') ?></div>
         </div>
@@ -101,19 +94,6 @@
             <div class="data-value"><?php echo $element->site->name ?></div>
         </div>
     </div>
-    <div class="row">
-        <div class="large-6 column">
-            <?php if (!is_null($element->fast_track)): ?>
-                <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('fast_track')) ?></h3>
-                <div class="data-value"><?php echo $element->fast_track ? 'Yes' : 'No' ?></div>
-            <?php endif ?>
-        </div>
-        <div class="large-6 column">
-            <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('fast_track_discussed_with_patient')) ?></h3>
-			<div class="data-value"><?php echo is_null($element->fast_track_discussed_with_patient) ? 'Not recorded' : ($element->fast_track_discussed_with_patient ? 'Yes' : 'No')?></div>
-        </div>
-    </div>
-
 </section>
 
 <section class="element element-data">
@@ -149,6 +129,21 @@
                 <?php if ($element->special_equipment): ?>
                     <div class="data-value panel comments"><?= Yii::app()->format->nText($element->special_equipment_details) ?></div>
                 <?php endif ?>
+            <?php endif ?>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="large-6 column">
+            <?php if (!is_null($element->preassessment_booking_required)): ?>
+                <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('preassessment_booking_required')) ?></h3>
+                <div class="data-value"><?= $element->preassessment_booking_required ? 'Yes' : 'No' ?></div>
+            <?php endif ?>
+        </div>
+        <div class="large-6 column">
+            <?php if (!is_null($element->overnight_stay_required)): ?>
+                <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('overnight_stay_required')) ?></h3>
+                <div class="data-value"><?= $element->overnight_stay_required->name ?></div>
             <?php endif ?>
         </div>
     </div>
