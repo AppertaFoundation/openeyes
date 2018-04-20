@@ -16,6 +16,7 @@
  */
 
 namespace OEModule\OphCiExamination\models;
+use OEModule\PASAPI\resources\Patient;
 
 /**
  * Class SystemicDiagnoses
@@ -29,6 +30,7 @@ namespace OEModule\OphCiExamination\models;
  * @property \User $user
  * @property \User $usermodified
  * @property SystemicDiagnoses_Diagnosis[] $diagnoses
+ * @property SystemicDiagnoses_RequiredDiagnosisCheck[] $checked_required_diagnoses
  * @property SystemicDiagnoses_Diagnosis[] $orderedDiagnoses
  */
 class SystemicDiagnoses extends \BaseEventTypeElement
@@ -78,7 +80,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, diagnoses', 'safe'),
+            array('event_id, diagnoses, checked_required_diagnoses', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id',  'safe', 'on' => 'search')
@@ -118,6 +120,11 @@ class SystemicDiagnoses extends \BaseEventTypeElement
                 'OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis',
                 'element_id',
                 'condition' => 'has_disorder = 0'
+            ),
+            'checked_required_diagnoses' => array(
+                self::HAS_MANY,
+                'OEModule\OphCiExamination\models\SystemicDiagnoses_RequiredDiagnosisCheck',
+                'element_id'
             )
         );
     }
@@ -148,9 +155,16 @@ class SystemicDiagnoses extends \BaseEventTypeElement
 
         if ($patient) {
             $diagnoses = array();
-            foreach ($patient->getSystemicDiagnoses() as $sd) {
-                $diagnoses[] = SystemicDiagnoses_Diagnosis::fromSecondaryDiagnosis($sd);
+
+            $both = array(true, false);
+            foreach ($both as $present) {
+                foreach ($patient->getSystemicDiagnoses($present) as $sd) {
+                    $diagnosis = SystemicDiagnoses_Diagnosis::fromSecondaryDiagnosis($sd);
+                    $diagnosis->has_disorder = $present ? SystemicDiagnoses_Diagnosis::$PRESENT : SystemicDiagnoses_Diagnosis::$NOT_PRESENT;
+                    $diagnoses[] = $diagnosis;
+                }
             }
+
             $this->diagnoses = $diagnoses;
         }
     }
@@ -227,17 +241,27 @@ class SystemicDiagnoses extends \BaseEventTypeElement
      * @return bool
      *
      * If a diagnose is "not checked", do not store in db
+     * If a diagnose is "not present", save separately
      */
 
     public function beforeSave()
     {
         $diags = $this->diagnoses;
+        $checked_req_diags = array();
+
         foreach ($diags as $key=>$entry) {
             if($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_CHECKED) {
                 unset($diags[$key]);
             }
+            else if($entry->has_disorder == SystemicDiagnoses_Diagnosis::$NOT_PRESENT) {
+                $checked_req_diag = new SystemicDiagnoses_RequiredDiagnosisCheck();
+                $checked_req_diag->setAttributes(array_diff_key($entry->getAttributes(), array('id' => null)), false);
+                $checked_req_diags[] = $checked_req_diag;
+                unset($diags[$key]);
+            }
         }
         $this->diagnoses = $diags;
+        $this->checked_required_diagnoses = $checked_req_diags;
         return parent::beforeSave();
     }
 
@@ -251,8 +275,10 @@ class SystemicDiagnoses extends \BaseEventTypeElement
             // extract event from the event id of the element - in afterSave the relation doesn't
             // work when the instance has only just been saved
             $event = \Event::model()->findByPk($this->event_id);
+            /** @var \Patient $patient */
             $patient = $event->getPatient();
             $sd_ids_to_keep = array();
+
             // update or create the secondary diagnoses for the diagnoses on this element
             foreach ($this->diagnoses as $diagnosis) {
                 $sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
@@ -261,6 +287,19 @@ class SystemicDiagnoses extends \BaseEventTypeElement
 
             // then delete any other secondary diagnoses still on the patient.
             foreach ($patient->getSystemicDiagnoses() as $sd) {
+                if (!in_array($sd->id, $sd_ids_to_keep)) {
+                    $sd->delete();
+                }
+            }
+
+            $sd_ids_to_keep = array();
+            // update or create not present secondary diagnoses
+            foreach ($this->checked_required_diagnoses as $diagnosis) {
+                $sd = $diagnosis->updateAndGetSecondaryDiagnosis($patient);
+                $sd_ids_to_keep[] = $sd->id;
+            }
+
+            foreach ($patient->getSystemicDiagnoses(false) as $sd) {
                 if (!in_array($sd->id, $sd_ids_to_keep)) {
                     $sd->delete();
                 }

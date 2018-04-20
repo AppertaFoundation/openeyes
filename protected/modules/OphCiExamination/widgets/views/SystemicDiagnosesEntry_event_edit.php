@@ -40,9 +40,11 @@ if (!isset($values)) {
     }
 
     $is_new_record = isset($diagnosis) && $diagnosis->isNewRecord ? true : false;
+
+    $mandatory = !$removable;
 ?>
 
-<tr data-key="<?=$row_count?>" class="<?=$model_name ?>_row" style="height:50px;">
+<tr data-key="<?=$row_count?>" class="<?=$model_name ?>_row" style="height:50px; <?= ($values['has_disorder'] == SystemicDiagnoses_Diagnosis::$NOT_PRESENT && !$mandatory) ? 'display: none;' : '' ?>">
     <td style="width:270px;">
         <input type="hidden" name="<?= $field_prefix ?>[id][]" value="<?=$values['id'] ?>" />
 
@@ -54,7 +56,7 @@ if (!isset($values)) {
                     data-saved-diagnoses='<?php echo json_encode(array(
                             'id' => $values['id'],
                             'name' => $values['disorder_display'],
-                            'disorder_id' => $values['disorder_id'])); ?>'
+                            'disorder_id' => $values['disorder_id']), JSON_HEX_APOS); ?>'
 
                <?php endif; ?>
         >
@@ -63,14 +65,22 @@ if (!isset($values)) {
 
     <td id="<?="{$model_name}_{$row_count}_checked_status"?>">
         <?php
+
             $is_not_checked = $values['has_disorder'] == SystemicDiagnoses_Diagnosis::$NOT_CHECKED;
             $selected = $posted_checked_status ? $posted_checked_status : ($is_not_checked ? null : $values['has_disorder']);
 
-            echo CHtml::dropDownList($model_name . '[has_disorder][]', $selected, [
-                SystemicDiagnoses_Diagnosis::$NOT_CHECKED => 'Not Checked',
-                SystemicDiagnoses_Diagnosis::$PRESENT => 'Yes',
-                SystemicDiagnoses_Diagnosis::$NOT_PRESENT => 'No',
-            ],['empty' => '- Select -']); ?>
+            if($removable) {
+                echo '<span>'.SystemicDiagnoses_Diagnosis::getStatusNameEditMode($selected).'</span>';
+                echo CHtml::hiddenField($model_name . '[has_disorder][]', $selected);
+            }
+            else {
+                echo CHtml::dropDownList($model_name . '[has_disorder][]', $selected, [
+                    SystemicDiagnoses_Diagnosis::$NOT_CHECKED => 'Not checked',
+                    SystemicDiagnoses_Diagnosis::$PRESENT => 'Yes',
+                    SystemicDiagnoses_Diagnosis::$NOT_PRESENT => 'No',
+                ],['empty' => '- Select -']);
+            }
+        ?>
     </td>
 
     <td>
