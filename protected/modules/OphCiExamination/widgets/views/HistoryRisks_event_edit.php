@@ -27,7 +27,6 @@ $required_risk_ids = array_map(function($r) { return $r->id; }, $this->getRequir
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 <div class="element-fields" id="<?= $model_name ?>_element">
-
     <div class="field-row row<?= (count($element->entries)+count($missing_req_risks)) ? ' hidden' : ''?> <?=$model_name?>_no_risks_wrapper">
         <div class="large-3 column">
             <label for="<?=$model_name?>_no_risks">Confirm patient has no risks:</label>

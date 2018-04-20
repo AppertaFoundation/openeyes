@@ -23,7 +23,6 @@ namespace OEModule\OphCiExamination\widgets;
 use OEModule\OphCiExamination\models\HistoryRisks as HistoryRisksElement;
 use OEModule\OphCiExamination\models\HistoryRisksEntry;
 use OEModule\OphCiExamination\models\OphCiExaminationRisk;
-use OEModule\OphCiExamination\models\OphCiExaminationRiskSet;
 
 class HistoryRisks extends \BaseEventElementWidget
 {
@@ -60,7 +59,6 @@ class HistoryRisks extends \BaseEventElementWidget
 
     public function getMissingRequiredRisks()
     {
-
         $current_ids = array_map(function ($e) { return $e->risk_id; }, $this->element->entries);
         $missing = array();
         foreach ($this->getRequiredRisks() as $required) {

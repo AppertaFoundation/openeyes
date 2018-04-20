@@ -15,6 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCiExamination\models\AllergyEntry;
 ?>
 
 <?php
@@ -25,11 +26,12 @@ if (!isset($values)) {
         'allergy_display' => $entry->displayallergy,
         'other' => $entry->other,
         'comments' => $entry->comments,
+        'has_allergy' => $entry->has_allergy
     );
 }
 ?>
 
-<tr class="row-<?=$row_count;?><?php if($removable){ echo " read-only"; } ?>" data-key="<?=$row_count;?>">
+<tr class="row-<?=$row_count;?><?php if(!$removable){ echo " read-only"; } ?>" data-key="<?=$row_count;?>">
     <td>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
         <input type="hidden" name="<?= $field_prefix ?>[other]" value="<?=$values['other'] ?>" />
@@ -59,14 +61,22 @@ if (!isset($values)) {
             <input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?=$values['allergy_id'] ?>" />
         <?php endif; ?>
     </td>
+    <td id="<?= $model_name ?>_entries_<?=$row_count?>_allergy_has_allergy">
+        <label class="inline highlight">
+            <?php echo CHtml::radioButton($field_prefix . '[has_allergy]', $posted_not_checked, array('value' => AllergyEntry::$NOT_CHECKED)); ?>
+            Not checked
+        </label>
+        <label class="inline highlight">
+            <?php echo CHtml::radioButton($field_prefix . '[has_allergy]', $values['has_allergy'] === (string) AllergyEntry::$PRESENT, array('value' => AllergyEntry::$PRESENT)); ?>
+            yes
+        </label>
+        <label class="inline highlight">
+            <?php echo CHtml::radioButton($field_prefix . '[has_allergy]', $values['has_allergy'] === (string) AllergyEntry::$NOT_PRESENT, array('value' => AllergyEntry::$NOT_PRESENT)); ?>
+            no
+        </label>
+    </td>
     <td>
-        <?php if ($removable): ?>
-            <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-        <?php else: ?>
-            <input type="hidden" name="<?= $field_prefix ?>[comments]" value="<?=$values['comments'] ?>" />
-            <?= $values['comments'] ?>
-        <?php endif; ?>
-
+        <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
     </td>
 
     <td class="edit-column">
