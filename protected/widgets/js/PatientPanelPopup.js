@@ -9,6 +9,7 @@ PatientPanel.patientPopups = {
     var demographics2 	= new OpenEyes.UI.NavBtnPopup( 'management', $('#js-management-btn'), $('#patient-popup-management') );
     var risks 			= new OpenEyes.UI.NavBtnPopup( 'risks', $('#js-allergies-risks-btn'), $('#patient-popup-allergies-risks') );
 
+
     var all = [ quicklook, demographics, demographics2, risks ];
 
     for( pBtns in all ) {

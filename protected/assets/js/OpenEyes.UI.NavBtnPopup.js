@@ -22,11 +22,14 @@
                 changeContent($btn.hasClass(css.open));
             }).mouseenter(function () {
               $btn.addClass(css.active);
-              if (useMouseEvents) show();
+              if (useMouseEvents){
+                  show(); }
             })
               .mouseleave(function () {
                 $btn.removeClass(css.active);
-                if (useMouseEvents) hide();
+                if (useMouseEvents) {
+                  hide();
+                }
               });
         }
 
@@ -58,7 +61,7 @@
         function show() {
             $btn.addClass(css.open);
             $content.show();
-            if (!useMouseEvents && !isFixed) addContentEvents();
+            if (useMouseEvents && !isFixed) addContentEvents();
         }
 
         function hide() {
