@@ -76,13 +76,7 @@ if (!isset($values)) {
         </label>
     </td>
     <td>
-        <?php if ($removable): ?>
-            <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
-        <?php else: ?>
-            <input type="hidden" name="<?= $field_prefix ?>[comments]" value="<?=$values['comments'] ?>" />
-            <?= $values['comments'] ?>
-        <?php endif; ?>
-
+        <?php echo CHtml::textField($field_prefix . '[comments]', $values['comments'], array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
     </td>
 
     <td class="edit-column">
