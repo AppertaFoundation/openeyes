@@ -23,6 +23,7 @@
                 foreach($associated_content as $key => $value){
                     $method = null;
                     $event_name = null;
+                    $is_macroinit = false;
 
                     if(isset($value->initMethod)){
                         $method = $value->initMethod->method;
@@ -31,6 +32,7 @@
                         if(isset($value->initAssociatedContent->initMethod->method)){
                             $method = $value->initAssociatedContent->initMethod->method;
                             $ac = $value->initAssociatedContent;
+                            $is_macroinit = true;
                         } else {
                             $ac = $value;
                         }
@@ -83,7 +85,9 @@
                     <td><input type="text" class="attachments_display_title" name="attachments_display_title[<?= $row_index ?>]"   value="<?= $display_title ?>" /></td>
                     <td>
                         <input type="hidden" name="attachments_event_id[<?= $row_index ?>]" value="<?= $event->id ?>" />
-                        <input type="hidden" name="attachments_id[<?= $row_index ?>]" value="<?= $ac->id ?>" />
+                        <?php if($is_macroinit): ?>
+                            <input type="hidden" name="attachments_id[<?= $row_index ?>]" value="<?= $ac->id ?>" />
+                        <?php endif; ?>
                         <input type="hidden" name="attachments_system_hidden[<?= $row_index ?>]" value="<?= $ac->is_system_hidden ?>" />
                         <input type="hidden" name="attachments_print_appended[<?= $row_index ?>]" value="<?= $ac->is_print_appended ?>" />
                         <input type="hidden" name="attachments_short_code[<?= $row_index ?>]" value="<?= $ac->short_code ?>" />
