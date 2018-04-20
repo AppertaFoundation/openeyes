@@ -67,6 +67,33 @@
         }
             <?php endforeach;?>
         <?php endif; ?>
+		<?php
+            if (isset($elements) && is_array($elements)) {
+                foreach ($elements as $element) {
+                    ?>
+		var errorObject = <?php $element->getFrontEndErrors();
+                    ?>;
+		for (k = 0; k < errorObject.length; k++) {
+			//$('[id*=' + errorObject[k] + ']').addClass('highlighted-error');
+      var $field = $('#' + errorObject[k]);
+			if ($field.length) {
+			  if ($field.is('tr')) {
+			    $field.addClass('highlighted-error');
+        } else {
+          if(! $field.parent().hasClass('highlighted-error')) {
+            $field.addClass('highlighted-error');
+          }
+        }
+			} else {
+				if(! $('[id*="' + errorObject[k] + '"]').parent().hasClass('highlighted-error')) {
+					$('[id*="' + errorObject[k] + '"]:not(:hidden)').wrap("<div class='highlighted-error'></div>");
+				}
+			}
+		}
+		<?php
+
+                }
+            }?>
 	});
 
 </script>
