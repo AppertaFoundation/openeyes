@@ -342,9 +342,15 @@ function hide_linked_field(element_name,field_name)
 }
 
 function scrollToElement(element) {
-    $('html, body').animate({
-        scrollTop: parseInt(element.offset().top - 100)
-    }, 1);
+  var $container = $('main.main-event');
+  $container.scrollTop(
+    $(element).offset().top - $container.offset().top + $container.scrollTop() - 130
+  );
+
+  var $title = $(element).closest('.element').find('.element-title');
+  $title.effect('pulsate', {
+    times: 2
+  }, 600);
 }
 
 /**
