@@ -76,7 +76,6 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
     <?php echo $form->hiddenField($element, 'followup_period_id'); ?>
     <?php echo $form->hiddenField($element, 'role_id'); ?>
     <?php echo $form->hiddenField($element, 'role_comments'); ?>
-    <?php echo $form->hiddenField($element, 'community_patient'); ?>
 
   <div class="cols-7">
       <?php echo CHtml::textField('follow-up-dummy-input', '', array(
@@ -185,10 +184,6 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
             </tr>
             </tbody>
           </table>
-          <label class="inline">
-              <?php echo CHtml::checkbox('follow_up_community_patient', $element->community_patient); ?>
-              <?php echo $element->getAttributeLabel('community_patient') ?>
-          </label>
         </div>
       </div>
     </div>

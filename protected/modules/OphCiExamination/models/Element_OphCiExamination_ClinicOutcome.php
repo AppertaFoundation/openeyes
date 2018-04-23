@@ -104,7 +104,7 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
                 'followup_period_id' => 'Follow-up period',
                 'role_id' => 'Role',
                 'role_comments' => 'Role comment',
-                'community_patient' => 'Patient suitable for community patient tariff',
+                'community_patient' => '',
         );
     }
 
