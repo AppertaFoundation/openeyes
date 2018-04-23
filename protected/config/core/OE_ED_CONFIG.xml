@@ -2189,7 +2189,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           <GOTO_ID>OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_%position_values_0_reading_id</GOTO_ID>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Drops / Meds administered</PRIMARY_TERM>
+          <PRIMARY_TERM>Drops</PRIMARY_TERM>
           <SECONDARY_TERM_LIST>
             <TERM>Dilation</TERM>
           </SECONDARY_TERM_LIST>
