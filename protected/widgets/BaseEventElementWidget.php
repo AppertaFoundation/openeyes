@@ -374,9 +374,11 @@ class BaseEventElementWidget extends CWidget
         // TODO: refactor this out for consistent rendering
         if ($this->mode === static::$PATIENT_POPUP_MODE) {
             return $this->popupList();
+        } elseif ($this->mode === static::$EVENT_VIEW_MODE) {
+            return $this->render($this->getView(), $this->getViewData());
+        } else {
+            return $this->renderWarnings() . $this->render($this->getView(), $this->getViewData());
         }
-
-        return $this->renderWarnings() . $this->render($this->getView(), $this->getViewData());
     }
 
     /**

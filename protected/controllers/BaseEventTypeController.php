@@ -1630,7 +1630,18 @@ class BaseEventTypeController extends BaseModuleController
         $element_count = count($elements);
         if($element_count < 1)return;
         $rows = array(array());
-
+        foreach ($elements as $element) {
+            if ($element->widgetClass) {
+                $widget = $this->createWidget($element->widgetClass, array(
+                    'patient' => $this->patient,
+                    'element' => $element,
+                    'data' => $data,
+                    'mode' => $this->getElementWidgetMode($action)
+                ));
+                $element->widget = $widget;
+                $element->widget->renderWarnings();
+            }
+        }
         //Find the groupings
         for ($element_index = 0, $tile_index = 0, $row_index = 0;
              $element_index < $element_count;

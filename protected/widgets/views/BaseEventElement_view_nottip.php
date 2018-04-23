@@ -18,7 +18,7 @@
 <?php
 $element_name = $element->getElementTypeName();
 ?>
-<p class="alert-box warning" style="margin-bottom: 0px;">This is not the latest known state for <?= $element_name ?>.
+<p class="alert-box warning" style="margin-bottom: 0px;"><?= $element_name ?> is not the latest known state.
   <span class="js-has-tooltip fa fa-info-circle"
         data-tooltip-content="Please use the patient summary page or pop up (above) to review the latest <?= $element_name ?> status."></span></p>
 
