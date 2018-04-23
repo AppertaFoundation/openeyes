@@ -96,6 +96,11 @@
 			},function(e) {
 				$( "#"+ e.data.selectId).val(e.data.val);
 				e.data.fieldImgInstance.options.dialog.close();
+
+				var nextPopupId = $( "#"+ e.data.selectId).data('nextPopupId');
+				if (nextPopupId) {
+          e.data.fieldImgInstance.createDiag(nextPopupId);
+        }
 			});
 			var valPar = $('<p class="ui-field-image-val">' + sval + '</p>');
 			if(imgPath){

@@ -49,6 +49,8 @@ $vascularities = CHtml::listData(
 );
 $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_BlebAssessment_Vascularity::model()->getFieldImages();
 
+$model_prefix = 'OEModule_OphCiExamination_models_Element_OphCiExamination_BlebAssessment_';
+
 ?>
 <div class="element-fields element-eyes">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
@@ -110,6 +112,7 @@ $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_B
                             'nowrapper' => true,
                             'class' => 'ui-field-images-dropdown',
                             'data-popup-title' => 'Area (Central)',
+                            'data-next-popup-id' => $model_prefix .  $eye_side . '_max_area_id',
                         ), false,
                         array()
                     ); ?>
@@ -123,6 +126,7 @@ $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_B
                             'nowrapper' => true,
                             'class' => 'ui-field-images-dropdown',
                             'data-popup-title' => 'Area (Maximal)',
+                            'data-next-popup-id' => $model_prefix . $eye_side . '_height_id',
                         ), false,
                         array()
                     ); ?>
@@ -136,6 +140,7 @@ $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_B
                             'nowrapper' => true,
                             'class' => 'ui-field-images-dropdown',
                             'data-popup-title' => 'Height',
+                            'data-next-popup-id' => $model_prefix . $eye_side . '_vasc_id',
                         ), false,
                         array()
                     ); ?>
