@@ -60,7 +60,7 @@
 	 */
 	FieldImages.prototype.createDiag = function(fieldElId) {
 		this.options.dialog = new OpenEyes.UI.Dialog({
-			title: this.options.title,
+			title: $('#' + fieldElId).data('popupTitle'),
 			content: this.createImagesDiv(this.options.idToImages[fieldElId ], fieldElId),
 			width: 460
 		});

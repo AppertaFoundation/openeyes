@@ -94,7 +94,7 @@ $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_B
               <thead>
               <tr>
                 <th>Area (Central)</th>
-                <th >Area (Maximal)</th>
+                <th>Area (Maximal)</th>
                 <th>Height</th>
                 <th>Vascularity</th>
               </tr>
@@ -105,7 +105,12 @@ $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_B
                 <td>
                     <?php
                     echo $form->dropDownList($element, $eye_side . '_central_area_id', $centralAreas,
-                        array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false,
+                        array(
+                            'empty' => '-',
+                            'nowrapper' => true,
+                            'class' => 'ui-field-images-dropdown',
+                            'data-popup-title' => 'Area (Central)',
+                        ), false,
                         array()
                     ); ?>
                 </td>
@@ -113,7 +118,12 @@ $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_B
                 <td>
                     <?php
                     echo $form->dropDownList($element, $eye_side . '_max_area_id', $maxAreas,
-                        array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false,
+                        array(
+                            'empty' => '-',
+                            'nowrapper' => true,
+                            'class' => 'ui-field-images-dropdown',
+                            'data-popup-title' => 'Area (Maximal)',
+                        ), false,
                         array()
                     ); ?>
                 </td>
@@ -121,7 +131,12 @@ $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_B
                 <td>
                     <?php
                     echo $form->dropDownList($element, $eye_side . '_height_id', $heights,
-                        array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false,
+                        array(
+                            'empty' => '-',
+                            'nowrapper' => true,
+                            'class' => 'ui-field-images-dropdown',
+                            'data-popup-title' => 'Height',
+                        ), false,
                         array()
                     ); ?>
                 </td>
@@ -129,7 +144,12 @@ $vascularitiesFieldImages = \OEModule\OphCiExamination\models\OphCiExamination_B
                 <td>
                     <?php
                     echo $form->dropDownList($element, $eye_side . '_vasc_id', $vascularities,
-                        array('empty' => '-', 'nowrapper' => true, 'class' => 'ui-field-images-dropdown'), false,
+                        array(
+                            'empty' => '-',
+                            'nowrapper' => true,
+                            'class' => 'ui-field-images-dropdown',
+                            'data-popup-title' => 'Vascularity',
+                        ), false,
                         array()
                     ); ?>
                 </td>
