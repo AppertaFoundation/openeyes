@@ -33,7 +33,7 @@ if (!@$comment) {
       <div
           class="data-value <?= $element->urgent ? ' urgent' : '' ?>"><?php echo $element->for_the_attention_of_user->getFullnameAndTitle();
           if ($element->urgent) {
-              echo ' <span class="priority fa fa-exclamation"></span>';
+              echo ' <span class="priority oe-i exclamation small"></span>';
           }
           ?></div>
     </div>

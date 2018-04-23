@@ -49,7 +49,7 @@
                 <?php } ?>
                 <?php if ($stopped) { ?>
                     <tr class="stopped-kind" style="display: none;">
-                        <td colspan="3" style="padding-left: 88px"><i>Stopped:</i> <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a></td>
+                        <td colspan="3" style="padding-left: 88px"><i>Stopped:</i> <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="oe-i remove small" aria-hidden="true"></i></a></td>
                     </tr>
                     <?php foreach ($stopped as $entry) { ?>
                         <tr class="stopped-kind" style="display: none;">
