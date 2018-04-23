@@ -17,9 +17,9 @@
  */
 ?>
 <section
-    class="element view full  eye-divider view-biometry"
+    class="element view full  eye-divider view-biometry
     <?php echo $element->elementType->class_name ?>
-    <?php if (@$ondemand) { ?>hidden<?php } ?>
+    <?php if (@$ondemand) { ?>hidden<?php } ?>"
     data-element-type-id="<?php echo $element->elementType->id ?>"
     data-element-type-class="<?php echo $element->elementType->class_name ?>"
     data-element-type-name="<?php echo $element->elementType->name ?>"
