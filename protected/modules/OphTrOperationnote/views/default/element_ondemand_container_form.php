@@ -16,18 +16,21 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element view full  eye-divider view-biometry"
+<section
+    class="element view full  eye-divider view-biometry"
+    <?php echo $element->elementType->class_name ?>
+    <?php if (@$ondemand) { ?>hidden<?php } ?>
     data-element-type-id="<?php echo $element->elementType->id ?>"
     data-element-type-class="<?php echo $element->elementType->class_name ?>"
     data-element-type-name="<?php echo $element->elementType->name ?>"
     data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
-  <header class="element-header">
-    <h4 class="element-title"><?php echo $element->elementType->name; ?></h4>
-  </header>
+    <header class="element-header">
+        <h4 class="element-title"><?php echo $element->elementType->name; ?></h4>
+    </header>
 
     <?php if ($this->action->id == 'update' && !$element->event_id) { ?>
-      <div class="alert-box alert">This element is missing and needs to be completed</div>
+        <div class="alert-box alert">This element is missing and needs to be completed</div>
     <?php } ?>
 
     <?php echo $content; ?>
