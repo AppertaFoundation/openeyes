@@ -61,6 +61,13 @@ if (!Yii::app()->user->isGuest) {
       </li>
         <?= $menuHelper->render($navIconUrl) ?>
       <li class="oe-nav-btn">
+        <div class="nav-js-btn" id="js-nav-activity-btn" data-fixable="false">
+          <svg viewBox="0 0 80 40" class="icon hotlist">
+            <use xlink:href="<?= $navIconUrl . '#hotlist-icon' ?>"></use>
+          </svg>
+        </div>
+      </li>
+      <li class="oe-nav-btn">
         <a class="icon-btn" href="<?= Yii::app()->createUrl('/site/logout'); ?>">
           <svg viewBox="0 0 80 40" class="icon logout">
             <use xlink:href="<?= $navIconUrl . '#logout-icon'; ?>"></use>
@@ -70,6 +77,5 @@ if (!Yii::app()->user->isGuest) {
       </li>
     </ul>
   </div>
-
 
 <?php } ?>

@@ -22,6 +22,8 @@ $(document).ready(function(){
 
     var shortcuts 	= new OpenEyes.UI.NavBtnPopup( 'shortcuts', $('#js-nav-shortcuts-btn'), $('#js-nav-shortcuts-subnav') ).useWrapper( $('#js-nav-shortcuts') );
     var activity 	= new OpenEyes.UI.NavBtnPopup( 'activity', $('#js-nav-activity-btn'), $('#js-activity-panel') );
+    var hotlist = new OpenEyes.UI.HotList(activity);
+
     var toolTip = new OpenEyes.UI.Tooltip({
         className: 'quicklook',
         offset: {

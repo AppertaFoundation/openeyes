@@ -866,6 +866,7 @@ class BaseEventTypeController extends BaseModuleController
                         $this->afterCreateElements($this->event);
 
                         $this->logActivity('created event.');
+                        $this->updateHotlistItem($this->event);
 
                         $this->event->audit('event', 'create');
 
@@ -1001,6 +1002,7 @@ class BaseEventTypeController extends BaseModuleController
                         //TODO: should not be pasing event?
                         $this->afterUpdateElements($this->event);
                         $this->logActivity('updated event');
+                        $this->updateHotlistItem($this->event);
 
                         $this->event->audit('event', 'update');
 
@@ -2386,5 +2388,23 @@ class BaseEventTypeController extends BaseModuleController
     public function getExtraTitleInfo()
     {
         throw new BadMethodCallException('getExtraTitleInfo() should have been overridden by ' . get_class($this));
+    }
+
+    protected function updateHotlistItem(Event $event)
+    {
+        $user = Yii::app()->user;
+        $hotlistItem = UserHotlistItem::model()->find('created_user_id = :user_id AND patient_id = :patient_id AND DATE(last_modified_date) = CURDATE()',
+            array(':user_id' => $user->id, ':patient_id' => $event->episode->patient_id));
+
+        if (!$hotlistItem) {
+            $hotlistItem = new UserHotlistItem();
+            $hotlistItem->patient_id = $event->episode->patient_id;
+        }
+
+        $hotlistItem->is_open = 1;
+        $hotlistItem->event_id = $event->id;
+        if (!$hotlistItem->save()) {
+            throw new Exception('UserHotListItem failed validation ' . print_r($hotlistItem->errors, true));
+        };
     }
 }
