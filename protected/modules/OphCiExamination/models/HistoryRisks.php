@@ -166,7 +166,7 @@ class HistoryRisks extends \BaseEventTypeElement
         foreach ($this->entries as $entry) {
             $force[] = $entry->risk_id;
         }
-        return OphCiExaminationRisk::model()->activeOrPk($force)->findAllByAttributes(array('required' => false));
+        return OphCiExaminationRisk::model()->activeOrPk($force)->findAll();
     }
 
     /**
