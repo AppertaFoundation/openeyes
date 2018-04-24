@@ -29,10 +29,10 @@ if ($element->event->id > 0) {
 	<div class="element-data element-eyes">
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
             <div class="<?= $eye_side ?>-eye">
-                <div class="<?=$eye_side?>-color-text">
-                    <h3><?php echo CHtml::encode($element->getAttributeLabel($eye_side)) ?></h3>
-                </div>
-                <?php if ($element->hasEye($eye_side))  {
+                <?php if ($element->hasEye($eye_side))  { ?>
+                    <div class="<?=$eye_side?>-color-text">
+                        <h3><?php echo CHtml::encode($element->getAttributeLabel($eye_side)) ?></h3>
+                    </div> <?php 
                     $this->renderPartial('view_Element_OphInBiometry_Measurement_fields',
                         array('side' => $eye_side, 'element' => $element));
                 } else { ?>
