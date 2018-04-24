@@ -94,4 +94,22 @@ $element_Type = $element->getElementType();
 
 	</section>
     <?php $this->renderChildOpenElements($element, $this->action->id, $form, $data)?>
+<?php } else { ?>
+  <section
+      class="<?php echo implode(' ', $section_classes); ?>"
+      data-element-type-id="<?php echo $element->elementType->id ?>"
+      data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
+      data-element-type-name="<?php echo $element->elementType->name ?>"
+      data-element-display-order="<?php echo $element->elementType->display_order ?>">
+
+      <?php echo $content; ?>
+
+    <!-- Sub elements -->
+      <?php if (!@$child) { ?>
+        <div class="sub-elements active">
+            <?php $this->renderChildOpenElements($element, $this->action->id, $form, $data) ?>
+        </div>
+      <?php } ?>
+
+  </section>
 <?php } ?>
