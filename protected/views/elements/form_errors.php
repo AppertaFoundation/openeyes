@@ -74,7 +74,6 @@
 		var errorObject = <?php $element->getFrontEndErrors();
                     ?>;
 		for (k = 0; k < errorObject.length; k++) {
-			//$('[id*=' + errorObject[k] + ']').addClass('highlighted-error');
       var $field = $('#' + errorObject[k]);
 			if ($field.length) {
 			  if ($field.is('tr')) {
