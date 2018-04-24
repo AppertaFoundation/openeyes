@@ -243,6 +243,11 @@ class DefaultController extends BaseEventTypeController
     {
         $this->initWithEventId($id);
 
+        $imgdir = $this->event->getImageDirectory();
+        if(!file_exists($imgdir)) {
+            mkdir($imgdir, 0775, true);
+        }
+
         if($this->eventContainsImagesOnly()) {
             return parent::actionSavePDFprint($id);
         }
@@ -365,7 +370,11 @@ class DefaultController extends BaseEventTypeController
 
             }
 
-            $pdf_path = $this->event->imageDirectory.'/event_print.pdf';
+            $imgdir = $this->event->imageDirectory;
+            $pdf_path = $imgdir.'/event_print.pdf';
+            if(!file_exists($imgdir)) {
+                mkdir($imgdir, 0775, true);
+            }
             $this->pdf_output->Output("F",   $pdf_path);
 
             if($return_pdf_path) {
