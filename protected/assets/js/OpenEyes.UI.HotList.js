@@ -53,7 +53,7 @@
 
     // When the date picker is clicked
     $('#js-activity-closed-select').click(function () {
-      $pmuWrap.show();
+      $pmuWrap.toggle();
     });
 
     // When the "Today" date link is clicked
@@ -120,9 +120,11 @@
 
       if (commentRow.css('display') !== 'none') {
         hotlist.updateComment(itemId, commentRow.find('input').val());
+        commentRow.hide();
+      } else {
+        commentRow.show();
+        commentRow.find('input').focus();
       }
-
-      commentRow.toggle();
 
       return false;
     });

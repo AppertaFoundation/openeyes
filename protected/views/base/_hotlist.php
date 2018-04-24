@@ -13,7 +13,7 @@ $closedHotlistItems= UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d'))
         </h3>
       </div>
 
-      <!-- OPEN (active) patients, once a patient is open the duration counts until they are closed. -->
+      <!-- Open Items -->
       <table class="activity-list open">
         <colgroup>
           <col class="cols-1">
@@ -26,9 +26,9 @@ $closedHotlistItems= UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d'))
         </tbody>
       </table>
 
-    </div><!-- patients-open -->
+    </div>
 
-    <!-- closed. clinicians can select date to view all patients closed on that date -->
+    <!-- Closed Items. users can select date to view all patients closed on that date -->
     <div class="patients-closed">
 
       <div class="overview flex-layout">
@@ -38,10 +38,7 @@ $closedHotlistItems= UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d'))
         <div class="closed-search">
           <span class="closed-date" id="js-activity-closed-today">Today</span>
           <span class="closed-date" id="js-activity-closed-select">Select date</span>
-
-          <!-- js pickmeup date picker -->
-          <div id="js-pickmeup-datepicker" style="display: none;">
-          </div>
+          <div id="js-pickmeup-datepicker" style="display: none;"></div>
         </div>
       </div>
 

@@ -85,6 +85,11 @@ class UserHotlistItem extends BaseActiveRecordVersioned
         return parent::model($className);
     }
 
+    /**
+     * Gets a string representation of the time that passed since this item was updated
+     *
+     * @return string The interval since update as a string
+     */
     public function getIntervalString()
     {
         $interval = (new DateTime())->diff(new DateTime($this->last_modified_date));
@@ -102,11 +107,23 @@ class UserHotlistItem extends BaseActiveRecordVersioned
         return $result === '' ? 'Less than a minute ago' : $result;
     }
 
+    /**
+     * Gets a value indicating whether this item was updated today
+     *
+     * @return bool True if this ite was updated today, otherwise false.
+     */
     public function wasUpdatedToday()
     {
         return new DateTime($this->last_modified_date) > new DateTime('midnight');
     }
 
+    /**
+     * Gets all hotlist items for the current user with the given state and date
+     *
+     * @param int $is_open 1 if only open items should be found, 0 if only closed items should be found
+     * @param string $date The date string (YYYY-mm-dd) that the hotlist items should have been last modified on
+     * @return UserHotlistItem[] The hotlist items that match the given state and date
+     */
     public function getHotlistItems($is_open, $date = null)
     {
         $criteria = new CDbCriteria();
@@ -119,6 +136,7 @@ class UserHotlistItem extends BaseActiveRecordVersioned
         }
 
         $criteria->order = 'last_modified_date DESC';
+
         return $this->findAll($criteria);
     }
 }
