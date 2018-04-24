@@ -35,6 +35,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.subspecialtyRefSpec = this.options.subspecialtyRefSpec;
 
         this.$table = this.$element.find('table');
+
+        this.loaderClass = this.options.loaderClass;
+        this.$loader = this.$table.find('.' + this.loaderClass);
+
         this.templateText = this.$element.find('.entry-template').text();
         this.externalDiagnoses = {};
 
@@ -49,7 +53,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         'selector': '#OphCiExamination_diagnoses',
         addButtonSelector: '.add-entry',
         element: undefined,
-        subspecialtyRefSpec: null
+        subspecialtyRefSpec: null,
+        loaderClass: 'external-loader'
     };
 
     DiagnosesController.prototype.initialiseTriggers = function()
@@ -212,7 +217,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     DiagnosesController.prototype.removeExternalDiagnosis = function(code)
     {
-        this.$element.find('.external a.removeDiagnosis[rel="'+code+'"]').click();
+        this.$table.find('input[type="hidden"][value="' + code + '"].savedDiagnosis').closest('tr').remove();
     };
 
     /**
@@ -253,6 +258,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      */
     DiagnosesController.prototype.retrieveDiagnosisDetail = function(code, side, callback)
     {
+        var controller = this;
         if (diagnosisDetail.hasOwnProperty(code)) {
             callback(diagnosisDetail[code].id, diagnosisDetail[code].name, side);
         } else {
@@ -260,9 +266,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 'type': 'GET',
                 // TODO: this should be a property of the element
                 'url': '/OphCiExamination/default/getDisorder?disorder_id='+code,
+                'beforeSend':function(){
+                    controller.$loader.show();
+                },
                 'success': function(json) {
                     diagnosisDetail[code] = json;
                     callback(diagnosisDetail[code].id, diagnosisDetail[code].name, side);
+                },
+                'complete': function(){
+                    controller.$loader.hide();
                 }
             });
         }
@@ -316,7 +328,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 if ($(this).hasClass('external')) {
                     // only want to alter sides for disorders that have been added from external source
                     // at this point
-                    listSide = $('input[type="radio"]:checked').val();
+                    listSide = $(this).find('input[type="radio"]:checked').val();
                     if (listSide != side) {
                         // the
                         $(this).find('input[type="radio"][value=' + side + ']').prop('checked', true);
@@ -336,9 +348,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             row = controller.createRow({disorder_id: id, disorder_display: name, eye_id:side});
             controller.$table.find('tbody').append(row);
             $tr = this.$table.find('tbody tr:last');
+            $tr.addClass('external');
             controller.initialiseRow($tr);
             $tr.find('.sides-radio-group input[value="' + side + '"]').prop("checked", true);
-
             $tr.find('.fuzzy_day').val(date.getDate());
             $tr.find('.fuzzy_month').val(date.getMonth()+1);
             $tr.find('.fuzzy_year').val(date.getFullYear());

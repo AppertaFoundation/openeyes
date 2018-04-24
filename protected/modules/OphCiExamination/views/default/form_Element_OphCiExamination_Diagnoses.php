@@ -41,7 +41,7 @@
             <th>Side</th>
             <th>Principal</th>
             <th>Date</th>
-            <th>Action</th>
+            <th style="width: 97px">Action</th>
         </tr>
         </thead>
         <tbody id="OphCiExamination_diagnoses">
@@ -64,7 +64,9 @@
         </tbody>
         <tfoot>
         <tr>
-            <td colspan="3"></td>
+            <td colspan="4">
+                <img class="external-loader" style="display: none;" src="<?php echo \Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />
+            </td>
             <td><button class="button small primary add-entry">Add</button></td>
         </tr>
         </tfoot>
