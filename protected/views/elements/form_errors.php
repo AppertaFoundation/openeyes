@@ -50,6 +50,7 @@
 
         for (k = 0; k < errorObject.length; k++) {
             var $field = $('#' + errorObject[k]);
+            $field.closest('.element').find('.element-title').addClass('error');
             if ($field.length) {
                 if ($field.is('tr')) {
                     $field.addClass('highlighted-error');
