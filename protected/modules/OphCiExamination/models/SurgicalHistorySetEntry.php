@@ -23,6 +23,7 @@
     /**
      * Class SurgicalHistorySetEntry
      * @property integer $id
+     * @property integer $surgical_history_set_id
      * @property string $gender
      * @property string $operation
      * @property int $age_min
