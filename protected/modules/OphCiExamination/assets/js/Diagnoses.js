@@ -112,9 +112,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     DiagnosesController.prototype.initialiseRow = function($row)
     {
-        var controller = this;
-        var DiagnosesSearchController = null;
-        var $radioButtons = $row.find('.sides-radio-group');
+        var controller = this,
+            DiagnosesSearchController = null,
+            $radioButtons = $row.find('.sides-radio-group'),
+            date = new Date();
 
         $row.on('change', '.fuzzy-date select', function(e) {
             var $fuzzyFieldset = $(this).closest('fieldset');
@@ -134,6 +135,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             'subspecialtyRefSpec': controller.subspecialtyRefSpec,
         });
         $row.find('.diagnoses-search-autocomplete').data('DiagnosesSearchController', DiagnosesSearchController );
+
+        //set todays date
+        $row.find('.fuzzy_day').val(date.getDate());
+        $row.find('.fuzzy_month').val(date.getMonth()+1);
+        $row.find('.fuzzy_year').val(date.getFullYear());
 
         // radio buttons
         $radioButtons.on('change', 'input', function(){
