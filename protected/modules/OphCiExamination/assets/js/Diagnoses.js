@@ -57,6 +57,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         loaderClass: 'external-loader'
     };
 
+    DiagnosesController.prototype.setDate = function($tr, date){
+
+        if(date === undefined){
+            date = new Date();
+        }
+
+        $tr.find('.fuzzy_month').val(date.getMonth()+1);
+        $tr.find('.fuzzy_day').val(date.getDate());
+        $tr.find('.fuzzy_year').val(date.getFullYear());
+    }
+
     DiagnosesController.prototype.initialiseTriggers = function()
     {
         var controller = this;
@@ -81,7 +92,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         controller.$element.on('change', 'select.condition-secondary-to', function(){
             var $option = $(this).find('option:selected'),
                 type = $option.data('type'),
-                row;
+                row, $tr;
 
             if(type && type === 'alternate'){
                 // select only the alternate
@@ -93,7 +104,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     row = controller.createRow({disorder_id: item.id, disorder_display:item.label});
                     $tr.remove();
                     controller.$table.find('tbody').append(row);
-                    controller.initialiseRow(controller.$table.find('tbody tr:last'));
+                    $tr = controller.$table.find('tbody tr:last');
+                    controller.initialiseRow($tr);
+                    controller.setDate($tr);
                 }
             } else if(type && type === 'disorder'){
                 // just add the disorder as an extra row
@@ -176,11 +189,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         $row = this.$table.find('tbody tr:last');
         this.initialiseRow($row);
-
-        var date = new Date();
-        $row.find('.fuzzy_month').val(date.getMonth()+1);
-        $row.find('.fuzzy_day').val(date.getDate());
-        $row.find('.fuzzy_year').val(date.getFullYear());
+        this.setDate($row);
     };
 
     /**
@@ -331,7 +340,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var alreadyInList = false;
         var listSide = null;
         var row, $tr;
-        var date = new Date();
 
         // iterate over table rows.
         $('#OphCiExamination_diagnoses').children('tr').each(function() {
@@ -363,9 +371,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $tr.addClass('external');
             controller.initialiseRow($tr);
             $tr.find('.sides-radio-group input[value="' + side + '"]').prop("checked", true);
-            $tr.find('.fuzzy_day').val(date.getDate());
-            $tr.find('.fuzzy_month').val(date.getMonth()+1);
-            $tr.find('.fuzzy_year').val(date.getFullYear());
+
+            controller.setDate($tr);
         }
     };
 
