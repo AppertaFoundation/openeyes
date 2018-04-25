@@ -146,6 +146,17 @@ OpenEyes.UI = OpenEyes.UI || {};
             if(item && item.hasOwnProperty('secondary') && item['secondary'].length > 0){
 
                 $associated_select.append( $('<option>',{'text': '- Please Select -'}));
+
+                if(item['alternate']){
+                    $associated_select.append( $('<option>',
+                        {
+                            'value': item['alternate'].id,
+                            'text': item['alternate'].selection_label,
+                            'data-type': 'alternate',
+                            'data-item': JSON.stringify(item['alternate'])
+                        }));
+                }
+
                 $.each(item['secondary'], function(i, item){
                     $associated_select.append( $('<option>',{'value': item.id, 'text': item.label, 'data-type': item.type }));
                 });

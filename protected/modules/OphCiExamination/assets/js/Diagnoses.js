@@ -87,10 +87,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 // select only the alternate
                 // and only that one - instead of the first/main selected
                 var $tr = $(this).closest('tr'),
-                    item = $tr.find('.commonly-used-diagnosis option:selected').data('item');
+                    item = $option.data('item');
 
-                if(item && item['alternate']){
-                    row = controller.createRow({disorder_id: item['alternate'].id, disorder_display:item['alternate'].label});
+                if(item){
+                    row = controller.createRow({disorder_id: item.id, disorder_display:item.label});
+                    $tr.remove();
                     controller.$table.find('tbody').append(row);
                     controller.initialiseRow(controller.$table.find('tbody tr:last'));
                 }
