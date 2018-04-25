@@ -73,7 +73,7 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
     public function relations()
     {
         return array(
-            'element_diagnoses' => array(self::BELONGS_TO, 'Element_OphCiExamination_Diagnoses', 'element_diagnoses_id'),
+            'element_diagnoses' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses', 'element_diagnoses_id'),
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
             'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
         );

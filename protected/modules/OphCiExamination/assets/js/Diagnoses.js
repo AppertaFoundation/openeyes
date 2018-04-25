@@ -115,7 +115,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         var controller = this,
             DiagnosesSearchController = null,
             $radioButtons = $row.find('.sides-radio-group'),
-            date = new Date();
+            $fuzzy_day = $row.find('.fuzzy_day'),
+            $fuzzy_month = $row.find('.fuzzy_month'),
+            $fuzzy_year = $row.find('.fuzzy_year');
 
         $row.on('change', '.fuzzy-date select', function(e) {
             var $fuzzyFieldset = $(this).closest('fieldset');
@@ -135,11 +137,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             'subspecialtyRefSpec': controller.subspecialtyRefSpec,
         });
         $row.find('.diagnoses-search-autocomplete').data('DiagnosesSearchController', DiagnosesSearchController );
-
-        //set todays date
-        $row.find('.fuzzy_day').val(date.getDate());
-        $row.find('.fuzzy_month').val(date.getMonth()+1);
-        $row.find('.fuzzy_year').val(date.getFullYear());
 
         // radio buttons
         $radioButtons.on('change', 'input', function(){
@@ -173,9 +170,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     DiagnosesController.prototype.addEntry = function()
     {
-        var row = this.createRow();
+        var row = this.createRow(),
+            $row;
         this.$table.find('tbody').append(row);
-        this.initialiseRow(this.$table.find('tbody tr:last'));
+
+        $row = this.$table.find('tbody tr:last');
+        this.initialiseRow($row);
+
+        var date = new Date();
+        $row.find('.fuzzy_month').val(date.getMonth()+1);
+        $row.find('.fuzzy_day').val(date.getDate());
+        $row.find('.fuzzy_year').val(date.getFullYear());
     };
 
     /**
