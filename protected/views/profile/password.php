@@ -16,40 +16,48 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
-<div class="admin box">
-    <h2>Change password</h2>
-    <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => 'profile-form',
-        'enableAjaxValidation' => false,
-        'layoutColumns' => array(
-            'label' => 2,
-            'field' => 5,
-        ),
-    )) ?>
-    <?php if (!Yii::app()->params['profile_user_can_change_password']) { ?>
-        <div class="alert-box alert">
-            User changing of passwords is administratively disabled.
-        </div>
-    <?php } ?>
-    <?php $this->renderPartial('//base/_messages') ?>
-    <?php $this->renderPartial('//elements/form_errors', array('errors' => $errors)) ?>
-    <?php echo $form->passwordChangeField($user, 'Current Password', 'User[password_old]',
-        array('readonly' => !Yii::app()->params['profile_user_can_change_password'])) ?>
-    <?php echo $form->passwordChangeField($user, 'New Password', 'User[password_new]',
-        array('readonly' => !Yii::app()->params['profile_user_can_change_password'])) ?>
-    <?php echo $form->passwordChangeField($user, 'Confirm', 'User[password_confirm]',
-        array('readonly' => !Yii::app()->params['profile_user_can_change_password'])) ?>
-
-    <?php if (Yii::app()->params['profile_user_can_change_password']) { ?>
-        <div class="row field-row">
-            <div class="large-5 large-offset-2 column">
-                <?php echo EventAction::button('Save', 'save')->toHtml() ?>
-              <i class="spinner" title="Loading..." style="display: none;"></i>
-            </div>
-        </div>
-    <?php } ?>
-
-    <?php $this->endWidget() ?>
-
-</div>
+  <h2>Change password</h2>
+<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+    'id' => 'profile-form',
+    'enableAjaxValidation' => false,
+    'layoutColumns' => array(
+        'label' => 2,
+        'field' => 5,
+    ),
+)) ?>
+<?php if (!Yii::app()->params['profile_user_can_change_password']) { ?>
+  <div class="alert-box alert">
+    User changing of passwords is administratively disabled.
+  </div>
+<?php } ?>
+<?php $this->renderPartial('//base/_messages') ?>
+<?php $this->renderPartial('//elements/form_errors', array('errors' => $errors)) ?>
+<table class="standard">
+  <tbody>
+  <tr>
+    <td>
+        <?php echo $form->passwordChangeField($user, 'Current Password', 'User[password_old]',
+            array('readonly' => !Yii::app()->params['profile_user_can_change_password'])) ?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo $form->passwordChangeField($user, 'New Password', 'User[password_new]',
+            array('readonly' => !Yii::app()->params['profile_user_can_change_password'])) ?>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <?php echo $form->passwordChangeField($user, 'Confirm', 'User[password_confirm]',
+            array('readonly' => !Yii::app()->params['profile_user_can_change_password'])) ?>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<?php if (Yii::app()->params['profile_user_can_change_password']) { ?>
+  <div class="profile-actions">
+      <?php echo EventAction::button('Save', 'save', array(), array('class' => 'button large hint green'))->toHtml() ?>
+    <i class="spinner" title="Loading..." style="display: none;"></i>
+  </div>
+<?php } ?>
+<?php $this->endWidget() ?>

@@ -16,10 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
 	<h2><?php echo Firm::contextLabel()?>s you work in</h2>
 	<form id="profile_firms" method="post" action="/profile/firms">
-		<table class="grid">
+		<table class="standard">
 			<thead>
 				<tr>
 					<th><input type="checkbox" id="checkall"  /></th>
@@ -39,21 +38,16 @@
 			</tbody>
 		</table>
 	</form>
-
-	<div class="row">
-		<div class="large-6 column">
-			<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
-		</div>
-		<div class="large-6 column text-right table-actions">
-			<label for="profile_firm_id" class="inline">Add <?php echo strtolower(Firm::contextLabel())?>:</label>
-			<?php echo CHtml::dropDownList('profile_firm_id', '', $user->getNotSelectedFirmList(), array('empty' => '- Select -'))?>
-			<?php echo CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info'))?>
-		</div>
-	</div>
-
+<div class="cols-6 column text-right table-actions">
+  <label for="profile_firm_id" class="inline">Add <?php echo strtolower(Firm::contextLabel())?>:</label>
+    <?php echo CHtml::dropDownList('profile_firm_id', '', $user->getNotSelectedFirmList(), array('empty' => '- Select -'))?>
+    <?php echo CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info'))?>
+</div>
+<div class="profile-actions">
+    <?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'button large hint green'))->toHtml()?>
 </div>
 
-<div class="box admin">
+<div class="profile-actions">
 	<p>Note: you can also set the sites you work at, <?php echo CHtml::link('click here', Yii::app()->createUrl('/profile/sites'))?> to do so.</p>
 </div>
 

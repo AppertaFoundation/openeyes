@@ -16,43 +16,38 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="box admin">
-	<h2>Sites you work at</h2>
-	<form id="profile_sites" method="post" action="/profile/sites">
-		<table class="grid">
-			<thead>
-				<tr>
-					<th><input type="checkbox" id="checkall" /></th>
-					<th>Name</th>
-					<th>Address</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php
-                foreach ($user->siteSelections as $i => $site) {?>
-					<tr data-attr-id="<?php echo $site->id?>">
-						<td><input type="checkbox" name="sites[]" value="<?php echo $site->id?>" /></td>
-						<td><?php echo $site->name?></td>
-						<td><?php echo $site->getLetterAddress(array('delimiter' => ', '))?>&nbsp;</td>
-					</tr>
-				<?php }?>
-			</tbody>
-		</table>
-	</form>
-
-	<div class="row">
-		<div class="large-6 column">
-			<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
-		</div>
-		<div class="large-6 column text-right table-actions">
-			<label for="profile_site_id" class="inline">Add site:</label>
-			<?php echo CHtml::dropDownList('profile_site_id', '', CHtml::listData($user->getNotSelectedSiteList(), 'id', 'name'), array('empty' => '- Select -'))?>
-			<?php echo CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info'))?>
-		</div>
-	</div>
+<h2>Sites you work at</h2>
+<form id="profile_sites" method="post" action="/profile/sites">
+  <table class="standard">
+    <thead>
+    <tr>
+      <th><input type="checkbox" id="checkall" /></th>
+      <th>Name</th>
+      <th>Address</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($user->siteSelections as $i => $site) {?>
+      <tr data-attr-id="<?php echo $site->id?>">
+        <td><input type="checkbox" name="sites[]" value="<?php echo $site->id?>" /></td>
+        <td><?php echo $site->name?></td>
+        <td><?php echo $site->getLetterAddress(array('delimiter' => ', '))?>&nbsp;</td>
+      </tr>
+    <?php }?>
+    </tbody>
+  </table>
+</form>
+<div class="cols-6 column text-right table-actions">
+  <label for="profile_site_id" class="inline">Add site:</label>
+    <?php echo CHtml::dropDownList('profile_site_id', '', CHtml::listData($user->getNotSelectedSiteList(), 'id', 'name'), array('empty' => '- Select -'))?>
+    <?php echo CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info'))?>
 </div>
-<div class="box admin">
-	<p>Note: you can also set the <?php echo strtolower(Firm::contextLabel())?>s you work at, <?php echo CHtml::link('click here', Yii::app()->createUrl('/profile/firms'))?> to do so.</p>
+<div class="profile-actions">
+    <?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'button large hint green'))->toHtml()?>
+</div>
+
+<div class="">
+  <p>Note: you can also set the <?php echo strtolower(Firm::contextLabel())?>s you work at, <?php echo CHtml::link('click here', Yii::app()->createUrl('/profile/firms'))?> to do so.</p>
 </div>
 
 <script type="text/javascript">
