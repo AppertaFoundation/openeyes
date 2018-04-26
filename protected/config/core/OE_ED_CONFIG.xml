@@ -1829,6 +1829,66 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           </INDEX_LIST>
         </INDEX>
         <INDEX>
+          <PRIMARY_TERM>Observations</PRIMARY_TERM>
+          <SECONDARY_TERM_LIST>
+            <TERM>Obs</TERM>
+          </SECONDARY_TERM_LIST>
+          <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+            <INDEX_LIST>
+                <INDEX>
+                  <PRIMARY_TERM>Blood Pressure</PRIMARY_TERM>
+                  <SECONDARY_TERM_LIST>
+                      <TERM>BP</TERM>
+                  </SECONDARY_TERM_LIST>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Observations_blood_pressure_systolic</GOTO_ID>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Blood Glucose</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Observations_blood_glucose</GOTO_ID>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>O2 Saturaation on air</PRIMARY_TERM>
+                  <SECONDARY_TERM_LIST>
+                      <TERM>O2 Sat</TERM>
+                      <TERM>O2Sat</TERM>
+                      <TERM>Oxygen Saturation</TERM>
+                  </SECONDARY_TERM_LIST>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Observations_o2_sat</GOTO_ID>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>HbA1c</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Observations_hba1c</GOTO_ID>
+                </INDEX>
+                <INDEX>
+                  <PRIMARY_TERM>Pulse</PRIMARY_TERM>
+                  <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+                  <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Observations_pulse</GOTO_ID>
+                </INDEX>
+                <INDEX>
+                    <PRIMARY_TERM>Height</PRIMARY_TERM>
+                    <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+                    <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Observations_height</GOTO_ID>
+                </INDEX>
+                <INDEX>
+                    <PRIMARY_TERM>Weight</PRIMARY_TERM>
+                    <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+                    <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_Observations_weight</GOTO_ID>
+                </INDEX>
+                <INDEX>
+                    <PRIMARY_TERM>BMI</PRIMARY_TERM>
+                    <SECONDARY_TERM_LIST>
+                        <TERM>Body Mass Index</TERM>
+                    </SECONDARY_TERM_LIST>
+                    <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_Observations</OPEN_ELEMENT_CLASS_NAME>
+                    <GOTO_ID>bmi-container</GOTO_ID>
+                </INDEX>
+            </INDEX_LIST>
+        </INDEX>
+        <INDEX>
           <PRIMARY_TERM>Visual Function</PRIMARY_TERM>
           <SECONDARY_TERM_LIST>
             <TERM>RAPD</TERM>

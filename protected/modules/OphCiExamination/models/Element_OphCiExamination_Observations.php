@@ -88,7 +88,7 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
 			'blood_pressure' => 'Blood pressure',
 			'blood_pressure_systolic' => 'Blood p. systolic',
 			'blood_pressure_diastolic' => 'Blood p. diastolic',
-			'o2_sat' => 'O2 Sat',
+			'o2_sat' => 'O2 Sat (air)',
 			'blood_glucose' => 'Blood Glucose',
 			'hba1c' => 'HbA1c',
 			'height' => 'Height',
@@ -149,9 +149,9 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
 	{
 		return parent::model($className);
 	}
-    
+
     /*
-     * Calculate BMI 
+     * Calculate BMI
      * @params $weight weight in kg
      * @params $height height in centimeters
      * @return float
@@ -160,7 +160,7 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
     {
         $height_meter = $height / 100;
         $result = $weight / ($height_meter * $height_meter);
-        
+
         return number_format((float)$result, 2, '.', '');
     }
 }
