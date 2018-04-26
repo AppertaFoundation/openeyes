@@ -81,7 +81,7 @@
         }
       });
 
-      hotlist.removeItem(itemId)
+      hotlist.removeItem(itemId);
       return false;
     });
 
@@ -177,6 +177,7 @@
 
   HotList.prototype.removeItem = function (itemId) {
     $('.activity-list tr[data-id="' + itemId + '"]').remove();
+    $('body').find( ".oe-tooltip" ).remove();
   };
 
 

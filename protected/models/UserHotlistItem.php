@@ -104,7 +104,7 @@ class UserHotlistItem extends BaseActiveRecordVersioned
 
         $result = $interval->format(implode($format));
 
-        return $result === '' ? 'Less than a minute ago' : $result;
+        return $result === '' ? 'less than a minute' : $result;
     }
 
     /**
