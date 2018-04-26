@@ -39,7 +39,11 @@ class m180416_031717_change_sidebar_element_groupings extends OEMigration
             'class_name' => 'Element_OphCiExamination_DRGrading',
             'old_parent' => null,
             'new_parent' => 'Element_OphCiExamination_PosteriorPole',
-        ]
+        ],
+    ];
+
+    public $renamed_elements = [
+        'Element_OphCiExamination_PosteriorPole' => 'Macula',
     ];
 
     public $group_titles = [
@@ -75,6 +79,11 @@ class m180416_031717_change_sidebar_element_groupings extends OEMigration
         // Set new group titles
         foreach ($this->group_titles as $class_name => $group_title) {
             $this->update('element_type', array('group_title' => $group_title), 'id = :id',
+                array(':id' => $this->getElementId($class_name)));
+        }
+
+        foreach ($this->renamed_elements as $class_name => $new_name) {
+            $this->update('element_type', array('name' => $new_name), 'id = :id',
                 array(':id' => $this->getElementId($class_name)));
         }
     }
