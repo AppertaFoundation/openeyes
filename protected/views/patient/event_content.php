@@ -1,4 +1,4 @@
-<main class="main-event <?php echo $this->moduleStateCssClass; ?>" id="event-content">
+<main class="main-event <?php echo $this->moduleStateCssClass; ?>" id="event-content" style="overflow-y: visible;">
 
   <h2 class="event-title">
       <?php echo $this->title ?>

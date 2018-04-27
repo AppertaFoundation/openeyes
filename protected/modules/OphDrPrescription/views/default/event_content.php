@@ -8,7 +8,7 @@
 		<?php $this->renderPartial('//patient/event_actions'); ?>
 	</nav>
 
-	<div class="event-content <?=($this->event->is_automated) ? 'auto' : ''?>" id="event-content">
+	<div class="event-content <?=($this->event->is_automated) ? 'auto' : ''?>" id="event-content" style="overflow-y: visible;">
 
 		<h2 class="event-title <?=($this->event->is_automated) ? 'auto' : ''?>"><?php echo $this->title?> <?php $this->renderPartial('//patient/event_automated'); ?></h2>
 
