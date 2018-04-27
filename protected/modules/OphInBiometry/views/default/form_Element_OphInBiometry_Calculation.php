@@ -17,100 +17,86 @@
  */
 ?>
 <style>
-	.readonly-div{
-		height: auto;
-		border: 1px solid #6b8aaa;
-		background-color: #dddddd;
-	}
+    .readonly-div {
+        height: auto;
+        border: 1px solid #6b8aaa;
+        background-color: #dddddd;
+    }
 </style>
 
-	<div class="element-fields element-eyes row">
-		<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-		<div id="right-eye-calculation" class="element-eye right-eye left side column <?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
-				 data-side="right" >
-			<div class="active-form">
+<div class="element-fields element-eyes">
 
-				<?php $this->renderPartial('form_Element_OphInBiometry_Calculation_fields',
-                        array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
-			</div>
-			<div class="inactive-form">
-				<div class="add-side">
-					Set right side lens type
-				</div>
-			</div>
-		</div>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+        <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+        <div id="<?php echo $eye_side ?>-eye-calculation"
+             class="element-eye <?php echo $eye_side ?>-eye left side column <?php if (!$element->hasEye($eye_side)) { ?> inactive<?php } ?>"
+             data-side="<?php echo $eye_side ?>">
+            <div class="active-form">
+                <?php $this->renderPartial('form_Element_OphInBiometry_Calculation_fields',
+                    array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
+            </div>
+            <div class="inactive-form">
+                <div class="add-side">
+                    Set <?php echo $eye_side ?> side lens type
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
+<div class="element-fields element-eyes">
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+        <div id="<?php echo $eye_side ?>-eye-comments" class="element-eye <?php echo $eye_side ?>-eye"
+             data-side="<?php echo $eye_side ?>">
+            <div class="active-form">
+                <div class="element-fields">
+                    <span class="field-info">General Comments:</span>
+                </div>
+            </div>
+            <div class="active-form">
+                <div class="element-fields">
+                    <?php echo $form->textArea($element, 'comments_right',
+                        array('rows' => 3, 'label' => false, 'nowrapper' => true), false,
+                        array('class' => 'comments_right')) ?>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
 
-		<div id="left-eye-calculation" class="element-eye left-eye right side column  <?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
-				 data-side="left">
-			<div class="active-form">
-
-				<?php $this->renderPartial('form_Element_OphInBiometry_Calculation_fields',
-                        array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
-			</div>
-			<div class="inactive-form">
-				<div class="add-side">
-					Set left side lens type
-				</div>
-			</div>
-		</div>
-
-	</div>
-<div class="element-fields element-eyes row edit element">
-	<div id="right-eye-comments" class="element-eye right-eye left side disabled" data-side="right">
-		<div class="active-form">
-			<div class="element-fields">
-				<span class="field-info">General Comments:</span>
-			</div>
-		</div>
-		<div class="active-form">
-			<div class="element-fields">
-				<?php echo $form->textArea($element, 'comments_right',
-					array('rows' => 3, 'label' => false, 'nowrapper' => true), false,
-					array('class' => 'comments_right')) ?>
-			</div>
-		</div>
-	</div>
-	<div id="left-eye-comments" class="element-eye left-eye right side column disabled" data-side="left">
-		<div class="active-form">
-			<div class="element-fields">
-				<span class="field-info">General Comments:</span>
-			</div>
-		</div>
-		<div class="active-form">
-			<div class="element-fields">
-			<?php echo $form->textArea($element, 'comments_left',
-				array('rows' => 3, 'label' => false, 'nowrapper' => true), false,
-				array('class' => 'comments_left')) ?>
-		</div>
-		</div>
-	</div>
 </div>
 
 <div id="comments">
 	<span class="field-info large-12">
-	<?php
-	if ($this->is_auto) {
-		if (!$this->getAutoBiometryEventData($this->event->id)[0]->is700() || $element->{'comments'}) {
-			echo 'Device Comments:';
-			echo '<div class="readonly-box">' . $element->{'comments'} . '<br></div>';
-		}
-	} else {
-		echo $form->textField($element, 'comments', array('style' => 'width:1027px;'), null,
-			array('label' => 4, 'field' => 200));
-	}
-	?>
+        <?php
+    if ($this->is_auto) {
+        if (!$this->getAutoBiometryEventData($this->event->id)[0]->is700() || $element->{'comments'}) {
+            echo 'Device Comments:';
+            echo '<div class="readonly-box">' . $element->{'comments'} . '<br></div>';
+        }
+    } else {
+        ?>
+        <span class="field-info">Comments:</span>
+        <?php
+        echo $form->textField($element, 'comments', array('style' => 'width:1027px;', 'nowrapper'=>true), null);
+    }
+    ?>
 	</span>
 </div>
 
 <script type="text/javascript">
-	$(document).ready(function() {
-		if ($('section.Element_OphInBiometry_Measurement').find('.element-eye.right-eye').hasClass('inactive')) {
-			$('section.Element_OphInBiometry_Calculation').find('.element-eye.right-eye').find('.active-form').hide();
-			$('section.Element_OphInBiometry_Calculation').find('.element-eye.right-eye').find('.inactive-form').show();
-		}
-		if ($('section.Element_OphInBiometry_Measurement').find('.element-eye.left-eye').hasClass('inactive')) {
-			$('section.Element_OphInBiometry_Calculation').find('.element-eye.left-eye').find('.active-form').hide();
-			$('section.Element_OphInBiometry_Calculation').find('.element-eye.left-eye').find('.inactive-form').show();
-		}
-	});
+    $(document).ready(function () {
+        if ($('section.Element_OphInBiometry_Measurement').find('.element-eye.right-eye').hasClass('inactive')) {
+            $('section.edit-Element_OphInBiometry_Calculation').find('.element-eye.right-eye').find('.active-form').hide();
+            $('section.edit-Element_OphInBiometry_Calculation').find('.element-eye.right-eye').find('.inactive-form').show();
+        } else {
+            $('section.edit-Element_OphInBiometry_Calculation').find('.element-eye.right-eye').find('.active-form').show();
+            $('section.edit-Element_OphInBiometry_Calculation').find('.element-eye.right-eye').find('.inactive-form').hide();
+        }
+        if ($('section.Element_OphInBiometry_Measurement').find('.element-eye.left-eye').hasClass('inactive')) {
+            $('section.Element_OphInBiometry_Calculation').find('.element-eye.left-eye').find('.active-form').hide();
+            $('section.Element_OphInBiometry_Calculation').find('.element-eye.left-eye').find('.inactive-form').show();
+        } else {
+            $('section.edit-Element_OphInBiometry_Calculation').find('.element-eye.left-eye').find('.active-form').show();
+            $('section.edit-Element_OphInBiometry_Calculation').find('.element-eye.left-eye').find('.inactive-form').hide();
+        }
+    });
 </script>

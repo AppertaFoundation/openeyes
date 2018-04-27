@@ -10,6 +10,13 @@
         <tr>
             <th colspan="4">
                 <?php echo $element->getAttributeLabel($side . 'Eye') ?>
+                <?php if ($side == 'right') { ?>
+                    <i class="oe-i laterality R small pad"></i>
+                <?php } else { ?>
+                    <i class="oe-i laterality L small pad"></i>
+                <?php } ?>
+                <i class="oe-i laterality NA small pad"></i>
+
             </th>
         </tr>
         </thead>

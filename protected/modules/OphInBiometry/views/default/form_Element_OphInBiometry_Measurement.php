@@ -138,7 +138,7 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
 </section>
 <section class="element edit full  eye-divider">
     <header class="element-header">
-        <h3 class="element-title">Visual Acuity <?php echo $VAdate; ?></h3>
+        <h3 class="element-title">Visual Acuity</h3>
     </header>
     <div class="element-fields element-eyes row">
         <div class="element-eye right-eye column">
@@ -267,7 +267,7 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
 
 <section class="element edit full  eye-divider">
     <header class="element-header">
-        <h3 class="element-title">Near Visual Acuity <?php echo $NearVAdate; ?></h3>
+        <h3 class="element-title">Near Visual Acuity</h3>
     </header>
     <div class="element-fields element-eyes row">
         <div class="element-eye right-eye column">
