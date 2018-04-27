@@ -41,3 +41,39 @@
 		</div>
 	</div>
 </section>
+
+<?php if($is_new_opnote):?>
+    <script>
+
+        var timer = setTimeout(setEyeDraw, 600);
+
+        function setEyeDraw() {
+            var cataract = getOEEyeDrawChecker().getInstanceByIdSuffix('Cataract'),
+                data = null,
+                k1, k2, steepK, flatK, axis, axis_k1, axis_k2;
+
+            if(cataract){
+                if ($('#Element_OphTrOperationnote_ProcedureList_eye_id_1').is(':checked')) {
+                    k1 = <?=$element->k1_left;?>;
+                    k2 = <?=$element->k2_left;?>;
+                    axis_k1 = <?=$element->axis_k1_left;?>;
+                    axis_k2 = <?=$element->k2_axis_left;?>;
+
+                } else if ($('#Element_OphTrOperationnote_ProcedureList_eye_id_2').is(':checked')) {
+                    k1 = <?=$element->k1_right;?>;
+                    k2 = <?=$element->k2_right;?>;
+                    axis_k1 = <?=$element->axis_k1_right;?>;
+                    axis_k2 = <?=$element->k2_axis_right;?>;
+                }
+
+                steepK = k1 > k2 ? k1 : k2;
+                flatK = k1 < k2 ? k1 : k2;
+                data = {axis: (k1 > k2 ? axis_k1 : axis_k2), flatK: flatK, steepK: steepK};
+
+                if (steepK !== flatK) {
+                    cataract.addDoodle("AntSegAngleMarks", data);
+                }
+            }
+        }
+    </script>
+<?php endif;?>
