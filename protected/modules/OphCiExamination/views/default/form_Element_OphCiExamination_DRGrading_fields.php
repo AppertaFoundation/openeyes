@@ -27,11 +27,8 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
     </td>
     <td>
       <div class="wrapper field-highlight inline<?php if ($element->{$side . '_clinicalret'}) {
-          ?> <?php echo $element->{$side . '_clinicalret'}->class ?><?php
-      } else {
-          ?> none<?php } ?>">
-          <?php
-          $html_options = array('options' => array());
+          ?> <?php echo $element->{$side . '_clinicalret'}->class ?><?php } else { ?> none<?php } ?>">
+          <?php $html_options = array('options' => array());
           foreach ($clinical_retinopathys as $clinical) {
               $html_options['options'][(string)$clinical->id] = array(
                   'class' => $clinical->class,
@@ -61,18 +58,15 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
       </div>
       <div id="<?php echo CHtml::modelName($element) . '_' . $side . '_all_clinicalret_desc'; ?>" class="grade-info-all"
            data-select-id="<?php echo CHtml::modelName($element) . '_' . $side . '_clinicalret_id'; ?>">
-        <dl>
-            <?php foreach ($clinical_retinopathys as $clinical) {
-                ?>
-              <dt class="pill <?php echo $clinical->class ?>">
+            <?php foreach ($clinical_retinopathys as $clinical) {?>
+              <div class="status-box <?= getLevelColour($clinical->class)?>">
+                <b>
                 <a href="#" data-id="<?php echo $clinical->id ?>"><?php echo $clinical->name ?></a>
-              </dt>
-              <dd class="<?php echo $clinical->class ?>">
+              </b>
+                <br>
                   <?php echo nl2br($clinical->description) ?>
-              </dd>
-                <?php
-            } ?>
-        </dl>
+              </div>
+                <?php } ?>
       </div>
     </td>
   </tr>
@@ -121,18 +115,15 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
       </div>
       <div id="<?php echo CHtml::modelName($element) . '_' . $side . '_all_retinopathy_desc'; ?>" class="grade-info-all"
            data-select-id="<?php echo CHtml::modelName($element) . '_' . $side . '_nscretinopathy_id'; ?>">
-        <dl>
-            <?php foreach ($nsc_retinopathys as $retin) {
-                ?>
-              <dt class="pill <?php echo $retin->class ?>">
-                <a href="#" data-id="<?php echo $retin->id ?>"><?php echo $retin->name ?></a>
-              </dt>
-              <dd class="<?php echo $retin->class ?>">
+            <?php foreach ($nsc_retinopathys as $retin) { ?>
+              <div class="status-box <?= getLevelColour($retin->class) ?>">
+                <b>
+                  <a href="#" data-id="<?php echo $retin->id ?>"><?php echo $retin->name ?></a>
+                </b>
+                <br>
                   <?php echo nl2br($retin->description) ?>
-              </dd>
-                <?php
-            } ?>
-        </dl>
+              </div>
+            <?php } ?>
       </div>
     </td>
   </tr>
@@ -245,14 +236,14 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
       <div id="<?php echo CHtml::modelName($element) . '_' . $side . '_all_maculopathy_desc'; ?>" class="grade-info-all"
            data-select-id="<?php echo CHtml::modelName($element) . '_' . $side . '_nscmaculopathy_id'; ?>">
         <dl>
-            <?php foreach ($nsc_maculopathys as $macu) {
-                ?>
-              <dt class="pill <?php echo $macu->class ?>">
-                <a href="#" data-id="<?php echo $macu->id ?>"><?php echo $macu->name ?></a>
-              </dt>
-              <dd class="<?php echo $macu->class ?>">
+            <?php foreach ($nsc_maculopathys as $macu) { ?>
+              <div class="status-box <?= getLevelColour($macu->class) ?>">
+                <b>
+                  <a href="#" data-id="<?php echo $macu->id ?>"><?php echo $macu->name ?></a>
+                </b>
+                <br>
                   <?php echo nl2br($macu->description) ?>
-              </dd>
+              </div>
                 <?php
             } ?>
         </dl>

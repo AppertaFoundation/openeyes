@@ -15,6 +15,30 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+function getLevelColour($risk_level){
+    switch ($risk_level){
+        case '':
+        case 'none':
+            return 'green';
+            break;
+        case 'pre-prolif':
+        case 'moderate':
+            return 'amber';
+            break;
+        case 'proliferative':
+        case 'maculopathy':
+        case 'severe':
+        case 'high-risk':
+            return 'red';
+            break;
+        case 'ungradable':
+        case 'mild':
+        case 'early':
+            return 'blue';
+        default:
+            return 'blue';
+    }
+}
 ?>
 
 <?php $this->beginClip('element-title-additional');?>

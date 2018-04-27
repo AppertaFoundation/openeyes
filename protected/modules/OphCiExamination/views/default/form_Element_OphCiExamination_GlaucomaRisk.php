@@ -15,10 +15,25 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+function getRiskLevelColour($risk_level){
+  switch ($risk_level){
+      case 'low':
+        return 'green';
+        break;
+      case 'moderate':
+        return 'amber';
+        break;
+      case 'high':
+        return 'red';
+        break;
+      default:
+        return 'blue';
+  }
+}
 ?>
 <div class="element-fields flex-layout full-width ">
 	<div class="field-row row collapse">
-		<div class="large-2 column">
+		<div class="cols-2 column">
 			<div class="field-highlight<?php if ($element->risk) {
     ?> <?php echo $element->risk->class?><?php }?> risk">
 				<?php $html_options = array('nowrapper' => true, 'empty' => '--- Please select ---');
@@ -35,19 +50,17 @@
 		</div>
     <a href="#" class="field-info descriptions_link">definitions</a>
 	</div>
-	<div class="field-row row glaucoma-risk-descriptions" id="<?= CHtml::modelName($element) ?>_descriptions">
-		<dl>
+	<div class="glaucoma-risk-descriptions" id="<?= CHtml::modelName($element) ?>_descriptions">
 			<?php foreach ($risks as $option) { ?>
-				<dt class="pill <?php echo $option->class ?>">
-					<a href="#" data-risk-id="<?php echo $option->id ?>">
-						<?php echo $option->name ?>
-					</a>
-				</dt>
-				<dd class="<?php echo $option->class ?>">
-					<?php echo nl2br($option->description) ?>
-				</dd>
-			<?php 
-}?>
-		</dl>
+				<div class="status-box <?= getRiskLevelColour($option->class)?>">
+          <b>
+            <a href="#" data-risk-id="<?php echo $option->id ?>">
+                <?php echo $option->name ?>
+            </a>
+          </b>
+          <br>
+            <?php echo nl2br($option->description) ?>
+        </div>
+			<?php } ?>
 	</div>
 </div>

@@ -372,23 +372,20 @@ $(document).ready(function() {
             OphCiExamination_ClinicOutcome_LoadTemplate(template_id);
         }
 
-        // Change colour of dropdown background
-        if (!$('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk .risk').hasClass($('option:selected', this).attr('class'))) {
-            $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk .risk').removeClass('low');
-            $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk .risk').removeClass('moderate');
-            $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk .risk').removeClass('high');
-            $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk .risk').addClass($('option:selected', this).attr('class'));
-        }
     });
     $(this).delegate('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk a.descriptions_link', 'click', function(e) {
-        $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk_descriptions').dialog('open');
-        e.preventDefault();
-    });
-    $('body').delegate('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk_descriptions a', 'click', function(e) {
+      var glaucoma_dialog = new OpenEyes.UI.Dialog({
+        title: 'Glaucoma Risk Stratifications',
+        content: $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk_descriptions'),
+        width: "50%",
+        autoOpen: true
+      });
+      glaucoma_dialog.open();
+      $(glaucoma_dialog.content).on('click', '.status-box a', function (e) {
         var value = $(this).attr('data-risk-id');
-        $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk_descriptions').dialog('close');
+        $('.oe-popup-wrap').hide();
         $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk_risk_id').val(value).trigger('change');
-        e.preventDefault();
+      });
     });
 
     /**
@@ -570,7 +567,7 @@ $(document).ready(function() {
         updateBookingWeeks(side);
     })
 
-    $('body').delegate('.grade-info-all a', 'click', function(e) {
+    $('body').delegate('.grade-info-all .status-box a', 'click', function(e) {
         var value = $(this).data('id');
         var select_id = $(this).parents('.grade-info-all').data('select-id');
         $(this).parents('.grade-info-all').dialog('close');
@@ -1369,7 +1366,6 @@ $(document).ready(function() {
         $('.quicklook-viewmode').remove();
     });
 });
-
     /** Post Operative Complication function **/
      function setPostOpComplicationTableText()
     {
@@ -1398,7 +1394,6 @@ $(document).ready(function() {
             $left_table.show();
         }
     }
-
     function addPostOpComplicationTr(selected_text, table_id, select_value, display_order)
     {
 
@@ -1421,10 +1416,7 @@ $(document).ready(function() {
         $tr.append($td_action);
         $table.append( $tr );
     }
-
     /** End of Post Operative Complication function **/
-
-
 function updateTextMacros() {
     var active_element_ids = [];
     $('.js-active-elements > .element, .js-active-elements .sub-elements.active > .sub-element').each(function() {
@@ -1748,8 +1740,6 @@ function OphCiExamination_NearVisualAcuity_init() {
         });
     });
 }
-
-
 // setup the dr grading fields (called once the Posterior Segment is fully loaded)
 // will verify whether the form values match that of the loaded eyedraws, and if not, mark as dirty
 function OphCiExamination_DRGrading_dirtyCheck(_drawing) {
@@ -1969,7 +1959,18 @@ function OphCiExamination_DRGrading_init() {
     $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_DRGrading').delegate('.grade-info-icon', 'click', function(e) {
         var side = getSplitElementSide($(this));
         var info_type = $(this).data('info-type');
-        $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_DRGrading_' + side + '_all_' + info_type + '_desc').dialog('open');
+        var dialog = new OpenEyes.UI.Dialog({
+          title: '',
+          content: $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_DRGrading_' + side + '_all_' + info_type + '_desc'),
+          dialogClass: 'oe-popup',
+          width: "50%",
+        });
+       dialog.open();
+      $(dialog.content).on('click', '.status-box a', function (e) {
+        var value = $(this).attr('data-id');
+        $('.oe-popup-wrap').hide();
+        $('#'+$(this).data('select-id')).val(value).trigger('change');
+      });
         // remove hovering:
         $(this).trigger('mouseleave');
         e.preventDefault();
@@ -2309,16 +2310,6 @@ function OphCiExamination_Gonioscopy_switch_mode(canvas, mode) {
     } else {
         expert.hide(); basic.show();
     }
-}
-
-function OphCiExamination_GlaucomaRisk_init() {
-    $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk_descriptions').dialog({
-        title: 'Glaucoma Risk Stratifications',
-        autoOpen: false,
-        modal: true,
-        resizable: false,
-        width: 800
-    });
 }
 
 function OphCiExamination_ClinicOutcome_LoadTemplate(template_id) {
