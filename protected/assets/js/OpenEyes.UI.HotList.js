@@ -63,9 +63,24 @@
     });
 
     // When a patient record is clicked
-    $('.activity-list').delegate('.js-activity-open-patient, .js-activity-closed-patient', 'click', function () {
-      window.location.href = $(this).data('eventHref');
+    $('.activity-list').delegate('.js-activity-closed-patient', 'click', function () {
+
+      var eventUrl = $(this).data('eventHref');
+
+      $.ajax({
+        type: 'GET',
+        url: '/UserHotlistItem/openHotlistItem',
+        data: {hotlist_item_id: $(this).data('id')},
+        success: function () {
+          window.location.href = eventUrl;
+        }
+      });
     });
+
+    $('.activity-list').delegate('.js-activity-open-patient', 'click', function () {
+      window.location.href =  $(this).data('eventHref');
+    });
+
 
     // When the close link in an open item is clicked
     $('.activity-list.closed').delegate('.js-open-hotlist-item', 'click', function () {
