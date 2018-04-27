@@ -63,7 +63,7 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
       container.append(new_element);
     } else if (!new_element.data('elementParentId')) {
       // If the new element is a parent, then find the last parent element with a lower display order
-      var parentToInsertAfter = container.find('section[data-element-parent-id]').filter(function () {
+      var parentToInsertAfter = container.find('section[data-element-parent-id=""]').filter(function () {
         return $(this).data('elementDisplayOrder') < new_element.data('elementDisplayOrder');
       }).last();
 
@@ -71,8 +71,8 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
       if (parentToInsertAfter.length === 0) {
         new_element.insertBefore(container.find('section[data-element-parent-id]').first());
       } else {
-        // Ifa a parent element was found, then find its children
-        var children = parentToInsertAfter.nextAll('section[data-element-parent-id="' + parentToInsertAfter.data('elementParentId') + '"]');
+        // If a parent element was found, then find its children
+        var children = parentToInsertAfter.nextAll('section[data-element-parent-id="' + parentToInsertAfter.data('elementTypeId') + '"]');
         if (children.length) {
           // if it has children, then insert after the last child
           new_element.insertAfter(children.last());
