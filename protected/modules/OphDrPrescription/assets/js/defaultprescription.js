@@ -90,15 +90,12 @@ $(' #prescription_items').delegate('select.dispenseCondition', 'change', functio
   return false;
 });
 
-$('#add-prescription-drugs, #prescription-search-results').delegate('li', 'click', function () {
+$('.common-drug-options, #prescription-search-results').delegate('li', 'click', function () {
   var item_id = $(this).data('itemId');
   var label = $(this).data('label');
   addItem(label, item_id);
-  $('#add-to-prescription').hide();
-});
-
-$('#add-prescription-drug-types').find('li').on('click', function () {
-  updatePrescriptionFilter();
+  $(this).removeClass('selected');
+  $('#add-to-prescription-popup').hide();
 });
 
 $('#prescription-search-btn').on('click', function () {
@@ -109,8 +106,8 @@ $('#prescription-search-btn').on('click', function () {
   $(this).addClass('selected');
   $('#prescription-select-btn').removeClass('selected');
 
-  $('.search-options').show();
-  $('.select-options').hide();
+  $('.prescription-search-options').show();
+  $('.common-drug-options').hide();
 });
 
 $('#prescription-select-btn').on('click', function () {
@@ -121,8 +118,14 @@ $('#prescription-select-btn').on('click', function () {
   $(this).addClass('selected');
   $('#prescription-search-btn').removeClass('selected');
 
-  $('.select-options').show();
-  $('.search-options').hide();
+  $('.common-drug-options').show();
+  $('.prescription-search-options').hide();
+});
+
+$('#add-prescription-drug-types').delegate('li', 'click', function () {
+  $(this).addClass('selected');
+  updatePrescriptionResults();
+  return false;
 });
 
 $('#prescription-search-field').on('change keyup', function () {
@@ -130,7 +133,6 @@ $('#prescription-search-field').on('change keyup', function () {
 });
 
 $('#preservative_free').on('change', function () {
-  updatePrescriptionFilter();
   updatePrescriptionResults();
 });
 
@@ -221,61 +223,50 @@ function updatePrescriptionResults() {
 
   last_search_request = $.getJSON(searchListUrl, {
     term: $('#prescription-search-field').val(),
-    preservative_free: ($('#preservative_free').is(':checked') ? '1' : '')
+    preservative_free: ($('#preservative_free').is(':checked') ? '1' : ''),
+    type_id: $('#add-prescription-drug-types').find('li.selected').data('drugType')
   }, function (data) {
     last_search_request = null;
-    var $container = $('.search-options').find('ul');
-    showPrescriptioNSearchResults(data, $container);
+    var $container = $('#prescription-search-results');
+    var no_data = !$(data).length;
+    $container.empty();
+    $('#prescription-search-no-results').toggle(no_data);
+    $container.toggle(!no_data);
+
+    $.each(data, function (key, value) {
+      var html = '<li data-label="' + value['label'] + '" data-item-id="' + value['id'] + '">';
+      html += '<span class="auto-width">' + value['label'] + '</span>';
+      html += '</li>';
+      $container.append($(html));
+    });
   });
 }
 
-function showPrescriptioNSearchResults(data, $container) {
-  $container.empty();
-  $.each(data, function (key, value) {
-    var html = '<li data-label="' + value['label'] + '" data-item-id="' + value['id'] + '">';
-    html += '<span class="auto-width">' + value['label'] + '</span>';
-    html += '</li>';
-    $container.append($(html));
-  });
-}
 
-function addStandardSet() {
-  var $selectedSet = $('#add-standard-set').find('li[class="selected"]');
+function addStandardSetCallback($selectedSet) {
   $selectedSet.removeClass('selected');
   addSet($selectedSet.data('drugSet'));
-}
-
-function updatePrescriptionFilter() {
-  var type_id = $('#add-prescription-drug-types').find('li[class="selected"]').data('drugType');
-  $.getJSON(searchListUrl, {
-      type_id: type_id,
-      preservative_free: ($('#preservative_free').is(':checked') ? '1' : '')
-    },
-    function (data) {
-      var $container = $('#add-prescription-drugs').find('ul');
-      showPrescriptioNSearchResults(data, $container);
-    });
 }
 
 $(function () {
 
   setUpAdder(
-    $('#add-to-prescription'),
+    $('#add-to-prescription-popup'),
     null,
     function () {
     },
     $('#add-prescription-btn'),
     null,
-    $('#add-to-prescription').find('.close-icon-btn, .add-icon-btn')
+    $('#add-to-prescription-popup').find('.close-icon-btn, .add-icon-btn')
   );
 
   setUpAdder(
-    $('#add-standard-set'),
+    $('#add-standard-set-popup'),
     'return',
-    addStandardSet,
+    addStandardSetCallback,
     $('#add-standard-set-btn'),
     null,
-    $('#add-standard-set').find('.close-icon-btn, .add-icon-btn')
+    $('#add-standard-set-popup').find('.close-icon-btn, .add-icon-btn')
   );
 });
 
