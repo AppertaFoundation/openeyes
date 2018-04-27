@@ -25,15 +25,14 @@
 </style>
 
 <div class="element-fields element-eyes">
-
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-        <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
         <div id="<?php echo $eye_side ?>-eye-calculation"
              class="element-eye <?php echo $eye_side ?>-eye left side column <?php if (!$element->hasEye($eye_side)) { ?> inactive<?php } ?>"
              data-side="<?php echo $eye_side ?>">
             <div class="active-form">
                 <?php $this->renderPartial('form_Element_OphInBiometry_Calculation_fields',
-                    array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
+                    array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data)); ?>
             </div>
             <div class="inactive-form">
                 <div class="add-side">
@@ -45,7 +44,7 @@
 </div>
 <div class="element-fields element-eyes">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
-        <div id="<?php echo $eye_side ?>-eye-comments" class="element-eye <?php echo $eye_side ?>-eye"
+        <div id="<?php echo $eye_side ?>-eye-comments" class="element-eye <?php echo $eye_side ?>-eye <?php echo $page_side?> side disabled"
              data-side="<?php echo $eye_side ?>">
             <div class="active-form">
                 <div class="element-fields">
@@ -54,9 +53,9 @@
             </div>
             <div class="active-form">
                 <div class="element-fields">
-                    <?php echo $form->textArea($element, 'comments_right',
+                    <?php echo $form->textArea($element, 'comments_'.$eye_side,
                         array('rows' => 3, 'label' => false, 'nowrapper' => true), false,
-                        array('class' => 'comments_right')) ?>
+                        array('class' => 'comments_'.$eye_side)) ?>
                 </div>
             </div>
         </div>

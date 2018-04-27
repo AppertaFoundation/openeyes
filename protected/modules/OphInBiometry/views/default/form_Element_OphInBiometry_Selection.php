@@ -21,12 +21,12 @@
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
                 <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
                 <div id="<?php echo $eye_side?>-eye-selection"
-                     class="element-eye <?php echo $eye_side?>-eye left side  <?php if (!$element->hasEye($eye_side)) { ?> inactive<?php } ?>"
-                     data-side="right">
+                     class="element-eye <?php echo $eye_side?>-eye <?= $page_side ?> side  <?php if (!$element->hasEye($eye_side)) { ?> inactive<?php } ?>"
+                     data-side="<?= $eye_side?>">
                     <div class="active-form">
                         <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
                         <?php $this->renderPartial('form_Element_OphInBiometry_Selection_fields',
-                            array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
+                            array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data)); ?>
                     </div>
                     <div class="inactive-form">
                         <div class="add-side">
