@@ -374,27 +374,11 @@ EOSQL;
     }
 
     private function getMainDivDivImage($index){
-      $result = "";
-      if ($index->IMG_URL){
-        $path = $index->IMG_URL;
-        $image_URL = '<?php
-        if (file_exists(\''.$path.'\')){
-          echo Yii::app()->getAssetManager()->publish(\''.$path.'\');
-        } else {
-          echo "";
-        }
-        ?>';
-        $result = "style=\"background-image: url({$image_URL});\"";
-      }
-      return $result;
+      return "";
     }
 
     private function getMainDivDivClass($index){
-      if ($index->IMG_URL){
-        return "class=\"result_item result_item_with_icon\"";
-      } else {
         return "class=\"result_item\"";
-      }
     }
 
     private function getMainDivSpanAttr($index,$lvl) {
