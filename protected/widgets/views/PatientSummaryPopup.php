@@ -344,7 +344,6 @@
 
       <!-- Warnings: Allergies -->
       <div class="popup-overflow">
-
             <?php $this->widget('OEModule\OphCiExamination\widgets\Allergies', array(
                 'patient' => $this->patient,
                 'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
@@ -359,6 +358,17 @@
               'patient' => $this->patient,
               'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE
           )); ?>
+        <table class="risks alert-box patient">
+          <tbody>
+          <?php $diabetes_disorders = $this->patient->getDisordersOfType(Disorder::$SNOMED_DIABETES_SET);
+          foreach ($diabetes_disorders as $diabete) { ?>
+                <tr>
+                  <td><?= $diabete->term ?></td>
+                  <td></td>
+                </tr>
+          <?php } ?>
+          </tbody>
+        </table>
       </div><!-- .popup-overflow -->
     </div><!-- .col-right -->
   </div><!-- .flex -->

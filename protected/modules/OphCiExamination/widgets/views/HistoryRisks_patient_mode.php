@@ -24,12 +24,12 @@ $model_name = CHtml::modelName($element);
 <?php }
 elseif(!count($element->entries) || $element->no_risks_date ){ ?>
   <div class="risk-status-none">
-    <h2>Risks</h2>
+    <h2>Alerts</h2>
     <p>Patient has no known risks.</p>
   </div>
 <?php } else { ?>
     <div class="alert-box patient">
-    <strong>Risks</strong><br>
+    <strong>Alerts</strong><br>
     </div>
   <table class="risks alert-box patient">
   <colgroup>
