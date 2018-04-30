@@ -13,9 +13,11 @@
   <td><?= $hotlistItem->patient->getHSCICName() ?></td>
 
   <td>
-    <!--<span class="duration green"><?= $hotlistItem->getIntervalString() ?></span>-->
-    <span class="duration js-hotlist-comment-readonly"><?= substr($hotlistItem->user_comment, 0,
-            20) . (strlen($hotlistItem->user_comment) > 20 ? '...' : '') ?></span>
+      <?php if ($hotlistItem->is_open): ?>
+        <span class="duration js-hotlist-comment-readonly js-has-tooltip"
+        data-tooltip-content="<?= $hotlistItem->user_comment ?>">
+            <?= substr($hotlistItem->user_comment, 0, 20) . (strlen($hotlistItem->user_comment) > 20 ? '...' : '') ?></span>
+      <?php endif; ?>
     <button class="button js-add-hotlist-comment <?= $hotlistItem->user_comment ? 'selected' : '' ?>" type="button">
       <i class="oe-i comments small-icon"></i>
     </button>

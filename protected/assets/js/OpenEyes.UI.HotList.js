@@ -198,8 +198,9 @@
 
   HotList.prototype.updateComment = function (itemId, userComment) {
     var hotlistItem = $('.activity-list tr[data-id="' + itemId + '"]');
-    var displayComment = userComment.substr(0, 20) + (userComment.length > 20 ? '...' : '');
-    hotlistItem.find('.js-hotlist-comment-readonly').text(displayComment);
+    var shortComment = userComment.substr(0, 20) + (userComment.length > 20 ? '...' : '');
+    hotlistItem.find('.js-hotlist-comment-readonly').text(shortComment);
+    hotlistItem.find('.js-hotlist-comment-readonly').data('tooltip-content', userComment);
 
     $.ajax({
       type: 'GET',
