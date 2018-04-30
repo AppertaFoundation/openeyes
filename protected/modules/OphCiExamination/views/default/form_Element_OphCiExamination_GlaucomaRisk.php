@@ -50,7 +50,7 @@ function getRiskLevelColour($risk_level){
 		</div>
     <a href="#" class="field-info descriptions_link">definitions</a>
 	</div>
-	<div class="glaucoma-risk-descriptions" id="<?= CHtml::modelName($element) ?>_descriptions">
+	<div class="glaucoma-risk-descriptions" id="<?= CHtml::modelName($element) ?>_descriptions" style="display: none;">
 			<?php foreach ($risks as $option) { ?>
 				<div class="status-box <?= getRiskLevelColour($option->class)?>">
           <b>

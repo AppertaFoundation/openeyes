@@ -376,11 +376,11 @@ $(document).ready(function() {
     $(this).delegate('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk a.descriptions_link', 'click', function(e) {
       var glaucoma_dialog = new OpenEyes.UI.Dialog({
         title: 'Glaucoma Risk Stratifications',
-        content: $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk_descriptions'),
-        width: "50%",
-        autoOpen: true
+        content: $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_GlaucomaRisk_descriptions').clone(),
+        width: "50%"
       });
       glaucoma_dialog.open();
+      $(glaucoma_dialog.content).find('.glaucoma-risk-descriptions').show();
       $(glaucoma_dialog.content).on('click', '.status-box a', function (e) {
         var value = $(this).attr('data-risk-id');
         $('.oe-popup-wrap').hide();
@@ -1924,15 +1924,6 @@ function OphCiExamination_DRGrading_init() {
         width: 480
     });
 
-    $('.'+OE_MODEL_PREFIX+'Element_OphCiExamination_DRGrading').find('.grade-info-all').each(function() {
-        $(this).dialog({
-            title: 'Grade Definitions',
-            autoOpen: false,
-            modal: true,
-            resizable: false,
-            width: 800
-        });
-    });
 
     OphCiExamination_PosteriorPole_init();
 
@@ -1961,11 +1952,12 @@ function OphCiExamination_DRGrading_init() {
         var info_type = $(this).data('info-type');
         var dialog = new OpenEyes.UI.Dialog({
           title: '',
-          content: $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_DRGrading_' + side + '_all_' + info_type + '_desc'),
+          content: $('#'+OE_MODEL_PREFIX+'Element_OphCiExamination_DRGrading_' + side + '_all_' + info_type + '_desc').clone(),
           dialogClass: 'oe-popup',
-          width: "50%",
+          width: "50%"
         });
        dialog.open();
+      $(dialog.content).find('.grade-info-all').show();
       $(dialog.content).on('click', '.status-box a', function (e) {
         var value = $(this).attr('data-id');
         $('.oe-popup-wrap').hide();

@@ -117,7 +117,6 @@
 
         this.content.append(popup);
         this.setClose($(this.content).find('.close-icon-btn'));
-
         // Add default content (if any exists)
         if (!this.options.url) {
             this.setContent(this.options.content);
