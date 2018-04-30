@@ -45,21 +45,28 @@
 <?php if($is_new_opnote):?>
     <script>
 
-        var timer = setTimeout(setEyeDraw, 600);
+        var timer = setTimeout(function(){
+            setEyeDraw(getSelectedEye());
+        }, 600);
 
-        function setEyeDraw() {
+        function setEyeDraw(eye_id) {
+
+            if(eye_id !== 1 && eye_id !== 2){
+                return false;
+            }
+
             var cataract = getOEEyeDrawChecker().getInstanceByIdSuffix('Cataract'),
                 data = null,
                 k1, k2, steepK, flatK, axis, axis_k1, axis_k2;
 
             if(cataract){
-                if ($('#Element_OphTrOperationnote_ProcedureList_eye_id_1').is(':checked')) {
+                if (eye_id === 1) {
                     k1 = <?=$element->k1_left;?>;
                     k2 = <?=$element->k2_left;?>;
                     axis_k1 = <?=$element->axis_k1_left;?>;
                     axis_k2 = <?=$element->k2_axis_left;?>;
 
-                } else if ($('#Element_OphTrOperationnote_ProcedureList_eye_id_2').is(':checked')) {
+                } else if (eye_id === 2) {
                     k1 = <?=$element->k1_right;?>;
                     k2 = <?=$element->k2_right;?>;
                     axis_k1 = <?=$element->axis_k1_right;?>;
@@ -71,9 +78,41 @@
                 data = {axis: (k1 > k2 ? axis_k1 : axis_k2), flatK: flatK, steepK: steepK};
 
                 if (steepK !== flatK) {
-                    cataract.addDoodle("AntSegAngleMarks", data);
+
+                    let angle_marks = cataract.firstDoodleOfClass("AntSegAngleMarks");
+
+                    for(i in cataract.doodleArray){
+                        if(cataract.doodleArray[i].className === "AntSegAngleMarks"){
+                            cataract.doodleArray[i].setParameterFromString('axis', data.axis);
+                            cataract.doodleArray[i].setParameterFromString('flatK', data.flatK);
+                            cataract.doodleArray[i].setParameterFromString('steepK', data.steepK);
+                        }
+                    }
+                } else {
+                    cataract.deleteDoodle('AntSegAngleMarks', true);
                 }
             }
         }
+
+        function getSelectedEye(){
+            eye_id = null;
+            if( $('#Element_OphTrOperationnote_ProcedureList_eye_id_1').is(':checked') ){
+                eye_id = 1;
+            }
+            if( $('#Element_OphTrOperationnote_ProcedureList_eye_id_2').is(':checked') ){
+                eye_id = 2;
+            }
+            return eye_id;
+        }
+
+        $('#Element_OphTrOperationnote_ProcedureList_eye_id_1, #Element_OphTrOperationnote_ProcedureList_eye_id_2').on('change',function(){
+
+            var eye_id =  getSelectedEye();
+
+            if(eye_id){
+                setEyeDraw(eye_id);
+            }
+        });
+
     </script>
 <?php endif;?>
