@@ -116,7 +116,7 @@ if($correspondeceApp === "on") {
 }
 ?>
 
-    <div id="correspondence_out" class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-7" style="background-color: white; color: black">
+    <div id="correspondence_out" class="wordbreak correspondence-letter<?php if ($element->draft) {?> draft<?php }?> cols-7" style="background-color: white; color: black; padding: 10px;">
         <header>
             <?php
             $ccString = "";
