@@ -66,10 +66,6 @@ if (!isset($values)) {
     </td>
     <td id="OEModule_OphCiExamination_models_HistoryRisks_entries_<?=$row_count?>_risk_id_error">
         <label class="inline highlight">
-            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $posted_not_checked, array('value' => HistoryRisksEntry::$NOT_CHECKED)); ?>
-            Not checked
-        </label>
-        <label class="inline highlight">
             <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === (string) HistoryRisksEntry::$PRESENT, array('value' => HistoryRisksEntry::$PRESENT)); ?>
             Yes
         </label>
@@ -77,6 +73,10 @@ if (!isset($values)) {
             <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === (string) HistoryRisksEntry::$NOT_PRESENT, array('value' => HistoryRisksEntry::$NOT_PRESENT)); ?>
             No
         </label>
+      <label class="inline highlight">
+          <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $posted_not_checked, array('value' => HistoryRisksEntry::$NOT_CHECKED)); ?>
+        Not checked
+      </label>
     </td>
     <td>
         <input type="text" name="<?= $field_prefix ?>[comments]" value="<?=$values['comments'] ?>" />

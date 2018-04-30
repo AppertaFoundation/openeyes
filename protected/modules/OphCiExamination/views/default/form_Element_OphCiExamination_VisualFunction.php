@@ -36,9 +36,9 @@
                         $element,
                         $eye_side . '_rapd',
                         array(
-                            0 => 'Not Checked',
                             1 => 'Yes',
                             2 => 'No',
+                            0 => 'Not Checked',
                         ),
                         ($element->{$eye_side .'_rapd'} !== null) ? $element->{$eye_side . '_rapd'} : 0,
                         false,

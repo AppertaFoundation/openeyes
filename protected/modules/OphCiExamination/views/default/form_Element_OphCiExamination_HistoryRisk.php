@@ -19,14 +19,14 @@
 ?>
 <div class="element-fields flex-layout full-width ">
     <div class="field-row row">
-        <div class="large-6 column">
+        <div class="cols-6 column">
             <?php $form->radioButtons(
                 $element,
                 'anticoagulant',
                 array(
-                    0 => 'Not Checked',
                     1 => 'Yes',
                     2 => 'No',
+                    0 => 'Not Checked',
                 ),
                 ($element->anticoagulant !== null) ? $element->anticoagulant : 0,
                 false,
@@ -43,7 +43,7 @@
                 ));
             ?>
         </div>
-        <div class="large-4 column end">
+        <div class="cols-4 column end">
             <?php $form->textField(
                 $element,
                 'anticoagulant_name',
@@ -57,14 +57,14 @@
         </div>
     </div>
     <div class="field-row row">
-        <div class="large-6 column">
+        <div class="cols-6 column">
             <?php $form->radioButtons(
                 $element,
                 'alphablocker',
                 array(
-                    0 => 'Not Checked',
                     1 => 'Yes',
                     2 => 'No',
+                    0 => 'Not Checked',
                 ),
                 ($element->alphablocker !== null) ? $element->alphablocker : 0,
                 false,
@@ -81,7 +81,7 @@
                 ));
             ?>
         </div>
-        <div class="large-4 column end">
+        <div class="cols-4 column end">
             <?php $form->textField(
                 $element,
                 'alpha_blocker_name',
