@@ -19,10 +19,10 @@
 $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
 if($correspondeceApp === "on") {
     ?>
-<div class="element-fields full-width flex-layout flex-top col-gap">
+<div class="element-fields full-width flex-layout flex-top col-gap" style="background: #141e2b; padding: 10px;">
     <div class="cols-5 ">
         <table class="cols-full">
-            <tr>
+            <tr style="border-bottom: 1px solid #26303d">
                 <td class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
                 <td class="large-9 column end">
                     <div class="data-value" style="text-align: right">
@@ -38,7 +38,7 @@ if($correspondeceApp === "on") {
                     </div>
                 </td>
             </tr>
-            <tr>
+            <tr style="border-bottom: 1px solid #26303d">
                 <td>
                     From
                 </td>
@@ -52,7 +52,7 @@ if($correspondeceApp === "on") {
                     ))?>
                 </td>
             </tr>
-            <tr>
+            <tr style="border-bottom: 1px solid #26303d">
                 <td>
                     Direct Line
                 </td>
@@ -62,7 +62,7 @@ if($correspondeceApp === "on") {
                     ?>
                 </td>
             </tr>
-            <tr>
+            <tr style="border-bottom: 1px solid #26303d">
                 <td>
                     Direct Fax
                 </td>
@@ -72,7 +72,7 @@ if($correspondeceApp === "on") {
                     ?>
                 </td>
             </tr>
-            <tr>
+            <tr style="border-bottom: 1px solid #26303d">
                 <td>
                     Cc
                 </td>
