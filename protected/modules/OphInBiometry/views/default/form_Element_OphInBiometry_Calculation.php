@@ -28,7 +28,7 @@
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
         <div id="<?php echo $eye_side ?>-eye-calculation"
-             class="element-eye <?php echo $eye_side ?>-eye left side column <?php if (!$element->hasEye($eye_side)) { ?> inactive<?php } ?>"
+             class="element-eye <?php echo $eye_side ?>-eye <?php echo $page_side?> side column <?php if (!$element->hasEye($eye_side)) { ?> inactive<?php } ?>"
              data-side="<?php echo $eye_side ?>">
             <div class="active-form">
                 <?php $this->renderPartial('form_Element_OphInBiometry_Calculation_fields',
