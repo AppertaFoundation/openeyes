@@ -144,7 +144,7 @@
             e.preventDefault();
         });
 
-        handleButton($('#et_deleteevent'));
+        //handleButton($('#et_deleteevent'));
 
 		$('input[name="Element_OphTrOperationbooking_Operation[priority_id]"]').click(function(e) {
 			var priority_id = $(this).val();
