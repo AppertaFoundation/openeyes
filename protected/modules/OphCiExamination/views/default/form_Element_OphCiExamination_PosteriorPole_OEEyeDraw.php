@@ -26,7 +26,8 @@
             array('LaserSpot', 'FocalLaser', 'MacularGrid', 'SectorPRPPostPole', 'PRPPostPole'),
         ),
         'onReadyCommandArray' => array(
-            array('addDoodle', array('PostPole')),
+            array('addDoodle', ['MaculaPostPole']),
+            array('addDoodle', ['PostPole'] ),
             array('deselectDoodles', array()),
         ),
         'listenerArray' => array('posteriorListener', 'autoReportListener'),
