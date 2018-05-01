@@ -21,12 +21,8 @@
 <div class="element-fields flex-layout full-width">
   <?php $model_name = CHtml::modelName($element); ?>
     <div class="field-row row<?= count($element->entries) ? ' hidden' : ''?>" id="<?=$model_name?>_no_family_history_wrapper">
-        <div class="large-3 column">
-            <label for="<?=$model_name?>_no_family_history">Confirm patient has no family history:</label>
-        </div>
-        <div class="large-2 column end">
-            <?php echo CHtml::checkBox($model_name .'[no_family_history]', $element->no_family_history_date ? true : false); ?>
-        </div>
+      <label for="<?=$model_name?>_no_family_history">Confirm patient has no family history:</label>
+        <?php echo CHtml::checkBox($model_name .'[no_family_history]', $element->no_family_history_date ? true : false); ?>
     </div>
 
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
