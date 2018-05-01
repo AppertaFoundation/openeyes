@@ -21,6 +21,7 @@ class PatientController extends BaseController
 {
     public $layout = '//layouts/main';
     public $renderPatientPanel = true;
+    public $fixedHotlist = true;
     public $patient;
     public $firm;
     public $editable;
