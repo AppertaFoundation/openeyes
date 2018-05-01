@@ -37,18 +37,16 @@
     </tbody>
   </table>
 </form>
-<div class="cols-6 column text-right table-actions">
+<div class="row">
   <label for="profile_site_id" class="inline">Add site:</label>
     <?php echo CHtml::dropDownList('profile_site_id', '', CHtml::listData($user->getNotSelectedSiteList(), 'id', 'name'), array('empty' => '- Select -'))?>
-    <?php echo CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info'))?>
+    <?php echo CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info button green hint'))?>
 </div>
 <div class="profile-actions">
-    <?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'button large hint green'))->toHtml()?>
+    <?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'button large hint red'))->toHtml()?>
 </div>
-
-<div class="">
+  <br>
   <p>Note: you can also set the <?php echo strtolower(Firm::contextLabel())?>s you work at, <?php echo CHtml::link('click here', Yii::app()->createUrl('/profile/firms'))?> to do so.</p>
-</div>
 
 <script type="text/javascript">
 	$('#profile_site_id').change(function(e) {

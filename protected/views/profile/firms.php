@@ -38,13 +38,13 @@
 			</tbody>
 		</table>
 	</form>
-<div class="cols-6 column text-right table-actions">
+<div class="row">
   <label for="profile_firm_id" class="inline">Add <?php echo strtolower(Firm::contextLabel())?>:</label>
     <?php echo CHtml::dropDownList('profile_firm_id', '', $user->getNotSelectedFirmList(), array('empty' => '- Select -'))?>
-    <?php echo CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info'))?>
+    <?php echo CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info button green hint'))?>
 </div>
 <div class="profile-actions">
-    <?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'button large hint green'))->toHtml()?>
+    <?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'button large hint red'))->toHtml()?>
 </div>
 
 <div class="profile-actions">
