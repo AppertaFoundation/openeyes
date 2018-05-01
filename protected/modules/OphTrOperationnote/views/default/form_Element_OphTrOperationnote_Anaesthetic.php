@@ -37,24 +37,25 @@ $is_hidden = function () use ($element) {
         <tr>
           <td>Type</td>
           <td>
-              <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type'); ?>
+              <?php echo $form->checkBoxes($element, 'AnaestheticType', 'anaesthetic_type', null,
+                  false, false, false, false, array(),array('field'=>12)); ?>
           </td>
         </tr>
-        <tr>
+        <tr id="Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container">
           <td>LA Delivery Methods</td>
           <td>
-            <div id="Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container">
+            <div >
                 <?php echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', null,
                     false, false, false, false, array('fieldset-class' => ($is_hidden() ? 'hidden' : ''))); ?>
             </div>
           </td>
         </tr>
-        <tr>
+        <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container">
           <td>
             Given by:
           </td>
           <td>
-            <div id="Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container">
+            <div >
                 <?php echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist', $element->anaesthetist_id,
                     false, false,
                     false, false,

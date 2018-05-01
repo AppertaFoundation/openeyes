@@ -57,7 +57,7 @@
         <?php if (!$no_element && $field) {?>
             <input type="hidden" value="" name="<?php echo CHtml::modelName($element)?>[<?php echo $field?>]">
         <?php }?>
-        <div class="cols-<?php echo $layoutColumns['field'];?> column">
+        <div class="cols-<?php echo $layoutColumns['field'];?>">
             <?php $i = 0; ?>
             <?php if ($label_above) {?>
                 <label for="">
