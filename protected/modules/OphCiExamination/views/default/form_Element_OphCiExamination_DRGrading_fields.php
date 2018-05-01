@@ -58,7 +58,7 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
       </div>
       <div id="<?php echo CHtml::modelName($element) . '_' . $side . '_all_clinicalret_desc'; ?>"
            class="grade-info-all"
-           style="display: none;"
+           style="display: none; padding: 10px"
            data-select-id="<?php echo CHtml::modelName($element) . '_' . $side . '_clinicalret_id'; ?>">
             <?php foreach ($clinical_retinopathys as $clinical) {?>
               <div class="status-box <?= getLevelColour($clinical->class)?>">
@@ -117,7 +117,7 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
       </div>
       <div id="<?php echo CHtml::modelName($element) . '_' . $side . '_all_retinopathy_desc'; ?>"
            class="grade-info-all"
-           style="display: none;"
+           style="display: none; padding:10px;"
            data-select-id="<?php echo CHtml::modelName($element) . '_' . $side . '_nscretinopathy_id'; ?>">
             <?php foreach ($nsc_retinopathys as $retin) { ?>
               <div class="status-box <?= getLevelColour($retin->class) ?>">
@@ -239,7 +239,7 @@ $clinical_retinopathys = \OEModule\OphCiExamination\models\OphCiExamination_DRGr
       <!-- div containing the full list of descriptions for nsc maculopathy -->
       <div id="<?php echo CHtml::modelName($element) . '_' . $side . '_all_maculopathy_desc'; ?>"
            class="grade-info-all"
-           style="display: none;"
+           style="display: none; padding: 10px;"
            data-select-id="<?php echo CHtml::modelName($element) . '_' . $side . '_nscmaculopathy_id'; ?>">
         <dl>
             <?php foreach ($nsc_maculopathys as $macu) { ?>
