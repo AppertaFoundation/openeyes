@@ -31,12 +31,19 @@
         ),
     ));
 
-    $this->renderPartial('/admin/surgicalhistoryassignment/_form', array('form' => $form, 'model'=>$model)); ?>
+    $this->renderPartial('/admin/surgicalhistoryassignment/_form', array('form' => $form, 'model'=>$model, 'errors'=>$errors)); ?>
 
     <button class="small primary event-action" name="add" type="submit" id="et_save">Save</button>
-    <a class="button small warning event-action" href="/OphCiExamination/oeadmin/RisksAssignment/" id="et_cancel">Cancel</a>
+    <a class="button small warning event-action" href="/OphCiExamination/oeadmin/SurgicalHistoryAssignment" id="et_cancel">Cancel</a>
 
     <?php
     $this->endWidget();
     ?>
 </div>
+<script>
+    $(document).ready(function(){
+        $('#et_cancel').click(function(){
+            window.location.href = '/OphCiExamination/oeadmin/SurgicalHistoryAssignment';
+        });
+    });
+</script>

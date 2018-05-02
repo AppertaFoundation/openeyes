@@ -57,10 +57,10 @@
             // NOTE: you should only define rules for those attributes that
             // will receive user inputs.
             return array(
-                array('surgical_history_set_id, operation', 'required'),
+                array('operation', 'required'),
                 array('gender', 'length', 'max'=>1),
                 array('operation', 'length', 'max' => 1024),
-                array('age_min, age_max', 'length', 'max'=>3),
+                array('age_min, age_max', 'numerical', 'min'=>1, 'max'=>120, 'integerOnly'=>true),
                 array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
                 array('last_modified_date, created_date', 'safe'),
                 // The following rule is used by search().

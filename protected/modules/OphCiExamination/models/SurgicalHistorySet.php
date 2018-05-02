@@ -42,9 +42,6 @@
 
     class SurgicalHistorySet extends \BaseActiveRecordVersioned
     {
-        protected $auto_update_relations = true;
-        protected $auto_validate_relations = true;
-
         /**
          * @return string the associated database table name
          */
@@ -149,5 +146,18 @@
         public static function model($className=__CLASS__)
         {
             return parent::model($className);
+        }
+
+        /**
+         * @inheritdoc
+         */
+
+        public function beforeDelete()
+        {
+            foreach ($this->entries as $entry) {
+                $entry->delete();
+            }
+
+            return parent::beforeDelete();
         }
     }

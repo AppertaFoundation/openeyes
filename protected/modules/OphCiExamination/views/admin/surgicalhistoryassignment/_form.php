@@ -19,6 +19,8 @@
  */
 ?>
 
+<?php echo CHtml::errorSummary(array_merge(array($model), $model->entries), null, null, array("class"=>"alert-box alert with-icon")); ?>
+
 <?php
     echo $form->textField($model, "name");
     echo "<br>";
@@ -95,7 +97,7 @@ $this->widget('application.widgets.SubspecialtyFirmPicker', [
 
         );
         $dataProvider = new \CActiveDataProvider(\OEModule\OphCiExamination\models\SurgicalHistorySetEntry::class);
-        //$dataProvider->setData($model->ophciexamination_risks_entry);
+        $dataProvider->setData($model->entries);
         $this->widget('zii.widgets.grid.CGridView', array(
             'dataProvider' => $dataProvider,
             'itemsCssClass' => 'generic-admin grid',

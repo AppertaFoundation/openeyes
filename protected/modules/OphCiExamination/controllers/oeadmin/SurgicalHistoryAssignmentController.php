@@ -48,29 +48,11 @@
 
         public function actionCreate()
         {
+            $errors = false;
             $model = new SurgicalHistorySet();
-            $errors = null;
 
             if(\Yii::app()->request->isPostRequest) {
-                $model->setAttributes(\Yii::app()->request->getPost('OEModule_OphCiExamination_models_SurgicalHistorySet'), false);
-                /** @var \CDbTransaction $transaction */
-                $transaction = \Yii::app()->db->beginTransaction();
-                try {
-                    $entries = SurgicalHistorySetEntry::model()->populateRecords(\Yii::app()->request->getPost('OEModule_OphCiExamination_models_SurgicalHistorySetEntry'));
-                    $model->entries = $entries;
-                    if($model->save()) {
-                        $transaction->commit();
-                        $this->redirect(array('index'));
-                    }
-                    else {
-                        $transaction->rollback();
-                        $errors = $model->getErrors();
-                    }
-                }
-                catch (\Exception $e) {
-                    \OELog::log($e->getMessage());
-                    $transaction->rollback();
-                }
+                $errors = $this->populateAndSaveModel($model);
             }
 
             $this->render('/admin/surgicalhistoryassignment/create',array(
@@ -81,9 +63,16 @@
 
         public function actionUpdate($id)
         {
+            $errors = false;
             $model = $this->loadModel($id);
+
+            if(\Yii::app()->request->isPostRequest) {
+                $errors = $this->populateAndSaveModel($model);
+            }
+
             $this->render('/admin/surgicalhistoryassignment/update',array(
                 'model' => $model,
+                'errors' => $errors
             ));
         }
 
@@ -92,14 +81,8 @@
             $model_ids = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_SurgicalHistorySet', array());
 
             foreach($model_ids as $model_id){
-
                 $model = $this->loadModel($model_id);
-                if(!$model->entries){
-                    $model->delete();
-                } else {
-                    echo "0";
-                    \Yii::app()->end();
-                }
+                $model->delete();
             }
 
             //handleButton.js's handleButton($('#et_delete') function needs this return
@@ -120,4 +103,76 @@
             }
             return $model;
         }
+
+        /**
+         * @param SurgicalHistorySet $model
+         * @return bool Whether input passed validation
+         * @throws \Exception
+         */
+
+        private function populateAndSaveModel(SurgicalHistorySet $model)
+        {
+            $errors = false;
+            $surgical_history_entries = array();
+            $model->setAttributes(\Yii::app()->request->getPost('OEModule_OphCiExamination_models_SurgicalHistorySet'), false);
+
+            /** @var \CDbTransaction $transaction */
+            $transaction = \Yii::app()->db->beginTransaction();
+
+            if(!$model->isNewRecord) {
+                foreach ($model->entries as $entry) {
+                    $entry->delete();
+                }
+            }
+
+            try {
+
+                if(!$model->validate()) {
+                    $errors = true;
+                }
+
+                $entries = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_SurgicalHistorySetEntry');
+                if(empty($entries)) {
+                    $model->addError('entries', "Please add at least one operation");
+                    $errors = true;
+                }
+                else {
+                    foreach ($entries as $entry) {
+                        $e = new SurgicalHistorySetEntry();
+                        $e->setAttributes($entry);
+
+                        $surgical_history_entries[] = $e;
+
+                        if(!$e->validate()) {
+                            $errors = true;
+                        }
+                    }
+
+                    $model->entries = $surgical_history_entries;
+                }
+
+                if(!$errors && $model->save()) {
+                    foreach ($surgical_history_entries as $entry) {
+                        $entry->surgical_history_set_id = $model->id;
+                        $entry->save();
+                    }
+
+                    $transaction->commit();
+                    $this->redirect(array('index'));
+
+                }
+                else {
+                    $transaction->rollback();
+                    $errors = true;
+                }
+            }
+
+            catch (\Exception $e) {
+                $errors = true;
+                $transaction->rollback();
+            }
+
+            return $errors;
+        }
+
     }
