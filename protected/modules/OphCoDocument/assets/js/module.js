@@ -307,8 +307,6 @@ $(document).ready(function () {
         }
     });
 
-    handleButton($('#et_deleteevent'));
-
     $('#single_document_uploader').hide();
     $('#double_document_uploader').hide();
     checkUploadMode();

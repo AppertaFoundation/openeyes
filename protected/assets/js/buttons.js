@@ -24,7 +24,6 @@ function handleButton(button, callback) {
 			}
 		} else {
 			e.preventDefault();
-			console.log('canceled');
 		}
 	});
 }

@@ -74,9 +74,6 @@ $(document).ready(function () {
     }
   });
 
-  handleButton($('#et_deleteevent'));
-  handleButton($('#et_canceldelete'));
-
   if ($('#et_ophdrprescription_print').val() == 1) {
     setTimeout("do_print_prescription();", 1000);
   }

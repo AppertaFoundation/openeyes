@@ -20,7 +20,7 @@ $(document).ready(function() {
 	var searchLoadingMsg = $('#search-loading-msg');
 	var searchResults = $('#searchResults');
 
-	handleButton($('#waitingList-filter button[type="submit"]'),function(e) {
+	$(this).on('click','#waitingList-filter button[type="submit"]',function(e) {
 		e.preventDefault();
 
 		if (!validateHosNum()) {
@@ -48,17 +48,17 @@ $(document).ready(function() {
 		});
 	});
 
-	handleButton($('#btn_print'),function() {
+  $(this).on('click','#btn_print',function(e) {
 		print_items_from_selector('input[id^="operation"]:checked',false);
 		enableButtons();
 	});
 
-	handleButton($('#btn_print_all'),function() {
+	$(this).on('click','#btn_print_all',function() {
 		print_items_from_selector('input[id^="operation"]:enabled',true);
 		enableButtons();
 	});
 
-	handleButton($('#btn_confirm_selected'),function(e) {
+	$(this).on('click','#btn_confirm_selected',function(e) {
 		var data = '';
 		var operations = 0;
 		data += "adminconfirmto=" + $('#adminconfirmto').val() + "&adminconfirmdate=" + $('#adminconfirmdate').val();

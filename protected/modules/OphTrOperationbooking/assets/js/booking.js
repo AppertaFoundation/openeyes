@@ -116,14 +116,6 @@ $(document).ready(function() {
     e.preventDefault();
   });
 
-	handleButton($('#et_deleteevent'));
-
-	handleButton($('#btn_reschedule-now'));
-
-	handleButton($('#btn_cancel-operation'));
-
-	handleButton($('#et_canceldelete'));
-
 	$(this).delegate('.addUnavailable', 'click', function(e) {
 		OphTrOperationbooking_PatientUnavailable_add();
 		e.preventDefault();
@@ -144,9 +136,8 @@ $(document).ready(function() {
 		}
 	});
 
-	handleButton($('#cancel'),function(e) {
+	$(this).on('click','#cancel',function(e) {
 		e.preventDefault();
-
 		$.ajax({
 			type: 'POST',
 			url: window.location.href,
@@ -168,8 +159,6 @@ $(document).ready(function() {
 					$('#cancelForm .alert-box').html(html);
 					enableButtons();
 				}
-
-
 			}
 		});
 	});
@@ -192,7 +181,7 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-	handleButton($('#bookingForm button#confirm_slot'),function() {
+	$('#bookingForm button#confirm_slot').on('click',function(e) {
 		$('#bookingForm').submit();
 	});
 
@@ -212,12 +201,12 @@ $(document).ready(function() {
 		window.location.href = URI(window.location.href).setSearch(search).removeSearch(['session_id', 'day']);
 	});
 
-	handleButton($('#btn_print-letter'),function() {
+	$(this).on('click','#btn_print-letter',function() {
 		var m = window.location.href.match(/\/view\/([0-9]+)$/);
 		printIFrameUrl(baseUrl+'/OphTrOperationbooking/waitingList/printLetters',{'event_id': m[1]});
 	});
 
-	handleButton($('#btn_print-admissionletter'),function() {
+  $(this).on('click','#btn_print-admissionletter',function() {
 		var m = window.location.href.match(/\/view\/([0-9]+)$/);
 		printIFrameUrl(baseUrl+'/OphTrOperationbooking/default/admissionLetter/'+m[1]);
 	});

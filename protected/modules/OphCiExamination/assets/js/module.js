@@ -310,26 +310,11 @@ $(document).ready(function() {
     });
 
   }
-    /**
-     * Save event
-     */
-    handleButton($('#et_save'));
 
-    handleButton($('#et_print'),function(e) {
-        printEvent(null);
+    $(this).on('click','#et_print', function (e) {
         e.preventDefault();
+        printEvent(null);
     });
-
-    /**
-     * Delete event
-     */
-    handleButton($('#et_deleteevent'));
-
-    /**
-     * Cancel event delete
-     */
-    handleButton($('#et_canceldelete'));
-
 
     $('#pcr-risk-info').tooltip(
         {show: {

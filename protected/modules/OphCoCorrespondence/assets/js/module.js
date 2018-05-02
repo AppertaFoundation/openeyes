@@ -319,7 +319,7 @@ $(document).ready(function() {
 
     });
 
-    handleButton($('#et_cancel'),function() {
+    $(this).on('click','#et_cancel',function() {
 		$('#dialog-confirm-cancel').dialog({
 			resizable: false,
 			//height: 140,
@@ -344,8 +344,6 @@ $(document).ready(function() {
 		});
 	});
 
-	handleButton($('#et_deleteevent'));
-	handleButton($('#et_canceldelete'));
 
 	$('#address_target').change(function() {
 		var nickname = $('input[id="ElementLetter_use_nickname"][type="checkbox"]').is(':checked') ? '1' : '0';
@@ -675,7 +673,7 @@ $(document).ready(function() {
 		}
 	}
 
-	handleButton($('#et_print'),function(e) {
+	$(this).on('click','#et_print',function(e) {
 		if ($('#correspondence_out').hasClass('draft')) {
 			$.ajax({
 				'type': 'GET',
@@ -696,7 +694,7 @@ $(document).ready(function() {
 		}
 	});
 
-	handleButton($('#et_print_all'),function(e) {
+  $(this).on('click','#et_print_all',function(e) {
 		if ($('#correspondence_out').hasClass('draft')) {
 			$.ajax({
 				'type': 'GET',
@@ -717,7 +715,7 @@ $(document).ready(function() {
 		}
 	});
 
-	handleButton($('#et_confirm_printed'),function() {
+	h$(this).on('click','#et_confirm_printed',function() {
 		$.ajax({
 			'type': 'GET',
 			'url': baseUrl+'/OphCoCorrespondence/Default/confirmPrinted/'+OE_event_id,

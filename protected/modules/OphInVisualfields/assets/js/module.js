@@ -27,5 +27,4 @@ $(document).ready(function() {
 		}).open();
 	});
 
-    handleButton($('#et_deleteevent'));
 });

@@ -16,15 +16,15 @@
  */
 
 $(document).ready(function() {
-	handleButton($('#et_save_draft'),function() {
+	$(this).on('click','#et_save_draft',function() {
 		$('#Element_OphTrConsent_Type_draft').val(1);
 	});
 
-	handleButton($('#et_save_print'),function() {
+  $(this).on('click','#et_save_print',function() {
 		$('#Element_OphTrConsent_Type_draft').val(0);
 	});
 
-	handleButton($('#et_cancel'),function(e) {
+  $(this).on('click','#et_cancel',function(e) {
 		if (m = window.location.href.match(/\/update\/[0-9]+/)) {
 			window.location.href = window.location.href.replace('/update/','/view/');
 		} else {
@@ -32,10 +32,6 @@ $(document).ready(function() {
 		}
 		e.preventDefault();
 	});
-
-	handleButton($('#et_deleteevent'));
-
-	handleButton($('#et_canceldelete'));
 
 	$('select.populate_textarea').unbind('change').change(function() {
 		if ($(this).val() != '') {

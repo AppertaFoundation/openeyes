@@ -18,11 +18,6 @@
 $(document).ready(function() {
 
 	/**
-	 * Save event
-	 */
-	handleButton($('#et_save'));
-
-	/**
 	 * Delete event
 	 */
 	$('#event-content').delegate('#et_deleteevent', 'click', function(e) {
@@ -34,10 +29,6 @@ $(document).ready(function() {
 		return false;
 	});
 
-	/**
-	 * Cancel event delete
-	 */
-	handleButton($('#et_canceldelete'));
 
 	$(this).delegate('.removeReading', 'click', function(e) {
 		$(this).closest('tr').remove();
@@ -88,7 +79,7 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-	handleButton($('#et_print'),function(e) {
+	$(this).on('click','#et_print',function(e) {
 		e.preventDefault();
 		printEvent(null);
 	});

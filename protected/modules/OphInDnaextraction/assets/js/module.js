@@ -2,11 +2,8 @@
 /* Module-specific javascript can be placed here */
 var dnaExtractionPrintUrl;
 $(document).ready(function() {
-    handleButton($('#et_save'),function() {
-    });
 
-
-    handleButton($('#et_cancel'),function(e) {
+  $(this).on('click','#et_cancel',function(e) {
         if (m = window.location.href.match(/\/update\/[0-9]+/)) {
                 window.location.href = window.location.href.replace('/update/','/view/');
         } else {
@@ -15,7 +12,7 @@ $(document).ready(function() {
         e.preventDefault();
     });
 
-    handleButton($('#et_print'),function(e) {
+  $(this).on('click', '#et_print',function(e) {
        // e.preventDefault();
        // printEvent(null);
         printIFrameUrl(dnaExtractionPrintUrl, null);
@@ -24,9 +21,7 @@ $(document).ready(function() {
 
     });
 
-    handleButton($('#et_deleteevent'));
-
-    handleButton($('#et_canceldelete'),function(e) {
+  $(this).on('click', '#et_canceldelete',function(e) {
         if (m = window.location.href.match(/\/delete\/([0-9]+)/)) {
                 window.location.href = baseUrl+'/patient/parentEvent/'+m[1];
         } else {
@@ -50,52 +45,53 @@ $(document).ready(function() {
         }
     });
 
-    handleButton( $('#addNewStoragePopup'),function(e) {
+    $(this).on('click', '#addNewStoragePopup',function(e) {
         $.ajax({
-            'type': 'POST',
-            'data': {YII_CSRF_TOKEN: YII_CSRF_TOKEN},
-            'url': baseUrl+'/OphInDnaextraction/default/GetNewStorageFields',
-            'success': function(html) {
-                
-                    var storageDialog = new OpenEyes.UI.Dialog({
-                    content: html,
-                    title: "Add new storage",
-                    autoOpen: false,
-                    onClose: function() { enableButtons(); },
-                    open: function (event, ui) {
-                        $('#save-new-storage-btn').css({'color':'#FFF'});
-                    },
-                    buttons: {
-                        "Close" : {
-                            text: "Close",
-                            id: "close-new-storage-btn",
-                            class: 'cancel event-action button small',
-                            click: function(){
-                                $( this ).dialog( "close" );
-                                enableButtons();
-                            }   
-                        },
-                        "Save":{
-                            text: "Save",
-                            class: 'button small secondary',
-                            id: "save-new-storage-btn",
-                            css:'color:#FFF',
-                            click: function(){
-                                if(saveNewStorage()){
-                                    $( this ).dialog( "close" );
-                                    enableButtons();
-                                }
-                                
-                            }   
-                        }
+          'type': 'POST',
+          'data': {YII_CSRF_TOKEN: YII_CSRF_TOKEN},
+          'url': baseUrl+'/OphInDnaextraction/default/GetNewStorageFields',
+          'success': function(html) {
+
+            var storageDialog = new OpenEyes.UI.Dialog({
+              content: html,
+              title: "Add new storage",
+              autoOpen: false,
+              onClose: function() { enableButtons(); },
+              open: function (event, ui) {
+                $('#save-new-storage-btn').css({'color':'#FFF'});
+              },
+              buttons: {
+                "Close" : {
+                  text: "Close",
+                  id: "close-new-storage-btn",
+                  class: 'cancel event-action button small',
+                  click: function(){
+                    $( this ).dialog( "close" );
+                    enableButtons();
+                  }
+                },
+                "Save":{
+                  text: "Save",
+                  class: 'button small secondary',
+                  id: "save-new-storage-btn",
+                  css:'color:#FFF',
+                  click: function(){
+                    if(saveNewStorage()){
+                      $( this ).dialog( "close" );
+                      enableButtons();
                     }
 
-                });
+                  }
+                }
+              }
 
-                storageDialog.open();
-            },
+            });
+
+            storageDialog.open();
+          },
         });
-    });
+      });
+    }
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }

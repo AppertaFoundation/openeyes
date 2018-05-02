@@ -9,10 +9,7 @@ $(document).ready(function () {
         }
     });
 
-      handleButton($('#et_save'), function () {
-      });
-
-      handleButton($('#et_cancel'), function (e) {
+  $(this).on('click','#et_cancel',function(e) {
         if (m = window.location.href.match(/\/update\/[0-9]+/)) {
           window.location.href = window.location.href.replace('/update/', '/view/');
         } else {
@@ -21,9 +18,7 @@ $(document).ready(function () {
         e.preventDefault();
       });
 
-      handleButton($('#et_deleteevent'));
-
-      handleButton($('#et_canceldelete'), function (e) {
+  $(this).on('click','#et_canceldelete',function(e) {
         if (m = window.location.href.match(/\/delete\/[0-9]+/)) {
           window.location.href = window.location.href.replace('/delete/', '/view/');
         } else {
