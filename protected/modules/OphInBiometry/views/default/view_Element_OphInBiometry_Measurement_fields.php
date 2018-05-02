@@ -16,8 +16,14 @@
             </td>
             <td colspan="2"></td>
             <td>
-                <i class="oe-i laterality NA small pad"></i>
-                <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                <?php if ($side == 'right') { ?>
+                    <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                    <i class="oe-i laterality NA small pad"></i>
+                <?php } else { ?>
+                    <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                    <i class="oe-i laterality NA small pad"></i>
+                <?php } ?>
+            </td>
             </td>
         </tr>
         <tr>
@@ -42,8 +48,14 @@
             ?>
             <td colspan="2"></td>
             <td>
-                <i class="oe-i laterality NA small pad"></i>
-                <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                <?php if ($side == 'right') { ?>
+                    <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                    <i class="oe-i laterality NA small pad"></i>
+                <?php } else { ?>
+                    <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                    <i class="oe-i laterality NA small pad"></i>
+                <?php } ?>
+            </td>
             </td>
         </tr>
         <tr>
@@ -70,8 +82,14 @@
                 } ?>
             </td>
             <td>
-                <i class="oe-i laterality NA small pad"></i>
-                <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                <?php if ($side == 'right') { ?>
+                    <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                    <i class="oe-i laterality NA small pad"></i>
+                <?php } else { ?>
+                    <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                    <i class="oe-i laterality NA small pad"></i>
+                <?php } ?>
+            </td>
             </td>
         </tr>
         <tr>
@@ -106,8 +124,14 @@
 
             </td>
             <td>
-                <i class="oe-i laterality NA small pad"></i>
-                <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                <?php if ($side == 'right') { ?>
+                    <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                    <i class="oe-i laterality NA small pad"></i>
+                <?php } else { ?>
+                    <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                    <i class="oe-i laterality NA small pad"></i>
+                <?php } ?>
+            </td>
             </td>
         </tr>
         <tr>
@@ -138,8 +162,14 @@
                 } ?>
             </td>
             <td>
-                <i class="oe-i laterality NA small pad"></i>
-                <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                <?php if ($side == 'right') { ?>
+                    <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                    <i class="oe-i laterality NA small pad"></i>
+                <?php } else { ?>
+                    <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                    <i class="oe-i laterality NA small pad"></i>
+                <?php } ?>
+            </td>
             </td>
         </tr>
         <tr>
@@ -151,8 +181,14 @@
             </td>
             <td colspan="2"></td>
             <td>
-                <i class="oe-i laterality NA small pad"></i>
-                <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                <?php if ($side == 'right') { ?>
+                    <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                    <i class="oe-i laterality NA small pad"></i>
+                <?php } else { ?>
+                    <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                    <i class="oe-i laterality NA small pad"></i>
+                <?php } ?>
+            </td>
             </td>
         </tr>
         <tr>
@@ -160,8 +196,14 @@
             <td><?php echo Eye_Status::model()->findByPk($element->{"eye_status_$side"})->name ?></td>
             <td colspan="2"></td>
             <td>
-                <i class="oe-i laterality NA small pad"></i>
-                <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                <?php if ($side == 'right') { ?>
+                    <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                    <i class="oe-i laterality NA small pad"></i>
+                <?php } else { ?>
+                    <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                    <i class="oe-i laterality NA small pad"></i>
+                <?php } ?>
+            </td>
             </td>
         </tr>
         </tbody>

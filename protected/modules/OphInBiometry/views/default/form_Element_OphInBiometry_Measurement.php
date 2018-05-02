@@ -431,5 +431,4 @@ if ($refractfound) {
     }
     }
     ?>
-    <br/>
 </section>
