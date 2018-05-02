@@ -6,7 +6,6 @@
  * The followings are the available columns in table 'user_hotlist_item':
  * @property integer $id
  * @property string $patient_id
- * @property string $event_id
  * @property integer $is_open
  * @property string $user_comment
  * @property string $last_modified_user_id
@@ -15,7 +14,6 @@
  * @property string $created_date
  *
  * The followings are the available model relations:
- * @property Event $event
  * @property User $createdUser
  * @property User $lastModifiedUser
  * @property Patient $patient
@@ -36,9 +34,9 @@ class UserHotlistItem extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('patient_id, event_id', 'required'),
+            array('patient_id', 'required'),
             array('is_open', 'numerical', 'integerOnly' => true),
-            array('patient_id, event_id, last_modified_user_id, created_user_id', 'length', 'max' => 10),
+            array('patient_id, last_modified_user_id, created_user_id', 'length', 'max' => 10),
             array('user_comment, last_modified_date, created_date', 'safe'),
         );
     }
@@ -49,7 +47,6 @@ class UserHotlistItem extends BaseActiveRecordVersioned
     public function relations()
     {
         return array(
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
@@ -64,7 +61,6 @@ class UserHotlistItem extends BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'patient_id' => 'Patient',
-            'event_id' => 'Event',
             'is_open' => 'Is Open',
             'user_comment' => 'User Comment',
             'last_modified_user_id' => 'Last Modified User',

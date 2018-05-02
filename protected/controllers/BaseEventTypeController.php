@@ -2403,7 +2403,6 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         $hotlistItem->is_open = 1;
-        $hotlistItem->event_id = $event->id;
         if (!$hotlistItem->save()) {
             throw new Exception('UserHotListItem failed validation ' . print_r($hotlistItem->errors, true));
         };

@@ -2,12 +2,13 @@
 /**
  * @var UserHotlistItem $hotlistItem
  */
+
+$core_api = new CoreAPI();
 ?>
 
 <tr class="js-activity-<?= $hotlistItem->is_open ? 'open' : 'closed' ?>-patient js-has-tooltip"
     data-id="<?= $hotlistItem->id ?>"
-    data-event-id="<?= $hotlistItem->event_id ?>"
-    data-event-href="<?php echo Yii::app()->createUrl('/' . $hotlistItem->event->eventType->class_name . '/default/view/' . $hotlistItem->event_id) ?>"
+    data-patient-href="<?= $core_api->generateEpisodeLink($hotlistItem->patient) ?>"
     data-tooltip-content="<div style='text-align: center'>Last modified <?= $hotlistItem->getIntervalString() ?> ago</div>">
   <td><?= $hotlistItem->patient->hos_num ?></td>
   <td><?= $hotlistItem->patient->getHSCICName() ?></td>
@@ -15,13 +16,13 @@
   <td>
       <?php if ($hotlistItem->is_open): ?>
         <span class="duration js-hotlist-comment-readonly js-has-tooltip"
-        data-tooltip-content="<?= $hotlistItem->user_comment ?>">
-            <?= substr($hotlistItem->user_comment, 0, 20) . (strlen($hotlistItem->user_comment) > 20 ? '...' : '') ?></span>
+              data-tooltip-content="<?= $hotlistItem->user_comment ?>">
+            <?= substr($hotlistItem->user_comment, 0,
+                30) . (strlen($hotlistItem->user_comment) > 30 ? '...' : '') ?></span>
       <?php endif; ?>
     <button class="button js-add-hotlist-comment <?= $hotlistItem->user_comment ? 'selected' : '' ?>" type="button">
       <i class="oe-i comments small-icon"></i>
     </button>
-    <i class="oe-i-e <?= $hotlistItem->event->eventType->getEventIconCssClass() ?>"></i>
       <?php if ($hotlistItem->is_open): ?>
         <i class="oe-i remove-circle medium pro-theme pad js-close-hotlist-item"></i>
       <?php else: ?>

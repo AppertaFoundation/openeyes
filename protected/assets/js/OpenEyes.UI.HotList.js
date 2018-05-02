@@ -65,20 +65,20 @@
     // When a patient record is clicked
     $('.activity-list').delegate('.js-activity-closed-patient', 'click', function () {
 
-      var eventUrl = $(this).data('eventHref');
+      var patientHref = $(this).data('patientHref');
 
       $.ajax({
         type: 'GET',
         url: '/UserHotlistItem/openHotlistItem',
         data: {hotlist_item_id: $(this).data('id')},
         success: function () {
-          window.location.href = eventUrl;
+          window.location.href = patientHref;
         }
       });
     });
 
     $('.activity-list').delegate('.js-activity-open-patient', 'click', function () {
-      window.location.href =  $(this).data('eventHref');
+      window.location.href =  $(this).data('patientHref');
     });
 
 
@@ -198,7 +198,7 @@
 
   HotList.prototype.updateComment = function (itemId, userComment) {
     var hotlistItem = $('.activity-list tr[data-id="' + itemId + '"]');
-    var shortComment = userComment.substr(0, 20) + (userComment.length > 20 ? '...' : '');
+    var shortComment = userComment.substr(0, 30) + (userComment.length > 30 ? '...' : '');
     hotlistItem.find('.js-hotlist-comment-readonly').text(shortComment);
     hotlistItem.find('.js-hotlist-comment-readonly').data('tooltip-content', userComment);
 
