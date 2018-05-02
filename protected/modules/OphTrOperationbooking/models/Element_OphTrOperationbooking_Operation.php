@@ -308,6 +308,18 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     }
 
     /**
+     * @inheritdoc
+     */
+
+    public function beforeValidate()
+    {
+        if(!isset($this->overnight_stay_required_id) || is_null($this->overnight_stay_required_id)) {
+            $this->overnight_stay_required_id = self::OVERNIGHT_STAY_NOT_REQUIRED_ID;
+        }
+        return parent::beforeValidate();
+    }
+
+    /**
      * Sets flags based on element properties.
      *
      * @return bool
