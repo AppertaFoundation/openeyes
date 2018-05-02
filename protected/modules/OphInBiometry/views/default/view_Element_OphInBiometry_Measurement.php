@@ -30,8 +30,9 @@ if ($element->event->id > 0) {
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
             <div class="<?= $eye_side ?>-eye">
                 <?php if ($element->hasEye($eye_side))  { ?>
-                    <div class="<?=$eye_side?>-color-text">
-                        <h3><?php echo CHtml::encode($element->getAttributeLabel($eye_side)) ?></h3>
+                    <div class="eye-icon-header">
+                        <i class="oe-i laterality  <?php echo $eye_side == 'right' ? 'R' : 'L' ?> pad"></i>
+                        </i><i class="oe-i laterality NA pad"></i>
                     </div> <?php 
                     $this->renderPartial('view_Element_OphInBiometry_Measurement_fields',
                         array('side' => $eye_side, 'element' => $element));
