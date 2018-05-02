@@ -17,7 +17,16 @@
  */
 ?>
 
-<div class="element-data">
+<?php
+    $biometry_data = [
+        'k1' => $element->{"k1_{$side}"},
+        'k2' => $element->{"k2_{$side}"},
+        'axis_k1' => $element->{"axis_k1_{$side}"},
+        'axis_k2' => $element->{"k2_axis_{$side}"},
+    ];
+?>
+
+<div class="element-data" <?="data-biometry_data='" . json_encode($biometry_data) ."'"?>>
 
     <div class="row data-row">
         <input type="hidden" id="Element_OphTrOperationnote_Biometry_id_hidden"

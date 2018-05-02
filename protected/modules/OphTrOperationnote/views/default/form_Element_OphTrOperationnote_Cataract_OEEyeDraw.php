@@ -32,6 +32,7 @@
         ),
         'listenerArray' => array(
             'sidePortController',
+            'AngleMarksController'
         ),
         'idSuffix' => 'Cataract',
         'side' => $this->selectedEyeForEyedraw->shortName,
