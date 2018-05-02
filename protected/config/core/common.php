@@ -312,6 +312,11 @@ return array(
                     'position' => 2,
                     'restricted' => array('TaskViewAudit'),
                 ),
+                'worklist' => array(
+                    'title' => 'Worklists',
+                    'uri' => 'worklist/view',
+                    'position' => 2,
+                ),
                 'reports' => array(
                     'title' => 'Reports',
                     'uri' => 'report',
@@ -367,15 +372,6 @@ return array(
         'admin_menu' => array(
         ),
         'dashboard_items' => array(
-            array(
-                'class' => 'WorklistManager',
-                'method' => 'renderAutomaticDashboard',
-                'position' => 10,
-            ),
-            array(
-                'class' => 'WorklistManager',
-                'method' => 'renderManualDashboard',
-            ),
         ),
         'admin_email' => '',
         'enable_transactions' => true,

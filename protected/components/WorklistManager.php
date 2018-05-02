@@ -607,6 +607,27 @@ class WorklistManager extends CComponent
         return $worklists;
     }
 
+    public function getCurrentAutomaticWorklistsForUser($user)
+    {
+        $worklists = [];
+
+        if (!$user) {
+            $user = $this->getCurrentUser();
+        }
+        $site = $this->getCurrentSite();
+        $firm = $this->getCurrentFirm();
+
+        $content = '';
+        $days = $this->getDashboardRenderDates(new DateTime());
+        foreach ($days as $when) {
+            foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist) {
+                $worklists[] = $worklist;
+            }
+        }
+
+        return $worklists;
+    }
+
     public function shouldDisplayWorklistForContext(Worklist $worklist, Site $site, Firm $firm)
     {
         if ($definition = $worklist->worklist_definition) {
