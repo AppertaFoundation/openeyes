@@ -47,8 +47,8 @@ $worklist_patients->getData();
 </div>
 
 <?php
-if ($worklist_patients->totalItemCount === 0) { ?>
-  <div class="alert-box">
+if ($worklist_patients->totalItemCount <= 0) { ?>
+  <div class="alert-box info">
     No patients in this worklist.
   </div>
     <?php
