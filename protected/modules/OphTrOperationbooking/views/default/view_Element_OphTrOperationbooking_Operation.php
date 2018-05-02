@@ -37,7 +37,7 @@
     <?php endif; ?>
     <div class="row">
         <div class="large-6 column">
-            <h3 class="data-title">Consultant required?</h3>
+            <h3 class="data-title">Named Consultant List:</h3>
             <?php
             if ($element->consultant) {
                 $consultant_name = $element->consultant->ReversedFullName;
@@ -45,7 +45,7 @@
                 $consultant_name = 'Consultant';
             }
             ?>
-            <div class="data-value"><?php echo $element->consultant_required ? "Yes, $consultant_name" : 'No Consultant' ?></div>
+            <div class="data-value"><?php echo $element->consultant_required ? "$consultant_name" : 'No' ?></div>
         </div>
         <?php if (!is_null($element->senior_fellow_to_do)): ?>
             <div class="large-6 column">
@@ -75,7 +75,7 @@
         <div class="large-6 column">
             <?php if (!is_null($element->stop_medication)): ?>
                 <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('stop_medication')) ?></h3>
-                <div class="data-value"><?= $element->stop_medication ? 'Yes' : 'No' ?></div>
+                <div class="data-value"><?= $element->stop_medication ? 'Yes' : 'Not specifed / Refer to Pre-Assessment Nurse Advice' ?></div>
                 <?php if ($element->stop_medication): ?>
                     <div class="data-value panel comments"><?= Yii::app()->format->nText($element->stop_medication_details) ?></div>
                 <?php endif ?>
