@@ -3087,11 +3087,11 @@ table tr td div.clamp6:hover {
 /* line 124, ../sass/openeyes/components/_tables.scss */
 table tr td div.clamp5 {
   display: -webkit-box;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-height: 4.3em;
+  max-height: 5.3em;
 }
 /* line 132, ../sass/openeyes/components/_tables.scss */
 table tr td div.clamp5:hover {
@@ -3099,241 +3099,241 @@ table tr td div.clamp5:hover {
   display: block;
 }
 /* line 138, ../sass/openeyes/components/_tables.scss */
-table tr td div.clamp5 {
+table tr td div.clamp4 {
   display: -webkit-box;
-  -webkit-line-clamp: 5;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-height: 5.3em;
+  max-height: 4.3em;
 }
 /* line 146, ../sass/openeyes/components/_tables.scss */
-table tr td div.clamp5:hover {
+table tr td div.clamp4:hover {
   overflow-y: scroll;
   display: block;
 }
-/* line 152, ../sass/openeyes/components/_tables.scss */
+/* line 153, ../sass/openeyes/components/_tables.scss */
 table tr.odd {
   background: #edf4f9;
 }
-/* line 155, ../sass/openeyes/components/_tables.scss */
+/* line 156, ../sass/openeyes/components/_tables.scss */
 table tr.even {
   background: #e1eef9;
 }
-/* line 159, ../sass/openeyes/components/_tables.scss */
+/* line 160, ../sass/openeyes/components/_tables.scss */
 table tfoot {
   font-weight: normal;
 }
-/* line 162, ../sass/openeyes/components/_tables.scss */
+/* line 163, ../sass/openeyes/components/_tables.scss */
 table tfoot tr th,
 table tfoot tr td {
   font-size: 0.6875rem;
   font-weight: bold;
 }
-/* line 167, ../sass/openeyes/components/_tables.scss */
+/* line 168, ../sass/openeyes/components/_tables.scss */
 table tfoot tr.even, table tfoot tr.alt, table tfoot tr:nth-of-type(even) {
   background: none;
 }
-/* line 174, ../sass/openeyes/components/_tables.scss */
+/* line 175, ../sass/openeyes/components/_tables.scss */
 table .clickable, table.clickable tr {
   cursor: pointer;
 }
-/* line 176, ../sass/openeyes/components/_tables.scss */
+/* line 177, ../sass/openeyes/components/_tables.scss */
 table .clickable:hover, table.clickable tr:hover {
   background: #3665ff;
 }
-/* line 178, ../sass/openeyes/components/_tables.scss */
+/* line 179, ../sass/openeyes/components/_tables.scss */
 table .clickable:hover td, table.clickable tr:hover td {
   color: #fff;
 }
 
-/* line 192, ../sass/openeyes/components/_tables.scss */
+/* line 193, ../sass/openeyes/components/_tables.scss */
 table.white, table.white tr:nth-of-type(even) {
   background: #fff;
 }
 
-/* line 197, ../sass/openeyes/components/_tables.scss */
+/* line 198, ../sass/openeyes/components/_tables.scss */
 .table-summary {
   font-size: 0.6875rem;
   font-weight: bold;
 }
 
-/* line 224, ../sass/openeyes/components/_tables.scss */
+/* line 225, ../sass/openeyes/components/_tables.scss */
 table.plain, table.plain td, table.plain th, table.plain tr {
   border: 0;
 }
-/* line 227, ../sass/openeyes/components/_tables.scss */
+/* line 228, ../sass/openeyes/components/_tables.scss */
 table.plain, table.plain tr:nth-of-type(even) {
   background: transparent;
 }
 
-/* line 254, ../sass/openeyes/components/_tables.scss */
+/* line 255, ../sass/openeyes/components/_tables.scss */
 table.blank {
   background: none;
   border: 0;
   width: auto;
   min-width: 0;
 }
-/* line 259, ../sass/openeyes/components/_tables.scss */
+/* line 260, ../sass/openeyes/components/_tables.scss */
 table.blank thead {
   background: none;
 }
-/* line 262, ../sass/openeyes/components/_tables.scss */
+/* line 263, ../sass/openeyes/components/_tables.scss */
 table.blank th {
   background: none;
   font-weight: normal;
   font-size: 0.8125rem;
   padding-left: 0;
 }
-/* line 268, ../sass/openeyes/components/_tables.scss */
+/* line 269, ../sass/openeyes/components/_tables.scss */
 table.blank tfoot {
   background: none;
 }
-/* line 270, ../sass/openeyes/components/_tables.scss */
+/* line 271, ../sass/openeyes/components/_tables.scss */
 table.blank tfoot td {
   padding: 8px 10px;
   padding-left: 0;
   padding-right: 0;
 }
-/* line 276, ../sass/openeyes/components/_tables.scss */
+/* line 277, ../sass/openeyes/components/_tables.scss */
 table.blank tr {
   background: none;
 }
-/* line 279, ../sass/openeyes/components/_tables.scss */
+/* line 280, ../sass/openeyes/components/_tables.scss */
 table.blank td {
   padding: 2px 10px 2px 0;
 }
-/* line 281, ../sass/openeyes/components/_tables.scss */
+/* line 282, ../sass/openeyes/components/_tables.scss */
 table.blank td img {
   height: auto;
   width: auto;
 }
 
-/* line 313, ../sass/openeyes/components/_tables.scss */
+/* line 314, ../sass/openeyes/components/_tables.scss */
 table.patient-episodes {
   border-bottom: 15px solid #ddd;
 }
-/* line 315, ../sass/openeyes/components/_tables.scss */
+/* line 316, ../sass/openeyes/components/_tables.scss */
 table.patient-episodes td, table.patient-episodes th {
   padding: 10px;
 }
-/* line 318, ../sass/openeyes/components/_tables.scss */
+/* line 319, ../sass/openeyes/components/_tables.scss */
 table.patient-episodes .speciality {
   background: #eae4ce;
 }
-/* line 320, ../sass/openeyes/components/_tables.scss */
+/* line 321, ../sass/openeyes/components/_tables.scss */
 table.patient-episodes .speciality td {
   color: #69634f;
   font-size: 0.75rem;
 }
 
-/* line 331, ../sass/openeyes/components/_tables.scss */
+/* line 332, ../sass/openeyes/components/_tables.scss */
 table.patient-data th, table.patient-data td {
   background: #fff;
 }
-/* line 334, ../sass/openeyes/components/_tables.scss */
+/* line 335, ../sass/openeyes/components/_tables.scss */
 table.patient-data .driving_statuses {
   vertical-align: top;
 }
 
-/* line 342, ../sass/openeyes/components/_tables.scss */
+/* line 343, ../sass/openeyes/components/_tables.scss */
 table.patient-contacts {
   margin-top: 10px;
 }
-/* line 344, ../sass/openeyes/components/_tables.scss */
+/* line 345, ../sass/openeyes/components/_tables.scss */
 table.patient-contacts td {
   font-size: 0.6875rem;
 }
-/* line 347, ../sass/openeyes/components/_tables.scss */
+/* line 348, ../sass/openeyes/components/_tables.scss */
 table.patient-contacts th, table.patient-contacts td {
   padding-left: 10px;
   padding-right: 10px;
 }
-/* line 351, ../sass/openeyes/components/_tables.scss */
+/* line 352, ../sass/openeyes/components/_tables.scss */
 table.patient-contacts td:first-child {
   font-size: 0.8125rem;
 }
 
-/* line 391, ../sass/openeyes/components/_tables.scss */
+/* line 392, ../sass/openeyes/components/_tables.scss */
 table.audit-logs tr.even.green {
   background-color: #c6ebb9;
 }
-/* line 394, ../sass/openeyes/components/_tables.scss */
+/* line 395, ../sass/openeyes/components/_tables.scss */
 table.audit-logs tr.odd.green {
   background-color: #e0f8d8;
 }
-/* line 397, ../sass/openeyes/components/_tables.scss */
+/* line 398, ../sass/openeyes/components/_tables.scss */
 table.audit-logs tr.even.red {
   background-color: #eba694;
 }
-/* line 400, ../sass/openeyes/components/_tables.scss */
+/* line 401, ../sass/openeyes/components/_tables.scss */
 table.audit-logs tr.odd.red {
   background-color: #e9c2b8;
 }
-/* line 405, ../sass/openeyes/components/_tables.scss */
+/* line 406, ../sass/openeyes/components/_tables.scss */
 table.log-details {
   width: 100%;
   table-layout: fixed;
 }
-/* line 408, ../sass/openeyes/components/_tables.scss */
+/* line 409, ../sass/openeyes/components/_tables.scss */
 table.log-details th {
   vertical-align: top;
   width: 9%;
 }
-/* line 412, ../sass/openeyes/components/_tables.scss */
+/* line 413, ../sass/openeyes/components/_tables.scss */
 table.log-details .data {
   overflow-x: auto;
   padding-bottom: 1px;
 }
 
-/* line 420, ../sass/openeyes/components/_tables.scss */
+/* line 421, ../sass/openeyes/components/_tables.scss */
 table.grid {
   border: solid 1px #ddd;
 }
-/* line 425, ../sass/openeyes/components/_tables.scss */
+/* line 426, ../sass/openeyes/components/_tables.scss */
 table.grid tr {
   border-bottom: 1px solid #CCD;
 }
-/* line 427, ../sass/openeyes/components/_tables.scss */
+/* line 428, ../sass/openeyes/components/_tables.scss */
 table.grid tr:last-child {
   border: 0;
 }
-/* line 431, ../sass/openeyes/components/_tables.scss */
+/* line 432, ../sass/openeyes/components/_tables.scss */
 table.grid th, table.grid td {
   border-right: 1px solid #CCD;
 }
-/* line 434, ../sass/openeyes/components/_tables.scss */
+/* line 435, ../sass/openeyes/components/_tables.scss */
 table.grid th:last-child,
 table.grid td:last-child {
   border-right: none;
 }
-/* line 438, ../sass/openeyes/components/_tables.scss */
+/* line 439, ../sass/openeyes/components/_tables.scss */
 table.grid th:last-child span.empty,
 table.grid td:last-child span.empty {
   font-size: 0.6875rem;
   font-weight: bold;
   font-style: normal;
 }
-/* line 444, ../sass/openeyes/components/_tables.scss */
+/* line 445, ../sass/openeyes/components/_tables.scss */
 table.grid tfoot {
   border-top: 1px solid #DDDDDD;
 }
-/* line 446, ../sass/openeyes/components/_tables.scss */
+/* line 447, ../sass/openeyes/components/_tables.scss */
 table.grid tfoot tr {
   border-bottom: 0;
 }
 @media print {
-  /* line 451, ../sass/openeyes/components/_tables.scss */
+  /* line 452, ../sass/openeyes/components/_tables.scss */
   table.grid th {
     border-bottom: 1px solid #CCD;
   }
 }
-/* line 457, ../sass/openeyes/components/_tables.scss */
+/* line 458, ../sass/openeyes/components/_tables.scss */
 table.grid.comfortable tr td {
   padding: 10px;
 }
 
-/* line 467, ../sass/openeyes/components/_tables.scss */
+/* line 468, ../sass/openeyes/components/_tables.scss */
 table.valign-top tr {
   vertical-align: top;
 }
