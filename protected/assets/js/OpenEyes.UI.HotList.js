@@ -31,6 +31,8 @@
       }
     }
 
+    $('.activity-list').find('textarea').autosize();
+
     // activity datepicker using pickmeup.
     // CSS controls it's positioning
 
@@ -79,7 +81,7 @@
     });
 
     $('.activity-list').delegate('.js-activity-open-patient', 'click', function () {
-      window.location.href =  $(this).data('patientHref');
+      window.location.href = $(this).data('patientHref');
     });
 
 
@@ -119,13 +121,16 @@
       return false;
     });
 
+
+    var commentUpdateTimeout;
     // When the enter key is pressed when editing a comment
-    $('.activity-list').delegate('.js-hotlist-comment input', 'keyup', function (e) {
-      if (e.which === 13) {
-        var itemId = $(this).closest('.js-hotlist-comment').data('id');
-        hotlist.updateComment(itemId, $(this).val());
-        $(this).closest('.js-hotlist-comment').hide();
-      }
+    $('.activity-list').delegate('.js-hotlist-comment textarea', 'keyup', function (e) {
+      var comment = $(this).val();
+      var itemId = $(this).closest('.js-hotlist-comment').data('id');
+      clearTimeout(commentUpdateTimeout);
+      commentUpdateTimeout = setTimeout(function () {
+        hotlist.updateComment(itemId, comment);
+      }, 500);
     });
 
     // Wjem the comment button in any item is clicked
@@ -135,11 +140,11 @@
       var commentRow = hotlistItem.siblings('.js-hotlist-comment[data-id="' + itemId + '"]');
 
       if (commentRow.css('display') !== 'none') {
-        hotlist.updateComment(itemId, commentRow.find('input').val());
+        hotlist.updateComment(itemId, commentRow.find('textarea').val());
         commentRow.hide();
       } else {
         commentRow.show();
-        commentRow.find('input').focus();
+        commentRow.find('textarea').focus();
       }
 
       return false;
@@ -168,6 +173,7 @@
       success: function (response) {
         $('table.activity-list.closed').find('tbody').html(response);
         hotlist.updateListCounters();
+        $('.activity-list').find('textarea').autosize();
       }
     });
   };
@@ -182,6 +188,7 @@
       success: function (response) {
         $('table.activity-list.open').find('tbody').html(response);
         hotlist.updateListCounters();
+        $('.activity-list').find('textarea').autosize();
       }
     });
   };
@@ -193,7 +200,7 @@
 
   HotList.prototype.removeItem = function (itemId) {
     $('.activity-list tr[data-id="' + itemId + '"]').remove();
-    $('body').find( ".oe-tooltip" ).remove();
+    $('body').find(".oe-tooltip").remove();
   };
 
 
