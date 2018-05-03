@@ -60,6 +60,7 @@
     $('#js-activity-closed-today').click(function () {
       pmu.set_date(new Date);
       hotlist.setSelectedDate(new Date, 'Today');
+      hotlist.updateClosedList();
     });
 
     // When a patient record is clicked
