@@ -867,7 +867,6 @@ class BaseEventTypeController extends BaseModuleController
                         $this->afterCreateElements($this->event);
 
                         $this->logActivity('created event.');
-                        $this->updateHotlistItem($this->event);
 
                         $this->event->audit('event', 'create');
 
@@ -890,6 +889,7 @@ class BaseEventTypeController extends BaseModuleController
             }
         } else {
             $this->setOpenElementsFromCurrentEvent('create');
+            $this->updateHotlistItem($this->patient);
         }
 
         $this->editable = false;
@@ -1003,7 +1003,6 @@ class BaseEventTypeController extends BaseModuleController
                         //TODO: should not be pasing event?
                         $this->afterUpdateElements($this->event);
                         $this->logActivity('updated event');
-                        $this->updateHotlistItem($this->event);
 
                         $this->event->audit('event', 'update');
 
@@ -1031,6 +1030,7 @@ class BaseEventTypeController extends BaseModuleController
         } else {
             // get the elements
             $this->setOpenElementsFromCurrentEvent('update');
+            $this->updateHotlistItem($this->patient);
         }
 
         $this->editing = true;
@@ -2391,15 +2391,15 @@ class BaseEventTypeController extends BaseModuleController
         throw new BadMethodCallException('getExtraTitleInfo() should have been overridden by ' . get_class($this));
     }
 
-    protected function updateHotlistItem(Event $event)
+    protected function updateHotlistItem(Patient $patient)
     {
         $user = Yii::app()->user;
         $hotlistItem = UserHotlistItem::model()->find('created_user_id = :user_id AND patient_id = :patient_id AND DATE(last_modified_date) = :current_date',
-            array(':user_id' => $user->id, ':patient_id' => $event->episode->patient_id, ':current_date' => date('Y-m-d')));
+            array(':user_id' => $user->id, ':patient_id' => $patient->id, ':current_date' => date('Y-m-d')));
 
         if (!$hotlistItem) {
             $hotlistItem = new UserHotlistItem();
-            $hotlistItem->patient_id = $event->episode->patient_id;
+            $hotlistItem->patient_id = $patient->id;
         }
 
         $hotlistItem->is_open = 1;
