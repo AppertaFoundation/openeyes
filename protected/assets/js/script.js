@@ -327,6 +327,10 @@ function format_date(d) {
 	}
 }
 
+function format_pickmeup_date(d) {
+  return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+}
+
 function format_date_get_segment(d,segment) {
 	switch (segment) {
 		case 'j':

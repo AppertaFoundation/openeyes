@@ -23,11 +23,9 @@ if (empty($diary)) {?>
 	</div>
 <?php } else {
     foreach ($diary as $theatre) {?>
-		<div class="row">
-			<div class="large-12 column">
-				<h2><?php echo $theatre->name?> (<?php echo $theatre->site->name?>)</h2>
-			</div>
-		</div>
+    <h2>
+        <?php echo $theatre->name?> (<?php echo $theatre->site->name?>)
+    </h2>
 		<?php foreach ($theatre->sessions as $session) {
     $this->renderPartial('_session', array('session' => $session, 'theatre' => $theatre, 'assetPath' => $assetPath, 'ward_id' => $ward_id));
 }
