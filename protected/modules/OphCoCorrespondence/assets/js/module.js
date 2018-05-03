@@ -715,7 +715,7 @@ $(document).ready(function() {
 		}
 	});
 
-	h$(this).on('click','#et_confirm_printed',function() {
+	$(this).on('click','#et_confirm_printed',function() {
 		$.ajax({
 			'type': 'GET',
 			'url': baseUrl+'/OphCoCorrespondence/Default/confirmPrinted/'+OE_event_id,
