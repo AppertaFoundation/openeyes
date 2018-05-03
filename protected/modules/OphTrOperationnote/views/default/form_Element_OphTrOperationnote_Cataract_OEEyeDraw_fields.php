@@ -86,7 +86,7 @@
     <div class="large-3 column">
         <label for="Element_OphTrOperationnote_Cataract_phaco_cde">Phaco CDE:</label>		</div>
     <div class="large-2 column">
-        <input autocomplete="off" type="text" name="Element_OphTrOperationnote_Cataract[phaco_cde]" id="Element_OphTrOperationnote_Cataract_phaco_cde" value="<?php echo $element->phaco_cde?>" placeholder="00.00">
+        <input autocomplete="off" type="text" name="Element_OphTrOperationnote_Cataract[phaco_cde]" id="Element_OphTrOperationnote_Cataract_phaco_cde" value="<?php echo $element->phaco_cde?>">
     </div>
     <div class="large-1 column end">
         <span class="has-tooltip fa fa-info-circle" data-tooltip-content="Cumulative Dissipated Energy, in 'seconds'"></span>
