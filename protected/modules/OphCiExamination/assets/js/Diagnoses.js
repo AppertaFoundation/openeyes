@@ -65,7 +65,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         $tr.find('.fuzzy_month').val(date.getMonth()+1);
         $tr.find('.fuzzy_day').val(date.getDate());
-        $tr.find('.fuzzy_year').val(date.getFullYear());
+        $tr.find('.fuzzy_year').val(date.getFullYear()).trigger('change');
     }
 
     DiagnosesController.prototype.initialiseTriggers = function()
@@ -146,6 +146,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 //Adding new element to array doesn't trigger change so do it manually
                 $(":input[name^='diabetic_diagnoses']").trigger('change');
                 $(":input[name^='glaucoma_diagnoses']").trigger('change');
+
+                //this references to DiagnosesSearchController object
+                let disorder_id = this.$row.find('input[type=hidden][name*=\\[disorder_id\\]\\[\\]]').val();
+                this.$row.find('input[name="principal_diagnosis"]').val(disorder_id);
             },
             'subspecialtyRefSpec': controller.subspecialtyRefSpec,
         });

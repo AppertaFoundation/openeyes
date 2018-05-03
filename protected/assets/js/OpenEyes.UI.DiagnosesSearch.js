@@ -170,7 +170,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         }
 
         if(typeof controller.options.afterSelect === 'function'){
-            controller.options.afterSelect();
+            controller.options.afterSelect.call(controller);
         }
     };
 

@@ -26,6 +26,7 @@ namespace OEModule\OphCiExamination\models;
  * @property int $disorder_id
  * @property int $eye_id
  * @property bool $principal
+ * @property string $date
  */
 class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
 {
