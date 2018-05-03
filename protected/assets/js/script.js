@@ -293,6 +293,32 @@ $(document).ready(function(){
     $(this).on('click', '.alert-box .close' , function(e) {
         $(e.srcElement).closest('.alert-box').fadeOut(500);
     });
+
+
+  $(this).on('mouseout', '.js-has-tooltip', function (e) {
+    $('body').find(".oe-tooltip").remove();
+  });
+
+  $(this).on('mouseover', '.js-has-tooltip', function (e) {
+    var text = $(this).data('tooltip-content');
+    var offset = $(this).offset();
+    var leftPos = offset.left - 94; // tooltip is 200px (and center on the icon)
+
+    // add, calculate height then show (remove 'hidden')
+    var tip = $("<div></div>", {
+      "class": "oe-tooltip",
+      "style": "position:fixed; left:" + leftPos + "px; top:0; pointer-events: none;"
+    });
+
+    // add the tip:
+    tip.html(text);
+    tip.appendTo($('body'));
+    // Move the popup by its height (but never off the edge of the screen)
+    var top = Math.max(offset.top - tip.height() - 20, 0);
+    tip.css({"top": top + "px"});
+
+  });
+
 });
 
 function changeState(wb,sp) {
