@@ -51,8 +51,30 @@
                     </td>
                 </tr>
             <?php } ?>
+            <tr>
+                <td>
+                    Lens
+                </td>
+                <td class="cols-full">
+                    <?php
+                    $criteria = new CDbCriteria();
 
-
+                    if (!empty(${'lens_' . $side})) {
+                        $criteria->condition = 'id in (' . implode(',', array_unique(${'lens_' . $side})) . ')';
+                        $lenses = OphInBiometry_LensType_Lens::model()->findAll($criteria, array('order' => 'display_order'));
+                        echo $form->dropDownList(
+                            $element, 'lens_id_' . $side,
+                            CHtml::listData(
+                                $lenses, 'id', 'display_name'
+                            ),
+                            array('empty' => '- Please select -', 'nowrapper' => true),
+                            null,
+                            array('label' => 6, 'field' => 12)
+                        );
+                    }
+                    ?>
+                </td>
+            </tr>
             <?php
             echo $form->hiddenField($element, 'iol_power_' . $side, array('value' => $element->{"iol_power_$side"}));
         } else {
@@ -117,87 +139,81 @@
                 </tr>
             <?php } ?>
 
-            <?php
-            if ($side === 'left') {
-                if (!empty($iolrefdata['left'])) {
-                    $acon_left = $acon['left'];
-                    foreach ($acon_left as $k => $v) {
-                        foreach ($v as $key => $value) {
-                            if (!empty($value)) { ?>
-                                <tr>
-                                <td>
-                                    A constant:
-                                </td>
-                                <td>
-
-                                <?php $spanid = 'aconstant_' . $side . '_' . $k . '_' . $key;
-                                echo '<span id=' . $spanid . ' class="field-value">' . $this->formatAconst($acon['left'][$k][$key]) . '</span>';
-                            }
-                        }
-                    }
-                }
-            } else {
-                if (!empty($iolrefdata['right'])) {
-                    $acon_right = $iolrefdata['right'];
-                    foreach ($acon_right as $k => $v) {
-                        foreach ($v as $key => $value) {
-                            if (!empty($value)) {
-                                $spanid = 'aconstant_' . $side . '_' . $k . '_' . $key;
-                                echo '<span id=' . $spanid . ' class="field-value">' . $this->formatAconst($acon['right'][$k][$key]) . '</span>';
-                            }
-                        }
-                    }
-                }
-
-                ?>
+            <tr>
+                <td>
+                    <span class="field-info">A constant:</span>
                 </td>
-                </tr>
-            <?php } ?>
-            <?php
-            if ($side == 'left') {
-                if (!empty($iolrefdata['left'])) {
-                    $iolrefdata_left = $iolrefdata['left'];
-                    foreach ($iolrefdata_left
-
-                             as $k => $v) {
-                        foreach ($v
-
-                                 as $key => $value) {
-                            if (!empty($value)) {
-                                ?>
-                                <tr>
-                                <td>
-                                    >Emmetropic IOL power:
-                                </td>
-                                <td>
-
-                                <?php $spanid = 'emmetropia_' . $side . '_' . $k . '_' . $key;
-                                echo '<span id=' . $spanid . ' class="field-value">' . $emmetropiadata['left'][$k][$key] . '</span>';
+                <td>
+                    <?php
+                    if ($side === 'left') {
+                        if (!empty($iolrefdata['left'])) {
+                            $acon_left = $acon['left'];
+                            foreach ($acon_left as $k => $v) {
+                                foreach ($v as $key => $value) {
+                                    if (!empty($value)) {
+                                        $spanid = 'aconstant_' . $side . '_' . $k . '_' . $key;
+                                        echo '<span id=' . $spanid . ' class="field-value">' . $this->formatAconst($acon['left'][$k][$key]) . '</span>';
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (!empty($iolrefdata['right'])) {
+                            $acon_right = $iolrefdata['right'];
+                            foreach ($acon_right as $k => $v) {
+                                foreach ($v as $key => $value) {
+                                    if (!empty($value)) {
+                                        $spanid = 'aconstant_' . $side . '_' . $k . '_' . $key;
+                                        echo '<span id=' . $spanid . ' class="field-value">' . $this->formatAconst($acon['right'][$k][$key]) . '</span>';
+                                    }
+                                }
                             }
                         }
                     }
-                }
-            } else {
-                if (!empty($iolrefdata['right'])) {
-                    $iolrefdata_right = $iolrefdata['right'];
-                    foreach ($iolrefdata_right as $k => $v) {
-                        foreach ($v as $key => $value) {
-                            if (!empty($value)) {
-                                $spanid = 'emmetropia_' . $side . '_' . $k . '_' . $key;
-                                echo '<span id=' . $spanid . ' class="field-value">' . $emmetropiadata['right'][$k][$key] . '</span>';
-                            }
-                        }
-                    }
-                }
-
-                ?>
+                    ?>
                 </td>
-                </tr>
-            <?php } ?>
+            </tr>
+            <tr>
+                <td>
+                    <span class="field-info">Emmetropic IOL power:</span>
+                </td>
+                <td>
+                    <?php
+                    if ($side == 'left') {
+                        if (!empty($iolrefdata['left'])) {
+                            $iolrefdata_left = $iolrefdata['left'];
+                            foreach ($iolrefdata_left as $k => $v) {
+                                foreach ($v as $key => $value) {
+                                    if (!empty($value)) {
+                                        $spanid = 'emmetropia_' . $side . '_' . $k . '_' . $key;
+                                        echo '<span id=' . $spanid . ' class="field-value">' . $emmetropiadata['left'][$k][$key] . '</span>';
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (!empty($iolrefdata['right'])) {
+                            $iolrefdata_right = $iolrefdata['right'];
+                            foreach ($iolrefdata_right as $k => $v) {
+                                foreach ($v as $key => $value) {
+                                    if (!empty($value)) {
+                                        $spanid = 'emmetropia_' . $side . '_' . $k . '_' . $key;
+                                        echo '<span id=' . $spanid . ' class="field-value">' . $emmetropiadata['right'][$k][$key] . '</span>';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    ?>
+                </td>
+            </tr>
+
+
             <?php
             if ($side == 'left') {
                 if (!empty($iolrefdata['left'])) { ?>
                     <tr>
+                        <td></td>
                         <td>
                             <?php $iolrefdata_left = $iolrefdata['left'];
                             foreach ($iolrefdata_left as $k => $v) {
@@ -208,7 +224,7 @@
                                         $found = 0;
                                         // $closet = $this->getClosest($emmetropiadata['left'][$k][$key],$iolData['IOL']);
                                         $closest = $this->getClosest($this->calculationValues[0]->{'target_refraction_left'}, $iolData['REF']);
-                                        echo '<table id=' . $divid . '><tr><th>#</th> <th>IOL</th><th>REF</th>';
+                                        echo '<table id=' . $divid . '  class="cols-full last-left"><colgroup><col class="cols-2"><col class="cols-2"><col class="cols-2"></colgroup><thead><tr><th>#</th> <th>IOL</th><th>REF</th></tr></thead>';
                                         for ($j = 0; $j < count($iolData['IOL']); ++$j) {
                                             $radid = $side . '_' . $k . '_' . $key . '__' . $j;
                                             if (($this->selectionValues[0]->{'predicted_refraction_left'} == $iolData['REF'][$j]) && ($this->selectionValues[0]->{'iol_power_left'} == $iolData['IOL'][$j])) {
@@ -234,11 +250,12 @@
                         </td>
                     </tr>
                 <?php }
-            } else {
-                if (!empty($iolrefdata['right'])) { ?>
-                    <tr>
-                    <td>
-                    <?php $iolrefdata_right = $iolrefdata['right'];
+            } else { ?>
+                <tr>
+                <td></td>
+                <td>
+                <?php if (!empty($iolrefdata['right'])) {
+                    $iolrefdata_right = $iolrefdata['right'];
                     foreach ($iolrefdata_right as $k => $v) {
                         foreach ($v as $key => $value) {
                             if (!empty($value)) {
@@ -247,7 +264,11 @@
                                 $found = 0;
                                 //$closet = $this->getClosest($emmetropiadata['right'][$k][$key],$iolData['IOL']);
                                 $closest = $this->getClosest($this->calculationValues[0]->{'target_refraction_right'}, $iolData['REF']);
-                                echo '<table id=' . $divid . '><tr><th>#</th> <th>IOL</th><th>REF</th>';
+                                echo '<table id=' . $divid . ' class="cols-full last-left"><colgroup>
+										<col class="cols-2">
+										<col class="cols-2">
+										<col class="cols-2">
+									</colgroup><tr><th>#</th> <th>IOL</th><th>REF</th>';
                                 for ($j = 0; $j < count($iolData['IOL']); ++$j) {
                                     $radid = $side . '_' . $k . '_' . $key . '__' . $j;
                                     if (($this->selectionValues[0]->{'predicted_refraction_right'} == $iolData['REF'][$j]) && ($this->selectionValues[0]->{'iol_power_right'} == $iolData['IOL'][$j])) {
