@@ -16,44 +16,49 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="event previous-elements">
-	<?php foreach ($elements as $element) {
-    ?>
-		<div class="element-container">
-			<section class="element <?php echo CHtml::modelName($element) ?>"
-				data-element-id="<?php echo $element->id ?>"
-				data-element-type-id="<?php echo $element->elementType->id ?>"
-				data-element-type-class="<?php echo CHtml::modelName($element) ?>"
-				data-element-type-name="<?php echo $element->elementType->name ?>"
-				data-element-display-order="<?php echo $element->elementType->display_order ?>">
+<table>
+  <colgroup>
+    <col class="cols-6">
+    <col class="cols-5">
+  </colgroup>
+  <tbody>
+  <?php foreach ($elements as $element) { ?>
+    <tr>
+      <td class="element <?php echo CHtml::modelName($element) ?>"
+          data-element-id="<?php echo $element->id ?>"
+          data-element-type-id="<?php echo $element->elementType->id ?>"
+          data-element-type-class="<?php echo CHtml::modelName($element) ?>"
+          data-element-type-name="<?php echo $element->elementType->name ?>"
+          data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
-				<?php $this->renderPartial(
-                    $element->view_view,
-                    array('element' => $element)
-                );
-    ?>
+          <?php $this->renderPartial(
+              $element->view_view,
+              array('element' => $element)
+          ); ?>
 
-			</section>
-			<div class="metadata">
-				<span class="info">Examination created by <span class="user"><?php echo $element->event->user->fullname ?></span>
-					on <?php echo $element->event->NHSDate('created_date') ?>
-					at <?php echo date('H:i', strtotime($element->event->created_date)) ?></span>
-				<span class="info">Examination last modified by <span class="user"><?php echo $element->event->usermodified->fullname ?></span>
-					on <?php echo $element->event->NHSDate('last_modified_date') ?>
-					at <?php echo date('H:i', strtotime($element->event->last_modified_date)) ?></span>
-			</div>
-			<?php if ($element->canCopy()) {
-    ?>
-				<div class="actions">
-					<button name="copy" class="copy_element small"
-						data-element-id="<?php echo $element->id ?>" data-element-type-class="<?php echo CHtml::modelName($element) ?>">
-						Copy
-					</button>
-				</div>
-			<?php 
-}
-    ?>
-		</div>
-	<?php 
-} ?>
-</div>
+      </td>
+      <td>
+        <div class="metadata">
+            <div class="info">Examination created by
+              <span class="user"><?php echo $element->event->user->fullname ?></span>
+              on <?php echo $element->event->NHSDate('created_date') ?>
+              at <?php echo date('H:i', strtotime($element->event->created_date)) ?></div>
+          <div class="info">Examination last modified by
+            <span class="user"><?php echo $element->event->usermodified->fullname ?></span>
+              on <?php echo $element->event->NHSDate('last_modified_date') ?>
+            at <?php echo date('H:i', strtotime($element->event->last_modified_date)) ?></div>
+        </div>
+      </td>
+        <?php if ($element->canCopy()) { ?>
+          <td>
+            <button name="copy" class="copy_element small"
+                    data-element-id="<?php echo $element->id ?>"
+                    data-element-type-class="<?php echo CHtml::modelName($element) ?>">
+              Copy
+            </button>
+          </td>
+        <?php } ?>
+    </tr>
+  <?php } ?>
+  </tbody>
+</table>
