@@ -21,7 +21,7 @@
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
                 <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
                 <div id="<?php echo $eye_side?>-eye-selection"
-                     class="element-eye <?php echo $eye_side?>-eye <?= $page_side ?> side  <?php if (!$element->hasEye($eye_side)) { ?> inactive<?php } ?>"
+                     class="element-eye <?php echo $eye_side?>-eye <?= $page_side ?> side<?php if (!$element->hasEye($eye_side)) {?> inactive<?php } ?>"
                      data-side="<?= $eye_side?>">
                     <div class="active-form">
                         <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
@@ -41,19 +41,23 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        if ($('section.Element_OphInBiometry_Measurement').find('.element-eye.right-eye').hasClass('inactive')) {
+        if ($('section.edit-Element_OphInBiometry_Selection').find('.element-eye.right-eye').hasClass('inactive')) {
             $('section.edit-Element_OphInBiometry_Selection').find('.element-eye.right-eye').find('.active-form').hide();
             $('section.edit-Element_OphInBiometry_Selection').find('.element-eye.right-eye').find('.inactive-form').show();
+            console.log("7");
         } else {
             $('section.edit-Element_OphInBiometry_Selection').find('.element-eye.right-eye').find('.active-form').show();
             $('section.edit-Element_OphInBiometry_Selection').find('.element-eye.right-eye').find('.inactive-form').hide();
+            console.log("8");
         }
-        if ($('section.Element_OphInBiometry_Measurement').find('.element-eye.left-eye').hasClass('inactive')) {
+        if ($('section.edit-Element_OphInBiometry_Selection').find('.element-eye.left-eye').hasClass('inactive')) {
             $('section.edit-Element_OphInBiometry_Selection').find('.element-eye.left-eye').find('.active-form').hide();
             $('section.edit-Element_OphInBiometry_Selection').find('.element-eye.left-eye').find('.inactive-form').show();
+            console.log("9");
         } else {
             $('section.edit-Element_OphInBiometry_Selection').find('.element-eye.left-eye').find('.active-form').show();
             $('section.edit-Element_OphInBiometry_Selection').find('.element-eye.left-eye').find('.inactive-form').hide();
+            console.log("10");
         }
     });
 </script>

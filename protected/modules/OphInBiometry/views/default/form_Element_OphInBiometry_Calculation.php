@@ -83,16 +83,16 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        if ($('section.Element_OphInBiometry_Measurement').find('.element-eye.right-eye').hasClass('inactive')) {
+        if ($('section.edit-Element_OphInBiometry_Calculation').find('.element-eye.right-eye').hasClass('inactive')) {
             $('section.edit-Element_OphInBiometry_Calculation').find('.element-eye.right-eye').find('.active-form').hide();
             $('section.edit-Element_OphInBiometry_Calculation').find('.element-eye.right-eye').find('.inactive-form').show();
         } else {
             $('section.edit-Element_OphInBiometry_Calculation').find('.element-eye.right-eye').find('.active-form').show();
             $('section.edit-Element_OphInBiometry_Calculation').find('.element-eye.right-eye').find('.inactive-form').hide();
         }
-        if ($('section.Element_OphInBiometry_Measurement').find('.element-eye.left-eye').hasClass('inactive')) {
-            $('section.Element_OphInBiometry_Calculation').find('.element-eye.left-eye').find('.active-form').hide();
-            $('section.Element_OphInBiometry_Calculation').find('.element-eye.left-eye').find('.inactive-form').show();
+        if ($('section.edit-Element_OphInBiometry_Calculation').find('.element-eye.left-eye').hasClass('inactive')) {
+            $('section.edit-Element_OphInBiometry_Calculation').find('.element-eye.left-eye').find('.active-form').hide();
+            $('section.edit-Element_OphInBiometry_Calculation').find('.element-eye.left-eye').find('.inactive-form').show();
         } else {
             $('section.edit-Element_OphInBiometry_Calculation').find('.element-eye.left-eye').find('.active-form').show();
             $('section.edit-Element_OphInBiometry_Calculation').find('.element-eye.left-eye').find('.inactive-form').hide();
