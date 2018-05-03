@@ -92,6 +92,62 @@ table {
 					display: block;
 				}
 			}
+
+			div.clamp8{
+				display: -webkit-box;
+				-webkit-line-clamp: 8;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				max-height: 8.4em;
+
+				&:hover{
+					overflow-y: scroll;
+					display: block;
+				}
+			}
+
+			div.clamp6{
+				display: -webkit-box;
+				-webkit-line-clamp: 6;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				max-height: 6.4em;
+
+				&:hover{
+					overflow-y: scroll;
+					display: block;
+				}
+			}
+
+			div.clamp5{
+				display: -webkit-box;
+				-webkit-line-clamp: 4;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				max-height: 4.3em;
+
+				&:hover{
+					overflow-y: scroll;
+					display: block;
+				}
+			}
+
+			div.clamp5{
+				display: -webkit-box;
+				-webkit-line-clamp: 5;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				max-height: 5.3em;
+
+				&:hover{
+					overflow-y: scroll;
+					display: block;
+				}
+			}
 		}
 		&.odd {
 			background: $table-bg;

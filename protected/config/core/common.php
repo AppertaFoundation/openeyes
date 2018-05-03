@@ -78,7 +78,7 @@ return array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '201805021457',
+            'time' => '201805031153',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
