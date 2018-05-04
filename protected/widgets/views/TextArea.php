@@ -46,7 +46,7 @@ if ($cols) {
     <?= CHtml::renderAttributes(array_merge($htmlOptions, $attr));?>
 ><?=CHtml::encode($value)?>
 </textarea>
-		<?php if (!$nowrapper) :
+<?php if (!$nowrapper) :
 		  if ($button):?>
 				<button type="submit" class="<?=$button['colour']?> <?=$button['size']?>"
                 id="<?= CHtml::modelName($element)?>_<?= $button['id']?>"

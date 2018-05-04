@@ -72,7 +72,7 @@
     </tr>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel('anaesthetic_type_id') ?>
+          <?php echo $element->getAttributeLabel('viscoelastic_type_id') ?>
       </td>
       <td>
           <?php echo $form->dropDownList($element, 'viscoelastic_type_id',
@@ -149,14 +149,15 @@
           ) ?>
       </td>
     </tr>
-    <tr>
+    <tr id="div_<?=  CHtml::modelName($element) ?>_difficulty_other"
+        style="<?= !$element->hasMultiSelectValue('difficulties', 'Other') ? "display: none;":"" ?>">
       <td>
           <?php echo $element->getAttributeLabel('difficulty_other') ?>
       </td>
       <td>
-          <?php echo $form->textArea($element, 'difficulty_other', array(),
-              !$element->hasMultiSelectValue('difficulties', 'Other'), array('cols' => 40),
-              array('field' => 6)) ?>
+          <?php echo $form->textArea($element, 'difficulty_other', array('nowrapper'=>true),
+              false, array( ),
+              array()) ?>
       </td>
     </tr>
     <tr>
@@ -195,7 +196,7 @@
           <?php echo $element->getAttributeLabel('complication_other') ?>
       </td>
       <td>
-          <?php echo $form->textArea($element, 'complication_other', array(),
+          <?php echo $form->textArea($element, 'complication_other', array('nowrapper'=>true),
               false, array('cols' => 40), array('field' => 6)) ?>
       </td>
     </tr>

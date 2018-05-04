@@ -18,7 +18,7 @@
 <div class="cols-full">
   <table class="cols-full last-left">
     <colgroup>
-      <col class="cols-6">
+      <col class="cols-4">
     </colgroup>
     <tbody>
     <tr>
@@ -97,7 +97,7 @@
           ?>
       </td>
     </tr>
-    <tr style="<?= $element->hasOtherComplication() ? '' : 'display: ;' ?>"
+    <tr style="<?= $element->hasOtherComplication() ? '' : 'display: none;' ?>"
         id="div_<?= CHtml::modelName($element) ?>_complication_other">
       <td>
         <label for="<?php echo CHtml::modelName($element) ?>_complication_other">

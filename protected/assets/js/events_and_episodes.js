@@ -68,7 +68,6 @@ $(document).ready(function(){
 
 	// Handle form fields that have linked fields to show/hide
 	$(this).on('change', 'select.linked-fields', function() {
-
 		var fields = $(this).data('linked-fields').split(',');
 		var values = $(this).data('linked-values').split(',');
 
@@ -82,12 +81,19 @@ $(document).ready(function(){
 			}
 		}
 
-		if (inArray($(this).children('option:selected').text(),values)) {
+    if ($(this).hasClass('MultiSelectList')) {
+			var selected = $(this).parents('.multi-select').find('.multi-select-selections').children('li');
+			for (var j = 0; j < selected.length; j++){
+				var value = $(selected[j]).children('.multi-select-remove')[0];
+				if ($(value).data('text') == $(selected[j]).find('.text').text()){
+					show_linked_field(element_name,$(value).data('linked-fields'),true);
+				}
+			}
+		}else if (inArray($(this).children('option:selected').text(),values)) {
 			var vi = arrayIndex($(this).children('option:selected').text(),values);
-
-			for (var i in fields) {
-				if (values.length == 1 || i == vi) {
-					show_linked_field(element_name,fields[i],i==0);
+			for (var j in fields) {
+				if (values.length == 1 || j == vi) {
+					show_linked_field(element_name,fields[j],js==0);
 				}
 			}
 		}

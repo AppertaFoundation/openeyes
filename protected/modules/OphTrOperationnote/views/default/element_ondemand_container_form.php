@@ -17,7 +17,8 @@
  */
 ?>
 <section
-    class="element view full  eye-divider view-biometry
+    class="element view full
+    <?php if (is_subclass_of($element, 'SplitEventTypeElement')) { echo 'eye-divider'; } ?>
     <?php echo $element->elementType->class_name ?>
     <?php if (@$ondemand) { ?>hidden<?php } ?>"
     data-element-type-id="<?php echo $element->elementType->id ?>"
