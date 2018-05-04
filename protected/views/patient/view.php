@@ -22,7 +22,7 @@ $clinical = $clinical = $this->checkAccess('OprnViewClinical');
 
 $warnings = $this->patient->getWarnings($clinical);
 ?>
-<main class="main-event edit" id="event-content" style="overflow-y: visible;">
+<main class="main-event edit" id="event-content">
 	<div class="messages patient">
 		<?php $this->renderPartial('//base/_messages'); ?>
 		<?php if ($this->patient->contact->address && !$this->patient->contact->address->isCurrent()) {?>
