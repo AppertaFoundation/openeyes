@@ -212,17 +212,21 @@
     $('body').find(".oe-tooltip").remove();
   };
 
-
   HotList.prototype.updateComment = function (itemId, userComment) {
     var hotlistItem = $('.activity-list tr[data-id="' + itemId + '"]');
     var shortComment = userComment.substr(0, 30) + (userComment.length > 30 ? '...' : '');
-    hotlistItem.find('.js-hotlist-comment-readonly').text(shortComment);
-    hotlistItem.find('.js-hotlist-comment-readonly').data('tooltip-content', userComment);
+    var readonlyComment = hotlistItem.find('.js-hotlist-comment-readonly');
+    readonlyComment.text(shortComment);
+    readonlyComment.data('tooltip-content', userComment);
+
+    var commentIcon = hotlistItem.find('i.js-add-hotlist-comment');
+    commentIcon.removeClass('comments comments-added');
+    commentIcon.addClass(userComment.length > 0 ? 'comments-added' : 'comments');
 
     $.ajax({
       type: 'GET',
       url: '/UserHotlistItem/updateUserComment',
-      data: {hotlist_item_id: itemId, comment: userComment},
+      data: {hotlist_item_id: itemId, comment: userComment}
     });
   };
 

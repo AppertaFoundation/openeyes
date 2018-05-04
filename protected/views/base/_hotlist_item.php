@@ -21,9 +21,7 @@ $core_api = new CoreAPI();
             <?= substr($hotlistItem->user_comment, 0,
                 30) . (strlen($hotlistItem->user_comment) > 30 ? '...' : '') ?></span>
       <?php endif; ?>
-    <button class="button js-add-hotlist-comment <?= $hotlistItem->user_comment ? 'selected' : '' ?>" type="button">
-      <i class="oe-i comments small-icon"></i>
-    </button>
+    <i class="oe-i <?= $hotlistItem->user_comment ? 'comments-added' : 'comments' ?> medium pro-theme js-add-hotlist-comment"></i>
       <?php if ($hotlistItem->is_open): ?>
         <i class="oe-i remove-circle medium pro-theme pad js-close-hotlist-item"></i>
       <?php else: ?>
