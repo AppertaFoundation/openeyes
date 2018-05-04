@@ -53,9 +53,18 @@
       hotlist.updateClosedList();
     });
 
+
     // When the date picker is clicked
     $('#js-activity-closed-select').click(function () {
       $pmuWrap.toggle();
+      return false;
+    });
+
+    // Hide the date picker if anywhere else on the screen is clicked
+    $('body').on('click', function (e) {
+      if (!$(e.target).closest('#js-pickmeup-datepicker').length) {
+        $('#js-pickmeup-datepicker').hide();
+      }
     });
 
     // When the "Today" date link is clicked
