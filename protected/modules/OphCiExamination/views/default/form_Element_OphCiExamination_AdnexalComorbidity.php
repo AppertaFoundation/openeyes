@@ -68,7 +68,7 @@
                    setAdnexText,
                    side.find('.js-add-select-search'),
                    popup.find('.add-icon-btn'),
-                   popup.find('.icon-close-btn .icon-add-btn')
+                   popup.find('.close-icon-btn')
                );
             });
         </script>

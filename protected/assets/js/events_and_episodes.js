@@ -354,6 +354,7 @@ function setUpAdder(adderDiv = null, selectMode = 'single', callback = null, ope
 
     if (openButtons !== null){
         openButtons.click(function showAdder() {
+        		positionFixedPopup(openButtons.offset(), adderDiv);
             adderDiv.show();
         });
     }
@@ -390,4 +391,36 @@ function setUpAdder(adderDiv = null, selectMode = 'single', callback = null, ope
             }
         });
 	}
+}
+
+function positionFixedPopup(offset, adderDiv = null){
+  /*
+  Popup is FIXED positioned
+  work out offset position
+  setup events to close it on resize or scroll.
+  */
+  var btnW = 38; // cover, button - abritary, set by eye
+  var btnH = 25;
+  console.log('button offset left:'+offset.left+ ' top: '+offset.top);
+	console.log('windows width:'+$(window).width()+' height: '+$(window).height());
+  var right = ($( window ).width() - offset.left) - btnW;
+  var bottom = ($( window ).height() - offset.top) - btnH;
+	console.log('right: '+right+' bottom: '+bottom);
+  // set CSS Fixed position
+  adderDiv.css(	{	"bottom":bottom,
+    "right":right });
+
+  /*
+  Close popup on...
+  as scroll event fires on assignment.
+  check against scroll position
+  */
+  var scrollPos = $(".main-event").scrollTop();
+  $(".main-event").on("scroll", function(){
+    if( scrollPos !=  $(this).scrollTop() ){
+      // Remove scroll event:
+      $(".main-event").off("scroll");
+      closeCancel();
+    }
+  });
 }
