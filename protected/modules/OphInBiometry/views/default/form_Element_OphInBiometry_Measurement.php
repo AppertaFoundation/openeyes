@@ -101,44 +101,9 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
 }
 
 ?>
-<section
-        data-element-type-id="<?php echo $element->elementType->id ?>"
-        data-element-type-class="<?php echo $element->elementType->class_name ?>"
-        data-element-type-name="<?php echo $element->elementType->name ?>"
-        data-element-display-order="<?php echo $element->elementType->display_order ?>">
-    <div class="element-fields element-eyes">
-        <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-        <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):
-        $element->hasEye($eye_side);
-        ?>
-        <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side <?= !$element->hasEye($eye_side) ? "inactive" : "" ?>"
-             data-side="<?= $eye_side ?>">
-            <div class="active-form" style="<?= $element->hasEye($eye_side) ? '' : 'display: none;' ?>">
-                <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-                <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
-                    'side' => $eye_side,
-                    'element' => $element,
-                    'form' => $form,
-                    'data' => $data,
-                    'measurementInput' => $iolRefValues,
-                )); ?>
-
-            </div>
-            <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">
-                <div class="add-side">
-                    <a href="#">
-                        Add <?= $eye_side ?> side <span class="icon-add-side"></span>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <?php endforeach; ?>
-    </div>
-</section>
-</section>
-<section class="element edit full  eye-divider">
+<section class="element edit full  eye-divider edit-biometry">
     <header class="element-header">
-        <h3 class="element-title">Visual Acuity</h3>
+        <h3 class="element-title">Visual Acuity <?php echo $VAdate; ?></h3>
     </header>
     <div class="element-fields element-eyes row">
         <div class="element-eye right-eye column">
@@ -265,9 +230,9 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
 }
 ?>
 
-<section class="element edit full  eye-divider">
+<section class="element edit full  eye-divider edit-biometry">
     <header class="element-header">
-        <h3 class="element-title">Near Visual Acuity</h3>
+        <h3 class="element-title">Near Visual Acuity <?php echo $NearVAdate; ?></h3>
     </header>
     <div class="element-fields element-eyes row">
         <div class="element-eye right-eye column">
@@ -431,4 +396,38 @@ if ($refractfound) {
     }
     }
     ?>
-</section>
+    </section>
+        <section class="element edit full  eye-divider edit-biometry"
+                data-element-type-id="<?php echo $element->elementType->id ?>"
+                data-element-type-class="<?php echo $element->elementType->class_name ?>"
+                data-element-type-name="<?php echo $element->elementType->name ?>"
+                data-element-display-order="<?php echo $element->elementType->display_order ?>">
+            <div class="element-fields element-eyes">
+                <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+                <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side):
+                    $element->hasEye($eye_side);
+                    ?>
+                    <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side <?= !$element->hasEye($eye_side) ? "inactive" : "" ?>"
+                         data-side="<?= $eye_side ?>">
+                        <div class="active-form" style="<?= $element->hasEye($eye_side) ? '' : 'display: none;' ?>">
+                            <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+                            <?php $this->renderPartial('form_Element_OphInBiometry_Measurement_fields', array(
+                                'side' => $eye_side,
+                                'element' => $element,
+                                'form' => $form,
+                                'data' => $data,
+                                'measurementInput' => $iolRefValues,
+                            )); ?>
+
+                        </div>
+                        <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? 'display: none;' : '' ?>">
+                            <div class="add-side">
+                                <a href="#">
+                                    Add <?= $eye_side ?> side <span class="icon-add-side"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </section>

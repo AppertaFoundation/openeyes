@@ -63,7 +63,7 @@
 
 </div>
 
-<div id="comments">
+<div id="comments" style="background-color: inherit">
 	<span class="field-info large-12">
         <?php
     if ($this->is_auto) {

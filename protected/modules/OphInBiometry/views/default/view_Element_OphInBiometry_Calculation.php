@@ -18,9 +18,6 @@
 ?>
 
 <section>
-    <header class="element-header">
-        <h3 class="element-title">Near Visual Acuity</h3>
-    </header>
     <div class="element-data element-eyes">
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
             <div class="<?= $eye_side ?>-eye">
@@ -34,7 +31,7 @@
         <?php endforeach; ?>
     </div>
 </section>
-<div class="column" id="comments">
+<div class="column" id="comments" style="background-color: inherit;">
 			<span class="field-info">&nbsp;
                 <?php
                 echo '<b>Device Comments</b>:&nbsp;' . $element->{'comments'};
