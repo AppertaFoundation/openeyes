@@ -93,8 +93,24 @@ class UserHotlistItemController extends BaseController
         if ($model->created_user_id !== Yii::app()->user->id) {
             throw new CHttpException(403, 'Access denied');
         }
-        $model->is_open = 1;
-        $model->save();
+
+        if ($model->is_open) {
+            return;
+        }
+
+        if ($model->wasUpdatedToday()) {
+            $model->is_open = 1;
+            if (!$model->save()) {
+                throw new Exception('The hotlist item could not be saved ' . print_r($model->errors, true));
+            }
+        } else {
+            $new_item = new UserHotlistItem();
+            $new_item->patient_id = $model->patient_id;
+            $new_item->is_open = 1;
+            if (!$new_item->save()) {
+                throw new Exception('New hotlist item could not be saved ' . print_r($new_item->errors, true));
+            }
+        }
     }
 
     /**
@@ -105,7 +121,7 @@ class UserHotlistItemController extends BaseController
      * @throws Exception Thrown if an error occurs when saving the record
      * @throws CHttpException Thrown if the user doesn't have privileges to access the item
      */
-    public function actionupdateUserComment($hotlist_item_id, $comment)
+    public function actionUpdateUserComment($hotlist_item_id, $comment)
     {
         $model = $this->loadModel($hotlist_item_id);
 
