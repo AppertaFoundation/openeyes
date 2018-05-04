@@ -14,14 +14,17 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
       </div>
 
       <!-- Open Items -->
-      <table class="activity-list open">
+      <table class="activity-list open" style="table-layout: fixed;">
         <colgroup>
-          <col class="cols-1">
+          <col style="width: 50px;">
+          <col style="width: 40%;">
+          <col style="width: 30%">
+          <col style="width: 50px;">
         </colgroup>
         <tbody>
 
         <?php foreach ($openHotlistItems as $hotlistItem): ?>
-          <?php echo $this->renderPartial('//base/_hotlist_item', array('hotlistItem' => $hotlistItem)); ?>
+            <?php echo $this->renderPartial('//base/_hotlist_item', array('hotlistItem' => $hotlistItem)); ?>
         <?php endforeach; ?>
         </tbody>
       </table>
@@ -42,9 +45,12 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
         </div>
       </div>
 
-      <table class="activity-list closed">
+      <table class="activity-list closed" style="table-layout: fixed;">
         <colgroup>
-          <col class="cols-1">
+          <col style="width: 50px;">
+          <col style="width: 40%;">
+          <col style="width: 30%">
+          <col style="width: 50px;">
         </colgroup>
         <tbody>
         <?php foreach ($closedHotlistItems as $hotlistItem): ?>
