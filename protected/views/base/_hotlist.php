@@ -1,10 +1,10 @@
 <?php
 $openHotlistItems = UserHotlistItem::model()->getHotlistItems(1);
-$closedHotlistItems= UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d'));
+$closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d'));
 
 ?>
 
-<div class="oe-activity-panel" id="js-activity-panel" style="display: none;">
+<div class="oe-hotlist-panel" id="js-activity-panel" style="display: none; z-index: 200;">
   <div class="patient-activity">
     <div class="patients-open">
       <div class="overview">
