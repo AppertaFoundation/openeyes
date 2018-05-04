@@ -420,7 +420,21 @@ function positionFixedPopup(offset, adderDiv = null){
     if( scrollPos !=  $(this).scrollTop() ){
       // Remove scroll event:
       $(".main-event").off("scroll");
-      closeCancel();
+      closeCancel(adderDiv);
     }
   });
+}
+
+// Close and reset
+function closeCancel(adderDiv = null){
+	console.log(adderDiv);
+  adderDiv.hide();
+
+  if(resetPopupData){
+    adderDiv.find('.add-options li').removeClass('selected');
+    for(var i = 0; i<lists.length; i++){
+      lists[i].clearData();
+    }
+  }
+
 }
