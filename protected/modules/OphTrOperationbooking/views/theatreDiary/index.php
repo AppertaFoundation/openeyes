@@ -77,7 +77,7 @@
         </td>
       </tr>
       <tr>
-        <td>Firm:</td>
+        <td><?= Firm::contextLabel() ?>:</td>
         <td>
             <?php if (!@$_POST['subspecialty-id']) { ?>
                 <?php echo CHtml::dropDownList('firm-id', '', array(),
