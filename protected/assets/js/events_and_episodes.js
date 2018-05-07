@@ -354,7 +354,7 @@ function setUpAdder(adderDiv = null, selectMode = 'single', callback = null, ope
 
     if (openButtons !== null){
         openButtons.click(function showAdder() {
-        		positionFixedPopup(openButtons.offset(), adderDiv);
+        		positionFixedPopup(openButtons, adderDiv);
             adderDiv.show();
         });
     }
@@ -393,19 +393,20 @@ function setUpAdder(adderDiv = null, selectMode = 'single', callback = null, ope
 	}
 }
 
-function positionFixedPopup(offset, adderDiv = null){
+function positionFixedPopup($btn, adderDiv = null){
   /*
   Popup is FIXED positioned
   work out offset position
   setup events to close it on resize or scroll.
   */
-  var btnW = 38; // cover, button - abritary, set by eye
-  var btnH = 25;
-  console.log('button offset left:'+offset.left+ ' top: '+offset.top);
-	console.log('windows width:'+$(window).width()+' height: '+$(window).height());
-  var right = ($( window ).width() - offset.left) - btnW;
-  var bottom = ($( window ).height() - offset.top) - btnH;
-	console.log('right: '+right+' bottom: '+bottom);
+  var elem = $btn[ 0 ];
+
+  // js vanilla:
+  var btnPos = elem.getBoundingClientRect();
+  var w = document.documentElement.clientWidth;
+  var h = document.documentElement.clientHeight;
+  var right = (w - btnPos.right);
+  var bottom = (h - btnPos.bottom);
   // set CSS Fixed position
   adderDiv.css(	{	"bottom":bottom,
     "right":right });
@@ -427,7 +428,6 @@ function positionFixedPopup(offset, adderDiv = null){
 
 // Close and reset
 function closeCancel(adderDiv = null){
-	console.log(adderDiv);
   adderDiv.hide();
 
   if(resetPopupData){
