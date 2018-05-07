@@ -55,7 +55,7 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
             if($vaID && !$data){
                 $data = $api->getMostRecentVAData($vaID->id);
                 $chosenVA = $vaID;
-                $VAdate = "- (exam date " . date("d M Y", strtotime($events[$i]->event_date)) . ")";
+                $VAdate = "- ( " . date("d M Y", strtotime($events[$i]->event_date)) . ")";
             }
         }
     }
@@ -188,7 +188,7 @@ if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
             $neardata = $api->getMostRecentNearVAData($vaID->id);
             $chosenNearVA = $vaID;
             $NearVAFound = true;
-            $NearVAdate = "- (exam date " . date("d M Y", strtotime($events[$i]->event_date)) . ")";
+            $NearVAdate = "- ( " . date("d M Y", strtotime($events[$i]->event_date)) . ")";
         }
     }
 

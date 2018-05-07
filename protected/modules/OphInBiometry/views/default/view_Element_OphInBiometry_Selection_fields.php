@@ -118,7 +118,9 @@
                     </td>
                     <td>
                         <div class="data-value">
-                            <?php echo CHtml::encode(number_format((float)$element->{'iol_power_' . $side}, 2, '.', '')) ?>
+                            <span class="large-text highlighter orange">
+                                <?php echo CHtml::encode(number_format((float)$element->{'iol_power_' . $side}, 2, '.', '')) ?>
+                            </span>
                         </div>
                     </td>
                     <td colspan="2"></td>

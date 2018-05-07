@@ -193,7 +193,11 @@
         </tr>
         <tr>
             <td>Status</td>
-            <td><?php echo Eye_Status::model()->findByPk($element->{"eye_status_$side"})->name ?></td>
+            <td>
+                <span class="large-text highlighter orange">
+                    <?php echo Eye_Status::model()->findByPk($element->{"eye_status_$side"})->name ?>
+                </span>
+            </td>
             <td colspan="2"></td>
             <td>
                 <?php if ($side == 'right') { ?>

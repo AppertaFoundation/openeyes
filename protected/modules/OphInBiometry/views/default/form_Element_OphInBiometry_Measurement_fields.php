@@ -26,7 +26,7 @@
             <td>
                 <?php
                 if ($this->is_auto) {
-                    echo $form->textField($element, 'axial_length_' . $side, array('nowrapper' => true, 'append-text' => 'mm'));
+                    echo '<span class="readonly-box">'.$element->{"axial_length_$side"}.'</span><span class="field-info">&nbsp;mm</span>';
                 } else {
                     ?>
                     <input type="text" id="Element_OphInBiometry_Measurement_axial_length_<?php echo $side; ?>"
