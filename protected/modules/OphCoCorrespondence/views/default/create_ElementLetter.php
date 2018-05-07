@@ -120,20 +120,10 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                         <?php echo $form->textField($element, 'fax', array('nowrapper' => true), array(), array_merge($layoutColumns, array('field' => 2))) ?>
                     </td>
                 </tr>
-                <tr>
-                     <?php if($element->getInternalReferralSettings('is_enabled')): ?>
-
-                         <div class="row field-row internal-referrer-wrapper <?php echo $element->isInternalreferral() ? '' : 'hidden'; ?>">
-                             <div class="large-2 column"></div>
-
-                             <div class="large-10 column">
-                                 <?php $this->renderPartial('_internal_referral', array('element' => $element)); ?>
-                             </div>
-                         </div>
-
-                     <?php endif; ?>
-                 </tr>
-                <tr>
+            </tbody>
+            </table>
+            <div class="row field-row">
+                <div id="docman_block" class="large-12 column">
                     <?php
                     $macro_data = array();
 
@@ -228,9 +218,8 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                     ));
 
                     ?>
-                </tr>
-                </tbody>
-            </table>
+                </div>
+            </div>
         </div>
 <!--        Right half-->
         <div class="cols-7">
@@ -305,7 +294,6 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                             }
 
                             foreach (LetterStringGroup::model()->with($with)->findAll(array('order' => 't.display_order')) as $string_group) {
-//                                echo $string_group->name;
                                 $strings = $string_group->getStrings($patient, $event_types);
 
                                 ?>
@@ -315,7 +303,6 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                                         'nowrapper' => true,
                                         'class' => 'stringgroup full-width',
                                         'disabled' => empty($strings),
-                                        'style' => 'width:100%;',
                                     )) ?>
                                 </div>
                             <?php } ?>
