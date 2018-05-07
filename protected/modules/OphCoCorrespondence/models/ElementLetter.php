@@ -842,9 +842,9 @@ class ElementLetter extends BaseEventTypeElement
     }
 
     public function getContainer_view_view()
-    {
-        return false;
-    }
+{
+    return '//patient/element_container_view';
+}
 
     public function getContainer_print_view()
     {
