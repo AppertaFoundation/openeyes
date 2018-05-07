@@ -214,8 +214,8 @@
     readonlyComment.data('tooltip-content', userComment);
 
     var commentIcon = hotlistItem.find('i.js-add-hotlist-comment');
-    commentIcon.removeClass('comments comments-added');
-    commentIcon.addClass(userComment.length > 0 ? 'comments-added' : 'comments');
+    commentIcon.removeClass('comments comments-added active');
+    commentIcon.addClass(userComment.length > 0 ? 'comments-added active' : 'comments');
 
     $.ajax({
       type: 'GET',
