@@ -121,7 +121,7 @@
     </tr>
     <tr>
       <td>
-          <?php echo $element->getAttributeLabel('ultiSelect_Difficulties') ?>
+          <?php echo $element->getAttributeLabel('MultiSelect_Difficulties') ?>
       </td>
       <td>
           <?php echo $form->multiSelectList(
@@ -155,9 +155,7 @@
           <?php echo $element->getAttributeLabel('difficulty_other') ?>
       </td>
       <td>
-          <?php echo $form->textArea($element, 'difficulty_other', array('nowrapper'=>true),
-              false, array( ),
-              array()) ?>
+          <?php echo $form->textArea($element, 'difficulty_other', array('nowrapper'=>true)) ?>
       </td>
     </tr>
     <tr>
@@ -186,8 +184,7 @@
               null,
               false,
               false,
-              array('field' => 4)
-          ) ?>
+              array('field' => 4)) ?>
       </td>
     </tr>
     <tr id="div_<?= CHtml::modelName($element) ?>_complication_other"
@@ -196,8 +193,7 @@
           <?php echo $element->getAttributeLabel('complication_other') ?>
       </td>
       <td>
-          <?php echo $form->textArea($element, 'complication_other', array('nowrapper'=>true),
-              false, array('cols' => 40), array('field' => 6)) ?>
+          <?php echo $form->textArea($element, 'complication_other', array('nowrapper'=>true)) ?>
       </td>
     </tr>
     </tbody>

@@ -41,7 +41,7 @@ class Element_OphTrOperationnote_Trabeculectomy extends Element_OnDemand
             'difficulty_other' => 'Other difficulty',
             'report' => 'Description',
             'MultiSelect_Complications' => 'Complications',
-            'ultiSelect_Difficulties' => 'Operative Difficulties'
+            'MultiSelect_Difficulties' => 'Operative Difficulties'
         );
     }
 
