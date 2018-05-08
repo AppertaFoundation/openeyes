@@ -42,6 +42,7 @@ class WorklistController extends BaseController
     public function actionView()
     {
         $this->layout = 'main';
+        $this->fixedHotlist = true;
         $worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null);
         $this->render('index', array('worklists' => $worklists));
     }
