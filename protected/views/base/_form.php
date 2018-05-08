@@ -61,6 +61,13 @@ if (!Yii::app()->user->isGuest) {
       </li>
         <?= $menuHelper->render($navIconUrl) ?>
       <li class="oe-nav-btn">
+        <a class="icon-btn" href="<?= Yii::app()->createUrl('worklist/view') ?>">
+          <svg viewBox="0 0 80 40" class="icon clinic ">
+            <use xlink:href="<?= $navIconUrl . '#clinic-icon' ?>"></use>
+          </svg>
+        </a>
+      </li>
+      <li class="oe-nav-btn">
         <div class="nav-js-btn" id="js-nav-activity-btn" data-fixable="<?= $this->fixedHotlist ? 'true' : 'false' ?>">
           <svg viewBox="0 0 80 40" class="icon hotlist">
             <use xlink:href="<?= $navIconUrl . '#hotlist-icon' ?>"></use>

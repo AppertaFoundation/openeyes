@@ -312,11 +312,6 @@ return array(
                     'position' => 2,
                     'restricted' => array('TaskViewAudit'),
                 ),
-                'worklist' => array(
-                    'title' => 'Worklists',
-                    'uri' => 'worklist/view',
-                    'position' => 2,
-                ),
                 'reports' => array(
                     'title' => 'Reports',
                     'uri' => 'report',
