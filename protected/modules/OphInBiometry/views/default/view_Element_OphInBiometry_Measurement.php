@@ -26,14 +26,19 @@ if ($element->event->id > 0) {
 ?>
 
 <section>
-	<div class="element-data element-eyes">
+    <div class="element-data element-eyes">
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
             <div class="<?= $eye_side ?>-eye">
-                <?php if ($element->hasEye($eye_side))  { ?>
+                <?php if ($element->hasEye($eye_side)) { ?>
                     <div class="eye-icon-header">
-                        <i class="oe-i laterality  <?php echo $eye_side == 'right' ? 'R' : 'L' ?> pad"></i>
-                        </i><i class="oe-i laterality NA pad"></i>
-                    </div> <?php 
+                        <?php if ($eye_side == 'right') { ?>
+                            <i class="oe-i laterality  R pad"></i>
+                            </i><i class="oe-i laterality NA pad"></i>
+                        <?php } else { ?>
+                            <i class="oe-i laterality NA pad"></i>
+                            <i class="oe-i laterality  L pad"></i>
+                        <?php } ?>
+                    </div> <?php
                     $this->renderPartial('view_Element_OphInBiometry_Measurement_fields',
                         array('side' => $eye_side, 'element' => $element));
                 } else { ?>
@@ -41,5 +46,5 @@ if ($element->event->id > 0) {
                 <?php } ?>
             </div>
         <?php endforeach; ?>
-	</div>
+    </div>
 </section>
