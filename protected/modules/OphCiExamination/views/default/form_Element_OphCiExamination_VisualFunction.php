@@ -92,26 +92,3 @@
 	}
 	?>
 </div>
-<script type="text/javascript">
-    var visual_function = $('.edit-Visual.Function');
-
-    var left_eye = visual_function.find('.left-eye');
-    var left_eye_comments = left_eye.find('#left-eye-comments');
-    if (left_eye_comments.text().trim().length){
-        left_eye_comments.show();
-    }else{
-        left_eye.find('.js-add-comments').on('click', function () {
-            left_eye_comments.show();
-        });
-    }
-
-    var right_eye = visual_function.find('.right-eye');
-    var right_eye_comments = right_eye.find('#right-eye-comments');
-    if(right_eye_comments.text().trim().length){
-        right_eye_comments.show();
-    }else{
-        right_eye.find('.js-add-comments').on('click', function () {
-            right_eye_comments.show();
-        });
-    }
-</script>

@@ -145,8 +145,18 @@ $(document).ready(function(){
 
   $(this).on('click', '.js-add-comments', function (e) {
     e.preventDefault();
-    $($(this).data('input')).show();
-    $(this).hide();
+    var button = $(this);
+    var input = $($(this).data('input'));
+    button.hide();
+    input.show();
+    input.focus();
+    input.find('textarea, input').focus().andSelf().on('blur', function () {
+      if ($(this).val().trim() === '') {
+        button.show();
+        input.hide();
+        input.find('textarea, input').andSelf().off('blur');
+      }
+    });
   });
 
   // Tile Data Overflow
