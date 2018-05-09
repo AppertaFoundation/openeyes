@@ -20,6 +20,8 @@ class m180501_092100_add_disorders extends OEMigration
 
 	    $this->execute("INSERT IGNORE INTO disorder (id, fully_specified_name, term, specialty_id) VALUES (373424008, 'Corneal guttata (finding)', 'Corneal guttata', (SELECT id FROM specialty WHERE code = 130));");
 
+	    $this->execute("INSERT IGNORE INTO disorder (id, fully_specified_name, term, specialty_id) VALUES (420515004, 'Retinal venous tortuosity (finding)', 'Retinal venous tortuosity', (SELECT id FROM specialty WHERE code = 130));");
+
 	}
 
 	public function down()
