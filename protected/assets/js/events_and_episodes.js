@@ -146,17 +146,19 @@ $(document).ready(function(){
   $(this).on('click', '.js-add-comments', function (e) {
     e.preventDefault();
     var button = $(this);
-    var input = $($(this).data('input'));
+    var container = $($(this).data('comment-container'));
     button.hide();
-    input.show();
-    input.focus();
-    input.find('textarea, input').focus().andSelf().on('blur', function () {
+    container.show();
+    container.find('textarea, input').andSelf().focus();
+  });
+
+  $(this).on('blur', '.js-comment-field', function() {
       if ($(this).val().trim() === '') {
+      	var button = $($(this).data('comment-button'));
+      	var container = $(this).closest('.js-comment-container');
         button.show();
-        input.hide();
-        input.find('textarea, input').andSelf().off('blur');
+        container.hide();
       }
-    });
   });
 
   // Tile Data Overflow

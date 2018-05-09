@@ -74,22 +74,24 @@
                     )) ?>
             </div>
 
-            <div id="refraction-<?= $eye_side ?>-comments" class="field-row-pad-top"
+            <div id="refraction-<?= $eye_side ?>-comments" class="field-row-pad-top js-comment-container"
                  style="<?= !$element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>">
                 <?php echo CHtml::activeTextArea($element, $eye_side . '_notes',
                     array(
                         'rows' => 1,
                         'placeholder' => $element->getAttributeLabel($eye_side . '_notes'),
-                        'class' => 'cols-full',
+                        'class' => 'cols-full js-comment-field',
                         'style' => 'overflow-wrap: break-word; height: 24px;',
+                        'data-comment-button' => '#refraction-' .  $eye_side . '-comment-button',
                     )) ?>
             </div>
           </div>
 
           <div class="flex-item-bottom">
 
-            <button class="button js-add-comments" data-input="#refraction-<?= $eye_side ?>-comments" type="button"
-              style="<?= $element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>">
+            <button id="refraction-<?= $eye_side ?>-comment-button"
+                    class="button js-add-comments" data-comment-container="#refraction-<?= $eye_side ?>-comments"
+                    type="button" style="<?= $element->{$eye_side . '_notes'} ? 'display: none;' : '' ?>">
               <i class="oe-i comments small-icon"></i>
             </button>
 

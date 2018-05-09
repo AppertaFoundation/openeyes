@@ -43,18 +43,26 @@ if ($this->checkClericalEditAccess()) {
                   $comments = $answer ? $answer->comments : null;
                   ?>
               </td>
-                <?php if ($factor->require_comments) { ?>
+                <?php if ($factor->require_comments) {
+                  $comment_button_id = CHtml::modelName($element) . '_patient_factors_' . $factor->id . '_comment_button'; ?>
                   <td>
                     <div class="cols-full ">
-                      <button class="button  js-add-comments" style="display: <?php if($comments){ echo 'none';} ?>"
-                              data-input="#<?= CHtml::modelName($element).'_patient_factors_'.$factor->id.'_comments'; ?>">
-                        <i class="oe-i comments  small-icon"></i>
+                      <button
+                          id="<?= $comment_button_id ?>"
+                          class="button js-add-comments" style="display: <?php if ($comments): ?>none<?php endif; ?>"
+                          data-comment-container="#<?= CHtml::modelName($element) . '_patient_factors_' . $factor->id . '_comments'; ?>">
+                        <i class="oe-i comments small-icon"></i>
                       </button>
-                        <?php echo CHtml::textArea("{$field_base_name}[comments]", $comments, array('rows' => 2, 'style'=>'display:'.(($comments)? '':'none'), 'placeholder'=>'Comments')); ?>
+                        <?php echo CHtml::textArea("{$field_base_name}[comments]", $comments, array(
+                            'class' => 'js-comment-field js-comment-container',
+                            'rows' => 2,
+                            'style' => 'display:' . (($comments) ? '' : 'none'),
+                            'placeholder' => 'Comments',
+                            'data-comment-button' => '#' . $comment_button_id)); ?>
                     </div>
                   </td>
                 <?php } else { ?>
-                    <td></td>
+                  <td></td>
                 <?php } ?>
               <td>
                 <label class="inline highlight">

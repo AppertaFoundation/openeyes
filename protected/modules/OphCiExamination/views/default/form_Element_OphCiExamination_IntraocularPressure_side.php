@@ -54,12 +54,20 @@ $comments = $side . '_comments';
     ?>
     </tbody>
   </table>
-  <div id="iop-<?php echo $side; ?>-comments" class="js-input-comments field-row-pad-top" <?= (!$element->$comments) ? 'style="display: none;"' : ''; ?>>
-      <?= $form->textArea($element, "{$side}_comments", array('nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'Comments', 'style' => 'overflow-x: hidden; word-wrap: break-word;')) ?>
+  <div id="iop-<?php echo $side; ?>-comments" class="js-comment-container field-row-pad-top" <?= (!$element->$comments) ? 'style="display: none;"' : ''; ?>>
+      <?= $form->textArea($element, "{$side}_comments", array('nowrapper' => true), false,
+          array(
+              'class' => 'js-comment-field',
+              'rows' => 1,
+              'placeholder' => 'Comments',
+              'style' => 'overflow-x: hidden; word-wrap: break-word;',
+              'data-comment-button' => '#iop-' . $side .'-comment-button'
+          )) ?>
   </div>
 </div>
 <div class="flex-item-bottom">
-  <button type="button" class="button js-add-comments" data-input="#iop-<?php echo $side; ?>-comments" <?= $element->$comments ? 'style="display: none;"' : ''; ?>>
+  <button id="iop-<?php echo $side; ?>-comment-button" type="button" class="button js-add-comments"
+          data-comment-container="#iop-<?php echo $side; ?>-comments" <?= $element->$comments ? 'style="display: none;"' : ''; ?>>
     <i class="oe-i comments small-icon"></i>
   </button>
   <button type="button" class="button hint green js-add-select-search">

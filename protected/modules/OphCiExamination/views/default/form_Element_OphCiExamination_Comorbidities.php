@@ -47,12 +47,19 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
           true,
           true
       ) ?>
-      <?php echo $form->textArea($element, 'comments', array( 'nowrapper' => true), false, array('placeholder' => 'Enter comments here', 'style'=>'display: none;')) ?>
+
+      <?php echo $form->textArea($element, 'comments', array('nowrapper' => true), false, array(
+          'class' => 'js-comment-field js-comment-container',
+          'data-comment-button' => '#' . CHtml::modelName($element) . '_comment_button',
+          'placeholder' => 'Enter comments here',
+          'style' => $element->comments ? '' : 'display: none;',
+      )) ?>
   </div>
-  <button class="button js-add-comments" data-input="#<?= CHtml::modelName($element).'_comments'; ?>" type="button">
+  <button id="<?= CHtml::modelName($element) ?>_comment_button" class="button js-add-comments"
+          data-comment-container="#<?= CHtml::modelName($element) . '_comments'; ?>" type="button"
+          <?php if ($element->comments): ?>style="display: none"<?php endif; ?>>
     <i class="oe-i comments small-icon"></i>
   </button>
-
 </div>
 
 

@@ -60,7 +60,18 @@ if (!isset($values)) {
           <?= $values['comments'] ?>
         <?php else: ?>
           <div class="cols-full">
-            <?php $form->comment($field_prefix . '[comments]', $values['comments']); ?>
+            <button id="<?= CHtml::getIdByName($field_prefix . '[comments]') ?>_button"
+                    class="button js-add-comments"
+                    data-comment-container="#<?= CHtml::getIdByName($field_prefix . '[comments]') ?>"
+                    type="button" <?php if ($values['comments']): ?>style="display: none"<?php endif; ?>>
+              <i class="oe-i comments small-icon"></i>
+            </button>
+
+              <?= CHtml::textField($field_prefix . '[comments]', $values['comments'], array(
+                  'style' => $values['comments'] ? '' : 'display: none;',
+                  'class' => 'js-comment-field js-comment-container',
+                  'data-comment-button' => '#' . CHtml::getIdByName($field_prefix . '[comments]') . '_button'
+              )) ?>
           </div>
         <?php endif; ?>
     </td>

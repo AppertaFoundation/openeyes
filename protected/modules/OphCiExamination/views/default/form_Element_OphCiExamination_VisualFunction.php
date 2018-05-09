@@ -54,8 +54,9 @@
                     ?>
                 </td>
                 <td class="top">
-                  <button class="button js-add-comments"
-                          data-input="#visual-function-<?=$eye_side?>-comments"
+                  <button id="visual-function-<?=$eye_side?>-comment_button"
+                          class="button js-add-comments"
+                          data-comment-container="#visual-function-<?=$eye_side?>-comments"
                           style="display: <?= !$element->{$eye_side.'_comments'}?:'none' ?>;"
                           type="button">
                     <i class="oe-i comments small-icon"></i>
@@ -64,14 +65,19 @@
               </tr>
               </tbody>
             </table>
-            <div id="visual-function-<?=$eye_side?>-comments" class="field-row-pad-top cols-full" style="display: <?= $element->{$eye_side.'_comments'}?:'none' ?>;">
+            <div id="visual-function-<?= $eye_side ?>-comments" class="field-row-pad-top cols-full js-comment-container"
+                 style="display: <?= $element->{$eye_side . '_comments'} ?: 'none' ?>;">
                 <?php
                 echo $form->textArea(
                     $element,
                     $eye_side . '_comments',
                     array('rows' => 2, 'nowrapper' => true),
                     false,
-                    array('placeholder' => $element->getAttributeLabel($eye_side.'_comments')),
+                    array(
+                        'class' => 'js-comment-field',
+                        'placeholder' => $element->getAttributeLabel($eye_side . '_comments'),
+                        'data-comment-button' => '#visual-function-' . $eye_side . '-comment_button',
+                    ),
                     array('field' => 12)
                 )
                 ?>

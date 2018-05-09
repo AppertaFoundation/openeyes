@@ -42,7 +42,7 @@ if ($cols) {
     $attr['cols'] = $cols;
 }
 ?>
-<textarea class="cols-full column"
+<textarea class="cols-full column <?= @$htmlOptions['class'] ?>"
     <?= CHtml::renderAttributes(array_merge($htmlOptions, $attr));?>
 ><?=CHtml::encode($value)?>
 </textarea>

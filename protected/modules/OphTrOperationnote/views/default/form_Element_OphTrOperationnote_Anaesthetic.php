@@ -127,7 +127,8 @@ $is_hidden = function () use ($element) {
               ) ?>
           </td>
         </tr>
-        <tr style="<?= boolval($element->anaesthetic_comment) ? '' : 'display: none' ?>">
+        <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
+            style="<?= (bool)$element->anaesthetic_comment ? '' : 'display: none' ?>" class="js-comment-container">
           <td>
             Comments
           </td>
@@ -137,6 +138,8 @@ $is_hidden = function () use ($element) {
                   array(
                       'rows' => 4,
                       'cols' => 40,
+                      'class' => 'js-comment-field',
+                      'data-comment-button' => '#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button',
                   )) ?>
           </td>
         </tr>
@@ -145,7 +148,8 @@ $is_hidden = function () use ($element) {
     </div>
   </div>
   <div class="flex-item-bottom">
-    <button class="button js-add-comments" data-input="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment">
+    <button id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button" class="button js-add-comments"
+            data-comment-container="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container">
       <i class="oe-i comments small-icon"></i>
     </button>
   </div>

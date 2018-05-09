@@ -44,13 +44,18 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
           'style' => 'overflow: hidden; overflow-wrap: break-word; height: 24px;',
       )) ?>
 
-    <div id="outcomes-comments" class="field-row-pad-top" style="<?= $element->description ? '' : 'display: none;' ?>">
+    <div id="outcomes-comments" class="field-row-pad-top js-comment-container"
+         style="<?= $element->description ? '' : 'display: none;' ?>">
         <?php echo $form->textArea(
             $element,
             'description',
-            array('class' => 'autosize', 'nowrapper' => true),
+            array('nowrapper' => true),
             false,
-            array('placeholder' => $element->getAttributeLabel('description'))
+            array(
+                'class' => 'autosize js-comment-field',
+                'placeholder' => $element->getAttributeLabel('description'),
+                'data-comment-button' => '#outcomes-comment-button',
+            )
         ) ?>
     </div>
 
@@ -99,7 +104,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
       <?php } ?>
   </div>
   <div class="flex-item-bottom">
-    <button class="button js-add-comments" data-input="#outcomes-comments"
+    <button id="outcomes-comment-button" class="button js-add-comments" data-comment-container="#outcomes-comments"
             style="<?= $element->description ? 'display: none;' : '' ?>" type="button">
       <i class="oe-i comments small-icon"></i>
     </button>
