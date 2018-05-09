@@ -417,7 +417,7 @@ function positionFixedPopup($btn, adderDiv = null){
   check against scroll position
   */
   var scrollPos = $(".main-event").scrollTop();
-  $(".main-event").on("scroll", function(){
+	document.addEventListener("scroll", function () {
     if( scrollPos !=  $(this).scrollTop() ){
       // Remove scroll event:
       $(".main-event").off("scroll");
@@ -429,12 +429,4 @@ function positionFixedPopup($btn, adderDiv = null){
 // Close and reset
 function closeCancel(adderDiv = null){
   adderDiv.hide();
-
-  if(resetPopupData){
-    adderDiv.find('.add-options li').removeClass('selected');
-    for(var i = 0; i<lists.length; i++){
-      lists[i].clearData();
-    }
-  }
-
 }
