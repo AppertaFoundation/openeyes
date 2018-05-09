@@ -20,9 +20,30 @@
 <?php
     $js_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.assets.js') . '/OpenEyes.UI.DiagnosesSearch.js', false, -1);
     Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/Diagnoses.js", CClientScript::POS_HEAD);
+
     $firm = Firm::model()->with(array(
             'serviceSubspecialtyAssignment' => array('subspecialty')
     ))->findByPk(Yii::app()->session['selected_firm_id']);
+
+    $current_episode = Episode::getCurrentEpisodeByFirm($this->patient->id, $firm);
+
+    $other_episode_ids = array_map(function($episodes){
+        return $episodes->id;
+    }, $this->patient->episodes);
+
+    unset($other_episode_ids[$current_episode->id]);
+
+    $read_only_diagnoses = [];
+    foreach ($this->patient->episodes as $ep) {
+        $diagnosis = $ep->diagnosis; // Disorder model
+        if ($diagnosis && $diagnosis->specialty && $diagnosis->specialty->code == 130 && $ep->id != $current_episode->id) {
+            $read_only_diagnoses[] =[
+                'diagnosis' => $diagnosis,
+                'eye' => Eye::methodPostFix($ep->eye_id),
+                'subspecialty' => $ep->getSubspecialtyText(),
+            ];
+        }
+    }
 ?>
 
 <script type="text/javascript" src="<?=$js_path;?>"></script>
@@ -47,7 +68,14 @@
         <tbody id="OphCiExamination_diagnoses">
         <?php
 
+        foreach ($read_only_diagnoses as $row_count => $values) {
+            $this->renderPartial('DiagnosesEntry_event_edit_readonly', [ 'values' => $values ]);
+        }
+
+        $row = $row_count+1;
         foreach ($element->diagnoses as $row_count => $diagnosis) {
+
+            $row_count = $row + $row_count;
             $this->renderPartial(
                 'DiagnosesEntry_event_edit',
                 array(
