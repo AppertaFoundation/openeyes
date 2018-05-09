@@ -41,15 +41,15 @@
         </div>
     </div>
     <div id="double_document_uploader">
-        <div class="row">
+        <div class="flex-layout flex-left">
             <div class="cols-6 column">
-                <b>RIGHT</b>
+                <h2>RIGHT</h2>
             </div>
             <div class="cols-6 column">
-                <b>LEFT</b>
+                <h2>LEFT</h2>
             </div>
         </div>
-        <div class="row" id="double_document_uploader">
+        <div class="flex-layout flex-left" id="double_document_uploader">
             <div class="cols-6 column" id="right_document_id_row">
                 <?php $this->generateFileField($element, 'right_document'); ?>
             </div>
