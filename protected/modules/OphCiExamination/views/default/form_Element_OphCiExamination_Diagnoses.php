@@ -68,11 +68,12 @@
         <tbody id="OphCiExamination_diagnoses">
         <?php
 
+        $row_count = 0; //in case $read_only_diagnoses is an empty array
         foreach ($read_only_diagnoses as $row_count => $values) {
             $this->renderPartial('DiagnosesEntry_event_edit_readonly', [ 'values' => $values ]);
         }
 
-        $row = $row_count+1;
+        $row = $row_count + 1;
         foreach ($element->diagnoses as $row_count => $diagnosis) {
 
             $row_count = $row + $row_count;
