@@ -17,26 +17,6 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-    var toolTip = new OpenEyes.UI.Tooltip({
-        offset: {
-            x: 10,
-            y: 10
-        },
-        viewPortOffset: {
-            x: 0,
-            y: 32 // height of sticky footer
-        }
-    });
-    $(this).on('mouseover', '.has-tooltip', function() {
-        if ($(this).data('tooltip').length) {
-            toolTip.setContent($(this).data('tooltip'));
-            var offsets = $(this).offset();
-            toolTip.show(offsets.left, offsets.top);
-        }
-    }).mouseout(function (e) {
-        toolTip.hide();
-    });
-
     $(this).on('click', '#add-message-comment', function() {
         $('#new-comment-form').toggle();
         $('#add-comment-button-container').toggle();
