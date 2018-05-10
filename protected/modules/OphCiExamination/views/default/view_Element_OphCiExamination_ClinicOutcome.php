@@ -17,38 +17,37 @@
  */
 ?>
 <div class="element-data full-width">
-    <div class="data-row">
-      <?= $element->getAttributeLabel('status') ?>:
-                <?php echo $element->status?>
-                <?php if ($element->status && $element->status->followup) { ?>
-                    in
-                    <?php echo $element->getFollowUp()?>
-                    with
-                    <?php echo $element->role->name?>
-                    <?php if ($element->role_comments) { ?>
-                        (<?= Yii::app()->format->Ntext($element->role_comments) ?>)
-                    <?php } ?>
-                <?php if ($element->community_patient) { ?>
-                    (Community patient)
-                    <?php } ?>
-                <?php } ?>
-	<?php if ($api = Yii::app()->moduleAPI->get('PatientTicketing')) {
-    if ($element->status && $element->status->patientticket &&
-            $ticket = $api->getTicketForEvent($this->event)
-            ) {
-        ?>
-				<div>
-					<?php $this->widget($api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
-				</div>
-	<?php
-    }
-}?>
-    </div>
+  <div class="data-row">
+      <?php echo $element->status ?>
+      <?php if ($element->status && $element->status->followup) { ?>
+        in
+          <?php echo $element->getFollowUp() ?>
+        with
+          <?php echo $element->role->name ?>
+          <?php if ($element->role_comments) { ?>
+          (<?= Yii::app()->format->Ntext($element->role_comments) ?>)
+          <?php } ?>
+          <?php if ($element->community_patient) { ?>
+          (Community patient)
+          <?php } ?>
+      <?php } ?>
+      <?php if ($api = Yii::app()->moduleAPI->get('PatientTicketing')) {
+          if ($element->status && $element->status->patientticket &&
+              $ticket = $api->getTicketForEvent($this->event)
+          ) {
+              ?>
+            <div class="cols-7">
+                <?php $this->widget($api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
+            </div>
+              <?php
+          }
+      } ?>
+  </div>
     <?php if ($element->description) { ?>
-        <div class="data-row">
-            <?= $element->getAttributeLabel('description') ?>:
-              <?= Yii::app()->format->Ntext($element->description); ?>
-        </div>
+      <div class="data-row">
+          <?= $element->getAttributeLabel('description') ?>:
+          <?= Yii::app()->format->Ntext($element->description); ?>
+      </div>
     <?php } ?>
 
 </div>

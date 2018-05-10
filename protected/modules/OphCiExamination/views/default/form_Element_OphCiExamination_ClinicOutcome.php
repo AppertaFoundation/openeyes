@@ -27,49 +27,7 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
 ?>
 
 <div class="element-fields flex-layout full-width">
-    <?php if ($ticket_api) { ?>
-      <div data-queue-ass-form-uri="<?= $ticket_api->getQueueAssignmentFormURI() ?>"
-          id="div_<?= CHtml::modelName($element) ?>_patientticket"
-          style="<?= !($element->status && $element->status->patientticket) ? "display: none;" : "" ?>" >
-        <!-- TODO, this should be pulled from the ticketing module somehow -->
-          <?php $ticket = $element->getPatientTicket();
-          if ($ticket) { ?>
-            <span class="field-info">Already Referred to Virtual Clinic:</span><br/>
-              <?php $this->widget($ticket_api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
-          <?php } else { ?>
-            <fieldset class="flex-layout">
-              Virtual Clinic:
-              <div class="cols-3">
-                  <?php if (count($queues) == 0) { ?>
-                    <span>No valid Virtual Clinics available</span>
-                  <?php } elseif (count($queues) == 1) {
-                      echo reset($queues);
-                      $qid = key($queues);
-                      $_POST['patientticket_queue'] = $qid;
-                      ?>
-                    <input type="hidden" name="patientticket_queue" value="<?= $qid ?>"/>
 
-                  <?php } else {
-                      echo CHtml::dropDownList('patientticket_queue', @$_POST['patientticket_queue'], $queues,
-                          array('empty' => '- Please select -', 'nowrapper' => true, 'options' => array()));
-                  } ?>
-              </div>
-              <div class="cols-1">
-                <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
-                     alt="loading..." style="display: none;">
-              </div>
-            </fieldset>
-            <div id="queue-assignment-placeholder">
-                <?php if (@$_POST['patientticket_queue']) {
-                    $this->widget(
-                        $ticket_api::$QUEUE_ASSIGNMENT_WIDGET,
-                        array('queue_id' => $_POST['patientticket_queue'], 'label_width' => 3, 'data_width' => 5)
-                    );
-                } ?>
-            </div>
-          <?php } ?>
-      </div>
-    <?php } ?>
 
     <?php echo $form->hiddenField($element, 'status_id'); ?>
     <?php echo $form->hiddenField($element, 'followup_quantity'); ?>
@@ -95,10 +53,54 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
             array('placeholder' => $element->getAttributeLabel('description'))
         ) ?>
     </div>
-  </div>
 
+      <?php if ($ticket_api) { ?>
+        <br/>
+        <div data-queue-ass-form-uri="<?= $ticket_api->getQueueAssignmentFormURI() ?>"
+             id="div_<?= CHtml::modelName($element) ?>_patientticket"
+             style="<?= !($element->status && $element->status->patientticket) ? 'display: none;' : '' ?>">
+          <!-- TODO, this should be pulled from the ticketing module somehow -->
+            <?php $ticket = $element->getPatientTicket();
+            if ($ticket) { ?>
+              <span class="field-info">Already Referred to Virtual Clinic:</span><br/>
+                <?php $this->widget($ticket_api::$TICKET_SUMMARY_WIDGET, array('ticket' => $ticket)); ?>
+            <?php } else { ?>
+              <fieldset class="flex-layout">
+                Virtual Clinic:
+                <div class="cols-3">
+                    <?php if (count($queues) == 0) { ?>
+                      <span>No valid Virtual Clinics available</span>
+                    <?php } elseif (count($queues) == 1) {
+                        echo reset($queues);
+                        $qid = key($queues);
+                        $_POST['patientticket_queue'] = $qid;
+                        ?>
+                      <input type="hidden" name="patientticket_queue" value="<?= $qid ?>"/>
+
+                    <?php } else {
+                        echo CHtml::dropDownList('patientticket_queue', @$_POST['patientticket_queue'], $queues,
+                            array('empty' => '- Please select -', 'nowrapper' => true, 'options' => array()));
+                    } ?>
+                </div>
+                <div class="cols-1">
+                  <i class="oe-i spinner" style="display: none;"></i>
+                </div>
+              </fieldset>
+              <div id="queue-assignment-placeholder">
+                  <?php if (@$_POST['patientticket_queue']) {
+                      $this->widget(
+                          $ticket_api::$QUEUE_ASSIGNMENT_WIDGET,
+                          array('queue_id' => $_POST['patientticket_queue'], 'label_width' => 3, 'data_width' => 5)
+                      );
+                  } ?>
+              </div>
+            <?php } ?>
+        </div>
+      <?php } ?>
+  </div>
   <div class="flex-item-bottom">
-    <button class="button js-add-comments" data-input="#outcomes-comments" style="<?= $element->description ? 'display: none;' : '' ?>" type="button">
+    <button class="button js-add-comments" data-input="#outcomes-comments"
+            style="<?= $element->description ? 'display: none;' : '' ?>" type="button">
       <i class="oe-i comments small-icon"></i>
     </button>
 
@@ -194,12 +196,12 @@ if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
 
   var Element_OphCiExamination_ClinicOutcome_templates = {
       <?php foreach (\OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Template::model()->findAll() as $template): ?>
-      "<?php echo $template->id?>": {
-        "clinic_outcome_status_id": <?php echo $template->clinic_outcome_status_id ?>,
-        "followup_quantity": "<?php echo $template->followup_quantity ?>",
-        "followup_period_id": "<?php echo $template->followup_period_id ?>"
-      },
-    <?php endforeach ?>
+    "<?php echo $template->id?>": {
+      "clinic_outcome_status_id": <?php echo $template->clinic_outcome_status_id ?>,
+      "followup_quantity": "<?php echo $template->followup_quantity ?>",
+      "followup_period_id": "<?php echo $template->followup_period_id ?>"
+    },
+      <?php endforeach ?>
   };
 
   $(function () {
