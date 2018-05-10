@@ -23,7 +23,6 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
 
 <h4>Select a session time:</h4>
 <div id="theatre-times">
-
 	<?php $i = 0;
 	foreach ($theatres as $i => $theatre) { ?>
 

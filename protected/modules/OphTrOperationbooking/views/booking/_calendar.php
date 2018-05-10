@@ -20,67 +20,93 @@ $lastMonth = mktime(0, 0, 0, date('m', $date) - 1, 1, date('Y', $date));
 $nextMonth = mktime(0, 0, 0, date('m', $date) + 1, 1, date('Y', $date));
 $nextYear = mktime(0, 0, 0, date('m'), 1, date('Y') + 1);
 ?>
-<div id="dates" class="clearfix">
-	<div id="current_month" style="text-align: center;"><?php echo date('F Y', $date)?></div>
-  <div class="cols-full flex-layout">
-    <div class="left cols-6" id="month_back">
-      <div class="primary" id="previous_month">
-          <?php echo CHtml::link('&#x25C0;&nbsp;&nbsp;previous month',
-              array('booking/'.($operation->booking ? 're' : '').'schedule/'.$operation->event_id.'?firm_id='.($firm->id ? $firm->id : 'EMG').'&date='.date('Ym', $lastMonth)),
-              array('class' => 'button primary')
-          )?>
-      </div>
+
+<div class="element-fields full-width flex-layout flex-top">
+    <div class="cols-9">
+        <div class="flex-layout row">
+            <?php echo CHtml::link('<button class="large">
+                <i class="oe-i arrow-left-bold medium pad"></i>
+                Previous month</button>',
+                array('booking/'.($operation->booking ? 're' : '').'schedule/'.$operation->event_id.'?firm_id='.($firm->id ? $firm->id : 'EMG').'&date='.date('Ym', $lastMonth)),
+                array('class' => 'large')
+            )?>
+            <h3><?php echo date('F Y', $date)?></h3>
+            <?php if ($nextMonth > $nextYear) {
+                echo '<button href="#" class="large" id="next_month">Next month <i class="oe-i arrow-right-bold medium pad"></i></button>';
+            } else {?>
+                <?php echo CHtml::link('<button class="large">Next month <i class="oe-i arrow-right-bold medium pad"></i></button>',
+                    array('booking/'.($operation->booking ? 're' : '').'schedule/'.$operation->event_id.'?firm_id='.($firm->id ? $firm->id : 'EMG').'&date='.date('Ym', $nextMonth)),
+                    array('class' => 'large')
+                )?>
+            <?php }?>
+        </div>
+        <table id="calendar" class="calendar">
+            <?php
+            foreach ($sessions as $weekday => $list) {?>
+                <tr>
+                    <td><?php echo $weekday?></td>
+                    <?php foreach ($list as $date => $session) {?>
+                        <?php if ($session['status'] == 'blank') {?>
+                            <td></td>
+                        <?php } else {?>
+                            <td class="<?php echo $session['status']?><?php if ($date == $selectedDate) {?> selected_date<?php }?>">
+                                <?php echo date('j', strtotime($date))?>
+                            </td>
+                        <?php }?>
+                    <?php }?>
+                </tr>
+            <?php }?>
+        </table>
     </div>
-    <div class="right cols-6" style="text-align: right;" id="month_forward">
-      <div id="next_month">
-          <?php if ($nextMonth > $nextYear) {
-              echo '<a href="#" class="button primary disabled" id="next_month">next month&nbsp;&nbsp;&#x25B6;</a>';
-          } else {?>
-              <?php echo CHtml::link('<span class="button-span button-span-blue">next month&nbsp;&nbsp;&#x25B6;</span>',
-                  array('booking/'.($operation->booking ? 're' : '').'schedule/'.$operation->event_id.'?firm_id='.($firm->id ? $firm->id : 'EMG').'&date='.date('Ym', $nextMonth)),
-                  array('class' => 'button primary')
-              )?>
-          <?php }?>
-      </div>
+    <div class="cols-2">
+        <table class="calendar key">
+            <tbody>
+            <tr>
+                <td class="">
+                    Day of the week
+                </td>
+            </tr>
+            <tr>
+                <td class="available">
+                    Slots Available
+                </td>
+            </tr>
+            <tr>
+                <td class="limited">
+                    Limited Slots
+                </td>
+            </tr>
+            <tr>
+                <td class="full">
+                    Full
+                </td>
+            </tr>
+            <tr>
+                <td class="closed">
+                    Theatre Closed
+                </td>
+            </tr>
+            <tr>
+                <td class="selected-date">
+                    Selected Date
+                </td>
+            </tr>
+                    <?php if ($operation->getRTTBreach()) {?>
+                        <tr>
+                        <td>
+                        Outside RTT
+                        </td>
+                        </tr>
+                    <?php } ?>
+            <tr>
+                <td class="patient-unavailable">
+                    Patient Unavailable
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
-  </div>
+
+
 </div>
-<table id="calendar" class="cols-full">
-	<tbody>
-		<?php
-        foreach ($sessions as $weekday => $list) {?>
-			<tr>
-				<th><?php echo $weekday?></th>
-				<?php foreach ($list as $date => $session) {?>
-					<?php if ($session['status'] == 'blank') {?>
-						<td></td>
-					<?php } else {?>
-						<td class="<?php echo $session['status']?><?php if ($date == $selectedDate) {?> selected_date<?php }?>">
-							<?php echo date('j', strtotime($date))?>
-						</td>
-					<?php }?>
-				<?php }?>
-			</tr>
-		<?php }?>
-	</tbody>
-	<tfoot>
-		<tr>
-			<td colspan="8">
-				<div id="key">
-				<label>Key:</label>
-					<div class="container" id="day"><div class="color_box"></div><div class="label">Day of the week</div></div>
-					<div class="container" id="available"><div class="color_box"></div><div class="label">Slots Available</div></div>
-					<div class="container" id="limited"><div class="color_box"></div><div class="label">Limited Slots</div></div>
-					<div class="container" id="full"><div class="color_box"></div><div class="label">Full</div></div>
-					<div class="container" id="closed"><div class="color_box"></div><div class="label">Theatre Closed</div></div>
-					<div class="container" id="selected_date"><div class="color_box"></div><div class="label">Selected Date</div></div>
-					<?php if ($operation->getRTTBreach()) {?>
-						<div class="container" id="outside_rtt"><div class="color_box"></div><div class="label">Outside RTT</div></div>
-					<?php } ?>
-					<div class="container" id="patient-unavailable"><div class="color_box"></div><div class="label">Patient Unavailable</div></div>
-				</div>
-			</td>
-      <td></td>
-		</tr>
-	</tfoot>
-</table>
+
