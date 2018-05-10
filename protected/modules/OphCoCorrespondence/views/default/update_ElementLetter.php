@@ -49,9 +49,21 @@ $patient = Patient::model()->findByPk($patient_id);
     $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
     if($correspondeceApp === "on") {
         ?>
-        <div class="cols-5">
+        <div class="cols-3">
             <table class="cols-full">
+                <colgroup>
+                    <col class = "cols-5">
+                    <col class = "cols-7">
+                </colgroup>
                 <tbody>
+                <tr>
+                    <td>
+                        Macro
+                    </td>
+                    <td>
+                        <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'cols-full')); ?>
+                    </td>
+                </tr>
                     <tr>
                         <td>
                             <?php echo $element->getAttributeLabel('is_signed_off') ?>:
@@ -67,6 +79,10 @@ $patient = Patient::model()->findByPk($patient_id);
                             ); ?>
                         </td>
                     </tr>
+                </tbody>
+            </table>
+            <table class="cols-full pad-top">
+                <tbody>
                 <tr>
                     <td>
                         Site
@@ -81,14 +97,6 @@ $patient = Patient::model()->findByPk($patient_id);
                     </td>
                     <td>
                         <?php echo $form->datePicker($element, 'date', array('maxDate' => 'today'), array('nowrapper' => true)) ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Macro
-                    </td>
-                    <td>
-                        <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'full-width resizeselect')); ?>
                     </td>
                 </tr>
                 <tr>
@@ -140,60 +148,132 @@ $patient = Patient::model()->findByPk($patient_id);
 
                     <?php endif; ?>
                 </tr>
-            </tbody>
+                </tbody>
             </table>
-                <div class="cols-5">
-                    <div id="docman_block" class="large-12 column">
-                        <?php
+            <table class="cols-full last-left pad-top">
+                <tbody>
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td class="large-text">
+                        Insert Quick Text
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="large-<?php echo $layoutColumns['label']; ?> column">
+                            <?php
+                            $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
 
-                        $document_set = DocumentSet::model()->findByAttributes(array('event_id' => $element->event_id));
+                            $event_types = array();
+                            foreach (EventType::model()->with('elementTypes')->findAll() as $event_type) {
+                                $event_types[$event_type->class_name] = array();
 
-                        if($document_set){
-                            $this->renderPartial('//docman/_update', array(
-                                'row_index' => (isset($row_index) ? $row_index : 0),
-                                'document_set' => $document_set,
-                                'macro_id' => $macro_id,
-                                'element' => $element,
-                                'can_send_electronically' => true,
-                            ));
-                        }
-                        ?>
+                                foreach ($event_type->elementTypes as $elementType) {
+                                    $event_types[$event_type->class_name][] = $elementType->class_name;
+                                }
+                            }
+
+                            if (isset($_GET['patient_id'])) {
+                                $patient = Patient::model()->findByPk($_GET['patient_id']);
+                            } else {
+                                $patient = Yii::app()->getController()->patient;
+                            }
+
+                            $with = array(
+                                'firmLetterStrings' => array(
+                                    'on' => 'firm_id is null or firm_id = :firm_id',
+                                    'params' => array(
+                                        ':firm_id' => $firm->id,
+                                    ),
+                                    'order' => 'firmLetterStrings.display_order asc',
+                                ),
+                                'subspecialtyLetterStrings' => array(
+                                    'on' => 'subspecialty_id is null',
+                                    'order' => 'subspecialtyLetterStrings.display_order asc',
+                                ),
+                                'siteLetterStrings' => array(
+                                    'on' => 'site_id is null or site_id = :site_id',
+                                    'params' => array(
+                                        ':site_id' => Yii::app()->session['selected_site_id'],
+                                    ),
+                                    'order' => 'siteLetterStrings.display_order',
+                                ),
+                            );
+                            if ($firm->getSubspecialtyID()) {
+                                $with['subspecialtyLetterStrings']['on'] = 'subspecialty_id is null or subspecialty_id = :subspecialty_id';
+                                $with['subspecialtyLetterStrings']['params'] = array(':subspecialty_id' => $firm->getSubspecialtyID());
+                            }
+                            foreach (LetterStringGroup::model()->with($with)->findAll(array('order' => 't.display_order')) as $string_group) {
+                                $strings = $string_group->getStrings($patient, $event_types);
+                                ?>
+                                <div class="field-row">
+                                    <?php echo $form->dropDownListNoPost(strtolower($string_group->name), $strings, '', array(
+                                        'empty' => '- ' . $string_group->name . ' -',
+                                        'nowrapper' => true,
+                                        'class' => 'stringgroup full-width cols-full',
+                                        'disabled' => empty($strings),
+                                    )) ?>
+                                </div>
+                            <?php } ?>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="cols-9">
+            <div class="cols-full">
+                <div id="docman_block" class="cols-12">
+                    <?php
+
+                    $document_set = DocumentSet::model()->findByAttributes(array('event_id' => $element->event_id));
+
+                    if($document_set){
+                        $this->renderPartial('//docman/_update', array(
+                            'row_index' => (isset($row_index) ? $row_index : 0),
+                            'document_set' => $document_set,
+                            'macro_id' => $macro_id,
+                            'element' => $element,
+                            'can_send_electronically' => true,
+                        ));
+                    }
+                    ?>
+                </div>
+            </div>
+            <?php if(!$element->document_instance): ?>
+                <div class="row field-row">
+                    <div class="large-<?php echo $layoutColumns['label'];?> column">
+                        <?php echo $form->dropDownListNoPost('address_target', $element->address_targets, $element->address_target, array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width'))?>
+                    </div>
+                    <div class="large-6 column end">
+                        <?php echo $form->textArea($element, 'address', array('rows' => 7, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
                     </div>
                 </div>
-                    <?php if(!$element->document_instance): ?>
-                        <div class="row field-row">
-                            <div class="large-<?php echo $layoutColumns['label'];?> column">
-                                <?php echo $form->dropDownListNoPost('address_target', $element->address_targets, $element->address_target, array('empty' => '- Recipient -', 'nowrapper' => true, 'class' => 'full-width'))?>
-                            </div>
-                            <div class="large-6 column end">
-                                <?php echo $form->textArea($element, 'address', array('rows' => 7, 'label' => false, 'nowrapper' => true), false, array('class' => 'address'))?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-        </div>
-        <div class="cols-7">
+            <?php endif; ?>
             <table class="cols-full">
                 <colgroup>
                     <col>
-                    <col class="cols-9">
+                    <col class="cols-8">
                 </colgroup>
                 <tbody>
                     <tr>
                         <!--Nickname-->
-                        <td>
+                        <td style="text-align: left;">
                             <?php echo $form->checkBox($element, 'use_nickname', array('nowrapper' => true)) ?>
                         </td>
+                    </tr>
+                    <tr>
 <!--                        Introduction/ Salutation-->
-                        <td>
+                        <td colspan="2" class="cols-full correspondence-letter-text">
                             <?php echo $form->textArea($element, 'introduction', array('rows' => 2, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
                         </td>
                     </tr>
                     <tr>
 <!--                        Subject-->
-                        <td>
-                            Subject
-                        </td>
-                        <td>
+                        <td colspan="2">
                             <div class="large-<?php echo $layoutColumns['field']; ?> column large-offset-<?php echo $layoutColumns['label']; ?> end">
                                 <?php echo $form->textArea(
                                     $element,
@@ -205,64 +285,7 @@ $patient = Patient::model()->findByPk($patient_id);
                         </td>
                     </tr>
                     <tr>
-                        <td>
-                            <div class="large-<?php echo $layoutColumns['label']; ?> column">
-                                <?php
-                                $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
-
-                                $event_types = array();
-                                foreach (EventType::model()->with('elementTypes')->findAll() as $event_type) {
-                                    $event_types[$event_type->class_name] = array();
-
-                                    foreach ($event_type->elementTypes as $elementType) {
-                                        $event_types[$event_type->class_name][] = $elementType->class_name;
-                                    }
-                                }
-
-                                if (isset($_GET['patient_id'])) {
-                                    $patient = Patient::model()->findByPk($_GET['patient_id']);
-                                } else {
-                                    $patient = Yii::app()->getController()->patient;
-                                }
-
-                                $with = array(
-                                    'firmLetterStrings' => array(
-                                        'on' => 'firm_id is null or firm_id = :firm_id',
-                                        'params' => array(
-                                            ':firm_id' => $firm->id,
-                                        ),
-                                        'order' => 'firmLetterStrings.display_order asc',
-                                    ),
-                                    'subspecialtyLetterStrings' => array(
-                                        'on' => 'subspecialty_id is null',
-                                        'order' => 'subspecialtyLetterStrings.display_order asc',
-                                    ),
-                                    'siteLetterStrings' => array(
-                                        'on' => 'site_id is null or site_id = :site_id',
-                                        'params' => array(
-                                            ':site_id' => Yii::app()->session['selected_site_id'],
-                                        ),
-                                        'order' => 'siteLetterStrings.display_order',
-                                    ),
-                                );
-                                if ($firm->getSubspecialtyID()) {
-                                    $with['subspecialtyLetterStrings']['on'] = 'subspecialty_id is null or subspecialty_id = :subspecialty_id';
-                                    $with['subspecialtyLetterStrings']['params'] = array(':subspecialty_id' => $firm->getSubspecialtyID());
-                                }
-                                foreach (LetterStringGroup::model()->with($with)->findAll(array('order' => 't.display_order')) as $string_group) {
-                                    $strings = $string_group->getStrings($patient, $event_types);
-                                    ?>
-                                    <div class="field-row">
-                                        <?php echo $form->dropDownListNoPost(strtolower($string_group->name), $strings, '', array(
-                                            'empty' => '- ' . $string_group->name . ' -',
-                                            'nowrapper' => true,
-                                            'class' => 'stringgroup full-width',
-                                            'disabled' => empty($strings),
-                                        )) ?>
-                                    </div>
-                                <?php } ?>
-                        </td>
-                        <td>
+                        <td colspan="2">
                             <?php echo $form->textArea($element, 'body', array('rows' => 20, 'label' => false, 'nowrapper' => true), false, array('class' => 'address')) ?>
                         </td>
                     </tr>
@@ -287,6 +310,7 @@ $patient = Patient::model()->findByPk($patient_id);
                                 ),
                                 'htmlOptions' => array(
                                     'placeholder' => 'type to search for users',
+                                    'class' => 'cols-full search',
                                 ),
                             ));
                             ?>
@@ -316,11 +340,6 @@ $patient = Patient::model()->findByPk($patient_id);
                                 </div>
                             <?php endif; ?>
 
-                            <!--		<div class="eventDetail row enclosures">
-		<input type="hidden" name="update_enclosures" value="1" />
-		<div class="label OphCoCorrespondence_footerLabel">Enclosures:</div>
-		<div class="right">
-			<div id="enclosureItems">
 				<?php if (is_array(@$_POST['EnclosureItems'])) { ?>
 					<?php foreach ($_POST['EnclosureItems'] as $key => $value) { ?>
 						<div class="enclosureItem"><?php echo CHtml::textField("EnclosureItems[$key]", $value,
@@ -332,14 +351,7 @@ $patient = Patient::model()->findByPk($patient_id);
                                 array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 60)) ?><a href="#" class="removeEnclosure">Remove</a></div>
 					<?php } ?>
 				<?php } ?>
-			</div>
-			<div>
-				<button class="addEnclosure classy green mini" type="button">
-					<span class="button-span button-span-green">Add</span>
-				</button>
-			</div>
-		</div>
-	</div> -->
+
                             <input type="hidden" name="update_enclosures" value="1"/>
                             <div id="enclosureItems" class="field-row<?php echo !is_array(@$_POST['EnclosureItems']) && empty($element->enclosures) ? ' hide' : ''; ?>">
                                 <?php if (is_array(@$_POST['EnclosureItems'])) { ?>

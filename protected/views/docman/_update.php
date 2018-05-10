@@ -24,7 +24,7 @@
 <?php $element->draft = 1; ?>
 <?php $is_mandatory = false; ?>
 
-    <table id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
+    <table class= "cols-full" id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
         <thead>
             <tr id="dm_0">
                 <th>To/CC</th>
