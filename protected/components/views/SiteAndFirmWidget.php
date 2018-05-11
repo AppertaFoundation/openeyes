@@ -21,7 +21,7 @@
 <?php
 $form = $this->beginWidget('CActiveForm', array(
     'id' => ($this->mode === 'static' ? 'static-' : '') . 'site-and-firm-form',
-    'htmlOptions' => array('class' => $this->mode . '-site-and-firm-form'),
+    'htmlOptions' => array('class' => 'js-' . $this->mode . '-site-and-firm-form'),
     'action' => Yii::app()->createUrl('/site/changesiteandfirm'),
 ));
 ?>
@@ -56,21 +56,33 @@ if ($errors = $form->errorSummary($model)) {
     echo '<div>' . $errors . '</div>';
 }
 ?>
-<table>
+<table <?php if ($this->mode === 'static'): ?>class="standard"<?php endif; ?>>
   <colgroup>
     <col class="cols-3">
   </colgroup>
   <tbody>
   <tr>
-    <td><?php echo $form->labelEx($model, 'site_id'); ?></td>
     <td>
-        <?php echo $form->dropDownList($model, 'site_id', $sites); ?>
+        <?php if ($this->mode === 'static'): ?>
+            <?= $model->getAttributeLabel('site_id') ?>
+        <?php else: ?>
+            <?php echo $form->labelEx($model, 'site_id'); ?>
+        <?php endif; ?>
+    </td>
+    <td>
+        <?php echo $form->dropDownList($model, 'site_id', $sites, array('class' => 'cols-full')); ?>
     </td>
   </tr>
   <tr>
-    <td><?php echo $form->labelEx($model, 'firm_id'); ?></td>
     <td>
-        <?php echo $form->dropDownList($model, 'firm_id', $firms); ?>
+        <?php if ($this->mode === 'static'): ?>
+            <?= $model->getAttributeLabel('firm_id') ?>
+        <?php else: ?>
+            <?php echo $form->labelEx($model, 'firm_id'); ?>
+        <?php endif; ?>
+    </td>
+    <td>
+        <?php echo $form->dropDownList($model, 'firm_id', $firms, array('class' => 'cols-full')); ?>
     </td>
   </tr>
 
@@ -102,7 +114,7 @@ if (Yii::app()->components['user']->loginRequiredAjaxResponse) {
 
 <script>
   $(document).ready(function () {
-    $('.static-site-and-firm-form').on('change', 'select', function () {
+    $('.js-static-site-and-firm-form').on('change', 'select', function () {
       $(this).closest('form').submit();
     });
   });
