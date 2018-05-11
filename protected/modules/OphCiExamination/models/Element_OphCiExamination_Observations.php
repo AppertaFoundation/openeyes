@@ -53,7 +53,7 @@ class Element_OphCiExamination_Observations extends \BaseEventTypeElement
             array('blood_pressure_systolic', 'numerical','min'=>0, 'max'=>400),
             array('blood_pressure_diastolic', 'numerical','min'=>0, 'max'=>400),
             array('o2_sat', 'numerical','min'=>0, 'max'=>100),
-            array('blood_glucose', 'numerical', 'min'=>0.0, 'max'=>10.0),
+            array('blood_glucose', 'numerical', 'min'=>0.0, 'max'=>50.0),
             array('hba1c', 'numerical', 'min'=>0, 'max'=>1000),
             array('height', 'numerical', 'min'=>0.0, 'max'=>250.0),
             array('weight', 'numerical', 'min'=>0.0, 'max'=>250.0),
