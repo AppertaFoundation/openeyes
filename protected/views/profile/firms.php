@@ -44,7 +44,7 @@
     <?php echo CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info button green hint'))?>
 </div>
 <div class="profile-actions">
-    <?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'button large hint red'))->toHtml()?>
+    <?php echo EventAction::button('Remove selected ' . strtolower(Firm::contextLabel()), 'delete', array(), array('class' => 'button large hint blue'))->toHtml()?>
 </div>
 
 <div class="profile-actions">

@@ -43,7 +43,7 @@
     <?php echo CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info button green hint'))?>
 </div>
 <div class="profile-actions">
-    <?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'button large hint red'))->toHtml()?>
+    <?php echo EventAction::button('Remove selected site', 'delete', array(), array('class' => 'button large hint blue'))->toHtml()?>
 </div>
   <br>
   <p>Note: you can also set the <?php echo strtolower(Firm::contextLabel())?>s you work at, <?php echo CHtml::link('click here', Yii::app()->createUrl('/profile/firms'))?> to do so.</p>
