@@ -18,7 +18,8 @@
 ?>
 <?php
 list($values, $val_options) = $element->getUnitValuesForForm(null, false);
-$methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(), 'id', 'name');
+$methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(),
+    'id', 'name');
 $key = 0;
 ?>
 
@@ -26,62 +27,73 @@ $key = 0;
 $this->beginClip('element-title-additional');
 if ($element->isNewRecord) {
     ?>
-    <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id, CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')), 'id', 'name'), array('class' => 'inline'));
+    <?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id,
+        CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_near' => '0')),
+            'id', 'name'), array('class' => 'inline'));
     ?>
-<?php
+    <?php
 } ?>
 <?php if ($element->unit->information) {
     ?>
-    <div class="info"><small><em><?php echo $element->unit->information ?></em></small></div>
-<?php
+  <div class="info">
+    <small><em><?php echo $element->unit->information ?></em></small>
+  </div>
+    <?php
 }
 $this->endClip('element-title-additional');
 ?>
 <?php
-    // CVI alert
-    $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
-    if($cvi_api){
-        echo $cvi_api->renderAlertForVA($this->patient, $element);
-        echo $form->hiddenInput($element, 'cvi_alert_dismissed', false, array('class' => 'cvi_alert_dismissed'));
-    }
+// CVI alert
+$cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
+if ($cvi_api) {
+    echo $cvi_api->renderAlertForVA($this->patient, $element);
+    echo $form->hiddenInput($element, 'cvi_alert_dismissed', false, array('class' => 'cvi_alert_dismissed'));
+}
 ?>
 <div class="element-fields element-eyes">
-    <input type="hidden" name="visualacuity_readings_valid" value="1" />
+  <input type="hidden" name="visualacuity_readings_valid" value="1"/>
     <?php echo $form->hiddenInput($element, 'id', false, array('class' => 'element_id')); ?>
     <?php echo $form->hiddenInput($element, 'unit_id', false); ?>
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
-  <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
-    <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side?> side<?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>" data-side="<?= $eye_side ?>">
+    <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
+      <div
+          class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side<?php if (!$element->hasEye($eye_side)) { ?> inactive <?php } ?>"
+          data-side="<?= $eye_side ?>">
         <div class="active-form field-row flex-layout">
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
           <div class="cols-9">
-            <table class="cols-full blank va_readings"<?php if (!$element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?> >
-                <tbody>
-                    <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
-                    // Adjust currently element readings to match unit steps
-                        $reading->loadClosest($element->unit->id);
-                        $this->renderPartial('form_Element_OphCiExamination_VisualAcuity_Reading', array(
-                            'name_stub' => CHtml::modelName($element).'[' . $eye_side . '_readings]',
-                            'key' => $key,
-                            'reading' => $reading,
-                            'side' => $reading->side,
-                            'values' => $values,
-                            'val_options' => $val_options,
-                            'methods' => $methods,
-                            'asset_path' => $this->getAssetPathForElement($element),
-                    ));
-                        ++$key; }?>
-                </tbody>
+            <table
+                class="cols-full blank va_readings"<?php if (!$element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?> >
+              <tbody>
+              <?php foreach ($element->{$eye_side . '_readings'} as $reading) {
+                  // Adjust currently element readings to match unit steps
+                  $reading->loadClosest($element->unit->id);
+                  $this->renderPartial('form_Element_OphCiExamination_VisualAcuity_Reading', array(
+                      'name_stub' => CHtml::modelName($element) . '[' . $eye_side . '_readings]',
+                      'key' => $key,
+                      'reading' => $reading,
+                      'side' => $reading->side,
+                      'values' => $values,
+                      'val_options' => $val_options,
+                      'methods' => $methods,
+                      'asset_path' => $this->getAssetPathForElement($element),
+                  ));
+                  ++$key;
+              } ?>
+              </tbody>
             </table>
-            <div class="field-row row noReadings"<?php if ($element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?>>
-                <div class="large-4 column">
-                    <div class="field-info">Not recorded</div>
-                </div>
-                <div class="large-8 column end">
-                    <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true))?>
-                    <?php echo $form->checkBox($element, $eye_side . '_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
-                </div>
+            <div
+                class="field-row row noReadings"<?php if ($element->{$eye_side . '_readings'}) { ?> style="display: none;" <?php } ?>>
+              <div class="large-4 column">
+                <div class="field-info">Not recorded</div>
+              </div>
+              <div class="large-8 column end">
+                  <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess',
+                      array('text-align' => 'right', 'nowrapper' => true)) ?>
+                  <?php echo $form->checkBox($element, $eye_side . '_eye_missing',
+                      array('text-align' => 'right', 'nowrapper' => true)) ?>
+              </div>
             </div>
           </div>
           <div class="flex-item-bottom">
@@ -92,45 +104,45 @@ $this->endClip('element-title-additional');
           </div>
           <!--flex bottom-->
         </div>
-      <!-- active form-->
-      <div class="inactive-form" style="display: none">
-        <div class="add-side">
-          <a href="#">
-            Add <?= $eye_side ?> side <span class="icon-add-side"></span>
-          </a>
+        <!-- active form-->
+        <div class="inactive-form" style="display: none">
+          <div class="add-side">
+            <a href="#">
+              Add <?= $eye_side ?> side <span class="icon-add-side"></span>
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-  <?php endforeach; ?>
+    <?php endforeach; ?>
 </div>
 <script id="visualacuity_reading_template" type="text/html">
     <?php
     $default_reading = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Reading::model();
     $default_reading->init();
     $this->renderPartial('form_Element_OphCiExamination_VisualAcuity_Reading', array(
-            'name_stub' => CHtml::modelName($element).'[{{side}}_readings]',
-            'key' => '{{key}}',
-            'side' => '{{side}}',
-            'values' => $values,
-            'val_options' => $val_options,
-            'methods' => $methods,
-            'asset_path' => $this->getAssetPathForElement($element),
-            'reading' => $default_reading,
+        'name_stub' => CHtml::modelName($element) . '[{{side}}_readings]',
+        'key' => '{{key}}',
+        'side' => '{{side}}',
+        'values' => $values,
+        'val_options' => $val_options,
+        'methods' => $methods,
+        'asset_path' => $this->getAssetPathForElement($element),
+        'reading' => $default_reading,
     ));
     ?>
 </script>
 <?php
-    $assetManager = Yii::app()->getAssetManager();
-    $baseAssetsPath = Yii::getPathOfAlias('application.assets');
-    $assetManager->publish($baseAssetsPath.'/components/chosen/');
+$assetManager = Yii::app()->getAssetManager();
+$baseAssetsPath = Yii::getPathOfAlias('application.assets');
+$assetManager->publish($baseAssetsPath . '/components/chosen/');
 
-    Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath.'/components/chosen/').'/chosen.jquery.min.js');
+Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath . '/components/chosen/') . '/chosen.jquery.min.js');
 
 ?>
 <script type="text/javascript">
-    $(document).ready(function() {
+  $(document).ready(function () {
 
-        OphCiExamination_VisualAcuity_method_ids = [ <?php
+    OphCiExamination_VisualAcuity_method_ids = [ <?php
         $first = true;
         foreach ($methods as $index => $method) {
             if (!$first) {
@@ -139,5 +151,5 @@ $this->endClip('element-title-additional');
             $first = false;
             echo $index;
         } ?> ];
-    });
+  });
 </script>

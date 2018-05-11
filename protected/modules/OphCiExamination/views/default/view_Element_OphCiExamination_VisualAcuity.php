@@ -21,11 +21,10 @@
 $all_units = $element->getUnits($element->unit->id, false);
 $va_tooltip_right = "";
 $va_tooltip_left = "";
-foreach($all_units as $unit) {
-    $va_tooltip_right.='<b>'.$unit->name.'</b>:<br/> '.$element->getCombined('right', $unit->id).'<br/>';
-    $va_tooltip_left.='<b>'.$unit->name.'</b>:<br/> '.$element->getCombined('left', $unit->id).'<br/>';
+foreach ($all_units as $unit) {
+    $va_tooltip_right .= '<b>' . $unit->name . '</b>:<br/> ' . $element->getCombined('right', $unit->id) . '<br/>';
+    $va_tooltip_left .= '<b>' . $unit->name . '</b>:<br/> ' . $element->getCombined('left', $unit->id) . '<br/>';
 }
-
 
 $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
 if ($cvi_api) {
@@ -39,52 +38,36 @@ if ($cvi_api) {
 <div class="element-data element-eyes">
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side): ?>
       <div class="element-eye <?= $eye_side ?>-eye">
-          <?php if ($element->hasEye($eye_side)) {
-              ?>
-              <?php if ($element->getCombined($eye_side)) {
-                  ?>
-              <div class="data-row">
-                <div class="data-value">
-                  <span class="priority-text">
-                    <?php echo $element->getCombined($eye_side) ?>
-                  </span>
-                </div>
-              </div>
-
-                  <?php
-              } else {
-                  ?>
-              <div class="data-row">
-                <div class="data-value">
-                  Not recorded
-                    <?php if ($element->{$eye_side . '_unable_to_assess'}) {
-                        ?>
+          <?php if ($element->hasEye($eye_side)): ?>
+            <div class="data-row">
+              <div class="data-value">
+                  <?php if ($element->getCombined($eye_side)): ?>
+                    <span class="priority-text">
+                      <?php echo $element->getCombined($eye_side) ?>
+                    </span>
+                    <i class="oe-i info small pad js-has-tooltip"
+                       data-tooltip-content="<?= ${'va_tooltip_' . $eye_side} ?>"></i>
+                  <?php else: ?>
+                    Not recorded
+                      <?php if ($element->{$eye_side . '_unable_to_assess'}): ?>
                       (Unable to assess<?php if ($element->{$eye_side . '_eye_missing'}) {
-                            ?>, eye missing<?php
-                        }
-                        ?>)
-                        <?php
-                    } elseif ($element->{$eye_side . '_eye_missing'}) {
-                        ?>
+                              ?>, eye missing<?php
+                          }
+                          ?>)
+                      <?php elseif ($element->{$eye_side . '_eye_missing'}): ?>
                       (Eye missing)
-                        <?php
-                    }
-                    ?>
-                </div>
+                      <?php endif; ?>
+                  <?php endif; ?>
               </div>
-                  <?php
-              }
-              ?>
-              <?php
-          } else {
-              ?>
+            </div>
+
+          <?php else: ?>
             <div class="data-row">
               <div class="data-value">
                 Not recorded
               </div>
             </div>
-              <?php
-          } ?>
+          <?php endif; ?>
       </div>
     <?php endforeach; ?>
 </div>

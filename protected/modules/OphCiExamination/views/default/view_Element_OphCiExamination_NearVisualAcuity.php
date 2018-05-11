@@ -16,105 +16,42 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
 <div class="element-data element-eyes">
-	<div class="element-eye right-eye column">
-		<?php if ($element->hasRight()) {
-    ?>
-			<?php if ($element->getCombined('right')) {
-    ?>
-				<div class="data-row">
-					<div class="data-value">
-						<?php echo $element->unit->name?> <?php echo $this->renderPartial('_visual_acuity_tooltip', array('element' => $element, 'side'=>'right', 'is_near'=>true)); ?>
-					</div>
-				</div>
-				<div class="data-row">
-					<div class="data-value">
-						<?php echo $element->getCombined('right')?>
-					</div>
-				</div>
-			<?php 
-} else {
-    ?>
-				<div class="data-row">
-					<div class="data-value">
-						Not recorded
-						<?php if ($element->right_unable_to_assess) {
-    ?>
-							(Unable to assess<?php if ($element->right_eye_missing) {
-    ?>, eye missing<?php 
-}
-    ?>)
-						<?php 
-} elseif ($element->right_eye_missing) {
-    ?>
-							(Eye missing)
-						<?php 
-}
-    ?>
-					</div>
-				</div>
-			<?php 
-}
-    ?>
-		<?php 
-} else {
-    ?>
-			<div class="data-row">
-				<div class="data-value">
-					Not recorded
-				</div>
-			</div>
-		<?php 
-}?>
-	</div>
-	<div class="element-eye left-eye column">
-		<?php if ($element->hasLeft()) {
-    ?>
-			<?php if ($element->getCombined('left')) {
-    ?>
-				<div class="data-row">
-					<div class="data-value">
-						<?php echo $element->unit->name?> <?php echo $this->renderPartial('_visual_acuity_tooltip', array('element' => $element, 'side'=>'left', 'is_near'=>true)); ?>
-					</div>
-				</div>
-				<div class="data-row">
-					<div class="data-value">
-						<?php echo $element->getCombined('left')?>
-					</div>
-				</div>
-			<?php 
-} else {
-    ?>
-				<div class="data-row">
-					<div class="data-value">
-						Not recorded
-						<?php if ($element->left_unable_to_assess) {
-    ?>
-							(Unable to assess<?php if ($element->left_eye_missing) {
-    ?>, eye missing<?php 
-}
-    ?>)
-						<?php 
-} elseif ($element->left_eye_missing) {
-    ?>
-							(Eye missing)
-						<?php 
-}
-    ?>
-					</div>
-				</div>
-			<?php 
-}
-    ?>
-		<?php 
-} else {
-    ?>
-			<div class="data-row">
-				<div class="data-value">
-					Not recorded
-				</div>
-			</div>
-		<?php 
-}?>
-	</div>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+      <div class="element-eye <?= $eye_side ?>-eye column">
+          <?php if ($element->hasEye($eye_side)): ?>
+              <?php if ($element->getCombined($eye_side)): ?>
+              <div class="data-row">
+                <div class="data-value">
+                    <?php echo $element->unit->name ?><?php echo $this->renderPartial('_visual_acuity_tooltip',
+                        array('element' => $element, 'side' => $eye_side, 'is_near' => true)); ?>
+                </div>
+              </div>
+              <div class="data-row">
+                <div class="data-value">
+                    <?php echo $element->getCombined($eye_side) ?>
+                </div>
+              </div>
+              <?php else: ?>
+              <div class="data-row">
+                <div class="data-value">
+                  Not recorded
+                    <?php if ($element->{$eye_side . '_unable_to_assess'}): ?>
+                      (Unable to assess<?php if ($element->{$eye_side . '_eye_missing'}): ?>, eye missing<?php endif; ?>)
+                    <?php elseif ($element->{$eye_side . '_eye_missing'}): ?>
+                      (Eye missing)
+                    <?php endif; ?>
+                </div>
+              </div>
+              <?php endif; ?>
+          <?php else: ?>
+            <div class="data-row">
+              <div class="data-value">
+                Not recorded
+              </div>
+            </div>
+          <?php endif; ?>
+      </div>
+    <?php endforeach; ?>
 </div>
