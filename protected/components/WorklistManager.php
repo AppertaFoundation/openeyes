@@ -342,10 +342,10 @@ class WorklistManager extends CComponent
      *
      * @throws Exception
      */
-    public function getDashboardRenderDates(DateTime $date)
+    public function getDashboardRenderDates(DateTime $start_date, $end_date)
     {
         // in case the passed in date is being used for anything else
-        $r_date = clone $date;
+        $r_date = clone $start_date;
         $r_date->setTime(0, 0, 0);
 
         $future_days = $this->getAppParam('worklist_dashboard_future_days');
@@ -359,7 +359,7 @@ class WorklistManager extends CComponent
         }
 
         $future_dates = array();
-        while (count($future_dates) < $future_days) {
+        while ((!$end_date && count($future_dates) < $future_days) || ($end_date && $r_date < $end_date)) {
             $r_date = clone $r_date;
             $r_date->modify('+1 day');
             if (!in_array($r_date->format('D'), $skip_days)) {
@@ -367,10 +367,9 @@ class WorklistManager extends CComponent
             }
         }
 
-        if (!in_array($date->format('D'), $skip_days)) {
-            array_unshift($future_dates, clone $date);
+        if (!in_array($start_date->format('D'), $skip_days)) {
+            array_unshift($future_dates, clone $start_date);
         }
-
         return $future_dates;
     }
 
@@ -607,7 +606,7 @@ class WorklistManager extends CComponent
         return $worklists;
     }
 
-    public function getCurrentAutomaticWorklistsForUser($user)
+    public function getCurrentAutomaticWorklistsForUser($user, $start_date = null, $end_date = null)
     {
         $worklists = [];
 
@@ -618,7 +617,7 @@ class WorklistManager extends CComponent
         $firm = $this->getCurrentFirm();
 
         $content = '';
-        $days = $this->getDashboardRenderDates(new DateTime());
+        $days = $this->getDashboardRenderDates($start_date ? $start_date : new DateTime(), $end_date);
         foreach ($days as $when) {
             foreach ($this->getCurrentAutomaticWorklistsForUserContext($user, $site, $firm, $when) as $worklist) {
                 $worklists[] = $worklist;

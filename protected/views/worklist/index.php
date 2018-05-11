@@ -15,6 +15,11 @@
     <div class="row">
       <?php $this->renderPartial('//site/change_site_and_firm', array('returnUrl' => Yii::app()->request->url, 'mode' => 'static')); ?>
     </div>
+    <h3>Filter by Date</h3>
+    <div class="flex-layout">
+      <input id="worklist-date-from" class="cols-5" placeholder="from" type="text" value="<?= @$_GET['date_from'] ?>">
+      <input id="worklist-date-to" class="cols-5" placeholder="to" type="text" value="<?= @$_GET['date_to'] ?>">
+    </div>
     <h3>Select list</h3>
     <ul>
       <li><a href="#">All</a></li>
@@ -29,3 +34,26 @@
       <?php endforeach; ?>
   </main>
 </div>
+<script type="text/javascript">
+  $(function() {
+
+    pickmeup('#worklist-date-from', {
+      format: 'Y-m-d',
+      hide_on_select: true,
+      date: $('#worklist-date-from').val(),
+      default_date: false,
+    });
+    pickmeup('#worklist-date-to', {
+      format: 'Y-m-d',
+      hide_on_select: true,
+      date: $('#worklist-date-to').val(),
+      default_date: false,
+    });
+
+    $('#worklist-date-from, #worklist-date-to').on('pickmeup-change change', function(){
+      window.location.href = jQuery.query
+        .set('date_from', $('#worklist-date-from').val())
+        .set('date_to', $('#worklist-date-to').val());
+    });
+  });
+</script>
