@@ -27,29 +27,23 @@ $form = $this->beginWidget('CActiveForm', array(
 ?>
 <?php echo CHtml::hiddenField('returnUrl', $this->returnUrl) ?>
 
-<?php if ($this->subspecialty) {
-    ?>
+<?php if ($this->subspecialty): ?>
     <?php echo CHtml::hiddenField('subspecialty_id', $this->subspecialty->id) ?>
   <p>
     To add an event to this episode you must switch to a <?php echo $this->subspecialty->name ?> firm.
   </p>
-    <?php
-} ?>
+<?php endif; ?>
 
-<?php if ($this->support_services) {
-    ?>
+<?php if ($this->support_services): ?>
     <?php echo CHtml::hiddenField('support_services', 1) ?>
   <p>
     To add an event to this episode you must switch to a support services firm.
   </p>
-    <?php
-} ?>
+<?php endif; ?>
 
-<?php if ($this->patient) {
-    ?>
+<?php if ($this->patient): ?>
     <?php echo CHtml::hiddenField('patient_id', $this->patient->id) ?>
-    <?php
-} ?>
+<?php endif; ?>
 
 <?php
 if ($errors = $form->errorSummary($model)) {
@@ -63,11 +57,7 @@ if ($errors = $form->errorSummary($model)) {
   <tbody>
   <tr>
     <td>
-        <?php if ($this->mode === 'static'): ?>
-            <?= $model->getAttributeLabel('site_id') ?>
-        <?php else: ?>
-            <?php echo $form->labelEx($model, 'site_id'); ?>
-        <?php endif; ?>
+        <?= $model->getAttributeLabel('site_id') ?>
     </td>
     <td>
         <?php echo $form->dropDownList($model, 'site_id', $sites, array('class' => 'cols-full')); ?>
@@ -75,11 +65,7 @@ if ($errors = $form->errorSummary($model)) {
   </tr>
   <tr>
     <td>
-        <?php if ($this->mode === 'static'): ?>
-            <?= $model->getAttributeLabel('firm_id') ?>
-        <?php else: ?>
-            <?php echo $form->labelEx($model, 'firm_id'); ?>
-        <?php endif; ?>
+        <?= $model->getAttributeLabel('firm_id') ?>
     </td>
     <td>
         <?php echo $form->dropDownList($model, 'firm_id', $firms, array('class' => 'cols-full')); ?>
