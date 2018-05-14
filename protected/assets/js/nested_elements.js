@@ -382,6 +382,27 @@ $(document).ready(function () {
     /**
      * View previous elements
      */
+    $('.js-active-elements').delegate('.js-duplicate-element', 'click', function (e) {
+      var element = $(this).closest('.element');
+      var dialog = new OpenEyes.UI.Dialog({
+        url: baseUrl + '/' + moduleName + '/default/viewpreviouselements',
+        data: {element_type_id: element.data('element-type-id'), patient_id: OE_patient_id},
+        width: 1070,
+        title: 'Previous ' + element.data('element-type-name') + ' Elements',
+        autoOpen: true,
+        popupContentClass: 'oe-popup-content previous-elements'
+      });
+      dialog.open();
+
+      $(dialog.content).on('click', '.copy_element', function (dialog, element, event) {
+        var element_id = $(event.target).data('element-id');
+        $(element).addClass('clicked');
+        $(element).find('> .element-fields').css('opacity', '0.5');
+        $(element).find('> .element-fields').find('input, select, textarea').prop('disabled', true);
+        $('.oe-popup-wrap').remove();
+        addElement(element, false, (element.hasClass('element')), element_id);
+      }.bind(undefined, dialog, element));
+      e.preventDefault();
 
     $('.js-active-elements').delegate('.viewPrevious', 'click', function (e) {
         e.preventDefault();

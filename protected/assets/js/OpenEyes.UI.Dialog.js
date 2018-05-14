@@ -88,6 +88,7 @@
         autoOpen: false,
         title: null,
         popupClass: 'oe-popup',
+        popupContentClass: 'oe-popup-content',
         modal: true,
         dialogClass: 'dialog',
         resizable: false,
@@ -113,7 +114,7 @@
         var closeButton = '<div class="close-icon-btn"><i class="oe-i remove-circle pro-theme"></i></div>';
         var popup = $('<div class="' + this.options.popupClass + '"></div>');
         popup.css('width', this.options.width);
-        $('<div class="title">' + this.options.title + '</div>' + closeButton + '<div class="oe-popup-content"></div>').appendTo(popup);
+        $('<div class="title">' + this.options.title + '</div>' + closeButton + '<div class="' + this.options.popupContentClass + '"></div>').appendTo(popup);
 
         this.content.append(popup);
         this.setClose($(this.content).find('.close-icon-btn'));
