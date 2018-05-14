@@ -40,7 +40,7 @@
       <thead>
       <tr>
           <th>Allergy</th>
-          <th>Checked Status</th>
+          <th>Status</th>
           <th>Comments</th>
           <th>Action(s)</th>
       </tr>

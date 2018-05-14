@@ -64,7 +64,7 @@ class AllergyEntry extends \BaseElement
         return array(
             array('element_id, allergy_id, other, comments, has_allergy', 'safe'),
             array('allergy_id', 'required'),
-            array('has_allergy', 'required', 'message'=>'Checked Status cannot be blank'),
+            array('has_allergy', 'required', 'message'=>'Status cannot be blank'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, element_id, allergy_id, other, comments, has_allergy', 'safe', 'on' => 'search'),
