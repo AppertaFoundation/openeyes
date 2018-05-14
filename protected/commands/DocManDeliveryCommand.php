@@ -291,19 +291,6 @@ EOH;
                 return false;
             }
 
-           /* if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] === 'format1') {
-                $filename = "OPENEYES_" . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . $this->event->id . "_" . rand();
-            } else {
-                if (Yii::app()->params['docman_filename_format'] === 'format2') {
-                    $filename = (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . date('YmdHi',
-                            strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
-                } else {
-                    if (Yii::app()->params['docman_filename_format'] === 'format3') {
-                        $filename = (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_edtdep-OEY_' .
-                            date('Ymd_His', strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
-                    }
-                }
-            }*/
             $filename = $this->getFileName()['filename'];
 
             $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
@@ -335,7 +322,6 @@ EOH;
 
     private function getFileName($prefix = '')
     {
-
         $format =  isset(Yii::app()->params['docman_filename_format']) ? Yii::app()->params['docman_filename_format'] : 'format1';
         $rand = rand();
 
@@ -349,25 +335,13 @@ EOH;
                     date('Ymd_His', strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
                 break;
             case 'format4':
-                $filename = $this->event->episode->patient->hos_num . "_" . date('YmdHis') . "_" . $rand . ( $prefix ? "_$prefix" : '');
+                $filename = $this->event->episode->patient->hos_num . "_" . date('YmdHis') . "_" . ($this->event->id) . ( $prefix ? "_$prefix" : '');
                 break;
             default:
             case 'format1':
                 $filename = "OPENEYES_" . ($prefix ? "{$prefix}_" : '') . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' .
                     $this->event->id . "_" . $rand;
                 break;
-        }
-
-        if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] === 'format1') {
-
-        } else {
-            if (Yii::app()->params['docman_filename_format'] === 'format2') {
-
-            } else {
-                if (Yii::app()->params['docman_filename_format'] === 'format3') {
-
-                }
-            }
         }
 
         return ['filename' => $filename, 'rand' => $rand];
