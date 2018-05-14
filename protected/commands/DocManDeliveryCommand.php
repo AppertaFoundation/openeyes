@@ -394,7 +394,7 @@ EOH;
             'gp_name' => isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->getFullName() : null,
             'gp_first_name' => isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->first_name : null,
             'gp_last_name' => isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->last_name : null,
-            'gp_title' => isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->last_name : null,
+            'gp_title' => isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->title : null,
 
             'practice_code' => isset($this->event->episode->patient->practice->code) ? $this->event->episode->patient->practice->code : '',
             'event_id' => $this->event->id,
