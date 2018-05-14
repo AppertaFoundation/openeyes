@@ -424,6 +424,26 @@ return array(
           In case a trust integrated engine can use the same XML to decide where to forward the document to */
         //'docman_with_internal_referral' => false,
 
+        // xml template
+        //'docman_xml_template' => 'template_default',
+        // set this to false if you want to suppress XML output
+
+        /**
+         * defaults to format1
+         * possible values:
+         * format1 => OPENEYES_<eventId>_<randomInteger>.pdf [current format, default if parameter not specified]
+         * format2 => <hosnum>_<yyyyMMddhhmm>_<eventId>.pdf
+         * format3 => <hosnum>_edtdep-OEY_yyyyMMdd_hhmmss_<eventId>.pdf
+         * format4 => <hosnum>_<yyyyMMddhhmmss>_<eventId>__<doctype>_.pdf
+         */
+        //'docman_filename_format' => 'format1',
+
+        /**
+         *  Set to false to suppress XML generation for electronic correspondence
+         */
+        'docman_generate_xml' => false,
+
+
         /**
          * Text to be displayed for sending correspondence electronically e.g.: 'Electronic (DocMan)'
          * To be overriden in local config

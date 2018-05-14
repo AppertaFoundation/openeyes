@@ -22,6 +22,7 @@ class DocManDeliveryCommand extends CConsoleCommand
 {
     //if export path provided it will overwrite the $path
     public $export_path = null;
+    public $xml_template = '';
 
     private $path;
 
@@ -53,14 +54,32 @@ class DocManDeliveryCommand extends CConsoleCommand
      */
     private $with_internal_referral = true;
 
+    public function getHelp(){
+        return <<<EOH
+yiic docmandelivery --xml_template=<file>
+    --xml_template: full path and filename to the template : eg.: /var/tmp/test_template.php
+
+yiic docmandelivery generateone --event_id=<event_id>
+    --event_id: id of the event
+EOH;
+
+    }
+
     /**
      * DocManDeliveryCommand constructor.
      */
     public function __construct()
     {
+
         $this->path = $this->export_path ? $this->export_path : Yii::app()->params['docman_export_dir'];
 
-        $this->generate_xml = !isset(Yii::app()->params['docman_xml_format']) || Yii::app()->params['docman_xml_format'] !== 'none';
+        $template_path = dirname(Yii::app()->basePath) . '/protected/modules/OphCoCorrespondence/views/templates/xml/docman/';
+        if(!$this->xml_template){
+            $template_name = isset(\Yii::app()->params['docman_xml_template']) ? \Yii::app()->params['docman_xml_template'] : 'default';
+            $this->xml_template = $template_path . $template_name . '.php';
+        }
+
+        $this->generate_xml = isset(\Yii::app()->params['docman_generate_xml']) && \Yii::app()->params['docman_generate_xml'];
         $this->with_internal_referral = !isset(Yii::app()->params['docman_with_internal_referral']) || Yii::app()->params['docman_with_internal_referral'] !== false;
 
         $this->checkPath($this->path);
@@ -127,16 +146,17 @@ class DocManDeliveryCommand extends CConsoleCommand
         if($document->output_type == 'Docman'){
             echo 'Processing event ' . $document->document_target->document_instance->correspondence_event_id . ' :: Docman' . PHP_EOL;
             $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
+            // $this->savePDFFile generates xml if required
+
         } else if($document->output_type == 'Internalreferral'){
 
-            $file_name = $this->getFileName('Internal');
+            $file_info = $this->getFileName('Internal');
             //Docman xml will be used
-            $xml_generated = $this->generateXMLOutput($file_name, $document);
+            $xml_generated = $this->generateXMLOutput($file_info['filename'], $document);
 
             if ($xml_generated){
                 $internal_referral_command = new InternalReferralDeliveryCommand();
-                $file_name_array = explode('_', $file_name);
-                $internal_referral_command->setFileRandomNumber( $file_name_array[4] );
+                $internal_referral_command->setFileRandomNumber( $file_info['rand'] );
 
                 //now we only generate PDF file, until the integration, the generate_xml is set to false in the InternalReferralDeliveryCommand
                 $internal_referral_command->actionGenerateOne($this->event->id);
@@ -271,19 +291,7 @@ class DocManDeliveryCommand extends CConsoleCommand
                 return false;
             }
 
-            if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] === 'format1') {
-                $filename = "OPENEYES_" . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . $this->event->id . "_" . rand();
-            } else {
-                if (Yii::app()->params['docman_filename_format'] === 'format2') {
-                    $filename = (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . date('YmdHi',
-                            strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
-                } else {
-                    if (Yii::app()->params['docman_filename_format'] === 'format3') {
-                        $filename = (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_edtdep-OEY_' .
-                            date('Ymd_His', strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
-                    }
-                }
-            }
+            $filename = $this->getFileName()['filename'];
 
             $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
             if ($this->generate_xml) {
@@ -314,107 +322,106 @@ class DocManDeliveryCommand extends CConsoleCommand
 
     private function getFileName($prefix = '')
     {
-        if (!isset(Yii::app()->params['docman_filename_format']) || Yii::app()->params['docman_filename_format'] === 'format1') {
-            $filename = "OPENEYES_" . ($prefix ? "{$prefix}_" : '') . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . $this->event->id . "_" . rand();
-        } else {
-            if (Yii::app()->params['docman_filename_format'] === 'format2') {
+        $format =  isset(Yii::app()->params['docman_filename_format']) ? Yii::app()->params['docman_filename_format'] : 'format1';
+        $rand = rand();
+
+        switch ($format){
+            case 'format2':
                 $filename = ($prefix ? "{$prefix}_" : '') . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' . date('YmdHi',
                         strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
-            } else {
-                if (Yii::app()->params['docman_filename_format'] === 'format3') {
-                    $filename = ($prefix ? "{$prefix}_" : '') . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_edtdep-OEY_' .
-                        date('Ymd_His', strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
-                }
-            }
+                break;
+            case 'format3':
+                $filename = ($prefix ? "{$prefix}_" : '') . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_edtdep-OEY_' .
+                    date('Ymd_His', strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
+                break;
+            case 'format4':
+                $filename = $this->event->episode->patient->hos_num . "_" . date('YmdHis') . "_" . ($this->event->id) . "__" . $prefix . "_";
+                break;
+            default:
+            case 'format1':
+                $filename = "OPENEYES_" . ($prefix ? "{$prefix}_" : '') . (str_replace(' ', '', $this->event->episode->patient->hos_num)) . '_' .
+                    $this->event->id . "_" . $rand;
+                break;
         }
 
-        return $filename;
+        return ['filename' => $filename, 'rand' => $rand];
     }
 
     /**
-     * @param string $filename
-     * @param DocumentOutput $document_output
      *
+     * Awaiting OE-7215
+     *
+     * @return null
+     */
+    private function getVisitId(){
+        //@TODO: Implement
+        return null;
+    }
+
+    /**
+     * Generating and XML file
+     *
+     * @param $filename
+     * @param $document_output
      * @return bool
+     * @throws CException
      */
     private function generateXMLOutput($filename, $document_output)
     {
         $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $this->event->id));
         $sub_obj = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty : null;
-        $subspeciality = isset($sub_obj->ref_spec) ? $sub_obj->ref_spec : 'SS';
-        $subspeciality_name = isset($sub_obj->name) ? $sub_obj->name : 'Support Services';
-        $nat_id = isset($this->event->episode->patient->gp->nat_id) ? $this->event->episode->patient->gp->nat_id : null;
-        $gp_name = isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->getFullName() : null;
-        $practice_code = isset($this->event->episode->patient->practice->code) ? $this->event->episode->patient->practice->code : '';
-        $address = isset($this->event->episode->patient->contact->address) ? $this->event->episode->patient->contact->address->getLetterArray() : array();
-        $address1 = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->address1) : '';
-        $city = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->city) : '';
-        $county = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->county) : '';
-        $city = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->city) : '';
-        $post_code = isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->postcode) : '';
-        $letter_type = isset($element_letter->letterType->name) ? $element_letter->letterType->name : '';
 
-        //Internal referral reference
-        $service_to = isset($element_letter->toSubspecialty) ? $element_letter->toSubspecialty->ref_spec : '';
-        $consultant_to = isset($element_letter->event->episode->firm) ? $element_letter->event->episode->firm->pas_code : '';
-        $is_urgent = $element_letter->is_urgent ? 1 : '';
-        $is_same_condition = $element_letter->is_same_condition ? 'True' : 'False';
+        //I decided to pass each value separately to keep the XML files clean and easier to modify each value if necessary
+        $data = [
+            'hos_num' => $this->event->episode->patient->hos_num,
+            'nhs_num' => $this->event->episode->patient->nhs_num,
+            'full_name' => $this->event->episode->patient->contact->getFullName(),
+            'last_name' => $this->event->episode->patient->contact->last_name,
+            'first_name' => $this->event->episode->patient->contact->first_name,
+            'patient_title' => $this->event->episode->patient->contact->title,
+            'second_forename' => '',
+            'title' => $this->event->episode->patient->contact->title,
+            'dob' => $this->event->episode->patient->dob,
+            'date_of_death' => $this->event->episode->patient->date_of_death,
+            'gender' => $this->event->episode->patient->gender,
+            'address' => isset($this->event->episode->patient->contact->address) ? $this->event->episode->patient->contact->address->getLetterArray() : [],
+            'address1' => isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->address1) : '',
+            'city' => isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->city) : '',
+            'county' => isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->county) : '',
+            'post_code' => isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->postcode) : '',
 
-        $location_code = isset($element_letter->toLocation) ? $element_letter->toLocation->site->location_code : '';
+            'gp_nat_id' => isset($this->event->episode->patient->gp->nat_id) ? $this->event->episode->patient->gp->nat_id : null,
+            'gp_name' => isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->getFullName() : null,
+            'gp_first_name' => isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->first_name : null,
+            'gp_last_name' => isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->last_name : null,
+            'gp_title' => isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->title : null,
 
-        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-            <DocumentInformation>
-            <PatientNumber>" . $this->event->episode->patient->hos_num . "</PatientNumber>
-            <NhsNumber>" . $this->event->episode->patient->nhs_num . "</NhsNumber>
-            <Name>" . $this->event->episode->patient->contact->getFullName() . "</Name>
-            <Surname>" . $this->event->episode->patient->contact->last_name . "</Surname>
-            <FirstForename>" . $this->event->episode->patient->contact->first_name . "</FirstForename>
-            <SecondForename></SecondForename>
-            <Title>" . $this->event->episode->patient->contact->title . "</Title>
-            <DateOfBirth>" . $this->event->episode->patient->dob . "</DateOfBirth>
-            <Sex>" . $this->event->episode->patient->gender . "</Sex>
-            <Address>" . implode(", ", $address) . "</Address>
-            <AddressName></AddressName>
-            <AddressNumber></AddressNumber>
-            <AddressStreet>" . $address1 . "</AddressStreet>
-            <AddressDistrict></AddressDistrict>
-            <AddressTown>" . $city . "</AddressTown>
-            <AddressCounty>" . $county . "</AddressCounty>
-            <AddressPostcode>" . $post_code . "</AddressPostcode>
-            <GP>" . $nat_id . "</GP>
-            <GPName>" . $gp_name . "</GPName>
-            <Surgery>" . $practice_code . "</Surgery>
-            <SurgeryName></SurgeryName>
-            <ActivityID>" . $this->event->id . "</ActivityID>
-            <ActivityDate>" . $this->event->event_date . "</ActivityDate>
-            <ClinicianType></ClinicianType>
-            <Clinician></Clinician>
-            <ClinicianName></ClinicianName>
-            <Specialty>" . $subspeciality . "</Specialty>
-            <SpecialtyName>" . $subspeciality_name . "</SpecialtyName>
-            <Location>" . $element_letter->site->short_name . "</Location>
-            <LocationName>" . $element_letter->site->name . "</LocationName>
-            <SubLocation></SubLocation>
-            <SubLocationName></SubLocationName>
-            <LetterType>" . $letter_type . "</LetterType>";
+            'practice_code' => isset($this->event->episode->patient->practice->code) ? $this->event->episode->patient->practice->code : '',
+            'event_id' => $this->event->id,
+            'event_date' => $this->event->event_date,
+            'subspeciality' => isset($sub_obj->ref_spec) ? $sub_obj->ref_spec : 'SS',
+            'subspeciality_name' => isset($sub_obj->name) ? $sub_obj->name : 'Support Services',
+            'site_name' => $element_letter->site->name,
+            'site_short_name' => $element_letter->site->short_name,
+            'letter_type' => isset($element_letter->letterType->name) ? $element_letter->letterType->name : '',
+            'with_internal_referral' => $this->with_internal_referral,
+            'service_to' => isset($element_letter->toSubspecialty) ? $element_letter->toSubspecialty->ref_spec : '',
+            'consultant_to' => isset($element_letter->toFirm) ? $element_letter->toFirm->pas_code : '',
+            'consultant_title' => isset($element_letter->toFirm->consultant) ? $element_letter->toFirm->consultant->title : '',
+            'consultant_first_name' => isset($element_letter->toFirm->consultant) ? $element_letter->toFirm->consultant->first_name : '',
+            'consultant_last_name' => isset($element_letter->toFirm->consultant) ? $element_letter->toFirm->consultant->last_name : '',
 
-        if($this->with_internal_referral) {
-            $xml .= "
-            <!--Internal Referral-->
-            <ServiceTo>" . $service_to . "</ServiceTo>
-            <ConsultantTo>" . $consultant_to . "</ConsultantTo>
-            <!-- is urgent or not -->
-            <workflowimportance>" . $is_urgent . "</workflowimportance>
-            <SameCondition>" . $is_same_condition . "</SameCondition>
-            <ToLocationCode>" . $location_code . "</ToLocationCode>
-        
-            <!-- When main recipient is Internalreferral and a CC is a GP the Docman and Internalreferral XMLs look like the same. -->
-            <!-- SendTo tag contains the actual output type: Either 'Docman' or 'Internalreferral' -->
-            <SendTo>" . $document_output->output_type . "</SendTo>";
-        }
-        $xml .= "</DocumentInformation>";
+            'is_urgent' => $element_letter->is_urgent ? 1 : '',
+            'is_same_condition' => $element_letter->is_same_condition ? 'True' : 'False',
+            'location_code' => isset($element_letter->toLocation) ? $element_letter->toLocation->site->location_code : '',
+            'output_type' => $document_output->output_type,
 
-        return file_put_contents($this->path . "/" . $filename . ".XML", $this->cleanXML($xml)) !== false;
+            'visit_id' => $this->getVisitId()
+        ];
+
+        $xml = $this->renderFile($this->xml_template, ['data' => $data], true);
+
+        return file_put_contents($this->path . "/" . $filename . ".xml", $this->cleanXML($xml)) !== false;
     }
 
     /**
