@@ -335,7 +335,7 @@ EOH;
                     date('Ymd_His', strtotime($this->event->last_modified_date)) . '_' . $this->event->id;
                 break;
             case 'format4':
-                $filename = $this->event->episode->patient->hos_num . "_" . date('YmdHis') . "_" . ($this->event->id) . ( $prefix ? "_$prefix" : '');
+                $filename = $this->event->episode->patient->hos_num . "_" . date('YmdHis') . "_" . ($this->event->id) . "__" . $prefix . "_";
                 break;
             default:
             case 'format1':
@@ -421,7 +421,7 @@ EOH;
 
         $xml = $this->renderFile($this->xml_template, ['data' => $data], true);
 
-        return file_put_contents($this->path . "/" . $filename . ".XML", $this->cleanXML($xml)) !== false;
+        return file_put_contents($this->path . "/" . $filename . ".xml", $this->cleanXML($xml)) !== false;
     }
 
     /**

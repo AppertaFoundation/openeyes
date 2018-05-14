@@ -434,7 +434,7 @@ return array(
          * format1 => OPENEYES_<eventId>_<randomInteger>.pdf [current format, default if parameter not specified]
          * format2 => <hosnum>_<yyyyMMddhhmm>_<eventId>.pdf
          * format3 => <hosnum>_edtdep-OEY_yyyyMMdd_hhmmss_<eventId>.pdf
-         * format4 => <hosnum>_<yyyyMMddhhmm>_<randomInteger>_<doctype>_.pdf
+         * format4 => <hosnum>_<yyyyMMddhhmmss>_<eventId>__<doctype>_.pdf
          */
         //'docman_filename_format' => 'format1',
 
