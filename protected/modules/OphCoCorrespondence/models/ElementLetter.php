@@ -841,11 +841,6 @@ class ElementLetter extends BaseEventTypeElement
         return 'print_'.$this->getDefaultView();
     }
 
-    public function getContainer_view_view()
-{
-    return '//patient/element_container_view';
-}
-
     public function getContainer_print_view()
     {
         return false;
