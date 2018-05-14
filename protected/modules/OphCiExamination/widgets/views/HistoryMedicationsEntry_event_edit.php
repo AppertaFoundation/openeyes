@@ -93,9 +93,19 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
                            so in this way we can force numbers for only new records and for only on the input box
                            note: type="number" inputs will not display text like "1 drop(s)"
                         */
-                        //$input_type = ($entry->isNewRecord || is_numeric($entry->dose)) ? 'numberField' : 'textField';
-                        $input_type = 'textField';
-                        echo CHtml::$input_type("{$field_prefix}[dose]", $entry->dose, ['placeholder' => $entry->units]);
+
+                        $input_type = ($entry->isNewRecord || is_numeric($entry->dose)) ? 'numberField' : 'textField';
+
+                        $attributes['placeholder'] = $entry->units;
+                        if($input_type === 'numberField'){
+                            $attributes['min'] = "0";
+
+                            if($entry->units == 'mg'){
+                                $attributes['step'] = "0.01";
+                            }
+                        }
+
+                        echo CHtml::$input_type("{$field_prefix}[dose]", $entry->dose, $attributes);
                   ?>
 
               </div>

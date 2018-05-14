@@ -187,6 +187,7 @@ class Drug extends BaseActiveRecordVersioned
             'frequency_id' => $this->default_frequency_id,
             'dose_unit' => $this->dose_unit,
             'default_dose' => $this->default_dose,
+            'step' => $this->dose_unit == 'mg' ? "0.01" : "1",
         );
     }
 
