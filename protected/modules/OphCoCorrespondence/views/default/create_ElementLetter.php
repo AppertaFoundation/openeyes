@@ -64,7 +64,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                             Macro
                         </td>
                         <td>
-                            <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'cols-5 resizeSelect')); ?>
+                            <?php echo CHtml::dropDownList('macro_id', $macro_id, $element->letter_macros, array('empty' => '- Macro -', 'nowrapper' => true, 'class' => 'cols-full')); ?>
                         </td>
                     </tr>
                 </tbody>
@@ -187,7 +187,7 @@ $element->letter_type_id = ($element->letter_type_id ? $element->letter_type_id 
                                     <?php echo $form->dropDownListNoPost(strtolower($string_group->name), $strings, '', array(
                                         'empty' => '- ' . $string_group->name . ' -',
                                         'nowrapper' => true,
-                                        'class' => 'stringgroup full-width',
+                                        'class' => 'stringgroup full-width cols-full',
                                         'disabled' => empty($strings),
                                     )) ?>
                                 </div>
