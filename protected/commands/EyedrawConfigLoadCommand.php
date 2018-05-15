@@ -373,12 +373,31 @@ EOSQL;
       return "{$this->getMainDivDivImage($index)} {$this->getMainDivDivClass($index)} {$this->getMainDivDivData($index)}";
     }
 
-    private function getMainDivDivImage($index){
-      return "";
+    private function getMainDivDivImage($index)
+    {
+        $result = "";
+        if ($index->IMG_URL) {
+            $path = $index->IMG_URL;
+            $image_URL = '<?php
+        if (file_exists(\'' . $path . '\')){
+          echo Yii::app()->getAssetManager()->publish(\'' . $path . '\');
+        } else {
+          echo "";
+        }
+        ?>';
+            $result = "style=\"background-image: url({$image_URL}); background-repeat: no-repeat; padding-left: 5px; background-size: 16px 16px;\"";
+        }
+
+        return $result;
     }
 
-    private function getMainDivDivClass($index){
-        return "class=\"result_item\"";
+    private function getMainDivDivClass($index)
+    {
+        if ($index->IMG_URL) {
+            return "class=\"result_item result_item_with_icon\"";
+        } else {
+            return "class=\"result_item\"";
+        }
     }
 
     private function getMainDivSpanAttr($index,$lvl) {
