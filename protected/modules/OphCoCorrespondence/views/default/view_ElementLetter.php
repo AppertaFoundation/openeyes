@@ -39,7 +39,7 @@ if($correspondeceApp === "on") {
                 </td>
             </tr>
             <tr>
-                <td>
+                <td class="data-label">
                     From
                 </td>
                 <td style="text-align: right">
@@ -53,7 +53,7 @@ if($correspondeceApp === "on") {
                 </td>
             </tr>
             <tr>
-                <td>
+                <td class="data-label">
                     Direct Line
                 </td>
                 <td style="text-align: right">
@@ -63,7 +63,7 @@ if($correspondeceApp === "on") {
                 </td>
             </tr>
             <tr>
-                <td>
+                <td class="data-label">
                     Direct Fax
                 </td>
                 <td style="text-align: right">
@@ -73,7 +73,7 @@ if($correspondeceApp === "on") {
                 </td>
             </tr>
             <tr>
-                <td>
+                <td class="data-label">
                     Cc
                 </td>
                 <td style="text-align: right">
