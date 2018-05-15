@@ -104,16 +104,16 @@
             </tr>
             <tr>
               <td class=" pcr-risk-div">
-                <label class="<?php echo $element->pcrRiskColour($eye_side) ?>">
+                <label class="highlighter">
                   PCR Risk <span
-                      class="pcr-span "><?php echo ($element->{$eye_side . '_pcr_risk'}) ? $element->{$eye_side . '_pcr_risk'} : 'N/A' ?></span>
+                      class="pcr-span"><?php echo ($element->{$eye_side . '_pcr_risk'}) ? $element->{$eye_side . '_pcr_risk'} : 'N/A' ?></span>
                   %
                 </label>
               </td>
               <td>
                 <label>
                   Excess risk compared to average eye <span
-                      class="pcr-erisk"><?php echo $element->{$eye_side . '_excess_risk'} ?></span> times
+                      class="pcr-erisk highlighter"><?php echo $element->{$eye_side . '_excess_risk'} ?></span> times
                 </label>
               </td>
             </tr>
