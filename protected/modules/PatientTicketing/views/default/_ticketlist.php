@@ -16,48 +16,46 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<div>
+    <?php
+    if (!count($tickets)) { ?>
+        <div class="alert-box">
+            No tickets match the search criteria.
+        </div>
+        <?php
+    } else { ?>
+        <table class="standard audit-logs">
+            <colgroup>
+                <col>
+                <col class="cols-2"> <!-- patient -->
+                <col>
+                <col class="cols-1">
+                <col>
+                <col>
+                <col class="cols-2"><!-- clinical info -->
+                <col class="cols-2"><!-- referral notes -->
+                <col>
+            </colgroup>
 
-<div class="row">
-
-	<div class="large-12 column">
-		<div class="box generic">
-			<?php
-            if (!count($tickets)) {?>
-				<div class="alert-box">
-					No tickets match the search criteria.
-				</div>
-			<?php
-            } else {?>
-				<div class="pagination">
-				</div>
-				<table class="grid audit-logs" id="ticket-table">
-					<thead>
-					<tr>
-						<th>Patient List</th>
-						<th class="large-2">Patient</th>
-						<th>Priority</th>
-						<th>Referral Date</th>
-						<th>Firm</th>
-						<th>Created By</th>
-						<th class="large-2">Clinic Info</th>
-						<th class="large-2">Referral Notes</th>
-						<!--<th>Ticket Owner</th>-->
-						<th class="large-2">Actions</th>
-					</tr>
-					</thead>
-					<tbody id="ticket-list">
-					<?php foreach ($tickets as $i => $t) {
-                        $this->renderPartial('_ticketlist_row', array('i' => $i, 'ticket' => $t, 'can_process' => $can_process));
-                    }?>
-					</tbody>
-				</table>
-				<div class="text-center pagination last">
-					<?php $this->widget('CLinkPager', array(
-                                    'pages' => $pages,
-                                    'header' => '',
-                            )) ?>
-				</div>
-			<?php }?>
-		</div>
-	</div>
+            <thead>
+            <tr>
+                <th>Patient List</th>
+                <th>Patient</th>
+                <th>Priority</th>
+                <th>Referral Date</th>
+                <th>Firm</th>
+                <th>Created By</th>
+                <th>Clinic Info</th>
+                <th>Referral Notes</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="ticket-list">
+            <?php foreach ($tickets as $i => $t) {
+                $this->renderPartial('_ticketlist_row', array('i' => $i, 'ticket' => $t, 'can_process' => $can_process));
+            } ?>
+            </tbody>
+        </table>
+    <?php } ?>
 </div>
+

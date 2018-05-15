@@ -19,29 +19,44 @@
 
 <?php $t_svc = Yii::app()->service->getService($this::$TICKET_SERVICE); ?>
 
-<tr data-ticket-id="<?= $ticket->id?>" data-ticket-info="<?= CHtml::encode($ticket->getInfoData()) ?>">
-	<td><?= $ticket->current_queue->name ?></td>
-	<td><a href="<?= $ticket->getSourceLink() ?>"><?= $ticket->patient->hos_num.' - '
-            .(($ticket->patient->nhs_num) ? $ticket->patient->nhs_num.' - ' : '')
-            .$ticket->patient->getHSCICName()
-            .' ('.($ticket->patient->isDeceased() ? 'Deceased' : $ticket->patient->getAge()).')'; ?></a></td>
-	<td <?php if ($ticket->priority) {
-    ?>style="color: <?= $ticket->priority->colour ?>"<?php
-}?>><?= $ticket->priority ? $ticket->priority->name : '-' ?></td>
-	<td><?= Helper::convertDate2NHS($ticket->created_date)?></td>
-	<td><?= $ticket->getTicketFirm() ?></td>
-	<td><?= $ticket->user->getFullName() ?></td>
-	<td>
-        <div class="clamp5"><?= $ticket->report ? $ticket->report : '-'; ?></div>
+<tr data-ticket-id="<?= $ticket->id ?>" data-ticket-info="<?= CHtml::encode($ticket->getInfoData()) ?>">
+    <td><?= $ticket->current_queue->name ?></td>
+    <td><a href="<?= $ticket->getSourceLink() ?>">
+
+            <?= $ticket->patient->getHSCICName() ?>
+            <small>(<?php echo($ticket->patient->isDeceased() ? 'Deceased' : $ticket->patient->getAge()); ?>)</small>
+            <br/>
+            <small>
+                <span class="fade">No</span>
+                <?= $ticket->patient->hos_num ?>
+            </small>
+            <br/>
+            <small>
+                <span class="fade">NHS</span>
+                <?= (($ticket->patient->nhs_num) ? $ticket->patient->nhs_num : '') ?>
+            </small>
+
+        </a></td>
+    <td>
+        <i class="oe-i circle-<?php echo $ticket->priority ? $ticket->priority->name : ''?> small pad selected"></i>
+    <td><?= Helper::convertDate2NHS($ticket->created_date) ?></td>
+    <td><?= $ticket->getTicketFirm() ?></td>
+    <td><?= $ticket->user->getFullName() ?></td>
+    <td>
+        <div class="clinic-info scroll-content">
+            <?= $ticket->report ? $ticket->report : '-'; ?>
+        </div>
     </td>
-	<td class="forceNoWrap">
-        <div class="clamp5"><?= nl2br($ticket->getNotes()) ?></div>
+    <td>
+        <div class="scroll-content">
+            <?= nl2br($ticket->getNotes()) ?>
+        </div>
     </td>
-	<!-- Ownership functionality not required at the moment.
-	<td><?= $ticket->assignee ? $ticket->assignee->getFullName() : '-'?></td>
+    <!-- Ownership functionality not required at the moment.
+	<td><?= $ticket->assignee ? $ticket->assignee->getFullName() : '-' ?></td>
 	 -->
-	<td class="actions">
-		<?php
+    <td class="actions">
+        <?php
         if ($can_process) {
             if (!$ticket->is_complete()) {
                 /*
@@ -58,14 +73,15 @@
                 }
                 */
                 ?>
-				<a href="<?= Yii::app()->createURL('/PatientTicketing/default/startTicketProcess/', array('ticket_id' => $ticket->id)); ?>" class="button tiny"><?= $t_svc->getTicketActionLabel($ticket) ?></a>
-		<?php }
-        }?>
-		<?php if ($ticket->hasHistory()) {?>
-			<button class="tiny ticket-history">History</button>
-			<?php if ($this->checkAccess('Patient Tickets admin')) {?>
-				<button class="tiny undo-last-queue-step">Undo last step</button>
-			<?php }?>
-		<?php }?>
-	</td>
+                <a href="<?= Yii::app()->createURL('/PatientTicketing/default/startTicketProcess/', array('ticket_id' => $ticket->id)); ?>"
+                   class="button"><?= $t_svc->getTicketActionLabel($ticket) ?></a>
+            <?php }
+        } ?>
+        <?php if ($ticket->hasHistory()) { ?>
+            <button class="tiny ticket-history">History</button>
+            <?php if ($this->checkAccess('Patient Tickets admin')) { ?>
+                <button class="tiny undo-last-queue-step">Undo last step</button>
+            <?php } ?>
+        <?php } ?>
+    </td>
 </tr>
