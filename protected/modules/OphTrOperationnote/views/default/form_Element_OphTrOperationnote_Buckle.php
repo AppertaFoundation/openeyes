@@ -22,14 +22,14 @@ $layoutColumns = $form->layoutColumns;
 $form->layoutColumns = array('label' => 3, 'field' => 9);
 ?>
 <div class="element-fields full-width">
-  <div class="eyedraw-row row buckle">
-    <div class="fixed column">
+  <div class="cols-11 flex-layout col-gap eyedraw-row buckle">
+    <div class="cols-6">
         <?php $this->renderPartial($element->form_view . '_OEEyeDraw', array(
             'element' => $element,
             'form' => $form,
         )); ?>
     </div>
-    <div class="fluid column">
+    <div class="cols-6">
         <?php $this->renderPartial($element->form_view . '_OEEyeDraw_fields', array(
             'form' => $form,
             'element' => $element,
