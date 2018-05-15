@@ -21,7 +21,7 @@
     $is_mandatory = isset($is_mandatory) ? $is_mandatory : false;
 ?>
 
-<table id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
+<table class="cols-full" id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
     <thead>
         <tr id="dm_0">
             <th>To/CC</th>
@@ -230,8 +230,8 @@
         ?>
 
         <tr class="new_entry_row">
-            <td colspan="5">
-                <button class="button small secondary" id="docman_add_new_recipient">Add new recipient</button>
+            <td style="text-align: left" colspan="5">
+                <button class="button green hint" id="docman_add_new_recipient">Add new recipient</button>
             </td>
         </tr>
 
