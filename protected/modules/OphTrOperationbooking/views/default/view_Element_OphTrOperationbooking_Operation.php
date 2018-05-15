@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
 <section class="element element-data">
     <h3 class="data-title">Procedure<?php if (count($element->procedures) != 1) echo 's' ?></h3>
     <ul class="data-value highlight important">
@@ -26,9 +27,17 @@
 </section>
 
 <section class="element element-data">
+    <?php if(!is_null($element->complexity)): ?>
     <div class="row">
         <div class="large-6 column">
-            <h3 class="data-title">Consultant required?</h3>
+            <h3 class="data-title"><?php echo $element->getAttributeLabel('complexity') ?>:</h3>
+            <div class="data-value"><?php echo $element->getComplexityCaption(); ?></div>
+        </div>
+    </div>
+    <?php endif; ?>
+    <div class="row">
+        <div class="large-6 column">
+            <h3 class="data-title">Named Consultant List:</h3>
             <?php
             if ($element->consultant) {
                 $consultant_name = $element->consultant->ReversedFullName;
@@ -36,7 +45,7 @@
                 $consultant_name = 'Consultant';
             }
             ?>
-            <div class="data-value"><?php echo $element->consultant_required ? "Yes, $consultant_name" : 'No Consultant' ?></div>
+            <div class="data-value"><?php echo $element->consultant_required ? "$consultant_name" : 'No' ?></div>
         </div>
         <?php if (!is_null($element->senior_fellow_to_do)): ?>
             <div class="large-6 column">
@@ -47,22 +56,13 @@
     </div>
     <div class="row">
         <div class="large-6 column">
-            <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('any_grade_of_doctor')) ?>?</h3>
-            <div class="data-value"><?php echo $element->any_grade_of_doctor ? 'Yes' : 'No' ?></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="large-6 column">
             <h3 class="data-title">Anaesthetic</h3>
             <div class="data-value">
                 <?= $element->getAnaestheticTypeDisplay(); ?>
             </div>
         </div>
         <div class="large-6 column">
-            <?php if (!is_null($element->anaesthetist_preop_assessment)): ?>
-                <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('anaesthetist_preop_assessment')) ?></h3>
-                <div class="data-value"><?= $element->anaesthetist_preop_assessment ? 'Yes' : 'No' ?></div>
-            <?php endif ?>
+
         </div>
     </div>
     <div class="row">
@@ -75,7 +75,7 @@
         <div class="large-6 column">
             <?php if (!is_null($element->stop_medication)): ?>
                 <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('stop_medication')) ?></h3>
-                <div class="data-value"><?= $element->stop_medication ? 'Yes' : 'No' ?></div>
+                <div class="data-value"><?= $element->stop_medication ? 'Yes' : 'Not specifed / Refer to Pre-Assessment Nurse Advice' ?></div>
                 <?php if ($element->stop_medication): ?>
                     <div class="data-value panel comments"><?= Yii::app()->format->nText($element->stop_medication_details) ?></div>
                 <?php endif ?>
@@ -87,10 +87,6 @@
 <section class="element element-data">
     <div class="row">
         <div class="large-6 column">
-            <h3 class="data-title">Post Operative Stay Required</h3>
-            <div class="data-value"><?php echo $element->overnight_stay ? 'Yes Stay' : 'No Stay' ?></div>
-        </div>
-        <div class="large-6 column">
             <h3 class="data-title">Decision Date</h3>
             <div class="data-value"><?php echo $element->NHSDate('decision_date') ?></div>
         </div>
@@ -101,19 +97,6 @@
             <div class="data-value"><?php echo $element->site->name ?></div>
         </div>
     </div>
-    <div class="row">
-        <div class="large-6 column">
-            <?php if (!is_null($element->fast_track)): ?>
-                <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('fast_track')) ?></h3>
-                <div class="data-value"><?php echo $element->fast_track ? 'Yes' : 'No' ?></div>
-            <?php endif ?>
-        </div>
-        <div class="large-6 column">
-            <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('fast_track_discussed_with_patient')) ?></h3>
-			<div class="data-value"><?php echo is_null($element->fast_track_discussed_with_patient) ? 'Not recorded' : ($element->fast_track_discussed_with_patient ? 'Yes' : 'No')?></div>
-        </div>
-    </div>
-
 </section>
 
 <section class="element element-data">
@@ -149,6 +132,21 @@
                 <?php if ($element->special_equipment): ?>
                     <div class="data-value panel comments"><?= Yii::app()->format->nText($element->special_equipment_details) ?></div>
                 <?php endif ?>
+            <?php endif ?>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="large-6 column">
+            <?php if (!is_null($element->preassessment_booking_required)): ?>
+                <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('preassessment_booking_required')) ?></h3>
+                <div class="data-value"><?= $element->preassessment_booking_required ? 'Yes' : 'No' ?></div>
+            <?php endif ?>
+        </div>
+        <div class="large-6 column">
+            <?php if (!is_null($element->overnight_stay_required)): ?>
+                <h3 class="data-title"><?= CHtml::encode($element->getAttributeLabel('overnight_stay_required')) ?></h3>
+                <div class="data-value"><?= $element->overnight_stay_required->name ?></div>
             <?php endif ?>
         </div>
     </div>

@@ -466,6 +466,75 @@ function showHideIOLFields(_drawing, resetPosition) {
 
 }
 
+function AngleMarksController(_drawing) {
+    var angleMarks,
+        $biometry_element = $(".Element_OphTrOperationnote_Biometry"),
+        has_biometry = $biometry_element.find(".element-fields").data('has_biometry'),
+        data;
+
+    // Register controller for notifications
+    _drawing.registerForNotifications(this, 'notificationHandler', ['ready']);
+
+    // Method called for notification
+    this.notificationHandler = function (_messageArray) {
+
+        switch (_messageArray['eventName']) {
+            // Ready notification
+            case 'ready':
+                this.initAntSegAngleMarks();
+                break;
+        }
+    }
+
+    this.initAntSegAngleMarks = function(){
+
+        data = $(".Element_OphTrOperationnote_Biometry").find('.' + (_drawing.eye === 0 ? 'right' : 'left') + '-eye .element-data').data("biometry_data");
+        angleMarks = _drawing.firstDoodleOfClass('AntSegAngleMarks');
+
+        if(!has_biometry && angleMarks){
+            _drawing.deleteDoodle(angleMarks, true);
+        } else if(has_biometry && !data && angleMarks) {
+            //Eg. only one side has biometry data but we creating Op note for the other eye
+            _drawing.deleteDoodle(angleMarks, true);
+        } else if(has_biometry && data){
+            if(!_drawing.hasDoodleOfClass("AntSegAngleMarks")){
+                let biometry_data = this.calculateBiometryData(data);
+                _drawing.addDoodle("AntSegAngleMarks", biometry_data);
+            } else {
+                this.setBiometryData();
+            }
+
+        }
+    }
+
+    this.calculateBiometryData = function(data){
+        var return_obj = {};
+        if(data && data.k1 && data.k2 && data.axis_k1 && data.axis_k2){
+            let steepK = data.k1 > data.k2 ? data.k1 : data.k2;
+            let flatK  = data.k1 < data.k2 ? data.k1 : data.k2;
+            let axis   = data.k1 > data.k2 ? data.axis_k1 : data.axis_k2;
+
+            return_obj = {'axis': axis, 'flatK': flatK, 'steepK': steepK};
+        }
+
+        return return_obj;
+    }
+    this.setBiometryData = function(){
+
+        //Refresh data
+        data = $(".Element_OphTrOperationnote_Biometry").find('.' + (_drawing.eye === 0 ? 'right' : 'left') + '-eye .element-data').data("biometry_data");
+        let biometry_data = this.calculateBiometryData(data);
+
+        if(has_biometry && data && angleMarks){
+            angleMarks.setParameterFromString('axis', biometry_data.axis);
+            angleMarks.setParameterFromString('flatK', biometry_data.flatK);
+            angleMarks.setParameterFromString('steepK', biometry_data.steepK);
+        } else {
+            _drawing.deleteDoodle(angleMarks, true);
+        }
+    }
+}
+
 function sidePortController(_drawing) {
     var phakoIncision;
     var sidePort1;
@@ -678,6 +747,13 @@ function changeEye() {
         alert('The eye state loaded for the cataract operation may no longer be correct. Please remove and re-add the procedure.');
         if (drawingEdit2.eye == ED.eye.Right) drawingEdit2.eye = ED.eye.Left;
         else drawingEdit2.eye = ED.eye.Right;
+
+        for (let i in drawingEdit2.notificationArray){
+            let obj = drawingEdit2.notificationArray[i].object;
+            if(obj.constructor.name === 'AngleMarksController') {
+                obj.initAntSegAngleMarks();
+            }
+        }
     }
 
     if (typeof(drawingEdit3) != 'undefined') {

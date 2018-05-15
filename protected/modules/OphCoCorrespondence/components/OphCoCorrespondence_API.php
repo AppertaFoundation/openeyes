@@ -343,8 +343,14 @@ class OphCoCorrespondence_API extends BaseAPI
             if($commissioningbodytype && $commissioningbody) {
                 foreach($commissioningbody->services as $service) {
                     if($service->type->shortname == 'DRSS') {
+
+                        $correspondence_name = $service->fullName;
+                        if (method_exists($service, 'getCorrespondenceName')) {
+                            $correspondence_name = $service->correspondenceName;
+                        }
+
                         $data['cc'][$k]['contact_type'] = 'DRSS';
-                        $data['cc'][$k]['contact_name'] = $service->getFullName();
+                        $data['cc'][$k]['contact_name'] = implode(',', $correspondence_name);
                         $data['cc'][$k]['contact_id'] = $service->contact->id;
                         $data['cc'][$k]['address'] = $service->getLetterAddress(array(
                                         'include_name' => false,

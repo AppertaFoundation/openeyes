@@ -88,8 +88,8 @@ class Element_OphCiExamination_OpticDisc extends \SplitEventTypeElement
                 array('left_diameter, right_diameter', 'numerical', 'max' => 9.9, 'min' => 0.1),
                 array('left_lens_id, right_lens_id', 'checkDiameter'),
                 array('eye_id, event_id, left_description, right_description, left_eyedraw, right_eyedraw, left_diameter, right_diameter, left_cd_ratio_id, right_cd_ratio_id, left_lens_id, right_lens_id', 'safe', 'on' => 'search'),
-                array('left_ed_report', 'requiredIfSide', 'side' => 'left'),
-                array('right_ed_report', 'requiredIfSide', 'side' => 'right'),
+                array('left_ed_report', 'requiredIfNoComments', 'side' => 'left', 'comments_attribute' => 'description'),
+                array('right_ed_report', 'requiredIfNoComments', 'side' => 'right', 'comments_attribute' => 'description'),
         );
     }
 

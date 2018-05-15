@@ -16,33 +16,32 @@
 */
 
 h1 {
-	font-size: 1.5em;
-	margin: 10px 0;
-	vertical-align: bottom;
-	margin-top: 3em;
-	float: left;
+    font-size: 1.2em;
+    margin: 0;
+    vertical-align: bottom;
+    float: left;
+    width: 50%;
 }
 
-h2 {
-	font-size: 1.2em;
-	margin: 10px 0 5px;
+h2,b {
+    font-size: 1.0em;
+
 }
 
 table {
-	margin: 10px 0;
-	width: 100%;
+    width: 100%;
 }
 
 .banner {
-	position: relative;
+    position: relative;
 }
 
 tr.handWritten td {
-	height: 30px;
+    height: 30px;
 }
 
 .banner {
-	height: 100px;
+    max-height: 100px;
 }
 
 .banner .letter-seal {
@@ -64,8 +63,9 @@ tr.handWritten td {
 }
 
 .print-form-div {
-	padding: 30px;
-	page-break-after: always;
+    padding: 0 0 0 0;
+    page-break-after: always;
+    font-size: 10pt;
 }
 
 h2 {
@@ -74,12 +74,17 @@ h2 {
 }
 
 td, th {
-	border: 2px #ccc solid;
-	padding: 5px !important;
+    border: 1.5px #ccc solid;
+    padding: 1px !important;
+    font-size: 8pt !important;
+}
+
+ul li, ol li {
+        font-size: 8pt !important;
 }
 
 .prescription_header th {
-	width: 20%;
+    width: 20%;
 }
 
 .prescription_header td {
@@ -87,48 +92,51 @@ td, th {
 }
 .prescription_items td,
 .prescription_items th {
-	width: 12%;
+    width: 12%;
 }
 
 .prescription_items .prescriptionLabel {
-	width: 28%;
+    width: 28%;
 }
 
 .prescription_items .prescriptionTaper td.prescriptionLabel {
-	text-align: right;
+    text-align: right;
+    padding-right: 5px !important;
 }
 .pharmacy_checkboxes th {
-	width: 30%;
+    width: 30%;
 }
 
 .pharmacy_checkboxes td {
-	width: 20%;
+    width: 20%;
 }
 .done_bys th {
-	width: 22%;
+    width: 22%;
 }
 
 .done_bys td	{
-	width: 28%;
+    width: 28%;
 }
 
 tr.handWritten td {
-	height: 30px;
+    height: 30px;
 }
 
 .from-address {
-	float: right;
-	width: 300px;
-	text-align: right;
+    float: right;
+    width: 300px;
+    text-align: right;
+    font-size:6pt;
+    padding-bottom: 10px;
 }
 
 .watermark {
-	position: relative;
+    position: relative;
 }
 
 .watermark img {
-	position: absolute;
-	z-index: -1;
-	top: 120px;
-	left: 60px;
+    position: absolute;
+    z-index: -1;
+    top: 120px;
+    left: 60px;
 }

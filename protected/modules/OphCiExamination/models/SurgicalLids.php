@@ -67,8 +67,8 @@ class SurgicalLids extends \SplitEventTypeElement
                 'right_eyedraw, right_ed_report, right_comments', 'safe'),
             array('left_eyedraw', 'requiredIfSide', 'side' => 'left'),
             array('right_eyedraw', 'requiredIfSide', 'side' => 'right'),
-            array('left_ed_report', 'requiredIfSide', 'side' => 'left'),
-            array('right_ed_report', 'requiredIfSide', 'side' => 'right'),
+            array('left_ed_report', 'requiredIfNoComments', 'side' => 'left', 'comments_attribute' => 'comments'),
+            array('right_ed_report', 'requiredIfNoComments', 'side' => 'right', 'comments_attribute' => 'comments'),
             // The following rule is used by search().
             array('id, event_id, eye_id, left_eyedraw, left_ed_report, left_comments, ' .
                 'right_eyedraw, right_ed_report, right_comments', 'safe', 'on' => 'search'),

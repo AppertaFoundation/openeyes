@@ -33,7 +33,7 @@ class AdminController extends BaseAdminController
 
     public function actionEditPreviousOperation()
     {
-        $this->genericAdmin('Edit Previous Ophthalmic Surgery Choices', 'CommonPreviousOperation');
+        $this->genericAdmin('Edit Surgical History Choices', 'CommonPreviousOperation');
     }
 
     public function actionEditCommonOphthalmicDisorderGroups()
@@ -1637,10 +1637,6 @@ class AdminController extends BaseAdminController
             }
 
             $address->attributes = $_POST['Address'];
-
-            if (!$address->validate()) {
-                $errors = array_merge($errors, $address->getErrors());
-            }
 
             if (empty($errors)) {
                 $transaction = Yii::app()->db->beginInternalTransaction();

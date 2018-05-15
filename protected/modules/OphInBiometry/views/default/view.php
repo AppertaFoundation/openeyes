@@ -22,6 +22,24 @@ if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::printButton();
 }
 
+// Add the open in forum button if FORUM integration is enabled
+$sop=OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id))->sop_uid;
+if (Yii::app()->params['enable_forum_integration'] == 'on' && !empty($sop)){
+array_unshift(
+$this->event_actions,
+    EventAction::link('Open In Forum',
+        ('oelauncher:forumsop/'.$sop),
+        null, array('class' => 'button small')
+    ));
+}
+
+if ($this->checkEditAccess()){
+    array_unshift(
+    $this->event_actions,
+        EventAction::link('Choose Lens', Yii::app()->createUrl($this->module->id.'/default/update/'.$this->event->id), null, array('class' => 'button small')
+    ));
+}
+
 $this->beginContent('//patient/event_container');
 $this->moduleNameCssClass .= ' highlight-fields';
 
