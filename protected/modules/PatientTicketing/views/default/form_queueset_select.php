@@ -54,18 +54,18 @@ $form = $this->beginWidget('CActiveForm', array(
 <?php
 $this->endWidget(); ?>
 <script>
-    $(document).on('click', '#js-virtual-clinic-btn', function (e) {
+    $(document).on('click', '.button.blue.hint', function (e) {
         e.preventDefault();
         $('.oe-popup-wrap').css('display', 'flex');
     });
 
-    $(document).on('click', '#close-btn', function (e) {
+    $(document).on('click', '.oe-i.remove-circle.pro-theme', function (e) {
         e.preventDefault();
         $('.oe-popup-wrap').css('display', 'none');
     });
 
-    $(document).ready(function() {
-        $("a").click(function(event) {
+    $(".oe-btn-list").ready(function() {
+        $("li").click(function(event) {
            $('#ticket-filter').submit();
         });
     });
