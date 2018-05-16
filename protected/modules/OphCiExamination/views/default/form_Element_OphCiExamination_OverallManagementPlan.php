@@ -34,7 +34,7 @@ if (isset($element->hrt_id)) {
 
 $overallPeriods = CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_OverallPeriod::model()
     ->activeOrPk($usedOverallPeriods)->findAll(
-    array('order' => 'display_order asc')), 'id', 'name'
+        array('order' => 'display_order asc')), 'id', 'name'
 );
 
 $intervalVisits = CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_VisitInterval::model()
@@ -57,58 +57,83 @@ $field_width = 7;
 $label_width = 5;
 ?>
 
-<div class="element-fields full-width">
-  <table class="cols-12 element-fields">
-    <tbody class="cols-full element-fields">
+<div class="element-fields eye-divider">
+  <div class="element-both-eyes">
+    <table class="cols-full">
+      <tbody>
       <tr>
-        <td><?= $form->dropDownList($element, 'clinic_interval_id', $overallPeriods, array(), false, array('label' => $label_width, 'field' => $field_width))?></td>
-        <td><?= $form->dropDownList($element, 'photo_id', $overallPeriods, array(), false, array('label' => $label_width, 'field' => $field_width))?></td>
-        <td><?= $form->dropDownList($element, 'oct_id', $overallPeriods, array(), false, array('label' => $label_width, 'field' => $field_width))?></td>
-        <td><?= $form->dropDownList($element, 'hfa_id', $overallPeriods, array(), false, array('label' => $label_width, 'field' => $field_width))?></td>
-        <td><?= $form->dropDownList($element, 'gonio_id', $intervalVisits, array(), false, array('label' => $label_width, 'field' => $field_width))?></td>
-        <td><?= $form->dropDownList($element, 'hrt_id', $overallPeriods, array(), false, array('label' => $label_width, 'field' => $field_width))?></td>
-      </tr><tr></tr>
-    </tbody>
-  </table>
-  <div class="cols-12">
-    <?php echo $form->textArea($element, 'comments', array('nowrapper' => true), false, array('rows' => 1, 'placeholder' => 'Comments'), array('field' => 12))?>
+        <td><?= $form->dropDownList($element, 'clinic_interval_id', $overallPeriods, array(), false,
+                array('label' => $label_width, 'field' => $field_width)) ?></td>
+        <td><?= $form->dropDownList($element, 'photo_id', $overallPeriods, array(), false,
+                array('label' => $label_width, 'field' => $field_width)) ?></td>
+        <td><?= $form->dropDownList($element, 'oct_id', $overallPeriods, array(), false,
+                array('label' => $label_width, 'field' => $field_width)) ?></td>
+        <td><?= $form->dropDownList($element, 'hfa_id', $overallPeriods, array(), false,
+                array('label' => $label_width, 'field' => $field_width)) ?></td>
+        <td><?= $form->dropDownList($element, 'gonio_id', $intervalVisits, array(), false,
+                array('label' => $label_width, 'field' => $field_width)) ?></td>
+        <td><?= $form->dropDownList($element, 'hrt_id', $overallPeriods, array(), false,
+                array('label' => $label_width, 'field' => $field_width)) ?></td>
+        <td>
+          <button id="<?= CHtml::modelName($element) ?>_comment_button" type="button" class="button js-add-comments"
+                  data-comment-container="#<?= CHtml::modelName($element) ?>_comment_container"
+                  <?php if ($element->comments): ?>style="display: none;"<?php endif; ?>>
+            <i class="oe-i comments small-icon"></i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div id="<?= CHtml::modelName($element) ?>_comment_container" class="field-row js-comment-container"
+         <?php if (!$element->comments): ?>style="display: none;"<?php endif; ?>>
+        <?php echo $form->textArea($element, 'comments', array('nowrapper' => true), false,
+            array(
+                'rows' => 1,
+                'placeholder' => 'Comments',
+                'class' => 'js-comment-field',
+                'data-comment-button' => '#' . CHtml::modelName($element) . '_comment_button',
+            ), array('field' => 12)) ?>
+    </div>
   </div>
-</div>
-<div class="element-fields element-eyes sub-element">
-<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-<?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):
-    $hasEyeFunc = 'has'.ucfirst($eye);
-    ?>
-  <div class="element-eye <?=$eye?>-eye column <?=$side?> side <?= !$element->$hasEyeFunc() ? "inactive" : ""?>" data-side="<?=$eye?>">
-    <div class="active-form" style="<?= !$element->$hasEyeFunc() ? "display: none;" : ""?>">
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-      <div class="row field-row">
-        <div class="large-3 column">
-          <label for="<?= CHtml::modelName($element).'['.$eye.'_target_iop_id]' ?>">
-            Target IOP:
-          </label>
-          <?= $form->dropDownList($element, $eye.'_target_iop_id', $targetIOPS, array('nowrapper' => true, 'empty' => '- Select -')) ?>
-          mmHg
+  <div class="element-eyes sub-element">
+      <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+      <?php foreach (['left' => 'right', 'right' => 'left'] as $side => $eye):
+          $hasEyeFunc = 'has' . ucfirst($eye);
+          ?>
+        <div
+            class="element-eye <?= $eye ?>-eye column <?= $side ?> side <?= !$element->$hasEyeFunc() ? "inactive" : "" ?>"
+            data-side="<?= $eye ?>">
+          <div class="active-form" style="<?= !$element->$hasEyeFunc() ? "display: none;" : "" ?>">
+            <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+            <div class="row field-row">
+              <div class="large-3 column">
+                <label for="<?= CHtml::modelName($element) . '[' . $eye . '_target_iop_id]' ?>">
+                  Target IOP:
+                </label>
+                  <?= $form->dropDownList($element, $eye . '_target_iop_id', $targetIOPS,
+                      array('nowrapper' => true, 'empty' => '- Select -')) ?>
+                mmHg
+              </div>
+            </div>
+          </div>
+          <div class="inactive-form side" style="<?= $element->$hasEyeFunc() ? "display: none;" : "" ?>">
+            <div class="add-side">
+              <a href="#">
+                Add <?= $eye ?> eye <span class="icon-add-side"></span>
+              </a>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="inactive-form side" style="<?= $element->$hasEyeFunc() ? "display: none;" : ""?>">
-      <div class="add-side">
-        <a href="#">
-          Add <?=$eye?> eye <span class="icon-add-side"></span>
-        </a>
-      </div>
-    </div>
+      <?php endforeach; ?>
   </div>
-<?php endforeach; ?>
 
-<script type="text/javascript">
-	if (typeof setCurrentManagementIOP == 'function') {
-		setCurrentManagementIOP('left');
-		setCurrentManagementIOP('right');
-	}
-</script>
-<?php
+  <script type="text/javascript">
+    if (typeof setCurrentManagementIOP == 'function') {
+      setCurrentManagementIOP('left');
+      setCurrentManagementIOP('right');
+    }
+  </script>
+    <?php
     Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/OverallManagement.js", CClientScript::POS_HEAD);
-?>
+    ?>
 
