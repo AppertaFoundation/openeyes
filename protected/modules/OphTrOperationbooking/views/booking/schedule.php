@@ -220,9 +220,45 @@
                         </tbody>
                     </table>
                 <?php } ?>
-            </div>
-    </section>
-    <section class="element edit full  edit-select-theatre-date">
+                </tbody>
+            </table>
+        </div>
+        <div class="cols-6">
+            <?php
+            $initial_erod = ($operation->firstBooking) ? $operation->firstBooking->erod : null;
+            $erod = $operation->calculateEROD($firm);
+            if ($initial_erod || $erod) { ?>
+                <table class="cols-full last-left">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <?= CHtml::encode($schedule_options->getAttributeLabel('schedule_options_id')) ?>:
+                        </td>
+                        <td class="large-text">
+                            <?= CHtml::encode($schedule_options->schedule_options->name) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            EROD
+                        </td>
+                        <td>
+                            <?php if ($erod) {
+                                echo $erod->getDescription();
+                            } else {
+                                echo 'N/A';
+                            }
+                            if ($initial_erod) {
+                                echo ' <span class="initial-erod">Initially: ' . $initial_erod->getDescription();
+                            } ?>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            <?php } ?>
+        </div>
+</section>
+<section class="element edit full  edit-select-theatre-date">
         <header class="element-header">
             <h3 class="element-title">Select theatre slot</h3>
         </header>
@@ -252,22 +288,22 @@
                 </div>
             </div>
         </div>
-    </section>
-    <section class="element edit full  edit-select-theatre-date">
-        <?php if ($theatres) { ?>
-            <?php echo $this->renderPartial('_theatre_times', array(
-                'operation' => $operation,
-                'date' => $selectedDate,
-                'theatres' => $theatres,
-                'reschedule' => $operation->booking,
-                'firm' => $firm,
-                'selectedDate' => $selectedDate,
-                'selectedSession' => $session,
-            ), false, false) ?>
-        <?php } ?>
-    </section>
-    <section class="element edit full  edit-other-operations-in-this-session">
-        <div id="sessionDetails">
+</section>
+<section class="element edit full  edit-select-theatre-date">
+            <?php if ($theatres) { ?>
+                <?php echo $this->renderPartial('_theatre_times', array(
+                    'operation' => $operation,
+                    'date' => $selectedDate,
+                    'theatres' => $theatres,
+                    'reschedule' => $operation->booking,
+                    'firm' => $firm,
+                    'selectedDate' => $selectedDate,
+                    'selectedSession' => $session,
+                ), false, false) ?>
+            <?php } ?>
+</section>
+<section class="element edit full  edit-other-operations-in-this-session">
+    <div id="sessionDetails">
             <?php if ($session) { ?>
                 <?php echo $this->renderPartial('_list', array(
                     'operation' => $operation,
@@ -278,6 +314,6 @@
                     'errors' => $errors,
                 ), false, false) ?>
             <?php } ?>
-        </div>
-    </section>
+    </div>
+</section>
 <?php $this->endContent(); ?>

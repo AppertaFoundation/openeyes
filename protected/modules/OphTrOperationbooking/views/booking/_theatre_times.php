@@ -15,79 +15,95 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->params['future_scheduling_limit'] && $date > date('Y-m-d', strtotime('+'.Yii::app()->params['future_scheduling_limit']))) {?>
-	<div class="alert-box alert with-icon" style="margin-top: 10px;">
-		This date is outside the allowed booking window of <?php echo Yii::app()->params['future_scheduling_limit']?> and so cannot be booked into.
-	</div>
-<?php }?>
+if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->params['future_scheduling_limit'] && $date > date('Y-m-d', strtotime('+' . Yii::app()->params['future_scheduling_limit']))) { ?>
+    <div class="alert-box alert with-icon" style="margin-top: 10px;">
+        This date is outside the allowed booking window of <?php echo Yii::app()->params['future_scheduling_limit'] ?>
+        and so cannot be booked into.
+    </div>
+<?php } ?>
+<header class="element-header">
+    <h3 class="element-title">Select theatre time</h3>
+</header>
+<div class="element-actions">
+    <span class="js-remove-element">
+	    <i class="oe-i remove-circle"></i>
+	</span>
+</div>
 
-<h4>Select a session time:</h4>
-<div id="theatre-times">
-	<?php $i = 0;
-	foreach ($theatres as $i => $theatre) { ?>
-
-	<h5><?php echo $theatre->name ?>
-		<?php if ($theatre->site) { 
-			echo ' ('.$theatre->site->name.')'; 
-		}?>
-	</h5>
-
-	<div id="theatre-times_tab_<?php echo $i ?>" class="sessionTimes element tile">
-
-		<?php foreach ($theatre->sessions as $j => $session) {
-            if ($session->id != @$selectedSession->id) {?>
-				<a href="<?php echo 
-					Yii::app()->createUrl('/'.$operation->event->eventType->class_name.'/booking/'.($operation->booking ? 're' : '')
-						.'schedule/'.$operation->event_id).'?'.
-                        implode('&', array(
-                            'firm_id='.($firm->id ? $firm->id : 'EMG'),
-                            'date='.date('Ym', strtotime($date)),
-                            'day='.CHtml::encode($_GET['day']),
-                            'session_id='.$session->id,
-                            'referral_id='.$operation->referral_id, )); ?>#book">
-			<?php }?>
-				<div class="timeBlock <?php echo $session->id == @$selectedSession->id ? 'selected_session' : $session->status ?><?php if (strtotime(date('Y-m-d')) > strtotime($session->date)) { echo ' inthepast'; } elseif ($session->operationBookable($operation)) { echo ' bookable';}?>" id="bookingSession<?php echo $session->id ?>">
-					<div class="mainInfo">
-						<div class="time"><?php echo substr($session->start_time, 0, 5) ?> - <?php echo substr($session->end_time, 0, 5) ?></div>
-						<div class="timeLeft">
-							(<?php echo abs($session->availableMinutes) ?> min
-							<?php echo $session->minuteStatus?>)
-						</div>
-						<div class="session_id"><?php echo $session->id ?></div>
-					</div>
-					<?php if ($session->consultant || $session->anaesthetist || $session->paediatric) {?>
-					<div class="metadata">
-						<?php if ($session->consultant) {?>
-							<div class="consultant" title="Consultant Present">Consultant</div>
-						<?php }?>
-						<?php if ($session->anaesthetist) {?>
-							<div class="anaesthetist" title="Anaesthetist Present">Anaesthetist
-							<?php if ($session->general_anaesthetic) {?> 
-								(GA)
-							<?php }?>
-							</div>
-						<?php }?>
-						<?php if ($session->paediatric) {?>
-							<div class="paediatric" title="Paediatric Session">Paediatric</div>
-						<?php }?>
-					</div>
-					<?php }?>
-				</div>
-			<?php if ($session->id != @$selectedSession->id) {?>
-				</a>
-			<?php }?>
-		<?php }?>
-	</div>
-
-	<?php if (isset($selectedSession) && !$selectedSession->operationBookable($operation)) {?>
-		<div class="alert-box alert with-icon" style="margin-top: 10px;">
-			<?php echo CHtml::encode($selectedSession->unbookableReason($operation))?>
-		</div>
-	<?php }?>
-
-	<?php ++$i; } ?>
-
-	<?php if ($i == 0) {?>
-		<h5>Sorry, this firm has no sessions on the selected day.</h5>
-	<?php }?>
+<div class="element-fields full-width">
+    <div class="cols-full theatre-sessions">
+        <table class="theatre-bookings">
+            <tfoot>
+            <?php $i = 0;
+            foreach ($theatres as $i => $theatre) { ?>
+                <tr>
+                    <td>
+                        <h3 style="float: left"><?php echo $theatre->name ?>
+                            <?php if ($theatre->site) {
+                                echo ' (' . $theatre->site->name . ')';
+                            } ?>
+                        </h3>
+                    </td>
+                </tr>
+                <?php foreach ($theatre->sessions as $j => $session) { ?>
+                    <tr>
+                        <td class="<?php echo $session->id == @$selectedSession->id ? 'selected_session' : $session->status ?><?php if (strtotime(date('Y-m-d')) > strtotime($session->date)) {
+                            echo ' inthepast';
+                        } elseif ($session->operationBookable($operation)) {
+                            echo ' bookable';
+                        } ?>" id="bookingSession<?php echo $session->id ?>">
+                            <div class="session_timeleft time-left available">
+                                <?php echo abs($session->availableMinutes) ?> min
+                                <?php echo $session->minuteStatus ?>
+                            </div>
+                            <div class="specialists">
+                                <?php if ($session->consultant) { ?>
+                                    <div class="consultant" title="Consultant Present">Consultant</div>
+                                <?php } ?>
+                                <?php if ($session->anaesthetist) { ?>
+                                    <div class="anaesthetist" title="Anaesthetist Present">Anaesthetist
+                                        <?php if ($session->general_anaesthetic) { ?>
+                                            (GA)
+                                        <?php } ?>
+                                    </div>
+                                <?php } ?>
+                                <?php if ($session->paediatric) { ?>
+                                    <div class="paediatric" title="Paediatric Session">Paediatric</div>
+                                <?php } ?>
+                            </div>
+                        </td>
+                        <?php if ($session->id != @$selectedSession->id) { ?>
+                            <td>
+                                <a href="<?php echo
+                                    Yii::app()->createUrl('/' . $operation->event->eventType->class_name . '/booking/' . ($operation->booking ? 're' : '')
+                                        . 'schedule/' . $operation->event_id) . '?' .
+                                    implode('&', array(
+                                        'firm_id=' . ($firm->id ? $firm->id : 'EMG'),
+                                        'date=' . date('Ym', strtotime($date)),
+                                        'day=' . CHtml::encode($_GET['day']),
+                                        'session_id=' . $session->id,
+                                        'referral_id=' . $operation->referral_id,)); ?>">
+                                    <button class="large blue hint">Select time</button>
+                                </a>
+                            </td>
+                        <?php } ?>
+                    </tr>
+                    <?php if (isset($selectedSession) && !$selectedSession->operationBookable($operation)) { ?>
+                        <tr>
+                            <td style="float:left">
+                                <span class="session-unavailable">
+                                    <?php echo CHtml::encode($selectedSession->unbookableReason($operation)) ?>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                <?php } ?>
+                <?php ++$i;
+            } ?>
+            </tfoot>
+        </table>
+        <?php if ($i == 0) {?>
+            <h5>Sorry, this firm has no sessions on the selected day.</h5>
+        <?php }?>
+    </div>
 </div>
