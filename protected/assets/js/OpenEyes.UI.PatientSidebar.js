@@ -339,15 +339,6 @@
         var self = this;
         var open = $.inArray(itemData.class_name, self.patient_open_elements) !== -1;
         var itemClass = "collapse-group";
-        var hrefClass = 'has-icon';
-
-        if (open)
-            hrefClass += ' selected';
-
-        var error = $.inArray(itemData.class_name, self.patient_error_elements) !== -1;
-        if (error) {
-            hrefClass += ' error';
-        }
 
         var item = $("<div>")
           .data('element-type-class', itemData.class_name)
@@ -361,7 +352,6 @@
         item.attr('data-collapse', 'collapsed');
       }
 
-      item.append('<a href="#" class="' + hrefClass + '"></a>');
       item.append('<div class="collapse-group-icon"><i class="oe-i pro-theme ' + (open ? 'minus' : 'plus') + '"></i></div> <h3 class="collapse-group-header">' + itemData.name + '</h3>');
 
       //children
