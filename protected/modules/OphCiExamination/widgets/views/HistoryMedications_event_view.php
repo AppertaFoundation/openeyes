@@ -29,7 +29,7 @@
             <?php if ($element->currentOrderedEntries) { ?>
             <ul class="comma-list">
                 <?php foreach ($element->currentOrderedEntries as $entry) { ?>
-                  <li><span class="detail" style="display:inline"><strong><?= $entry->getMedicationDisplay()  ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span</li>
+                  <li><span class="detail" style="display: inline;"><strong><?= $entry->getMedicationDisplay()  ?></strong><?= $entry->getAdministrationDisplay() ? ', ' . $entry->getAdministrationDisplay() : ''?><?= $entry->getDatesDisplay() ? ', ' . $entry->getDatesDisplay() : ''?></span></li>
                 <?php } ?>
             </ul>
             <?php } else { ?>
@@ -41,7 +41,6 @@
     <div class="row stopped-kind" <?php if ($element->currentOrderedEntries) { ?>style="display: none;"<?php } ?>>
         <div class="large-2 column">
             <label style="white-space: nowrap;">Stopped:
-                <?php if ($element->stoppedOrderedEntries) { ?><?php } ?>
                 <a href="#" class="kind-toggle remove" data-kind="stopped"><i class="fa fa-icon fa-times" aria-hidden="true"></i></a>
             </label>
         </div>
