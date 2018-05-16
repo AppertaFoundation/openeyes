@@ -139,8 +139,14 @@ class UserIdentity extends CUserIdentity
                     array('givenname', 'sn', 'mail')
                 );
             } elseif (Yii::app()->params['ldap_method'] == 'native-search') {
-                if (!$link = ldap_connect(Yii::app()->params['ldap_server'], Yii::app()->params['ldap_port'])) {
-                    throw new Exception('Unable to connect to LDAP server: '.Yii::app()->params['ldap_server'].' '.Yii::app()->params['ldap_port']);
+                if (preg_match('~ldaps?://~', Yii::app()->params['ldap_server'])) {
+                    if (!$link = ldap_connect(Yii::app()->params['ldap_server'])) {
+                        throw new Exception('Unable to connect to LDAP server: '.Yii::app()->params['ldap_server']);
+                    }
+                } else {
+                    if (!$link = ldap_connect(Yii::app()->params['ldap_server'], Yii::app()->params['ldap_port'])) {
+                        throw new Exception('Unable to connect to LDAP server: '.Yii::app()->params['ldap_server'].' '.Yii::app()->params['ldap_port']);
+                    }
                 }
 
                 ldap_set_option($link, LDAP_OPT_REFERRALS, 0);

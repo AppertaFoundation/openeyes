@@ -128,7 +128,6 @@
 		</p>
 	</div>
 	<div class="pageBreak">
-		<h2>Moorfields Eye Hospital NHS Trust</h2>
 		<h3>Name of proposed procedure or course of treatment</h3>
 		<?php echo $this->renderPartial('_proposed_procedures', array('css_class' => $css_class, 'procedures' => $elements['Element_OphTrConsent_Procedure']->procedures, 'eye' => $elements['Element_OphTrConsent_Procedure']->eye->adjective))?>
 		<h3>Statement of health professional <span class="noth3">(to be filled in by a health professional with appropriate knowledge of the proposed procedure(s), as specified in the consent policy)</span></h3>
@@ -150,7 +149,7 @@
 		</p>
 		<p>
 			[<?php if ($elements['Element_OphTrConsent_Other']->information) {?>x<?php } else {?>&nbsp;&nbsp;<?php }?>] The following informational leaflets have been provided: .............................................<br/>
-			[<?php if ($elements['Element_OphTrConsent_Other']->anaesthetic_leaflet) {?>x<?php } else {?>&nbsp;&nbsp;<?php }?>] "Anaesthesia at Moorfields Eye Hospital" leaflet has been provided<br/>
+			[<?php if ($elements['Element_OphTrConsent_Other']->anaesthetic_leaflet) {?>x<?php } else {?>&nbsp;&nbsp;<?php }?>] Anaesthesia leaflet has been provided<br/><br/>
 			<strong>This procedure will involve:</strong>
 			[<?php if ($elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('GA')) {?>x<?php } else {?>&nbsp;&nbsp;<?php }?>] general and/or regional anaesthesia<br/>[<?php if ($elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode(array('Topical', 'LAC', 'LA', 'LAS'))) {?>x<?php } else {?>&nbsp;&nbsp;<?php }?>] local anaesthesia&nbsp;&nbsp;[<?php if ($elements['Element_OphTrConsent_Procedure']->hasAnaestheticTypeByCode('LAS')) {?>x<?php } else {?>&nbsp;&nbsp;<?php }?>] sedation
 		</p>

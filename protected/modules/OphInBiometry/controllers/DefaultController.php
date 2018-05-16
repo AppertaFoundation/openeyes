@@ -89,12 +89,12 @@ class DefaultController extends BaseEventTypeController
                 ),
             );
             $cancel_url = ($this->episode) ? '/patient/episode/' . $this->episode->id : '/patient/episodes/' . $this->patient->id;
-            $this->event_actions = array(
+            $this->event_actions[] =
                 EventAction::link('Cancel',
                     Yii::app()->createUrl($cancel_url),
                     null, array('class' => 'button small warning')
-                ),
-            );
+                );
+
 
             $this->render('select_imported_event', array(
                 'errors' => $errors,
@@ -274,6 +274,7 @@ class DefaultController extends BaseEventTypeController
                 ));
         }
         $this->setFlashMessage($id);
+
         parent::actionView($id);
     }
 
@@ -317,6 +318,12 @@ class DefaultController extends BaseEventTypeController
         Yii::app()->assetManager->registerScriptFile('js/spliteventtype.js', null, null, AssetManager::OUTPUT_SCREEN);
 
         return parent::beforeAction($action);
+    }
+
+    protected function afterAction($action){
+        
+
+            return parent::afterAction($action);
     }
 
     /**

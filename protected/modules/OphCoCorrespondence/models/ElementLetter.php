@@ -100,6 +100,7 @@ class ElementLetter extends BaseEventTypeElement
             'letterType' => array(self::BELONGS_TO, 'LetterType', 'letter_type_id'),
             'toSubspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'to_subspecialty_id'),
             'toLocation' => array(self::BELONGS_TO, 'OphCoCorrespondence_InternalReferral_ToLocation', 'to_location_id'),
+            'toFirm' => array(self::BELONGS_TO, 'Firm', 'to_firm_id'),
 
         );
     }
