@@ -31,20 +31,12 @@
 <?php $this->renderPartial('//base/_debug'); ?>
 
 <!-- Branding (logo) -->
-<div class="openeyes-brand" style="position: absolute" >
+<div class="openeyes-brand">
     <?php $this->renderPartial('//base/_brand'); ?>
 </div>
 
 <?php $this->renderPartial('//base/_header'); ?>
 
-
-<nav class="event-header no-face">
-    <i class="oe-i-e large i-CiExamination"></i>
-    <?php $this->renderPartial('//patient/event_tabs'); ?>
-     <!-- right hand side buttons-->
-    <?php $this->renderPartial('//patient/event_actions'); ?>
-
-</nav><!-- /.content.container -->
 <?php echo $content; ?>
 
 <?php $this->renderPartial('//base/_footer'); ?>

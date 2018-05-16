@@ -31,7 +31,7 @@
 <?php $this->renderPartial('//base/_debug'); ?>
 
 <!-- Branding (logo) -->
-<div class="openeyes-brand" style="position: absolute">
+<div class="openeyes-brand">
     <?php $this->renderPartial('//base/_brand'); ?>
 </div>
 
