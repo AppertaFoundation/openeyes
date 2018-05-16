@@ -16,75 +16,96 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data tile">
-  <table>
-    <tbody>
-    <tr class="flex-layout flex-top">
-      <td class="flex-layout cols-4">
-        <div class="cols-5 data-label"><?php echo CHtml::encode($element->getAttributeLabel('clinic_interval_id'))?></div>
-        <div class="cols-7 data-value"><?php echo $element->clinic_interval ? : 'None'?></div>
-      </td>
-      <td class="flex-layout cols-4">
-        <div class="cols-5 data-label"><?php echo CHtml::encode($element->getAttributeLabel('photo_id'))?></div>
-        <div class="cols-7"><div class="data-value"><?php echo $element->photo ? $element->photo->name : 'None'?></div>
-      </td>
-      <td class="flex-layout cols-4">
-        <div class="cols-5 data-label"><?php echo CHtml::encode($element->getAttributeLabel('oct_id'))?></div>
-        <div class="cols-7 data-value"><?php echo $element->oct ? $element->oct->name : 'None'?></div>
-      </td>
-    </tr>
-    <tr class="flex-layout flex-top">
-      <td class="flex-layout cols-4">
-        <div class="cols-5 data-label"><?php echo CHtml::encode($element->getAttributeLabel('hfa_id'))?></div>
-        <div class="cols-7 data-value"><?php echo $element->hfa ? $element->hfa->name : 'None'?></div>
-      </td>
-      <td class="flex-layout cols-4">
-        <div class="cols-5 data-label"><?php echo CHtml::encode($element->getAttributeLabel('gonio_id'))?></div>
-        <div class="cols-7 data-value"><?php echo $element->gonio ? $element->gonio->name : 'None'?></div>
-      </td>
-      <td class="flex-layout cols-4">
-        <div class="cols-5 data-label"><?php echo CHtml::encode($element->getAttributeLabel('hrt_id'))?></div>
-        <div class="cols-7 data-value"><?php echo $element->hrt ? $element->hrt->name : 'None'?></div>
-      </td>
-    </tr>
+<div class="element-data eye-divider">
 
-    </tbody>
-  </table>
-  <br/>
-  <div class="cols-5 data-label"><?php echo CHtml::encode($element->getAttributeLabel('comments'))?></div>
-  <div class="cols-full data-value"><?php echo $element->textWithLineBreaks('comments')?></div>
-  <br/>
-</div>
-<div class="element-data element-eyes">
-<?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):
-  $hasEyeFunc = 'has'.ucfirst($eye);
-  $targetIOP = $eye."_target_iop";
-?>
-	<div class="element-eye <?=$eye?>-eye column">
-		<div class="data-row">
-			<div class="data-value">
-				<?php if ($element->$hasEyeFunc()):?>
-					<div class="row data-row">
-						<div class="cols-5 column">
-              <div class="data-label">
-                  <?php echo CHtml::encode($element->getAttributeLabel($eye.'_target_iop_id'))?>
-              </div>
-            </div>
-						<div class="cols-7 column end">
-              <div
-                  class="data-value"
-                  id="OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_<?=$eye?>_target_iop_id"
-              >
-                  <?php echo $element->$targetIOP->name?> mmHg
-              </div>
-            </div>
-					</div>
+  <div class="element-both-eyes">
+    <div class="data-row">
+      <div class="data-value flex-layout flex-top">
 
-				<?php else:?>
-					Not recorded
-				<?php endif;?>
-			</div>
-		</div>
-	</div>
-<?php endforeach;?>
+        <civ class="cols-11">
+
+          <div class="cols-11">
+            <ul id="js-listview-risks-pro" class="dslash-list">
+              <li><?php echo CHtml::encode($element->getAttributeLabel('clinic_interval_id')) ?>
+                : <?php echo $element->clinic_interval ?: 'None' ?></li>
+              <li><?php echo CHtml::encode($element->getAttributeLabel('photo_id')) ?>
+                : <?php echo $element->photo ? $element->photo->name : 'None' ?></li>
+              <li><?php echo CHtml::encode($element->getAttributeLabel('oct_id')) ?>
+                : <?php echo $element->oct ? $element->oct->name : 'None' ?></li>
+              <li><?php echo $element->oct ? $element->oct->name : 'None' ?>
+                : <?php echo $element->hfa ? $element->hfa->name : 'None' ?></li>
+              <li><?php echo CHtml::encode($element->getAttributeLabel('gonio_id')) ?>
+                : <?php echo $element->gonio ? $element->gonio->name : 'None' ?></li>
+              <li><?php echo CHtml::encode($element->getAttributeLabel('hrt_id')) ?>
+                : <?php echo $element->hrt ? $element->hrt->name : 'None' ?></li>
+            </ul>
+          </div>
+
+          <div class="col-11" id="js-listview-risks-full" style="display: none;">
+
+            <table class="cols-full last-left">
+              <thead>
+              <tr>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('clinic_interval_id')) ?></th>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('photo_id')) ?></th>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('oct_id')) ?></th>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('hfa_id')) ?></th>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('gonio_id')) ?></th>
+                <th><?php echo CHtml::encode($element->getAttributeLabel('hrt_id')) ?></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td><span class="large-text"><?php echo $element->clinic_interval ?: 'None' ?></span></td>
+                <td><span class="large-text"><?php echo $element->photo ? $element->photo->name : 'None' ?></span></td>
+                <td><span class="large-text"><?php echo $element->oct ? $element->oct->name : 'None' ?></span></td>
+                <td><span class="large-text"><?php echo $element->hfa ? $element->hfa->name : 'None' ?></span></td>
+                <td><span class="large-text"><?php echo $element->gonio ? $element->gonio->name : 'None' ?></span></td>
+                <td><span class="large-text"><?php echo $element->hrt ? $element->hrt->name : 'None' ?></span></td>
+              </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </civ>
+
+        <div>
+          <i class="oe-i small js-listview-expand-btn expand" data-list="risks"></i>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="data-row">
+      <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('comments')) ?></div>
+      <div class="data-value"><?php echo $element->textWithLineBreaks('comments') ?></div>
+    </div>
+  </div>
+  <div class="element-eyes">
+      <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+        <div class="element-eye <?= $eye_side ?>-eye">
+          <div class="data-row">
+
+              <?php if ($element->hasEye($eye_side)): ?>
+                <table class="cols-11 large-text last-left">
+                  <colgroup>
+                    <col class="cols-3">
+                  </colgroup>
+                  <tbody>
+                  <tr>
+                    <td><?php echo CHtml::encode($element->getAttributeLabel($eye_side . '_target_iop_id')) ?></td>
+                    <td><?php echo $element->{$eye_side . '_target_iop'}->name ?> mmHg</td>
+                  </tr>
+                  </tbody>
+                </table>
+
+              <?php else: ?>
+                Not recorded
+              <?php endif; ?>
+          </div>
+        </div>
+      <?php endforeach; ?>
+  </div>
 </div>
+
+
