@@ -281,7 +281,7 @@ function show_results(){
     $('#dim_rest').show();
     $("body").css("overflow","hidden");
     var $eventHeader = $('.event-header');
-    $("#results").css({top:eventHeader.offset().top + eventHeader.height() });
+    $("#results").css({top: $eventHeader.offset().top + $eventHeader.height() });
     $("#results").show();
     $(".switch").show();
     $("#children_toggle_container,#description_toogle_container").css("display","inline-block");
