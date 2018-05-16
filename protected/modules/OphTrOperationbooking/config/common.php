@@ -44,6 +44,7 @@ return array(
                 'title' => 'Partial bookings waiting list',
                 'uri' => 'OphTrOperationbooking/waitingList/index',
                 'position' => 20,
+                'restricted' => array('Schedule operation' , 'Super schedule operation'),
             ),
         ),
         'future_scheduling_limit' => '3 months',
