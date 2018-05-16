@@ -17,8 +17,7 @@ $core_api = new CoreAPI();
     </a>
   </td>
   <td style="overflow: hidden">
-    <a class="js-hotlist-comment-readonly js-has-tooltip js-add-hotlist-comment"
-       data-tooltip-content="<?= nl2br($hotlistItem->user_comment) ?>">
+    <a class="js-hotlist-comment-readonly js-add-hotlist-comment">
         <?= substr($hotlistItem->user_comment, 0, 30) .
         (strlen($hotlistItem->user_comment) > 30 ? '...' : '') ?></a>
   </td>
