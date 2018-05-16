@@ -78,6 +78,7 @@
             <td>
                 <?php
                 if ($this->is_auto) {
+                    echo '<span class="readonly-box">'.$element->{"k1_$side"}.'</span><span class="field-info">D</span>';
                 } else {
                     ?>
                     <input type="text" id="Element_OphInBiometry_Measurement_k1_<?php echo $side; ?>"
