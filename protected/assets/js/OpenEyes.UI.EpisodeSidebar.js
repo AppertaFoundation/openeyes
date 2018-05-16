@@ -314,8 +314,6 @@
       self.setGroupingState($(this).data('grouping-val'), 'expand');
     });
 
-    self.scrollRefresh();
-
     if (saveState)
       this.saveState();
   };
@@ -333,8 +331,6 @@
     element.each(function () {
       self.setGroupingState($(this).data('grouping-val'), 'collapse');
     });
-
-    self.scrollRefresh();
 
     if (saveState)
       this.saveState();
@@ -364,15 +360,6 @@
           self.expandGrouping($(this), false);
         }
       });
-    }
-  };
-
-  /**
-   * Simple wrapper to check the render of the sidebar wrapper for scrolling etc.
-   */
-  EpisodeSidebar.prototype.scrollRefresh = function () {
-    if (this.sidebarController) {
-      this.sidebarController.checkSideNavHeight();
     }
   };
 

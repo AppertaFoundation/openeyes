@@ -41,13 +41,6 @@
                 self.showHelp = false;
             }
         });
-
-        self.checkSideNavHeight();
-        // make sure we re-do all the sizing when the window resizes
-        $(window).on('resize', function() {
-            self.checkSideNavHeight();
-        });
-
     };
 
     Sidebar.prototype.checkSideNavHeight = function()
