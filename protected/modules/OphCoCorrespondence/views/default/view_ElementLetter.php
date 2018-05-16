@@ -22,7 +22,7 @@ if($correspondeceApp === "on") {
 <div class="element-fields full-width flex-layout flex-top col-gap" style="padding: 10px;">
     <div class="cols-5 ">
         <table class="cols-full">
-            <tr">
+            <tr>
                 <td class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('is_signed_off')) . ' '; ?></td>
                 <td class="large-9 column end">
                     <div class="data-value" style="text-align: right">
