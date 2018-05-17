@@ -165,7 +165,7 @@
 
     $('#js-search-event-input-left').focus(function(){
       $('#js-search-event-input-left').val('');
-      last_search_pos = "right";
+      last_search_pos = "left";
       $('#js-search-event-input-left').trigger("keyup");
       $('#js-search-event-input-left').css('opacity','1');
       $('#js-search-event-input-right').css('opacity','0.6');
