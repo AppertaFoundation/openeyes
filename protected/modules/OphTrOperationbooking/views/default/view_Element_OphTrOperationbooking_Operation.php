@@ -27,13 +27,26 @@
 </section>
 
 <section class="element element-data">
-    <?php if(!is_null($element->complexity)): ?>
-    <div class="row">
-        <div class="large-6 column">
-            <h3 class="data-title"><?php echo $element->getAttributeLabel('complexity') ?>:</h3>
-            <div class="data-value"><?php echo $element->getComplexityCaption(); ?></div>
+    <h3 class="data-title"><?php echo $procedure->getAttributeLabel('opcsCodes.name') . 's'; ?></h3>
+    <?php
+        $codes = [];
+        foreach ($element->procedures as $procedure) {
+            $size = count($procedure->opcsCodes) - 1;
+            foreach ($procedure->opcsCodes as $code) {
+                $codes[] = $code->name;
+            }
+        }
+        echo implode(', ', $codes) ?>
+</section>
+
+<section class="element element-data">
+    <?php if (!is_null($element->complexity)): ?>
+        <div class="row">
+            <div class="large-6 column">
+                <h3 class="data-title"><?php echo $element->getAttributeLabel('complexity') ?>:</h3>
+                <div class="data-value"><?php echo $element->getComplexityCaption(); ?></div>
+            </div>
         </div>
-    </div>
     <?php endif; ?>
     <div class="row">
         <div class="large-6 column">
@@ -116,12 +129,12 @@
     <div class="row">
         <div class="large-6 column">
             <h3 class="data-title">Admission category:</h3>
-            <div class="data-value"><?php echo ($element->overnight_stay) ? 'An overnight stay' : 'Day case'?>
+            <div class="data-value"><?php echo ($element->overnight_stay) ? 'An overnight stay' : 'Day case' ?>
             </div>
         </div>
         <div class="large-6 column">
             <h3 class="data-title">Total theatre time (mins):</h3>
-            <div class="data-value"><?php echo CHtml::encode($element->total_duration)?></div>
+            <div class="data-value"><?php echo CHtml::encode($element->total_duration) ?></div>
         </div>
     </div>
     <div class="row">
@@ -168,7 +181,8 @@
                     } ?>
                 </div>
                 <?php if ($rtt = $element->getRTT()) { ?>
-                    <div class="rtt-info">Clock Start - <?= Helper::convertDate2NHS($rtt->clock_start) ?> Breach: <?= Helper::convertDate2NHS($rtt->breach) ?></div>
+                    <div class="rtt-info">Clock Start - <?= Helper::convertDate2NHS($rtt->clock_start) ?>
+                        Breach: <?= Helper::convertDate2NHS($rtt->breach) ?></div>
                 <?php } ?>
             </div>
 
@@ -254,11 +268,14 @@
 				<span class="info">
 					Operation scheduling created by
 					<span class="user"><?php echo $element->booking->user->fullname ?></span>
-					on <?php echo $element->booking->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($element->booking->created_date)) ?>
+					on <?php echo $element->booking->NHSDate('created_date') ?>
+                    at <?php echo date('H:i', strtotime($element->booking->created_date)) ?>
 				</span>
                 <span class="info">
-					Operation scheduling last modified by <span class="user"><?php echo $element->booking->usermodified->fullname ?></span>
-					on <?php echo $element->booking->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($element->booking->last_modified_date)) ?>
+					Operation scheduling last modified by <span
+                            class="user"><?php echo $element->booking->usermodified->fullname ?></span>
+					on <?php echo $element->booking->NHSDate('last_modified_date') ?>
+                    at <?php echo date('H:i', strtotime($element->booking->last_modified_date)) ?>
 				</span>
             </div>
         </div>
@@ -289,7 +306,7 @@
     </section>
 <?php } ?>
 
-<?php if ( ($element->status->name === 'Cancelled' || $element->status->name === 'Requires rescheduling' ) && $element->operation_cancellation_date) { ?>
+<?php if (($element->status->name === 'Cancelled' || $element->status->name === 'Requires rescheduling') && $element->operation_cancellation_date) { ?>
     <section class="element">
         <h3 class="element-title highlight">Cancellation details</h3>
         <div class="element-data">
