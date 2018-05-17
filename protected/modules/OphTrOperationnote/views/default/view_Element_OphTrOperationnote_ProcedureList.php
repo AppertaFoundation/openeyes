@@ -18,13 +18,32 @@
 ?>
 
 <section class="element element-data">
-	<h3 class="data-title"><?php echo $element->elementType->name ?></h3>
-	<ul class="data-value highlight important">
-		<?php foreach ($element->procedures as $procedure) {?>
-			<li><?php echo $element->eye->adjective?> <?php echo $procedure->term?></li>
-		<?php }?>
-	</ul>
-	<div class="sub-elements">
-		<?php $this->renderChildOpenElements($element, 'view', $form, $data)?>
-	</div>
+    <h3 class="data-title"><?php echo $element->elementType->name ?></h3>
+    <ul class="data-value highlight important">
+        <?php foreach ($element->procedures as $procedure) { ?>
+            <li><?php echo $element->eye->adjective . ' ' ?><?php echo $procedure->term . " " . $procedure->id ?>
+                <?php foreach ($procedure->opcsCodes as $code) {
+                    echo $code->name;
+
+                } ?></li>
+
+        <?php } ?>
+    </ul>
+    <div class="sub-elements">
+        <?php $this->renderChildOpenElements($element, 'view', $form, $data) ?>
+    </div>
+</section>
+
+<section class="element element-data">
+    <h3 class="data-title"><?php echo $procedure->getAttributeLabel('opcsCodes.name'); ?></h3>
+    <?php
+        $codes = [];
+        foreach ($element->procedures as $procedure) {
+            $size = count($procedure->opcsCodes) - 1;
+            foreach ($procedure->opcsCodes as $code) {
+                $codes[] = $code->name;
+            }
+        }
+        echo implode(', ', $codes);
+    ?>
 </section>
