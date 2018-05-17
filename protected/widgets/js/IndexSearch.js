@@ -123,9 +123,9 @@
           }
         });
         if (similarity_score <= Math.ceil(closest_match_term.length * 0.20)) {
-          $results.append(`<h2 id="did_you_mean_suggestion">Did you mean <a class="sugguested_term_link">${closest_match_term}</a>?<h2>`);
+          $results.append(`<h2 id="did_you_mean_suggestion" class="search-criteria">Did you mean <a class="sugguested_term_link">${closest_match_term}</a>?<h2>`);
         } else {
-          $results.append(`<h2 id="did_you_mean_suggestion">No results found.<h2>`);
+          $results.append(`<h2 id="did_you_mean_suggestion" class="search-criteria">No results found.<h2>`);
         }
     }
 
