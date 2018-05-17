@@ -23,6 +23,8 @@
                 foreach($associated_content as $key => $value){
                     $method = null;
                     $event_name = null;
+                    $is_macroinit = false;
+                    $is_deleted_event = false;
 
                     if(isset($value->initMethod)){
                         $method = $value->initMethod->method;
@@ -31,6 +33,7 @@
                         if(isset($value->initAssociatedContent->initMethod->method)){
                             $method = $value->initAssociatedContent->initMethod->method;
                             $ac = $value->initAssociatedContent;
+                            $is_macroinit = true;
                         } else {
                             $ac = $value;
                         }
@@ -46,16 +49,25 @@
                         $event = Event::model()->findByPk( $ac->associated_event_id );
                         if(isset($event->eventType)){
                             $event_name = $event->eventType->name;
-                        } else {
+                            $event_date = Helper::convertDate2NHS($event->event_date);
+                        } elseif(!is_null($event)) {
                             $event_name = $event->event_name;
+                            $event_date = Helper::convertDate2NHS($event->event_date);
                         }
-                        $event_date = Helper::convertDate2NHS($event->event_date);
+                        else {
+                            $event_name = $ac->display_title.' (deleted)';
+                            $event_date = '<i>N/A</i>';
+                            $is_deleted_event = true;
+                        }
                     }
 
-                    if( empty($event) || ($event == null)){
+                    if(!$is_deleted_event && empty($event)){
                         continue;
                     }
-                    $event_id_compare[] = $event->id;
+
+                    $event_id = !$is_deleted_event ? $event->id : $ac->associated_event_id;
+
+                    $event_id_compare[] = $event_id;
                 ?>
                 <tr data-id="<?= $row_index ?>">
                     <?php
@@ -64,7 +76,7 @@
 
                         <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $row_index ?>]" value="<?= $_POST['attachments_event_id'][$row_index] ?>" />
                     <?php } else if(isset($value->associated_protected_file_id)){ ?>
-                        <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $row_index ?>]" value="<?= $event->id ?>" />
+                        <input type="hidden" class="attachments_event_id" name="attachments_event_id[<?= $row_index ?>]" value="<?= $event_id ?>" />
                     <?php }
 
                     if(isset($_POST['attachments_display_title'])){
@@ -82,8 +94,10 @@
                     <td><?= $event_name ?></td>
                     <td><input type="text" class="attachments_display_title" name="attachments_display_title[<?= $row_index ?>]"   value="<?= $display_title ?>" /></td>
                     <td>
-                        <input type="hidden" name="attachments_event_id[<?= $row_index ?>]" value="<?= $event->id ?>" />
-                        <input type="hidden" name="attachments_id[<?= $row_index ?>]" value="<?= $ac->id ?>" />
+                        <input type="hidden" name="attachments_event_id[<?= $row_index ?>]" value="<?= $event_id ?>" />
+                        <?php if($is_macroinit): ?>
+                            <input type="hidden" name="attachments_id[<?= $row_index ?>]" value="<?= $ac->id ?>" />
+                        <?php endif; ?>
                         <input type="hidden" name="attachments_system_hidden[<?= $row_index ?>]" value="<?= $ac->is_system_hidden ?>" />
                         <input type="hidden" name="attachments_print_appended[<?= $row_index ?>]" value="<?= $ac->is_print_appended ?>" />
                         <input type="hidden" name="attachments_short_code[<?= $row_index ?>]" value="<?= $ac->short_code ?>" />
