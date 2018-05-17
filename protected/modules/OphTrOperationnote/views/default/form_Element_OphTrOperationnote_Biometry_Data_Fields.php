@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div>
+<div class="element-data">
     <div class="field-row">
         <table class="cols-11 large-text">
             <colgroup>
@@ -27,13 +27,15 @@
             <tbody>
             <tr>
                 <td>
-                    <input type="hidden" id="Element_OphTrOperationnote_Biometry_id_hidden"
-                           name="Element_OphTrOperationnote_Biometry[id]" value="<?php echo $element->id; ?>">
-                    <?php echo CHtml::encode($element->getAttributeLabel('lens_id_' . $side)) ?>
+                    <div class="data-label">
+                        <?php echo CHtml::encode($element->getAttributeLabel('lens_id_'.$side)) ?>
+                    </div>
                 </td>
                 <td>
-                    <?php echo $element->{'lens_display_name_' . $side} ? $element->{'lens_display_name_' . $side} : 'None' ?>
-                    <input type="hidden" class="selected_lens" value="<?php echo $element->{'lens_id_' . $side} ?>">
+                    <div class="data-value iolDisplayHighlited"
+                         id="lens_<?php echo $side ?>"><?php echo $element->{'lens_display_name_'.$side} ? $element->{'lens_display_name_'.$side} : 'None' ?>
+                        <input type="hidden" class="js-selected_lens" value="<?php echo $element->{'lens_id_'.$side} ?>">
+                    </div>
                 </td>
                 <td colspan="2"></td>
                 <td>
@@ -47,16 +49,23 @@
             </tr>
             <tr>
                 <td>
-                    <?php echo CHtml::encode($element->getAttributeLabel('iol_power_' . $side)) ?>
+                    <div class="data-label">
+                        <?php echo CHtml::encode($element->getAttributeLabel('iol_power_'.$side)) ?>
+                    </div>
                 </td>
                 <td>
-                    <?php echo CHtml::encode($element->{'iol_power_' . $side}) ?>
+                    <div class="data-value iolDisplayHighlited js-iol-Display"><?php echo CHtml::encode($element->{'iol_power_'.$side}) ?></div>
                 </td>
                 <td>
-                    <?php echo CHtml::encode($element->getAttributeLabel('predicted_refraction_' . $side)) ?>
+                    <div class="data-label">
+                        <?php echo CHtml::encode($element->getAttributeLabel('predicted_refraction_'.$side)) ?>
+                    </div>
                 </td>
                 <td>
+                    <div class="data-value js-predictedRefraction"
+                         id="predicted_refraction_<?php echo $side ?>">
                     <?php echo $element->{'predicted_refraction_' . $side} ? $element->{'predicted_refraction_' . $side} : 'None' ?>
+                    </div>
                 </td>
             </tr>
             <tr>

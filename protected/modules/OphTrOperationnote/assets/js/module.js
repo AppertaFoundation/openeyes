@@ -842,9 +842,9 @@ function loadBiometryElementData(){
         iolPower = '';
 
     $higlightedEye = $('.highlighted-eye');
-    predictedRefraction = $higlightedEye.find('.predictedRefraction').text();
-    iolPower = $higlightedEye.find('.iolDisplay').text();
-    selectedLens = $higlightedEye.find('.selected_lens').val();
+    predictedRefraction = $higlightedEye.find('.js-predictedRefraction').text();
+    iolPower = $higlightedEye.find('.js-iol-Display').text();
+    selectedLens = $higlightedEye.find('.js-selected_lens').val();
 
     if(predictedRefraction &&  ($('#Element_OphTrOperationnote_Cataract_predicted_refraction').val() == "" ||  $('#Element_OphTrOperationnote_Cataract_predicted_refraction').val() == 0)){
         if(predictedRefraction == "None"){
@@ -872,13 +872,13 @@ function highlightBiometryElement( ){
     // left: 1
     $('#ophTrOperationnotePCRRiskDiv').attr('style', 'display: block;');
     if( $('#Element_OphTrOperationnote_ProcedureList_eye_id_2').is(':checked') ){
-        $('.right-eye').removeClass('deactivate');
-        $('.left-eye').addClass('deactivate');
+        $('.right-eye').removeClass('deactivate highlighted-eye');
+        $('.left-eye').addClass('deactivate highlighted-eye');
         $('#ophCiExaminationPCRRiskLeftEye').hide();
         $('#ophCiExaminationPCRRiskRightEye').show();
     }else if($('#Element_OphTrOperationnote_ProcedureList_eye_id_1').is(':checked') ){
-        $('.left-eye').removeClass('deactivate');
-        $('.right-eye').addClass('deactivate');
+        $('.left-eye').removeClass('deactivate highlighted-eye');
+        $('.right-eye').addClass('deactivate highlighted-eye');
         $('#ophCiExaminationPCRRiskRightEye').hide();
         $('#ophCiExaminationPCRRiskLeftEye').show();
     }
