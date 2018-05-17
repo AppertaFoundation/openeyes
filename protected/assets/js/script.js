@@ -21,8 +21,8 @@ $(document).ready(function(){
   	$('.openeyes-brand').off('mouseenter');
 
     var shortcuts 	= new OpenEyes.UI.NavBtnPopup( 'shortcuts', $('#js-nav-shortcuts-btn'), $('#js-nav-shortcuts-subnav') ).useWrapper( $('#js-nav-shortcuts') );
-    var activity 	= new OpenEyes.UI.NavBtnPopup( 'activity', $('#js-nav-activity-btn'), $('#js-activity-panel') );
-    var hotlist = new OpenEyes.UI.HotList(activity);
+    var hotlist_nav 	= new OpenEyes.UI.NavBtnPopup( 'hotlist', $('#js-nav-hotlist-btn'), $('#js-hotlist-panel') );
+    var hotlist = new OpenEyes.UI.HotList(hotlist_nav);
 
     var toolTip = new OpenEyes.UI.Tooltip({
         className: 'quicklook',

@@ -4,7 +4,7 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
 
 ?>
 
-<div class="oe-hotlist-panel" id="js-activity-panel" style="display: none; z-index: 98;">
+<div class="oe-hotlist-panel" id="js-hotlist-panel" style="display: none; z-index: 98;">
   <div class="patient-activity">
     <div class="patients-open">
       <div class="overview">
@@ -39,8 +39,8 @@ $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d')
           <small class="count"><?= count($closedHotlistItems) ?></small>
         </h3>
         <div class="closed-search">
-          <span class="closed-date" id="js-activity-closed-today">Today</span>
-          <span class="closed-date" id="js-activity-closed-select">Select date</span>
+          <span class="closed-date" id="js-hotlist-closed-today">Today</span>
+          <span class="closed-date" id="js-hotlist-closed-select">Select date</span>
           <div id="js-pickmeup-datepicker" style="display: none;"></div>
         </div>
       </div>

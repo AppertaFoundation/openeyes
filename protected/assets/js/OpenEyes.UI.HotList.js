@@ -7,7 +7,7 @@
   HotList.prototype.create = function (activity) {
     var hotlist = this;
 
-    if ($('#js-nav-activity-btn').length == 0) {
+    if ($('#js-nav-hotlist-btn').length == 0) {
       return;
     }
 
@@ -15,7 +15,7 @@
     this.selected_date = new Date;
 
     // Fix Activity Panel if design allows it to be fixable!
-    if ($('#js-nav-activity-btn').data('fixable') == true) {
+    if ($('#js-nav-hotlist-btn').data('fixable') == true) {
       checkBrowserSize();
 
       $(window).resize(function () {
@@ -55,7 +55,7 @@
 
 
     // When the date picker is clicked
-    $('#js-activity-closed-select').click(function () {
+    $('#js-hotlist-closed-select').click(function () {
       $pmuWrap.toggle();
       return false;
     });
@@ -68,7 +68,7 @@
     });
 
     // When the "Today" date link is clicked
-    $('#js-activity-closed-today').click(function () {
+    $('#js-hotlist-closed-today').click(function () {
       pmu.set_date(new Date);
       hotlist.setSelectedDate(new Date, 'Today');
       hotlist.updateClosedList();

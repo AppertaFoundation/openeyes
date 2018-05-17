@@ -68,7 +68,7 @@ if (!Yii::app()->user->isGuest) {
         </a>
       </li>
       <li class="oe-nav-btn">
-        <div class="nav-js-btn" id="js-nav-activity-btn" data-fixable="<?= $this->fixedHotlist ? 'true' : 'false' ?>">
+        <div class="nav-js-btn" id="js-nav-hotlist-btn" data-fixable="<?= $this->fixedHotlist ? 'true' : 'false' ?>">
           <svg viewBox="0 0 80 40" class="icon hotlist">
             <use xlink:href="<?= $navIconUrl . '#hotlist-icon' ?>"></use>
           </svg>
