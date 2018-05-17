@@ -20,10 +20,10 @@
 <?php
     $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'doodleToolBarArray' => array(
-            array('HardDrusen', 'Geographic', 'CNV', 'RPEDetachment', 'EpiretinalMembrane', 'MacularHole', 'MacularDystrophy', 'Macroaneurysm', 'RetinalVeinOcclusionPostPole', 'RetinalArteryOcclusionPostPole'),
+            array('Drusen', 'Geographic', 'CNV', 'RPEDetachment', 'EpiretinalMembrane', 'MacularHole', 'MacularDystrophy', 'Macroaneurysm', 'RetinalVeinOcclusionPostPole', 'RetinalArteryOcclusionPostPole'),
             array('Microaneurysm', 'BlotHaemorrhage', 'HardExudate', 'IRMA', 'Circinate', 'MacularThickening', 'CystoidMacularOedema', 'PreRetinalHaemorrhage', 'CottonWoolSpot', 'DiabeticNV', 'VitreousOpacity', 'FibrousProliferation', 'TractionRetinalDetachment'),
-            array('SwollenDisc', 'Telangiectasis', 'ChoroidalHaemorrhage', 'ChoroidalNaevus'),
-            array('LaserSpot', 'FocalLaser', 'MacularGrid', 'SectorPRPPostPole', 'PRPPostPole'),
+            array('SwollenDisc', 'Telangiectasis', 'ChoroidalHaemorrhage', 'ChoroidalNaevus',),
+            array('LaserSpot', 'FocalLaser', 'MacularGrid', 'SectorPRPPostPole', 'PRPPostPole', 'RPEAtrophy'),
         ),
         'onReadyCommandArray' => array(
             array('addDoodle', ['MaculaPostPole']),
