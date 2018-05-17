@@ -19,7 +19,6 @@
 <?php
 //$clinical = $this->checkAccess('OprnViewClinical');
 $warnings = $this->patient->getWarnings($allow_clinical);
-Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
 $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . '/svg/oe-nav-icons.svg';
 
 ?>

@@ -177,6 +177,5 @@ $widgetOptionsJson = json_encode(array(
 $assetManager = Yii::app()->getAssetManager();
 $widgetPath = $assetManager->publish('protected/widgets/js');
 $assetManager->registerScriptFile('components/chosen/chosen.jquery.min.js');
-$assetManager->registerCssFile('components/chosen/chosen.min.css');
 Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultiSelectList.js');
 ?>
