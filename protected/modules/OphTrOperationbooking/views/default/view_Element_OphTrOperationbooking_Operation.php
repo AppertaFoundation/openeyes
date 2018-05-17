@@ -18,25 +18,32 @@
 ?>
 
 <section class="element element-data">
-    <h3 class="data-title">Procedure<?php if (count($element->procedures) != 1) echo 's' ?></h3>
-    <ul class="data-value highlight important">
-        <?php foreach ($element->procedures as $procedure) {
-            echo "<li>{$element->eye->adjective} {$procedure->term}</li>";
-        } ?>
-    </ul>
-</section>
-
-<section class="element element-data">
-    <h3 class="data-title"><?php echo $procedure->getAttributeLabel('opcsCodes.name') . 's'; ?></h3>
-    <?php
-        $codes = [];
-        foreach ($element->procedures as $procedure) {
-            $size = count($procedure->opcsCodes) - 1;
-            foreach ($procedure->opcsCodes as $code) {
-                $codes[] = $code->name;
-            }
-        }
-        echo implode(', ', $codes) ?>
+    <div class="row">
+        <div class="large-6 column">
+            <h3 class="data-title"><?php echo $element->elementType->name ?></h3>
+            <ul class="data-value highlight important">
+                <?php foreach ($element->procedures as $procedure) { ?>
+                    <li><?php echo $element->eye->adjective . ' ' ?><?php echo $procedure->term ?></li>
+                <?php } ?>
+            </ul>
+            <div class="sub-elements">
+                <?php $this->renderChildOpenElements($element, 'view', $form, $data) ?>
+            </div>
+        </div>
+        <div class="large-6 column">
+            <h3 class="data-title"><?php echo $procedure->getAttributeLabel('opcsCodes.name') . 's'; ?></h3>
+            <?php
+                $codes = [];
+                foreach ($element->procedures as $procedure) {
+                    $size = count($procedure->opcsCodes) - 1;
+                foreach ($procedure->opcsCodes as $code) {
+                        $codes[] = $code->name;
+                     }
+                 }
+            echo implode(', ', $codes);
+            ?>
+        </div>
+    </div>
 </section>
 
 <section class="element element-data">
