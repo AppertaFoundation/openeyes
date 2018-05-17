@@ -40,7 +40,7 @@
               ?>
           </div>
 
-          <div class="eyedraw-data cols-5">
+          <div class="eyedraw-data" style="width: 100%">
             <table class="label-value no-lines last-left">
               <colgroup>
                 <col class="cols-5">
@@ -197,20 +197,33 @@
 </section>
 
 <div class="flex-layout flex-left flex-stretch">
-  <section class="element view tile priority">
-    <header class="element-header">
-      <h3 class="element-title">Cataract report</h3>
-    </header>
-    <div class="element-data full-width">
-      <div class="data-row">
-        <div class="data-value">
-          <div class="tile-data-overflow">
-              <?= nl2br(CHtml::encode($element->report)); ?>
+
+    <?php if ($instructions = $element->event->getElementByClass(Element_OphTrOperationnote_Comments::class)): ?>
+      <section class="element view tile">
+        <header class="element-header">
+          <h3 class="element-title"><?php echo CHtml::encode($instructions->getAttributeLabel('postop_instructions')) ?></h3>
+        </header>
+        <div class="element-data full-width">
+          <div class="data-row">
+            <div class="data-value">
+              <div class="tile-data-overflow">
+                <div class="data-row">
+                  <div class="data-value<?php if (!$instructions->postop_instructions) { ?> none<?php } ?>">
+                      <?php echo CHtml::encode($instructions->postop_instructions) ? Yii::app()->format->Ntext($instructions->postop_instructions) : 'None' ?>
+                  </div>
+                </div>
+                <div class="data-row">
+                  <h4 class="data-label"><?php echo CHtml::encode($instructions->getAttributeLabel('comments')) ?></h4>
+                  <div class="data-value<?php if (!$instructions->comments) { ?> none<?php } ?>">
+                      <?php echo CHtml::encode($instructions->comments) ? Yii::app()->format->Ntext($instructions->comments) : 'None' ?>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
+    <?php endif; ?>
 
   <section class="element view tile priority view-agents">
     <header class="element-header">

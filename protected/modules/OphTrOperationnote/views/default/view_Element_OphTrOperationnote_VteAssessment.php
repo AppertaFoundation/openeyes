@@ -17,7 +17,7 @@
  */
 ?>
 
-<section class="element">
+<section class="element view tile">
   <header class="element-header">
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
