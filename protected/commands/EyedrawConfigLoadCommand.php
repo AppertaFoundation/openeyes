@@ -418,7 +418,7 @@ EOSQL;
     private function getAdditionalInfoLeftCol($secondary_term_list,$lvl) {
       $secondary_terms = (array)$secondary_term_list;
       return
-      "<div class=\"index_row\">"
+      "<div class=\"index_row row\">"
       ."<div class=\"index_col_left"."_lvl{$lvl}\">"
       ."<span class=\"alias\">"
       .($secondary_terms ? (implode(", ",$secondary_terms)) : (""))
@@ -438,7 +438,7 @@ EOSQL;
     private function generateIndexDescription($description,$warning,$info) {
       $result="";
       if ($description){
-        $result = "<span class=\"description_note\">{$description}</span>";
+        $result = "<p class=\"description_note note\">{$description}</p>";
       }
       return ($warning || $info) ? "{$result}<br>" : $result;
     }
@@ -458,7 +458,7 @@ EOSQL;
       if ($info){
         $result =
         "<span class=\"info_icon\"></span>"
-        ."<span class=\"info_note\">{$info}</span>";
+        ."<p class=\"info_note\">{$info}</p>";
       }
       return $result;
     }
@@ -509,7 +509,7 @@ EOSQL;
     private function getIndexSearchHeader() {
       return
       "<?php \$this->render('IndexSearch_header'); ?>"
-      ."<div id=\"elements-search-results\" class=\"elements-search-results\" style=\"display:none;\">"
+      ."<div id=\"elements-search-results\" class=\"elements-search-results search-results\" style=\"display:none;\">"
       ."<div class=\"close-icon-btn\"><i class=\"oe-i remove-circle\"></i></div>"
       ."<ul class='results_list'>";
     }
