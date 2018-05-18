@@ -795,7 +795,7 @@ $(document).ready(function() {
             $('.internal-referrer-wrapper').slideDown();
             setRecipientToInternalReferral();
 
-            if( typeof docman !== "undefined" ){
+            if( typeof docman !== "undefined" && !$('#macro_id').val()){
 
                 //add GP to recipients
                 if( !docman.isContactTypeAdded("GP") ){
