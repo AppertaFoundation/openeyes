@@ -842,8 +842,8 @@ function loadBiometryElementData(){
         iolPower = '';
 
     $higlightedEye = $('.highlighted-eye');
-    predictedRefraction = $higlightedEye.find('.js-predictedRefraction').text();
-    iolPower = $higlightedEye.find('.js-iol-Display').text();
+    predictedRefraction = $higlightedEye.find('.js-predicted-refraction').text();
+    iolPower = $higlightedEye.find('.js-iol-display').text();
     selectedLens = $higlightedEye.find('.js-selected_lens').val();
 
     if(predictedRefraction &&  ($('#Element_OphTrOperationnote_Cataract_predicted_refraction').val() == "" ||  $('#Element_OphTrOperationnote_Cataract_predicted_refraction').val() == 0)){

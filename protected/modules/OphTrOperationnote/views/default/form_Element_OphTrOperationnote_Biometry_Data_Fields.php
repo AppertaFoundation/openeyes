@@ -32,7 +32,7 @@
                     </div>
                 </td>
                 <td>
-                    <div class="data-value iolDisplayHighlited"
+                    <div class="data-value"
                          id="lens_<?php echo $side ?>"><?php echo $element->{'lens_display_name_'.$side} ? $element->{'lens_display_name_'.$side} : 'None' ?>
                         <input type="hidden" class="js-selected_lens" value="<?php echo $element->{'lens_id_'.$side} ?>">
                     </div>
@@ -54,7 +54,7 @@
                     </div>
                 </td>
                 <td>
-                    <div class="data-value iolDisplayHighlited js-iol-Display"><?php echo CHtml::encode($element->{'iol_power_'.$side}) ?></div>
+                    <div class="data-value iolDisplayHighlited js-iol-display"><?php echo CHtml::encode($element->{'iol_power_'.$side}) ?></div>
                 </td>
                 <td>
                     <div class="data-label">
@@ -62,7 +62,7 @@
                     </div>
                 </td>
                 <td>
-                    <div class="data-value js-predictedRefraction"
+                    <div class="data-value js-predicted-refraction"
                          id="predicted_refraction_<?php echo $side ?>">
                     <?php echo $element->{'predicted_refraction_' . $side} ? $element->{'predicted_refraction_' . $side} : 'None' ?>
                     </div>
