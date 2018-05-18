@@ -26,7 +26,6 @@ $element_errors = $element->getErrors();
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
-<script type="text/javascript" src="<?= $this->getJsPublishedPath('OpenEyes.UI.InputFieldValidation.js', true)?>"></script>
 
 <div class="element-fields" id="<?= $model_name ?>_element">
 
