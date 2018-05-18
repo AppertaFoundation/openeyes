@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
 <tr data-key="<?php echo $key ?>" class="prescription-item prescriptionItem<?php if (isset($patient)) {
     if ($patient->hasDrugAllergy($item->drug_id)) {?> 
     allergyWarning
@@ -34,13 +35,19 @@
 	</td>
 	<td class="prescriptionItemDose">
 		<?php
-            $method = 'textField';
-            if($item->dose === null || is_numeric($item->dose)){
-                $method = 'numberField';
+
+            $class = '';
+            if($item->dose === null || is_numeric($item->dose) || $item->dose === ''){
+                $class = "input-validate numbers-only";
+                if($item->drug->dose_unit === 'mg'){
+                    $class .= ' decimal';
+                }
             }
-            echo CHtml::$method('prescription_item['.$key.'][dose]', $item->dose, array(
+
+            echo CHtml::textField('prescription_item['.$key.'][dose]', $item->dose, array(
                 'autocomplete' => Yii::app()->params['html_autocomplete'],
-                'placeholder' => $item->drug->dose_unit
+                'placeholder' => $item->drug->dose_unit,
+                'class' => $class
             ));
 
         ?>
@@ -93,12 +100,18 @@
 	</td>
 	<td>
 		<?php
-            $method = 'textField';
-            if($taper->dose === null || is_numeric($taper->dose)){
-                $method = 'numberField';
+            $class = '';
+            if($taper->dose === null || is_numeric($taper->dose) || $item->dose === ''){
+                $class = "input-validate numbers-only";
+                if($item->drug->dose_unit === 'mg'){
+                    $class .= ' decimal';
+                }
             }
-            echo CHtml::$method('prescription_item['.$key.'][taper]['.$count.'][dose]', $taper->dose,
-                array('autocomplete' => Yii::app()->params['html_autocomplete'], 'placeholder' => $item->drug->dose_unit));
+            echo CHtml::textField('prescription_item['.$key.'][taper]['.$count.'][dose]', $taper->dose, array(
+                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    'placeholder' => $item->drug->dose_unit,
+                    'class' => $class,
+            ));
         ?>
 	</td>
 	<td></td>
