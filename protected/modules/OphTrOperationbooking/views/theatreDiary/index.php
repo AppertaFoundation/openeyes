@@ -167,6 +167,23 @@
 
 </div>
 
+<style>
+  .printable {
+    display: none;
+  }
+
+  .printable * {
+    font-size: 9pt;
+  }
+
+  @media print {
+    .printable {
+      display: block !important;
+      width: 1050px !important;
+    }
+  }
+</style>
+
 <script type="text/javascript">
   $(document).ready(function () {
     pickmeup('#date-start', {
