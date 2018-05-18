@@ -12,14 +12,14 @@
 )); ?>
 
 
-<div id="patientMergeWrapper" class="container content">
+<div id="patientMergeWrapper" class="container content ">
 
     <form id="patientMergeList">
         <div class="row">
-            <div class="large-8 column large-centered">
+            <div class="cols-8 ">
                 <?php $this->renderPartial('//base/_messages')?>
-                <section class="box generic requestList js-toggle-container">
-                    <h2>Merge Requests</h2>
+                <section class="main-event view">
+                    <h2 class="event-title">Merge Requests</h2>
                     <div class="filter panel">
                         <div class="row">
                             <div class="large-10 column">

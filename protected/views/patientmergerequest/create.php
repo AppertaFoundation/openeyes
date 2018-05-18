@@ -16,37 +16,44 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-    <div id="patientMergeWrapper" class="container content">
-        
-        <div class="row">
-            <div class="large-3 column large-centered text-right large-offset-9">
-                <section class="box dashboard">
-                <?php 
-                    echo CHtml::link('Back to Patient Merge list', array('patientMergeRequest/index'), array('class' => 'button small'));
-                ?>
-                </section>
+    <div id="patientMergeWrapper" class="container content main-event">
+        <div class="element-fields full-width flex-layout flex-top col-gap">
+            <div class="cols-3 row">
+                <div class="large-3 column large-centered text-right large-offset-9">
+                    <section class="box dashboard">
+                        <?php
+                        echo CHtml::link('Back to Patient Merge list', array('patientMergeRequest/index'), array('class' => 'button small'));
+                        ?>
+                    </section>
+                </div>
+            </div>
+            <div class="cols-full text-center">
+                <div class="large-7 column large-centered">
+                    <?php $this->renderPartial('//patientmergerequest/_patient_search', array('patient_type' => 'patient'))?>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="large-7 column large-centered">
-                <?php $this->renderPartial('//patientmergerequest/_patient_search', array('patient_type' => 'patient'))?>
-            </div>
-        </div>
-        <form id="grid_header_form" action="<?php echo Yii::app()->createUrl('/patientMergeRequest/create')?>" method="post">
+
+        <form id="grid_header_form" action="<?php echo Yii::app()->createUrl('/patientMergeRequest/create')?>" method="post" class="element-fields full-width col-gap">
             <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-            <div class="row">
-                <div class="large-5 column">
+            <div class="cols-12 flex-layout">
+                <div class="cols-5">
                     <h2 class="secondaryPatient">Secondary</h2>
                     <?php $this->renderPartial('//patientmergerequest/_patient_details', array('model' => $model, 'type' => 'secondary'))?>
                 </div>  
 
-                <div class="large-2 column text-center">
-                    <h2>INTO</h2>
-                    <img class="into-arrow" src="<?= Yii::app()->assetManager->createUrl('img/_elements/graphic/right-black-arrow_128_30.png')?>" alt="OpenEyes logo" />
-                    <button type="button" id="swapPatients"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAYCAYAAACbU/80AAABdklEQVRIS8XWv0vUcRzH8cehIog0Obio/QMuTk45KQYOidBQk+DkIopbazQEkkODERzh0tIQQQjh0uYgTq2RQzQKgSKhQ7yPO/h6nPe9z5fv3fczv96f15PP+9enpv9nGo/xrpNVrf/+HuIXtrHf7jdIgPB+gVdZiEEDhHcABEjjVAEQvm+wUxQg6NcTamcYMx30B9gs8gJRSFsJAN2k9SoBbvC8CMAqFhJe4EGHlP3DU3wpApDg3ZC25kAr7hpP8C2vCOdwjotUxzZ9FuASK/ie14bzOMIsfpcE8BfLOMkbRI/wFeOYKgngFEs4yxvFi/iMsaawDIAJTOJH3jKK3HzCaEZYBkDXDLa6YA0fMdKm/oCrhBo4br5gzyEB8AyHGOo56n7hHnZT7gmA99hICeqiLQQQEG9jMXS4+CduE+DqeJ2gv7OOg76xIqsowpbny+xnoaQ50FMXZEWx7wMkzsDasJ0yUhEpqQwggKIoYyr+SSmqVO1/0Hw+DMYnP1MAAAAASUVORK5CYII="><br>Swap</button>
+                <div class="cols-2 text-center">
+                    <div style="text-align: center"><h2>INTO</h2></div>
+                    <div style="text-align: center"><img class="into-arrow" src="<?= Yii::app()->assetManager->createUrl('img/_elements/graphic/right-black-arrow_128_30.png')?>" alt="OpenEyes logo" /></div>
+                    <br>
+                    <div style="text-align: center">
+                        <button class="green hint" type="button" id="swapPatients"><div class="cols-full"><img style="display:inline-block" class="cols-full" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAYCAYAAACbU/80AAABdklEQVRIS8XWv0vUcRzH8cehIog0Obio/QMuTk45KQYOidBQk+DkIopbazQEkkODERzh0tIQQQjh0uYgTq2RQzQKgSKhQ7yPO/h6nPe9z5fv3fczv96f15PP+9enpv9nGo/xrpNVrf/+HuIXtrHf7jdIgPB+gVdZiEEDhHcABEjjVAEQvm+wUxQg6NcTamcYMx30B9gs8gJRSFsJAN2k9SoBbvC8CMAqFhJe4EGHlP3DU3wpApDg3ZC25kAr7hpP8C2vCOdwjotUxzZ9FuASK/ie14bzOMIsfpcE8BfLOMkbRI/wFeOYKgngFEs4yxvFi/iMsaawDIAJTOJH3jKK3HzCaEZYBkDXDLa6YA0fMdKm/oCrhBo4br5gzyEB8AyHGOo56n7hHnZT7gmA99hICeqiLQQQEG9jMXS4+CduE+DqeJ2gv7OOg76xIqsowpbny+xnoaQ50FMXZEWx7wMkzsDasJ0yUhEpqQwggKIoYyr+SSmqVO1/0Hw+DMYnP1MAAAAASUVORK5CYII="></div><br><div>
+                                Swap
+                            </div></button>
+                    </div>
                 </div>  
 
-                <div class="large-5 column">
+                <div class="cols-5">
                     <h2 class="primaryPatient">Primary</h2>
                     <?php $this->renderPartial('//patientmergerequest/_patient_details', array('model' => $model, 'type' => 'primary'))?>
                 </div>

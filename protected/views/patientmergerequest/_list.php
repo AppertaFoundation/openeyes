@@ -1,5 +1,5 @@
 
-<table class="grid" id="patientMergeRequestList">
+<table class="standard" id="patientMergeRequestList">
     <thead>
         <tr>
             <th class="checkbox"><input type="checkbox" name="selectall" id="selectall" /></th>
