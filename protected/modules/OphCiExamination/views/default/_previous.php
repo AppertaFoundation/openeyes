@@ -31,33 +31,33 @@
           data-element-type-name="<?php echo $element->elementType->name ?>"
           data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
-          <?php $this->renderPartial(
-              $element->view_view,
-              array('element' => $element)
-          ); ?>
+        <div class="flex-layout flex-top row">
+            <?php $this->renderPartial(
+                $element->view_view,
+                array('element' => $element)
+            ); ?>
+        </div>
 
-      </td>
-      <td>
-        <div class="metadata">
+        <div class="flex-layout row">
+          <div class="metadata">
             <div class="info">Examination created by
               <span class="user"><?php echo $element->event->user->fullname ?></span>
               on <?php echo $element->event->NHSDate('created_date') ?>
               at <?php echo date('H:i', strtotime($element->event->created_date)) ?></div>
-          <div class="info">Examination last modified by
-            <span class="user"><?php echo $element->event->usermodified->fullname ?></span>
+            <div class="info">Examination last modified by
+              <span class="user"><?php echo $element->event->usermodified->fullname ?></span>
               on <?php echo $element->event->NHSDate('last_modified_date') ?>
-            at <?php echo date('H:i', strtotime($element->event->last_modified_date)) ?></div>
+              at <?php echo date('H:i', strtotime($element->event->last_modified_date)) ?></div>
+          </div>
+            <?php if ($element->canCopy()) { ?>
+              <button name="copy" class="copy_element small"
+                      data-element-id="<?php echo $element->id ?>"
+                      data-element-type-class="<?php echo CHtml::modelName($element) ?>">
+                Copy
+              </button>
+            <?php } ?>
         </div>
       </td>
-        <?php if ($element->canCopy()) { ?>
-          <td>
-            <button name="copy" class="copy_element small"
-                    data-element-id="<?php echo $element->id ?>"
-                    data-element-type-class="<?php echo CHtml::modelName($element) ?>">
-              Copy
-            </button>
-          </td>
-        <?php } ?>
     </tr>
   <?php } ?>
   </tbody>
