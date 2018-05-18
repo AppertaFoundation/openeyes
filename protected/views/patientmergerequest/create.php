@@ -38,7 +38,7 @@
             <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
             <div class="cols-12 flex-layout">
                 <div class="cols-5">
-                    <h2 class="secondaryPatient">Secondary</h2>
+                    <h2 class="secondaryPatient event-title" style="text-align:center">Secondary</h2>
                     <?php $this->renderPartial('//patientmergerequest/_patient_details', array('model' => $model, 'type' => 'secondary'))?>
                 </div>  
 
@@ -53,8 +53,8 @@
                     </div>
                 </div>  
 
-                <div class="cols-5">
-                    <h2 class="primaryPatient">Primary</h2>
+                <div class="cols-5 worklist-summary">
+                    <h2 class="primaryPatient event-title" style="text-align:center">Primary</h2>
                     <?php $this->renderPartial('//patientmergerequest/_patient_details', array('model' => $model, 'type' => 'primary'))?>
                 </div>
             </div>
