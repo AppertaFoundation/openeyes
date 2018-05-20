@@ -14,64 +14,80 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @var \OEModule\OphCiExamination\models\HistoryMedicationsEntry[] $current
+ * @var \OEModule\OphCiExamination\models\HistoryMedicationsEntry[] $stopped
+ */
+
 $model_name = CHtml::modelName($element);
+
+$systemic_filter = function ($entry) {
+    return $entry['route_id'] != 1;
+};
+
+$eye_filter = function ($entry) {
+    return $entry['route_id'] == 1;
+};
+
+$current_systemic_meds = array_filter($current, $systemic_filter);
+$stopped_systemic_meds = array_filter($stopped, $systemic_filter);
+$current_eye_meds = array_filter($current, $eye_filter);
+$stopped_eye_meds = array_filter($stopped, $eye_filter);
+
 ?>
 <div class="group">
   <div class="label">Systemic Medications</div>
   <div class="data">
-      <?php if (!$current && !$stopped) { ?>
+      <?php if (!$current_systemic_meds && !$stopped_systemic_meds): ?>
         <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded.</div>
-      <?php } else { ?>
-        <table id="<?= $model_name ?>_entry_table">
-          <?php if ($current) { ?>
-          <thead>
+      <?php else: ?>
+          <?php if ($current_systemic_meds): ?>
+          <table id="<?= $model_name ?>_entry_table">
+            <tbody>
+            <?php foreach ($current_systemic_meds as $entry): ?>
+              <tr>
+                <td><?= $entry->getMedicationDisplay() ?></td>
+                <td><?php $laterality = $entry->getLateralityDisplay(); ?>
+                  <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
+                  <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                </td>
+                <td><?= $entry->getDatesDisplay() ?></td>
+              </tr>
+            <?php endforeach; ?>
+            </tbody>
+          </table>
+          <?php endif; ?>
+
+          <?php if ($stopped_systemic_meds): ?>
+          <table>
+            <thead>
             <tr>
-              <th class="cols-7">Current</th>
+              <th class="cols-7">Stopped</th>
+              <th></th>
+              <th>
+                <i class="oe-i small js-patient-expand-btn pad expand"></i>
+              </th>
             </tr>
-          </thead>
-          <tbody>
-          <?php foreach ($current as $entry) {
-                  if ($entry['route_id'] != 1) { ?>
-                    <tr>
-                      <td><?= $entry->getMedicationDisplay() ?></td>
-                      <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                        <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
-                        <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
-                      </td>
-                      <td><?= $entry->getDatesDisplay() ?></td>
-                    </tr>
-                  <?php }
-              }
-          } ?>
-          </tbody>
-        </table>
-        <table>
-          <thead>
-          <tr>
-            <th class="cols-7">Stopped</th>
-            <th>
-              <i class="oe-i small js-patient-expand-btn pad expand"></i>
-            </th>
-          </tr>
-          </thead>
-          <tbody style="display: none;">
-          <?php if ($stopped) { ?>
-              <?php foreach ($stopped as $entry) {
-                  if ($entry['route_id'] != 1) { ?>
-                    <tr>
-                      <td><?= $entry->getMedicationDisplay() ?></td>
-                      <td><?= $entry->getDatesDisplay() ?></td>
-                      <td><?php if ($entry->prescription_item) { ?>
-                          <a href="<?= $this->getPrescriptionLink($entry) ?>"><span class="js-has-tooltip fa oe-i eye small"
-                                                                                    data-tooltip-content="View prescription"></span></a>
-                          <?php } ?></td>
-                    </tr>
-                  <?php }
-              }
-          } ?>
-          </tbody>
-        </table>
-      <?php } ?>
+            </thead>
+            <tbody style="display: none;">
+            <?php foreach ($stopped_systemic_meds as $entry): ?>
+              <tr>
+                <td><?= $entry->getMedicationDisplay() ?></td>
+                <td><?= $entry->getDatesDisplay() ?></td>
+                <td>
+                    <?php if ($entry->prescription_item): ?>
+                    <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
+                          class="js-has-tooltip fa oe-i eye small"
+                          data-tooltip-content="View prescription"></span></a>
+                    <?php endif; ?>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+            </tbody>
+          </table>
+          <?php endif; ?>
+      <?php endif; ?>
   </div>
 </div>
 </div><!-- popup-overflow -->
@@ -82,61 +98,56 @@ $model_name = CHtml::modelName($element);
   <div class="group">
     <div class="label">Eye medications</div>
     <div class="data">
-        <?php if (!$current && !$stopped) { ?>
+        <?php if (!$current_eye_meds && !$stopped_eye_meds): ?>
           <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded.</div>
-        <?php } else { ?>
-          <table id="<?= $model_name ?>_entry_table">
-            <thead>
-            <tr>
-              <th class="cols-7">Current</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php if ($current) { ?>
-                <?php foreach ($current as $entry) {
-                    if ($entry['route_id'] == 1) { ?>
-                      <tr>
-                        <td><?= $entry->getMedicationDisplay() ?></td>
-                        <td>
-                            <?php $laterality = $entry->getLateralityDisplay(); ?>
-                          <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
-                          <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
-                        </td>
-                        <td><?= $entry->getDatesDisplay() ?></td>
-                      </tr>
-                    <?php }
-                }
-            } ?>
-            </tbody>
-          </table>
-          <table>
-            <thead>
-            <tr>
-              <th class="cols-7">Stopped</th>
-              <th>
-                <i class="oe-i small pad js-patient-expand-btn expand"></i>
-              </th>
-            </tr>
-            </thead>
-              <?php if ($stopped) { ?>
-            <tbody style="display: none;">
-            <?php foreach ($stopped as $entry) {
-                if ($entry['route_id'] == 1) { ?>
-                  <tr>
-                    <td><?= $entry->getMedicationDisplay() ?></td>
-                    <td><?= $entry->getDatesDisplay() ?></td>
-                    <td><?php if ($entry->prescription_item) { ?>
-                        <a href="<?= $this->getPrescriptionLink($entry) ?>">
-                          <span class="js-has-tooltip fa oe-i eye small" data-tooltip-content="View prescription"></span>
-                        </a>
-                        <?php } ?>
-                    </td>
-                  </tr>
-                <?php }
-            }
-            } ?>
-            </tbody>
-          </table>
-        <?php } ?>
+        <?php else: ?>
+            <?php if ($current_eye_meds): ?>
+            <table id="<?= $model_name ?>_entry_table">
+              <tbody>
+              <?php foreach ($current_eye_meds as $entry): ?>
+                <tr>
+                  <td><?= $entry->getMedicationDisplay() ?></td>
+                  <td>
+                      <?php $laterality = $entry->getLateralityDisplay(); ?>
+                    <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
+                    <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                  </td>
+                  <td><?= $entry->getDatesDisplay() ?></td>
+                </tr>
+              <?php endforeach; ?>
+              </tbody>
+            </table>
+            <?php endif; ?>
+
+            <?php if ($stopped_eye_meds): ?>
+            <table>
+              <thead>
+              <tr>
+                <th class="cols-7">Stopped</th>
+                <th></th>
+                <th>
+                  <i class="oe-i small pad js-patient-expand-btn expand"></i>
+                </th>
+              </tr>
+              </thead>
+              <tbody style="display: none;">
+              <?php foreach ($stopped_eye_meds as $entry): ?>
+                <tr>
+                  <td><?= $entry->getMedicationDisplay() ?></td>
+                  <td><?= $entry->getDatesDisplay() ?></td>
+                  <td>
+                      <?php if ($entry->prescription_item): ?>
+                      <a href="<?= $this->getPrescriptionLink($entry) ?>">
+                          <span class="js-has-tooltip fa oe-i eye small"
+                                data-tooltip-content="View prescription"></span>
+                      </a>
+                      <?php endif; ?>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+              </tbody>
+            </table>
+            <?php endif; ?>
+        <?php endif; ?>
     </div>
   </div>
