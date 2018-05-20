@@ -10,16 +10,16 @@ $core_api = new CoreAPI();
     data-id="<?= $hotlistItem->id ?>"
     data-patient-href="<?= $core_api->generateEpisodeLink($hotlistItem->patient) ?>"
     style="white-space: nowrap;">
-  <td><?= $hotlistItem->patient->hos_num ?></td>
+  <td><?= CHtml::encode($hotlistItem->patient->hos_num) ?></td>
   <td style="overflow: hidden;">
     <a href="<?= $core_api->generateEpisodeLink($hotlistItem->patient) ?>">
-        <?= $hotlistItem->patient->getHSCICName() ?>
+        <?= CHtml::encode($hotlistItem->patient->getHSCICName()) ?>
     </a>
   </td>
   <td style="overflow: hidden">
     <a class="js-hotlist-comment-readonly js-add-hotlist-comment">
-        <?= substr($hotlistItem->user_comment, 0, 30) .
-        (strlen($hotlistItem->user_comment) > 30 ? '...' : '') ?></a>
+        <?= CHtml::encode(substr($hotlistItem->user_comment, 0, 30) .
+        (strlen($hotlistItem->user_comment) > 30 ? '...' : '')) ?></a>
   </td>
   <td>
     <i class="oe-i <?= $hotlistItem->user_comment ? 'comments-added active' : 'comments' ?> medium pro-theme js-add-hotlist-comment"></i>
