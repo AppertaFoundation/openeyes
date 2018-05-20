@@ -112,8 +112,7 @@ if (!$reschedule) {
                     </td>
                     <td>
                     <textarea id="Session_comments" name="Session[comments]"
-                              class="cols-full"><?php echo CHtml::encode($_POST['Session']['comments']) ?>
-                    </textarea>
+                              class="cols-full"><?php echo CHtml::encode($_POST['Session']['comments']) ?></textarea>
                     </td>
                 </tr>
                 </tbody>
