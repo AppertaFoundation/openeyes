@@ -110,7 +110,7 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
     $this->widget('zii.widgets.grid.CGridView', array(
         'itemsCssClass' => 'standard',
         'dataProvider' => $worklist_patients,
-        'htmlOptions' => array('id' => "worklist-table-{$worklist->id}"),
+        'htmlOptions' => array('id' => "worklist-table-{$worklist->id}", 'class' => ''),
         'summaryText' => '<h3><small> {start}-{end} of {count} </small></h3>',
         'template' => '{items}',
         'columns' => $cols,
