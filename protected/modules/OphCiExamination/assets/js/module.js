@@ -2296,10 +2296,6 @@ function OphCiExamination_ClinicOutcomes_updateFollowUpLabel() {
     if (role_comments) {
       label_str += ' (' + role_comments + ')';
     }
-
-    if (community_patient != 0) {
-      label_str += ' (Community patient)';
-    }
   }
 
   var dummy_text = $('#follow-up-dummy-input');

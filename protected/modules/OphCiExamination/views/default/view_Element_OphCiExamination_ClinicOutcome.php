@@ -27,9 +27,6 @@
           <?php if ($element->role_comments) { ?>
           (<?= Yii::app()->format->Ntext($element->role_comments) ?>)
           <?php } ?>
-          <?php if ($element->community_patient) { ?>
-          (Community patient)
-          <?php } ?>
       <?php } ?>
       <?php if ($api = Yii::app()->moduleAPI->get('PatientTicketing')) {
           if ($element->status && $element->status->patientticket &&
