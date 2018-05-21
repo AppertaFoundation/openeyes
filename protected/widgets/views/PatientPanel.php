@@ -58,7 +58,7 @@ $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('ap
 
   </div>
 <?php
-if ($this->patient->allergyAssignments||$this->patient->risks) { ?>
+if ($this->patient->allergyAssignments||$this->patient->risks||$this->patient->getDiabetes()) { ?>
   <div class="patient-allergies-risks" id="js-allergies-risks-btn">
     <div class="patient-warning">
         <?= $this->patient->allergyAssignments ? 'Allergies' : ''; ?>
