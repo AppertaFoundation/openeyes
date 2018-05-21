@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data element-eyes row">
+<div class="element-data element-eyes">
 	<div class="element-eye right-eye column">
 		<?php if ($element->hasRight()) {
     $this->renderPartial($element->view_view.'_fields', array('side' => 'right', 'element' => $element));

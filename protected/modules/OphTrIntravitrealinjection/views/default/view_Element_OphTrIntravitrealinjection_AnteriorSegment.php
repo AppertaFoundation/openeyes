@@ -17,7 +17,7 @@
  */
 ?>
 
-<div class="element-data element-eyes row">
+<div class="element-data element-eyes">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
         <?php if ($element->hasEye($eye_side)) { ?>
         <div class="<?= $eye_side ?>-eye ">

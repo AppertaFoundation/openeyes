@@ -55,7 +55,7 @@
   <div class="cols-full data-value"><?php echo $element->textWithLineBreaks('comments')?></div>
   <br/>
 </div>
-<div class="element-data element-eyes row">
+<div class="element-data element-eyes">
 <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):
   $hasEyeFunc = 'has'.ucfirst($eye);
   $targetIOP = $eye."_target_iop";

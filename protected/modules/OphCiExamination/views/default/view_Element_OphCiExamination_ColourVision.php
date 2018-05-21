@@ -16,7 +16,7 @@
  */
 ?>
 
-<div class="element-data element-eyes row">
+<div class="element-data element-eyes">
 	<div class="element-eye right-eye column">
 		<div class="data-row">
 			<?php if ($element->hasRight()) {

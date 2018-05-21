@@ -18,7 +18,7 @@
 ?>
 
 <section class="element">
-	<div class="element-data element-eyes row">
+	<div class="element-data element-eyes">
 		<div class="element-eye right-eye column">
 			<?php if ($element->hasRight()) {
                 $this->renderPartial('view_Element_OphInBiometry_BiometryData_fields',

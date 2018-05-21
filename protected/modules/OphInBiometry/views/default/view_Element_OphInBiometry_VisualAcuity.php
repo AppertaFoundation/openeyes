@@ -19,7 +19,7 @@
 
 <?php echo CHtml::hiddenField('element_id', $element->id, array('class' => 'element_id')); ?>
 
-<div class="element-data element-eyes row">
+<div class="element-data element-eyes">
     <div class="element-eye right-eye column">
         <?php if ($element->hasRight()) {
             ?>

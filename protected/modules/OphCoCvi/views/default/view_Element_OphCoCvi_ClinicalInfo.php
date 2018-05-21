@@ -101,7 +101,7 @@ data-element-display-order="<?php echo $element->getDisplayOrder('view') ?>">
     <header class="element-header">
       <h3 class="element-title">Visual Acuity</h3>
     </header>
-    <div class="indent-correct element-data element-eyes row">
+    <div class="indent-correct element-data element-eyes">
         <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
           <div class="element-eye <?= $eye_side ?>-eye column">
             <div class="data-row">

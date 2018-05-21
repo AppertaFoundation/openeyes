@@ -34,7 +34,7 @@
   </table>
 </div>
 
-<div class="element-data element-eyes row">
+<div class="element-data element-eyes">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
       <div class="element-eye <?= $eye_side ?>-eye column">
           <?php if ($element->hasEye($eye_side)) { ?>

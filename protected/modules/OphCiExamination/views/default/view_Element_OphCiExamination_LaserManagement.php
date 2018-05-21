@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="sub-element-data element-eyes row flex-layout flex-top">
+<div class="sub-element-data element-eyes flex-layout flex-top">
   <?php foreach(['left' => 'right', 'right' => 'left'] as $side => $eye):?>
 	<div class="element-eye <?=$eye?>-eye column cols-full">
 		<?php if ($element->{'has'.ucfirst($eye)}()):

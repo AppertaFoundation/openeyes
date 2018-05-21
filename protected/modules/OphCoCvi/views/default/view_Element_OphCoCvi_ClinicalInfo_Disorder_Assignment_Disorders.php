@@ -6,7 +6,7 @@
           <header class="element-header">
             <h3><?php echo $disorder_section->name; ?></h3>
           </header>
-              <div class="element-data element-eyes row">
+              <div class="element-data element-eyes">
                     <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side){ ?>
                       <div class="element-eye <?= $eye_side; ?>-eye column">
                           <?php $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo_Disorder_Assignment_Disorders_Side', array(

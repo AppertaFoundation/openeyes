@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data element-eyes row">
+<div class="element-data element-eyes">
     <?php foreach(['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
   <div class="element-eye <?= $eye_side ?>-eye column">
     <div class="data-row">
