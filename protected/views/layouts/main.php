@@ -35,7 +35,7 @@
 
   <?php $this->renderPartial('//base/_header'); ?>
 
-		<main class="oe-home" id="oe-home">
+		<main class="oe-home flex-layout flex-top flex-center" id="oe-home">
 			<?php echo $content; ?>
 		</main><!-- /.content.container -->
 
