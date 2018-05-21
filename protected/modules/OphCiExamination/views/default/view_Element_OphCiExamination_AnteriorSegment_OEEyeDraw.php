@@ -45,7 +45,6 @@
 
 <div class="eyedraw-data stack">
     <?php if ($report = $element->{$side . '_ed_report'}): ?>
-      <div class="data-label"><?php echo $element->getAttributeLabel($side . '_ed_report') ?>:</div>
       <div class="data-value"><?php echo nl2br($report) ?></div>
     <?php endif; ?>
 

@@ -31,7 +31,6 @@
   <div class="eyedraw-data stack">
 
       <?php if ($report = $element->{$side . '_ed_report'}): ?>
-        <div class="data-label"><?= $element->getAttributeLabel($side . '_ed_report') ?>:</div>
         <div class="data-value"><?= Yii::app()->format->Ntext($element->{$side . '_ed_report'}) ?></div>
       <?php endif; ?>
 
