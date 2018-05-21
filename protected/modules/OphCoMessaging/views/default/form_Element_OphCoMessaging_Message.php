@@ -52,6 +52,7 @@
                         ),
                         'htmlOptions' => array(
                             'placeholder' => 'search by name or username',
+                            'size' => 45,
                         ),
                     ));
     ?>
