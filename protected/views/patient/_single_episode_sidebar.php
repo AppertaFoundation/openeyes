@@ -128,7 +128,7 @@ if (is_array($ordered_episodes)):
                         <?= $event->getEventIcon() ?>
                   </span>
 
-                  <span class="event-date <?php echo ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
+                  <span class="event-date oe-date <?php echo ($event->isEventDateDifferentFromCreated()) ? ' ev_date' : '' ?>">
                     <?php echo $event->event_date ? $event->NHSDateAsHTML('event_date') : $event->NHSDateAsHTML('created_date'); ?>
                   </span>
                   <span class="tag"><?= $tag ?></span>
