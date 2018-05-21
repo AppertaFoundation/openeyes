@@ -37,7 +37,7 @@ $required_risk_ids = array_map(function($r) { return $r->id; }, $this->getRequir
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
 
   <div class="cols-10">
-    <table class="<?= $model_name ?>_entry_table <?= !count($element->entries) ? 'hidden' : ''?>">
+    <table class="<?= $model_name ?>_entry_table <?= !count($element->entries) && !count($missing_req_risks) ? 'hidden' : ''?>">
         <thead>
         <tr>
             <th>Risk</th>
