@@ -17,11 +17,6 @@
 
 ?>
 <table>
-    <thead>
-      <tr>
-        <th class="cols-6">&nbsp;</th>
-      </tr>
-    </thead>
     <tbody>
     <?php if (!$operations || sizeof($operations)==0) { ?>
       <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded.</div>
