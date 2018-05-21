@@ -17,7 +17,7 @@
  */
 ?>
     <div id="patientMergeWrapper" class="container content main-event">
-        <div class="element-fields full-width flex-layout flex-top col-gap">
+        <div class="element-fields full-width flex-layout flex-top col-gap element">
             <div class="cols-3 row">
                 <div class="large-3 column large-centered text-right large-offset-9">
                     <section class="box dashboard">
@@ -59,28 +59,31 @@
                 </div>
             </div>
             <hr>
-            <div class="row">
-                <div class="large-5 column">Comment:
-                    <?php echo CHTML::activeTextArea($model, 'comment'); ?>
+            <div class="element-fields full-width flex-layout flex-top col-gap" >
+                <div class="cols-3"></div>
+                <div class="cols-6 element">
+                    <div >Comment:
+                        <?php echo CHTML::activeTextArea($model, 'comment'); ?>
+                    </div>
+                    <br>
+                    <?php $this->renderPartial('//base/_messages')?>
+                    <div id="patientDataConflictConfirmation" class="row" style="display:none">
+                        <div class="large-10 large-offset-1 column alert-box with-icon warning">
+                            <h2> Personal details are conflicting. </h2>
+                            Please confirm you selected the right patients. <br>
+                            Note, the primary patient's personal details will <strong>NOT</strong> be overwritten.<br><br>
+                            <label>
+                                <input type="checkbox" id="PatientMergeRequest_personal_details_conflict_confirm" value="1" data-name="PatientMergeRequest[personal_details_conflict_confirm]"> I hereby confirm that I selected the right patients.</label>
+                        </div>
+                    </div>
+                    <div class="cols-full">
+                        <div class="large-3 column text-right large-offset-9">
+                            <input class="no-clear" type="submit" value="Save">
+                        </div>
+                    </div>
                 </div>
+                <div class="cols-3"></div>
             </div>
-            <br>
-            <?php $this->renderPartial('//base/_messages')?>
-            <div id="patientDataConflictConfirmation" class="row" style="display:none">
-                <div class="large-10 large-offset-1 column alert-box with-icon warning">
-                    <h2> Personal details are conflicting. </h2>
-                    Please confirm you selected the right patients. <br>
-                    Note, the primary patient's personal details will <strong>NOT</strong> be overwritten.<br><br>
-                    <label>
-                    <input type="checkbox" id="PatientMergeRequest_personal_details_conflict_confirm" value="1" data-name="PatientMergeRequest[personal_details_conflict_confirm]"> I hereby confirm that I selected the right patients.</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="large-3 column text-right large-offset-9">
-                    <input class="no-clear" type="submit" value="Save">
-                </div>
-            </div>
-            
         </form>
         
 
