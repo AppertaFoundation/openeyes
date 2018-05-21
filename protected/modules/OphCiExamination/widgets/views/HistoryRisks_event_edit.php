@@ -41,7 +41,7 @@ $required_risk_ids = array_map(function($r) { return $r->id; }, $this->getRequir
         <thead>
         <tr>
             <th>Risk</th>
-            <th>Checked Status</th>
+            <th>Status</th>
             <th>Comments</th>
             <th>Action(s)</th>
         </tr>
