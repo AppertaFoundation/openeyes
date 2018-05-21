@@ -234,6 +234,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
           for (var name in res) {
               if (name === 'dose') {
                   $row.find('[name$="[' + name +']"]').attr('placeholder', res['dose_unit']);
+                  if(res['dose_unit'] === 'mg'){
+                      $row.find('[name$="[' + name +']"]').addClass("decimal");
+                  }
+                  $row.find('[name$="[' + name +']"]').val("");
                   $row.find('[name$="[units]"]').val(res['dose_unit']);
               } else {
                   $row.find('[name$="[' + name +']"]').val(res[name]).change();
