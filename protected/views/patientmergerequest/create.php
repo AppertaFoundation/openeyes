@@ -62,7 +62,7 @@
             <div class="element-fields full-width flex-layout flex-top col-gap" >
                 <div class="cols-3"></div>
                 <div class="cols-6 element">
-                    <div >Comment:
+                    <div style="text-align: center" >Comment:
                         <?php echo CHTML::activeTextArea($model, 'comment'); ?>
                     </div>
                     <br>
@@ -77,7 +77,7 @@
                         </div>
                     </div>
                     <div class="cols-full">
-                        <div class="large-3 column text-right large-offset-9">
+                        <div class="large-3 column text-right large-offset-9" style="text-align: center">
                             <input class="no-clear" type="submit" value="Save">
                         </div>
                     </div>
