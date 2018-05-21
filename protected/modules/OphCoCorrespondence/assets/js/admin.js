@@ -160,6 +160,42 @@ $(document).ready(function() {
 
 	/** End of Internal Referral Settings **/
 
+
+    /** EditMacro Page **/
+
+    $('#LetterMacro_letter_type_id').on('change', function(){
+        var radios = $('#LetterMacro_recipient_id').find('input[type=radio]'),
+        	letter_type = $(this).find('option:selected').text();
+
+        $.each(radios, function(index, option){
+        	var $label = $(option).closest('label'),
+				$span = $label.find('span'),
+                txt = $span.text().trim();
+
+			if(letter_type === 'Internal Referral'){
+
+				if(txt === 'None'){
+                    $span.text("Internal Referral");
+                    $(option).prop('checked', true);
+                    $label.show();
+				} else {
+                    $(option).prop('disabled', true);
+                    $(option).prop('checked', false);
+                    $label.hide();
+				}
+
+			} else {
+                if(txt === 'Internal Referral'){
+                    $span.text("None");
+				}
+                $(option).prop('disabled', false);
+                $label.show();
+			}
+		});
+    });
+
+    /** End of EditMacro Page **/
+
 });
 
 var macro_cursor_position = 0;
