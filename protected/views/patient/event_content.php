@@ -1,5 +1,6 @@
 <main class="main-event <?php echo $this->moduleStateCssClass; ?>" id="event-content">
 
+
   <h2 class="event-title">
       <?php echo $this->title ?>
       <?php if ($this->event->is_automated) { ?>
@@ -16,6 +17,8 @@
         </div>
       <?php endif; ?>
   </h2>
+
+    <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php $this->renderPartial('//base/_messages'); ?>
 
     <?php if ($this->action->id === 'view' && $this->event->isEventDateDifferentFromCreated()) { ?>

@@ -17,5 +17,6 @@
  */
 ?>
 <main class="main-event"  id="event-content">
+    <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php echo $content; ?>
 </main>

@@ -4,11 +4,6 @@
     <?php $this->renderPartial('//patient/event_actions'); ?>
 </nav>
 
-<div class="row messages patient fixed">
-    <?php $this->renderPartial('//patient/_patient_alerts') ?>
-</div>
-
-
 <?php if ($this->patient->isDeceased()) { ?>
   <div id="deceased-notice" class="alert-box alert with-icon">
     This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)

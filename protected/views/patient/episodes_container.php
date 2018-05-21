@@ -16,9 +16,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-  <div class="row messages patient fixed">
-      <?php $this->renderPartial('//patient/_patient_alerts') ?>
-  </div>
 
 <?php if ($this->patient->isDeceased()) { ?>
   <div id="deceased-notice" class="alert-box alert with-icon">
