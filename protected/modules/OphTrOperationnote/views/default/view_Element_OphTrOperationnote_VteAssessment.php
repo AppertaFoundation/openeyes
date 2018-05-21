@@ -22,7 +22,8 @@
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
   <section class="element-fields full-width">
-    <p>Has an assessment for the risk of thrombosis been completed on admission?</p>
-      <?php echo $element->selected_option()->name; ?>
+    <p>
+      Thrombosis risk assessed on admission? <?php echo $element->selected_option()->name; ?>
+    </p>
   </section>
 </section>
