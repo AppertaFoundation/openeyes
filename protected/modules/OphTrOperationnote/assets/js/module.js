@@ -872,13 +872,13 @@ function highlightBiometryElement( ){
     // left: 1
     $('#ophTrOperationnotePCRRiskDiv').attr('style', 'display: block;');
     if( $('#Element_OphTrOperationnote_ProcedureList_eye_id_2').is(':checked') ){
-        $('.right-eye').removeClass('deactivate highlighted-eye');
-        $('.left-eye').addClass('deactivate highlighted-eye');
+        $('.right-eye').removeClass('deactivate').addClass('highlighted-eye');
+        $('.left-eye').addClass('deactivate').removeClass('highlighted-eye');
         $('#ophCiExaminationPCRRiskLeftEye').hide();
         $('#ophCiExaminationPCRRiskRightEye').show();
     }else if($('#Element_OphTrOperationnote_ProcedureList_eye_id_1').is(':checked') ){
-        $('.left-eye').removeClass('deactivate highlighted-eye');
-        $('.right-eye').addClass('deactivate highlighted-eye');
+        $('.left-eye').removeClass('deactivate').addClass('highlighted-eye');
+        $('.right-eye').addClass('deactivate').removeClass('highlighted-eye');
         $('#ophCiExaminationPCRRiskRightEye').hide();
         $('#ophCiExaminationPCRRiskLeftEye').show();
     }

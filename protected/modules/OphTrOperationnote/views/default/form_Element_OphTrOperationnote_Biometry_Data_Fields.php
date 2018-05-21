@@ -50,11 +50,11 @@
             <tr>
                 <td>
                     <div class="data-label">
-                        <?php echo CHtml::encode($element->getAttributeLabel('iol_power_'.$side)) ?>
+                        <?php echo CHtml::encode($element->getAttributeLabel('power')) ?>
                     </div>
                 </td>
                 <td>
-                    <div class="data-value iolDisplayHighlited js-iol-display"><?php echo CHtml::encode($element->{'iol_power_'.$side}) ?></div>
+                    <div class="data-value large-text highlighter orange js-iol-display"><?php echo CHtml::encode($element->{'iol_power_'.$side}) ?></div>
                 </td>
                 <td>
                     <div class="data-label">
@@ -70,7 +70,7 @@
             </tr>
             <tr>
                 <td>
-                    <?php echo CHtml::encode($element->getAttributeLabel('formula_' . $side)) ?>
+                    <?php echo CHtml::encode($element->getAttributeLabel('formula_')) ?>
                 </td>
                 <td>
                     <?php echo $element->{'formula_' . $side} ? $element->{'formula_' . $side} : 'None' ?>
@@ -212,7 +212,7 @@
                 </td>
                 <td>
                     <div class="data-value">
-                        <span class="large-text highlighter orange">
+                        <span class="large-text">
                             <?php echo CHtml::encode($element->{'status_' . $side}) ?>
                         </span>
                     </div>
