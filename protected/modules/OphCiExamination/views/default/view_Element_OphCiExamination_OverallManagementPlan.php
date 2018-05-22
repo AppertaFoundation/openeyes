@@ -75,11 +75,12 @@
 
       </div>
     </div>
-
-    <div class="data-row">
-      <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('comments')) ?></div>
-      <div class="data-value"><?php echo $element->textWithLineBreaks('comments') ?></div>
-    </div>
+      <?php if ($element->comments !== ''): ?>
+        <div class="data-row">
+          <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('comments')) ?>:</div>
+          <div class="data-value"><?php echo $element->textWithLineBreaks('comments') ?></div>
+        </div>
+      <?php endif; ?>
   </div>
   <div class="element-eyes">
       <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
