@@ -251,4 +251,35 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         //default value when no Risk element exists
         return 'Not checked';
     }
+
+    /**
+     * @return string
+     */
+
+    public function getPatientRisksDisplay()
+    {
+        $display = "";
+        $patient = $this->event->patient;
+
+        // TODO Check for diabetes
+
+        // Check risks
+
+        $risks = $patient->riskAssignments;
+
+        // Exclude anti-coags and alpha-blockers as they've been called out in their respective sections already
+
+        $risks = array_filter($risks, function($risk){
+            return !in_array($risk->name, ["Anticoagulants", "Alpha blockers"]);
+        });
+
+        $display.= implode("<br/>", array_map(function($risk){
+            if($risk->comments != "") {
+                return '<span class="has-tooltip" data-tooltip-content="'.$risk->comments.'">'.$risk->name.'</span>';
+            }
+            return $risk->name;
+        }, $risks));
+
+        return $display === "" ? "None" : $display;
+    }
 }
