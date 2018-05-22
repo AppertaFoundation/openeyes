@@ -44,5 +44,8 @@
 <?php
 $display_theme = SettingMetadata::model()->getSetting('display_theme');
 $cssFileName = $display_theme === 'dark' ? '/css/style_oe3.0.min.css' : '/css/style_oe3.0_classic.min.css' ;
-Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue')) . $cssFileName);
+$newblue_path = $assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'));
+
+Yii::app()->clientScript->registerCssFile($newblue_path . $cssFileName);
+Yii::app()->clientScript->registerCssFile($newblue_path . '/css/eyedraw_draw_icons.min.css');
 ?>
