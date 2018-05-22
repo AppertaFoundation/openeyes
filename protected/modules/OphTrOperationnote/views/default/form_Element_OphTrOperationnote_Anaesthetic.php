@@ -41,16 +41,15 @@ $is_hidden = function () use ($element) {
                   false, false, false, false, array(),array('field'=>12)); ?>
           </td>
         </tr>
-        <tr id="Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container">
+        <tr id="Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container" <?php if($is_hidden()): ?>style="display: none;"<?php endif; ?>>
           <td>LA Delivery Methods</td>
           <td>
             <div >
-                <?php echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery', null,
-                    false, false, false, false, array('fieldset-class' => ($is_hidden() ? 'hidden' : ''))); ?>
+                <?php echo $form->checkBoxes($element, 'AnaestheticDelivery', 'anaesthetic_delivery'); ?>
             </div>
           </td>
         </tr>
-        <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container">
+        <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container" <?php if($is_hidden()): ?>style="display: none;"<?php endif; ?>>
           <td>
             Given by:
           </td>
@@ -59,7 +58,7 @@ $is_hidden = function () use ($element) {
                 <?php echo $form->radioButtons($element, 'anaesthetist_id', 'Anaesthetist', $element->anaesthetist_id,
                     false, false,
                     false, false,
-                    array('fieldset-class' => ($is_hidden() ? 'hidden' : ''), 'nowrapper' => true)); ?>
+                    array('nowrapper' => true)); ?>
             </div>
           </td>
         </tr>
