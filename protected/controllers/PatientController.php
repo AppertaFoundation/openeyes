@@ -19,7 +19,7 @@ Yii::import('application.controllers.*');
 
 class PatientController extends BaseController
 {
-    public $layout = '//layouts/main';
+    public $layout = '//layouts/home';
     public $renderPatientPanel = true;
     public $fixedHotlist = true;
     public $patient;

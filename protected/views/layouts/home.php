@@ -19,24 +19,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php $this->renderPartial('//base/head/_meta'); ?>
-	<?php $this->renderPartial('//base/head/_assets'); ?>
-	<?php $this->renderPartial('//base/head/_tracking'); ?>
+    <?php $this->renderPartial('//base/head/_meta'); ?>
+    <?php $this->renderPartial('//base/head/_assets'); ?>
+    <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
 <body class="open-eyes oe-grid">
 
 <!--	--><?php //$this->renderPartial('//base/_banner_watermark'); ?>
-	<?php $this->renderPartial('//base/_debug'); ?>
+<?php $this->renderPartial('//base/_debug'); ?>
 
-  <!-- Branding (logo) -->
-  <div class="openeyes-brand">
-      <?php $this->renderPartial('//base/_brand'); ?>
-  </div>
+<!-- Branding (logo) -->
+<div class="openeyes-brand">
+    <?php $this->renderPartial('//base/_brand'); ?>
+</div>
 
-  <?php $this->renderPartial('//base/_header'); ?>
+<?php $this->renderPartial('//base/_header'); ?>
 
-			<?php echo $content; ?>
+<main class="oe-home" id="oe-home">
+    <?php echo $content; ?>
+</main><!-- /.content.container -->
 
-		<?php $this->renderPartial('//base/_footer'); ?>
+<?php $this->renderPartial('//base/_footer'); ?>
 </body>
 </html>
