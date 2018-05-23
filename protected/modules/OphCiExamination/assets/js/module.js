@@ -1096,7 +1096,6 @@ $(document).ready(function() {
     }
 
     var referral = isClinicOutcomeStatusPatientTicket();
-    console.log('referral: ' + referral);
     if (referral) {
       showOutcomeStatusPatientTicket();
     }

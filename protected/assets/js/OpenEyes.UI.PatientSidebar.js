@@ -345,7 +345,6 @@
           .data('element-type-id', itemData.id)
           .data('element-display-order', itemData.display_order)
           .data('element-type-name', itemData.name)
-          .attr('id','side-element-'+itemData.name.replace(/\s+/g,'-'))
           .addClass(itemClass);
 
       if (!open) {
