@@ -16,7 +16,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 if ($element->isIndividual('view')) { ?>
-
   <section class=" element
 <?php if (is_subclass_of($element, 'SplitEventTypeElement')) {
       echo 'full priority eye-divider';
@@ -40,5 +39,3 @@ if ($element->isIndividual('view')) { ?>
 <?php } else {
     echo $content;
 } ?>
-
-<?php $this->renderTiledElements($this->getChildElements($element->getElementType(),'view'), 'view');?>

@@ -288,14 +288,9 @@ class BaseEventTypeController extends BaseModuleController
         $element_name = array();
         if (is_array($this->open_elements)) {
             foreach ($this->open_elements as $element) {
-                if ($element->getElementType() && !$element->isChild($action)) {
+                if ($element->getElementType()) {
                     $elements[] = $element;
                     $element_name[] = $element->getElementType()->class_name;
-                }
-            }
-            foreach ($this->open_elements as $element) {
-                if ($element->isChild($action)&&!in_array($element->getParentType($action), $element_name)) {
-                    $elements[] = $element;
                 }
             }
         }
@@ -325,8 +320,9 @@ class BaseEventTypeController extends BaseModuleController
                 'name'          => $et->group_title,
                 'class_name'    => CHtml::modelName($et->class_name),
                 'id'            => $et->id,
-                'display_order' => $et->display_order,
-                'children' => array(),
+                'display_order' => -1,
+                'parent_display_order' => $et->display_order,
+                'children'      => array(),
             );
 
             // Add the parent as its first child with the display name instead of the group title
@@ -334,7 +330,8 @@ class BaseEventTypeController extends BaseModuleController
                 'name'          => $et->name,
                 'class_name'    => CHtml::modelName($et->class_name),
                 'id'            => $et->id,
-                'display_order' => $et->display_order,
+                'display_order' => -1,
+                'parent_display_order' => $et->display_order,
             );
 
             foreach ($et->child_element_types as $child) {
@@ -345,7 +342,8 @@ class BaseEventTypeController extends BaseModuleController
                     'name' => $child->name,
                     'id' => $child->id,
                     'display_order' => $child->display_order,
-                    'class_name' => CHtml::modelName($child->class_name),
+                    'parent_display_order' => $et->display_order,
+                    'class_name'    => CHtml::modelName($child->class_name),
                 );
             }
 
@@ -362,7 +360,7 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @return \BaseEventTypeElement[] $open_elements
      */
-    public function getChildElements($parent_type, $action='edit')
+    public function getChildElements($parent_type, $action = 'edit')
     {
         $open_child_elements = array();
         if (is_array($this->open_elements)) {

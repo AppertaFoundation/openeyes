@@ -29,6 +29,10 @@
  */
 class EventType extends BaseActiveRecordVersioned
 {
+    const ELEMENT_DISPLAY_ORDER_SQL = '
+        COALESCE((SELECT parent.display_order FROM element_type parent WHERE parent.id = t.parent_element_type_id), t.display_order), 
+        CASE WHEN t.parent_element_type_id IS NULL THEN -1 ELSE t.display_order END';
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -304,7 +308,7 @@ class EventType extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
         $criteria->compare('event_type_id', $this->id);
         $criteria->compare('`default`', 1);
-        $criteria->order = 'display_order asc';
+        $criteria->order = self::ELEMENT_DISPLAY_ORDER_SQL;
 
         $elements = array();
         foreach (ElementType::model()->findAll($criteria) as $element_type) {
@@ -345,7 +349,7 @@ class EventType extends BaseActiveRecordVersioned
             $ids[] = $parent->id;
         }
         $criteria->addInCondition('event_type_id', $ids);
-        $criteria->order = 'display_order asc';
+        $criteria->order = self::ELEMENT_DISPLAY_ORDER_SQL;
 
         return ElementType::model()->findAll($criteria);
     }
@@ -364,7 +368,7 @@ class EventType extends BaseActiveRecordVersioned
         }
         $criteria->addInCondition('t.event_type_id', $ids);
         $criteria->addCondition('t.parent_element_type_id IS NULL');
-        $criteria->order = 't.display_order asc';
+        $criteria->order = self::ELEMENT_DISPLAY_ORDER_SQL;
 
         return ElementType::model()->with('child_element_types')->findAll($criteria);
     }

@@ -39,11 +39,13 @@ $element_Type = $element->getElementType();
     data-element-type-id="<?php echo $element->elementType->id?>"
   data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
   data-element-type-name="<?php echo $element->elementType->name?>"
-	data-element-display-order="<?php echo $element->elementType->display_order?>"
-  data-element-parent-id = "<?php $et = $element->getElementType();
-  if ($et->isChild()){
-    echo $et->parent_element_type_id;
+	data-element-display-order="<?= $element->elementType->isChild() ? $element->elementType->display_order : -1?>"
+  data-element-parent-id = " <?php
+  if ($element->elementType->isChild()){
+    echo $element->elementType->parent_element_type_id;
   } ?>"
+  data-element-parent-display-order="<?= $element->elementType->isChild() ? $element->elementType->parent_element_type->display_order : $element->elementType->display_order ?>"
+
   style="min-height: 80px;"
 >
 
@@ -93,7 +95,6 @@ $element_Type = $element->getElementType();
       <?php echo $content; ?>
 
 	</section>
-    <?php $this->renderChildOpenElements($element, $this->action->id, $form, $data)?>
 <?php } else { ?>
   <section
       class="<?php echo implode(' ', $section_classes); ?>"
@@ -103,13 +104,6 @@ $element_Type = $element->getElementType();
       data-element-display-order="<?php echo $element->elementType->display_order ?>">
 
       <?php echo $content; ?>
-
-    <!-- Sub elements -->
-      <?php if (!@$child) { ?>
-        <div class="sub-elements active">
-            <?php $this->renderChildOpenElements($element, $this->action->id, $form, $data) ?>
-        </div>
-      <?php } ?>
 
   </section>
 <?php } ?>

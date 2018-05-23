@@ -179,21 +179,6 @@
         // The <li> that contains $item (can be selected or not)
         var $container = $item.parent();
 
-        // The parent element of $container
-        // If $container _is_ a parent element, then the $parent will be set to $container
-        // (because it would be firstr in the list of siblings)
-        var $parent = $container.siblings().addBack().first();
-
-        // If the element isn't a parent, and isn't selected, then the parent needs to be loaded first
-        if (!$parent.is($container) && !$parent.find('a:first').hasClass('selected')) {
-          $parent.find('a:first').addClass('selected');
-          // construct a callback to run this method with the original target,
-          // once the parent is loaded
-          var newCallback = function () {
-            self.loadClickedItem($item, data, callback);
-          }.bind($item, data, callback);
-          self.loadElement($parent, {}, newCallback);
-        } else {
           self.loadElement($container, data, callback);
           $item.addClass('selected');
         } else {
@@ -202,8 +187,6 @@
             if (callback)
               callback();
         }
-
-      }
     };
 
     /**
@@ -344,6 +327,7 @@
           .data('element-type-class', itemData.class_name)
           .data('element-type-id', itemData.id)
           .data('element-display-order', itemData.display_order)
+          .data('element-parent-display-order', itemData.parent_display_order)
           .data('element-type-name', itemData.name)
           .addClass(itemClass);
 
@@ -365,6 +349,7 @@
             .data('element-type-class', this.class_name)
             .data('element-type-id', this.id)
             .data('element-display-order', this.display_order)
+            .data('element-parent-display-order', this.parent_display_order)
             .data('element-type-name', this.name)
             .attr('id','side-element-'+id_name ).addClass('element');
 

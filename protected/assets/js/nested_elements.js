@@ -49,6 +49,8 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
   $.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function (data) {
     var new_element = $(data);
     var elClass = $(element).data('element-type-class');
+    var element_display_order = Number($(element).data('element-display-order'));
+    var element_parent_display_order = Number($(element).data('element-parent-display-order'));
 
     if ($(element).prop('tagName') !== 'LI') {
       new_element.find(".sub-elements.active").replaceWith($(element).find(".sub-elements.active"));
@@ -61,48 +63,26 @@ function addElement(element, animate, is_child, previous_id, params, callback) {
     // If there aren't any elements, then insert the new element at the end (after the event date)
     if (container.find('section[data-element-type-name]').length === 0) {
       container.append(new_element);
-    } else if (!new_element.data('elementParentId')) {
-      // If the new element is a parent, then find the last parent element with a lower display order
-      var parentToInsertAfter = container.find('section[data-element-parent-id=""]').filter(function () {
-        return $(this).data('elementDisplayOrder') < new_element.data('elementDisplayOrder');
-      }).last();
+    } else {
+      var $toInsertBefore = null;
+      container.find('section[data-element-type-name]').each(function () {
+        var target_display_order = Number($(this).data('element-display-order'));
+        var target_parent_display_order = Number($(this).data('element-parent-display-order'));
 
-      // if there are no parents lower than the new element, then insert before the first element
-      if (parentToInsertAfter.length === 0) {
-        new_element.insertBefore(container.find('section[data-element-parent-id]').first());
-      } else {
-        // If a parent element was found, then find its children
-        var children = parentToInsertAfter.nextAll('section[data-element-parent-id="' + parentToInsertAfter.data('elementTypeId') + '"]');
-        if (children.length) {
-          // if it has children, then insert after the last child
-          new_element.insertAfter(children.last());
-        } else {
-          // Otherwise insert after the parent
-          new_element.insertAfter(parentToInsertAfter);
+        if (target_parent_display_order > element_parent_display_order ||
+          (target_parent_display_order === element_parent_display_order && target_display_order > element_display_order)) {
+
+          $toInsertBefore = $(this);
+          return false;
         }
-      }
-    } else { // If new element is a child
-      var parent = container.find('section[data-element-type-id="' + new_element.data('elementParentId') + '"]');
-      var otherChildren = container.find('section[data-element-parent-id="' + new_element.data('elementParentId') + '"]');
+      });
 
-      // If the parent element of the new element has no other children, then simply insert after it
-      if (otherChildren.length === 0) {
-        new_element.insertAfter(parent);
+      if ($toInsertBefore){
+        new_element.insertBefore($toInsertBefore);
       } else {
-        // Otherwise find the last child that has a lower display order than the new element and insert after it
-        var toInsertAfter = otherChildren.filter(function () {
-          return $(this).data('elementDisplayOrder') < new_element.data('elementDisplayOrder');
-        }).last();
-
-        // If none could be found (all other children are later in the list), then insert after the parent instead
-        if (toInsertAfter.length === 0) {
-          toInsertAfter = parent;
-        }
-
-        new_element.insertAfter(toInsertAfter);
+        container.append(new_element);
       }
     }
-
 
     if (is_child) {
       // check if this is sided
@@ -268,6 +248,7 @@ function markElementChilds(element , element_remove_value) {
     var element_type_id = $(element).data('element-type-id');
     var element_type_name = $(element).data('element-type-name');
     var display_order = $(element).data('element-display-order');
+  var parent_display_order = $(element).data('element-parent-display-order');
 
     var $menuLi = findMenuItemForElementClass(element_type_class);
 
@@ -284,7 +265,6 @@ function markElementChilds(element , element_remove_value) {
     }
 
     // If the element has element removed flag hide it instead of removing it
-    // And set the flag values to 1
     // And set the flag values to 1
     if ($('input[name="' + element_type_class + "[element_removed]" + '"]').length) {
         $(element).hide();
