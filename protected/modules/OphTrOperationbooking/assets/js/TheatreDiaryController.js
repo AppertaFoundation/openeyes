@@ -126,14 +126,6 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$('#date-start').bind('change',function() {
-		pickmeup('#date-end', {'min': $(this).val()});
-	});
-
-	$('#date-end').bind('change',function() {
-    pickmeup('#date-start', {'mmax': $(this).val()});
-	});
-
 	$('#theatre-filter select').change(function() {
 		var hash = {};
 		hash[$(this).attr('id')] = $(this).val();
@@ -541,8 +533,7 @@ function loadTheatresAndWards(siteId) {
 }
 
 function clearBoundaries() {
-	pickmeup('#date-start', {'min': '', 'max': ''});
-	pickmeup('#date-end', {'min': '', 'max': ''});
+	// Not sure how to change pickmeup boundaries after initialisation
 }
 
 function returnDateWithInterval(d, interval) {
