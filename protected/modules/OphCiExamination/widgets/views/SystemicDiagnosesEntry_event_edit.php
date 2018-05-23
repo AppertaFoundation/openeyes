@@ -31,6 +31,15 @@ if (!isset($values)) {
         'date_display' => $diagnosis->getDisplayDate(),
     );
 }
+
+    if (isset($values['date']) && strtotime($values['date'])) {
+        list($start_sel_year, $start_sel_month, $start_sel_day) = explode('-', $values['date']);
+    } else {
+        $start_sel_day = $start_sel_month = null;
+        $start_sel_year = date('Y');
+        $values['date'] = $start_sel_year . '-00-00'; // default to the year displayed in the select dropdowns
+    }
+
     $is_new_record = isset($diagnosis) && $diagnosis->isNewRecord ? true : false;
 
     $mandatory = !$removable;

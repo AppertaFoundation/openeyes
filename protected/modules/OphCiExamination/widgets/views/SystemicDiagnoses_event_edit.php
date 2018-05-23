@@ -100,7 +100,8 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
             'field_prefix' => $model_name . '[entries][{{row_count}}]',
             'row_count' => '{{row_count}}',
             'removable' => true,
-
+            'posted_checked_status' => false,
+            'has_disorder' => false,
             'values' => array(
                 'id' => '',
                 'disorder_id' => '{{disorder_id}}',
@@ -110,6 +111,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
                 'date' => '{{date}}',
                 'date_display' => '{{date_display}}',
                 'row_count' => '{{row_count}}',
+                'has_disorder' => SystemicDiagnoses_Diagnosis::$PRESENT,
             )
         )
     );
