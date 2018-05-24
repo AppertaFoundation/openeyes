@@ -39,6 +39,37 @@ $widget = $this;
                 <td>
                     <?= $diag->getDisplayDate(); ?>
                 </td>
+                <td></td>
+              </tr>
+          <?php } ?>
+          <?php foreach ($this->getCheckedRequiredSystemicDiagnoses() as $diag){ ?>
+              <tr>
+                <td>
+                    <?= $diag->disorder; ?>
+                </td>
+                <td>
+                  <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective=='Right'||$diag->side->adjective=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
+                  <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective=='Left'||$diag->side->adjective=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
+                </td>
+                <td>
+                    <?= $diag->getDisplayDate(); ?>
+                </td>
+                <td><string>Not present</string></td>
+              </tr>
+          <?php } ?>
+          <?php foreach ($this->getMissingRequiredSystemicDiagnoses() as $diag){ ?>
+              <tr>
+                <td>
+                    <?= $diag->disorder; ?>
+                </td>
+                <td>
+                  <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective=='Right'||$diag->side->adjective=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
+                  <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective=='Left'||$diag->side->adjective=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
+                </td>
+                <td>
+                    <?= $diag->getDisplayDate(); ?>
+                </td>
+                <td><strong>Not checked</strong></td>
               </tr>
           <?php } ?>
         </tbody>

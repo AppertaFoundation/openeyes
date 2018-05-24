@@ -60,6 +60,27 @@ if (!isset($values)) {
         <input type="hidden" name="<?= $field_prefix ?>[disorder_id][]" value="">
     </td>
 
+
+  <td id="<?="{$model_name}_{$row_count}_checked_status"?>">
+      <?php
+
+      $is_not_checked = $values['has_disorder'] == SystemicDiagnoses_Diagnosis::$NOT_CHECKED;
+      $selected = $posted_checked_status ? $posted_checked_status : ($is_not_checked ? null : $values['has_disorder']);
+
+      if($removable) {
+          echo '<span>'.SystemicDiagnoses_Diagnosis::getStatusNameEditMode($selected).'</span>';
+          echo CHtml::hiddenField($model_name . '[has_disorder][]', $selected);
+      }
+      else {
+          echo CHtml::dropDownList($model_name . '[has_disorder][]', $selected, [
+              SystemicDiagnoses_Diagnosis::$NOT_CHECKED => 'Not checked',
+              SystemicDiagnoses_Diagnosis::$PRESENT => 'Yes',
+              SystemicDiagnoses_Diagnosis::$NOT_PRESENT => 'No',
+          ],['empty' => '- Select -']);
+      }
+      ?>
+  </td>
+
   <?php if (!$removable): ?>
   <td class="<?= $model_name ?>_sides" style="white-space:nowrap">
       <?php if($values['side']=='Right'||$values['side']=='Both'){ ?>

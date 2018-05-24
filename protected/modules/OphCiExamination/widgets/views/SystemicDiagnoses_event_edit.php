@@ -36,11 +36,12 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
         <thead>
         <tr>
           <th></th>
+          <th>Status</th>
           <th>Right</th>
           <th>Both</th>
           <th>Left</th>
           <th>N/A</th>
-          <th>Date(optional)</th>
+          <th>Date (optional)</th>
           <th></th>
         </tr>
         </thead>
