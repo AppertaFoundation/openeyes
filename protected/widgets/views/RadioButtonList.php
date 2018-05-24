@@ -35,7 +35,7 @@
             }?>
 			<label class="inline highlight">
 				<?php echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options); ?>
-		 		<?php echo CHtml::encode($data_value)?>
+                <span><?php echo CHtml::encode($data_value)?></span>
 	 		</label>
 	<?php }?>
 
@@ -63,7 +63,14 @@
 				</label>
 			<?php }?>
 			<?php foreach ($data as $id => $data_value) {?>
-				<label class="inline highlight">
+                <?php
+                    $label_style = '';
+                    if(isset($htmlOptions['labelOptions'][$id])){
+                        $label_style = 'style="' . $htmlOptions['labelOptions'][$id] . '"';
+                    }
+                ?>
+
+                <label class="inline highlight" <?=$label_style;?>>
 					<?php
                         $options = array('value' => $id, 'id' => CHtml::modelName($element).'_'.$field.'_'.$id);
 
@@ -78,7 +85,7 @@
 
     echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value != ''), $options);
     ?>
-					<?php echo CHtml::encode($data_value)?>
+                    <span><?php echo CHtml::encode($data_value)?></span>
 				</label>
 			<?php }?>
 		</div>
