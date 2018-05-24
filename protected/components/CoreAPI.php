@@ -191,4 +191,13 @@ class CoreAPI
         }
     }
 
+    public function generateLatestEventLink(Patient $patient) {
+        $latest_event = $patient->getLatestEvent();
+        if ($latest_event) {
+            return $this->yii->createUrl($latest_event->eventType->class_name.'/default/view/'.$latest_event->id);
+        }
+        else
+            return null;
+    }
+
 }

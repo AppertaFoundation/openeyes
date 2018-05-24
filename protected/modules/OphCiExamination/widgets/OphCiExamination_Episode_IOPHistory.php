@@ -96,4 +96,69 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
             $chart->addPoint($seriesName, $chart->getXMax(), $target->name, "{$target->name} mmHg");
         }
     }
+
+    public function getIOPData(){
+        $iop_data_list = array('right'=>array(), 'left'=>array());
+        $events = $this->event_type->api->getEvents($this->episode->patient, false);
+        foreach ($events as $event) {
+            if (($iop = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure'))) {
+                $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
+                foreach (['left', 'right'] as $side) {
+                    if ($reading = $iop->getReading($side)){
+                        array_push($iop_data_list[$side], array('x'=>$timestamp, 'y'=>(float)$reading));
+                    }
+                }
+            }
+        }
+        foreach (['left', 'right'] as $side){
+            usort($iop_data_list[$side], function($item1, $item2){
+                if ($item1['x'] == $item2['x']) return 0;
+                return $item1['x'] < $item2['x'] ? -1 : 1;
+            });
+        }
+        return $iop_data_list;
+    }
+
+    public function getTargetIOP(){
+        $iop_target = array();
+        $plan = $this->event_type->api->getLatestElement(
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_OverallManagementPlan',
+            $this->episode->patient,
+            false
+        );
+        if ($plan) {
+            foreach (['left', 'right'] as $side) {
+                if (($target = $plan->{$side."_target_iop"})) {
+                    $iop_target[$side] = (float)$target->name;
+                }
+            }
+        }
+        return $iop_target;
+    }
+
+    public function getIOPMarkingEvent(){
+        $iop_markings = array('right'=>array(), 'left'=>array());
+        $marking_list = array('Phacoemulsification'=>'Phaco','Phacoemulsification and Intraocular lens'=>'Phaco',
+            'Trabeculectomy'=>'Trabeculectomy', 'Argon laser trabeculoplasty'=>'Argon laser trabeculoplasty',
+            'Selective laser trabeculoplasty'=>'Selective laser trabeculoplasty',
+            'Cycloablation'=>'Cycloablation','Cyclodialysis cleft repair'=>'Cycloablation',
+            'Peripheral iridectomy'=>'Peripheral iridotomy');
+        $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
+        $events = Event::model()->getEventsOfTypeForPatient($event_type ,$this->episode->patient);
+        foreach ($events as $event) {
+            if (($proc_list = $event->getElementByClass('Element_OphTrOperationnote_ProcedureList'))) {
+                $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
+                $eye_side = $proc_list->eye;
+                foreach ($proc_list->procedures as $proc){
+                    if (array_key_exists($proc->term, $marking_list)){
+                        if (empty($iop_markings[$eye_side])||!array_key_exists($marking_list[$proc->term], $iop_markings[$eye_side])){
+                            $iop_markings[$eye_side][$marking_list[$proc->term]] = array();
+                        }
+                        array_push($iop_markings[$eye_side][$marking_list[$proc->term]], $timestamp);
+                    }
+                }
+            }
+        }
+        return $iop_markings;
+    }
 }

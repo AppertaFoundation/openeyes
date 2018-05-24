@@ -23,6 +23,7 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
     protected $va_unit_input = 'va_history_unit_id';
 
     protected $va_axis;
+    protected $va_ticks;
     private $va_unit;
 
     public function run()
@@ -58,7 +59,8 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
             $va_ticks[] = array($value->base_value, $label);
         }
 
-        $this->va_axis = "Visual Acuity ({$this->va_unit->name})";
+        $this->va_ticks = $va_ticks;
+        $this->va_axis = "{$this->va_unit->name}";
 
         $chart = $this->createWidget('FlotChart', array('chart_id' => $this->chart_id))
             ->configureXAxis(array('mode' => 'time'))
@@ -96,4 +98,34 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         $label = "{$series_name}\n{$reading->element->unit->name}: {$reading->convertTo($reading->value)} {$reading->method->name}";
         $chart->addPoint($series_name, Helper::mysqlDate2JsTimestamp($event->event_date), $reading->value, $label);
     }
+
+    public function getVaData(){
+        $va_data_list = array('right'=>array(), 'left'=>array());
+        foreach ($this->event_type->api->getElements('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity', $this->episode->patient, false) as $va) {
+            if (($reading = $va->getBestReading('right'))) {
+                array_push($va_data_list['right'],array( 'y'=>(float)$reading->value,'x'=>Helper::mysqlDate2JsTimestamp($reading->created_date)));
+            }
+            if (($reading = $va->getBestReading('left'))) {
+                array_push($va_data_list['left'],array('y'=>(float)$reading->value, 'x'=>Helper::mysqlDate2JsTimestamp($reading->created_date)));
+            }
+        }
+        foreach (['left', 'right'] as $side){
+            usort($va_data_list[$side], array("EpisodeSummaryWidget","sortData"));
+        }
+        return $va_data_list;
+    }
+
+    public function getVaAxis() {
+        return $this->va_axis;
+    }
+
+    public function getVaTicks() {
+        $tick_data = array('tick_position'=> array(), 'tick_labels'=> array());
+        foreach ($this->va_ticks as $tick){
+            array_push($tick_data['tick_position'],(float)$tick[0]);
+            array_push($tick_data['tick_labels'], $tick[1]);
+        }
+        return $tick_data;
+    }
+
 }

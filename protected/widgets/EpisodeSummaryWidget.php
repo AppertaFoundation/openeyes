@@ -30,4 +30,13 @@ abstract class EpisodeSummaryWidget extends CWidget
      * @var bool
      */
     public $openOnPageLoad = false;
+
+    protected function sortData($item1, $item2){
+        if ($item1['x'] == $item2['x']) return 0;
+        return $item1['x'] < $item2['x'] ? -1 : 1;
+    }
+
+    public function run_right_side(){
+
+    }
 }
