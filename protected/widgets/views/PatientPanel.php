@@ -57,27 +57,21 @@ $navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('ap
     </div>
 
   </div>
-<?php
-if ($this->patient->allergyAssignments||$this->patient->risks||$this->patient->getDiabetes()) { ?>
-  <div class="patient-allergies-risks" id="js-allergies-risks-btn">
-    <div class="patient-warning">
-        <?= $this->patient->allergyAssignments ? 'Allergies' : ''; ?>
-        <?= $this->patient->allergyAssignments && $this->patient->risks ? ', ' : ''; ?>
-        <?= $this->patient->risks||$this->patient->getDiabetes() ? 'Alerts' : ''; ?>
-    </div>
-      <?php }
-    elseif (!$this->patient->hasAllergyStatus()||!$this->patient->hasRiskStatus()) { ?>
-    <div class="patient-allergies-risks" id="js-allergies-risks-btn" style="background-color: grey;">
-      <div class="patient-warning">Allergies, Alerts</div>
-      <?php
-} elseif($this->patient->no_risks_date&& $this->patient->no_allergies_date){ ?>
-      <div class="patient-allergies-risks" id="js-allergies-risks-btn" style="background-color: green;">
-        <div class="patient-warning">Allergies, Alerts</div>
-          <?php } ?>
-    <svg viewBox="0 0 30 30" class="icon">
-      <use xlink:href="<?php echo $navIconsUrl; ?>#warning-icon"></use>
-    </svg>
-  </div>
+    <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
+      <div class="patient-allergies-risks risk-warning" id="js-allergies-risks-btn">
+          <?= $this->patient->allergyAssignments ? 'Allergies' : ''; ?>
+          <?= $this->patient->allergyAssignments && $this->patient->risks ? ', ' : ''; ?>
+          <?= $this->patient->risks || $this->patient->getDiabetes() ? 'Alerts' : ''; ?>
+      </div>
+    <?php } elseif (!$this->patient->hasAllergyStatus() || !$this->patient->hasRiskStatus()) { ?>
+      <div class="patient-allergies-risks no-risk" id="js-allergies-risks-btn">
+        Allergies, Alerts
+      </div>
+    <?php } elseif ($this->patient->no_risks_date && $this->patient->no_allergies_date) { ?>
+      <div class="patient-allergies-risks unknown" id="js-allergies-risks-btn">
+        Allergies, Alerts
+      </div>
+    <?php } ?>
   <div class="patient-demographics" id="js-demographics-btn">
     <svg viewBox="0 0 60 60" class="icon">
       <use xlink:href="<?php echo $navIconsUrl; ?>#info-icon"></use>
