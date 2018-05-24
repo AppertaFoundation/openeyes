@@ -29,15 +29,15 @@ class OphCoDocument_API extends BaseAPI
         $module_path = Yii::getPathOfAlias('application.modules.OphCoDocument.assets.img');
 
         $element = Element_OphCoDocument_Document::model()->findByAttributes(array('event_id' => $event->id));
-        if (!$element) {
-            $path = $asset_manager->publish($module_path . '/' . $type . '.png');
+        if (!$element || $element->sub_type->name === 'General') {
+            return '<i class="oe-i-e large i-CoDocument"></i>';
+        }
+
+        $file = $module_path . '/' . $type . str_replace(' ', '_', $element->sub_type->name) . '.png';
+        if (file_exists($file)) {
+            $path = $asset_manager->publish($file);
         } else {
-            $file = $module_path . '/' . $type . str_replace(' ', '_', $element->sub_type->name) . '.png';
-            if (file_exists($file)) {
-                $path = $asset_manager->publish($file);
-            } else {
-                $path = $asset_manager->publish($module_path . '/' . $type . '.png');
-            }
+            $path = $asset_manager->publish($module_path . '/' . $type . '.png');
         }
 
         return "<img src=\"$path\"/>";
