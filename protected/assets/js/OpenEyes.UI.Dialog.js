@@ -110,7 +110,7 @@
     Dialog.prototype.create = function () {
 
         // Create the dialog content div.
-        this.content = $('<div />', {class: 'oe-popup-wrap', style: 'z-index: 110; overflow-y: scroll;'});
+        this.content = $('<div />', {class: 'oe-popup-wrap'});
         var closeButton = '<div class="close-icon-btn"><i class="oe-i remove-circle pro-theme"></i></div>';
         var popup = $('<div class="' + this.options.popupClass + '"></div>');
         popup.css('width', this.options.width);

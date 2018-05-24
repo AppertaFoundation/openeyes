@@ -188,8 +188,8 @@
   });
   */
 
-  $('body').append('<div id="dim_rest" class="ui-widget-overlay" style="position:fixed;display : none; width: 100%; height: 100%; z-index: 180;"></div>');
-  $('body').append("<div id=\"is_loading\"style=\"display : none; position: fixed; background-color: black; width: 100%; height: 100%; z-index: 1000; opacity: 0.8; top:0px; \"><img class=\"is_loading\" style=\" position: fixed; z-index: 1000; height: 64px; width: 64px; top: 33%; left: 50%;\"></div>");
+  $('body').append('<div id="dim_rest" class="ui-widget-overlay" style="position:fixed;display : none; width: 100%; height: 100%;"></div>');
+  $('body').append("<div id=\"is_loading\"style=\"display : none; position: fixed; background-color: black; width: 100%; height: 100%; opacity: 0.8; top:0px; \"><img class=\"is_loading\" style=\" position: fixed;height: 64px; width: 64px; top: 33%; left: 50%;\"></div>");
   $('#description_toggle').change(function(){
     let current_search_bar = "#js-search-event-input-"+last_search_pos;
     if (this.checked) {

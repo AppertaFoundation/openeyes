@@ -24,7 +24,7 @@
       <?php echo CHtml::dropDownList($name_stub . '[' . $key . '][value]', @$reading->value, $values, array(
           'empty' => '--',
           'class' => 'va-selector',
-          'style' => 'width:82px; z-index:1000;',
+          'style' => 'width:82px;',
           'options' => $val_options,
       )) ?>
   </td>

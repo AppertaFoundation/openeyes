@@ -247,7 +247,7 @@ $(document).ready(function(){
     if( OpenEyes.UI.Search.getElement().data('autocomplete') ){
         OpenEyes.UI.Search.getElement().data('autocomplete')._renderItem = function (ul, item) {
             var warningHTML = '';
-                ul.addClass("z-index-1000 patient-ajax-list");
+                ul.addClass("patient-ajax-list");
 
             if(item.warning.length > 0){
                 for(i=0; i<item.warning.length;i++){
