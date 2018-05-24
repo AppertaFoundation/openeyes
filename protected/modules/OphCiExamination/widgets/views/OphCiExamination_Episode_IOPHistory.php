@@ -27,6 +27,7 @@
     var sides = ['left', 'right'];
     var chart_IOP = {}, Yaxis = {};
     for (var i in sides) {
+      optionsIOP['xAxis']['plotLines'] = [];
       for($marking_key in IOP_marking[sides[i]]){
         for ($i in IOP_marking[sides[i]][$marking_key]){
           optionsIOP['xAxis']['plotLines'].push(setXPlotLine($marking_key,IOP_marking[sides[i]][$marking_key][$i], sides[i] ));

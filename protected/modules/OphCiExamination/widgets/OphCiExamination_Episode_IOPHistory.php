@@ -148,13 +148,29 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
         foreach ($events as $event) {
             if (($proc_list = $event->getElementByClass('Element_OphTrOperationnote_ProcedureList'))) {
                 $timestamp = Helper::mysqlDate2JsTimestamp($event->event_date);
-                $eye_side = $proc_list->eye;
-                foreach ($proc_list->procedures as $proc){
-                    if (array_key_exists($proc->term, $marking_list)){
-                        if (empty($iop_markings[$eye_side])||!array_key_exists($marking_list[$proc->term], $iop_markings[$eye_side])){
-                            $iop_markings[$eye_side][$marking_list[$proc->term]] = array();
+                $eye_side = array();
+                switch ($proc_list->eye->name) {
+                    case 'Left':
+                        array_push($eye_side, 'left');
+                        break;
+                    case 'Right':
+                        array_push($eye_side, 'right');
+                        break;
+                    case 'Both':
+                        array_push($eye_side, 'left');
+                        array_push($eye_side, 'right');
+                        break;
+                    default:
+                        break;
+                }
+                foreach ($eye_side as $side){
+                    foreach ($proc_list->procedures as $proc){
+                        if (array_key_exists($proc->term, $marking_list)){
+                            if (empty($iop_markings[$side])||!array_key_exists($marking_list[$proc->term], $iop_markings[$side])){
+                                $iop_markings[$side][$marking_list[$proc->term]] = array();
+                            }
+                            array_push($iop_markings[$side][$marking_list[$proc->term]], $timestamp);
                         }
-                        array_push($iop_markings[$eye_side][$marking_list[$proc->term]], $timestamp);
                     }
                 }
             }
