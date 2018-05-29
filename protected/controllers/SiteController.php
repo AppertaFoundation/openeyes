@@ -130,6 +130,8 @@ class SiteController extends BaseController
      */
     public function actionLogin()
     {
+        $this->layout = 'home';
+
         if (!Yii::app()->user->isGuest) {
             $this->redirect('/');
             Yii::app()->end();
