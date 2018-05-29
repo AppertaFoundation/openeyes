@@ -197,6 +197,25 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     }
 
     /**
+     * Gets the common ophthalmic disorders for the given firm.
+     *
+     * @param int $firm_id
+     *
+     * @return array
+     * @throws \CException
+     */
+    public function getCommonOphthalmicDisorders($firm_id)
+    {
+        if (empty($firm_id)) {
+            throw new \CException('Firm is required');
+        }
+        $firm = \Firm::model()->findByPk($firm_id);
+        if ($firm) {
+            return \CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($firm);
+        }
+    }
+
+    /**
      * Delete the related diagnoses for this element.
      *
      * @return bool

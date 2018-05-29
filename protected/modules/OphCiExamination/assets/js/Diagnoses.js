@@ -43,6 +43,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.externalDiagnoses = {};
 
         this.initialiseTriggers();
+        this.initialiseDatepicker();
     }
 
     /**
@@ -56,17 +57,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         subspecialtyRefSpec: null,
         loaderClass: 'external-loader'
     };
-
-    DiagnosesController.prototype.setDate = function($tr, date){
-
-        if(date === undefined){
-            date = new Date();
-        }
-
-        $tr.find('.fuzzy_month').val(date.getMonth()+1);
-        $tr.find('.fuzzy_day').val(date.getDate());
-        $tr.find('.fuzzy_year').val(date.getFullYear()).trigger('change');
-    }
 
     DiagnosesController.prototype.initialiseTriggers = function()
     {
@@ -106,7 +96,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     controller.$table.find('tbody').append(row);
                     $tr = controller.$table.find('tbody tr:last');
                     controller.initialiseRow($tr);
-                    controller.setDate($tr);
+                    controller.setDatepicker();
                 }
             } else if(type && type === 'disorder'){
                 // just add the disorder as an extra row
@@ -172,6 +162,34 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return res;
     };
 
+
+  DiagnosesController.prototype.initialiseDatepicker = function () {
+    var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
+    for (var i=0; i<row_count;i++){
+      var datepicker_name = '#diagnoses-datepicker-'+i;
+      var datepicker= $(this.$table).find(datepicker_name);
+      if (datepicker.length!=0){
+        pickmeup(datepicker_name, {
+          format: 'Y-m-d',
+          hide_on_select: true,
+          default_date: false
+        });
+      }}
+  };
+
+  DiagnosesController.prototype.setDatepicker = function () {
+    var row_count = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key')-1;
+    var datepicker_name = '#diagnoses-datepicker-'+row_count;
+    var datepicker= $(this.$table).find(datepicker_name);
+    if (datepicker.length!=0){
+      pickmeup(datepicker_name, {
+        format: 'Y-m-d',
+        hide_on_select: true,
+        default_date: false
+      });
+    }};
+
+
     DiagnosesController.prototype.createRow = function(data)
     {
         if (data === undefined)
@@ -193,7 +211,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         $row = this.$table.find('tbody tr:last');
         this.initialiseRow($row);
-        this.setDate($row);
+      this.setDatepicker();
     };
 
     /**
@@ -375,8 +393,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $tr.addClass('external');
             controller.initialiseRow($tr);
             $tr.find('.sides-radio-group input[value="' + side + '"]').prop("checked", true);
-
-            controller.setDate($tr);
+            controller.setDatepicker();
         }
     };
 

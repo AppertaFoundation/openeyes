@@ -1151,6 +1151,44 @@ $(document).ready(function() {
 
     updateTextMacros();
 
+    // Refresh common ophthalmic diagnosis widget when findings element is changed
+    $('.js-active-elements').on('MultiSelectChanged', '#OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings_further_findings_assignment', function() {
+        OphCiExamination_RefreshCommonOphDiagnoses();
+    });
+
+    // Refresh common ophthalmic diagnosis widget when findings element is removed
+    $(document).on('ElementRemoved', '.js-active-elements', function(event, element_class) {
+        if(element_class == 'OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings') {
+            OphCiExamination_RefreshCommonOphDiagnoses();
+        }
+    });
+
+    // Handle removal of diagnoses from diagnosis element and trigger refresh of widget
+    $('.js-active-elements').on('click', 'a.removeDiagnosis', function() {
+        var disorder_id = $(this).attr('rel');
+        var new_principal = false;
+
+        if ($('input[name="principal_diagnosis"]:checked').val() == disorder_id) {
+            new_principal = true;
+        }
+
+        $('.js-diagnoses').find('input[type="hidden"]').map(function() {
+            if ($(this).val() == disorder_id) {
+                $(this).remove();
+            }
+        });
+
+        $(this).parent().parent().remove();
+
+        if (new_principal) {
+            $('input[name="principal_diagnosis"]:first').attr('checked','checked');
+        }
+
+        OphCiExamination_RefreshCommonOphDiagnoses();
+
+        return false;
+    });
+
     $('.signField').die('change').live('change',function(e) {
         var sign_id = $(this).val() >0 ? 1 : 2;
         var type = $(this).data('type');
@@ -2249,7 +2287,6 @@ function OphCiExamination_ClinicOutcome_LoadTemplate(template_id) {
 }
 
 function OphCiExamination_RefreshCommonOphDiagnoses() {
-    DiagnosisSelection_updateSelections();
 }
 
 function OphCiExamination_ClinicOutcomes_updateFollowUpLabel() {

@@ -154,7 +154,7 @@
                 <i class="oe-i exclamation medium pad js-has-tooltip"
                    data-tooltip-content="<?= implode(' / ', $msgs) ?>"></i>
               <?php } ?>
-              
+
             <i class="oe-i confirmed medium pad js-has-tooltip" data-tooltip-content="<?= implode(' / ', $msgs) ?>"
                 <?php if (!$booking->confirmed) { ?> style="display: none;"<?php } ?>></i>
 

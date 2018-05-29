@@ -42,7 +42,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
 }
 
 ?>
-<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row" style="height:50px;">
+<tr data-key="<?=$row_count?>" class="<?=$field_prefix ?>_row">
     <td style="width:290px;padding-top:15px;padding-bottom:15px;">
 
         <input type="hidden" name="<?= $field_prefix ?>[id][]" value="<?=$values['id'] ?>" />
@@ -58,7 +58,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <input type="hidden" name="<?= $field_prefix ?>[disorder_id][]" value="">
     </td>
 
-    <td>
+    <td class="eye" style="<?= isset($diagnosis) && $diagnosis->hasErrors() ? 'border: 2px solid red;' : '' ?>">
         <div class="sides-radio-group">
             <?php foreach (Eye::model()->findAll(array('order' => 'display_order')) as $eye) {
                 ?>
@@ -79,21 +79,15 @@ if (isset($values['date']) && strtotime($values['date'])) {
     </td>
     <td>
         <fieldset class="row field-row fuzzy-date">
-            <input type="hidden" name="<?= $model_name ?>[date][]" value="<?= $values['date'] ?>" />
-            <div class="large-12 column end">
-                <span class="start-date-wrapper">
-                <?php $this->renderPartial('application.views.patient._fuzzy_date_fields', array(
-                    'sel_day' => $start_sel_day,
-                    'sel_month' => $start_sel_month,
-                    'sel_year' => $start_sel_year))
-                ?>
-                </span>
-            </div>
+          <input id="diagnoses-datepicker-<?= $row_count; ?>" style="width:90px" placeholder="yyyy-mm-dd"  name="<?= $model_name ?>[date][]" value="<?= $values['date'] ?>" >
+          <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
         </fieldset>
     </td>
     <td class="edit-column">
         <?php if($removable) : ?>
-            <button class="button small warning remove">remove</button>
+          <a href="#" class="removeDiagnosis" rel="<?php echo $values['disorder_id'] ?>">
+            <i class="oe-i trash"></i>
+          </a>
         <?php else: ?>
             read only
         <?php endif; ?>

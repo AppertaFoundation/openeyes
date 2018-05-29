@@ -16,12 +16,12 @@
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 ?>
-<tr class="" style="height:50px;">
-    <td style="width:290px;padding-top:15px;padding-bottom:15px;">
+<tr class="read-only">
+    <td>
         <?=$values['diagnosis']->term;?>
     </td>
     <td> <?=$values['eye'];?> </td>
     <td> <?=$values['subspecialty'];?> </td>
     <td></td>
-    <td><span class="has-tooltip fa fa-info-circle" data-tooltip-content="You must switch to the <?=$values['subspecialty'];?> subspecialty to alter this diagnosis"></span></td>
+    <td><span class="js-has-tooltip fa oe-i info small" data-tooltip-content="You must switch to the <?= $episode->getSubspecialtyText() ?> subspecialty to alter this diagnosis"></span></td>
 </tr>
