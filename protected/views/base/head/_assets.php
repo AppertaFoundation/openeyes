@@ -1,4 +1,14 @@
 <?php $assetManager = Yii::app()->getAssetManager();?>
+<?php
+$display_theme = SettingMetadata::model()->getSetting('display_theme');
+$newblue_path = Yii::getPathOfAlias('application.assets.newblue');
+Yii::app()->clientScript->registerCssFile($newblue_path . '/css/eyedraw_draw_icons.min.css');
+?>
+<link rel="stylesheet" type="text/css" data-theme="dark"
+      href="<?= $assetManager->getPublishedUrl($newblue_path) . '/css/style_oe3.0.min.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
+<link rel="stylesheet" type="text/css" data-theme="light"
+      href="<?= $assetManager->getPublishedUrl($newblue_path) . '/css/style_oe3.0_classic.min.css' ?>" media="<?= $display_theme === 'dark' ? 'none' : '' ?>">
+
 <?php $assetManager->registerScriptFile('js/modernizr.custom.js')?>
 <?php $assetManager->registerCoreScript('jquery')?>
 <?php $assetManager->registerCoreScript('jquery.ui')?>
@@ -41,11 +51,3 @@
 <?php $assetManager->registerScriptFile('js/oelauncher.js');?>
 <?php $assetManager->registerScriptFile('js/sortable/Sortable.min.js', 'application.assets.newblue');?>
 <?php $assetManager->registerScriptFile('js/pickmeup/pickmeup.js', 'application.assets.newblue');?>
-<?php
-$display_theme = SettingMetadata::model()->getSetting('display_theme');
-$cssFileName = $display_theme === 'dark' ? '/css/style_oe3.0.min.css' : '/css/style_oe3.0_classic.min.css' ;
-$newblue_path = $assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'));
-
-Yii::app()->clientScript->registerCssFile($newblue_path . $cssFileName);
-Yii::app()->clientScript->registerCssFile($newblue_path . '/css/eyedraw_draw_icons.min.css');
-?>

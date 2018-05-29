@@ -125,13 +125,6 @@ class BaseController extends Controller
         // stylesheets. Ideally we should suppress the inclusion here. (Or we should be using a different approach
         // to render the HTML template for the TCPDF engine)
 
-        // Publish the newblue assets and pass the base URL into javascript variables.
-        $newBlue = $assetManager->publish(Yii::getPathOfAlias('application.assets.newblue'));
-        $this->jsVars['newblueBaseUrl'] = $newBlue;
-
-        $this->jsVars['lightThemeFilePath'] = $newBlue . '/css/style_oe3.0_classic.min.css';
-        $this->jsVars['darkThemeFilePath'] = $newBlue . '/css/style_oe3.0.min.css';
-
         // Prevent certain assets from being outputted in certain conditions.
         $assetManager->adjustScriptMapping();
     }
