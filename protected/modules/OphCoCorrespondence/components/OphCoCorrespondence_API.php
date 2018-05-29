@@ -484,7 +484,7 @@ class OphCoCorrespondence_API extends BaseAPI
         $data['cc'] = implode("\n",$cc['text']);
         $data['date'] = date('Y-m-d');
         $data['site_id'] = Yii::app()->session['selected_site_id'];
-        $data['footer'] = "Yours sincerely\n\n\n\n\n".User::model()->findByPk(Yii::app()->user->id)->fullName."\n".User::model()->findByPk(Yii::app()->user->id)->role."\n";
+        $data['footer'] = "Yours sincerely\n\n".User::model()->findByPk(Yii::app()->user->id)->fullName."\n".User::model()->findByPk(Yii::app()->user->id)->role."\n";
         //.(ui.item.consultant?"Consultant: "+ui.item.consultant:'')
         return $data;
     }
