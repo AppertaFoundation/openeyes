@@ -646,7 +646,7 @@ class OphCoCorrespondence_API extends BaseAPI
 
             $full_name = trim($contact->title.' '.$contact->first_name.' '.$contact->last_name.' '.$contact->qualifications);
 
-            return "Yours sincerely\n\n\n\n\n" . $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Consultant: " . $consultant_name : '');
+            return "Yours sincerely\n\n" . $full_name . "\n" . $user->role . "\n" . ($consultant_name ? "Consultant: " . $consultant_name : '');
         }
 
         return null;
