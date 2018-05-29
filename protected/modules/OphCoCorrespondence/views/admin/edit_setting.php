@@ -23,7 +23,6 @@
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'settingsform',
         'enableAjaxValidation' => false,
-        'focus' => '#username',
         'layoutColumns' => array(
             'label' => 2,
             'field' => 5,

@@ -35,6 +35,43 @@ class AdminController extends \ModuleAdminController
         ));
     }
 
+
+    public function actionLetterSettings()
+    {
+        $this->render('/admin/letter_settings',array(
+            'settings' => OphCoCorrespondenceLetterSettings::model()->findAll(),
+        ));
+    }
+
+    public function actionEditSetting()
+    {
+        if (!$metadata = OphCoCorrespondenceLetterSettings::model()->find('`key`=?', array(@$_GET['key']))) {
+            $this->redirect(array('/OphCoCorrespondence/admin/letterSettings/settings'));
+        }
+
+        $errors = array();
+
+        if (Yii::app()->request->isPostRequest) {
+            foreach (OphCoCorrespondenceLetterSettings::model()->findAll() as $metadata) {
+                if (@$_POST['hidden_' . $metadata->key] || @$_POST[$metadata->key]) {
+                    if (!$setting = $metadata->getSetting($metadata->key, null, true)) {
+                        $setting = new OphCoCorrespondenceLetterSettingValue();
+                        $setting->key = $metadata->key;
+                    }
+                    $setting->value = @$_POST[$metadata->key];
+                    if (!$setting->save()) {
+                        $errors = $setting->errors;
+                    } else {
+                        $this->redirect(array('/OphCoCorrespondence/admin/letterSettings/settings'));
+                    }
+                }
+            }
+        }
+
+        $this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors));
+    }
+
+
     public function getUniqueEpisodeStatuses($macros)
     {
         $statuses = array();
