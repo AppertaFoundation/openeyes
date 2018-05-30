@@ -56,6 +56,8 @@ class TheatreDiaryController extends BaseModuleController
      */
     public function actionIndex()
     {
+        $this->fixedHotlist = true;
+
         //TODO: determine whether we actually need this check
         $firm = Firm::model()->findByPk($this->selectedFirmId);
 
