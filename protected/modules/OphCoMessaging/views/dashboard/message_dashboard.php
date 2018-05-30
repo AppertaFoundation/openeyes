@@ -90,33 +90,24 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
             window.location.href = jQuery.query.set('messages', 'sent')
         });
 
-    $('#OphCoMessaging_to').add('#OphCoMessaging_from').each(function () {
-      pickmeup('#' + $(this).attr('id'), {
-        format: 'Y-m-d',
-        hide_on_select: true,
-        default_date: false
-      });
-    }).on('blur', function () {
-      updateDateRange()
-    }).on('keypress', function (e) {
-      if (e.which === 13) {
-        updateDateRange();
-      }
-    });
-    });
+        $('#OphCoMessaging_to').add('#OphCoMessaging_from').each(function () {
+          pickmeup('#' + $(this).attr('id'), {
+              format: 'd b Y',
+            hide_on_select: true,
+            default_date: false
+          });
+          }).on('pickmeup-change change', function () {
+        window.location.href = jQuery.query
+          .set('OphCoMessaging_from', $('#OphCoMessaging_from').val())
+          .set('OphCoMessaging_to', $('#OphCoMessaging_to').val());
+          });
 
-  function updateDateRange() {
-    window.location.href = jQuery.query
-      .set('OphCoMessaging_from', $('#OphCoMessaging_from').val())
-      .set('OphCoMessaging_to', $('#OphCoMessaging_to').val());
-  }
+        $('.js-expand-message').each(function(){
 
-
-    $('.js-expand-message').each(function(){
-
-        var message = $(this).parent().parent().find('.message');
-        var expander = new Expander( $(this),
-            message );
+            var message = $(this).parent().parent().find('.message');
+            var expander = new Expander( $(this),
+                message );
+        });
     });
 
     function Expander( $icon, $message){
