@@ -210,11 +210,6 @@ $(document).ready(function() {
 			theatre_edit_session_data["confirm"][id] = $('#confirm_'+id).is(':checked');
 		});
 
-		/*$('#tbody_'+theatre_edit_session_id+' .diaryViewMode').hide();
-		$('span.session_options.diaryViewMode').hide();
-		$('.comments .comments.diaryViewMode').hide();
-		$('.specialists.diaryViewMode').hide();
-		$('button.diaryViewMode').hide();*/
 		$('.diaryViewMode').hide();
 		$('.diaryEditMode[data-id="'+theatre_edit_session_id+'"]').show();
 		$('.action_options[data-id="'+theatre_edit_session_id+'"]').show();
@@ -289,6 +284,7 @@ $(document).ready(function() {
 	$(this).undelegate('button[id^="btn_edit_session_save_"]','click').delegate('button[id^="btn_edit_session_save_"]','click',function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
+			$('.diaries-search .spinner').hide();
 
 			var session_id = $(this).attr('id').match(/[0-9]+/);
 
