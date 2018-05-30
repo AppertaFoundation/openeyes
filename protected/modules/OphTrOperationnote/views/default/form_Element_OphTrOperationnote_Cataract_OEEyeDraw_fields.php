@@ -81,7 +81,7 @@
                       'order' => 'display_name',
                   )), 'id', 'display_name'),
                   array('empty' => '- Please select -', 'nolabel' => true), $element->iol_hidden,
-                  array('field' => 4)); ?>
+                  array('field' => 6)); ?>
           <?php else: ?>
               <?php echo $form->dropDownList($element, 'iol_type_id', array(
                   CHtml::listData(OphTrOperationnote_IOLType::model()->activeOrPk($element->iol_type_id)->findAll(array(
@@ -94,7 +94,7 @@
                   )), 'id', 'name'),
               ),
                   array('empty' => '- Please select -', 'divided' => true, 'nolabel' => true), $element->iol_hidden,
-                  array('field' => 4)) ?>
+                  array('field' => 6)) ?>
           <?php endif; ?>
       </td>
     </tr>
