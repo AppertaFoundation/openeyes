@@ -42,6 +42,7 @@
         'element' => $element,
         'durations' => true,
     )) ?>
+    <?php echo $form->radioButtons($element, 'complexity', Element_OphTrOperationbooking_Operation::$complexity_captions) ?>
     <?php echo $form->radioBoolean($element, 'consultant_required') ?>
     <?php echo $form->dropDownList(
         $element,
