@@ -76,7 +76,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     var datepicker= $(this.$table).find(name);
     if (datepicker.length!=0){
       pickmeup(name, {
-        format: 'Y-m-d',
+        format: 'd b Y',
         hide_on_select: true,
         default_date: false
       });

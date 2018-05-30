@@ -38,13 +38,13 @@
   $(function() {
 
     pickmeup('#worklist-date-from', {
-      format: 'Y-m-d',
+      format: 'd b Y',
       hide_on_select: true,
       date: $('#worklist-date-from').val(),
       default_date: false,
     });
     pickmeup('#worklist-date-to', {
-      format: 'Y-m-d',
+      format: 'd b Y',
       hide_on_select: true,
       date: $('#worklist-date-to').val(),
       default_date: false,

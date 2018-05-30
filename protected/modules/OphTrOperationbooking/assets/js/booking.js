@@ -290,7 +290,7 @@ function OphTrOperationbooking_PatientUnavailable_add() {
 	$('.unavailables').append(form);
 	$('.unavailables').find('[id$="date"]').each(function() {
     pickmeup('#'+this.getAttribute('id'), {
-      format: 'Y-m-d',
+      format: 'd b Y',
       hide_on_select: true,
       default_date: false,
 			min: new Date()

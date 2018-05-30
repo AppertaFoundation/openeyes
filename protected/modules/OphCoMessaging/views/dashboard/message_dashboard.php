@@ -74,7 +74,6 @@ $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('applic
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#grid_header_form .datepicker').datepicker({'showAnim':'fold','dateFormat':'d M yy'});
 
         $('#display-inbox').click(function(e) {
             e.preventDefault();

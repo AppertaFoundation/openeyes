@@ -58,7 +58,7 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
     var datepicker= $(this.tableSelector).find(datepicker_name);
     if (datepicker.length!=0){
       pickmeup(datepicker_name, {
-        format: 'Y-m-d',
+        format: 'd b Y',
         hide_on_select: true,
         default_date: false
       });

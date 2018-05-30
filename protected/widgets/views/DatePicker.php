@@ -45,7 +45,7 @@ if (@$htmlOptions['id']){
 
     if (datepicker.length !== 0) {
       pickmeup('#<?= $input_id ?>', {
-        format: '<?= @$htmlOptions['dateFormat'] ?: 'Y-m-d' ?>',
+        format: '<?= @$htmlOptions['dateFormat'] ?: 'd b Y' ?>',
         hide_on_select: true,
         default_date: false,
         max: '<?= @$options['maxDate'] ?>'
