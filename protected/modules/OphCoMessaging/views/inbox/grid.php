@@ -50,25 +50,26 @@ $cols = array(
         'cssClassExpression' => '"nowrap patient"',
     ),
     array(
+        'id' => 'event_date',
+        'class' => 'CDataColumn',
+        'header' => '<i class="oe-i arrow-down-bold small pad active"></i> Messages',
+        'value' => function ($data) {
+            return '<span class="oe-date">'.Helper::convertMySQL2NHS($data->created_date).'</span>';
+        },
+        'type' => 'raw'
+    ),
+    array(
         'name' => 'priority',
         'header' => '',
         'value' => function ($data) {
             return $data->urgent ? '
-            <svg class="urgent-message" viewBox="0 0 8 8" height="8" width="8">
-              <circle cx="4" cy="4" r="4"></circle>
-            </svg>' : '';
+            <svg class="urgent-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"></circle></svg>' : '';
         },
         'type' => 'raw',
     ),
     array(
-        'id' => 'event_date',
-        'class' => 'CDataColumn',
-        'header' => $dp->getSort()->link('event_date', 'Date', array('class' => 'sort-link')),
-        'value' => 'Helper::convertMySQL2NHS($data->created_date)',
-    ),
-    array(
         'id' => 'user',
-        'header' => $dp->getSort()->link('user', $message_type === 'sent' ? 'To' : 'From', array('class' => 'sort-link')),
+        'header' => '',
         'value' => $message_type === 'sent' ?
             '\User::model()->findByPk($data->for_the_attention_of_user_id)->getFullNameAndTitle()' :
             '\User::model()->findByPk($data->created_user_id)->getFullNameAndTitle()',
