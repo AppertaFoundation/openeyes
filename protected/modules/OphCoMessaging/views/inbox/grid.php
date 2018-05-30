@@ -78,6 +78,7 @@ $cols = array(
     array(
         'id' => 'message',
         'name' => 'Message',
+        'cssClassExpression' => '"js-message"',
         'value' => function ($data) {
             return '<div class="message">' . Yii::app()->format->Ntext($data->message_text) . '</div>';
         },
