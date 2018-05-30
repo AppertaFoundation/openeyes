@@ -30,7 +30,7 @@ if ($element->patientId > 0) {
     $latestData = null;
 }
 ?>
-<div>
+<div class="element-fields" data-has-biometry="<?= (bool)$latestData ?>">
         <?php if (!$latestData) { ?>
           <div class="alert-box">No biometry data presented.</div>
         <?php } else { ?>
@@ -40,6 +40,7 @@ if ($element->patientId > 0) {
                 $this->renderPartial('form_Element_OphTrOperationnote_Biometry_Data', array(
                 'element' => $latestData,
                 'form' => $form,
+                'is_new_opnote' => $element->isNewRecord,
             ));
         }
         ?>

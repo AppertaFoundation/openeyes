@@ -471,7 +471,7 @@ function showHideIOLFields(_drawing, resetPosition) {
 function AngleMarksController(_drawing) {
     var angleMarks,
         $biometry_element = $(".Element_OphTrOperationnote_Biometry"),
-        has_biometry = $biometry_element.find(".element-fields").data('has_biometry'),
+        has_biometry = $biometry_element.find(".element-fields").data('has-biometry'),
         data;
 
     // Register controller for notifications
@@ -490,7 +490,7 @@ function AngleMarksController(_drawing) {
 
     this.initAntSegAngleMarks = function(){
 
-        data = $(".Element_OphTrOperationnote_Biometry").find('.' + (_drawing.eye === 0 ? 'right' : 'left') + '-eye .element-data').data("biometry_data");
+        data = $(".Element_OphTrOperationnote_Biometry").find('.' + (_drawing.eye === 0 ? 'right' : 'left') + '-eye .element-data').data("biometry-data");
         angleMarks = _drawing.firstDoodleOfClass('AntSegAngleMarks');
 
         if(!has_biometry && angleMarks){
@@ -524,7 +524,7 @@ function AngleMarksController(_drawing) {
     this.setBiometryData = function(){
 
         //Refresh data
-        data = $(".Element_OphTrOperationnote_Biometry").find('.' + (_drawing.eye === 0 ? 'right' : 'left') + '-eye .element-data').data("biometry_data");
+        data = $(".Element_OphTrOperationnote_Biometry").find('.' + (_drawing.eye === 0 ? 'right' : 'left') + '-eye .element-data').data("biometry-data");
         let biometry_data = this.calculateBiometryData(data);
 
         if(has_biometry && data && angleMarks){
