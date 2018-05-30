@@ -52,7 +52,7 @@ if (!isset($values)) {
             $show_other = $values['risk_id'] && array_key_exists($values['risk_id'], $risks_opts['options']) && ($risks_opts['options'][$values['risk_id']]['data-other'] === '1');
         ?>
 
-          <span class="<?=  $show_other ? : 'hidden'?> <?= $model_name ?>_other_wrapper">
+          <span class="<?= $model_name ?>_other_wrapper" <?= $show_other ? '' : 'style="display: none;"' ?>>
             <?php echo CHtml::textField($field_prefix . '[other]', $values['other'], array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
           </span>
         <?php

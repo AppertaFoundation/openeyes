@@ -127,7 +127,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         this.$popupSelector.on('click', '.js-add-select-search', function(e) {
             e.preventDefault();
-            controller.$table.removeClass('hidden');
             controller.$table.show();
             controller.addEntry();
         });
