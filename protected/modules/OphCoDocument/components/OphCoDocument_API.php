@@ -30,7 +30,7 @@ class OphCoDocument_API extends BaseAPI
 
         $element = Element_OphCoDocument_Document::model()->findByAttributes(array('event_id' => $event->id));
         if (!$element || $element->sub_type->name === 'General') {
-            return '<i class="oe-i-e large i-CoDocument"></i>';
+            return '<i class="oe-i-e ' . ($type === 'small' ? 'small' : 'large') . ' i-CoDocument"></i>';
         }
 
         $file = $module_path . '/' . $type . str_replace(' ', '_', $element->sub_type->name) . '.png';
