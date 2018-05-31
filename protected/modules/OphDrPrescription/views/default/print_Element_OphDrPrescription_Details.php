@@ -102,7 +102,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 				<?php if(strpos($group_name,"Hospital") !== false ){?>
 					<th>Dispense Location</th>
 					<th>Dispensed</th>
-					<th>Checked</th>
+					<th>Checked Status</th>
 				<?php }?>
 			</tr>
 			</thead>
