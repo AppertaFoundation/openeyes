@@ -88,19 +88,12 @@ var optionsVA = {
 
 
 function drawVASeries(chart, data, eye_side) {
-  var series_option_1 = {
-    type:'line',
-    colorIndex: (eye_side=='right')?11:21,				// Right Eye 11-13: 11 - solid; 12 - dotted; 13 - dashed
-    yAxis:0,
-    showInNavigator: true,
-  };
-  addSeries(chart, 'VA ('+eye_side+')', data, series_option_1);
 
   var series_option_2 = {
     type:'line',
     colorIndex: (eye_side=='right')?12:22,				// Right Eye 11-13: 11 - solid; 12 - dotted; 13 - dashed
     yAxis:1,
-    showInNavigator: false,
+    showInNavigator: true,
   };
 
   //MD (mean deviation) values should be taken from visual field data, will not be available until Sept/Oct 2018
@@ -119,6 +112,14 @@ function drawVASeries(chart, data, eye_side) {
   ];
 
   addSeries(chart, 'MD ('+eye_side+')', data_2, series_option_2);
+
+  var series_option_1 = {
+    type:'line',
+    colorIndex: (eye_side=='right')?11:21,				// Right Eye 11-13: 11 - solid; 12 - dotted; 13 - dashed
+    yAxis:0,
+    showInNavigator: true,
+  };
+  addSeries(chart, 'VA ('+eye_side+')', data, series_option_1);
 }
 
 

@@ -29,7 +29,7 @@ var highHelp = {
     return {
       enabled:true,
       inputEnabled: false, 	// hide inputs
-      floating:false,
+      floating: false,
       buttons: [{
         type: 'all',
         text: 'Show all',

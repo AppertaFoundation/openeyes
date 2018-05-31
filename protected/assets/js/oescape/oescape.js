@@ -2,7 +2,7 @@ $(document).ready(function () {
 
   var left = $('.oes-left-side'),
     right = $('.oes-right-side'),
-    size;
+    size, percent;
 
 
 // setup resize buttons
@@ -13,12 +13,15 @@ $(document).ready(function () {
     switch(str){
       case 'small':
         size = 500;
+        percent = '30%';
         break;
       case 'medium':
         size = 700;
+        percent = '50%';
         break;
       case 'large':
         size = 900;
+        percent = '70%';
         break;
       case 'full':
         size = null;  // null, when passed to highcharts makes chart fill container
@@ -30,7 +33,7 @@ $(document).ready(function () {
       left.css({"min-width":"500px", "width":"100%"});
       right.hide();
     } else {
-      left.css({"min-width": size + "px", "width":""});
+      left.css({"min-width": size + "px", "width": percent});
       right.show();
     }
     var highcarts_list = $('.highchart-section');
