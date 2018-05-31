@@ -114,7 +114,9 @@
     </div>
 
     <!-- exit oes and go back to previous page -->
-    <div id="js-exit-oescape">
+    <div id="js-exit-oescape"
+         data-link="<?php $core_api = new CoreAPI();
+         echo $core_api->generateLatestEventLink($this->patient)?>">
         <i class="oe-i remove-circle"></i>
     </div>
 </nav>

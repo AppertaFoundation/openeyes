@@ -35,9 +35,7 @@ var optionsVA = {
 
   plotOptions: {
     series: {
-      animation: {
-        duration: 0, // disable the inital draw animation
-      },
+      animation: false,
       marker: {
         enabled: true,
         radius: 4,

@@ -63,7 +63,7 @@ $(document).ready(function () {
     if(localStorage.getItem("lastPage")){
       window.location = localStorage.getItem("lastPage");
     } else {
-      window.location.href = '/';
+      window.location.href = $(this).data('link');
     }
   });
 
