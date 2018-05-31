@@ -2,7 +2,7 @@
 <?php
 $display_theme = SettingMetadata::model()->getSetting('display_theme');
 $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
-Yii::app()->clientScript->registerCssFile($newblue_path . '/css/eyedraw_draw_icons.min.css');
+Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblue_path) . '/css/eyedraw_draw_icons.min.css');
 ?>
 <link rel="stylesheet" type="text/css" data-theme="dark"
       href="<?= $assetManager->getPublishedUrl($newblue_path) . '/css/style_oe3.0.min.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
