@@ -186,7 +186,7 @@ class FamilyHistory extends \BaseEventTypeElement
 
     public function getTileSize($action)
     {
-        return 1;
+        return $action === 'view' ? 1 : null;
     }
 
     public function isIndividual($action)
