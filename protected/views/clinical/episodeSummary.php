@@ -33,7 +33,7 @@ $episode->audit('episode summary', 'view');
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/oes-highchart-tools.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/initStack.js')?>"></script>
     <?php $this->renderPartial('//base/_messages'); ?>
-<div class="oes-left-side">
+<div class="oes-left-side"  style="width: 50%;">
   <div id="charts-container" class="highchart-area <?= $episode->subspecialty->name; ?>">
 
     <?php $summaryItems = array();
@@ -56,7 +56,7 @@ $episode->audit('episode summary', 'view');
     } ?>
   </div>
 </div>
-  <div class="oes-right-side">
+  <div class="oes-right-side" style="width: 50%;">
       <?php $widget->run_right_side(); ?>
   </div>
 

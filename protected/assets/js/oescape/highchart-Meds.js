@@ -13,6 +13,7 @@ var optionsMeds = {
   },
 
   credits: { enabled: false },  // highcharts url (logo) removed
+  exporting: false,
 
   title: {
     text: 'Medications, IOP, VA & MD',

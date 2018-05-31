@@ -36,6 +36,7 @@ var options_MR = {
   },
 
   credits: { enabled: false },  // highcharts url (logo) removed
+  exporting: false,
 
   title: 	{
     text: "Retinal thickness-Visual acuity",

@@ -10,6 +10,8 @@ var optionsVA = {
   credits: 		{ enabled: false },  // highcharts url (logo) removed
   scrollbar: 		{ enabled: false },
 
+  exporting: false,
+
   title: {
     align: 'center',
     text: '',
@@ -88,30 +90,6 @@ var optionsVA = {
 
 
 function drawVASeries(chart, data, eye_side) {
-
-  var series_option_2 = {
-    type:'line',
-    colorIndex: (eye_side=='right')?12:22,				// Right Eye 11-13: 11 - solid; 12 - dotted; 13 - dashed
-    yAxis:1,
-    showInNavigator: true,
-  };
-
-  //MD (mean deviation) values should be taken from visual field data, will not be available until Sept/Oct 2018
-  // The below are some demo data.
-  var data_2 = [
-    [Date.UTC(2013, 03,05),-3.5],
-    [Date.UTC(2013, 7,23),-4.5],
-    [Date.UTC(2013, 12,3),-4.5],
-    [Date.UTC(2014, 5,20),-6.7],
-    [Date.UTC(2014, 10,21),-9.2],
-    [Date.UTC(2015, 3,24),-6.2],
-    [Date.UTC(2015, 6,23),-5.7],
-    [Date.UTC(2015, 11,17),-6.2],
-    [Date.UTC(2016, 11,25),-8.9],
-    [Date.UTC(2017, 6,05),-14.8]
-  ];
-
-  addSeries(chart, 'MD ('+eye_side+')', data_2, series_option_2);
 
   var series_option_1 = {
     type:'line',

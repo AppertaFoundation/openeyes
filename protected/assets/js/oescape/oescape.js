@@ -9,6 +9,8 @@ $(document).ready(function () {
   // buttons have data-area attribute: small, medium, large and full
   $('.js-oes-area-resize').click(function( e ){
     e.stopPropagation();
+    $('.js-oes-area-resize.selected').removeClass('selected');
+    $(this).addClass('selected');
     var str = $(this).data('area');
     switch(str){
       case 'small':

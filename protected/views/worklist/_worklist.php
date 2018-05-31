@@ -66,9 +66,8 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
             'id' => 'patient_name',
             'class' => 'CLinkColumn',
             'header' => 'Name',
-//                    'urlExpression' => '$data->patient->generateEpisodeLink()',
             'urlExpression' => function ($data) use ($core_api) {
-                return $core_api->generateEpisodeLink($data->patient);
+                return $core_api->generateLatestEventLink($data->patient);
             },
             'labelExpression' => '$data->patient->getHSCICName()',
         ),

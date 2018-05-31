@@ -9,7 +9,7 @@
                 <rect x="3.5" y="3.5" width="8" height="11"></rect>
             </svg>
         </button>
-        <button class="js-oes-area-resize" data-area="medium">
+        <button class="js-oes-area-resize selected" data-area="medium">
             <svg class="svg-size-icon" width="38" height="19" viewBox="0 0 38 19">
                 <title>oescape-chart-size-medium</title>
                 <rect x="1.5" y="1.5" width="34" height="15"></rect>

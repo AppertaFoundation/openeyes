@@ -19,6 +19,8 @@ var optionsIOP = {
 
   legend: highHelp.chartLegend(),
 
+  exporting: false,
+
   rangeSelector: {
     enabled: false,
   },
