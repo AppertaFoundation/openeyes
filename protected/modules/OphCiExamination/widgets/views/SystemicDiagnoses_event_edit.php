@@ -36,7 +36,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
         <thead>
         <tr>
           <th></th>
-          <th>Status</th>
+          <th>Checked</th>
           <th>Right</th>
           <th>Both</th>
           <th>Left</th>
