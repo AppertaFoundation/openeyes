@@ -111,7 +111,7 @@ if (isset($values['date']) && strtotime($values['date'])) {
         <?php if (!$removable) :?>
             <?=Helper::formatFuzzyDate($values['date']) ?>
         <?php else:?>
-            <input id="past-surgery-datepicker-<?= $row_count ?>" style="width:90px" placeholder="dd/mm/yyyy"  name="<?= $field_prefix ?>[date]" value="<?=$values['date'] ?>" >
+            <input id="past-surgery-datepicker-<?= $row_count ?>" style="width:90px" placeholder="yyyy-mm-dd"  name="<?= $field_prefix ?>[date]" value="<?=$values['date'] ?>" autocomplete="off">
 
             <fieldset id="<?= $model_name ?>_fuzzy_date" class="row field-row fuzzy-date" style="padding:0">
                 <?php $this->render('application.views.patient._fuzzy_date_fields', array('sel_day' => $sel_day, 'sel_month' => $sel_month, 'sel_year' => $sel_year)) ?>

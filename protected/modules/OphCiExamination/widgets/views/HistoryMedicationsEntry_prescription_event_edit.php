@@ -69,7 +69,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
         <fieldset class="row field-row fuzzy-date">
             <div class="cols-11">
                 <?php if (!$entry->end_date) { ?>
-                  <input id="datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd">
+                  <input id="datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
                   <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
                 <?php } else { ?>
                   <i class="oe-i start small pad"></i>

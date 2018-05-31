@@ -34,7 +34,7 @@ if (@$htmlOptions['id']){
     </div>
     <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
 <?php } ?>
-      <input class="<?= @$htmlOptions['class'] ?>" id="<?= $input_id ?>" placeholder="yyyy-mm-dd" name="<?= $name ?>" value="<?= $value ?>" >
+      <input class="<?= @$htmlOptions['class'] ?>" id="<?= $input_id ?>" placeholder="yyyy-mm-dd" name="<?= $name ?>" value="<?= $value ?>" autocomplete="off">
 <?php if (!@$htmlOptions['nowrapper']) { ?>
     </div>
 </div>

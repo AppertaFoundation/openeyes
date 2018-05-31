@@ -115,7 +115,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
       <?php if (!$entry->start_date||$removable) { ?>
         <input id="datepicker_1_<?=$row_count?>" name="<?= $field_prefix ?>[start_date]"
                value="<?= $entry->start_date? $entry->start_date: date('Y-m-d') ?>"
-               style="width:80px" placeholder="yyyy-mm-dd">
+               style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
         <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
       <?php } else { ?>
         <i class="oe-i start small pad"></i>
@@ -130,7 +130,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
   <td>
     <fieldset class="row field-row fuzzy-date">
         <?php if (!$entry->end_date||$removable) { ?>
-          <input id="datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd">
+          <input id="datepicker_2_<?=$row_count?>" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
           <i class="js-has-tooltip oe-i info small pad right" data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy."></i>
         <?php } else { ?>
           <i class="oe-i start small pad"></i>
