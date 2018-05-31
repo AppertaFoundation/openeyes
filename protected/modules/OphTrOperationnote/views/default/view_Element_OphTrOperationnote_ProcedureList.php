@@ -21,32 +21,26 @@
   <header class="element-header">
     <h3 class="element-title"><?php echo $element->elementType->name ?></h3>
   </header>
-  <div class="element-fields full-width">
-    <ul class="data-value highlight important">
-        <?php foreach ($element->procedures as $procedure) { ?>
-          <li>
+  <div class="element-data full-width">
+    <div class="cols-10">
+      <table class="priority-text last-left">
+        <tbody>
+        <?php foreach ($element->procedures as $procedure): ?>
+          <tr>
+            <td><span class="priority-text">
               <?php echo $element->eye->adjective ?>
               <?php echo $procedure->term ?>
-          </li>
-        <?php } ?>
-    </ul>
-    <div class="cols-6 column">
-      <header class="element-header">
-        <h3 class="element-title"><?php echo $procedure->getAttributeLabel('opcsCodes.name'); ?></h3>
-      </header>
-
-      <section class="element-fields full-width">
-          <?php
-          $codes = [];
-          foreach ($element->procedures as $procedure) {
-              $size = count($procedure->opcsCodes) - 1;
-              foreach ($procedure->opcsCodes as $code) {
-                  $codes[] = $code->name;
-              }
-          }
-          echo implode(', ', $codes);
-          ?>
-      </section>
+              </span></td>
+            <td><span class="priority-text">
+                    <?= implode(array_map(function ($x) {
+                        return $x->name;
+                    }, $procedure->opcsCodes), ', '); ?>
+              </span></td>
+          </tr>
+        <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
   </div>
 </section>
 
