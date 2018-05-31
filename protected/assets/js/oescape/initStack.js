@@ -24,17 +24,15 @@ initStack = function(container,img_id_prefix, initID, callBack){
 
     if(num === 0 || num > imgTotal) return; // out of range
 
-    updateImageStack(num);
-
     if(typeof callBack === "function") callBack(num);
   });
 
   // update images
   function updateImageStack(n, side){
-    if(n){
+    if(n && n>=0){
       $('.oct-img').filter(':visible').hide();
+      $("#oct_stack_"+side+" #"+ img_id_prefix+side+'_' + n ).show();
     }
-    $("#oct_stack_"+side+" #"+ img_id_prefix+side+'_' + n ).show();
     imgID = n;
   }
 

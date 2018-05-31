@@ -48,6 +48,8 @@ $(document).ready(function () {
     $('.js-oes-eyeside-left').removeClass('selected');
     $('.highcharts-right').show();
     $('.highcharts-left').hide();
+    $('.highcharts-right').highcharts().redraw();
+
   });
 
   $('.js-oes-eyeside-left').click(function (e) {
@@ -56,6 +58,7 @@ $(document).ready(function () {
     $('.js-oes-eyeside-right').removeClass('selected');
     $('.highcharts-right').hide();
     $('.highcharts-left').show();
+    $('.highcharts-left').highcharts().redraw();
   });
 
   // exit oescape and go back to last viewed (non-oes) page

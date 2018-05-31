@@ -132,11 +132,11 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
         foreach ($this->event_type->api->getEvents($this->episode->patient, false) as $event) {
             if (($oct = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_OCT'))) {
                 if ($oct->hasRight()){
-                    $crt = $oct->{"right_crt"};
+                    $crt = $oct->{"right_sft"};
                     array_push($crt_data_list['right'], array('y'=>$crt?(float)$crt:0, 'x'=>Helper::mysqlDate2JsTimestamp($oct->created_date)));
                 }
                 if ($oct->hasLeft()) {
-                    $crt = $oct->{"left_crt"};
+                    $crt = $oct->{"left_sft"};
                     array_push($crt_data_list['left'], array('y'=>$crt?(float)$crt:0, 'x'=>Helper::mysqlDate2JsTimestamp($oct->created_date)));
                 }
             }

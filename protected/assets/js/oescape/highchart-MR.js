@@ -141,17 +141,19 @@ function drawMRSeries(chart_MR, VA_data, CRT_data, VA_lines_data, injections_dat
     className: 'oes-hs-eye-'+eye_side+'-dull',
     y: (0 - xAxisOffset - 15)
   };
-  var i = 0;
   addSeries(chart_MR, '(VA)'+axis_type+'  ('+eye_side_label+')', VA_data[eye_side], VA_options);
   addSeries(chart_MR, 'CRT ('+eye_side_label+')',  CRT_data[eye_side], CRT_options);
   addSeries(chart_MR, 'VA > 5 lines',  VA_lines_data[eye_side], VA_lines_options);
+  var i = 0;
   for ( var injection_name in injections_data[eye_side]) {
     var injections_options = {
       type: "flags",
       className: 'oes-hs-eye-'+eye_side+'-dull',
       y: flagYoffset-i*40,
     };
-    addSeries(chart_MR, injection_name, injections_data[eye_side][injection_name], injections_options);
+    var size = injections_data[eye_side][injection_name].length;
+    addSeries(chart_MR, injection_name+"("+size+")", injections_data[eye_side][injection_name], injections_options);
+    i++;
   }
 }
 
