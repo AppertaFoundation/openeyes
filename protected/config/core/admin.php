@@ -77,6 +77,9 @@ return array(
                 'Leaflets' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/Leaflets/list'),
                 'Leaflet Subspecialty context_firm_label Assignment' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/LeafletSubspecialtyFirm/list'),
             ),
+            'Document' => array(
+                'Document event type settings' => array('module' => 'OphCoDocument', 'uri' => '/oeadmin/Document/list'),
+            ),
 
         ),
     ),
