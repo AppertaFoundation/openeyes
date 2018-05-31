@@ -63,7 +63,7 @@ $cols = array(
         'header' => '',
         'value' => function ($data) {
             return $data->urgent ? '
-            <svg class="urgent-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"></circle></svg>' : '';
+            <svg class="urgent-message" viewBox="0 0 8 8" height="8" width="8"><circle cx="4" cy="4" r="4"/></svg>' : '';
         },
         'type' => 'raw',
     ),
