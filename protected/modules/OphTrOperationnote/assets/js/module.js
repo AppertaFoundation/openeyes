@@ -842,7 +842,7 @@ function loadBiometryElementData(){
         iolPower = '';
 
     $higlightedEye = $('.highlighted-eye');
-    predictedRefraction = $higlightedEye.find('.js-predicted-refraction').text();
+    predictedRefraction = $higlightedEye.find('.js-predicted-refraction').text().trim();
     iolPower = $higlightedEye.find('.js-iol-display').text();
     selectedLens = $higlightedEye.find('.js-selected_lens').val();
 
