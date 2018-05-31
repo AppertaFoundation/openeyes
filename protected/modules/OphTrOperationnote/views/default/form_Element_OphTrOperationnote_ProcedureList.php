@@ -47,6 +47,3 @@
     </div>
   </div>
 </section>
-<div class="sub-elements active">
-    <?php $this->renderChildOpenElements($element, $this->action->id, $form, $data) ?>
-</div>

@@ -440,7 +440,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function renderOpenElements($action, $form = null, $data = null)
     {
-        $this->renderTiledElements($this->getElements(), $action, $form, $data);
+        $this->renderTiledElements($this->getElements($action), $action, $form, $data);
     }
 
     /**
