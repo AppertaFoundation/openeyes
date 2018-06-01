@@ -41,9 +41,14 @@ var optionsMeds = {
   tooltip: {
     useHtml: true,
     formatter: function () {
+      var stop_reason = '';
+      if(this.point.stop_reason){
+        stop_reason = '<br/><strong> Stop Reason:'+ this.point.stop_reason +'</strong>'
+      }
       return '<strong>' + this.series.name + '</strong><br /><strong>'
         + Highcharts.dateFormat('%d/%m/%Y', this.point.low) + ' - '
-        + Highcharts.dateFormat('%d/%m/%Y', this.point.high)+ '</strong>';
+        + Highcharts.dateFormat('%d/%m/%Y', this.point.high)+ '</strong>'
+        + stop_reason;
     }
   },
 
@@ -88,6 +93,7 @@ function drawMedsSeries(chart, data, eye_side){
   for (name in data){
     var options = {
       className: "oes-hs-eye-"+eye_side+"-dull",
+      keys: ['low','high','stop_reason']
     };
     addSeries(chart, name, [data[name]], options );
   }
