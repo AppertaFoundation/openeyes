@@ -23,9 +23,8 @@
   </div>
 <?php } ?>
 
-<?php $this->renderPartial('//patient/oescape_header', array(
-    'episode' => $episode
-)) ?>
+<?php $this->renderPartial('//patient/episodes_sidebar') ?>
+
 <?php $this->renderPartial('//patient/episode_content', array(
     'cssClass' => $cssClass,
     'content' => $content,

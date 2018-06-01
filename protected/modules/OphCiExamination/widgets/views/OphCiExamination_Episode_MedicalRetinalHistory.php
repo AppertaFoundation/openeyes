@@ -13,46 +13,118 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/highchart-MR.js')?>"></script>
-<form action="#OphCiExamination_Episode_MedicalRetinalHistory">
-    <?= CHtml::dropDownList(
-        'mr_history_va_unit_id',
-        $va_unit->id,
-        CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(),
-            'id',
-            'name')) ?>
-</form>
-<div id="js-hs-chart-MR" class="highchart-area" data-highcharts-chart="0" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
-  <div id="highcharts-MR-right" class="highcharts-MR highcharts-right highchart-section"></div>
-  <div id="highcharts-MR-left" class="highcharts-MR highcharts-left highchart-section" style="display: none;"></div>
-</div>
-<div class="oes-data-row-input">
-</div>
+<?php if ($chart->hasData()): ?>
+  <div class="row">
+    <div class="data-label column cols-9"></div>
+    <div class="data-value column cols-3">
+      <form action="#OphCiExamination_Episode_MedicalRetinalHistory">
+        <label for="mr_history_va_unit_id">Visual Acuity unit</label>
+          <?= CHtml::dropDownList('mr_history_va_unit_id', $va_unit->id, CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(), 'id', 'name'))?>
+      </form>
+    </div>
+  </div>
 
-<script type="text/javascript">
-  $(document).ready(function () {
-    //right side image
-    var doc_list = <?= CJavaScript::encode($this->getDocument()); ?>;
-    setImgStack($('#oct-stack'), 'oct_img_',  doc_list['right'].length?doc_list['right'][0]['doc_id']:null );
-    setImgStack($('#oct-stack'), 'oct_img_',  doc_list['left'].length?doc_list['left'][0]['doc_id']:null );
-    //left side plots
-    $('#mr_history_va_unit_id').change(function () { this.form.submit(); });
-    var va_axis = <?= CJavaScript::encode($this->getVaAxis()); ?>;
-    options_MR['yAxis'][1]['title']['text'] = "VA ("+va_axis+")";
-    var va_ticks = <?= CJavaScript::encode($this->getVaTicks()); ?>;
-    options_MR['yAxis'][1]['tickPositions'] = va_ticks['tick_position'];
-    options_MR['yAxis'][1]['labels'] = setYLabels(va_ticks['tick_position'], va_ticks['tick_labels']);
-    var injections_data = <?= CJavaScript::encode($this->getInjectionsList()); ?>;
-    var VA_data = <?= CJavaScript::encode($this->getVaData()); ?>;
-    var CRT_data = <?= CJavaScript::encode($this->getCRTData()); ?>;
-    var VA_lines_data = <?= CJavaScript::encode($this->getLossLetterMoreThan5()); ?>;
-    var sides = ['left', 'right'];
-    var chart_MR = {};
-    for (var i in sides) {
-      changeSetting(Object.keys(injections_data[sides[i]]), sides[i]);
-      options_MR['title']['text']="Retinal thickness-Visual acuity ("+sides[i]+" Eye)";
-      chart_MR[sides[i]] = new Highcharts.chart('highcharts-MR-'+sides[i], options_MR);
-      drawMRSeries(chart_MR[sides[i]], VA_data, CRT_data, VA_lines_data, injections_data,va_axis);
-    }
-  });
-</script>
+  <div class="row">
+    <div class="column cols-12">
+      <div id="mr-history-chart" class="chart" style="width: 100%; height: 500px"></div>
+    </div>
+  </div>
+
+    <?= $chart->run(); ?>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('#mr_history_va_unit_id').change(function () { this.form.submit(); });
+
+      var injections = <?= CJavaScript::encode($this->injections); ?>,
+        width = 100,
+        height = 20,
+        offset = 10;
+
+      var plot = $('#mr-history-chart').data('plot'),
+        series = plot.getData(),
+        xaxis = plot.getAxes().xaxis;
+
+      var colors = {};
+      for (var i = 0; i < series.length; i++) {
+        colors[series[i].label] = series[i].color;
+      }
+
+      var top = offset;
+      for (var t in injections) {
+        injections[t].top = top;
+        top += (height + offset);
+        if (top > 130) top = offset;
+      }
+
+        plot.hooks.draw.push(function (plot, ctx) {
+          function drawInjectionLabel(ctx, inj, side, x) {
+            var drug = inj[side],
+              top = inj.top,
+              left, l1, l2, text;
+            switch (side) {
+              case 'right':
+                left = x - (width + offset);
+                l1 = x - offset;
+                l2 = x - offset/2;
+                text = drug + " (R)";
+                break;
+              case 'left':
+                left = x + offset;
+                l1 = x + offset;
+                l2 = x + offset/2;
+                text = drug + " (L)";
+            }
+
+              ctx.save();
+
+              ctx.fillStyle = "white";
+            ctx.fillRect(left, top, width, height);
+              ctx.strokeStyle = colors[drug];
+            ctx.lineWidth = 2;
+            ctx.strokeRect(left, top, width, height);
+
+              ctx.beginPath();
+            ctx.moveTo(l1, top + height/2);
+            ctx.lineTo(l2, top + height/2);
+            ctx.stroke();
+
+              ctx.rect(left, top, width, height);
+            ctx.clip();
+
+              ctx.fillStyle = colors[drug];
+            ctx.font = "12px sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(text, left + width/2, top + height/2);
+              ctx.restore();
+          }
+
+          ctx.save();
+          ctx.translate(plot.getPlotOffset().left, plot.getPlotOffset().top);
+          ctx.rect(0, 0, plot.width(), plot.height());
+          ctx.clip();
+
+          for (var t in injections) {
+            var x = xaxis.p2c(t);
+
+            if (injections[t].right) {
+              drawInjectionLabel(ctx, injections[t], 'right', x);
+            }
+            if (injections[t].left) {
+              drawInjectionLabel(ctx, injections[t], 'left', x);
+            }
+          }
+            ctx.restore();
+        });
+        plot.draw();
+    });
+  </script>
+  <?php else: ?>
+  <div class="row">
+    <div class="cols-12 column">
+      <div class="data-row">
+        <div class="data-value">(no data)</div>
+      </div>
+    </div>
+  </div>
+<?php endif; ?>

@@ -2,9 +2,9 @@
 use OEModule\OphCiExamination\models;
 class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
 {
-    public function run()
+    public function run_oescape()
     {
-        $this->render('OphCiExamination_Episode_Medication');
+        $this->render('OphCiExamination_OEscape_Medication');
     }
     public function getMedicationList() {
         $medication_list = array('right'=>array(), 'left'=>array());

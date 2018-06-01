@@ -75,7 +75,7 @@
                                     data-subspecialty-id="<?= $subspecialty[0] ?>"
                                     data-definition=' <?= CJSON::encode(NewEventDialogHelper::structureEpisode($episodes_list[$subspecialty[0]])) ?>'>
                                     <a class="active"
-                                       href=" <?= Yii::app()->createUrl('/patient/episode/' . $episodes_list[$subspecialty[0]]->id) ?>">
+                                       href=" <?= Yii::app()->createUrl('/patient/oescape/' . $episodes_list[$subspecialty[0]]->id) ?>">
                                         <?= $subspecialty[2] ?>
                                     </a>
                                 </li>
@@ -92,7 +92,7 @@
                                 data-subspecialty-id="SS"
                                 data-definition='<?= CJSON::encode(NewEventDialogHelper::structureEpisode($episodes_list['SS'])) ?>'>
                                 <a class="active"
-                                   href="<?= Yii::app()->createUrl('/patient/episode/' . $episodes_list['SS']->id) ?>">
+                                   href="<?= Yii::app()->createUrl('/patient/oescape/' . $episodes_list['SS']->id) ?>">
                                     SS
                                 </a>
                             </li>
@@ -102,7 +102,7 @@
                                 data-subspecialty-id="Le"
                                 data-definition='<?= CJSON::encode(NewEventDialogHelper::structureEpisode($episodes_list['Le'])) ?>'>
                                 <a class="active"
-                                   href="<?= Yii::app()->createUrl('/patient/episode/' . $episodes_list['Le']->id) ?>">
+                                   href="<?= Yii::app()->createUrl('/patient/oescape/' . $episodes_list['Le']->id) ?>">
                                     Le
                                 </a>
                             </li>

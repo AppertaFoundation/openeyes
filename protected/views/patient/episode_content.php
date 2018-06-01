@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php $this->renderPartial('//patient/_patient_alerts') ?>
-<main class="oescape flex-layout flex-stretch"  id="oescape-layout">
+<main class="main-event"  id="event-content">
+    <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php echo $content; ?>
 </main>

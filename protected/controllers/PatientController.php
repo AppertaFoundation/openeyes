@@ -44,7 +44,7 @@ class PatientController extends BaseController
                 'users' => array('@'),
             ),
             array('allow',
-                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements'),
+                'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode', 'previouselements', 'oescape'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -489,6 +489,41 @@ class PatientController extends BaseController
         ));
     }
 
+    public function actionOEscape($id){
+        if (!$this->episode = Episode::model()->findByPk($id)) {
+            throw new SystemException('Episode not found: '.$id);
+        }
+
+        $this->fixedHotlist = false;
+        $this->layout = '//layouts/events_and_episodes';
+        $this->patient = $this->episode->patient;
+
+        //if $this->patient was merged we redirect the user to the primary patient's page
+        $this->redirectIfMerged();
+
+        $episodes = $this->patient->episodes;
+
+        $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+
+        $this->event_tabs = array(
+            array(
+                'label' => 'View',
+                'active' => true,
+            ),
+        );
+
+        $this->current_episode = $this->episode;
+        $status = Yii::app()->session['episode_hide_status'];
+        $status[$id] = true;
+        Yii::app()->session['episode_hide_status'] = $status;
+
+        $this->render('oescapes', array(
+            'title' => '' ,
+            'episodes' => $episodes,
+            'site' => $site,
+            'noEpisodes' => false,
+        ));
+    }
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.

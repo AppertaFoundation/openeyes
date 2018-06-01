@@ -80,6 +80,10 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
         $this->render('OphCiExamination_Episode_IOPHistory', array('chart' => $chart));
     }
 
+    public function run_oescape(){
+        $this->render('OphCiExamination_OEscape_IOPHistory');
+    }
+
     protected function addIop(\FlotChart $chart, models\Element_OphCiExamination_IntraocularPressure $iop, $timestamp, $side)
     {
         if (($reading = $iop->getReading($side))) {

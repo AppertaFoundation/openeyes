@@ -13,29 +13,35 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<script src="<?= Yii::app()->assetManager->createUrl('js/oescape/highchart-VA.js')?>"></script>
+  <?php if ($chart->hasData()): ?>
 
-<div class="row">
-  <form action="#OphCiExamination_Episode_VisualAcuityHistory">
-      <?= CHtml::dropDownList('va_history_unit_id', $va_unit->id, CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(), 'id', 'name'))?>
-  </form>
-</div>
-<div id="js-hs-chart-VA" class="highchart-area" data-highcharts-chart="2" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
-  <div id="highcharts-VA-right" class="highcharts-VA highcharts-right highchart-section"></div>
-  <div id="highcharts-VA-left" class="highcharts-VA highcharts-left highchart-section" style="display: none;"></div>
-</div>
-<script type="text/javascript">
-  $(document).ready(function () {
-    $('#va_history_unit_id').change(function () { this.form.submit(); });
-    var va_ticks = <?= CJavaScript::encode($this->getVaTicks()); ?>;
-    optionsVA['yAxis'][0]['tickPositions'] = va_ticks['tick_position'];
-    optionsVA['yAxis'][0]['labels'] = setYLabels(va_ticks['tick_position'], va_ticks['tick_labels']);
-    var VA_data = <?= CJavaScript::encode($this->getVaData()); ?>;
-    var sides = ['left', 'right'];
-    var chart_VA = {};
-    for (var i in sides) {
-      chart_VA[sides[i]] = new Highcharts.chart('highcharts-VA-'+sides[i], optionsVA);
-      drawVASeries(chart_VA[sides[i]], VA_data[sides[i]], sides[i]);
-    }
-  });
-</script>
+  <div class="row">
+    <div class="data-label column cols-9"></div>
+  	<div class="data-value column cols-3">
+      <form action="#OphCiExamination_Episode_VisualAcuityHistory">
+        <label for="va_history_unit_id">Visual Acuity unit</label>
+          <?= CHtml::dropDownList('va_history_unit_id', $va_unit->id, CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(), 'id', 'name'))?>
+      </form>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="column cols-12">
+      <div id="va-history-chart" class="chart" style="width: 100%; height: 500px"></div>
+    </div>
+  </div>
+    <?= $chart->run(); ?>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('#va_history_unit_id').change(function () { this.form.submit(); });
+    });
+  </script>
+<?php else: ?>
+  <div class="row">
+    <div class="cols-12 column">
+      <div class="data-row">
+        <div class="data-value">(no data)</div>
+      </div>
+    </div>
+  </div>
+<?php endif; ?>

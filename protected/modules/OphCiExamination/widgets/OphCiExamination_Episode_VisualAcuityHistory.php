@@ -37,6 +37,14 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         $this->render(get_class($this), array('va_unit' => $this->va_unit, 'chart' => $chart));
     }
 
+    public function run_oescape(){
+        $va_unit_id = @$_GET[$this->va_unit_input] ?: models\Element_OphCiExamination_VisualAcuity::model()->getSetting('unit_id');
+        $this->va_unit = models\OphCiExamination_VisualAcuityUnit::model()->findByPk($va_unit_id);
+
+        $chart = $this->configureChart();
+
+        $this->render("OphCiExamination_OEscape_VisualAcuityHistory", array('va_unit' => $this->va_unit));
+    }
     /**
      * @return FlotChart
      */

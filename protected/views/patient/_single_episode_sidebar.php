@@ -43,7 +43,7 @@ $episodes_list = array();
 if (is_array($ordered_episodes)):
     foreach ($ordered_episodes as $specialty_episodes): ?>
 
-      <ul class="oescape-icon-btns">
+      <ul class="subspecialties">
           <?php foreach ($specialty_episodes['episodes'] as $i => $episode) {
               // TODO deal with support services possibly?
               $id = $episode->getSubspecialtyID();
@@ -60,55 +60,23 @@ if (is_array($ordered_episodes)):
                   $tag = $episode->subspecialty->ref_spec;
               }
 
+              $selected = '';
+              if ($current_episode && $current_episode->getSubspecialtyID() == $id) {
+                  $selected = 'selected';
+                  $current_subspecialty = $current_episode->getSubspecialty();
+              }
 
               if (!array_key_exists($id, $subspecialty_labels)) {
-                  $subspecialty_labels[$id] = $subspecialty_name;
-              }
-              if (!array_key_exists($id, $episodes_list)) {
-                  $episodes_list[$id] = $episode;
-              }
-          }
-          $subspecialties = array_map(function ($v) {
-              return array($v->id, $v->name, $v->ref_spec);
-          }, Subspecialty::model()->findAll());
-          foreach ($subspecialties as $subspecialty) {
-              if (in_array($subspecialty[0], array_keys($episodes_list))) { ?>
-                <li class="icon-btn"
-                    data-subspecialty-id="<?= $subspecialty[0] ?>"
-                    data-definition=' <?= CJSON::encode(NewEventDialogHelper::structureEpisode($episodes_list[$subspecialty[0]])) ?>'>
-                  <a class="active"
-                     href=" <?= Yii::app()->createUrl('/patient/episode/' . $episodes_list[$subspecialty[0]]->id) ?>">
-                      <?= $subspecialty[2] ?>
+                  $subspecialty_labels[$id] = $subspecialty_name; ?>
+                <li class="subspecialty event <?= $selected ?>"
+                    data-subspecialty-id="<?= $id ?>"
+                    data-definition='<?= CJSON::encode(NewEventDialogHelper::structureEpisode($episode)) ?>'>
+                  <a href="<?= Yii::app()->createUrl('/patient/episode/' . $episode->id) ?>">
+                      <?= $subspecialty_name ?><span class="tag"><?= $tag ?></span>
                   </a>
                 </li>
-              <?php } else { ?>
-                <li class="icon-btn"
-                    data-subspecialty-id="<?= $subspecialty[0] ?>"
-                    data-definition=''>
-                  <a class="inactive" href="#"><?= $subspecialty[2] ?></a>
-                </li>
               <?php }
-          }
-          if (in_array('SS', array_keys($episodes_list))) { ?>
-            <li class="icon-btn"
-                data-subspecialty-id="SS"
-                data-definition='<?= CJSON::encode(NewEventDialogHelper::structureEpisode($episodes_list['SS'])) ?>'>
-              <a class="active"
-                 href="<?= Yii::app()->createUrl('/patient/episode/' . $episodes_list['SS']->id) ?>">
-                SS
-              </a>
-            </li>
-          <?php }
-          if (in_array('Le', array_keys($episodes_list))) { ?>
-            <li class="icon-btn"
-                data-subspecialty-id="Le"
-                data-definition='<?= CJSON::encode(NewEventDialogHelper::structureEpisode($episodes_list['Le'])) ?>'>
-              <a class="active"
-                 href="<?= Yii::app()->createUrl('/patient/episode/' . $episodes_list['Le']->id) ?>">
-                Le
-              </a>
-            </li>
-          <?php } ?>
+          } ?>
       </ul>
 
       <ul class="events">

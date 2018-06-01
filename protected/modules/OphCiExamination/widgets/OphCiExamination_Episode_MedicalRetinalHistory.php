@@ -23,11 +23,32 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
 
     protected $injections = array();
 
+    private $va_unit;
+
 
     public function run_right_side(){
         $this->render(get_class($this).'_Right');
     }
 
+    public function run_oescape(){
+
+        $va_unit_id = @$_GET[$this->va_unit_input] ?: models\Element_OphCiExamination_VisualAcuity::model()->getSetting('unit_id');
+        $this->va_unit = models\OphCiExamination_VisualAcuityUnit::model()->findByPk($va_unit_id);
+
+        $va_ticks = array();
+        foreach ($this->va_unit->selectableValues as $value) {
+            if ($value->base_value < 10 || ($this->va_unit->name == 'ETDRS Letters' && $value->value % 10)) {
+                continue;
+            }
+
+            $label = ($value->value == '6/9.5') ? '' : $value->value;
+
+            $va_ticks[] = array($value->base_value, $label);
+        }
+
+        $this->va_ticks = $va_ticks;
+        $this->render("OphCiExamination_OEscape_MedicalRetinalHistory",  array('va_unit' => $this->va_unit));
+    }
     public function configureChart()
     {
         $chart = parent::configureChart();

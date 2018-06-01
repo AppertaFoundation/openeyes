@@ -30,11 +30,19 @@ $current_episode = @$this->current_episode;
 
 <nav class="sidebar">
     <?php
+    $this->renderPartial('//patient/_single_oescape_sidebar', array(
+        'legacyepisodes' => $legacyepisodes,
+        'ordered_episodes' => $ordered_episodes,
+        'supportserviceepisodes' => $supportserviceepisodes,
+        'current_episode' => $current_episode,
+    ));
+
     $this->renderPartial('//patient/_single_episode_sidebar', array(
         'legacyepisodes' => $legacyepisodes,
         'ordered_episodes' => $ordered_episodes,
         'supportserviceepisodes' => $supportserviceepisodes,
         'current_episode' => $current_episode,
     ));
+
     ?>
 </nav>
