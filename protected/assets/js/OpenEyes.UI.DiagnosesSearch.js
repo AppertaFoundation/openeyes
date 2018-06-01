@@ -52,6 +52,12 @@ OpenEyes.UI = OpenEyes.UI || {};
             "<a href='javascript:void(0)' class='diagnosis-rename'><i class='oe-i remove-circle small' aria-hidden='true' title='Change diagnosis'></i></a> " +
             "<span class='diagnosis-name'></span></span>" +
             "<select class='commonly-used-diagnosis cols-full'></select>" +
+            "{{#render_secondary_to}}" +
+                "<div class='condition-secondary-to-wrapper' style='display:none;'>" +
+                    "<div style='margin-top:7px;border-top:1px solid lightgray;padding:3px'>Associated diagnosis:</div>" +
+                    "<select class='condition-secondary-to'></select>" +
+                "</div>" +
+            "{{/render_secondary_to}}" +
             "{{{input_field}}}" +
             "<input type='hidden' name='{{field_prefix}}[id][]' class='savedDiagnosisId' value=''>" +
             "<input type='hidden' name='{{field_prefix}}[disorder_id][]' class='savedDiagnosis' value=''>",
@@ -116,23 +122,19 @@ OpenEyes.UI = OpenEyes.UI || {};
           var $select = $parent.find('.commonly-used-diagnosis');
 
           $select.append($('<option>', {'text': 'Select a commonly used diagnosis'}));
+          $select.append($('<option>', {'text': '----------', 'disabled': 'disabled'}));
           $.each(data, function (i, item) {
             $select.append($('<option>', {'value': item.id, 'text': item.label, 'data-item': JSON.stringify(item)}));
-            $select.show();
           });
           controller.$inputField.before($select);
-          savedDiagnoses = controller.$inputField.data('saved-diagnoses');
-          if (savedDiagnoses.id||savedDiagnoses.name ) {
-            controller.addDiagnosis(savedDiagnoses.id, {label: savedDiagnoses.name, id: savedDiagnoses.disorder_id});
-          }
         });
       }
-      else {
-        savedDiagnoses = controller.$inputField.data('saved-diagnoses');
-        if (savedDiagnoses.id||savedDiagnoses.name ) {
-          controller.addDiagnosis(savedDiagnoses.id, {label: savedDiagnoses.name, id: savedDiagnoses.disorder_id});
-        }
-      }
+    }
+
+    savedDiagnoses = controller.$inputField.data('saved-diagnoses');
+
+    if (savedDiagnoses && savedDiagnoses.disorder_id) {
+      controller.addDiagnosis(savedDiagnoses.id, {label: savedDiagnoses.name, id: savedDiagnoses.disorder_id});
     }
   };
 
