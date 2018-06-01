@@ -148,6 +148,15 @@
       </td>
     </tr>
     <tr>
+      <td>
+        Phaco CDE:
+      </td>
+      <td>
+        <input autocomplete="off" type="text" name="Element_OphTrOperationnote_Cataract[phaco_cde]" id="Element_OphTrOperationnote_Cataract_phaco_cde" value="<?php echo $element->phaco_cde?>">
+        <i class="oe-i info small pad js-has-tooltip " data-tooltip-content="Cumulative Dissipated Energy, in 'seconds'"></i>
+      </td>
+    </tr>
+    <tr>
       <td>Complications</td>
       <td>
           <?php echo $form->multiSelectList($element, 'OphTrOperationnote_CataractComplications', 'complications', 'id',
@@ -158,14 +167,6 @@
               array('empty' => '- Complications -', 'label' => 'Complications', 'nowrapper' => true),
               false, false, null,
               false, false, array('field' => 4)) ?>
-      </td>
-    </tr>
-    <tr>
-      <td>
-          Phaco CDE:
-      </td>
-      <td>
-          <input autocomplete="off" type="text" name="Element_OphTrOperationnote_Cataract[phaco_cde]" id="Element_OphTrOperationnote_Cataract_phaco_cde" value="<?php echo $element->phaco_cde?>">
       </td>
     </tr>
     <tr>
