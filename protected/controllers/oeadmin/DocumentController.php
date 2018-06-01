@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+// OphCoDocument_Sub_Types
 class DocumentController extends BaseAdminController
 {
     /**
@@ -24,10 +25,14 @@ class DocumentController extends BaseAdminController
     public $layout = 'admin';
 
     /**
-     * @throws Exception
+     * @var int
      */
+
     public function actionList()
     {
-        $this->genericAdmin("Document Sub Types", "OphCoDocument_Sub_Types");
+        $model = OphCoDocument_Sub_Types::model();
+        $document_sub_types = $model->findAll();
+        $this->render('//admin/document_sub_types' , $document_sub_types);
     }
+
 }
