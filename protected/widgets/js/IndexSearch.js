@@ -134,7 +134,6 @@
         let search_bar = `#js-search-event-input-${last_search_pos}`;
         $(search_bar).val($(this).text());
         $(search_bar).trigger('keyup');
-        $(search_bar).trigger('focus');
       });
     }
 
