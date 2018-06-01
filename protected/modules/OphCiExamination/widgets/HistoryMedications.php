@@ -70,7 +70,7 @@ class HistoryMedications extends \BaseEventElementWidget
      *
      * @return array
      */
-    private function getEntriesForUntrackedPrescriptionItems()
+    public function getEntriesForUntrackedPrescriptionItems()
     {
         $untracked = array();
         if ($api = $this->getApp()->moduleAPI->get('OphDrPrescription')) {

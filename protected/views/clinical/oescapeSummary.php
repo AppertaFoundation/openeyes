@@ -66,12 +66,26 @@ $episode->audit('episode summary', 'view');
   $(document).ready(function () {
     if ($("#charts-container").hasClass('Glaucoma')){
       $('.right-side-content').show();
+
       var VAChart_right = $('.highcharts-VA')[0];
       var VAChart_left = $('.highcharts-VA')[1];
       var MedChart_right = $('.highcharts-Meds')[0];
       var MedChart_left = $('.highcharts-Meds')[1];
       var IOPChart_right = $('.highcharts-IOP')[0];
       var IOPChart_left = $('.highcharts-IOP')[1];
+
+      var max_right = Math.max($(VAChart_right).highcharts().xAxis[0].max, $(MedChart_right).highcharts().yAxis[0].max, $(IOPChart_right).highcharts().xAxis[0].max);
+      var min_right =Math.min($(VAChart_right).highcharts().xAxis[0].min, $(MedChart_right).highcharts().yAxis[0].min, $(IOPChart_right).highcharts().xAxis[0].min);
+      var max_left = Math.max($(VAChart_left).highcharts().xAxis[0].max, $(MedChart_left).highcharts().yAxis[0].max, $(IOPChart_left).highcharts().xAxis[0].max);
+      var min_left = Math.min($(VAChart_left).highcharts().xAxis[0].min, $(MedChart_left).highcharts().yAxis[0].min, $(IOPChart_left).highcharts().xAxis[0].min);
+
+      $(VAChart_right).highcharts().xAxis[0].setExtremes(min_right, max_right);
+      $(IOPChart_right).highcharts().xAxis[0].setExtremes(min_right, max_right);
+      $(MedChart_right).highcharts().yAxis[0].setExtremes(min_right, max_right);
+      $(VAChart_left).highcharts().xAxis[0].setExtremes(min_left, max_left);
+      $(IOPChart_left).highcharts().xAxis[0].setExtremes( min_left, max_left);
+      $(MedChart_left).highcharts().yAxis[0].setExtremes( min_left, max_left);
+
       /**
        In order to synchronize tooltips and crosshairs, override the
        built-in events with handlers defined on the parent element.

@@ -14,8 +14,12 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
         $subspecialty_id = Subspecialty::model()->findByAttributes(array('name'=>'Glaucoma'))->id;
         foreach ($events as $event){
             if ($meds = $event->getElementByClass('OEModule\OphCiExamination\models\HistoryMedications')){
-                $meds_entries = $meds->orderedEntries;
+                $widget = $this->createWidget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
+                    'patient' => $this->episode->patient,));
+                $untracked = $widget->getEntriesForUntrackedPrescriptionItems();
+                $meds_entries = array_merge($meds->orderedEntries, $untracked);
                 foreach ($meds_entries as $entry) {
+                    Yii::log($entry->drug->name);
                     if ($entry->drug_id){
                         $meds_subspecialty = SiteSubspecialtyDrug::model()->findByAttributes(
                             array('drug_id'=> $entry->drug_id,
@@ -73,7 +77,6 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                 }
             }
         }
-
         return $medication_list;
     }
 }
