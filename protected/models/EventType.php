@@ -454,6 +454,8 @@ class EventType extends BaseActiveRecordVersioned
             'OphTrOperation' => 'i-TrOperationProcedure',
             'OphTrOperationbooking' => 'i-TrOperation',
             'OphTrOperationnote' => 'i-TrOperationNotes',
+            //TODO Change Did Not Attend Icon
+            'OphCiDidNotAttend' => 'i-NuEducation',
         );
 
         return array_key_exists($this->class_name, $style_mapping) ? $style_mapping[$this->class_name] : null;
