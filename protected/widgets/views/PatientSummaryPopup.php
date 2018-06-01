@@ -91,17 +91,18 @@
               <tbody>
             <?php
              $ophthalmic_diagnoses = $this->patient->getOphthalmicDiagnosesSummary();
-             if (sizeof($ophthalmic_diagnoses)==0) { ?>
+             if (count($ophthalmic_diagnoses)===0) { ?>
                <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded</div>
              <?php }
              foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
-               list($side, $name) = explode(" ", $ophthalmic_diagnosis, 2); ?>
+               list($side, $name, $date) = explode("~", $ophthalmic_diagnosis, 3); ?>
                  <tr>
                    <td><?= $name ?></td>
                    <td>
                      <i class="oe-i laterality <?php echo $side && ($side=='Right'||$side=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
                      <i class="oe-i laterality <?php echo $side && ($side=='Left'||$side=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
                    </td>
+                   <td><?= $date ?></td>
                  </tr>
             <?php } ?>
               </tbody>
