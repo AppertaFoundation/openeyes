@@ -2,7 +2,7 @@ var marginRight = 90;	// plot to chart edge (to align right side)
 
 var optionsIOP = {
   chart: {
-    height:400,
+    height: 250,
     marginRight: marginRight,			// plot to chart edge (align right side)
     spacing: [15, 10, 15, 10], 			// then make space for title - default: [10, 10, 15, 10]
   },

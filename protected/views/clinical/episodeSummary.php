@@ -43,22 +43,23 @@ $episode->audit('episode summary', 'view');
     }
     if (!$summaryItems) {
         $summaryItems = EpisodeSummaryItem::model()->enabled()->findAll();
-    } ?>
+    }
 
-    <?php if (count($summaryItems)) { ?>
-        <?php foreach ($summaryItems as $summaryItem) {
+    if (count($summaryItems)) {
+      foreach ($summaryItems as $summaryItem) {
         Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
         $widget = $this->createWidget($summaryItem->getClassName(), array(
             'episode' => $episode,
             'event_type' => $summaryItem->event_type,
-        )); ?>
-        <?php $widget->run();  }
+        ));
+        $widget->run();
+      }
     } ?>
   </div>
 </div>
-  <div class="oes-right-side" style="width: 50%;">
-      <?php $widget->run_right_side(); ?>
-  </div>
+<div class="oes-right-side" style="width: 50%;">
+    <?php $widget->run_right_side(); ?>
+</div>
 
 <?php } ?>
 

@@ -5,7 +5,7 @@ var series_no = 5;
 var optionsMeds = {
   chart: {
     className: 'oes-chart-medications-both',	// suffix: -right -left or -both (eyes)
-    height: series_no*42, 					// needs to be based on the number of series data
+    height: 200, //limited to 5 meds
     marginRight: marginRight,					// plot to chart edge (align right side)
     spacing: [15, 10, 15, 10], 			// then make space for title - default: [10, 10, 15, 10]
     type: 'columnrange', 				// Can be any of the chart types listed under plotOptions. ('line' default)
@@ -93,6 +93,7 @@ function drawMedsSeries(chart, data, eye_side){
   for (name in data){
     var options = {
       className: "oes-hs-eye-"+eye_side+"-dull",
+      pointWidth: "20",
       keys: ['low','high','stop_reason']
     };
     addSeries(chart, name, [data[name]], options );
