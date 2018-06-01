@@ -105,7 +105,7 @@
                             Message
                         </td>
                         <td >
-                            <?php echo $form->textArea($element, 'message_text', array('rows' => 4, 'cols' => 500, 'no_label' => true), false, null, array('label' => 2, 'field' => 12))?>
+                            <?php echo $form->textArea($element, 'message_text', array('rows' => 4, 'cols' => 500, 'no_label' => true), false, array('placeholder' => 'Your Message...'), array('label' => 2, 'field' => 12))?>
                         </td>
                     </tr>
                 </tbody>
