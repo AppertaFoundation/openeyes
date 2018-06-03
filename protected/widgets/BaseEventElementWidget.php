@@ -99,7 +99,7 @@ class BaseEventElementWidget extends CWidget
      * @return bool
      */
     protected function showEditTipWarning() {
-        return $this->inEditMode();
+        return $this->inEditMode() && Yii::app()->params['show_notattip_warning'] === 'on';
     }
 
     /**
@@ -113,7 +113,7 @@ class BaseEventElementWidget extends CWidget
      * @return bool
      */
     protected function showViewTipWarning() {
-        return $this->inViewMode();
+        return $this->inViewMode() && Yii::app()->params['show_notattip_warning'] === 'on';
     }
 
     /**
