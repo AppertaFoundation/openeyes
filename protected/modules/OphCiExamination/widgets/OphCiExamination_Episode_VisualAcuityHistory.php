@@ -111,10 +111,10 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         $va_data_list = array('right'=>array(), 'left'=>array());
         foreach ($this->event_type->api->getElements('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity', $this->episode->patient, false) as $va) {
             if (($reading = $va->getBestReading('right'))) {
-                array_push($va_data_list['right'],array( 'y'=>(float)$reading->value,'x'=>Helper::mysqlDate2JsTimestamp($reading->created_date)));
+                array_push($va_data_list['right'],array( 'y'=>(float)$reading->value,'x'=>Helper::mysqlDate2JsTimestamp($va->event->event_date)));
             }
             if (($reading = $va->getBestReading('left'))) {
-                array_push($va_data_list['left'],array('y'=>(float)$reading->value, 'x'=>Helper::mysqlDate2JsTimestamp($reading->created_date)));
+                array_push($va_data_list['left'],array('y'=>(float)$reading->value, 'x'=>Helper::mysqlDate2JsTimestamp($va->event->event_date)));
             }
         }
         foreach (['left', 'right'] as $side){
