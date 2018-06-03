@@ -54,6 +54,9 @@
     });
 
 
+    this.updateOpenList();
+    this.updateClosedList();
+
     // When the date picker is clicked
     $('#js-hotlist-closed-select').click(function () {
       $pmuWrap.toggle();
@@ -165,7 +168,6 @@
 
   HotList.prototype.updateClosedList = function () {
     var hotlist = this;
-
     $.ajax({
       type: 'GET',
       url: '/UserHotlistItem/renderHotlistItems',
