@@ -50,14 +50,9 @@ function callbackAddProcedure(procedure_id) {
                         m[1] = m[1].replace(/ .*$/, '');
 
                         if (m[1] === 'Element_OphTrOperationnote_GenericProcedure' || $('.' + m[1]).length < 1) {
-                            var $last_sub_element = $('.Element_OphTrOperationnote_ProcedureList').nextAll('.sub-element').last();
-                            if ($last_sub_element.length) {
-                              $(html).insertAfter($last_sub_element);
-                            } else {
-                                $(html).insertAfter($('.Element_OphTrOperationnote_ProcedureList'));
-                            }
+                          $('.Element_OphTrOperationnote_ProcedureList').next('.sub-elements').append(html);
 
-                            var $lastMatchedElement = $('.' + m[1] + ':last');
+                          var $lastMatchedElement = $('.' + m[1] + ':last');
                             $lastMatchedElement.attr('style', 'display: none;');
                             $lastMatchedElement.removeClass('hidden');
                             $lastMatchedElement.slideToggle('fast');

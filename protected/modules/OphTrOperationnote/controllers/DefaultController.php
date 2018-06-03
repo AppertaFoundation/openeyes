@@ -444,6 +444,40 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
+     * Get the open elements for the event that are not children.
+     *
+     * @return array
+     */
+    public function getElements()
+    {
+        $elements = array();
+        if (is_array($this->open_elements)) {
+            foreach ($this->open_elements as $element) {
+                if ($element->getElementType() && !$element->getElementType()->isChild()) {
+                    $elements[] = $element;
+                }
+            }
+        }
+
+        return $elements;
+    }
+
+    public function getChildElements($parent_type)
+    {
+        $open_child_elements = array();
+        if (is_array($this->open_elements)) {
+            foreach ($this->open_elements as $open) {
+                $et = $open->getElementType();
+                if ($et && $et->isChild() && $et->parent_element_type->class_name == $parent_type->class_name) {
+                    $open_child_elements[] = $open;
+                }
+            }
+        }
+
+        return $open_child_elements;
+    }
+
+    /**
      * Overrides for procedure list to render the elements in the order they are selected.
      *
      * @param BaseEventTypeElement $parent_element
