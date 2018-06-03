@@ -317,7 +317,7 @@ class BaseEventTypeController extends BaseModuleController
                 continue;
             }
             $struct = array(
-                'name'          => $et->group_title,
+                'name'          => $et->group_title ?: $et->name,
                 'class_name'    => CHtml::modelName($et->class_name),
                 'id'            => $et->id,
                 'display_order' => -1,
