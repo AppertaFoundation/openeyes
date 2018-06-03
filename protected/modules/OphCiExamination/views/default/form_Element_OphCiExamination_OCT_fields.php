@@ -63,7 +63,7 @@ if (@$_POST[CHtml::modelName($element)]) {
               array()
           ) ?>
         <span class="field-info">&micro;m</span>
-        <i class="oe-i small-icon"></i>
+        <i class="oe-i small-icon" style="visibility: hidden;"></i>
       </td>
     </tr>
     <tr>
@@ -85,9 +85,9 @@ if (@$_POST[CHtml::modelName($element)]) {
                 null,
                 array()) ?>
           <span class="field-info">&micro;m</span>
-        <i class="oe-i info small-icon js-has-tooltip"
-           data-tooltip-content="<?php echo $tooltip_content; ?>">
-        </i>
+          <i class="oe-i info small-icon js-has-tooltip" <?php if(!$tooltip_content): ?>style="visibility: hidden;"<?php endif; ?>
+             data-tooltip-content="<?php echo $tooltip_content; ?>">
+          </i>
       </td>
     </tr>
     <tr>
