@@ -233,7 +233,7 @@ class PatientController extends BaseController
         } elseif ($itemCount == 1) {
             $item = $dataProvider->getData()[0];
             $api = new CoreAPI();
-            $this->redirect(array($api->generateLatestEventLink($item)));
+            $this->redirect(array($api->generateEpisodeLink($item)));
         } else {
             $this->renderPatientPanel = false;
 

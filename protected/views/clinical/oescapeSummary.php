@@ -39,10 +39,10 @@ $episode->audit('episode summary', 'view');
     <?php $summaryItems = array();
 
     if ($episode->subspecialty) {
-        $summaryItems = EpisodeSummaryItem::model()->enabled($episode->subspecialty->id)->findAll();
+        $summaryItems = OescapeSummaryItem::model()->enabled($episode->subspecialty->id)->findAll();
     }
     if (!$summaryItems) {
-        $summaryItems = EpisodeSummaryItem::model()->enabled()->findAll();
+        $summaryItems = OescapeSummaryItem::model()->enabled()->findAll();
     } ?>
 
     <?php if (count($summaryItems)) { ?>
@@ -57,7 +57,9 @@ $episode->audit('episode summary', 'view');
   </div>
 </div>
   <div class="oes-right-side" style="width: 50%;">
-      <?php $widget->run_right_side(); ?>
+      <?php if(isset($widget)) {
+        $widget->run_right_side();
+      } ?>
   </div>
 
 <?php } ?>

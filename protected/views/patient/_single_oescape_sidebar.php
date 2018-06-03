@@ -42,8 +42,7 @@ $episodes_list = array();
 
 if (is_array($ordered_episodes)):
     foreach ($ordered_episodes as $specialty_episodes): ?>
-
-      <ul class="oescape-icon-btns">
+      <ul class="oescape-icon-btns" style="font-size: 0;">
           <?php foreach ($specialty_episodes['episodes'] as $i => $episode) {
               // TODO deal with support services possibly?
               $id = $episode->getSubspecialtyID();
@@ -59,7 +58,6 @@ if (is_array($ordered_episodes)):
               } else {
                   $tag = $episode->subspecialty->ref_spec;
               }
-
 
               if (!array_key_exists($id, $subspecialty_labels)) {
                   $subspecialty_labels[$id] = $subspecialty_name;
@@ -85,7 +83,7 @@ if (is_array($ordered_episodes)):
                 <li class="icon-btn"
                     data-subspecialty-id="<?= $subspecialty[0] ?>"
                     data-definition=''>
-                  <a class="inactive" href="#"><?= $subspecialty[2] ?></a>
+                  <a class="active" href="#"><?= $subspecialty[2] ?></a>
                 </li>
               <?php }
           }
@@ -110,6 +108,5 @@ if (is_array($ordered_episodes)):
             </li>
           <?php } ?>
       </ul>
-
     <?php endforeach;
 endif; ?>
