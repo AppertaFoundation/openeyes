@@ -32,7 +32,7 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
 
     public function run_oescape(){
 
-        $va_unit_id = @$_GET[$this->va_unit_input] ?: models\Element_OphCiExamination_VisualAcuity::model()->getSetting('unit_id');
+        $va_unit_id = @$_GET[$this->va_unit_input] ?: models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name'=>'ETDRS Letters'))->id;
         $this->va_unit = models\OphCiExamination_VisualAcuityUnit::model()->findByPk($va_unit_id);
 
         $va_ticks = array();
@@ -47,6 +47,8 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
         }
 
         $this->va_ticks = $va_ticks;
+        $this->va_axis = "{$this->va_unit->name}";
+
         $this->render("OphCiExamination_OEscape_MedicalRetinalHistory",  array('va_unit' => $this->va_unit));
     }
     public function configureChart()

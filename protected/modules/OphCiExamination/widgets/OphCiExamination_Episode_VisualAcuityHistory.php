@@ -38,10 +38,10 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
     }
 
     public function run_oescape(){
-        $va_unit_id = @$_GET[$this->va_unit_input] ?: models\Element_OphCiExamination_VisualAcuity::model()->getSetting('unit_id');
+        $va_unit_id = @$_GET[$this->va_unit_input] ?:  models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name'=>'ETDRS Letters'))->id;
         $this->va_unit = models\OphCiExamination_VisualAcuityUnit::model()->findByPk($va_unit_id);
 
-        $chart = $this->configureChart();
+        $this->configureChart();
 
         $this->render("OphCiExamination_OEscape_VisualAcuityHistory", array('va_unit' => $this->va_unit));
     }
