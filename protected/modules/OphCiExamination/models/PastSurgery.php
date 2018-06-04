@@ -32,6 +32,7 @@ namespace OEModule\OphCiExamination\models;
  * @property \User $user
  * @property \User $usermodified
  * @property PastSurgery_Operation[] $operations
+ * @property string $comments
  */
 class PastSurgery extends \BaseEventTypeElement
 {
@@ -76,10 +77,10 @@ class PastSurgery extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, operations', 'safe'),
+            array('event_id, operations, comments', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id',  'safe', 'on' => 'search')
+            array('id, event_id, comments',  'safe', 'on' => 'search')
         );
     }
 
@@ -142,6 +143,7 @@ class PastSurgery extends \BaseEventTypeElement
             $operations[] = $op;
         }
         $this->operations = $operations;
+        $this->comments = $element->comments;
     }
 
     /**

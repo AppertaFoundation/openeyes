@@ -23,8 +23,9 @@ use OEModule\OphCiExamination\models\PastSurgery_Operation;
 $model_name = CHtml::modelName($element);
 ?>
 <div class="element-fields flex-layout full-width">
+  <div class="row cols-10">
   <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
-    <table id="<?= $model_name ?>_operation_table" class="cols-10 <?= $model_name ?>_Operation">
+    <table id="<?= $model_name ?>_operation_table" class="cols-full <?= $model_name ?>_Operation">
         <thead>
         <tr>
             <th class="cols-3">Procedures</th>
@@ -81,7 +82,31 @@ $model_name = CHtml::modelName($element);
         ?>
         </tbody>
     </table>
+    <div id="<?= $model_name ?>-comments" class="field-row-pad-top js-comment-container"
+         style="<?= $element->comments ? '' : 'display: none;' ?>">
+      <br/>
+        <?php echo $form->textArea(
+            $element,
+            'comments',
+            array('nowrapper' => true),
+            false,
+            array(
+                'class' => 'autosize js-comment-field',
+                'placeholder' => $element->getAttributeLabel('comments'),
+                'data-comment-button' => '#' . $model_name . '-comment-button',
+            )
+        )
+        ?>
+    </div>
+  </div>
   <div class="flex-item-bottom" id="add-to-past-surgery" >
+
+    <button id="<?= $model_name ?>-comment-button" class="button js-add-comments"
+            data-comment-container="#<?= $model_name ?>-comments"
+            style="<?= $element->comments ? 'display: none;' : '' ?>" type="button">
+      <i class="oe-i comments small-icon"></i>
+    </button>
+
     <button id="show-add-popup" class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>

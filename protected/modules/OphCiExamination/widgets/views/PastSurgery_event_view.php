@@ -31,17 +31,23 @@ $widget = $this;
               <?php } else {
                   foreach ($operations as $operation) {?>
                     <tr>
-                      <td><?= array_key_exists('object', $operation) ? $operation['object']->operation : $operation['operation']; ?></td>
+                <td><?= array_key_exists('object',
+                        $operation) ? $operation['object']->operation : $operation['operation']; ?></td>
                       <td>
-                          <?php $side = array_key_exists('side', $operation) ? $operation['side']: (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
+                    <?php $side = array_key_exists('side',
+                        $operation) ? $operation['side'] : (array_key_exists('object',
+                        $operation) ? $operation['object']->side : ''); ?>
                         <i class="oe-i laterality <?php echo  $side=='Right'||$side=='Both'||$side=='Bilateral'? 'R':'NA' ?> small pad"></i>
                         <i class="oe-i laterality <?php echo $side=='Left'||$side=='Both'||$side=='Bilateral'? 'L':'NA' ?> small pad"></i>
                       </td>
-                      <td><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date']); ?></td>
+                <td><?= array_key_exists('object',
+                        $operation) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date']); ?></td>
                     </tr>
-                  <?php } }?>
+            <?php }
+        } ?>
               </tbody>
             </table>
+      <?= CHtml::encode($element->comments) ?>
           </div>
         </div>
 </div>

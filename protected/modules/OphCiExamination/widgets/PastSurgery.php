@@ -64,6 +64,8 @@ class PastSurgery extends \BaseEventElementWidget
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
+        $element->comments = $data['comments'];
+
         // pre-cache current entries so any entries that remain in place will use the same db row
         $operations_by_id = array();
         foreach ($element->operations as $entry) {
