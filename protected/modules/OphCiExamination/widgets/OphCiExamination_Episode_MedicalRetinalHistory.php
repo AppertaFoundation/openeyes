@@ -121,7 +121,7 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
     {
         $series_name = "Central SFT ({$side})";
         $sft = $oct->{"{$side}_sft"};
-        $chart->addPoint($series_name, Helper::mysqlDate2JsTimestamp($oct->last_modified_date), $sft, "{$series_name}\n{$sft} µm");
+        $chart->addPoint($series_name, Helper::mysqlDate2JsTimestamp($oct->event->event_date), $sft, "{$series_name}\n{$sft} µm");
     }
 
     /**
@@ -156,11 +156,11 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
             if (($oct = $event->getElementByClass('OEModule\OphCiExamination\models\Element_OphCiExamination_OCT'))) {
                 if ($oct->hasRight()){
                     $crt = $oct->{"right_sft"};
-                    array_push($crt_data_list['right'], array('y'=>$crt?(float)$crt:0, 'x'=>Helper::mysqlDate2JsTimestamp($oct->created_date)));
+                    array_push($crt_data_list['right'], array('y'=>$crt?(float)$crt:0, 'x'=>Helper::mysqlDate2JsTimestamp($oct->event->event_date)));
                 }
                 if ($oct->hasLeft()) {
                     $crt = $oct->{"left_sft"};
-                    array_push($crt_data_list['left'], array('y'=>$crt?(float)$crt:0, 'x'=>Helper::mysqlDate2JsTimestamp($oct->created_date)));
+                    array_push($crt_data_list['left'], array('y'=>$crt?(float)$crt:0, 'x'=>Helper::mysqlDate2JsTimestamp($oct->event->event_date)));
                 }
             }
         }
