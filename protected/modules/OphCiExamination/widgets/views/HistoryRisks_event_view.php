@@ -32,12 +32,33 @@
           <div class="data-value flex-layout flex-top">
             <div class="cols-11">
             <div class="cols-11" id="js-list-view-risks-pro" style>
-              <ul class="dslash-list">
-                <li>YES: <?php if ($element->present) {  echo $element->getEntriesDisplay('present'); } else { echo 'None'; } ?></li>
-                <li>NO: <?php if ($element->not_checked) { echo $element->getEntriesDisplay('not_checked'); }  else { echo 'None'; } ?></li>
-                <li>Not checked: <?php if ($element->not_present) { echo $element->getEntriesDisplay('not_present'); }
-                                    else { echo 'None'; } ?></li>
-              </ul>
+<!--                Anticoagulants and alpha blockers being mandatory risk items to be displayed, we check if $element contains these in either yes, or no and if it doesn't in either, we display it as unchecked forcefully-->
+                <?php
+                    $anticoagulants = false;
+                    $alphablockers = false;
+                    if (in_array("Anticoagulants - Present", $element->present) or in_array("Anticoagulants - Not present", $element->not_present) ) {
+                        $anticoagulants= true;
+                    }
+                    if (in_array("Alpha blockers - Present", $element->present) or in_array("Alpha blockers - Not present", $element->not_present) ) {
+                        $alphablockers = true;
+                    }
+                ?>
+                <ul class="dslash-list">
+                    <li><?php if ($element->present) {  echo $element->getEntriesDisplay('present') .' : YES'; } ?> </li>
+                    <li><?php if ($element->not_checked) { echo $element->getEntriesDisplay('not_checked').' : Not Checked'; }
+                        else {
+                            if ($anticoagulants == false and $alphablockers == false) {
+                                echo 'Anticoagulants, Anti Blockers : Not Checked';
+                            } elseif ($anticoagulants == false) {
+                                echo 'Anticoagulants : Not Checked';
+                            } elseif ($alphablockers == false) {
+                                echo 'Alpha blockers : Not Checked';
+                            }
+                        }
+                        ?>
+                    </li>
+                    <li><?php if ($element->not_present) { echo $element->getEntriesDisplay('not_present').' : NO'; } ?></li>
+                </ul>
             </div>
             <div class="col-6" id="js-listview-risks-full" style="display: none;">
             <table class="last-left">
