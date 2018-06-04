@@ -60,8 +60,7 @@
                       $subspecialties = array_map(function ($v) {
                           return array($v->id, $v->name, $v->ref_spec);
                       }, Subspecialty::model()->findAllByAttributes(array('name'=> array('Cataract', 'Glaucoma', 'Medical Retina'))));
-                      foreach ($subspecialties as $subspecialty) {
-                          if (in_array($subspecialty[0], array_keys($episodes_list))) { ?>
+                      foreach ($subspecialties as $subspecialty) { ?>
                             <li class="icon-btn"
                                 data-subspecialty-id="<?= $subspecialty[0] ?>">
                               <a class="<?= in_array($subspecialty[0], array_keys($episodes_list))?'active':'inactive' ?>"
@@ -69,7 +68,7 @@
                                   <?= $subspecialty[2] ?>
                               </a>
                             </li>
-                          <?php }
+                          <?php
                       } ?>
                   </ul>
                 <?php endforeach;
