@@ -178,7 +178,12 @@ $(document).ready(function(){
       flag.click(function () {
         tileOverflow.animate({
           scrollTop: tileOverflow.height()
-        }, 1000);
+        }, {
+          duration: 1000,
+          complete: function () {
+            flag.fadeOut();
+          }
+        });
       });
 
       tileOverflow.on('scroll', function () {
