@@ -88,6 +88,17 @@ $episode->audit('episode summary', 'view');
       $(IOPChart_left).highcharts().xAxis[0].setExtremes( min_left, max_left);
       $(MedChart_left).highcharts().yAxis[0].setExtremes( min_left, max_left);
 
+      $(VAChart_left).highcharts().navigator.xAxis.min = min_left;
+      $(VAChart_left).highcharts().navigator.xAxis.max = max_left;
+      $(VAChart_left).highcharts().navigator.xAxis.tickPositions = [min_left, max_left];
+
+      $(VAChart_right).highcharts().navigator.xAxis.min = min_right;
+      $(VAChart_right).highcharts().navigator.xAxis.max = max_right;
+      $(VAChart_right).highcharts().navigator.xAxis.tickPositions = [min_right, max_right];
+
+      //This seems to recalculate the values used for the navigation
+      $(VAChart_right).highcharts().redraw();
+      
       /**
        In order to synchronize tooltips and crosshairs, override the
        built-in events with handlers defined on the parent element.
