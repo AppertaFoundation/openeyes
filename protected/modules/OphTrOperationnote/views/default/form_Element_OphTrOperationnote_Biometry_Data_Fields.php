@@ -28,6 +28,9 @@ $biometry_data = [
 
 <div class="element-data" data-biometry-data='<?= json_encode($biometry_data) ?>'>
     <div class="field-row">
+      <input type="hidden" id="Element_OphTrOperationnote_Biometry_id_hidden"
+             name="Element_OphTrOperationnote_Biometry[id]" value="<?php echo $element->id; ?>">
+
         <table class="cols-11 large-text">
             <colgroup>
                 <col class="cols-3">
