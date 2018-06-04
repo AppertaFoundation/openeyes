@@ -16,12 +16,14 @@
  */
 
 ?>
-<script type="text/javascript" src="<?=$this->getJsPublishedPath('Allergies.js')?>"></script>
+<script type="text/javascript" src="<?= $this->getJsPublishedPath('Allergies.js') ?>"></script>
 <?php
-    $model_name = CHtml::modelName($element);
+$model_name = CHtml::modelName($element);
 
-    $missing_req_allergies = $this->getMissingRequiredAllergies();
-    $required_allergy_ids = array_map(function($r) { return $r->id; }, $this->getRequiredAllergies());
+$missing_req_allergies = $this->getMissingRequiredAllergies();
+$required_allergy_ids = array_map(function ($r) {
+    return $r->id;
+}, $this->getRequiredAllergies());
 ?>
 
 <div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
@@ -34,9 +36,9 @@
         </div>
     </div>
 
-  <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
+    <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
-  <table id="<?= $model_name ?>_entry_table" class="cols-10 <?= !count($element->entries) ? 'hidden' : ''?>">
+    <table id="<?= $model_name ?>_entry_table" class="cols-10 <?= !count($element->entries) ? 'hidden' : '' ?>">
       <tbody>
 
       <?php
@@ -78,9 +80,12 @@
       }
       ?>
       </tbody>
-  </table>
-  <div class="flex-item-bottom" id="history-allergy-popup" style="display: <?php echo $element->no_allergies_date?'none':''; ?>">
-    <button class="button hint green js-add-select-search" id="add-allergy-btn" type="button"><i class="oe-i plus pro-theme"></i></button>
+    </table>
+  </div>
+  <div class="flex-item-bottom" id="history-allergy-popup"
+       style="display: <?php echo $element->no_allergies_date ? 'none' : ''; ?>">
+    <button class="button hint green js-add-select-search" id="add-allergy-btn" type="button"><i
+          class="oe-i plus pro-theme"></i></button>
     <!-- popup to add to element is click -->
     <div id="add-to-allergies" class="oe-add-select-search" style="display: none;">
       <!-- icon btns -->
@@ -96,15 +101,16 @@
           <td>
             <div class="flex-layout flex-top flex-left">
               <ul class="add-options" data-multi="true" data-clickadd="false" id="history-allergy-option">
-                <?php $allergies = $element->getAllergyOptions();
-                    foreach ($allergies as $allergy){ ?>
-                      <li data-str = "<?php echo $allergy->name ?>" data-id="<?php echo $allergy->id ?>">
+                  <?php $allergies = $element->getAllergyOptions();
+                  foreach ($allergies as $allergy) { ?>
+                    <li data-str="<?php echo $allergy->name ?>" data-id="<?php echo $allergy->id ?>">
                         <span class="auto-width">
                           <?php echo $allergy->name; ?>
                         </span>
-                      </li>
-                    <?php } ?>
-              </ul></div>
+                    </li>
+                  <?php } ?>
+              </ul>
+            </div>
             <!-- flex-layout -->
           </td>
         </tr>
@@ -114,7 +120,7 @@
   </div>
 </div>
 
-<script type="text/template" id="<?= CHtml::modelName($element).'_entry_template' ?>" class="hidden">
+<script type="text/template" id="<?= CHtml::modelName($element) . '_entry_template' ?>" class="hidden">
     <?php
     $empty_entry = new \OEModule\OphCiExamination\models\AllergyEntry();
     $this->render(
@@ -135,36 +141,36 @@
                 'other' => '{{other}}',
                 'comments' => null,
                 'has_allergy' => (string)\OEModule\OphCiExamination\models\AllergyEntry::$PRESENT,
-            )
+            ),
         )
     );
     ?>
 </script>
 <script type="text/javascript">
-    $(function () {
-        var allergyController;
-        $(document).ready(function() {
-            allergyController = new OpenEyes.OphCiExamination.AllergiesController({
-                element: $('#<?=$model_name?>_element')
-            });
-        });
-
-        var popup = $('#add-to-allergies');
-
-        function addAllergy(){
-            //this just gets it's own data
-            allergyController.addEntry();
-            allergyController.showTable();
-        }
-
-        setUpAdder(
-            popup,
-            'return',
-            addAllergy,
-            $('#add-allergy-btn'),
-            null,
-            $('.close-icon-btn, .add-icon-btn')
-        );
+  $(function () {
+    var allergyController;
+    $(document).ready(function () {
+      allergyController = new OpenEyes.OphCiExamination.AllergiesController({
+        element: $('#<?=$model_name?>_element')
+      });
     });
+
+    var popup = $('#add-to-allergies');
+
+    function addAllergy() {
+      //this just gets it's own data
+      allergyController.addEntry();
+      allergyController.showTable();
+    }
+
+    setUpAdder(
+      popup,
+      'return',
+      addAllergy,
+      $('#add-allergy-btn'),
+      null,
+      $('.close-icon-btn, .add-icon-btn')
+    );
+  });
 
 </script>
