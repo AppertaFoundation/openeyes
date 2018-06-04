@@ -386,7 +386,9 @@ class EventType extends BaseActiveRecordVersioned
         if ($type === 'medium') {
             $type = 'large';
         }
-
+        if (isset($event->is_automated) && $event->eventType->name = 'OphCiExamination' && $event->is_automated == 1) {
+            return "<i class=\"oe-i-e {$type} i-CiCommunityData \"></i>";
+        }
         return "<i class=\"oe-i-e {$type} {$this->getEventIconCssClass()}\"></i>";
     }
 
@@ -396,12 +398,11 @@ class EventType extends BaseActiveRecordVersioned
     public function getNonPrintableEventTypes()
     {
         $result = array();
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria;
         $criteria->select = array('id');
-        $criteria->condition='is_printable = 0';
+        $criteria->condition = 'is_printable = 0';
         $data = self::model()->findAll($criteria);
-        foreach($data as $row)
-        {
+        foreach ($data as $row) {
             $result[] = $row->id;
         }
         return $result;
