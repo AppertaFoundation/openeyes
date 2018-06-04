@@ -41,7 +41,7 @@
             extract($this->getEpisodes());
             if (is_array($ordered_episodes)):
                 foreach ($ordered_episodes as $specialty_episodes): ?>
-                  <ul class="oescape-icon-btns">
+                  <ul class="oescape-icon-btns" style="font-size: 0;">
                       <?php
                       foreach ($specialty_episodes['episodes'] as $i => $episode) {
                           // TODO deal with support services possibly?
@@ -59,7 +59,7 @@
                       }
                       $subspecialties = array_map(function ($v) {
                           return array($v->id, $v->name, $v->ref_spec);
-                      }, Subspecialty::model()->findAllByAttributes(array('name'=> array('Cataract', 'Glaucoma', 'Medical Retina'))));
+                      }, Subspecialty::model()->findAllByAttributes(array('name'=> array('Cataract', 'Glaucoma', 'Medical Retina', 'General Ophthalmology'))));
                       foreach ($subspecialties as $subspecialty) { ?>
                             <li class="icon-btn"
                                 data-subspecialty-id="<?= $subspecialty[0] ?>">

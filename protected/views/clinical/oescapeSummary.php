@@ -66,7 +66,7 @@ $episode->audit('episode summary', 'view');
 
 <script type="text/javascript">
   $(document).ready(function () {
-    if ($("#charts-container").hasClass('Glaucoma')){
+    if ($("#charts-container").hasClass('Glaucoma')||$("#charts-container").hasClass('General Ophthalmology')){
       $('.right-side-content').show();
 
       var VAChart_right = $('.highcharts-VA')[0];

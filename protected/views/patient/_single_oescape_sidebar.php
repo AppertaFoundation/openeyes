@@ -60,7 +60,7 @@ if (is_array($ordered_episodes)):
           }
           $subspecialties = array_map(function ($v) {
               return array($v->id, $v->name, $v->ref_spec);
-          }, Subspecialty::model()->findAllByAttributes(array('name'=> array('Cataract', 'Glaucoma', 'Medical Retina'))));
+          }, Subspecialty::model()->findAllByAttributes(array('name'=> array('Cataract', 'Glaucoma', 'Medical Retina','General Ophthalmology'))));
           foreach ($subspecialties as $subspecialty) { ?>
               <li class="icon-btn"
                   data-subspecialty-id="<?= $subspecialty[0] ?>">
