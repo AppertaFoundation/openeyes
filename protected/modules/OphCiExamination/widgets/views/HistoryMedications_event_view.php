@@ -23,40 +23,63 @@
          data-element-type-class="<?php echo $element->elementType->class_name ?>"
          data-element-type-name="Eye Medications"
          data-element-display-order="<?php echo $element->elementType->display_order ?>">
-  <header class=" element-header">
-    <h3 class="element-title">Eye medications</h3>
-  </header>
-  <div class="element-data">
-    <div class="data-value">
-        <?php if (!$element->orderedEntries) { ?>
-          No current medications.
-        <?php } else { ?>
-          <div class="tile-data-overflow">
-            <table>
-              <colgroup>
-                <col>
-                <col width="55px">
-                <col width="85px">
-              </colgroup>
-              <tbody>
-              <?php foreach ($element->orderedEntries as $entry) {
-                  if ($entry['route_id'] == 1) { ?>
-                    <tr>
-                      <td><?= $entry->getMedicationDisplay() ?></td>
-                      <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                        <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
-                        <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
-                      </td>
-                      <td><?= $entry->getStartDateDisplay() ?></td>
-                    </tr>
-                  <?php }
-              } ?>
-              </tbody>
-            </table>
-          </div>
-        <?php } ?>
+    <header class=" element-header">
+        <h3 class="element-title">Eye medications</h3>
+    </header>
+    <div class="element-data">
+        <div class="data-value">
+            <?php if (!$element->currentOrderedEntries) { ?>
+                No current medications.
+                <br/>
+                Stopped Medications : 
+                <table>
+                    <colgroup>
+                        <col>
+                        <col width="55px">
+                        <col width="85px">
+                    </colgroup>
+                    <tbody>
+                    <?php foreach ($element->stoppedOrderedEntries as $entry) {
+                        if ($entry['route_id'] == 1) { ?>
+                            <tr>
+                                <td><?= $entry->getMedicationDisplay() ?></td>
+                                <td><?php $laterality = $entry->getLateralityDisplay(); ?>
+                                    <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
+                                    <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                                </td>
+                                <td><?= $entry->getStartDateDisplay() ?></td>
+                            </tr>
+                        <?php }
+                    } ?>
+                    </tbody>
+                </table>
+            <?php } else { ?>
+                <div class="tile-data-overflow">
+                    <table>
+                        <colgroup>
+                            <col>
+                            <col width="55px">
+                            <col width="85px">
+                        </colgroup>
+                        <tbody>
+                        <?php foreach ($element->currentOrderedEntries as $entry) {
+                            if ($entry['route_id'] == 1) { ?>
+                                <tr>
+                                    <td><?= $entry->getMedicationDisplay() ?></td>
+                                    <td><?php $laterality = $entry->getLateralityDisplay(); ?>
+                                        <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
+                                        <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                                    </td>
+                                    <td><?= $entry->getStartDateDisplay() ?></td>
+                                </tr>
+                            <?php }
+                        } ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php } ?>
+        </div>
     </div>
-  </div>
 </section>
 
 <section class=" element view-Systemic-Medications tile"
@@ -64,40 +87,40 @@
          data-element-type-class="<?php echo $element->elementType->class_name ?>"
          data-element-type-name="Systemic Medications"
          data-element-display-order="<?php echo $element->elementType->display_order + 1 ?>">
-  <header class=" element-header">
-    <h3 class="element-title">Systemic Medications</h3>
-  </header>
-  <div class="element-data">
-    <div class="data-value">
-        <?php if (!$element->orderedEntries) { ?>
-          No current medications.
-        <?php } else { ?>
-          <div class="tile-data-overflow">
-            <table>
-              <colgroup>
-                <col>
-                <col width="55px">
-                <col width="85px">
-              </colgroup>
-              <tbody>
-              <?php foreach ($element->orderedEntries as $entry) {
-                  if ($entry['route_id'] != 1) { ?>
-                    <tr>
-                      <td><?= $entry->getMedicationDisplay() ?></td>
-                      <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                        <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
-                        <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
-                      </td>
-                      <td><?= $entry->getStartDateDisplay() ?></td>
-                    </tr>
-                  <?php }
-              } ?>
-              </tbody>
-            </table>
-          </div>
-        <?php } ?>
+    <header class=" element-header">
+        <h3 class="element-title">Systemic Medications</h3>
+    </header>
+    <div class="element-data">
+        <div class="data-value">
+            <?php if (!$element->orderedEntries) { ?>
+                No current medications.
+            <?php } else { ?>
+                <div class="tile-data-overflow">
+                    <table>
+                        <colgroup>
+                            <col>
+                            <col width="55px">
+                            <col width="85px">
+                        </colgroup>
+                        <tbody>
+                        <?php foreach ($element->orderedEntries as $entry) {
+                            if ($entry['route_id'] != 1) { ?>
+                                <tr>
+                                    <td><?= $entry->getMedicationDisplay() ?></td>
+                                    <td><?php $laterality = $entry->getLateralityDisplay(); ?>
+                                        <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
+                                        <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                                    </td>
+                                    <td><?= $entry->getStartDateDisplay() ?></td>
+                                </tr>
+                            <?php }
+                        } ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php } ?>
+        </div>
     </div>
-  </div>
 </section>
 
 
