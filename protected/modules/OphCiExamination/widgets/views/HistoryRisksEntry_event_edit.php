@@ -31,61 +31,78 @@ if (!isset($values)) {
         'risk_display' => $entry->displayrisk,
         'has_risk' => $entry->has_risk,
         'other' => $entry->other,
-        'comments' => $entry->comments
+        'comments' => $entry->comments,
     );
 }
 ?>
-<tr data-key="<?=$row_count?>">
-    <td>
-        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?=$values['id'] ?>" />
-        <?php
-        if ($removable) {
-            $risks_opts = array(
-                'options' => array(),
-                'empty' => '- select -',
-                'class' => $model_name . '_risk_id'
-            );
-            foreach ($risks as $risk) {
-                $risks_opts['options'][$risk->id] = array('data-other' => $risk->isOther() ? '1' : '0');
-            }
-            echo CHtml::dropDownList($field_prefix . '[risk_id]', $values['risk_id'], CHtml::listData($risks, 'id', 'name'), $risks_opts);
-            $show_other = $values['risk_id'] && array_key_exists($values['risk_id'], $risks_opts['options']) && ($risks_opts['options'][$values['risk_id']]['data-other'] === '1');
-        ?>
+<tr data-key="<?= $row_count ?>">
+  <td>
+    <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
+      <?php
+      if ($removable) {
+          $risks_opts = array(
+              'options' => array(),
+              'empty' => '- select -',
+              'class' => $model_name . '_risk_id',
+          );
+          foreach ($risks as $risk) {
+              $risks_opts['options'][$risk->id] = array('data-other' => $risk->isOther() ? '1' : '0');
+          }
+          echo CHtml::dropDownList($field_prefix . '[risk_id]', $values['risk_id'],
+              CHtml::listData($risks, 'id', 'name'), $risks_opts);
+          $show_other = $values['risk_id'] && array_key_exists($values['risk_id'],
+                  $risks_opts['options']) && ($risks_opts['options'][$values['risk_id']]['data-other'] === '1');
+          ?>
 
-          <span class="<?= $model_name ?>_other_wrapper" <?= $show_other ? '' : 'style="display: none;"' ?>>
-            <?php echo CHtml::textField($field_prefix . '[other]', $values['other'], array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete']))?>
+        <span class="<?= $model_name ?>_other_wrapper" <?= $show_other ? '' : 'style="display: none;"' ?>>
+            <?php echo CHtml::textField($field_prefix . '[other]', $values['other'],
+                array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
           </span>
-        <?php
-        } else {
-            echo CHtml::hiddenField($field_prefix . '[risk_id]', $values['risk_id']);
-            echo CHtml::hiddenField($field_prefix . '[other]', $values['other']);
-            echo $values['risk_display'];
-        }
-        ?>
+          <?php
+      } else {
+          echo CHtml::hiddenField($field_prefix . '[risk_id]', $values['risk_id']);
+          echo CHtml::hiddenField($field_prefix . '[other]', $values['other']);
+          echo $values['risk_display'];
+      }
+      ?>
 
-    </td>
-    <td id="OEModule_OphCiExamination_models_HistoryRisks_entries_<?=$row_count?>_risk_id_error">
-        <label class="inline highlight">
-            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === (string) HistoryRisksEntry::$PRESENT, array('value' => HistoryRisksEntry::$PRESENT)); ?>
-            Yes
-        </label>
-        <label class="inline highlight">
-            <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $values['has_risk'] === (string) HistoryRisksEntry::$NOT_PRESENT, array('value' => HistoryRisksEntry::$NOT_PRESENT)); ?>
-            No
-        </label>
-      <label class="inline highlight">
-          <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $posted_not_checked, array('value' => HistoryRisksEntry::$NOT_CHECKED)); ?>
-        Not checked
-      </label>
-    </td>
-    <td>
-        <input type="text" name="<?= $field_prefix ?>[comments]" value="<?=$values['comments'] ?>" />
-    </td>
-    <?php if($removable) : ?>
+  </td>
+  <td id="OEModule_OphCiExamination_models_HistoryRisks_entries_<?= $row_count ?>_risk_id_error">
+    <label class="inline highlight">
+        <?php echo CHtml::radioButton($field_prefix . '[has_risk]',
+            $values['has_risk'] === (string)HistoryRisksEntry::$PRESENT,
+            array('value' => HistoryRisksEntry::$PRESENT)); ?>
+      Yes
+    </label>
+    <label class="inline highlight">
+        <?php echo CHtml::radioButton($field_prefix . '[has_risk]',
+            $values['has_risk'] === (string)HistoryRisksEntry::$NOT_PRESENT,
+            array('value' => HistoryRisksEntry::$NOT_PRESENT)); ?>
+      No
+    </label>
+    <label class="inline highlight">
+        <?php echo CHtml::radioButton($field_prefix . '[has_risk]', $posted_not_checked,
+            array('value' => HistoryRisksEntry::$NOT_CHECKED)); ?>
+      Not checked
+    </label>
+  </td>
+  <td>
+    <button
+        id="<?= strtr($field_prefix, '[]', '__') ?>_comment_button"
+        class="button js-add-comments" style="display: <?php if ($values['comments']): ?>none<?php endif; ?>"
+        data-comment-container="#<?= strtr($field_prefix, '[]', '__') ?>_comments">
+      <i class="oe-i comments small-icon"></i>
+    </button>
+    <input type="text" class="js-comment-field js-comment-container" name="<?= $field_prefix ?>[comments]"
+           value="<?= $values['comments'] ?>" id="<?= strtr($field_prefix, '[]', '__') ?>_comments"
+           data-comment-button="#<?= strtr($field_prefix, '[]', '__') ?>_comment_button"
+           <?php if (!$values['comments']): ?>style="display: none;"<?php endif; ?>/>
+  </td>
+    <?php if ($removable) : ?>
       <td>
         <i class="oe-i trash"></i>
       </td>
     <?php else: ?>
-      <td>read only <i class="oe-i info small pad"></i></td>
+      <td>read only</td>
     <?php endif; ?>
 </tr>
