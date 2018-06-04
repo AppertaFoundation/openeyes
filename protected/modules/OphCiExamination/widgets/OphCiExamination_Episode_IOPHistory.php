@@ -142,11 +142,14 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 
     public function getIOPMarkingEvent(){
         $iop_markings = array('right'=>array(), 'left'=>array());
-        $marking_list = array('Phacoemulsification'=>'Phaco','Phacoemulsification and Intraocular lens'=>'Phaco',
-            'Trabeculectomy'=>'Trabeculectomy', 'Argon laser trabeculoplasty'=>'Argon laser trabeculoplasty',
-            'Selective laser trabeculoplasty'=>'Selective laser trabeculoplasty',
-            'Cycloablation'=>'Cycloablation','Cyclodialysis cleft repair'=>'Cycloablation',
-            'Peripheral iridectomy'=>'Peripheral iridotomy');
+//        $marking_list = array('Phacoemulsification'=>'Phaco','Phacoemulsification and Intraocular lens'=>'Phaco',
+//            'Trabeculectomy'=>'Trabeculectomy', 'Argon laser trabeculoplasty'=>'Argon laser trabeculoplasty',
+//            'Selective laser trabeculoplasty'=>'SLT', 'Panretinal photocoagulation'=>'PRP',
+//            'Cycloablation'=>'Cycloablation','Cyclodialysis cleft repair'=>'Cycloablation',
+//            'Peripheral iridectomy'=>'Peripheral iridotomy');
+
+        $marking_list = array('Phacoemulsification','Phacoemulsification and Intraocular lens', 'Trabeculectomy', 'Argon laser trabeculoplasty',
+            'Selective laser trabeculoplasty', 'Panretinal photocoagulation', 'Cycloablation','Cyclodialysis cleft repair', 'Peripheral iridectomy');
         $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
         $events = Event::model()->getEventsOfTypeForPatient($event_type ,$this->episode->patient);
         foreach ($events as $event) {
@@ -169,11 +172,11 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
                 }
                 foreach ($eye_side as $side){
                     foreach ($proc_list->procedures as $proc){
-                        if (array_key_exists($proc->term, $marking_list)){
-                            if (empty($iop_markings[$side])||!array_key_exists($marking_list[$proc->term], $iop_markings[$side])){
-                                $iop_markings[$side][$marking_list[$proc->term]] = array();
+                        if (in_array($proc->term, $marking_list)){
+                            if (empty($iop_markings[$side])||!in_array($proc->short_format, $iop_markings[$side])){
+                                $iop_markings[$side][$proc->short_format] = array();
                             }
-                            array_push($iop_markings[$side][$marking_list[$proc->term]], $timestamp);
+                            array_push($iop_markings[$side][$proc->short_format], $timestamp);
                         }
                     }
                 }
