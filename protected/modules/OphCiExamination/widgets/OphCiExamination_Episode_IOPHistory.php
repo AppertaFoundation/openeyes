@@ -142,14 +142,18 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 
     public function getIOPMarkingEvent(){
         $iop_markings = array('right'=>array(), 'left'=>array());
-//        $marking_list = array('Phacoemulsification'=>'Phaco','Phacoemulsification and Intraocular lens'=>'Phaco',
-//            'Trabeculectomy'=>'Trabeculectomy', 'Argon laser trabeculoplasty'=>'Argon laser trabeculoplasty',
-//            'Selective laser trabeculoplasty'=>'SLT', 'Panretinal photocoagulation'=>'PRP',
-//            'Cycloablation'=>'Cycloablation','Cyclodialysis cleft repair'=>'Cycloablation',
-//            'Peripheral iridectomy'=>'Peripheral iridotomy');
 
-        $marking_list = array('Phacoemulsification','Phacoemulsification and Intraocular lens', 'Trabeculectomy', 'Argon laser trabeculoplasty',
-            'Selective laser trabeculoplasty', 'Panretinal photocoagulation', 'Cycloablation','Cyclodialysis cleft repair', 'Peripheral iridectomy');
+        $marking_list = array(
+					'Phacoemulsification',
+					'Phacoemulsification and Intraocular lens', 
+					'Trabeculectomy', 
+					'Argon laser trabeculoplasty',
+					'Selective laser trabeculoplasty', 
+					'Panretinal photocoagulation', 
+					'Cycloablation',
+					'Cyclodialysis cleft repair', 
+					'Peripheral iridectomy'
+				);
         $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
         $events = Event::model()->getEventsOfTypeForPatient($event_type ,$this->episode->patient);
         foreach ($events as $event) {
