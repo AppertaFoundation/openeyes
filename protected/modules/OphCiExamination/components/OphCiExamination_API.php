@@ -2705,6 +2705,23 @@ class OphCiExamination_API extends \BaseAPI
             return $bp->pulse;
         }
     }
+
+    public function getPrincipalOphtalmicDiagnosis(\Episode $episode, $disorder_id = null)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->join = 'JOIN et_ophciexamination_diagnoses et ON t.element_diagnoses_id = et.`id`';
+        $criteria->join .= ' JOIN event ON event.id = et.`event_id`';
+        $criteria->join .= ' JOIN episode ON event.`episode_id` = episode.id';
+        $criteria->join .= ' JOIN patient ON episode.`patient_id` = patient.`id`';
+        $criteria->addCondition("patient_id = :patient_id");
+        $criteria->addCondition("t.disorder_id = :disorder_id");
+        $criteria->params=['patient_id' => $episode->patient_id , 'disorder_id' => $disorder_id];
+        $criteria->order="t.created_date desc";
+
+        $value = models\OphCiExamination_Diagnosis::model()->find($criteria);
+        return $value;
+
+    }
     
     
     
