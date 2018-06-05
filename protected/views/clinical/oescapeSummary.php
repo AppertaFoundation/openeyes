@@ -69,62 +69,87 @@ $episode->audit('episode summary', 'view');
     if ($("#charts-container").hasClass('Glaucoma')||$("#charts-container").hasClass('General Ophthalmology')){
       $('.right-side-content').show();
 
-      var VAChart_right = $('.highcharts-VA')[0];
-      var VAChart_left = $('.highcharts-VA')[1];
-      var MedChart_right = $('.highcharts-Meds')[0];
-      var MedChart_left = $('.highcharts-Meds')[1];
-      var IOPChart_right = $('.highcharts-IOP')[0];
-      var IOPChart_left = $('.highcharts-IOP')[1];
+      var charts = [];
+      charts['VA'] = [];
+      charts['VA']['major_axis'] = 'xAxis';
+      charts['VA']['right'] = $($('.highcharts-VA')[0]).highcharts();
+      charts['VA']['left'] = $($('.highcharts-VA')[1]).highcharts();
 
-      var max_right = Math.max($(VAChart_right).highcharts().xAxis[0].max, $(MedChart_right).highcharts().yAxis[0].max, $(IOPChart_right).highcharts().xAxis[0].max);
-      var min_right =Math.min($(VAChart_right).highcharts().xAxis[0].min, $(MedChart_right).highcharts().yAxis[0].min, $(IOPChart_right).highcharts().xAxis[0].min);
-      var max_left = Math.max($(VAChart_left).highcharts().xAxis[0].max, $(MedChart_left).highcharts().yAxis[0].max, $(IOPChart_left).highcharts().xAxis[0].max);
-      var min_left = Math.min($(VAChart_left).highcharts().xAxis[0].min, $(MedChart_left).highcharts().yAxis[0].min, $(IOPChart_left).highcharts().xAxis[0].min);
+      charts['Med'] = [];
+      charts['Med']['major_axis'] = 'yAxis';
+      charts['Med']['right'] = $($('.highcharts-Meds')[0]).highcharts();
+      charts['Med']['left'] = $($('.highcharts-Meds')[1]).highcharts();
 
-      $(VAChart_right).highcharts().xAxis[0].setExtremes(min_right, max_right);
-      $(IOPChart_right).highcharts().xAxis[0].setExtremes(min_right, max_right);
-      $(MedChart_right).highcharts().yAxis[0].setExtremes(min_right, max_right);
-      $(VAChart_left).highcharts().xAxis[0].setExtremes(min_left, max_left);
-      $(IOPChart_left).highcharts().xAxis[0].setExtremes( min_left, max_left);
-      $(MedChart_left).highcharts().yAxis[0].setExtremes( min_left, max_left);
 
-      $(VAChart_left).highcharts().navigator.xAxis.min = min_left;
-      $(VAChart_left).highcharts().navigator.xAxis.max = max_left;
-      $(VAChart_left).highcharts().navigator.xAxis.tickPositions = [min_left, max_left];
+      charts['IOP'] = [];
+      charts['IOP']['major_axis'] = 'xAxis';
+      charts['IOP']['right'] = $($('.highcharts-IOP')[0]).highcharts();
+      charts['IOP']['left'] = $($('.highcharts-IOP')[1]).highcharts();
 
-      $(VAChart_right).highcharts().navigator.xAxis.min = min_right;
-      $(VAChart_right).highcharts().navigator.xAxis.max = max_right;
-      $(VAChart_right).highcharts().navigator.xAxis.tickPositions = [min_right, max_right];
+      var limits = [];
+      ['right', 'left'].forEach(function(eye_side)  {
+        limits[eye_side] = [];
+        limits[eye_side]['max'] = Object.keys(charts).reduce(function(max, chart_key) {
+          var chart = charts[chart_key];
+          var chart_max = chart[eye_side][chart.major_axis][0].max;
+          return chart_max > max ? chart_max : max;
+        }, 0);
+        limits[eye_side]['min'] = Object.keys(charts).reduce(function(min, chart_key) {
+          var chart = charts[chart_key];
+          var chart_min = chart[eye_side][chart.major_axis][0].min;
+          return chart_min < min ? chart_min : min;
+        }, limits[eye_side]['max']);
+      });
 
-      //This seems to recalculate the values used for the navigation
-      $(VAChart_right).highcharts().redraw();
-      
+
+      for(var key in charts){
+        ['right', 'left'].forEach(function(eye_side)  {
+          var axis = charts[key][eye_side][charts[key].major_axis][0];
+          axis.setExtremes(
+            limits[eye_side].min,
+            limits[eye_side].max
+          );
+        });
+      }
+
+      ['right', 'left'].forEach(function(eye_side)  {
+        var navAxis = charts.VA[eye_side].navigator.xAxis;
+        navAxis.min = limits[eye_side].min;
+        navAxis.max = limits[eye_side].max;
+        navAxis.tickPositions = [limits[eye_side].min, limits[eye_side].max];
+        //This seems to recalculate the values used for the navigation
+        charts.VA[eye_side].redraw();
+        charts.IOP[eye_side].redraw();
+        charts.Med[eye_side].redraw();
+      });
+
+      for(key in charts){
+        console.log(charts[key].right);
+      }
       /**
        In order to synchronize tooltips and crosshairs, override the
        built-in events with handlers defined on the parent element.
        **/
       $('#charts-container').bind('mousemove touchmove touchstart', function (e) {
-        var event_right = $(IOPChart_right).highcharts().pointer.normalize(e.originalEvent); // Find coordinates within the chart
-        var point_right = $(IOPChart_right).highcharts().series[0].searchPoint(event_right, true); // Get the hovered point
-        $(VAChart_right).highcharts().xAxis[0].drawCrosshair(event_right);
-        $(IOPChart_right).highcharts().xAxis[0].drawCrosshair(event_right);
-        $(MedChart_right).highcharts().yAxis[0].drawCrosshair(event_right);
-        var event_left = $(IOPChart_left).highcharts().pointer.normalize(e.originalEvent); // Find coordinates within the chart
-        var point_left = $(IOPChart_left).highcharts().series[0].searchPoint(event_left, true); // Get the hovered point
-        $(VAChart_left).highcharts().xAxis[0].drawCrosshair(event_left);
-        $(IOPChart_left).highcharts().xAxis[0].drawCrosshair(event_left);
-        $(MedChart_left).highcharts().yAxis[0].drawCrosshair(event_left);
+        var event_right = charts.IOP.right.pointer.normalize(e.originalEvent); // Find coordinates within the chart
+        charts.VA.right.xAxis[0].drawCrosshair(event_right);
+        charts.IOP.right.xAxis[0].drawCrosshair(event_right);
+        charts.Med.right.yAxis[0].drawCrosshair(event_right);
+        var event_left = charts.IOP.left.pointer.normalize(e.originalEvent); // Find coordinates within the chart
+        charts.VA.left.xAxis[0].drawCrosshair(event_left);
+        charts.IOP.left.xAxis[0].drawCrosshair(event_left);
+        charts.Med.left.yAxis[0].drawCrosshair(event_left);
       });
       // VA has Navigator, use it to control all 3 charts
-      Highcharts.addEvent($(VAChart_right).highcharts().xAxis[0], 'afterSetExtremes', function (e) {
+      Highcharts.addEvent(charts.VA.right.xAxis[0], 'afterSetExtremes', function (e) {
         // match Extremes on other charts to VA:
-        $(IOPChart_right).highcharts().xAxis[0].setExtremes( e.min, e.max);
-        $(MedChart_right).highcharts().yAxis[0].setExtremes( e.min, e.max);
+        charts.IOP.right.xAxis[0].setExtremes( e.min, e.max);
+        charts.Med.right.yAxis[0].setExtremes( e.min, e.max);
       });
-      Highcharts.addEvent($(VAChart_left).highcharts().xAxis[0], 'afterSetExtremes', function (e) {
+      Highcharts.addEvent(charts.VA.left.xAxis[0], 'afterSetExtremes', function (e) {
         // match Extremes on other charts to VA:
-        $(IOPChart_left).highcharts().xAxis[0].setExtremes( e.min, e.max);
-        $(MedChart_left).highcharts().yAxis[0].setExtremes( e.min, e.max);
+        charts.IOP.left.xAxis[0].setExtremes( e.min, e.max);
+        charts.Med.left.yAxis[0].setExtremes( e.min, e.max);
       });
     }
   });

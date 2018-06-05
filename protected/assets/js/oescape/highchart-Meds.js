@@ -35,7 +35,8 @@ var optionsMeds = {
     crosshair: {
       snap:false,
     },
-
+    startOnTick: false,
+    endOnTick: false,
     tickPixelInterval: 100,  // if this is too high the last tick isn't shown (default 100)
   },
   tooltip: {
