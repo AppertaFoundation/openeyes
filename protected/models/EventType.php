@@ -386,7 +386,7 @@ class EventType extends BaseActiveRecordVersioned
         if ($type === 'medium') {
             $type = 'large';
         }
-        if (isset($event->is_automated) && $event->eventType->name = 'OphCiExamination' && $event->is_automated == 1) {
+        if (isset($event->is_automated) && $event->eventType->class_name =='OphCiExamination' && $event->is_automated == 1) {
             return "<i class=\"oe-i-e {$type} i-CiCommunityData \"></i>";
         }
         return "<i class=\"oe-i-e {$type} {$this->getEventIconCssClass()}\"></i>";
