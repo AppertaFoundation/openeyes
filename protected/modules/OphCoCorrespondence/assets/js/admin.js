@@ -117,6 +117,11 @@ $(document).ready(function() {
         window.location.href = baseUrl + '/OphCoCorrespondence/oeadmin/internalReferralSettings/editSetting?key=' + $(this).data('key');
     });
 
+    $('#letter_settings tr.clickable').click(function (e) {
+        e.preventDefault();
+        window.location.href = baseUrl + '/OphCoCorrespondence/admin/editSetting?key=' + $(this).data('key');
+    });
+
 	/** Internal Referral Settings **/
 	function saveSiteList(){
 		data = $('#to_location_sites_grid input').serializeArray();
