@@ -32,6 +32,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
             'CornealSuture',
             'ToricPCIOL',
             'LimbalRelaxingIncision',
+            'Cypass',
         ),
     ),
     'bindingArray' => array(
