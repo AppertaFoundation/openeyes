@@ -485,11 +485,9 @@ class OphCoCorrespondence_API extends BaseAPI
         $data['site_id'] = Yii::app()->session['selected_site_id'];
         $empty_lines = "\n";
         $meta_data = OphCoCorrespondenceLetterSettingValue::model()->find('`key`=?', array('letter_footer_blank_line_count'));
-        $count = $meta_data ? $meta_data->value : 0;
-        if (is_numeric($meta_data->value)) {
-            for ($x = 0; $x < $count; $x++) {
-                $empty_lines .= "\n";
-            }
+        $count = $meta_data ? $meta_data->value : 4;
+        for ($x = 0; $x < $count; $x++) {
+            $empty_lines .= "\n";
         }
         $data['footer'] = "Yours sincerely" . $empty_lines . User::model()->findByPk(Yii::app()->user->id)->fullName . "\n" . User::model()->findByPk(Yii::app()->user->id)->role . "\n";
         //.(ui.item.consultant?"Consultant: "+ui.item.consultant:'')
