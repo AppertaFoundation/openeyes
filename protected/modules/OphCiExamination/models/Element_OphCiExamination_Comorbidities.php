@@ -153,13 +153,13 @@ class Element_OphCiExamination_Comorbidities extends \BaseEventTypeElement
         $this->items = $element->items;
     }
 
-    public function getDisplayOrder($action)
+    public function getDisplayOrder($action, $as_parent = false)
     {
         if ($action=='view'){
             return 45;
         }
         else{
-            return parent::getDisplayOrder($action);
+            return parent::getDisplayOrder($action, $as_parent);
         }
     }
 }

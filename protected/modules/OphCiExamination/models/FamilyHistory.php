@@ -194,13 +194,13 @@ class FamilyHistory extends \BaseEventTypeElement
         return $action!=='view';
     }
 
-    public function getDisplayOrder($action)
+    public function getDisplayOrder($action, $as_parent = false)
     {
         if ($action=='view'){
             return 35;
         }
         else{
-            return parent::getDisplayOrder($action);
+            return parent::getDisplayOrder($action, $as_parent);
         }
     }
 }

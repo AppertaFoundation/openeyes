@@ -164,13 +164,13 @@ class PastSurgery extends \BaseEventTypeElement
         return "Eye Procedures";
     }
 
-    public function getDisplayOrder($action)
+    public function getDisplayOrder($action, $as_parent = false)
     {
         if ($action=='view'){
             return 10;
         }
         else{
-            return parent::getDisplayOrder($action);
+            return parent::getDisplayOrder($action, $as_parent);
         }
     }
 }

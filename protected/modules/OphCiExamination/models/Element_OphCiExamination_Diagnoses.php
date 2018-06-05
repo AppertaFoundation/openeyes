@@ -421,13 +421,13 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         return "Eye Diagnoses";
     }
 
-    public function getDisplayOrder($action)
+    public function getDisplayOrder($action, $as_parent = false)
     {
-        if ($action=='view'){
-            return 5;
+        if ($action === 'view'){
+            return $as_parent ? 10 : 50;
         }
         else{
-            return parent::getDisplayOrder($action);
+            return parent::getDisplayOrder($action, $as_parent);
         }
     }
 

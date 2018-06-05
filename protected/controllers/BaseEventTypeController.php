@@ -265,6 +265,28 @@ class BaseEventTypeController extends BaseModuleController
     {
         $this->open_elements = $this->getEventElements();
         $this->setElementOptions($action);
+
+        // Ensure the element type is initialised so getDisplayOrder() doesn't mutate array during sorting
+        array_map(function ($e) {
+            $e->getElementType();
+            if ($e->getElementType()->parent_element_type) {
+                $e->getElementType()->parent_element_type->display_order;
+            }
+        }, $this->open_elements);
+
+        usort($this->open_elements, function ($a, $b) use ($action) {
+            $a_parent_order = (int)($a->getElementType()->parent_element_type ? $a->getElementType()->parent_element_type->display_order : $a->getDisplayOrder($action, true));
+            $b_parent_order = (int)($b->getElementType()->parent_element_type ? $b->getElementType()->parent_element_type->display_order : $b->getDisplayOrder($action, true));
+            $a_child_order = (int)($a->getElementType()->parent_element_type ? $a->getDisplayOrder($action) : -1);
+            $b_child_order = (int)($b->getElementType()->parent_element_type ? $b->getDisplayOrder($action) : -1);
+
+            if ($a_parent_order === $b_parent_order) {
+                return $a_child_order < $b_child_order ? -1 : 1;
+            } else {
+                return $a_parent_order < $b_parent_order ? -1 : 1;
+            }
+        }
+        );
     }
 
     /**
@@ -371,7 +393,8 @@ class BaseEventTypeController extends BaseModuleController
                 }
             }
         }
-        if ($action == 'view') {
+
+        if ($action === 'view') {
             usort($open_child_elements, function ($a, $b) {
                 $a_order = $a->getDisplayOrder('view');
                 $b_order = $b->getDisplayOrder('view');
