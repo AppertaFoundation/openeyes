@@ -123,9 +123,7 @@ $episode->audit('episode summary', 'view');
         charts.Med[eye_side].redraw();
       });
 
-      for(key in charts){
-        console.log(charts[key].right);
-      }
+
       /**
        In order to synchronize tooltips and crosshairs, override the
        built-in events with handlers defined on the parent element.
