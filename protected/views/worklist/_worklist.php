@@ -84,9 +84,11 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
             'id' => 'dob',
             'class' => 'CDataColumn',
             'header' => 'DOB',
-            'value' => 'Helper::convertMySQL2NHS($data->patient->dob)',
-            'htmlOptions' => array('class' => 'date'),
             'headerHtmlOptions' => array('class' => 'date', 'colgroup' => 'cols-2'),
+            'value' => function ($data) {
+                return '<span class="oe-date">' . Helper::convertDate2Html(Helper::convertMySQL2NHS($data->patient->dob)) . '</span>';
+            },
+            'type' => 'raw',
         ),
     );
     if ($worklist->scheduled) {
