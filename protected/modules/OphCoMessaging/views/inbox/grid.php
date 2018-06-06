@@ -47,14 +47,14 @@ $cols = array(
         'header' => $dp->getSort()->link('patient_name', 'Patient', array('class' => 'sort-link')),
         'urlExpression' => 'Yii::app()->createURL("/OphCoMessaging/default/view/", array("id" => $data->event_id))',
         'labelExpression' => '$data->event->episode->patient->getHSCICName()',
-        'cssClassExpression' => '"nowrap patient"',
+        'htmlOptions' => array('class' => 'nowrap patient'),
     ),
     array(
         'id' => 'event_date',
         'class' => 'CDataColumn',
         'header' => '<i class="oe-i arrow-down-bold small pad active"></i> Messages',
         'value' => function ($data) {
-            return '<span class="oe-date">'.Helper::convertMySQL2NHS($data->created_date).'</span>';
+            return '<span class="oe-date">'. Helper::convertDate2HTML(Helper::convertMySQL2NHS($data->created_date)).'</span>';
         },
         'type' => 'raw'
     ),
