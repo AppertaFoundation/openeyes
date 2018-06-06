@@ -61,6 +61,7 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
             'class' => 'CDataColumn',
             'header' => 'Hospital No.',
             'value' => '$data->patient->hos_num',
+            'headerHtmlOptions' => array('colgroup' => 'cols-2'),
         ),
         array(
             'id' => 'patient_name',
@@ -70,12 +71,14 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
                 return $core_api->generateEpisodeLink($data->patient);
             },
             'labelExpression' => '$data->patient->getHSCICName()',
+            'headerHtmlOptions' => array('colgroup' => 'cols-6'),
         ),
         array(
             'id' => 'gender',
             'class' => 'CDataColumn',
             'header' => 'Gender',
             'value' => '$data->patient->genderString',
+            'headerHtmlOptions' => array('colgroup' => 'cols-1'),
         ),
         array(
             'id' => 'dob',
@@ -83,6 +86,7 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
             'header' => 'DOB',
             'value' => 'Helper::convertMySQL2NHS($data->patient->dob)',
             'htmlOptions' => array('class' => 'date'),
+            'headerHtmlOptions' => array('class' => 'date', 'colgroup' => 'cols-2'),
         ),
     );
     if ($worklist->scheduled) {
@@ -91,6 +95,7 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
             'class' => 'CDataColumn',
             'header' => 'Time',
             'value' => '$data->scheduledtime',
+            'headerHtmlOptions' => array('colgroup' => 'cols-1'),
         ));
     }
 
@@ -106,7 +111,7 @@ if ($worklist_patients->totalItemCount <= 0) { ?>
         );
     }
 
-    $this->widget('zii.widgets.grid.CGridView', array(
+    $this->widget('application.widgets.ColGroupGridView', array(
         'itemsCssClass' => 'standard',
         'dataProvider' => $worklist_patients,
         'htmlOptions' => array('id' => "worklist-table-{$worklist->id}", 'class' => ''),
