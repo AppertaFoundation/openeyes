@@ -17,7 +17,11 @@
         </div>
       <?php endif; ?>
   </h2>
-
+    <div class="event-title-extra-info">
+        <span class="extra-info"><?php
+            $months = ['Jan', 'Feb', 'Mar','Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] ;
+            echo date("d") .' '. $months[date("m")-1]. ' '.date("Y");?></span>
+    </div>
     <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php $this->renderPartial('//base/_messages'); ?>
 

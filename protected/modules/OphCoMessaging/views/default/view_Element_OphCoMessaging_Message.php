@@ -35,7 +35,20 @@ if (!@$comment) {
                     <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('for_the_attention_of_user_id')) ?></div>
                 </td>
                 <td>
-                    <div class="data-value <?= $element->urgent ? ' urgent' : '' ?>"><?php echo $element->for_the_attention_of_user->getFullnameAndTitle();?></div>
+                    <div class="data-value "><?php echo $element->for_the_attention_of_user->getFullnameAndTitle();?></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="data-label">Date sent</div>
+                </td>
+                <td>
+                    <div><?php
+                        $message_date = date_create($element->event->event_date);
+                        $months = ['Jan', 'Feb', 'Mar','Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] ;
+                        echo date_format($message_date,"d") .' '. $months[date_format($message_date,"m")-1]. ' '.date_format($message_date,"Y");
+                        ?>
+                    </div>
                 </td>
             </tr>
             <tr>
