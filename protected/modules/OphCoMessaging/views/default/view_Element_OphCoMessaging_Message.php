@@ -45,8 +45,7 @@ if (!@$comment) {
                 <td>
                     <div><?php
                         $message_date = date_create($element->event->event_date);
-                        $months = ['Jan', 'Feb', 'Mar','Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] ;
-                        echo date_format($message_date,"d") .' '. $months[date_format($message_date,"m")-1]. ' '.date_format($message_date,"Y");
+                        echo date_format($message_date,"d M Y") ;
                         ?>
                     </div>
                 </td>
