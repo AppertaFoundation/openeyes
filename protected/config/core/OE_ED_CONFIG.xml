@@ -2618,7 +2618,7 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           <GOTO_ID>OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome_status_id</GOTO_ID>
         </INDEX>
         <INDEX>
-          <PRIMARY_TERM>Examination Posterior Pole</PRIMARY_TERM>
+          <PRIMARY_TERM>Examination Macula</PRIMARY_TERM>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_PosteriorPole</OPEN_ELEMENT_CLASS_NAME>
           <INDEX_LIST>
             <INDEX>
