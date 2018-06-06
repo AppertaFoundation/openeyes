@@ -102,7 +102,7 @@
                      <i class="oe-i laterality <?php echo $side && ($side=='Right'||$side=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
                      <i class="oe-i laterality <?php echo $side && ($side=='Left'||$side=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
                    </td>
-                   <td><?= $date ?></td>
+                   <td><span class="oe-date"><?= Helper::convertDate2HTML($date) ?></span></td>
                  </tr>
             <?php } ?>
               </tbody>
@@ -125,7 +125,7 @@
                     <i class="oe-i laterality <?php echo $diagnosis->eye && ($diagnosis->eye->adjective=='Right'||$diagnosis->eye->adjective=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
                     <i class="oe-i laterality <?php echo $diagnosis->eye && ($diagnosis->eye->adjective=='Left'||$diagnosis->eye->adjective=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
                   </td>
-                  <td><?php echo $diagnosis->dateText?></td>
+                  <td><span class="oe-date"><?= Helper::convertDate2HTML($diagnosis->dateText) ?></span></td>
                 </tr>
               <?php }?>
               </tbody>

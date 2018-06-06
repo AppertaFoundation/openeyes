@@ -43,7 +43,7 @@
                                 <?php } ?>
                             </td>
                             <td><span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span></td>
-                            <td style="white-space: nowrap;"><?= $entry->getDatesDisplay() ?></td>
+                          <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
                         </tr>
                     <?php } ?>
                 <?php } ?>
@@ -59,7 +59,7 @@
                                 <?php } ?>
                             </td>
                             <td><span class="laterality <?= $entry->getLateralityDisplay() ?>"><?= $entry->getLateralityDisplay() ?></span></td>
-                            <td style="white-space: nowrap;"><?= $entry->getDatesDisplay() ?></td>
+                            <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></td>
                         </tr>
                     <?php } ?>
                 <?php } ?>

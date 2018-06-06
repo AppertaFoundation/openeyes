@@ -52,7 +52,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                   <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
                   <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
                 </td>
-                <td><?= $entry->getDatesDisplay() ?></td>
+                <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
               </tr>
             <?php endforeach; ?>
             </tbody>
@@ -74,7 +74,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
             <?php foreach ($stopped_systemic_meds as $entry): ?>
               <tr>
                 <td><?= $entry->getMedicationDisplay() ?></td>
-                <td><?= $entry->getDatesDisplay() ?></td>
+                <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
                 <td>
                     <?php if ($entry->prescription_item): ?>
                     <a href="<?= $this->getPrescriptionLink($entry) ?>"><span
@@ -112,7 +112,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                     <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
                     <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
                   </td>
-                  <td><?= $entry->getDatesDisplay() ?></td>
+                  <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
                 </tr>
               <?php endforeach; ?>
               </tbody>
@@ -134,7 +134,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
               <?php foreach ($stopped_eye_meds as $entry): ?>
                 <tr>
                   <td><?= $entry->getMedicationDisplay() ?></td>
-                  <td><?= $entry->getDatesDisplay() ?></td>
+                  <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
                   <td>
                       <?php if ($entry->prescription_item): ?>
                       <a href="<?= $this->getPrescriptionLink($entry) ?>">
