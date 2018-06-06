@@ -21,12 +21,12 @@
   This patient may be eligible for a Certificate of Visual Impairment
   <span class="right">
       <?php if ($show_create): ?>
-        <button class="button create-cvi hint green"
+        <a class="button create-cvi hint green"
                 href="<?php echo Yii::app()->createUrl('/OphCoCvi/Default/create',
                     array('patient_id' => $this->patient->id)); ?>">
           <i class="oe-i plus pro-theme"></i>
           Create Now
-        </button>
+        </a>
       <?php endif; ?>
     <i class="oe-i remove-circle small dismiss_cva_alert dismiss right"></i>
     </span>
