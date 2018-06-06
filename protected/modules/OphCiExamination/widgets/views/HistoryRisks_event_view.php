@@ -31,7 +31,7 @@
       <?php } else { ?>
           <div class="data-value flex-layout flex-top">
             <div class="cols-11">
-            <div class="cols-11" id="js-list-view-risks-pro" style>
+            <div class="cols-11" id="js-listview-risks-pro" style>
 <!--                Anticoagulants and alpha blockers being mandatory risk items to be displayed, we check if $element contains these in either yes, or no and if it doesn't in either, we display it as unchecked forcefully-->
                 <?php
                     $anticoagulants = false;
