@@ -71,7 +71,7 @@
                   <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('meridian')) ?>:</div>
                 </td>
                 <td>
-                  <div class="data-value"><?php echo $element->incision_type->name ?></div>
+                  <div class="data-value"><?php echo $element->meridian ?></div>
                 </td>
               </tr>
 
