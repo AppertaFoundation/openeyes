@@ -19,19 +19,18 @@ $navIconUrl = Yii::app()->getAssetManager()->getPublishedUrl(Yii::getPathOfAlias
 ?>
 
 <?php if ($flash_messages = Yii::app()->user->getFlashes()) { ?>
-			<?php
-            ksort($flash_messages);
+    <?php
+    ksort($flash_messages);
     foreach ($flash_messages as $flash_key => $flash_message) {
         $parts = explode('.', $flash_key);
         $class = isset($parts[1]) ? $parts[0] : 'info';
         $iconClass = ($class === 'warning') ? 'triangle' : $class;
         $id = isset($parts[1]) ? $parts[1] : $parts[0];
         ?>
-				<div id="flash-<?php echo $id; ?>" class="alert-box <?php echo $class?>">
-          <i class="oe-i <?php echo $iconClass; ?>"></i>
-					<?php echo $flash_message; ?>
-				</div>
-				<?php
+      <div id="flash-<?php echo $id; ?>" class="alert-box <?php echo $class ?>">
+          <?php echo $flash_message; ?>
+      </div>
+        <?php
     }
     ?>
-<?php }?>
+<?php } ?>
