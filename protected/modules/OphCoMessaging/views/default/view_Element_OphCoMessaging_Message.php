@@ -23,37 +23,52 @@ if (!@$comment) {
 }
 ?>
 
-<div class="element-data full-width">
-  <div class="data-row">
-    <div class="cols-2 column">
-      <div
-          class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('for_the_attention_of_user_id')) ?></div>
-    </div>
-    <div class="cols-10 column end">
-      <div
-          class="data-value <?= $element->urgent ? ' urgent' : '' ?>"><?php echo $element->for_the_attention_of_user->getFullnameAndTitle();
-          if ($element->urgent) {
-              echo ' <span class="priority oe-i exclamation small"></span>';
-          }
-          ?></div>
-    </div>
+<div class="element-data full-width flex-layout flex-top">
+  <div class="cols-5">
+    <table class="label-value">
+        <colgroup>
+            <col class="cols-5">
+        </colgroup>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('for_the_attention_of_user_id')) ?></div>
+                </td>
+                <td>
+                    <div class="data-value <?= $element->urgent ? ' urgent' : '' ?>"><?php echo $element->for_the_attention_of_user->getFullnameAndTitle();?></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('message_type_id')) ?></div>
+                </td>
+                <td>
+                    <div class="data-value"><?php echo $element->message_type ? $element->message_type->name : 'None' ?></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="data-label">Urgent</div>
+                </td>
+                <td>
+                    <div><?php
+                            if ($element->urgent) {
+                                echo ' <span class="highlighter">Yes</span>';
+                            } else {
+                                echo ' <span>No</span>';
+                            }
+                          ?>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+
 
   </div>
-  <div class="row data-row">
-    <div class="cols-2 column">
-      <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('message_type_id')) ?></div>
-    </div>
-    <div class="cols-10 column end">
-      <div class="data-value"><?php echo $element->message_type ? $element->message_type->name : 'None' ?></div>
-    </div>
-  </div>
-  <div class="row data-row">
-    <div class="cols-2 column">
-      <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('message_text')) ?></div>
-    </div>
-    <div class="cols-10 column end">
-      <div class="data-value"><?= Yii::app()->format->Ntext($element->message_text) ?></div>
-    </div>
+  <div class="cols-6">
+      <p class="data-value"><?= Yii::app()->format->Ntext($element->message_text) ?></p>
   </div>
     <?= $element->comments ? '<hr />' : '' ?>
     <?php foreach ($element->comments as $comment) { ?>
