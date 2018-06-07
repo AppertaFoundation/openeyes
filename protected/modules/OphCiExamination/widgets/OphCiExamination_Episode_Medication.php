@@ -30,17 +30,18 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                         continue;
                     }
 
-                    $meds_subspecialty = SiteSubspecialtyDrug::model()->findByAttributes(
-                        array(
-                            'drug_id' => $entry->drug_id,
-                            'subspecialty_id' => $subspecialty_id,
-                        ));
+                    $meds_tag = array();
 
-                    if ($entry['route_id'] != 1 || !$meds_subspecialty) {
+                    foreach ($entry->drug->tags as $item) {
+                        array_push($meds_tag, $item->name);
+                    }
+
+                    if ($entry['route_id'] != 1 || !$meds_tag || !in_array('Glaucoma', $meds_tag)) {
                         continue;
                     }
 
-                    $drug_name = $entry->drug_id ? $entry->drug->name : $entry->medication_drug->name;
+                    $durg_aliases = $entry->drug->aliases? ' ('.$entry->drug->aliases.')': '';
+                    $drug_name = $entry->drug_id ? $entry->drug->name.$durg_aliases : $entry->medication_drug->name;
                     $start_date = Helper::mysqlDate2JsTimestamp($entry->start_date);
                     $end_date = Helper::mysqlDate2JsTimestamp($entry->end_date);
                     $stop_reason = $entry->stop_reason ? $entry->stop_reason->name : null;
