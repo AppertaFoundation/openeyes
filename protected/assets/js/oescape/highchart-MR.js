@@ -22,10 +22,16 @@ var options_MR = {
   chart: {
     events: {
       load: function() {
-        highHelp.drawBanners(this,drugs);
+        highHelp.drawBanners(this,Object.keys(drugs[eye_side]));
       },
-      redraw: function(){
-        highHelp.drawBanners(this,drugs);
+      redraw: function(e){
+        if ($(this['renderTo']).hasClass('highcharts-right')){
+          side = 'right';
+        } else {
+          side = 'left';
+        }
+
+        highHelp.drawBanners(this,Object.keys(drugs[side]));
       }
     },
     className: 'oes-chart-mr-'+eye_side,	// suffix: -right -left or -both (eyes)

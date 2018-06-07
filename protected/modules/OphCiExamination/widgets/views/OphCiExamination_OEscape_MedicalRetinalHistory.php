@@ -49,7 +49,7 @@
     var sides = ['left', 'right'];
     var chart_MR = {};
     for (var i in sides) {
-      changeSetting(Object.keys(injections_data[sides[i]]), sides[i]);
+      changeSetting(injections_data, sides[i]);
       options_MR['title']['text']="Retinal thickness-Visual acuity ("+sides[i]+" Eye)";
       chart_MR[sides[i]] = new Highcharts.chart('highcharts-MR-'+sides[i], options_MR);
       drawMRSeries(chart_MR[sides[i]], VA_data, CRT_data, VA_lines_data, injections_data,va_axis);
