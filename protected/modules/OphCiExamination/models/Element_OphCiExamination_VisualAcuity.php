@@ -246,6 +246,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
 
         $options = array();
 
+
         // getting the conversion values
         foreach ($unit_values as $uv) {
             $idx = (string) $uv->base_value;
@@ -253,7 +254,7 @@ class Element_OphCiExamination_VisualAcuity extends \SplitEventTypeElement
             foreach ($tooltip_units as $tt) {
                 $last = null;
                 foreach ($tt->values as $tt_val) {
-                    if ($tt_val->base_value <= $uv->base_value) {
+                    if ($tt_val->base_value >= $uv->base_value) {
                         $val = $tt_val->value;
 
                         if ($last != null && (abs($uv->base_value - $tt_val->base_value) > abs($uv->base_value - $last->base_value))) {
