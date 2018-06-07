@@ -15,7 +15,6 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
         $events = $this->event_type->api->getEvents($this->episode->patient, false);
         $earlist_date = time() * 1000;
         $latest_date = time() * 1000;
-        $subspecialty_id = Subspecialty::model()->findByAttributes(array('name' => 'Glaucoma'))->id;
         foreach ($events as $event) {
             if ($meds = $event->getElementByClass('OEModule\OphCiExamination\models\HistoryMedications')) {
                 $widget = $this->createWidget('OEModule\OphCiExamination\widgets\HistoryMedications', array(
@@ -40,8 +39,8 @@ class OphCiExamination_Episode_Medication extends \EpisodeSummaryWidget
                         continue;
                     }
 
-                    $durg_aliases = $entry->drug->aliases? ' ('.$entry->drug->aliases.')': '';
-                    $drug_name = $entry->drug_id ? $entry->drug->name.$durg_aliases : $entry->medication_drug->name;
+                    $drug_aliases = $entry->drug->aliases? ' ('.$entry->drug->aliases.')': '';
+                    $drug_name = $entry->drug_id ? $entry->drug->name.$drug_aliases : $entry->medication_drug->name;
                     $start_date = Helper::mysqlDate2JsTimestamp($entry->start_date);
                     $end_date = Helper::mysqlDate2JsTimestamp($entry->end_date);
                     $stop_reason = $entry->stop_reason ? $entry->stop_reason->name : null;
