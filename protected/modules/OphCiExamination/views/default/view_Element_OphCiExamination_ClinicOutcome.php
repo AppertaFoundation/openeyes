@@ -18,9 +18,10 @@
 ?>
 <div class="element-data full-width">
   <div class="data-row">
-      <?php echo $element->status ?>
+      <?php if($element->status->name !== 'Follow-up') { echo $element->status; } ?>
+
       <?php if ($element->status && $element->status->followup) { ?>
-        in
+          <?php if($element->status->name !== 'Follow-up'):?>in<?php endif; ?>
           <?php echo $element->getFollowUp() ?>
         with
           <?php echo $element->role->name ?>
