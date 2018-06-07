@@ -57,11 +57,9 @@ var optionsIOP = {
   },
 
   xAxis: {
+    visible: false,
     className: "oes-hide-xAxis-lines", // can't make visible: false because of the plotlines!
     type: 'datetime',
-    title: {
-      text: '',
-    },
 
     crosshair: {
       snap:false,
