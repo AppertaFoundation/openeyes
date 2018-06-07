@@ -57,7 +57,6 @@ var optionsIOP = {
   },
 
   xAxis: {
-    visible: false,
     className: "oes-hide-xAxis-lines", // can't make visible: false because of the plotlines!
     type: 'datetime',
 
@@ -66,7 +65,7 @@ var optionsIOP = {
     },
 
     labels: {
-      enabled:true,
+      enabled:false,
       y:25				// move labels below ticks
     },
     tickPixelInterval: 100,  // if this is too high the last tick isn't shown (default 100)
