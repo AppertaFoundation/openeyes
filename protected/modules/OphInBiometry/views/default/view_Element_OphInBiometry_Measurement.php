@@ -30,16 +30,18 @@ if ($element->event->id > 0) {
         <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
             <div class="<?= $eye_side ?>-eye">
                 <?php if ($element->hasEye($eye_side)) { ?>
-                    <div class="eye-icon-header">
-                        <?php if ($eye_side == 'right') { ?>
-                            <i class="oe-i laterality  R pad"></i>
-                            </i><i class="oe-i laterality NA pad"></i>
-                        <?php } else { ?>
-                            <i class="oe-i laterality NA pad"></i>
-                            <i class="oe-i laterality  L pad"></i>
-                        <?php } ?>
-                    </div> <?php
-                    $this->renderPartial('view_Element_OphInBiometry_Measurement_fields',
+                  <div class="eye-icon-header">
+                      <span class="oe-eye-lat-icons">
+                    <?php if ($eye_side == 'right') { ?>
+                      <i class="oe-i laterality  R pad"></i>
+                      <i class="oe-i laterality NA pad"></i>
+                    <?php } else { ?>
+                      <i class="oe-i laterality NA pad"></i>
+                      <i class="oe-i laterality  L pad"></i>
+                    <?php } ?>
+                      </span>
+                  </div>
+                    <?php $this->renderPartial('view_Element_OphInBiometry_Measurement_fields',
                         array('side' => $eye_side, 'element' => $element));
                 } else { ?>
                     <div class="data-value not-recorded">Not recorded</div>

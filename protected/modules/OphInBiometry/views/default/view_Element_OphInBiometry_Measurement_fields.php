@@ -16,6 +16,7 @@
             </td>
             <td colspan="2"></td>
             <td>
+              <span class="oe-eye-lat-icons">
                 <?php if ($side == 'right') { ?>
                     <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
                     <i class="oe-i laterality NA small pad"></i>
@@ -23,7 +24,7 @@
                     <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
                     <i class="oe-i laterality NA small pad"></i>
                 <?php } ?>
-            </td>
+              </span>
             </td>
         </tr>
         <tr>
@@ -82,14 +83,15 @@
                 } ?>
             </td>
             <td>
+              <span class="oe-eye-lat-icons">
                 <?php if ($side == 'right') { ?>
-                    <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
-                    <i class="oe-i laterality NA small pad"></i>
+                  <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                  <i class="oe-i laterality NA small pad"></i>
                 <?php } else { ?>
-                    <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
-                    <i class="oe-i laterality NA small pad"></i>
+                  <i class="oe-i laterality small <?php echo $side == 'right' ? 'R' : 'L' ?>"></i>
+                  <i class="oe-i laterality NA small pad"></i>
                 <?php } ?>
-            </td>
+              </span>
             </td>
         </tr>
         <tr>

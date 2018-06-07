@@ -33,8 +33,10 @@ $widget = $this;
                     <?= $diag->disorder; ?>
                 </td>
                 <td>
-                  <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective=='Right'||$diag->side->adjective=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
-                  <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective=='Left'||$diag->side->adjective=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
+                  <span class="oe-eye-lat-icons">
+                    <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective == 'Right' || $diag->side->adjective == 'Bilateral') ? 'R' : 'NA' ?> small pad"></i>
+                    <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective == 'Left' || $diag->side->adjective == 'Bilateral') ? 'L' : 'NA' ?> small pad"></i>
+                  </span>
                 </td>
                 <td>
                     <?= $diag->getDisplayDate(); ?>
@@ -48,8 +50,10 @@ $widget = $this;
                     <?= $diag->disorder; ?>
                 </td>
                 <td>
-                  <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective=='Right'||$diag->side->adjective=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
-                  <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective=='Left'||$diag->side->adjective=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
+                  <span class="oe-eye-lat-icons">
+                    <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective=='Right'||$diag->side->adjective=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
+                    <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective=='Left'||$diag->side->adjective=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
+                  </span>
                 </td>
                 <td>
                     <?= $diag->getDisplayDate(); ?>
@@ -63,8 +67,10 @@ $widget = $this;
                     <?= $diag->disorder; ?>
                 </td>
                 <td>
-                  <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective=='Right'||$diag->side->adjective=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
-                  <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective=='Left'||$diag->side->adjective=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
+                  <span class="oe-eye-lat-icons">
+                    <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective=='Right'||$diag->side->adjective=='Bilateral') ? 'R': 'NA' ?> small pad"></i>
+                    <i class="oe-i laterality <?php echo $diag->side && ($diag->side->adjective=='Left'||$diag->side->adjective=='Bilateral') ? 'L': 'NA' ?> small pad"></i>
+                  </span>
                 </td>
                 <td>
                     <?= $diag->getDisplayDate(); ?>

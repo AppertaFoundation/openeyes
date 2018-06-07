@@ -43,8 +43,10 @@ $principals = $this->episode->patient->episodes;
               </strong>
             </td>
             <td>
-              <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
-              <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
+              <span class="oe-eye-lat-icons">
+                <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
+                <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
+              </span>
             </td>
             <td></td>
           </tr>
@@ -59,8 +61,10 @@ $principals = $this->episode->patient->episodes;
                         data-tooltip-content="Principal diagnosis for <?= $principal->getSubspecialtyText(); ?>"></span>
                 </td>
                 <td>
-                  <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
-                  <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
+                  <span class="oe-eye-lat-icons">
+                      <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
+                      <i class="oe-i laterality <?php echo in_array($principal->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
+                  </span>
                 </td>
                 <td>
                     <?php echo $principal->NHSDate('start_date'); ?>
@@ -76,8 +80,10 @@ $principals = $this->episode->patient->episodes;
                 <?php echo $diagnosis->disorder->term ?>
             </td>
             <td>
-              <i class="oe-i laterality <?php echo in_array($diagnosis->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
-              <i class="oe-i laterality <?php echo in_array($diagnosis->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
+              <span class="oe-eye-lat-icons">
+                <i class="oe-i laterality <?php echo in_array($diagnosis->eye_id, array(\Eye::RIGHT, \Eye::BOTH)) ? 'R': 'NA' ?> small pad"></i>
+                <i class="oe-i laterality <?php echo in_array($diagnosis->eye_id, array(\Eye::LEFT, \Eye::BOTH)) ? 'L': 'NA' ?> small pad"></i>
+              </span>
             </td>
             <td></td>
           </tr>

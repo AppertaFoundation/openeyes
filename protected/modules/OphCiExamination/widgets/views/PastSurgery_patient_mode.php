@@ -31,8 +31,10 @@
           </td>
           <td>
               <?php $side = array_key_exists('side', $operation) ? $operation['side']: (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
+            <span class="oe-eye-lat-icons">
                 <i class="oe-i laterality <?php echo  $side=='Right'||$side=='Both'||$side=='Bilateral'? 'R':'NA' ?> small pad"></i>
                 <i class="oe-i laterality <?php echo $side=='Left'||$side=='Both'||$side=='Bilateral'? 'L':'NA' ?> small pad"></i>
+            </span>
           </td>
           <td>
           </td>

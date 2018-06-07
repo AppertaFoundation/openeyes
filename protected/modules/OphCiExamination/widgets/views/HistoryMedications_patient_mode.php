@@ -49,8 +49,10 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
               <tr>
                 <td><?= $entry->getMedicationDisplay() ?></td>
                 <td><?php $laterality = $entry->getLateralityDisplay(); ?>
-                  <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
-                  <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                  <span class="oe-eye-lat-icons">
+                    <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
+                    <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                  </span>
                 </td>
                 <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
               </tr>
@@ -109,8 +111,10 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
                   <td><?= $entry->getMedicationDisplay() ?></td>
                   <td>
                       <?php $laterality = $entry->getLateralityDisplay(); ?>
-                    <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
-                    <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                    <span class="oe-eye-lat-icons">
+                      <i class="oe-i laterality small <?php echo $laterality == 'R' || $laterality == 'B' ? 'R' : 'NA' ?>"></i>
+                      <i class="oe-i laterality small <?php echo $laterality == 'L' || $laterality == 'B' ? 'L' : 'NA' ?>"></i>
+                    </span>
                   </td>
                   <td><span class="oe-date"><?= Helper::convertDate2HTML($entry->getDatesDisplay()) ?></span></td>
                 </tr>
