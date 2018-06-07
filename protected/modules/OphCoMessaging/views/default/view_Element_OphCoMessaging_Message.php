@@ -22,6 +22,15 @@ if (!@$comment) {
     $comment = new \OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment();
 }
 ?>
+<?php
+$text = Helper::convertDate2NHS($element->event->event_date);
+echo '<script type="text/javascript">
+        var span = document.createElement("span");
+        span.className="extra-info";
+        span.innerHTML = "'.$text.'";
+        window.onload = function() { document.getElementById("event-title-extra-info").appendChild(span); };
+      </script>';
+?>
 
 <div class="element-data full-width flex-layout flex-top">
   <div class="cols-5">
@@ -30,6 +39,17 @@ if (!@$comment) {
             <col class="cols-5">
         </colgroup>
         <tbody>
+            <tr>
+                <td>
+                    <div class="data-label">From</div>
+                </td>
+                <td>
+                    <?php
+                        $user = User::model()->findByPk(Yii::app()->user->id);
+                        echo $user->title. ' '. $user->first_name. ' '. $user->last_name;
+                    ?>
+                </td>
+            </tr>
             <tr>
                 <td>
                     <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('for_the_attention_of_user_id')) ?></div>
@@ -44,9 +64,7 @@ if (!@$comment) {
                 </td>
                 <td>
                     <div><?php
-                        $message_date = date_create($element->event->event_date);
-                        echo date_format($message_date,"d M Y") ;
-                        ?>
+                        echo Helper::convertDate2NHS($element->event->event_date);?>
                     </div>
                 </td>
             </tr>
