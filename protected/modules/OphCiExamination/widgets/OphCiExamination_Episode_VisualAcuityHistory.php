@@ -51,6 +51,10 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
     public function configureChart()
     {
         $va_ticks = array();
+        $va_ticks[] = array(1, 'NPL');
+        $va_ticks[] = array(5, 'PL');
+        $va_ticks[] = array(10, 'HM');
+        $va_ticks[] = array(15, 'CF');
         foreach ($this->va_unit->selectableValues as $value) {
             if ($value->base_value < 10 || ($this->va_unit->name == 'ETDRS Letters' && $value->value % 10)) {
                 continue;
@@ -110,11 +114,14 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
     public function getVaData(){
         $va_data_list = array('right'=>array(), 'left'=>array());
         foreach ($this->event_type->api->getElements('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity', $this->episode->patient, false) as $va) {
-            if (($reading = $va->getBestReading('right'))) {
-                array_push($va_data_list['right'],array( 'y'=>(float)$reading->value,'x'=>Helper::mysqlDate2JsTimestamp($va->event->event_date)));
-            }
-            if (($reading = $va->getBestReading('left'))) {
-                array_push($va_data_list['left'],array('y'=>(float)$reading->value, 'x'=>Helper::mysqlDate2JsTimestamp($va->event->event_date)));
+            foreach (['left', 'right'] as $side){
+                if ($reading = $va->getBestReading($side)){
+                    $va_value = (float)$reading->value;
+                    if ($va_value < 5 && $va_value > 1){
+                        $va_value = $va_value* 5;
+                    }
+                    array_push($va_data_list[$side],array( 'y'=>$va_value,'x'=>Helper::mysqlDate2JsTimestamp($va->event->event_date)));
+                }
             }
         }
         foreach (['left', 'right'] as $side){

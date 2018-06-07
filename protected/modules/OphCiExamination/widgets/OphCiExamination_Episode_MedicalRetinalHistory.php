@@ -36,8 +36,12 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
         $this->va_unit = models\OphCiExamination_VisualAcuityUnit::model()->findByPk($va_unit_id);
 
         $va_ticks = array();
+        $va_ticks[] = array(1, 'NPL');
+        $va_ticks[] = array(5, 'PL');
+        $va_ticks[] = array(10, 'HM');
+        $va_ticks[] = array(15, 'CF');
         foreach ($this->va_unit->selectableValues as $value) {
-            if ($value->base_value < 10 || ($this->va_unit->name == 'ETDRS Letters' && $value->value % 10)) {
+            if ($value->base_value < 5 || ($this->va_unit->name == 'ETDRS Letters' && $value->value % 10)) {
                 continue;
             }
 
@@ -45,6 +49,7 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
 
             $va_ticks[] = array($value->base_value, $label);
         }
+
 
         $this->va_ticks = $va_ticks;
         $this->va_axis = "{$this->va_unit->name}";
