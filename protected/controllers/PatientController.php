@@ -93,13 +93,12 @@ class PatientController extends BaseController
     public function behaviors()
     {
         return array(
-            'CreateEventBehavior' => array(
-                'class' => 'application.behaviors.CreateEventControllerBehavior',
-            ),
+            'CreateEventBehavior' => ['class' => 'application.behaviors.CreateEventControllerBehavior',],
+            'WorklistBehavior' => ['class' => 'application.behaviors.WorklistBehavior',],
         );
     }
 
-    protected function beforeAction($action)
+    public function beforeAction($action)
     {
         parent::storeData();
 

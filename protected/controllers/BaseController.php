@@ -71,6 +71,11 @@ class BaseController extends Controller
         $filter->filter($filterChain);
     }
 
+    public function events()
+    {
+        return ['onAfterAction' => 'afterAction'];
+    }
+
     /**
      * List of print actions.
      *
@@ -122,6 +127,17 @@ class BaseController extends Controller
 
         // Prevent certain assets from being outputted in certain conditions.
         $assetManager->adjustScriptMapping();
+    }
+
+
+    public function onAfterAction($event)
+    {
+        $this->raiseEvent('onAfterAction',$event);
+    }
+
+    public function afterAction($action)
+    {
+        $this->onAfterAction(new \CEvent($this),["action" => $action]);
     }
 
     protected function beforeAction($action)
