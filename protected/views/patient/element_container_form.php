@@ -41,9 +41,12 @@ if ($this->isHiddenInUI($element)) {
 		<!-- Element title -->
 		<?php if (!@$child) {?>
 			<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+            <!-- Add a element remove flag which is used when saving data -->
+            <input type="hidden" name="<?php echo CHtml::modelName($element->elementType->class_name)?>[element_removed]"value="0">
 		<?php }else{?>
 			<h4 class="sub-element-title"><?php echo $element->elementType->name?></h4>
 		<?php }?>
+            <?php ?>
 
 		<!-- Additional element title information -->
 		<?php if (isset($this->clips['element-title-additional'])){?>
