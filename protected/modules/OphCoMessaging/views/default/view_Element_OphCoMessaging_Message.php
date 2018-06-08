@@ -22,15 +22,6 @@ if (!@$comment) {
     $comment = new \OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment();
 }
 ?>
-<?php
-$text = Helper::convertDate2NHS($element->event->event_date);
-echo '<script type="text/javascript">
-        var span = document.createElement("span");
-        span.className="extra-info";
-        span.innerHTML = "'.$text.'";
-        window.onload = function() { document.getElementById("event-title-extra-info").appendChild(span); };
-      </script>';
-?>
 
 <div class="element-data full-width flex-layout flex-top">
   <div class="cols-5">
@@ -45,8 +36,7 @@ echo '<script type="text/javascript">
                 </td>
                 <td>
                     <?php
-                        $user = User::model()->findByPk(Yii::app()->user->id);
-                        echo $user->title. ' '. $user->first_name. ' '. $user->last_name;
+                        echo $element->user->getFullnameAndTitle();
                     ?>
                 </td>
             </tr>
@@ -63,9 +53,7 @@ echo '<script type="text/javascript">
                     <div class="data-label">Date sent</div>
                 </td>
                 <td>
-                    <div><?php
-                        echo Helper::convertDate2NHS($element->event->event_date);?>
-                    </div>
+                    <?php echo Helper::convertDate2NHS($element->event->event_date);?>
                 </td>
             </tr>
             <tr>
@@ -82,11 +70,11 @@ echo '<script type="text/javascript">
                 </td>
                 <td>
                     <div><?php
-                            if ($element->urgent) {
-                                echo ' <span class="highlighter">Yes</span>';
-                            } else {
-                                echo ' <span>No</span>';
-                            }
+                            if ($element->urgent) { ?>
+                                <span class="highlighter">Yes</span>
+                            <?php } else {
+                                ?> <span>No</span>
+                            <?php }
                           ?>
                     </div>
                 </td>

@@ -18,8 +18,6 @@
       <?php endif; ?>
   </h2>
 
-    <div class="event-title-extra-info" id="event-title-extra-info"></div>
-
     <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php $this->renderPartial('//base/_messages'); ?>
 
