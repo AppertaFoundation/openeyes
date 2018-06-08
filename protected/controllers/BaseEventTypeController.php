@@ -1201,14 +1201,10 @@ class BaseEventTypeController extends BaseModuleController
 
 
         /**
-         * Check if the element with the key has been set and if it has a flag called element_removed
-         * If it has data and it doesn't have the flag proceed ,
-         * If it does check if the value is not 1(True)
+         * Check if the element has the element removed flag set and if its not set to 0
          */
-        if (isset($data[$f_key]) && !isset($data[$f_key]["element_removed"]) ||
-            isset($data[$f_key]["element_removed"]) && !$data[$f_key]["element_removed"]) {
+        if (isset($data[$f_key]["element_removed"])&& !$data[$f_key]["element_removed"]) {
             $keys = array_keys($data[$f_key]);
-
             if (is_array($data[$f_key][$keys[0]]) && !count(array_filter(array_keys($data[$f_key]), 'is_string'))) {
                 // there is more than one element of this type
                 $pk_field = $el_cls_name::model()->tableSchema->primaryKey;
