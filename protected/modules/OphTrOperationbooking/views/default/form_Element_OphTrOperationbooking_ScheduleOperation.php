@@ -14,66 +14,76 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
- ?>
-	<fieldset class="element-fields">
-		<?php echo $form->radioButtons($element, 'schedule_options_id', 'OphTrOperationbooking_ScheduleOperation_Options'); ?>
-		<div class="flex-layout flex-left">
-			<label class="cols-2">
-				<?php echo $element->getAttributeLabel('patient_unavailables'); ?>:
-			</label>
-			<div class="cols-10">
-				<table class="blank" style="display: <?php echo $element->patient_unavailables? '': 'none' ?>">
-					<thead>
-					<tr>
-						<th>Start Date</th>
-						<th>End Date</th>
-						<th>Reason</th>
-						<th><div class="hide-offscreen">Actions</div></th>
-					</tr>
-					</thead>
-					<tbody class="unavailables">
-					<?php
-          if ($element->patient_unavailables) {
-            foreach ($element->patient_unavailables as $key => $unavailable) {
-              $this->renderPartial('form_OphTrOperationbooking_ScheduleOperation_PatientUnavailable', array(
-                  'key' => $key,
-                  'unavailable' => $unavailable,
-                  'form' => $form,
-                  'element_name' => get_class($element),
-                  'dateFieldWidget' => 'TextField'
-              ));
-              ++$key;
-              }}
-              ?>
-					</tbody>
-					<tfoot>
-					</tfoot>
-				</table>
-        <button class="secondary small addUnavailable" type="button">Add</button>
-			</div>
-		</div>
-	</fieldset>
+?>
+<div class="element-fields full-width flex-layout">
+    <div class="cols-11">
+        <table class="cols-6 last-left">
+            <tbody>
+            <tr>
+                <td>
+                    Schedule options
+                </td>
+                <td>
+                    <?php echo $form->radioButtons($element, 'schedule_options_id', 'OphTrOperationbooking_ScheduleOperation_Options', '',
+                        '', '', '', '', array('nowrapper' => true)); ?>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <hr>
+        <?php echo $element->getAttributeLabel('patient_unavailables'); ?>:
+        <table class="cols-11">
+            <thead>
+            <tr>
+                <th><i class="oe-i start small pad"></i>Start</th>
+                <th><i class="oe-i stop small pad"></i>End</th>
+                <th>Reason</th>
+                <th></th>
+            </tr>
+
+            </thead>
+            <tbody class="unavailables">
+                <?php
+                if ($element->patient_unavailables) {
+                    foreach ($element->patient_unavailables as $key => $unavailable) {
+                        $this->renderPartial('form_OphTrOperationbooking_ScheduleOperation_PatientUnavailable', array(
+                            'key' => $key,
+                            'unavailable' => $unavailable,
+                            'form' => $form,
+                            'element_name' => get_class($element),
+                            'dateFieldWidget' => 'TextField',
+                        ));
+                        ++$key;
+                    }
+                }
+                ?>
+        </table>
+    </div>
+    <div class="flex-item-bottom">
+        <button class="button hint green addUnavailable"><i class="oe-i plus pro-theme "></i></button>
+    </div>
+</div>
 <script type="text/javascript">
-  $(document).ready(function() {
-    $('.unavailables').find('[id$="date"]').each(function() {
-      pickmeup('#'+this.getAttribute('id'), {
-        format: 'd b Y',
-        hide_on_select: true,
-        default_date: false
-      });
+    $(document).ready(function () {
+        $('.unavailables').find('[id$="date"]').each(function () {
+            pickmeup('#' + this.getAttribute('id'), {
+                format: 'd b Y',
+                hide_on_select: true,
+                default_date: false
+            });
+        });
     });
-  });
 </script>
 <script id="intraocularpressure_reading_template" type="text/html">
     <?php
     $template_unavailable = new OphTrOperationbooking_ScheduleOperation_PatientUnavailable();
 
     $this->renderPartial('form_OphTrOperationbooking_ScheduleOperation_PatientUnavailable', array(
-            'key' => '{{key}}',
-            'unavailable' => $template_unavailable,
-            'form' => $form,
-            'element_name' => get_class($element),
-            'dateFieldWidget' => 'TextField'
+        'key' => '{{key}}',
+        'unavailable' => $template_unavailable,
+        'form' => $form,
+        'element_name' => get_class($element),
+        'dateFieldWidget' => 'TextField'
     ));
     ?>
 </script>

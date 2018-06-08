@@ -101,77 +101,77 @@
         </div>
       </fieldset>
     </div><?php $totalDuration = 0; ?>
-  <div class="cols-6">
-    <div id="procedureList_<?php echo $identifier ?>" class="panel procedures"
-         style="<?php if (empty($selected_procedures)) { ?> display: none;<?php } ?>">
-      <table class="plain">
-        <thead>
-        <tr>
-          <th>Procedure</th>
-            <?php if ($durations) { ?>
-              <th>Duration</th>
-            <?php } ?>
-          <th></th>
-        </tr>
-        </thead>
-        <tbody class="body">
-        <?php
-        if (!empty($selected_procedures)) {
-            foreach ($selected_procedures as $procedure) {
-                $totalDuration += $procedure['default_duration'];
-                ?>
-              <tr class="item">
-                <td class="procedure">
+      <div class="cols-6">
+          <div id="procedureList_<?php echo $identifier ?>" class="panel procedures"
+               style="<?php if (empty($selected_procedures)) { ?> display: none;<?php } ?>">
+              <table class="plain">
+                  <thead>
+                  <tr>
+                      <th>Procedure</th>
+                      <?php if ($durations) { ?>
+                          <th>Duration</th>
+                      <?php } ?>
+                      <th></th>
+                  </tr>
+                  </thead>
+                  <tbody class="body">
+                  <?php
+                  if (!empty($selected_procedures)) {
+                      foreach ($selected_procedures as $procedure) {
+                          $totalDuration += $procedure['default_duration'];
+                          ?>
+                          <tr class="item">
+                              <td class="procedure">
                   <span class="field"><?= CHtml::hiddenField('Procedures_' . $identifier . '[]',
                           $procedure['id']); ?></span>
-                  <span class="value"><?= $procedure['term']; ?></span>
-                </td>
-                  <?php if ($durations) { ?>
-                    <td class="duration">
-                        <?php echo $procedure['default_duration'] ?> mins
-                    </td>
-                  <?php } ?>
-                <td>
+                                  <span class="value"><?= $procedure['term']; ?></span>
+                              </td>
+                              <?php if ($durations) { ?>
+                                  <td class="duration">
+                                      <?php echo $procedure['default_duration'] ?> mins
+                                  </td>
+                              <?php } ?>
+                              <td>
                   <span class="removeProcedure">
                     <i class="oe-i remove-circle small"></i>
                   </span>
-                </td>
-              </tr>
-            <?php }
-            if (isset($_POST[$class]['total_duration_' . $identifier])) {
-                $total_duration = $_POST[$class]['total_duration_' . $identifier];
-            }
-        } ?>
-        </tbody>
-      </table>
-        <?php if ($durations) { ?>
-          <table class="grid durations">
-            <tfoot>
-            <tr>
-              <td>
-                Calculated Total Duration:
-              </td>
-              <td id="projected_duration_<?php echo $identifier ?>">
-                  <?php echo CHtml::encode($totalDuration) ?> mins
-              </td>
-              <td>
-                Estimated Total Duration:
-              </td>
-              <td>
-                <input
-                    type="text"
-                    value="<?php echo $total_duration ?>"
-                    id="<?php echo $class ?>_total_duration_<?php echo $identifier ?>"
-                    name="<?php echo $class ?>[total_duration_<?php echo $identifier ?>]"
-                    style="width:60px"
-                />
-              </td>
-            </tr>
-            </tfoot>
-          </table>
-        <?php } ?>
-    </div>
-  </div>
+                              </td>
+                          </tr>
+                      <?php }
+                      if (isset($_POST[$class]['total_duration_' . $identifier])) {
+                          $total_duration = $_POST[$class]['total_duration_' . $identifier];
+                      }
+                  } ?>
+                  </tbody>
+              </table>
+              <?php if ($durations) { ?>
+                  <table class="grid durations">
+                      <tfoot>
+                      <tr>
+                          <td>
+                              Calculated Total Duration:
+                          </td>
+                          <td id="projected_duration_<?php echo $identifier ?>">
+                              <?php echo CHtml::encode($totalDuration) ?> mins
+                          </td>
+                          <td>
+                              Estimated Total Duration:
+                          </td>
+                          <td>
+                              <input
+                                      type="text"
+                                      value="<?php echo $total_duration ?>"
+                                      id="<?php echo $class ?>_total_duration_<?php echo $identifier ?>"
+                                      name="<?php echo $class ?>[total_duration_<?php echo $identifier ?>]"
+                                      style="width:60px"
+                              />
+                          </td>
+                      </tr>
+                      </tfoot>
+                  </table>
+              <?php } ?>
+          </div>
+      </div>
 </div>
 
 <script type="text/javascript">

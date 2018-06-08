@@ -16,49 +16,45 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="flex-layout flex-left">
-    <div
-        class="cols-<?php echo $layoutColumns['label']; ?> column"
-        style="<?=!($label)?"display: none;":""?>" >
+<td>
+    <div class="cols-<?php echo $layoutColumns['label']; ?> column"
+         style="<?=!($label)?"display: none;":""?>" >
         <label for="<?php echo "{$class}_{$field}"; ?>">Diagnosis:</label>
     </div>
-    <div class="cols-<?php echo $layoutColumns['field']; ?> column end">
-
-        <!-- Here we show the selected diagnosis -->
-        <div class="panel diagnosis<?php if (!$label) { ?> hide<?php } ?>"
-            id="enteredDiagnosisText"
-            style="<?=!($label)?"display: none;":""?>">
-            <?php echo $label ?>
-            <?php
-            $clear_diagnosis = '';
-            if ($allowClear) {
-                $clear_diagnosis = Chtml::link('(Remove)', "#", array("class" => "clear-diagnosis-widget"));
-                echo $clear_diagnosis;
-            } ?>
-        </div>
-
-        <div class="field-row">
-            <?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis')) ?>
-        </div>
-        <div class="field-row">
-            <?php $this->controller->renderPartial('//disorder/disorderAutoComplete', array(
-                'class' => $class,
-                'name' => $field,
-                'code' => $code,
-                'clear_diagnosis' => $clear_diagnosis,
-                'value' => $value,
-                'placeholder' => 'or type the first few characters of a diagnosis',
-                'form' => $form,
-                'callback' => $callback
-            ));
-            ?>
-        </div>
+</td>
+<td>
+    <div class="panel diagnosis<?php if (!$label) { ?> hide<?php } ?>"
+         id="enteredDiagnosisText"
+         style="<?=!($label)?"display: none;":""?>">
+        <?php echo $label ?>
+        <?php
+        $clear_diagnosis = '';
+        if ($allowClear) {
+            $clear_diagnosis = Chtml::link('(Remove)', "#", array("class" => "clear-diagnosis-widget"));
+            echo $clear_diagnosis;
+        } ?>
     </div>
-</div>
+</td>
+<td>
+    <?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis')) ?>
+</td>
+<td>
+    <?php $this->controller->renderPartial('//disorder/disorderAutoComplete', array(
+        'class' => $class,
+        'name' => $field,
+        'code' => $code,
+        'clear_diagnosis' => $clear_diagnosis,
+        'value' => $value,
+        'placeholder' => 'or type the first few characters of a diagnosis',
+        'form' => $form,
+        'callback' => $callback
+    ));
+    ?>
+</td>
 
 <script type="text/javascript">
     $('#<?php echo $class?>_<?php echo $field?>').change(function () {
-      var selected = $('option:selected', this);
-      select(undefined, {item: {id: selected.val(), value: selected.text()}});
+        var selected = $('option:selected', this);
+        select(undefined, {item: {id: selected.val(), value: selected.text()}});
     });
 </script>

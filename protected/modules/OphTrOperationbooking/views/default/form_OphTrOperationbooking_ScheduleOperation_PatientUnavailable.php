@@ -18,7 +18,7 @@
 <?php
 $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
 ?>
-<tr class="patient-unavailable" data-key="<?php echo $key ?>">
+<tr data-key="<?php echo $key ?>">
 	<td>
 		<?php if (isset($unavailable) && $unavailable->id) { ?>
 			<input type="hidden" name="<?php echo $element_name; ?>[patient_unavailables][<?php echo $key ?>][id]" value="<?php echo $unavailable->id?>" />
