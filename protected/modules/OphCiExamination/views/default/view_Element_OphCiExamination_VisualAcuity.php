@@ -27,7 +27,7 @@ foreach ($all_units as $unit) {
 }
 
 $cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
-if ($cvi_api) {
+if ($cvi_api && $this->action->id !== 'viewpreviouselements') {
     echo $cvi_api->renderAlertForVA($this->patient, $element, true);
 }
 
