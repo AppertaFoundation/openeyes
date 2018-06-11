@@ -2415,7 +2415,9 @@ class BaseEventTypeController extends BaseModuleController
     protected function updateHotlistItem(Patient $patient)
     {
         $user = Yii::app()->user;
-        $hotlistItem = UserHotlistItem::model()->find('created_user_id = :user_id AND patient_id = :patient_id AND DATE(last_modified_date) = :current_date',
+        $hotlistItem = UserHotlistItem::model()->find(
+            'created_user_id = :user_id AND patient_id = :patient_id 
+                       AND (DATE(last_modified_date) = :current_date OR is_open = 1)',
             array(':user_id' => $user->id, ':patient_id' => $patient->id, ':current_date' => date('Y-m-d')));
 
         if (!$hotlistItem) {
