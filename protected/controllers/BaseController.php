@@ -73,7 +73,10 @@ class BaseController extends Controller
 
     public function events()
     {
-        return ['onAfterAction' => 'afterAction'];
+        return [
+            'onBeforeAction' => 'beforeAction',
+            'onAfterAction' => 'afterAction',
+        ];
     }
 
     /**
@@ -129,19 +132,25 @@ class BaseController extends Controller
         $assetManager->adjustScriptMapping();
     }
 
-
-    public function onAfterAction($event)
+    public function onBeforeAction(\CEvent $event)
     {
-        $this->raiseEvent('onAfterAction',$event);
+        $this->raiseEvent('onBeforeAction', $event);
+    }
+
+    public function onAfterAction(\CEvent $event)
+    {
+        $this->raiseEvent('onAfterAction', $event);
     }
 
     public function afterAction($action)
     {
-        $this->onAfterAction(new \CEvent($this),["action" => $action]);
+        $this->onAfterAction(new \CEvent($this, ["action" => $action]));
     }
 
     protected function beforeAction($action)
     {
+        $this->onBeforeAction(new \CEvent($this, ["action" => $action]));
+
         $app = Yii::app();
 
         foreach (SettingMetadata::model()->findAll() as $metadata) {

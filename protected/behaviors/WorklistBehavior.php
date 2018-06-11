@@ -28,19 +28,56 @@ class WorklistBehavior extends CBehavior
     public function events()
     {
         return array_merge(parent::events(), [
-            'onAfterAction' => 'afterAction',
+            'onBeforeAction' => 'beforeAction',
+            //'onAfterAction' => 'afterAction',
         ]);
     }
 
-    public function afterAction(\CEvent $event)
+    public function beforeAction(\CEvent $event)
     {
-        $referrer = \Yii::app()->request->getQuery('referrer', null);
-        if($referrer === 'worklist' && $this->owner->patient->id){
-            //store the patient ID to use later when we create an event
-            $this->worklist_manager->setWorklistPatientId($this->owner->patient->id);
-        } else {
-            $this->worklist_manager->clearWorklistPatientId();
+        $action = isset($event->params['action']) ? $event->params['action'] : null;
+        $patient_id = $this->owner->patient->id;
+        $worklist_patient_id = $this->worklist_manager->getWorklistPatientId();
+        $worklist_patient = $worklist_patient_id ? WorklistPatient::model()->findByPk($worklist_patient_id) : null;
+
+        if ($action && ($action->id === 'create') && $this->owner->event) {
+
+            if ($worklist_patient && $worklist_patient->patient->id === $patient_id) {
+
+                $assignment = $this->getPasApiAssignment($worklist_patient->id);
+
+                //set pas_visit_id
+                if ($assignment) {
+                    $this->owner->event->pas_visit_id = $assignment->resource_id;
+                }
+
+            } else {
+
+                $this->owner->event->pas_visit_id = null;
+
+                // Using the closest worklist_patient.id matching the current patient and current date
+                $worklist_patients = WorklistPatient::model()->findAllByAttributes(['patient_id' => $patient_id]);
+
+                $interval = [];
+                foreach ($worklist_patients as $worklist_patient) {
+                    $interval[$worklist_patient->id] = abs(strtotime($worklist_patient->when) - time());
+                }
+                asort($interval);
+                $worklist_patient_id = key($interval);
+
+                if ($worklist_patient_id && ($assignment = $this->getPasApiAssignment($worklist_patient_id))) {
+                    $this->owner->event->pas_visit_id = $assignment->resource_id;
+                }
+            }
         }
+    }
+
+    public function getPasApiAssignment($worklist_patient_id){
+        //Should this come from the PatientAppointment resource instead of directly from PasApiAssignment ???
+        return \OEModule\PASAPI\models\PasApiAssignment::model()->findByAttributes([
+            'resource_type' => \OEModule\PASAPI\resources\PatientAppointment::$resource_type,
+            'internal_id' => $worklist_patient_id,
+            'internal_type' => '\WorklistPatient']);
     }
 }
 

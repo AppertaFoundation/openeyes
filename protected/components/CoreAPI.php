@@ -181,14 +181,13 @@ class CoreAPI
      * @param Patient $patient
      * @return string
      */
-    public function generateEpisodeLink(Patient $patient, $referrer = null)
+    public function generateEpisodeLink(Patient $patient, $params = [])
     {
         $episode = $this->getEpisodeForCurrentContext($patient);
-        $ref = $referrer ? ['referrer' => $referrer] : [];
         if( $episode !== null){
-            return $this->yii->createURL("/patient/episode/", array("id" => $episode->id) + $ref );
+            return $this->yii->createURL("/patient/episode/", array("id" => $episode->id) + $params );
         } else {
-            return $this->yii->createURL("/patient/episodes/", array("id" => $patient->id) + $ref);
+            return $this->yii->createURL("/patient/episodes/", array("id" => $patient->id) + $params);
         }
     }
 

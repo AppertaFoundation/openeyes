@@ -94,7 +94,6 @@ class PatientController extends BaseController
     {
         return array(
             'CreateEventBehavior' => ['class' => 'application.behaviors.CreateEventControllerBehavior',],
-            'WorklistBehavior' => ['class' => 'application.behaviors.WorklistBehavior',],
         );
     }
 
@@ -110,6 +109,20 @@ class PatientController extends BaseController
         }
 
         return parent::beforeAction($action);
+    }
+
+    public function afterAction($action)
+    {
+        $worklist_patient_id = \Yii::app()->request->getQuery('worklist_patient_id', null);
+        $worklist_patient = WorklistPatient::model()->findByPk($worklist_patient_id);
+
+        if ($worklist_patient && ($this->patient->id === $worklist_patient->patient->id)) {
+            //store the worklist_patient ID to use later when we create an event
+            $worklist_manager = new WorklistManager();
+            $worklist_manager->setWorklistPatientId($worklist_patient->id);
+        }
+
+        parent::afterAction($action);
     }
 
     /**

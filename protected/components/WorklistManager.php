@@ -1494,9 +1494,9 @@ class WorklistManager extends CComponent
         return !empty($this->errors);
     }
 
-    public function setWorklistPatientId($patient_id)
+    public function setWorklistPatientId($worklist_patient_id)
     {
-        \Yii::app()->user->setState("worklist_patient_id", $patient_id);
+        \Yii::app()->user->setState("worklist_patient_id", $worklist_patient_id);
     }
 
     public function clearWorklistPatientId()
