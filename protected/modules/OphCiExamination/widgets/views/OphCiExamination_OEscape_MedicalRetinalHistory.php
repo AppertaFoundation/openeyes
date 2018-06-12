@@ -14,17 +14,20 @@
  */
 ?>
 <script src="<?= Yii::app()->assetManager->createUrl('js/oescape/highchart-MR.js')?>"></script>
-<form action="#OphCiExamination_Episode_MedicalRetinalHistory">
-    <?= CHtml::dropDownList(
-        'mr_history_va_unit_id',
-        $va_unit->id,
-        CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(),
-            'id',
-            'name')) ?>
-</form>
+
 <div id="js-hs-chart-MR" class="highchart-area" data-highcharts-chart="0" dir="ltr" style="min-width: 500px; left: 0px; top: 0px;">
   <div id="highcharts-MR-right" class="highcharts-MR highcharts-right highchart-section"></div>
   <div id="highcharts-MR-left" class="highcharts-MR highcharts-left highchart-section" style="display: none;"></div>
+  <div style="z-index:10; position: relative; width: 150px; top: -800px;">
+    <form action="#OphCiExamination_Episode_MedicalRetinalHistory" >
+        <?= CHtml::dropDownList(
+            'mr_history_va_unit_id',
+            $va_unit->id,
+            CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->active()->findAll(),
+                'id',
+                'name')) ?>
+    </form>
+  </div>
 </div>
 <div class="oes-data-row-input">
 </div>
@@ -51,7 +54,6 @@
     var chart_MR = {};
     for (var i in sides) {
       changeSetting(injections_data, sides[i]);
-      options_MR['title']['text']="Retinal thickness-Visual acuity ("+sides[i]+" Eye)";
       chart_MR[sides[i]] = new Highcharts.chart('highcharts-MR-'+sides[i], options_MR);
       drawMRSeries(chart_MR[sides[i]], VA_data, CRT_data, VA_lines_data, injections_data,va_axis);
     }

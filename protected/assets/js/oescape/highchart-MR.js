@@ -10,7 +10,7 @@ var drugs = [];	// drug banners
 var bannersOffset = 45 * drugs.length; 			// offset xAxis to allow space for drug banners
 var xAxisOffset ; 			// allow for the '>5' flags
 var flagYoffset = -40; 							// drug flags are positioned relative to xAxis
-var total_height = 700;
+var total_height = 800;
 var eye_side = 'right';
 var eye_side_label = 'R';
 var octImgStack;
@@ -34,7 +34,6 @@ var options_MR = {
         highHelp.drawBanners(this,Object.keys(drugs[side]));
       }
     },
-    className: 'oes-chart-mr-'+eye_side,	// suffix: -right -left or -both (eyes)
     height: total_height, 						// chart height fixed px
     marginTop:80,						// make px space for Legend
     spacing: [30, 10, 15, 10], 			// then make space for title - default: [10, 10, 15, 10]
@@ -47,14 +46,13 @@ var options_MR = {
   title: 	{
     text: "Retinal thickness-Visual acuity",
     align: 'center',
-    margin:60,
     y:-10, // title needs offset to not go under legend in small mode
   },
 
   // standard settings
   legend: 		highHelp.chartLegend(),
   navigator: 		highHelp.chartNavigator(),
-  rangeSelector: 	highHelp.chartRangeSelector(-60,-25),	// offset from bottom right (x,y) "Show all" button
+  rangeSelector: 	highHelp.chartRangeSelector(0,-55),	// offset from bottom right (x,y) "Show all" button
 
   yAxis: [{
     // primary y axis
@@ -63,7 +61,7 @@ var options_MR = {
     },
     opposite: true,
     reversed: false,
-    height: total_height - bannersOffset - 430
+    // height: total_height - bannersOffset - 400
   },{
     // secondary y axis
     title: {
@@ -72,14 +70,11 @@ var options_MR = {
     min: 1,
     max: 150,
     opposite: false,
-    height: total_height - bannersOffset - 430
+    // height: total_height - bannersOffset - 400
   }],
 
   xAxis: {
     type: 'datetime',
-    title: {
-      text: 'Time'
-    },
     crosshair: {
       snap: false,		// blue line smooth
     },
@@ -128,6 +123,10 @@ function changeSetting(enter_drugs, side) {
   xAxisOffset = bannersOffset + 10; 			// allow for the '>5' flags
   eye_side = side;
   eye_side_label = (eye_side=='right')?'R':'L';
+  options_MR['yAxis'][0]['height'] =  total_height - bannersOffset - 280;
+  options_MR['yAxis'][1]['height'] =  total_height - bannersOffset - 280;
+  options_MR['title']['text']="Retinal thickness-Visual acuity ("+side+" Eye)";
+  options_MR['chart']['className'] = 'oes-chart-mr-'+eye_side;
 }
 
 function drawMRSeries(chart_MR, VA_data, CRT_data, VA_lines_data, injections_data, axis_type){

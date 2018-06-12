@@ -21,7 +21,7 @@ var highHelp = {
         labels : {
           enabled: false
         }
-      }
+        },
     };
   },
 
