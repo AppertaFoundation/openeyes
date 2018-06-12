@@ -17,7 +17,7 @@
 ?>
 
 <div class="element-fields flex-layout full-width">
-    <table class="cols-11">
+    <table class="cols-11" id="editDiagnosis">
         <colgroup>
             <col class="cols-1">
         </colgroup>
@@ -29,8 +29,8 @@
             <td>
                 <span class="oe-eye-lat-icons">
                     <?php echo $form->radioButtons($element, 'eye_id',
-                        CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'), '',
-                        '', '', '', '', array('nowrapper' => true)) ?>
+                        CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'), null,
+                        false, false, false, false, array('nowrapper' => true)) ?>
                 </span>
             </td>
         </tr>

@@ -36,7 +36,7 @@
                             <?php echo $form->radioButtons($element, 'eye_id', CHtml::listData(Eye::model()->findAll(array(
                                 'condition' => 'name != "Both"',
                                 'order' => 'display_order asc',
-                            )), 'id', 'name'), '', '', '', '', '', array('nowrapper' => true)) ?>
+                            )), 'id', 'name'), $element->eye_id, '', '', '', '', array('nowrapper' => true)) ?>
                             <?php
                         } else {
                             ?>
@@ -70,8 +70,8 @@
                         </td>
                         <td>
                             <?php echo $form->radioButtons($element, 'complexity', Element_OphTrOperationbooking_Operation::$complexity_captions,
-                                '',
-                                '', false,
+                                null,
+                                false, false,
                                 false,
                                 false,
                                 array(
@@ -125,7 +125,8 @@
                         <td>
                             <?php echo $form->radioButtons($element, 'priority_id',
                                 CHtml::listData(OphTrOperationbooking_Operation_Priority::model()->notDeletedOrPk($element->priority_id)->findAll(array('order' => 'display_order asc')),
-                                    'id', 'name'), '', '', '', '', '',
+                                    'id', 'name'), null,
+                                false, false, false, false,
                                 array('nowrapper' => true)) ?>
                         </td>
                     </tr>
@@ -281,8 +282,3 @@
         </table>
     </div>
 </div>
-
-<fieldset class="element-fields">
-
-
-</fieldset>
