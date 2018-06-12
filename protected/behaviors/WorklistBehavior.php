@@ -29,14 +29,13 @@ class WorklistBehavior extends CBehavior
     {
         return array_merge(parent::events(), [
             'onBeforeAction' => 'beforeAction',
-            //'onAfterAction' => 'afterAction',
         ]);
     }
 
     public function beforeAction(\CEvent $event)
     {
         $action = isset($event->params['action']) ? $event->params['action'] : null;
-        $patient_id = $this->owner->patient->id;
+        $patient_id = isset($this->owner->patient->id) ? $this->owner->patient->id : null;
         $worklist_patient_id = $this->worklist_manager->getWorklistPatientId();
         $worklist_patient = $worklist_patient_id ? WorklistPatient::model()->findByPk($worklist_patient_id) : null;
 
