@@ -61,7 +61,6 @@ var options_MR = {
     },
     opposite: true,
     reversed: false,
-    // height: total_height - bannersOffset - 400
   },{
     // secondary y axis
     title: {
@@ -70,7 +69,6 @@ var options_MR = {
     min: 1,
     max: 150,
     opposite: false,
-    // height: total_height - bannersOffset - 400
   }],
 
   xAxis: {
@@ -119,7 +117,7 @@ var options_MR = {
 
 function changeSetting(enter_drugs, side) {
   drugs = enter_drugs;
-  bannersOffset = 45 * drugs.length; 			// offset xAxis to allow space for drug banners
+  bannersOffset = 45 * Object.keys(drugs[side]).length; 			// offset xAxis to allow space for drug banners
   xAxisOffset = bannersOffset + 10; 			// allow for the '>5' flags
   eye_side = side;
   eye_side_label = (eye_side=='right')?'R':'L';
