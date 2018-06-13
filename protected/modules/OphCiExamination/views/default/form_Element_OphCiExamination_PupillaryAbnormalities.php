@@ -17,39 +17,23 @@
  */
 ?>
 <div class="element-fields element-eyes">
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-	<div class="element-eye right-eye column left side" data-side="right">
-		<div class="active-form" <?php if (!$element->hasRight()) {
-    ?>style="display: none;"<?php
-    }?>>
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-        <?php echo $form->dropDownList($element, 'right_abnormality_id', $this->getPupilliaryAbnormalitiesList($element->right_abnormality_id), array('empty' => '-- Select --'), false, array('label' => 3, 'field' => 6)); ?>
-		</div>
-		<div class="inactive-form" <?php if ($element->hasRight()) {
-    ?>style="display: none;"<?php
-    }?>>
-			<div class="add-side">
-				<a href="#">
-					Add right side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
-	<div class="element-eye left-eye column right side" data-side="left">
-		<div class="active-form" <?php if (!$element->hasLeft()) {
-        ?>style="display: none;"<?php
-    }?>>
-      <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-        <?php echo $form->dropDownList($element, 'left_abnormality_id', $this->getPupilliaryAbnormalitiesList($element->left_abnormality_id), array('empty' => '-- Select --'), false, array('label' => 3, 'field' => 6)) ?>
-		</div>
-		<div class="inactive-form" <?php if ($element->hasLeft()) {
-    ?>style="display: none;"<?php
-    }?>>
-			<div class="add-side">
-				<a href="#">
-					Add left side <span class="icon-add-side"></span>
-				</a>
-			</div>
-		</div>
-	</div>
+    <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+      <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side" data-side="<?= $eye_side ?>">
+        <div class="active-form" <?php if (!$element->hasEye($eye_side)) { ?>style="display: none;"<?php } ?>>
+          <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
+            <?php echo $form->dropDownList($element, $eye_side . '_abnormality_id',
+                $this->getPupilliaryAbnormalitiesList($element->{$eye_side . '_abnormality_id'}),
+                array('empty' => '-- Select --'),
+                false, array('label' => 3, 'field' => 6)); ?>
+        </div>
+        <div class="inactive-form" <?php if ($element->hasEye($eye_side)) { ?>style="display: none;"<?php } ?>>
+          <div class="add-side">
+            <a href="#">
+              Add <?= $eye_side ?> side <span class="icon-add-side"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    <?php endforeach; ?>
 </div>
