@@ -348,17 +348,6 @@ EOH;
     }
 
     /**
-     *
-     * Awaiting OE-7215
-     *
-     * @return null
-     */
-    private function getVisitId(){
-        //@TODO: Implement
-        return null;
-    }
-
-    /**
      * Generating and XML file
      *
      * @param $filename
@@ -416,7 +405,7 @@ EOH;
             'location_code' => isset($element_letter->toLocation) ? $element_letter->toLocation->site->location_code : '',
             'output_type' => $document_output->output_type,
 
-            'visit_id' => $this->getVisitId()
+            'visit_id' => $this->event->pas_visit_id,
         ];
 
         $xml = $this->renderFile($this->xml_template, ['data' => $data], true);
