@@ -275,10 +275,10 @@ class BaseEventTypeController extends BaseModuleController
         }, $this->open_elements);
 
         usort($this->open_elements, function ($a, $b) use ($action) {
-            $a_parent_order = (int)($a->getElementType()->parent_element_type ? $a->getElementType()->parent_element_type->display_order : $a->getDisplayOrder($action, true));
-            $b_parent_order = (int)($b->getElementType()->parent_element_type ? $b->getElementType()->parent_element_type->display_order : $b->getDisplayOrder($action, true));
-            $a_child_order = (int)($a->getElementType()->parent_element_type ? $a->getDisplayOrder($action) : -1);
-            $b_child_order = (int)($b->getElementType()->parent_element_type ? $b->getDisplayOrder($action) : -1);
+            $a_parent_order = (int)$a->getParentDisplayOrder($action);
+            $b_parent_order = (int)$b->getParentDisplayOrder($action);
+            $a_child_order = (int)$a->getChildDisplayOrder($action);
+            $b_child_order = (int)$b->getChildDisplayOrder($action);
 
             if ($a_parent_order === $b_parent_order) {
                 return $a_child_order < $b_child_order ? -1 : 1;

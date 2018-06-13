@@ -210,13 +210,13 @@ class HistoryMedications extends \BaseEventTypeElement
         return $action !=='view';
     }
 
-    public function getDisplayOrder($action, $as_parent = false)
+    public function getDisplayOrder($action)
     {
         if ($action=='view'){
             return 25;
         }
         else{
-            return parent::getDisplayOrder($action, $as_parent);
+            return parent::getDisplayOrder($action);
         }
     }
 }

@@ -498,8 +498,24 @@ class BaseEventTypeElement extends BaseElement
      * @param $action
      * @return mixed
      */
-    public function getDisplayOrder($action, $as_parent = false){
+    public function getDisplayOrder($action){
         return $this->getElementType()->display_order;
+    }
+
+    public function getChildDisplayOrder($action) {
+        if($this->isChild($action)) {
+            return $this->getDisplayOrder($action);
+        } else {
+            return -1;
+        }
+    }
+
+    public function getParentDisplayOrder($action) {
+        if ($this->getElementType($action)->parent_element_type_id) {
+            return $this->getElementType($action)->parent_element_type->display_order;
+        } else {
+            return $this->getDisplayOrder($action);
+        }
     }
 
     /**
