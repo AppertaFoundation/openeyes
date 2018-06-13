@@ -99,10 +99,11 @@ ul li, ol li {
     width: 28%;
 }
 
-.prescription_items .prescriptionTaper td.prescriptionLabel {
+.prescription_items .prescriptionTaper td.prescriptionLabel, .prescription_items .prescriptionComments td.prescriptionLabel {
     text-align: right;
     padding-right: 5px !important;
 }
+
 .pharmacy_checkboxes th {
     width: 30%;
 }

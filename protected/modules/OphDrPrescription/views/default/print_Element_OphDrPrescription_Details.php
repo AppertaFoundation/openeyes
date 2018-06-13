@@ -124,6 +124,16 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 					</tr>
 					<?php
 				}
+
+				if(!is_null($item->comments)) { ?>
+
+                    <tr class="prescriptionComments">
+                        <td class="prescriptionLabel">Comments:</td>
+                        <td colspan="<?php echo strpos($group_name,"Hospital") !== false ? 7 : 4 ?>"><i><?php echo CHtml::encode($item->comments); ?></i></td>
+                    </tr>
+
+                <?php
+				}
 			}
 			?>
 			</tbody>
