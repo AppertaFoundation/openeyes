@@ -24,7 +24,7 @@
          data-element-type-name="Eye Medications"
          data-element-display-order="<?php echo $element->elementType->display_order ?>">
     <header class=" element-header">
-        <h3 class="element-title">Eye medications</h3>
+        <h3 class="element-title">Eye Medications</h3>
     </header>
     <div class="element-data">
         <div class="data-value">

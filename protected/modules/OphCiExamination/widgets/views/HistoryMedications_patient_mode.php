@@ -96,7 +96,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
 <div class="oe-popup-overflow quicklook-data-groups">
 
   <div class="group">
-    <div class="label">Eye medications</div>
+    <div class="label">Eye Medications</div>
     <div class="data">
         <?php if (!$current_eye_meds && !$stopped_eye_meds): ?>
           <div style="font-style: italic; color: rgba(255,255,255,0.5);">Nil recorded.</div>
