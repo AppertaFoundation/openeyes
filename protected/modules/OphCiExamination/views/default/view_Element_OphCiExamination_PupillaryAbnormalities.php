@@ -17,34 +17,21 @@
  */
 ?>
 <div class="element-data element-eyes">
-  <div class="element-eye right-eye column">
-    <div class="data-row">
-      <div class="data-value">
-        <span class="large-text">
-				<?php if ($element->hasRight()) {
-            echo $element->right_abnormality->name;
-        } else {
-            ?>
-          Not recorded
-            <?php
-        } ?>
-          </span>
+    <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
+      <div class="element-eye <?= $eye_side ?>-eye column">
+        <div class="data-row">
+          <div class="data-value">
+            <span class="large-text">
+             <?php if ($element->hasEye($eye_side)) {
+                 echo $element->{$eye_side . '_abnormality'}->name;
+             } else {
+                 ?>
+               Not recorded
+                 <?php
+             } ?>
+            </span>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="element-eye left-eye column">
-    <div class="data-row">
-      <div class="data-value">
-        <span class="large-text">
-				<?php if ($element->hasLeft()) {
-            echo $element->left_abnormality->name;
-        } else {
-            ?>
-          Not recorded
-            <?php
-        } ?>
-          </span>
-      </div>
-    </div>
-  </div>
+    <?php endforeach; ?>
 </div>
