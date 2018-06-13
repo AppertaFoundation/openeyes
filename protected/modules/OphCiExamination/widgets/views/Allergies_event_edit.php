@@ -165,10 +165,10 @@ $required_allergy_ids = array_map(function ($r) {
 
     setUpAdder(
       popup,
-      'return',
+      'multi',
       addAllergy,
       $('#add-allergy-btn'),
-      null,
+      popup.find('.add-icon-btn'),
       $('.close-icon-btn, .add-icon-btn')
     );
   });

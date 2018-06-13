@@ -129,13 +129,19 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if (data === undefined)
             data = {};
         var selected_option = $('#history-allergy-option').find('.selected');
-        data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
-        data['allergy_id'] = selected_option.data('id');
-        data['allergy_display'] = selected_option.data('str');
-        return Mustache.render(
-            this.templateText,
-            data
-        );
+        var newRows = [];
+        var template = this.templateText;
+        var tableSelector = this.tableSelector;
+        selected_option.each(function (e) {
+          data = {};
+          data['row_count'] = OpenEyes.Util.getNextDataKey( tableSelector + ' tbody tr', 'key')+ newRows.length;
+          data['allergy_id'] = $(this).data('id');
+          data['allergy_display'] = $(this).data('str');
+          newRows.push( Mustache.render(
+             template,
+            data ));
+        });
+        return newRows;
     };
 
     AllergiesController.prototype.updateNoAllergiesState = function()
