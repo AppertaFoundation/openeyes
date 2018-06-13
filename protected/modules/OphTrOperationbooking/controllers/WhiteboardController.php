@@ -86,6 +86,11 @@ class WhiteboardController extends BaseDashboardController
         Yii::app()->clientScript->registerScriptFile($assetPath.'/components/dialog-polyfill/dialog-polyfill.js');
         Yii::app()->clientScript->registerCssFile($assetPath.'/components/dialog-polyfill/dialog-polyfill.css');
         Yii::app()->clientScript->registerScriptFile($assetPath.'/components/mustache/mustache.js');
+
+        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/OpenEyes.UI.js');
+        Yii::app()->clientScript->registerScriptFile($assetPath.'/components/eventemitter2/lib/eventemitter2.js');
+        Yii::app()->clientScript->registerScriptFile($assetPath.'/js/OpenEyes.UI.Tooltip.js');
+
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dashboard/OpenEyes.Dialog.js');
         Yii::app()->clientScript->registerScriptFile($assetPath.'/js/dashboard/whiteboard.js');
 

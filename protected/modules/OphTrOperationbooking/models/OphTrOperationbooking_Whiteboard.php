@@ -258,10 +258,19 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
     public function getPatientRisksDisplay()
     {
-        $display = "";
+        /** @var Patient $patient */
         $patient = $this->event->patient;
+        $lines = array();
 
-        // TODO Check for diabetes
+        // Search for diabetes
+
+        $diabetic_disorders = $patient->getDisordersOfType(Disorder::$SNOMED_DIABETES_SET);
+
+        if(!empty($diabetic_disorders)) {
+            foreach ($diabetic_disorders as $disorder) {
+                $lines[] = $disorder;
+            }
+        }
 
         // Check risks
 
@@ -273,12 +282,14 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             return !in_array($risk->name, ["Anticoagulants", "Alpha blockers"]);
         });
 
-        $display.= implode("<br/>", array_map(function($risk){
+        $lines = array_merge($lines, array_map(function($risk){
             if($risk->comments != "") {
                 return '<span class="has-tooltip" data-tooltip-content="'.$risk->comments.'">'.$risk->name.'</span>';
             }
             return $risk->name;
         }, $risks));
+
+        $display = implode('<br/>', $lines);
 
         return $display === "" ? "None" : $display;
     }
