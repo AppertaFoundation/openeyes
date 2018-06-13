@@ -179,11 +179,11 @@ $model_name = CHtml::modelName($element);
 
         setUpAdder(
             popup,
-            'return',
+            'multi',
             addSurgery,
             adder.find('#show-add-popup'),
-            null,
-            adder.find('#close-btn')
+            popup.find('.add-icon-btn'),
+            adder.find('#close-btn .add-icon-btn')
         );
     });
 

@@ -50,7 +50,7 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
   };
   PreviousSurgeryController.prototype.setDatepicker = function () {
     var row_count =  OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key')-1 ;
-    this.constructDatepicker( row_count);
+    this.constructDatepicker(row_count);
   };
 
   PreviousSurgeryController.prototype.constructDatepicker = function (line_no) {
@@ -104,13 +104,21 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
         if (data === undefined)
             data = {};
 
-        data['row_count'] = OpenEyes.Util.getNextDataKey( this.tableSelector + ' tbody tr', 'key');
-        data['operation'] = $('#past-surgery-option').find('.selected').data('str');
-        data['id'] = $('#past-surgery-option').find('.selected').data('id');
-      return Mustache.render(
-            template = this.templateText,
-            data
-        );
+      var selected_option = $('#past-surgery-option').find('.selected');
+      var newRows = [];
+      var template = this.templateText;
+      var tableSelector = this.tableSelector;
+      selected_option.each(function (e) {
+        data = {};
+        data['row_count'] = OpenEyes.Util.getNextDataKey(tableSelector + ' tbody tr', 'key')+ newRows.length;
+        data['id'] = $(this).data('id');
+        data['operation'] = $(this).data('str');
+        newRows.push( Mustache.render(
+          template,
+          data ));
+      });
+      return newRows;
+
     };
 
     /**
@@ -118,10 +126,12 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
      */
     PreviousSurgeryController.prototype.addEntry = function()
     {
-        var row = this.createRow();
-        this.$table.find('tbody').append(row);
+        var rows= this.createRow();
+        for(var i in rows){
+          this.$table.find('tbody').append(rows[i]);
+          this.setDatepicker();
+        }
         this.$popupSelector.find('.selected').removeClass('selected');
-        this.setDatepicker();
     };
 
     /**
