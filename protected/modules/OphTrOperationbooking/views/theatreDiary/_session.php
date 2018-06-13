@@ -159,12 +159,12 @@
                                     <?php if ($warnings = $booking->operation->event->episode->patient->getWarnings()) {
                                         $msgs = array();
                                         foreach ($warnings as $warn) {
-                                            $msgs[] = $warn['short_msg'];
+                                            $msgs[] = $warn['long_msg']." - ".$warn['details'];
                                         }
                                         ?>
                                         <img src="<?php echo $assetPath ?>/img/diaryIcons/warning.png"
-                                             alt="<?php echo implode(' / ', $msgs); ?>"
-                                             title="<?php echo implode(' / ', $msgs); ?>" width="17" height="17"/>
+                                             alt="<?php echo implode(' // ', $msgs); ?>"
+                                             title="<?php echo implode(' // ', $msgs); ?>" width="17" height="17"/>
                                     <?php } ?>
                                     <img src="<?php echo $assetPath ?>/img/diaryIcons/confirmed.png" alt="confirmed"
                                          width="17" height="17" class="confirmed"
