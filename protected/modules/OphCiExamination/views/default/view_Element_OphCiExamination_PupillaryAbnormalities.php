@@ -19,10 +19,19 @@
 <div class="element-data element-eyes">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
       <div class="element-eye <?= $eye_side ?>-eye column">
+          <?php if ($element->{$eye_side . '_rapd'} === '1'): ?>
+            <div class="data-row">
+              <div class="data-value">
+                <span class="large-text">
+                    RAPD present
+                </span>
+              </div>
+            </div>
+          <?php endif; ?>
         <div class="data-row">
           <div class="data-value">
             <span class="large-text">
-             <?php if ($element->hasEye($eye_side)) {
+             <?php if ($element->hasEye($eye_side) && $element->{$eye_side . '_abnormality'}) {
                  echo $element->{$eye_side . '_abnormality'}->name;
              } else {
                  ?>
@@ -32,6 +41,13 @@
             </span>
           </div>
         </div>
+          <?php if ($element->{$eye_side . '_comments'}): ?>
+            <div class="data-row">
+              <div class="data-value">
+                  <?= Yii::app()->format->Ntext($element->{$eye_side . '_comments'}) ?>
+              </div>
+            </div>
+          <?php endif; ?>
       </div>
     <?php endforeach; ?>
 </div>

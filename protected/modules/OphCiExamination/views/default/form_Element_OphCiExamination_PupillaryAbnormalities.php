@@ -20,12 +20,77 @@
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side): ?>
       <div class="element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side" data-side="<?= $eye_side ?>">
-        <div class="active-form" <?php if (!$element->hasEye($eye_side)) { ?>style="display: none;"<?php } ?>>
+        <div class="active-form flex-layout" <?php if (!$element->hasEye($eye_side)) { ?>style="display: none;"<?php } ?>>
           <a class="remove-side"><i class="oe-i remove-circle small"></i></a>
-            <?php echo $form->dropDownList($element, $eye_side . '_abnormality_id',
-                $this->getPupilliaryAbnormalitiesList($element->{$eye_side . '_abnormality_id'}),
-                array('empty' => '-- Select --'),
-                false, array('label' => 3, 'field' => 6)); ?>
+          <table class="cols-10">
+            <tbody>
+            <tr>
+              <td>
+                  <?= $element->getAttributeLabel($eye_side . '_rapd') ?>
+              </td>
+              <td>
+                  <?php
+                  echo $form->radioButtons(
+                      $element,
+                      $eye_side . '_rapd',
+                      array(
+                          1 => 'Yes',
+                          2 => 'No',
+                          0 => 'Not Checked',
+                      ),
+                      ($element->{$eye_side . '_rapd'} !== null) ? $element->{$eye_side . '_rapd'} : 0,
+                      false,
+                      false,
+                      false,
+                      false,
+                      array(
+                          'nowrapper' => true,
+                      )
+                  );
+                  ?>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                  <?= $element->getAttributeLabel($eye_side . '_abnormality_id') ?>
+              </td>
+              <td>
+                  <?php echo $form->dropDownList($element, $eye_side . '_abnormality_id',
+                      $this->getPupilliaryAbnormalitiesList($element->{$eye_side . '_abnormality_id'}),
+                      array('empty' => '-- Select --', 'nowrapper' => true),
+                      false, array('nowrapper' => true)); ?>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" id="pupils-<?= $eye_side ?>-comments" class="js-comment-container"
+                  style="display: <?= $element->{$eye_side . '_comments'} ?: 'none' ?>;">
+                  <?php
+                  echo $form->textArea(
+                      $element,
+                      $eye_side . '_comments',
+                      array('nowrapper' => true),
+                      false,
+                      array(
+                          'class' => 'js-comment-field',
+                          'placeholder' => $element->getAttributeLabel($eye_side . '_comments'),
+                          'data-comment-button' => '#pupils-' . $eye_side . '-comment_button',
+                      )
+                  )
+                  ?>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="flex-item-bottom">
+            <button id="pupils-<?= $eye_side ?>-comment_button"
+                    class="button js-add-comments"
+                    data-comment-container="#pupils-<?= $eye_side ?>-comments"
+                    style="display: <?= !$element->{$eye_side . '_comments'} ?: 'none' ?>;"
+                    type="button">
+              <i class="oe-i comments small-icon"></i>
+            </button>
+          </div>
+
         </div>
         <div class="inactive-form" <?php if ($element->hasEye($eye_side)) { ?>style="display: none;"<?php } ?>>
           <div class="add-side">
