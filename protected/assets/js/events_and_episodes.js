@@ -132,16 +132,11 @@ $(document).ready(function(){
 		}
 	});
 
-    $(this).on('click', '.js-remove-element', function (e) {
-        e.preventDefault();
-        var parent = $(this).parent().parent();
-        var parent_id = parent.data('element-type-id');
-        var children_elements = $('section[data-element-parent-id="'+parent_id+'"]');
-        removeElement(parent);
-        for (var i=0; i < children_elements.length; i++){
-          removeElement($(children_elements[i]));
-        }
-    });
+	$(this).on('click', '.js-remove-element', function (e) {
+			e.preventDefault();
+			var parent = $(this).parent().parent();
+			removeElement(parent);
+	});
 
   $(this).on('click', '.js-add-comments', function (e) {
     e.preventDefault();
