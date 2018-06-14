@@ -23,8 +23,6 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
 
     protected $injections = array();
 
-    private $va_unit;
-
 
     public function run_right_side(){
         $this->render(get_class($this).'_Right');
@@ -35,20 +33,7 @@ class OphCiExamination_Episode_MedicalRetinalHistory extends OphCiExamination_Ep
         $va_unit_id = @$_GET[$this->va_unit_input] ?: models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name'=>'ETDRS Letters'))->id;
         $this->va_unit = models\OphCiExamination_VisualAcuityUnit::model()->findByPk($va_unit_id);
 
-        $va_ticks = array();
-        $va_ticks[] = array(1, 'NPL');
-        $va_ticks[] = array(5, 'PL');
-        $va_ticks[] = array(10, 'HM');
-        $va_ticks[] = array(15, 'CF');
-        foreach ($this->va_unit->selectableValues as $value) {
-            if ($value->base_value < 5 || ($this->va_unit->name == 'ETDRS Letters' && $value->value % 10)) {
-                continue;
-            }
-
-            $label = ($value->value == '6/9.5') ? '' : $value->value;
-
-            $va_ticks[] = array($value->base_value, $label);
-        }
+        $va_ticks = $this->getChartTicks();
 
 
         $this->va_ticks = $va_ticks;

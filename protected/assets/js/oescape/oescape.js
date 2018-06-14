@@ -95,3 +95,26 @@ function setYLabels(tick_positions, tick_labels){
     }
   }
 }
+
+//Takes a list (sorted smallest to largest) and removes overlapping labels
+function pruneYTicks(ticks, plotHeight, label_height){
+  var new_ticks = [];
+  new_ticks['tick_position'] = [];
+  new_ticks['tick_labels'] = [];
+  var plot_min = Math.min.apply(null, ticks.tick_position);
+  var plot_max = Math.max.apply(null, ticks.tick_position);
+  var high_point = Number.NEGATIVE_INFINITY;
+  var plot_per_data = plotHeight / (plot_max - plot_min);
+
+  for( var ii = 0; ii < ticks.tick_position.length; ii++){
+    var tick_lower = (ticks.tick_position[ii] - plot_min) * plot_per_data - (label_height / 2);
+    if(tick_lower < high_point){
+      continue;
+    }
+    high_point = tick_lower + label_height;
+
+    new_ticks.tick_position.push(ticks.tick_position[ii]);
+    new_ticks.tick_labels.push(ticks.tick_labels[ii]);
+  }
+  return new_ticks;
+}

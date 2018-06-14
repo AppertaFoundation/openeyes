@@ -71,10 +71,8 @@ var optionsVA = {
     },
     opposite: true,
     reversed: false,
-    min: 1,
-    max: 150,
     labels: {
-    }
+    },
 
   },{
     title: {
@@ -90,7 +88,6 @@ var optionsVA = {
 
 
 function drawVASeries(chart, data, eye_side) {
-
   var series_option_1 = {
     type:'line',
     colorIndex: (eye_side=='right')?11:21,				// Right Eye 11-13: 11 - solid; 12 - dotted; 13 - dashed

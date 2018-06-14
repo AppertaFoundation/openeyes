@@ -24,7 +24,9 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
 
     protected $va_axis;
     protected $va_ticks;
-    private $va_unit;
+    protected $va_unit;
+    protected $va_y_min;
+    protected $va_y_max;
 
     public function run()
     {
@@ -45,38 +47,34 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
 
         $this->render("OphCiExamination_OEscape_VisualAcuityHistory", array('va_unit' => $this->va_unit));
     }
+
+    /**
+     * Moves the values for CF, HM, PL, NPL for better graphing
+     * @param $val float|int value of Visual Acuity to be adjusted
+     * @return float|int adjusted value
+     */
+    public function getAdjustedVA( $val )
+    {
+        return $val > 4 ? $val : ($val-2) * 10;
+    }
+
+
+
     /**
      * @return FlotChart
      */
-    public function configureChart()
-    {
-        $va_ticks = array();
-        $va_ticks[] = array(1, 'NPL');
-        $va_ticks[] = array(5, 'PL');
-        $va_ticks[] = array(10, 'HM');
-        $va_ticks[] = array(15, 'CF');
-        foreach ($this->va_unit->selectableValues as $value) {
-            if ($value->base_value < 10 || ($this->va_unit->name == 'ETDRS Letters' && $value->value % 10)) {
-                continue;
-            }
-
-            /*
-                OE-7011
-                Replacing the charts completely with highcharts will come in OE3.x (with OEScape)
-                until that we need to fix this overlapping labels
-                FlotChart's tickFormatter function won't apply as "'ticks' => $va_ticks" are provided
-            */
-            $label = ($value->value == '6/9.5') ? '' : $value->value;
-
-            $va_ticks[] = array($value->base_value, $label);
-        }
+    public function configureChart() {
+        $va_ticks = $this->getChartTicks();
 
         $this->va_ticks = $va_ticks;
-        $this->va_axis = "{$this->va_unit->name}";
+        $this->va_axis = (string)$this->va_unit->name;
 
         $chart = $this->createWidget('FlotChart', array('chart_id' => $this->chart_id))
             ->configureXAxis(array('mode' => 'time'))
-            ->configureYAxis($this->va_axis, array('position' => 'left', 'min' => 1, 'max' => 150, 'ticks' => $va_ticks))
+            ->configureYAxis(
+                $this->va_axis,
+                array('position' => 'left', 'min' => $this->va_y_min, 'max' => $this->va_y_max, 'ticks' => $va_ticks)
+            )
             ->configureSeries('Visual Acuity (right)', array('yaxis' => $this->va_axis, 'lines' => array('show' => true), 'points' => array('show' => true)))
             ->configureSeries('Visual Acuity (left)', array('yaxis' => $this->va_axis, 'lines' => array('show' => true), 'points' => array('show' => true)));
 
@@ -113,14 +111,15 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
 
     public function getVaData(){
         $va_data_list = array('right'=>array(), 'left'=>array());
-        foreach ($this->event_type->api->getElements('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity', $this->episode->patient, false) as $va) {
+        foreach ($this->event_type->api->getElements(
+            'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
+            $this->episode->patient,
+            false
+        ) as $va) {
             foreach (['left', 'right'] as $side){
                 if ($reading = $va->getBestReading($side)){
-                    $va_value = (float)$reading->value;
-                    if ($va_value < 5 && $va_value > 1){
-                        $va_value = $va_value* 5;
-                    }
-                    array_push($va_data_list[$side],array( 'y'=>$va_value,'x'=>Helper::mysqlDate2JsTimestamp($va->event->event_date)));
+                    $va_value = $this->getAdjustedVA((float)$reading->value);
+                    $va_data_list[$side][] = array( 'y'=>$va_value,'x'=>Helper::mysqlDate2JsTimestamp($va->event->event_date));
                 }
             }
         }
@@ -141,6 +140,17 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
             array_push($tick_data['tick_labels'], $tick[1]);
         }
         return $tick_data;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getChartTicks()
+    {
+        foreach ($this->va_unit->selectableValues as $value) {
+            $va_ticks[] = array($this->getAdjustedVA($value->base_value), $value->value);
+        }
+        return $va_ticks;
     }
 
 }
