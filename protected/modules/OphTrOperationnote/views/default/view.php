@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+
 <?php $this->beginContent('//patient/event_container', array('no_face'=>true));
 
 $this->moduleNameCssClass .= ' highlight-fields';
@@ -56,4 +57,13 @@ if ($this->checkPrintAccess()) {
 <?php } ?>
 
 <?php $this->renderOpenElements($this->action->id); ?>
+<?php $this->renderPartial('delete');?>
 <?php $this->endContent(); ?>
+
+
+<script>
+    $('#js-delete-event-btn').click(function(event){
+        event.preventDefault();
+        $('#js-delete-event').css('display','');
+    });
+</script>

@@ -85,7 +85,8 @@ class EventAction
         if ($this->options['level'] === 'delete') {
             $content = '<i class="oe-i trash"></i>';
             $label = $content;
-            $this->htmlOptions['class'] .= ' icon red';
+            $this->htmlOptions['class'] .= ' header-tab icon red';
+            $this->htmlOptions['id']= 'js-delete-event-btn';
         }
         if ($this->options['level'] === 'cancel') {
             $this->htmlOptions['class'] .= ' red';
