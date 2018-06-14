@@ -63,7 +63,7 @@
 									<th>Site:</th>
 									<th>Theatre:</th>
 									<th>Subspeciality:</th>
-									<th>Firm:</th>
+									<th><?php echo Firm::model()->contextLabel()?>:</th>
 									<th>Ward:</th>
 									<th>Emergency list:</th>
 								</tr>
@@ -83,7 +83,7 @@
 										<?php if (!@$_POST['subspecialty-id']) {?>
 											<?php echo CHtml::dropDownList('firm-id', '', array(), array('empty' => 'All firms', 'disabled' => 'disabled'))?>
 										<?php } else {?>
-											<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], Firm::model()->getList(@$_POST['subspecialty-id']), array('empty' => 'All firms', 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : '')))?>
+											<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'],$used_firms, array('empty' => 'All '.Firm::model()->contextLabel().'s', 'disabled' => (@$_POST['emergency_list'] == 1 ? 'disabled' : '')))?>
 										<?php }?>
 									</td>
 									<td>

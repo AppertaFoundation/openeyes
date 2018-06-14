@@ -45,6 +45,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
 {
     public static $DEFAULT_UNAVAILABLE_REASON = 'This session is unavailable at this time';
     public static $TOO_MANY_PROCEDURES_REASON = 'This operation has too many procedures for this session';
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -99,7 +100,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
+            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'session_user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
@@ -107,6 +108,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             'theatre' => array(self::BELONGS_TO, 'OphTrOperationbooking_Operation_Theatre', 'theatre_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
+
             'sequence' => array(self::BELONGS_TO, 'OphTrOperationbooking_Operation_Sequence', 'sequence_id'),
             'unavailablereason' => array(self::BELONGS_TO, 'OphTrOperationbooking_Operation_Session_UnavailableReason', 'unavailablereason_id'),
             'activeBookings' => array(self::HAS_MANY, 'OphTrOperationbooking_Operation_Booking', 'session_id',
@@ -158,9 +160,9 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
                 'user',
             ),
         );
-        if ((int) $ward_id) {
+        if ((int)$ward_id) {
             $criteria['condition'] = 'ward.id = :ward_id';
-            $criteria['params'][':ward_id'] = (int) $ward_id;
+            $criteria['params'][':ward_id'] = (int)$ward_id;
         }
 
         return $this->activeBookings($criteria);
@@ -251,13 +253,13 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
 
     public function getTimeSlot()
     {
-        return date('H:i', strtotime($this->start_time)).' - '.date('H:i', strtotime($this->end_time));
+        return date('H:i', strtotime($this->start_time)) . ' - ' . date('H:i', strtotime($this->end_time));
     }
 
     public function getFirmName()
     {
         if ($this->firm) {
-            return $this->firm->name.' ('.$this->firm->serviceSubspecialtyAssignment->subspecialty->name.')';
+            return $this->firm->name . ' (' . $this->firm->serviceSubspecialtyAssignment->subspecialty->name . ')';
         } else {
             return 'Emergency List';
         }
@@ -266,7 +268,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
     public function getTheatreName()
     {
         if ($this->theatre) {
-            return $this->theatre->name.' ('.$this->theatre->site->short_name.')';
+            return $this->theatre->name . ' (' . $this->theatre->site->short_name . ')';
         } else {
             return 'None';
         }
@@ -330,7 +332,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             return false;
         }
 
-        if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->params['future_scheduling_limit'] && $this->date > date('Y-m-d', strtotime('+'.Yii::app()->params['future_scheduling_limit']))) {
+        if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->params['future_scheduling_limit'] && $this->date > date('Y-m-d', strtotime('+' . Yii::app()->params['future_scheduling_limit']))) {
             return false;
         }
 
@@ -350,7 +352,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             if (!$this->unavailablereason) {
                 return self::$DEFAULT_UNAVAILABLE_REASON;
             } else {
-                return self::$DEFAULT_UNAVAILABLE_REASON.': '.$this->unavailablereason->name;
+                return self::$DEFAULT_UNAVAILABLE_REASON . ': ' . $this->unavailablereason->name;
             }
         }
 
@@ -378,8 +380,8 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             return 'This session is in the past and so cannot be booked into.';
         }
 
-        if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->params['future_scheduling_limit'] && $this->date > date('Y-m-d', strtotime('+'.Yii::app()->params['future_scheduling_limit']))) {
-            return 'This session is outside the allowed booking window of '.Yii::app()->params['future_scheduling_limit'].' and so cannot be booked into.';
+        if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->params['future_scheduling_limit'] && $this->date > date('Y-m-d', strtotime('+' . Yii::app()->params['future_scheduling_limit']))) {
+            return 'This session is outside the allowed booking window of ' . Yii::app()->params['future_scheduling_limit'] . ' and so cannot be booked into.';
         }
     }
 
@@ -544,12 +546,12 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
         $warnings = array();
         $mins = $this->getAvailableMinutes();
         if ($mins < 0) {
-            $warnings[] = 'Overbooked by '.abs($mins).' minutes';
+            $warnings[] = 'Overbooked by ' . abs($mins) . ' minutes';
         }
 
         $procs = $this->getAvailableProcedureCount();
         if ($procs < 0) {
-            $warnings[] = 'Overbooked by '.abs($procs).' procedures';
+            $warnings[] = 'Overbooked by ' . abs($procs) . ' procedures';
         }
 
         return $warnings;
@@ -561,7 +563,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      */
     protected function validateNewSessionConflict()
     {
-        if($this->isNewRecord){
+        if ($this->isNewRecord) {
 
             $criteria = new CDbCriteria();
 
@@ -605,5 +607,27 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
                 }
             }
         }
+    }
+
+    /**
+     * Get firms that been used atleast once in OphTrOperationbooking_Operation_Session table
+     * @param Optional variable $subspecialty_id which if given returns a list of firms also by subspecialty
+     */
+    public function getFirmsBeenUsed($subspecialty_id = null)
+    {
+        $criteria = new \CDbCriteria;
+        $criteria->select = "s.firm_id, t.*";
+        $criteria->join = 'JOIN ophtroperationbooking_operation_session s ON t.id = s.firm_id';
+        $criteria->distinct = true;
+
+        if ($subspecialty_id) {
+            $criteria->join .= ' JOIN service_subspecialty_assignment ssa ON t.service_subspecialty_assignment_id = ssa.id';
+            $criteria->join .= ' JOIN subspecialty sub ON ssa.subspecialty_id = sub.id';
+            $criteria->addCondition("sub.id = :sub_id");
+            $criteria->addCondition('t.active = 1');
+            $criteria->params[':sub_id'] = $subspecialty_id;
+        }
+
+        return \Firm::model()->findAll($criteria);
     }
 }
