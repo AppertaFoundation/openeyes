@@ -22,10 +22,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   function HistoryMedicationsController(options) {
     this.options = $.extend(true, {}, HistoryMedicationsController._defaultOptions, options);
     this.$element = this.options.element;
-    this.$table = this.$element.find('table');
+    this.$table = this.$element.find('#OEModule_OphCiExamination_models_HistoryMedications_entry_table');
     this.$popup = this.$element.find('#medication-history-popup');
     this.templateText = this.$element.find('.entry-template').text();
     this.drugsByRisk = {};
+    this.medicationSearchRequest = null;
     this.initialiseFilters();
     this.initialiseTriggers();
     this.initialiseDatepicker();
@@ -35,6 +36,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     modelName: 'OEModule_OphCiExamination_models_HistoryMedications',
     element: undefined,
     addButtonSelector: '.js-add-select-search',
+    popup:'#add-to-medication',
     removeButtonSelector: 'i.trash',
     searchSource: '/medication/finddrug',
     routeOptionSource: '/medication/retrieveDrugRouteOptions',
@@ -42,7 +44,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     drugFieldSelector: 'input[name$="[drug_id]"]',
     medicationFieldSelector: 'input[name$="[medication_drug_id]"]',
     asTypedFieldSelector: 'input[name$="[medication_name]"]',
-    medicationSearchSelector: 'input[name$="[medication_search]"]',
+    medicationSelectOptions:'.select-options',
+    medicationSearchOptions: '.history-medication-search-options',
+    medicationSearchInput: '#history-medication-search-field',
+    medicationSearchResult: '#history-medication-search-results',
     drugSelectSelector: 'select[name$="[drug_select]"]',
     medicationNameSelector: '.medication-name',
     medicationDisplaySelector: '.medication-display',
@@ -129,6 +134,36 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         e.preventDefault();
         controller.hideStopped();
     });
+    controller.$element.on('click','#history-medication-search-btn',  function (e) {
+      if ($(this).hasClass('selected')) {
+        return;
+      }
+
+      $(this).addClass('selected');
+      $('#history-medication-select-btn').removeClass('selected');
+
+      $(controller.options.medicationSearchOptions).show();
+      $(controller.options.medicationSearchOptions).find('selected').remove('selected');
+      $(controller.options.medicationSelectOptions).hide();
+    });
+
+    controller.$element.on('click','#history-medication-select-btn', function () {
+      if ($(this).hasClass('selected')) {
+        return;
+      }
+
+      $(this).addClass('selected');
+      $('#history-medication-search-btn').removeClass('selected');
+
+      $(controller.options.medicationSelectOptions).show();
+      $(controller.options.medicationSearchOptions).hide();
+      $(controller.options.medicationSearchInput).val('');
+      $(controller.options.medicationSearchResult).empty();
+    });
+
+    $(controller.options.medicationSearchInput).on('change keyup', function () {
+      controller.initialiseSearch();
+    });
   };
 
   HistoryMedicationsController.prototype.initialiseRow = function($row)
@@ -164,88 +199,36 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       });
 
       controller.setDatepicker();
-
-      if (!$row.find(controller.options.medicationNameSelector).text().length) {
-        controller.resetSearchRow($row, true);
-      }
   };
 
-  HistoryMedicationsController.prototype.initialiseSearch = function($el)
+  HistoryMedicationsController.prototype.initialiseSearch = function()
   {
     var controller = this;
-    if (!$el.data('search')) {
-        $el.autocomplete({
-            minLength: 3,
-            delay: 300,
-            source: function(request, response) {
-                $.getJSON(controller.options.searchSource, {
-                    term: request.term,
-                    ajax: 'ajax'
-                }, response);
-            },
-            focus: function (event, ui) {
-                event.preventDefault();
-                if (event.hasOwnProperty('key')) {
-                    $el.val(controller.getItemDisplayValue(ui.item));
-                }
-                // otherwise do nothing as this is a mouse hover focus;
-                return false;
-            },
-            select: function (event, ui) {
-                controller.searchSelect($el, event, ui);
-            },
-            response: function (event, ui) {
-                ui.content.push({
-                    value: $el.val(),
-                    label: controller.options.searchAsTypedPrefix + $el.val(),
-                    type: 't'
-                });
-            }
-        });
-        $el.autocomplete("widget").css('max-height', '150px').css('overflow', 'auto');
+    if (controller.medicationSearchRequest !== null) {
+      controller.medicationSearchRequest.abort();
     }
-  };
 
-  HistoryMedicationsController.prototype.getItemDisplayValue = function(item)
-  {
-      if (item.type == 't') {
-          return item.label.replace(this.options.searchAsTypedPrefix, '');
+    controller.medicationSearchRequest = $.getJSON(controller.options.searchSource, {
+      term: $(controller.options.medicationSearchInput).val(),
+      ajax: 'ajax'
+    }, function (ui) {
+      controller.medicationSearchRequest = null;
+      $(controller.options.medicationSearchResult).empty();
+      var no_data = !$(ui).length;
+      $(controller.options.medicationSearchResult).toggle(!no_data);
+      $('#history-medication-search-no-results').toggle(no_data);
+      for (var i in ui){
+        var span = "<span class='auto-width'>"+ui[i]['name']+"</span>";
+        var item = $("<li>")
+          .attr('data-str', ui[i]['name'])
+          .attr('data-id', ui[i]['value']);
+        item.append(span);
+        $(controller.options.medicationSearchResult).append(item);
       }
-      return item.label;
+    });
+
   };
 
-  HistoryMedicationsController.prototype.searchSelect = function($el, event, ui)
-  {
-    event.preventDefault();
-    var $container = $el.parents('td');
-    this.resetSearchRow($container, false);
-
-    this.selectMedication($container, ui.item);
-    // set the search text box to the full value chosen
-    $el.val(this.getItemDisplayValue(ui.item));
-  };
-
-  HistoryMedicationsController.prototype.selectMedication = function($container, item)
-  {
-      var displayText = this.getItemDisplayValue(item);
-
-      if (item.type == 't') {
-          $container.find(this.options.asTypedFieldSelector).val(item.value);
-      }
-      else if (item.type == 'd') {
-          $container.find(this.options.drugFieldSelector).val(item.value);
-          this.loadDrugDefaults($container.parents('tr'), item);
-      } else {
-          $container.find(this.options.medicationFieldSelector).val(item.value);
-      }
-      $container.find(this.options.medicationNameSelector).text(displayText);
-
-      $container.find(this.options.medicationDisplaySelector).show();
-      $container.find(this.options.medicationSearchSelector).hide();
-      $container.find(this.options.drugSelectSelector).hide();
-
-      this.processRisks(item);
-  };
 
   HistoryMedicationsController.prototype.loadDrugDefaults = function($row, item)
   {
@@ -309,22 +292,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
   };
 
-  HistoryMedicationsController.prototype.resetSearchRow = function($container, showSearch)
-  {
-      if (showSearch === undefined)
-          showSearch = true;
-
-      $container.find(this.options.asTypedFieldSelector).val('');
-      $container.find(this.options.drugFieldSelector).val('');
-      $container.find(this.options.medicationFieldSelector).val('');
-      $container.find(this.options.medicationNameSelector).text('');
-      $container.find(this.options.drugSelectSelector).val('');
-      if (showSearch) {
-          $container.find(this.options.medicationDisplaySelector).hide();
-          $container.find(this.options.medicationSearchSelector).show();
-          $container.find(this.options.drugSelectSelector).show();
-      }
-  };
 
   HistoryMedicationsController.prototype.showDate = function($row, $type)
   {
@@ -370,23 +337,44 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       }
   };
 
-  HistoryMedicationsController.prototype.createRow = function(data)
+  HistoryMedicationsController.prototype.createRow = function()
   {
-    if (data === undefined)
-      data = {};
 
-    data['row_count'] = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
-    return Mustache.render(
-      this.templateText,
-      data
-    );
+    var selected_option = [];
+    $('#history-medication-option').find('.selected').each(function (e) {
+      selected_option.push(this);
+    });
+    $(this.options.medicationSearchResult).find('.selected').each(function (e) {
+      selected_option.push(this);
+    });
+    var newRows = [];
+    var template = this.templateText;
+    var element = this.$element;
+    for (var i in selected_option) {
+      data = {};
+      data['row_count'] = OpenEyes.Util.getNextDataKey( element.find('table tbody tr'), 'key')+ newRows.length;
+      data['medication_drug_id'] = $(selected_option[i]).data('id');
+      data['medication_name'] = $(selected_option[i]).data('str');
+      newRows.push( Mustache.render(
+        template,
+        data ));
+    }
+
+    return newRows;
+
   };
 
   HistoryMedicationsController.prototype.addEntry = function()
   {
-    var row = this.createRow();
-    this.$table.find('tbody').append(row);
-    this.initialiseRow(this.$table.find('tbody tr:last'));
+    var rows = this.createRow();
+    for(var i in rows){
+      this.$table.find('tbody').append(rows[i]);
+      this.initialiseRow(this.$table.find('tbody tr:last'));
+    }
+
+    $(this.options.medicationSelectOptions).find('.selected').removeClass('.selected');
+    $(this.options.medicationSearchInput).val('');
+    $(this.options.medicationSearchResult).empty();
   };
 
     /**

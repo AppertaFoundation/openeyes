@@ -83,9 +83,65 @@ $element_errors = $element->getErrors();
   </div>
   <div class="flex-layout flex-right">
     <div class="flex-item-bottom" id="medication-history-popup">
-      <button class="button hint green js-add-select-search" type="button">
+      <button class="button hint green js-add-select-search" id="add-medication-btn" type="button">
         <i class="oe-i plus pro-theme"></i>
       </button>
+
+      <div id="add-to-medication" class="oe-add-select-search" style="display: none;">
+        <!-- icon btns -->
+        <div class="close-icon-btn" type="button"><i class="oe-i remove-circle medium"></i></div>
+        <div class="select-icon-btn" type="button"><i id="history-medication-select-btn" class="oe-i menu"></i></div>
+        <button class="button hint green add-icon-btn" type="button">
+          <i class="oe-i plus pro-theme"></i>
+        </button>
+        <!-- select (and search) options for element -->
+        <table class="select-options">
+          <tbody>
+          <tr>
+            <td>
+              <div class="flex-layout flex-top flex-left">
+                <ul class="add-options" data-multi="true" data-clickadd="false" id="history-medication-option">
+                    <?php $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID());
+                    foreach ($medications as $id=>$medication) { ?>
+                      <li data-str="<?php echo $medication ?>" data-id="<?php echo $id?>">
+                        <span class="auto-width">
+                          <?php echo $medication; ?>
+                        </span>
+                      </li>
+                    <?php } ?>
+                </ul>
+              </div>
+              <!-- flex-layout -->
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="search-icon-btn"><i id="history-medication-search-btn" class="oe-i search"></i></div>
+        <div class="history-medication-search-options" style="display: none;">
+          <table class="cols-full last-left">
+            <thead>
+            <tr>
+              <th>
+                <input id="history-medication-search-field"
+                       class="search"
+                       placeholder="Search for Drug"
+                       type="text">
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>
+                <ul id="history-medication-search-results" class="add-options" data-multi="true" style="width: 100%;">
+                </ul>
+                <span id="history-medication-search-no-results">No results found</span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div><!-- oe-add-select-search -->
+
     </div>
   </div>
     <script type="text/template" class="entry-template hidden">
@@ -102,7 +158,13 @@ $element_errors = $element->getErrors();
                 'removable' => true,
                 'route_options' => $route_options,
                 'frequency_options' => $frequency_options,
-                'stop_reason_options' => $stop_reason_options
+                'stop_reason_options' => $stop_reason_options,
+                'values' => array(
+                    'id' => '',
+                    'drug_id' => '{{drug_id}}',
+                    'medication_drug_id' => '{{medication_drug_id}}' ,
+                    'medication_name' => '{{medication_name}}',
+                    )
             )
         );
         ?>
@@ -111,10 +173,25 @@ $element_errors = $element->getErrors();
 
 
 <script type="text/javascript">
+  var medicationsController;
   $(document).ready(function() {
-    new OpenEyes.OphCiExamination.HistoryMedicationsController({
+    medicationsController = new OpenEyes.OphCiExamination.HistoryMedicationsController({
       element: $('#<?=$model_name?>_element')
     });
-
   });
+
+  var popup = $('#add-to-medication');
+
+  function addMedication() {
+    medicationsController.addEntry();
+  }
+
+  setUpAdder(
+    popup,
+    'multi',
+    addMedication,
+    $('#add-medication-btn'),
+    popup.find('.add-icon-btn'),
+    $('.close-icon-btn, .add-icon-btn')
+  );
 </script>

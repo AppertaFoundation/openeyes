@@ -389,7 +389,7 @@ function setUpAdder(adderDiv = null, selectMode = 'single', callback = null, ope
         	callback($(this));
         });
 	} else {
-        adderDiv.find('li').click(function () {
+        adderDiv.on('click', 'li',function () {
             if(!$(this).hasClass('selected')){
                 if(selectMode !== 'multi'){
                     $(this).parent('ul').find('li').removeClass('selected');

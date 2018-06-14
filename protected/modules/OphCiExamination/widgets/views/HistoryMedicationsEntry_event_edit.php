@@ -19,6 +19,15 @@
 
 <?php
 
+if (!isset($values)) {
+    $values = array(
+        'id' => $entry->id,
+        'drug_id' => $entry->drug_id?:'',
+        'medication_drug_id' => $entry->medication_drug_id? :'' ,
+        'medication_name' =>$entry->getMedicationDisplay()? :'',
+    );
+}
+
 if (isset($entry->start_date) && strtotime($entry->start_date)) {
     list($start_sel_year, $start_sel_month, $start_sel_day) = array_pad(explode('-', $entry->start_date), 3,0);
 }else {
@@ -37,7 +46,7 @@ if (isset($entry->end_date) && strtotime($entry->end_date)) {
     <td>
       <span class="medication-display">
         <span class="medication-name">
-          <?= $entry->getMedicationDisplay() ?>
+          <?= $values['medication_name'] ?>
         </span>
       </span>
       <?php if ($entry->originallyStopped) { ?>
