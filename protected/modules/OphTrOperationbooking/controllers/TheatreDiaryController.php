@@ -81,7 +81,7 @@ class TheatreDiaryController extends BaseModuleController
                     $theatres = $this->getFilteredTheatres($_POST['site-id']);
                 }
 
-                if (!isset($_POST['firm-id'])) {
+                if (!isset($_POST['firm-id']) || empty($_POST['firm-id'])) {
                     $_POST['firm-id'] = $theatre_searchoptions['firm-id'] = Yii::app()->session['selected_firm_id'];
                     $_POST['subspecialty-id'] = $theatre_searchoptions['subspecialty-id'] = $firm->getSubspecialtyID();
                 }
@@ -103,7 +103,8 @@ class TheatreDiaryController extends BaseModuleController
 
         $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
 
-        $this->render('index', array('wards' => $wards, 'theatres' => $theatres));
+        $used_firms =  CHtml::listData(OphTrOperationbooking_Operation_Session::model()->getFirmsBeenUsed(@$_POST['subspecialty-id']),"id" , "name");
+        $this->render('index', array('wards' => $wards, 'theatres' => $theatres , 'used_firms'=>$used_firms));
     }
 
     /**
