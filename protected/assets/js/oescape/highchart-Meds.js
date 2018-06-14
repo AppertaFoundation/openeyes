@@ -7,7 +7,7 @@ var series_spacing = 24;
 var optionsMeds = {
   chart: {
     className: 'oes-chart-medications-both',	// suffix: -right -left or -both (eyes)
-    height: title_height,
+    height: title_height + series_no * series_spacing,
     marginRight: marginRight,					// plot to chart edge (align right side)
     spacing: [15, 10, 15, 10], 			// then make space for title - default: [10, 10, 15, 10]
     type: 'columnrange', 				// Can be any of the chart types listed under plotOptions. ('line' default)
@@ -93,7 +93,7 @@ function setSeriesNo(length){
 }
 
 function drawMedsSeries(chart, data, eye_side){
-  chart.setSize($('#highcharts-Meds-' + eye_side).width(),title_height + series_no * series_spacing);
+  chart.setSize(null ,title_height + series_no * series_spacing);
   for (name in data){
     var options = {
       className: "oes-hs-eye-"+eye_side+"-dull",
