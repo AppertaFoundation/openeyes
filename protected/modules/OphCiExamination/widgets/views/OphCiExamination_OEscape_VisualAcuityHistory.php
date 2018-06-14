@@ -28,8 +28,9 @@
   $(document).ready(function () {
     $('#va_history_unit_id').change(function () { this.form.submit(); });
     var va_ticks = <?= CJavaScript::encode($this->getVaTicks()); ?>;
-    optionsVA['yAxis'][0]['tickPositions'] = va_ticks['tick_position'];
-    optionsVA['yAxis'][0]['labels'] = setYLabels(va_ticks['tick_position'], va_ticks['tick_labels']);
+    var axis_index = 0;
+    optionsVA['yAxis'][axis_index]['tickPositions'] = va_ticks['tick_position'];
+    optionsVA['yAxis'][axis_index]['labels'] = setYLabels(va_ticks['tick_position'], va_ticks['tick_labels']);
     var VA_data = <?= CJavaScript::encode($this->getVaData()); ?>;
     var sides = ['left', 'right'];
     var chart_VA = {};
@@ -39,13 +40,6 @@
       drawVASeries(chart_VA[sides[i]], VA_data[sides[i]], sides[i]);
     }
 
-    //The magic number here is pretty much unobtainable, it refers to the height of the label, if you can get it
-    //programmatically, do it
-    va_ticks = pruneYTicks(va_ticks, chart_VA.right.plotSizeY, 12);
-    optionsVA['yAxis'][0]['tickPositions'] = va_ticks['tick_position'];
-    optionsVA['yAxis'][0]['labels'] = setYLabels(va_ticks['tick_position'], va_ticks['tick_labels']);
-    chart_VA.left.update(optionsVA);
-    chart_VA.right.update(optionsVA);
-    chart_VA.redraw();
+    cleanVATicks(va_ticks, optionsVA, chart_VA, axis_index);
   });
 </script>

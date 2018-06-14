@@ -37,11 +37,12 @@
     setImgStack($('#oct-stack'), 'oct_img_',  doc_list['left'].length?doc_list['left'][0]['doc_id']:null );
     //left side plots
     $('#mr_history_va_unit_id').change(function () { this.form.submit(); });
+    var axis_index = 1;
     var va_axis = <?= CJavaScript::encode($this->getVaAxis()); ?>;
-    options_MR['yAxis'][1]['title']['text'] = "VA ("+va_axis+")";
+    options_MR['yAxis'][axis_index]['title']['text'] = "VA ("+va_axis+")";
     var va_ticks = <?= CJavaScript::encode($this->getVaTicks()); ?>;
-    options_MR['yAxis'][1]['tickPositions'] = va_ticks['tick_position'];
-    options_MR['yAxis'][1]['labels'] = setYLabels(va_ticks['tick_position'], va_ticks['tick_labels']);
+    options_MR['yAxis'][axis_index]['tickPositions'] = va_ticks['tick_position'];
+    options_MR['yAxis'][axis_index]['labels'] = setYLabels(va_ticks['tick_position'], va_ticks['tick_labels']);
     var injections_data = <?= CJavaScript::encode($this->getInjectionsList()); ?>;
     var VA_data = <?= CJavaScript::encode($this->getVaData()); ?>;
     var CRT_data = <?= CJavaScript::encode($this->getCRTData()); ?>;
@@ -54,5 +55,7 @@
       chart_MR[sides[i]] = new Highcharts.chart('highcharts-MR-'+sides[i], options_MR);
       drawMRSeries(chart_MR[sides[i]], VA_data, CRT_data, VA_lines_data, injections_data,va_axis);
     }
+
+    cleanVATicks(va_ticks, options_MR, chart_MR, axis_index);
   });
 </script>
