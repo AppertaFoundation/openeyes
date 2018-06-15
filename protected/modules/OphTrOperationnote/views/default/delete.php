@@ -62,21 +62,4 @@
     <?php echo CHtml::endForm(); ?>
 </div>
 
-<script>
-    $('#et_canceldelete').click(function(event){
-       event.preventDefault();
-        $('#errors').text("");
-        $('#js-delete-event').css('display','none');
-    });
-
-    $('#et_deleteevent').click(function(event) {
-        var reasonLength = $('#js-text-area').val().length;
-       if(reasonLength > 0){
-           return;
-       } else {
-           $('#errors').text("Please enter the reason for deletion");
-           event.preventDefault();
-       }
-    });
-</script>
 

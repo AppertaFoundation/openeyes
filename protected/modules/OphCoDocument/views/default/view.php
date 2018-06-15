@@ -22,5 +22,13 @@ $this->event_actions[] = EventAction::printButton('Print', 'print', array(), arr
 $this->moduleNameCssClass .= ' highlight-fields';
 
 $this->renderOpenElements($this->action->id);
-
+$this->renderPartial('//default/delete');
 $this->endContent();
+?>
+
+<script>
+    $('#js-delete-event-btn').click(function(event){
+        event.preventDefault();
+        $('#js-delete-event').css('display','');
+    });
+</script>

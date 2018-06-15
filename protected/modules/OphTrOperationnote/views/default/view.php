@@ -57,7 +57,7 @@ if ($this->checkPrintAccess()) {
 <?php } ?>
 
 <?php $this->renderOpenElements($this->action->id); ?>
-<?php $this->renderPartial('delete');?>
+<?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent(); ?>
 
 

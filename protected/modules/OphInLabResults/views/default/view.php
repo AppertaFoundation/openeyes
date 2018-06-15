@@ -19,5 +19,14 @@ $this->beginContent('//patient/event_container', array('no_face'=>true));
 $this->moduleNameCssClass .= ' highlight-fields';
 
 $this->renderOpenElements($this->action->id);
+$this->renderPartial('//default/delete');
 
-$this->endContent();
+$this->endContent();?>
+
+<script>
+    $('#js-delete-event-btn').click(function(event){
+        event.preventDefault();
+        $('#js-delete-event').css('display','');
+    });
+</script>
+

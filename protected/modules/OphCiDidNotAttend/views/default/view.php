@@ -30,5 +30,11 @@ $this->beginContent('//patient/event_container');
 <?php }?>
 
 <?php $this->renderOpenElements($this->action->id)?>
-
+<?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent()?>
+<script>
+    $('#js-delete-event-btn').click(function(event){
+        event.preventDefault();
+        $('#js-delete-event').css('display','');
+    });
+</script>

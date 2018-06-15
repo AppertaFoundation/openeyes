@@ -64,5 +64,11 @@ if ($this->is_auto) {
 
 }
 $this->renderOpenElements($this->action->id); ?>
-
+<?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent()?>
+<script>
+    $('#js-delete-event-btn').click(function(event){
+        event.preventDefault();
+        $('#js-delete-event').css('display','');
+    });
+</script>

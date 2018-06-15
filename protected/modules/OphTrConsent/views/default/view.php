@@ -37,5 +37,11 @@ if ($this->checkPrintAccess()) {
 	<?php // The "print" value is set by the controller and comes from the user session ?>
 	<input type="hidden" name="OphTrConsent_print" id="OphTrConsent_print" value="<?php echo $print;?>" />
 	<iframe id="print_iframe" name="print_iframe" style="display: none;"></iframe>
-
+<?php $this->renderPartial('//default/delete');?>
 <?php $this->endContent(); ?>
+<script>
+    $('#js-delete-event-btn').click(function(event){
+        event.preventDefault();
+        $('#js-delete-event').css('display','');
+    });
+</script>
