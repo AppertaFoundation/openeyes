@@ -95,7 +95,7 @@ $element_errors = $element->getErrors();
           <i class="oe-i plus pro-theme"></i>
         </button>
         <!-- select (and search) options for element -->
-        <table class="select-options">
+        <table class="select-options" id="history-medication-select-options">
           <tbody>
           <tr>
             <td>

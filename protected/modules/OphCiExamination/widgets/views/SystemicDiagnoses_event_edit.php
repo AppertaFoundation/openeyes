@@ -95,7 +95,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
         <i class="oe-i plus pro-theme"></i>
       </button>
       <!-- select (and search) options for element -->
-      <table class="select-options">
+      <table class="select-options" id='systemic-diagnoses-select-options'>
         <tbody>
         <tr>
           <td>

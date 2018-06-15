@@ -44,7 +44,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     drugFieldSelector: 'input[name$="[drug_id]"]',
     medicationFieldSelector: 'input[name$="[medication_drug_id]"]',
     asTypedFieldSelector: 'input[name$="[medication_name]"]',
-    medicationSelectOptions:'.select-options',
+    medicationSelectOptions:'#history-medication-select-options',
     medicationSearchOptions: '.history-medication-search-options',
     medicationSearchInput: '#history-medication-search-field',
     medicationSearchResult: '#history-medication-search-results',
@@ -143,7 +143,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       $('#history-medication-select-btn').removeClass('selected');
 
       $(controller.options.medicationSearchOptions).show();
-      $(controller.options.medicationSearchOptions).find('selected').remove('selected');
+      $(controller.options.medicationSelectOptions).find('.selected').removeClass('selected');
       $(controller.options.medicationSelectOptions).hide();
     });
 
@@ -161,7 +161,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       $(controller.options.medicationSearchResult).empty();
     });
 
-    $(controller.options.medicationSearchInput).on('change keyup', function () {
+    $(controller.options.medicationSearchInput).on('keyup', function () {
       controller.initialiseSearch();
     });
   };
@@ -374,7 +374,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       this.initialiseRow(this.$table.find('tbody tr:last'));
     }
 
-    $(this.options.medicationSelectOptions).find('.selected').removeClass('.selected');
+    $(this.options.medicationSelectOptions).find('.selected').removeClass('selected');
     $(this.options.medicationSearchInput).val('');
     $(this.options.medicationSearchResult).empty();
   };

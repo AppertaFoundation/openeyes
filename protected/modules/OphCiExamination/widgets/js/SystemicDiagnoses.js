@@ -27,6 +27,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$table = this.$element.find('#OEModule_OphCiExamination_models_SystemicDiagnoses_diagnoses_table');
         this.templateText = $('#OEModule_OphCiExamination_models_SystemicDiagnoses_template').text();
         this.$popupSelector = $('#systemic-diagnoses-popup');
+        this.searchRequest = null;
         this.initialiseTriggers();
         this.initialiseDatepicker();
     }
@@ -34,9 +35,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     SystemicDiagnosesController._defaultOptions = {
         modelName: 'OEModule_OphCiExamination_models_SystemicDiagnoses',
         element: undefined,
+        code: 'systemic',
         addButtonSelector: '#add-history-systemic-diagnoses',
-        searchSource: '/medication/finddrug',
-        selectOptions: '.select-options',
+        findSource: '/medication/finddrug',
+        searchSource: '/disorder/autocomplete',
+        selectOptions: '#systemic-diagnoses-select-options',
         selectItems: '#systemic-diagonses-option',
         searchOptions: '.systemic-diagonses-search-options',
         searchInput: '#systemic-diagonses-search-field',
@@ -62,12 +65,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if ($(this).hasClass('selected')) {
           return;
         }
-
         $(this).addClass('selected');
-        $('#history-medication-select-btn').removeClass('selected');
+        $('#systemic-diagonses-select-btn').removeClass('selected');
 
         $(controller.options.searchOptions).show();
-        $(controller.options.searchOptions).find('selected').remove('selected');
+        $(controller.options.selectOptions).find('.selected').removeClass('selected');
         $(controller.options.selectOptions).hide();
       });
 
@@ -77,7 +79,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
 
         $(this).addClass('selected');
-        $('#history-medication-search-btn').removeClass('selected');
+        $('#systemic-diagonses-search-btn').removeClass('selected');
 
         $(controller.options.selectOptions).show();
         $(controller.options.searchOptions).hide();
@@ -85,7 +87,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $(controller.options.searchResult).empty();
       });
 
-      $(controller.options.searchInput).on('change keyup', function () {
+      $(controller.options.searchInput).on('keyup', function () {
+
         controller.initialiseSearch();
       });
 
@@ -138,8 +141,31 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     SystemicDiagnosesController.prototype.initialiseSearch = function () {
-
+      var controller = this;
+      if (controller.searchRequest !== null) {
+        controller.searchRequest.abort();
+      }
+      controller.searchRequest = $.getJSON(controller.options.searchSource, {
+        term: $(controller.options.searchInput).val(),
+        code: controller.options.code,
+        ajax: 'ajax'
+      }, function (ui) {
+        controller.searchRequest = null;
+        $(controller.options.searchResult).empty();
+        var no_data = !$(ui).length;
+        $(controller.options.searchResult).toggle(!no_data);
+        $('#systemic-diagonses-search-no-results').toggle(no_data);
+        for (var i in ui){
+          var span = "<span class='auto-width'>"+ui[i]['value']+"</span>";
+          var item = $("<li>")
+            .attr('data-str', ui[i]['value'])
+            .attr('data-id', ui[i]['id']);
+          item.append(span);
+          $(controller.options.searchResult).append(item);
+        }
+      });
     };
+
     SystemicDiagnosesController.prototype.dateFromFuzzyFieldSet = function(fieldset)
     {
         var res = fieldset.find('select.fuzzy_year').val();
@@ -187,7 +213,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.setDatepicker();
       }
 
-      $(this.options.selectOptions).find('.selected').removeClass('.selected');
+      $(this.options.selectOptions).find('.selected').removeClass('selected');
       $(this.options.searchInput).val('');
       $(this.options.searchResult).empty();
     };
