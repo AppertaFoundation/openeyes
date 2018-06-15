@@ -53,6 +53,7 @@
                         <?php $form->widget('application.widgets.ProcedureSelection', array(
                             'element' => $element,
                             'durations' => true,
+                            'label'=>''
                         )) ?>
                     </td>
                 </tr>
