@@ -16,7 +16,6 @@
  */
 
 use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
-
 /** @var \OEModule\OphCiExamination\models\SystemicDiagnoses $element */
 ?>
 
@@ -102,12 +101,12 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
           <td>
             <div class="flex-layout flex-top flex-left">
               <ul class="add-options" data-multi="true" data-clickadd="false" id="systemic-diagonses-option">
-                  <?php $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID());
-                  foreach ($medications as $id=>$medication) { ?>
-                    <li data-str="<?php echo $medication ?>" data-id="<?php echo $id?>">
+                  <?php $systemicDiagnoses = [];
+                  foreach (CommonSystemicDisorder::getDisorders() as $disorder) { ?>
+                      <li data-str="<?php echo $disorder->term ?>" data-id="<?php echo $disorder->id?>">
                         <span class="auto-width">
-                          <?php echo $medication; ?>
-                        </span>
+                          <?php echo $disorder->term; ?>
+                      </span>
                     </li>
                   <?php } ?>
               </ul>
