@@ -35,7 +35,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         modelName: 'OEModule_OphCiExamination_models_SystemicDiagnoses',
         element: undefined,
         addButtonSelector: '#add-history-systemic-diagnoses',
-        searchSource: '/medication/finddrug'
+        searchSource: '/medication/finddrug',
+        selectOptions: '.select-options',
+        selectItems: '#systemic-diagonses-option',
+        searchOptions: '.systemic-diagonses-search-options',
+        searchInput: '#systemic-diagonses-search-field',
+        searchResult: '#systemic-diagonses-search-results'
     };
 
     SystemicDiagnosesController.prototype.initialiseTriggers = function()
@@ -117,11 +122,26 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         return res;
     };
 
-    SystemicDiagnosesController.prototype.createRow = function(data)
+    SystemicDiagnosesController.prototype.createRow = function()
     {
-        if (data === undefined)
+        var controller = this;
+        var selected_options = [];
+        var newRows = [];
+        var template = this.templateText;
+        var element = this.$element;
+        $(controller.options.selectItems).find('.selected').each(function (e) {
+          selected_options.push(this);
+        });
+        $(controller.options.searchResult).find('.selected').each(function (e) {
+          selected_options.push(this);
+        });
+
+        for (var i in selected_options) {
             data = {};
-        data['row_count'] = OpenEyes.Util.getNextDataKey( this.$element.find('table tbody tr'), 'key');
+            data['row_count'] = OpenEyes.Util.getNextDataKey(element.find('table tbody tr'), 'key')+ newRows.length;
+
+        }
+
         return Mustache.render(
             this.templateText,
             data

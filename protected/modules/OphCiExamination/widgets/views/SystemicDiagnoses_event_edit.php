@@ -87,6 +87,62 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
     <button class="button hint green js-add-select-search" type="button" id="add-history-systemic-diagnoses">
       <i class="oe-i plus pro-theme"></i>
     </button>
+
+    <div id="add-to-systemic-diagonses" class="oe-add-select-search" style="display: none;">
+      <!-- icon btns -->
+      <div class="close-icon-btn" type="button"><i class="oe-i remove-circle medium"></i></div>
+      <div class="select-icon-btn" type="button"><i id="systemic-diagonses-select-btn" class="oe-i menu"></i></div>
+      <button class="button hint green add-icon-btn" type="button">
+        <i class="oe-i plus pro-theme"></i>
+      </button>
+      <!-- select (and search) options for element -->
+      <table class="select-options">
+        <tbody>
+        <tr>
+          <td>
+            <div class="flex-layout flex-top flex-left">
+              <ul class="add-options" data-multi="true" data-clickadd="false" id="systemic-diagonses-option">
+                  <?php $medications = Drug::model()->listBySubspecialtyWithCommonMedications($this->getFirm()->getSubspecialtyID());
+                  foreach ($medications as $id=>$medication) { ?>
+                    <li data-str="<?php echo $medication ?>" data-id="<?php echo $id?>">
+                        <span class="auto-width">
+                          <?php echo $medication; ?>
+                        </span>
+                    </li>
+                  <?php } ?>
+              </ul>
+            </div>
+            <!-- flex-layout -->
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="search-icon-btn"><i id="systemic-diagonses-search-btn" class="oe-i search"></i></div>
+      <div class="systemic-diagonses-search-options" style="display: none;">
+        <table class="cols-full last-left">
+          <thead>
+          <tr>
+            <th>
+              <input id="systemic-diagonses-search-field"
+                     class="search"
+                     placeholder="Search for Drug"
+                     type="text">
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>
+              <ul id="systemic-diagonses-search-results" class="add-options" data-multi="true" style="width: 100%;">
+              </ul>
+              <span id="systemic-diagonses-search-no-results">No results found</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- oe-add-select-search -->
+
   </div>
 </div>
 <script type="text/template" class="entry-template hidden" id="<?= CHtml::modelName($element).'_template'?>">
@@ -119,9 +175,25 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
     ?>
 </script>
 <script type="text/javascript">
+  var systemicDiagnosesController;
   $(document).ready(function() {
-    new OpenEyes.OphCiExamination.SystemicDiagnosesController({
+    systemicDiagnosesController =  new OpenEyes.OphCiExamination.SystemicDiagnosesController({
       element: $('#<?=$model_name?>_element')
     });
   });
+
+  var popup = $('#add-to-systemic-diagonses');
+
+  function addSystemicDiagnoses() {
+    systemicDiagnosesController.addEntry();
+  }
+
+  setUpAdder(
+    popup,
+    'multi',
+    addSystemicDiagnoses,
+    $('#add-history-systemic-diagnoses'),
+    popup.find('.add-icon-btn'),
+    $('.close-icon-btn, .add-icon-btn')
+  );
 </script>

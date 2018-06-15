@@ -341,15 +341,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
   {
 
     var selected_option = [];
+    var newRows = [];
+    var template = this.templateText;
+    var element = this.$element;
+
     $('#history-medication-option').find('.selected').each(function (e) {
       selected_option.push(this);
     });
     $(this.options.medicationSearchResult).find('.selected').each(function (e) {
       selected_option.push(this);
     });
-    var newRows = [];
-    var template = this.templateText;
-    var element = this.$element;
+
     for (var i in selected_option) {
       data = {};
       data['row_count'] = OpenEyes.Util.getNextDataKey( element.find('table tbody tr'), 'key')+ newRows.length;
