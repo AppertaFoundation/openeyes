@@ -90,7 +90,6 @@ $required_allergy_ids = array_map(function ($r) {
     <div id="add-to-allergies" class="oe-add-select-search" style="display: none;">
       <!-- icon btns -->
       <div class="close-icon-btn" type="button"><i class="oe-i remove-circle medium"></i></div>
-      <div class="select-icon-btn" type="button"><i class="oe-i menu selected"></i></div>
       <button class="button hint green add-icon-btn" type="button">
         <i class="oe-i plus pro-theme"></i>
       </button>

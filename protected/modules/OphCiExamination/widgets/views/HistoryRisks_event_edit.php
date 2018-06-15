@@ -81,11 +81,33 @@ $required_risk_ids = array_map(function ($r) {
       </tbody>
     </table>
   </div>
-  <div class="flex-item-bottom" id="history-risk-popup"
+  <div class="flex-item-bottom" id="add-history-risk-popup"
        style="visibility: <?php echo $element->no_risks_date ? 'hidden' : ''; ?>">
-    <button class="button hint green js-add-select-search" type="button">
+    <button id="show-add-popup" class="button hint green js-add-select-search" type="button">
       <i class="oe-i plus pro-theme"></i>
     </button>
+
+    <div id="add-history-risks" class="oe-add-select-search auto-width" style="bottom: 61px; display: none;">
+      <div id="close-btn" class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
+      <button class="button hint green add-icon-btn" type="button"><i class="oe-i plus pro-theme"></i></button>
+      <table class="select-options">
+        <tr>
+          <td>
+            <div class="flex-layout flex-top flex-left">
+              <ul id="history-risks-option" class="add-options" data-multi="true" data-clickadd="false">
+                  <?php
+                  foreach ($risks_options as $risk_item) {
+                      ?>
+                    <li data-str="<?php echo $risk_item->name; ?>" data-id="<?php echo $risk_item->id; ?>">
+                      <span class="restrict-width"><?php echo $risk_item->name; ?></span>
+                    </li>
+                  <?php } ?>
+              </ul>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
   </div>
   <script type="text/template" class="<?= CHtml::modelName($element) . '_entry_template' ?> hidden">
       <?php
@@ -117,9 +139,26 @@ $required_risk_ids = array_map(function ($r) {
 
 
 <script type="text/javascript">
+  var controller;
   $(document).ready(function () {
-    new OpenEyes.OphCiExamination.HistoryRisksController({
+    controller = new OpenEyes.OphCiExamination.HistoryRisksController({
       element: $('#<?=$model_name?>_element')
     });
   });
+
+  var adder = $('#add-history-risk-popup');
+  var popup = adder.find('#add-history-risks');
+
+  function addRisks(selection) {
+    controller.addEntry();
+  }
+
+  setUpAdder(
+    popup,
+    'multi',
+    addRisks,
+    adder.find('#show-add-popup'),
+    popup.find('.add-icon-btn'),
+    adder.find('#close-btn .add-icon-btn')
+  );
 </script>

@@ -99,10 +99,8 @@ OpenEyes.OphCiExamination.PreviousSurgeryController = (function() {
      * @param data
      * @returns {*}
      */
-    PreviousSurgeryController.prototype.createRow = function(data)
+    PreviousSurgeryController.prototype.createRow = function()
     {
-        if (data === undefined)
-            data = {};
 
       var selected_option = $('#past-surgery-option').find('.selected');
       var newRows = [];

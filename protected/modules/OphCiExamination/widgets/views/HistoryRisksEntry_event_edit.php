@@ -28,7 +28,7 @@ if (!isset($values)) {
     $values = array(
         'id' => $entry->id,
         'risk_id' => $entry->risk_id,
-        'risk_display' => $entry->displayrisk,
+        'risk_display' => $entry->risk ? $entry->risk->name : '',
         'has_risk' => $entry->has_risk,
         'other' => $entry->other,
         'comments' => $entry->comments,
@@ -39,33 +39,13 @@ if (!isset($values)) {
   <td>
     <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
       <?php
-      if ($removable) {
-          $risks_opts = array(
-              'options' => array(),
-              'empty' => '- select -',
-              'class' => $model_name . '_risk_id',
-          );
-          foreach ($risks as $risk) {
-              $risks_opts['options'][$risk->id] = array('data-other' => $risk->isOther() ? '1' : '0');
-          }
-          echo CHtml::dropDownList($field_prefix . '[risk_id]', $values['risk_id'],
-              CHtml::listData($risks, 'id', 'name'), $risks_opts);
-          $show_other = $values['risk_id'] && array_key_exists($values['risk_id'],
-                  $risks_opts['options']) && ($risks_opts['options'][$values['risk_id']]['data-other'] === '1');
-          ?>
-
-        <span class="<?= $model_name ?>_other_wrapper" <?= $show_other ? '' : 'style="display: none;"' ?>>
-            <?php echo CHtml::textField($field_prefix . '[other]', $values['other'],
-                array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-          </span>
-          <?php
-      } else {
-          echo CHtml::hiddenField($field_prefix . '[risk_id]', $values['risk_id']);
-          echo CHtml::hiddenField($field_prefix . '[other]', $values['other']);
-          echo $values['risk_display'];
-      }
-      ?>
-
+      echo CHtml::hiddenField($field_prefix . '[risk_id]', $values['risk_id']);
+      echo CHtml::hiddenField($field_prefix . '[other]', $values['other']);
+      echo $values['risk_display']; ?>
+    <span class="<?= $model_name ?>_other_wrapper" <?= $values['other'] ? '' : 'style="display: none;"' ?>>
+        <?php echo CHtml::textField($field_prefix . '[other]', $values['other'],
+            array('class' => 'other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+    </span>
   </td>
   <td id="OEModule_OphCiExamination_models_HistoryRisks_entries_<?= $row_count ?>_risk_id_error">
     <label class="inline highlight">

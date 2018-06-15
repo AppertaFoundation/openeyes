@@ -121,8 +121,7 @@ $model_name = CHtml::modelName($element);
               <ul id="past-surgery-option" class="add-options" data-multi="true" data-clickadd="false">
                   <?php
                       $op_list = CommonPreviousOperation::model()->findAll(array('order' => 'display_order asc'));
-                      foreach ($op_list as $op_item) {
-                      ?>
+                      foreach ($op_list as $op_item) { ?>
                           <li data-str="<?php echo $op_item->name; ?>" data-id="<?php echo $op_item->id; ?>">
                             <span class="restrict-width"><?php echo $op_item->name; ?></span>
                           </li>
@@ -171,7 +170,7 @@ $model_name = CHtml::modelName($element);
 
 
         var adder = $('#add-to-past-surgery');
-        var popup = adder.find('.oe-add-select-search');
+        var popup = adder.find('#add-prev-surgery');
 
         function addSurgery(selection){
             controller.addEntry();
